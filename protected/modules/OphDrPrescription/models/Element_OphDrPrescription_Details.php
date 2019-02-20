@@ -407,7 +407,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             foreach ($drug_allergies_assignments as $drug_allergy_assignment) {
                 if ($allergy->id === $drug_allergy_assignment->allergy_id) {
                     $patient_allergies_from_drugs[$allergy->id] = $allergy->name;
-                    $allergic_drugs[$drug_allergy_assignment->drug_id] = $drug_allergy_assignment->drug->name;
+                    $allergic_drugs[$drug_allergy_assignment->medication_id] = $drug_allergy_assignment->medication->preferred_term;
                 }
             }
         }
@@ -427,7 +427,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     {
         $drug_allergies_assignments = [];
         foreach ($this->items as $prescription_item) {
-            $drug_allergy_assignment = DrugAllergyAssignment::model()->find('drug_id = :drug_id', [':drug_id' => $prescription_item->drug->id]);
+            $drug_allergy_assignment = MedicationAllergyAssignment::model()->find('medication_id = :medication_id', [':medication_id' => $prescription_item->medication->id]);
             if (isset($drug_allergy_assignment)) {
                 $drug_allergies_assignments[] = $drug_allergy_assignment;
             }
