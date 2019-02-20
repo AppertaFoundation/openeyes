@@ -135,4 +135,17 @@ class UserHotlistItem extends BaseActiveRecordVersioned
 
         return $this->findAll($criteria);
     }
+
+    public function maxStrLen($openHotlistItems){
+        $maxStrLen = 0;
+        if(count($openHotlistItems) > 0){
+            foreach ($openHotlistItems as $hotlistItem) {
+                $strLen = strlen($hotlistItem->patient->hos_num);
+                if($strLen > $maxStrLen){
+                    $maxStrLen = $strLen;
+                }
+            }
+        }
+        return $maxStrLen;
+    }
 }

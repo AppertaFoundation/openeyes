@@ -31,7 +31,7 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
             <!-- Open Items -->
             <table class="activity-list open" style="table-layout: fixed;">
                 <colgroup>
-                    <col style="width: 50px;">
+                    <col style="width: <?php echo UserHotlistItem::model()->maxStrLen($openHotlistItems)*7.5; ?>px;">
                     <col style="width: 40%;">
                     <col style="width: 30%">
                     <col style="width: 50px;">
