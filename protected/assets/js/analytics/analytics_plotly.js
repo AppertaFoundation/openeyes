@@ -4,10 +4,11 @@ var analytics_layout = {
         color: '#fff',
     },
     autosize: false,
+    automargin: true,
     height: 800,
     width: 1460,
     margin:{
-        l:50,
+        l:150,
         t:30,
         b: 50,
         pad:4,
@@ -32,6 +33,7 @@ var analytics_layout = {
         /*Ticks setting*/
         ticks: 'outside',
         showticklabels: true,
+        rangemode: 'tozero',
         showline: true,
         linecolor: '#fff',
         tickcolor: '#fff',
