@@ -151,7 +151,7 @@ class ProcedureController extends BaseAdminController
             if (isset($user_complications)) {
                 $criteria = new \CDbCriteria();
                 $criteria->addInCondition('id', array_values($user_complications));
-                $complications = Benefit::model()->findAll($criteria);
+                $complications = Complication::model()->findAll($criteria);
             }
             $procedure->complications = $complications;
 
