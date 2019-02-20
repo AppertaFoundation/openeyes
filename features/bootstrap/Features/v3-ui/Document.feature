@@ -10,20 +10,16 @@ Feature: Document test
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "<uname>" and "<pwd>"
-    And I select Change Firm
-    And I select Site "<siteName/Number>"
-    Then I select a firm of "<firmName/Number>"
+
 
     Then I search for patient name last name "<lastName>" and first name "<firstName>"
     And I add a New Event "<event>"
     Then I select Event Sub Type of "<event_sub_type>"
-    #Then I click on double files upload
-    #Then I click on double document upload left
     Then I upload single file "<file_path>"
     Then I save document event and confirm it saved successfully
     Then I delete the event
     Then I logout
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | event_sub_type|file_path                                        |
-      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCoDocument    | OCT           |/var/www/openeyes/features/data/assets/index.jpg |
+      |uname|pwd  |lastName|firstName|event            | event_sub_type|file_path                                        |
+      |admin|admin|Coffin, |Violet   |OphCoDocument    | OCT           |/var/www/openeyes/features/data/assets/index.jpg |

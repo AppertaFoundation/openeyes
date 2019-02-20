@@ -3,158 +3,161 @@
 use Behat\Behat\Exception\BehaviorException;
 
 
-class Prescription extends OpenEyesPage
+class Prescription extends EventPage
 {
-
+    public function __construct(\Behat\Mink\Session $session, \SensioLabs\Behat\PageObjectExtension\Context\PageFactoryInterface $pageFactory, array $parameters = array())
+    {
+        parent::__construct($session, $pageFactory, $parameters);
+        $this->elements = array_merge($this->elements, self::getPageElements());
+    }
     protected $path = "/site/OphDrPrescription/Default/create?patient_id={parentId}";
 
-    //protected $repeatDrugCheck= "//*[@class='prescription-label']//*[@value=".repeatDrug."]";
-    protected $elements = array(
-        'filterBy' => array(
-            'xpath' => "//*[@id='drug_type_id']"
-        ),
-        'noPreservative' => array(
-            'xpath' => "//*[@id='preservative_free']"
-        ),
-        'prescriptionCommonDrug' => array(
-            'xpath' => "//*[@id='common_drug_id']"
-        ),
-        'prescriptionStandardSet' => array(
-            'xpath' => "//*[@id='drug_set_id']"
-        ),
-        'prescriptionDoseItem0' => array(
-            //'xpath' => "//*[@id='prescription_item_0_dose']"
-            'xpath' => "//*[@class='prescriptionItemDose']//*[@id='prescription_item_0_dose']"
-        ),
-        'prescriptionRouteItem0' => array(
-            'xpath' => "//*[@id='prescription_item_0_route_id']"
-        ),
-        'prescriptionEyeOptionItem0' => array(
-            'xpath' => "//*[@id='prescription_item_0_route_option_id']"
-        ),
-        'prescriptionEyeOptionItem1' => array(
-            'xpath' => "//*[@id='prescription_item_1_route_option_id']"
-        ),
-        'prescriptionEyeOptionItem2' => array(
-            'xpath' => "//*[@id='prescription_item_2_route_option_id']"
-        ),
-        'prescriptionFrequencyItem0' => array(
-            'xpath' => "//*[@id='prescription_item_0_frequency_id']"
-        ),
-        'prescriptionDurationItem0' => array(
-            'xpath' => "//*[@id='prescription_item_0_duration_id']"
-        ),
-        'prescriptionComments' => array(
-            'xpath' => "//textarea[@id='Element_OphDrPrescription_Details_comments']"
-        ),
-        'savePrescriptionandPrint' => array(
-            'xpath' => "//*[@id='et_save_print']"
-        ),
-        'prescriptionSaveDraft' => array(
-            'xpath' => "//*[@id='et_save_draft']"
-        ),
-        'prescriptionSavedOk' => array(
-            'xpath' => "//*[@id='flash-success']"
-        ),
-        'addTaper' => array(
-            'xpath' => "//*[@class='taperItem']"
-        ),
-        'firstTaperDose' => array(
-            'xpath' => "//*[@id='prescription_item_0_taper_0_dose']"
-        ),
-        'firstTaperFrequency' => array(
-            'xpath' => "//*[@id='prescription_item_0_taper_0_frequency_id']"
-        ),
-        'firstTaperDuration' => array(
-            'xpath' => "//*[@id='prescription_item_0_taper_0_duration_id']"
-        ),
-        'secondTaperDose' => array(
-            'xpath' => "//*[@id='prescription_item_0_taper_1_dose']"
-        ),
-        'secondTaperFrequency' => array(
-            'xpath' => "//*[@id='prescription_item_0_taper_1_frequency_id']"
-        ),
-        'secondTaperDuration' => array(
-            'xpath' => "//*[@id='prescription_item_0_taper_1_duration_id']"
-        ),
-        'removeThirdTaper' => array(
-            'xpath' => "//*[@data-taper='2']//*[@class='removeTaper']"
-        ),
-        'prescriptionValidationWarning' => array(
-            'xpath' => "//*[contains(text(),'Items cannot be blank.')]"
-        ),
-        'standardSetRepeatDrug1' => array(
-            'xpath' => "//*[@class='prescription-item prescriptionItem even']//*[contains(text(),'atropine 1% eye drops')]"
-        ),
-        'standardSetRepeatDrug2' => array(
-            'xpath' => "//*[@class='prescription-item prescriptionItem odd']//*[contains(text(),'chlorAMPhenicol 0.5% eye drops')]"
-        ),
-        'standardSetRepeatDrug3' => array(
-            'xpath' => "//*[@class='prescription-item prescriptionItem even']//*[contains(text(),'dexamethasone 0.1% eye drops')]"
-        ),
-        'repeatPrescription' => array(
-            'xpath' => "//*[@id='repeat_prescription']"
-        ),
-        'previousPrescription' => array(
-            'xpath' => 'repeatDrugCheck'
-        ),
+    protected static function getPageElements()
+    {
+        return array(
+            'filterBy' => array(
+                'xpath' => "//*[@id='drug_type_id']"
+            ),
+            'noPreservative' => array(
+                'xpath' => "//*[@id='preservative_free']"
+            ),
+            'prescriptionCommonDrug' => array(
+                'xpath' => "//*[@id='common_drug_id']"
+            ),
+            'prescriptionStandardSet' => array(
+                'xpath' => "//*[@id='drug_set_id']"
+            ),
+            'prescriptionDoseItem0' => array(
+                //'xpath' => "//*[@id='prescription_item_0_dose']"
+                'xpath' => "//*[@class='prescriptionItemDose']//*[@id='prescription_item_0_dose']"
+            ),
+            'prescriptionRouteItem0' => array(
+                'xpath' => "//*[@id='prescription_item_0_route_id']"
+            ),
+            'prescriptionEyeOptionItem0' => array(
+                'xpath' => "//*[@id='prescription_item_0_route_option_id']"
+            ),
+            'prescriptionEyeOptionItem1' => array(
+                'xpath' => "//*[@id='prescription_item_1_route_option_id']"
+            ),
+            'prescriptionEyeOptionItem2' => array(
+                'xpath' => "//*[@id='prescription_item_2_route_option_id']"
+            ),
+            'prescriptionFrequencyItem0' => array(
+                'xpath' => "//*[@id='prescription_item_0_frequency_id']"
+            ),
+            'prescriptionDurationItem0' => array(
+                'xpath' => "//*[@id='prescription_item_0_duration_id']"
+            ),
+            'prescriptionComments' => array(
+                'xpath' => "//textarea[@id='Element_OphDrPrescription_Details_comments']"
+            ),
+            'savePrescriptionandPrint' => array(
+                'xpath' => "//*[@id='et_save_print']"
+            ),
+            'prescriptionSaveDraft' => array(
+                'xpath' => "//*[@id='et_save_draft']"
+            ),
+            'addTaper' => array(
+                'xpath' => "//*[@class='taperItem']"
+            ),
+            'firstTaperDose' => array(
+                'xpath' => "//*[@id='prescription_item_0_taper_0_dose']"
+            ),
+            'firstTaperFrequency' => array(
+                'xpath' => "//*[@id='prescription_item_0_taper_0_frequency_id']"
+            ),
+            'firstTaperDuration' => array(
+                'xpath' => "//*[@id='prescription_item_0_taper_0_duration_id']"
+            ),
+            'secondTaperDose' => array(
+                'xpath' => "//*[@id='prescription_item_0_taper_1_dose']"
+            ),
+            'secondTaperFrequency' => array(
+                'xpath' => "//*[@id='prescription_item_0_taper_1_frequency_id']"
+            ),
+            'secondTaperDuration' => array(
+                'xpath' => "//*[@id='prescription_item_0_taper_1_duration_id']"
+            ),
+            'removeThirdTaper' => array(
+                'xpath' => "//*[@data-taper='2']//*[@class='removeTaper']"
+            ),
+            'prescriptionValidationWarning' => array(
+                'xpath' => "//*[contains(text(),'Items cannot be blank.')]"
+            ),
+            'standardSetRepeatDrug1' => array(
+                'xpath' => "//*[@class='prescription-item prescriptionItem even']//*[contains(text(),'atropine 1% eye drops')]"
+            ),
+            'standardSetRepeatDrug2' => array(
+                'xpath' => "//*[@class='prescription-item prescriptionItem odd']//*[contains(text(),'chlorAMPhenicol 0.5% eye drops')]"
+            ),
+            'standardSetRepeatDrug3' => array(
+                'xpath' => "//*[@class='prescription-item prescriptionItem even']//*[contains(text(),'dexamethasone 0.1% eye drops')]"
+            ),
+            'repeatPrescription' => array(
+                'xpath' => "//*[@id='repeat_prescription']"
+            ),
+            'previousPrescription' => array(
+                'xpath' => 'repeatDrugCheck'
+            ),
 
-        'prescriptionExist' => array(
-            'xpath' => "//*[@class='events']//*[@class='tooltip quicklook']//*[contains(text(),'Prescription')]"
-        ),
+            'prescriptionExist' => array(
+                'xpath' => "//*[@class='events']//*[@class='tooltip quicklook']//*[contains(text(),'Prescription')]"
+            ),
 
-        'prescriptionHover' => array(
-            'xpath' => "//*[@class='event-type']"
-        ),
-        'prescriptionHoverText' => array(
-            'xpath' => "//*[@class='events-container show']//*[contains(text(),'Prescription')]"
-        ),
+            'prescriptionHover' => array(
+                'xpath' => "//*[@class='event-type']"
+            ),
+            'prescriptionHoverText' => array(
+                'xpath' => "//*[@class='events-container show']//*[contains(text(),'Prescription')]"
+            ),
 
-        'deleteEvent' => array(
-            'xpath' => "//*[@class=' delete event-action button button-icon small']"
-        ),
-        'deleteEventButton' => array(
-            'xpath' => "//*[@id='et_deleteevent']"
-        ),
-        'prescriptionExistWarning' => array(
-            'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'WARNING: A Prescription has already been created for this patient today. ')]"
-        ),
+            'deleteEvent' => array(
+                'xpath' => "//*[@class=' delete event-action button button-icon small']"
+            ),
+            'deleteEventButton' => array(
+                'xpath' => "//*[@id='et_deleteevent']"
+            ),
+            'prescriptionExistWarning' => array(
+                'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'WARNING: A Prescription has already been created for this patient today. ')]"
+            ),
 
-        'prescriptionExistWarning2' => array(
-            'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'WARNING: Prescriptions have already been created for this patient today.')]"
-        ),
-        'prescriptionExistsYesOption' => array(
-            'xpath' => "//*[@id='prescription-yes']"
-        ),
-        'prescriptionExistsNoOption' => array(
-            'xpath' => "//*[@id='prescription-no']"
-        ),
-        'eventCreationPage' => array(
-            'xpath' => "//*[@class='selected']//*[contains(text(),'Create')]"
-        ),
-        'eventSummaryPage' => array(
-            'xpath' => "//*[@class='inline-list tabs event-actions']//*[contains(text(),'View')]"
-        ),
-        //new code from here
-        'addPrescriptionBtn' => array(
-            'xpath' => "//*[@id='add-prescription-btn']"
-        ),
-        'searchBar' => array(
-            'css' => '.search.cols-full.js-search-autocomplete'
-        ),
-        'drugList' => array(
-            'css' => '.oe-add-select-search.auto-width'
-        ),
-        'drugSearchList' => array(
-            'css' => '.add-options.js-search-results'
-        ),
-        'dispenseCondition' => array(
-            'xpath' => "//*[@id='prescription_item_0_dispense_condition_id']"
-        ),
-        'dispenseLocation' => array(
-            'xpath' => "//*[@id='prescription_item_0_dispense_location_id']"
-        ),
-    );
+            'prescriptionExistWarning2' => array(
+                'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'WARNING: Prescriptions have already been created for this patient today.')]"
+            ),
+            'prescriptionExistsYesOption' => array(
+                'xpath' => "//*[@id='prescription-yes']"
+            ),
+            'prescriptionExistsNoOption' => array(
+                'xpath' => "//*[@id='prescription-no']"
+            ),
+            'eventCreationPage' => array(
+                'xpath' => "//*[@class='selected']//*[contains(text(),'Create')]"
+            ),
+            'eventSummaryPage' => array(
+                'xpath' => "//*[@class='inline-list tabs event-actions']//*[contains(text(),'View')]"
+            ),
+            //new code from here
+            'addPrescriptionBtn' => array(
+                'xpath' => "//*[@id='add-prescription-btn']"
+            ),
+            'searchBar' => array(
+                'css' => '.search.cols-full.js-search-autocomplete'
+            ),
+            'drugList' => array(
+                'css' => '.oe-add-select-search.auto-width'
+            ),
+            'drugSearchList' => array(
+                'css' => '.add-options.js-search-results'
+            ),
+            'dispenseCondition' => array(
+                'xpath' => "//*[@id='prescription_item_0_dispense_condition_id']"
+            ),
+            'dispenseLocation' => array(
+                'xpath' => "//*[@id='prescription_item_0_dispense_location_id']"
+            ),
+        );
+    }
 
     //new code from here
     public function addDrugs($drug)
@@ -307,17 +310,11 @@ class Prescription extends OpenEyesPage
         $this->getSession()->wait(1000);
     }
 
-    protected function hasPrescriptionSaved()
-    {
-        $this->waitForElementDisplayBlock('prescriptionSavedOk');
-        return ( bool )$this->find('xpath', $this->getElement('prescriptionSavedOk')->getXpath());
-    }
-
     public function savePrescriptionAndConfirm()
     {
         $this->getElement('prescriptionSaveDraft')->click();
 
-        if (!$this->hasPrescriptionSaved()) {
+        if (!$this->eventSaved()) {
             throw new BehaviorException ("WARNING!!!  Prescription has NOT been saved!!  WARNING!!");
         }
     }

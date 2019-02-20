@@ -702,7 +702,7 @@ class IntravitrealContext extends PageObjectContext {
 		 * @var Intravitreal $Intravitreal
 		 */
 		$Intravitreal = $this->getPage ( 'Intravitreal' );
-		$Intravitreal->saveIntravitrealAndConfirm ();
+		$Intravitreal->saveAndConfirm();
 	}
 	
 	/**

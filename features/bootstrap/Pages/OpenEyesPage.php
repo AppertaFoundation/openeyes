@@ -7,11 +7,11 @@ use SensioLabs\Behat\PageObjectExtension\Context\PageFactoryInterface;
 
 
 class OpenEyesPage extends Page {
-
 	public function __construct(Session $session, PageFactoryInterface $pageFactory, array $parameters = array())
     {
         parent::__construct($session, $pageFactory, $parameters);
     }
+
 
     /**
 	 * ription checks that the title is equal to the expected value
@@ -150,13 +150,6 @@ JS;
 	private function getWaitTime($waitTime) {
 		return $waitTime = $waitTime != null ? ( int ) $waitTime : 2000;
 	}
-
-    /**
-     * This should be the same behaviour for every OE page
-     */
-    public function saveEvent() {
-        $this->getElement ( 'save' )->click ();
-    }
 
     public function popupOk($element_name)
     {

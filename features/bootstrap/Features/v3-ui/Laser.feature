@@ -10,9 +10,7 @@ Feature: Laser test
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "<uname>" and "<pwd>"
-    And I select Change Firm
-    And I select Site "<siteName/Number>"
-    Then I select a firm of "<firmName/Number>"
+
 
     Then I search for patient name last name "<lastName>" and first name "<firstName>"
 
@@ -29,5 +27,5 @@ Feature: Laser test
     Then I logout
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | Laser_site | Laser| Laser_operator| Procedure| Procedure_id| New_Procedure|
-      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphTrLaser       | Kings      | Yag  | Jones George  |Laser gonioplasty|364|Cycloablation    |
+      |uname|pwd  |lastName|firstName|event            | Laser_site | Laser| Laser_operator| Procedure|
+      |admin|admin|Coffin, |Violet   |OphTrLaser       | Kings      | Yag  | Jones George  |Laser gonioplasty|
