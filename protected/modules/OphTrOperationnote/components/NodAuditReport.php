@@ -46,6 +46,8 @@ class NodAuditReport extends Report implements ReportInterface
             'ticks' => 'outside',
             'dtick' => 50,
             'tick0' => 0,
+            'dtick'=>0.1,
+            'tickformat'=>',.0%',
             'showgrid' => true,
         ),
         'legend' => array(
@@ -246,6 +248,11 @@ class NodAuditReport extends Report implements ReportInterface
             }else{
                 $return_data['E/I'] = array_merge_recursive($return_data['E/I'],$this->NodEligibilityDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'E/I'),$surgeon_id['id']));
             }
+            if (!isset($return_data['Total'])){
+                $return_data['Total'] = count($this->queryData($surgeon_id['id'],$this->from,$this->to,'CT'));
+            }else{
+                $return_data['Total'] += count($this->queryData($surgeon_id['id'],$this->from,$this->to,'CT'));
+            }
         }
         return $return_data;
     }
@@ -356,16 +363,16 @@ class NodAuditReport extends Report implements ReportInterface
                 'Eligibility For NOD Audit'
             ),
             'y' => array(
-                count($dataset['VA']['pre-incomplete']),
-                count($dataset['VA']['post-incomplete']),
-                count($dataset['RF']['pre-incomplete']),
-                count($dataset['RF']['post-incomplete']),
-                count($dataset['BM']['pre-incomplete']),
-                count($dataset['PRE-EXAM']['pre-incomplete']),
-                count($dataset['PCR_RISK']['not_known']),
-                count($dataset['COMPLICATION']['post-incomplete']),
-                count($dataset['INDICATION_FOR_SURGERY']['incomplete']),
-                count($dataset['E/I']['ineligible']),
+                count($dataset['VA']['pre-incomplete'])/$dataset['Total'],
+                count($dataset['VA']['post-incomplete'])/$dataset['Total'],
+                count($dataset['RF']['pre-incomplete'])/$dataset['Total'],
+                count($dataset['RF']['post-incomplete'])/$dataset['Total'],
+                count($dataset['BM']['pre-incomplete'])/$dataset['Total'],
+                count($dataset['PRE-EXAM']['pre-incomplete'])/$dataset['Total'],
+                count($dataset['PCR_RISK']['not_known'])/$dataset['Total'],
+                count($dataset['COMPLICATION']['post-incomplete'])/$dataset['Total'],
+                count($dataset['INDICATION_FOR_SURGERY']['incomplete'])/$dataset['Total'],
+                count($dataset['E/I']['ineligible'])/$dataset['Total'],
             ),
             'customdata'=>array(
                 $dataset['VA']['pre-incomplete'],
@@ -396,16 +403,16 @@ class NodAuditReport extends Report implements ReportInterface
                 'Eligibility For NOD Audit',
             ),
             'y' => array(
-                count($dataset['VA']['pre-complete']),
-                count($dataset['VA']['post-complete']),
-                count($dataset['RF']['pre-complete']),
-                count($dataset['RF']['post-complete']),
-                count($dataset['BM']['pre-complete']),
-                count($dataset['PRE-EXAM']['pre-complete']),
-                count($dataset['PCR_RISK']['known']),
-                count($dataset['COMPLICATION']['post-complete']),
-                count($dataset['INDICATION_FOR_SURGERY']['complete']),
-                count($dataset['E/I']['eligible']),
+                count($dataset['VA']['pre-complete'])/$dataset['Total'],
+                count($dataset['VA']['post-complete'])/$dataset['Total'],
+                count($dataset['RF']['pre-complete'])/$dataset['Total'],
+                count($dataset['RF']['post-complete'])/$dataset['Total'],
+                count($dataset['BM']['pre-complete'])/$dataset['Total'],
+                count($dataset['PRE-EXAM']['pre-complete'])/$dataset['Total'],
+                count($dataset['PCR_RISK']['known'])/$dataset['Total'],
+                count($dataset['COMPLICATION']['post-complete'])/$dataset['Total'],
+                count($dataset['INDICATION_FOR_SURGERY']['complete'])/$dataset['Total'],
+                count($dataset['E/I']['eligible'])/$dataset['Total'],
             ),
             'customdata'=>array(
                 $dataset['VA']['pre-complete'],
