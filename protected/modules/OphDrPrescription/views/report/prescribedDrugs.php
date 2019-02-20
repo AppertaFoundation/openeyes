@@ -84,7 +84,7 @@
       <td>
           <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
               <?=\CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
-                  CHtml::listData($users, 'id', 'fullName'), array('empty' => '--- Please select ---')) ?>
+                  CHtml::listData($users, 'id', 'fullName'), array('empty' => 'Select')) ?>
           <?php else: ?>
               <?php
               $user = User::model()->findByPk(Yii::app()->user->id);

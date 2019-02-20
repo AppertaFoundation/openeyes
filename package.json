@@ -17,13 +17,12 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-hub": "^0.7.0",
     "grunt-jsdoc": "^2.3.0",
-    "grunt-mocha": "^1.0.2",
-    "grunt-modernizr": "^1.0.2",
     "jshint-stylish": "^2.2.0",
     "load-grunt-tasks": "^3.5.0"
   },
   "dependencies": {
     "plotly.js-dist": "^1.41.3",
-    "tinymce": "^4.8.2"
+    "tinymce": "^4.8.2",
+    "lodash": "^4.17.4"
   }
 }

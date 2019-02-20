@@ -146,9 +146,8 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
             foreach ($m[1] as $el) {
                 $text = preg_replace('/\[pt_'.$el.'\]/is', @$by_id[$el] ? $by_id[$el] : 'Unknown', $text);
             }
-
-            return $text;
         }
+        return $text;
     }
 
     /* Generate the report text */

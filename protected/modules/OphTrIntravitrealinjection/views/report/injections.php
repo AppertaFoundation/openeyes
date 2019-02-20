@@ -45,7 +45,7 @@
           <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
               <?=\CHtml::dropDownList('given_by_id', '',
                   CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')), 'id',
-                      'fullName'), array('empty' => '- Please select -')) ?>
+                      'fullName'), array('empty' => 'Select')) ?>
           <?php else: ?>
               <?php
               $user = User::model()->findByPk(Yii::app()->user->id);
@@ -71,7 +71,7 @@
               CHtml::listData(
                   OphTrIntravitrealinjection_Treatment_Drug::model()->findAll(
                       array('order' => 'name asc')), 'id', 'name'),
-              array('empty' => '- Please select -')) ?>
+              array('empty' => 'Select')) ?>
       </td>
     </tr>
     <tr>
@@ -86,7 +86,7 @@
                   OphTrIntravitrealinjection_AntiSepticDrug::model()->findAll(
                       array('order' => 'name asc')),
                   'id', 'name'),
-              array('empty' => '- Please select -')) ?>
+              array('empty' => 'Select')) ?>
       </td>
       <td>
         <input type="hidden" name="summary" value="0"/>

@@ -138,65 +138,7 @@ class PatientController extends BaseController
      */
     public function actionView($id)
     {
-        Yii::app()->assetManager->registerScriptFile('js/patientSummary.js');
-
-        $this->patient = $this->loadModel($id);
-
-        if($merged = $this->patient->isMergedInto()){
-            $primary_patient = $this->loadModel($merged->primary_id);
-
-            //display the flash message
-            Yii::app()->user->setFlash('warning.no-results', $merged->getMergedMessage());
-
-            $this->redirect(array('/patient/view/' . $primary_patient->id));
-        }
-
-        $tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
-        $eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
-
-        $episodes = $this->patient->episodes;
-        // TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
-        $ordered_episodes = $this->patient->getOrderedEpisodes();
-
-        $legacyepisodes = $this->patient->legacyepisodes;
-        // NOTE that this is not being used in the render
-        $supportserviceepisodes = $this->patient->supportserviceepisodes;
-
-        $properties['patient_id'] = $this->patient->id;
-        Audit::add('patient summary', 'view', $id, '', $properties);
-
-        $this->logActivity('viewed patient');
-
-        $episodes_open = 0;
-        $episodes_closed = 0;
-
-        foreach ($episodes as $episode) {
-            if ($episode->end_date === null) {
-                ++$episodes_open;
-            } else {
-                ++$episodes_closed;
-            }
-        }
-
-        $this->jsVars['currentContacts'] = $this->patient->currentContactIDS();
-
-        $this->breadcrumbs = array(
-            $this->patient->first_name.' '.$this->patient->last_name.'('.$this->patient->hos_num.')',
-        );
-
-        $this->checkImportedBiometryEvent();
-
-        $this->render('view', array(
-            'tab' => $tabId,
-            'event' => $eventId,
-            'episodes' => $episodes,
-            'ordered_episodes' => $ordered_episodes,
-            'legacyepisodes' => $legacyepisodes,
-            'episodes_open' => $episodes_open,
-            'episodes_closed' => $episodes_closed,
-            'firm' => $this->firm,
-            'supportserviceepisodes' => $supportserviceepisodes,
-        ));
+        $this->redirect(array('episodes', 'id' => $id));
     }
 
     public function actionSearch()
@@ -233,6 +175,10 @@ class PatientController extends BaseController
                 $message .= 'found for your search.';
             }
             Yii::app()->user->setFlash('warning.no-results', $message);
+
+
+            Yii::app()->session['search_term'] = $term;
+            Yii::app()->session->close();
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
@@ -779,7 +725,7 @@ class PatientController extends BaseController
         }
 
         // Don't assign the patient's own GP
-        if ($contact->label == 'General Practitioner') {
+        if ($contact->label == Yii::app()->params['general_practitioner_label']) {
             if ($gp = Gp::model()->find('contact_id=?', array($contact->id))) {
                 if ($gp->id == $patient->gp_id) {
                     return;
@@ -1696,11 +1642,19 @@ class PatientController extends BaseController
         $this->fixedHotlist = true;
         $this->pageTitle = 'Add New Patient';
 
-        $patient = new Patient('manual');
+        $patient_source = 'referral';
+        $patient = new Patient($patient_source);
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
-        $address = new Address();
+        $address = new Address($patient_source);
+        $referral = null;
+        $patient_user_referral = null;
         $patient_identifiers = $this->getPatientIdentifiers($patient);
+
+        $gpcontact = new Contact();
+        $practicecontact = new Contact();
+        $practiceaddress = new Address();
+        $practice = new Practice();
 
         $this->performAjaxValidation(array($patient, $contact, $address));
 
@@ -1709,11 +1663,54 @@ class PatientController extends BaseController
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
 
+          $referral = new PatientReferral();
+          if (isset($_POST['PatientReferral'])) {
+            $referral->attributes = $_POST['PatientReferral'];
+          }
+
+          if (isset($_POST['PatientUserReferral'])) {
+            $patient_user_referral = new PatientUserReferral();
+            if ($_POST['PatientUserReferral']['user_id'] != -1) {
+              $patient_user_referral->attributes = $_POST['PatientUserReferral'];
+            }
+          }
+          switch ($patient->patient_source) {
+            case Patient::PATIENT_SOURCE_OTHER:
+              $contact->setScenario('other_register');
+              $patient->setScenario('other_register');
+              $address->setScenario('other_register');
+              $referral->setScenario('other_register');
+              break;
+            case Patient::PATIENT_SOURCE_REFERRAL:
+              $contact->setScenario('referral');
+              $patient->setScenario('referral');
+              $address->setScenario('referral');
+              $referral->setScenario('referral');
+              break;
+            case Patient::PATIENT_SOURCE_SELF_REGISTER:
+              $contact->setScenario('self_register');
+              $patient->setScenario('self_register');
+              $address->setScenario('self_register');
+              $referral->setScenario('self_register');
+              break;
+            default:
+              $contact->setScenario('manual');
+              break;
+          }
             // not to be sync with PAS
             $patient->is_local = 1;
 
-            list($contact, $patient, $address, $patient_identifiers) = $this->performPatientSave($contact, $patient, $address,
-                $patient_identifiers);
+
+          // Don't save if the user just changed the "Patient Source"
+          if ($_POST["changePatientSource"] == 0) {
+            list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
+              $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+          } else {
+            // Return the same page to the user without saving
+            // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
+            $patient->beforeValidate();
+            $patient->beforeSave();
+          }
         }
         if($patient->getIsNewRecord()){
             $patient->hos_num = $patient->autoCompleteHosNum();
@@ -1722,7 +1719,13 @@ class PatientController extends BaseController
             'patient' => $patient,
             'contact' => $contact,
             'address' => $address,
+            'referral' => isset($referral) ? $referral : new PatientReferral($patient_source),
+            'patientuserreferral' => isset($patient_user_referral) ? $patient_user_referral : new PatientUserReferral(),
             'patient_identifiers' => $patient_identifiers,
+            'gpcontact' => $gpcontact,
+            'practicecontact' => $practicecontact,
+            'practiceaddress' => $practiceaddress,
+            'practice' => $practice
         ));
    }
 
@@ -1757,72 +1760,137 @@ class PatientController extends BaseController
     * @param Patient $patient
     * @param Address $address
     * @param PatientIdentifier[] $patient_identifiers
+    * @param PatientReferral $referral
+    * @param PatientUserReferral $patient_user_referral
     * @return array on validation error returns the 3 objects otherwise redirects to the patient view page
+    *
+    * @throws
     */
-    private function performPatientSave(Contact $contact, Patient $patient, Address $address, $patient_identifiers)
+    private function performPatientSave(
+        Contact $contact,
+        Patient $patient,
+        Address $address,
+        PatientReferral $referral,
+        PatientUserReferral $patient_user_referral,
+        $patient_identifiers)
     {
+        $patientScenario = $patient->getScenario();
         $transaction = Yii::app()->db->beginTransaction();
         try {
 
-            if ($contact->save()) {
-                $patient->contact_id = $contact->id;
-                $address->contact_id = $contact->id;
-                $action = $patient->isNewRecord ? 'add' : 'edit';
-                $isNewPatient = $patient->isNewRecord ? true : false;
-
-                $issetGeneticsModule = isset(Yii::app()->modules["Genetics"]);
-                $issetGeneticsClinical = Yii::app()->user->checkAccess('Genetics Clinical');
-                $success = $patient->save() && $address->save();
-                if ($success) {
-                    list($success, $patient_identifiers) = $this->performIdentifierSave($patient, $patient_identifiers);
-                }
-
-                if ($success) {
-                    $transaction->commit();
-
-                    if (($issetGeneticsModule !== false) && ($issetGeneticsClinical !== false) && ($isNewPatient)) {
-                        $this->redirect(array('Genetics/subject/edit?patient=' . $patient->id));
-                    } else {
-                        Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
-                        $this->redirect(array('episodes', 'id' => $patient->id));
-                    }
-
+            $success =
+                $this->patientSaveInner(
+                    $contact,
+                    $patient,
+                    $address,
+                    $referral,
+                    $patient_user_referral,
+                    $patient_identifiers
+                );
+            if ($success) {
+                if (isset(Yii::app()->modules["Genetics"])
+                    && Yii::app()->user->checkAccess('Genetics Clinical')
+                    && $patient->isNewRecord
+                ) {
+                    $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
                 } else {
-                    // patient or address failed to save
-                    $transaction->rollback();
-
-                    // to show validation error messages to the user
-                    $patient->validate();
-                    $address->validate();
+                    $redirect = array('/patient/episodes/' . $patient->id);
                 }
+                $transaction->commit();
+                $this->redirect($redirect);
             } else {
-                // to show validation error messages to the user
-                $patient->validate();
-                $address->validate();
-
-                // remove contact_id validation error
-                $patient->clearErrors('contact_id');
-                $address->clearErrors('contact_id');
-
-                // contact failed to save
+                //Get all the validation errors
+                foreach ([
+                             'patient',
+                             'contact',
+                             'address',
+                             'patient_user_referral',
+                             'patient_identifiers'
+                         ] as $model)
+                {
+                    if (isset(${$model})) {
+                        if (is_array(${$model})) {
+                            foreach (${$model} as $item) {
+                                $item->validate();
+                            }
+                        } else {
+                            ${$model}->validate();
+                        }
+                    }
+                }
                 $transaction->rollback();
             }
 
+            // remove contact_id validation error
+            $patient->clearErrors('contact_id');
+            $address->clearErrors('contact_id');
         } catch (Exception $ex) {
+            \Yii::log("Rolling back patient creation. " . $ex->getMessage());
             OELog::logException($ex);
             $transaction->rollback();
         }
 
-        return array($contact, $patient, $address, $patient_identifiers);
+        $patient->setScenario($patientScenario);
+
+        return array($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
     }
 
+    private function patientSaveInner(
+        Contact &$contact,
+        Patient &$patient,
+        Address &$address,
+        PatientReferral &$referral,
+        PatientUserReferral &$patient_user_referral,
+        &$patient_identifiers)
+    {
+        if (!$contact->save()) {
+            return false;
+        }
+
+        $patient->contact_id = $contact->id;
+        $address->contact_id = $contact->id;
+
+        if (!$patient->save()
+            || !$address->save()
+            || !$this->performIdentifierSave($patient, $patient_identifiers)
+        ) {
+            return false;
+        }
+
+        //Save referral documents
+        if (!$this->actionPerformReferralDoc($patient, $referral)) {
+            return false;
+        }
+
+
+        //Save referral to doctor
+        if (isset($patient_user_referral) && $patient_user_referral->user_id != '') {
+            if (!isset($patient_user_referral->patient_id)) {
+                $patient_user_referral->patient_id = $patient->id;
+            }
+
+            if (!$patient_user_referral->save()) {
+                return false;
+            }
+            Audit::add('Referred to', 'saved', $patient_user_referral->id);
+        }
+
+
+        $action = $patient->isNewRecord ? 'add' : 'edit';
+        Audit::add(
+            'Patient',
+            $action . '-patient',
+            "Patient manually [id: $patient->id] {$action}ed."
+        );
+        return true;
+    }
 
     /**
      * Saves the input $Patient_identiiers according to the config params
      *
      * @param Patient $patient
      * @param PatientIdentifier[] $patient_identifiers
-     * @return array
+     * @return bool
      * @throws Exception
      */
     private function performIdentifierSave($patient, $patient_identifiers)
@@ -1852,7 +1920,7 @@ class PatientController extends BaseController
             $result[] = $patient_identifier;
         }
 
-        return [$success, $result];
+        return $success;
     }
 
     /**
@@ -1869,8 +1937,12 @@ class PatientController extends BaseController
         $this->fixedHotlist = true;
 
         $patient = $this->loadModel($id);
-        $patient->scenario = 'manual';
+        $referral = isset($patient->referral) ? $patient->referral : new PatientReferral();
         $this->pageTitle = 'Update Patient - ' . $patient->last_name . ', ' . $patient->first_name;
+        $gpcontact = isset($patient->gp) ? $patient-> gp->contact : new Contact();
+        $practice = isset($patient->practice) ? $patient->practice : new Practice();
+        $practicecontact = isset($patient->practice) ? $patient-> practice->contact : new Contact();
+        $practiceaddress = isset($practicecontact) && isset($practicecontact->address) ? $practicecontact->address : new Address();
 
         //only local patient can be edited
         if ($patient->is_local == 0) {
@@ -1878,31 +1950,94 @@ class PatientController extends BaseController
             $this->redirect(array('view', 'id' => $patient->id));
         }
 
-        $contact = $patient->contact ? $patient->contact : new Contact('manualAddPatient');
-        $address = $patient->contact->address ? $patient->contact->address : new Address();
+        $contact = $patient->contact ? $patient->contact : new Contact('');
+        $address = $patient->contact->address ? : new Address();
+
+        $patient_user_referral = isset($patient->patientuserreferral[0]) ? $patient->patientuserreferral[0] : new PatientUserReferral();
         $patient_identifiers = PatientIdentifier::model()->findAll('patient_id = ?', array($patient->id));
 
 
-        $this->performAjaxValidation(array($patient, $contact, $address));
-
+      //only local patient can be edited
+      if ($patient->is_local == 0) {
+        Yii::app()->user->setFlash('warning.update-patient', 'Only local patients can be edited.');
+        $this->redirect(array('view', 'id' => $patient->id));
+      }
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
-            $contact->attributes = $_POST['Contact'];
-            $patient->attributes = $_POST['Patient'];
-            $address->attributes = $_POST['Address'];
-            $patient_identifiers = $this->getPatientIdentifiers($patient);
+          $contact->attributes = $_POST['Contact'];
+          $patient->attributes = $_POST['Patient'];
+          $address->attributes = $_POST['Address'];
+          $patient_identifiers = $this->getPatientIdentifiers($patient);
 
-            // not to be sync with PAS
-            $patient->is_local = 1;
+          if (isset($_POST['PatientReferral'])) {
+            $referral->attributes = $_POST['PatientReferral'];
+          }
 
-            list($contact, $patient, $address, $patient_identifiers) = $this->performPatientSave($contact, $patient, $address,
-                $patient_identifiers);
+          // not to be sync with PAS
+          $patient->is_local = 1;
+
+          if (isset($_POST['PatientUserReferral'])) {
+            if ($_POST['PatientUserReferral']['user_id'] == -1) {
+              if (isset($patient_user_referral->user_id)) {
+                $patient_user_referral->delete();
+              }
+            } elseif ($_POST['PatientUserReferral']['user_id'] != $patient_user_referral->user_id) {
+              if (isset($patient_user_referral->user_id)) {
+                $patient_user_referral->delete();
+              }
+              $patient_user_referral = new PatientUserReferral();
+              $patient_user_referral->attributes = $_POST['PatientUserReferral'];
+            }
+          }
         }
+
+          switch ($patient->patient_source) {
+            case Patient::PATIENT_SOURCE_OTHER:
+              $contact->setScenario('other_register');
+              $patient->setScenario('other_register');
+              $address->setScenario('other_register');
+              $referral->setScenario('other_register');
+              break;
+            case Patient::PATIENT_SOURCE_REFERRAL:
+              $contact->setScenario('referral');
+              $patient->setScenario('referral');
+              $address->setScenario('referral');
+              $referral->setScenario('referral');
+              break;
+            case Patient::PATIENT_SOURCE_SELF_REGISTER:
+              $contact->setScenario('self_register');
+              $patient->setScenario('self_register');
+              $address->setScenario('self_register');
+              $referral->setScenario('self_register');
+              break;
+            default:
+              $contact->setScenario('manual');
+              $patient->setScenario('manual');
+              $address->setScenario('manual');
+              $referral->setScenario('manual');
+              break;
+          }
+
+          $this->performAjaxValidation(array($patient, $contact, $address));
+
+      if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
+        if ($_POST['changePatientSource'] == 0) {
+          list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
+            $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+        }
+      }
+
 
         $this->render('crud/update', array(
             'patient' => $patient,
             'contact' => $contact,
             'address' => $address,
             'patient_identifiers' => $patient_identifiers,
+            'practicecontact' => $practicecontact,
+            'practiceaddress' => $practiceaddress,
+            'practice' => $practice,
+            'referral' => $referral,
+          'patientuserreferral' => $patient_user_referral,
+          'patient_identifiers' => $patient_identifiers,
         ));
     }
 
@@ -2052,4 +2187,110 @@ class PatientController extends BaseController
 
         echo CJSON::encode($result);
     }
+
+    /**
+     * Takes an uploaded file from $_FILES and saves it to a document event under the current context/firm
+     *
+     * @param Patient $patient To save the referral document to
+     * @param PatientReferral $referral
+     *
+     * @throws Exception
+     * @return bool false for failure to save a file
+     */
+    public function actionPerformReferralDoc($patient, $referral)
+    {
+        $firm_id = Yii::app()->session['selected_firm_id'];
+        //Get or Create an episode
+        list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm_id);
+
+
+        $event = new Event();
+        $event->episode_id = $episode->id;
+        $event->firm_id = $firm_id;
+        $event->event_type_id = EventType::model()->findByAttributes(array('name' => 'Document'))->id;
+        $referral_letter_type_id = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Referral Letter'))->id;
+
+        if (!$event->save()) {
+            throw new Exception('Could not save event');
+        }
+
+        $document_saved = false;
+        foreach ($_FILES as $file) {
+            $tmp_name = $file["tmp_name"]["uploadedFile"];
+
+            //If no document is selected this can throw errors
+            if ($tmp_name == '') {
+                continue;
+            }
+            $p_file = ProtectedFile::createFromFile($tmp_name);
+            $p_file->name = $file["name"]["uploadedFile"];
+            if ($p_file->save()) {
+                unlink($tmp_name);
+                $document = new Element_OphCoDocument_Document();
+                $document->patientId = $patient->id;
+                $document->event_id = $event->id;
+                $document->event = $event;
+                $document->single_document_id = $p_file->id;
+                $document->event_sub_type = $referral_letter_type_id;
+                $document->single_document = $p_file;
+                if (!$document->save()) {
+                    throw new Exception('Could not save Document');
+                } else {
+                    $document_saved = true;
+                }
+            } else {
+                unlink($tmp_name);
+            }
+        }
+
+        if (!$document_saved) {
+            $patient_source = $_POST['Patient']['patient_source'];
+            if($patient_source == Patient::PATIENT_SOURCE_REFERRAL){
+                //If there is no existing referral letter document, add an error
+                $command = Yii::app()->db->createCommand()->setText("
+                    select count(*) 'referral letters'
+                    from patient p
+                    join episode e on p.id = e.patient_id
+                    join event e2 on e.id = e2.episode_id
+                    join et_ophcodocument_document d on d.event_id = e2.id
+                      and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
+                    where p.id = $patient->id;"
+                );
+                if ($command->queryScalar() == 0){
+                    $referral->addError('uploadedFile', 'Referral requires a letter file');
+                }
+            }
+
+            //Removed any extraneous models if we couldn't save a document
+            $event->delete();
+            if ($episode_is_new) {
+                $episode->delete();
+            }
+        }
+        return !$referral->hasErrors();
+    }
+
+    /**
+     * @param Patient $patient
+     * @param integer $firm_id Firm under which the episode should be
+     * @return array(Episode, bool) The created or found episode and whether or not is was created
+     * @throws Exception If a episode could not be found or created
+     */
+    private function getOrCreateEpisode($patient, $firm_id){
+        $episode = Episode::model()->findByAttributes(array('firm_id' => $firm_id, 'patient_id' => $patient->id));
+        $episode_is_new = false;
+        if (!$episode){
+            $episode_is_new = true;
+            $episode = new Episode();
+            $episode->patient_id = $patient->id;
+            $episode->firm_id = $firm_id;
+            $episode->support_services = false;
+            $episode->start_date = date('Y-m-d H:i:s');
+            if (!$episode->save()){
+                throw new Exception('Could not get episode');
+            }
+        }
+        return [$episode, $episode_is_new];
+    }
+
 }

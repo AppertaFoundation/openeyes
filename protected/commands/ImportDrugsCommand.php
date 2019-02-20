@@ -464,6 +464,7 @@ EOD;
 
     public function copyToOE()
     {
+
         if(file_exists('/tmp/ref_medication_set.csv') && !@unlink('/tmp/ref_medication_set.csv')) {
         	die("Error while attepting to delete /tmp/ref_medication_set.csv, please delete manually and re-run.".PHP_EOL);
 		}
@@ -474,13 +475,13 @@ EOD;
 
         foreach ($scripts as $script) {
             $cmd = file_get_contents(Yii::getPathOfAlias('application').'/migrations/data/dmd_import/'.$script.'.sql');
-            echo $script;
+            $this->printMsg($script, false, true) ;
             $cmd = str_replace(['{prefix}'], [$this->tablePrefix], $cmd);
             Yii::app()->db->createCommand($cmd)->execute();
             echo " OK".PHP_EOL;
         }
 
-        echo "attributes";
+        $this->printMsg("Creating attributes", false) ;
         
         $lookup_tables = [
             'COMBINATION_PACK_IND',
@@ -539,7 +540,7 @@ EOD;
 		$pres_free_opt_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute_option WHERE `medication_attribute_id` = '$pres_free_id' AND `value` = '0001'")->queryScalar();
 
 		echo " OK".PHP_EOL;
-        echo "Importing VMP form information";
+        $this->printMsg("Importing VMP form information", false);
 
         $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
 					SELECT 
@@ -550,13 +551,13 @@ EOD;
 						LEFT JOIN {$this->tablePrefix}vmp_drug_form AS df ON df.vpid = vmp.vpid
 						LEFT JOIN medication_attribute_option AS mao ON mao.`value` COLLATE utf8_general_ci = df.formcd COLLATE utf8_general_ci
 						LEFT JOIN medication_attribute AS attr ON mao.medication_attribute_id = attr.id
-						WHERE med.source_subtype = 'VMP' AND attr.`name` = 'FORM'
+						WHERE med.source_type = 'DM+D' AND med.source_subtype = 'VMP' AND attr.`name` = 'FORM'
 					";
 
 		Yii::app()->db->createCommand($cmd)->execute();
 		echo " OK".PHP_EOL;
 
-		echo "Importing VMP route information";
+		$this->printMsg( "Importing VMP route information", false);
 
 		$cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
 					SELECT 
@@ -573,7 +574,7 @@ EOD;
 		Yii::app()->db->createCommand($cmd)->execute();
 		echo " OK".PHP_EOL;
 
-		echo "Importing VMP preservative free information";
+		$this->printMsg( "Importing VMP preservative free information", false);
 
 		$cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
 					SELECT 
@@ -596,7 +597,7 @@ EOD;
         foreach ($tables as $table => $id_col)
 		{
 			// AMPs
-			echo "Importing attributes for $table ..".str_repeat(" ", 14);
+			$this->printMsg( "Importing attributes for $table ..".str_repeat(" ", 14), false);
 			$cmd = "SELECT * FROM $table";
 			$amps = Yii::app()->db->createCommand($cmd)->queryAll();
 			$total = count($amps);
@@ -630,6 +631,41 @@ EOD;
 
 			echo PHP_EOL;
 		}
+
+		$this->printMsg("Applying VTM attributes to VMPs", false);
+
+		$cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+				SELECT med_vmp.id, maa.medication_attribute_option_id
+				FROM medication_attribute_assignment AS maa
+				LEFT JOIN medication AS med_vtm ON maa.medication_id = med_vtm.id
+				LEFT JOIN medication AS med_vmp ON med_vmp.vtm_code = med_vtm.preferred_code
+				WHERE
+				med_vtm.source_type = 'DM+D'
+				AND med_vtm.source_subtype = 'VTM'
+				AND
+				med_vmp.source_type = 'DM+D'
+				AND med_vmp.source_subtype = 'VMP'";
+
+		Yii::app()->db->createCommand($cmd)->execute();
+		echo " OK".PHP_EOL;
+
+		$this->printMsg("Applying VMP attributes to AMPs", false);
+
+		$cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+				SELECT med_amp.id, maa.medication_attribute_option_id
+				FROM medication_attribute_assignment AS maa
+				LEFT JOIN medication AS med_vmp ON maa.medication_id = med_vmp.id
+				  LEFT JOIN medication AS med_amp ON med_amp.vmp_code = med_vmp.preferred_code
+				WHERE
+				  med_vmp.source_type = 'DM+D'
+				  AND med_vmp.source_subtype = 'VMP'
+				  AND
+				  med_amp.source_type = 'DM+D'
+				  AND med_amp.source_subtype = 'AMP'
+					";
+
+		Yii::app()->db->createCommand($cmd)->execute();
+		echo " OK".PHP_EOL;
 
         @unlink('/tmp/ref_medication_set.csv');
 

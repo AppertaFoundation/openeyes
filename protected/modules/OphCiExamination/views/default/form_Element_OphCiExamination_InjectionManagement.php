@@ -29,7 +29,7 @@
         $options = \OEModule\OphCiExamination\models\OphCiExamination_Management_Status::model()
             ->activeOrPk($element->injection_status_id)
             ->findAll();
-        $html_options = array('empty' => '- Please select -', 'options' => array());
+        $html_options = array('empty' => 'Select', 'options' => array());
         foreach ($options as $opt) {
             $html_options['options'][(string)$opt->id] = array(
                 'data-deferred' => $opt->deferred,
@@ -60,7 +60,7 @@
     <div class="cols-4 column ">
         <?php
         $options = \OEModule\OphCiExamination\models\OphCiExamination_Management_DeferralReason::model()->activeOrPk($element->injection_deferralreason_id)->findAll();
-        $html_options = array('empty' => '- Please select -', 'options' => array());
+        $html_options = array('empty' => 'Select', 'options' => array());
         foreach ($options as $opt) {
             $html_options['options'][(string)$opt->id] = array('data-other' => $opt->other);
         }

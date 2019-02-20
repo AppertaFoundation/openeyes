@@ -15,29 +15,15 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-function showActiveChildElements() {
-    $('#active_elements .active_child_elements').each(function() {
-        if($('.element', this).length) {
-            $(this).show();
-        } else {
-            $(this).hide();
-        }
-    });
-}
+function addElement(element, animate, previous_id, params, callback) {
+  if (typeof (animate) === 'undefined')
+    animate = true;
+  if (typeof (previous_id) === 'undefined')
+    previous_id = 0;
+  if (typeof (params) === 'undefined')
+    params = {};
 
-function addElement(element, animate, is_child, previous_id, params, callback) {
-    if (typeof (animate) === 'undefined')
-        animate = true;
-    if (typeof (is_child) === 'undefined')
-        is_child = false;
-    if (typeof (previous_id) === 'undefined')
-        previous_id = 0;
-    if (typeof (params) === 'undefined')
-        params = {};
-
-    var element_type_id = $(element).data('element-type-id');
-    var element_type_class = $(element).data('element-type-class');
-    var display_order = $(element).data('element-display-order');
+  var element_type_id = $(element).data('element-type-id');
 
     var core_params = {
         id: element_type_id,
@@ -45,77 +31,39 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
         previous_id: previous_id
     };
 
-    $.extend(params, core_params);
-    $.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function (data) {
-        var new_element = $(data);
-        var elClass = $(element).data('element-type-class');
-        var element_display_order = Number($(element).data('element-display-order'));
-        var element_parent_display_order = Number($(element).data('element-parent-display-order'));
-
-        if ($(element).prop('tagName') !== 'LI') {
-            new_element.find(".sub-elements.active").replaceWith($(element).find(".sub-elements.active"));
-            new_element.find(".sub-elements.inactive").replaceWith($(element).find(".sub-elements.inactive"));
-        }
+  $.extend(params, core_params);
+  $.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function (data) {
+    var new_element = $(data);
+    var elClass = $(new_element).data('element-type-class');
+    var element_display_order = Number($(new_element).data('element-display-order'));
 
         var container = $('.js-active-elements');
         $(element).remove();
 
-        // If there aren't any elements, then insert the new element at the end (after the event date)
-        if (container.find('section[data-element-type-name]').length === 0) {
-            container.append(new_element);
-        } else {
-            var $toInsertBefore = null;
-            container.find('section[data-element-type-name]').each(function () {
-                var target_display_order = Number($(this).data('element-display-order'));
-                var target_parent_display_order = Number($(this).data('element-parent-display-order'));
-
-                if (target_parent_display_order > element_parent_display_order ||
-                    (target_parent_display_order === element_parent_display_order && target_display_order > element_display_order)) {
-
-                    $toInsertBefore = $(this);
-                    return false;
-                }
-            });
-
-            if ($toInsertBefore){
-                new_element.insertBefore($toInsertBefore);
-            } else {
-                container.append(new_element);
-            }
+    // If there aren't any elements, then insert the new element at the end (after the event date)
+    if (container.find('section[data-element-type-name]').length === 0) {
+      container.append(new_element);
+    } else {
+      // Otherwise find the first element that has a greater display order...
+      var $toInsertBefore = null;
+      container.find('section[data-element-type-name]').each(function () {
+        var target_display_order = Number($(this).data('element-display-order'));
+        if (target_display_order > element_display_order) {
+          $toInsertBefore = $(this);
+          return false;
         }
+      });
 
-        if (is_child) {
-            // check if this is sided
-            // and match the parent active sides if it is
-            var cel = $(container).find('.' + element_type_class);
-            var pel = $(container).parents('.element');
-            var sideField = $(cel).find('input.sideField');
-            if ($(sideField).length && $(pel).find('.element-fields input.sideField').length) {
-                $(sideField).val($(pel).find('.element-fields input.sideField').val());
+      // ... and insert before it
+      if ($toInsertBefore) {
+        new_element.insertBefore($toInsertBefore);
+      } else {
+        // If there are no elements with greater display order, then the new element should go last
+        container.append(new_element);
+      }
+    }
 
-                if ($(sideField).val() == '1') {
-                    $(cel).find('.js-element-eye.left').addClass('inactive');
-                }
-                else if ($(sideField).val() == '2') {
-                    $(cel).find('.js-element-eye.right').addClass('inactive');
-                }
-            }
-        }
-
-        $('#event-content textarea.autosize:visible').autosize();
-        showActiveChildElements();
-
-        var initFunctionName;
-        if (typeof OE_MODEL_PREFIX != 'undefined') {
-            initFunctionName = elClass.replace(OE_MODEL_PREFIX + 'Element_', '') + '_init';
-        }
-        else {
-            initFunctionName = elClass.replace('Element_', '') + '_init';
-        }
-
-        if (typeof(window[initFunctionName]) == 'function') {
-            window[initFunctionName](previous_id);
-        }
+    $('#event-content textarea.autosize:visible').autosize();
 
         // now init any children
         $(".element." + elClass).find('.active_child_elements').find('.element').each(function () {
@@ -145,11 +93,11 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
             updateTextMacros();
         }
 
-        if (callback) {
-            callback();
-        }
+    if (callback) {
+      callback();
+    }
 
-    });
+  });
 }
 
 /**
@@ -167,32 +115,27 @@ function findMenuItemForElementClass(elementTypeClass) {
 }
 
 function removeElement(element) {
-    if (element.hasClass('has-children')) {
-        is_child = true;
-    } else {
-        is_child = false;
-    }
 
     var element_type_class = $(element).data('element-type-class');
     var element_type_id = $(element).data('element-type-id');
     var element_type_name = $(element).data('element-type-name');
     var display_order = $(element).data('element-display-order');
-    var parent_display_order = $(element).data('element-parent-display-order');
 
     var $menuLi = findMenuItemForElementClass(element_type_class);
 
     if ($menuLi) {
         $menuLi.find('a').removeClass('selected').removeClass('error');
     }
-    if (is_child) {
-        var container = $(element).closest('.elements.active').parent().find('.elements.inactive:last .elements-list');
-    } else {
         var container = $('.optional-elements-list');
-    }
 
     $(element).remove();
 
-    var element = '<li data-element-type-class="' + element_type_class + '" data-element-type-id="' + element_type_id + '" data-element-type-name="' + element_type_name + '" data-element-display-order="' + display_order + '" data-element-parent-display-order="' + parent_display_order + '"><a href="#">' + element_type_name + '</a></li>';
+    var element = $('<li></li>')
+      .data('element-type-class', element_type_class)
+      .data('element-type-id', element_type_id)
+      .data('element-type-name', element_type_name)
+      .data('element-display-order', display_order)
+      .append($('<a href="#">' + element_type_name + '</a>'));
 
     var insert_before = $(container).find('li').first();
 
@@ -205,8 +148,6 @@ function removeElement(element) {
     } else {
         $(container).append(element);
     }
-
-    showActiveChildElements();
 
     // Update sticky elements to cope with change in page size
     OpenEyes.UI.StickyElements.refresh();
@@ -238,11 +179,6 @@ function moveToElement($element) {
 $(document).ready(function () {
 
     /**
-     * Show/hide activechildelements containers (necessary in order to deal with padding)
-     */
-    showActiveChildElements();
-
-    /**
      * Autoadjust height of textareas
      */
     $('#event-content textarea.autosize:visible').autosize();
@@ -251,19 +187,13 @@ $(document).ready(function () {
      * Add all optional elements
      */
     $('.optional-elements').delegate('.add-all', 'click', function (e) {
-        if ($(this).closest('.element').length) {
-            $(this).closest('.element').find('.inactive_child_elements .element').each(function () {
-                $(this).addClass('clicked');
-                addElement(this, true, true);
-            });
-        }
-        else {
-            $('.optional-elements-list li').each(function () {
-                $(this).addClass('clicked');
-                addElement(this, false);
-            });
-        }
-        e.preventDefault();
+      if ($(this).closest('.element').length == 0) {
+        $('.optional-elements-list li').each(function () {
+          $(this).addClass('clicked');
+          addElement(this, false);
+        });
+      }
+      e.preventDefault();
     });
 
     /**
@@ -292,15 +222,15 @@ $(document).ready(function () {
         });
         dialog.open();
 
-        $(dialog.content).on('click', '.copy_element', function (dialog, element, event) {
-            var element_id = $(event.target).data('element-id');
-            $(element).addClass('clicked');
-            $(element).find('> .element-fields').css('opacity', '0.5');
-            $(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
-            $('.oe-popup-wrap').remove();
-            addElement(element, false, (element.hasClass('element')), element_id);
-        }.bind(undefined, dialog, element));
-        e.preventDefault();
+      $(dialog.content).on('click', '.copy_element', function (dialog, element, event) {
+        var element_id = $(event.target).data('element-id');
+        $(element).addClass('clicked');
+        $(element).find('> .element-fields').css('opacity', '0.5');
+        $(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
+        $('.oe-popup-wrap').remove();
+        addElement(element, false, element_id);
+      }.bind(undefined, dialog, element));
+      e.preventDefault();
 
     });
 

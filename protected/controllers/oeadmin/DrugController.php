@@ -111,8 +111,8 @@ class DrugController extends BaseAdminController
 
         if ($request->getIsPostRequest()) {
             $drug->attributes = $_POST['Drug'];
-            $drug['tags'] = $_POST['Drug']['tags'];
-            $drug['allergies'] = $_POST['Drug']['allergies'];
+            $drug->tags = isset($_POST['Drug']['tags']) ? $_POST['Drug']['tags'] : "";
+            $drug->allergies = isset($_POST['Drug']['allergies']) ? $_POST['Drug']['allergies'] : "";
 
             if (!$drug->save()) {
                 throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
@@ -130,6 +130,7 @@ class DrugController extends BaseAdminController
         $this->render('/oeadmin/drug/edit', array(
             'model' => $drug,
         ));
+
     }
 
     /**

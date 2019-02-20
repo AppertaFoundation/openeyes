@@ -72,31 +72,6 @@ class ProcedureSpecialtySubsectionAssignmentTest extends CDbTestCase
         $this->assertEquals('proc_subspecialty_subsection_assignment', $this->model->tableName());
     }
 
-    /**
-     * @covers ProcedureSubspecialtySubsectionAssignment::rules
-     *
-     * @todo   Implement testRules().
-     */
-    public function testRules()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers ProcedureSubspecialtySubsectionAssignment::relations
-     *
-     * @todo   Implement testRelations().
-     */
-    public function testRelations()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
 
     /**
      * @covers ProcedureSubspecialtySubsectionAssignment::attributeLabels
@@ -114,18 +89,6 @@ class ProcedureSpecialtySubsectionAssignmentTest extends CDbTestCase
         $this->assertEquals($expected, $this->model->attributeLabels());
     }
 
-    /**
-     * @covers ProcedureSubspecialtySubsectionAssignment::search
-     *
-     * @todo   Implement testSearch().
-     */
-    public function testSearch()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
-    }
 
     /**
      * @dataProvider dataProvider_Search

@@ -126,7 +126,7 @@ class CsvController extends BaseController
         $new_trial->started_date = !empty($trial['started_date']) ? $trial['started_date'] : null;
         $new_trial->closed_date = !empty($trial['closed_date']) ? $trial['closed_date'] : null;
         $new_trial->external_data_link = !empty($trial['external_data_link']) ? $trial['external_data_link'] : null;
-        $new_trial->principle_investigator_user_id = Yii::app()->user->id;
+        $new_trial->ethics_number = !empty($trial['ethics_number']) ? $trial['ethics_number'] : null;
 
         if (!$new_trial->save()) {
             $errors = $new_trial->getErrors();
@@ -349,7 +349,7 @@ class CsvController extends BaseController
                     $gp_contact->last_name = $patient['gp_last_name'];
                     $gp_contact->contact_label_id = $gp_label->id;
                     if (!$gp_contact->save()) {
-                        $errors[] = 'Could not save new GP contact';
+                        $errors[] = 'Could not save new '.Yii::app()->params['gp_label'].' contact';
                         array_unshift($errors, $gp_contact->getErrors());
                         return $errors;
                     }
@@ -372,7 +372,7 @@ class CsvController extends BaseController
                     return $errors;
                 }
             } else {
-                $errors[] = 'Both names are required to import GP';
+                $errors[] = 'Both names are required to import '.Yii::app()->params['gp_label'];
                 return $errors;
             }
         }

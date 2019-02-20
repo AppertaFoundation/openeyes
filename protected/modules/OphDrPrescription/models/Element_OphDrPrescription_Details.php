@@ -267,6 +267,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             $this->event->deleteIssue('Draft');
         }
 
+        $this->auditAllergicDrugEntries();
         return parent::afterSave();
     }
 
@@ -392,4 +393,48 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     {
         return 'print_'.$this->getDefaultView();
     }
+
+    protected function auditAllergicDrugEntries()
+    {
+        $patient = $this->event->getPatient();
+        $patient_allergies = $patient->allergies;
+        $patient_allergies_from_drugs = [];
+        $allergic_drugs = [];
+
+        $drug_allergies_assignments = $this->getDrugAllergiesAssignments();
+
+        foreach ($patient_allergies as $allergy) {
+            foreach ($drug_allergies_assignments as $drug_allergy_assignment) {
+                if ($allergy->id === $drug_allergy_assignment->allergy_id) {
+                    $patient_allergies_from_drugs[$allergy->id] = $allergy->name;
+                    $allergic_drugs[$drug_allergy_assignment->medication_id] = $drug_allergy_assignment->medication->preferred_term;
+                }
+            }
+        }
+
+        if (isset($allergic_drugs) && sizeof($allergic_drugs) !== 0 &&
+            isset($patient_allergies_from_drugs) && sizeof($allergic_drugs) != 0) {
+            Audit::add(
+                'prescription', 'allergy-override', 'Allergies: ' .
+                implode(' , ', $patient_allergies_from_drugs) . ' Drugs: ' . implode(' , ', $allergic_drugs),
+                null,
+                array('patient_id' => $patient->id)
+            );
+        }
+    }
+
+    protected function getDrugAllergiesAssignments()
+    {
+        $drug_allergies_assignments = [];
+        foreach ($this->items as $prescription_item) {
+            $drug_allergy_assignment = MedicationAllergyAssignment::model()->find('medication_id = :medication_id', [':medication_id' => $prescription_item->medication->id]);
+            if (isset($drug_allergy_assignment)) {
+                $drug_allergies_assignments[] = $drug_allergy_assignment;
+            }
+        }
+
+        return $drug_allergies_assignments;
+    }
+
+
 }

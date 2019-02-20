@@ -23,6 +23,7 @@ if (!isset($values)) {
         'id' => $diagnosis->id,
         'disorder_id' => $diagnosis->disorder_id,
         'disorder_display' => $diagnosis->disorder ? $diagnosis->disorder->term : '',
+        'is_glaucoma' => isset($diagnosis->disorder)? (strpos(strtolower($diagnosis->disorder->term), 'glaucoma')) !== false : false,
         'eye_id' => $diagnosis->eye_id,
         'date' => $diagnosis->date,
         'date_display' => \Helper::formatFuzzyDate($diagnosis->date),

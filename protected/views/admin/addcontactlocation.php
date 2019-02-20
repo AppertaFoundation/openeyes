@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -38,7 +38,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <label for="institution_id">Institution:</label>
     </div>
     <div class="cols-5 column end">
-        <?=\CHtml::dropDownList('institution_id', @$_POST['institution_id'], CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- Please select -')) ?>
+        <?=\CHtml::dropDownList('institution_id', @$_POST['institution_id'], CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'Select')) ?>
     </div>
 </div>
 <div class="data-group">
