@@ -97,13 +97,14 @@
                                 </select>
                             </li>
                             <?php if ($specialty == "Medical Retina") { ?>
-                                <li>Treatment: <span id="js-chart-filter-treatment" class="js-hs-filters" data-name="custom_treatment">All</span></li>
+                                <li>Treatment: <span id="js-chart-filter-treatment" class="js-hs-filters js-hs-custom-mr-treatment" data-name="custom_treatment">All</span></li>
                                 <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-mr-diagnosis" data-name="custom_diagnosis">All</span></li>
+                                <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters" data-name="custom_plot">VA (absolute)</span></li>
+                                <li>Protocol: <span id="js-chart-filter-protocol" class="js-hs-filters" data-name="custom_protocol">ALL</span></li>
                             <?php }else{?>
-                                <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters" data-name="custom_diagnosis">All</span></li>
+                                <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-gl-diagnosis" data-name="custom_diagnosis">All</span></li>
+                                <li>Procedure: <span id="js-chart-filter-procedure" class="js-hs-filters" data-name="custom_procedure">All</span></li>
                             <?php } ?>
-                            <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters" data-name="custom_plot">VA (absolute)</span></li>
-                            <li>Protocol: <span id="js-chart-filter-protocol" class="js-hs-filters" data-name="custom_protocol">ALL</span></li>
                         </ul>
 
                         <div class="flex-item-bottom"><!-- OE UI Filter options (id: custom-filters) -->
@@ -120,24 +121,48 @@
                                         <i class="oe-i remove-circle medium pro-theme"></i>
                                     </div>
                                     <div class="flex-layout flex-top">
-                                        <?php if ($specialty !== "Cataract") { ?>
-                                            <?php
+                                        <?php if ($specialty !== "Cataract") {
                                             if ($specialty === 'Medical Retina') {
                                                 $analytics_treatment = array('Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex');
                                                 $analytics_diagnoses = array('AMD(wet)', 'BRVO', 'CRVO', 'DMO');
                                                 ?>
-                                                <div class="options-group" data-filter-ui-id="js-chart-filter-treatment-clinical">
+                                                <div class="options-group" data-filter-ui-id="js-chart-filter-treatment">
                                                     <h3>Treatment</h3>
                                                     <ul class="btn-list">
-                                                        <li class="selected">ALL</li>
+                                                        <li class="selected">All</li>
                                                         <?php foreach ($analytics_treatment as $treatment) { ?>
                                                             <li><?= $treatment; ?></li>
                                                         <?php } ?>
                                                     </ul>
+                                                </div>
+                                                <div class="options-group" data-filter-ui-id="js-chart-filter-plot">
+                                                    <h3>Plot</h3>
+                                                    <ul class="btn-list">
+                                                        <li class="selected">VA (absolute)</li>
+                                                        <li>VA (change)</li>
+                                                        <li>SFT</li>
+                                                    </ul>
+                                                </div><!-- options-group -->
+                                                <div class="options-group" data-filter-ui-id="js-chart-filter-protocol">
+                                                    <h3>Protocol</h3>
+                                                    <ul class="btn-list">
+                                                        <li class="selected">ALL</li>
+                                                    </ul>
                                                 </div><!-- options-group -->
                                             <?php } elseif ($specialty === 'Glaucoma') {
-                                                $analytics_diagnoses = array('Macular degeneration', 'Diabetic Macular Oedema', 'BRVO', 'CRVO', 'Hemivein');
-                                            } ?>
+                                                $analytics_diagnoses = array('Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension');
+                                                $analytics_procedures = array('Cataract Extraction','Trabeculectomy', 'Aqueous Shunt','Cypass','SLT','Cyclodiode');
+                                                ?>
+                                                <div class="options-group" data-filter-ui-id="js-chart-filter-procedure">
+                                                    <h3>Procedures</h3>
+                                                    <ul class="btn-list js-multi-list">
+                                                        <li class="selected">All</li>
+                                                        <?php foreach ($analytics_procedures as $procedure) { ?>
+                                                            <li><?= $procedure; ?></li>
+                                                        <?php } ?>
+                                                    </ul>
+                                                </div><!-- options-group -->
+                                            <?php } ?>
 
                                             <?php if (isset($user_list)) { ?>
                                                 <div class="options-group" data-filter-ui-id="js-chart-filter-clinical-surgeon-custom">
@@ -153,7 +178,7 @@
 
                                             <div class="options-group" data-filter-ui-id="js-chart-filter-diagnosis">
                                                 <h3>Diagnosis</h3>
-                                                <ul class="btn-list">
+                                                <ul class="btn-list js-multi-list">
                                                     <li class="selected">All</li>
                                                     <?php foreach ($analytics_diagnoses as $diagnosis) { ?>
                                                         <li><?= $diagnosis; ?></li>
@@ -166,20 +191,6 @@
                                             <ul class="btn-list">
                                                 <li class="selected">All</li>
                                                 <li>Range</li>
-                                            </ul>
-                                        </div><!-- options-group -->
-                                        <div class="options-group" data-filter-ui-id="js-chart-filter-plot">
-                                            <h3>Plot</h3>
-                                            <ul class="btn-list">
-                                                <li class="selected">VA (absolute)</li>
-                                                <li>VA (change)</li>
-                                                <li>SFT</li>
-                                            </ul>
-                                        </div><!-- options-group -->
-                                        <div class="options-group" data-filter-ui-id="js-chart-filter-protocol">
-                                            <h3>Protocol</h3>
-                                            <ul class="btn-list">
-                                                <li class="selected">ALL</li>
                                             </ul>
                                         </div><!-- options-group -->
                                         <div class="options-group" data-filter-ui-id="js-chart-filter-eye-side">
@@ -341,6 +352,8 @@
         var side_bar_user_list = <?=CJavaScript::encode($side_bar_user_list);?>;
         var service_common_disorders = <?=CJavaScript::encode($common_disorders);?>;
         var mr_custom_diagnosis = ['AMD(wet)', 'BRVO', 'CRVO', 'DMO'];
+        var gl_custom_diagnosis = ['Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension'];
+        var mr_custom_treatment = ['Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex'];
         var filters ="specialty="+specialty;
         $('.js-hs-filters').each(function () {
             if($(this).is('span')){
@@ -350,7 +363,35 @@
                     }else if($(this).data('name') == "service_diagnosis"){
                         filters += '&'+$(this).data('name')+'='+Object.keys(service_common_disorders).find(key => service_common_disorders[key] ===$(this).html());
                     }else if($(this).hasClass('js-hs-custom-mr-diagnosis')){
-                        filters += '&'+$(this).data('name')+'='+mr_custom_diagnosis.indexOf($(this).html());
+                        var diagnosis_array = $(this).html().split(",");
+                        var diagnoses = "";
+                        diagnosis_array.forEach(
+                            function (item) {
+                                diagnoses += mr_custom_diagnosis.indexOf(item) + ',';
+                            }
+                        );
+                        diagnoses = diagnoses.slice(0,-1);
+                        filters += '&'+$(this).data('name')+'='+diagnoses;
+                    }else if($(this).hasClass('js-hs-custom-mr-treatment')){
+                        var treatment_array = $(this).html().split(",");
+                        var treatments = "";
+                        treatment_array.forEach(
+                            function (item) {
+                                treatments += mr_custom_treatment.indexOf(item) + ',';
+                            }
+                        );
+                        treatments = treatments.slice(0,-1);
+                        filters += '&'+$(this).data('name')+'='+treatments;
+                    }else if($(this).hasClass('js-hs-custom-gl-diagnosis')){
+                        var diagnosis_array = $(this).html().split(",");
+                        var diagnoses = "";
+                        diagnosis_array.forEach(
+                            function (item) {
+                                diagnoses += gl_custom_diagnosis.indexOf(item) + ',';
+                            }
+                        );
+                        diagnoses = diagnoses.slice(0,-1);
+                        filters += '&'+$(this).data('name')+'='+diagnoses;
                     }
                     else{
                         filters += '&'+$(this).data('name')+'='+$(this).html();
@@ -380,17 +421,19 @@
             if ($specialty !== 'All'){?>
         var custom_charts = ['js-hs-chart-analytics-clinical-others-left','js-hs-chart-analytics-clinical-others-right'];
         var custom_data = data[2];
-        console.log(data);
         window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
         for (var i = 0; i < custom_charts.length; i++) {
             var chart = $('#'+custom_charts[i])[0];
+            console.log(chart.data[0]);
             chart.layout['title'] = (i)? 'Clinical Section (Right Eye)': 'Clinical Section (Left Eye)';
             chart.data[0]['x'] = custom_data[i][0]['x'];
             chart.data[0]['y'] = custom_data[i][0]['y'];
             chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
+            chart.data[0]['error_y'] = custom_data[i][0]['error_y'];
             chart.data[1]['x'] = custom_data[i][1]['x'];
             chart.data[1]['y'] = custom_data[i][1]['y'];
             chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
+            chart.data[1]['error_y'] = custom_data[i][1]['error_y'];
             Plotly.redraw(chart);
         }
         <?php }}?>

@@ -72,9 +72,29 @@ $(document).ready(function () {
         var $allListElements = $('.btn-list li',$optionGroup);
 
         $allListElements.click( function(){
-            $('#'+textID).text( $(this).text() );
-            $allListElements.removeClass('selected');
-            $(this).addClass('selected');
+            if ($(this).parent().hasClass('js-multi-list') && $(this).text() !== "All"){
+                if ($(this).hasClass('selected')){
+                    if ($('#'+textID).text().includes(',')){
+                        $(this).removeClass('selected');
+                        $('#'+textID).text($('#'+textID).text().replace($(this).text()+",",""));
+                        $('#'+textID).text($('#'+textID).text().replace(","+$(this).text(),""));
+                    }
+                } else{
+                    $(this).addClass('selected');
+                    $allListElements.filter(function () {
+                        return $(this).text() == "All";
+                    }).removeClass('selected');
+                    if ($('#'+textID).text() == "All"){
+                        $('#'+textID).text($(this).text() );
+                    } else{
+                        $('#'+textID).text($('#'+textID).text() + ','+$(this).text() );
+                    }
+                }
+            } else {
+                $('#'+textID).text( $(this).text() );
+                $allListElements.removeClass('selected');
+                $(this).addClass('selected');
+            }
         });
     }
 
