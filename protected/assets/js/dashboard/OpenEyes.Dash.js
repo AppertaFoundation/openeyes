@@ -396,10 +396,10 @@
                 data['E/I']['ineligible'],
             ];
             chart.data[1]['y'] = completedData.map(function (item) {
-                return item.length/data['Total'];
+                return item.length/data['total'];
             });
             chart.data[0]['y'] = incompletedData.map(function (item) {
-                return item.length/data['Total'];
+                return item.length/data['total'];
             });
             chart.data[1]['customdata'] = completedData.map(function (item) {
                 return item;
