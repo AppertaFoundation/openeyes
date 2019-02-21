@@ -17,16 +17,12 @@
  */
 ?>
 <?php
-$firm_subspecialty = Firm::model()->findByPk($this->selectedFirmId)->getSubspecialtyID();
-$subspecialty = Subspecialty::model()->findByPk($firm_subspecialty);
 $mode = 'Basic';
-if($subspecialty && $subspecialty->id){
-    $expert = SettingSubspecialty::model()->findByAttributes(['subspecialty_id' => $subspecialty->id, 'key' => 'expert']);
-    if($expert && $expert->value === "1"){
-        $mode = 'Expert';
-    }
+$settings = new SettingMetadata();
+$expert = $settings->getSetting('expert',$element->elementType);
+if($expert){
+    $mode = 'Expert';
 }
-
 $doodleToolBarArray = array('AngleNV', 'AntSynech', 'AngleRecession');
 $bindingArray = array(
     'Gonioscopy' => array(
