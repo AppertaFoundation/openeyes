@@ -73,7 +73,7 @@ class DisorderController extends BaseController
         ), false, true);
     }
 
-    protected function setItemAttributesForGenericAdmin(&$item, $options, $i, $j, &$attributes, &$errors, $new)
+    protected function setItemAttributesForGenericAdmin(&$item, $options, $i, $j, &$attributes, &$errors, $new, $model)
     {
         $item->{$options['label_field']} = $_POST[$options['label_field']][$i];
         if ($item->hasAttribute('display_order')) {
@@ -157,7 +157,7 @@ class DisorderController extends BaseController
 
                         $attributes = $item->getAttributes();
                         if (!empty($_POST[$options['label_field']][$i])) {
-                            $this->setItemAttributesForGenericAdmin($item, $options, $i, $j, $attributes, $errors, $new);
+                            $this->setItemAttributesForGenericAdmin($item, $options, $i, $j, $attributes, $errors, $new, $model);
                             $items[] = $item;
                             ++$j;
                         }
