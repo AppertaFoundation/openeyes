@@ -88,11 +88,11 @@ class NodAuditReport extends Report implements ReportInterface
                 $this->command->select('eoc.id as cataract_element_id, 
                                         eoc.event_id as cataract_event_id, 
                                         eov.id as va_element_id, 
-                                        eoc.created_date as cataract_date, 
-                                        eov.created_date as other_date')
+                                        e1.event_date as cataract_date, 
+                                        e2.event_date as other_date')
                     ->leftJoin('et_ophciexamination_visualacuity eov','eov.event_id = e2.id')
-                    ->andWhere('(DATEDIFF(eoc.created_date,eov.created_date) <= 30 AND TIMEDIFF(eoc.created_date,eov.created_date)>0) 
-                                OR (DATEDIFF(eov.created_date,eoc.created_date) <= :days AND TIMEDIFF(eov.created_date, eoc.created_date)>0)',array(':days'=>$this->months))
+                    ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= 30 AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
+                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)',array(':days'=>$this->months))
                     ->group('e2.id');
                 break;
             //refraction
@@ -100,11 +100,11 @@ class NodAuditReport extends Report implements ReportInterface
                 $this->command->select('eoc.id as cataract_element_id,
                                         eoc.event_id as cataract_event_id, 
                                         eor.id as refraction_element_id, 
-                                        eoc.created_date as cataract_date, 
-                                        eor.created_date as other_date')
+                                        e1.event_date as cataract_date, 
+                                        e2.event_date as other_date')
                     ->leftJoin('et_ophciexamination_refraction eor','eor.event_id = e2.id')
-                    ->andWhere('(DATEDIFF(eoc.created_date,eor.created_date) <= 30 AND TIMEDIFF(eoc.created_date,eor.created_date)>0) 
-                                OR (DATEDIFF(eor.created_date,eoc.created_date) <= :days AND TIMEDIFF(eor.created_date, eoc.created_date)>0)',array(':days'=>$this->months))
+                    ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= 30 AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
+                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)',array(':days'=>$this->months))
                     ->group('e2.id');
                 break;
             //biometry
@@ -133,10 +133,10 @@ class NodAuditReport extends Report implements ReportInterface
                 $this->command->select('eoc.id as cataract_element_id,
                                         eoc.event_id as cataract_event_id, 
                                         eopc.id as post_op_complication_id, 
-                                        eoc.created_date as cataract_date, 
-                                        eopc.created_date as other_date')
+                                        e1.event_date as cataract_date, 
+                                        e2.event_date as other_date')
                     ->leftJoin('et_ophciexamination_postop_complications eopc','eopc.event_id = e2.id')
-                    ->andWhere('DATEDIFF(eopc.created_date,eoc.created_date) <= :days AND TIMEDIFF(eopc.created_date, eoc.created_date)>0',array(':days'=>$this->months))
+                    ->andWhere('DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0',array(':days'=>$this->months))
                     ->group('e2.id');
                 break;
             // indication for surgery
@@ -149,8 +149,8 @@ class NodAuditReport extends Report implements ReportInterface
             case 'PRE-EXAM':
                 $this->command->select('eoc.id as cataract_element_id,
                                         eoc.event_id as cataract_event_id, 
-                                        eoc.created_date as cataract_date, 
-                                        e2.created_date as other_date')
+                                        e1.event_date as cataract_date, 
+                                        e2.event_date as other_date')
                     ->andWhere('eoc.id IS NULL');
                 break;
             case 'E/I':
