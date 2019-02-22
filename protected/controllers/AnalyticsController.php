@@ -171,21 +171,91 @@ class AnalyticsController extends BaseController
      * Return arraies for left and right eye side which can be easily transformed to plotly readable data format.
      * Note: the name getCustomXXX() because we thought they are for custom section, but seems not, names will be changed if needed.
      */
-  public function getCustomVA($subspecialty_id,$surgeon = null) {
-      //As the dataset is huge and to speed up the performance, sql queries are used to get all data.
-      $va_elements = $this->queryVA($subspecialty_id);
-//      return $this->getCustomDataListQuery($va_elements,"VA",$surgeon);
-      return $this->getCustomDataListQueryNew("VA");
+  public function getCustomVA($subspecialty_name,$surgeon = null) {
+      $basic_criteria = null;
+      $extra_command = null;
+      if ($subspecialty_name == 'Medical Retina'){
+          $basic_criteria = isset($this->filters['treatment'])? $this->filters['treatment']:null;
+          $extra_command = Yii::app()->db->createCommand()
+              ->from('et_ophtrintravitinjection_treatment eot')
+              ->leftJoin('event e','e.id = eot.event_id')
+              ->leftJoin('episode ep','ep.id = e.episode_id')
+              ->leftJoin('patient p','p.id = ep.patient_id')
+              ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0');
+          if (isset($surgeon)){
+              $extra_command->andWhere('eot.created_user_id = '.$surgeon);
+          }
+      }elseif ($subspecialty_name == 'Glaucoma'){
+//          $basic_criteria = isset($this->filters['procedure'])? implode(",",$this->filters['procedure']):null;
+          $basic_criteria = isset($this->filters['procedure'])? $this->filters['procedure']:null;
+          $op_proc_command = Yii::app()->db->createCommand()
+              ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, IF(eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
+              ->from('et_ophtroperationnote_procedurelist eop')
+              ->leftJoin('ophtroperationnote_procedurelist_procedure_assignment opa','eop.id = opa.procedurelist_id')
+              ->leftJoin('event e','eop.event_id = e.id')
+              ->leftJoin('episode ep','e.episode_id = ep.id')
+              ->leftJoin('patient p','p.id = ep.patient_id')
+              ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
+              ->group('patient_id, left_value, right_value');
+          $laser_proc_command = Yii::app()->db->createCommand()
+              ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eot.eye_id = 1 or eot.eye_id = 3, ola.procedure_id, null) as left_value, IF(eot.eye_id =2 or eot.eye_id = 3, ola.procedure_id, null) as right_value, \'2event\' as t_name, eot.created_user_id as surgeon_id', 'DISTINCT')
+              ->from('et_ophtrlaser_treatment eot')
+              ->leftJoin('ophtrlaser_laserprocedure_assignment ola','eot.id = ola.treatment_id')
+              ->leftJoin('event e','eot.event_id = e.id')
+              ->leftJoin('episode ep','e.episode_id = ep.id')
+              ->leftJoin('patient p','p.id = ep.patient_id')
+              ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
+              ->group('patient_id, left_value, right_value');
+          $extra_command = Yii::app()->db->createCommand()
+              ->from('('.$op_proc_command->union('('.$laser_proc_command->getText().')')->getText().') as et');
+          if (isset($surgeon)){
+              $extra_command->andWhere('et.surgeon_id = '.$surgeon);
+          }
+      }
+      return $this->getCustomDataListQueryNew($subspecialty_name,'VA',$extra_command,$basic_criteria);
   }
 
-  public function getCustomCRT($subspecialty_id,$surgeon=null) {
-      $crt_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_OCT::model()->findAll();
-      return $this->getCustomDataList($crt_elements,'CRT', $subspecialty_id, $surgeon);
+  public function getCustomCRT($subspecialty_name,$surgeon=null) {
+      $basic_criteria = isset($this->filters['treatment'])? $this->filters['treatment']:null;
+      $extra_command = Yii::app()->db->createCommand()
+          ->from('et_ophtrintravitinjection_treatment eot')
+          ->leftJoin('event e','e.id = eot.event_id')
+          ->leftJoin('episode ep','ep.id = e.episode_id')
+          ->leftJoin('patient p','p.id = ep.patient_id')
+          ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0');
+      if (isset($surgeon)){
+          $extra_command->andWhere('eot.created_user_id = '.$surgeon);
+      }
+      return $this->getCustomDataListQueryNew($subspecialty_name,'CRT',$extra_command,$basic_criteria);
   }
 
-  public function getCustomIOP($subspecialty_id,$surgeon=null){
-      $iop_elements = $this->queryIOP($subspecialty_id);
-      return $this->getCustomDataListQuery($iop_elements,"IOP",$surgeon);
+  public function getCustomIOP($subspecialty_name,$surgeon=null){
+      //          $basic_criteria = isset($this->filters['procedure'])? implode(",",$this->filters['procedure']):null;
+      $basic_criteria = isset($this->filters['procedure'])? $this->filters['procedure']:null;
+      $op_proc_command = Yii::app()->db->createCommand()
+          ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, IF(eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
+          ->from('et_ophtroperationnote_procedurelist eop')
+          ->leftJoin('ophtroperationnote_procedurelist_procedure_assignment opa','eop.id = opa.procedurelist_id')
+          ->leftJoin('event e','eop.event_id = e.id')
+          ->leftJoin('episode ep','e.episode_id = ep.id')
+          ->leftJoin('patient p','p.id = ep.patient_id')
+          ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
+          ->group('patient_id, left_value, right_value');
+      $laser_proc_command = Yii::app()->db->createCommand()
+          ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eot.eye_id = 1 or eot.eye_id = 3, ola.procedure_id, null) as left_value, IF(eot.eye_id =2 or eot.eye_id = 3, ola.procedure_id, null) as right_value, \'2event\' as t_name, eot.created_user_id as surgeon_id', 'DISTINCT')
+          ->from('et_ophtrlaser_treatment eot')
+          ->leftJoin('ophtrlaser_laserprocedure_assignment ola','eot.id = ola.treatment_id')
+          ->leftJoin('event e','eot.event_id = e.id')
+          ->leftJoin('episode ep','e.episode_id = ep.id')
+          ->leftJoin('patient p','p.id = ep.patient_id')
+          ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
+          ->group('patient_id, left_value, right_value');
+      $extra_command = Yii::app()->db->createCommand()
+          ->from('('.$op_proc_command->union('('.$laser_proc_command->getText().')')->getText().') as et');
+      if (isset($surgeon)){
+          $extra_command->andWhere('et.surgeon_id ='.$surgeon);
+      }
+      return $this->getCustomDataListQueryNew($subspecialty_name,'IOP',$extra_command,$basic_criteria);
   }
 
     /**
@@ -275,30 +345,16 @@ class AnalyticsController extends BaseController
         return $command->queryAll();
     }
 
-    public function queryVANew($eye_side,$basic_criteria=null, $surgeon_id = null){
+    public function queryVANew($eye_side,$subspecialty,$extra_command,$basic_criteria=null){
+        $extra_commands = clone $extra_command;
         $command_va_values = Yii::app()->db->createCommand()
-            ->select('ep.patient_id as patient_id, e.event_date as event_date,  IF(eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, IF(eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'value\' as t_name','DISTINCT')
+            ->select('ep.patient_id as patient_id, e.event_date as event_date,  IF(eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, IF(eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name','DISTINCT')
             ->from('et_ophciexamination_visualacuity eov')
             ->leftJoin('event e','e.id = eov.event_id')
             ->leftJoin('episode ep','ep.id = e.episode_id')
             ->leftJoin('patient p','p.id = ep.patient_id')
             ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
             ->group('eov.id');
-        $command_treatments = Yii::app()->db->createCommand()
-            ->from('et_ophtrintravitinjection_treatment eot')
-            ->leftJoin('event e','e.id = eot.event_id')
-            ->leftJoin('episode ep','ep.id = e.episode_id')
-            ->leftJoin('patient p','p.id = ep.patient_id')
-            ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
-            ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
-        $command_treatments_patient = Yii::app()->db->createCommand()
-            ->select('ep.patient_id as patient_id','DISTINCT')
-            ->from('et_ophtrintravitinjection_treatment eot')
-            ->leftJoin('event e','e.id = eot.event_id')
-            ->leftJoin('episode ep','ep.id = e.episode_id')
-            ->leftJoin('patient p','p.id = ep.patient_id')
-            ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
-            ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
         $command_va_patients = Yii::app()->db->createCommand()
             ->select('ep.patient_id as patient_id','DISTINCT')
             ->from('et_ophciexamination_visualacuity eov')
@@ -308,27 +364,137 @@ class AnalyticsController extends BaseController
             ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
             ->group('ep.patient_id');
         if (isset($basic_criteria)){
-            $command_treatments_patient->where('eot.'.$eye_side.'_drug_id = '.$basic_criteria);
-            $command_treatments->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id = '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id = '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'event\' as t_name','DISTINCT')
-                ->where('eot.'.$eye_side.'_drug_id = '.$basic_criteria);
+            if ($subspecialty == 'Medical Retina'){
+                $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id = '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id = '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name','DISTINCT')
+                    ->andwhere('eot.'.$eye_side.'_drug_id = '.$basic_criteria)
+                    ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
+            }elseif ($subspecialty == 'Glaucoma'){
+                $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value = '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value = '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name','DISTINCT')
+                    ->andwhere('et.'.$eye_side.'_value = '.$basic_criteria)
+                    ->group('patient_id, left_value,right_value');
+            }
         }else{
-            $command_treatments->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , eot.left_drug_id as left_value, eot.right_drug_id as right_value, \'event\' as t_name','DISTINCT')
-                ->where('eot.left_drug_id IS NOT NULL or eot.right_drug_id IS NOT NULL');
-            $command_treatments_patient->where('eot.left_drug_id IS NOT NULL or eot.right_drug_id IS NOT NULL');
+            if ($subspecialty == 'Medical Retina'){
+                $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , eot.left_drug_id as left_value, eot.right_drug_id as right_value, \'2event\' as t_name','DISTINCT')
+                    ->andwhere('eot.left_drug_id IS NOT NULL or eot.right_drug_id IS NOT NULL')
+                    ->group('ep.patient_id');;
+            }elseif ($subspecialty == 'Glaucoma'){
+                $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , et.left_value  as left_value, et.right_value as right_value, \'2event\' as t_name','DISTINCT')
+                    ->andwhere('et.left_value IS NOT NULL or et.right_value IS NOT NULL')
+                    ->group('et.patient_id');
+            }
         }
 
-        $command_filtered_patients = Yii::app()->db->createCommand()
-            ->select('dp.patient_id')
-            ->from('('.$this->queryDiagnosesFilteredPatientListCommand($eye_side)->getText().') AS dp')
-            ->where('dp.patient_id in ('.$command_treatments_patient->getText().')')
-            ->andWhere('dp.patient_id in ('.$command_va_patients->getText().')');
+        $extra_command_patient = Yii::app()->db->createCommand()
+            ->select('tp.patient_id','distinct')
+            ->from('('.$extra_commands->getText().') as tp');
 
+        $command_filtered_patients = Yii::app()->db->createCommand()
+            ->select('dp.patient_id','distinct')
+            ->from('('.$this->queryDiagnosesFilteredPatientListCommand($eye_side)->getText().') AS dp')
+            ->where('dp.patient_id in ('.$extra_command_patient->getText().')')
+            ->andWhere('dp.patient_id in ('.$command_va_patients->getText().')');
         $command_final_table = Yii::app()->db->createCommand()
             ->select('t.patient_id as patient_id, t.event_date as event_date, t.'.$eye_side.'_value as value, t.t_name as name','DISTINCT')
-            ->from('('.$command_va_values->union($command_treatments->getText())->getText().') as t')
+            ->from('('.$command_va_values->union($extra_commands->getText())->getText().') as t')
             ->where('t.patient_id in ('.$command_filtered_patients->getText().')')
             ->andWhere('t.'.$eye_side.'_value IS NOT NULL')
             ->order('t.patient_id, t.event_date','ASC');
+
+        return $command_final_table->queryAll();
+    }
+
+    public function queryIOPNew($eye_side,$extra_command,$basic_criteria=null){
+        $extra_commands = clone $extra_command;
+        $command_iop_values = Yii::app()->db->createCommand()
+            ->select('ep.patient_id as patient_id, e.event_date as event_date,  IF(eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, IF(eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name','DISTINCT')
+            ->from('et_ophciexamination_intraocularpressure eov')
+            ->leftJoin('event e','e.id = eov.event_id')
+            ->leftJoin('episode ep','ep.id = e.episode_id')
+            ->leftJoin('patient p','p.id = ep.patient_id')
+            ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
+            ->group('eov.id');
+        $command_iop_patients = Yii::app()->db->createCommand()
+            ->select('ep.patient_id as patient_id','DISTINCT')
+            ->from('et_ophciexamination_intraocularpressure eov')
+            ->leftJoin('event e','e.id = eov.event_id')
+            ->leftJoin('episode ep','ep.id = e.episode_id')
+            ->leftJoin('patient p','p.id = ep.patient_id')
+            ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
+            ->group('ep.patient_id');
+        if (isset($basic_criteria)){
+            $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value = '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value = '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name','DISTINCT')
+                ->andwhere('et.'.$eye_side.'_value = '.$basic_criteria)
+                ->group('patient_id, left_value,right_value');
+        }else{
+            $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , et.left_value  as left_value, et.right_value as right_value, \'2event\' as t_name','DISTINCT')
+                ->andwhere('et.left_value IS NOT NULL or et.right_value IS NOT NULL')
+                ->group('et.patient_id');
+        }
+
+        $extra_command_patient = Yii::app()->db->createCommand()
+            ->select('tp.patient_id','distinct')
+            ->from('('.$extra_commands->getText().') as tp');
+
+        $command_filtered_patients = Yii::app()->db->createCommand()
+            ->select('dp.patient_id','distinct')
+            ->from('('.$this->queryDiagnosesFilteredPatientListCommand($eye_side)->getText().') AS dp')
+            ->where('dp.patient_id in ('.$extra_command_patient->getText().')')
+            ->andWhere('dp.patient_id in ('.$command_iop_patients->getText().')');
+        $command_final_table = Yii::app()->db->createCommand()
+            ->select('t.patient_id as patient_id, t.event_date as event_date, t.'.$eye_side.'_value as value, t.t_name as name','DISTINCT')
+            ->from('('.$command_iop_values->union($extra_commands->getText())->getText().') as t')
+            ->where('t.patient_id in ('.$command_filtered_patients->getText().')')
+            ->andWhere('t.'.$eye_side.'_value IS NOT NULL')
+            ->order('t.patient_id, t.event_date','ASC');
+
+        return $command_final_table->queryAll();
+    }
+
+    public function queryCRTNew($eye_side,$extra_command,$basic_criteria=null){
+        $extra_commands = clone $extra_command;
+        $command_crt_values = Yii::app()->db->createCommand()
+            ->select('ep.patient_id as patient_id, e.event_date as event_date,  IF(eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, IF(eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name','DISTINCT')
+            ->from('et_ophciexamination_oct eov')
+            ->leftJoin('event e','e.id = eov.event_id')
+            ->leftJoin('episode ep','ep.id = e.episode_id')
+            ->leftJoin('patient p','p.id = ep.patient_id')
+            ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
+            ->group('eov.id');
+        $command_crt_patients = Yii::app()->db->createCommand()
+            ->select('ep.patient_id as patient_id','DISTINCT')
+            ->from('et_ophciexamination_oct eov')
+            ->leftJoin('event e','e.id = eov.event_id')
+            ->leftJoin('episode ep','ep.id = e.episode_id')
+            ->leftJoin('patient p','p.id = ep.patient_id')
+            ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
+            ->group('ep.patient_id');
+        if (isset($basic_criteria)){
+            $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id = '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id = '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name','DISTINCT')
+                ->andwhere('eot.'.$eye_side.'_drug_id = '.$basic_criteria)
+                ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
+        }else{
+            $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , eot.left_drug_id as left_value, eot.right_drug_id as right_value, \'2event\' as t_name','DISTINCT')
+                ->andwhere('eot.left_drug_id IS NOT NULL or eot.right_drug_id IS NOT NULL')
+                ->group('ep.patient_id');;
+        }
+
+        $extra_command_patient = Yii::app()->db->createCommand()
+            ->select('tp.patient_id','distinct')
+            ->from('('.$extra_commands->getText().') as tp');
+
+        $command_filtered_patients = Yii::app()->db->createCommand()
+            ->select('dp.patient_id','distinct')
+            ->from('('.$this->queryDiagnosesFilteredPatientListCommand($eye_side)->getText().') AS dp')
+            ->where('dp.patient_id in ('.$extra_command_patient->getText().')')
+            ->andWhere('dp.patient_id in ('.$command_crt_patients->getText().')');
+        $command_final_table = Yii::app()->db->createCommand()
+            ->select('t.patient_id as patient_id, t.event_date as event_date, t.'.$eye_side.'_value as value, t.t_name as name','DISTINCT')
+            ->from('('.$command_crt_values->union($extra_commands->getText())->getText().') as t')
+            ->where('t.patient_id in ('.$command_filtered_patients->getText().')')
+            ->andWhere('t.'.$eye_side.'_value IS NOT NULL')
+            ->order('t.patient_id, t.event_date','ASC');
+
         return $command_final_table->queryAll();
     }
 
@@ -365,24 +531,49 @@ class AnalyticsController extends BaseController
         return $command_secondary->union($command_principal->getText());
     }
 
-    public function getCustomDataListQueryNew($type){
+    public function getCustomDataListQueryNew($subsepcialty,$type,$extra_command,$basic_criteria){
         $patient_list = array();
         $left_list = array();
         $right_list = array();
-        $injection_drug = isset($this->filters['treatment'])? $this->filters['treatment']:null;
-        foreach (['right', 'left'] as $side) {
+        foreach (['right','left'] as $side) {
             $treatment = array();
             $initial_reading = array();
-            $elements = $this->queryVANew($side,$injection_drug);
+            switch ($type){
+                case 'VA':
+                    $elements = $this->queryVANew($side,$subsepcialty,$extra_command,$basic_criteria);
+                    break;
+                case 'IOP':
+                    $elements = $this->queryIOPNew($side,$extra_command,$basic_criteria);
+                    break;
+                case 'CRT':
+                    $elements = $this->queryCRTNew($side,$extra_command,$basic_criteria);
+                    break;
+            }
             foreach ($elements as $element) {
                 if (!isset($element['value'])){
                     continue;
                 }
 
-                if ($element['name'] == 'value'){
-                    $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element['value'])->getBestReading($side);
+                if ($element['name'] == '1value'){
+                    switch ($type){
+                        case 'VA':
+                            $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element['value'])->getBestReading($side);
+                            break;
+                        case 'IOP':
+                            $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure::model()->findByPk($element['value'])->getReading($side);
+                            break;
+                        case 'CRT':
+                            $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_OCT::model()->findByPk($element['value']);
+                            break;
+                    }
+
                     if (isset($reading)){
-                        $reading = $reading->value;
+                        if ($type == 'VA'){
+                            $reading = $reading->value;
+                        }
+                        if ($type == 'CRT'){
+                            $reading = $reading->{$side.'_sft'};
+                        }
                     }else{
                         continue;
                     }
@@ -499,7 +690,6 @@ class AnalyticsController extends BaseController
 
         ksort($left_list);
         ksort($right_list);
-        Yii::log(var_export($right_list,true));
 
         return [$left_list,$right_list];
     }
@@ -1097,21 +1287,10 @@ class AnalyticsController extends BaseController
           }
       }
       if (isset($custom_treatment)){
-          if ($specialty === "Medical Retina"){
-              $custom_treatment = $treatments[$custom_treatment];
-          }
+          $custom_treatment = $treatments[$custom_treatment];
       }
       if (isset($custom_procedure)){
-          $custom_procedure_array = explode(",",$custom_treatment);
-          $custom_procedure = array();
-          foreach ($custom_procedure_array as $item){
-              if ($specialty === "Glaucoma"){
-                  array_push($custom_procedure,$procedures[$item]);
-              }else{
-                  $custom_procedure = null;
-                  break;
-              }
-          }
+          $custom_procedure = $procedures[$custom_procedure];
       }
 
       if ($dateTo){
@@ -1172,11 +1351,11 @@ class AnalyticsController extends BaseController
           $custom_data = array();
       }else{
           $subspecialty_id = $this->getSubspecialtyID($specialty);
-          list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$this->filters['custom_surgeon_id']);
+          list($left_va_list, $right_va_list) = $this->getCustomVA($specialty,$this->filters['custom_surgeon_id']);
           if ($specialty === "Glaucoma"){
-              list($left_second_list,$right_second_list) = $this->getCustomIOP($subspecialty_id,$this->filters['custom_surgeon_id']);
+              list($left_second_list,$right_second_list) = $this->getCustomIOP($specialty,$this->filters['custom_surgeon_id']);
           }elseif ($specialty === "Medical Retina"){
-              list($left_second_list,$right_second_list) = $this->getCustomCRT($subspecialty_id,$this->filters['custom_surgeon_id']);
+              list($left_second_list,$right_second_list) = $this->getCustomCRT($specialty,$this->filters['custom_surgeon_id']);
           }
           $custom_data = array();
           foreach (['left','right'] as $side){
@@ -1568,12 +1747,12 @@ class AnalyticsController extends BaseController
         );
 
         if($speciality_name === 'Glaucoma'){
-            list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id,$this->surgeon);
-            list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$this->surgeon);
+            list($left_iop_list, $right_iop_list) = $this->getCustomIOP($speciality_name,$this->surgeon);
+            list($left_va_list, $right_va_list) = $this->getCustomVA($speciality_name,$this->surgeon);
             $second_list_name = '_iop_list';
         } else {
-            list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$this->surgeon);
-            list($left_crt_list, $right_crt_list) = $this->getCustomCRT($subspecialty_id,$this->surgeon);
+            list($left_va_list, $right_va_list) = $this->getCustomVA($speciality_name,$this->surgeon);
+            list($left_crt_list, $right_crt_list) = $this->getCustomCRT($speciality_name,$this->surgeon);
             $second_list_name = '_crt_list';
         }
 

@@ -103,7 +103,7 @@
                                 <li>Protocol: <span id="js-chart-filter-protocol" class="js-hs-filters" data-name="custom_protocol">ALL</span></li>
                             <?php }else{?>
                                 <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-gl-diagnosis" data-name="custom_diagnosis">All</span></li>
-                                <li>Procedure: <span id="js-chart-filter-procedure" class="js-hs-filters" data-name="custom_procedure">All</span></li>
+                                <li>Procedure: <span id="js-chart-filter-procedure" class="js-hs-filters js-hs-custom-gl-procedure" data-name="custom_procedure">All</span></li>
                             <?php } ?>
                         </ul>
 
@@ -155,7 +155,7 @@
                                                 ?>
                                                 <div class="options-group" data-filter-ui-id="js-chart-filter-procedure">
                                                     <h3>Procedures</h3>
-                                                    <ul class="btn-list js-multi-list">
+                                                    <ul class="btn-list">
                                                         <li class="selected">All</li>
                                                         <?php foreach ($analytics_procedures as $procedure) { ?>
                                                             <li><?= $procedure; ?></li>
@@ -354,6 +354,7 @@
         var mr_custom_diagnosis = ['AMD(wet)', 'BRVO', 'CRVO', 'DMO'];
         var gl_custom_diagnosis = ['Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension'];
         var mr_custom_treatment = ['Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex'];
+        var gl_custom_procedure = ['Cataract Extraction','Trabeculectomy', 'Aqueous Shunt','Cypass','SLT','Cyclodiode'];
         var filters ="specialty="+specialty;
         $('.js-hs-filters').each(function () {
             if($(this).is('span')){
@@ -373,15 +374,11 @@
                         diagnoses = diagnoses.slice(0,-1);
                         filters += '&'+$(this).data('name')+'='+diagnoses;
                     }else if($(this).hasClass('js-hs-custom-mr-treatment')){
-                        var treatment_array = $(this).html().split(",");
-                        var treatments = "";
-                        treatment_array.forEach(
-                            function (item) {
-                                treatments += mr_custom_treatment.indexOf(item) + ',';
-                            }
-                        );
-                        treatments = treatments.slice(0,-1);
-                        filters += '&'+$(this).data('name')+'='+treatments;
+                        var treatment = mr_custom_treatment.indexOf($(this).html());
+                        filters += '&'+$(this).data('name')+'='+treatment;
+                    }else if($(this).hasClass('js-hs-custom-gl-procedure')){
+                        var procedure = gl_custom_procedure.indexOf($(this).html());
+                        filters += '&'+$(this).data('name')+'='+procedure;
                     }else if($(this).hasClass('js-hs-custom-gl-diagnosis')){
                         var diagnosis_array = $(this).html().split(",");
                         var diagnoses = "";
@@ -401,6 +398,7 @@
                 filters += '&'+$(this).data('name')+'='+$(this).val();
             }
         });
+        console.log(filters);
         return filters;
     }
     function plotUpdate(data){
