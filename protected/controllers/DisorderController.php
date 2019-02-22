@@ -134,14 +134,8 @@ class DisorderController extends BaseController
         $j = 0;
 
         foreach ((array) @$_POST['id'] as $i => $id) {
-            if ($id) {
-                $item = $model::model()->findByPk($id);
-                $new = false;
-            } else {
-                $item = new $model();
-                $new = true;
-            }
-
+            $item = ($id) ? $model::model()->findByPk($id) : new $model();
+            $new = ($id) ? false : true ;
             $attributes = $item->getAttributes();
             if (!empty($_POST[$options['label_field']][$i])) {
                 $this->setItemAttributesForGenericAdmin($item, $options, $i, $j, $attributes, $errors, $new, $model);
