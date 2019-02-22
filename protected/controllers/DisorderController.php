@@ -38,7 +38,7 @@ class DisorderController extends BaseController
         );
     }
 
-    protected function genericAdmin($title, $model, array $options = array(), $key = null)
+    protected function setOptionsForGenericAdmin($options, $model)
     {
         $options = array_merge(array(
             'label_field' => $model::SELECTION_LABEL_FIELD,
@@ -53,23 +53,35 @@ class DisorderController extends BaseController
         $columns = $model::model()->metadata->columns;
 
         $options = $this->addExtraFieldsToOptions($options, $columns);
+        $options['display_order'] = false;
+        return $options;
+    }
+
+    protected function renderPartialForGenericAdmin($key, $model, $options, $title, $errors)
+    {
+        $items = array($key => new $model());
+        $options['get_row'] = true;
+        if ($model::model()->hasAttribute('display_order')) {
+            $options['display_order'] = true;
+        }
+        $this->renderPartial('//admin/generic_admin', array(
+            'title' => $title,
+            'model' => $model,
+            'items' => $items,
+            'errors' => $errors,
+            'options' => $options,
+        ), false, true);
+    }
+
+    protected function genericAdmin($title, $model, array $options = array(), $key = null)
+    {
+        $options = $this->setOptionsForGenericAdmin($options, $model);
         $items = array();
         $errors = array();
-        $options['display_order'] = false;
+
 
         if ($key !== null) {
-            $items = array($key => new $model());
-            $options['get_row'] = true;
-            if ($model::model()->hasAttribute('display_order')) {
-                $options['display_order'] = true;
-            }
-            $this->renderPartial('//admin/generic_admin', array(
-                'title' => $title,
-                'model' => $model,
-                'items' => $items,
-                'errors' => $errors,
-                'options' => $options,
-            ), false, true);
+           $this->renderPartialForGenericAdmin($key, $model, $options, $title, $errors);
         } else {
             if ($options['filters_ready']) {
                 if (Yii::app()->request->isPostRequest) {
