@@ -73,13 +73,71 @@ class DisorderController extends BaseController
         ), false, true);
     }
 
+    protected function setItemAttributesForGenericAdmin(&$item, $options, $i, $j, &$attributes, &$errors, $new)
+    {
+        $item->{$options['label_field']} = $_POST[$options['label_field']][$i];
+        if ($item->hasAttribute('display_order')) {
+            $options['display_order'] = true;
+            $item->display_order = $j + 1;
+        }
+
+        if (array_key_exists('active', $attributes)) {
+            $item->active = (isset($_POST['active'][$i]) || $item->isNewRecord) ? 1 : 0;
+        }
+
+        foreach ($options['extra_fields'] as $field) {
+            $name = $field['field'];
+            if (!array_key_exists($name, $attributes)) {
+                // getAttributes doesn't return relations, so this sets this up
+                // to enable the change check below. This will give false positives for saves
+                // but is a simple solution for now.
+                $attributes[$name] = $item->$name;
+            }
+            $item->$name = @$_POST[$name][$i];
+        }
+
+        if ($item->hasAttribute('default')) {
+            if (isset($_POST['default']) && $_POST['default'] !== 'NONE' && $_POST['default'] == $j) {
+                $item->default = 1;
+            } else {
+                $item->default = 0;
+            }
+        }
+
+        foreach ($options['filter_fields'] as $field) {
+            $item->{$field['field']} = $field['value'];
+        }
+
+        if ($new || $item->getAttributes() != $attributes) {
+            if (!$item->save()) {
+                $errors = $item->getErrors();
+                foreach ($errors as $error) {
+                    $errors[$i] = $error[0];
+                }
+            }
+            Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array(
+                'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                'model' => $model::getShortModelName(),
+            ));
+        }
+    }
+
+    protected function renderForGenericAdmin($title, $model, $items, $errors, $options)
+    {
+        $this->render('//admin/generic_admin', array(
+            'title' => $title,
+            'model' => $model,
+            'items' => $items,
+            'errors' => $errors,
+            'options' => $options,
+        ));
+    }
+
     protected function genericAdmin($title, $model, array $options = array(), $key = null)
     {
         $options = $this->setOptionsForGenericAdmin($options, $model);
         $items = array();
         $errors = array();
-
-
         if ($key !== null) {
            $this->renderPartialForGenericAdmin($key, $model, $options, $title, $errors);
         } else {
@@ -99,52 +157,7 @@ class DisorderController extends BaseController
 
                         $attributes = $item->getAttributes();
                         if (!empty($_POST[$options['label_field']][$i])) {
-                            $item->{$options['label_field']} = $_POST[$options['label_field']][$i];
-                            if ($item->hasAttribute('display_order')) {
-                                $options['display_order'] = true;
-                                $item->display_order = $j + 1;
-                            }
-
-                            if (array_key_exists('active', $attributes)) {
-                                $item->active = (isset($_POST['active'][$i]) || $item->isNewRecord) ? 1 : 0;
-                            }
-
-                            foreach ($options['extra_fields'] as $field) {
-                                $name = $field['field'];
-                                if (!array_key_exists($name, $attributes)) {
-                                    // getAttributes doesn't return relations, so this sets this up
-                                    // to enable the change check below. This will give false positives for saves
-                                    // but is a simple solution for now.
-                                    $attributes[$name] = $item->$name;
-                                }
-                                $item->$name = @$_POST[$name][$i];
-                            }
-
-                            if ($item->hasAttribute('default')) {
-                                if (isset($_POST['default']) && $_POST['default'] !== 'NONE' && $_POST['default'] == $j) {
-                                    $item->default = 1;
-                                } else {
-                                    $item->default = 0;
-                                }
-                            }
-
-                            foreach ($options['filter_fields'] as $field) {
-                                $item->{$field['field']} = $field['value'];
-                            }
-
-                            if ($new || $item->getAttributes() != $attributes) {
-                                if (!$item->save()) {
-                                    $errors = $item->getErrors();
-                                    foreach ($errors as $error) {
-                                        $errors[$i] = $error[0];
-                                    }
-                                }
-                                Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array(
-                                    'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                                    'model' => $model::getShortModelName(),
-                                ));
-                            }
-
+                            $this->setItemAttributesForGenericAdmin($item, $options, $i, $j, $attributes, $errors, $new);
                             $items[] = $item;
                             ++$j;
                         }
@@ -155,13 +168,7 @@ class DisorderController extends BaseController
                 }
             }
 
-            $this->render('//admin/generic_admin', array(
-                'title' => $title,
-                'model' => $model,
-                'items' => $items,
-                'errors' => $errors,
-                'options' => $options,
-            ));
+        $this->renderForGenericAdmin($title, $model, $items, $errors, $options);
         }
     }
 
