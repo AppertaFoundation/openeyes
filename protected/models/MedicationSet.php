@@ -198,11 +198,21 @@ class MedicationSet extends BaseActiveRecordVersioned
         return '<a href="/OphDrPrescription/refMedicationSetAdmin/list?ref_set_id='.$this->id.'">List medications</a>';
     }
 
+	public function getAdminListAction()
+	{
+		return $this->adminListAction();
+    }
+
     public function itemsCount()
     {
         $result = Yii::app()->db->createCommand("SELECT COUNT(id) AS cnt FROM medication_set_item WHERE medication_set_id = ".$this->id)->queryScalar();
         return $result;
     }
+
+    public function getItemsCount()
+	{
+		return $this->itemsCount();
+	}
 
     public function rulesString()
     {

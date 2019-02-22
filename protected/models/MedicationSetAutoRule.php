@@ -234,4 +234,78 @@ class MedicationSetAutoRule extends BaseActiveRecordVersioned
 			Yii::app()->db->createCommand("DELETE FROM ".MedicationSetAutoRuleMedication::model()->tableName()." WHERE id IN (".implode(",", $ids_to_delete).");")->execute();
 		}
 	}
+
+	/**
+	 * Populate the related set with
+	 * all the relevant medications
+	 *
+	 * @return int the number of items found
+	 */
+
+	public function populateSet()
+	{
+		$cmd = Yii::app()->db->createCommand();
+		/** @var CDbCommand $cmd */
+		$cmd->select('id', 'DISTINCT')->from('medication');
+
+		$attribute_option_ids = array_map(function ($e){ return $e->medication_attribute_option_id; }, $this->medicationSetAutoRuleAttributes);
+		$set_ids = array_map(function ($e) { return $e->medication_set_id; }, $this->medicationSetAutoRuleSetMemberships);
+
+		if(!empty($attribute_option_ids)) {
+			$cmd->orWhere("id IN (SELECT medication_id FROM ".MedicationAttributeAssignment::model()->tableName()."
+												WHERE medication_attribute_option_id IN (".implode(",", $attribute_option_ids).")
+												)");
+		}
+
+		if(!empty($set_ids)) {
+			$cmd->orWhere("id IN (SELECT medication_id FROM ".MedicationSetItem::model()->tableName()."
+												WHERE medication_set_id IN (".implode(",", $set_ids).")
+												)");
+		}
+
+		foreach ($this->medicationSetAutoRuleMedications as $medicationSetAutoRuleMedication) {
+			if($medicationSetAutoRuleMedication->include_parent) {
+				$medication = $medicationSetAutoRuleMedication->medication;
+				if($medication->isAMP()) {
+					$cmd->orWhere("preferred_code = '{$medication->vmp_code}'");
+					if($vmp = Medication::model()->findAll("preferred_code = '{$medication->vmp_code}'")){
+						$vmp = $vmp[0];
+					};
+					$cmd->orWhere("preferred_code = '{$vmp->vtm_code}'");
+				}
+				elseif ($medication->isVMP()) {
+					$cmd->orWhere("preferred_code = '{$medication->vtm_code}'");
+				}
+			}
+
+			if($medicationSetAutoRuleMedication->include_children) {
+				$medication = $medicationSetAutoRuleMedication->medication;
+				if($medication->isVTM()) {
+					$cmd->orWhere("vtm_code = '{$medication->preferred_code}'");
+				}
+				elseif ($medication->isVMP()) {
+					$cmd->orWhere("vmp_code = '{$medication->preferred_code}'");
+				}
+			}
+
+			$cmd->orWhere("id = ".$medicationSetAutoRuleMedication->medication_id);
+		}
+
+		$ids = $cmd->queryColumn();
+
+		// empty the set
+		Yii::app()->db->createCommand("DELETE FROM ".MedicationSetItem::model()->tableName()." WHERE medication_set_id = ".$this->medication_set_id)->execute();
+
+		if(!empty($ids)) {
+			// repopulate
+			$values = array();
+			foreach ($ids as $id) {
+				$values[] = "({$this->medication_set_id},$id)";
+			}
+			Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
+									VALUES ".implode(",", $values))->execute();
+		}
+
+		return count($ids);
+	}
 }
