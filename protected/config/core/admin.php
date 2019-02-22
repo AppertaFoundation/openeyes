@@ -59,7 +59,8 @@ return array(
                 'Common Systemic Medications' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonSystemicMedicationsAdmin/list'),
                 'Formulary Drugs' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/formularyDrugsAdmin/list'),
                 'Export' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/RefMedicationAdmin/exportForm'),
-                'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
+                'Auto set rules' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/medicationSetAutoRulesAdmin/list'),
+				'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
                 'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
                 'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/PrescriptionEditOptions'),
                 /*

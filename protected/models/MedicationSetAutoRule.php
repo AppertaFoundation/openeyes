@@ -23,6 +23,13 @@
  */
 class MedicationSetAutoRule extends BaseActiveRecordVersioned
 {
+	/*
+	 * These variables stand for temporary storage only
+	 */
+	public $attrs = [];
+	public $sets = [];
+	public $meds = [];
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -76,11 +83,12 @@ class MedicationSetAutoRule extends BaseActiveRecordVersioned
 			'id' => 'ID',
 			'medication_set_id' => 'Medication Set',
 			'name' => 'Name',
-			'hidden' => 'Hidden',
+			'hidden' => 'Set is a',
 			'last_modified_user_id' => 'Last Modified User',
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
+			'medicationSet.name' => 'Set name'
 		);
 	}
 
@@ -125,5 +133,105 @@ class MedicationSetAutoRule extends BaseActiveRecordVersioned
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	public function beforeValidate()
+	{
+		foreach ($this->attrs as $attr) {
+			if($attr['medication_attribute_option_id'] == '') {
+				$this->addError('attribute', 'Attribute value must be set');
+			}
+		}
+
+		if(empty($this->medication_set_id)) {
+			$medicationSet = new MedicationSet();
+			$medicationSet->name = $this->name;
+			$medicationSet->save();
+			$this->medication_set_id = $medicationSet->id;
+			$this->medicationSet = $medicationSet;
+		}
+
+		return parent::beforeValidate();
+	}
+
+	public function afterSave()
+	{
+		$this->_saveAttrs();
+		$this->_saveSets();
+		$this->_saveMeds();
+		$this->medicationSet->hidden = $this->hidden;
+		$this->medicationSet->save();
+		return parent::afterSave();
+	}
+
+	private function _saveAttrs()
+	{
+		$existing_ids = array_map(function($e){ return $e->id; }, $this->medicationSetAutoRuleAttributes);
+		$updated_ids = array();
+		foreach ($this->attrs as $attr) {
+			if($attr['id'] == -1) {
+				$attrib = new MedicationSetAutoRuleAttribute();
+			}
+			else {
+				$attrib = MedicationSetAutoRuleAttribute::model()->findByPk($attr['id']);
+			}
+
+			$attrib->medication_attribute_option_id = $attr['medication_attribute_option_id'];
+			$attrib->medication_set_auto_rule_id = $this->id;
+			$attrib->save();
+			$updated_ids[] = $attrib->id;
+		}
+		$ids_to_delete = array_diff($existing_ids, $updated_ids);
+		if(!empty($ids_to_delete)) {
+			Yii::app()->db->createCommand("DELETE FROM ".MedicationSetAutoRuleAttribute::model()->tableName()." WHERE id IN (".implode(",", $ids_to_delete).");")->execute();
+		}
+	}
+
+	private function _saveSets()
+	{
+		$existing_ids = array_map(function($e){ return $e->id; }, $this->medicationSetAutoRuleSetMemberships);
+		$updated_ids = array();
+		foreach ($this->sets as $set) {
+			if($set['id'] == -1) {
+				$set_m = new MedicationSetAutoRuleSetMembership();
+			}
+			else {
+				$set_m = MedicationSetAutoRuleSetMembership::model()->findByPk($set['id']);
+			}
+
+			$set_m->medication_set_id = $set['medication_set_id'];
+			$set_m->medication_set_auto_rule_id = $this->id;
+			$set_m->save();
+			$updated_ids[] = $set_m->id;
+		}
+		$ids_to_delete = array_diff($existing_ids, $updated_ids);
+		if(!empty($ids_to_delete)) {
+			Yii::app()->db->createCommand("DELETE FROM ".MedicationSetAutoRuleSetMembership::model()->tableName()." WHERE id IN (".implode(",", $ids_to_delete).");")->execute();
+		}
+	}
+
+	private function _saveMeds()
+	{
+		$existing_ids = array_map(function($e){ return $e->id; }, $this->medicationSetAutoRuleMedications);
+		$updated_ids = array();
+		foreach ($this->meds as $med) {
+			if($med['id'] == -1) {
+				$med_m = new MedicationSetAutoRuleMedication();
+			}
+			else {
+				$med_m = MedicationSetAutoRuleMedication::model()->findByPk($med['id']);
+			}
+
+			$med_m->medication_id = $med['medication_id'];
+			$med_m->include_children = $med['include_children'];
+			$med_m->include_parent = $med['include_parent'];
+			$med_m->medication_set_auto_rule_id = $this->id;
+			$med_m->save();
+			$updated_ids[] = $med_m->id;
+		}
+		$ids_to_delete = array_diff($existing_ids, $updated_ids);
+		if(!empty($ids_to_delete)) {
+			Yii::app()->db->createCommand("DELETE FROM ".MedicationSetAutoRuleMedication::model()->tableName()." WHERE id IN (".implode(",", $ids_to_delete).");")->execute();
+		}
 	}
 }
