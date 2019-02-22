@@ -97,11 +97,7 @@ class DisorderController extends BaseController
         }
 
         if ($item->hasAttribute('default')) {
-            if (isset($_POST['default']) && $_POST['default'] !== 'NONE' && $_POST['default'] == $j) {
-                $item->default = 1;
-            } else {
-                $item->default = 0;
-            }
+            $item->default = (isset($_POST['default']) && $_POST['default'] !== 'NONE' && $_POST['default'] == $j) ?  1: 0;
         }
 
         foreach ($options['filter_fields'] as $field) {
@@ -133,6 +129,29 @@ class DisorderController extends BaseController
         ));
     }
 
+    protected function postRequest($model, $options, &$errors){
+        $tx = Yii::app()->db->beginTransaction();
+        $j = 0;
+
+        foreach ((array) @$_POST['id'] as $i => $id) {
+            if ($id) {
+                $item = $model::model()->findByPk($id);
+                $new = false;
+            } else {
+                $item = new $model();
+                $new = true;
+            }
+
+            $attributes = $item->getAttributes();
+            if (!empty($_POST[$options['label_field']][$i])) {
+                $this->setItemAttributesForGenericAdmin($item, $options, $i, $j, $attributes, $errors, $new, $model);
+                $items[] = $item;
+                ++$j;
+            }
+        }
+        $errors = $this->amendCommonOphthalmicDisorderGroups($model, $options, $errors, $items, $tx);
+    }
+
     protected function genericAdmin($title, $model, array $options = array(), $key = null)
     {
         $options = $this->setOptionsForGenericAdmin($options, $model);
@@ -143,31 +162,11 @@ class DisorderController extends BaseController
         } else {
             if ($options['filters_ready']) {
                 if (Yii::app()->request->isPostRequest) {
-                    $tx = Yii::app()->db->beginTransaction();
-                    $j = 0;
-
-                    foreach ((array) @$_POST['id'] as $i => $id) {
-                        if ($id) {
-                            $item = $model::model()->findByPk($id);
-                            $new = false;
-                        } else {
-                            $item = new $model();
-                            $new = true;
-                        }
-
-                        $attributes = $item->getAttributes();
-                        if (!empty($_POST[$options['label_field']][$i])) {
-                            $this->setItemAttributesForGenericAdmin($item, $options, $i, $j, $attributes, $errors, $new, $model);
-                            $items[] = $item;
-                            ++$j;
-                        }
-                    }
-                    $errors = $this->amendCommonOphthalmicDisorderGroups($model, $options, $errors, $items, $tx);
+                    $this->postRequest($model, $options, $errors);
                 } else {
                     list($options, $items) = $this->optionsFiltersNotAvailable($model, $options);
                 }
             }
-
         $this->renderForGenericAdmin($title, $model, $items, $errors, $options);
         }
     }
