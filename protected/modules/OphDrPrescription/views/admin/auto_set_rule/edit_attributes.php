@@ -29,7 +29,7 @@
             </select>
         </td>
         <td>
-            <a href="javascript:void(0);" class="js-delete-attribute">delete</a>
+            <a href="javascript:void(0);" class="js-delete-attribute"><i class="oe-i trash"></i></a>
         </td>
     </tr>
 </script>
@@ -84,7 +84,7 @@
 				<?php echo CHtml::dropDownList('MedicationSetAutoRule[attribute][medication_attribute_option_id][]', $assignment->medicationAttributeOption->id, $optiondata[$attr_id], array('empty' => '-- Please select --', "class" => "js-option", "id" => 'Medication_attribute_option_id'.$rowkey)); ?>
             </td>
             <td>
-                <a href="javascript:void(0);" class="js-delete-attribute">delete</a>
+                <a href="javascript:void(0);" class="js-delete-attribute"><i class="oe-i trash"></i></a>
             </td>
         </tr>
     <?php endforeach; ?>
@@ -92,7 +92,9 @@
     <tfoot class="pagination-container">
         <tr>
             <td colspan="3">
-                <button class="button large js-add-attribute" type="button">Add attribute</button>
+                <div class="flex-layout flex-right">
+                    <button class="button hint green js-add-attribute" type="button"><i class="oe-i plus pro-theme"></i></button>
+                </div>
             </td>
         </tr>
     </tfoot>

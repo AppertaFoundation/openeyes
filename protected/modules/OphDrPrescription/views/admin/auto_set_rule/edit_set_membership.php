@@ -11,7 +11,7 @@
             <?php echo CHtml::dropDownList('MedicationSetAutoRule[sets][medication_set_id][]', null, $setlist); ?>
         </td>
         <td>
-            <a href="javascript:void(0);" class="js-delete-set-membership">delete</a>
+            <a href="javascript:void(0);" class="js-delete-set-membership"><i class="oe-i trash"></i></a>
         </td>
     </tr>
 </script>
@@ -46,7 +46,7 @@
                 <?php echo CHtml::dropDownList('MedicationSetAutoRule[sets][medication_set_id][]', $membership->medication_set_id, $setlist); ?>
             </td>
             <td>
-                <a href="javascript:void(0);" class="js-delete-set-membership">delete</a>
+                <a href="javascript:void(0);" class="js-delete-set-membership"><i class="oe-i trash"></i></a>
             </td>
         </tr>
     <?php endforeach; ?>
@@ -54,7 +54,9 @@
     <tfoot class="pagination-container">
     <tr>
         <td colspan="3">
-            <button class="button large js-add-set-membership" type="button">Add set</button>
+            <div class="flex-layout flex-right">
+                <button class="button hint green js-add-set-membership" type="button"><i class="oe-i plus pro-theme"></i></button>
+            </div>
         </td>
     </tr>
     </tfoot>
