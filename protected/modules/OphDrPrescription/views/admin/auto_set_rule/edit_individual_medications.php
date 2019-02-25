@@ -17,7 +17,7 @@
             <?php echo CHtml::dropDownList('MedicationSetAutoRule[medications][include_children][]', '0', $yesorno); ?>
         </td>
         <td>
-            <a href="javascript:void(0);" class="js-delete-medication-assignment">delete</a>
+            <a href="javascript:void(0);" class="js-delete-medication-assignment"><i class="oe-i trash"></i></a>
         </td>
     </tr>
 </script>
@@ -57,15 +57,17 @@
 				<?php echo CHtml::dropDownList('MedicationSetAutoRule[medications][include_children][]', $assignment->include_children, $yesorno); ?>
             </td>
             <td>
-                <a href="javascript:void(0);" class="js-delete-medication-assignment">delete</a>
+                <a href="javascript:void(0);" class="js-delete-medication-assignment"><i class="oe-i trash"></i></a>
             </td>
         </tr>
 	<?php endforeach; ?>
     </tbody>
     <tfoot class="pagination-container">
     <tr>
-        <td colspan="3">
-            <button id="add-medication-assignment" class="button large" type="button">Add medication</button>
+        <td colspan="4">
+            <div class="flex-layout flex-right">
+                <button id="add-medication-assignment" class="button hint green" type="button"><i class="oe-i plus pro-theme"></i></button>
+            </div>
             <script type="text/javascript">
                 new OpenEyes.UI.AdderDialog({
                     openButton: $('#add-medication-assignment'),
