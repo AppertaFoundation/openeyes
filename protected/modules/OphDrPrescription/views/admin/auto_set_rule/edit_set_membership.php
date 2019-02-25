@@ -39,6 +39,7 @@
     </tr>
     </thead>
     <tbody>
+	<?php if(!is_null($medicationSetAutoRule)): ?>
     <?php foreach ($medicationSetAutoRule->medicationSetAutoRuleSetMemberships as $membership): ?>
         <tr data-key="<?php echo ++$rowkey; ?>">
             <input type="hidden" name="MedicationSetAutoRule[sets][id][]" value="<?=$membership->id?>" />
@@ -50,6 +51,7 @@
             </td>
         </tr>
     <?php endforeach; ?>
+    <?php endif; ?>
     </tbody>
     <tfoot class="pagination-container">
     <tr>

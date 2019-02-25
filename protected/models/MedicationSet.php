@@ -25,6 +25,7 @@
  * @property Medication[] $medications
  * @property MedicationSetItem[] $items
  * @method  Medication[] medications(array $opts)
+ * @property MedicationSetAutoRule[] $medicationSetAutoRules
  */
 class MedicationSet extends BaseActiveRecordVersioned
 {
@@ -70,6 +71,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'medicationSetRules' => array(self::HAS_MANY, MedicationSetRule::class, 'medication_set_id'),
             'medications' => array(self::MANY_MANY, Medication::class, 'medication_set_item(medication_set_id,medication_id)'),
+			'medicationSetAutoRules' => array(self::HAS_MANY, MedicationSetAutoRule::class, 'medication_set_id')
 		);
 	}
 
