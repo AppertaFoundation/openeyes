@@ -99,7 +99,7 @@
                             <?php if ($specialty == "Medical Retina") { ?>
                                 <li>Treatment: <span id="js-chart-filter-treatment" class="js-hs-filters js-hs-custom-mr-treatment" data-name="custom_treatment">All</span></li>
                                 <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-mr-diagnosis" data-name="custom_diagnosis">All</span></li>
-                                <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters" data-name="custom_plot">VA (absolute)</span></li>
+                                <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters js-hs-custom-mr-plot-type" data-name="custom_plot">VA (absolute)</span></li>
                                 <li>Protocol: <span id="js-chart-filter-protocol" class="js-hs-filters" data-name="custom_protocol">ALL</span></li>
                             <?php }else{?>
                                 <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-gl-diagnosis" data-name="custom_diagnosis">All</span></li>
@@ -140,7 +140,6 @@
                                                     <ul class="btn-list">
                                                         <li class="selected">VA (absolute)</li>
                                                         <li>VA (change)</li>
-                                                        <li>SFT</li>
                                                     </ul>
                                                 </div><!-- options-group -->
                                                 <div class="options-group" data-filter-ui-id="js-chart-filter-protocol">
@@ -389,6 +388,10 @@
                         );
                         diagnoses = diagnoses.slice(0,-1);
                         filters += '&'+$(this).data('name')+'='+diagnoses;
+                    }else if($(this).hasClass('js-hs-custom-mr-plot-type')){
+                        if ($(this).html().includes('change')){
+                            filters += '&'+$(this).data('name')+'=change';
+                        }
                     }
                     else{
                         filters += '&'+$(this).data('name')+'='+$(this).html();
@@ -398,7 +401,6 @@
                 filters += '&'+$(this).data('name')+'='+$(this).val();
             }
         });
-        console.log(filters);
         return filters;
     }
     function plotUpdate(data){
@@ -422,7 +424,6 @@
         window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
         for (var i = 0; i < custom_charts.length; i++) {
             var chart = $('#'+custom_charts[i])[0];
-            console.log(chart.data[0]);
             chart.layout['title'] = (i)? 'Clinical Section (Right Eye)': 'Clinical Section (Left Eye)';
             chart.data[0]['x'] = custom_data[i][0]['x'];
             chart.data[0]['y'] = custom_data[i][0]['y'];

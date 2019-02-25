@@ -186,7 +186,6 @@ class AnalyticsController extends BaseController
               $extra_command->andWhere('eot.created_user_id = '.$surgeon);
           }
       }elseif ($subspecialty_name == 'Glaucoma'){
-//          $basic_criteria = isset($this->filters['procedure'])? implode(",",$this->filters['procedure']):null;
           $basic_criteria = isset($this->filters['procedure'])? $this->filters['procedure']:null;
           $op_proc_command = Yii::app()->db->createCommand()
               ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, IF(eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
@@ -230,7 +229,6 @@ class AnalyticsController extends BaseController
   }
 
   public function getCustomIOP($subspecialty_name,$surgeon=null){
-      //          $basic_criteria = isset($this->filters['procedure'])? implode(",",$this->filters['procedure']):null;
       $basic_criteria = isset($this->filters['procedure'])? $this->filters['procedure']:null;
       $op_proc_command = Yii::app()->db->createCommand()
           ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, IF(eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
@@ -265,7 +263,7 @@ class AnalyticsController extends BaseController
      * @return bool
      *
      */
-  public function validateFilters($age, $protocol, $date){
+  public function validateAgeAndDateFilters($age, $date){
       $return_value = true;
       if (isset($this->filters['age_min'])){
           $return_value = ($age >= (int)$this->filters['age_min']);
@@ -310,13 +308,11 @@ class AnalyticsController extends BaseController
             ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = firm.service_subspecialty_assignment_id')
             ->where('ssa.subspecialty_id=:subspecialty_id', array(':subspecialty_id'=>$subspecialty_id))
             ->group('va_id, side');
-
         if(isset($this->filters['custom_diagnosis'])){
             foreach ($this->filters['custom_diagnosis'] as $diagnosis){
                 $command->andWhere(array('like','term',$diagnosis));
             }
         }
-
         return $command->queryAll();
     }
     public function queryIOP($subspecialty_id){
@@ -335,13 +331,11 @@ class AnalyticsController extends BaseController
             ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = firm.service_subspecialty_assignment_id')
             ->where('ssa.subspecialty_id=:subspecialty_id', array(':subspecialty_id'=>$subspecialty_id))
             ->group('iop_id, side');
-
         if(isset($this->filters['custom_diagnosis'])){
             foreach ($this->filters['custom_diagnosis'] as $diagnosis){
                 $command->andWhere(array('like','term',$diagnosis));
             }
         }
-
         return $command->queryAll();
     }
 
@@ -355,22 +349,15 @@ class AnalyticsController extends BaseController
             ->leftJoin('patient p','p.id = ep.patient_id')
             ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
             ->group('eov.id');
-        $command_va_patients = Yii::app()->db->createCommand()
-            ->select('ep.patient_id as patient_id','DISTINCT')
-            ->from('et_ophciexamination_visualacuity eov')
-            ->leftJoin('event e','e.id = eov.event_id')
-            ->leftJoin('episode ep','ep.id = e.episode_id')
-            ->leftJoin('patient p','p.id = ep.patient_id')
-            ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
-            ->group('ep.patient_id');
+
         if (isset($basic_criteria)){
             if ($subspecialty == 'Medical Retina'){
-                $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id = '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id = '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name','DISTINCT')
-                    ->andwhere('eot.'.$eye_side.'_drug_id = '.$basic_criteria)
+                $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name','DISTINCT')
+                    ->andwhere('eot.'.$eye_side.'_drug_id '.$basic_criteria)
                     ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
             }elseif ($subspecialty == 'Glaucoma'){
-                $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value = '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value = '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name','DISTINCT')
-                    ->andwhere('et.'.$eye_side.'_value = '.$basic_criteria)
+                $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name','DISTINCT')
+                    ->andwhere('et.'.$eye_side.'_value '.$basic_criteria)
                     ->group('patient_id, left_value,right_value');
             }
         }else{
@@ -384,6 +371,10 @@ class AnalyticsController extends BaseController
                     ->group('et.patient_id');
             }
         }
+        $command_va_values_paitents = clone $command_va_values;
+        $command_va_patients = Yii::app()->db->createCommand()
+            ->select('va_vals.patient_id','DISTINCT')
+            ->from('('.$command_va_values_paitents->getText().') AS va_vals');
 
         $extra_command_patient = Yii::app()->db->createCommand()
             ->select('tp.patient_id','distinct')
@@ -394,6 +385,7 @@ class AnalyticsController extends BaseController
             ->from('('.$this->queryDiagnosesFilteredPatientListCommand($eye_side)->getText().') AS dp')
             ->where('dp.patient_id in ('.$extra_command_patient->getText().')')
             ->andWhere('dp.patient_id in ('.$command_va_patients->getText().')');
+
         $command_final_table = Yii::app()->db->createCommand()
             ->select('t.patient_id as patient_id, t.event_date as event_date, t.'.$eye_side.'_value as value, t.t_name as name','DISTINCT')
             ->from('('.$command_va_values->union($extra_commands->getText())->getText().') as t')
@@ -414,23 +406,19 @@ class AnalyticsController extends BaseController
             ->leftJoin('patient p','p.id = ep.patient_id')
             ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
             ->group('eov.id');
-        $command_iop_patients = Yii::app()->db->createCommand()
-            ->select('ep.patient_id as patient_id','DISTINCT')
-            ->from('et_ophciexamination_intraocularpressure eov')
-            ->leftJoin('event e','e.id = eov.event_id')
-            ->leftJoin('episode ep','ep.id = e.episode_id')
-            ->leftJoin('patient p','p.id = ep.patient_id')
-            ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
-            ->group('ep.patient_id');
         if (isset($basic_criteria)){
-            $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value = '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value = '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name','DISTINCT')
-                ->andwhere('et.'.$eye_side.'_value = '.$basic_criteria)
+            $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name','DISTINCT')
+                ->andwhere('et.'.$eye_side.'_value '.$basic_criteria)
                 ->group('patient_id, left_value,right_value');
         }else{
             $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , et.left_value  as left_value, et.right_value as right_value, \'2event\' as t_name','DISTINCT')
                 ->andwhere('et.left_value IS NOT NULL or et.right_value IS NOT NULL')
                 ->group('et.patient_id');
         }
+        $command_iop_values_paitents = clone $command_iop_values;
+        $command_iop_patients = Yii::app()->db->createCommand()
+            ->select('iop_vals.patient_id','DISTINCT')
+            ->from('('.$command_iop_values_paitents->getText().') AS iop_vals');
 
         $extra_command_patient = Yii::app()->db->createCommand()
             ->select('tp.patient_id','distinct')
@@ -461,23 +449,21 @@ class AnalyticsController extends BaseController
             ->leftJoin('patient p','p.id = ep.patient_id')
             ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
             ->group('eov.id');
-        $command_crt_patients = Yii::app()->db->createCommand()
-            ->select('ep.patient_id as patient_id','DISTINCT')
-            ->from('et_ophciexamination_oct eov')
-            ->leftJoin('event e','e.id = eov.event_id')
-            ->leftJoin('episode ep','ep.id = e.episode_id')
-            ->leftJoin('patient p','p.id = ep.patient_id')
-            ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
-            ->group('ep.patient_id');
+
         if (isset($basic_criteria)){
-            $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id = '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id = '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name','DISTINCT')
-                ->andwhere('eot.'.$eye_side.'_drug_id = '.$basic_criteria)
+            $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name','DISTINCT')
+                ->andwhere('eot.'.$eye_side.'_drug_id '.$basic_criteria)
                 ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
         }else{
             $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , eot.left_drug_id as left_value, eot.right_drug_id as right_value, \'2event\' as t_name','DISTINCT')
                 ->andwhere('eot.left_drug_id IS NOT NULL or eot.right_drug_id IS NOT NULL')
                 ->group('ep.patient_id');;
         }
+
+        $command_crt_values_paitents = clone $command_crt_values;
+        $command_crt_patients = Yii::app()->db->createCommand()
+            ->select('crt_vals.patient_id','DISTINCT')
+            ->from('('.$command_crt_values_paitents->getText().') AS crt_vals');
 
         $extra_command_patient = Yii::app()->db->createCommand()
             ->select('tp.patient_id','distinct')
@@ -526,7 +512,7 @@ class AnalyticsController extends BaseController
 
         if (isset($diagnoses)){
             $command_principal->andWhere('e.disorder_id IN ('.implode(",",$diagnoses).')');
-            $command_secondary->andWhere('sd.disorder_id IN('.implode(",",$diagnoses).')');
+            $command_secondary->andWhere('sd.disorder_id IN ('.implode(",",$diagnoses).')');
         }
         return $command_secondary->union($command_principal->getText());
     }
@@ -591,12 +577,17 @@ class AnalyticsController extends BaseController
                     continue;
                 }
 
-                $current_protocol = null;
                 $current_patient = Patient::model()->findByPk($element['patient_id']);
 
                 /* Add patient in this->patient_list if not exist, prepare for drill down list,
                 Get each patient's left and right eye readings as well as event time */
-                if ($this->validateFilters( $current_patient->getAge(), $current_protocol, $current_time)) {
+                if ($this->validateAgeAndDateFilters( $current_patient->getAge(), $current_time) && isset($reading) && isset($current_time)) {
+                    if (!isset($initial_reading[$element['patient_id']]['value']) || !isset($initial_reading[$element['patient_id']]['event_date'])){
+                        $initial_reading[$element['patient_id']]['value'] = $reading;
+                        $initial_reading[$element['patient_id']]['event_date'] = $current_time;
+                    }
+
+
                     if (!array_key_exists($current_patient->id, $this->patient_list)) {
                         $this->patient_list[$current_patient->id] = $current_patient;
                     }
@@ -630,61 +621,27 @@ class AnalyticsController extends BaseController
                         array_push($this->custom_csv_data[$current_patient->id][$side][$type],$reading);
                     }
 
-                    array_push($patient_list[$current_patient->id], array(
-                            'left_reading' => ($side == 'left')? $reading: null,
-                            'right_reading'=>($side == 'right')? $reading: null,
-                            'event_time' => $current_time,
-                            'weeks' => 0
-                        )
-                    );
-                }
-            }
-        }
+                    $current_week = floor((($current_time/1000) - ($initial_reading[$element['patient_id']]['event_date']/1000)) / self::WEEKTIME);
 
-
-
-        /* Sort all the data of each patient by time
-        Then calculate each record's weeks from the start time
-        Re-structure the data by using weeks as key
-        Calculate the record count and sum at the same time for later use. */
-        foreach ($patient_list as $patient_id => &$patient_data){
-            usort($patient_data, array($this, 'sortByTime'));
-            $start_time = $patient_data[0]['event_time']/1000;
-            foreach ($patient_data as &$data_item){
-                $current_week = floor(($data_item['event_time']/1000 - $start_time) / self::WEEKTIME);
-                $data_item['weeks'] = $current_week;
-                foreach (['left', 'right'] as $side){
-                    if(isset($data_item[$side.'_reading'])){
-                        if (array_key_exists((int)$current_week, ${$side.'_list'})){
-                            ${$side.'_list'}[$current_week]['count']+=1;
-                            ${$side.'_list'}[$current_week]['sum']+=$data_item[$side.'_reading'];
-                            ${$side.'_list'}[$current_week]['values'][] =$data_item[$side.'_reading'];
-                            ${$side.'_list'}[$current_week]['patients'][] = $patient_id;
-                        } else {
-                            ${$side.'_list'}[$current_week] = array(
-                                'count'=> 1,
-                                'sum' => $data_item[$side.'_reading'],
-                                'values'=> array($data_item[$side.'_reading']),
-                                'patients' => array($patient_id),
-                            );
-                        }
+                    if (array_key_exists((int)$current_week, ${$side.'_list'})){
+                        ${$side.'_list'}[$current_week]['count']+=1;
+                        ${$side.'_list'}[$current_week]['sum']+=$reading;
+                        ${$side.'_list'}[$current_week]['square_sum']+= pow($reading,2);
+                        ${$side.'_list'}[$current_week]['average'] = round( ${$side.'_list'}[$current_week]['sum']/ ${$side.'_list'}[$current_week]['count']);
+                        ${$side.'_list'}[$current_week]['SD'] = $this->calculateStandardDeviationByDataSet(${$side.'_list'}[$current_week]);
+                        array_push( ${$side.'_list'}[$current_week]['patients'],$current_patient->id);
+                    } else {
+                        ${$side.'_list'}[$current_week] = array(
+                            'count'=> 1,
+                            'sum' => $reading,
+                            'square_sum'=> pow($reading,2),
+                            'average'=>$reading,
+                            'SD'=>0,
+                            'patients' => array($current_patient->id),
+                        );
                     }
+
                 }
-            }
-        }
-
-
-        /* Use data above to calculate average and SD value */
-        foreach (['left', 'right'] as $side){
-            foreach (${$side.'_list'} as &$data_item){
-                if ($data_item['count']>1){
-                    $data_item['average'] = round($data_item['sum']/$data_item['count']);
-                    $data_item['SD'] = $this->calculateStandardDeviation($data_item['values'],$data_item['sum'],$data_item['count']);
-                }else{
-                    $data_item['average'] = $data_item['sum'];
-                    $data_item['SD'] = 0;
-                }
-
             }
         }
 
@@ -693,7 +650,15 @@ class AnalyticsController extends BaseController
 
         return [$left_list,$right_list];
     }
+    public function calculateStandardDeviationByDataSet($data_set){
+        $square_average = pow($data_set['average'],2);
+        $square_sum = $data_set['square_sum'];
+        $sum = $data_set['sum'];
+        $average = $data_set['average'];
+        $count = $data_set['count'];
 
+        return sqrt((($square_sum-(2*$average*$sum))/$count) + $square_average);
+    }
     /**
      * @return mixed
      * Get all the cataract elements in operation note event
@@ -1255,10 +1220,6 @@ class AnalyticsController extends BaseController
      * Get all filters from sidebar, used together with actionUpdateData()
      */
   public function obtainFilters(){
-      $diagnoses_MR = $this->getIdByName(array("Age related macular degeneration","Branch retinal vein occlusion with macular oedema","Central retinal vein occlusion with macular oedema","Diabetic macular oedema"),Disorder::class,'term');
-      $diagnoses_GL = $this->getIdByName(array('Absolute glaucoma', 'Open-angle glaucoma', 'Angle-closure glaucoma', 'Low tension glaucoma', 'Ocular hypertension'),Disorder::class,'term');
-      $treatments = $this->getIdByName(array('Lucentis', 'Eylea', 'Avastin', 'Triamcinolone', 'Ozurdex'),OphTrIntravitrealinjection_Treatment_Drug::class,'name');
-      $procedures = $this->getIdByName(array('ICCE','Traby', 'InsAqueousShunt','Cypass','SLT','Cyclodiode'),Procedure::class,'short_format');
       $specialty = Yii::app()->request->getParam('specialty');
       $dateFrom = Yii::app()->request->getParam('from');
       $dateTo = Yii::app()->request->getParam('to');
@@ -1271,15 +1232,18 @@ class AnalyticsController extends BaseController
       $service_surgeon_id = Yii::app()->request->getParam('service_surgeon');
       $custom_surgeon_id = Yii::app()->request->getParam('custom_surgeon');
       $custom_procedure = Yii::app()->request->getParam('custom_procedure');
+      $plot_va_change = Yii::app()->request->getParam('custom_plot');
 
       if (isset($custom_diagnosis)){
+          $diagnoses_MR = $this->getIdByName(array("age-related macular degeneration","Branch retinal vein occlusion","Central retinal vein occlusion","Diabetic macular oedema"),Disorder::class,'term');
+          $diagnoses_GL = $this->getIdByName(array('glaucoma', 'open-angle glaucoma', 'angle-closure glaucoma', 'Low tension glaucoma', 'Ocular hypertension'),Disorder::class,'term');
           $custom_diagnosis_array = explode(",",$custom_diagnosis);
           $custom_diagnosis = array();
           foreach ($custom_diagnosis_array as $item){
               if ($specialty === "Medical Retina"){
-                  array_push($custom_diagnosis,$diagnoses_MR[$item]);
+                      $custom_diagnosis = array_merge_recursive($custom_diagnosis,$diagnoses_MR[$item]);
               }else if ($specialty === "Glaucoma"){
-                  array_push($custom_diagnosis,$diagnoses_GL[$item]);
+                      $custom_diagnosis = array_merge_recursive($custom_diagnosis,$diagnoses_GL[$item]);
               }else{
                   $custom_diagnosis = null;
                   break;
@@ -1287,10 +1251,19 @@ class AnalyticsController extends BaseController
           }
       }
       if (isset($custom_treatment)){
+          $treatments = $this->getIdByName(array('Lucentis', 'Eylea', 'Avastin', 'Triamcinolone', 'Ozurdex'),OphTrIntravitrealinjection_Treatment_Drug::class,'name');
           $custom_treatment = $treatments[$custom_treatment];
+          $custom_treatment = 'IN ('.implode(",",$custom_treatment).')';
       }
       if (isset($custom_procedure)){
+          $procedures = $this->getIdByName(array('cataract extraction','Trabeculectomy', 'aqueous shunt','Cypass Stent Insertion','Selective laser trabeculoplasty','Laser coagulation ciliary body'),Procedure::class,'term');
           $custom_procedure = $procedures[$custom_procedure];
+          $custom_procedure = 'IN ('.implode(",",$custom_procedure).')';
+      }
+      if (isset($plot_va_change)){
+          $plot_va_change = true;
+      }else{
+          $plot_va_change = false;
       }
 
       if ($dateTo){
@@ -1319,14 +1292,19 @@ class AnalyticsController extends BaseController
           'service_surgeon_id'=>$service_surgeon_id,
           'custom_surgeon_id'=>$custom_surgeon_id,
           'procedure'=>$custom_procedure,
+          'plot_va_change'=> ($plot_va_change)? $plot_va_change:null,
       );
   }
     public function getIdByName($name_array, $model, $name_attribute){
         $return_array = array();
         foreach ($name_array as $name){
-            $item = $model::model()->findByAttributes(array($name_attribute=>$name));
-            if(isset($item)){
-                $return_array[] = $item->id;
+            $items = $model::model()->findAll($name_attribute.' LIKE \'%'.$name.'%\'');
+            if(isset($items)){
+                $item_array = array();
+                foreach ($items as $item){
+                    $item_array[] = $item->id;
+                }
+                $return_array[] = $item_array;
             }else{
                 $return_array[] = null;
             }
@@ -1357,13 +1335,20 @@ class AnalyticsController extends BaseController
           }elseif ($specialty === "Medical Retina"){
               list($left_second_list,$right_second_list) = $this->getCustomCRT($specialty,$this->filters['custom_surgeon_id']);
           }
-          $custom_data = array();
+
           foreach (['left','right'] as $side){
+              if (isset($this->filters['plot_va_change']) && $this->filters['plot_va_change']){
+                  $this->filters['plot_va_change_initial_va_value'] = ${$side.'_va_list'}[0]['average'];
+                  $this->filters['plot_va_change_initial_second_value'] = ${$side.'_second_list'}[0]['average'];
+              }
               $custom_data[] = array(
                   array(
                       'x' => array_keys(${$side.'_va_list'}),
                       'y' => array_map(
                           function ($item){
+                              if (isset($this->filters['plot_va_change_initial_va_value'])){
+                                  $item['average'] -= $this->filters['plot_va_change_initial_va_value'];
+                              }
                               return $item['average'];
                           }, array_values(${$side.'_va_list'})),
                       'customdata'=>array_map(
@@ -1388,6 +1373,9 @@ class AnalyticsController extends BaseController
                       'x' => array_keys(${$side.'_second_list'}),
                       'y' => array_map(
                           function ($item){
+                              if (isset($this->filters['plot_va_change_initial_second_value'])){
+                                  $item['average'] -= $this->filters['plot_va_change_initial_second_value'];
+                              }
                               return $item['average'];
                           }, array_values(${$side.'_second_list'})),
                       'customdata'=>array_map(
