@@ -1,6 +1,6 @@
 <?php
 
-class m181128_061013_user_add_disorder extends CDbMigration
+class m181128_061013_user_add_disorder extends OEMigration
 {
 	public function safeUp()
 	{
@@ -19,15 +19,4 @@ class m181128_061013_user_add_disorder extends CDbMigration
 	{
         $this->delete('setting_metadata', '`key` = \'user_add_disorder\'');
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }
