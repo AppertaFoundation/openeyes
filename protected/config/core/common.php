@@ -591,7 +591,7 @@ return array(
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.1',
+      'oe_version' => '3.2a',
       'gp_label' => 'GP'
     ),
 );
