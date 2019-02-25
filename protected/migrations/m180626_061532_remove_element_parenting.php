@@ -101,7 +101,7 @@ class m180626_061532_remove_element_parenting extends OEMigration
 
         // Group tiles are now located in the element_group table, and the column can now bw removed
         // Check that group_title exists
-        $table = Yii::app()->db->schema->getTable('element_type');
+        $table = $this->dbConnection->schema->getTable('element_type');
         if(!isset($table->columns['group_title'])) {
             //Assume all these things are extant if group title is
             $this->dropColumn('element_type', 'group_title');

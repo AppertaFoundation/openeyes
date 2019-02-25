@@ -158,6 +158,7 @@ class DocmanController extends BaseController
         }
 
         $contact_name = null;
+        $contact_nickname = null;
         if ($contact_id) {
             $contact = Contact::model()->findByPk($contact_id);
             $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
@@ -167,6 +168,7 @@ class DocmanController extends BaseController
                 }
             }
             $contact_name = $contact->getFullName();
+            $contact_nickname = $contact->nick_name;
         }
         
         if($address){
@@ -182,6 +184,7 @@ class DocmanController extends BaseController
                 'row_index' => $last_row_index + 1, 
                 'selected_contact_type' => $selected_contact_type, 
                 'contact_name' => $contact_name,
+                'contact_nickname' => $contact_nickname,
                 'can_send_electronically' => isset($patient->gp) || isset($patient->practice),
                 'is_internal_referral' => true,
                 'is_mandatory' => $is_mandatory == 'true' ? true : false
