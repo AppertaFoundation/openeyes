@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 Yii::import('application.controllers.*');
+use OEModule\OphCiExamination\models;
 
 /**
  * Class PatientController
@@ -466,11 +467,42 @@ class PatientController extends BaseController
             ),
         );
 
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        $cct_element = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+            $this->patient,
+            false //use context
+        );
+
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['event.episode'];
+        $criteria->addCondition('episode.patient_id = :patient_id');
+        $criteria->params[':patient_id'] = $this->patient->id;
+        $criteria->order = "event.event_date ASC";
+        $iop = models\Element_OphCiExamination_IntraocularPressure::model()->find($criteria);
+
+        $header_data = [];
+        if ($cct_element) {
+            if ($cct_element->hasLeft()) {
+                $header_data['CCT']['left'] = $cct_element->left_value;
+            }
+            if ($cct_element->hasRight()) {
+                $header_data['CCT']['right'] = $cct_element->right_value;
+            }
+            $header_data['CCT']['date'] = \Helper::convertMySQL2NHS($cct_element->event->event_date);
+        }
+
+        if ($iop) {
+            $header_data['IOP']['right'] = $iop->getReading('right');
+            $header_data['IOP']['left'] = $iop->getReading('left');
+            $header_data['IOP']['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
+        }
+
         $this->render('/oescape/oescapes', array(
             'title' => '' ,
             'subspecialty' => $subspecialty,
             'site' => $site,
             'noEpisodes' => false,
+            'header_data' => $header_data
         ));
     }
 

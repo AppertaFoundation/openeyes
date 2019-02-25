@@ -28,10 +28,25 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
       <?php endforeach; ?>
     <button class="js-oes-eyeside selected" data-side="right">Right Eye</button>
     <button class="js-oes-eyeside" data-side="left">Left Eye</button>
+
+    <div class="data-awareness">
+        <div class="group">
+          <span class="type">CCT:</span>
+          <span class="data">R:<?= isset($header_data['CCT']['left']) ? $header_data['CCT']['right'] : ' NR';?></span>
+          <span class="data">L:<?= isset($header_data['CCT']['left']) ? $header_data['CCT']['left'] : ' NR';?></span>
+          <span class="date"><?= isset($header_data['CCT']['date']) ? $header_data['CCT']['date'] : '';?></span>
+        </div>
+        <div class="group">
+          <span class="type">IOP(Max):</span>
+          <span class="data">R:<?= isset($header_data['IOP']['right']) ? $header_data['IOP']['right'] : ' NR';?></span>
+          <span class="data">L:<?= isset($header_data['IOP']['left']) ? $header_data['IOP']['left'] : ' NR';?></span>
+          <span class="date"><?= isset($header_data['IOP']['date']) ? $header_data['IOP']['date'] : '';?></span>
+         </div>
+    </div>
   </div>
 
   <div class="nav-title">
-    <div class="title"><?= 'OEscape: '. $subspecialty->name ?></div>
+    <div class="title"><?=$subspecialty->name ?></div>
             <ul class="oescape-icon-btns" style="font-size: 0;">
                 <?php
                 $subspecialties =  Subspecialty::model()->findAllByAttributes(array(
