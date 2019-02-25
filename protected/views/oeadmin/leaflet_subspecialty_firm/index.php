@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -33,7 +33,7 @@
                         @$_POST['subspecialty-id'],
                         Subspecialty::model()->getList(),
                         [
-                            'empty' => '- Please select -',
+                            'empty' => 'Select',
                             'class' => 'cols-full',
                             'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
                         ]

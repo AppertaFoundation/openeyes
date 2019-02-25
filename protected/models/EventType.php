@@ -23,16 +23,13 @@
  *
  * @property int $id
  * @property string $name
+ * @property ElementGroup[] $elementGroups
  *
  * The followings are the available model relations:
  * @property Event[] $events
  */
 class EventType extends BaseActiveRecordVersioned
 {
-    const ELEMENT_DISPLAY_ORDER_SQL = '
-        COALESCE((SELECT parent.display_order FROM element_type parent WHERE parent.id = t.parent_element_type_id), t.display_order), 
-        CASE WHEN t.parent_element_type_id IS NULL THEN -1 ELSE t.display_order END';
-
     /**
      * Returns the static model of the specified AR class.
      *
@@ -79,6 +76,7 @@ class EventType extends BaseActiveRecordVersioned
             'elementTypes' => array(self::HAS_MANY, 'ElementType', 'event_type_id'),
             'parent' => array(self::BELONGS_TO, 'EventType', 'parent_id'),
             'children' => array(self::HAS_MANY, 'EventType', 'parent_id'),
+            'elementGroups' => array(self::HAS_MANY, 'ElementGroup', 'event_type_id'),
         );
     }
 
@@ -303,12 +301,12 @@ class EventType extends BaseActiveRecordVersioned
         }
     }
 
-    public function getDefaultElements()
+    public function getDefaultElements($action = 'edit')
     {
         $criteria = new CDbCriteria();
         $criteria->compare('event_type_id', $this->id);
         $criteria->compare('`default`', 1);
-        $criteria->order = self::ELEMENT_DISPLAY_ORDER_SQL;
+        $criteria->order = 'display_order';
 
         $elements = array();
         foreach (ElementType::model()->findAll($criteria) as $element_type) {
@@ -348,7 +346,7 @@ class EventType extends BaseActiveRecordVersioned
      *
      * @return ElementType[]
      */
-    public function getAllElementTypes()
+    public function getAllElementTypes($action = 'edit')
     {
         $criteria = new CDbCriteria();
         $ids = array($this->id);
@@ -356,28 +354,30 @@ class EventType extends BaseActiveRecordVersioned
             $ids[] = $parent->id;
         }
         $criteria->addInCondition('event_type_id', $ids);
-        $criteria->order = self::ELEMENT_DISPLAY_ORDER_SQL;
+        $criteria->order = 'display_order';
 
         return ElementType::model()->findAll($criteria);
     }
 
     /**
-     * Get the root event type elements with associated children.
-     *
-     * @return BaseEventTypeElement[]
+     * @return ElementGroup[]
      */
-    public function getRootElementTypes()
+    public function getAllElementGroups()
     {
         $criteria = new CDbCriteria();
-        $ids = array($this->id);
-        foreach ($this->getParentEventTypes() as $parent) {
-            $ids[] = $parent->id;
-        }
-        $criteria->addInCondition('t.event_type_id', $ids);
-        $criteria->addCondition('t.parent_element_type_id IS NULL');
-        $criteria->order = self::ELEMENT_DISPLAY_ORDER_SQL;
+        $criteria->compare('event_type_id', $this->id);
+        $criteria->order = 'display_order';
 
-        return ElementType::model()->with('child_element_types')->findAll($criteria);
+        return ElementGroup::model()->findAll($criteria);
+    }
+
+    public function getElementTypesForGroup($element_group_id, $action = 'edit')
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('element_group_id', $element_group_id);
+        $criteria->order = 'display_order';
+
+        return ElementType::model()->findAll($criteria);
     }
 
     /**
@@ -393,9 +393,10 @@ class EventType extends BaseActiveRecordVersioned
         if ($type === 'medium') {
             $type = 'large';
         }
-        if (isset($event->is_automated) && $event->eventType->class_name =='OphCiExamination' && $event->is_automated == 1) {
+        if (isset($event->is_automated) && $event->eventType->class_name == 'OphCiExamination' && $event->is_automated == 1) {
             return "<i class=\"oe-i-e {$type} i-CiCommunityData \"></i>";
         }
+
         return "<i class=\"oe-i-e {$type} {$this->getEventIconCssClass()}\"></i>";
     }
 
@@ -412,6 +413,7 @@ class EventType extends BaseActiveRecordVersioned
         foreach ($data as $row) {
             $result[] = $row->id;
         }
+
         return $result;
     }
 

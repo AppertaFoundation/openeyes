@@ -295,6 +295,7 @@ $(document).ready(function() {
     $(this).delegate('#js-search-in-event', 'click', function (e) {
       showSearch();
       $('#js-search-in-event').addClass('selected');
+      $('.main-event').addClass('examination-search-active');
     });
 
   // popup
@@ -302,6 +303,7 @@ $(document).ready(function() {
     $('#js-search-in-event-popup').show();
 
     $('.close-icon-btn').click(function(){
+      $('.main-event').removeClass('examination-search-active');
       $('#js-search-in-event-popup').hide();
       $('#js-search-in-event').removeClass('selected');
       $('#js-search-event-input-right').val('');
@@ -349,7 +351,7 @@ $(document).ready(function() {
         }
     });
 
-    $(this).delegate('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_risk_id', 'change', function(e) {
+    $(this).delegate('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_risk_id', 'change', function() {
         // Update Clinic Outcome follow up
         var clinic_outcome_element = $('.js-active-elements .'+OE_MODEL_PREFIX+'Element_OphCiExamination_ClinicOutcome');
         if(clinic_outcome_element.length) {
@@ -358,7 +360,7 @@ $(document).ready(function() {
         }
 
     });
-    $(this).delegate('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk a.descriptions_link', 'click', function(e) {
+    $(this).delegate('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk a.descriptions_link', 'click', function() {
       var glaucoma_dialog = new OpenEyes.UI.Dialog({
         title: 'Glaucoma Risk Stratifications',
         content: $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_descriptions').clone(),
@@ -700,7 +702,7 @@ $(document).ready(function() {
 
     // show/hide the laser deferral fields
     $(this).delegate('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_LaserManagement_left_laser_status_id, ' +
-        '#'+OE_MODEL_PREFIX+'Element_OphCiExamination_LaserManagement_right_laser_status_id', 'change', function(e) {
+        '#'+OE_MODEL_PREFIX+'Element_OphCiExamination_LaserManagement_right_laser_status_id', 'change', function() {
         var side = getSplitElementSide($(this));
         deferralFields(OE_MODEL_PREFIX+'Element_OphCiExamination_LaserManagement', side + '_laser');
         var selVal = $(this).val();
@@ -745,13 +747,13 @@ $(document).ready(function() {
     });
 
     // show/hide the injection deferral fields
-    $(this).delegate('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagement_injection_status_id', 'change', function(e) {
+    $(this).delegate('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagement_injection_status_id', 'change', function() {
         deferralFields(OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagement', 'injection');
     });
 
     // show/hide the deferral reason option
     $(this).delegate('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_LaserManagement_left_laser_deferralreason_id, ' +
-        '#'+OE_MODEL_PREFIX+'Element_OphCiExamination_LaserManagement_right_laser_deferralreason_id', 'change', function(e) {
+        '#'+OE_MODEL_PREFIX+'Element_OphCiExamination_LaserManagement_right_laser_deferralreason_id', 'change', function() {
         var side = getSplitElementSide($(this));
         var other = isDeferralOther(OE_MODEL_PREFIX+'Element_OphCiExamination_LaserManagement', side + '_laser');
 
@@ -764,7 +766,7 @@ $(document).ready(function() {
     });
 
     // show/hide the deferral reason option
-    $(this).delegate('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagement_injection_deferralreason_id', 'change', function(e) {
+    $(this).delegate('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagement_injection_deferralreason_id', 'change', function() {
         var other = isDeferralOther(''+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagement', 'injection');
 
         if (other) {
@@ -823,16 +825,34 @@ $(document).ready(function() {
     /**
      * Update gonioExpert when gonioBasic is changed (gonioBasic controls are not stored in DB)
      */
-    $('body').delegate('.gonioBasic', 'change', function(e) {
+    $('body').on('change', '.gonioBasic', function(e) {
         var position = $(this).attr('data-position');
         var expert = $(this).closest('.js-element-eye').find('.gonioExpert[data-position="'+position+'"]');
-        if($(this).val() == 0) {
+        if($(this).val() === '0') {
             $('option',expert).attr('selected', function () {
-                return ($(this).attr('data-value') == '1');
+                return ($(this).attr('data-value') === '0');
             });
         } else {
             $('option',expert).attr('selected', function () {
-                return ($(this).attr('data-value') == '3');
+                return ($(this).attr('data-value') === '4');
+            });
+        }
+        e.preventDefault();
+    });
+
+    /**
+     * Update gonioBasic when gonioExpert is changed
+     */
+    $('body').on('change', '.gonioExpert', function(e) {
+        var position = $(this).attr('data-position');
+        var basic = $(this).closest('.js-element-eye').find('.gonioBasic[data-position="'+position+'"]');
+        if($(this).val() === '5') {
+            $('option',basic).attr('selected', function () {
+                return ($(this).attr('data-value') === 'No');
+            });
+        } else {
+            $('option',basic).attr('selected', function () {
+                return ($(this).attr('data-value') === 'Yes');
             });
         }
         e.preventDefault();
@@ -1082,6 +1102,7 @@ $(document).ready(function() {
 
         OphCiExamination_RefreshCommonOphDiagnoses();
 
+        $(":input[name^='glaucoma_diagnoses']").trigger('change');
         return false;
     });
 
@@ -1177,14 +1198,13 @@ $(document).ready(function() {
 
             setPostOpComplicationTableText();
         });
-
-	$(".js-end-date-display").on("click",'button.js-change-end-date' , function (event) {
-		event.preventDefault();
-		$(this).closest(".js-end-date-display").hide();
-		$(this).closest(".js-stop-date").find("[id ^= 'js-stop-date-toolkit-']").show();
-	});
-
         /** End of Post Operative Complication Event Bindings **/
+        $('#event-content').on('change','.diagnosis-selection select', function(){
+            let side = $(this).closest('.js-element-eye').data('side');
+            OphCiExamination_InjectionManagementComplex_DiagnosisCheck(side);
+        }).on('click','.jsNoTreatment', function(){
+            OphCiExamination_InjectionManagementComplex_init();
+        });
 
 });
     /** Post Operative Complication function **/
@@ -1791,7 +1811,7 @@ function OphCiExamination_InjectionManagementComplex_DiagnosisCheck(side) {
         let l2_selected_val = l2_el.val();
 
         l2_el.find('option').remove();
-        l2_el.append( $('<option>').text("- Please Select -") );
+        l2_el.append( $('<option>').text("Select") );
 
         if (l2_data) {
             for (let i in l2_data) {
@@ -1937,6 +1957,10 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
                     OphCiExamination_Gonioscopy_switch_mode(drawing.canvas, message.object.value);
                 }
                 break;
+            case 'reset':
+            case 'resetEdit':
+                $(drawing.canvasParent).closest('.ed-body').find('select.gonioExpert').val(2).trigger('change');
+            break;
         }
     };
     drawing.registerForNotifications(this);

@@ -16,7 +16,7 @@
         </tbody>
     </table>
 </div>
-	<?php //echo $form->dropDownList($element, 'formula_id_'.$side, CHtml::listData(OphInBiometry_Calculation_Formula::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'),null,array('label'=>3, 'field'=>6))?>
+	<?php //echo $form->dropDownList($element, 'formula_id_'.$side, CHtml::listData(OphInBiometry_Calculation_Formula::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'Select'),null,array('label'=>3, 'field'=>6))?>
 	<!--
 	<div class="data-group">
 		<div class="large-8 column">

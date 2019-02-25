@@ -17,6 +17,7 @@
 						'contact_id' => $contact_id,
 						'contact_name' => $contact_name,
 						'contact_type' => isset($selected_contact_type) ? $selected_contact_type : null,
+                        'contact_nickname' => $contact_nickname,
 						'row_index' => $row_index,
 						//contact_type is not editable as per requested, former validation left until the req finalized
 						'is_editable' => false, //!$element->isInternalReferral(),
@@ -28,7 +29,7 @@
 			$contact_type = ( isset($selected_contact_type) ? $selected_contact_type : null );
 			$this->renderPartial('//docman/table/contact_address', array(
 				'contact_id' => $contact_id,
-				'is_editable_address' => $contact_type != 'GP',
+				'is_editable_address' => $contact_type != Yii::app()->params['gp_label'],
 				'contact_type' => $contact_type,
 				'row_index' => $row_index,
 				'address' => $address,

@@ -43,6 +43,7 @@
 
  * @property tinyint $deleted
  * @property int $ethnic_group_id
+ * @property int $patient_source
  *
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -65,6 +66,10 @@
 class Patient extends BaseActiveRecordVersioned
 {
     const CHILD_AGE_LIMIT = 16;
+
+    const PATIENT_SOURCE_OTHER = 0;
+    const PATIENT_SOURCE_REFERRAL = 1;
+    const PATIENT_SOURCE_SELF_REGISTER = 2;
 
     public $use_pas = true;
     private $_orderedepisodes;
@@ -123,18 +128,21 @@ class Patient extends BaseActiveRecordVersioned
     {
         return array(
             array('pas_key', 'length', 'max' => 10),
+            array('dob, patient_source', 'required'),
             array('hos_num', 'required', 'on' => 'pas'),
+            array('gender', 'required', 'on' => array('self_register')),
+            array('gp_id, practice_id', 'required', 'on' => 'referral'),
+
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
             array('gender,is_local', 'length', 'max' => 1),
-            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id', 'safe'),
-            array('gender', 'required', 'on' => 'self_register'),
-            array('gp_id, practice_id', 'required', 'on' => 'referral'),
+
+            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
             array('deleted', 'safe'),
             array('dob', 'dateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
-            array('date_of_death', 'deathDateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
-            array('dob, hos_num, nhs_num, date_of_death, deleted,is_local', 'safe', 'on' => 'search'),
             array('dob','dateOfBirthRangeValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
+            array('date_of_death', 'deathDateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
+            array('dob, hos_num, nhs_num, date_of_death, deleted,is_local patient_source', 'safe', 'on' => 'search'),
         );
     }
 
@@ -285,13 +293,14 @@ class Patient extends BaseActiveRecordVersioned
             'date_of_death' => 'Date of Death',
             'gender' => 'Gender',
             'ethnic_group_id' => 'Ethnic Group',
-            'hos_num' => 'Hospital Number',
-            'nhs_num' => Yii::app()->params['nhs_num_label'].' Number',
+            'hos_num' => Yii::app()->params['hos_num_label'],
+            'nhs_num' => Yii::app()->params['nhs_num_label'],
             'deleted' => 'Is Deleted',
-            'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Number Status',
-            'gp_id' => 'General Practitioner',
+            'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Status',
+            'gp_id' => Yii::app()->params['general_practitioner_label'],
             'practice_id' => 'Practice',
-            'is_local' => 'Is local patient ?'
+            'is_local' => 'Is local patient?',
+            'patient_source' => 'Patient Source'
         );
     }
 
@@ -313,6 +322,44 @@ class Patient extends BaseActiveRecordVersioned
     {
         return $this->_pas_errors;
     }
+
+  public function getScenarioSourceCode()
+  {
+    return array(
+      'referral' => self::PATIENT_SOURCE_REFERRAL,
+      'self_register' => self::PATIENT_SOURCE_SELF_REGISTER,
+      'other_register' => self::PATIENT_SOURCE_OTHER,
+    );
+  }
+
+  /**
+   * @return array List of sources for display in a drop-down list.
+   */
+  public function getSourcesList()
+  {
+    return array(
+      self::PATIENT_SOURCE_OTHER => 'Other',
+      self::PATIENT_SOURCE_REFERRAL => 'Referral',
+      self::PATIENT_SOURCE_SELF_REGISTER => 'Self-Registration',
+    );
+  }
+
+  /**
+   * @return string Human-readable patient source for read-only display.
+   */
+  public function getPatientSource()
+  {
+    switch ($this->patient_source)
+    {
+      case self::PATIENT_SOURCE_REFERRAL:
+        return 'Referral';
+      case self::PATIENT_SOURCE_SELF_REGISTER:
+        return 'Self-Registration';
+      case self::PATIENT_SOURCE_OTHER:
+        return 'Other';
+    }
+    return 'None';
+  }
 
     public function search_nr($params)
     {
@@ -419,10 +466,8 @@ class Patient extends BaseActiveRecordVersioned
             $this->is_deceased = 1;
         }
 
-        if( $this->scenario == 'manual'){
-            $this->dob = str_replace('/', '-', $this->dob);
-            $this->date_of_death = str_replace('/', '-', $this->date_of_death);
-        }
+        $this->dob = str_replace('/', '-', $this->dob);
+        $this->date_of_death = str_replace('/', '-', $this->date_of_death);
 
         return true;
     }
@@ -916,8 +961,8 @@ class Patient extends BaseActiveRecordVersioned
         if (!$info) {
             $info = new PatientOphInfo();
             $info->patient_id = $this->id;
-            // only interested in yyyy mm dd for the cvi date
-            $info->cvi_status_date = substr($this->created_date, 0, 10);
+            // date is unknown, set as null
+            $info->cvi_status_date = null;
             $info->cvi_status_id = 1;
         }
 
@@ -2041,7 +2086,6 @@ class Patient extends BaseActiveRecordVersioned
     $validPatient->dob = $dob;
 
     if ($validPatient->validate(array('dob')) && $validContact->validate(array('first_name', 'last_name'))) {
-    	Yii::log('validated');
       return Patient::model()->findAllBySql($sql, array(':dob' => $mysqlDob, ':first_name' => $firstName, ':last_name' => $last_name, ':id' => $id));
     }
 
@@ -2102,6 +2146,17 @@ class Patient extends BaseActiveRecordVersioned
         return array_map(function($allergy) {
             return $allergy->name;
         }, $this->allergies);
+    }
+
+    public function getAllergiesId()
+    {
+        if (!$this->hasAllergyStatus() || $this->no_allergies_date) {
+            return false;
+        } else {
+            return array_map(function($allergy) {
+                return $allergy->id;
+            }, $this->allergies);
+        }
     }
 
     /**

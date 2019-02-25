@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,12 +11,13 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCoMessaging\controllers;
 
+use OEModule\OphCoMessaging\components\OphCoMessaging_API;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
 
 class DefaultController extends \BaseEventTypeController
@@ -133,11 +134,9 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Mark the event message as read.
      *
-     * @param $id
-     *
      * @throws \Exception
      */
-    public function actionMarkRead($id)
+    public function actionMarkRead()
     {
         $el = $this->getMessageElement();
 
@@ -147,7 +146,12 @@ class DefaultController extends \BaseEventTypeController
             $this->markMessageRead($el);
         }
 
-        $this->redirectAfterAction();
+        if (!isset($_GET['noRedirect']) || !$_GET['noRedirect']) {
+            $this->redirectAfterAction();
+        } else {
+            $exam_api = new OphCoMessaging_API();
+            echo json_encode($exam_api->updateMessagesCount(\Yii::app()->user));
+        }
     }
 
     /**
@@ -412,13 +416,13 @@ class DefaultController extends \BaseEventTypeController
 
             $this->event->audit('event', 'marked read');
 
-            \Yii::app()->user->setFlash('success', '<a href="'.$this->getEventViewUrl()."\">{$this->event_type->name}</a> marked as read.");
-
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();
             throw $e;
         }
+
+        return true;
     }
 
     protected function markCommentRead($el)

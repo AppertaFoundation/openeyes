@@ -26,6 +26,7 @@ class RefSetAdminController extends BaseAdminController
             'name',
             'rulesString',
             'itemsCount',
+            'hiddenString',
             'adminListAction'
         ));
 
@@ -131,7 +132,8 @@ class RefSetAdminController extends BaseAdminController
                 $medSetRule->setAttributes(array(
                     'medication_set_id' => $model->id,
                     'site_id' => Yii::app()->request->getPost('site_id')[$key],
-                    'subspecialty_id' => Yii::app()->request->getPost('subspecialty_id')[$key]
+                    'subspecialty_id' => Yii::app()->request->getPost('subspecialty_id')[$key],
+                    'usage_code' => Yii::app()->request->getPost('usage_code')[$key],
                 ));
 
                 $medSetRule->save();

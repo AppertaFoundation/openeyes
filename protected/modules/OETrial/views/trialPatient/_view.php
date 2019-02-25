@@ -98,47 +98,47 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
       </td>
     <?php endif; ?>
 
-  <td> <!-- Accept/Reject/Shortlist actions -->
+    <td> <!-- Comment -->
+        <div class="add-data-actions">
+            <button id="trial_patient_comment_button" type="button">
+                <i class="oe-i comments small-icon"></i>
+            </button>
+        </div>
+    </td>
+    <td> <!-- Accept/Reject/Shortlist actions -->
       <?php if ($permission->can_edit && $data->trial->is_open): ?>
 
           <?php if ($data->status->code === TrialPatientStatus::SHORTLISTED_CODE): ?>
 
-          <div>
-            <a href="javascript:void(0)"
+            <button href="javascript:void(0)"
                onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::ACCEPTED_CODE ?>')"
-               class="accept-patient-link"
+               class="accept-patient-button button hint green"
                <?php if ($data->trial->trialType->code === TrialType::INTERVENTION_CODE && $isInAnotherInterventionTrial): ?>style="color: #ad1515;"<?php endif; ?> >
               Accept
-            </a>
-          </div>
+            </button>
           <?php endif; ?>
 
           <?php if (in_array($data->status->code,
               [TrialPatientStatus::SHORTLISTED_CODE, TrialPatientStatus::ACCEPTED_CODE], true)): ?>
-          <div>
-            <a href="javascript:void(0)"
+            <button href="javascript:void(0)"
                onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::REJECTED_CODE ?>')"
-               class="accept-patient-link">Reject
-            </a>
-          </div>
+               class="accept-patient-button button hint red">Reject
+            </button>
           <?php endif; ?>
 
           <?php if ($data->status->code === TrialPatientStatus::REJECTED_CODE): ?>
-          <div style="white-space: nowrap;">
           <span>
-            <a href="javascript:void(0)"
+            <button href="javascript:void(0)"
                onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::SHORTLISTED_CODE ?>')"
-               class="accept-patient-link">Re-Shortlist
-            </a>
+               class="accept-patient-button button hint blue">Re-Shortlist
+            </button>
           </span>
 
-          </div>
-          <div>
-            <a href="javascript:void(0)"
+            <button href="javascript:void(0)"
+                    class="accept-patient-button button hint red"
                onclick="removePatientFromTrial(<?= $data->id ?>, <?= $data->patient_id ?>, <?= $data->trial_id ?>)">
               Remove
-            </a>
-          </div>
+            </button>
           <?php endif; ?>
 
         <img class="loader" id="action-loader-<?= $data->id ?>"
@@ -146,4 +146,35 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
              alt="loading..." style="display: none;"/>
       <?php endif; ?>
   </td>
+</tr>
+<!--Comment Section-->
+<tr class="js-trial-patient-comment-tr" data-trial-patient-id="<?= $data->id ?>" style="display:none">
+    <td colspan="6">
+        <div id="trial-patient-comments"  class="cols-full flex-layout flex-center" >
+            <?php
+            echo CHtml::textArea(
+                "cmt-trial-id-$data->id",
+                $data->comment,
+                array(
+                    'class' => 'js-comment-trial-patient cols-full column',
+                    'rows'=>4,
+                    'style'=>'width:90%',
+                )
+            ); ?>
+            <?= CHtml::hiddenField(
+                "cmt-trial-id-hidden-$data->id",
+                $data->comment,
+                array(
+                    'class' => 'js-hidden-comment-trial-patient',
+                )
+            ) ?>
+            <i class="oe-i remove-circle small-icon pad-left  js-remove-trial-patient-comments"></i>
+        </div>
+    </td>
+    <td class="js-comment-trial-patient-actions" style="display: none; text-align: center;">
+            <button class="js-save-comment-trial-patient button hint green" style=" text-align: center" >Save</button>
+            <button class="js-cancel-comment-trial-patient button hint red" style="text-align: center">Cancel</button>
+            <span class="js-spinner-as-icon" style="display: none;"><i class="spinner as-icon"></i></span>
+    </td>
+
 </tr>

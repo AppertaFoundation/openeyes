@@ -47,6 +47,8 @@ class RefMedicationAdminController extends BaseAdminController
         }
 
         $admin->getSearch()->addSearchItem('preferred_term');
+        $admin->getSearch()->addSearchItem('source_type');
+        $admin->getSearch()->addSearchItem('source_subtype');
 
         $admin->setModelDisplayName($this->display_name);
 
@@ -64,7 +66,10 @@ class RefMedicationAdminController extends BaseAdminController
         $admin = new Admin($model, $this);
 
         if(!is_null($id)) {
-            $search_indexes = Medication::model()->findByPk($id)->medicationSearchIndexes;
+        	$medication  = Medication::model()->findByPk($id);
+        	/** @var Medication $medication */
+            $search_indexes = $medication->medicationSearchIndexes;
+            $attrs = $medication->medicationAttributeAssignments;
         }
         else {
             $search_indexes = array();
@@ -82,7 +87,14 @@ class RefMedicationAdminController extends BaseAdminController
             'vmp_code' => 'VMP code',
             'amp_term' => 'AMP term',
             'amp_code' => 'AMP code',
-            'alternative_terms' =>  array(
+            'attributes' => array(
+				'widget' => 'CustomView',
+				'viewName' => 'application.modules.OphDrPrescription.views.admin.edit_attributes',
+				'viewArguments' => array(
+					'medication' => $medication
+				)
+			),
+			'alternative_terms' =>  array(
                 'widget' => 'GenericAdmin',
                 'options' => array(
                     'model' => MedicationSearchIndex::class,
@@ -118,7 +130,16 @@ class RefMedicationAdminController extends BaseAdminController
     {
         $admin = $this->_getEditAdmin($id);
 
+        $old_attrs = array();
+
         $model = $admin->getModel();
+
+		// store old attrs
+		foreach ($model->medicationAttributeAssignments as $assignment) {
+			$old_attrs[$assignment->id] = [
+				'option_id' => $assignment->medication_attribute_option_id
+			];
+		}
 
         /** @var Medication $model */
 
@@ -131,6 +152,7 @@ class RefMedicationAdminController extends BaseAdminController
             exit;
         }
 
+        // update indices
 
         $existing_ids = array();
         $updated_ids = array();
@@ -163,6 +185,35 @@ class RefMedicationAdminController extends BaseAdminController
             MedicationSearchIndex::model()->deleteByPk($deleted_ids);
         }
 
+        // update attribute assignments
+
+		if(!array_key_exists('medicationAttributeAssignment', $data)) {
+			$data['medicationAttributeAssignment'] = array();
+		}
+
+		$updated_ids = array();
+		foreach ($data['medicationAttributeAssignment']['id'] as $key=>$assignment_id) {
+        	if($assignment_id == -1) {
+        		$assignment = new MedicationAttributeAssignment();
+        		$assignment->medication_id = $model->id;
+        		$assignment->medication_attribute_option_id = $data['medicationAttributeAssignment']['medication_attribute_option_id'][$key];
+				$assignment->save();
+        	}
+			else {
+				$assignment = MedicationAttributeAssignment::model()->findByPk($assignment_id);
+				$assignment->medication_attribute_option_id = $data['medicationAttributeAssignment']['medication_attribute_option_id'][$key];
+				$assignment->save();
+				$updated_ids[] = $assignment_id;
+			}
+		}
+
+		foreach ($old_attrs as $id=>$attr) {
+			if(!in_array($id, $updated_ids)) {
+				MedicationAttributeAssignment::model()->deleteByPk($id);
+			}
+		}
+
+        $this->redirect('/OphDrPrescription/refMedicationAdmin/list');
         $this->redirect('/OphDrPrescription/'.$this->id.'/list');
 
     }

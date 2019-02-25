@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 
 # Check that we are running from the /tmp folder. If not, exit
@@ -27,6 +27,8 @@ trap 'found_error' ERR
 
 SCRIPTROOT="" # will be passed in from install-oe.sh
 WROOT="" # will be passed in from install-oe.sh
+
+curuser="${LOGNAME:-root}"
 
 # parse SCRIPTDIR and WROOT first. Strip from list of params
 PARAMS=()
@@ -67,6 +69,7 @@ accept=0
 genetics=0
 preservedb=0
 nocheckout=0
+nosample=""
 
 # Process command line inputs
 while [[ $# -gt 0 ]]
@@ -90,6 +93,9 @@ do
         ;;
         --preserve-database) preservedb=1
             # use an existing database (won't call oe-reset)
+        ;;
+        --no-sample|-ns) nosample=1
+          # Don't install the sample database (will use existing or migrate from new)
         ;;
     	*)  checkoutparams="$checkoutparams $1"
             # Pass anything else through to the checkout command
@@ -123,7 +129,7 @@ if [ $showhelp = 1 ]; then
 fi
 
 
-echo -e "\n\n\nInstalling openeyes as user: $USER...\n\n\n"
+echo -e "\n\n\nInstalling openeyes as user: $curuser...\n\n\n"
 
 
 # Show disclaimer
@@ -173,14 +179,14 @@ fi
 
 # Fix permissions
 echo "Setting file permissions..."
-sudo gpasswd -a "$USER" www-data
-sudo chown "$USER":www-data -R $WROOT
+sudo gpasswd -a "$curuser" www-data
+sudo chown "$curuser":www-data -R $WROOT
 
 sudo chmod 777 -R $WROOT
 sudo chmod g+s -R $WROOT
 
 # if this isn't a live install, then add the sample DB
-if [ "$OE_MODE" != "LIVE" ]; then checkoutparams="$checkoutparams --sample"; echo "Sample database will be installed."; fi
+if [ "$nosample" == "0" ]; then checkoutparams="$checkoutparams --sample"; echo "Sample database will be installed."; fi
 
 if [ "$nocheckout" = "0" ]; then
     echo "calling oe-checkout with $checkoutparams"
@@ -211,10 +217,10 @@ $SCRIPTDIR/oe-fix.sh --no-compile --no-clear --no-assets --no-migrate --no-depen
 # unless the preservedb switch is set add/reset the sample database
 if [ $preservedb = 0 ]; then
 
-    resetswitches='--no-migrate --no-fix --banner "New"'
+    resetswitches="--no-migrate --no-fix ${nosample/1/--clean-base} --banner 'New'"
 
     # If the genetics switch has been set, then enable the genetics module
-    [ $genetics = 1 ] && resetswitches='$resetswitches --genetics-enable'
+    [ $genetics = 1 ] && resetswitches="$resetswitches --genetics-enable"
 
     $SCRIPTDIR/oe-reset.sh $resetswitches
 
@@ -244,13 +250,12 @@ if [ "$OE_MODE" != "BUILD" ]; then
     </VirtualHost>
     " | sudo tee /etc/apache2/sites-available/000-default.conf >/dev/null
 
-    sudo service apache2 restart
+		# If apache was running, restart it. Otherwise we assume it will be started by another process
+	  [[ $(ps -ef | grep -v grep | grep apache2 | wc -l) > 0 ]] && sudo service apache2 restart || :
 
     # copy cron tasks
-    sudo cp -f $SCRIPTDIR/.cron/hotlist /etc/cron.d/
-    sudo chmod 0644 /etc/cron.d/hotlist
-    sudo cp -f $SCRIPTDIR/.cron/eventimage /etc/cron.d/
-sudo chmod 0644 /etc/cron.d/eventimage
+    bash $SCRIPTDIR/set-cron.sh
+ 
 fi
 
 echo ""

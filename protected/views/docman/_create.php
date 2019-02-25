@@ -42,11 +42,12 @@
                	<td>
 										<?php
 										$contact_type = isset($macro_data["to"]["contact_type"]) ? strtoupper($macro_data["to"]["contact_type"]) : null;
-										if($contact_type == 'PRACTICE'){$contact_type = 'GP';}
+										if($contact_type == 'PRACTICE'){$contact_type = Yii::app()->params['gp_label'];}
 										$this->renderPartial('//docman/table/contact_name_type', array(
 											'address_targets' => $element->address_targets,
 											'contact_name' => $macro_data["to"]["contact_name"],
 											'contact_id' => $macro_data["to"]["contact_id"],
+                                            'contact_nickname' => (isset($macro_data["to"]["contact_nickname"]) ? $macro_data["to"]["contact_nickname"] : ''),
 											'contact_type' => $contact_type,
 											'row_index' => $row_index,
 											// Internal referral will always be the first row - indexed 0
@@ -91,6 +92,7 @@
                             'row_index' => 0,
                             'selected_contact_type' => null,
                             'contact_name' => null,
+                            'contact_nickname' => null,
                             'can_send_electronically' => $can_send_electronically,
                         )
                     );
@@ -114,6 +116,7 @@
 														'contact_name' => $contact_name,
                             'contact_type' => strtoupper($macro["contact_type"]),
                             'row_index' => $index,
+                            'contact_nickname' => (isset($macro_data["to"]["contact_nickname"]) ? $macro_data["to"]["contact_nickname"] : ''),
 
                             //contact_type is not editable as per requested, former validation left until the req finalized
                             'is_editable' => false, //strtoupper($macro["contact_type"]) != 'INTERNALREFERRAL',
@@ -170,6 +173,10 @@
                 if(isset($defaults['To']['contact_name'])){
                     $contact_name = $defaults['To']['contact_name'];
                 }
+                $contact_nickname = null;
+                if(isset($defaults['To']['contact_nickname'])){
+                    $contact_nickname = $defaults['To']['contact_nickname'];
+                }
                 
                 echo $this->renderPartial(
                     '//docman/document_row_recipient',
@@ -178,6 +185,7 @@
                         'address' => $address, 'row_index' => 0, 
                         'selected_contact_type' => $contact_type, 
                         'contact_name' => $contact_name, 
+                        'contact_nickname' => $contact_nickname,
                         'can_send_electronically' => $can_send_electronically,
                     )
                 );
@@ -210,6 +218,7 @@
                         'row_index' => 1, 
                         'selected_contact_type' => $contact_type, 
                         'contact_name' => $contact_name,
+                        'contact_nickname' => $contact_nickname,
                         'can_send_electronically' => $can_send_electronically,
                         'is_internal_referral' => $element->isInternalReferralEnabled(),
                     )

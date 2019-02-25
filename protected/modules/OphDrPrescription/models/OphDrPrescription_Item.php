@@ -71,6 +71,7 @@ class OphDrPrescription_Item extends EventMedicationUse
             ),
             'dispense_condition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'dispense_condition_id'),
             'dispense_location' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'dispense_location_id'),
+            'parent' => array(self::HAS_MANY, OphDrPrescription_Item::class, 'prescription_item_id'),
         ));
     }
 
@@ -95,11 +96,11 @@ class OphDrPrescription_Item extends EventMedicationUse
 
             if($defaults) {
                 /** @var MedicationSetItem $defaults */
-                $this->frequency_id = $defaults->default_frequency;
-                $this->route_id = $defaults->default_route;
+                $this->frequency_id = $defaults->default_frequency_id;
+                $this->route_id = $defaults->default_route_id;
                 $this->dose = $defaults->default_dose;
                 $this->dose_unit_term = $defaults->default_dose_unit_term;
-                $this->form_id = $defaults->default_form;
+                $this->form_id = $defaults->default_form_id;
             }
         }
     }

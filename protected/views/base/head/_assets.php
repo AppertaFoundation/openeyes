@@ -65,3 +65,4 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/pickmeup/pickmeup.js', 'application.assets.newblue');?>
 <?php $assetManager->registerScriptFile('../../node_modules/tinymce/tinymce.js');?>
 <?php $assetManager->registerScriptFile('../../node_modules/plotly.js-dist/plotly.js');?>
+<?php $assetManager->registerScriptFile('../../node_modules/lodash/lodash.min.js');?>

@@ -80,7 +80,7 @@
                       'name'
                   ),
                   array(
-                      'empty' => '- Please Select -',
+                      'empty' => 'Select',
                       'nowrapper'=>true,
                       'class'=>'cols-full'),
                   false,
@@ -101,7 +101,7 @@
                       'name'
                   ),
                   array(
-                      'empty' => '- Please Select -',
+                      'empty' => 'Select',
                       'nowrapper'=>true,
                       'class'=>'cols-full'),
                   false,

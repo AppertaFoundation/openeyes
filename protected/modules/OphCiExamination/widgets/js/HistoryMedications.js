@@ -19,6 +19,16 @@ var OpenEyes = OpenEyes || {};
 OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
 (function(exports) {
+
+    if(typeof window.switch_alternative !== "function") {
+        window.switch_alternative = function(anchor) {
+            var $wrapper = $(anchor).closest(".alternative-display-element");
+            $wrapper.hide();
+            $wrapper.siblings(".alternative-display-element").show();
+            $wrapper.closest(".alternative-display").next(".alt-display-trigger").hide();
+        };
+    }
+
   function HistoryMedicationsController(options) {
     this.options = $.extend(true, {}, HistoryMedicationsController._defaultOptions, options);
     this.$element = this.options.element;
@@ -435,7 +445,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    */
   HistoryMedicationsController.prototype.processRisks = function(setIds , drug_name)
   {
-      if (setIds.length === 0 || (setIds.length === 1 && setIds[0] === "")) {
+      if (typeof setIds === "undefined" || setIds.length === 0 || (setIds.length === 1 && setIds[0] === "")) {
           return;
       }
       var self = this;
@@ -544,30 +554,38 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   };
 
-    HistoryMedicationsController.prototype.addEntry = function (selectedItems)
+    HistoryMedicationsController.prototype.addEntry = function (selectedItems, do_callback)
     {
         var medication = [];
 
         $.each(selectedItems, function (i, e) {
-            medication[i] = {
-                medication_id: selectedItems[i].id,
-                default_form: selectedItems[i].default_form,
-                dose: selectedItems[i].dose,
-                dose_unit_term: selectedItems[i].dose_unit_term,
-                medication_name: selectedItems[i].label,
-                route_id: selectedItems[i].route,
-                frequency_id: selectedItems[i].frequency,
-                will_copy: selectedItems[i].will_copy,
-                to_be_copied: selectedItems[i].will_copy,
-                prepended_markup: selectedItems[i].prepended_markup,
-                set_ids: selectedItems[i].set_ids,
-            };
+
+            if(typeof selectedItems[i].label !== "undefined") {
+                // added from Adder Dialog
+                medication[i] = {
+                    medication_id: selectedItems[i].id,
+                    default_form: selectedItems[i].default_form,
+                    dose: selectedItems[i].dose,
+                    dose_unit_term: selectedItems[i].dose_unit_term,
+                    medication_name: selectedItems[i].label,
+                    route_id: selectedItems[i].route,
+                    frequency_id: selectedItems[i].frequency,
+                    will_copy: selectedItems[i].will_copy,
+                    to_be_copied: selectedItems[i].will_copy,
+                    prepended_markup: selectedItems[i].prepended_markup,
+                    set_ids: selectedItems[i].set_ids,
+                };
+            }
+            else {
+                // added as a copy of another row
+                medication[i] = JSON.parse(JSON.stringify(selectedItems[i]));
+            }
+
         });
 
         var rows = this.createRow(medication);
         var $newrow;
         for (var i in rows) {
-
             $newrow = $(rows[i]);
 
             $newrow.appendTo(this.$table.children('tbody'));
@@ -577,15 +595,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             this.initialiseRow($lastRow);
             this.loadDrugDefaults($lastRow, medication[i]);
 
-            if (medication[i].will_copy && typeof this.boundController !== "undefined") {
-                var $copy = this.copyRow($lastRow, this.boundController.$table.children("tbody"));
-                this.bindEntries($lastRow, $copy);
+            if(do_callback) {
+                this.options.onAddedEntry($lastRow, this);
             }
         }
 
         $(this.options.medicationSelectOptions).find('.selected').removeClass('selected');
         $(this.options.medicationSearchInput).val('');
         $(this.options.medicationSearchResult).empty();
+
+        // return the last created row
+        return $newrow;
     };
 
   HistoryMedicationsController.prototype.getItemDisplayValue = function(item)

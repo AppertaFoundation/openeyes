@@ -33,42 +33,32 @@
         public function actionFindRefMedications($term = '', $limit = 50)
         {
             header('Content-type: application/json');
-            /** @var MedicationSet $medication_set */
-            if(!$medication_sets = MedicationSet::model()->findAll('id IN (SELECT medication_set_id FROM medication_set_rule WHERE usage_code =\'Formulary\')')) {
-                echo CJSON::encode([]);
-                exit;
-            }
 
             $ret_data = [];
 
             $criteria = new \CDbCriteria();
 
             if($term !== '') {
-                $criteria->condition = "medications.preferred_term LIKE :term OR medicationSearchIndexes.alternative_term LIKE :term";
+                $criteria->condition = "preferred_term LIKE :term OR medicationSearchIndexes.alternative_term LIKE :term";
                 $criteria->params['term'] = "%$term%";
             }
 
             $criteria->limit = $limit > 1000 ? 1000 : $limit;
-            $criteria->order = "medications.preferred_term";
-            $criteria->with = 'medicationSearchIndexes';
+            $criteria->order = "preferred_term";
+            $criteria->with = array('medicationSearchIndexes');
+            $criteria->together = true;
 
-            foreach ($medication_sets as $medication_set) {
-                foreach ($medication_set->medications($criteria) as $med) {
-                    /** @var MedicationSetItem $med_set_item */
-                    $med_set_item = MedicationSetItem::model()
-                        ->find('medication_id = :medication_id AND medication_set_id = :medication_set_id', [
-                            'medication_id' => $med->id,
-                            'medication_set_id' => $medication_set->id
-                        ]);
+            foreach (Medication::model()->findAll($criteria) as $med) {
+                /** @var Medication $med */
+              
+                $crit2 = new CDbCriteria();
+                $crit2->condition = 'medication_id = :med_id';
+                $crit2->params['med_id'] = $med->id;
+                $crit2->limit = 1;
 
-                    $tabsize = 0;
-
-                    if($med->isVMP()) {
-                        $tabsize = 1;
-                    }
-                    elseif ($med->isAMP()) {
-                        $tabsize = 2;
-                    }
+                $med_set_item = MedicationSetItem::model()->findAll($crit2);
+                if(!empty($med_set_item)) {
+                    $med_set_item = $med_set_item[0];
 
                     $infoBox = new MedicationInfoBox();
                     $infoBox->medication_id = $med->id;
@@ -82,7 +72,7 @@
                             'default_form' => $med_set_item->default_form_id,
                             'frequency_id' => $med_set_item->default_frequency_id,
                             'route_id' => $med_set_item->default_route_id,
-                            'tabsize' => $tabsize,
+                            'tabsize' => null,
                             'will_copy' => $med->getToBeCopiedIntoMedicationManagement(),
                             'prepended_markup' => $tooltip,
                             'set_ids' => array_map(function ($e){
@@ -91,7 +81,25 @@
                         ]
                     );
                 }
+                else {
+
+                    $ret_data[] = array_merge($med->getAttributes(), [
+                            'label' => $med->getLabel(),
+                            'dose_unit_term' => '',
+                            'dose' => '',
+                            'default_form' => null,
+                            'frequency_id' => null,
+                            'route_id' => null,
+                            'tabsize' => null,
+                            'will_copy' => false,
+                            'prepended_markup' => ''
+                        ]
+                    );
+                }
+
+
             }
+
 
 
             echo CJSON::encode($ret_data);

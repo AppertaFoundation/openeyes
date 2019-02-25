@@ -1,4 +1,4 @@
-INSERT INTO openeyes.medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code,amp_term,amp_code)
+INSERT INTO medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code,amp_term,amp_code)
 SELECT
 	'DM+D' AS source_type,
 	'AMP' AS source_subtype,
@@ -15,7 +15,7 @@ SELECT
 	amp.desc AS amp_term,
 	amp.apid AS amp_code
 FROM
-	drugs2.f_amp_amps amp
-	LEFT JOIN drugs2.f_vmp_vmps vmp ON vmp.vpid = amp.vpid
-	LEFT JOIN drugs2.f_vtm_vtm vtm ON vtm.vtmid = vmp.vtmid
+	{prefix}amp_amps amp
+	LEFT JOIN {prefix}vmp_vmps vmp ON vmp.vpid = amp.vpid
+	LEFT JOIN {prefix}vtm_vtm vtm ON vtm.vtmid = vmp.vtmid
 ;

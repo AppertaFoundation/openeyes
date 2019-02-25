@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 ## Resets various caches and configs
 
 ## NOTE: This script assumes it is in protected/scripts. If you move it then relative paths will not work!
@@ -13,6 +13,8 @@ done
 # Determine root folder for site - all relative paths will be built from here
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
+
+curuser="${LOGNAME:-root}"
 
 # process commandline parameters
 clearcahes=1
@@ -56,7 +58,7 @@ do
         ;;
 		--no-compile) #reserved for future use
 		;;
-	    *)  echo "Unknown command line: $p"
+	    *)  [ ! -z $p ] && echo "Unknown command line: $p" || :
         ;;
     esac
 
@@ -174,45 +176,48 @@ fi
 
 # Fix permissions
 if [ $noperms = 0 ]; then
-    sudo gpasswd -a "$USER" www-data # add current user to www-data group
-	echo "Resetting file permissions..."
-    if [ $(stat -c '%U' $WROOT) != $USER ] || [ $(stat -c '%G' $WROOT) != "www-data" ]; then
-        echo "updaing ownership on $WROOT"
-        sudo chown -R "$USER":www-data $WROOT
-    else
-        echo "ownership of $WROOT looks ok, skipping. Use --force-perms to override"
-    fi
+    sudo gpasswd -a "$curuser" www-data # add current user to www-data group
+
+    # We can ignore setting file permissions when running in a docker conatiner, as we always run as root
+    if [ "$DOCKER_CONTAINER" != "TRUE" ]; then
+      echo "Resetting file permissions..."
+      if [ $(stat -c '%U' $WROOT) != $curuser ] || [ $(stat -c '%G' $WROOT) != "www-data" ]; then
+          echo "updaing ownership on $WROOT"
+          sudo chown -R $curuser:www-data $WROOT
+      else
+          echo "ownership of $WROOT looks ok, skipping. Use --force-perms to override"
+      fi
 
 
-    folders774=( $WROOT/protected/config/local $WROOT/assets/ $WROOT/protected/runtime $WROOT/protected/files )
+      folders774=( $WROOT/protected/config/local $WROOT/assets/ $WROOT/protected/runtime $WROOT/protected/files )
 
-    for i in "${folders774[@]}"
-    do
-        if [ $(stat -c %a "$i") != 774 ] || [ $forceperms == 1 ]; then
-            echo "updating $i to 774..."
-            sudo chmod -R 774 $i
-        else
-            echo "Permissions look ok for $i, skipping. Use --force-perms to override"
-        fi
-    done
+      for i in "${folders774[@]}"
+      do
+          if [[ $(stat -c %a "$i") != *"774" ]] || [ $forceperms == 1 ]; then
+              echo "updating $i to 774..."
+              sudo chmod -R 774 $i
+          else
+              echo "Permissions look ok for $i, skipping. Use --force-perms to override"
+          fi
+      done
 
-    touch $WROOT/protected/runtime/testme
-    touch $WROOT/protected/files/testme
+      touch $WROOT/protected/runtime/testme
+      touch $WROOT/protected/files/testme
 
-    if [ $(stat -c '%U' $WROOT/protected/runtime/testme) != $USER ] || [ $(stat -c '%G' $WROOT/protected/runtime/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/runtime/testme") != 774 ]; then
-        echo "setting sticky bit for protected/runtime"
-        sudo chmod -R g+s $WROOT/protected/runtime
-    fi
+      if [ $(stat -c '%U' $WROOT/protected/runtime/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/runtime/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/runtime/testme") != 774 ]; then
+          echo "setting sticky bit for protected/runtime"
+          sudo chmod -R g+s $WROOT/protected/runtime
+      fi
 
-    if [ $(stat -c '%U' $WROOT/protected/files/testme) != $USER ] || [ $(stat -c '%G' $WROOT/protected/files/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/files/testme") != 774 ]; then
-        echo "setting sticky bit for protected/files"
-        sudo chmod -R g+s $WROOT/protected/files
-    fi
+      if [ $(stat -c '%U' $WROOT/protected/files/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/files/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/files/testme") != 774 ]; then
+          echo "setting sticky bit for protected/files"
+          sudo chmod -R g+s $WROOT/protected/files
+      fi
 
-    # re-own composer and npm config folders in user home directory (sots issues caused if sudo was used to composer/npm update previously)
-	sudo chown -R "$USER" ~/.config 2>/dev/null || :
-	sudo chown -R "$USER" ~/.composer 2>/dev/null || :
-
+      # re-own composer and npm config folders in user home directory (sots issues caused if sudo was used to composer/npm update previously)
+    	sudo chown -R $curuser ~/.config 2>/dev/null || :
+    	sudo chown -R $curuser ~/.composer 2>/dev/null || :
+  fi
 	#  update ImageMagick policy to allow PDFs
 	sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &> /dev/null
 	sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &> /dev/null
@@ -221,13 +226,12 @@ fi
 if [ $buildassests = 1 ]; then
 	echo "(re)building assets..."
 	# use curl to ping the login page - forces php/apache to rebuild the assets directory
-	curl -s http://localhost/site/login > /dev/null
-    curl -s http://localhost:8888/site/login > /dev/null
+	curl -s http://localhost > /dev/null
 fi
 
 # Set some git properties
 
-git config core.fileMode false 2>/dev/null
+git -C $WROOT config core.fileMode false 2>/dev/null
 # Set to cache password in memory (should only ask once per day or each reboot)
 git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
 

@@ -13,6 +13,7 @@
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property int $hidden
  *
  * The followings are the available model relations:
  * @property MedicationSetItem[] $medicationSetItems
@@ -24,6 +25,7 @@
  * @property Medication[] $medications
  * @property MedicationSetItem[] $items
  * @method  Medication[] medications(array $opts)
+ * @property MedicationSetAutoRule[] $medicationSetAutoRules
  */
 class MedicationSet extends BaseActiveRecordVersioned
 {
@@ -44,13 +46,13 @@ class MedicationSet extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
-			array('antecedent_medicaion_set_id, display_order', 'numerical', 'integerOnly'=>true),
+			array('antecedent_medication_set_id, display_order, hidden', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>255),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('deleted_date, last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, antecedent_medication_set_id, deleted_date, display_order, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, name, hidden, antecedent_medication_set_id, deleted_date, display_order, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -69,6 +71,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'medicationSetRules' => array(self::HAS_MANY, MedicationSetRule::class, 'medication_set_id'),
             'medications' => array(self::MANY_MANY, Medication::class, 'medication_set_item(medication_set_id,medication_id)'),
+			'medicationSetAutoRules' => array(self::HAS_MANY, MedicationSetAutoRule::class, 'medication_set_id')
 		);
 	}
 
@@ -101,6 +104,8 @@ class MedicationSet extends BaseActiveRecordVersioned
             'adminListAction' => 'Action',
             'itemsCount' => 'Items count',
             'rulesString' => 'Rules',
+			'hidden' => 'Hidden/system',
+			'hiddenString' => 'Hidden/system'
 		);
 	}
 
@@ -195,11 +200,21 @@ class MedicationSet extends BaseActiveRecordVersioned
         return '<a href="/OphDrPrescription/refMedicationSetAdmin/list?ref_set_id='.$this->id.'">List medications</a>';
     }
 
+	public function getAdminListAction()
+	{
+		return $this->adminListAction();
+    }
+
     public function itemsCount()
     {
         $result = Yii::app()->db->createCommand("SELECT COUNT(id) AS cnt FROM medication_set_item WHERE medication_set_id = ".$this->id)->queryScalar();
         return $result;
     }
+
+    public function getItemsCount()
+	{
+		return $this->itemsCount();
+	}
 
     public function rulesString()
     {
@@ -218,5 +233,10 @@ class MedicationSet extends BaseActiveRecordVersioned
         return array(
             'byName' =>  array('order' => 'name ASC'),
         );
+    }
+
+	public function hiddenString()
+	{
+		return $this->hidden ? "Yes" : "No";
     }
 }

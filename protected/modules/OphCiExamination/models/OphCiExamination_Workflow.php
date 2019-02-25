@@ -69,10 +69,11 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
     {
         return array(
                 'steps' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ElementSet', 'workflow_id',
-                    'order' => 'position',
+                    'order' => 'position'
                 ),
                 'first_step' => array(self::HAS_ONE, 'OEModule\OphCiExamination\models\OphCiExamination_ElementSet', 'workflow_id',
                     'order' => 'first_step.position, first_step.id',
+                    'condition' => 'is_active = 1'
                 ),
         );
     }

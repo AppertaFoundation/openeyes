@@ -28,9 +28,13 @@
  * @property User $createdUser
  * @property MedicationSet[] $medicationSets
  * @property MedicationSearchIndex[] $medicationSearchIndexes
+ * @property MedicationAttributeOption[] $medicationAttributeOptions
+ * @property MedicationAttributeAssignment[] $medicationAttributeAssignments
  */
 class Medication extends BaseActiveRecordVersioned
 {
+	const ATTR_PRESERVATIVE_FREE = "PRESERVATIVE_FREE";
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -71,6 +75,8 @@ class Medication extends BaseActiveRecordVersioned
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'medicationSets' => array(self::MANY_MANY, MedicationSet::class, 'medication_set_item(medication_id, medication_set_id)'),
 			'medicationSearchIndexes' => array(self::HAS_MANY, MedicationSearchIndex::class, 'medication_id'),
+            'medicationAttributeAssignments' => array(self::HAS_MANY, MedicationAttributeAssignment::class, 'medication_id'),
+            'medicationAttributeOptions' => array(self::HAS_MANY, MedicationAttributeOption::class, 'medication_attribute_assignment(medication_id,medication_attribute_option_id)')
 		);
 	}
 
@@ -220,13 +226,7 @@ class Medication extends BaseActiveRecordVersioned
 
     public function isPreservativeFree()
     {
-        foreach ($this->getTypes() as $type) {
-            if($type->name == 'Preservative free') {
-                return true;
-            }
-        }
-
-        return false;
+        return !empty($this->getAttrs(self::ATTR_PRESERVATIVE_FREE));
     }
 
     /**
@@ -242,7 +242,7 @@ class Medication extends BaseActiveRecordVersioned
         }
 
         if ($this->isPreservativeFree()) {
-            $name.= ' (No Preservative)';
+            $name.= ' (PF)';
         }
 
         return $name;
@@ -271,11 +271,13 @@ class Medication extends BaseActiveRecordVersioned
         return implode(", ", $terms);
     }
 
-    public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false)
+    private function listByUsageCode($usage_code, $subspecialty_id = null, $raw = false)
     {
         $criteria = new CDbCriteria();
-        $criteria->compare('medicationSetRules.usage_code',"Common subspecialty medications");
-        $criteria->compare('medicationSetRules.subspecialty_id', $subspecialty_id);
+        $criteria->compare('medicationSetRules.usage_code',$usage_code);
+        if(!is_null($subspecialty_id)) {
+            $criteria->compare('medicationSetRules.subspecialty_id', $subspecialty_id);
+        }
         $sets = MedicationSet::model()->with('medicationSetRules')->findAll($criteria);
 
         $return = [];
@@ -311,6 +313,16 @@ class Medication extends BaseActiveRecordVersioned
         });
 
         return $raw ? $return : CHtml::listData($return, 'id', 'label');
+    }
+
+    public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false)
+    {
+        return $this->listByUsageCode("Common subspecialty medications", $subspecialty_id, $raw);
+    }
+
+    public function listCommonSystemicMedications($raw = false)
+    {
+        return $this->listByUsageCode("Common systemic medications", null, $raw);
     }
 
     public function getMedicationSetsForCurrentSubspecialty()
@@ -375,4 +387,27 @@ class Medication extends BaseActiveRecordVersioned
         $searchIndex->save();
     }
 
+    /**
+     * Returns all attributes as [['attr_name'=> $attr_name, 'value'=> $value, 'description' => $description], [...]]
+     *
+     * @param string $attr_name     If set, the result will be filtered to this attribute
+     * @return array
+     */
+
+    public function getAttrs($attr_name = null)
+    {
+        $ret = array();
+        foreach ($this->medicationAttributeAssignments as $attr_assignment) {
+            $aname = $attr_assignment->medicationAttributeOption->medicationAttribute->name;
+            if(is_null($attr_name) || $aname == $attr_name) {
+                $ret[] = array(
+                    'attr_name' => $aname,
+                    'value' => $attr_assignment->medicationAttributeOption->value,
+                    'description' => $attr_assignment->medicationAttributeOption->description,
+                );
+            }
+        }
+
+        return $ret;
+    }
 }

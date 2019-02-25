@@ -43,6 +43,5 @@
     </div>
   </div>
 </section>
-<?php $this->renderChildOpenElements($element, 'view', $form, $data) ?>
 
 
