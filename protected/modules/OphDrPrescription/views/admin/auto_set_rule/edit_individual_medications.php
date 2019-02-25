@@ -39,6 +39,7 @@
     </tr>
     </thead>
     <tbody>
+	<?php if(!is_null($medicationSetAutoRule)): ?>
 	<?php foreach ($medicationSetAutoRule->medicationSetAutoRuleMedications as $assignment): ?>
 		<?php
 		$assignment_id = $assignment->id;
@@ -61,6 +62,7 @@
             </td>
         </tr>
 	<?php endforeach; ?>
+    <?php endif; ?>
     </tbody>
     <tfoot class="pagination-container">
     <tr>

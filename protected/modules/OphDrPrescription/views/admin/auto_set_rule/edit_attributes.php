@@ -70,6 +70,7 @@
         </tr>
     </thead>
     <tbody>
+    <?php if(!is_null($medicationSetAutoRule)): ?>
     <?php foreach ($medicationSetAutoRule->medicationSetAutoRuleAttributes as $assignment): ?>
 		<?php
             $attr_id = $assignment->medicationAttributeOption->medication_attribute_id;
@@ -88,6 +89,7 @@
             </td>
         </tr>
     <?php endforeach; ?>
+    <?php endif; ?>
     </tbody>
     <tfoot class="pagination-container">
         <tr>

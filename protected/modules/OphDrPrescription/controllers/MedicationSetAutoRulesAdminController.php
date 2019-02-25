@@ -104,6 +104,7 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 
 		$model->name = $data['name'];
 		$model->hidden = $data['hidden'];
+		$model->medication_set_id = $data['medication_set_id'];
 		$model->attrs = array();
 		if(isset($data['attribute']['id']) && !empty($data['attribute']['id'])) {
 			foreach ($data['attribute']['id'] as $key=>$attr_id) {

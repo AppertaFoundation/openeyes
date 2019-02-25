@@ -150,6 +150,20 @@ class MedicationSetAutoRule extends BaseActiveRecordVersioned
 			$this->medication_set_id = $medicationSet->id;
 			$this->medicationSet = $medicationSet;
 		}
+		else {
+			$set = MedicationSet::model()->findByPk($this->medication_set_id);
+			$has_other_rule = false;
+
+			foreach($set->medicationSetAutoRules as $autoRule) {
+					if($autoRule->id != $this->id) {
+					$has_other_rule = true;
+				}
+			}
+
+			if($has_other_rule) {
+				$this->addError('medication_set_id', 'This Medication Set is already associated with an auto set rule.');
+			}
+		}
 
 		return parent::beforeValidate();
 	}
