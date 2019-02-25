@@ -22,10 +22,10 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
         $dataProvider = new CActiveDataProvider('Element_OphTrConsent_Procedure');
         $iterator = new CDataProviderIterator($dataProvider);
 
-        $anaesthetic_topical_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
-        $anaesthetic_LA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LA'))->queryScalar();
-        $anaesthetic_LAC_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAC'))->queryScalar();
-        $anaesthetic_LAS_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAS'))->queryScalar();
+        $anaesthetic_topical_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
+        $anaesthetic_LA_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LA'))->queryScalar();
+        $anaesthetic_LAC_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAC'))->queryScalar();
+        $anaesthetic_LAS_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAS'))->queryScalar();
 
         var_dump("Migrating Anaesthetic options...");
 

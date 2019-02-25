@@ -254,10 +254,8 @@ if [ "$OE_MODE" != "BUILD" ]; then
 	  [[ $(ps -ef | grep -v grep | grep apache2 | wc -l) > 0 ]] && sudo service apache2 restart || :
 
     # copy cron tasks
-    sudo cp -f $SCRIPTDIR/.cron/hotlist /etc/cron.d/
-    sudo chmod 0644 /etc/cron.d/hotlist
-    sudo cp -f $SCRIPTDIR/.cron/eventimage /etc/cron.d/
-sudo chmod 0644 /etc/cron.d/eventimage
+    bash $SCRIPTDIR/set-cron.sh
+ 
 fi
 
 echo ""

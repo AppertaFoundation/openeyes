@@ -61,7 +61,7 @@ cleanbase=0
 migrateparams="-q"
 nofix=0
 dwservrunning=0
-restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql"
+restorefile="/tmp/openeyes_sample_data.sql"
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -224,6 +224,10 @@ if [ $nofiles = "0" ]; then
 fi
 
 if [ $cleanbase = "0" ]; then
+  # Extract or copy sample DB (since v3.2 db has been zipped)
+  [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && cp $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp || :
+  [ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
+
 	echo "Re-importing database"
 	eval $dbconnectionstring -D openeyes < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
 fi

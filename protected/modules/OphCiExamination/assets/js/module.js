@@ -1199,6 +1199,12 @@ $(document).ready(function() {
             setPostOpComplicationTableText();
         });
         /** End of Post Operative Complication Event Bindings **/
+        $('#event-content').on('change','.diagnosis-selection select', function(){
+            let side = $(this).closest('.js-element-eye').data('side');
+            OphCiExamination_InjectionManagementComplex_DiagnosisCheck(side);
+        }).on('click','.jsNoTreatment', function(){
+            OphCiExamination_InjectionManagementComplex_init();
+        });
 
 });
     /** Post Operative Complication function **/

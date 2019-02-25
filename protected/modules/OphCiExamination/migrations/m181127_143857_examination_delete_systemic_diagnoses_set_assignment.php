@@ -2,7 +2,7 @@
 
 class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extends \OEMigration
 {
-    public function up()
+    public function safeUp()
     {
         $this->addColumn('ophciexamination_systemic_diagnoses_set_entry_version', 'set_id', 'int(11)');
         $this->addColumn('ophciexamination_systemic_diagnoses_set_entry', 'set_id', 'int(11)');
@@ -12,13 +12,13 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
             'ophciexamination_systemic_diagnoses_set',
             'id');
 
-        $assignments = Yii::app()->db->createCommand()
+        $assignments = $this->dbConnection->createCommand()
             ->select()
             ->from('ophciexamination_systemic_diagnoses_set_assignment')
             ->queryAll();
 
         foreach ($assignments as $assignment) {
-            $systemic_diagnoses_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry::model()->findByPk($assignment['ophciexamination_systemic_diagnoses_entry_id']);
+            $systemic_diagnoses_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry::model()->findByPk($assignment['systemic_diagnoses_set_entry_id']);
             $systemic_diagnoses_set_entry->set_id = $assignment['systemic_diagnoses_set_id'];
             $systemic_diagnoses_set_entry->save();
         }
@@ -29,7 +29,7 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
         $this->dropTable('ophciexamination_systemic_diagnoses_set_assignment_version');
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->createOETable('ophciexamination_systemic_diagnoses_set_assignment',
             array(
@@ -53,7 +53,7 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
                 ":ophciexamination_systemic_diagnoses_entry_id"=>$systemic_diagnoses_entry->id,
                 ':systemic_diagnoses_set_id' => $systemic_diagnoses_entry->set_id
             ];
-            Yii::app()->db->createCommand($sql)->execute($parameters);
+            $this->dbConnection->createCommand($sql)->execute($parameters);
 //
         }
 
