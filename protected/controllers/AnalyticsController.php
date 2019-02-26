@@ -371,10 +371,10 @@ class AnalyticsController extends BaseController
                     ->group('et.patient_id');
             }
         }
-        $command_va_values_paitents = clone $command_va_values;
+        $command_va_values_patients = clone $command_va_values;
         $command_va_patients = Yii::app()->db->createCommand()
             ->select('va_vals.patient_id','DISTINCT')
-            ->from('('.$command_va_values_paitents->getText().') AS va_vals');
+            ->from('('.$command_va_values_patients->getText().') AS va_vals');
 
         $extra_command_patient = Yii::app()->db->createCommand()
             ->select('tp.patient_id','distinct')
@@ -415,10 +415,10 @@ class AnalyticsController extends BaseController
                 ->andwhere('et.left_value IS NOT NULL or et.right_value IS NOT NULL')
                 ->group('et.patient_id');
         }
-        $command_iop_values_paitents = clone $command_iop_values;
+        $command_iop_values_patients = clone $command_iop_values;
         $command_iop_patients = Yii::app()->db->createCommand()
             ->select('iop_vals.patient_id','DISTINCT')
-            ->from('('.$command_iop_values_paitents->getText().') AS iop_vals');
+            ->from('('.$command_iop_values_patients->getText().') AS iop_vals');
 
         $extra_command_patient = Yii::app()->db->createCommand()
             ->select('tp.patient_id','distinct')
@@ -460,10 +460,10 @@ class AnalyticsController extends BaseController
                 ->group('ep.patient_id');;
         }
 
-        $command_crt_values_paitents = clone $command_crt_values;
+        $command_crt_values_patients = clone $command_crt_values;
         $command_crt_patients = Yii::app()->db->createCommand()
             ->select('crt_vals.patient_id','DISTINCT')
-            ->from('('.$command_crt_values_paitents->getText().') AS crt_vals');
+            ->from('('.$command_crt_values_patients->getText().') AS crt_vals');
 
         $extra_command_patient = Yii::app()->db->createCommand()
             ->select('tp.patient_id','distinct')
