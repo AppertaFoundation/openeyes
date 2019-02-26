@@ -19,15 +19,20 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 {
 	public function actionList()
 	{
-		$admin = new Admin(MedicationSetAutoRule::model(), $this);
+		$admin = new Admin(MedicationSet::model(), $this);
 		$admin->setListFields(array(
 			'name',
-			'medicationSet.name'
+			'hiddenString',
+			'itemsCount',
+			'adminListAction'
 		));
 
+		$crit = new CDbCriteria();
+		$crit->addCondition("automatic = 1");
+		$admin->getSearch()->setCriteria($crit);
 		$admin->getSearch()->setItemsPerPage(30);
 
-		$admin->setModelDisplayName("Rules for automatic medication sets");
+		$admin->setModelDisplayName("Automatic medication sets");
 		$admin->listModel(true);
 	}
 
@@ -39,22 +44,15 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 
 	private function _getAdmin($id)
 	{
-		$admin = new Admin(MedicationSetAutoRule::model(), $this);
+		$admin = new Admin(MedicationSet::model(), $this);
 
-		$admin->setModelDisplayName("Auto Set Rule");
+		$admin->setModelDisplayName("Automatic Set Rules");
 		if($id) {
 			$admin->setModelId($id);
 		}
 
 		$admin->setEditFields(array(
 			'name'=>'Name',
-			'medication_set_id' =>  array(
-				'widget' => 'DropDownList',
-				'options' => CHtml::listData(MedicationSet::model()->findAll(['order' => 'name']), 'id', 'name'),
-				'htmlOptions' => array('empty' => '-- Create new Set based on rule name --'),
-				'hidden' => false,
-				'layoutColumns' => null,
-			),
 			'hidden' => array(
 				'widget' => 'DropDownList',
 				'options' => array(0 => 'Visible set', 1 => 'Hidden/system set'),
@@ -67,21 +65,21 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 				'widget' => 'CustomView',
 				'viewName' => 'application.modules.OphDrPrescription.views.admin.auto_set_rule.edit_attributes',
 				'viewArguments' => array(
-					'medicationSetAutoRule' => $admin->getModel()
+					'medicationSet' => $admin->getModel()
 				)
 			),
 			'medicationSetAutoRuleSetMemberships' => array(
 				'widget' => 'CustomView',
 				'viewName' => 'application.modules.OphDrPrescription.views.admin.auto_set_rule.edit_set_membership',
 				'viewArguments' => array(
-					'medicationSetAutoRule' => $admin->getModel()
+					'medicationSet' => $admin->getModel()
 				)
 			),
 			'medicationSetAutoRuleMedications' => array(
 				'widget' => 'CustomView',
 				'viewName' => 'application.modules.OphDrPrescription.views.admin.auto_set_rule.edit_individual_medications',
 				'viewArguments' => array(
-					'medicationSetAutoRule' => $admin->getModel(),
+					'medicationSet' => $admin->getModel(),
 				)
 			)
 		));
@@ -93,42 +91,43 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 	public function actionSave($id = -1)
 	{
 		if($id > 0) {
-			$model = MedicationSetAutoRule::model()->findByPk($id);
+			$model = MedicationSet::model()->findByPk($id);
 		}
 		else {
-			$model = new MedicationSetAutoRule();
+			$model = new MedicationSet();
 		}
 
 
-		$data = Yii::app()->request->getPost('MedicationSetAutoRule');
+		$data = Yii::app()->request->getPost('MedicationSet');
 
 		$model->name = $data['name'];
 		$model->hidden = $data['hidden'];
-		$model->medication_set_id = $data['medication_set_id'];
-		$model->attrs = array();
+		$model->automatic = 1;
+
+		$model->tmp_attrs = array();
 		if(isset($data['attribute']['id']) && !empty($data['attribute']['id'])) {
 			foreach ($data['attribute']['id'] as $key=>$attr_id) {
-				$model->attrs[] = array(
+				$model->tmp_attrs[] = array(
 					'id' => $attr_id,
 					'medication_attribute_option_id' => $data['attribute']['medication_attribute_option_id'][$key]
 				);
 			}
 		}
 
-		$model->sets = array();
+		$model->tmp_sets = array();
 		if(isset($data['sets']['id']) && !empty($data['sets']['id'])) {
 			foreach ($data['sets']['id'] as $key=>$s_id) {
-				$model->sets[] = array(
+				$model->tmp_sets[] = array(
 					'id' => $s_id,
 					'medication_set_id' => $data['sets']['medication_set_id'][$key]
 				);
 			}
 		}
 
-		$model->meds = array();
+		$model->tmp_meds = array();
 		if(isset($data['medications']['id']) && !empty($data['medications']['id'])) {
 			foreach ($data['medications']['id'] as $key=>$m_id) {
-				$model->meds[] = array(
+				$model->tmp_meds[] = array(
 					'id' => $m_id,
 					'medication_id' => $data['medications']['medication_id'][$key],
 					'include_parent' => $data['medications']['include_parent'][$key],
@@ -138,7 +137,8 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 		}
 
 		$trans = Yii::app()->db->beginTransaction();
-		if(!$model->save(true)) {
+
+		if(!$model->validate() || !$model->save(false)) {
 			$trans->rollback();
 			$admin = $this->_getAdmin($id);
 			$admin->setModel($model);

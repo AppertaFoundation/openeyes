@@ -1,20 +1,20 @@
 <?php
-    /** @var MedicationSetAutoRule $medicationSetAutoRule */
+    /** @var MedicationSet $medicationSet */
     $rowkey = 0;
     $yesorno = array('1'=>'yes', '0'=>'no')
 ?>
 <script id="individual_medications_tbl_row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
        <td>
-            <input type="hidden" name="MedicationSetAutoRule[medications][id][]" value="-1" />
-            <input type="hidden" name="MedicationSetAutoRule[medications][medication_id][]" value="{{ id }}" />
+            <input type="hidden" name="MedicationSet[medications][id][]" value="-1" />
+            <input type="hidden" name="MedicationSet[medications][medication_id][]" value="{{ id }}" />
             {{ &infobox }} {{ medication }}
         </td>
         <td align="center">
-            <?php echo CHtml::dropDownList('MedicationSetAutoRule[medications][include_parent][]', '0', $yesorno); ?>
+            <?php echo CHtml::dropDownList('MedicationSet[medications][include_parent][]', '0', $yesorno); ?>
         </td>
         <td align="center">
-            <?php echo CHtml::dropDownList('MedicationSetAutoRule[medications][include_children][]', '0', $yesorno); ?>
+            <?php echo CHtml::dropDownList('MedicationSet[medications][include_children][]', '0', $yesorno); ?>
         </td>
         <td>
             <a href="javascript:void(0);" class="js-delete-medication-assignment"><i class="oe-i trash"></i></a>
@@ -39,23 +39,23 @@
     </tr>
     </thead>
     <tbody>
-	<?php if(!is_null($medicationSetAutoRule)): ?>
-	<?php foreach ($medicationSetAutoRule->medicationSetAutoRuleMedications as $assignment): ?>
+	<?php if(!is_null($medicationSet)): ?>
+	<?php foreach ($medicationSet->medicationSetAutoRuleMedications as $assignment): ?>
 		<?php
 		$assignment_id = $assignment->id;
 		$rowkey++
 		?>
         <tr data-key="<?=$rowkey?>">
             <td>
-                <input type="hidden" name="MedicationSetAutoRule[medications][id][]" value="<?=$assignment->id?>" />
-                <input type="hidden" name="MedicationSetAutoRule[medications][medication_id][]" value="<?=$assignment->medication_id?>" />
-                <?php echo $assignment->medication->preferred_term; ?>
+                <input type="hidden" name="MedicationSet[medications][id][]" value="<?=$assignment->id?>" />
+                <input type="hidden" name="MedicationSet[medications][medication_id][]" value="<?=$assignment->medication_id?>" />
+                <?php $this->widget('MedicationInfoBox', array('medication_id' => $assignment->medication_id)); ;?><?php echo $assignment->medication->preferred_term; ?>
             </td>
             <td align="center">
-				<?php echo CHtml::dropDownList('MedicationSetAutoRule[medications][include_parent][]', $assignment->include_parent, $yesorno); ?>
+				<?php echo CHtml::dropDownList('MedicationSet[medications][include_parent][]', $assignment->include_parent, $yesorno); ?>
             </td>
             <td align="center">
-				<?php echo CHtml::dropDownList('MedicationSetAutoRule[medications][include_children][]', $assignment->include_children, $yesorno); ?>
+				<?php echo CHtml::dropDownList('MedicationSet[medications][include_children][]', $assignment->include_children, $yesorno); ?>
             </td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-medication-assignment"><i class="oe-i trash"></i></a>
@@ -77,6 +77,9 @@
                     onReturn: function (adderDialog, selectedItems) {
                         var $body = $("#individual_medications_tbl > tbody");
                         var lastkey = $body.find("tr:last").attr("data-key");
+                        if(isNaN(lastkey)) {
+                            lastkey = 0;
+                        }
                         var key = parseInt(lastkey) + 1;
                         var template = $('#individual_medications_tbl_row_template').html();
                         Mustache.parse(template);

@@ -14,6 +14,7 @@
  * @property string $created_user_id
  * @property string $created_date
  * @property int $hidden
+ * @property int $automatic
  *
  * The followings are the available model relations:
  * @property MedicationSetItem[] $medicationSetItems
@@ -25,10 +26,23 @@
  * @property Medication[] $medications
  * @property MedicationSetItem[] $items
  * @method  Medication[] medications(array $opts)
- * @property MedicationSetAutoRule[] $medicationSetAutoRules
+ * @property MedicationAttributeOption[] $autoRuleAttributes
+ * @property MedicationSet[] $autoRuleSets
+ * @property Medication[] $autoRuleMedications
+ * @property MedicationSetAutoRuleAttribute[] $medicationAutoRuleAttributes
+ * @property MedicationSetAutoRuleSetMembership[] $medicationSetAutoRuleSetMemberships
+ * @property MedicationSetAutoRuleMedication[] $medicationSetAutoRuleMedications
  */
 class MedicationSet extends BaseActiveRecordVersioned
 {
+	/*
+	 * These variables stand for temporary storage only
+	 */
+	public $tmp_attrs = [];
+	public $tmp_sets = [];
+	public $tmp_meds = [];
+
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -46,13 +60,13 @@ class MedicationSet extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
-			array('antecedent_medication_set_id, display_order, hidden', 'numerical', 'integerOnly'=>true),
+			array('antecedent_medication_set_id, display_order, hidden, automatic', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>255),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
-			array('deleted_date, last_modified_date, created_date', 'safe'),
+			array('deleted_date, last_modified_date, created_date, automatic, hidden', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, hidden, antecedent_medication_set_id, deleted_date, display_order, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, name, hidden, automatic, antecedent_medication_set_id, deleted_date, display_order, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -71,7 +85,12 @@ class MedicationSet extends BaseActiveRecordVersioned
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'medicationSetRules' => array(self::HAS_MANY, MedicationSetRule::class, 'medication_set_id'),
             'medications' => array(self::MANY_MANY, Medication::class, 'medication_set_item(medication_set_id,medication_id)'),
-			'medicationSetAutoRules' => array(self::HAS_MANY, MedicationSetAutoRule::class, 'medication_set_id')
+			'medicationAutoRuleAttributes' => array(self::HAS_MANY, MedicationSetAutoRuleAttribute::class, 'medication_set_id'),
+			'autoRuleAttributes' => array(self::MANY_MANY, MedicationAttributeOption::class, 'medication_set_auto_rule_attribute(medication_set_id, medication_attribute_option_id)'),
+			'medicationSetAutoRuleSetMemberships' => array(self::HAS_MANY, MedicationSetAutoRuleSetMembership::class, 'target_medication_set_id'),
+			'autoRuleSets' => array(self::MANY_MANY, MedicationSet::class, 'medication_set_auto_rule_set_membership(target_medication_set_id,source_medication_set_id)'),
+			'medicationSetAutoRuleMedications' => array(self::HAS_MANY, MedicationSetAutoRuleMedication::class, 'medication_set_id'),
+			'autoRuleMedications' => array(self::MANY_MANY, Medication::class, 'medication_set_auto_rule_medication(medication_set_id, medication_id)'),
 		);
 	}
 
@@ -105,7 +124,8 @@ class MedicationSet extends BaseActiveRecordVersioned
             'itemsCount' => 'Items count',
             'rulesString' => 'Rules',
 			'hidden' => 'Hidden/system',
-			'hiddenString' => 'Hidden/system'
+			'hiddenString' => 'Hidden/system',
+			'automatic' => 'Automatic'
 		);
 	}
 
@@ -229,4 +249,114 @@ class MedicationSet extends BaseActiveRecordVersioned
 	{
 		return $this->hidden ? "Yes" : "No";
     }
+
+	public function beforeValidate()
+	{
+		if($this->automatic) {
+			foreach ($this->tmp_attrs as $attr) {
+				if($attr['medication_attribute_option_id'] == '') {
+					$this->addError('attribute', 'Attribute value must be set');
+				}
+			}
+		}
+
+		return parent::beforeValidate();
+	}
+
+	public function afterSave()
+	{
+		if($this->automatic) {
+			$this->_saveAutoAttrs();
+			$this->_saveAutoSets();
+			$this->_saveAutoMeds();
+		}
+
+		return parent::afterSave();
+	}
+
+	/**
+	 * Saves temporary auto attributes
+	 * applies to automatic sets only
+	 */
+
+	private function _saveAutoAttrs()
+	{
+		$existing_ids = array_map(function($e){ return $e->id; }, $this->medicationAutoRuleAttributes);
+		$updated_ids = array();
+		foreach ($this->tmp_attrs as $attr) {
+			if($attr['id'] == -1) {
+				$attrib = new MedicationSetAutoRuleAttribute();
+			}
+			else {
+				$attrib = MedicationSetAutoRuleAttribute::model()->findByPk($attr['id']);
+			}
+
+			$attrib->medication_attribute_option_id = $attr['medication_attribute_option_id'];
+			$attrib->medication_set_id = $this->id;
+			$attrib->save();
+			$updated_ids[] = $attrib->id;
+		}
+		$ids_to_delete = array_diff($existing_ids, $updated_ids);
+		if(!empty($ids_to_delete)) {
+			Yii::app()->db->createCommand("DELETE FROM ".MedicationSetAutoRuleAttribute::model()->tableName()." WHERE id IN (".implode(",", $ids_to_delete).");")->execute();
+		}
+	}
+
+	/**
+	 * Saves temporary set memberships
+	 * Applies to automatic sets only
+	 */
+
+	private function _saveAutoSets()
+	{
+		$existing_ids = array_map(function($e){ return $e->id; }, $this->medicationSetAutoRuleSetMemberships);
+		$updated_ids = array();
+		foreach ($this->tmp_sets as $set) {
+			if($set['id'] == -1) {
+				$set_m = new MedicationSetAutoRuleSetMembership();
+			}
+			else {
+				$set_m = MedicationSetAutoRuleSetMembership::model()->findByPk($set['id']);
+			}
+
+			$set_m->source_medication_set_id = $set['medication_set_id'];
+			$set_m->target_medication_set_id = $this->id;
+			$set_m->save();
+			$updated_ids[] = $set_m->id;
+		}
+		$ids_to_delete = array_diff($existing_ids, $updated_ids);
+		if(!empty($ids_to_delete)) {
+			Yii::app()->db->createCommand("DELETE FROM ".MedicationSetAutoRuleSetMembership::model()->tableName()." WHERE id IN (".implode(",", $ids_to_delete).");")->execute();
+		}
+	}
+
+	/**
+	 * Saves temporary individual medications for auto sets
+	 * Applies to automatic sets only
+	 */
+
+	private function _saveAutoMeds()
+	{
+		$existing_ids = array_map(function($e){ return $e->id; }, $this->medicationSetAutoRuleMedications);
+		$updated_ids = array();
+		foreach ($this->tmp_meds as $med) {
+			if($med['id'] == -1) {
+				$med_m = new MedicationSetAutoRuleMedication();
+			}
+			else {
+				$med_m = MedicationSetAutoRuleMedication::model()->findByPk($med['id']);
+			}
+
+			$med_m->medication_id = $med['medication_id'];
+			$med_m->include_children = $med['include_children'];
+			$med_m->include_parent = $med['include_parent'];
+			$med_m->medication_set_id = $this->id;
+			$med_m->save();
+			$updated_ids[] = $med_m->id;
+		}
+		$ids_to_delete = array_diff($existing_ids, $updated_ids);
+		if(!empty($ids_to_delete)) {
+			Yii::app()->db->createCommand("DELETE FROM ".MedicationSetAutoRuleMedication::model()->tableName()." WHERE id IN (".implode(",", $ids_to_delete).");")->execute();
+		}
+	}
 }
