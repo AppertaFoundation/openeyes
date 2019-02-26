@@ -35,7 +35,7 @@
 <title><?=\CHtml::encode($this->pageTitle); ?></title>
 <?php Yii::app()->clientScript->registerCoreScript('jquery')?>
 </head>
-<body class="open-eyes print <?= $printHelperClass ?>" <?= isset($printHelperStyles) ? 'style="'.$printHelperStyles.'"' : '' ?>>
+<body class="open-eyes print" style="margin: 0 55px; padding: 0px;">
 	<?php echo $content; ?>
 	<script type="text/javascript">
 		$(document).ready(function() {

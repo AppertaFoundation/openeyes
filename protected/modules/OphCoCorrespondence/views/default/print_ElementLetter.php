@@ -23,7 +23,7 @@
  */
 
 if (!@$no_header) {?>
-	<header>
+	<header class="print-header">
 	<?php 
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
