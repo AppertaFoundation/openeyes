@@ -33,6 +33,7 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 		$admin->getSearch()->setItemsPerPage(30);
 
 		$admin->setModelDisplayName("Automatic medication sets");
+		$admin->setListTemplate('application.modules.OphDrPrescription.views.admin.auto_set_rule.list');
 		$admin->listModel(true);
 	}
 
@@ -148,5 +149,12 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 			$trans->commit();
 			$this->redirect("/OphDrPrescription/medicationSetAutoRulesAdmin/list");
 		}
+	}
+
+	public function actionPopulateAll()
+	{
+		exec("php ".Yii::app()->basePath."/yiic populateAutoMedicationSets &");
+		Yii::app()->user->setFlash('success', "Rebuild process started at ".date('H:i').".");
+		$this->redirect('/OphDrPrescription/medicationSetAutoRulesAdmin/list');
 	}
 }
