@@ -4,12 +4,13 @@
 
 .oe-patient .patient-trials .icon {
     fill: #fff;
+    opacity: 0.8;
 }
 
 .oe-patient .patient-trials {
     padding: 5px 12px 4px 8px;
-    bottom: 30px;
-    right: 30px;
+    bottom: 0px;
+    right: -28px;
     position: absolute;
     cursor: pointer;
 }
