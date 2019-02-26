@@ -252,7 +252,7 @@ foreach ($ethnic_list as $key=>$item){
               <?= $form->error($patient, 'nhs_num') ?>
           </td>
         </tr>
-        <tr style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
+        <tr class="nhs-num-status" style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
           <td>
               <?= $form->label($patient, 'nhs_num_status_id') ?>
             <br/>
