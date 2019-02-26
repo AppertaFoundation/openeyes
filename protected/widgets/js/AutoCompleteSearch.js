@@ -60,8 +60,9 @@ OpenEyes.UI = OpenEyes.UI || {};
     var inputbox;
     var onSelect = [];
     var timeout_id = null;
+    var max_height = null;
     
-    function initAutocomplete(input, autocomplete_url) {
+    function initAutocomplete(input, autocomplete_url, autocomplete_max_height) {
     	input.on('input',function(){
     		inputbox = input;
     		inputbox.parent().find('.alert-box').addClass('hidden');
@@ -131,7 +132,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     				$('.oe-menu-item a:eq('+current_focus+')').trigger('click');
     			}
     		}
-
+			max_height = autocomplete_max_height;
     		$('.oe-autocomplete a').removeClass('hint');
     		$('.oe-autocomplete a:eq('+current_focus+')').addClass('hint');
     	});
@@ -167,8 +168,12 @@ OpenEyes.UI = OpenEyes.UI || {};
 
      		search_options += `</a></li>`;
         });
-
-        inputbox.parent().find(".oe-autocomplete").append(search_options).css({'position':'absolute', 'top':inputbox.outerHeight()}).removeClass('hidden');
+        var input_box_css = {'position':'absolute', 'top':inputbox.outerHeight()};
+        if (max_height != 'null'){
+        	input_box_css['overflow-y'] = 'auto';
+        	input_box_css['max-height'] = max_height;
+		}
+        inputbox.parent().find(".oe-autocomplete").append(search_options).css(input_box_css).removeClass('hidden');
     }
 
     function matchSearchTerm(str){
@@ -196,7 +201,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     	init: function (options) {
     		if(options.input){
                 set_onSelect(options.input, options.onSelect);
-	    		initAutocomplete(options.input, options.url);
+	    		initAutocomplete(options.input, options.url, ('maxHeight' in options )? options.maxHeight:null);
 	    		return exports.AutoCompleteSearch;
     		}
     	},

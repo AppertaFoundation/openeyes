@@ -65,35 +65,9 @@
                     </td>
                     <td>
                         <?php echo $form->error($model, 'contact_label_id'); ?>
-                        <?php
-                        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                            'name' => 'contact_label_id',
-                            'id' => 'autocomplete_contact_label_id',
-                            'source' => "js:function(request, response) {
-                                $.getJSON('/gp/contactLabelList', {
-                                   term : request.term
-                                }, response);
-                        }",
-                            'options' => array(
-                                'select' => "js:function(event, ui) {
-                                removeSelectedContactLabel();
-                                addItem('selected_contact_label_wrapper', ui);   
-                                $('#autocomplete_contact_label_id').val('');
-                                return false;
-                                }",
-                                'response' => 'js:function(event, ui){
-                          if(ui.content.length === 0){
-                            $("#no_contact_label_result").show();
-                          } else {
-                            $("#no_contact_label_result").hide();
-                          }
-                        }',
-                            ),
-                            'htmlOptions' => array(
-                                'placeholder' => 'Search Roles',
-                            ),
-                        ));
-                        ?>
+
+                        <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_contact_label_id']); ?>
+
                     </td>
                 </tr>
                 <tr id="selected_contact_label_wrapper" style="display: <?php echo $model->label ? '' : 'none' ?>">
@@ -157,3 +131,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $('#autocomplete_contact_label_id'),
+        url: '/gp/contactLabelList',
+        maxHeight: '200px',
+        onSelect: function(){
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            removeSelectedContactLabel();
+            addItem('selected_contact_label_wrapper', {item: AutoCompleteResponse});
+            $('#autocomplete_contact_label_id').val('');
+        }
+    });
+</script>
