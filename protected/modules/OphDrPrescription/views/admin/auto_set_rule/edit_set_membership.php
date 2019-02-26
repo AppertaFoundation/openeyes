@@ -1,14 +1,14 @@
 <label>Include medications from the following sets:</label>
 <?php
-    /** @var MedicationSetAutoRule $medicationSetAutoRule */
+    /** @var MedicationSet $medicationSet */
     $rowkey = 0;
     $setlist = CHtml::listData(MedicationSet::model()->findAll(['order' => 'name']), 'id', 'name');
 ?>
 <script id="set_membership_row_template" type="x-tmpl-mustache">
      <tr data-key="{{ key }}">
-        <input type="hidden" name="MedicationSetAutoRule[sets][id][]" value="-1" />
+        <input type="hidden" name="MedicationSet[sets][id][]" value="-1" />
         <td>
-            <?php echo CHtml::dropDownList('MedicationSetAutoRule[sets][medication_set_id][]', null, $setlist); ?>
+            <?php echo CHtml::dropDownList('MedicationSet[sets][medication_set_id][]', null, $setlist); ?>
         </td>
         <td>
             <a href="javascript:void(0);" class="js-delete-set-membership"><i class="oe-i trash"></i></a>
@@ -19,6 +19,9 @@
     $(function(){
         $(document).on("click", ".js-add-set-membership", function (e) {
             var lastkey = $("#medication_set_membership_tbl tbody tr:last").attr("data-key");
+            if(isNaN(lastkey)) {
+                lastkey = 0;
+            }
             var key = parseInt(lastkey) + 1;
             var template = $('#set_membership_row_template').html();
             Mustache.parse(template);
@@ -39,12 +42,12 @@
     </tr>
     </thead>
     <tbody>
-	<?php if(!is_null($medicationSetAutoRule)): ?>
-    <?php foreach ($medicationSetAutoRule->medicationSetAutoRuleSetMemberships as $membership): ?>
+	<?php if(!is_null($medicationSet)): ?>
+    <?php foreach ($medicationSet->medicationSetAutoRuleSetMemberships as $membership): ?>
         <tr data-key="<?php echo ++$rowkey; ?>">
-            <input type="hidden" name="MedicationSetAutoRule[sets][id][]" value="<?=$membership->id?>" />
+            <input type="hidden" name="MedicationSet[sets][id][]" value="<?=$membership->id?>" />
             <td>
-                <?php echo CHtml::dropDownList('MedicationSetAutoRule[sets][medication_set_id][]', $membership->medication_set_id, $setlist); ?>
+                <?php echo CHtml::dropDownList('MedicationSet[sets][medication_set_id][]', $membership->source_medication_set_id, $setlist); ?>
             </td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-set-membership"><i class="oe-i trash"></i></a>
