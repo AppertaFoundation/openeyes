@@ -153,10 +153,9 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
                 if($hasReadings){
                     // pick out the method_id's from the submitted readings and tally them up
                     $method_ids = array_column($va[$side.'_readings'], 'method_id');
-                    $method_id_count = array_count_values($method_ids);
 
-                    // seeing as each method id should only appear once each value should be 1
-                    if(array_sum($method_id_count) > count($method_id_count)){
+                    // change values to keys. dupicates keys are dropped as keys must be unique
+                    if(count($method_ids) !== count(array_flip($method_ids))){
                         $this->addError($side, 'Each method type can only be added once per eye');
                     }
                 } else {
