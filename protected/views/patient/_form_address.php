@@ -90,7 +90,7 @@
 
 <tr>
   <td class="required">
-      <?= $form->labelEx($address, 'country_id') ?>
+      <?= $form->label($address, 'country_id') ?>
     <br/>
       <?= $form->error($address, 'country_id') ?>
   </td>
