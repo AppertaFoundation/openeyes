@@ -36,9 +36,9 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
 
 		$this->_savePid();
 
-		foreach (MedicationSetAutoRule::model()->findAll() as $rule) {
-			/** @var MedicationSetAutoRule $rule */
-			$rule->populateSet();
+		foreach (MedicationSet::model()->findAll("automatic = 1") as $set) {
+			/** @var MedicationSet $set */
+			$set->populateAuto();
 		}
 
 		exit(0);

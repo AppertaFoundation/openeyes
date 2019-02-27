@@ -5,8 +5,8 @@
  *
  * The followings are the available columns in table 'medication_set_auto_rule_medication':
  * @property integer $id
- * @property integer $medication_set_auto_rule_id
  * @property integer $medication_id
+ * @property integer $medication_set_id
  * @property integer $include_parent
  * @property integer $include_children
  * @property string $last_modified_user_id
@@ -15,8 +15,8 @@
  * @property string $created_date
  *
  * The followings are the available model relations:
+ * @property MedicationSet $medicationSet
  * @property Medication $medication
- * @property MedicationSetAutoRule $medicationSetAutoRule
  * @property User $createdUser
  * @property User $lastModifiedUser
  */
@@ -38,13 +38,13 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('medication_set_auto_rule_id, medication_id', 'required'),
-			array('medication_set_auto_rule_id, medication_id, include_parent, include_children', 'numerical', 'integerOnly'=>true),
+			array('medication_set_id, medication_id', 'required'),
+			array('medication_set_id, medication_id, include_parent, include_children', 'numerical', 'integerOnly'=>true),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, medication_set_auto_rule_id, medication_id, include_parent, include_children, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, medication_set_id, medication_id, include_parent, include_children, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -57,7 +57,7 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 		// class name for the relations automatically generated below.
 		return array(
 			'medication' => array(self::BELONGS_TO, Medication::class, 'medication_id'),
-			'medicationSetAutoRule' => array(self::BELONGS_TO, MedicationSetAutoRule::class, 'medication_set_auto_rule_id'),
+			'medicationSet' => array(self::BELONGS_TO, MedicationSet::class, 'medication_set_id'),
 			'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
 		);
@@ -70,7 +70,7 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 	{
 		return array(
 			'id' => 'ID',
-			'medication_set_auto_rule_id' => 'Medication Set Auto Rule',
+			'medication_set' => 'Medication Set',
 			'medication_id' => 'Medication',
 			'include_parent' => 'Include Parent',
 			'include_children' => 'Include Children',
@@ -100,7 +100,7 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('medication_set_auto_rule_id',$this->medication_set_auto_rule_id);
+		$criteria->compare('medication_set_id',$this->medication_set_id);
 		$criteria->compare('medication_id',$this->medication_id);
 		$criteria->compare('include_parent',$this->include_parent);
 		$criteria->compare('include_children',$this->include_children);

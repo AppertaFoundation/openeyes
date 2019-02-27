@@ -1,5 +1,5 @@
 <?php
-    /** @var MedicationSetAutoRule $medicationSetAutoRule */
+    /** @var MedicationSet $medicationSet */
 	$attrs = MedicationAttribute::model()->findAll(array("order" => "name"));
 	$default_tarr = reset($attrs);
 	$all_options = MedicationAttributeOption::model()->findAll(array("select"=>array("id","medication_attribute_id","value","description")));
@@ -20,11 +20,11 @@
 <script id="row_template" type="x-tmpl-mustache">
     <tr id="{{ key }}">
         <td>
-        <input type="hidden" name="MedicationSetAutoRule[attribute][id][]" value="-1" />
-            <?php echo CHtml::dropDownList('MedicationSetAutoRule[attribute][medication_attribute_id][]', null, CHtml::listData($attrs, 'id', 'name'), array('empty' => '-- Please select --', "class" => "js-attribute", "id" => 'Medication_attribute_id{{ key }}')); ?>
+        <input type="hidden" name="MedicationSet[attribute][id][]" value="-1" />
+            <?php echo CHtml::dropDownList('MedicationSet[attribute][medication_attribute_id][]', null, CHtml::listData($attrs, 'id', 'name'), array('empty' => '-- Please select --', "class" => "js-attribute", "id" => 'Medication_attribute_id{{ key }}')); ?>
         </td>
         <td>
-            <select class="js-option" name="MedicationSetAutoRule[attribute][medication_attribute_option_id][]">
+            <select class="js-option" name="MedicationSet[attribute][medication_attribute_option_id][]">
                 <option>-- Please select --</option>
             </select>
         </td>
@@ -48,6 +48,9 @@
 
         $(document).on("click", ".js-add-attribute", function (e) {
             var lastkey = $("#medication_attribute_assignment_tbl tbody tr:last").attr("data-key");
+            if(isNaN(lastkey)) {
+                lastkey = 0;
+            }
             var key = parseInt(lastkey) + 1;
             var template = $('#row_template').html();
             Mustache.parse(template);
@@ -70,19 +73,19 @@
         </tr>
     </thead>
     <tbody>
-    <?php if(!is_null($medicationSetAutoRule)): ?>
-    <?php foreach ($medicationSetAutoRule->medicationSetAutoRuleAttributes as $assignment): ?>
+    <?php if(!is_null($medicationSet)): ?>
+    <?php foreach ($medicationSet->medicationAutoRuleAttributes as $assignment): ?>
 		<?php
             $attr_id = $assignment->medicationAttributeOption->medication_attribute_id;
 		    $rowkey++
         ?>
         <tr data-key="<?=$rowkey?>">
             <td>
-                <input type="hidden" name="MedicationSetAutoRule[attribute][id][]" value="<?=$assignment->id?>" />
-                <?php echo CHtml::dropDownList('MedicationSetAutoRule[attribute][medication_attribute_id][]', $attr_id, CHtml::listData($attrs, 'id', 'name'), array('empty' => '-- Please select --', "class" => "js-attribute", "id" => 'Medication_attribute_id'.$rowkey)); ?>
+                <input type="hidden" name="MedicationSet[attribute][id][]" value="<?=$assignment->id?>" />
+                <?php echo CHtml::dropDownList('MedicationSet[attribute][medication_attribute_id][]', $attr_id, CHtml::listData($attrs, 'id', 'name'), array('empty' => '-- Please select --', "class" => "js-attribute", "id" => 'Medication_attribute_id'.$rowkey)); ?>
             </td>
             <td>
-				<?php echo CHtml::dropDownList('MedicationSetAutoRule[attribute][medication_attribute_option_id][]', $assignment->medicationAttributeOption->id, $optiondata[$attr_id], array('empty' => '-- Please select --', "class" => "js-option", "id" => 'Medication_attribute_option_id'.$rowkey)); ?>
+				<?php echo CHtml::dropDownList('MedicationSet[attribute][medication_attribute_option_id][]', $assignment->medicationAttributeOption->id, $optiondata[$attr_id], array('empty' => '-- Please select --', "class" => "js-option", "id" => 'Medication_attribute_option_id'.$rowkey)); ?>
             </td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-attribute"><i class="oe-i trash"></i></a>
