@@ -17,38 +17,11 @@
  */
 $logoHelper = new LogoHelper();
 ?>
-<div class="banner clearfix">
+
+<div class="logo">
     <?= $logoHelper->render() ?>
 </div>
-<div class="from-address" style="font-size: initial; width: 20em; line-height: 19px; margin-top: -20px;">
-<?php
-            echo $element->site->getLetterAddress(array(
-                'include_name' => true,
-                'delimiter' => '<br />',
-                'include_telephone' => true,
-                'include_fax' => true,
-            )) ?>
-            <?php if ($element->direct_line || $element->fax) { ?>
-                <br/>
-            <?php } ?>
-            <?php if ($element->direct_line) { ?>
-                <br/><?php echo $element->getAttributeLabel('direct_line') ?>: <?php echo $element->direct_line ?>
-            <?php } ?>
-            <?php if ($element->fax) { ?>
-                <br/><?php echo $element->getAttributeLabel('fax') ?>: <?php echo $element->fax ?>
-            <?php } ?>
-            <div class="date" style="padding-top: 15px;"><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) { ?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate)) ?>)<?php } ?></div>
-</div>
-<div class="to-address">
-            <div class="to-address-header" style="margin-bottom: 0.5em;">
-                To:
-            </div>
-            <div class="to-address-address" style="width: 16em; height: 8em; line-height: 15px;">
-                <?php echo str_replace("\n", '<br/>', CHtml::encode($toAddress))?>
-            </div>
-        </div>
-
-<!-- <div class="flex-layout flex-top">
+<div class="flex-layout flex-top" style="position: relative; top: 20px;">
     <div class="cols-left">
         <div class="to-address">
             <div class="to-address-header">
@@ -78,9 +51,9 @@ $logoHelper = new LogoHelper();
                 <?php if ($element->fax) { ?>
                     <br/><?php echo $element->getAttributeLabel('fax') ?>: <?php echo $element->fax ?>
                 <?php } ?>
-                <div class="date"><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) { ?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate)) ?>)<?php } ?></div>
+                <div class="date"><br/><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) { ?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate)) ?>)<?php } ?></div>
         </div>
     <?php }?>
     </div>
-</div> -->
+</div>
 <br/><br/>

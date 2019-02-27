@@ -21,7 +21,7 @@
     switch(Yii::app()->controller->module->id){
         case 'OphCoCorrespondence':
             $printHelperClass = 'OphCoCorrespondence large-font';
-            $printHelperStyles = 'margin-top: 25px; margin-right: 87px; margin-left: 87px; padding: 0px;';
+            $printHelperStyles = 'margin: 0 55px; padding: 0px;';
             break;
         case 'OphTrConsent':
             $printHelperClass = 'OphTrConsent '.(isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
@@ -35,7 +35,7 @@
 <title><?=\CHtml::encode($this->pageTitle); ?></title>
 <?php Yii::app()->clientScript->registerCoreScript('jquery')?>
 </head>
-<body class="open-eyes print" style="margin: 0 55px; padding: 0px;">
+<body class="open-eyes print <?= $printHelperClass ?>" <?= isset($printHelperStyles) ? 'style="'.$printHelperStyles.'"' : '' ?>>
 	<?php echo $content; ?>
 	<script type="text/javascript">
 		$(document).ready(function() {
