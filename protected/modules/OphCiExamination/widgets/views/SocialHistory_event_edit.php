@@ -211,10 +211,10 @@
 
   // Re-enable all fields on form submit (otherwise the data isn't sent)
   // Note: document.currentScript relies on this being run outside of $(document).ready
-  $(document.currentScript).closest('form').submit(function () {
-    disabledSocialHistoryFields.forEach(function (field) {
-      field.removeAttr('disabled');
-    });
+  $('#<?= $model_name ?>_entry_table').closest('form').submit(function () {
+      disabledSocialHistoryFields.forEach(function (field) {
+          field.removeAttr('disabled');
+      });
   });
 
   $(document).ready(function () {
@@ -301,4 +301,5 @@
       }
     });
   });
+
 </script>
