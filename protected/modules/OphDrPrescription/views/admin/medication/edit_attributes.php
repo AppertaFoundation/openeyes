@@ -29,7 +29,7 @@
             </select>
         </td>
         <td>
-            <a href="javascript:void(0);" class="js-delete-attribute">delete</a>
+            <a href="javascript:void(0);" class="js-delete-attribute"><i class="oe-i trash"></i></a>
         </td>
     </tr>
 </script>
@@ -60,7 +60,7 @@
         });
     });
 </script>
-<h2>Attributes</h2>
+<h3>Attributes</h3>
 <table class="standard" id="medication_attribute_assignment_tbl">
     <thead>
         <tr>
@@ -72,19 +72,21 @@
     <tbody>
     <?php foreach ($medication->medicationAttributeAssignments as $assignment): ?>
 		<?php
-            $attr_id = $assignment->medicationAttributeOption->medication_attribute_id;
-		    $rowkey++
-        ?>
+            $attr_id = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->medication_attribute_id : null;
+            $option_id = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->id : null;
+            $id = is_null($assignment->id) ? -1 : $assignment->id;
+            $rowkey++;
+		?>
         <tr data-key="<?=$rowkey?>">
             <td>
-                <input type="hidden" name="Medication[medicationAttributeAssignment][id][]" value="<?=$assignment->id?>" />
+                <input type="hidden" name="Medication[medicationAttributeAssignment][id][]" value="<?=$id?>" />
                 <?php echo CHtml::dropDownList('Medication[medicationAttributeAssignment][medication_attribute_id][]', $attr_id, CHtml::listData($attrs, 'id', 'name'), array('empty' => '-- Please select --', "class" => "js-attribute", "id" => 'Medication_attribute_id'.$rowkey)); ?>
             </td>
             <td>
-				<?php echo CHtml::dropDownList('Medication[medicationAttributeAssignment][medication_attribute_option_id][]', $assignment->medicationAttributeOption->id, $optiondata[$attr_id], array('empty' => '-- Please select --', "class" => "js-option", "id" => 'Medication_attribute_option_id'.$rowkey)); ?>
+				<?php echo CHtml::dropDownList('Medication[medicationAttributeAssignment][medication_attribute_option_id][]', $option_id, is_null($attr_id) ? array() : $optiondata[$attr_id], array('empty' => '-- Please select --', "class" => "js-option", "id" => 'Medication_attribute_option_id'.$rowkey)); ?>
             </td>
             <td>
-                <a href="javascript:void(0);" class="js-delete-attribute">delete</a>
+                <a href="javascript:void(0);" class="js-delete-attribute"><i class="oe-i trash"></i></a>
             </td>
         </tr>
     <?php endforeach; ?>
@@ -92,7 +94,9 @@
     <tfoot class="pagination-container">
         <tr>
             <td colspan="3">
-                <button class="button large js-add-attribute" type="button">Add attribute</button>
+                <div class="flex-layout flex-right">
+                    <button class="button hint green js-add-attribute" type="button"><i class="oe-i plus pro-theme"></i></button>
+                </div>
             </td>
         </tr>
     </tfoot>
