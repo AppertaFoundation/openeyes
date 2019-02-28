@@ -395,16 +395,16 @@
                 data['INDICATION_FOR_SURGERY']['incomplete'],
                 data['E/I']['ineligible'],
             ];
-            chart.data[1]['y'] = completedData.map(function (item) {
+            chart.data[0]['y'] = completedData.map(function (item) {
                 return item.length/data['total'];
             });
-            chart.data[0]['y'] = incompletedData.map(function (item) {
+            chart.data[1]['y'] = incompletedData.map(function (item) {
                 return item.length/data['total'];
             });
-            chart.data[1]['customdata'] = completedData.map(function (item) {
+            chart.data[0]['customdata'] = completedData.map(function (item) {
                 return item;
             });
-            chart.data[0]['customdata'] = incompletedData.map(function (item) {
+            chart.data[1]['customdata'] = incompletedData.map(function (item) {
                 return item;
             });
             Plotly.redraw(chart);
