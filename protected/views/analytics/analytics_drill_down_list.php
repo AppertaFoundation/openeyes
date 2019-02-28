@@ -3,7 +3,7 @@
 <div class="analytics-patient-list" style="display: none;" >
     <div class="flex-layout">
         <h3 id="js-list-title">Patient List</h3>
-        <button id="js-back-to-chart" class="selected" >Back to chart</button>
+        <button id="js-back-to-chart" class="selected js-plot-display-label" >Back to chart</button>
     </div>
     <table>
         <colgroup>
@@ -55,9 +55,9 @@
         var link = $(this).data('link');
         window.location.href = link;
     });
-    $('#js-back-to-chart').click(function () {
+    $('.js-plot-display-label').click(function () {
         $('.analytics-charts').show();
         $('.analytics-patient-list').hide();
         $('.analytics-patient-list-row').hide();
-    });
+    })
 </script>

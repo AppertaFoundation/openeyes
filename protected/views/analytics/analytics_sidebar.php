@@ -23,9 +23,9 @@
             <input type="hidden" id="side-bar-subspecialty-id" value="<?= $specialty == 'Glaucoma'? 1:0; ?>">
             <div id="js-charts-clinical" style="display: none;">
                 <ul class="charts">
-                    <li><a href="#" id="js-hs-clinical-diagnoses" data-plotid="#js-hs-chart-analytics-clinical-diagnosis" data-filterid="#js-clinical-data-filter-diagnosis" class="selected clinical-plot-button">Diagnoses</a></li>
+                    <li><a href="#" id="js-hs-clinical-diagnoses" data-plotid="#js-hs-chart-analytics-clinical-diagnosis" data-filterid="#js-clinical-data-filter-diagnosis" class="selected clinical-plot-button js-plot-display-label">Diagnoses</a></li>
                     <?php if ($specialty !== "All"){?>
-                        <li><a href="#" id="js-hs-clinical-custom" data-plotid="#js-hs-chart-analytics-clinical-others" data-filterid="#js-clinical-data-filter-custom" class="clinical-plot-button">Change In Vision</a></li>
+                        <li><a href="#" id="js-hs-clinical-custom" data-plotid="#js-hs-chart-analytics-clinical-others" data-filterid="#js-clinical-data-filter-custom" class="clinical-plot-button js-plot-display-label">Change In Vision</a></li>
                     <?php }?>
                 </ul>
             <h3>Filters</h3>
@@ -209,9 +209,9 @@
             </div>
         <div id="js-charts-service">
             <ul class="charts">
-                <li><a href="#" id="js-hs-app-follow-up-coming">Followups coming due</a></li>
-                <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected">Overdue followups</a></li>
-                <li><a href="#" id="js-hs-app-follow-up-waiting" >Waiting time for new patients</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-coming" class="js-plot-display-label">Follow-Up</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected js-plot-display-label">Delayed</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-waiting" class="js-plot-display-label">Waiting Time</a></li>
             </ul>
             <div id="js-service-data-filter" class="" style="display: block">
                 <h3>Filters</h3>
