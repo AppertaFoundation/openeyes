@@ -207,24 +207,21 @@
                 </div><!-- #js-custom-data-filter -->
             <?php } ?>
             </div>
-            <div id="js-charts-service">
+        <div id="js-charts-service">
             <ul class="charts">
                 <li><a href="#" id="js-hs-app-follow-up-coming">Followups coming due</a></li>
                 <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected">Overdue followups</a></li>
                 <li><a href="#" id="js-hs-app-follow-up-waiting" >Waiting time for new patients</a></li>
             </ul>
-            <div id="js-service-data-filter" class=""  style="display: block">
+            <div id="js-service-data-filter" class="" style="display: block">
                 <h3>Filters</h3>
                 <div class="service-filters custom-filters flex-layout">
                     <div class="service-filters flex-layout cols-9">
                         <ul class="filters-selected cols-9">
-                            <?php if(isset($user_list)){?>
-                                <li>User: <span class="service-selected js-hs-filters js-hs-surgeon" id="js-chart-filter-service-surgeon" data-name="service_surgeon">All</span></li>
-                            <?php }else{?>
-                                <li>User: <span class="service-selected js-hs-filters js-hs-surgeon" id="js-chart-filter-service-surgeon" data-name="service_surgeon"><?=$current_user->getFullName();?></span></li>
-                            <?php }?>
-                            <li><input type="checkbox" id="js-chart-filter-service-unbooked-only" checked><span>Unbooked Only</span></li>
-                            <li>Diagnosis: <span id="js-chart-filter-service-diagnosis" class="js-hs-filters" data-name="service_diagnosis">All</span></li>
+                            <li><input type="checkbox" id="js-chart-filter-service-unbooked-only" checked><span>Unbooked Only</span>
+                            </li>
+                            <li>Diagnosis: <span id="js-chart-filter-service-diagnosis" class="js-hs-filters"
+                                                 data-name="service_diagnosis">All</span></li>
                         </ul>
                     </div>
                     <div class="flex-item-bottom"><!-- OE UI Filter options (id: service-filters) -->
@@ -245,22 +242,11 @@
                                         <h3>Diagnosis</h3>
                                         <ul class="btn-list">
                                             <li class="selected">All</li>
-                                            <?php foreach ($common_disorders as $id=>$diagnosis) { ?>
+                                            <?php foreach ($common_disorders as $id => $diagnosis) { ?>
                                                 <li><?= $diagnosis; ?></li>
                                             <?php } ?>
                                         </ul>
                                     </div><!-- options-group -->
-                                    <?php if (isset($user_list)) { ?>
-                                        <div class="options-group" data-filter-ui-id="js-chart-filter-service-surgeon">
-                                            <h3>Users</h3>
-                                            <ul class="btn-list">
-                                                <li class="selected">All</li>
-                                                <?php foreach ($user_list as $user) { ?>
-                                                    <li><?= $user->getFullName(); ?></li>
-                                                <?php } ?>
-                                            </ul>
-                                        </div><!-- options-group -->
-                                    <?php } ?>
                                 </div><!-- .flex -->
                             </div><!-- filter-options-popup -->
                         </div><!-- .oe-filter-options -->
