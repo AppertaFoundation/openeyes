@@ -42,6 +42,8 @@ class MedicationManagement extends BaseMedicationElement
 
     public static $entry_class = MedicationManagementEntry::class;
 
+    private $linked_prescription_id = null;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -195,6 +197,8 @@ class MedicationManagement extends BaseMedicationElement
 
     protected function saveEntries()
     {
+    	$this->findLinkedPrescription();
+
         $criteria = new \CDbCriteria();
         $criteria->addCondition("event_id = :event_id AND usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."'");
         $criteria->params['event_id'] = $this->event->id;
@@ -244,11 +248,110 @@ class MedicationManagement extends BaseMedicationElement
             }
         }
 
-        if(count($this->entries_to_prescribe) > 0) {
-            $this->generatePrescriptionEvent();
-        }
+        $this->createOrUpdatePrescriptionEvent();
+
         return true;
     }
+
+	/**
+	 * Returns the linked prescription of available, null othervise
+	 * Also sets $this->linked_prescription_id
+	 *
+	 * @return \Element_OphDrPrescription_Details|null
+	 */
+
+    public function findLinkedPrescription()
+	{
+		if($this->getIsNewRecord()) {
+			return null;
+		}
+
+		foreach ($this->entries as $entry) {
+			/** @var \EventMedicationUse $entry */
+			if($entry->prescription_item_id) {
+				$item = \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id);
+				/** @var \OphDrPrescription_Item $item */
+				$prescription = $item->prescription;
+				$this->linked_prescription_id = $prescription->id;
+				return $prescription;
+			}
+		}
+
+		return null;
+	}
+
+    private function createOrUpdatePrescriptionEvent()
+	{
+		if(!is_null($this->linked_prescription_id)) {
+			// prescription exists
+
+			/** @var \Element_OphDrPrescription_Details $prescription */
+			$prescription = \Element_OphDrPrescription_Details::model()->findByPk($this->linked_prescription_id);
+			$changed = false;
+
+			/* items to update or remove */
+			$existing_mgment_items = array();
+			foreach ($prescription->items as $prescription_Item) {
+				if($mgment_item = MedicationManagementEntry::model()->find("prescription_item_id=".$prescription_Item->id)) {
+					/** @var MedicationManagementEntry $mgment_item */
+					$existing_mgment_items[] = $mgment_item->id;
+
+					if($mgment_item->prescribe == 0) {
+						//manaemenet item was updated as not prescribed
+						$mgment_item->prescription_item_id = null;
+						$mgment_item->save();
+						$prescription_Item->delete();
+						$changed = true;
+					}
+					else if(!$mgment_item->compareToPrescriptionItem()) {
+						//manaemenet item was updated
+						$prescription_Item->updateFromManagementItem();
+						$changed = true;
+					}
+				}
+				else {
+					// management item was deleted
+					$prescription_Item->delete();
+					$changed = true;
+				}
+			}
+
+			/* items to add */
+			foreach ($this->entries_to_prescribe as $entry) {
+				if(!in_array($entry->id, $existing_mgment_items)) {
+					$prescription_Item = new \OphDrPrescription_Item();
+					$prescription_Item->event_id =$prescription->event_id;
+					$prescription_Item->setAttributes(array(
+						'medication_id' => $entry->medication_id,
+						'form_id' => $entry->form_id,
+						'laterality' => $entry->laterality,
+						'route_id' => $entry->route_id,
+						'frequency_id' => $entry->frequency_id,
+						'duration' => $entry->duration,
+						'dose' => $entry->dose
+					));
+					$prescription_Item->save();
+					$entry->prescription_item_id = $prescription_Item->id;
+					$entry->save();
+					$changed = true;
+				}
+			}
+
+			if($changed) {
+				// update prescription with message
+				$edit_reason = "Updated via examination clinical management";
+				$prescription->edit_reason_other = $edit_reason;
+				$prescription->draft = 1;
+				$prescription->save();
+			}
+		}
+		else {
+			// prescription does not exist yet
+			if(!empty($this->entries_to_prescribe)) {
+				$this->generatePrescriptionEvent();
+			}
+		}
+	}
 
     private function generatePrescriptionEvent()
     {

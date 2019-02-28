@@ -121,9 +121,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                 $entry->delete();
             }
         }
-        if(count($this->entries_to_prescribe) > 0) {
-            $this->generatePrescriptionEvent();
-        }
+
         return true;
     }
     /**

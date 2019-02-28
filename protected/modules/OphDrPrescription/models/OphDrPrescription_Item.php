@@ -155,4 +155,32 @@ class OphDrPrescription_Item extends EventMedicationUse
         }
         return $dose . ($this->laterality ? ' ' . $this->getLateralityDisplay() : '') . ' ' . $route . ' ' . $freq;
     }
+
+	/**
+	 * Update the item based on its
+	 * management item
+	 */
+
+	public function updateFromManagementItem()
+	{
+		$attributes_to_check = array(
+			'medication_id',
+			'form_id',
+			'laterality',
+			'route_id',
+			'frequency_id',
+			'duration',
+			'dose',
+		);
+
+		if(!$mgment_item = \OEModule\OphCiExamination\models\MedicationManagementEntry::model()->findByAttributes(array("prescription_item_id" =>$this->id))) {
+			return false;
+		}
+		/** @var \OEModule\OphCiExamination\models\MedicationManagementEntry $mgment_item */
+		foreach ($attributes_to_check as $attribute) {
+			$this->setAttribute($attribute, $mgment_item->getAttribute($attribute));
+		}
+
+		return $this->save();
+    }
 }
