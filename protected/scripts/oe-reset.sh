@@ -133,7 +133,7 @@ done
 # If we are checking out new branch,then pass all unprocessed commands to checkout command
 # Else, throw error and list unknown commands
 if  [ ${#PARAMS[@]} -gt 0 ]; then
-    if [ branch == 1 ]; then
+    if [ "$branch" != "0" ]; then
         for i in "${PARAMS[@]}"
         do
             $checkoutparams="$checkoutparams $i"
@@ -199,6 +199,10 @@ if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null; then
 fi
 
 if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
+	
+	## If no branch is specified, use build branch or fallback to master
+	[ "$branch" = "0" ] && branch=${BUILD_BRANCH:-"master"} || :
+	
 	## Checkout new sample database branch
 	echo "Downloading database for $branch"
 
