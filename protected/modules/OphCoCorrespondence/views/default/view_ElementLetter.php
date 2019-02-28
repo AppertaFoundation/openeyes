@@ -46,12 +46,17 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
                 </td>
                 <td>
                     <?php
-                    echo $element->site->getLetterAddress(array(
-                        'include_name' => true,
-                        'delimiter' => '<br />',
-                        'include_telephone' => true,
-                        'include_fax' => true,
-                    ))?>
+                    if (isset($element->site)){
+                        echo $element->site->getLetterAddress(array(
+                            'include_name' => true,
+                            'delimiter' => '<br />',
+                            'include_telephone' => true,
+                            'include_fax' => true,
+                        ));
+                    }else{
+                        echo 'No Site Has Been Selected.';
+                    }
+                    ?>
                 </td>
             </tr>
             <tr>
