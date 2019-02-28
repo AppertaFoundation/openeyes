@@ -582,4 +582,13 @@ class DefaultController extends OphTrOperationbookingEventController
 
         return $this->actionPDFPrint($this->operation->event->id);
     }
+    public function actionDelete($id){
+        $operation = $this->operation;
+        if ($operation->status->name == 'Cancelled') {
+            parent::actionDelete($id);
+        }else{
+            Yii::app()->user->setFlash('error.error', "Please cancel this operation before deleting it.");
+            return $this->redirect(array('default/view/'.$this->event->id));
+        }
+    }
 }
