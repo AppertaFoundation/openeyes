@@ -123,13 +123,14 @@ $deceased = $this->patient->isDeceased();
                     </a>
                 </div>
             <?php endif; ?>
-            <?php if (Yii::app()->moduleAPI->get('OETrial')) { ?>
+            <?php 
+								if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials) !== 0) {	?>
                 <div class="patient-trials js-trials-btn">
                     <svg viewBox="0 0 30 30" class="icon">
                         <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>
                     </svg>
                 </div>
-            <?php } ?>
+            <?php }	?>
         </div>
     </div>
     <!-- Widgets (extra icons, links etc) -->
