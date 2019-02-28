@@ -73,7 +73,22 @@ function setGlaucomaDisorder(ev, pcrEl) {
     }
 
     if ($('input[name^="glaucoma_diagnoses"]').filter('[value=true],[value="1"]').length) {
-        $(pcrEl).val('Y');
+        if($(this).closest('tr').find('input[name^="glaucoma_diagnoses"]').filter('[value=true],[value="1"]').length){
+            let side_checked = $(this).closest('tr').find('.oe-eye-lat-icons :checked');
+            switch(side_checked.length){
+                case 2:
+                    $(pcrEl).val('Y');
+                break;
+                case 1:
+                    $(pcrEl).val('N');
+                    $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .'+side_checked.data('data-eye-side')+'-eye').find(pcrEl).val('Y');
+                break;
+                default:
+                    $(pcrEl).val('NK');
+                break;
+            }           
+        }
+
     } else {
         $(pcrEl).val('N');
     }
@@ -315,7 +330,12 @@ function mapExaminationToPcr() {
                 "pcr": undefined,
                 "func": setRisks,
                 "init": true
-            }
+            },
+            ".oe-eye-lat-icons :checkbox": {
+                "pcr": '.pcrrisk_glaucoma',
+                "func": setGlaucomaDisorder,
+                "init": true
+            },
         },
         examinationObj,
         examinationEl;
