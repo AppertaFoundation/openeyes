@@ -207,7 +207,8 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                 searchSource: medicationsController.options.searchSource,
             },
             enableCustomSearchEntries: true,
-            searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"}
+            searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"},
+            searchFilterEnabled: true
         });
     });
 </script>

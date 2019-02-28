@@ -180,7 +180,8 @@ $element_errors = $element->getErrors();
             },
             searchOptions: {
                 searchSource:  window.MMController.options.searchSource,
-            }
+            },
+            searchFilterEnabled: true
         });
 
 

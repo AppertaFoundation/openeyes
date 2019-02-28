@@ -54,6 +54,10 @@
       enableCustomSearchEntries: false,
       searchAsTypedPrefix: 'As typed: ',
       searchAsTypedItemProperties: {},
+
+      searchFilterEnabled: false,
+      searchFilterLabel: 'Include Branded',
+      searchFilterURLparam: 'include_branded'
   };
 
     /**
@@ -171,18 +175,28 @@
         let $filterDiv = $('<div />', {class: 'has-filter'}).appendTo(this.searchWrapper);
         $searchInput.appendTo($filterDiv);
 
-    var timeout = null;$searchInput.on('keyup', function () {
-      var term = $(this).val();
-      if(timeout) {
-        clearTimeout(timeout);
-        timeout = null;
-      }
-      timeout = setTimeout(function(){dialog.runItemSearch(term);
-      }, 500);
-    });
+        var timeout = null;
+        $searchInput.on('keyup', function () {
+          var term = $(this).val();
+          if(timeout) {
+            clearTimeout(timeout);
+            timeout = null;
+          }
+          timeout = setTimeout(function(){dialog.runItemSearch(term);
+          }, 500);
+        });
 
         this.noSearchResultsWrapper = $('<span />').text('No results found');
         this.noSearchResultsWrapper.appendTo($filterDiv);
+
+        if(this.options.searchFilterEnabled) {
+            var $searchFilter = $('<div><label class="inline"><input class="js-searchfilter-check" type="checkbox" /> '+this.options.searchFilterLabel+'</label> </div>');
+            $searchFilter.appendTo($filterDiv);
+            this.searchWrapper.find(".js-searchfilter-check").on("click", function(e){
+                var text = $searchInput.val();
+                dialog.runItemSearch(text);
+            });
+        }
 
         this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
         this.searchResultList.appendTo($filterDiv);
@@ -451,11 +465,18 @@
             this.searchRequest.abort();
         }
 
-        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
+        var ajaxOptions = {
             term: text,
             code: this.options.searchOptions.code,
             ajax: 'ajax'
-        }, function (results) {
+        };
+
+        if(this.options.searchFilterEnabled) {
+            var filter_on = this.searchWrapper.find(".js-searchfilter-check").prop("checked");
+            ajaxOptions[this.options.searchFilterURLparam] = filter_on ? 1 : 0;
+        }
+
+        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, ajaxOptions, function (results) {
             dialog.searchRequest = null;
             let no_data = !$(results).length;
 
