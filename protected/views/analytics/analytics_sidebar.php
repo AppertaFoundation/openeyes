@@ -209,9 +209,9 @@
             </div>
             <div id="js-charts-service">
             <ul class="charts">
-                <li><a href="#" id="js-hs-app-follow-up-coming">Follow-Up</a></li>
-                <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected">Delayed</a></li>
-                <li><a href="#" id="js-hs-app-follow-up-waiting" >Waiting Time</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-coming">Followups coming due</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected">Overdue followups</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-waiting" >Waiting time for new patients</a></li>
             </ul>
             <div id="js-service-data-filter" class=""  style="display: block">
                 <h3>Filters</h3>
