@@ -28,11 +28,13 @@ namespace OEModule\OphCiExamination\models;
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property int $prescription_id
  *
  * The followings are the available model relations:
  * @property \Event $event
  * @property \User $createdUser
  * @property \User $lastModifiedUser
+ * @property \Element_OphDrPrescription_Details $prescription
  */
 class MedicationManagement extends BaseMedicationElement
 {
@@ -41,8 +43,6 @@ class MedicationManagement extends BaseMedicationElement
     public $widgetClass = 'OEModule\OphCiExamination\widgets\MedicationManagement';
 
     public static $entry_class = MedicationManagementEntry::class;
-
-    private $linked_prescription_id = null;
 
 	/**
 	 * @return string the associated database table name
@@ -64,6 +64,7 @@ class MedicationManagement extends BaseMedicationElement
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
+			'prescription_id' => 'Prescription'
 		);
 	}
 
@@ -86,6 +87,7 @@ class MedicationManagement extends BaseMedicationElement
                 'on' => "hidden = 0 AND usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."' ",
                 'order' => 'visible_entries.start_date_string_YYYYMMDD DESC, visible_entries.end_date_string_YYYYMMDD DESC, visible_entries.last_modified_date'
             ),
+			'prescription' => array(self::BELONGS_TO, \Element_OphDrPrescription_Details::class, 'prescription_id'),
         );
     }
 
@@ -197,9 +199,7 @@ class MedicationManagement extends BaseMedicationElement
 
     protected function saveEntries()
     {
-    	$this->findLinkedPrescription();
-
-        $criteria = new \CDbCriteria();
+    	$criteria = new \CDbCriteria();
         $criteria->addCondition("event_id = :event_id AND usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."'");
         $criteria->params['event_id'] = $this->event->id;
         $orig_entries = MedicationManagementEntry::model()->findAll($criteria);
@@ -253,40 +253,13 @@ class MedicationManagement extends BaseMedicationElement
         return true;
     }
 
-	/**
-	 * Returns the linked prescription of available, null othervise
-	 * Also sets $this->linked_prescription_id
-	 *
-	 * @return \Element_OphDrPrescription_Details|null
-	 */
-
-    public function findLinkedPrescription()
-	{
-		if($this->getIsNewRecord()) {
-			return null;
-		}
-
-		foreach ($this->entries as $entry) {
-			/** @var \EventMedicationUse $entry */
-			if($entry->prescription_item_id) {
-				$item = \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id);
-				/** @var \OphDrPrescription_Item $item */
-				$prescription = $item->prescription;
-				$this->linked_prescription_id = $prescription->id;
-				return $prescription;
-			}
-		}
-
-		return null;
-	}
-
     private function createOrUpdatePrescriptionEvent()
 	{
-		if(!is_null($this->linked_prescription_id)) {
+		if(!is_null($this->prescription_id)) {
 			// prescription exists
 
 			/** @var \Element_OphDrPrescription_Details $prescription */
-			$prescription = \Element_OphDrPrescription_Details::model()->findByPk($this->linked_prescription_id);
+			$prescription =$this->prescription;
 			$changed = false;
 
 			/* items to update or remove */
@@ -298,8 +271,12 @@ class MedicationManagement extends BaseMedicationElement
 
 					if($mgment_item->prescribe == 0) {
 						//manaemenet item was updated as not prescribed
-						$mgment_item->prescription_item_id = null;
-						$mgment_item->save();
+						$pitem = \EventMedicationUse::model()->findAllByAttributes(['prescription_item_id' => $prescription_Item->id]);
+						foreach ($pitem as $p) {
+							// we need to remove all links
+							$p->prescription_item_id = null;
+							$p->save();
+						}
 						$prescription_Item->delete();
 						$changed = true;
 					}
@@ -338,11 +315,19 @@ class MedicationManagement extends BaseMedicationElement
 			}
 
 			if($changed) {
-				// update prescription with message
-				$edit_reason = "Updated via examination clinical management";
-				$prescription->edit_reason_other = $edit_reason;
-				$prescription->draft = 1;
-				$prescription->save();
+				if(empty(\OphDrPrescription_Item::model()->findAllByAttributes(['event_id' => $prescription->event_id]))) {
+					// if no more items on the prescription, delete it
+					\Yii::app()->db->createCommand("UPDATE ".$this->tableName()." SET prescription_id=NULL WHERE id=".$this->id)->execute();
+					$prescription->delete();
+					$prescription->event->softDelete("Deleted via examination clinical management");
+				}
+				else {
+					// update prescription with message
+					$edit_reason = "Updated via examination clinical management";
+					$prescription->edit_reason_other = $edit_reason;
+					$prescription->draft = 1;
+					$prescription->save();
+				}
 			}
 		}
 		else {
@@ -390,9 +375,10 @@ class MedicationManagement extends BaseMedicationElement
                     \Yii::trace(print_r($orig_item->errors, true));
                 }
             }
-
-
         }
+
+        $this->prescription_id = $prescription_details->id;
+        \Yii::app()->db->createCommand("UPDATE ".$this->tableName()." SET prescription_id=".$this->prescription_id." WHERE id=".$this->id)->execute();
     }
 
     private function getPrescriptionDetails()
