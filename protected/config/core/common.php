@@ -395,7 +395,7 @@ return array(
                 ),
                 'analytics' => array(
                   'title' => 'Analytics',
-                  'uri' => '/Analytics/medicalRetina',
+                  'uri' => '/Analytics/analyticsReports',
                   'position' => 11,
                 ),
                 'worklist' => array(

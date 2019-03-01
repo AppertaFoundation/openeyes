@@ -31,10 +31,31 @@ class AnalyticsController extends BaseController
   {
     return array(
       array('allow',
-        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'updateData','allSubspecialties'),
+        'actions' => array('analyticsReports','cataract', 'medicalRetina', 'glaucoma', 'updateData','allSubspecialties'),
         'users'=> array('@')
       ),
     );
+  }
+
+  public function actionAnalyticsReports(){
+      $this->current_user = User::model()->findByPk(Yii::app()->user->id);
+      $firm_id = $this->current_user->last_firm_id;
+      $subspecialty = Firm::model()->findByPk($firm_id)->serviceSubspecialtyAssignment->subspecialty->name;
+
+      switch ($subspecialty){
+          case "Glaucoma":
+              $this->actionGlaucoma();
+              break;
+          case "Cataract":
+              $this->actionCataract();
+              break;
+          case "Medical Retina":
+              $this->actionMedicalRetina();
+              break;
+          default:
+              $this->actionAllSubspecialties();
+              break;
+      }
   }
 
     /**
