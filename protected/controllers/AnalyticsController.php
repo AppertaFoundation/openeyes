@@ -1481,8 +1481,6 @@ class AnalyticsController extends BaseController
                   ($end_date && $event_time > $end_date))
                   continue;
               $current_episode = $current_event->episode;
-              $current_subspecialty = $current_episode->getSubspecialtyID();
-              if ($current_subspecialty == $subspecialty_id || !isset($subspecialty_id)){
                   $current_patient = $current_episode->patient;
                   if ($diagnosis){
                       $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient->id);
@@ -1526,7 +1524,7 @@ class AnalyticsController extends BaseController
                           }
                       }
                   }
-              }
+
           }
       }
 
@@ -1544,10 +1542,6 @@ class AnalyticsController extends BaseController
                   continue;
               }
           }
-          $current_episode = $current_event->episode;
-          $current_subspecialty = $current_episode->getSubspecialtyID();
-          if($current_subspecialty!=$subspecialty_id && isset($subspecialty_id))
-              continue;
 
           $current_patient = $ticket->patient;
           if ($diagnosis){
@@ -1601,10 +1595,7 @@ class AnalyticsController extends BaseController
           $current_event = $referral_element->event;
           if (isset($current_event)){
               $current_episode = $current_event->episode;
-              $current_subspecialty = $current_episode->getSubspecialtyID();
-              if (($current_subspecialty !== $subspecialty_id && isset($subspecialty_id)) || !isset($current_episode->firm_id) ){
-                  continue;
-              }
+
               if (isset($this->surgeon)){
                   if ($this->surgeon !== $current_event->created_user_id){
                       continue;
