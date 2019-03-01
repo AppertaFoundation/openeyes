@@ -30,7 +30,7 @@ class IntravitrealContext extends PageObjectContext {
 		 * @var Intravitreal $Intravitreal
 		 */
 		$Intravitreal = $this->getPage ( 'Intravitreal' );
-		$Intravitreal->removeRightSide ();
+		$Intravitreal->removeSide ('Right');
 	}
 	
 	/**
@@ -42,7 +42,7 @@ class IntravitrealContext extends PageObjectContext {
 		 * @var Intravitreal $Intravitreal
 		 */
 		$Intravitreal = $this->getPage ( 'Intravitreal' );
-		$Intravitreal->addRightSide ();
+		$Intravitreal->addSide ('Right');
 	}
 	
 	/**
@@ -54,7 +54,7 @@ class IntravitrealContext extends PageObjectContext {
 		 * @var Intravitreal $Intravitreal
 		 */
 		$Intravitreal = $this->getPage ( 'Intravitreal' );
-		$Intravitreal->addLeftSide ();
+		$Intravitreal->addSide ('Left');
 	}
 	
 	/**
@@ -702,7 +702,7 @@ class IntravitrealContext extends PageObjectContext {
 		 * @var Intravitreal $Intravitreal
 		 */
 		$Intravitreal = $this->getPage ( 'Intravitreal' );
-		$Intravitreal->saveIntravitrealAndConfirm ();
+		$Intravitreal->saveAndConfirm();
 	}
 	
 	/**

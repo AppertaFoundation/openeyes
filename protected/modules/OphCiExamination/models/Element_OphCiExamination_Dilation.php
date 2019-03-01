@@ -206,6 +206,20 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
     }
 
     /**
+     * Concatenate all fields of the given treatment to create a unique id
+     *
+     * @param $treatment
+     * @return string
+     */
+    public function createUIDTreatments($treatment) {
+        $index = "";
+        foreach ($treatment as $key=>$treat) {
+            $index .= $treat;
+        }
+        return $index;
+    }
+
+    /**
      * Update the dilation treatments - depends on their only being one treatment of a particular drug on a given side.
      *
      * @param $side
@@ -226,16 +240,16 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
 
         foreach ($this->treatments as $t) {
             if ($t->side == $side) {
-                $curr_by_id[$t->drug_id] = $t;
+                $curr_by_id[$this->createUIDTreatments($t)] = $t;
             }
         }
 
         foreach ($treatments as $treat) {
-            if (!array_key_exists($treat['drug_id'], $curr_by_id)) {
+            if (!array_key_exists($this->createUIDTreatments($treat), $curr_by_id)) {
                 $t_obj = new OphCiExamination_Dilation_Treatment();
             } else {
-                $t_obj = $curr_by_id[$treat['drug_id']];
-                unset($curr_by_id[$treat['drug_id']]);
+                $t_obj = $curr_by_id[$this->createUIDTreatments($treat)];
+                unset($curr_by_id[$this->createUIDTreatments($treat)]);
             }
 
             $t_obj->attributes = $treat;

@@ -187,6 +187,11 @@ class ExaminationElementAttributesController extends BaseAdminController
 
         foreach ($attributeIdsArray as $key => $attributeId) {
             $element = $newOCEAE::model()->findByAttributes(array('attribute_id' => $attributeId));
+
+            if(Yii::app()->request->getPost('DELETE_SUBS_ALSO')){
+                $this->deleteAttributeElements($element);
+            }
+
             if ($element && $this->isAttributeElementDeletable($element)) {
                 if ($element->delete()) {
                     //echo success;
@@ -249,5 +254,9 @@ class ExaminationElementAttributesController extends BaseAdminController
     {
         $admin = new Admin(OEModule\OphCiExamination\models\OphCiExamination_Attribute::model(), $this);
         $admin->sortModel();
+    }
+
+    public function deleteAttributeElements(OEModule\OphCiExamination\models\OphCiExamination_AttributeElement $element){
+        OEModule\OphCiExamination\models\OphCiExamination_AttributeOption::model()->deleteAll('attribute_element_id = :id', [':id' => $element->id]);
     }
 }

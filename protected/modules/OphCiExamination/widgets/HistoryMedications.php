@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -209,29 +209,30 @@ class HistoryMedications extends \BaseEventElementWidget
         // setElementFromDefaults() only called when the element is a new record (BaseEventElementWidget like ~166)
         // and this is where the untracked elements are loaded into the $this->element->entries
         // so if it isn't a new element ->entries only contains tracked medications
-        if(!$this->element->isNewRecord){
+        if (!$this->element->isNewRecord) {
             if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
                 // tracking prescription items.
                 $this->element->entries = array_merge(
                     $this->element->entries,
-                    $untracked);
+                    $untracked
+                );
             }
         }
 
         $result['current'] = array();
         $result['stopped'] = array();
 
-        if($this->element->entries){
+        if ($this->element->entries) {
             $stopped = array();
             $current = array();
-            foreach($this->element->entries as $entry){
+            foreach ($this->element->entries as $entry) {
                 if ($entry->end_date && $entry->end_date < date("Y-m-d")) {
                     $stopped[] = $entry;
                 } else {
                     $current[] = $entry;
                 }
             }
-            $sorter = function($a , $b) {
+            $sorter = function ($a, $b) {
                 return $a['start_date'] >= $b['start_date'] ? -1 : 1;
             };
             uasort($current, $sorter);
@@ -243,7 +244,7 @@ class HistoryMedications extends \BaseEventElementWidget
 
         // now remove any that are no longer relevant because the prescription item
         // has been deleted
-        $filter = function($entry) {
+        $filter = function ($entry) {
             return !($entry->prescription_item_deleted || $entry->prescription_event_deleted);
         };
 

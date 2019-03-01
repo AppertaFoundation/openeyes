@@ -54,15 +54,15 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             $this->update('anaesthetic_type', array('display_order' => 3), 'name = "GA"');
             $this->update('anaesthetic_type', array('display_order' => 4), 'name = "No Anaesthetic"');
 
-            $anaesthetic_topical_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
-            $anaesthetic_LA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LA'))->queryScalar();
-            $anaesthetic_LAC_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAC'))->queryScalar();
-            $anaesthetic_LAS_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAS'))->queryScalar();
-            $anaesthetic_sedation_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Sedation'))->queryScalar();
-            $anaesthetic_GA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'GA'))->queryScalar();
+            $anaesthetic_topical_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
+            $anaesthetic_LA_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LA'))->queryScalar();
+            $anaesthetic_LAC_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAC'))->queryScalar();
+            $anaesthetic_LAS_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAS'))->queryScalar();
+            $anaesthetic_sedation_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Sedation'))->queryScalar();
+            $anaesthetic_GA_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'GA'))->queryScalar();
 
-            $delivery_topical_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_delivery')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
-            $delivery_other_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_delivery')->where('name=:name', array(':name' => 'Other'))->queryScalar();
+            $delivery_topical_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_delivery')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
+            $delivery_other_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_delivery')->where('name=:name', array(':name' => 'Other'))->queryScalar();
 
             $dataProvider = new CActiveDataProvider('Element_OphTrOperationnote_Anaesthetic');
             $iterator = new CDataProviderIterator($dataProvider);
@@ -104,7 +104,7 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                         'anaesthetic_delivery_id' => $delivery_topical_id
                     ));
 
-                    $anaesthetic_delivery_name = Yii::app()->db->createCommand()->select('name')->from('anaesthetic_delivery')->where('id=:id', array(':id' => $element->anaesthetic_delivery_id))->queryScalar();
+                    $anaesthetic_delivery_name = $this->dbConnection->createCommand()->select('name')->from('anaesthetic_delivery')->where('id=:id', array(':id' => $element->anaesthetic_delivery_id))->queryScalar();
                     $data = array(
 
                         'original_attributes' => array(
@@ -142,7 +142,7 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                        //When option GA is selected, set delivery method to (only) Other, set given by to Anaesthetist
                 } else if ($element->anaesthetic_type_id == $anaesthetic_GA_id) {
 
-                    $original_anaesthetist_name = Yii::app()->db->createCommand()->select('name')->from('anaesthetist')->where('id=:id', array(':id' => $element->anaesthetist_id))->queryScalar();
+                    $original_anaesthetist_name = $this->dbConnection->createCommand()->select('name')->from('anaesthetist')->where('id=:id', array(':id' => $element->anaesthetist_id))->queryScalar();
                     $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticType', array(
                         'et_ophtroperationnote_anaesthetic_id' => $element->id,
                         'anaesthetic_type_id' => $anaesthetic_GA_id
@@ -153,13 +153,13 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                         'anaesthetic_delivery_id' => $delivery_other_id
                     ));
 
-                    $anaesthetist_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetist')->where('name=:name', array(':name' => 'Anaesthetist'))->queryScalar();
+                    $anaesthetist_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetist')->where('name=:name', array(':name' => 'Anaesthetist'))->queryScalar();
                     $element->anaesthetist_id = $anaesthetist_id;
 
                     if( !$element->save(false) ){
                         throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($element->getErrors(), true));
                     }
-                    $anaesthetic_delivery_name = Yii::app()->db->createCommand()->select('name')->from('anaesthetic_delivery')->where('id=:id', array(':id' => $element->anaesthetic_delivery_id))->queryScalar();
+                    $anaesthetic_delivery_name = $this->dbConnection->createCommand()->select('name')->from('anaesthetic_delivery')->where('id=:id', array(':id' => $element->anaesthetic_delivery_id))->queryScalar();
                     $data = array(
                         'original_attributes' => array(
                             'Element_OphTrOperationnote_Anaesthetic' => $element->attributes,

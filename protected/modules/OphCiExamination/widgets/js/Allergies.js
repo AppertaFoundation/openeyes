@@ -100,7 +100,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     AllergiesController.prototype.isAllergiesChecked = function (value) {
         var valueChecked = false;
-        this.$table.find('input[type=radio]:checked , input[type=hidden]').each(function () {
+        this.$table.find('input[type=radio]:checked , input[type=hidden][id$="has_allergy"]').each(function () {
             if ($(this).val() === value) {
                 valueChecked = true;
                 return false;
