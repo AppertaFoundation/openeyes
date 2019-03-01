@@ -72,7 +72,7 @@ class AnalyticsController extends BaseController
             'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
         );
 
-        $follow_patient_list = $this->getFollowUps($subspecialty_id,$this->surgeon);
+        $follow_patient_list = $this->getFollowUps($subspecialty_id);
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
         $clinical_data = array(
             'title' => 'Disorders Section',
@@ -1250,7 +1250,6 @@ class AnalyticsController extends BaseController
       $service_diagnosis = Yii::app()->request->getParam('service_diagnosis');
       $custom_treatment = Yii::app()->request->getParam('custom_treatment');
       $clinical_surgeon_id = Yii::app()->request->getParam('clinical_surgeon');
-      $service_surgeon_id = Yii::app()->request->getParam('service_surgeon');
       $custom_surgeon_id = Yii::app()->request->getParam('custom_surgeon');
       $custom_procedure = Yii::app()->request->getParam('custom_procedure');
       $plot_va_change = Yii::app()->request->getParam('custom_plot');
@@ -1310,7 +1309,6 @@ class AnalyticsController extends BaseController
           'treatment'=>$custom_treatment,
           'service_diagnosis'=>$service_diagnosis,
           'clinical_surgeon_id'=>$clinical_surgeon_id,
-          'service_surgeon_id'=>$service_surgeon_id,
           'custom_surgeon_id'=>$custom_surgeon_id,
           'procedure'=>$custom_procedure,
           'plot_va_change'=> ($plot_va_change)? $plot_va_change:null,
@@ -1428,7 +1426,7 @@ class AnalyticsController extends BaseController
           'customdata' =>$disorder_data['customdata'],
           'csv_data' => $disorder_data['csv_data'],
       );
-      $service_data = $this->getFollowUps($subspecialty_id, $this->filters['service_surgeon_id'],$this->filters['date_from']/1000,$this->filters['date_to']/1000, $this->filters['service_diagnosis']);
+      $service_data = $this->getFollowUps($subspecialty_id,$this->filters['date_from']/1000,$this->filters['date_to']/1000, $this->filters['service_diagnosis']);
 
 
       $this->renderJSON(array($clinical_data, $service_data, $custom_data));
@@ -1470,7 +1468,7 @@ class AnalyticsController extends BaseController
      * Todo: split this function into small chunk of code to make it more readable
      *
      */
-  public function getFollowUps($subspecialty_id,$surgeon = null, $start_date = null, $end_date = null, $diagnosis=null){
+  public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null, $diagnosis=null){
 
       $followup_patient_list = array(
           'overdue' => array(),
@@ -1489,12 +1487,6 @@ class AnalyticsController extends BaseController
       foreach ($followup_elements as $followup_item){
           $current_event = $followup_item->event;
           if (isset($current_event->episode)){
-
-              if (isset($surgeon)){
-                  if ($surgeon !== $current_event->created_user_id){
-                      continue;
-                  }
-              }
 
               /* Calculate the coming and overdue followups */
               $event_time = Helper::mysqlDate2JsTimestamp($current_event->event_date)/1000;
