@@ -1584,7 +1584,7 @@ class AnalyticsController extends BaseController
                       continue;
                   //Follow up is overdue
                   $over_weeks = intval(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
-                  array_push($followup_csv_data['overdue'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$coming_weeks));
+                  array_push($followup_csv_data['overdue'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$over_weeks));
                   if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
                       $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
                   } else {
