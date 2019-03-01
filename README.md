@@ -41,45 +41,13 @@ Issues in the core should be logged through the [github issues system](https://g
 
 Dev Setup
 ---------
-To make life easier and also help ensure consistency in environments we use [Vagrant](http://vagrantup.com). Full setup instructions can be found in the [oe_installer repository](https://github.com/appertafoundation/oe_installer)
+To make life easier and also help ensure consistency in environments we use Docker. Full setup instructions can be found in the [appertaopeneyes docker hub repository](https://cloud.docker.com/u/appertaopeneyes/repository/docker/appertaopeneyes/web-allin1)
 
 Once the build has finished you can access OpenEyes using the link:
 
-[http://openeyes.vm](http://openeyes.vm)
+[http://localhost](http://localhost)
 
 **Note:** [Google Chrome](https://www.google.com/chrome/) is the *only* supported browser for OpenEyes.
 
-## Command Line Options
+**Note:** There are many options/variables/tags avilable in the Docker conatiner. If the options are omitted then default values are used. More information can be found on the [docker hub page](https://cloud.docker.com/u/appertaopeneyes/repository/docker/appertaopeneyes/web-allin1)
 
-(OPTIONAL) To allow for multiple environments to be built at the same time the hostname and the servername (used in the VM GUI to identify machines) can be changed via the command line as below when building the VM:
-
-	--hostname="openeyes.dev.local"
-	--servername="My Open Eyes Dev Server"
-
-Full usage:
-
-	$ vagrant --hostname="openeyes.dev.local" --servername="My Open Eyes Dev Server" up
-
-If either are omitted the default vales of "openeyes.vm"" and "OpenEyes Dev Server" are used for the hostname and servername respectively.
-
-**Note:** if the options are omitted the default values are used, the command line options have to be before the vagrant command for them to work.
-
-**Further Note:** These options must be used each time the box is brought up; at the moment vagrant does not respect the original values used, and will fall over.
-
-### Useful Vagrant Commands
-
-* `vagrant up` - Will build the environment if it hasn't already been built
-* `vagrant provision` - Will update the machine with any Ansible configuration changes
-* `vagrant status` - Will tell you the status of the box
-* `vagrant halt` - Halt's the machine (going home for the night)
-* `vagrant suspend` - Will suspend the machine
-* `vagrant destroy` - Will remove the machine build
-
-And if that's not enough there is the Vagrant [documentation](https://www.vagrantup.com/docs/) and also `vagrant help`
-
-
-Printing
---------
-
-OpenEyes now supports full PDF printing using wkhtmltopdf, but it needs to be compiled with a patched QT library in order to work properly. As of version 1.12 a pre-compiled binary
-is shipped in the oe_installer repository. However, should you need to re-compile it, you can find instructions for doing this [here](https://github.com/openeyes/appertafoundation/wiki/Compiling-WKHtmlToPDF-to-enable-PDF-printing).
