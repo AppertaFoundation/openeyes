@@ -39,7 +39,7 @@ We are beginning to evolve some documentation for developers on [our github wiki
 
 Issues in the core should be logged through the [github issues system](https://github.com/appertafoundation/OpenEyes/issues) for the moment.  Though please be aware that no service level agreement exists for the open source project and no support can be given via github. The team will do their best to fix any critical issues reported, but no gaurantees are given. For official support with SLAs, please contact our commercial partner, [ABEHR Digital](http://abehr.com)
 
-Dev Setup
+Setup
 ---------
 To make life easier and also help ensure consistency in environments we use Docker. Full setup instructions can be found in the [appertaopeneyes docker hub repository](https://cloud.docker.com/u/appertaopeneyes/repository/docker/appertaopeneyes/web-allin1)
 
