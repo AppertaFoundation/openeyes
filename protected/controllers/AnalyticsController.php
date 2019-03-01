@@ -1357,8 +1357,8 @@ class AnalyticsController extends BaseController
 
           foreach (['left','right'] as $side){
               if (isset($this->filters['plot_va_change']) && $this->filters['plot_va_change']){
-                  $this->filters['plot_va_change_initial_va_value'] = ${$side.'_va_list'}[0]['average'];
-                  $this->filters['plot_va_change_initial_second_value'] = ${$side.'_second_list'}[0]['average'];
+                  $this->filters['plot_va_change_initial_va_value'] = (empty(${$side.'_va_list'}))? null: ${$side.'_va_list'}[0]['average'];
+                  $this->filters['plot_va_change_initial_second_value'] = (empty(${$side.'_second_list'}))? null: ${$side.'_second_list'}[0]['average'];
               }
               $custom_data[] = array(
                   array(
