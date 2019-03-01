@@ -21,7 +21,7 @@ $logoHelper = new LogoHelper();
 <div class="logo">
     <?= $logoHelper->render() ?>
 </div>
-<div class="flex-layout flex-top" style="position: relative; top: 20px;">
+<div class="flex-layout flex-top" style="position: relative; top: 40px;">
     <div class="cols-left">
         <div class="to-address">
             <div class="to-address-header">
