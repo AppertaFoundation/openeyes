@@ -4,9 +4,15 @@ class m190304_110500_VA_unit_mapping_for_NOD extends CDbMigration
 {
     public function safeUp()
     {
-        $this->execute("ALTER TABLE ophciexamination_visual_acuity_unit_value ADD CONSTRAINT unique_unit_base UNIQUE (unit_id, base_value);");
+        $this->execute("CREATE TEMPORARY TABLE tmp190304 (id int);");
 
-        // If the above fails, manually delete duplicates identified with: SELECT unit_id, base_value FROM ophciexamination_visual_acuity_unit_value GROUP BY unit_id, base_value HAVING count(*) > 1;
+        $this->execute("INSERT INTO tmp190304 (SELECT max(id) FROM ophciexamination_visual_acuity_unit_value GROUP BY unit_id, base_value HAVING count(*) > 1);");
+ 
+        $this->execute("DELETE FROM ophciexamination_visual_acuity_unit_value WHERE id IN (SELECT id FROM tmp190304);");
+
+        $this->execute("DROP TABLE tmp190304;");
+
+        $this->execute("ALTER TABLE ophciexamination_visual_acuity_unit_value ADD CONSTRAINT unique_unit_base UNIQUE (unit_id, base_value);");
 
         $unit_id = $this->dbConnection->createCommand()->select('id')->from('ophciexamination_visual_acuity_unit')->where('LOWER(name) = ?', array('logmar single-letter'))->queryScalar();
 
