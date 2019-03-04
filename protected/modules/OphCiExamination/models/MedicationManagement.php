@@ -299,15 +299,22 @@ class MedicationManagement extends BaseMedicationElement
 					$prescription_Item = new \OphDrPrescription_Item();
 					$prescription_Item->event_id =$prescription->event_id;
 					$prescription_Item->setAttributes(array(
+						'usage_type' => \OphDrPrescription_Item::getUsageType(),
+						'usage_subtype' => \OphDrPrescription_Item::getUsageSubtype(),
 						'medication_id' => $entry->medication_id,
 						'form_id' => $entry->form_id,
 						'laterality' => $entry->laterality,
 						'route_id' => $entry->route_id,
 						'frequency_id' => $entry->frequency_id,
 						'duration' => $entry->duration,
-						'dose' => $entry->dose
+						'dose' => $entry->dose,
+						'start_date_string_YYYYMMDD' => $entry->start_date_string_YYYYMMDD,
+						'dispense_location_id' => 2,
+						'dispense_condition_id' => 1
 					));
-					$prescription_Item->save();
+					if(!$prescription_Item->save()) {
+						throw new \Exception("Error while saving prescription item: ".print_r($prescription_Item->errors, true));
+					}
 					$entry->prescription_item_id = $prescription_Item->id;
 					$entry->save();
 					$changed = true;
