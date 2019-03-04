@@ -2,7 +2,7 @@
 
 class m190304_110500_VA_unit_mapping_for_NOD extends CDbMigration
 {
-    public function up()
+    public function safeUp()
     {
         $this->execute("ALTER TABLE ophciexamination_visual_acuity_unit_value ADD CONSTRAINT unique_unit_base UNIQUE (unit_id, base_value);");
 
@@ -35,19 +35,9 @@ class m190304_110500_VA_unit_mapping_for_NOD extends CDbMigration
         $this->execute("INSERT IGNORE INTO ophciexamination_visual_acuity_unit_value (unit_id, value, base_value) VALUES ($unit_id, -0.80, 150);");
     }
 
-    public function down()
-    {
-        // down not supported
-    }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
     public function safeDown()
     {
+        $this->execute("ALTER TABLE ophciexamination_visual_acuity_unit_value DROP INDEX unique_unit_base;");
     }
-    */
+
 }
