@@ -185,8 +185,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 },
                 success: function (response) {
                     if (response.s === 0) {
-                        console.log(window.max_content_length);
-                        console.log(file.size);
                         new OpenEyes.UI.Dialog.Alert({
                             content: response.msg
                         }).open();
@@ -283,8 +281,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
             if ($input.val()) {
                 if (size > window.max_document_size || size > window.max_content_length) {
-                    console.log(window.max_content_length);
-                    console.log(size);
                     new OpenEyes.UI.Dialog.Alert({
                         content: 'The file you tried to upload exceeds the maximum allowed file size, which is ' + (window.max_document_size / 1048576) + ' MB'
                     }).open();
