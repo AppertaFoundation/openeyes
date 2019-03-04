@@ -17,13 +17,13 @@
         </colgroup>
         <thead>
         <tr>
-            <th class="drill_down_patient_list" style="text-align: center;vertical-align: center;">Hospital No</th>
-            <th class="drill_down_patient_list" style="text-align: center;vertical-align: center;">Name</th>
-            <th style="text-align: center;vertical-align: center;">DOB</th>
-            <th style="text-align: center;vertical-align: center;">Age</th>
-            <th style="text-align: center;vertical-align: center;">Gender</th>
-            <th style="text-align: center;vertical-align: center;">Diagnoses</th>
-            <th style="text-align: center;vertical-align: center;">Procedures</th>
+            <th class="drill_down_patient_list text-left" style="vertical-align: center;">Hospital No</th>
+            <th class="drill_down_patient_list text-left" style="vertical-align: center;">Name</th>
+            <th class="text-left" style="vertical-align: center;">DOB</th>
+            <th clsas="text-left" style="vertical-align: center;">Age</th>
+            <th clsas="text-left" style="vertical-align: center;">Gender</th>
+            <th clsas="text-left" style="vertical-align: center;">Diagnoses</th>
+            <th clsas="text-left" style="vertical-align: center;">Procedures</th>
         </tr>
         </thead>
         <tbody>
@@ -43,7 +43,7 @@
                     }
                     $procedure_lists = substr($procedure_lists,0,-1);
                 ?>
-                <td style="text-align: center;vertical-align: center;"><?=$procedure_lists; ?></td>
+                <td class="text-left" style="vertical-align: center;"><?=$procedure_lists; ?></td>
             </tr>
         <?php } ?>
         </tbody>

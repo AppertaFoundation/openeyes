@@ -13,17 +13,17 @@
     <table>
         <thead>
         <tr>
-            <th style="text-align: center;vertical-align: center;">Event No</th>
-            <th style="text-align: center;vertical-align: center;">Patient Name</th>
-            <th style="text-align: center;vertical-align: center;">Procedure</th>
+            <th class="text-left" style="vertical-align: center;">Event No</th>
+            <th class="text-left" style="vertical-align: center;">Patient Name</th>
+            <th class="text-left" style="vertical-align: center;">Procedure</th>
         </tr>
         </thead>
         <tbody>
         <?php foreach ($event_list as $event) { ?>
             <tr class="analytics-event-list-row clickable" id="<?=$event['event_id']?>" style="display: none;">
-                <td style="text-align: center;vertical-align: center;"><?= $event['event_id']; ?></td>
-                <td style="text-align: center;vertical-align: center;"><?= $event['patient_name']; ?></td>
-                <td style="text-align: center;vertical-align: center;"><?= $event['procedures']; ?></td>
+                <td class="text-left" style="vertical-align: center;"><?= $event['event_id']; ?></td>
+                <td class="text-left" style="vertical-align: center;"><?= $event['patient_name']; ?></td>
+                <td class="text-left" style="vertical-align: center;"><?= $event['procedures']; ?></td>
             </tr>
         <?php } ?>
         </tbody>
