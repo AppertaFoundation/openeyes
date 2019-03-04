@@ -4,11 +4,7 @@ class m190303_184800_add_report_views extends CDbMigration
 {
 	public function safeUp()
 	{
-	    $this->execute("CREATE
-    ALGORITHM = UNDEFINED
-    DEFINER = `openeyes`@`%`
-    SQL SECURITY DEFINER
-VIEW `v_patient_va` AS
+	    $this->execute("CREATE VIEW `v_patient_va` AS
     SELECT
         `pe`.`patient_id` AS `patient_id`,
         `eva`.`event_id` AS `event_id`,
@@ -37,11 +33,7 @@ VIEW `v_patient_va` AS
     ORDER BY `pe`.`patient_id` , `pe`.`event_date` , `pe`.`event_created_date` , `pe`.`event_last_modified_date`;");
 
 
-	    $this->execute("CREATE
-    ALGORITHM = UNDEFINED
-    DEFINER = `openeyes`@`%`
-    SQL SECURITY DEFINER
-VIEW `v_patient_va_converted` AS
+	    $this->execute("CREATE VIEW `v_patient_va_converted` AS
     SELECT
         `pe`.`patient_id` AS `patient_id`,
         `eva`.`event_id` AS `event_id`,

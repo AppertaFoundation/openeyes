@@ -4,11 +4,7 @@ class m190303_185200_add_report_views extends CDbMigration
 {
 	public function safeUp()
 	{
-	    $this->execute("CREATE
-    ALGORITHM = UNDEFINED
-    DEFINER = `openeyes`@`%`
-    SQL SECURITY DEFINER
-VIEW `v_patient_events` AS
+	    $this->execute("CREATE VIEW `v_patient_events` AS
     SELECT
         `p`.`id` AS `patient_id`,
         `ev`.`id` AS `event_id`,
@@ -43,11 +39,7 @@ VIEW `v_patient_events` AS
             AND (`ep`.`deleted` = 0));");
 
 
-	    $this->execute("CREATE
-    ALGORITHM = UNDEFINED
-    DEFINER = `openeyes`@`%`
-    SQL SECURITY DEFINER
-VIEW `v_patient_details` AS
+	    $this->execute("CREATE VIEW `v_patient_details` AS
     SELECT
         `p`.`id` AS `patient_id`,
         `p`.`hos_num` AS `hos_num`,
@@ -102,11 +94,7 @@ VIEW `v_patient_details` AS
 
 
 
-			$this->execute("CREATE
-    ALGORITHM = UNDEFINED
-    DEFINER = `openeyes`@`%`
-    SQL SECURITY DEFINER
-VIEW `v_patient_gp_details` AS
+			$this->execute("CREATE VIEW `v_patient_gp_details` AS
     SELECT
         `p`.`id` AS `patient_id`,
         `gp`.`nat_id` AS `gp_code`,
