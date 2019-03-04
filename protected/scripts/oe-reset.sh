@@ -229,6 +229,7 @@ fi
 
 if [ $cleanbase = "0" ]; then
   # Extract or copy sample DB (since v3.2 db has been zipped)
+  rm -f /tmp/openeyes_sample_data.sql >/dev/null
   [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && cp $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp || :
   [ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
 
