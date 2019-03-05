@@ -367,12 +367,12 @@ class EventMedicationUse extends BaseElement
         return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date_string_YYYYMMDD) . '</div>';
     }
 
-    public function getEndDateDisplay()
+    public function getEndDateDisplay($default = "")
     {
         if ($this->end_date) {
             return \Helper::formatFuzzyDate($this->end_date);
         } else {
-            return '';
+            return $default;
         }
     }
 

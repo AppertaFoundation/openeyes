@@ -3202,13 +3202,17 @@ class OphCiExamination_API extends \BaseAPI
         $entries = $widget->getMergedEntries();
 
         $route_filter = function ($entry) {
-            return $entry['route']['name'] == 'Eye';
+            /** @var \EventMedicationUse $entry */
+            return $entry->route->isEyeRoute();
         };
+
         $current_eye_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_eye_meds) {
             return "(no current eye medications)";
         }
+
+        /** @var \EventMedicationUse[] $current_eye_meds */
 
         ob_start();
         ?>
@@ -3228,8 +3232,8 @@ class OphCiExamination_API extends \BaseAPI
             <tbody>
                 <?php foreach ($current_eye_meds as $entry) : ?>
                     <tr>
-                        <td><?=$entry->getMedicationDisplay() ?></td>
-                        <td><?=$entry->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                        <td><?=$entry->getMedicationDisplay(true) ?></td>
+                        <td><?=$entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '')?></td>
                         <td>
                             <?php
                                 $laterality = $entry->getLateralityDisplay();
@@ -3258,13 +3262,16 @@ class OphCiExamination_API extends \BaseAPI
 
         $route_filter = function ($entry) {
             // route should be different than eye
-            return $entry['route']['name'] != 'Eye';
+            /** @var \EventMedicationUse $entry */
+            return !$entry->route->isEyeRoute();
         };
         $current_systemic_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_systemic_meds) {
             return "(no current systemic medications)";
         }
+
+		/** @var \EventMedicationUse[] $current_systemic_meds */
 
         ob_start();
         ?>
@@ -3283,8 +3290,8 @@ class OphCiExamination_API extends \BaseAPI
             <tbody>
             <?php foreach ($current_systemic_meds as $entry) : ?>
                 <tr>
-                    <td><?=$entry->getMedicationDisplay() ?></td>
-                    <td><?=$entry->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                    <td><?=$entry->getMedicationDisplay(true) ?></td>
+                    <td><?=$entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '')?></td>
                     <td>
                         <?=$entry->frequency ? $entry->frequency : '';?>
                     </td>
