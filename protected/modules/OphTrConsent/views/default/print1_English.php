@@ -91,7 +91,7 @@
             </tr>
         </tbody>
     </table>
-    <h2>To be retained in patient's notes</h2>
+    <h2 class="pageBreak">To be retained in patient's notes</h2>
     <?php for ($i = 0; $i < 2; ++$i) { ?>
             <?php if($i == 1){ ?>
                 <div class="break"></div>
