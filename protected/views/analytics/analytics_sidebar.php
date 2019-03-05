@@ -45,8 +45,9 @@
                         </li>
                     <?php }?>
                 </ul>
-            <h3>Filters</h3>
-            <div id="js-clinical-data-filter-diagnosis" class="js-hs-filter-analytics-clinical"  style="display: block">
+
+                <div id="js-clinical-data-filter-diagnosis" class="js-hs-filter-analytics-clinical"  style="display: block">
+                    <h3>Filters</h3>
                     <div class="clinical-filters custom-filters flex-layout">
                         <div class="clinical-filters flex-layout cols-9">
                             <ul class="filters-selected cols-9">
@@ -73,8 +74,9 @@
                             </ul>
                         </div>
                         <?php if (isset($user_list)) { ?>
-                        <div class="flex-item-bottom">
-                            <div class="oe-filter-options" id="oe-filter-options-clinical-filters"
+                        <div class="flex-item" style="position: relative; top: -75px; left: -175px;">
+                            <div class="oe-filter-options"
+                                 id="oe-filter-options-clinical-filters"
                                  data-filter-id="clinical-filters"><!-- simple button to popup filter options -->
                                 <button class="oe-filter-btn green hint" id="oe-filter-btn-clinical-filters">
                                     <i class="oe-i filter pro-theme"></i>
@@ -104,8 +106,115 @@
                     </div>
                 </div>
             <?php if($specialty !== 'All'){?>
-                <div id="js-clinical-data-filter-custom" class="js-hs-filter-analytics-clinical" style="display: none;">
-                    <div class="custom-filters flex-layout">
+                <div id="js-clinical-data-filter-custom"
+                     class="js-hs-filter-analytics-clinical"
+                     style="display: none; ">
+                    <div class="flex-item" style="position: relative; top: -25px; left: 100px;"><!-- OE UI Filter options (id: custom-filters) -->
+                        <div class="oe-filter-options" id="oe-filter-options-custom-filters"
+                             data-filter-id="custom-filters"><!-- simple button to popup filter options -->
+                            <button class="oe-filter-btn green hint"
+                                    id="oe-filter-btn-custom-filters">
+                                <i class="oe-i filter pro-theme"></i>
+                            </button>
+                            <!-- Filter options. Popup is JS positioned: top-left, top-right, bottom-left, bottom-right -->
+                            <div class="filter-options-popup" id="filter-options-popup-custom-filters"
+                                 style="display: none;">
+                                <!-- provide close (for touch) -->
+                                <div class="close-icon-btn">
+                                    <i class="oe-i remove-circle medium pro-theme"></i>
+                                </div>
+                                <div class="flex-layout flex-top">
+                                    <?php if ($specialty !== "Cataract") {
+                                        if ($specialty === 'Medical Retina') {
+                                            $analytics_treatment = array('Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex');
+                                            $analytics_diagnoses = array('AMD(wet)', 'BRVO', 'CRVO', 'DMO');
+                                            ?>
+                                            <div class="options-group" data-filter-ui-id="js-chart-filter-treatment">
+                                                <h3>Treatment</h3>
+                                                <ul class="btn-list">
+                                                    <li class="selected">All</li>
+                                                    <?php foreach ($analytics_treatment as $treatment) { ?>
+                                                        <li><?= $treatment; ?></li>
+                                                    <?php } ?>
+                                                </ul>
+                                            </div>
+                                            <div class="options-group" data-filter-ui-id="js-chart-filter-plot">
+                                                <h3>Plot</h3>
+                                                <ul class="btn-list">
+                                                    <li class="selected">VA (absolute)</li>
+                                                    <li>VA (change)</li>
+                                                </ul>
+                                            </div><!-- options-group -->
+                                            <div class="options-group" data-filter-ui-id="js-chart-filter-protocol">
+                                                <h3>Protocol</h3>
+                                                <ul class="btn-list">
+                                                    <li class="selected">ALL</li>
+                                                </ul>
+                                            </div><!-- options-group -->
+                                        <?php } elseif ($specialty === 'Glaucoma') {
+                                            $analytics_diagnoses = array('Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension');
+                                            $analytics_procedures = array('Cataract Extraction','Trabeculectomy', 'Aqueous Shunt','Cypass','SLT','Cyclodiode');
+                                            ?>
+                                            <div class="options-group" data-filter-ui-id="js-chart-filter-procedure">
+                                                <h3>Procedures</h3>
+                                                <ul class="btn-list">
+                                                    <li class="selected">All</li>
+                                                    <?php foreach ($analytics_procedures as $procedure) { ?>
+                                                        <li><?= $procedure; ?></li>
+                                                    <?php } ?>
+                                                </ul>
+                                            </div><!-- options-group -->
+                                            <div class="options-group" data-filter-ui-id="js-chart-filter-plot">
+                                                <h3>Plot</h3>
+                                                <ul class="btn-list">
+                                                    <li class="selected">VA (absolute)</li>
+                                                    <li>VA (change)</li>
+                                                </ul>
+                                            </div><!-- options-group -->
+                                        <?php } ?>
+
+                                        <?php if (isset($user_list)) { ?>
+                                            <div class="options-group" data-filter-ui-id="js-chart-filter-clinical-surgeon-custom">
+                                                <h3>Users</h3>
+                                                <ul class="btn-list">
+                                                    <li class="selected">All</li>
+                                                    <?php foreach ($user_list as $user) { ?>
+                                                        <li><?= $user->getFullName(); ?></li>
+                                                    <?php } ?>
+                                                </ul>
+                                            </div><!-- options-group -->
+                                        <?php } ?>
+
+                                        <div class="options-group" data-filter-ui-id="js-chart-filter-diagnosis">
+                                            <h3>Diagnosis</h3>
+                                            <ul class="btn-list js-multi-list">
+                                                <li class="selected">All</li>
+                                                <?php foreach ($analytics_diagnoses as $diagnosis) { ?>
+                                                    <li><?= $diagnosis; ?></li>
+                                                <?php } ?>
+                                            </ul>
+                                        </div><!-- options-group -->
+                                    <?php } ?>
+                                    <div class="options-group" data-filter-ui-id="js-chart-filter-age">
+                                        <h3>Age</h3>
+                                        <ul class="btn-list">
+                                            <li class="selected">All</li>
+                                            <li>Range</li>
+                                        </ul>
+                                    </div><!-- options-group -->
+                                    <div class="options-group" data-filter-ui-id="js-chart-filter-eye-side">
+                                        <h3>Eye</h3>
+                                        <ul class="btn-list" id="js-btn-selected-eye">
+                                            <li class="selected">Right</li>
+                                            <li>Left</li>
+                                        </ul>
+                                    </div>
+                                </div><!-- .flex -->
+                            </div><!-- filter-options-popup -->
+                        </div><!-- .oe-filter-options -->
+                    </div>
+                    <h3>Filters</h3>
+                    <div class="custom-filters">
                         <ul class="filters-selected cols-9">
                             <?php if(isset($user_list)){?>
                                 <li>User:
@@ -148,110 +257,6 @@
                                 <li>Procedure: <span id="js-chart-filter-procedure" class="js-hs-filters js-hs-custom-gl-procedure" data-name="custom_procedure">All</span></li>
                             <?php } ?>
                         </ul>
-
-                        <div class="flex-item"><!-- OE UI Filter options (id: custom-filters) -->
-                            <div class="oe-filter-options" id="oe-filter-options-custom-filters"
-                                 data-filter-id="custom-filters"><!-- simple button to popup filter options -->
-                                <button class="oe-filter-btn green hint" id="oe-filter-btn-custom-filters">
-                                    <i class="oe-i filter pro-theme"></i>
-                                </button>
-                                <!-- Filter options. Popup is JS positioned: top-left, top-right, bottom-left, bottom-right -->
-                                <div class="filter-options-popup" id="filter-options-popup-custom-filters"
-                                     style="display: none;">
-                                    <!-- provide close (for touch) -->
-                                    <div class="close-icon-btn">
-                                        <i class="oe-i remove-circle medium pro-theme"></i>
-                                    </div>
-                                    <div class="flex-layout flex-top">
-                                        <?php if ($specialty !== "Cataract") {
-                                            if ($specialty === 'Medical Retina') {
-                                                $analytics_treatment = array('Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex');
-                                                $analytics_diagnoses = array('AMD(wet)', 'BRVO', 'CRVO', 'DMO');
-                                                ?>
-                                                <div class="options-group" data-filter-ui-id="js-chart-filter-treatment">
-                                                    <h3>Treatment</h3>
-                                                    <ul class="btn-list">
-                                                        <li class="selected">All</li>
-                                                        <?php foreach ($analytics_treatment as $treatment) { ?>
-                                                            <li><?= $treatment; ?></li>
-                                                        <?php } ?>
-                                                    </ul>
-                                                </div>
-                                                <div class="options-group" data-filter-ui-id="js-chart-filter-plot">
-                                                    <h3>Plot</h3>
-                                                    <ul class="btn-list">
-                                                        <li class="selected">VA (absolute)</li>
-                                                        <li>VA (change)</li>
-                                                    </ul>
-                                                </div><!-- options-group -->
-                                                <div class="options-group" data-filter-ui-id="js-chart-filter-protocol">
-                                                    <h3>Protocol</h3>
-                                                    <ul class="btn-list">
-                                                        <li class="selected">ALL</li>
-                                                    </ul>
-                                                </div><!-- options-group -->
-                                            <?php } elseif ($specialty === 'Glaucoma') {
-                                                $analytics_diagnoses = array('Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension');
-                                                $analytics_procedures = array('Cataract Extraction','Trabeculectomy', 'Aqueous Shunt','Cypass','SLT','Cyclodiode');
-                                                ?>
-                                                <div class="options-group" data-filter-ui-id="js-chart-filter-procedure">
-                                                    <h3>Procedures</h3>
-                                                    <ul class="btn-list">
-                                                        <li class="selected">All</li>
-                                                        <?php foreach ($analytics_procedures as $procedure) { ?>
-                                                            <li><?= $procedure; ?></li>
-                                                        <?php } ?>
-                                                    </ul>
-                                                </div><!-- options-group -->
-                                                <div class="options-group" data-filter-ui-id="js-chart-filter-plot">
-                                                    <h3>Plot</h3>
-                                                    <ul class="btn-list">
-                                                        <li class="selected">VA (absolute)</li>
-                                                        <li>VA (change)</li>
-                                                    </ul>
-                                                </div><!-- options-group -->
-                                            <?php } ?>
-
-                                            <?php if (isset($user_list)) { ?>
-                                                <div class="options-group" data-filter-ui-id="js-chart-filter-clinical-surgeon-custom">
-                                                    <h3>Users</h3>
-                                                    <ul class="btn-list">
-                                                        <li class="selected">All</li>
-                                                        <?php foreach ($user_list as $user) { ?>
-                                                            <li><?= $user->getFullName(); ?></li>
-                                                        <?php } ?>
-                                                    </ul>
-                                                </div><!-- options-group -->
-                                            <?php } ?>
-
-                                            <div class="options-group" data-filter-ui-id="js-chart-filter-diagnosis">
-                                                <h3>Diagnosis</h3>
-                                                <ul class="btn-list js-multi-list">
-                                                    <li class="selected">All</li>
-                                                    <?php foreach ($analytics_diagnoses as $diagnosis) { ?>
-                                                        <li><?= $diagnosis; ?></li>
-                                                    <?php } ?>
-                                                </ul>
-                                            </div><!-- options-group -->
-                                        <?php } ?>
-                                        <div class="options-group" data-filter-ui-id="js-chart-filter-age">
-                                            <h3>Age</h3>
-                                            <ul class="btn-list">
-                                                <li class="selected">All</li>
-                                                <li>Range</li>
-                                            </ul>
-                                        </div><!-- options-group -->
-                                        <div class="options-group" data-filter-ui-id="js-chart-filter-eye-side">
-                                            <h3>Eye</h3>
-                                            <ul class="btn-list" id="js-btn-selected-eye">
-                                                <li class="selected">Right</li>
-                                                <li>Left</li>
-                                            </ul>
-                                        </div>
-                                    </div><!-- .flex -->
-                                </div><!-- filter-options-popup -->
-                            </div><!-- .oe-filter-options -->
-                        </div>
                     </div><!-- .chart-filters -->
                 </div><!-- #js-custom-data-filter -->
             <?php } ?>
@@ -263,17 +268,8 @@
                 <li><a href="#" id="js-hs-app-follow-up-waiting" class="js-plot-display-label">Waiting Time</a></li>
             </ul>
             <div id="js-service-data-filter" class="" style="display: block">
-                <h3>Filters</h3>
-                <div class="service-filters custom-filters flex-layout">
-                    <div class="service-filters flex-layout cols-9">
-                        <ul class="filters-selected cols-9">
-                            <li><input type="checkbox" id="js-chart-filter-service-unbooked-only" checked><span>Unbooked Only</span>
-                            </li>
-                            <li>Diagnosis: <span id="js-chart-filter-service-diagnosis" class="js-hs-filters"
-                                                 data-name="service_diagnosis">All</span></li>
-                        </ul>
-                    </div>
-                    <div class="flex-item-bottom"><!-- OE UI Filter options (id: service-filters) -->
+                <div class="service-filters custom-filters">
+                    <div class="flex-item" style="position: relative; top: -25px; left: 100px;"><!-- OE UI Filter options (id: service-filters) -->
                         <div class="oe-filter-options" id="oe-filter-options-service-filters"
                              data-filter-id="service-filters"><!-- simple button to popup filter options -->
                             <button class="oe-filter-btn green hint" id="oe-filter-btn-service-filters">
@@ -299,6 +295,19 @@
                                 </div><!-- .flex -->
                             </div><!-- filter-options-popup -->
                         </div><!-- .oe-filter-options -->
+                    </div>
+                    <h3>Filters</h3>
+                    <div class="service-filters  flex-layout">
+                        <ul class="filters-selected cols-9">
+                            <li>
+                                <input type="checkbox" id="js-chart-filter-service-unbooked-only" checked>
+                                <span>Unbooked Only</span>
+                            </li>
+                            <li>Diagnosis:
+                                <span id="js-chart-filter-service-diagnosis" class="js-hs-filters"
+                                                 data-name="service_diagnosis">All</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
