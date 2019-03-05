@@ -298,12 +298,12 @@ class ElementLetter extends BaseEventTypeElement
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options[Yii::app()->params['gp_label'].$patient->gp_id] = $patient->gp->contact->fullname.' ('.Yii::app()->params['gp_label'].')';
+                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' ('.Yii::app()->params['gp_label'].')';
             } else {
-                $options[Yii::app()->params['gp_label'].$patient->gp_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
+                $options['Gp'.$patient->gp_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
             }
             if (!$patient->practice || !@$patient->practice->contact->address) {
-                $options[Yii::app()->params['gp_label'].$patient->gp_id] .= ' - NO ADDRESS';
+                $options['Gp'.$patient->gp_id] .= ' - NO ADDRESS';
             }
         } else {
             if ($patient->practice) {
