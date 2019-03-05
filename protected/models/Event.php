@@ -367,7 +367,7 @@ class Event extends BaseActiveRecordVersioned
             }
 
             foreach ($this->getElements() as $element) {
-                $element->softDelete();
+                $element->delete();
             }
             if (!$this->save()) {
                 throw new Exception('Unable to mark event deleted: ' . print_r($this->event->getErrors(), true));

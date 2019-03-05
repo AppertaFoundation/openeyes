@@ -375,6 +375,11 @@ class BaseEventTypeElement extends BaseElement
     {
     }
 
+    public function delete()
+    {
+        $this->deleteAll('event_id = :event_id', array(':event_id' => $this->event_id));
+    }
+
     /**
      * Returns true if the specified multiselect relation has the value $value_string.
      */
