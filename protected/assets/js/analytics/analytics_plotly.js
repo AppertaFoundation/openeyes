@@ -31,6 +31,7 @@ var analytics_layout = {
         showgrid: false,
         /*Ticks setting*/
         ticks: 'outside',
+        tickformat: ',d',
         showticklabels: true,
         rangemode: 'tozero',
         showline: true,
@@ -43,6 +44,7 @@ var analytics_layout = {
     yaxis:{
         /*Ticks setting*/
         ticks: 'outside',
+        tickformat: ',d',
         showgrid: true,
         gridcolor: '#aaa',
         showticklabels: true,

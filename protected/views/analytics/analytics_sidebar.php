@@ -23,9 +23,26 @@
             <input type="hidden" id="side-bar-subspecialty-id" value="<?= $specialty == 'Glaucoma'? 1:0; ?>">
             <div id="js-charts-clinical" style="display: none;">
                 <ul class="charts">
-                    <li><a href="#" id="js-hs-clinical-diagnoses" data-plotid="#js-hs-chart-analytics-clinical-diagnosis" data-filterid="#js-clinical-data-filter-diagnosis" class="selected clinical-plot-button js-plot-display-label">Diagnoses</a></li>
+                    <li>
+                        <a href="#"
+                           id="js-hs-clinical-diagnoses"
+                           data-plotid="#js-hs-chart-analytics-clinical-diagnosis"
+                           data-filterid="#js-clinical-data-filter-diagnosis"
+                           class="selected clinical-plot-button js-plot-display-label">
+                            Diagnoses
+                        </a>
+                    </li>
                     <?php if ($specialty !== "All"){?>
-                        <li><a href="#" id="js-hs-clinical-custom" data-plotid="#js-hs-chart-analytics-clinical-others" data-filterid="#js-clinical-data-filter-custom" class="clinical-plot-button js-plot-display-label">Change In Vision</a></li>
+                        <li>
+                            <a href="#"
+                               id="js-hs-clinical-custom"
+                               data-plotid="#js-hs-chart-analytics-clinical-others"
+                               data-filterid="#js-clinical-data-filter-custom"
+                               class="clinical-plot-button js-plot-display-label">
+                                <?php if ($specialty == "Glaucoma"){ echo "Vision-IOP"; }
+                                 if ($specialty == "Medical Retina"){ echo "Vision-CRT"; }?>
+                            </a>
+                        </li>
                     <?php }?>
                 </ul>
             <h3>Filters</h3>
@@ -34,11 +51,25 @@
                         <div class="clinical-filters flex-layout cols-9">
                             <ul class="filters-selected cols-9">
                                 <?php if(isset($user_list)){?>
-                                    <li>User: <span class="service-selected js-hs-filters js-hs-surgeon" id="js-chart-filter-clinical-surgeon-diagnosis" data-name="clinical_surgeon">All</span></li>
-                                <?php }else{?>
-                                    <li>User: <span class="service-selected js-hs-filters js-hs-surgeon" id="js-chart-filter-clinical-surgeon-diagnosis" data-name="clinical_surgeon"><?=$current_user->getFullName();?></span></li>
-                                <?php }?>
-                                <li><input type="checkbox" id="js-chart-filter-service-unbooked-only" checked><span>Unbooked Only</span></li>
+                                    <li>User:
+                                        <span class="service-selected js-hs-filters js-hs-surgeon"
+                                              id="js-chart-filter-clinical-surgeon-diagnosis"
+                                              data-name="clinical_surgeon">All</span>
+                                    </li>
+                                <?php } else { ?>
+                                    <li>User:
+                                        <span class="service-selected js-hs-filters js-hs-surgeon"
+                                              id="js-chart-filter-clinical-surgeon-diagnosis"
+                                              data-name="clinical_surgeon">
+                                            <?=$current_user->getFullName();?>
+                                        </span>
+                                    </li>
+                                <?php } ?>
+                                <li>
+                                    <input type="checkbox"
+                                           id="js-chart-filter-service-unbooked-only" checked>
+                                    <span>Unbooked Only</span>
+                                </li>
                             </ul>
                         </div>
                         <?php if (isset($user_list)) { ?>
@@ -77,10 +108,20 @@
                     <div class="custom-filters flex-layout">
                         <ul class="filters-selected cols-9">
                             <?php if(isset($user_list)){?>
-                                <li>User: <span class="service-selected js-hs-filters js-hs-surgeon" id="js-chart-filter-clinical-surgeon-custom" data-name="custom_surgeon">All</span></li>
+                                <li>User:
+                                    <span class="service-selected js-hs-filters js-hs-surgeon"
+                                          id="js-chart-filter-clinical-surgeon-custom"
+                                          data-name="custom_surgeon">All</span>
+                                </li>
                             <?php }else{?>
-                                <li>User: <span class="service-selected js-hs-filters js-hs-surgeon" id="js-chart-filter-clinical-surgeon-custom" data-name="custom_surgeon"><?=$current_user->getFullName();?></span></li>
-                            <?php }?>
+                                <li>User:
+                                    <span class="service-selected js-hs-filters js-hs-surgeon"
+                                          id="js-chart-filter-clinical-surgeon-custom"
+                                          data-name="custom_surgeon">
+                                        <?=$current_user->getFullName();?>
+                                    </span>
+                                </li>
+                            <?php } ?>
                             <li>Eye: <span id="js-chart-filter-eye-side">Right</span></li>
                             <li id="js-chart-filter-age-all">Ages: <span id="js-chart-filter-age"  data-name="custom_age_all">All</span></li>
                             <li id="js-chart-filter-age-range" style="display: none;">Ages:
@@ -101,13 +142,14 @@
                                 <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-mr-diagnosis" data-name="custom_diagnosis">All</span></li>
                                 <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters js-hs-custom-mr-plot-type" data-name="custom_plot">VA (absolute)</span></li>
                                 <li>Protocol: <span id="js-chart-filter-protocol" class="js-hs-filters" data-name="custom_protocol">ALL</span></li>
-                            <?php }else{?>
+                            <?php }else{ ?>
                                 <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-gl-diagnosis" data-name="custom_diagnosis">All</span></li>
+                                <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters js-hs-custom-mr-plot-type" data-name="custom_plot">VA (absolute)</span></li>
                                 <li>Procedure: <span id="js-chart-filter-procedure" class="js-hs-filters js-hs-custom-gl-procedure" data-name="custom_procedure">All</span></li>
                             <?php } ?>
                         </ul>
 
-                        <div class="flex-item-bottom"><!-- OE UI Filter options (id: custom-filters) -->
+                        <div class="flex-item"><!-- OE UI Filter options (id: custom-filters) -->
                             <div class="oe-filter-options" id="oe-filter-options-custom-filters"
                                  data-filter-id="custom-filters"><!-- simple button to popup filter options -->
                                 <button class="oe-filter-btn green hint" id="oe-filter-btn-custom-filters">
@@ -159,6 +201,13 @@
                                                         <?php foreach ($analytics_procedures as $procedure) { ?>
                                                             <li><?= $procedure; ?></li>
                                                         <?php } ?>
+                                                    </ul>
+                                                </div><!-- options-group -->
+                                                <div class="options-group" data-filter-ui-id="js-chart-filter-plot">
+                                                    <h3>Plot</h3>
+                                                    <ul class="btn-list">
+                                                        <li class="selected">VA (absolute)</li>
+                                                        <li>VA (change)</li>
                                                     </ul>
                                                 </div><!-- options-group -->
                                             <?php } ?>
@@ -277,7 +326,7 @@
 
         <div class="extra-actions">
             <button id="js-download-csv" data-value="aaa" class="pro-theme cols-full">Download (CSV)</button>
-            <button id="js-download-anonymized-csv" class="pro-theme cols-full">Download (CSV - Anonymized)</button>
+            <button id="js-download-anonymized-csv" class="pro-theme cols-full">Download (CSV - Anonymised)</button>
         </div>
 
     </div><!-- .specialty-options -->
