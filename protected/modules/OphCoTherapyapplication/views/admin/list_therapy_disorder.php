@@ -85,6 +85,9 @@
             'default' => false,
             'callback' => 'OphCoTherapyapplication_AddDiagnosis',
             'placeholder' => 'type the first few characters to search',
+        'layoutColumns' => array(
+            'field' => 12,
+        )
     ));
 
     echo CHtml::hiddenField('disorder_id', '', array('id' => 'disorder_id'));
@@ -92,4 +95,4 @@
     $this->endWidget();
     ?>
 </div>
-</div>
+</div
