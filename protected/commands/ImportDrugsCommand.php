@@ -291,7 +291,7 @@ EOD;
     }
 
     public function getXmlNodeInfo($type){
-        return $this->nodes[$type];
+        return array_key_exists($type, $this->nodes) ? $this->nodes[$type] : false;
     }
 
     public function createInsertSqlCommands($xmlArray,$type,$tablesData) {
@@ -300,7 +300,10 @@ EOD;
 
         $sqlCommands = [];
 
-        $nodeIinfo = $this->getXmlNodeInfo($type);
+        if(!$nodeIinfo = $this->getXmlNodeInfo($type)) {
+        	return false;
+		}
+
         $parentNode = $nodeIinfo[0];
         $subNode = $nodeIinfo[1];
 
@@ -368,18 +371,12 @@ EOD;
         $xmlArray = $parser->getOutput();
         unset($parser);
 
-        $sqlCommands = $this->createInsertSqlCommands($xmlArray,$type,$tablesData);
-
-        foreach($sqlCommands as $sqlQuery){
-            $sqlCommand = Yii::app()->db->createCommand($sqlQuery);
-            $sqlCommand->execute();
-        }
-    }
-
-    public function copyDrugsToOE(){
-        $sqlCommand = "
-        
-        ";
+        if($sqlCommands = $this->createInsertSqlCommands($xmlArray,$type,$tablesData)) {
+			foreach ($sqlCommands as $sqlQuery) {
+				$sqlCommand = Yii::app()->db->createCommand($sqlQuery);
+				$sqlCommand->execute();
+			}
+		}
     }
 
     // ----- FUNCTIONS ----------------------------------------------------------------------------------------
