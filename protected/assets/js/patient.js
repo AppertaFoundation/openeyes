@@ -92,3 +92,15 @@ function addGpItem(wrapper_id, ui){
     $wrapper.show();
     $wrapper.find('.hidden_id').val(JsonObj.id);
 }
+
+$(document).ready(function ()
+{
+  highLightError("Patient_gp_id_em_","Practitioner cannot be blank",'#autocomplete_gp_id');
+  highLightError("Patient_practice_id_em_","Practice cannot be blank",'#autocomplete_practice_id');
+});
+
+function highLightError(elementId, containText,highLightFiled){
+  if(document.getElementById(elementId).innerHTML.includes(containText)){
+    $(highLightFiled).addClass("error");
+  }
+}

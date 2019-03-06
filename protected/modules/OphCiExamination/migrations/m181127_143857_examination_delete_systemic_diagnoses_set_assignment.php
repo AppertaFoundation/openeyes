@@ -12,7 +12,7 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
             'ophciexamination_systemic_diagnoses_set',
             'id');
 
-        $assignments = Yii::app()->db->createCommand()
+        $assignments = $this->dbConnection->createCommand()
             ->select()
             ->from('ophciexamination_systemic_diagnoses_set_assignment')
             ->queryAll();
@@ -53,7 +53,7 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
                 ":ophciexamination_systemic_diagnoses_entry_id"=>$systemic_diagnoses_entry->id,
                 ':systemic_diagnoses_set_id' => $systemic_diagnoses_entry->set_id
             ];
-            Yii::app()->db->createCommand($sql)->execute($parameters);
+            $this->dbConnection->createCommand($sql)->execute($parameters);
 //
         }
 
