@@ -27,6 +27,10 @@ class Report
      * @var string
      */
     protected $to;
+    /**
+     * @var boolean
+     */
+    public $allSurgeons;
 
     /**
      * Template to render.
@@ -122,7 +126,6 @@ class Report
     public function __construct($app)
     {
         $this->app = $app;
-
         if ($app->getRequest()->getQuery('from', '')) {
             $from = new DateTime($app->getRequest()->getQuery('from', ''));
             $this->from = $from->format('Y-m-d');
@@ -132,6 +135,11 @@ class Report
             $to = new DateTime($app->getRequest()->getQuery('to', ''));
             $this->to = $to->format('Y-m-d');
         }
+
+        if ($app->getRequest()->getQuery('allsurgeons','')){
+            $this->allSurgeons = true;
+        }
+
         $this->command = $app->db->createCommand();
         $this->surgeon = $app->user->id;
     }

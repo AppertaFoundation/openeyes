@@ -121,6 +121,8 @@ $config = array(
         'OphInGeneticresults',*/
         'OphCoDocument',
         'OphCiDidNotAttend',
+        'OECaseSearch',
+        'OETrial',
     ),
 
     'params' => array(
