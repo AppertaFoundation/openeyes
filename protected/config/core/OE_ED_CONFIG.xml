@@ -1055,6 +1055,16 @@
       <TITLE>Continuous Corneal Suture</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealThinning</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal Thinning</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PeripheralVascularisation</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Peripheral Vascularisation</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
   </DOODLE_LIST>
   <DOODLE_USAGE_LIST>
     <DOODLE_USAGE>
@@ -3968,6 +3978,18 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/ContinuousCornealSuture.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>ContinuousCornealSuture</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Corneal Thinning</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/CornealThinning.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CornealThinning</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Peripheral Vascularisation</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/PeripheralVascularisation.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>PeripheralVascularisation</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
           </INDEX_LIST>
         </INDEX>
