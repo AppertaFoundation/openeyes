@@ -52,12 +52,13 @@ class PrescriptionCommonController extends DefaultController
 
     public function actionGetSetDrugs($set_id)
     {
-        $drug_set_items = DrugSetItem::model()->findAllByAttributes(array('drug_set_id' => $set_id));
+        $drug_set_items = MedicationSetItem::model()->findAllByAttributes(array('medication_set_id' => $set_id));
         $drugs = [];
-        foreach ($drug_set_items as $drug_set_item) {
-            $drug = $drug_set_item->drug;
+        /** @var MedicationSetItem[] $drug_set_items */
+		foreach ($drug_set_items as $drug_set_item) {
+            $drug = $drug_set_item->medication;
             $drugs[] = [
-                'label' => $drug->name,
+                'label' => $drug->getLabel(),
                 'allergies' => array_map(function ($allergy) {
                     return $allergy->id;
                 }, $drug->allergies),

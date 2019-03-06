@@ -31,6 +31,7 @@
  * @property MedicationSearchIndex[] $medicationSearchIndexes
  * @property MedicationAttributeOption[] $medicationAttributeOptions
  * @property MedicationAttributeAssignment[] $medicationAttributeAssignments
+ * @property \OEModule\OphCiExamination\models\AllergyEntry[] $allergies
  */
 class Medication extends BaseActiveRecordVersioned
 {
@@ -81,7 +82,8 @@ class Medication extends BaseActiveRecordVersioned
 			'medicationSetItems' => array(self::HAS_MANY, MedicationSetItem::class, 'medication_id'),
 			'medicationSearchIndexes' => array(self::HAS_MANY, MedicationSearchIndex::class, 'medication_id'),
             'medicationAttributeAssignments' => array(self::HAS_MANY, MedicationAttributeAssignment::class, 'medication_id'),
-            'medicationAttributeOptions' => array(self::HAS_MANY, MedicationAttributeOption::class, 'medication_attribute_assignment(medication_id,medication_attribute_option_id)')
+            'medicationAttributeOptions' => array(self::HAS_MANY, MedicationAttributeOption::class, 'medication_attribute_assignment(medication_id,medication_attribute_option_id)'),
+			'allergies' => array(self::MANY_MANY, \OEModule\OphCiExamination\models\AllergyEntry::class, 'medication_allergy_assignment(medication_id,allergy_id)'),
 		);
 	}
 

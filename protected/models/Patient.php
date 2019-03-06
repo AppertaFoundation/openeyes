@@ -720,17 +720,17 @@ class Patient extends BaseActiveRecordVersioned
         }
     }
 
-    public function getPatientDrugAllergy($drug_id)
+    public function getPatientDrugAllergy($medication_id)
     {
         $criteria = new CDbCriteria();
         $criteria->select ='t.name';
-        $criteria->condition= 'paa.patient_id = :patient_id AND dra.drug_id = :drug_id';
+        $criteria->condition= 'paa.patient_id = :patient_id AND maa.medication_id = :medication_id';
 
         $join = array();
         $join[] = 'JOIN patient_allergy_assignment paa ON paa.allergy_id = t.id';
-        $join[] = 'JOIN drug_allergy_assignment dra ON dra.allergy_id = t.id';
+        $join[] = 'JOIN medication_allergy_assignment maa ON maa.allergy_id = t.id';
         $criteria->join = implode(' ' , $join);
-        $criteria->params = array(':patient_id' => $this->id , ':drug_id' => $drug_id);
+        $criteria->params = array(':patient_id' => $this->id , ':medication_id' => $medication_id);
 
         return Allergy::model()->findAll($criteria);
     }

@@ -143,6 +143,10 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
 
     var prescriptionElementDrugTypes = <?= CJSON::encode($drugTypes) ?>;
 
+	<?php if(isset($this->patient)){ ?>
+    var patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
+	<?php } ?>
+
 </script>
 
 <?php
@@ -155,6 +159,7 @@ $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application
 Yii::app()->getClientScript()->registerScript('scr_controllerName',
     "controllerName = '" . get_class(Yii::app()->getController()) . "';", CClientScript::POS_HEAD);
 
+Yii::app()->clientScript->registerScriptFile($modulePath . '/js/allergicDrugs.js', CClientScript::POS_END);
 Yii::app()->clientScript->registerScriptFile($modulePath . '/js/defaultprescription.js', CClientScript::POS_END);
 
 ?>

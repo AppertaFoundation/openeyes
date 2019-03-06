@@ -33,7 +33,7 @@
       <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][usage_type]" value="<?php echo OphDrPrescription_Item::getUsageType(); ?>" />
       <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][usage_subtype]" value="<?php echo OphDrPrescription_Item::getUsageSubType(); ?>" />
       <?php if (isset($patient) && $patient->hasDrugAllergy($item->medication_id)): ?>
-      <i class="oe-i warning small pad js-has-tooltip" data-tooltip-content="Allergic to <?= implode(',',$patient->getPatientDrugAllergy($item->drug_id))?>"></i>
+      <i class="oe-i warning small pad js-has-tooltip" data-tooltip-content="Allergic to <?= implode(',',$patient->getPatientDrugAllergy($item->medication_id))?>"></i>
       <?php endif; ?>
       <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
       <?php echo $item->medication->preferred_term; ?>
