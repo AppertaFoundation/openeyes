@@ -21,7 +21,7 @@ $logoHelper = new LogoHelper();
 <div class="logo">
     <?= $logoHelper->render() ?>
 </div>
-<div style="position: relative; top: 60px;">
+<div style="position: relative; top: 30px;">
     <div style="float: left;">
         <div class="to-address">
             <div class="to-address-header">
