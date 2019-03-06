@@ -27,10 +27,17 @@
  * @property User $lastModifiedUser
  * @property User $createdUser
  * @property MedicationSet[] $medicationSets
+ * @property MedicationSetItem[] $medicationSetItems
  * @property MedicationSearchIndex[] $medicationSearchIndexes
+ * @property MedicationAttributeOption[] $medicationAttributeOptions
+ * @property MedicationAttributeAssignment[] $medicationAttributeAssignments
  */
 class Medication extends BaseActiveRecordVersioned
 {
+	const ATTR_PRESERVATIVE_FREE = "PRESERVATIVE_FREE";
+
+	protected $auto_update_relations = true;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -51,10 +58,11 @@ class Medication extends BaseActiveRecordVersioned
 			array('source_type, last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('source_subtype', 'length', 'max' => 45),
 			array('preferred_term, short_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code', 'length', 'max'=>255),
-			array('deleted_date, last_modified_date, created_date', 'safe'),
+			array('deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code, 
+					deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -70,7 +78,10 @@ class Medication extends BaseActiveRecordVersioned
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'medicationSets' => array(self::MANY_MANY, MedicationSet::class, 'medication_set_item(medication_id, medication_set_id)'),
+			'medicationSetItems' => array(self::HAS_MANY, MedicationSetItem::class, 'medication_id'),
 			'medicationSearchIndexes' => array(self::HAS_MANY, MedicationSearchIndex::class, 'medication_id'),
+            'medicationAttributeAssignments' => array(self::HAS_MANY, MedicationAttributeAssignment::class, 'medication_id'),
+            'medicationAttributeOptions' => array(self::HAS_MANY, MedicationAttributeOption::class, 'medication_attribute_assignment(medication_id,medication_attribute_option_id)')
 		);
 	}
 
@@ -220,13 +231,7 @@ class Medication extends BaseActiveRecordVersioned
 
     public function isPreservativeFree()
     {
-        foreach ($this->getTypes() as $type) {
-            if($type->name == 'Preservative free') {
-                return true;
-            }
-        }
-
-        return false;
+        return !empty($this->getAttrs(self::ATTR_PRESERVATIVE_FREE));
     }
 
     /**
@@ -242,7 +247,7 @@ class Medication extends BaseActiveRecordVersioned
         }
 
         if ($this->isPreservativeFree()) {
-            $name.= ' (No Preservative)';
+            $name.= ' (PF)';
         }
 
         return $name;
@@ -322,12 +327,7 @@ class Medication extends BaseActiveRecordVersioned
 
     public function listCommonSystemicMedications($raw = false)
     {
-        return $this->listByUsageCode("COMMON_SYSTEMIC", null, $raw);
-    }
-
-    public function listCommonOphThalmicMedications($raw = false)
-    {
-        return $this->listByUsageCode("COMMON_OPH", null, $raw);
+        return $this->listByUsageCode("Common systemic medications", null, $raw);
     }
 
     public function getMedicationSetsForCurrentSubspecialty()
@@ -392,4 +392,27 @@ class Medication extends BaseActiveRecordVersioned
         $searchIndex->save();
     }
 
+    /**
+     * Returns all attributes as [['attr_name'=> $attr_name, 'value'=> $value, 'description' => $description], [...]]
+     *
+     * @param string $attr_name     If set, the result will be filtered to this attribute
+     * @return array
+     */
+
+    public function getAttrs($attr_name = null)
+    {
+        $ret = array();
+        foreach ($this->medicationAttributeAssignments as $attr_assignment) {
+            $aname = $attr_assignment->medicationAttributeOption->medicationAttribute->name;
+            if(is_null($attr_name) || $aname == $attr_name) {
+                $ret[] = array(
+                    'attr_name' => $aname,
+                    'value' => $attr_assignment->medicationAttributeOption->value,
+                    'description' => $attr_assignment->medicationAttributeOption->description,
+                );
+            }
+        }
+
+        return $ret;
+    }
 }

@@ -39,7 +39,9 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
         }
         
         if ($this->checkPrintAccess()) {
-            $this->event_actions[] = EventAction::printButton();
+        	if(!$Element->draft || $this->checkEditAccess()){
+        		$this->event_actions[] = EventAction::printButton();
+        	}
         }
         
     ?>

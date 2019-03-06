@@ -26,7 +26,7 @@ return array(
             ),
             'Core' => array(
                 'Users' => '/admin/users',
-                'context_firm_labels and service_firm_labels' => '/admin/firms',
+                'context_firm_labels and service_firm_labels' => '/Admin/context/index',
                 'Contacts' => '/admin/contacts',
                 'Contact labels' => '/admin/contactlabels',
                 'Data sources' => '/admin/datasources',
@@ -58,8 +58,11 @@ return array(
                 'Common Subspecialty Medications' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonSubspecialtyMedicationsAdmin/list'),
                 'Common Systemic Medications' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonSystemicMedicationsAdmin/list'),
                 'Formulary Drugs' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/formularyDrugsAdmin/list'),
+                'Local Drugs' => '/OphDrPrescription/localDrugsAdmin/list',
+                'DM+D Drugs' => '/OphDrPrescription/dmdDrugsAdmin/list',
                 'Export' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/RefMedicationAdmin/exportForm'),
-                'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
+                'Auto set rules' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/medicationSetAutoRulesAdmin/list'),
+				'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
                 'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
                 'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/PrescriptionEditOptions'),
                 /*

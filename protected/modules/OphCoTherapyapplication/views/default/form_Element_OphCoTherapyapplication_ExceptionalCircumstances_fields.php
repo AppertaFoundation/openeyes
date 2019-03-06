@@ -84,7 +84,7 @@ if (@$_POST[get_class($element)]) {
             $element,
             $side . '_standard_intervention_id',
             CHtml::listData($element->getStandardInterventionsForSide($side), 'id', 'name'),
-            array('empty' => '- Please select -'),
+            array('empty' => 'Select'),
             false,
             array(
                 'label' => 6,
@@ -151,7 +151,7 @@ if (@$_POST[get_class($element)]) {
           <?php
           $html_options = array(
               'options' => array(),
-              'empty' => '- Please select -',
+              'empty' => 'Select',
               'div_id' => get_class($element) . '_' . $side . '_deviationreasons',
               'div_class' => 'elementField',
               'label' => $element->getAttributeLabel($side . '_deviationreasons'),
@@ -297,7 +297,7 @@ if (@$_POST[get_class($element)]) {
         }
         // get all the start periods and get data attribute for urgency requirements
         $start_periods = $element->getStartPeriodsForSide($side);
-        $html_options = array('empty' => '- Please select -', 'options' => array());
+        $html_options = array('empty' => 'Select', 'options' => array());
         foreach ($start_periods as $sp) {
             $html_options['options'][$sp->id] = array('data-urgent' => $sp->urgent);
             if ($posted_sp == $sp->id && $sp->urgent) {
@@ -339,7 +339,7 @@ if (@$_POST[get_class($element)]) {
           <?php
           $html_options = array(
               'options' => array(),
-              'empty' => '- Please select -',
+              'empty' => 'Select',
               'div_id' => get_class($element) . '_' . $side . '_filecollections',
               'div_class' => 'elementField',
               'label' => 'File Attachments',

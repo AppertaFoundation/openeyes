@@ -15,7 +15,8 @@
                     id="oct_img_<?=$side.'_'.$doc['doc_id'] ?>"
                     class="oct-img"
                     src="/file/view/<?= $doc['doc_id'] ?>/image<?= strrchr($doc['doc_name'], '.') ?>"
-                    style="display: <?= $k==0&&$side=='right'? '': 'none'?> ;">
+                    data-date="<?= $doc['date'] ?>"
+                    style="display: <?= $k==0&&$side=='right'? 'inline': 'none'?> ;">
             <?php } ?>
         </div>
     <?php } ?>

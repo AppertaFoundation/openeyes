@@ -21,12 +21,13 @@ namespace OEModule\OphCiExamination;
 class OphCiExaminationModule extends \BaseEventTypeModule
 {
     public $controllerNamespace = '\OEModule\OphCiExamination\controllers';
-    
+
     public function init()
     {
         $this->setImport(array(
             'application.modules.OphDrPrescription.models.*',
         ));
+		$this->setModules(['ExaminationAdmin']);
         parent::init();
     }
 }

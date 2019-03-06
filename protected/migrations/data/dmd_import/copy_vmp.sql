@@ -1,4 +1,4 @@
-INSERT INTO openeyes.medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code)
+INSERT INTO medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code)
   SELECT
     'DM+D' AS source_type,
     'VMP' AS source_subtype,
@@ -13,5 +13,5 @@ INSERT INTO openeyes.medication (source_type,source_subtype,preferred_term,prefe
     vmp.vpid AS vmp_code
 
   FROM
-    drugs2.f_vmp_vmps vmp
-    LEFT JOIN drugs2.f_vtm_vtm vtm ON vtm.vtmid = vmp.vtmid;
+    {prefix}vmp_vmps vmp
+    LEFT JOIN {prefix}vtm_vtm vtm ON vtm.vtmid = vmp.vtmid;

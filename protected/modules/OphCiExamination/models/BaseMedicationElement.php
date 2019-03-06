@@ -52,7 +52,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, entries', 'safe'),
+            array('event_id, entries, prescription_id', 'safe'),
             array('entries', 'required', 'message' => 'At least one medication must be recorded, or the element should be removed.')
         );
     }
@@ -66,7 +66,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         return array_merge(array(
                 'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id')
+                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             ),
             $this->getEntryRelations()
         );
@@ -121,9 +121,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                 $entry->delete();
             }
         }
-        if(count($this->entries_to_prescribe) > 0) {
-            $this->generatePrescriptionEvent();
-        }
+
         return true;
     }
     /**

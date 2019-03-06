@@ -70,8 +70,8 @@ class ElementLetter extends BaseEventTypeElement
             array('to_subspecialty_id', 'internalReferralServiceValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
-            array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
-            array('use_nickname', 'required'),
+            array('date, introduction, body, footer', 'requiredIfNotDraft'),
+            array('use_nickname , site_id', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
@@ -125,6 +125,7 @@ class ElementLetter extends BaseEventTypeElement
             'to_firm_id' => 'To Consultant',
             'is_urgent' => 'Urgent',
             'is_same_condition' => '',
+            'site_id' => 'Site',
         );
     }
 
@@ -213,7 +214,7 @@ class ElementLetter extends BaseEventTypeElement
                 if($target['attributes']['contact_type'] === 'PATIENT'){
                     $patient_found = true;
                 }
-                if($target['attributes']['contact_type'] === 'GP'){
+                if($target['attributes']['contact_type'] === Yii::app()->params['gp_label']){
                     $gp_found = true;
                 }
             }
@@ -298,16 +299,16 @@ class ElementLetter extends BaseEventTypeElement
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' (GP)';
+                $options[Yii::app()->params['gp_label'].$patient->gp_id] = $patient->gp->contact->fullname.' ('.Yii::app()->params['gp_label'].')';
             } else {
-                $options['Gp'.$patient->gp_id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options[Yii::app()->params['gp_label'].$patient->gp_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
             }
             if (!$patient->practice || !@$patient->practice->contact->address) {
-                $options['Gp'.$patient->gp_id] .= ' - NO ADDRESS';
+                $options[Yii::app()->params['gp_label'].$patient->gp_id] .= ' - NO ADDRESS';
             }
         } else {
             if ($patient->practice) {
-                $options['Practice'.$patient->practice_id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options['Practice'.$patient->practice_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
                 if (@$patient->practice->contact && !@$patient->practice->contact->address) {
                     $options['Practice'.$patient->practice_id] .= ' - NO ADDRESS';
                 }
@@ -493,7 +494,7 @@ class ElementLetter extends BaseEventTypeElement
             $this->introduction = $patient->getLetterIntroduction(array(
                 'nickname' => $this->use_nickname,
             ));
-        } elseif ($this->macro->recipient && $this->macro->recipient->name == 'GP') {
+        } elseif ($this->macro->recipient && $this->macro->recipient->name == Yii::app()->params['gp_label']) {
             $this->address_target = 'gp';
             if ($patient->gp) {
                 $this->introduction = $patient->gp->getLetterIntroduction(array(
@@ -1000,7 +1001,7 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if($target->ToCc != 'To'){
-                        $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                        $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
                         $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
                     }
                 }

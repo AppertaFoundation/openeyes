@@ -30,7 +30,7 @@
             );
         }
 
-        public function actionFindRefMedications($term = '', $limit = 50)
+        public function actionFindRefMedications($term = '', $include_branded = 1, $limit = 50)
         {
             header('Content-type: application/json');
 
@@ -39,9 +39,13 @@
             $criteria = new \CDbCriteria();
 
             if($term !== '') {
-                $criteria->condition = "preferred_term LIKE :term OR medicationSearchIndexes.alternative_term LIKE :term";
+                $criteria->addCondition("preferred_term LIKE :term OR medicationSearchIndexes.alternative_term LIKE :term");
                 $criteria->params['term'] = "%$term%";
             }
+
+            if($include_branded == 0) {
+            	$criteria->addCondition("source_subtype != 'AMP'");
+			}
 
             $criteria->limit = $limit > 1000 ? 1000 : $limit;
             $criteria->order = "preferred_term";

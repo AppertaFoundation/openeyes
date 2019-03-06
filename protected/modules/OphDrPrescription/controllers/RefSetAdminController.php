@@ -26,6 +26,7 @@ class RefSetAdminController extends BaseAdminController
             'name',
             'rulesString',
             'itemsCount',
+            'hiddenString',
             'adminListAction'
         ));
 

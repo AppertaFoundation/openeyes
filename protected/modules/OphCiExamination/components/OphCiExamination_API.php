@@ -21,6 +21,7 @@ namespace OEModule\OphCiExamination\components;
 
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\widgets\HistoryRisks;
+use OEModule\OphCiExamination\widgets\HistoryMedications;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -1228,7 +1229,7 @@ class OphCiExamination_API extends \BaseAPI
                 if (!array_key_exists($service, $summary)) {
                     $summary[$service] = $summaries->comments;
                     $summary_obj->service = $service;
-                    $summary_obj->comments = $summaries->comments ? : $summaries->getChildrenString();
+                    $summary_obj->comments = $summaries->comments ? : $summaries->getSiblingString();
                     $date_parts = explode(' ', $created_date);
                     $summary_obj->date = $date_parts;
                     $summary_obj->user = $user_name;
@@ -2623,7 +2624,7 @@ class OphCiExamination_API extends \BaseAPI
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
         $criteria->with = array(
-            'ophciexamination_risks_entry' => array(
+            'entries' => array(
                 'condition' =>
                     '((age_min <= :age OR age_min IS NULL) AND' .
                     '(age_max >= :age OR age_max IS NULL)) AND' .
@@ -2640,10 +2641,12 @@ class OphCiExamination_API extends \BaseAPI
 
         $required = array();
         foreach($sets as $set){
-            if($set->ophciexamination_risks_entry){
-                foreach($set->ophciexamination_risks_entry as $ophciexamination_risks){
+            if($set->entries){
+                foreach($set->entries as $ophciexamination_risks){
                     $risk = $ophciexamination_risks->ophciexamination_risk;
-                    $required[$risk->id] = $risk;
+                    if(isset($risk) && isset($risk->id)) {
+                        $required[$risk->id] = $risk;
+                    }
                 }
             }
         }
@@ -2667,7 +2670,7 @@ class OphCiExamination_API extends \BaseAPI
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
         $criteria->with = array(
-            'allergy_set_entries' => array(
+            'entries' => array(
                 'condition' =>
                     '((age_min <= :age OR age_min IS NULL) AND' .
                     '(age_max >= :age OR age_max IS NULL)) AND' .
@@ -2684,10 +2687,13 @@ class OphCiExamination_API extends \BaseAPI
 
         $required = array();
         foreach($sets as $set){
-            if($set->allergy_set_entries){
-                foreach($set->allergy_set_entries as $allergy_entry){
+            if($set->entries){
+                foreach($set->entries as $allergy_entry){
                     $allergy = $allergy_entry->ophciexaminationAllergy;
-                    $required[$allergy->id] = $allergy;
+                    if(isset($allergy) && isset($allergy->id)) {
+                        $required[$allergy->id] = $allergy;
+                    }
+
                 }
             }
         }
@@ -2732,7 +2738,9 @@ class OphCiExamination_API extends \BaseAPI
             if($set->entries){
                 foreach($set->entries as $entry){
                     $disorder = $entry->disorder;
-                    $required[$disorder->id] = $disorder;
+                    if(isset($disorder) && isset($disorder->id)) {
+                        $required[$disorder->id] = $disorder;
+                    }
                 }
             }
         }
@@ -2772,7 +2780,9 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->entries){
                 foreach($set->entries as $entry){
-                    $required[] = $entry->operation;
+                    if(isset($entry) && isset($entry->operation)) {
+                        $required[] = $entry->operation;
+                    }
                 }
             }
         }
@@ -3033,13 +3043,13 @@ class OphCiExamination_API extends \BaseAPI
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
         if(!is_null($element)) {
-            
+
             $meds = $element->getEntriesStartedToday();
             if($meds){
                 foreach( $meds as $med ){
                     $medStartedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
                 }
-                
+
                 return '<table>
                     <thead>
                         <tr>
@@ -3064,13 +3074,13 @@ class OphCiExamination_API extends \BaseAPI
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
         if(!is_null($element)) {
-           
+
             $medStopped = $element->getEntriesStoppedToday();
             if($medStopped){
                 foreach($medStopped as $med){
                     $medStoppedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
                 }
-                
+
                 return '<table>
                     <thead>
                         <tr>
@@ -3099,9 +3109,9 @@ class OphCiExamination_API extends \BaseAPI
             if($medContinued){
                 foreach($medContinued as $med){
                     $medContinuedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
-                } 
-            
-            
+                }
+
+
             return '<table>
                     <thead>
                         <tr>
@@ -3114,7 +3124,7 @@ class OphCiExamination_API extends \BaseAPI
 
         return "";
     }
-    
+
     /**
      * Handler routine for MMS shortcode
      * @param $patient
@@ -3124,17 +3134,17 @@ class OphCiExamination_API extends \BaseAPI
     public function getMedicationManagementSummary( $patient, $use_context = false )
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
-        
+
         if(!is_null($element)) {
-            
+
             $medStartedRow = '<td></td>';
             $medStarted = $element->getEntriesStartedToday();
             if($medStarted){
                 foreach($medStarted as $med){
                     $medStartedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
-                } 
+                }
             }
-            
+
             $medStoppedRow = '<td></td>';
             $medStopped = $element->getEntriesStoppedToday();
             if($medStopped){
@@ -3148,9 +3158,9 @@ class OphCiExamination_API extends \BaseAPI
             if($medContinued){
                 foreach($medContinued as $med){
                     $medContinuedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
-                } 
+                }
             }
-            
+
             if(($medStarted) || ($medStopped) || ($medContinued)){
                 return '<table>
                     <thead>
@@ -3163,7 +3173,213 @@ class OphCiExamination_API extends \BaseAPI
                 <tbody><tr>'.$medStartedRow.$medStoppedRow.$medContinuedRow.'</tr></tbody></table>';
             }
         }
-        
+
         return "";
+    }
+
+    /*
+     * Glaucoma Current Management Plan from latest Examination
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getGlaucomaCurrentPlan(\Patient $patient, $use_context = false)
+    {
+        $result = '';
+        $el = $this->getLatestElement(
+            'models\Element_OphCiExamination_CurrentManagementPlan',
+            $patient, $use_context
+        );
+
+        if ($el) {
+            $IOP = $el->getLatestIOP($patient);
+            $result = '
+                <table style="margin: 0 !important; height: 100%;">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Glaucoma Current Management Plan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="cols-6">
+                                <table style="margin: 0 !important; height: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2" style="text-align: center;">Right Eye</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>IOP:</td>
+                                            <td>'.($IOP ? $IOP["rightIOP"].' mmHg' : 'N/A').'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Glaucoma status:</td>
+                                            <td>'.$el->right_glaucoma_status->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Drop-related problems:</td>
+                                            <td>'.$el->{'right_drop-related_prob'}->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Drops:</td>
+                                            <td>'.$el->right_drops->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Surgery:</td>
+                                            <td>'.($el->right_surgery ? $el->right_surgery->name : 'N/A').'</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td class="cols-6">
+                                <table style="margin: 0 !important; height: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2" style="text-align: center;">Left Eye</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>IOP:</td>
+                                            <td>'.($IOP ? $IOP["leftIOP"].' mmHg' : 'N/A').'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Glaucoma status:</td>
+                                            <td>'.$el->left_glaucoma_status->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Drop-related problems:</td>
+                                            <td>'.$el->{'left_drop-related_prob'}->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Drops:</td>
+                                            <td>'.$el->left_drops->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Surgery:</td>
+                                            <td>'.($el->left_surgery ? $el->left_surgery->name : 'N/A').'</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            ';
+        }
+        return $result;
+    }
+
+    public function getCurrentOphthalmicDrugs(\Patient $patient, $use_context = false)
+    {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\HistoryMedications',
+            array('mode' => HistoryMedications::$DATA_MODE, 'patient' => $patient));
+
+        $entries = $widget->getMergedEntries();
+
+        $route_filter = function ($entry) {
+            /** @var \EventMedicationUse $entry */
+            return $entry->route->isEyeRoute();
+        };
+
+        $current_eye_meds = array_filter($entries['current'], $route_filter);
+
+        if (!$current_eye_meds) {
+            return "(no current eye medications)";
+        }
+
+        /** @var \EventMedicationUse[] $current_eye_meds */
+
+        ob_start();
+        ?>
+        <table class="standard borders current-ophtalmic-drugs">
+            <colgroup>
+                <col class="cols-5">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="empty"></th>
+                    <th>Dose (unit)</th>
+                    <th>Eye</th>
+                    <th>Frequency</th>
+                    <th>Until</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($current_eye_meds as $entry) : ?>
+                    <tr>
+                        <td><?=$entry->getMedicationDisplay(true) ?></td>
+                        <td><?=$entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '')?></td>
+                        <td>
+                            <?php
+                                $laterality = $entry->getLateralityDisplay();
+                                \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                            ?>
+                        </td>
+                        <td>
+                            <?=$entry->frequency ? $entry->frequency : '';?>
+                        </td>
+                        <td><?=$entry->getEndDateDisplay('Ongoing');?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <?php return ob_get_clean();
+    }
+
+    public function getCurrentSystemicDrugs(\Patient $patient, $use_context = false)
+    {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\HistoryMedications',
+            array('mode' => HistoryMedications::$DATA_MODE, 'patient' => $patient));
+
+        $entries = $widget->getMergedEntries();
+
+        $route_filter = function ($entry) {
+            // route should be different than eye
+            /** @var \EventMedicationUse $entry */
+            return !$entry->route->isEyeRoute();
+        };
+        $current_systemic_meds = array_filter($entries['current'], $route_filter);
+
+        if (!$current_systemic_meds) {
+            return "(no current systemic medications)";
+        }
+
+		/** @var \EventMedicationUse[] $current_systemic_meds */
+
+        ob_start();
+        ?>
+        <table class="standard borders current-ophtalmic-drugs">
+            <colgroup>
+                <col class="cols-5">
+            </colgroup>
+            <thead>
+            <tr>
+                <th class="empty"></th>
+                <th>Dose (unit)</th>
+                <th>Frequency</th>
+                <th>Until</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($current_systemic_meds as $entry) : ?>
+                <tr>
+                    <td><?=$entry->getMedicationDisplay(true) ?></td>
+                    <td><?=$entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '')?></td>
+                    <td>
+                        <?=$entry->frequency ? $entry->frequency : '';?>
+                    </td>
+                    <td><?=$entry->getEndDateDisplay('Ongoing');?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <?php return ob_get_clean();
     }
 }

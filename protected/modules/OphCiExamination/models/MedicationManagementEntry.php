@@ -63,4 +63,36 @@
         {
             return substr($date_str, 0, 4)."-".substr($date_str, 4, 2)."-".substr($date_str, 6, 2);
         }
+
+		/**
+		 * Check if menegement entry is different to its
+		 * linked prescription entry
+		 *
+		 * @return bool	true if identical, false otherwise
+		 */
+
+        public function compareToPrescriptionItem()
+		{
+			$my_attributes = $this->getAttributes();
+			$their_attributes = $this->prescriptionItem->getAttributes();
+
+			$attributes_to_check = array(
+				'medication_id',
+				'form_id',
+				'laterality',
+				'route_id',
+				'frequency_id',
+				'duration',
+				'dose',
+			);
+
+			$identical = true;
+			foreach ($attributes_to_check as $attr) {
+				if($my_attributes[$attr] != $their_attributes[$attr]) {
+					$identical = false;
+				}
+			}
+
+			return $identical;
+		}
     }

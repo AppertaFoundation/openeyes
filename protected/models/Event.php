@@ -34,6 +34,7 @@
  * @property string $created_date
  * @property string $last_modified_date
  * @property string $pas_visit_id
+ * @property int $firm_id
  *
  * The followings are the available model relations:
  * @property Episode   $episode

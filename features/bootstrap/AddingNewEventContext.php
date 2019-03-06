@@ -108,6 +108,16 @@ class AddingNewEventContext extends PageObjectContext {
 			throw new BehaviorException ( "WARNING!!! Invalid Event selected, not in the list!" );
 		}
 	}
+	/**
+     * @Then /^I select the Medical Retina option in the sidebar$/
+     */
+	public function iSelectTheMedicalRetinaOptionInTheSidebar(){
+        /**
+         *
+         * @var AddingNewEvent $addNewEvent
+         */
+        $addNewEvent = $this->getPage ( 'AddingNewEvent' );
+    }
 
 
 //	/**

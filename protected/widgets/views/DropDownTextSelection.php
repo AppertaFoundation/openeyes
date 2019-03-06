@@ -30,7 +30,7 @@
     }
     $htmlOptions['id'] = 'dropDownTextSelection_'.CHtml::modelName($element).'_'.$field;
     if (!@$htmlOptions['empty']) {
-        $htmlOptions['empty'] = '- Please select -';
+        $htmlOptions['empty'] = 'Select';
     }
 ?>
 <?php if (!$no_wrapper) { ?>

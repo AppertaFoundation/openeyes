@@ -158,4 +158,12 @@ class MedicationRoute extends BaseActiveRecordVersioned
     {
         return $this->term;
     }
+
+    public function isEyeRoute()
+	{
+		return in_array($this->id, array(
+			self::ROUTE_INTRAVITREAL,
+			self::ROUTE_EYE
+		));
+	}
 }

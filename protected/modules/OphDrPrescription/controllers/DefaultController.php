@@ -43,7 +43,7 @@ class DefaultController extends BaseEventTypeController
     public function actionView($id)
     {
         $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
-        
+
         $this->editable = $model->isEditableByMedication();
         if( $this->editable == true ){
             $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
@@ -168,7 +168,7 @@ class DefaultController extends BaseEventTypeController
             throw new Exception('Prescription not found: '.$id);
         }
         $prescription->printed = 1;
-        if (!$prescription->save()) {
+        if (!$prescription->update(["printed"])) {
             throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
         }
         $this->event->info = $prescription->infotext;
@@ -530,7 +530,7 @@ class DefaultController extends BaseEventTypeController
         if ($prescription->print == 1) {
             $prescription->print = 0;
 
-            if (!$prescription->save()) {
+            if (!$prescription->update(["printed"])) {
                 throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
             }
         }
@@ -555,7 +555,7 @@ class DefaultController extends BaseEventTypeController
     {
         return $this->checkAccess('OprnEditPrescription', $this->firm, $this->event);
     }
-    
+
     /**
      * @return MedicationSet
      */
@@ -705,24 +705,24 @@ class DefaultController extends BaseEventTypeController
             parent::actionUpdate($id);
         }
     }
-    
+
     /*
-     * Finalize as "Save as final" prescription event, 
+     * Finalize as "Save as final" prescription event,
      * when a prescription event is created as the result of a medication management element from an examination event
-     * 
-     * @param       integer     event_id    
+     *
+     * @param       integer     event_id
      * @param       integer     element_id
-     * @return      json_array       
+     * @return      json_array
      */
     public function actionFinalize()
     {
         if( Yii::app()->request->isPostRequest ){
             $eventID =  Yii::app()->request->getPost('event');
             $elementID = Yii::app()->request->getPost('element');
-            
+
             $model = Element_OphDrPrescription_Details::model()->findBySql('
                 SELECT * FROM et_ophdrprescription_details 
-                WHERE id = :id AND event_id = :event_id ', 
+                WHERE id = :id AND event_id = :event_id ',
                 [':event_id'=>$eventID , ':id' => $elementID]
             );
 
@@ -737,10 +737,10 @@ class DefaultController extends BaseEventTypeController
                     'success' => 0
                 ];
             }
-            
+
             echo json_encode($result);
         }
-       
+
     }
 
     /**

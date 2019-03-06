@@ -28,11 +28,13 @@ namespace OEModule\OphCiExamination\models;
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property int $prescription_id
  *
  * The followings are the available model relations:
  * @property \Event $event
  * @property \User $createdUser
  * @property \User $lastModifiedUser
+ * @property \Element_OphDrPrescription_Details $prescription
  */
 class MedicationManagement extends BaseMedicationElement
 {
@@ -62,6 +64,7 @@ class MedicationManagement extends BaseMedicationElement
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
+			'prescription_id' => 'Prescription'
 		);
 	}
 
@@ -84,6 +87,7 @@ class MedicationManagement extends BaseMedicationElement
                 'on' => "hidden = 0 AND usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."' ",
                 'order' => 'visible_entries.start_date_string_YYYYMMDD DESC, visible_entries.end_date_string_YYYYMMDD DESC, visible_entries.last_modified_date'
             ),
+			'prescription' => array(self::BELONGS_TO, \Element_OphDrPrescription_Details::class, 'prescription_id'),
         );
     }
 
@@ -91,7 +95,7 @@ class MedicationManagement extends BaseMedicationElement
      * @return MedicationManagementEntry[]
      */
 
-    public function getContinuedEntries($debug = false)
+    public function getContinuedEntries()
     {
         $event_date = $this->event->event_date;
         $event_date_YYYYMMDD = substr($event_date, 0, 4).substr($event_date, 5, 2).substr($event_date, 8, 2);
@@ -151,6 +155,22 @@ class MedicationManagement extends BaseMedicationElement
         });
     }
 
+    public function getOtherEntries()
+    {
+        $continued = array_map(function($e){ return $e->id; }, $this->getContinuedEntries());
+        $stopped = array_map(function($e){ return $e->id; }, $this->getStoppedEntries());
+        $prescribed = array_map(function($e){ return $e->id; }, $this->getPrescribedEntries());
+        $exclude = array_merge($continued, $stopped, $prescribed);
+        $other = array();
+        foreach ($this->visible_entries as $entry) {
+            if(!in_array($entry->id, $exclude)) {
+                $other[] = $entry;
+            }
+        }
+
+        return $other;
+    }
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
@@ -179,12 +199,13 @@ class MedicationManagement extends BaseMedicationElement
 
     protected function saveEntries()
     {
-        $criteria = new \CDbCriteria();
+    	$criteria = new \CDbCriteria();
         $criteria->addCondition("event_id = :event_id AND usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."'");
         $criteria->params['event_id'] = $this->event->id;
         $orig_entries = MedicationManagementEntry::model()->findAll($criteria);
         $saved_ids = array();
         $class = self::$entry_class;
+
         foreach ($this->entries as $entry) {
             /** @var MedicationManagementEntry $entry */
             $entry->event_id = $this->event->id;
@@ -192,6 +213,10 @@ class MedicationManagement extends BaseMedicationElement
             /* Why do I have to do this? */
             if(isset($entry->id) && $entry->id > 0) {
                 $entry->setIsNewRecord(false);
+                $is_new = false;
+            }
+            else {
+                $is_new = true;
             }
 
             /* ensure corrent usage type and subtype */
@@ -205,10 +230,10 @@ class MedicationManagement extends BaseMedicationElement
                 return false;
             }
 
-            /* Why do I have to do this? */
-
-            $id = \Yii::app()->db->getLastInsertID();;
-            $entry->id = $id;
+            if($is_new) {
+                $id = \Yii::app()->db->getLastInsertID();;
+                $entry->id = $id;
+            }
 
             $saved_ids[] = $entry->id;
 
@@ -223,11 +248,102 @@ class MedicationManagement extends BaseMedicationElement
             }
         }
 
-        if(count($this->entries_to_prescribe) > 0) {
-            $this->generatePrescriptionEvent();
-        }
+        $this->createOrUpdatePrescriptionEvent();
+
         return true;
     }
+
+    private function createOrUpdatePrescriptionEvent()
+	{
+		if(!is_null($this->prescription_id)) {
+			// prescription exists
+
+			/** @var \Element_OphDrPrescription_Details $prescription */
+			$prescription =$this->prescription;
+			$changed = false;
+
+			/* items to update or remove */
+			$existing_mgment_items = array();
+			foreach ($prescription->items as $prescription_Item) {
+				if($mgment_item = MedicationManagementEntry::model()->find("prescription_item_id=".$prescription_Item->id)) {
+					/** @var MedicationManagementEntry $mgment_item */
+					$existing_mgment_items[] = $mgment_item->id;
+
+					if($mgment_item->prescribe == 0) {
+						//manaemenet item was updated as not prescribed
+						$pitem = \EventMedicationUse::model()->findAllByAttributes(['prescription_item_id' => $prescription_Item->id]);
+						foreach ($pitem as $p) {
+							// we need to remove all links
+							$p->prescription_item_id = null;
+							$p->save();
+						}
+						$prescription_Item->delete();
+						$changed = true;
+					}
+					else if(!$mgment_item->compareToPrescriptionItem()) {
+						//manaemenet item was updated
+						$prescription_Item->updateFromManagementItem();
+						$changed = true;
+					}
+				}
+				else {
+					// management item was deleted
+					$prescription_Item->delete();
+					$changed = true;
+				}
+			}
+
+			/* items to add */
+			foreach ($this->entries_to_prescribe as $entry) {
+				if(!in_array($entry->id, $existing_mgment_items)) {
+					$prescription_Item = new \OphDrPrescription_Item();
+					$prescription_Item->event_id =$prescription->event_id;
+					$prescription_Item->setAttributes(array(
+						'usage_type' => \OphDrPrescription_Item::getUsageType(),
+						'usage_subtype' => \OphDrPrescription_Item::getUsageSubtype(),
+						'medication_id' => $entry->medication_id,
+						'form_id' => $entry->form_id,
+						'laterality' => $entry->laterality,
+						'route_id' => $entry->route_id,
+						'frequency_id' => $entry->frequency_id,
+						'duration' => $entry->duration,
+						'dose' => $entry->dose,
+						'start_date_string_YYYYMMDD' => $entry->start_date_string_YYYYMMDD,
+						'dispense_location_id' => 2,
+						'dispense_condition_id' => 1
+					));
+					if(!$prescription_Item->save()) {
+						throw new \Exception("Error while saving prescription item: ".print_r($prescription_Item->errors, true));
+					}
+					$entry->prescription_item_id = $prescription_Item->id;
+					$entry->save();
+					$changed = true;
+				}
+			}
+
+			if($changed) {
+				if(empty(\OphDrPrescription_Item::model()->findAllByAttributes(['event_id' => $prescription->event_id]))) {
+					// if no more items on the prescription, delete it
+					\Yii::app()->db->createCommand("UPDATE ".$this->tableName()." SET prescription_id=NULL WHERE id=".$this->id)->execute();
+					$prescription->delete();
+					$prescription->event->softDelete("Deleted via examination clinical management");
+				}
+				else {
+					// update prescription with message
+					$edit_reason = "Updated via examination clinical management";
+					$prescription->edit_reason_other = $edit_reason;
+					$prescription->draft = 1;
+					$prescription->save();
+				}
+			}
+		}
+		else {
+			// prescription does not exist yet
+			if(!empty($this->entries_to_prescribe)) {
+				$this->generatePrescriptionEvent();
+			}
+		}
+	}
 
     private function generatePrescriptionEvent()
     {
@@ -266,9 +382,10 @@ class MedicationManagement extends BaseMedicationElement
                     \Yii::trace(print_r($orig_item->errors, true));
                 }
             }
-
-
         }
+
+        $this->prescription_id = $prescription_details->id;
+        \Yii::app()->db->createCommand("UPDATE ".$this->tableName()." SET prescription_id=".$this->prescription_id." WHERE id=".$this->id)->execute();
     }
 
     private function getPrescriptionDetails()

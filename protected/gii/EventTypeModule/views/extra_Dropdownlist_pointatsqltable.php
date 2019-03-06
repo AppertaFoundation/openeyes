@@ -1,7 +1,7 @@
 <div id="dropDownFieldSQLDetails<?php echo $element_num?>Field<?php echo $field_num?>">
 	Table:
 	<select name="dropDownFieldSQLTable<?php echo $element_num?>Field<?php echo $field_num?>" class="dropDownFieldSQLTable">
-		<option value="">- Please select a table -</option>
+		<option value="">Select</option>
 		<?php foreach (Yii::app()->getDb()->getSchema()->getTableNames() as $table) {
     ?>
 			<option value="<?php echo $table?>"<?php if (@$_POST['dropDownFieldSQLTable'.$element_num.'Field'.$field_num] == $table) {

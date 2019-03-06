@@ -3,7 +3,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +12,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class AdminController extends BaseAdminController
@@ -569,118 +569,8 @@ class AdminController extends BaseAdminController
     }
 
     /**
-     * @param bool $id
-     *
      * @throws Exception
      */
-    public function actionFirms()
-    {
-        Audit::add('admin-Firm', 'list');
-/*        $search = new ModelSearch(Firm::model());
-        $search->addSearchItem('name', array(
-            'type' => 'compare',
-            'compare_to' => array(
-                'id',
-                'pas_code',
-                'consultant.first_name',
-                'consultant.last_name',
-                'serviceSubspecialtyAssignment.subspecialty.name',
-            ),
-        ));
-        $search->addSearchItem('active', array('type' => 'boolean'));
-*/
-        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
-        $criteria = new \CDbCriteria();
-
-        if(Yii::app()->request->isPostRequest) {
-            if ($search['query']) {
-                if (is_numeric($search['query'])) {
-                    $criteria->addCondition('id = :id');
-                    $criteria->params[':id'] = $search['query'];
-                } else {
-                    $criteria->addSearchCondition('pas_code', $search['query'], true, 'OR');
-                    $criteria->addSearchCondition('name', $search['query'], true, 'OR');
-                }
-            }
-
-            if($search['active'] == 1){
-                $criteria->addCondition('active = 1');
-            } elseif ($search['active'] !== '') {
-                $criteria->addCondition('active != 1');
-            }
-        }
-
-        $this->render('/admin/contexts/index', array(
-            'pagination' => $this->initPagination(Firm::model(), $criteria),
-            'firms' => Firm::model()->findAll($criteria),
-            'search' => $search
-        ));
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function actionAddFirm()
-    {
-        $firm = new Firm();
-
-        if (!empty($_POST)) {
-            $firm->attributes = $_POST['Firm'];
-
-            if (!$firm->validate()) {
-                $errors = $firm->getErrors();
-            } else {
-                if (!$firm->save()) {
-                    throw new Exception('Unable to save firm: ' . print_r($firm->getErrors(), true));
-                }
-                Audit::add('admin-Firm', 'add', $firm->id);
-                $this->redirect('/admin/firms/' . ceil($firm->id / $this->items_per_page));
-            }
-        }
-
-        $this->render('/admin/contexts/edit', array(
-            'firm' => $firm,
-            'errors' => @$errors,
-        ));
-    }
-
-    public function actionEditFirm($id)
-    {
-        $firm = Firm::model()->findByPk($id);
-        if (!$firm) {
-            throw new Exception("Firm not found: $id");
-        }
-
-        if (!empty($_POST)) {
-            $firm->attributes = $_POST['Firm'];
-
-            if (!$firm->validate()) {
-                $errors = $firm->getErrors();
-            } else {
-                if (!$firm->save()) {
-                    throw new Exception('Unable to save firm: ' . print_r($firm->getErrors(), true));
-                }
-                Audit::add('admin-Firm', 'edit', $firm->id);
-                $this->redirect('/admin/firms/' . ceil($firm->id / $this->items_per_page));
-            }
-        } else {
-            Audit::add('admin-Firm', 'view', $id);
-        }
-
-        $siteSecretaries = array();
-        if (isset(Yii::app()->modules['OphCoCorrespondence'])) {
-            $firmSiteSecretaries = new FirmSiteSecretary();
-            $siteSecretaries = $firmSiteSecretaries->findSiteSecretaryForFirm($id);
-            $firmSiteSecretaries->firm_id = $id;
-            $siteSecretaries[] = $firmSiteSecretaries;
-        }
-
-        $this->render('/admin/contexts/edit', array(
-            'firm' => $firm,
-            'errors' => @$errors,
-            'siteSecretaries' => $siteSecretaries,
-        ));
-    }
 
     public function actionLookupUser()
     {

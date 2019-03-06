@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 namespace OEModule\OphCiExamination\widgets;
@@ -189,21 +189,7 @@ class HistoryMedications extends BaseMedicationWidget
      */
     public function getMergedEntries()
     {
-        //$this->element->currentOrderedEntries and stoppedOrderedEntries relations are not uses here as we
-        //need to include the untracked Prescription Items as well and those are already loaded into the
-        //$this->element->entries (alongside with tracked Prescription Items)
-        // setElementFromDefaults() only called when the element is a new record (BaseEventElementWidget like ~166)
-        // and this is where the untracked elements are loaded into the $this->element->entries
-        // so if it isn't a new element ->entries only contains tracked medications
-
-        if(!$this->element->isNewRecord){
-            if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
-                // tracking prescription items.
-                $this->element->entries = array_merge(
-                    $this->element->entries,
-                    $untracked);
-            }
-        }
+        $this->setElementFromDefaults();
 
         $this->element->assortEntries();
         $result['current'] = $this->element->current_entries;
@@ -215,6 +201,7 @@ class HistoryMedications extends BaseMedicationWidget
         $filter = function($entry) {
             return !($entry->prescription_item_deleted || $entry->prescription_event_deleted);
         };
+
         $result['current'] = array_filter($result['current'], $filter);
         $result['stopped'] = array_filter($result['stopped'], $filter);
         $result['prescribed'] = array_filter($result['prescribed'], $filter);
@@ -223,6 +210,7 @@ class HistoryMedications extends BaseMedicationWidget
 
         return $result;
     }
+
     /**
      * @param $entry
      * @return string

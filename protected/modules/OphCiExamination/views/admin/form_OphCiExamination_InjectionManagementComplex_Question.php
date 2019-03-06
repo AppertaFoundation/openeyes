@@ -36,7 +36,7 @@
                     'id',
                     'term'
                 ),
-                ['class' => 'cols-full', 'empty' => '- Please select -']
+                ['class' => 'cols-full', 'empty' => 'Select']
             ); ?>
         </td>
     </tr>

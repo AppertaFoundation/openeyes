@@ -80,18 +80,13 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
      *
      * @return OphCiExamination_Attribute[]
      */
-    public function findAllByElementAndSubspecialty($element_type_id, $subspecialty_id = null, $include_descendents = true)
+    public function findAllByElementAndSubspecialty($element_type_id, $subspecialty_id = null)
     {
         $criteria = new \CDbCriteria();
         $criteria->select = 't.*';
         $criteria->distinct = true;
         $element_type_ids = array($element_type_id);
-        if ($include_descendents) {
-            $element_type = \ElementType::model()->findByPk($element_type_id);
-            foreach ($element_type->getDescendents() as $descendent) {
-                $element_type_ids[] = $descendent->id;
-            }
-        }
+
         $criteria->addInCondition('attribute_element.element_type_id', $element_type_ids);
         if ($subspecialty_id) {
             $criteria->addCondition('subspecialty_id = :subspecialty_id OR subspecialty_id IS NULL');

@@ -23,37 +23,36 @@ $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($clinical);
 ?>
 <main class="main-event edit" id="event-content">
-	<div class="messages patient">
-		<?php $this->renderPartial('//base/_messages'); ?>
-		<?php if ($this->patient->contact->address && !$this->patient->contact->address->isCurrent()) {?>
+    <div class="messages patient">
+        <?php $this->renderPartial('//base/_messages'); ?>
+        <?php if ($this->patient->contact->address && !$this->patient->contact->address->isCurrent()) {?>
       <div id="no-current-address-error" class="alert-box alert with-icon">
         Warning: The patient has no current address. The address shown is their last known address.
       </div>
-		<?php }?>
+        <?php }?>
 
-		<?php if ($this->patient->isDeceased()) {?>
+        <?php if ($this->patient->isDeceased()) {?>
       <div id="deceased-notice" class="alert-box alert with-icon">
         This patient is deceased (<?= $this->patient->NHSDate('date_of_death'); ?>)
       </div>
-		<?php }?>
+        <?php }?>
 
-		<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) {?>
+        <?php if (!$this->patient->practice || !$this->patient->practice->contact->address) {?>
       <div id="no-practice-address" class="alert-box alert with-icon">
-        Patient has no GP practice address, please correct in PAS before printing GP letter.
+        Patient has no <?php echo \Yii::app()->params['gp_label'] ?> practice address, please correct in PAS before printing <?php echo \Yii::app()->params['gp_label'] ?> letter.
       </div>
-		<?php }?>
+        <?php }?>
 
-		<?php if ($warnings) { ?>
+        <?php if ($warnings) { ?>
       <div class="alert-box patient with-icon">
           <?php foreach ($warnings as $warn) {?>
             <strong><?= $warn['long_msg']; ?></strong>
             - <?= $warn['details']; }?>
       </div>
-		<?php }?>
+        <?php }?>
 
-		<?php $this->renderPartial('//patient/_patient_alerts')?>
-		</div>
-
+        <?php $this->renderPartial('//patient/_patient_alerts')?>
+        </div>
 	<div class="patient-content flex-layout flex-top col-gap-small">
     <div class="cols-half">
 			<?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])): ?>
@@ -88,7 +87,7 @@ $warnings = $this->patient->getWarnings($clinical);
         <?php endif; ?>
 
             <?php if ($this->checkAccess('OprnViewClinical')) {?>
-				<?php $this->renderPartial('_patient_episodes', array(
+                <?php $this->renderPartial('_patient_episodes', array(
                     'episodes' => $episodes,
                     'ordered_episodes' => $ordered_episodes,
                     'legacyepisodes' => $legacyepisodes,
@@ -96,7 +95,7 @@ $warnings = $this->patient->getWarnings($clinical);
                     'episodes_closed' => $episodes_closed,
                     'firm' => $firm,
                 ))?>
-			<?php }?>
-		</div>
-	</div>
+            <?php }?>
+        </div>
+    </div>
 </main>

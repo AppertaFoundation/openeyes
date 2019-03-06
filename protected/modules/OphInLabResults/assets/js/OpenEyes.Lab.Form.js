@@ -16,52 +16,62 @@
  */
 OpenEyes.Lab = OpenEyes.Lab || {};
 
-(function(exports) {
-  var Form = {};
-  var ajaxElementUri = '/OphInLabResults/Default/elementForm';
-  var $resultTypeSelect;
+(function (exports) {
+    var Form = {};
+    var ajaxElementUri = '/OphInLabResults/Default/elementForm';
+    var $resultTypeSelect;
 
-  /**
-   * Reset the dropdown when an element is removed.
-   */
-  function removeResultElement() {
-    $resultTypeSelect.val('');
-    $('#result-output').parents('.element').remove();
-  }
-
-  /**
-   * Load the apropriate form for the lab result type.
-   *
-   * @param e
-   * @returns {boolean}
-   */
-  function loadResultElement(e) {
-    var option = e.target.options[e.target.selectedIndex];
-
-    if(!option.dataset.elementId){
-      removeResultElement($('#result-output').parent());
-      return false;
+    /**
+     * Reset the dropdown when an element is removed.
+     */
+    function removeResultElement(event) {
+        let section = $(event.target).closest('section');
+        if (section.length && section.find('[name$="[element_dirty]"]').val() === '1') {
+            $(document).one("element_removed", function () {
+                $resultTypeSelect.val('');
+            });
+        } else {
+            $resultTypeSelect.val('');
+            $('#result-output').parents('.element').remove();
+        }
     }
 
-    $.ajax({
-      url: ajaxElementUri,
-      data: {
-        patient_id: OE_patient_id,
-        id: option.dataset.elementId
-      },
-      dataType: 'html',
-      success: function (data) {
-        var $dataElement  = $('<section></section>').html(data);
-        $dataElement.find('.js-remove-element').on('click', removeResultElement);
-        $('.lab-results-type').parent().after($dataElement);
-      }
-    });
-  }
+    /**
+     * Load the apropriate form for the lab result type.
+     *
+     * @param e
+     * @returns {boolean}
+     */
+    function loadResultElement(e) {
+        var option = e.target.options[e.target.selectedIndex];
 
-  Form.init = function ($resultType) {
-    $resultTypeSelect = $resultType;
-    $resultTypeSelect.on('change', loadResultElement);
-  };
+        if (!option.dataset.elementId) {
+            removeResultElement($('#result-output').parent());
+            return false;
+        }
+        disableButtons();
+        $.ajax({
+            url: ajaxElementUri,
+            data: {
+                patient_id: OE_patient_id,
+                id: option.dataset.elementId
+            },
+            dataType: 'html',
+            success: function (data) {
+                var $dataElement = $('<section></section>').html(data);
+                $dataElement.find('.js-remove-element').on('click', removeResultElement);
+                $('.lab-results-type').parent().after($dataElement);
+                enableButtons();
+                $('textarea').autosize();
+            }
+        });
+    }
 
-  exports.Form = Form;
+    Form.init = function ($resultType) {
+        $resultTypeSelect = $resultType;
+        $resultTypeSelect.on('change', loadResultElement);
+        $('.js-remove-element').on('click', removeResultElement);
+    };
+
+    exports.Form = Form;
 }(this.OpenEyes.Lab));

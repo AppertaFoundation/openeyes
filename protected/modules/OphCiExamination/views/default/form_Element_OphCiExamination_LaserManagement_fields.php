@@ -137,7 +137,7 @@ $model_name = CHtml::modelName($element);
                   $element,
                   $eye.'_lasertype_id',
                   CHtml::listData($lasertypes, 'id', 'name'),
-                  array('options' => $lasertype_options, 'empty' => '- Please select -')
+                  array('options' => $lasertype_options, 'empty' => 'Select')
               )?>
           </div>
         </div>
