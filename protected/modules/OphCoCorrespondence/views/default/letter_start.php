@@ -21,8 +21,8 @@ $logoHelper = new LogoHelper();
 <div class="logo">
     <?= $logoHelper->render() ?>
 </div>
-<div class="flex-layout flex-top" style="position: relative; top: 60px;">
-    <div class="cols-left">
+<div style="position: relative; top: 60px;">
+    <div style="float: left;">
         <div class="to-address">
             <div class="to-address-header">
                 To:
@@ -32,7 +32,7 @@ $logoHelper = new LogoHelper();
             </div>
         </div>
     </div>
-    <div class="cols-right">
+    <div>
     <?php if ($element->site) {?>
         <div class="right-align">
                 <?php
