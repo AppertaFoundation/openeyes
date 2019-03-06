@@ -217,6 +217,9 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 complete: function () {
                 }
             });
+        } else {
+            //Chrome will not trigger the 'change' event next time unless the input has been cleared
+            $('.js-document-file-input').val(null);
         }
     };
 
@@ -300,6 +303,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                         content: 'Only the following file types can be uploaded: ' + window.allowed_file_types.join(', ') +
                             '\n\nFor reference, the type of the file you tried to upload is: ' + file.type
                     }).open();
+
+
                 }
             }
 
