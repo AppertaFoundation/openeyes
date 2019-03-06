@@ -257,14 +257,13 @@ class Patient extends BaseActiveRecordVersioned
         $earliest_date =  new DateTime('01-01-1900');
         $current_date->format('d-m-Y');
 
-
         if( !$patient_dob_date || !$format_check){
             $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
         }
         if( $patient_dob_date > $current_date){
-            $this->addError($attribute, 'Date of Birth should be before current date.');
+            $this->addError($attribute, 'Date of birth should be before current date.');
         }elseif ($patient_dob_date < $earliest_date){
-            $this->addError($attribute, "Patient's Date of Birth cannot be earlier than ".$earliest_date->format('d/m/Y'));
+            $this->addError($attribute, "Patient's Date of birth cannot be earlier than ".$earliest_date->format('d/m/Y'));
         }
     }
     public function deathDateFormatValidator($attribute, $params)
@@ -279,15 +278,16 @@ class Patient extends BaseActiveRecordVersioned
             $current_date->format('d-m-Y');
             $earliest_date =  new DateTime('01-01-1900');
 
-
-            if( !$patient_dod_date || !$format_check){
+            if (!$this->date_of_death) {
+                $this->addError($attribute, 'Date of death cannot be blank.');
+            } elseif( !$format_check) {
                 $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
-            }else if( $patient_dod_date < $patient_dob_date){
-                $this->addError($attribute,"Patient's Date of Death cannot be earlier than Date of Birth ".$this->dob);
-            }else if( $patient_dod_date > $current_date){
-                $this->addError($attribute, 'Date of Death can only be earlier than the current date or can be the current date '.$current_date->format('d/m/Y'));
-            }elseif ($patient_dod_date < $earliest_date){
-                $this->addError($attribute, "Patient's Date of Death cannot be earlier than ".$earliest_date->format('d/m/Y'));
+            }elseif( $patient_dod_date < $patient_dob_date){
+                $this->addError($attribute,"Patient's date of death cannot be earlier than date of birth ".$patient_dob_date->format('d/m/Y'));
+            }elseif( $patient_dod_date > $current_date){
+                $this->addError($attribute, 'Date of death cannot be in the future');
+            }elseif($patient_dod_date < $earliest_date){
+                $this->addError($attribute, "Patient's date of death cannot be earlier than ".$earliest_date->format('d/m/Y'));
             }
         }
     }
