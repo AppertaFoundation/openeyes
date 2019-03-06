@@ -21,10 +21,28 @@
     $('<th>Preservative</th>').appendTo($header);
     $('<th id="common-drugs-label">Common Drugs</th>').appendTo($header);
 
+
+    this.popup.on('click', '.js-search-results li', function () {
+      if ($(this).data('selected') == "none"){
+        $(this).data('selected','true');
+      }else{
+        $(this).data('selected','none');
+        $(this).removeClass('selected');
+      }
+    });
+
     this.popup.on('click', '.js-drug-types li', function () {
-      dialog.popup.find('.js-drug-types li.selected').not(this).removeClass('selected');
+      if ($(this).data('selected') == "none"){
+        dialog.popup.find('.js-drug-types li.selected').not(this).removeClass('selected');
+        dialog.popup.find('.js-drug-types li').not(this).data('selected','none');
+        $(this).data('selected','true');
+      }else{
+        $(this).data('selected','none');
+        $(this).removeClass('selected');
+      }
       dialog.runItemSearch(dialog.popup.find('input.search').val());
     });
+
     this.popup.on('click', '.js-no-preservative li', function () {
         dialog.runItemSearch(dialog.popup.find('input.search').val());
     });
@@ -32,7 +50,7 @@
 
   PrescriptionDialog.prototype.getSelectedItems = function () {
     return this.popup.find('li.selected').filter(function () {
-      return $(this).closest('.js-drug-types').length === 0;
+      return $(this).closest('.js-drug-types').length === 0 && !$(this).parent().hasClass('js-no-preservative');
     }).map(function () {
       return $(this).data();
     }).get();
@@ -83,12 +101,12 @@
     this.noSearchResultsWrapper = $('<span />').text('No results found').hide();
     this.noSearchResultsWrapper.insertAfter(this.popup.find('.js-drug-list'));
 
-    this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
+    this.searchResultList = $('<ul />', {class: 'add-options multi js-search-results', "data-multiselect":"true"});
     this.searchResultList.insertAfter(this.popup.find('.js-drug-list'));
 
     let $drugTypes = $('<ul >', {class: 'add-options js-drug-types'});
     this.options.searchOptions.searchFilter.forEach(function (drugType) {
-      $drugTypes.append($('<li />', {'data-id': drugType.id}).append($('<span />', {class: 'auto-width'}).text(drugType.label)));
+      $drugTypes.append($('<li />', {'data-id': drugType.id, 'data-selected':'none'}).append($('<span />', {class: 'auto-width'}).text(drugType.label)));
     });
 
     $drugTypes.appendTo($filterDiv);
@@ -114,7 +132,7 @@
             code: this.options.searchOptions.code,
             type_id: this.popup.find('.js-drug-types li.selected').data('id'),
             preservative_free: this.popup.find('.js-no-preservative li.selected').data('id'),
-            ajax: 'ajax'
+            ajax: 'ajax',
         });
 
         this.searchRequest = $.getJSON(this.options.searchOptions.searchSource + '?' + params, function (results) {
@@ -127,6 +145,7 @@
 
         $(results).each(function (index, result) {
           let dataset = AdderDialog.prototype.constructDataset(result);
+          dataset['data-selected'] = 'none';
           let item = $("<li />", dataset)
             .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
           dialog.searchResultList.append(item);
