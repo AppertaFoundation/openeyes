@@ -6,9 +6,7 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use \SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 class AnaestheticAuditContext extends PageObjectContext {
-	public function __construct(array $parameters) {
-	}
-	
+
 	/**
 	 * @Then /^I select an Anaesthetist "([^"]*)"$/
 	 */
@@ -143,7 +141,7 @@ class AnaestheticAuditContext extends PageObjectContext {
 		 * @var Examination $exam
 		 */
 		$exam = $this->getPage ( 'Examination' );
-		$exam->saveExaminationAndConfirm();
+		$exam->saveAndConfirm();
 	}
 	
 	/**

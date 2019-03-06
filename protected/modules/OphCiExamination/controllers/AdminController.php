@@ -226,7 +226,7 @@ class AdminController extends \ModuleAdminController
                     Audit::add('admin', 'create', $model->id, null, array('module' => 'OphCiExamination', 'model' => 'InjectionManagementComplex_Question'));
                     Yii::app()->user->setFlash('success', 'Injection Management Disorder Question added');
 
-                    $this->redirect(array('ViewOphCiExamination_InjectionManagementComplex_Question', 'disorder_id' => $model->disorder_id));
+                    $this->redirect('ViewOphCiExamination_InjectionManagementComplex_Question?disorder_id='.$model->disorder_id);
                 }
             }
         } elseif (isset($_GET['disorder_id'])) {

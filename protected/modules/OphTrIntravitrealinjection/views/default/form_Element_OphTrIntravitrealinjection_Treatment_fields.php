@@ -218,7 +218,7 @@ foreach ($skin_drugs as $drug) {
       </td>
       <td class="cols-<?php echo $form->columns('field'); ?>">
         <div class="collapse in">
-          <div>
+          <div class="flex-layout">
               <?php echo $form->textField($element, $side . '_number', array('size' => '10', 'nowrapper' => true)) ?>
             <span id="<?php echo $side; ?>_number_history_icon"
                   class="postfix number-history-icon<?php if (!$selected_drug) {
@@ -232,11 +232,13 @@ foreach ($skin_drugs as $drug) {
                           $tooltip_info = $tooltip_info . Helper::convertDate2NHS($previous['date']) . ' (' . $previous[$side . '_number'] . ')<br />';
                       }
                   }
-              } ?>
-              <i class="oe-i info small-icon js-has-tooltip"
-                 data-tooltip-content="<?php echo $tooltip_info; ?>">
-        </i>
-      </span>
+              }
+              if ($tooltip_info == "")
+                $tooltip_info = "The patient has no drug history";?>
+                <i class="oe-i info small-icon js-has-tooltip"
+                   data-tooltip-content="<?php echo $tooltip_info; ?>">
+                 </i>
+            </span>
           </div>
         </div>
       </td>

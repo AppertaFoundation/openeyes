@@ -29,7 +29,7 @@ $(document).ready(function() {
         	url;
 
 		if (did) {
-			url = '/' + OE_module_name + '/admin/ViewOphCiExamination_InjectionManagementComplex_Question/disorder_id/';
+			url = '/' + OE_module_name + '/admin/ViewOphCiExamination_InjectionManagementComplex_Question?disorder_id=';
             console.log(url + did);
             window.location.href = url + did;
 		}

@@ -28,8 +28,8 @@
 		<div class="data-group collapse in flex-layout flex-top">
 			<div class="cols-10 column">
 				<div class="dropdown-row">
-					<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => 'Select') : $dropdownOptions) : ''?>
-				</div>
+					<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => 'Select') : array_merge($dropdownOptions, array('style' => 'width : 100%'))) : ''?>
+                </div>
         <div class="autocomplete-row" style="display: none">
             <?php
             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -86,7 +86,7 @@
 			</div>
 			<div class="cols-2 column">
 				<div class="postfix">
-					<button class="oe-i search" id="<?php echo $class.'_'.$field.'_search'?>" style="height: 28px; width: 28px;" type="button">
+					<button class="oe-i search pad-left" id="<?php echo $class.'_'.$field.'_search'?>" style="height: 28px; width: 28px;" type="button">
 						<span class="icon-button-small-search" ></span>
 						<span style="display: none">Search</span>
 					</button>

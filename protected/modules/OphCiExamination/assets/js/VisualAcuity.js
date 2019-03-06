@@ -290,7 +290,6 @@ function OphCiExamination_VisualAcuity_bestForSide(side) {
 }
 
 function swapElement(element_to_swap, elementTypeClass, params){
-  console.log('swap element');
     const nva = elementTypeClass.endsWith("NearVisualAcuity");
     const sidebar = $('#episodes-and-events').data('patient-sidebar');
     const $menuLi = sidebar.findMenuItemForElementClass(elementTypeClass);

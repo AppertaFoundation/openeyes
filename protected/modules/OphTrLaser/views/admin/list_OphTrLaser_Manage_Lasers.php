@@ -17,8 +17,7 @@
  */
 ?>
 
-<?php $this->renderPartial('//base/_messages') ?>
-
+<?php $this->renderPartial('//base/_messages'); ?>
 <div class="cols-8">
     <form id="admin_manage_lasers">
         <table class="standard">
@@ -33,7 +32,8 @@
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($model_list as $i => $model) { ?>
+            <?php if (isset($model_list)){
+            foreach ($model_list as $i => $model) { ?>
                 <tr class="clickable" data-id="<?php echo $model->id ?>"
                     data-uri="OphTrLaser/admin/editLaser/<?php echo $model->id ?>">
                     <td><?php echo $model->name ?></td>
@@ -49,7 +49,7 @@
                         ) ?>
                     </td>
                 </tr>
-            <?php } ?>
+            <?php } } ?>
             </tbody>
             <tfoot class="pagination-container">
             <tr>

@@ -6,16 +6,12 @@ use Behat\Mink\Session;
 use SensioLabs\Behat\PageObjectExtension\Context\PageFactoryInterface;
 
 
-abstract class OpenEyesPage extends Page {
-	
+class OpenEyesPage extends Page {
 	public function __construct(Session $session, PageFactoryInterface $pageFactory, array $parameters = array())
     {
         parent::__construct($session, $pageFactory, $parameters);
-
-        // this should obviously be configurable, but I've put this in to ensure that we are able
-        // to always see the save button.
-        $this->getDriver()->resizeWindow(1280,800);
     }
+
 
     /**
 	 * ription checks that the title is equal to the expected value
@@ -107,7 +103,6 @@ abstract class OpenEyesPage extends Page {
 	 */
 	public function scrollWindowToLink($locator) {
 		$element = $this->findLink ( $locator );
-		print $locator;
 		if ($element === null) {
 			throw new ElementNotFoundException ( $this->getSession (), 'element', 'id|title|alt|text', $locator );
 		}
@@ -115,10 +110,8 @@ abstract class OpenEyesPage extends Page {
 		$this->scrollWindowToElement ( $element );
 	}
 	public function acceptAlert() {
-		//print "******In OpenEyes Class*******";
 		$wdSession = $this->getSession ()->getDriver ()->getWebDriverSession ();
 		$wdSession->accept_alert();
-		//$element = $wdSession->element ( 'xpath', $element->getXpath () );
 	}
 	/**
 	 * Scrolls the window to ensure the element is within the viewport.
@@ -158,13 +151,6 @@ JS;
 		return $waitTime = $waitTime != null ? ( int ) $waitTime : 2000;
 	}
 
-    /**
-     * This should be the same behaviour for every OE page
-     */
-    public function saveEvent() {
-        $this->getElement ( 'save' )->click ();
-    }
-
     public function popupOk($element_name)
     {
         $element = $this->getElement($element_name);
@@ -173,4 +159,8 @@ JS;
         }
     }
 
+    public function logout()
+    {
+        $this->getDriver()->visit($this->getParameter('base_url').'/site/logout');
+    }
 }
