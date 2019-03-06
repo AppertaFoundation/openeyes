@@ -146,15 +146,16 @@ class GpController extends BaseController
                 }
             } else {
                 if ($isAjax) {
-                    throw new CHttpException(400,"Unable to save Practitioner contact");
+                    throw new CHttpException(400,CHtml::errorSummary($contact));
                 }
+
                 $transaction->rollback();
             }
         } catch (Exception $ex) {
             OELog::logException($ex);
             $transaction->rollback();
             if ($isAjax) {
-                throw new CHttpException(400,"Unable to save Practitioner contact");
+                 throw $ex;
             }
         }
 

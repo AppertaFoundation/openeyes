@@ -71,10 +71,10 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 <tr>
                     <td>
                         <?php echo $form->labelEx($contact, 'primary_phone'); ?>
+                        <?php echo $form->error($contact, 'primary_phone'); ?>
                     </td>
                     <td>
                         <?php echo $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20)); ?>
-                        <?php echo $form->error($contact, 'primary_phone'); ?>
                     </td>
                 </tr>
                 <tr>
@@ -87,8 +87,10 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                             [
                                 'type' => 'POST',
                                 'error' => 'js:function(error){
-                                $("#errors").text("Please input the mandatory fields.");
-                                $(".alert-box").css("display","");
+                                    $error_message = error.responseText.split("(")[0].split("</h1>")[1];
+                                     $alertBox = $(".alert-box"); 
+                                     $alertBox.find("#errors").html($error_message);                                
+                                     $(".alert-box").css("display","");
                           }',
                                 'success' => 'js:function(event){
                                removeSelectedPractice();

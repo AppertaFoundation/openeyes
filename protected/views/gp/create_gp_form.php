@@ -101,11 +101,11 @@
                                 Yii::app()->controller->createUrl('gp/create', array('context' => 'AJAX')),
                                 array(
                                     'type' => 'POST',
-                                    'error' => 'js:function(error){
-                                event.preventDefault();
-                                let $alertBox = $(".alert-box"); 
-                                $alertBox.find("#errors").text("First name and Last name cannot be blank.");
-                                $(".alert-box").css("display","");
+                                    'error' => 'js:function(data){
+                                    $error_message = data.responseText.split("(")[0].split("</h1>")[1];
+                                     $alertBox = $(".alert-box"); 
+                                     $alertBox.find("#errors").html($error_message);
+                                     $(".alert-box").css("display","");
                               }',
                                     'success' => 'js:function(event){
                                      removeSelectedGP();

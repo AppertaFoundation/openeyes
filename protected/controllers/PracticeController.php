@@ -141,7 +141,7 @@ class PracticeController extends BaseController
                 }
             } else {
                 if ($isAjax) {
-                    throw new CHttpException(400, "Unable to save Practice contact");
+                    throw new CHttpException(400,CHtml::errorSummary($contact));
                 }
                 $transaction->rollback();
             }
@@ -149,7 +149,7 @@ class PracticeController extends BaseController
             OELog::logException($ex);
             $transaction->rollback();
             if ($isAjax) {
-                throw new CHttpException(400, "Unable to save Practice contact");
+                throw $ex;
             }
         }
 
