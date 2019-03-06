@@ -3043,24 +3043,19 @@ class OphCiExamination_API extends \BaseAPI
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
         if(!is_null($element)) {
+            /** @var models\MedicationManagement $element */
+            $entries = $element->getEntriesStartedToday();
+            if($entries) {
+            $viewparams = array(
+                'entries' => $entries,
+                'table_class' => 'drugs-stopped-today'
+            );
 
-            $meds = $element->getEntriesStartedToday();
-            if($meds){
-                foreach( $meds as $med ){
-                    $medStartedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
-                }
-
-                return '<table>
-                    <thead>
-                        <tr>
-                            <th>New drugs started today</th>
-                        </tr>
-                    </thead>
-                <tbody><tr>'.$medStartedRow.'</tr></tbody></table>';
+            return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
             }
         }
 
-        return "";
+        return "(no drugs started today)";
     }
 
     /**
@@ -3074,24 +3069,19 @@ class OphCiExamination_API extends \BaseAPI
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
         if(!is_null($element)) {
+			/** @var models\MedicationManagement $element */
+            $entries = $element->getEntriesStoppedToday();
+            if($entries) {
+                $viewparams = array(
+                    'entries' => $entries,
+                    'table_class' => 'drugs-stopped-today'
+                );
 
-            $medStopped = $element->getEntriesStoppedToday();
-            if($medStopped){
-                foreach($medStopped as $med){
-                    $medStoppedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
-                }
-
-                return '<table>
-                    <thead>
-                        <tr>
-                            <th>Drugs stopped today</th>
-                        </tr>
-                    </thead>
-                <tbody><tr>'.$medStoppedRow.'</tr></tbody></table>';
+                return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
             }
         }
 
-        return "";
+        return "(no drugs stopped today)";
     }
 
     /**
@@ -3104,25 +3094,20 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterDrugsContinuedToday($patient, $use_context = false)
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
-        if(!is_null($element)) {
-            $medContinued = $element->getContinuedEntries();
-            if($medContinued){
-                foreach($medContinued as $med){
-                    $medContinuedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
-                }
+		if(!is_null($element)) {
+		    /** @var models\MedicationManagement $element */
+			$entries = $element->getContinuedEntries();
+			if($entries) {
+				$viewparams = array(
+					'entries' => $entries,
+					'table_class' => 'drugs-continued-today'
+				);
 
+				return \Yii::app()->controller->renderPartial("_druglist", $viewparams);
+			}
+		}
 
-            return '<table>
-                    <thead>
-                        <tr>
-                            <th>Existing drugs to continue</th>
-                        </tr>
-                    </thead>
-                <tbody><tr>'.$medContinuedRow.'</tr></tbody></table>';
-            }
-        }
-
-        return "";
+        return "(no drugs continued today)";
     }
 
     /**
@@ -3136,45 +3121,18 @@ class OphCiExamination_API extends \BaseAPI
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
 
         if(!is_null($element)) {
+            /** @var models\MedicationManagement $element */
+			$viewparams = array(
+				'started' => $element->getEntriesStartedToday(),
+				'stopped' => $element->getEntriesStoppedToday(),
+				'continued' => $element->getContinuedEntries(),
+				'table_class' => 'medication-management-summary'
+			);
 
-            $medStartedRow = '<td></td>';
-            $medStarted = $element->getEntriesStartedToday();
-            if($medStarted){
-                foreach($medStarted as $med){
-                    $medStartedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
-                }
-            }
-
-            $medStoppedRow = '<td></td>';
-            $medStopped = $element->getEntriesStoppedToday();
-            if($medStopped){
-                foreach($medStopped as $med){
-                    $medStoppedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
-                }
-            }
-
-            $medContinuedRow = '<td></td>';
-            $medContinued = $element->getContinuedEntries();
-            if($medContinued){
-                foreach($medContinued as $med){
-                    $medContinuedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
-                }
-            }
-
-            if(($medStarted) || ($medStopped) || ($medContinued)){
-                return '<table>
-                    <thead>
-                        <tr>
-                            <th>New drugs started today</th>
-                            <th>Drugs stopped today</th>
-                            <th>Existing drugs to continue</th>
-                        </tr>
-                    </thead>
-                <tbody><tr>'.$medStartedRow.$medStoppedRow.$medContinuedRow.'</tr></tbody></table>';
-            }
+			return \Yii::app()->controller->renderPartial("_druglist_all", $viewparams);
         }
 
-        return "";
+        return "(medication management summary not available)";
     }
 
     /*
