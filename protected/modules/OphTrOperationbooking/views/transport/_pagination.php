@@ -21,30 +21,30 @@
 $uri_append = $this->getUriAppend();
 ?>
 <ul class="pagination">
-	<li class="previous<?php echo $this->page <= 1 ? ' unavailable' : '';?>">
-		<?=\CHtml::link(
+    <li class="previous<?php echo $this->page <= 1 ? ' unavailable' : '';?>">
+        <?=\CHtml::link(
             '&lt; Previous',
             Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.($this->page - 1).$uri_append),
             array('rel' => 'back')
         )?>
-	</li>
+    </li>
 
-	<?php for ($i = 1;$i <= $this->pages;++$i) {?>
-		<li class="page<?php echo $i == $this->page ? ' current' : '';?>">
-			<?=\CHtml::link(
+    <?php for ($i = 1;$i <= $this->pages;++$i) {?>
+        <li class="page<?php echo $i == $this->page ? ' current' : '';?>">
+            <?=\CHtml::link(
                 $i,
                 Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.$i.$uri_append),
                 array('rel' => $i)
             )?>
-		</li>
-	<?php }?>
+        </li>
+    <?php }?>
 
 
-	<li class="next<?php echo !$this->pages || $this->page == $this->pages ? ' unavailable' : '';?>">
-		<?=\CHtml::link(
+    <li class="next<?php echo !$this->pages || $this->page == $this->pages ? ' unavailable' : '';?>">
+        <?=\CHtml::link(
             'Next &gt;',
             Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.($this->page + 1).$uri_append),
             array('rel' => 'back')
         )?>
-	</li>
-</div>
+    </li>
+</ul>

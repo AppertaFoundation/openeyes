@@ -77,8 +77,8 @@ class LaserContext extends PageObjectContext {
 		 *
 		 * @var laser $laserPage
 		 */
-		$laserPage = $this->getPage ( 'laser' );
-		$laserPage->saveLaser ();
+		$laserPage = $this->getPage ( 'Laser' );
+		$laserPage->saveEvent();
 	}
 	
 	/**
@@ -90,7 +90,7 @@ class LaserContext extends PageObjectContext {
 		 * @var laser $laserPage
 		 */
 		$laserPage = $this->getPage ( 'laser' );
-		$laserPage->saveLaserAndConfirm ();
+		$laserPage->saveAndConfirm();
 	}
 	
 	/**
