@@ -52,6 +52,7 @@ class PcrRiskReport extends Report implements ReportInterface
         'ticks' => 'outside',
         'dtick' => 10,
         'tick0' => 0,
+        'showgrid'=>true,
         'range' => [0,50],
       ),
       'legend'=> array(
@@ -91,6 +92,7 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     protected function queryData($surgeon, $dateFrom, $dateTo)
     {
+        $this->command->reset();
         $this->command->select('ophtroperationnote_cataract_complications.name as complication, pcr_risk as risk')
             ->from('et_ophtroperationnote_cataract')
             ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
@@ -110,76 +112,120 @@ class PcrRiskReport extends Report implements ReportInterface
 
         return $this->command->queryAll();
     }
+    protected function querySurgeonData(){
+        $this->command->reset();
+        $this->command->select('user.id as id')
+            ->from('user')
+            ->where('is_surgeon = 1');
+        return $this->command->queryAll();
+    }
 
     /**
      * @return array
      */
     public function dataSet()
     {
-        $data = $this->queryData($this->surgeon, $this->from, $this->to);
-
-        $total = $this->getTotalOperations();
-        $pcrCases = 0;
-        $pcrRiskTotal = 0;
-        $adjustedPcrRate = 0;
-
-        foreach ($data as $case) {
-            if (isset($case['complication']) && ($case['complication'] === 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')) {
-                ++$pcrCases;
-            }
-            if (isset($case['risk']) && $case['risk'] !== '' && $case['risk'] != 0) {
-                $pcrRiskTotal += $case['risk'];
-            } else {
-                $pcrRiskTotal += 1.92;
-            }
+        $return_data = array();
+        if ($this->allSurgeons){
+            $surgeon_id_list =  $this->querySurgeonData();
+        }else{
+            $surgeon_id_list = array(array('id' => $this->surgeon));
         }
+        $surgeon_count = 1;
+        foreach ($surgeon_id_list as $surgeon_id) {
 
-        if ($total !== 0 && (int) $pcrRiskTotal !== 0) {
-            // unadjusted PCR rate
+            $data = $this->queryData($surgeon_id['id'], $this->from, $this->to);
+            $total = $this->getTotalOperations($surgeon_id['id']);
+            $pcrCases = 0;
+            $pcrRiskTotal = 0;
+            $adjustedPcrRate = 0;
+            $unadjustedPcrRate = 0;
+            foreach ($data as $case) {
+                if (isset($case['complication']) && ($case['complication'] === 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')) {
+                    ++$pcrCases;
+                }
+                if (isset($case['risk']) && $case['risk'] !== '' && $case['risk'] != 0) {
+                    $pcrRiskTotal += $case['risk'];
+                } else {
+                    $pcrRiskTotal += 1.92;
+                }
+            }
+
+            if ($total !== 0 && (int)$pcrRiskTotal !== 0) {
+                // unadjusted PCR rate
                 $unadjustedPcrRate = ($pcrCases / $total) * 100;
 
                 // adjusted PCR rate
                 $expectedPcrRate = $pcrRiskTotal / $total;
-            $observedPcrRate = $pcrCases / $total;
-            $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
-            $adjustedPcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
+                $observedPcrRate = $pcrCases / $total;
+                $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
+                $adjustedPcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
                 //$adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
-        }
+            }
 
-        // set the graph subtitle here, so we don't have to run this query more than once
-        if ($total > 1000) {
-            $this->totalOperations = $total;
-        }
+            // set the graph subtitle here, so we don't have to run this query more than once
+            if ($total > 1000) {
+                $this->totalOperations = $total;
+            }
+            if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
+                $surgeon_name = User::model()->findByPk($surgeon_id)->getFullName();
+                $surgeon_name = '<br><i>Surgon: </i>'.$surgeon_name;
+            }else{
+                $surgeon_name = '<br><i>Surgon: </i>Surgon '.$surgeon_count;
+            }
+            if ($surgeon_id['id'] == Yii::app()->user->id){
+                $color = "#1f77b4";
+            }else{
+                $color = 'red';
+            }
 
-        if ($this->mode == 0) {
-            return array(array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
-        } elseif ($this->mode == 1) {
-            return array(array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate));
-        } elseif ($this->mode == 2) {
-            return array(array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate), array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
+            if ($this->mode == 0) {
+                array_push($return_data, array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate, 'surgeon' => $surgeon_name, 'color' => $color));
+            } elseif ($this->mode == 1) {
+                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate, 'surgeon' => $surgeon_name, 'color' => $color));
+            } elseif ($this->mode == 2) {
+                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate, 'surgeon' => $surgeon_name,'color' => $color), array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate, 'surgeon' => $surgeon_name, 'color' => $color));
+            }
+            $surgeon_count += 1;
         }
+        return $return_data;
     }
-
     /**
      * @return string
      */
 
     public function tracesJson(){
-      $dataset = $this->dataSet();
+      $dataset =$this->dataSet();
+      $current_surgeon_data = array();
+      $other_surgeons_data = array();
+      foreach($dataset as $row){
+          if ($row['color'] == 'red'){
+              array_push($other_surgeons_data,$row);
+          }else{
+              array_push($current_surgeon_data,$row);
+          }
+      }
+
       $trace1 = array(
         'name' => 'Current Surgeon',
+        'mode'=>'markers',
         'type' => 'scatter',
+        'marker' => array(
+            'color' => array_map(function ($item){
+                return $item['color'];
+            },$current_surgeon_data),
+        ),
         'x' => array_map(function($item){
           return $item['x'];
-        }, $dataset),
+        }, $current_surgeon_data),
         'y' => array_map(function($item){
           return $item['y'];
-        }, $dataset),
+        }, $current_surgeon_data),
         'hovertext' => array_map(function($item){
           return '<b>PCR Risk adjusted</b><br><i>Operations:</i>'
             . $item['x'] . '<br><i>PCR Avg:</i>'
-            . number_format($item['y'], 2);
-        }, $dataset),
+            . number_format($item['y'], 2).$item['surgeon'];
+        }, $current_surgeon_data),
         'hoverinfo'=>'text',
         'hoverlabel' => array(
           'bgcolor' => '#fff',
@@ -215,8 +261,37 @@ class PcrRiskReport extends Report implements ReportInterface
         }, $this->upper95()),
         'hoverinfo' => 'skip',
       );
+      $trace4 = array(
+          'name' => 'Other Surgeons',
+          'mode'=>'markers',
+          'type' => 'scatter',
+          'marker' => array(
+              'color' => array_map(function ($item){
+                  return $item['color'];
+              },$other_surgeons_data),
+          ),
+          'x' => array_map(function($item){
+              return $item['x'];
+          }, $other_surgeons_data),
+          'y' => array_map(function($item){
+              return $item['y'];
+          }, $other_surgeons_data),
+          'hovertext' => array_map(function($item){
+              return '<b>PCR Risk adjusted</b><br><i>Operations:</i>'
+                  . $item['x'] . '<br><i>PCR Avg:</i>'
+                  . number_format($item['y'], 2).$item['surgeon'];
+          }, $other_surgeons_data),
+          'hoverinfo'=>'text',
+          'hoverlabel' => array(
+              'bgcolor' => '#fff',
+              'bordercolor' => '#1f77b4',
+              'font' => array(
+                  'color' => '#000',
+              ),
+          ),
+      );
 
-      $traces = array($trace1, $trace2, $trace3);
+      $traces = array($trace1, $trace4, $trace2, $trace3);
       return json_encode($traces);
 
     }
@@ -224,15 +299,18 @@ class PcrRiskReport extends Report implements ReportInterface
     /**
      * @return int
      */
-    public function getTotalOperations()
+    public function getTotalOperations($surgeon)
     {
         $this->command->reset();
         $this->command->select('COUNT(*) as total')
             ->from('et_ophtroperationnote_cataract')
             ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
             ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
-            ->where('surgeon_id = :surgeon', array('surgeon' => $this->surgeon))
-            ->andWhere('event.deleted=0');
+            ->where('event.deleted=0');
+
+        if ($surgeon !== 'all'){
+            $this->command->andwhere('surgeon_id = :surgeon', array('surgeon' => $surgeon));
+        }
 
         if ($this->from) {
             $this->command->andWhere('event.event_date >= :dateFrom', array('dateFrom' => $this->from));
@@ -246,7 +324,6 @@ class PcrRiskReport extends Report implements ReportInterface
 
         return (int) $totalData[0]['total'];
     }
-
     /**
      * @return string
      */
@@ -256,8 +333,13 @@ class PcrRiskReport extends Report implements ReportInterface
         $this->plotlyConfig['shapes'][0]['y0'] = $this->average();
         $this->plotlyConfig['shapes'][0]['y1'] = $this->average();
       }
+      if ($this->allSurgeons){
+          $totalOperations = $this->getTotalOperations('all');
+      }else{
+          $totalOperations = $this->getTotalOperations($this->surgeon);
+      }
       $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted)<br><sub>Total Operations: '
-        .$this->getTotalOperations().'</sub>';
+        .$totalOperations.'</sub>';
       return json_encode($this->plotlyConfig);
     }
 
@@ -690,8 +772,12 @@ class PcrRiskReport extends Report implements ReportInterface
     /**
      * @return mixed|string
      */
-    public function renderSearch()
+    public function renderSearch($analytics = false)
     {
+        if ($analytics){
+            $this->searchTemplate = 'application.modules.OphTrOperationnote.views.report.pcr_risk_search_analytics';
+        }
+
         $displayModes = array(array('id' => '0', 'name' => 'Adjusted risk'), array('id' => '1', 'name' => 'Unadjusted risk'), array('id' => '2', 'name' => 'Both'));
 
         return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'modes' => $displayModes));

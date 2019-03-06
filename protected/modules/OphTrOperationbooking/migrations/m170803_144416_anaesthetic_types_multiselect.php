@@ -41,11 +41,11 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
                     $episode = $event->episode;
                 }
 
-                $anaesthetic_topical_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
-                $anaesthetic_LA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LA'))->queryScalar();
-                $anaesthetic_LAC_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAC'))->queryScalar();
-                $anaesthetic_LAS_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAS'))->queryScalar();
-                $anaesthetic_sedation_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Sedation'))->queryScalar();
+                $anaesthetic_topical_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
+                $anaesthetic_LA_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LA'))->queryScalar();
+                $anaesthetic_LAC_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAC'))->queryScalar();
+                $anaesthetic_LAS_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAS'))->queryScalar();
+                $anaesthetic_sedation_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Sedation'))->queryScalar();
 
                 //Topical or LAC -> LA
                 if( $element->anaesthetic_type_id == $anaesthetic_topical_id || $element->anaesthetic_type_id == $anaesthetic_LAC_id){

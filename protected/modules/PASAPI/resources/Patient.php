@@ -110,8 +110,14 @@ class Patient extends BaseResource
         $this->assignProperty($patient, 'nhs_num', 'NHSNumber');
         $this->assignProperty($patient, 'hos_num', 'HospitalNumber');
         $this->assignProperty($patient, 'dob', 'DateOfBirth');
-        $this->assignProperty($patient, 'date_of_death', 'DateOfDeath');
         $this->assignProperty($patient, 'is_deceased', 'IsDeceased');
+
+        // Special case to resurrect patients.
+        if ($this->partial_record && !$patient->is_deceased && !property_exists($this, 'DateOfDeath')) {
+            $patient->date_of_death = null;
+        } else {
+            $this->assignProperty($patient, 'date_of_death', 'DateOfDeath');
+        }
 
         $this->mapGender($patient);
         $this->mapEthnicGroup($patient);

@@ -14,7 +14,7 @@ class m181127_091916_examination_delete_allergy_set_assignment extends \OEMigrat
             'id'
         );
 
-        $assignments = Yii::app()->db->createCommand()
+        $assignments = $this->dbConnection->createCommand()
             ->select('*')
             ->from('ophciexamination_allergy_set_assignment')
             ->queryAll();
@@ -56,7 +56,7 @@ class m181127_091916_examination_delete_allergy_set_assignment extends \OEMigrat
                 ":ophciexamination_systemic_diagnoses_entry_id"=>$allergy_entry->id,
                 ':systemic_diagnoses_set_id' => $allergy_entry->set_id
             ];
-            Yii::app()->db->createCommand($sql)->execute($parameters);
+            $this->dbConnection->createCommand($sql)->execute($parameters);
         }
 
         $this->dropColumn('ophciexamination_allergy_set_entry_version', '_set_id');

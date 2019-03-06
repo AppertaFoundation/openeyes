@@ -303,18 +303,20 @@
             var rangesliderLeftX = rangeslider.getBoundingClientRect().left + window.scrollX;
             var rangesliderRightX = rangeslider.getBoundingClientRect().right + window.scrollX;
             var current_time = (data.clientX - rangesliderLeftX) / (rangesliderRightX - rangesliderLeftX) * date_range + start_time;
-            var closest_img = doc_list[side][0]['id'];
-            var closest_time = Math.abs(doc_list[side][0]['date'] - current_time);
-            for (var i = 0; i < doc_list[side].length; i++) {
-                var img_date = doc_list[side][i]['date'];
-                if (Math.abs(current_time - img_date) <= closest_time) {
-                    closest_time = Math.abs(current_time - img_date);
-                    closest_img = doc_list[side][i]['doc_id'];
+            if (doc_list[side].length > 0){
+                var closest_img = doc_list[side][0]['id'];
+                var closest_time = Math.abs(doc_list[side][0]['date'] - current_time);
+                for (var i = 0; i < doc_list[side].length; i++) {
+                    var img_date = doc_list[side][i]['date'];
+                    if (Math.abs(current_time - img_date) <= closest_time) {
+                        closest_time = Math.abs(current_time - img_date);
+                        closest_img = doc_list[side][i]['doc_id'];
+                    }
                 }
+                current_img.hide();
+                $('#oct_img_'+side+'_'+closest_img).show();
+                current_img = $('#oct_img_'+side+'_'+closest_img);
             }
-            current_img.hide();
-            $('#oct_img_'+side+'_'+closest_img).show();
-            current_img = $('#oct_img_'+side+'_'+closest_img);
         };
 
     });
