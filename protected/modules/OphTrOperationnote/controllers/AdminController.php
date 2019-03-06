@@ -18,7 +18,7 @@
  */
 class AdminController extends ModuleAdminController
 {
-    public $group = 'Drugs';
+    public $group = 'Operation note';
 
     /**
      * Renders list of post op drugs.
@@ -38,7 +38,7 @@ class AdminController extends ModuleAdminController
      */
     public function actionViewIncisionLengthDefaults()
     {
-        $this->group = 'Operation Note';
+        $this->group = 'Operation note';
         $this->render('incisionlengthdefaults');
     }
 
@@ -212,7 +212,7 @@ class AdminController extends ModuleAdminController
      */
     public function actionPostOpInstructions()
     {
-        $this->group = 'Operation Note';
+        $this->group = 'Operation note';
         if(Yii::app()->request->isAjaxRequest){
 
             if( isset($_POST['action']) && $_POST['action'] == 'save'){
