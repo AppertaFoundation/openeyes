@@ -18,7 +18,7 @@ class m190304_104100_add_report_views extends CDbMigration
 {
   public function safeUp()
 {
-    $this->execute("CREATE VIEW `v_patient_messages` AS
+    $this->execute("CREATE OR REPLACE VIEW `v_patient_messages` AS
     SELECT
         `m`.`id` AS `message_id`,
         `ev`.`patient_id` AS `patient_id`,
