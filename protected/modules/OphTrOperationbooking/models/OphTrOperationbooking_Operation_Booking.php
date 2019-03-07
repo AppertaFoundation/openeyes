@@ -75,6 +75,7 @@ class OphTrOperationbooking_Operation_Booking extends BaseActiveRecordVersioned
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, element_id, session_id, display_order, ward_id, admission_time, confirmed', 'safe', 'on' => 'search'),
+            array('ward_id,admission_time,session_id','notNullValidator')
         );
     }
 
@@ -329,6 +330,11 @@ class OphTrOperationbooking_Operation_Booking extends BaseActiveRecordVersioned
             $this->addError('admission_time', 'Session End Time required to check Admission Time');
         } elseif (strtotime($this->session->end_time) <= strtotime($this->admission_time)) {
             $this->addError('admission_time', 'Admission time cannot be later or equal than Session End Time');
+        }
+    }
+    public function notNullValidator($attribute,$param){
+        if (!isset($this->$attribute) || empty($this->$attribute)){
+            $this->addError($attribute,$this->getAttribute($attribute).' can not be blank.');
         }
     }
 }
