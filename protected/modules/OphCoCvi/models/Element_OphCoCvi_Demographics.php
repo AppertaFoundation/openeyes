@@ -86,6 +86,8 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
                 'on' => 'finalise'
             ),
             array('date_of_birth', 'OEDateValidatorNotFuture'),
+            array('email','email'),
+            array( 'telephone, gp_telephone, la_telephone','numerical'),
         );
     }
 
