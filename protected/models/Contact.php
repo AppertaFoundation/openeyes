@@ -72,7 +72,7 @@ class Contact extends BaseActiveRecordVersioned
             array('first_name, last_name', 'required', 'on' => array('manualAddPatient','referral','self_register','other_register','manage_gp','manage_practice')),
             array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
             array('first_name', 'required', 'on' => array('manage_practice')),
-            array('primary_phone','phoneNumberValidator'),
+            array('primary_phone','OEPhoneNumberValidator'),
         );
     }
 
@@ -253,14 +253,6 @@ class Contact extends BaseActiveRecordVersioned
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
-        }
-    }
-    public function phoneNumberValidator($attribute,$param){
-        if (isset($this->primary_phone)){
-            $phone_number = str_replace(' ','',$this->primary_phone);
-            if (!is_numeric($phone_number)){
-                $this->addError($attribute,"Phone number should be numerical.");
-            }
         }
     }
 }
