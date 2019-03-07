@@ -132,7 +132,7 @@ foreach ($ethnic_list as $key=>$item){
             }
             ?>
             <?= $form->textField($patient, 'dob', array('onblur' => "findDuplicates($patient->id);",
-              'placeholder' => 'dd/mm/yyyy', 'class' => 'date')) ?>
+              'placeholder' => 'dd/mm/yyyy', 'class' => 'date', 'autocomplete'=>'off')) ?>
             <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[dob]',
                 'id' => 'patient_dob',
@@ -296,7 +296,7 @@ foreach ($ethnic_list as $key=>$item){
                 }
                 ?>
 
-                <?= $form->textField($patient, 'date_of_death', array('placeholder' => 'dd/mm/yyy', 'class' => 'date')) ?>
+                <?= $form->textField($patient, 'date_of_death', array('placeholder' => 'dd/mm/yyy', 'class' => 'date','autocomplete'=>'off')) ?>
 
                 <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[date_of_death]',
