@@ -21,8 +21,8 @@ $logoHelper = new LogoHelper();
 <div class="logo">
     <?= $logoHelper->render() ?>
 </div>
-<div style="position: relative; top: 30px;">
-    <div style="float: left;">
+<div class="flex-layout flex-top" style="position: relative; top: 110px;">
+    <div class="cols-left">
         <div class="to-address">
             <div class="to-address-header">
                 To:
@@ -34,7 +34,7 @@ $logoHelper = new LogoHelper();
     </div>
     <div>
     <?php if ($element->site) {?>
-        <div class="right-align">
+        <div>
                 <?php
                 echo $element->site->getLetterAddress(array(
                     'include_name' => true,
