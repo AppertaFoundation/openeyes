@@ -120,8 +120,9 @@ class PracticeController extends BaseController
                             }
 
                         } else {
+                            $address->validate();
                             if ($isAjax) {
-                                throw new CHttpException(400, "Unable to save Practice contact");
+                                throw new CHttpException(400, CHtml::errorSummary($address));
                             }
                             $transaction->rollback();
                         }
@@ -134,14 +135,16 @@ class PracticeController extends BaseController
                         }
                     }
                 } else {
+                    $address->validate();
                     if ($isAjax) {
-                        throw new CHttpException(400, "Unable to save Practice contact");
+                        throw new CHttpException(400,CHtml::errorSummary(array($practice,$address)) );
                     }
                     $transaction->rollback();
                 }
             } else {
+                $address->validate();
                 if ($isAjax) {
-                    throw new CHttpException(400,CHtml::errorSummary($contact));
+                    throw new CHttpException(400,CHtml::errorSummary(array($contact,$address)));
                 }
                 $transaction->rollback();
             }
