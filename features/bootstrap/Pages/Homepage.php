@@ -149,11 +149,7 @@ class Homepage extends OpenEyesPage {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'invalidLogin' )->getXpath () );
 	}
 	public function isInvalidLoginShown() {
-		if ($this->invalidLoginMessage ()) {
-			print "Invalid Login message displayed OK";
-		}
-
-		else {
+		if (!$this->invalidLoginMessage ()) {
 			throw new BehaviorException ( "WARNING!!! Invalid Login is NOT displayed WARNING!!!" );
 		}
 	}
@@ -164,21 +160,12 @@ class Homepage extends OpenEyesPage {
 		if ($this->modulesUnavailableCheck ()) {
 			throw new BehaviorException ( "WARNING!!! Level 1 RBAC access is NOT functioning correctly WARNING!!!" );
 		}
-
-		else {
-			print "Level 1 RBAC access working OK";
-		}
 	}
 	public function modulesAvailableCheck() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'patientInfoBox' )->getXpath () );
 	}
 	public function modulesCorrect() {
-		if ($this->modulesAvailableCheck ()) {
-			print "Patient Information modules are being displayed correctly";
-		}
-
-		else {
-
+		if (!$this->modulesAvailableCheck ()) {
 			throw new BehaviorException ( "WARNING!!! Patient Information modules are NOT being displayed correctly WARNING!!!" );
 		}
 	}
@@ -189,10 +176,6 @@ class Homepage extends OpenEyesPage {
 		if ($this->modulesUnavailableLevelTwoCheck ()) {
 			throw new BehaviorException ( "WARNING!!! Level 2 RBAC access is NOT functioning correctly WARNING!!!" );
 		}
-
-		else {
-			print "Level 2 RBAC access working OK";
-		}
 	}
 	public function modulesUnavailableLevelTwoAdditionalChecks() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'editEvent' )->getXpath () ) || ( bool ) $this->find ( 'xpath', $this->getElement ( 'deleteEvent' )->getXpath () ) || ( bool ) $this->find ( 'xpath', $this->getElement ( 'addNewEpisodeButton' )->getXpath () ) || ( bool ) $this->find ( 'xpath', $this->getElement ( 'addEventButtons' )->getXpath () );
@@ -200,10 +183,6 @@ class Homepage extends OpenEyesPage {
 	public function levelTwoAccessAdditionalChecks() {
 		if ($this->modulesUnavailableLevelTwoAdditionalChecks ()) {
 			throw new BehaviorException ( "WARNING!!! Level 2 RBAC access is NOT functioning correctly (edit, print, delete, episode or event) WARNING!!!" );
-		}
-
-		else {
-			print "Level 2 RBAC access working OK";
 		}
 	}
 	public function hasPrintingBeenDisabled() {
@@ -213,20 +192,12 @@ class Homepage extends OpenEyesPage {
 		if ($this->hasPrintingBeenDisabled ()) {
 			throw new BehaviorException ( "WARNING!!! Level 2 RBAC Printing access IS visible WARNING!!!" );
 		}
-
-		else {
-			print "Level 2 RBAC Printing access is disabled OK";
-		}
 	}
 	public function printingAccessCheck() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'printButton' )->getXpath () );
 	}
 	public function printAccessCheck() {
-		if ($this->printingAccessCheck ()) {
-			print "Level 3 RBAC Printing access working OK";
-		}
-
-		else {
+		if (!$this->printingAccessCheck ()) {
 			throw new BehaviorException ( "WARNING!!! Level 3 RBAC Printing access NOT working WARNING!!!" );
 		}
 	}
@@ -234,11 +205,7 @@ class Homepage extends OpenEyesPage {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'prescriptionDisabled' )->getXpath () );
 	}
 	public function levelFourAccess() {
-		if ($this->hasPrescriptionBeenDisabled ()) {
-			print "Level 4 RBAC Prescription has been disabled OK";
-		}
-
-		else {
+		if (!$this->hasPrescriptionBeenDisabled ()) {
 			throw new BehaviorException ( "WARNING!!! Level 4 RBAC Prescription IS enabled WARNING!!!" );
 		}
 	}
@@ -274,10 +241,7 @@ class Homepage extends OpenEyesPage {
 		$this->elements['homepageAlert'] = array (
 			'xpath' => "//*[//*[@class='messages patient']//*[contains(text(),'$alert')]]"
 		);
-		if($this->getElement('homepageAlert')->isVisible()){
-			print "Alert Displayed Correctly!";
-		}
-		else{
+		if(!$this->getElement('homepageAlert')->isVisible()){
 			throw new BehaviorException("Alert not displayed correctly!");
 		}
 	}

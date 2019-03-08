@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if (!$reschedule) {
@@ -51,7 +51,19 @@ if (!$reschedule) {
             <tr>
                 <td><?php echo $counter ?>
                     . <?php echo $booking->operation->event->episode->patient->getDisplayName() ?></td>
-                <td><?php echo $booking->operation->getProceduresCommaSeparated() ?></td>
+
+                <td>
+                    <?php
+                    $procedures = [];
+                    foreach ($booking->operation->procedures as $procedure) {
+                        $icon = $booking->operation->complexity ? OEHtml::icon('circle-' . Element_OphTrOperationbooking_Operation::$complexity_colors[$booking->operation->complexity], ['class' => 'small pad']) : '';
+                        $eye = "[" . Eye::methodPostFix($booking->operation->eye_id) . "] ";
+                        $procedures[] = $icon . $eye . $procedure->term;
+                    }
+
+                    echo empty($procedures) ? 'No procedures' : implode('<br />', $procedures);
+                    ?>
+                </td>
                 <td><?php echo $booking->operation->getAnaestheticTypeDisplay() ?></td>
                 <td><?php echo "{$booking->operation->total_duration} minutes"; ?></td>
                 <td><?php echo $booking->admission_time ?></td>

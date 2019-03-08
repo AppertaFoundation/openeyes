@@ -163,6 +163,7 @@ foreach ($this->patient->episodes as $ep) {
         ) ?>, {'multiSelect': true})],
         searchOptions: {
           searchSource: diagnosesController.options.searchSource,
+          code: diagnosesController.options.code,
         },
         onReturn: function (adderDialog, selectedItems, selectedAdditions) {
             var diag = [];

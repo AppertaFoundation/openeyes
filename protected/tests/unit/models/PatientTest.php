@@ -96,24 +96,12 @@ class PatientTest extends CDbTestCase
     /**
      * @covers Patient::getAge
      *
-     * @todo   Implement testGetAge().
      */
     public function testGetAge()
     {
         Yii::app()->params['pseudonymise_patient_details'] = false;
 
-        $attributes = array(
-            'hos_num' => 5550101,
-            'first_name' => 'Rod',
-            'last_name' => 'Flange',
-            'dob' => '1979-09-08',
-            'title' => 'MR',
-            'primary_phone' => '0208 1111111',
-            'address_id' => 1, );
-
-        $patient = new Patient();
-        $patient->setAttributes($attributes);
-        $patient->save();
+        $patient = $this->patients('patient9');
 
         $age = date('Y') - 1979;
         if (date('md') < '0908') {
@@ -127,20 +115,10 @@ class PatientTest extends CDbTestCase
     {
         Yii::app()->params['pseudonymise_patient_details'] = false;
 
-        $attributes = array(
-            'hos_num' => 5550101,
-            'first_name' => 'Rod',
-            'last_name' => 'Flange',
-            'dob' => '1979-09-08',
-            'title' => 'MR',
-            'primary_phone' => '0208 1111111',
-            'address_id' => 1, );
+        $patient = $this->patients('patient9');
+        $orig_hos_num = $this->getFixtureData('patients')['patient9']['hos_num'];
 
-        $patient = new Patient();
-        $patient->setAttributes($attributes);
-        $patient->save();
-
-        $this->assertEquals($attributes['hos_num'], $patient->getAttribute('hos_num'), 'Data should not have changed.');
+        $this->assertEquals($orig_hos_num, $patient->getAttribute('hos_num'), 'Data should not have changed.');
     }
 
     /**
