@@ -72,6 +72,7 @@ class Address extends BaseActiveRecordVersioned
             array('country_id, contact_id', 'required'),
             array('email', 'required', 'on'=>array('self_register')),
             array('id, address1, address2, city, postcode, county, email, country_id, address_type_id, date_start, date_end', 'safe', 'on' => 'search'),
+            array('city', 'cityValidator'),
         );
     }
 
@@ -217,5 +218,13 @@ class Address extends BaseActiveRecordVersioned
         }
 
         return false;
+    }
+
+    public function cityValidator($attribute, $param){
+        if(isset($this->city)){
+            if(1 === preg_match('~[0-9]~', $this->city)){
+                $this->addError($attribute, "City has Numeric values");
+            }
+        }
     }
 }

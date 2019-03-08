@@ -12,6 +12,13 @@ $this->pageTitle = 'View Practitioner';
     </div>
     <div class="oe-full-content oe-new-patient flex-layout flex-top">
         <div class="cols-6 box patient-info js-toggle-container">
+            <nav>
+                <ul>
+                    <li>
+                        <a href="/gp/index">Back to GP</a>
+                    </li>
+                </ul>
+            </nav>
             <h3 class="box-title">Contact Information:</h3>
             <a href="#" class="toggle-trigger toggle-hide js-toggle">
             <span class="icon-showhide">

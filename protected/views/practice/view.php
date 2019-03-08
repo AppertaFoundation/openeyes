@@ -12,7 +12,13 @@ $this->pageTitle = 'View Practice';
     </div>
 
     <div class="oe-full-content oe-new-patient flex-layout flex-top">
-
+        <nav class="cols-3">
+            <ul>
+                <li>
+                    <a href="/practice/index">Back to Practices</a>
+                </li>
+            </ul>
+        </nav>
         <section class="box patient-info patient-contacts js-toggle-container">
             <div class="js-toggle-body">
                 <table class="standard">

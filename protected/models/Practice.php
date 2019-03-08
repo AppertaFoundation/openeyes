@@ -82,7 +82,7 @@ class Practice extends BaseActiveRecordVersioned
         return array(
             array('code', 'required'),
             array('code','required','on' => 'manage_practice'),
-            array('phone, contact_id', 'safe'),
+            array('phone, contact_id, code', 'safe'),
             array('id, code', 'safe', 'on' => 'search'),
         );
     }
