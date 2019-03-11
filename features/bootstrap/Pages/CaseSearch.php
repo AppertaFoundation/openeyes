@@ -203,9 +203,7 @@ class CaseSearch extends OpenEyesPage
             $next_page->click();
             $next_page=$this->find('css','.oe-i.arrow-right-bold');
         }
-        if ($exist){
-            print "Specific result found and test passed.";
-        }else{
+        if (!$exist){
             throw new BehaviorException ( "WARNING!!!  The specific result has NOT been found!!  WARNING!!" );
         }
 
