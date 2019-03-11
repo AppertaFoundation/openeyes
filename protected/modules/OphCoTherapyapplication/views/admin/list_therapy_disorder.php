@@ -95,4 +95,4 @@
     $this->endWidget();
     ?>
 </div>
-</div
+</div>
