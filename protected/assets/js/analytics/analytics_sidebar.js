@@ -15,6 +15,7 @@ $(document).ready(function () {
     });
 
 
+
     //select tag between clinic, custom and service
     $('.analytics-section').on('click', function () {
         $('.analytics-section').each(function () {
@@ -71,10 +72,39 @@ $(document).ready(function () {
         var $allListElements = $('.btn-list li',$optionGroup);
 
         $allListElements.click( function(){
-            $('#'+textID).text( $(this).text() );
-            $allListElements.removeClass('selected');
-            $(this).addClass('selected');
+            if ($(this).parent().hasClass('js-multi-list') && $(this).text() !== "All"){
+                if ($(this).hasClass('selected')){
+                    if ($('#'+textID).text().includes(',')){
+                        $(this).removeClass('selected');
+                        $('#'+textID).text($('#'+textID).text().replace($(this).text()+",",""));
+                        $('#'+textID).text($('#'+textID).text().replace(","+$(this).text(),""));
+                    }
+                } else{
+                    $(this).addClass('selected');
+                    $allListElements.filter(function () {
+                        return $(this).text() == "All";
+                    }).removeClass('selected');
+                    if ($('#'+textID).text() == "All"){
+                        $('#'+textID).text($(this).text() );
+                    } else{
+                        $('#'+textID).text($('#'+textID).text() + ','+$(this).text() );
+                    }
+                }
+            } else {
+                $('#'+textID).text( $(this).text() );
+                $allListElements.removeClass('selected');
+                $(this).addClass('selected');
+            }
         });
     }
+
+    $('.clinical-plot-button').on('click',function () {
+       $(this).addClass('selected');
+       $('.clinical-plot-button').not(this).removeClass('selected');
+       $('.js-hs-chart-analytics-clinical').hide();
+       $('.js-hs-filter-analytics-clinical').hide();
+       $($(this).data('filterid')).show();
+       $($(this).data('plotid')).show();
+    });
 
 });

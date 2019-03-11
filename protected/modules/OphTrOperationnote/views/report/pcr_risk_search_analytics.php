@@ -35,7 +35,3 @@
             </div>
         </fieldset>
     </form>
-
-<?php
-// select class="browser-default"
-?>
