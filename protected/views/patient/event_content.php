@@ -3,11 +3,10 @@
 
   <h2 class="event-title">
       <?php echo $this->title ?>
-      <?php if ($this->event->is_automated) { ?>
-        <span id="automated-event">
-          <?php $this->renderPartial('//patient/event_automated'); ?>
-        </span>
-      <?php } ?>
+      <?php if ($this->event->is_automated) {
+          echo " - ";
+          $this->renderPartial('//patient/event_automated');
+      } ?>
       <?php if ($this->action->id === 'view') { ?>
         <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
       <?php } ?>
