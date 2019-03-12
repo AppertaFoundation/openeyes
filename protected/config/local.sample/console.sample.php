@@ -27,7 +27,7 @@ if (file_exists('/etc/openeyes/db.conf')) {
     $db = parse_ini_file('/etc/openeyes/db.conf');
     $db_host = $db['host'];
     $db_port = $db['port'];
-    $db_name = $db['host'];
+    $db_name = $db['dbname'];
     $db_user = $db['username'];
     $db_pass = $db['password'];
 } else {
