@@ -49,7 +49,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer', 'stefan'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -142,6 +142,67 @@ class PatientController extends BaseController
     {
         $this->redirect(array('episodes', 'id' => $id));
     }
+
+
+
+
+
+
+
+
+
+
+
+    public function actionStefan($id) {
+//        if (!$this->episode = Episode::model()->findByPk($id)) {
+//            throw new SystemException('Episode not found: '.$id);
+//        }
+
+        $this->layout = '//layouts/events_and_episodes';
+        $this->patient = Patient::model()->findByPk($id);
+//        $this->pageTitle = $this->episode->getSubspecialtyText();
+
+        //if $this->patient was merged we redirect the user to the primary patient's page
+//        $this->redirectIfMerged();
+//
+        $episodes = $this->patient->episodes;
+//
+        $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+//
+//        $this->title = 'Episode summary';
+//        $this->event_tabs = array(
+//            array(
+//                'label' => 'View',
+//                'active' => true,
+//            ),
+//        );
+//
+//        if ($this->checkAccess('OprnEditEpisode', $this->firm, $this->episode) && $this->episode->firm) {
+//            $this->event_tabs[] = array(
+//                'label' => 'Edit',
+//                'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
+//            );
+//        }
+//        $this->current_episode = $this->episode;
+//        $status = Yii::app()->session['episode_hide_status'];
+//        $status[$id] = true;
+//        Yii::app()->session['episode_hide_status'] = $status;
+
+        $this->render('landing_page', array(
+            'title' => empty($episodes) ? '' : 'Episode summary',
+            'episodes' => $episodes,
+            'site' => $site,
+            'patient' => $this->patient,
+            'noEpisodes' => false,
+        ));
+    }
+
+
+
+
+
+
+
 
     public function actionSearch()
     {

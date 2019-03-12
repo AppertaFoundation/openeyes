@@ -95,6 +95,14 @@ if (is_array($ordered_episodes)):
             </svg>
           </a>
         </li>
+        <li class="icon-btn">
+          <a href="<?= Yii::app()->createUrl('/patient/stefan', array('id' => $this->patient->id)) ?>"
+             class="active ">
+            <svg viewBox="0 0 30 30" width="15" height="15">
+              <use xlink:href="<?= $navIconUrl ?>#patient-icon"></use>
+            </svg>
+          </a>
+        </li>
       </ul>
     <?php endforeach;
 endif; ?>
