@@ -47,7 +47,9 @@
                 <tr class="item">
                   <td class="procedure large-text">
                   <span class="field"><?= CHtml::hiddenField('Procedures_' . $identifier . '[]',
-                          $procedure['id']); ?></span>
+                          $procedure['id'],
+                          ['class' => 'js-procedure']); ?>
+                  </span>
                     <span class="value"><?= $procedure['term']; ?></span>
                   </td>
                     <?php if ($durations) { ?>
@@ -336,9 +338,9 @@
           }
 
           if (callback && typeof(window.callbackAddProcedure) == 'function') {
-            m = data.match(/<input type=\"hidden\" value=\"([0-9]+)\"/);
-            var procedure_id = m[1];
-            callbackAddProcedure(procedure_id);
+              m = data.match(/<input class="js-procedure" type=\"hidden\" value=\"([0-9]+)\"/);
+              var procedure_id = m[1];
+              callbackAddProcedure(procedure_id);
           }
         }
       });
@@ -367,12 +369,11 @@
         }
         return true;
       },
-        onOpen:function(){
-            $('#procedure_popup_<?=$identifier?:''; ?>').find('li').each(function () {
-                var procedureId = $(this).data('id');
-
-                var alreadyUsed = $('#procedureList_procs')
-                    .find('input[type="hidden"][name="Procedures_procs[]"][value="' + procedureId + '"]').length > 0;
+        onOpen: function () {
+            $('#procedure_popup_<?=$identifier ?: ''; ?>').find('li').each(function () {
+                let procedureId = $(this).data('id');
+                let alreadyUsed = $('#procedureList_<?=$identifier ?: ''; ?>')
+                    .find('.js-procedure[value="' + procedureId + '"]').length > 0;
                 $(this).toggle(!alreadyUsed);
             });
         },
