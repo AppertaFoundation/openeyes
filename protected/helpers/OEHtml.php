@@ -9,15 +9,66 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-
 class OEHtml extends CHtml
 {
-    public static function icon($name, $size = 'small')
+    public static function icon($name, $htmlOption = [])
     {
-        return "<i class='oe-i $name $size'></i>";
+        return self::tag("i", array_merge($htmlOption, [
+            "class" => "oe-i $name"  . (isset($htmlOption["class"]) ? " " . $htmlOption["class"] : ""),
+        ]),'', true);
     }
+
+    public static function button($name, $htmlOption = [])
+    {
+        return \CHtml::button(
+            $name,
+            array_merge($htmlOption, [
+                "class" => "button large",
+            ])
+        );
+    }
+
+    public static function submitButton($name = "Save", $htmlOption = [])
+    {
+        return \CHtml::submitButton(
+            $name,
+            array_merge($htmlOption, [
+                "class" => "button large",
+                "name" => "save",
+                "id" => "et_save"
+            ])
+        );
+    }
+
+    public static function addButton($name = "Add", $htmlOption = [])
+    {
+        return \CHtml::submitButton(
+            $name,
+            array_merge($htmlOption, [
+                "class" => "button large",
+                "name" => "add",
+                "id" => "et_add"
+            ])
+        );
+    }
+
+    public static function cancelButton($name = "Cancel", $htmlOption = [])
+    {
+        return \CHtml::submitButton(
+            $name,
+            array_merge($htmlOption, [
+                "class" => "warning button large",
+                "name" => "cancel",
+                "id" => "et_cancel"
+            ])
+        );
+    }
+
+
+
+
 }

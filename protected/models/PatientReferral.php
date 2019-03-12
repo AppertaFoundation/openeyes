@@ -50,7 +50,7 @@ class PatientReferral extends BaseActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'patient' => array(self::BELONGS_TO, 'Patient', 'id'),
+            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
         );

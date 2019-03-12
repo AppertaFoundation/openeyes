@@ -6,6 +6,6 @@
     if(isset($logo['headerLogo'])){
     ?>
 <div class="logo">
-    <img src="<?php echo $logo['headerLogo']; ?>" alt="logo" />
+    <img src="<?php echo $logo['headerLogo']; ?>" alt="logo" style="height:<?= $size ?>px" />
 </div>
 <?php } ?>

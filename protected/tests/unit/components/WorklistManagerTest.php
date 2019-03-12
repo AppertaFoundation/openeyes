@@ -526,14 +526,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->setMethods(array('getGenerationTimeLimitDate', 'getInstanceForClass', 'startTransaction', 'setDateLimitOnRrule', 'createAutomaticWorklist', 'audit'))
             ->getMock();
 
-        if (is_null($limit)) {
-            $manager->expects($this->once())
-                ->method('getGenerationTimeLimitDate')
-                ->will($this->returnValue(new DateTime()));
-        } else {
-            $manager->expects($this->never())
-                ->method('getGenerationTimeLimitDate');
-        }
+        $manager->expects($this->once())
+            ->method('getGenerationTimeLimitDate')
+            ->will($this->returnValue(new DateTime()));
 
         $orig_rrule = 'original';
 
