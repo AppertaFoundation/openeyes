@@ -17,6 +17,7 @@
 						'contact_id' => $contact_id,
 						'contact_name' => $contact_name,
 						'contact_type' => isset($selected_contact_type) ? $selected_contact_type : null,
+                        'contact_nickname' => $contact_nickname,
 						'row_index' => $row_index,
 						//contact_type is not editable as per requested, former validation left until the req finalized
 						'is_editable' => false, //!$element->isInternalReferral(),

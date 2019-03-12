@@ -66,10 +66,7 @@
                 return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {'header': $itemSet.header,'multiSelect': $itemSet.multiSelect });
             }),
             onReturn: function (adderDialog, selectedItems) {
-              $(selectedItems).each(function (key, item) {
-                inputText.val(inputText.val() ? inputText.val() + item['label'] : item['label']
-                );
-              });
+							inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
               inputText.trigger('oninput');
               return true;
             }

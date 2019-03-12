@@ -799,10 +799,12 @@ class DefaultController extends \BaseEventTypeController
             $checker = 'has'.ucfirst($side);
             if ($element->$checker()) {
                 if (isset($data[$model_name][$side.'_treatments'])) {
-                    foreach ($data[$model_name][$side.'_treatments'] as $idx => $p_treat) {
+                    foreach ($data[$model_name][$side . '_treatments'] as $idx => $p_treat) {
+                        $dilation = null;
                         if (@$p_treat['id']) {
                             $dilation = models\OphCiExamination_Dilation_Treatment::model()->findByPk($p_treat['id']);
-                        } else {
+                        }
+                        if ($dilation == null) {
                             $dilation = new models\OphCiExamination_Dilation_Treatment();
                         }
                         $dilation->attributes = $p_treat;
@@ -1294,8 +1296,8 @@ class DefaultController extends \BaseEventTypeController
     {
         if (!$this->set) {
             /*@TODO: probably the getNextStep() should be able to recognize if there were no steps completed before and return the first step
-              @TODO: note, getCurrentStep() will return firstStep if there were no steps before */
-            $this->set = $this->getElementSetAssignment() ? $this->getNextStep() : $this->getFirstStep();
+              Note: getCurrentStep() will return firstStep if there were no steps before */
+            $this->set = $this->getElementSetAssignment() && $this->action->id != 'update' ? $this->getNextStep() : $this->getCurrentStep();
 
             //if $this->set is null than no workflow rule to apply
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;

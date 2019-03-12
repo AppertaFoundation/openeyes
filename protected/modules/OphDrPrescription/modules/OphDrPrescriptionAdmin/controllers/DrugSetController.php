@@ -25,6 +25,8 @@ class DrugSetController extends BaseAdminController
 
     public $group = 'Drugs';
 
+    public $assetPath;
+
     /**
      * Init the edit admin page, because we have a custom save URL, so we need to use
      * Admin in more then 1 function.
@@ -59,6 +61,8 @@ class DrugSetController extends BaseAdminController
                 'viewArguments' => array('element' => $element),
             ),
         ));
+
+        $this->assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('OphDrPrescription.assets'));
 
         return $admin;
     }

@@ -100,7 +100,7 @@
                     <td></td>
                     <td>
                         <div>
-                      <span class="name">
+                      <span class="js-name">
                         <?php echo isset($model->label) ? $model->label->name : ''; ?>
                       </span>
                             <?php echo CHtml::hiddenField('Contact[contact_label_id]', $model->contact_label_id, array('class' => 'hidden_id')); ?>
@@ -129,7 +129,8 @@
                                     'type' => 'POST',
                                     'error' => 'js:function(error){
                                 event.preventDefault();
-                                $("#errors").text("First name and Last name cannot be blank.");
+                                let $alertBox = $(".alert-box"); 
+                                $alertBox.find("#errors").text("First name and Last name cannot be blank.");
                                 $(".alert-box").css("display","");
                               }',
                                     'success' => 'js:function(event){
@@ -139,6 +140,10 @@
                                   }',
                                     'complete' => 'js:function(){
                                             $("#gp-form")[0].reset();
+                                            $("#selected_contact_label_wrapper").css("display","none");
+                                            $("#selected_contact_label_wrapper").find(".js-name").text(" ");
+                                            $("#selected_contact_label_wrapper").find(".js-name").val(" ");
+                                            $("#selected_contact_label_wrapper").find(".hidden_id").val(" ");
                                 }',
                                 )
                             );

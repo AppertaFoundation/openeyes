@@ -79,7 +79,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201812061722',
+            'time' => '201901011500',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -313,6 +313,8 @@ return array(
             'paste_as_text' => true,
             'table_toolbar' => "tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
             'browser_spellcheck' => true,
+            'extended_valid_elements' => 'i[*]',
+            'valid_elements' => '*[*]',
         ),
         'menu_bar_items' => array(
                 'admin' => array(
@@ -378,18 +380,28 @@ return array(
                     'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
                     'position' => 90,
                 ),
+                'disorder' => array(
+                    'title' => 'Manage Disorders',
+                    'uri' => "/disorder/index",
+                    'requires_setting' => array('setting_key'=>'user_add_disorder', 'required_value'=>'on'),
+                    'position' => 91,
+            ),
                 'gps' => array(
                     'title' => 'Practitioners',
                     'uri' => 'gp/index',
                     'position' => 10,
                     'restricted' => array('TaskViewGp', 'TaskCreateGp'),
                 ),
-// temporarily disabled
-//			'worklist' => array(
-//				'title' => 'Worklists',
-//				'uri' => '/worklist',
-//				'position' => 3,
-//			),
+                'analytics' => array(
+                  'title' => 'Analytics',
+                  'uri' => '/Analytics/medicalRetina',
+                  'position' => 11,
+                ),
+                'worklist' => array(
+                  'title' => 'Worklists',
+                  'uri' => '/worklist',
+                  'position' => 3,
+                ),
         ),
         'admin_menu' => array(
         ),
@@ -589,6 +601,7 @@ return array(
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.1',
+      'oe_version' => '3.2a',
+      'gp_label' => 'GP'
     ),
 );
