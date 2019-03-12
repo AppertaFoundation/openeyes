@@ -27,6 +27,7 @@ class ProcedureSelection extends BaseFieldWidget
     public $durations = false;
     public $class;
     public $total_duration = 0;
+    public $adjusted_total_duration = 0;
     public $last;
     public $identifier = 'procs';
     public $relation = 'procedures';
@@ -47,11 +48,13 @@ class ProcedureSelection extends BaseFieldWidget
                 if ($this->durations) {
                     $this->total_duration = $this->element->total_duration;
                 }
+                $posted_complexity = isset($_POST['Element_OphTrOperationbooking_Operation']['complexity']) ? $_POST['Element_OphTrOperationbooking_Operation']['complexity'] : null;
+                $this->adjusted_total_duration = $this->adjustTimeByComplexity($this->total_duration, $posted_complexity);
             }
         } else {
             $this->selected_procedures = array();
-            if (isset($_POST['Procedures_'.$this->identifier]) && is_array($_POST['Procedures_'.$this->identifier])) {
-                foreach ($_POST['Procedures_'.$this->identifier] as $proc_id) {
+            if (isset($_POST['Procedures_' . $this->identifier]) && is_array($_POST['Procedures_' . $this->identifier])) {
+                foreach ($_POST['Procedures_' . $this->identifier] as $proc_id) {
                     $proc = Procedure::model()->findByPk($proc_id);
                     $this->selected_procedures[] = $proc;
                     if ($this->durations) {
@@ -89,7 +92,7 @@ class ProcedureSelection extends BaseFieldWidget
                         $this->removed_stack[] = "{id: $proc_id, name: '$name'}";
                     }
                 } else {
-                    if (!@$_POST['Procedures_'.$this->identifier] || !in_array($proc_id, $_POST['Procedures_'.$this->identifier])) {
+                    if (!isset($_POST['Procedures_' . $this->identifier]) || !in_array($proc_id, $_POST['Procedures_' . $this->identifier])) {
                         $this->procedures[$proc_id] = $name;
                     } else {
                         $this->removed_stack[] = "{id: $proc_id, name: '$name'}";
@@ -112,6 +115,21 @@ class ProcedureSelection extends BaseFieldWidget
         } else {
             $this->render(get_class($this));
         }
+    }
+
+    public function adjustTimeByComplexity($duration, $complexity)
+    {
+        $adjusted_duration = $duration;
+        $increase = SettingMetadata::model()->getSetting('op_booking_inc_time_high_complexity');
+        $decrease = SettingMetadata::model()->getSetting('op_booking_inc_time_low_complexity');
+
+        if ($complexity == Element_OphTrOperationbooking_Operation::COMPLEXITY_HIGH && $increase) {
+            $adjusted_duration = (1 + ((int)$increase/100)) * $duration; // if increase=20 than 1.2 * duration
+        } elseif ($complexity == Element_OphTrOperationbooking_Operation::COMPLEXITY_LOW && $decrease) {
+            $adjusted_duration = (1 - ((int)$decrease/100)) * $duration; // if decrease=10 than 0.9 * duration
+        }
+
+        return ceil($adjusted_duration);
     }
 
     public function render($view, $data = null, $return = false)

@@ -63,7 +63,7 @@
                 </tr>
               <?php }
               if (isset($_POST[$class]['total_duration_' . $identifier])) {
-                  $total_duration = $_POST[$class]['total_duration_' . $identifier];
+                  $adjusted_total_duration = $_POST[$class]['total_duration_' . $identifier];
               }
           } ?>
           </tbody>
@@ -81,10 +81,11 @@
                 <td class="align-left">
                   <input
                       type="text"
-                      value="<?php echo $total_duration ?>"
-                      id="<?php echo $class ?>_total_duration_<?php echo $identifier ?>"
-                      name="<?php echo $class ?>[total_duration_<?php echo $identifier ?>]"
+                      value="<?=$adjusted_total_duration ?>"
+                      id="<?=$class ?>_total_duration_<?=$identifier ?>"
+                      name="<?=$class ?>[total_duration_<?=$identifier ?>]"
                       style="width:60px"
+                      data-total-duration="<?=$total_duration ?>"
                   />
                     <span class="fade">mins (estimated)</span>
                 </td>
@@ -103,9 +104,31 @@
 </div>
 
   <script type="text/javascript">
+      const low_complexity = "0";
+      const high_complexity = "10";
+      const high_percentage = typeof op_booking_inc_time_high_complexity !== "undefined" ? parseInt(window.op_booking_inc_time_high_complexity) : 20;
+      const low_percentage = typeof op_booking_decrease_time_low_complexity !== "undefined" ? parseInt(window.op_booking_decrease_time_low_complexity) : 10;
+
     // Note: Removed_stack is probably not the best name for this. Selected procedures is more accurate.
     // It is used to suppress procedures from the add a procedure inputs
     var removed_stack_<?php echo $identifier?> = [<?php echo implode(',', $removed_stack); ?>];
+
+    function getComplexity() {
+        let $checked = $('input[name="Element_OphTrOperationbooking_Operation[complexity]"]:checked');
+        return $checked ? $checked.val() : null;
+    }
+
+    function calculateDurationByComplexity(duration, complexity) {
+
+        let adjusted_duration = duration;
+        if (complexity === high_complexity) {
+            adjusted_duration = (1 + (high_percentage/100)) * duration;
+        } else if (complexity === low_complexity) {
+            adjusted_duration = (1 - (low_percentage/100)) * duration;
+        }
+
+        return Math.ceil(adjusted_duration);
+    }
 
     function updateTotalDuration(identifier) {
 
@@ -121,7 +144,10 @@
         totalDuration *= 2;
       }
       $('#projected_duration_' + identifier).text(totalDuration + " mins");
-      $('#<?php echo $class?>_total_duration_' + identifier).val(totalDuration);
+
+
+      $('#<?php echo $class?>_total_duration_' + identifier).val(calculateDurationByComplexity(totalDuration, getComplexity()));
+      $('#<?php echo $class?>_total_duration_' + identifier).data('total-duration', totalDuration);
     }
 
     $('.removeProcedure').die('click').live('click', function () {
