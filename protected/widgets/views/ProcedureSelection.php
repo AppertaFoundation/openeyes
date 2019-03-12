@@ -367,7 +367,16 @@
         }
         return true;
       },
-    searchOptions: {
+        onOpen:function(){
+            $('#procedure_popup_<?=$identifier?:''; ?>').find('li').each(function () {
+                var procedureId = $(this).data('id');
+
+                var alreadyUsed = $('#procedureList_procs')
+                    .find('input[type="hidden"][name="Procedures_procs[]"][value="' + procedureId + '"]').length > 0;
+                $(this).toggle(!alreadyUsed);
+            });
+        },
+        searchOptions: {
         searchSource: '/procedure/autocomplete',
     }
     });
