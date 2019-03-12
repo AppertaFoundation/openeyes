@@ -2,8 +2,6 @@
 
 class m190311_141951_add_default_complexity_settings extends CDbMigration
 {
-
-	// Use safeUp/safeDown to do migration with transaction
 	public function safeUp()
 	{
         $this->insert('setting_metadata', array(
@@ -13,10 +11,6 @@ class m190311_141951_add_default_complexity_settings extends CDbMigration
             'key' => 'op_booking_inc_time_high_complexity',
             'name' => 'Increase estimated Op Booking time for complex cases (int %)',
             'default_value' => '20'
-        ));
-        $this->insert('setting_installation', array(
-            'key' => 'op_booking_high_complexity_add',
-            'value' => '20'
         ));
 
         $this->insert('setting_metadata', array(
