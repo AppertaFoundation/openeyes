@@ -84,14 +84,7 @@ class Phasing extends OpenEyesPage {
 					//'xpath' => "//*[contains(text(),'Intraocular Pressure Phasing: Left reading (1): Invalid Time')]" 
 			) 
 	);
-	protected function doesPhasingLogoExist() {
-		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'phasingLogo' )->getXpath () );
-	}
-	public function confirmPhasingLogoExist() {
-		if ($this->doesPhasingLogoExist ()) {
-		} elseif (print "Logo MISSING!")
-			;
-	}
+
 	public function rightInstrument($rightEye) {
 		$this->getElement ( 'phasingInstrumentRight' )->selectOption ( $rightEye );
 	}
@@ -157,17 +150,12 @@ class Phasing extends OpenEyesPage {
 	}
 	protected function hasPhasingSaved() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'phasingSavedOk' )->getXpath () );
-		;
 	}
 	public function savePhasingAndConfirm() {
 		$this->getElement ( 'savePhasingEvent' )->click ();
 
 		sleep(5);
-		if ($this->hasPhasingSaved ()) {
-			print "Phasing has been saved OK";
-		} 
-
-		else {
+		if (!$this->hasPhasingSaved ()) {
 			throw new BehaviorException ( "WARNING!!!  Phasing has NOT been saved!!  WARNING!!" );
 		}
 	}
@@ -177,11 +165,7 @@ class Phasing extends OpenEyesPage {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'leftReadingTimeInvalid' )->getXpath () );
 	}
 	public function phasingTimeErrorValidation() {
-		if ($this->hasPhasingTimeErrorDisplayed ()) {
-			print "Phasing Reading Invalid time error displayed OK";
-		} 
-
-		else {
+		if (!$this->hasPhasingTimeErrorDisplayed ()) {
 			throw new BehaviorException ( "WARNING!!!  Phasing Reading Invalid time error NOT displayed WARNING!!!" );
 		}
 	}

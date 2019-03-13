@@ -511,4 +511,17 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     {
         return 'print_'.$this->getDefaultView();
     }
+    public function getReading($side)
+    {
+        if (!$values = $this->{"{$side}_readings"}) {
+            return;
+        }
+        $sum = 0;
+        foreach ($values as $value) {
+            if ($value->value) {
+                $sum += $value->value;
+            }
+        }
+        return round($sum / count($values));
+    }
 }

@@ -80,7 +80,11 @@ OpenEyes.OphTrOperationnote.AnaestheticController = (function () {
                 }
 
             } else {
-                $(options['deliveryContainer']).fadeIn();
+                if( $LA.is(':checked') ){
+                    $(options['deliveryContainer']).fadeIn();
+                } else {
+                    $(options['deliveryContainer']).fadeOut();
+                }
                 $(options['anaestheticContainer']).fadeIn();
             }
         });
