@@ -157,20 +157,31 @@
     };
 
     PatientSidebar.prototype.loadClickedItem = function ($item, data, callback) {
-      var self = this;
+      if($item.hasClass('loading')) {
+          if (callback)
+              callback();
+          return;
+      }
+
+      let self = this;
       if (!$item.hasClass('selected')) {
           self.markSidebarItems(self.getSidebarItemsForExistingElements($item));
-        // The <li> that contains $item (can be selected or not)
-        var $container = $item.parent();
-
-          self.loadElement($container, data, callback);
-          $item.addClass('selected');
-        } else {
+          // The <li> that contains $item (can be selected or not)
+          let $container = $item.parent();
+          let newCallback = function() {
+            $item.addClass('selected');
+            $item.removeClass('loading');
+            if (callback)
+                callback();
+          };
+          self.loadElement($container, data, newCallback);
+          $item.addClass('loading');
+      } else {
           // either has no parent or parent is already loaded.
           self.moveTo($item);
-            if (callback)
+          if (callback)
               callback();
-        }
+      }
     };
 
     /**
