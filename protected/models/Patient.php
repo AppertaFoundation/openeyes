@@ -2099,8 +2099,8 @@ class Patient extends BaseActiveRecordVersioned
         JOIN contact c
           ON c.id = p.contact_id
         WHERE p.dob = :dob
-          AND (SOUNDEX(c.first_name) = SOUNDEX(:first_name) OR levenshtein_ratio(c.first_name, :first_name) >= 60)
-          AND (SOUNDEX(c.last_name) = SOUNDEX(:last_name) OR levenshtein_ratio(c.last_name, :last_name) >= 60)
+          AND (SOUNDEX(c.first_name) = SOUNDEX(:first_name) OR levenshtein_ratio(c.first_name, :first_name) >= 30)
+          AND (SOUNDEX(c.last_name) = SOUNDEX(:last_name) OR levenshtein_ratio(c.last_name, :last_name) >= 30)
           AND (:id IS NULL OR p.id != :id)
         ORDER BY c.first_name, c.last_name
         ';
