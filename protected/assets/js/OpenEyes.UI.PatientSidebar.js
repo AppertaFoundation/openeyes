@@ -158,7 +158,7 @@
 
     PatientSidebar.prototype.loadClickedItem = function ($item, data, callback) {
       if($item.hasClass('loading')) {
-          if (callback)
+          if (typeof callback === "function")
               callback();
           return;
       }
@@ -171,7 +171,7 @@
           let newCallback = function() {
             $item.addClass('selected');
             $item.removeClass('loading');
-            if (callback)
+            if (typeof callback === "function")
                 callback();
           };
           self.loadElement($container, data, newCallback);
@@ -179,7 +179,7 @@
       } else {
           // either has no parent or parent is already loaded.
           self.moveTo($item);
-          if (callback)
+          if (typeof callback === "function")
               callback();
       }
     };
