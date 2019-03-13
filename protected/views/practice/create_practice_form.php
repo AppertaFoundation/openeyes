@@ -34,29 +34,11 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 <tbody>
                 <tr>
                     <td>
-                        <?php echo $form->labelEx($contact, 'title'); ?>
-                    </td>
-                    <td>
-                        <?php echo $form->telField($contact, 'title', array('size' => 15, 'maxlength' => 20)); ?>
-                        <?php echo $form->error($contact, 'title'); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
                         <?php echo $form->labelEx($contact, 'first_name'); ?>
                     </td>
                     <td>
-                        <?php echo $form->telField($contact, 'first_name', array('size' => 15, 'maxlength' => 20)); ?>
+                        <?php echo $form->textField($contact, 'first_name', array('size' => 15, 'maxlength' => 20)); ?>
                         <?php echo $form->error($contact, 'first_name'); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <?php echo $form->labelEx($contact, 'last_name'); ?>
-                    </td>
-                    <td>
-                        <?php echo $form->telField($contact, 'last_name', array('size' => 15, 'maxlength' => 20)); ?>
-                        <?php echo $form->error($contact, 'last_name'); ?>
                     </td>
                 </tr>
                 <tr>
@@ -64,7 +46,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                         <?php echo $form->labelEx($model, 'code'); ?>
                     </td>
                     <td>
-                        <?php echo $form->telField($model, 'code', array('size' => 15, 'maxlength' => 20)); ?>
+                        <?php echo $form->textField($model, 'code', array('size' => 15, 'maxlength' => 20)); ?>
                         <?php echo $form->error($model, 'code'); ?>
                     </td>
                 </tr>

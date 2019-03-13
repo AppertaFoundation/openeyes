@@ -90,7 +90,7 @@ foreach ($ethnic_list as $key=>$item){
         <td>
             <?= $form->textField($contact, 'first_name',
                 array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
-                  'placeholder' => 'First name')) ?>
+                  'placeholder' => 'First name', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       <tr>
@@ -102,7 +102,7 @@ foreach ($ethnic_list as $key=>$item){
         <td>
             <?= $form->textField($contact, 'last_name',
                 array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
-                  'placeholder' => 'Last name')) ?>
+                  'placeholder' => 'Last name', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       <tr>
