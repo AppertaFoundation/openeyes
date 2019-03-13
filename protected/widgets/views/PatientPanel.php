@@ -51,7 +51,7 @@ $deceased = $this->patient->isDeceased();
     <div class="flex-layout">
         <div class="patient-details">
             <div class="hospital-number">
-                <span>No. </span>
+                <span><?php echo Yii::app()->params['hos_num_label'] ?> </span>
                 <?php echo $this->patient->hos_num ?>
             </div>
             <div class="nhs-number">
