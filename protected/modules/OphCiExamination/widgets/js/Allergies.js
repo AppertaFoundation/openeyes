@@ -33,6 +33,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.allergyNoValue = this.options.allergyNoValue;
         this.allergyYesValue = this.options.allergyYesValue;
 
+        this.registerController();
         this.initialiseTriggers();
         this.dedupeAllergySelectors();
         this.showEditableIfOther();
@@ -60,6 +61,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         controller.$table.on('change', 'input[type=radio]', function () {
             controller.updateNoAllergiesState();
+            controller.notifyMedicationManagementController();
         });
 
         this.$popupSelector.on('click', '.add-icon-btn', function (e) {
@@ -79,6 +81,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $(this).closest('tr').remove();
             controller.updateNoAllergiesState();
             controller.dedupeAllergySelectors();
+            controller.notifyMedicationManagementController();
         });
 
         this.$noAllergiesFld.on('click', function () {
@@ -95,7 +98,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 //now when we un-tick the box we do not want allergies marked No by default - user must select something
                 controller.$table.find('input[type=radio]:checked').prop('checked', false);
             }
+
+            controller.notifyMedicationManagementController();
         });
+    };
+
+    AllergiesController.prototype.registerController = function () {
+        this.$element.data("controller", this);
+    };
+
+    AllergiesController.prototype.notifyMedicationManagementController = function(new_allergy_ids) {
+        var $element = $("section[data-element-type-class=\"OEModule_OphCiExamination_models_MedicationManagement\"]");
+        if($element.length > 0) {
+            var medicationManagementController = $element.data("controller");
+            medicationManagementController.updateAllergyStatuses(new_allergy_ids);
+        }
     };
 
     AllergiesController.prototype.isAllergiesChecked = function (value) {
@@ -164,6 +181,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
+     * API method used by other elements
+     * to get current allergy ids
+     */
+
+    AllergiesController.prototype.getAllergyIds = function ()
+    {
+        var allergy_ids = [];
+        $.each(this.$element.find(".js-allergy-entry-allergy-id"), function (i, e) {
+            allergy_ids.push($(e).val());
+        });
+
+        return allergy_ids;
+    };
+
+    /**
      * Add a family history section if its valid.
      */
     AllergiesController.prototype.addEntry = function (allergies) {
@@ -172,6 +204,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.dedupeAllergySelectors();
         this.updateNoAllergiesState();
         this.showEditableIfOther();
+
+        var new_allergy_ids = [];
+        $.each(allergies, function(i,e){
+            new_allergy_ids.push(e.id);
+        });
+
+        this.notifyMedicationManagementController(new_allergy_ids);
     };
 
     /**

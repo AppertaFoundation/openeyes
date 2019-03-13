@@ -90,6 +90,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     cancelStopDateButtonSelector: '.stop-medication.cancel',
     routeFieldSelector: 'select[name$="[route_id]"]',
     routeOptionWrapperSelector: '.admin-route-options',
+    patientAllergies: [],
+      allAllergies: {},
 
       // Customizable callbacks
 
@@ -369,7 +371,150 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $row.find(".js-dose-unit-term").text(data.dose_unit_term);
 
         $row.data("medication", data);
+    };
 
+    HistoryMedicationsController.prototype.getMergedAllergies = function ()
+    {
+        var controller = this;
+       var patient_allergies = controller.options.patientAllergies;
+       var merged_allergies = {};
+       $.each(patient_allergies, function (i, e) {
+            merged_allergies[e] = controller.options.allAllergies[e];
+       });
+
+       var $element = $("#OEModule_OphCiExamination_models_Allergies_element");
+
+       if($element.length > 0) {
+           var allergiesController = $element.data("controller");
+           $.each(allergiesController.getAllergyIds(), function (i, e) {
+               merged_allergies[e] = controller.options.allAllergies[e];
+           });
+       }
+
+       return merged_allergies;
+    };
+
+    /**
+     * Check if the selected entries are relevant to current allergies
+     * Then add them depending on user choice
+     *
+     * @param selectedItems
+     * @returns {boolean}
+     */
+
+    HistoryMedicationsController.prototype.addEntriesWithAllergyCheck = function(selectedItems)
+    {
+        var allergies = this.getMergedAllergies();
+        var allergic_drugs = [];
+        var controller = this;
+
+        $.each(selectedItems, function (i, medication) {
+            if(medication.allergy_ids.toString() === "") {
+                return;
+            }
+
+            var med_allergies = medication.allergy_ids.toString().split(",");
+            var intersect = [];
+
+            $.each(med_allergies, function (j, med_allergy) {
+                for(var k in allergies) {
+                    if(k == med_allergy) {
+                        intersect.push(k);
+                    }
+                }
+            });
+
+            if(intersect.length > 0) {
+                allergic_drugs.push(medication.label);
+            }
+        });
+
+        if(allergic_drugs.length > 0) {
+
+            var dialog = new OpenEyes.UI.Dialog.Confirm({
+                content: "Patient is allergic to " +
+                allergic_drugs.join() +
+                ". Are you sure you want to add them?"
+            });
+
+            dialog.on('ok', function () {
+                controller.addEntry(selectedItems);
+            });
+
+            dialog.on('cancel' , function(){
+                var items_to_add = [];
+
+                $.each(selectedItems, function(i,e) {
+                    if(allergic_drugs.indexOf(e.label) === -1) {
+                        items_to_add.push(e);
+                    }
+                });
+
+                controller.addEntry(items_to_add);
+            });
+
+            dialog.open();
+        }
+        else {
+            controller.addEntry(selectedItems);
+        }
+
+        return true;
+    };
+
+    HistoryMedicationsController.prototype.updateAllergyStatuses = function(new_allergy_ids)
+    {
+        var allergies = this.getMergedAllergies();
+        var controller = this;
+        var matched_allergy_ids = [];
+
+        var match_allergies = function($row, allergy_ids) {
+            var intersection = [];
+            $.each(allergy_ids, function(i, id) {
+                for(var j in allergies) {
+                    if(id == j)  {
+                        intersection.push(id);
+                        matched_allergy_ids.push(parseInt(id));
+                    }
+                }
+            });
+
+            $row.find(".js-allergy-warning").remove();
+
+            if(intersection.length > 0) {
+                var allergy_warning = controller.getAllergyWarningForAllergyIds(intersection);
+                $(allergy_warning).prependTo($row.find(".js-prepended_markup"));
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+
+        $.each(this.$table.find("tbody > tr"), function (i, row) {
+            var allergy_ids = $(row).attr("data-allergy-ids");
+            var allergies = [];
+            if(typeof allergy_ids !== "undefined" && allergy_ids !== "") {
+                allergies = allergy_ids.split(",");
+            }
+
+            if(allergies.length > 0) {
+                match_allergies($(row), allergies);
+            }
+        });
+
+        /* If there are new allergy matches, trigger an alert */
+
+        if(typeof new_allergy_ids !== "undefined") {
+            let intersection = matched_allergy_ids.filter(x => new_allergy_ids.includes(x));
+            
+            if(intersection.length > 0) {
+                let dlg = new OpenEyes.UI.Dialog.Alert({
+                    content: "Allergy warning! Please check entries in Medication Management."
+                });
+                dlg.open();    
+            }
+        }
     };
 
     HistoryMedicationsController.prototype.bindController = function(controller, name) {
@@ -545,14 +690,57 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       data = medications[i];
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
       this.processRisks(medications[i]['set_ids'.split(",")], medications[i]['medication_name']);
+      data['allergy_warning'] = this.getAllergyWarning(medications[i]);
       newRows.push(Mustache.render(
           template,
           data ));
     }
 
     return newRows;
-
   };
+
+    HistoryMedicationsController.prototype.getAllergyWarning = function(medication)
+    {
+        if(medication.allergy_ids.toString() === "") {
+            return "";
+        }
+
+        var patient_allergies = this.getMergedAllergies();
+        var med_allergies = medication.allergy_ids.toString().split(",");
+        var intersect = [];
+        var allergy_names = [];
+        var controller = this;
+
+        $.each(med_allergies, function (j, med_allergy) {
+            for(var k in patient_allergies) {
+                if(k == med_allergy) {
+                    intersect.push(k);
+                }
+            }
+        });
+
+        if(intersect.length > 0) {
+            $.each(intersect, function (i, e) {
+                allergy_names.push(controller.options.allAllergies[e]);
+            });
+            return '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' + allergy_names.join(", ") + '"></i>';
+        }
+        else {
+            return "";
+        }
+    };
+
+    HistoryMedicationsController.prototype.getAllergyWarningForAllergyIds = function(allergy_ids)
+    {
+        var allergy_names = [];
+        var controller = this;
+
+        $.each(allergy_ids, function (i, e) {
+            allergy_names.push(controller.options.allAllergies[e]);
+        });
+
+        return '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' + allergy_names.join(", ") + '"></i>';
+    };
 
     HistoryMedicationsController.prototype.addEntry = function (selectedItems, do_callback)
     {
@@ -574,6 +762,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     to_be_copied: selectedItems[i].will_copy,
                     prepended_markup: selectedItems[i].prepended_markup,
                     set_ids: selectedItems[i].set_ids,
+                    allergy_ids: selectedItems[i].allergy_ids,
                 };
             }
             else {

@@ -81,7 +81,10 @@
                             'prepended_markup' => $tooltip,
                             'set_ids' => array_map(function ($e){
                                 return $e->id;
-                            } , $med->getMedicationSetsForCurrentSubspecialty())
+                            } , $med->getMedicationSetsForCurrentSubspecialty()),
+							'allergy_ids' => array_map(function ($e) {
+								return $e->id;
+							}, $med->allergies),
                         ]
                     );
                 }

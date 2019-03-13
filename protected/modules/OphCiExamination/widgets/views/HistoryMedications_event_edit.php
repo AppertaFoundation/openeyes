@@ -94,7 +94,8 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                         'usage_type' => 'OphCiExamination',
                         'row_type' => '',
                         'is_last' => ($row_count == $total_count - 1),
-                        'is_new' => $entry->getIsNewRecord()
+                        'is_new' => $entry->getIsNewRecord(),
+						'patient' => $this->patient
                     )
                 );
             }
@@ -131,7 +132,8 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                 'usage_type' => 'OphCiExamination',
                 'row_type' => 'new',
                 'is_last' => false,
-                'is_new' => true
+                'is_new' => true,
+                'patient' => $this->patient
             )
         );
         ?>
@@ -142,6 +144,8 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
     $(document).ready(function () {
         medicationsController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
             element: $('#<?=$model_name?>_element'),
+            patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
+            allAllergies: <?= CJSON::encode(CHtml::listData(\OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
             onInit: function (controller) {
                 registerElementController(controller, "HMController", "MMController");
                 /* Don't add automatically

@@ -309,7 +309,10 @@ class Medication extends BaseActiveRecordVersioned
                     'will_copy' => $item->medication->getToBeCopiedIntoMedicationManagement(),
                     'set_ids' =>  array_map(function ($e){
                         return $e->id;
-                    } , $item->medication->getMedicationSetsForCurrentSubspecialty())
+                    } , $item->medication->getMedicationSetsForCurrentSubspecialty()),
+					'allergy_ids' => array_map(function ($e) {
+						return $e->id;
+					}, $item->medication->allergies),
                 );
                 $ids[] = $item->medication->id;
             }

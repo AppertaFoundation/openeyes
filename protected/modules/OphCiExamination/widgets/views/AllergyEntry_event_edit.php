@@ -44,7 +44,7 @@ if (!isset($values)) {
 			<span class="js-not-other-allergy">
             <?= $values['allergy_display'];?>
         </span>
-			<input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
+			<input class="js-allergy-entry-allergy-id" type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
 			</td>
 	<td>
         <?php if ($removable) {

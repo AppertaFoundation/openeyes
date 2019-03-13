@@ -82,7 +82,8 @@ $element_errors = $element->getErrors();
                                     'row_type' => /*$entry->group */ 'group',
                                     'removable' => /* $entry->group === "new" */ "old",
                                     'is_last' => ($row_count == $total_count - 1),
-                                    'prescribe_access' => $prescribe_access
+                                    'prescribe_access' => $prescribe_access,
+                                    'patient' => $this->patient,
                                 )
                             );
                             $row_count++;
@@ -122,7 +123,8 @@ $element_errors = $element->getErrors();
                 'row_type' => 'new',
                 'is_last' => false,
                 'is_new' => true,
-                'prescribe_access' => $prescribe_access
+                'prescribe_access' => $prescribe_access,
+                'patient' => $this->patient,
             )
         );
         ?>
@@ -134,9 +136,12 @@ $element_errors = $element->getErrors();
         window.MMController =new OpenEyes.OphCiExamination.HistoryMedicationsController({
             element: $('#<?=$model_name?>_element'),
             modelName: '<?=$model_name?>',
+            patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
+            allAllergies: <?= CJSON::encode(CHtml::listData(\OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
 
             onInit: function(controller) {
                 registerElementController(controller, "MMController", "HMController");
+                $('section[data-element-type-class="OEModule_OphCiExamination_models_MedicationManagement"]').data("controller", controller);
             },
             onControllerBound: function(controller, name) {
                 if(name === "HMController") {
@@ -175,7 +180,7 @@ $element_errors = $element->getErrors();
             openButton: $('#mm-add-medication-btn'),
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($medications) ?>, {'multiSelect': true})],
             onReturn: function (adderDialog, selectedItems) {
-                window.MMController.addEntry(selectedItems);
+                window.MMController.addEntriesWithAllergyCheck(selectedItems);
                 return true;
             },
             searchOptions: {

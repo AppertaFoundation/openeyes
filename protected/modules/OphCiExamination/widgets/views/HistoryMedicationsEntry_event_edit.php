@@ -54,12 +54,18 @@ $is_posting = Yii::app()->request->getIsPostRequest();
 
 ?>
 
-<tr data-key="<?=$row_count?>" data-event-medication-use-id="<?php echo $entry->id; ?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?= $row_type == 'closed' ? ' stopped' : '' ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
+<tr data-key="<?=$row_count?>"
+    data-event-medication-use-id="<?php echo $entry->id; ?>"
+	<?php if(!is_null($entry->medication_id)): ?>data-allergy-ids="<?php echo implode(",", array_map(function($e){ return $e->id; }, $entry->medication->allergies)); ?>"<?php endif; ?>
+    class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?= $row_type == 'closed' ? ' stopped' : '' ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
     <td>
         <div class="medication-display">
             <span class="js-prepended_markup">
             <?php if(!is_null($entry->medication_id)) {
+				if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
+					echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to '.implode(',',$patient->getPatientDrugAllergy($entry->medication_id)).'"></i>';
+				}
                 $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
             }
             else {

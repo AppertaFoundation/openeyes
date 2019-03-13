@@ -53,17 +53,30 @@ $is_new = isset($is_new) ? $is_new : false;
 <tr
     data-key="<?=$row_count?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
+    data-allergy-ids="<?php if(!is_null($entry->medication_id)){
+        echo implode(",", array_map(function($e){ return $e->id; }, $entry->medication->allergies));
+    }
+    else {
+        echo "{{& allergy_ids}}";
+	}?>"
     class="<?=$field_prefix ?>_row <?= ($is_new || /*$entry->group*/ "new" == 'new') ? " new" : ""?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
 >
 
     <td>
         <span class="js-prepended_markup">
-          <?php if(!is_null($entry->medication_id)) {
-              $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
-          }
-          else {
-              echo "{{& prepended_markup}}";
-          }?>
+            <?php
+            if(!is_null($entry->medication_id)) {
+                if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
+                  echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to '.implode(',',$patient->getPatientDrugAllergy($entry->medication_id)).'"></i>';
+                }
+
+                $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
+            }
+            else {
+                echo "{{& allergy_warning}}";
+                echo "{{& prepended_markup}}";
+            }
+            ?>
           </span>
       <span class="js-medication-display">
           <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
