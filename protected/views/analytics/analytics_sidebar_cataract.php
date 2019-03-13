@@ -9,7 +9,7 @@
             if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
                 $clinical_button_disable = false;
             }?>
-            <button class="analytics-section pro-theme cols-6 selected <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
+            <button class="analytics-section pro-theme cols-12 selected <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
                     data-section="#js-hs-chart-analytics-clinical-main"
                     data-tab="#js-charts-clinical">
                     Clinical
@@ -22,6 +22,7 @@
                 <li><a href="#" data-report="CP" class="js-cataract-report-type">Complication Profile</a></li>
                 <li><a href="#" data-report="VA" class="js-cataract-report-type">Visual Acuity</a></li>
                 <li><a href="#" data-report="RO" class="js-cataract-report-type">Refractive Outcome</a></li>
+                <li><a href="#" data-report="NOD" class="js-cataract-report-type">NOD Audit</a></li>
             </ul>
             <form id="search-form">
                 <div id="search-form-report-search-section"></div>
@@ -102,6 +103,7 @@
         $('#cataract-complication-grid').html("");
         $('#visual-acuity-grid').html("");
         $('#refractive-outcome-grid').html("");
+        $('#nod-audit-grid').html("");
         $('#analytics_datepicker_from').val("");
         $('#analytics_datepicker_to').val("");
         $('#analytics_allsurgeons').val("");
@@ -110,7 +112,6 @@
         $('#js-back-to-chart').hide();
         $('#js-all-surgeons').html('View all surgeons');
         var selected_value = $(this).data("report");
-        console.log(selected_value);
         switch (selected_value) {
             case "PCR":
                 OpenEyes.Dash.init('#pcr-risk-grid');
@@ -127,6 +128,10 @@
             case "RO":
                 OpenEyes.Dash.init('#refractive-outcome-grid');
                 OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 10);
+                break;
+            case "NOD":
+                OpenEyes.Dash.init('#nod-audit-grid');
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=NodAudit&template=analytics', null, 10);
                 break;
         }
     });

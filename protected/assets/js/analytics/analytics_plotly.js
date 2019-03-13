@@ -12,6 +12,7 @@ var analytics_layout = {
         b: 50,
         pad:4,
     },
+    hovermode:'closest',
     paper_bgcolor: '#101925',
     plot_bgcolor: '#101925',
     /* legend settings */
@@ -31,6 +32,7 @@ var analytics_layout = {
         /*Ticks setting*/
         ticks: 'outside',
         showticklabels: true,
+        rangemode: 'tozero',
         showline: true,
         linecolor: '#fff',
         tickcolor: '#fff',
