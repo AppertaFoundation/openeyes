@@ -113,7 +113,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
           </tr>
           <tr>
               <td><?php echo 'Referring '.Yii::app()->params['general_practitioner_label'].' Role' ?></td>
-              <td><?= $this->patient->gp ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
+              <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
           </tr>
           <tr>
             <td><?php echo Yii::app()->params['gp_label']?> Address</td>
