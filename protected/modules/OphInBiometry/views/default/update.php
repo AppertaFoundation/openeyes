@@ -28,15 +28,16 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
 
         // Add the open in forum button if FORUM integration is enabled
-        $biometry_imported_events =OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));
-        $sop=isset($biometry_events->sop_uid) ? $biometry_events->sop_uid : array();
-        if (!empty($sop && Yii::app()->params['enable_forum_integration'] === 'on')){
-        array_unshift(
-        $this->event_actions,
-            EventAction::link('Open In Forum',
-                ('oelauncher:forumsop/'.$sop),
-                null, array('class' => 'button small')
-            ));
+        $biometry_imported_events=OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));
+        $sop=isset($biometry_imported_events->sop_uid) ? $biometry_imported_events->sop_uid : array();
+
+        if (!empty($sop) && Yii::app()->params['enable_forum_integration'] === 'on') {
+            array_unshift(
+                $this->event_actions,
+                EventAction::link('Open In Forum',
+                    ('oelauncher:forumsop/' . $sop),
+                    null, array('class' => 'button small')
+                ));
         }
 
 
