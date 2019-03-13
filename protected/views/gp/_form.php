@@ -31,7 +31,7 @@
                 <?php echo $form->labelEx($model, 'first_name'); ?>
             </td>
             <td>
-                <?php echo $form->textField($model, 'first_name', array('size' => 30, 'maxlength' => 100)); ?>
+                <?php echo $form->textField($model, 'first_name', array('size' => 30, 'maxlength' => 100, 'autocomplete' => 'off')); ?>
                 <?php echo $form->error($model, 'first_name'); ?>
             </td>
         </tr>
@@ -40,7 +40,7 @@
                 <?php echo $form->labelEx($model, 'last_name'); ?>
             </td>
             <td>
-                <?php echo $form->textField($model, 'last_name', array('size' => 30, 'maxlength' => 100)); ?>
+                <?php echo $form->textField($model, 'last_name', array('size' => 30, 'maxlength' => 100, 'autocomplete' => 'off')); ?>
                 <?php echo $form->error($model, 'last_name'); ?>
             </td>
         </tr>
@@ -49,7 +49,7 @@
                 <?php echo $form->labelEx($model, 'primary_phone'); ?>
             </td>
             <td>
-                <?php echo $form->telField($model, 'primary_phone', array('size' => 15, 'maxlength' => 20)); ?>
+                <?php echo $form->telField($model, 'primary_phone', array('size' => 15, 'maxlength' => 20, 'autocomplete' => 'off')); ?>
                 <?php echo $form->error($model, 'primary_phone'); ?>
             </td>
         </tr>
