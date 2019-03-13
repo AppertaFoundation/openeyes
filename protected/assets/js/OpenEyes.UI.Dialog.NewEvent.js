@@ -426,7 +426,7 @@
      * @param eventTypeId
      */
     NewEventDialog.prototype.createEvent = function (eventTypeId) {
-        // Stop ongoing backround tasks such as lightning image loading. Otherwise user has to wait
+        // Stop ongoing background tasks such as lightning image loading. Otherwise user has to wait
         window.stop();
         var self = this;
         // build params for the new event request

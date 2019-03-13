@@ -10,6 +10,15 @@ class EditExistingEvent extends OpenEyesPage
 {
     protected $path = "OphInBiometry/default/view/{eventId}}";
     protected $elements = array(
+
+        'EditBtn'=>array(
+//            'css' => ".button.header-tab"
+        // There is a space at the end of this class which should be a typo
+            'xpath'=>"//*[@class='button header-tab ']"
+        ),
+        'saveBtn'=>array(
+            'xpath'=>"//*[@id='et_save']"
+        ),
 //            'expandCataractEpisode' => array (
 //					'xpath' => "//*[@class='episode-title']//*[contains(text(),'Cataract')]"
 //			),
@@ -52,5 +61,17 @@ class EditExistingEvent extends OpenEyesPage
         );
         $this->getElement('expandFirmEpisode')->click();
     }
+
+    public function selectEvent($event_id){
+        $this->elements['SelectedEvent'] = array(
+            'xpath'=>"//*[@id='js-sideEvent$event_id']",
+        );
+        $this->getElement('SelectedEvent')->click();
+    }
+
+    public function selectEdit(){
+        $this->getElement('EditBtn')->click();
+    }
+
 }
 
