@@ -119,6 +119,12 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
             <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
           </tr>
+          <?php if (isset($this->referredTo)){ ?>
+              <tr>
+                  <td><?php echo 'Referred to '?></td>
+                  <td><?php echo $this->referredTo->getFullNameAndTitle();?></td>
+              </tr>
+          <?php }?>
           </tbody>
         </table>
       </div><!-- .popup-overflow -->
