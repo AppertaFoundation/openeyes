@@ -40,9 +40,9 @@ class CsvController extends BaseController
         );
     }
 
-    public function actionUpload($context)
+    public function actionUpload($context, $backuri)
     {
-        $this->render('upload', array('context' => $context));
+        $this->render('upload', array('context' => $context, 'backuri' => $backuri));
     }
 
     public function actionPreview($context)

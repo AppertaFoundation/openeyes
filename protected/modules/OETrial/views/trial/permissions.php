@@ -138,7 +138,7 @@
               </table>
 
               <div id="selected_user_wrapper" style="<?= !$newPermission->user_id ? 'display: none;' : '' ?>">
-                <button class="secondary small js-save-permission">Share with
+                <button class="secondary small js-save-permission">Share with &nbsp;
                   <span id="user_name">
                       <?= CHtml::encode($newPermission->user_id ? $newPermission->user->getFullName() : ''); ?>
                       </span>

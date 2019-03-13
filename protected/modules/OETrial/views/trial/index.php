@@ -37,11 +37,18 @@
           </li>
             <?php if (\CsvController::uploadAccess()): ?>
               <li>
-                  <?= CHtml::link('Upload trials', Yii::app()->createURL('csv/upload', array('context' => 'trials'))) ?>
+                  <?= CHtml::link('Upload trials',
+                      Yii::app()->createURL('csv/upload',
+                          array('context' => 'trials', 'backuri' => '/OETrial/trial')
+                      )
+                  ) ?>
               </li>
               <li>
                   <?= CHtml::link('Upload trial patients',
-                      Yii::app()->createURL('csv/upload', array('context' => 'trialPatients'))) ?>
+                      Yii::app()->createURL('csv/upload',
+                          array('context' => 'trialPatients', 'backuri' => '/OETrial/trial' )
+                      )
+                  ) ?>
               </li>
             <?php endif ?>
         </ul>
