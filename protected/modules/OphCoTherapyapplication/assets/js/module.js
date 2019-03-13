@@ -768,7 +768,16 @@ $(document).ready(function() {
 
 	});
 
+	removeWhiteSpaceForLabels('patient_different');
+	removeWhiteSpaceForLabels('patient_gain');
+	removeWhiteSpaceForLabels('intervention_id');
+
 });
+
+function removeWhiteSpaceForLabels(elementId) {
+	document.getElementById('Element_OphCoTherapyapplication_ExceptionalCircumstances_right_' + elementId)['labels']['0']['style']['whiteSpace']='normal';
+	document.getElementById('Element_OphCoTherapyapplication_ExceptionalCircumstances_left_' + elementId)['labels']['0']['style']['whiteSpace']='normal';
+}
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
 

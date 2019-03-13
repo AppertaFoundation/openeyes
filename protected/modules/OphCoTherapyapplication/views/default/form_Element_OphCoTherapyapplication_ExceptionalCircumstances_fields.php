@@ -88,7 +88,7 @@ if (@$_POST[get_class($element)]) {
             false,
             array(
                 'label' => 6,
-                'field' => 4,
+                'field' => 6,
             )
         ) ?>
     </td>
