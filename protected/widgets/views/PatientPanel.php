@@ -114,6 +114,13 @@ $deceased = $this->patient->isDeceased();
                     <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
                 </svg>
             </div>
+            <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials) !== 0) {	?>
+                <div class="patient-trials js-trials-btn">
+                    <svg viewBox="0 0 30 30" class="icon">
+                        <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>
+                    </svg>
+                </div>
+            <?php } ?>
             <?php if ($this->patient->isEditable()): ?>
                 <div class="patient-local-edit js-patient-local-edit-btn">
                     <a href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>">
@@ -123,14 +130,6 @@ $deceased = $this->patient->isDeceased();
                     </a>
                 </div>
             <?php endif; ?>
-            <?php 
-								if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials) !== 0) {	?>
-                <div class="patient-trials js-trials-btn">
-                    <svg viewBox="0 0 30 30" class="icon">
-                        <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>
-                    </svg>
-                </div>
-            <?php }	?>
         </div>
     </div>
     <!-- Widgets (extra icons, links etc) -->
