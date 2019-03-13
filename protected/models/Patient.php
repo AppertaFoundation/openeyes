@@ -2140,7 +2140,7 @@ class Patient extends BaseActiveRecordVersioned
         foreach ($this->episodes as $ep) {
             $d = $ep->diagnosis;
             if ($d && $d->specialty && $d->specialty->code == 130) {
-                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getHTMLformatedDate();
+                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getFormatedDate();
             }
         }
 
