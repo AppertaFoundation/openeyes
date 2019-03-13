@@ -29,9 +29,10 @@
       <col class="cols-1">
       <col class="cols-3">
       <col class="cols-1">
+      <col class="cols-1">
     </colgroup>
     <thead>
-    <?php foreach (array('Name', 'Date Started', 'Date Closed', 'Owner', 'Status') as $i => $field) { ?>
+    <?php foreach (array('Name', 'Date Started', 'Date Closed', 'Owner', 'Status','Intervention') as $i => $field) { ?>
       <th id="patient-grid_c<?php echo $i; ?>">
           <?php
           $new_sort_dir = ($i === $sort_by) ? 1 - $sort_dir : 0;
@@ -57,7 +58,8 @@
           <td><?php echo $trial->getStartedDateForDisplay(); ?></td>
           <td><?php echo $trial->getClosedDateForDisplay(); ?></td>
           <td><?php echo CHtml::encode($trial->ownerUser->getFullName()); ?></td>
-          <td><?php echo $trial->is_open ? 'Open' : 'Closed' ?></td>
+          <td><?php echo $trial->is_open ? 'Open' : 'Closed'; ?></td>
+          <td><?php echo ($trial->trialType->name == "Intervention")? 'Yes':'No'; ?></td>
         </tr>
       <?php endforeach; ?>
     </tbody>

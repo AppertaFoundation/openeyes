@@ -26,17 +26,18 @@
       <col class="cols-1">
       <col class="cols-3">
       <col class="cols-1">
+      <col class="cols-1">
     </colgroup>
     <thead>
     <?php
-    foreach (array('Name', 'Date Started', 'Date Closed', 'Owner', 'Status') as $i) { ?>
+    foreach (array('Name', 'Date Started', 'Date Closed', 'Owner', 'Status','Intervention') as $i) { ?>
     <th id="trials-search-list-<?php echo $i;?>">
         <a href="#">
         <?php
         echo $i;
         ?>
         </a>
-        <a id="trials-search-list-a"></a>
+        <a class="trials-search-list-a"></a>
     </th>
     <?php }?>
     </thead>
@@ -49,6 +50,7 @@
           <td><?php echo $trial->getClosedDateForDisplay(); ?></td>
           <td><?php echo CHtml::encode($trial->ownerUser->getFullName()); ?></td>
           <td><?php echo $trial->is_open ? 'Open' : 'Closed' ?></td>
+          <td><?php echo ($trial->trialType->name == "Intervention")? 'Yes':'No'; ?></td>
         </tr>
       <?php endforeach; ?>
     </tbody>

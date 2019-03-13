@@ -66,16 +66,16 @@ $deceased = $this->patient->isDeceased();
                 <em>Gender</em>
                 <?php echo $this->patient->getGenderString() ?>
             </div>
-            <?php if ($trialContext) {
-                echo $trialContext->renderPatientTrialStatus();
-                echo $trialContext->renderAddToTrial();
-            } ?>
             <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
                 <?php if ($deceased): ?>
                     <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death); ?>
                 <?php endif; ?>
                 <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $this->patient->getAge(); ?>
             </div>
+            <?php if ($trialContext) {
+                echo $trialContext->renderPatientTrialStatus();
+                echo $trialContext->renderAddToTrial();
+            } ?>
         </div>
         <div class="flex-layout flex-right">
             <?php if (!$deceased) { ?>
@@ -122,8 +122,10 @@ $deceased = $this->patient->isDeceased();
                 </div>
             <?php } ?>
             <?php if ($this->patient->isEditable()): ?>
-                <div class="patient-local-edit js-patient-local-edit-btn">
-                    <a href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>">
+                <div class="patient-local-edit js-patient-local-edit-btn"
+                <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials))  echo 'style ="top: 35px; right: -52px"'?>
+                >
+                    <a href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>" >
                         <svg viewBox="0 0 30 30" class="icon">
                             <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
                         </svg>

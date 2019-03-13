@@ -210,62 +210,35 @@ class TrialController extends BaseModuleController
                 break;
         }
 
-        $condition = "trial_type_id = :trialType AND EXISTS (
+        $condition = "EXISTS (
                         SELECT * FROM user_trial_assignment utp WHERE utp.user_id = :userId AND utp.trial_id = t.id
                     ) ORDER BY $sortBy $sortDir, LOWER(t.name) ASC";
 
-        $interventionTrialDataProvider = new CActiveDataProvider('Trial', array(
+        $trialDataProvider = new CActiveDataProvider('Trial', array(
             'criteria' => array(
                 'condition' => $condition,
                 'join' => 'JOIN user u ON u.id = t.owner_user_id',
                 'params' => array(
                     ':userId' => Yii::app()->user->id,
-                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::INTERVENTION_CODE))->id,
                 ),
             ),
         ));
 
-        $nonInterventionTrialDataProvider = new CActiveDataProvider('Trial', array(
+        $trialSearchDataProvider = new CActiveDataProvider('Trial', array(
             'criteria' => array(
                 'condition' => $condition,
                 'join' => 'JOIN user u ON u.id = t.owner_user_id',
                 'params' => array(
                     ':userId' => Yii::app()->user->id,
-                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::NON_INTERVENTION_CODE))->id,
-                ),
-            ),
-        ));
-
-
-        $interventionTrialSearchDataProvider = new CActiveDataProvider('Trial', array(
-            'criteria' => array(
-                'condition' => $condition,
-                'join' => 'JOIN user u ON u.id = t.owner_user_id',
-                'params' => array(
-                    ':userId' => Yii::app()->user->id,
-                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::INTERVENTION_CODE))->id,
                 ),
             ),
             'pagination'=>false,
         ));
 
-        $nonInterventionTrialSearchDataProvider = new CActiveDataProvider('Trial', array(
-            'criteria' => array(
-                'condition' => $condition,
-                'join' => 'JOIN user u ON u.id = t.owner_user_id',
-                'params' => array(
-                    ':userId' => Yii::app()->user->id,
-                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::NON_INTERVENTION_CODE))->id,
-                ),
-            ),
-            'pagination'=>false,
-        ));
 
         $this->render('index', array(
-            'interventionTrialDataProvider' => $interventionTrialDataProvider,
-            'nonInterventionTrialDataProvider' => $nonInterventionTrialDataProvider,
-            'interventionTrialSearchDataProvider' => $interventionTrialSearchDataProvider,
-            'nonInterventionTrialSearchDataProvider' => $nonInterventionTrialSearchDataProvider,
+            'trialDataProvider' => $trialDataProvider,
+            'trialSearchDataProvider' => $trialSearchDataProvider,
             'sort_by' => (int)Yii::app()->request->getParam('sort_by', null),
             'sort_dir' => (int)Yii::app()->request->getParam('sort_dir', null),
         ));
