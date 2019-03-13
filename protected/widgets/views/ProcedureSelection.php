@@ -337,9 +337,9 @@
             });
           }
 
-          if (callback && typeof(window.callbackAddProcedure) == 'function') {
-              m = data.match(/<input class="js-procedure" type=\"hidden\" value=\"([0-9]+)\"/);
-              var procedure_id = m[1];
+          if (callback && typeof(window.callbackAddProcedure) === 'function') {
+              let m = data.match(/<input class="js-procedure" type=\"hidden\" value=\"([0-9]+)\"/);
+              let procedure_id = m[1];
               callbackAddProcedure(procedure_id);
           }
         }
