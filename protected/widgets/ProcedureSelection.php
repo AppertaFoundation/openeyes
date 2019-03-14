@@ -42,16 +42,17 @@ class ProcedureSelection extends BaseFieldWidget
 
     public function run()
     {
+
         if (empty($_POST)) {
             if (!$this->selected_procedures && $this->element) {
                 $this->selected_procedures = $this->element->{$this->relation};
                 if ($this->durations) {
                     $this->total_duration = $this->element->total_duration;
                 }
-                $posted_complexity = isset($_POST['Element_OphTrOperationbooking_Operation']['complexity']) ? $_POST['Element_OphTrOperationbooking_Operation']['complexity'] : null;
-                $this->adjusted_total_duration = $this->adjustTimeByComplexity($this->total_duration, $posted_complexity);
+                $this->adjusted_total_duration = $this->total_duration;
             }
         } else {
+            $this->element->complexity = isset($_POST['Element_OphTrOperationbooking_Operation']['complexity']) ? $_POST['Element_OphTrOperationbooking_Operation']['complexity'] : $this->element->complexity;
             $this->selected_procedures = array();
             if (isset($_POST['Procedures_' . $this->identifier]) && is_array($_POST['Procedures_' . $this->identifier])) {
                 foreach ($_POST['Procedures_' . $this->identifier] as $proc_id) {
