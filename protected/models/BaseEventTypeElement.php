@@ -373,11 +373,7 @@ class BaseEventTypeElement extends BaseElement
      */
     public function softDelete()
     {
-    }
-
-    public function delete()
-    {
-        $this->deleteAll('event_id = :event_id', array(':event_id' => $this->event_id));
+        $this->updateAll(array('deleted' => 1),'event_id = :event_id', array(':event_id' => $this->event_id));
     }
 
     /**
