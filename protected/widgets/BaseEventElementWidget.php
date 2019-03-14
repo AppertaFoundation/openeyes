@@ -25,6 +25,7 @@ class BaseEventElementWidget extends CWidget
     public static $EVENT_EDIT_MODE = 16;
     public static $EPISODE_SUMMARY_MODE = 32;
     public static $DATA_MODE = 64;
+    public static $STEFAN = 128;
 
     /**
      * @var string of the module name.
@@ -100,7 +101,8 @@ class BaseEventElementWidget extends CWidget
             array(
                 static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
                 static::$EVENT_VIEW_MODE, static::$EVENT_PRINT_MODE,
-                static::$EVENT_EDIT_MODE, static::$DATA_MODE
+                static::$EVENT_EDIT_MODE, static::$DATA_MODE,
+                static::$STEFAN
             ),
             true
         );
@@ -370,6 +372,8 @@ class BaseEventElementWidget extends CWidget
             case static::$DATA_MODE:
                 throw new \SystemException('No view to render when ' . static::class . ' in DATA_MODE');
                 break;
+            case static::$STEFAN:
+                return $short_name . '_stefan';
             default:
                 return $short_name . '_patient_mode';
         }

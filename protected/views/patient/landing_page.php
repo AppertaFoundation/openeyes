@@ -17,12 +17,14 @@
  */
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
-//echo "<pr>".print_r($exam_api,1)."</pr>";
-//echo "<br>";
-//echo "<pr>".print_r($correspondence_api,1)."</pr>";
-//die;
+$exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 
 ?>
+
+<nav class="event-header">
+    <i class="oe-i-e large i-Patient"></i>
+    <?php $this->renderPartial('//patient/event_actions'); ?>
+</nav>
 
 <?php
 $this->beginContent('//patient/episodes_container', array(
@@ -30,30 +32,7 @@ $this->beginContent('//patient/episodes_container', array(
     'episode' => isset($current_episode) ? $current_episode : ''
 ));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//TODO: date should be <span>YYYY</span><span>MM</span><span>DD</span>
 
 ?>
     <div class="flex-layout flex-top">
@@ -109,7 +88,8 @@ $this->beginContent('//patient/episodes_container', array(
                     <?php }
                 } else { ?>
                     <tr>
-                        <td>VA: NA</td>
+                        <td>VA:</td>
+                        <td><small class="fade">NA</small></td>
                     </tr>
                 <?php } ?>
 
@@ -130,7 +110,8 @@ $this->beginContent('//patient/episodes_container', array(
                             </small>
                         </td>
                     <?php } else { ?>
-                        <td>Refraction: NA</td>
+                        <td>Refraction:</td>
+                        <td><small class="fade">NA</small></td>>
                     <?php } ?>
                 </tr>
                 <tr>
@@ -156,172 +137,162 @@ $this->beginContent('//patient/episodes_container', array(
         <div class="patient-overview">
             <table class="standard">
                 <tbody>
-                <tr>
-                    <td><i class="oe-i-e i-CiExamination"></i></td>
-                    <td><a href="#">Laser (WHERE FROM)</a></td>
-                    <td>Prof. James Morgan</td>
-                    <td>
-                        <small class="fade">Updated: Today</small>
-                    </td>
-                </tr>
-                <tr>
-                    <td><i class="oe-i-e i-DrPrescription"></i></td>
-                    <td><a href="#">Prescription</a></td>
-                    <td>Prof. James Morgan</td>
-                    <td>
-                        <small class="fade">Created: Yesterday</small>
-                    </td>
-                </tr>
-                <tr>
-                    <td><i class="oe-i-e i-Message"></i></td>
-                    <td><a href="#">Message</a></td>
-                    <td>David Haider</td>
-                    <td>
-                        <small class="fade">Created: <span class="oe-date"><span class="day">14</span><span class="mth">Jun</span><span
-                                        class="yr">2018</span></span></small>
-                    </td>
-                </tr>
+                <?php foreach ($events as $event):
+                    $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
+                    <tr>
+                        <td>
+                            <?= $event->getEventIcon() ?>
+                        </td>
+                        <td>
+                            <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>"><?php echo $event->getEventName() ?></a>
+                        </td>
+                        <td><?= $event->user->title . " " . $event->user->first_name . " " . $event->user->last_name ?></td>
+                        <td>
+                            <small class="fade oe-date">
+                                <?php if ($event->created_date !== $event->last_modified_date) {
+                                    echo 'Updated: '; ?>
+                                    <span class="oe-date">
+                                        <?= $event->NHSDateAsHTML('last_modified_date'); ?>
+                                    </span>
+                                <?php } else {
+                                    echo 'Created: '; ?>
+                                    <span class="oe-date">
+                                        <?= $event->event_date ? $event->NHSDateAsHTML('event_date') : $event->NHSDateAsHTML('created_date') ?>
+                                    </span>
+                                <?php } ?>
+                            </small>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
     </div>
 
-<!--TODO: continue from here-->
+    <div class="flex-layout flex-top col-gap-small">
+        <div class="cols-half">
+            <section class="element view full view-xxx" id="idg-ele-view-eye-diagnoses">
+                <header class="element-header"><h3 class="element-title">Eye Diagnoses</h3></header>
+                <div class="element-data full-width">
+                    <div class="data-value">
+                        <table>
+                            <colgroup>
+                                <col class="cols-7">
+                            </colgroup>
+                            <tbody>
+                            <?php
+                            $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
+                            if (count($ophthalmic_diagnoses) === 0) { ?>
+                                <tr>
+                                    <td>
+                                        <div class="nil-recorded">Nil recorded</div>
+                                    </td>
+                                </tr>
+                            <?php } ?>
 
-  <div class="flex-layout flex-top">
-    <!-- oe-popup-overflow handles scrolling if data overflow height -->
-    <div class="oe-popup-overflow quicklook-data-groups">
-      <div class="group">
-        <div class="label">Eye diagnoses</div>
-        <div class="data">
-          <table>
-            <tbody>
-            <?php
-            $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
-            if (count($ophthalmic_diagnoses) === 0) { ?>
-              <tr>
-                <td>
-                  <div class="nil-recorded">Nil recorded</div>
-                </td>
-              </tr>
-            <?php } ?>
+                            <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
+                                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis, 3); ?>
+                                <tr>
+                                    <td><strong><?= $name ?></strong></td>
+                                    <td>
+                                        <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+                                    </td>
+                                    <td class="date">
+                                        <span class="oe-date"><?= $date ?></span>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
-            <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
-                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis, 3); ?>
-              <tr>
-                <td><?= $name ?></td>
-                <td>
-                    <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
-                </td>
-                <td>
-                  <span class="oe-date"><?= $date ?></span>
-                </td>
-              </tr>
-            <?php } ?>
-            </tbody>
-          </table>
+            <section class="element view full view-xxx" id="idg-ele-view-eye-procedures">
+                <header class="element-header"><h3 class="element-title">Surgical History</h3></header>
+                <div class="element-data full-width">
+                    <div class="data-value">
+                        <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
+                            'patient' => $this->patient,
+                            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                        )); ?>
+                    </div>
+                </div>
+            </section>
+            <section class="element view full view-xxx" id="idg-ele-view-eye-medications">
+                <header class="element-header"><h3 class="element-title">Eye Medications</h3></header>
+                <div class="element-data full-width">
+                    <div class="data-value">
+                        <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class, array(
+                            'patient' => $this->patient,
+                            'mode' => BaseEventElementWidget::$STEFAN,
+                        )); ?>
+                    </div>
+                </div>
+            </section>
         </div>
-      </div>
-      <!-- group-->
-      <div class="group">
-        <div class="label">Systemic Diagnoses</div>
-        <div class="data">
-          <table>
-            <tbody>
-            <?php if (count($this->patient->systemicDiagnoses) === 0) { ?>
-              <tr>
-                <td>
-                  <div class="nil-recorded">Nil recorded</div>
-                </td>
-              </tr>
-            <?php } ?>
-            <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) { ?>
-              <tr>
-                <td> <?= $diagnosis->disorder->term ?></td>
-                <td>
-                    <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
-                </td>
-                <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
-              </tr>
-            <?php } ?>
-            </tbody>
-          </table>
+
+        <div class="cols-half">
+            <section class="element view full view-xxx" id="idg-ele-view-management-summaries">
+                <header class="element-header"><h3 class="element-title">Management Summaries</h3></header>
+                <div class="element-data full-width">
+                    <table class="management-summaries">
+                        <tbody>
+                        <?php $summaries = $exam_api->getManagementSummaries($patient);
+                        if (sizeof($summaries) != 0) {
+                            foreach ($summaries as $summary) { ?>
+                                <tr>
+                                    <td><?= $summary->service ?></td>
+                                    <td><?= $summary->comments ?></td>
+                                    <td class="fade">
+                                        <span class="oe-date">
+                                            <span class="day"><?= $summary->date[0] ?></span>
+                                            <span class="month"><?= $summary->date[1] ?></span>
+                                            <span class="year"><?= $summary->date[2] ?></span>
+                                        </span>
+                                    </td>
+                                    <td><i class="oe-i info small pro-left js-has-tooltip"
+                                           data-tooltip-content="<?= $summary->user ?>"></i></td>
+                                </tr>
+                            <?php }
+                        } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="element view full view-xxx" id="idg-ele-view-appointments">
+                <header class="element-header"><h3 class="element-title">Appointments</h3></header>
+                <div class="element-data full-width">
+                    <div class="data-value">
+                        <table class="patient-appointments">
+                            <colgroup>
+                                <col class="cols-3">
+                                <col class="cols-5">
+                                <col class="cols-2">
+                            </colgroup>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section class="element view full view-xxx" id="idg-ele-view-problems-&amp;-plans">
+                <header class="element-header"><h3 class="element-title">Problems &amp; Plans</h3></header>
+                <div class="element-data full-width">
+                    <div class="problems-plans">
+                    </div>
+                </div>
+            </section>
         </div>
-      </div>
     </div>
 
-    <!-- oe-popup-overflow handles scrolling if data overflow height -->
-    <div class="oe-popup-overflow quicklook-data-groups">
-      <!-- Data -->
-      <div class="group">
-        <div class="label">Surgical History</div>
-        <div class="data">
-            <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
-                'patient' => $this->patient,
-                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-            )); ?>
-        </div>
-      </div>
-        <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class, array(
-            'patient' => $this->patient,
-            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-        )); ?>
 
 
-      <div class="group">
-        <div class="label">Family</div>
-        <div class="data">
-            <?php $this->widget(\OEModule\OphCiExamination\widgets\FamilyHistory::class, array(
-                'patient' => $this->patient,
-                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-            )); ?>
-        </div>
-      </div>
-      <!-- group-->
 
-      <div class="group">
-        <div class="label">Social</div>
-        <div class="data">
-            <?php $this->widget(\OEModule\OphCiExamination\widgets\SocialHistory::class, array(
-                'patient' => $this->patient,
-                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-            )); ?>
-        </div>
-      </div>
-    </div><!-- 	.oe-popup-overflow -->
 
 
 
 
 
 <?php
-echo "<pr>".print_r("STEFAN2",1)."</pr>";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 $this->endContent();
