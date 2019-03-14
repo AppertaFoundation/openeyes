@@ -219,17 +219,6 @@ $this->beginContent('//patient/episodes_container', array(
                     </div>
                 </div>
             </section>
-            <section class="element view full view-xxx" id="idg-ele-view-eye-medications">
-                <header class="element-header"><h3 class="element-title">Eye Medications</h3></header>
-                <div class="element-data full-width">
-                    <div class="data-value">
-                        <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class, array(
-                            'patient' => $this->patient,
-                            'mode' => BaseEventElementWidget::$STEFAN,
-                        )); ?>
-                    </div>
-                </div>
-            </section>
         </div>
 
         <div class="cols-half">
@@ -276,10 +265,14 @@ $this->beginContent('//patient/episodes_container', array(
                     </div>
                 </div>
             </section>
-            <section class="element view full view-xxx" id="idg-ele-view-problems-&amp;-plans">
-                <header class="element-header"><h3 class="element-title">Problems &amp; Plans</h3></header>
+            <section class="element view full view-xxx" id="idg-ele-view-eye-medications">
+                <header class="element-header"><h3 class="element-title">Eye Medications</h3></header>
                 <div class="element-data full-width">
-                    <div class="problems-plans">
+                    <div class="data-value">
+                        <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class, array(
+                            'patient' => $this->patient,
+                            'mode' => BaseEventElementWidget::$STEFAN,
+                        )); ?>
                     </div>
                 </div>
             </section>
