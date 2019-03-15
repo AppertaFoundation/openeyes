@@ -51,7 +51,12 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
       <span class="medication-display">
         <span class="medication-name">
             <span class="js-prepended_markup">
-            <?php if(!is_null($entry->medication_id)) { $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); } ?>
+            <?php if(!is_null($entry->medication_id)) {
+				if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
+					echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to '.implode(',',$patient->getPatientDrugAllergy($entry->medication_id)).'"></i>';
+				}
+                $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
+            } ?>
             </span>
           <?= $entry->getMedicationDisplay() ?>
         </span>

@@ -74,6 +74,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                         'row_count' => $row_count,
                         'stop_reason_options' => $stop_reason_options,
                         'usage_type' => 'OphCiExamination',
+						'patient' => $this->patient
                     )
                 );
             } else {

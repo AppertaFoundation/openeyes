@@ -440,7 +440,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
 				$allergies[] = $obj;
 			}
 		}
-		
+
 		return $allergies;
     }
 
