@@ -184,7 +184,7 @@ class CoreAPI
      * @return string
      */
     public function generatePatientLandingPageLink(Patient $patient, $params = []) {
-        return $this->yii->createURL("/patient/stefan/", array("id" => $patient->id) + $params );
+        return $this->yii->createURL("/patient/summary/", array("id" => $patient->id) + $params );
     }
 
     public function generateLatestEventLink(Patient $patient) {

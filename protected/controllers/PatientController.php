@@ -49,7 +49,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer', 'stefan'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer', 'summary'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -143,44 +143,25 @@ class PatientController extends BaseController
         $this->redirect(array('episodes', 'id' => $id));
     }
 
-
-
-
-
-
-
-
-
-
-
-    public function actionStefan($id) {
+    public function actionSummary($id) {
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = Patient::model()->findByPk($id);
         $this->pageTitle = "Summary";
 
-        $episodes = $this->patient->episodes;
-        $events = [];
-        foreach ($episodes as $episode) {
-            $events += $episode->events;
-        }
 
-        // sort events by last updated date and display only the 3 most recent ones
-        usort($events, function($a, $b) {
-            return strtotime($b['last_modified_date']) - strtotime($a['last_modified_date']);
-        });
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['episode', 'episode.patient'];
+        $criteria->addCondition('patient.id=:patient_id');
+        $criteria->params['patient_id'] = $this->patient->id;
+        $criteria->order = 't.last_modified_date desc';
+        $criteria->limit = 3;
+        $events = Event::model()->findAll($criteria);
 
         $this->render('landing_page', array(
-            'events' => array_slice($events, 0, 3),
+            'events' => $events,
             'patient' => $this->patient,
         ));
     }
-
-
-
-
-
-
-
 
     public function actionSearch()
     {
