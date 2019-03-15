@@ -35,9 +35,10 @@ class RefMedicationAdminController extends BaseAdminController
             'id',
             'source_type',
             'source_subtype',
+            'preferred_code',
             'preferred_term',
             'alternativeTerms',
-            'vtm_term',
+			'vtm_term',
             'vmp_term',
             'amp_term',
         ));
@@ -46,11 +47,14 @@ class RefMedicationAdminController extends BaseAdminController
             $admin->getSearch()->getCriteria()->addColumnCondition(['source_type' => $this->source_type]);
         }
 
-        $admin->getSearch()->addSearchItem('preferred_term');
-        if(is_null($this->source_type)) {
+		if(is_null($this->source_type)) {
 			$admin->getSearch()->addSearchItem('source_type');
 		}
-        $admin->getSearch()->addSearchItem('source_subtype');
+
+
+		$admin->getSearch()->addSearchItem('source_subtype');
+		$admin->getSearch()->addSearchItem('preferred_code');
+		$admin->getSearch()->addSearchItem('preferred_term');
 
         $admin->setModelDisplayName($this->display_name);
 
