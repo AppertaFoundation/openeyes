@@ -20,7 +20,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 
 ?>
 
-<nav class="event-header">
+<nav class="event-header no-face">
     <i class="oe-i-e large i-Patient"></i>
     <?php $this->renderPartial('//patient/event_actions'); ?>
 </nav>
