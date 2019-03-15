@@ -31,14 +31,13 @@ $this->beginContent('//patient/episodes_container', array(
     'episode' => isset($current_episode) ? $current_episode : ''
 ));
 ?>
+    <h2 class="event-title">Patient Overview </h2>
     <div class="flex-layout flex-top">
         <div class="patient-overview">
-            <!-- Patient Quicklook popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
             <?php
             $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
             $visualAcuityLeft = $exam_api->getLetterVisualAcuityLeft($patient); ?>
 
-            <!-- situational awareness -->
             <table class="standard last-right">
                 <tbody>
 
@@ -49,10 +48,12 @@ $this->beginContent('//patient/episodes_container', array(
                     if ($lDate == $rDate) { ?>
                         <tr>
                             <td>
-                                R <?= $visualAcuityRight ?: 'NA'; ?>
-                                <?= $visualAcuityRight ? $exam_api->getLetterVAMethodName($patient, 'right') : '' ?>
-                                L <?= $visualAcuityLeft ?: 'NA' ?>
-                                <?= $visualAcuityLeft ? $exam_api->getLetterVAMethodName($patient, 'left') : '' ?>
+                                <ul class="inline-list">
+                                    <li>R <?= $visualAcuityRight ?: 'NA'; ?>
+                                        <?= $visualAcuityRight ? $exam_api->getLetterVAMethodName($patient, 'right') : '' ?></li>
+                                    <li>L <?= $visualAcuityLeft ?: 'NA' ?>
+                                        <?= $visualAcuityLeft ? $exam_api->getLetterVAMethodName($patient, 'left') : '' ?></li>
+                                </ul>
                             </td>
                             <td>
                                 <small class="fade"><span class="oe-date"><?= Helper::convertDate2NHS($rDate); ?></span>
@@ -275,13 +276,4 @@ $this->beginContent('//patient/episodes_container', array(
         </div>
     </div>
 
-
-
-
-
-
-
-
-
-<?php
-$this->endContent();
+<?php $this->endContent();
