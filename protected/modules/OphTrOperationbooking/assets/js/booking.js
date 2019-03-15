@@ -262,7 +262,7 @@ function datepicker_start(element){
  * @param element: the datepicker element
  */
 function datepicker_end(element) {
-  element.addEventListener('pickmeup-fill', function (e) {
+  element.addEventListener('pickmeup-change', function (e) {
     var start = $(element).closest('tr').find('.unavailable-start-date')[0];
     if ($(start).val()===''||pickmeup(element).get_date() < new Date($(start).val())){
       $(start).val($(element).val());
