@@ -30,9 +30,6 @@ $this->beginContent('//patient/episodes_container', array(
     'cssClass' => isset($cssClass) ? $cssClass : '',
     'episode' => isset($current_episode) ? $current_episode : ''
 ));
-
-//TODO: date should be <span>YYYY</span><span>MM</span><span>DD</span>
-
 ?>
     <div class="flex-layout flex-top">
         <div class="patient-overview">
