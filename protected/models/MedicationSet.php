@@ -389,15 +389,18 @@ class MedicationSet extends BaseActiveRecordVersioned
 		$cmd->select('id', 'DISTINCT')->from('medication');
 		$attribute_option_ids = array_map(function ($e){ return $e->id; }, $this->autoRuleAttributes);
 		$set_ids = array_map(function ($e) { return $e->id; }, $this->autoRuleSets);
+		$no_condition = true;
 		if(!empty($attribute_option_ids)) {
 			$cmd->orWhere("id IN (SELECT medication_id FROM ".MedicationAttributeAssignment::model()->tableName()."
 												WHERE medication_attribute_option_id IN (".implode(",", $attribute_option_ids).")
 												)");
+			$no_condition = false;
 		}
 		if(!empty($set_ids)) {
 			$cmd->orWhere("id IN (SELECT medication_id FROM ".MedicationSetItem::model()->tableName()."
 												WHERE medication_set_id IN (".implode(",", $set_ids).")
 												)");
+			$no_condition = false;
 		}
 		foreach ($this->medicationSetAutoRuleMedications as $medicationSetAutoRuleMedication) {
 			if($medicationSetAutoRuleMedication->include_parent) {
@@ -423,11 +426,13 @@ class MedicationSet extends BaseActiveRecordVersioned
 				}
 			}
 			$cmd->orWhere("id = ".$medicationSetAutoRuleMedication->medication_id);
+			$no_condition = false;
 		}
+
 		$ids = $cmd->queryColumn();
 		// empty the set
 		Yii::app()->db->createCommand("DELETE FROM ".MedicationSetItem::model()->tableName()." WHERE medication_set_id = ".$this->id)->execute();
-		if(!empty($ids)) {
+		if(!$no_condition && !empty($ids)) {
 			// repopulate
 			$values = array();
 			foreach ($ids as $id) {
