@@ -373,7 +373,7 @@ class BaseEventElementWidget extends CWidget
                 throw new \SystemException('No view to render when ' . static::class . ' in DATA_MODE');
                 break;
             case static::$PATIENT_LANDING_PAGE_MODE:
-                return $short_name . '_stefan';
+                return $short_name . '_landing_page';
             default:
                 return $short_name . '_patient_mode';
         }
