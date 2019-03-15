@@ -1536,8 +1536,5 @@ class WorklistManager extends CComponent
     {
         return \Yii::app()->user->getState("worklist_patient_id", null);
     }
-
-
-
-
 }
+
