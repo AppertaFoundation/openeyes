@@ -128,4 +128,9 @@ class OphCiExaminationAllergy extends \BaseActiveRecordVersioned
     function unchecked($element_id){
         return self::model()->findAll('id NOT IN (SELECT allergy_id FROM ophciexamination_allergy_entry WHERE element_id = ?) AND id != 17', array($element_id));
     }
+
+	public function __toString()
+	{
+		return $this->name;
+	}
 }

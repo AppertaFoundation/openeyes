@@ -17,6 +17,8 @@
  * @property Medication $medication
  * @property User $createdUser
  * @property User $lastModifiedUser
+ *
+ * @deprecated - see OphCiExaminationAllergy
  */
 class MedicationAllergyAssignment extends BaseActiveRecordVersioned
 {

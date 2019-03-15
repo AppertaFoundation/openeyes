@@ -405,9 +405,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
 
         foreach ($patient_allergies as $allergy) {
             foreach ($drug_allergies_assignments as $drug_allergy_assignment) {
-                if ($allergy->id === $drug_allergy_assignment->allergy_id) {
+                if ($allergy->id === $drug_allergy_assignment->allergy->id) {
                     $patient_allergies_from_drugs[$allergy->id] = $allergy->name;
-                    $allergic_drugs[$drug_allergy_assignment->medication_id] = $drug_allergy_assignment->medication->preferred_term;
+                    $allergic_drugs[$drug_allergy_assignment->medication->id] = $drug_allergy_assignment->medication->preferred_term;
                 }
             }
         }
@@ -423,17 +423,25 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         }
     }
 
+	/**
+	 * @return stdClass[]	returns an array of objects where each object
+	 * 						has an "allergy" property and a "medication" property
+	 */
+
     protected function getDrugAllergiesAssignments()
     {
-        $drug_allergies_assignments = [];
-        foreach ($this->items as $prescription_item) {
-            $drug_allergy_assignment = MedicationAllergyAssignment::model()->find('medication_id = :medication_id', [':medication_id' => $prescription_item->medication->id]);
-            if (isset($drug_allergy_assignment)) {
-                $drug_allergies_assignments[] = $drug_allergy_assignment;
-            }
-        }
-
-        return $drug_allergies_assignments;
+		$allergies = array();
+		foreach ($this->items as $prescription_item) {
+			$item_allergies = $prescription_item->medication->allergies;
+			foreach ($item_allergies as $allergy) {
+				$obj = new stdClass();
+				$obj->allergy = clone $allergy;
+				$obj->medication = clone $prescription_item->medication;
+				$allergies[] = $obj;
+			}
+		}
+		
+		return $allergies;
     }
 
 

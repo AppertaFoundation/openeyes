@@ -701,38 +701,34 @@ class Patient extends BaseActiveRecordVersioned
     public function hasDrugAllergy($medication_id = null)
     {
         if (!is_null($medication_id)) {
-            if ($this->allergies) {
-                $criteria = new CDbCriteria();
-                $criteria->select = 't.id';
-                $criteria->condition = 'paa.patient_id = :patient_id';
-                $join = array();
-                $join[] = 'JOIN medication_allergy_assignment daa ON daa.medication_id = t.id';
-                $join[] = 'JOIN patient_allergy_assignment paa ON paa.allergy_id = daa.allergy_id';
-                $criteria->join = implode(' ', $join);
-                $criteria->params = array(':patient_id' => $this->id);
-
-                return (bool) Medication::model()->findByPk($medication_id, $criteria);
-            } else {
-                return false;
-            }
-        } else {
+            return !empty($this->getPatientDrugAllergy($medication_id));
+        }
+        else {
             return (bool) $this->allergies;
         }
     }
 
+	/**
+	 * @param $medication_id
+	 * @return \OEModule\OphCiExamination\models\OphCiExaminationAllergy[]
+	 */
+
     public function getPatientDrugAllergy($medication_id)
     {
-        $criteria = new CDbCriteria();
-        $criteria->select ='t.name';
-        $criteria->condition= 'paa.patient_id = :patient_id AND maa.medication_id = :medication_id';
+        $allergies = [];
 
-        $join = array();
-        $join[] = 'JOIN patient_allergy_assignment paa ON paa.allergy_id = t.id';
-        $join[] = 'JOIN medication_allergy_assignment maa ON maa.allergy_id = t.id';
-        $criteria->join = implode(' ' , $join);
-        $criteria->params = array(':patient_id' => $this->id , ':medication_id' => $medication_id);
+		if($this->allergies && $medication = Medication::model()->findByPk($medication_id)) {
+			/** @var Medication $medication */
+			foreach ($medication->allergies as $med_allergy) {
+				foreach ($this->allergies as $patient_allergy) {
+					if($patient_allergy->id == $med_allergy->id) {
+						$allergies[] = clone $med_allergy;
+					}
+				}
+			}
+		}
 
-        return Allergy::model()->findAll($criteria);
+		return $allergies;
     }
 
     /**
