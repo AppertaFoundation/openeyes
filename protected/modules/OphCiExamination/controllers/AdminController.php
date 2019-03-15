@@ -912,7 +912,17 @@ class AdminController extends \ModuleAdminController
      */
     public function actionAllergies()
     {
-        $this->genericAdmin('Edit Allergies', 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', ['div_wrapper_class' => 'cols-5']);
+        $this->genericAdmin('Edit Allergies', 'OEModule\OphCiExamination\models\OphCiExaminationAllergy',
+			[
+				'div_wrapper_class' => 'cols-5',
+				'extra_fields' => array(
+					'medication_set_id' => array(
+						'field' => 'medication_set_id',
+						'type' => 'lookup',
+						'model' => \MedicationSet::class
+					),
+				)
+			]);
     }
 
     public function actionRisks()

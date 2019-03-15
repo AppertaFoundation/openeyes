@@ -33,8 +33,18 @@ OpenEyes.OphDrPrescription = OpenEyes.OphDrPrescription || {};
     };
 
     AllergicDrugsController.prototype.fillAllergicDrugsAndAllergiesArray = function (drug) {
+        if(drug['allergies'] === "") {
+            return;
+        }
         let controller = this;
-        drug['allergies'].forEach(function (allergy) {
+        let allergies = [];
+        if(typeof drug['allergies'] === "string") {
+            allergies = drug['allergies'].split(",");
+        }
+        else {
+            allergies = drug['allergies'];
+        }
+        allergies.forEach(function (allergy) {
             if (controller.patientAllergies.includes(allergy) && !controller.allergicDrugs.includes(drug['label'])) {
                 let nextAllergicDrugIndex = controller.allergicDrugs.length;
                 controller.allergicDrugs[nextAllergicDrugIndex] = drug['label'];

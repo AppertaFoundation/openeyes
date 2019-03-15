@@ -8,6 +8,7 @@ class m190315_072355_allergies_to_sets extends OEMigration
 		try {
 			// Make a link to sets in allergies table
 			$this->addColumn("ophciexamination_allergy", "medication_set_id", "INT(11) null");
+			$this->addColumn("ophciexamination_allergy_version", "medication_set_id", "INT(11) null");
 			$this->addForeignKey("fk_allergy_to_set", "ophciexamination_allergy", "medication_set_id", "medication_set", "id");
 
 			// Create an auto-set for each allergy
@@ -40,7 +41,15 @@ class m190315_072355_allergies_to_sets extends OEMigration
 
 	public function down()
 	{
+		$this->execute("UPDATE ophciexamination_allergy SET medication_set_id = NULL ");
+		$this->execute("DELETE medication_set_item FROM medication_set_item, medication_set WHERE medication_set_item.medication_set_id = medication_set.id AND  medication_set.`name` LIKE 'Allergy\_%'");
+		$this->execute("DELETE tbl FROM medication_set_auto_rule_medication AS tbl, medication_set WHERE tbl.medication_set_id = medication_set.id AND  medication_set.`name` LIKE 'Allergy\_%'");
+		$this->execute("DELETE tbl FROM medication_set_auto_rule_attribute AS tbl, medication_set WHERE tbl.medication_set_id = medication_set.id AND  medication_set.`name` LIKE 'Allergy\_%'");
+		$this->execute("DELETE tbl FROM medication_set_auto_rule_set_membership AS tbl, medication_set WHERE tbl.target_medication_set_id = medication_set.id AND  medication_set.`name` LIKE 'Allergy\_%'");
 		$this->execute("DELETE FROM medication_set WHERE `name` LIKE 'Allergy\_%'");
+
+		$this->dropForeignKey("fk_allergy_to_set", "ophciexamination_allergy");
 		$this->dropColumn("ophciexamination_allergy", "medication_set_id");
+		$this->dropColumn("ophciexamination_allergy_version", "medication_set_id");
 	}
 }

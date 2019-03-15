@@ -290,6 +290,7 @@ class DefaultController extends BaseEventTypeController
 
                 foreach ($drugs as $drug) {
 
+                	/** @var Medication $drug */
                     $infoBox = new MedicationInfoBox();
                     $infoBox->medication_id = $drug->id;
                     $infoBox->init();
@@ -299,7 +300,8 @@ class DefaultController extends BaseEventTypeController
                         'label' => $drug->preferred_term,
                         'value' => $drug->preferred_term,
                         'id' => $drug->id,
-                        'prepended_markup' => $tooltip
+                        'prepended_markup' => $tooltip,
+						'allergies' => array_map(function($e){ return $e->id; }, $drug->allergies),
                     );
                 }
             }
