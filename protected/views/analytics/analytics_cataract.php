@@ -53,7 +53,7 @@
             $('#refractive-outcome-grid').html("");
             $('#refractive-outcome-grid').show();
             OpenEyes.Dash.init('#refractive-outcome-grid');
-            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 10);
+            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics&procedures[]=all', null, 10);
         }else if ($('#nod-audit-grid').html()){
             $('#nod-audit-grid').html("");
             $('#nod-audit-grid').show();

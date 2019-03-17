@@ -70,7 +70,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     public function __construct($app)
     {
         $this->months = $app->getRequest()->getQuery('months', 0);
-        $this->procedures = $app->getRequest()->getQuery('procedures', array());
+        $this->procedures = $app->getRequest()->getQuery('procedures', array('null'));
 
         //if they selected all set to empty array to ignore procedure check in query
         if (in_array('all', $this->procedures)) {
