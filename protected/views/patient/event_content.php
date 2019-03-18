@@ -60,7 +60,7 @@
                     });
                 });
             </script>
-            <span class="extra-info"><span class="fade">by:</span> <?php echo $this->event->user->fullname ?> <?php if($this->event->episode->firm->cost_code){'('.$this->event->episode->firm->cost_code.')';} ?></span>
+            <span class="extra-info"><span class="fade">by:</span> <?php echo $this->event->usermodified->fullname ?> <?php if($this->event->episode->firm->cost_code){'('.$this->event->episode->firm->cost_code.')';} ?></span>
             <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
             <i class="oe-i history large pad-left js-has-tooltip js-change-event-date"
                data-tooltip-content="Change Event date"
