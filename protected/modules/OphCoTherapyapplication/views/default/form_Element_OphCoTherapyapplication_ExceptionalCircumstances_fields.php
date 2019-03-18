@@ -304,6 +304,7 @@ if (@$_POST[get_class($element)]) {
                 $urgent = true;
             }
         }
+        $html_options['style'] = 'width : inherit ';
         echo $form->dropDownList(
             $element,
             $side . '_start_period_id',
