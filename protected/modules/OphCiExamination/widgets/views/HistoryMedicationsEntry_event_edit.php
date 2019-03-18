@@ -89,16 +89,12 @@ $is_posting = Yii::app()->request->getIsPostRequest();
             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
             <div class="flex-layout">
                 <div class="alternative-display inline">
-                    <div class="alternative-display-element textual" <?php if($direct_edit || $is_new){ echo 'style="display: none;"'; }?>>
+                    <div class="alternative-display-element textual" <?php if($direct_edit){ echo 'style="display: none;"'; }?>>
                         <a class="textual-display-dose textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
-                            <?= $entry->dose.' '.$entry->dose_unit_term; ?>&nbsp;
-                            <?= $entry->frequency; ?>&nbsp;
-                            <?= ($entry->laterality ? $entry->medicationLaterality->name : ''); ?>&nbsp;
-                            <?= (is_null($entry->route_id) ? "" : $entry->route); ?>
-
+							<?= $entry->getAdministrationDisplay() ?>
                         </a>
                     </div>
-                    <div class="alternative-display-element" <?php if(!$direct_edit && !$is_new){ echo 'style="display: none;"'; }?>>
+                    <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
                         <input class="cols-1 js-dose" style="width: 14%; display: inline-block;" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
                         <span class="js-dose-unit-term cols-1"><?php echo $entry->dose_unit_term; ?></span>
                         <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-4')) ?>
@@ -135,8 +131,8 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                 <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
                     <?php if(!is_null($entry->end_date)): ?>
                         <?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
-                        <?php echo !is_null($entry->stop_reason_id) ?
-                            ' ('.$entry->stopReason->name.')' : ''; ?>
+                        <?php /* echo !is_null($entry->stop_reason_id) ?
+                            ' ('.$entry->stopReason->name.')' : ''; */?>
                     <?php else: ?>
                         stopped?
                     <?php endif; ?>
@@ -154,7 +150,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
   </td>
 
     <td>
-        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'js-stop-reason', 'style' => $is_new ? "display:none" : null)) ?>
+        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'js-stop-reason', 'style' => $is_new || is_null($entry->end_date) ? "display:none" : null)) ?>
         <?php /* <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a> */ ?>
     </td>
 

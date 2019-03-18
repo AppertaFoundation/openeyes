@@ -142,8 +142,8 @@ $is_new = isset($is_new) ? $is_new : false;
                 <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
                     <?php if(!is_null($entry->end_date)): ?>
                         <?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
-                        <?php echo !is_null($entry->stop_reason_id) ?
-                            ' ('.$entry->stopReason->name.')' : ''; ?>
+                        <?php /* echo !is_null($entry->stop_reason_id) ?
+                            ' ('.$entry->stopReason->name.')' : ''; */?>
                     <?php else: ?>
                         stop
                     <?php endif; ?>

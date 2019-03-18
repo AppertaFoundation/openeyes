@@ -121,8 +121,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   HistoryMedicationsController.prototype.constructDatepicker = function (name) {
-    var datepicker= $(this.$table).find(name);
-    if (datepicker.length > 0){
+    var $datepicker= $(this.$table).find(name);
+    if ($datepicker.length > 0){
       pickmeup(name, {
         format: 'Y-m-d',
         hide_on_select: true,
@@ -269,7 +269,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         var $datepicker_wrapper = $row.find(".js-end-date-wrapper");
         var $stop_reason_select = $row.find(".js-stop-reason");
+        var $datepicker_control = $datepicker_wrapper.find("input");
         $row.find(".js-meds-stop-btn").hide();
+        var default_date = $datepicker_control.attr("data-default");
+        if(typeof default_date !== "undefined" && default_date !== false) {
+            $datepicker_control.val(default_date);
+        }
         $datepicker_wrapper.show();
         $stop_reason_select.show();
 

@@ -85,40 +85,31 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
 			<?= Helper::convertMySQL2NHS($entry->start_date) ?>
 		</fieldset>
 	</td>
+    <td class="end-date-column">
+        <div class="alternative-display inline">
+            <div class="alternative-display-element textual">
+                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
+					<?php if(!is_null($entry->end_date)): ?>
+						<?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
+						<?php /* echo !is_null($entry->stop_reason_id) ?
+							' ('.$entry->stopReason->name.')' : ''; */?>
+					<?php else: ?>
+                        stopped?
+					<?php endif; ?>
+                </a>
+            </div>
+            <fieldset style="display: none;" class="js-datepicker-wrapper js-end-date-wrapper">
+                <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" class="js-end-date"
+                       name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?=date('Y-m-d') ?>"
+                       style="width:80px" placeholder="yyyy-mm-dd"
+                       autocomplete="off">
+                <i class="js-has-tooltip oe-i info small pad right"
+                   data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
+            </fieldset>
+        </div>
+    </td>
 	<td>
-		<fieldset class="fuzzy-date">
-			<div class="cols-11 js-stop-date">
-				<div id="js-stop-date-toolkit-<?= $row_count ?>" style="display:<?= $entry->end_date ? "none" : "block" ?>">
-					<input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" class="js-end-date"
-                           name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
-							 style="width:80px" placeholder="yyyy-mm-dd"
-							 autocomplete="off">
-				<i class="js-has-tooltip oe-i info small pad right"
-					 data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
-				</div>
-				<?php if ($entry->end_date) : ?>
-					<table>
-						<tbody>
-						<tr class="js-end-date-display">
-							<td>
-                                <button class="js-change-end-date">
-                                    <i class="oe-i stop small pad "></i>
-                                </button>
-							</td>
-							<td>
-								<span class="js-end-date-display">
-									<?= Helper::formatFuzzyDate($entry->end_date) ?>
-								</span>
-							</td>
-						</tr>
-						</tbody>
-					</table>
-				<?php endif; ?>
-			</div>
-		</fieldset>
-	</td>
-	<td>
-		<?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason')) ?>
+		<?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason', 'style' => is_null($entry->end_date) ? "display:none" : null)) ?>
 	</td>
 
 	<td class="text-center">
