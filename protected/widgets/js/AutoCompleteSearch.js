@@ -111,6 +111,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     	input.parent().find(".oe-autocomplete").on('click', '.oe-menu-item', function(){
     		item_clicked = response[$(this).index()];
             inputbox.val('');
+            input.data('response',item_clicked);
             onSelect[inputbox.selector.replace(/[^A-z]/, '')]();
     		hideMe();
     	});
