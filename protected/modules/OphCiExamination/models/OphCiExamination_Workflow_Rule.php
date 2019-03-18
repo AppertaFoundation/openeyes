@@ -222,4 +222,15 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
 
         return parent::beforeValidate();
     }
+
+    public function findWorkflowSteps(){
+        $workflowSteps = [];
+        $rules = self::model()->findAll('firm_id > 0');
+        if($rules){
+            foreach ($rules as $rule) {
+                $workflowSteps[$rule->firm_id] = $rule->workflow->active_steps;
+            }
+        }
+        return $workflowSteps;
+    }
 }

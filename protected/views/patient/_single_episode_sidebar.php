@@ -158,8 +158,20 @@ $this->renderPartial('//patient/add_new_event', array(
     'context_firm' => $this->firm,
     'patient_id' => $this->patient->id,
     'eventTypes' => EventType::model()->getEventTypeModules(),
-)); ?>
-
+));
+if($this->editable){
+  $this->renderPartial('//patient/change_event_context', array(
+      'button_selector' => '.change_context',
+      'view_subspecialty' => $current_subspecialty,
+      'episodes' => $active_episodes,
+      'context_firm' => $this->firm,
+      'patient_id' => $this->patient->id,
+      'workflowSteps' => OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps(),
+      'currentStep' => (isset($this->event->eventType->class_name) && $this->event->eventType->class_name == 'OphCiExamination' ? $this->getCurrentStep() : '' ),
+      'currentFirm' => (isset($this->event->firm_id) ? $this->event->firm_id : '""')
+  ));
+}
+?>
 <?php
 $subspecialty_label_list = array();
 foreach ($subspecialty_labels as $id => $label) {

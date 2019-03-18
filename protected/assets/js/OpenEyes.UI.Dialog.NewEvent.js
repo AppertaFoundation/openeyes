@@ -44,7 +44,9 @@
         currentSubspecialties: [],
         subspecialties: [],
         userSubspecialtyId: undefined,
-        userContext: undefined
+        userContext: undefined,
+        showSteps: false,
+        mode: 'NewEvent'
     };
 
     // selectors for finding and hooking into various of the key elements.
@@ -63,7 +65,8 @@
         serviceList: '.select-service',
         addNewSubspecialty: '#js-add-subspecialty-btn',
         removeNewSubspecialty: '.change-new-specialty',
-        eventTypeItem: '.oe-event-type'
+        eventTypeItem: '.oe-event-type',
+        workflowStepItem: '.oe-event-workflow-step',
     };
 
     /**
@@ -81,7 +84,8 @@
                 subspecialtyId: self.options.currentSubspecialties[i].subspecialty.id,
                 name: self.options.currentSubspecialties[i].subspecialty.name,
                 shortName: self.options.currentSubspecialties[i].subspecialty.shortName,
-                serviceName: self.options.currentSubspecialties[i].service
+                serviceName: self.options.currentSubspecialties[i].service,
+                serviceId: self.options.currentSubspecialties[i].firm.id,
             });
             currentSubspecialtyIds.push(self.options.currentSubspecialties[i].subspecialty.id);
         }
@@ -133,7 +137,7 @@
 
     NewEventDialog.prototype.updateTitle = function (subspecialty) {
         var title = this.options.title;
-        if (subspecialty !== undefined) {
+        if (subspecialty !== undefined && this.options.mode == 'NewEvent') {
             title = 'Add a new ' + subspecialty.name + ' event';
         }
         this.setTitle(title);
@@ -179,6 +183,10 @@
             self.content.find(selectors.contextItem).removeClass('selected');
             $(this).addClass('selected');
             self.updateEventList();
+
+            if(self.options.mode == 'ChangeContext' && (self.options.showSteps == false || self.options.workflowSteps[$(this).data('context-id')] === undefined)){
+                self.changeEventContext();
+            }
         });
 
         self.content.on('click', selectors.eventTypeItem, function (e) {
@@ -186,6 +194,12 @@
                 // can proceed
                 self.createEvent($(this).data('eventtype-id'));
             }
+        });
+
+        self.content.on('click', selectors.workflowStepItem, function (e) {
+            self.content.find(selectors.workflowStepItem).removeClass('selected');
+            $(this).addClass('selected');
+            self.changeEventContext();
         });
     };
 
@@ -377,7 +391,10 @@
             for (var i in self.contextsBySubspecialtyId[subspecialtyId]) {
                 var context = self.contextsBySubspecialtyId[subspecialtyId][i];
                 list += '<li class="step-2" data-context-id="' + context.id + '">' + context.name + '</li>';
-                if (String(context.id) === defaultContextId) {
+                
+                if(self.options.mode == 'ChangeContext' && parseInt(context.id) === self.options.currentFirm){
+                    contextListIdx = i;
+                } else if (contextListIdx === undefined && String(context.id) === defaultContextId) {
                     contextListIdx = i;
                 }
             }
@@ -402,16 +419,36 @@
         var self = this;
         var selected = self.content.find('.step-2.selected');
         if (selected.length) {
-            var selectedSubspecialty = self.subspecialtiesById[self.content.find(selectors.subspecialtyItem + '.selected').data('subspecialtyId')];
-            if (selectedSubspecialty.supportServices) {
-                // Filter list based on whether Support Services is being chosen.
-                self.content.find(selectors.eventTypeItem).each(function () {
-                    if (!$(this).data('support-services')) {
-                        $(this).hide();
+            if(self.options.mode == 'NewEvent'){
+                var selectedSubspecialty = self.subspecialtiesById[self.content.find(selectors.subspecialtyItem + '.selected').data('subspecialtyId')];
+                if (selectedSubspecialty.supportServices) {
+                    // Filter list based on whether Support Services is being chosen.
+                    self.content.find(selectors.eventTypeItem).each(function () {
+                        if (!$(this).data('support-services')) {
+                            $(this).hide();
+                        }
+                    });
+                } else {
+                    self.content.find(selectors.eventTypeItem).show();
+                }                
+            }
+
+            if(self.options.mode == 'ChangeContext'  && this.options.showSteps){
+                let list = '';
+                const workflowSteps = self.options.workflowSteps[selected.data('context-id')];
+                const currentWorkflowStep = self.options.currentStep;
+                let applySelectedClass = false;
+                if(workflowSteps !== undefined){
+                    for (let i = 0; i < workflowSteps.length; i++) {
+                        if((workflowSteps.length < currentWorkflowStep.position) && i === (workflowSteps.length-1)){
+                            applySelectedClass = true;
+                        } else {
+                            applySelectedClass = (workflowSteps[i].position === currentWorkflowStep.position);
+                        }
+                        list += '<li class="oe-event-workflow-step step-3 '+(applySelectedClass ? 'selected' : '')+'" data-workflow-id="' + workflowSteps[i].id + '">' + workflowSteps[i].name + '</li>';
                     }
-                });
-            } else {
-                self.content.find(selectors.eventTypeItem).show();
+                }
+                self.content.find('#event-type-list').html(list);
             }
             self.content.find('.step-event-types').css('visibility', 'visible');
 
@@ -446,6 +483,36 @@
         // set window location to the new event request URL
         window.location = '/patientEvent/create?' + $.param(requestParams);
     };
+
+    NewEventDialog.prototype.changeEventContext = function () {
+        const self = this;
+        const selectedContextItem = $(selectors.contextItem).filter('.selected');
+        const selectedSubspecialtyItem = $(selectors.subspecialtyItem).filter('.selected');
+        const newSubspecialty = $(selectors.newSubspecialtyItem);
+        const selectedWorkflowStepItem = $(selectors.workflowStepItem).filter('.selected');
+        
+        if(selectedContextItem.length != 0){
+            if((parseInt(self.options.userContext.id) !== selectedContextItem.data('context-id')) || (parseInt(self.options.currentStep.id) !== selectedWorkflowStepItem.data('workflow-id'))){
+                let postData = {
+                    YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+                    eventId: OE_event_id,
+                    patientId: self.options.patientId,
+                    selectedContextId: selectedContextItem.data('context-id'),
+                    selectedSubspecialtyId: selectedSubspecialtyItem.data('service-id'),
+                    selectedWorkflowStepId: selectedWorkflowStepItem.data('workflow-id')
+                };
+                
+                if(newSubspecialty.length != 0){
+                    postData.selectedSubspecialtyId = newSubspecialty.data('service-id')
+                }
+                $.post("/ChangeEvent/UpdateEpisode",postData,function(successful){
+                    if(successful == "true"){
+                        $('.'+self.options.popupClass+' .close-icon-btn').trigger('click');
+                    }
+                });
+            }
+        }
+    }
 
     exports.NewEvent = NewEventDialog;
 }(OpenEyes.UI.Dialog, OpenEyes.Util));
