@@ -298,7 +298,7 @@ class ElementLetter extends BaseEventTypeElement
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' ('.Yii::app()->params['gp_label'].')';
+                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' ('.((isset($patient->gp->contact->label))? $patient->gp->contact->label->name : Yii::app()->params['gp_label']).')';
             } else {
                 $options['Gp'.$patient->gp_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
             }
