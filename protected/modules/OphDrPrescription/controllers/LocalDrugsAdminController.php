@@ -20,4 +20,41 @@ class LocalDrugsAdminController extends RefMedicationAdminController
 {
     protected $source_type = "LOCAL";
     protected $display_name = "Local drugs";
+
+    protected function _getEditFields($model)
+	{
+		return array(
+			'preferred_term'=>'Preferred term',
+			'short_term'=>'Short term',
+			'preferred_code'=>'Preferred code',
+			'source_subtype'=> array(
+				'widget' => 'DropDownList',
+				'options' => $this->_getSourceSubtypes(),
+				'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+				'hidden' => false,
+				'layoutColumns' => array()
+			),
+			'attributes' => array(
+				'widget' => 'CustomView',
+				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_attributes',
+				'viewArguments' => array(
+					'medication' => $model
+				)
+			),
+			'sets' => array(
+				'widget' => 'CustomView',
+				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_sets',
+				'viewArguments' => array(
+					'medication' => $model
+				)
+			),
+			'alternative_terms' =>  array(
+				'widget' => 'CustomView',
+				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_alternative_terms',
+				'viewArguments' => array(
+					'medication' => $model
+				)
+			),
+		);
+	}
 }
