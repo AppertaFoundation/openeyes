@@ -20,7 +20,7 @@
                     <i id="js-cancel-add-practitioner" class="oe-i remove-circle pro-theme"></i>
                 </div>
             </div>
-            <div class="alert-box warning" style="display:none;">
+            <div class="alert-box warning" id="practitioner-alert-box" style="display:none;">
                 <p id="errors"></p>
             </div>
             <table class="standard row">
@@ -101,24 +101,22 @@
                                 Yii::app()->controller->createUrl('gp/create', array('context' => 'AJAX')),
                                 array(
                                     'type' => 'POST',
-                                    'error' => 'js:function(data){
-                                    $error_message = data.responseText.split("(")[0].split("</h1>")[1];
-                                     $alertBox = $(".alert-box"); 
-                                     $alertBox.find("#errors").html($error_message);
-                                     $(".alert-box").css("display","");
-                              }',
                                     'success' => 'js:function(event){
-                                     removeSelectedGP();
-                                     addGpItem("selected_gp_wrapper",event);
-                                     $("#js-add-practitioner-event").css("display","none");
-                                  }',
-                                    'complete' => 'js:function(){
+                                    if (event.includes("error")){
+                                        $alertBox = $("#practitioner-alert-box"); 
+                                        $alertBox.find("#errors").html(event);
+                                        $("#practitioner-alert-box").css("display","");
+                                    }else{
+                                            removeSelectedGP();
+                                            addGpItem("selected_gp_wrapper",event);
+                                            $("#js-add-practitioner-event").css("display","none");
                                             $("#gp-form")[0].reset();
                                             $("#selected_contact_label_wrapper").css("display","none");
-                                            $("#selected_contact_label_wrapper").find(".js-name").text(" ");
-                                            $("#selected_contact_label_wrapper").find(".js-name").val(" ");
-                                            $("#selected_contact_label_wrapper").find(".hidden_id").val(" ");
-                                }',
+                                            $("#selected_contact_label_wrapper").find(".js-name").text("");
+                                            $("#selected_contact_label_wrapper").find(".js-name").val("");
+                                            $("#selected_contact_label_wrapper").find(".hidden_id").val("");
+                                    }
+                                  }',
                                 )
                             );
                         }

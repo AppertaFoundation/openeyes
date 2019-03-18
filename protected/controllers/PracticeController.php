@@ -75,12 +75,14 @@ class PracticeController extends BaseController
                 $context === 'AJAX');
         }
         if ($context === 'AJAX') {
-            $displayText = ($practice->contact->first_name ? ($practice->contact->first_name . ', ') : '') . $practice->getAddressLines();
-            echo CJSON::encode(array(
-                'label' => $displayText,
-                'value' => $displayText,
-                'id' => $practice->getPrimaryKey(),
-            ));
+            if (isset($practice->contact)){
+                $displayText = ($practice->contact->first_name ? ($practice->contact->first_name . ', ') : '') . $practice->getAddressLines();
+                echo CJSON::encode(array(
+                    'label' => $displayText,
+                    'value' => $displayText,
+                    'id' => $practice->getPrimaryKey(),
+                ));
+            }
         } else {
             $this->render('create', array(
                 'model' => $practice,
@@ -152,7 +154,7 @@ class PracticeController extends BaseController
             OELog::logException($ex);
             $transaction->rollback();
             if ($isAjax) {
-                throw $ex;
+                echo $ex->getMessage();
             }
         }
 

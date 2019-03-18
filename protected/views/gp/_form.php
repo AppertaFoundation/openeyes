@@ -14,7 +14,6 @@
         // See class documentation of CActiveForm for details on this.
         'enableAjaxValidation' => true,
     )); ?>
-    <?php echo $form->errorSummary($model); ?>
     <table class="standard row">
         <tbody>
         <tr>

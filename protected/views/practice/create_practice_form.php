@@ -68,17 +68,17 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                             Yii::app()->controller->createUrl('practice/create', array("context" => 'AJAX')),
                             [
                                 'type' => 'POST',
-                                'error' => 'js:function(error){
-                                    $error_message = error.responseText.split("(")[0].split("</h1>")[1];
-                                     $alertBox = $(".alert-box"); 
-                                     $alertBox.find("#errors").html($error_message);                                
-                                     $(".alert-box").css("display","");
-                          }',
                                 'success' => 'js:function(event){
+                                 if (event.includes("error")){
+                                     $alertBox = $("#practice-alert-box"); 
+                                     $alertBox.find("#errors").html(event);
+                                     $("#practice-alert-box").css("display","");
+                                    }else{
                                removeSelectedPractice();
                                addGpItem("selected_practice_wrapper",event);
                                $("#practice-form")[0].reset();
                                 $("#js-add-practice-event").css("display","none");
+                                }
                           }',
                             ]
                         );

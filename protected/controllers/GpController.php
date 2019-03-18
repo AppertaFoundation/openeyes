@@ -99,11 +99,13 @@ class GpController extends BaseController
         }
 
         if ($context === 'AJAX') {
-            echo CJSON::encode(array(
-                'label' => $contact->getFullName(),
-                'value' => $gp->getFullName(),
-                'id'    => $gp->getPrimaryKey(),
-            ));
+            if(isset($gp->contact)){
+                echo CJSON::encode(array(
+                    'label' => $contact->getFullName(),
+                    'value' => $gp->getFullName(),
+                    'id'    => $gp->getPrimaryKey(),
+                ));
+            }
         } else {
             $this->render('create', array(
                 'model' => $contact,
@@ -148,17 +150,19 @@ class GpController extends BaseController
                 if ($isAjax) {
                     throw new CHttpException(400,CHtml::errorSummary($contact));
                 }
-
                 $transaction->rollback();
             }
         } catch (Exception $ex) {
             OELog::logException($ex);
             $transaction->rollback();
             if ($isAjax) {
-                 throw $ex;
+                if (strpos($ex->getMessage(),'errorSummary')){
+                    echo $ex->getMessage();
+                }else{
+                    echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
+                }
             }
         }
-
         return array($contact, $gp);
     }
 
