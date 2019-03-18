@@ -379,4 +379,21 @@ class OphTrOperationnote_API extends BaseAPI
             }
         }
     }
+
+    /**
+     * get laterality of event by looking at the procedure list element eye side
+     *
+     * @param $event_id
+     * @return mixed
+     * @throws Exception
+     */
+    public function getLaterality($event_id)
+    {
+        if (!$operation_note = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($event_id))) {
+            throw new Exception("Operation note (procedure list) event not found: $event_id");
+        }
+
+        return $operation_note->eye;
+    }
+
 }

@@ -135,8 +135,11 @@ $episodes_list = array(); ?>
                     </span>
                     <span class="event-extra">
                         <span class="oe-eye-lat-icons">
-                            <i class="oe-i laterality R small"></i>
-                            <i class="oe-i laterality NA small"></i>
+                            <?php
+                            $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
+                            if (method_exists($api, 'getLaterality')) {
+                                $this->widget('EyeLateralityWidget', array('eye' => $api->getLaterality($event->id)));
+                            } ?>
                         </span>
                     </span>
 
