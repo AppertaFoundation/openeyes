@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -31,24 +31,28 @@ $required_risk_ids = array_map(function ($r) {
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
   <div class="data-group cols-10">
-    <div
-        class="cols-full <?= (count($element->entries) + count($missing_req_risks)) ? ' hidden' : '' ?> <?= $model_name ?>_no_risks_wrapper">
-      <label for="<?= $model_name ?>_no_risks">Confirm patient has no risks:</label>
-        <?php echo CHtml::checkBox($model_name . '[no_risks]', $element->no_risks_date ? true : false,
-            array('class' => $model_name . '_no_risks')); ?>
-    </div>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
     <table
-        class="<?= $model_name ?>_entry_table cols-full <?= !count($element->entries) && !count($missing_req_risks) ? 'hidden' : '' ?>">
-			<colgroup>
-				<col class="cols-3">
-				<col class="cols-4">
-				<col class="cols-4">
-				<col class="cols-1">
-			</colgroup>
+        class="<?= $model_name ?>_entry_table cols-full">
+      <colgroup>
+        <col class="cols-3">
+        <col class="cols-3">
+        <col class="cols-4">
+        <col class="cols-2">
+      </colgroup>
       <tbody>
+      <tr class="cols-full <?= (count($element->entries) + count($missing_req_risks)) ? ' hidden' : '' ?> <?= $model_name ?>_no_risks_wrapper">
+         <td colspan="5" class="align-left">
+              <label class="inline highlight" for="<?= $model_name ?>_no_risks">
+              <?= \CHtml::checkBox($model_name . '[no_risks]', $element->no_risks_date ? true : false,
+                  array('class' => $model_name . '_no_risks')); ?>
+                  Confirm patient has no risks
+              </label>
+         </td>
+      </tr>
+      <?php if (count($element->entries) || count($missing_req_risks)): ?>
       <?php
       $row_count = 0;
       foreach ($missing_req_risks as $entry) {
@@ -82,38 +86,16 @@ $required_risk_ids = array_map(function ($r) {
               )
           );
           $row_count++;
-      }
-      ?>
+      } ?>
+      <?php endif ?>
       </tbody>
     </table>
   </div>
   <div class="add-data-actions flex-item-bottom" id="add-history-risk-popup"
-       style="visibility: <?php echo $element->no_risks_date ? 'hidden' : ''; ?>">
+       style="display: <?php echo $element->no_risks_date ? 'none' : ''; ?>">
     <button id="show-add-risk-popup" class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
-
-    <div id="add-history-risks" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
-      <div id="close-btn" class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-      <button class="button hint green add-icon-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
-      <div class="flex-layout flex-top flex-left">
-        <ul id="history-risks-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
-            <?php
-            $exist_risks = array();
-            foreach ($element->entries as $entry) {
-                array_push($exist_risks, $entry->risk_id);
-            }
-            foreach ($risks_options as $risk_item) {
-                if (!in_array($risk_item->id, $exist_risks)) {
-                    ?>
-                  <li data-str="<?php echo $risk_item->name; ?>" data-id="<?php echo $risk_item->id; ?>">
-                    <span class="restrict-width"><?php echo $risk_item->name; ?></span>
-                  </li>
-                <?php }
-            } ?>
-        </ul>
-      </div>
-    </div>
   </div>
   <script type="text/template" class="<?= CHtml::modelName($element) . '_entry_template' ?> hidden">
       <?php
@@ -152,19 +134,24 @@ $required_risk_ids = array_map(function ($r) {
     });
   });
 
-  var adder = $('#add-history-risk-popup');
-  var popup = adder.find('#add-history-risks');
-
-  function addRisks(selection) {
-    controller.addEntry();
-  }
-
-  setUpAdder(
-    popup,
-    'multi',
-    addRisks,
-    adder.find('#show-add-risk-popup'),
-    popup.find('.add-icon-btn'),
-    adder.find('#close-btn, .add-icon-btn')
-  );
+  new OpenEyes.UI.AdderDialog({
+    openButton: $('#add-history-risk-popup'),
+    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+        array_map(function ($risk) {
+            return ['label' => $risk->name, 'id' => $risk->id];
+        }, $risks_options)) ?>, {multiSelect: true}),
+    ],
+    onOpen: function (adderDialog) {
+      adderDialog.popup.find('li').each(function() {
+        let risk_id = $(this).data('id');
+        var alreadyUsed = controller.$table.find('input[type="hidden"][id$="risk_id"][value="' + risk_id + '"]').length > 0;
+        $(this).toggle(!alreadyUsed || $(this).data('label') === 'Other');
+      });
+    },
+    onReturn: function (adderDialog, selectedItems) {
+      for (let i = 0; i < selectedItems.length; ++i) {
+        controller.addEntry(selectedItems[i].id, selectedItems[i].label);
+      }
+    },
+  });
 </script>

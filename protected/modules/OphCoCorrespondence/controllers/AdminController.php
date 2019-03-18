@@ -17,6 +17,8 @@
  */
 class AdminController extends \ModuleAdminController
 {
+    public $group = 'Correspondence';
+
     public $defaultAction = 'letterMacros';
 
     public function actionLetterMacros()
@@ -68,7 +70,14 @@ class AdminController extends \ModuleAdminController
             }
         }
 
-        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
+        $this->render(
+            '/admin/edit_setting',
+            [
+                'metadata' => $metadata,
+                'errors' => $errors,
+                'cancel_uri' => '/OphCoCorrespondence/admin/letterSettings/settings',
+            ]
+        );
     }
 
 

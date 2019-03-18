@@ -43,9 +43,9 @@ if ($flash_message) {
             <label for="to_queue_id">To:</label>
           </div>
           <div class="cols-3 column">
-              <?php echo CHtml::dropDownList('to_queue_id', $this->outcome_queue_id, $this->outcome_options, array(
+              <?=\CHtml::dropDownList('to_queue_id', $this->outcome_queue_id, $this->outcome_options, array(
                   'id' => 'to_queue_id-' . $this->ticket->id,
-                  'empty' => ' - Please Select -',
+                  'empty' => 'Select',
               )); ?>
           </div>
 
@@ -57,8 +57,8 @@ if ($flash_message) {
   </div>
   <span id="PatientTicketing-queue-assignment" data-queue="<?= $this->ticket->current_queue->id ?>">
       <?php $buttons = '<div class="row flex-layout flex-right">
-                          <button class="green hint js-ok" type="button" data-queue="' . $this->ticket->current_queue->id . '">Next step</button>
-                          <button class="red hint js-cancel" type="button" data-queue="' . $this->ticket->current_queue->queueset->id . '" data-category="' . $this->ticket->current_queue->queueset->category_id . '">Exit</button>
+                          <button class="green hint ok" type="button" data-queue="' . $this->ticket->current_queue->id . '">Next step</button>
+                          <button class="red hint cancel" type="button" data-queue="' . $this->ticket->current_queue->queueset->id . '" data-category="' . $this->ticket->current_queue->queueset->category_id . '">Exit</button>
                         </div>';
 
       $buttons_drawn = false;

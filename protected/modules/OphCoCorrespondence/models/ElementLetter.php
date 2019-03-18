@@ -70,8 +70,8 @@ class ElementLetter extends BaseEventTypeElement
             array('to_subspecialty_id', 'internalReferralServiceValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
-            array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
-            array('use_nickname', 'required'),
+            array('date, introduction, body, footer', 'requiredIfNotDraft'),
+            array('use_nickname , site_id', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
@@ -125,6 +125,7 @@ class ElementLetter extends BaseEventTypeElement
             'to_firm_id' => 'To Consultant',
             'is_urgent' => 'Urgent',
             'is_same_condition' => '',
+            'site_id' => 'Site',
         );
     }
 
@@ -213,7 +214,7 @@ class ElementLetter extends BaseEventTypeElement
                 if($target['attributes']['contact_type'] === 'PATIENT'){
                     $patient_found = true;
                 }
-                if($target['attributes']['contact_type'] === 'GP'){
+                if($target['attributes']['contact_type'] === Yii::app()->params['gp_label']){
                     $gp_found = true;
                 }
             }
@@ -298,16 +299,16 @@ class ElementLetter extends BaseEventTypeElement
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' (GP)';
+                $options[Yii::app()->params['gp_label'].$patient->gp_id] = $patient->gp->contact->fullname.' ('.Yii::app()->params['gp_label'].')';
             } else {
-                $options['Gp'.$patient->gp_id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options[Yii::app()->params['gp_label'].$patient->gp_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
             }
             if (!$patient->practice || !@$patient->practice->contact->address) {
-                $options['Gp'.$patient->gp_id] .= ' - NO ADDRESS';
+                $options[Yii::app()->params['gp_label'].$patient->gp_id] .= ' - NO ADDRESS';
             }
         } else {
             if ($patient->practice) {
-                $options['Practice'.$patient->practice_id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options['Practice'.$patient->practice_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
                 if (@$patient->practice->contact && !@$patient->practice->contact->address) {
                     $options['Practice'.$patient->practice_id] .= ' - NO ADDRESS';
                 }
@@ -392,8 +393,10 @@ class ElementLetter extends BaseEventTypeElement
                 $re .= ', '.$patient->contact->address->{$field};
             }
         }
-
-        return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', NHS No: '.$patient->nhsnum;
+        if (Yii::app()->params['nhs_num_private'] == true) {
+            return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num;
+        }
+        return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .' No: '.$patient->nhsnum;
     }
 
     /**
@@ -424,7 +427,11 @@ class ElementLetter extends BaseEventTypeElement
                 }
             }
 
-            $this->re .= ', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', NHS No: '.$patient->nhsnum;
+            if (Yii::app()->params['nhs_num_private'] == true) {
+                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', Hosps No: ' . $patient->hos_num;
+            } else {
+                $this->re .= ', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .' No: '.$patient->nhsnum;
+            }
 
             $user = Yii::app()->session['user'];
             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
@@ -487,7 +494,7 @@ class ElementLetter extends BaseEventTypeElement
             $this->introduction = $patient->getLetterIntroduction(array(
                 'nickname' => $this->use_nickname,
             ));
-        } elseif ($this->macro->recipient && $this->macro->recipient->name == 'GP') {
+        } elseif ($this->macro->recipient && $this->macro->recipient->name == Yii::app()->params['gp_label']) {
             $this->address_target = 'gp';
             if ($patient->gp) {
                 $this->introduction = $patient->gp->getLetterIntroduction(array(
@@ -976,8 +983,7 @@ class ElementLetter extends BaseEventTypeElement
                     }
                 }
             }
-        }else
-        {
+        } else {
             // for old legacy letters
             return $this->address;
         }
@@ -995,7 +1001,7 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if($target->ToCc != 'To'){
-                        $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                        $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
                         $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
                     }
                 }
@@ -1011,5 +1017,52 @@ class ElementLetter extends BaseEventTypeElement
         }
 
         return $ccString;
+    }
+
+    /**
+     * Sets the deleted flag for the document_* tables after the event has been deleted.
+     * Called from the DefaultController afterSoftDelete
+     *
+     * Please note this function does NOT check if the Event is delete not DocumentOutpus status
+     * ==> we do not delete records have "COMPELE" status from document_output table
+     */
+    public function markDocumentRelationTreeDeleted()
+    {
+        // Ok, can someone explain me why this is not working here ?
+        // $event = Event::model()->disableDefaultScope()->findByPk($this->event_id);
+        $event = Event::model()->disableDefaultScope();
+        $event->findByPk($this->event_id);
+        $document_sets = DocumentSet::model()->findAllByAttributes(['event_id' => $this->event_id]);
+
+        foreach ($document_sets as $document_set) {
+            if ($document_set->saveAttributes(['deleted' => 1])) {
+                Audit::add('DocumentSet', 'delete','Soft Delete: <br><pre>' . print_r($document_set->attributes, true) . '</pre>');
+                $document_instances = $document_set->document_instance;
+                foreach ($document_instances as $document_instance) {
+                    if ($document_instance->saveAttributes(['deleted' => 1])) {
+                        Audit::add('DocumentInstance', 'delete','Soft Delete: <br><pre>' . print_r($document_instance->attributes, true) . '</pre>');
+                        foreach ($document_instance->document_instance_data as $document_instance_data) {
+                            Audit::add('DocumentInstanceData', 'delete','Soft Delete: <br><pre>' . print_r($document_instance_data->attributes, true) . '</pre>');
+                            $document_instance_data->saveAttributes(['deleted' => 1]);
+                        }
+
+                        $document_targets = $document_instance->document_target;
+                        foreach ($document_targets as $document_target) {
+                            if ($document_target->saveAttributes(['deleted' => 1])) {
+                                Audit::add('DocumentTarget', 'delete','Soft Delete: <br><pre>' . print_r($document_target->attributes, true) . '</pre>');
+                                $document_outputs = $document_target->document_output;
+                                foreach ($document_outputs as $document_output) {
+                                    if ($document_output->saveAttributes(['deleted' => 1])) {
+                                        Audit::add('DocumentOutput', 'delete','Soft Delete: <br><pre>' . print_r($document_output->attributes, true) . '</pre>');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 }

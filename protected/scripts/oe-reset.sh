@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 ## If the OE_NO_DB build parameter is set, then this script will not be run
 if [ "$OE_NO_DB" == "true" ]; then
@@ -19,6 +19,7 @@ done
 # Determine root folder for site - all relative paths will be built from here
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
+MODULEROOT=$WROOT/protected/modules
 
 ## default DB connection variables
 # If database user / pass are empty then set from environment variables of from docker secrets (secrets are the recommended approach)
@@ -32,14 +33,18 @@ else
     dbpassword=""
 fi
 
-# Always using root for deleting and restoring DB
-username="root"
+if [ ! -z "$MYSQL_SUPER_USER" ] ; then
+    username="$MYSQL_SUPER_USER"
+elif [ -f "/run/secrets/MYSQL_SUPER_USER" ] ; then
+    username="$(</run/secrets/MYSQL_SUPER_USER)"
+else
+	# fallback to using root for deleting and restoring DB
+    username="root"
+fi
+
+
 port=${DATABASE_PORT:-"3306"}
 host=${DATABASE_HOST:-"localhost"}
-
-# if databse details are still empty, then attempt to load from db.conf (this is the old method from openeyes v2.x)
-#if [ -z $username ] && [ -z $dbpassword ]; then source /etc/openeyes/db.conf; fi
-
 
 
 # Process commandline parameters
@@ -56,8 +61,9 @@ cleanbase=0
 migrateparams="-q"
 nofix=0
 dwservrunning=0
+restorefile="/tmp/openeyes_sample_data.sql"
 
-
+PARAMS=()
 while [[ $# -gt 0 ]]
 do
     p="$1"
@@ -105,16 +111,42 @@ do
     	--clean-base) cleanbase=1
     		## Do not import base data (migrate from clean db instead)
     	;;
-    	--ignore-warnings) migrateparams="$migrateparams $i"
+    	--ignore-warnings) migrateparams="$migrateparams $p"
     		# Ignore warnings during migrate
     	;;
-    	*)  # assume anything else will be passed through to the checkout commands
-    		checkoutparams="$checkoutparams $i"
+		-f|--custom-file) # use a custom database backup for the restore
+			restorefile="$2"
+			shift
+		;;
+    	*)  if [ "$p" == "--hard" ]; then
+                echo "Unknown parameter $p $2"
+                exit 1
+            else
+                # Hold for processing later
+                PARAMS+=("$p")
+            fi
 		;;
     esac
     shift # move to next parameter
 done
 
+# If we are checking out new branch,then pass all unprocessed commands to checkout command
+# Else, throw error and list unknown commands
+if  [ ${#PARAMS[@]} -gt 0 ]; then
+    if [ "$branch" != "0" ]; then
+        for i in "${PARAMS[@]}"
+        do
+            $checkoutparams="$checkoutparams $i"
+        done
+    else
+        echo "Unknown Parameter(s):"
+        for i in "${PARAMS[@]}"
+        do
+            echo $i
+        done
+        exit 1;
+    fi
+fi
 
 if [ $showhelp = 1 ]; then
     echo ""
@@ -166,14 +198,16 @@ if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null; then
 		sudo service dicom-file-watcher stop
 fi
 
-if [ ! "$branch" = "0" ]; then
+if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
+	
+	## If no branch is specified, use build branch or fallback to master
+	[ "$branch" = "0" ] && branch=${BUILD_BRANCH:-"master"} || :
+	
 	## Checkout new sample database branch
 	echo "Downloading database for $branch"
 
     bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams
 fi
-
-MODULEROOT=$WROOT/protected/modules
 
 echo "Clearing current database"
 
@@ -194,8 +228,13 @@ if [ $nofiles = "0" ]; then
 fi
 
 if [ $cleanbase = "0" ]; then
+  # Extract or copy sample DB (since v3.2 db has been zipped)
+  rm -f /tmp/openeyes_sample_data.sql >/dev/null
+  [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && cp $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp || :
+  [ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
+
 	echo "Re-importing database"
-	eval $dbconnectionstring -D openeyes < $MODULEROOT/sample/sql/openeyes_sample_data.sql
+	eval $dbconnectionstring -D openeyes < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
 fi
 
 # Force default institution code to match common.php
@@ -318,7 +357,6 @@ if [ $dwservrunning = 1 ]; then
 	sudo service dicom-file-watcher start
 fi
 
-cd "$dir"
 printf "\e[42m\e[97m  RESET COMPLETE  \e[0m \n"
 echo ""
 

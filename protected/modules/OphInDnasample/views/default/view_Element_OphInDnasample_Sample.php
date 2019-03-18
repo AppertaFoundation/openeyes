@@ -55,7 +55,7 @@
         <div class="data-label"><?php echo $element->getAttributeLabel('volume') ?>:</div>
       </div>
       <div class="cols-10 column">
-        <div class="data-value"><?php echo CHtml::encode($element->volume) ?></div>
+        <div class="data-value"><?=\CHtml::encode($element->volume) ?></div>
       </div>
     </div>
 
@@ -64,7 +64,7 @@
         <div class="data-label"><?php echo $element->getAttributeLabel('destination') ?>:</div>
       </div>
       <div class="cols-10 column">
-        <div class="data-value"><?php echo CHtml::encode($element->destination) ?></div>
+        <div class="data-value"><?=\CHtml::encode($element->destination) ?></div>
       </div>
     </div>
 
@@ -104,7 +104,7 @@
         <div class="data-label"><?php echo $element->getAttributeLabel('comments') ?>:</div>
       </div>
       <div class="cols-10 column">
-        <div class="data-value"><?php echo CHtml::encode($element->comments) ?></div>
+        <div class="data-value"><?=\CHtml::encode($element->comments) ?></div>
       </div>
     </div>
   </div>

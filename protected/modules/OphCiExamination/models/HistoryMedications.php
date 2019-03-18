@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -82,17 +82,23 @@ class HistoryMedications extends \BaseEventTypeElement
                 'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
                 'element_id',
                 'order' => 'orderedEntries.start_date desc, orderedEntries.end_date desc, orderedEntries.last_modified_date'),
-            'currentOrderedEntries' => array(self::HAS_MANY,
-                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
-                'element_id',
-                'on' => '(end_date is NULL)',
-                'order' => 'currentOrderedEntries.start_date desc, currentOrderedEntries.end_date desc, currentOrderedEntries.last_modified_date'),
-            'stoppedOrderedEntries' => array(self::HAS_MANY,
-                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
-                'element_id',
-                'on' => '(end_date is NOT NULL)',
-                'order' => 'stoppedOrderedEntries.start_date desc, stoppedOrderedEntries.end_date desc, stoppedOrderedEntries.last_modified_date'),
         );
+    }
+
+    public function getStoppedOrderedEntries()
+    {
+        $stoppedEntries = array_filter($this->orderedEntries, function ($entry) {
+            return $entry->end_date && $entry->end_date <= date('Y-m-d' , strtotime($this->event->event_date));
+        });
+        return $stoppedEntries;
+    }
+
+    public function getCurrentOrderedEntries()
+    {
+        $currentEntries = array_filter($this->orderedEntries, function ($entry) {
+            return !$entry->end_date || $entry->end_date > date('Y-m-d' , strtotime($this->event->event_date));
+        });
+        return $currentEntries;
     }
 
     protected function errorAttributeException($attribute, $message)
@@ -193,7 +199,7 @@ class HistoryMedications extends \BaseEventTypeElement
      */
     public function beforeValidate()
     {
-        $this->entries = array_filter($this->entries, function($e) {
+        $this->entries = array_filter($this->entries, function ($e) {
             return $e->hasRecordableData();
         });
 
@@ -203,5 +209,10 @@ class HistoryMedications extends \BaseEventTypeElement
     public function getTileSize($action)
     {
         return $action === 'view' || $action === 'createImage' ? 2 : null;
+    }
+
+    public function getDisplayOrder($action)
+    {
+        return $action == 'view' ? 25 : parent::getDisplayOrder($action);
     }
 }

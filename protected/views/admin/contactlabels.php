@@ -9,49 +9,48 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="admin box">
+<div class="cols-5">
     <form id="admin_contactlabels">
         <table class="standard">
             <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                                </tr>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
             </thead>
+
             <tbody>
-                <?php
-                foreach ($contactlabels as $i => $contactlabel) {?>
-                    <tr class="clickable"
-                        data-id="<?php echo $contactlabel->id?>"
-                        data-uri="admin/editContactLabel/<?php echo $contactlabel->id?>">
-                        <td><?php echo $contactlabel->id?></td>
-                        <td><?php echo $contactlabel->name?>&nbsp;</td>
-                    </tr>
-                <?php }?>
-            </tbody>
-            <tfoot class="pagination-container">
-                <tr>
-                    <td colspan="5">
-                        <?php echo CHtml::button(
-                            'Add',
-                            [
-                                'class' => 'button large',
-                                'name' => 'add',
-                                'id' => 'et_add'
-                            ]
-                        ); ?>
-                    </td>
-                    <td colspan="4">
-                        <?php echo $this->renderPartial(
-                            '_pagination',
-                            ['pagination' => $pagination]
-                        )?>
-                    </td>
+            <?php
+            foreach ($contactlabels as $i => $contactlabel) { ?>
+                <tr class="clickable"
+                    data-id="<?php echo $contactlabel->id ?>"
+                    data-uri="admin/editContactLabel/<?php echo $contactlabel->id ?>">
+                    <td><?php echo $contactlabel->id ?></td>
+                    <td><?php echo $contactlabel->name ?>&nbsp;</td>
                 </tr>
+            <?php } ?>
+            </tbody>
+
+            <tfoot class="pagination-container">
+            <tr>
+                <td>
+                    <?= \CHtml::button(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'name' => 'add',
+                            'id' => 'et_add'
+                        ]
+                    ); ?>
+                </td>
+                <td>
+                    <?php echo $this->renderPartial('_pagination', ['pagination' => $pagination]) ?>
+                </td>
+            </tr>
             </tfoot>
         </table>
     </form>

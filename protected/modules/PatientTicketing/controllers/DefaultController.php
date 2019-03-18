@@ -178,7 +178,8 @@ class DefaultController extends \BaseModuleController
         $patient_filter = null;
         $patient_list = [];
 
-        if ($queuesets = $qsc_svc->getCategoryQueueSetsForUser($category, Yii::app()->user->id)) {
+        $queuesets = $qsc_svc->getCategoryQueueSetsForUser($category, Yii::app()->user->id);
+        if ($queuesets) {
             // default to the single queueset if that is all that is available to the user
             if (count($queuesets) > 1) {
                 if ($qs_id) {
@@ -687,7 +688,7 @@ class DefaultController extends \BaseModuleController
         }
 
         echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id),
-            ['class' => 'cols-11', 'empty' => 'All ' . \Firm::contextLabel() . 's']);
+            ['class' => 'cols-full', 'empty' => 'All ' . \Firm::contextLabel() . 's']);
     }
 
     public function actionUndoLastStep($id)

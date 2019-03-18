@@ -13,28 +13,6 @@
  */
 
 $(document).ready(function () {
-  function addReading(e) {
-    var side = e.data.side;
-    var table = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_" + side);
-    var indices = table.find('tr').map(function () {
-      return $(this).data('index');
-    });
-    var instrumentId = $(e.target).closest('li').data('id');
-
-    table.find("tbody").append(
-      Mustache.render(
-        template = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_reading_template_" + side).text(),
-        {
-          index: indices.length ? Math.max.apply(null, indices) + 1 : 0,
-          time: (new Date).toTimeString().substr(0, 5)
-        }
-      )
-    );
-
-    table.find('tr:last td.instrument').find('option[value="' + instrumentId + '"]').attr('selected', true);
-    table.show();
-  }
-
   function deleteReading(e) {
     var table = $(this).closest('table');
     if (table.find('tbody tr').length <= 1) table.hide();
@@ -50,9 +28,6 @@ $(document).ready(function () {
     return false;
   }
 
-  $(".right-eye #add-to-iop .add-options li").click({side: 'right'}, addReading);
-  $(".left-eye #add-to-iop .add-options li").click({side: 'left'}, addReading);
-
   $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_right").on("click", "i.trash", null, deleteReading);
   $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_left").on("click", "i.trash", null, deleteReading);
 
@@ -65,20 +40,24 @@ $(document).ready(function () {
     var index = $(this).closest('tr').data('index');
     var side = $(this).closest('tr').data('side');
 
-    $.ajax({
-      'type': 'GET',
-      'url': baseUrl + '/OphCiExamination/default/getScaleForInstrument?instrument_id=' + instrument_id + '&side=' + side + '&index=' + index,
-      'success': function (html) {
-        if (html.length > 0) {
-          scale_td.html(html);
-          scale_td.show();
-          scale_td.prev('td').hide();
-        } else {
-          scale_td.html('');
-          scale_td.hide();
-          scale_td.prev('td').show();
-        }
-      }
-    });
+    getScaleDropdown(instrument_id, scale_td, index, side);
   });
 });
+
+function getScaleDropdown(instrument_id, scale_td, index, side){
+    $.ajax({
+        'type': 'GET',
+        'url': baseUrl + '/OphCiExamination/default/getScaleForInstrument?instrument_id=' + instrument_id + '&side=' + side + '&index=' + index,
+        'success': function (html) {
+            if (html.length > 0) {
+                scale_td.html(html);
+                scale_td.show();
+                scale_td.prev('td').hide();
+            } else {
+                scale_td.html('');
+                scale_td.hide();
+                scale_td.prev('td').show();
+            }
+        }
+    });
+}

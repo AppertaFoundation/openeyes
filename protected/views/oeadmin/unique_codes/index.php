@@ -11,62 +11,62 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-<?php if (!$unique_codes) : ?>
-    <div class="row divider cols-8">
-        <div class="alert-box issue"><b>No results found</b></div>
+<div class="cols-5">
+
+    <?php if (!$unique_codes) : ?>
+        <div class="row divider cols-8">
+            <div class="alert-box issue"><b>No results found</b></div>
+        </div>
+    <?php endif; ?>
+
+    <div class="row divider">
+        <form id="unique_codes_search" method="post">
+            <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+            <table class="cols-full">
+                <colgroup>
+                    <col class="cols-10">
+                    <col class="cols-1">
+                    <col class="cols-1">
+                </colgroup>
+
+                <tbody>
+                <tr class="col-gap">
+                    <td>
+                        <?= \CHtml::textField(
+                            'search[query]',
+                            $search['query'],
+                            ['class' => 'cols-full', 'placeholder' => "Id, Code, Active"]
+                        ); ?>
+                    </td>
+                    <td>
+                        <?= \CHtml::dropDownList(
+                            'search[active]',
+                            $search['active'],
+                            [
+                                1 => 'Only Active',
+                                0 => 'Exclude Active',
+                            ],
+                            ['empty' => 'All']
+                        ); ?>
+                    </td>
+                    <td>
+                        <button class="blue hint"
+                                type="submit" id="et_search">Search
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
     </div>
-<?php endif; ?>
 
-<div class="row divider cols-8">
-    <form id="unique_codes_search" method="post">
+    <form id="admin_uniqueProcedures" method="post">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
-        <table class="cols-full">
-            <colgroup>
-                <col class="cols-8">
-                <col class="cols-2" span="2">
-                <col class="cols-1">
-            </colgroup>
-            <tbody>
-            <tr class="col-gap">
-                <td>
-                    <?php echo CHtml::textField(
-                        'search[query]',
-                        $search['query'],
-                        ['class' => 'cols-full', 'placeholder' => "Id, Code, Active"]
-                    ); ?>
-                </td>
-                <td>
-                    <?= \CHtml::dropDownList(
-                        'search[active]',
-                        $search['active'],
-                        [
-                            1 => 'Only Active',
-                            0 => 'Exclude Active',
-                        ],
-                        ['empty' => 'All']
-                    ); ?>
-                </td>
-
-                <td>
-                    <button class="blue hint"
-                            type="submit" id="et_search">Search
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </form>
-</div>
-
-<form id="admin_uniqueProcedures" method="post">
-    <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
-
-    <div class="cols-8">
         <table class="standard">
             <thead>
             <tr>
@@ -76,33 +76,31 @@
                 <th>Active</th>
             </tr>
             </thead>
+
             <tbody>
             <?php
             foreach ($unique_codes as $key => $unique_code) { ?>
                 <tr id="$key" class="clickable" data-id="<?php echo $unique_code->id ?>"
                     data-uri="oeadmin/uniqueCodes/edit/<?php echo $unique_code->id ?>?returnUri=">
                     <td>
-                        <input type="checkbox" name="select[]" value="<?php echo $unique_code->id ?>" id="select[<?=$unique_code->id ?>]"/>
+                        <input type="checkbox" name="select[]" value="<?php echo $unique_code->id ?>"
+                               id="select[<?= $unique_code->id ?>]"/>
                     </td>
                     <td><?php echo $unique_code->id ?></td>
                     <td><?php echo $unique_code->code ?></td>
-                    <td>
-                        <?php echo ($unique_code->active) ?
-                            ('<i class="oe-i tick small"></i>') :
-                            ('<i class="oe-i remove small"></i>'); ?>
-                    </td>
+                    <td><i class="oe-i <?=($unique_code->active ? 'tick' : 'remove');?> small"></i></td>
                 </tr>
             <?php } ?>
             </tbody>
+
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="2">
-                    <?php echo CHtml::button(
+                    <?= \CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large disabled',
                             'data-uri' => '/oeadmin/uniqueCodes/delete',
-                            'type' => 'submit',
                             'name' => 'delete',
                             'data-object' => 'uniqueProcedures',
                             'id' => 'et_delete',
@@ -119,8 +117,8 @@
             </tr>
             </tfoot>
         </table>
-    </div>
-</form>
+    </form>
+</div>
 
 <script>
     $(document).ready(function () {

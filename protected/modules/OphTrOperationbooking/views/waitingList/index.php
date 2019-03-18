@@ -66,18 +66,18 @@
 
 
         <h4>Next letter due</h4>
-          <?php echo CHtml::dropDownList('status', @$_POST['status'],
+          <?=\CHtml::dropDownList('status', @$_POST['status'],
               Element_OphTrOperationbooking_Operation::getLetterOptions(), array(
                   'class' => 'cols-full',
               )) ?>
 
         <h4>Site</h4>
-          <?php echo CHtml::dropDownList('site_id', @$_POST['site_id'],
+          <?=\CHtml::dropDownList('site_id', @$_POST['site_id'],
               CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList(), 'id', 'short_name'),
               array('empty' => 'All sites', 'class' => 'cols-full')); ?>
 
         <h4>Hospital Number</h4>
-          <?php echo CHtml::textField('hos_num', @$_POST['hos_num'],
+          <?=\CHtml::textField('hos_num', @$_POST['hos_num'],
               array(
                   'autocomplete' => Yii::app()->params['html_autocomplete'],
                   'size' => 12,
@@ -122,7 +122,7 @@
                       <option value="0">Invitation letter</option>
                       <option value="1">1st reminder letter</option>
                       <option value="2">2nd reminder letter</option>
-                      <option value="3">GP letter</option>
+                      <option value="3"><?php echo Yii::app()->params['gp_label']?> letter</option>
                     </select>
                   </td>
                 </tr>

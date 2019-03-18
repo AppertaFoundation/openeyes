@@ -49,7 +49,7 @@ foreach ($plate_positions as $pp) {
           <?= $element->getAttributeLabel('plate_limbus'); ?>
       </td>
       <td class="flex-layout flex-right">
-          <?php echo CHtml::activeTextField($element, 'plate_limbus',
+          <?=\CHtml::activeTextField($element, 'plate_limbus',
               array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'clearWithEyedraw')); ?>
         <span class="field-info postfix align">
           mm
@@ -63,7 +63,7 @@ foreach ($plate_positions as $pp) {
       <td>
           <?php echo $form->dropDownList($element, 'tube_position_id',
               CHtml::listData(OphTrOperationnote_GlaucomaTube_TubePosition::model()->activeOrPk($element->tube_position_id)->findAll(),
-                  'id', 'name'), array('empty' => '- Please select -', 'nowrapper' => true), false,
+                  'id', 'name'), array('empty' => 'Select', 'nowrapper' => true), false,
               array('field' => 3)) ?>
       </td>
     </tr>

@@ -31,7 +31,7 @@
         action="<?php echo Yii::app()->createUrl('/patientMergeRequest/merge', array('id' => $model->id)) ?>"
         method="post">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-      <?php echo CHTML::activeHiddenField($model, 'id') ?>
+      <?=\CHtml::activeHiddenField($model, 'id') ?>
     <div class="data-group">
       <div class="large-5 column">
         <h2 class="secondaryPatient">Secondary</h2>
@@ -54,7 +54,7 @@
     </div>
     <hr>
     <div class="cols-5 column">Comment:
-        <?php echo CHTML::activeTextArea($model, 'comment'); ?>
+        <?=\CHtml::activeTextArea($model, 'comment'); ?>
     </div>
     <br>
       <?php if ($personal_details_conflict_confirm && Yii::app()->user->checkAccess('Patient Merge')): ?>
@@ -64,7 +64,7 @@
             Please confirm you selected the right patients. <br>
             Note, the primary patient's personal details will <strong>NOT</strong> be overwritten.<br><br>
             <label>
-                <?php echo CHTML::checkBox('PatientMergeRequest[personal_details_conflict_confirm]', false); ?> I hereby
+                <?=\CHtml::checkBox('PatientMergeRequest[personal_details_conflict_confirm]', false); ?> I hereby
               confirm that I selected the right patients.</label>
           </div>
         </div>
@@ -78,7 +78,7 @@
             <div class="data-group">
               <div class="cols-9 column text-right">
                 <label>
-                    <?php echo CHTML::checkBox('PatientMergeRequest[confirm]', false); ?> I declare under penalty of
+                    <?=\CHtml::checkBox('PatientMergeRequest[confirm]', false); ?> I declare under penalty of
                   perjury I reviewed the details and I would like to proceed to merge.
                 </label>
               </div>
@@ -88,7 +88,7 @@
             </div>
 
             <div class="cols-3 column text-right large-offset-9">
-                <?php echo CHtml::link('cancel', array('patientMergeRequest/index'),
+                <?=\CHtml::link('cancel', array('patientMergeRequest/index'),
                     array('class' => 'button primary')); ?>
             </div>
 

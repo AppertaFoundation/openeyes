@@ -18,7 +18,7 @@
 ?>
 <?php if (!$nowrapper) :?>
 	<div id="div_<?= CHtml::modelName($element)?>_<?= $field?>"
-       class="data-group flex-layout flex-left"
+       class="data-group flex-layout"
        style="<?=($hidden) ? 'display: none':''?>" >
       <?php if (!$no_label): ?>
         <div class="cols-<?= $layoutColumns['label'] ?> column">
@@ -43,7 +43,7 @@ if ($cols) {
 ?>
 <textarea class="cols-full column <?= @$htmlOptions['class'] ?>"
     <?= CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>
-><?=CHtml::encode($value)?>
+><?=\CHtml::encode($value)?>
 </textarea>
 <?php if (!$nowrapper) :
 		  if ($button):?>

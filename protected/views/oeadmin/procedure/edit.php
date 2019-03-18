@@ -9,21 +9,23 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-<h2>Edit Procedure</h2>
+<div class="cols-5">
 
-<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
-<div class="cols-8">
+    <h2>Edit Procedure</h2>
+
+    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+
     <form method="POST">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <colgroup>
-                <col class="cols-2">
-                <col class="cols-5">
+                <col class="cols-1">
+                <col class="cols-4">
             </colgroup>
             <tbody>
             <?php
@@ -32,7 +34,7 @@
                 <tr>
                     <td><?php echo $procedure->getAttributeLabel($field); ?></td>
                     <td>
-                        <?php echo CHtml::activeTextField(
+                        <?=\CHtml::activeTextField(
                             $procedure,
                             $field,
                             [
@@ -46,13 +48,13 @@
             <tr>
                 <td>Unbooked</td>
                 <td>
-                    <?php echo CHTML::activeCheckBox($procedure, 'unbooked'); ?>
+                    <?=\CHtml::activeCheckBox($procedure, 'unbooked'); ?>
                 </td>
             </tr>
             <tr>
                 <td>Active</td>
                 <td>
-                    <?php echo CHTML::activeCheckBox($procedure, 'active'); ?>
+                    <?=\CHtml::activeCheckBox($procedure, 'active'); ?>
                 </td>
             </tr>
             <tr>
@@ -67,7 +69,7 @@
                             'data' => \CHtml::listData($opcs_code, 'id', function ($opcs) {
                                 return $opcs->name . ', ' . $opcs->description;
                             }),
-                            'htmlOptions' => ['empty' => 'Add a OPCS Code'],
+                            'htmlOptions' => ['empty' => 'Add a OPCS Code', 'class' => 'cols-full'],
                             'selectedItemsInputName' => "opcs_codes[]",
                             'selectedItems' => array_map(function ($sub) {
                                 return $sub->id;
@@ -87,7 +89,7 @@
                             'name' => null,
                             'id' => '$benefits',
                             'data' => \CHtml::listData($benefits, 'id', 'name'),
-                            'htmlOptions' => ['empty' => 'Add a Benefit'],
+                            'htmlOptions' => ['empty' => 'Add a Benefit', 'class' => 'cols-full'],
                             'selectedItemsInputName' => "benefits[]",
                             'selectedItems' => array_map(function ($sub) {
                                 return $sub->id;
@@ -107,7 +109,7 @@
                             'name' => null,
                             'id' => '$complications',
                             'data' => \CHtml::listData($complications, 'id', 'name'),
-                            'htmlOptions' => ['empty' => 'Add Complication'],
+                            'htmlOptions' => ['empty' => 'Add Complication', 'class' => 'cols-full'],
                             'selectedItemsInputName' => "complications[]",
                             'selectedItems' => array_map(function ($sub) {
                                 return $sub->id;
@@ -127,7 +129,7 @@
                             'name' => null,
                             'id' => '$notes',
                             'data' => \CHtml::listData($notes, 'id', 'name'),
-                            'htmlOptions' => ['empty' => 'Add a Operation Note Element'],
+                            'htmlOptions' => ['empty' => 'Add a Operation Note Element', 'class' => 'cols-full'],
                             'selectedItemsInputName' => "notes[]",
                             'selectedItems' => array_map(function ($sub) {
                                 return $sub->id;
@@ -142,21 +144,19 @@
             <tfoot>
             <tr>
                 <td colspan="8">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
-                            'class' => 'button small button',
+                            'class' => 'button large',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Cancel',
                         [
-                            'class' => 'warning button small',
+                            'class' => 'button large',
                             'data-uri' => '/oeadmin/procedure/list',
-                            'type' => 'submit',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

@@ -696,10 +696,11 @@ class TheatreDiaryController extends BaseModuleController
                 return;
             case 'anaesthetist':
                 $criteria = new CDbCriteria();
-                $criteria->addCondition('session.id = :sessionId and booking.booking_cancellation_date is null and `t`.anaesthetist_required = :required');
+                $criteria->addCondition('session.id = :sessionId and booking.booking_cancellation_date is null');
                 $criteria->addInCondition('`t`.status_id', array(2, 4));
+                $criteria->with = 'anaesthetic_type';
+                $criteria->addInCondition('anaesthetic_type.code', ['Sed', 'GA']);
                 $criteria->params[':sessionId'] = $session->id;
-                $criteria->params[':required'] = 1;
 
                 if (Element_OphTrOperationbooking_Operation::model()
                     ->with(array(

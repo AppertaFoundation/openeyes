@@ -40,7 +40,14 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     }
 
     public function run_oescape($widgets_no = 1){
-        $va_unit_id = @$_GET[$this->va_unit_input] ?:  models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'ETDRS Letters'))->id;
+        $va_unit_id = @$_GET[$this->va_unit_input] ?:
+          SettingMetadata::model()->getSetting(
+            'unit_id',
+            ElementType::model()->find(
+              'class_name=?',
+              array('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
+            )
+          );
         $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
 
         $this->configureChart();
@@ -65,15 +72,21 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
      */
     public function configureChart() {
         $va_ticks = $this->getChartTicks();
+        $va_len = sizeof($va_ticks);
+        $step = $va_len/20;
+        $no_numeric_val_count = 4;   //keep the 4 no number labels: CF, HM, PL, NPL
+        $this->va_ticks = array_slice($va_ticks, 0,$no_numeric_val_count);
 
-        $this->va_ticks = $va_ticks;
+        for ($i = $no_numeric_val_count+1; $i<=$va_len-$step; $i+=$step){
+            array_push($this->va_ticks, $va_ticks[$i]);
+        }
+
         $this->va_axis = (string)$this->va_unit->name;
-
         $chart = $this->createWidget('FlotChart', array('chart_id' => $this->chart_id))
             ->configureXAxis(array('mode' => 'time'))
             ->configureYAxis(
                 $this->va_axis,
-                array('position' => 'left', 'min' => $this->va_y_min, 'max' => $this->va_y_max, 'ticks' => $va_ticks)
+                array('position' => 'left', 'min' => $this->va_y_min, 'max' => $this->va_y_max, 'ticks' => $this->va_ticks)
             )
             ->configureSeries('Visual Acuity (right)', array('yaxis' => $this->va_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
             ->configureSeries('Visual Acuity (left)', array('yaxis' => $this->va_axis, 'lines' => array('show' => true), 'points' => array('show' => true)));
@@ -117,7 +130,8 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
             false
         ) as $va) {
             foreach (['left', 'right'] as $side){
-                if ($reading = $va->getBestReading($side)){
+              $reading = $va->getBestReading($side);
+                if ($reading){
                     $va_value = $this->getAdjustedVA((float)$reading->value);
                     $va_data_list[$side][] = array( 'y'=>$va_value,'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date));
                 }
@@ -128,6 +142,33 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         }
         return $va_data_list;
     }
+
+  public function getPlotlyVaData(){
+    $va_data_list = array('right'=>array(), 'left'=>array());
+    $va_plotly_list = array('right'=>array('x'=>array(), 'y'=>array()), 'left'=>array('x'=>array(), 'y'=>array()));
+    foreach ($this->event_type->api->getElements(
+      'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
+      $this->patient,
+      false
+    ) as $va) {
+      foreach (['left', 'right'] as $side){
+        $reading = $va->getBestReading($side);
+        if ($reading){
+          $va_value = $this->getAdjustedVA((float)$reading->value);
+          $va_data_list[$side][] = array( 'y'=>$va_value,'x'=>date('Y-m-d', Helper::mysqlDate2JsTimestamp($va->event->event_date)/1000));
+        }
+      }
+    }
+    foreach (['left', 'right'] as $side){
+      usort($va_data_list[$side], array("EpisodeSummaryWidget","sortData"));
+      foreach ($va_data_list[$side] as $item ){
+        $va_plotly_list[$side]['x'][] = $item['x'];
+        $va_plotly_list[$side]['y'][] = $item['y'];
+      }
+    }
+
+    return $va_plotly_list;
+  }
 
     public function getVaAxis() {
         return $this->va_axis;

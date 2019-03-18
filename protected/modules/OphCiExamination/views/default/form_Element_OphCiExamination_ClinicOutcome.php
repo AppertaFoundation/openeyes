@@ -36,7 +36,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
     <?php echo $form->hiddenField($element, 'role_comments'); ?>
 
   <div class="cols-7">
-      <?php echo CHtml::textField('follow-up-dummy-input', '', array(
+      <?=\CHtml::textField('follow-up-dummy-input', '', array(
           'class' => 'cols-full',
           'rows' => 1,
           'placeholder' => 'Please select an option from the right',
@@ -84,7 +84,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 
                     <?php } else {
                         echo CHtml::dropDownList('patientticket_queue', @$_POST['patientticket_queue'], $queues,
-                            array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array()));
+                            array('empty' => 'Select', 'nowrapper' => true, 'options' => array()));
                     } ?>
                 </div>
                 <div class="cols-1">
@@ -121,8 +121,6 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
       <button class="button hint green add-icon-btn" id="add-follow-up-btn" type="button">
         <i class="oe-i plus pro-theme"></i>
       </button>
-      <div class="flex-layout flex-left flex-top">
-        <div class="data-group">
           <table class="select-options">
             <tbody>
             <tr>
@@ -144,16 +142,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
                   </ul>
                 </div>
               </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="follow-up-options-follow-up-only data-group"
-             style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>">
-          <table>
-            <tbody>
-            <tr>
-              <td>
+              <td class="follow-up-options-follow-up-only"  style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
                 <div class="flex-layout flex-top flex-left">
                   <ul class="add-options" id="follow-uo-quantity-options">
                       <?php foreach ($element->getFollowUpQuantityOptions() as $quantity): ?>
@@ -172,9 +161,9 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
                       <?php endforeach; ?>
                   </ul>
                 </div>
+                  </div>
               </td>
-              <td class="flex-layout flex-top">
-                <div>
+              <td class="flex-layout flex-top follow-up-options-follow-up-only"  style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
                   <ul class="add-options" id="follow-up-role-options">
                       <?php foreach (\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role::model()->findAll() as $role): ?>
                         <li data-str="<?= $role->name ?>" data-role-id="<?= $role->id ?>"
@@ -185,20 +174,19 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
                   </ul>
                 </div>
               </td>
-              <td>
+              <td class="follow-up-options-follow-up-only"  style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
                 <div class="flex-layout flex-top flex-left">
-                    <?php echo CHtml::textField('follow_up_role_comments', $element->role_comments,
+                    <?=\CHtml::textField('follow_up_role_comments', $element->role_comments,
                         array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'Role')) ?>
                 </div>
+                  </div>
               </td>
             </tr>
             </tbody>
           </table>
-        </div>
       </div>
     </div>
   </div>
-</div>
 
 <script>
 
@@ -211,7 +199,6 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
     },
       <?php endforeach ?>
   };
-
   $(function () {
     setUpAdder(
       $('#add-to-follow-up'),

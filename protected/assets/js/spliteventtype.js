@@ -134,7 +134,9 @@ $(document).ready(function() {
 		element.find('.js-element-eye .active-form[style="display: none;"]').show();
 
 		e.preventDefault();
-		var checker = getOEEyeDrawChecker();
-		checker.resync();
+        if (typeof(getOEEyeDrawChecker) === 'function') {
+            var checker = getOEEyeDrawChecker();
+            checker.resync();
+        }
 	});
 });

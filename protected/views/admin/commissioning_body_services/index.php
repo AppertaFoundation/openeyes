@@ -9,113 +9,119 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php
-if (!isset($title)) {
-    $title = 'Commissioning body services';
-}
-// some base initialisation
-$url_query = '';
-if (!isset($return_url)) {
-    $return_url = '';
-}
-if (!isset($base_data_url)) {
-    $base_data_url = 'admin/';
-}
 
-?>
+<div class="cols-5">
+    <?php
+    if (!isset($title)) {
+        $title = 'Commissioning body services';
+    }
+    // some base initialisation
+    $url_query = '';
+    if (!isset($return_url)) {
+        $return_url = '';
+    }
+    if (!isset($base_data_url)) {
+        $base_data_url = 'admin/';
+    }
+    ?>
 
-<form id="admin_commissioning_body_services">
-    <table class="grid standard">
-        <thead>
-        <tr>
-            <th><input type="checkbox" id="checkall" class="commissioning_body_services"/></th>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Commissioning body</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        $criteria = new CDbCriteria();
-        $criteria->with = array('commissioning_body');
-        $criteria->order = 'LOWER(t.name) asc';
-
-        if (isset($commissioning_bt)) {
-            $criteria->addColumnCondition(array('commissioning_body.commissioning_body_type_id' => $commissioning_bt->id));
-            $url_query = 'commissioning_body_type_id=' . $commissioning_bt->id;
-        }
-        if (isset($service_type)) {
-            $url_query .= '&service_type_id=' . $service_type->id . '&return_url=' . $return_url;
-        }
-
-        foreach (CommissioningBodyService::model()->findAll($criteria) as $i => $cbs) { ?>
-            <tr class="clickable" data-id="<?php echo $cbs->id ?>"
-                data-uri="<?php echo $base_data_url ?>editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id;
-                if (isset($data["returnUrl"])) {
-                    echo "&return_url=" . $data["returnUrl"];
-                } ?>">
-                <td><input type="checkbox" name="commissioning_body_service[]" value="<?php echo $cbs->id ?>"
-                           class="wards"/></td>
-                <td><?php echo $cbs->code ?></td>
-                <td><?php echo $cbs->name ?></td>
-                <td><?php echo $cbs->type->name ?></td>
-                <td><?php echo $cbs->commissioning_body ? $cbs->commissioning_body->name : 'None' ?></td>
+    <form id="admin_commissioning_body_services">
+        <table class="grid standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" id="checkall" class="commissioning_body_services"/></th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Commissioning body</th>
             </tr>
-        <?php } ?>
-        </tbody>
-        <tfoot>
-        <tr>
-            <td colspan="5">
-                <?php echo CHtml::button(
-                    'Add',
-                    [
-                        'class' => 'button large',
-                        'name' => 'add_commissioning_body_service',
-                        'id' => 'et_add_commissioning_body_service',
-                        'data-uri' => $url_query,
-                    ]
-                ); ?>
-                <?php echo CHtml::button(
-                    'Delete',
-                    [
-                        'class' => 'button large',
-                        'name' => 'delete_commissioning_body_service',
-                        'id' => 'et_delete_commissioning_body_service',
-                    ]
-                ); ?>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
-</form>
+            </thead>
 
-<div id="confirm_delete_commissioning_body_services" title="Confirm delete commissioning_body_service"
-     style="display: none;">
-    <div>
-        <div id="delete_commissioning_body_services">
-            <div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-                <strong>WARNING: This will remove the commissioning body service from the system.<br/>This action cannot
-                    be undone.</strong>
-            </div>
-            <p>
-                <strong>Are you sure you want to proceed?</strong>
-            </p>
-            <div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
-                <button type="submit" class="classy red venti btn_remove_commissioning_body_services"><span
-                            class="button-span button-span-red">Remove commissioning body services</span></button>
-                <button type="submit" class="classy green venti btn_cancel_remove_commissioning_body_services"><span
-                            class="button-span button-span-green">Cancel</span></button>
-                <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
-                     alt="loading..." style="display: none;"/>
+            <tbody>
+            <?php
+            $criteria = new CDbCriteria();
+            $criteria->with = array('commissioning_body');
+            $criteria->order = 'LOWER(t.name) asc';
+
+            if (isset($commissioning_bt)) {
+                $criteria->addColumnCondition(array('commissioning_body.commissioning_body_type_id' => $commissioning_bt->id));
+                $url_query = 'commissioning_body_type_id=' . $commissioning_bt->id;
+            }
+            if (isset($service_type)) {
+                $url_query .= '&service_type_id=' . $service_type->id . '&return_url=' . $return_url;
+            }
+
+            foreach (CommissioningBodyService::model()->findAll($criteria) as $i => $cbs) { ?>
+                <tr class="clickable" data-id="<?php echo $cbs->id ?>"
+                    data-uri="<?php echo $base_data_url ?>editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id;
+                    if (isset($data["returnUrl"])) {
+                        echo "&return_url=" . $data["returnUrl"];
+                    } ?>">
+                    <td><input type="checkbox" name="commissioning_body_service[]" value="<?php echo $cbs->id ?>"
+                               class="wards"/></td>
+                    <td><?php echo $cbs->code ?></td>
+                    <td><?php echo $cbs->name ?></td>
+                    <td><?php echo $cbs->type->name ?></td>
+                    <td><?php echo $cbs->commissioning_body ? $cbs->commissioning_body->name : 'None' ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <?= \CHtml::button(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'name' => 'add_commissioning_body_service',
+                            'id' => 'et_add_commissioning_body_service',
+                            'data-uri' => $url_query,
+                        ]
+                    ); ?>
+                    <?= \CHtml::button(
+                        'Delete',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete_commissioning_body_service',
+                            'id' => 'et_delete_commissioning_body_service',
+                        ]
+                    ); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+
+    <div id="confirm_delete_commissioning_body_services"
+         title="Confirm delete commissioning_body_service"
+         style="display: none;">
+        <div>
+            <div id="delete_commissioning_body_services">
+                <div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
+                    <strong>WARNING: This will remove the commissioning body service from the system.<br/>
+                        This action cannot be undone.</strong>
+                </div>
+                <p>
+                    <strong>Are you sure you want to proceed?</strong>
+                </p>
+                <div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
+                    <button type="submit" class="classy red venti btn_remove_commissioning_body_services">
+                        <span class="button-span button-span-red">Remove commissioning body services</span></button>
+                    <button type="submit" class="classy green venti btn_cancel_remove_commissioning_body_services">
+                        <span class="button-span button-span-green">Cancel</span></button>
+                    <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+                         alt="loading..." style="display: none;"/>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
     $('li.even .column_code, li.even .column_name, li.even .column_type, li.even .column_address, li.odd .column_code, li.odd .column_name, li.odd .column_type, li.odd .column_address').click(function (e) {
         e.preventDefault();

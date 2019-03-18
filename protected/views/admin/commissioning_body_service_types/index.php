@@ -9,10 +9,11 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<div class="cols-5">
 
     <form id="admin_commissioning_body_service_types">
         <table class="standard">
@@ -27,6 +28,7 @@
                     <th>Name</th>
                 </tr>
             </thead>
+
             <tbody>
                 <?php foreach (CommissioningBodyServiceType::model()->findAll(array('order' => 'name asc')) as $i => $cb) {?>
                     <tr class="clickable" data-id="<?php echo $cb->id?>" data-uri="admin/editCommissioningBodyServiceType?commissioning_body_service_type_id=<?php echo $cb->id?>">
@@ -36,10 +38,11 @@
                     </tr>
                 <?php }?>
             </tbody>
+
             <tfoot>
                 <tr>
                     <td colspan="3">
-                        <?php echo CHtml::button(
+                        <?=\CHtml::button(
                             'Add',
                             [
                                 'class' => 'button large',
@@ -47,7 +50,7 @@
                                 'id' => 'et_add_commissioning_body_service_type'
                             ]
                         ); ?>
-                        <?php echo CHtml::button(
+                        <?=\CHtml::button(
                             'Delete',
                             [
                                 'class' => 'button large',
@@ -61,25 +64,34 @@
         </table>
     </form>
 
-<div id="confirm_delete_commissioning_body_service_types"
-     title="Confirm delete commissioning_body_service_type" style="display: none;">
-    <div>
-        <div id="delete_commissioning_body_service_types">
-            <div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-                <strong>WARNING: This will remove the commissioning body service types from the system.<br/>This action cannot be undone.</strong>
-            </div>
-            <p>
-                <strong>Are you sure you want to proceed?</strong>
-            </p>
-            <div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
-                <input type="hidden" id="medication_id" value="" />
-                <button type="submit" class="classy red venti btn_remove_commissioning_body_service_types"><span class="button-span button-span-red">Remove commissioning body service types(s)</span></button>
-                <button type="submit" class="classy green venti btn_cancel_remove_commissioning_body_service_types"><span class="button-span button-span-green">Cancel</span></button>
-                <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+    <div id="confirm_delete_commissioning_body_service_types"
+         title="Confirm delete commissioning_body_service_type" style="display: none;">
+        <div>
+            <div id="delete_commissioning_body_service_types">
+                <div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
+                    <strong>WARNING: This will remove the commissioning body service types from the system.<br/>
+                        This action cannot be undone.</strong>
+                </div>
+                <p>
+                    <strong>Are you sure you want to proceed?</strong>
+                </p>
+                <div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
+                    <input type="hidden" id="medication_id" value="" />
+                    <button type="submit" class="classy red venti btn_remove_commissioning_body_service_types">
+                        <span class="button-span button-span-red">Remove commissioning body service types(s)</span>
+                    </button>
+                    <button type="submit" class="classy green venti btn_cancel_remove_commissioning_body_service_types">
+                        <span class="button-span button-span-green">Cancel</span>
+                    </button>
+                    <img class="loader"
+                         src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>"
+                         alt="loading..." style="display: none;" />
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
     $('li.even .column_code, li.even .column_name, li.even .column_type, li.even .column_address, li.odd .column_code, li.odd .column_name, li.odd .column_type, li.odd .column_address').click(function(e) {
         e.preventDefault();

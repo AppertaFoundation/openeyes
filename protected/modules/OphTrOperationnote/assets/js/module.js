@@ -22,7 +22,7 @@ $( document ).ready(function() {
     }
 });
 
-function callbackAddProcedure(procedure_id) {
+async function callbackAddProcedure(procedure_id) {
     var eye = $('input[name="Element_OphTrOperationnote_ProcedureList\\[eye_id\\]"]:checked').val();
 
     $.ajax({
@@ -250,7 +250,7 @@ $(document).ready(function () {
     $(this).delegate('.ed_clear', 'click', function (e) {
         e.preventDefault();
 
-        var element = $(this).closest('.sub-element');
+        var element = $(this).closest('.element');
 
         var description = 'description';
         var report = 'report';
@@ -266,21 +266,21 @@ $(document).ready(function () {
 
     $(this).delegate('#btn-glaucomatube-report', 'click', function (e) {
         e.preventDefault();
-        var element = $(this).closest('.sub-element');
+        var element = $(this).closest('.element');
         var drawing_name = $('#Element_OphTrOperationnote_GlaucomaTube_eyedraw').prev('canvas').data('drawing-name');
         reportEyedraw(element, ED.getInstance(drawing_name), 'description');
     });
 
     $(this).delegate('#btn-trabeculectomy-report', 'click', function (e) {
         e.preventDefault();
-        var element = $(this).closest('.sub-element');
+        var element = $(this).closest('.element');
         var drawing_name = $('#Element_OphTrOperationnote_Trabeculectomy_eyedraw').prev('canvas').data('drawing-name');
         reportEyedraw(element, ED.getInstance(drawing_name), 'report');
     });
 
     $(this).delegate('#btn-trabectome-report', 'click', function (e) {
         e.preventDefault();
-        var element = $(this).closest('.sub-element');
+        var element = $(this).closest('.element');
         var drawing_name = $('#Element_OphTrOperationnote_Trabectome_eyedraw').prev('canvas').data('drawing-name');
         reportEyedraw(element, ED.getInstance(drawing_name), 'description');
     });
@@ -439,7 +439,7 @@ function showHideIOLFields(_drawing, resetPosition) {
         $('#div_Element_OphTrOperationnote_Cataract_iol_position_id').show();
         if (resetPosition && $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option:selected').text() == 'None') {
             $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
-                if ($(this).text() == '- Please select -') {
+                if ($(this).text() == 'Select') {
                     $(this).attr('selected', true);
                 } else {
                     $(this).attr('selected', false);

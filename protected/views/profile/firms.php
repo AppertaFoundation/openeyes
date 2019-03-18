@@ -40,15 +40,15 @@
 	</form>
 <div class="data-group">
   <label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
-    <?php echo CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
-    <?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
+    <?=\CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
+    <?=\CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
 </div>
 <div class="profile-actions">
     <?php echo EventAction::button('Remove selected ' . strtolower(Firm::contextLabel()), 'delete', array(), array('class' => 'button large hint blue'))->toHtml()?>
 </div>
 
 <div class="profile-actions">
-	<p>Note: you can also set the sites you work at, <?php echo CHtml::link('click here', Yii::app()->createUrl('/profile/sites'))?> to do so.</p>
+	<p>Note: you can also set the sites you work at, <?=\CHtml::link('click here', Yii::app()->createUrl('/profile/sites'))?> to do so.</p>
 </div>
 
 <script type="text/javascript">

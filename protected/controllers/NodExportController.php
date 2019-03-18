@@ -1,9 +1,8 @@
 <?php
-
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 // this extract's execution time is more than the default 500sec
@@ -34,11 +33,11 @@ class NodExportController extends BaseController
     private $startDate = '';
     private $endDate = '';
     
-    // Refactoring : 
+    // Refactoring :
     /**
      * This number will be appended after the tmp tables so the
      * two or more extract running at the same time can use different tmp tables
-     * @var int 
+     * @var int
      */
     private $extractIdentifier;
     
@@ -50,11 +49,6 @@ class NodExportController extends BaseController
                 'roles' => array('NOD Export'),
             ),
         );
-    }
-
-    public function beforeAction($action)
-    {
-        return parent::beforeAction($action);
     }
 
     public function init()
@@ -127,9 +121,7 @@ class NodExportController extends BaseController
 
         if (file_exists($this->exportPath . '/' . $this->zipName)) {
             Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
-        } else {
         }
-        
     }
     
     /**
@@ -203,8 +195,7 @@ class NodExportController extends BaseController
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', ((implode(',', $dataQuery['header'])) . "\n"), FILE_APPEND);
             }
 
-            if(count($data) > 0)
-            {
+            if (count($data) > 0) {
                 $csv = $this->array2Csv($data, null, $dataFormatter);
 
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
@@ -218,11 +209,9 @@ class NodExportController extends BaseController
         return $resultIds;
     }
 
-
-
     private function createAllTempTables()
     {
-        // DROP all tables if exsist before createing them
+        // DROP all tables if exist before creating them
         $this->clearAllTempTables();
         
         $query = '';
@@ -938,12 +927,12 @@ SELECT
 , ep.patient_id AS patient_id
 , ev.id AS nod_episode_id
 , DATE(ev.event_date) AS nod_date
-, et.name AS oe_event_type_name
+, et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id 
-WHERE et.name = 'Operation Note'
+WHERE et.class_name = 'OphTrOperationnote'
 
 EOL;
 
@@ -973,14 +962,14 @@ SELECT
 , ep.patient_id AS patient_id
 , ev.id AS nod_episode_id
 , DATE(ev.event_date) AS nod_date
-, et.name AS oe_event_type_name
+, et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id
 WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND ev.id NOT IN (SELECT c.oe_event_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
-AND et.name = 'Operation Note'
+AND et.class_name = 'OphTrOperationnote'
 AND ev.deleted = 0;
 
 #Load main control table with ALL examination events (using previously identified patients in control table)
@@ -997,13 +986,13 @@ SELECT
 , ep.patient_id AS patient_id
 , ev.id AS nod_episode_id
 , DATE(ev.event_date) AS nod_date
-, et.name AS oe_event_type_name
+, et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id 
 WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
-AND et.name IN ('Examination', 'Biometry', 'Prescription')
+AND et.class_name IN ('OphCiExamination', 'OphInBiometry', 'OphDrPrescription')
 AND ev.deleted = 0;
 
 EOL;
@@ -1823,7 +1812,7 @@ EOL;
                     ON et.id = eon.event_type_id 
                 /* Correlated operation notes to outer query for same oe_episode */
                 WHERE eon.episode_id = cev.episode_id
-                AND et.name = 'Operation Note'
+                AND et.class_name = 'OphTrOperationnote'
                 AND eon.deleted = 0
                 /* Restrict to operations on or before examination post op complication date */
                 AND eon.event_date <= cev.event_date 
@@ -1858,7 +1847,7 @@ EOL;
                    ON et.id = eon.event_type_id 
                  /* Correlated operation notes to outer query for same oe_episode */
                  WHERE eon.episode_id = cev.episode_id
-                 AND et.name = 'Operation Note'
+                 AND et.class_name = 'OphTrOperationnote'
                  AND eon.deleted = 0
                  /* Restrict to operations on or before examination post op complication date */
                  AND eon.event_date <= cev.event_date 
@@ -2714,7 +2703,7 @@ EOL;
                     FROM ophtroperationnote_procedurelist_procedure_assignment os
                 ) AS v
                 /* Restrict: Only OPERATION NOTE type events */
-                WHERE c.oe_event_type_name = 'Operation Note'
+                WHERE c.oe_event_type_name = 'OphTrOperationnote'
                 /* Restrict: LEFT or BOTH eyes only */
                 AND pl.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
             
@@ -2748,7 +2737,7 @@ EOL;
                 LEFT OUTER JOIN proc p 
                   ON p.id = pa.proc_id
                 /* Restrict: Only OPERATION NOTE type events */
-                WHERE c.oe_event_type_name = 'Operation Note'
+                WHERE c.oe_event_type_name = 'OphTrOperationnote'
                 /* Restrict: RIGHT or BOTH eyes only */
                 AND pl.eye_id IN (2, 3); /* 2 = RIGHT EYE, 3 = BOTH EYES */
             
@@ -3122,7 +3111,7 @@ LEFT OUTER JOIN user au ON s.assistant_id = au.id
 LEFT OUTER JOIN et_ophtroperationnote_site_theatre ost ON ost.event_id = c.oe_event_id
 LEFT OUTER JOIN site s2 ON s2.id = ost.site_id
 /* Restrict: Only OPERATION NOTE type events */
-WHERE c.oe_event_type_name = 'Operation Note';    
+WHERE c.oe_event_type_name = 'OphTrOperationnote';
               
 EOL;
         return $query;
@@ -3216,6 +3205,8 @@ FROM
     , CASE vam.name
       WHEN 'Glasses' THEN 'Aided'
       WHEN 'Contact lens' THEN 'Aided'
+      WHEN 'Auto-refraction' THEN 'Aided'
+      WHEN 'Formal refraction' THEN 'Aided'
       ELSE vam.name
       END AS method
     , evar.value AS reading_base_value

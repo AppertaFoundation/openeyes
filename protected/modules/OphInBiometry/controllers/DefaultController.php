@@ -73,19 +73,16 @@ class DefaultController extends BaseEventTypeController
         if (count($unlinkedEvents) === 0 || Yii::app()->request->getQuery('force_manual') == '1') {
             Yii::app()->user->setFlash('issue.formula', $this->flash_message);
             parent::actionCreate();
-        }
-        // we might need this later for automated linking process
-        //elseif (sizeof($unlinkedEvents) == 1) {
-        // if we have only 1 unlinked event we just simply link that event to the episode
-        //	$this->updateImportedEvent(Event::model()->findByPk($unlinkedEvents[0]->event_id), $unlinkedEvents[0]);
-        //	$this->redirect(array('/OphInBiometry/default/update/' . $unlinkedEvents[0]->event_id));
-        //}elseif (sizeof($unlinkedEvents) > 1) {
-        else {
+        } else if(count($unlinkedEvents) === 1) {
+            // if we have only 1 unlinked event we just simply link that event to the episode
+            $this->updateImportedEvent(Event::model()->findByPk($unlinkedEvents[0]->event_id), $unlinkedEvents[0]);
+            $this->redirect(array('/OphInBiometry/default/update/' . $unlinkedEvents[0]->event_id));
+        } else {
             // if we have more than 1 event we render the selection screen
             $this->title = 'Please Select a Biometry Report';
             $this->event_tabs = array(
                 array(
-                    'label' => 'The following Biometry reports are available for this patient:',
+                    'label' => 'Select a report to add',
                     'active' => true,
                 ),
             );

@@ -13,7 +13,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class EDProcessor
@@ -361,7 +361,7 @@ EOSQL;
     public function loadElementEyedrawDoodles(Patient $patient, &$element, $side, $attribute)
     {
         if (!in_array((int)$side, array(Eye::RIGHT, Eye::LEFT))) {
-            throw new CException("Invalid side argument $side for loading element eyedraw doodles");
+            $side = Eye::RIGHT;
         }
         $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
 

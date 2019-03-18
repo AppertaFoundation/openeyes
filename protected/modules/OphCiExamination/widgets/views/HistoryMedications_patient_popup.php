@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -14,11 +14,10 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<link rel="stylesheet" type="text/css" href="<?= $this->getCssPublishedPath('medications.css') ?>">
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <?php $el_id =  CHtml::modelName($element) . '_popup'; ?>
 

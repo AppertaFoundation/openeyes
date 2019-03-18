@@ -16,12 +16,49 @@
 $this->renderPartial('//base/_messages');
 $model = OEModule\OphCiExamination\models\SocialHistory::model();
 ?>
-<div class="box admin">
-	<h2>Social History</h2>
-	<ul>
-		<li><a href="/OphCiExamination/admin/socialHistoryOccupation"><?= CHtml::encode($model->getAttributeLabel('occupation_id')) ?></a></li>
-		<li><a href="/OphCiExamination/admin/socialHistoryDrivingStatus"><?= CHtml::encode($model->getAttributeLabel('driving_statuses')) ?></a></li>
-		<li><a href="/OphCiExamination/admin/socialHistorySmokingStatus"><?= CHtml::encode($model->getAttributeLabel('smoking_status_id')) ?></a></li>
-		<li><a href="/OphCiExamination/admin/socialHistoryAccommodation"><?= CHtml::encode($model->getAttributeLabel('accommodation_id')) ?></a></li>
-	</ul>
+
+<div class="cols-3">
+    <div class="row divider">
+        <h2>Social History</h2>
+    </div>
+    <table class="standard">
+        <tbody>
+        <tr>
+            <td>
+                <?= CHtml::link(
+                    CHtml::encode($model->getAttributeLabel('occupation_id')),
+                    '/OphCiExamination/admin/socialHistoryOccupation',
+                    []
+                ) ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= CHtml::link(
+                    CHtml::encode($model->getAttributeLabel('driving_statuses')),
+                    '/OphCiExamination/admin/socialHistoryDrivingStatus',
+                    []
+                ) ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= CHtml::link(
+                    CHtml::encode($model->getAttributeLabel('smoking_status_id')),
+                    '/OphCiExamination/admin/socialHistorySmokingStatus',
+                    []
+                ) ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= CHtml::link(
+                    CHtml::encode($model->getAttributeLabel('accommodation_id')),
+                    '/OphCiExamination/admin/socialHistoryAccommodation',
+                    []
+                ) ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>

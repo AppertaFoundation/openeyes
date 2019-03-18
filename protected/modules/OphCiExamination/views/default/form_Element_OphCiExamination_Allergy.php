@@ -27,7 +27,7 @@
                   <label for="no_allergies">Confirm patient has no allergies:</label>
                 </div>
                 <div class="<?php echo $form->columns('field'); ?>">
-                    <?php echo CHtml::checkBox('no_allergies', $this->patient->no_allergies_date ? true : false); ?>
+                    <?=\CHtml::checkBox('no_allergies', $this->patient->no_allergies_date ? true : false); ?>
                 </div>
               </div>
             </div>
@@ -60,7 +60,7 @@
                 <label for="comments">Comments:</label>
               </div>
               <div class="<?php echo $form->columns('field'); ?>">
-                  <?php echo CHtml::textField('comments', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                  <?=\CHtml::textField('comments', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
 

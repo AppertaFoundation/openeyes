@@ -4,7 +4,7 @@ $this->pageTitle = Yii::app()->name . ' - Login';
 
 <div class="oe-login">
   <div class="login">
-    <h1>OpenEyes 3.0</h1>
+    <h1>OpenEyes <?=Yii::App()->params['oe_version']?></h1>
     <div class="user">
 
         <?php $form = $this->beginWidget('CActiveForm', array(
@@ -25,6 +25,10 @@ $this->pageTitle = Yii::app()->name . ' - Login';
 
       <button type="submit" id="login_button" class="green hint">Login</button>
 
+      <div class="oe-user-banner">
+        <?php $this->renderPartial('//base/_banner_watermark_full'); ?>
+      </div>
+
         <?php $this->endWidget(); ?>
       <!-- user -->
     </div>
@@ -41,7 +45,7 @@ $this->pageTitle = Yii::app()->name . ' - Login';
             <?php endif; ?>
 
             <?php if (Yii::app()->params['help_url']): ?>
-              <?php echo CHtml::link('Help Documentation', Yii::app()->params['help_url'],
+              <?=\CHtml::link('Help Documentation', Yii::app()->params['help_url'],
                       array('target' => '_blank')) ?>
             <?php endif; ?>
 

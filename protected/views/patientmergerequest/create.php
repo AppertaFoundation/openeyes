@@ -63,7 +63,7 @@
                 <div class="cols-3"></div>
                 <div class="cols-6 element">
                     <div style="text-align: center" >Comment:
-                        <?php echo CHTML::activeTextArea($model, 'comment'); ?>
+                        <?=\CHtml::activeTextArea($model, 'comment'); ?>
                     </div>
                     <br>
                     <?php $this->renderPartial('//base/_messages')?>

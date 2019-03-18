@@ -36,7 +36,7 @@
           ));
           ?>
       </div>
-      <div class="eyedraw-data cols-5">
+      <div class="eyedraw-data cols-9">
         <table class="label-value no-lines last-left">
           <colgroup>
             <col class="cols-5">
@@ -45,7 +45,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('power_id')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('power_id')) ?>
               </div>
             </td>
             <td>
@@ -57,7 +57,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('blood_reflux')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('blood_reflux')) ?>
               </div>
             </td>
             <td>
@@ -70,7 +70,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('hpmc')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('hpmc')) ?>
               </div>
             </td>
             <td>
@@ -83,7 +83,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('description')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('description')) ?>
               </div>
             </td>
             <td>
@@ -96,7 +96,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('complications')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('complications')) ?>
               </div>
             </td>
             <td>

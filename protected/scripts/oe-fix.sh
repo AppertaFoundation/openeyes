@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 ## Resets various caches and configs
 
 ## NOTE: This script assumes it is in protected/scripts. If you move it then relative paths will not work!
@@ -14,6 +14,8 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 
+curuser="${LOGNAME:-root}"
+
 # process commandline parameters
 clearcahes=1
 buildassests=1
@@ -24,6 +26,8 @@ nowarnmigrate=0
 resetconfig=0
 eyedraw=1
 noperms=0
+restart=0
+forceperms=0
 
 while [[ $# -gt 0 ]]
 do
@@ -44,11 +48,17 @@ do
 	    ;;
 	    --no-permissions|-np) noperms=1
 	    ;;
+        --force-perms) forceperms=1
+        ;;
 	    --no-warn-migrate) nowarnmigrate=1
 	    ;;
 	    -fc|--reset-config) resetconfig=1
 	    ;;
-	    *)  echo "Unknown command line: $i"
+        -r|--restart) restart=1
+        ;;
+		--no-compile) #reserved for future use
+		;;
+	    *)  [ ! -z $p ] && echo "Unknown command line: $p" || :
         ;;
     esac
 
@@ -72,6 +82,8 @@ if [ $showhelp = 1 ]; then
 	echo "  --no-dependencies  : Do not update composer or npm dependencies"
 	echo "  --no-eyedraw   : Do not (re)import eyedraw configuration"
 	echo "  --no-permissions : Do not reset file permissions"
+    echo "  --force-perms  : force permission update, even if system thinks they're correct"
+	echo "  --restart      : restart apache"
 	echo ""
     exit 1
 fi
@@ -79,13 +91,13 @@ fi
 if [ -f "$WROOT/.htaccess.sample" ]; then
     echo Renaming .htaccess file
     mv .htaccess.sample .htaccess
-    sudo chown -R www-data:www-data .htaccess
+    sudo chown www-data:www-data .htaccess
 fi
 
 if [ -f "$WROOT/index.example.php" ]; then
     echo Renaming index.php file
     mv $WROOT/index.example.php $WROOT/index.php
-    sudo chown -R www-data:www-data $WROOT/index.php
+    sudo chown www-data:www-data $WROOT/index.php
 fi
 
 if [ ! -f "$WROOT/protected/config/local/common.php" ]; then
@@ -111,16 +123,23 @@ fi;
 if [ "$composer" == "1" ]; then
 
 
-    [ "$OE_MODE" == "LIVE" ] && composerexta="--no-dev"
-    [ "$OE_MODE" == "LIVE" ] && npmextra="--only=production"
+    [[ "$OE_MODE" == "LIVE" ]] && { composerexta="--no-dev"; npmextra="--only=production"; echo "************************** LIVE MODE ******************************"; }
+    [[ "$OE_MODE" == "HOST" ]] && { composerexta="--ignore-platform-reqs"; echo "-----= HOST MODE =----"; }
 
-    echo "DEPENDENCIES BEING EVALUATED... $composerexta $npmextra"
+    echo "DEPENDENCIES BEING EVALUATED..."
 
 	echo "Installing/updating composer dependencies"
-	sudo composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
+	sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
 
 	echo "Installing/updating npm dependencies"
-	sudo npm install $npmextra
+	rm $WROOT/package-lock.json &> /dev/null
+	sudo -E npm update --no-save --prefix $WROOT $npmextra
+
+	# If we've switched from dev to live, remove dev dependencies
+	[ "$OE_MODE" == "LIVE" ] && npm prune --prefix $WROOT --production
+
+    # Refresh git submodules
+    git -C $WROOT submodule update --init
 
 fi
 
@@ -157,34 +176,70 @@ fi
 
 # Fix permissions
 if [ $noperms = 0 ]; then
-	echo "Resetting file permissions..."
-	sudo gpasswd -a "$USER" www-data
-	sudo chown -R "$USER":www-data $WROOT
+    sudo gpasswd -a "$curuser" www-data # add current user to www-data group
 
-	sudo chmod -R 774 $WROOT/protected/config/local
-	sudo chmod -R 774 $WROOT/assets/
-	sudo chmod -R 774 $WROOT/protected/runtime
-	sudo chmod -R 774 $WROOT/protected/files
+    # We can ignore setting file permissions when running in a docker conatiner, as we always run as root
+    if [ "$DOCKER_CONTAINER" != "TRUE" ]; then
+      echo "Resetting file permissions..."
+      if [ $(stat -c '%U' $WROOT) != $curuser ] || [ $(stat -c '%G' $WROOT) != "www-data" ]; then
+          echo "updaing ownership on $WROOT"
+          sudo chown -R $curuser:www-data $WROOT
+      else
+          echo "ownership of $WROOT looks ok, skipping. Use --force-perms to override"
+      fi
 
-	sudo chmod -R g+s $WROOT/protected/runtime
-    sudo chmod -R g+s $WROOT/protected/files
 
-	sudo chown -R "$USER" ~/.config 2>/dev/null || :
-	sudo chown -R "$USER" ~/.composer 2>/dev/null || :
+      folders774=( $WROOT/protected/config/local $WROOT/assets/ $WROOT/protected/runtime $WROOT/protected/files )
+
+      for i in "${folders774[@]}"
+      do
+          if [[ $(stat -c %a "$i") != *"774" ]] || [ $forceperms == 1 ]; then
+              echo "updating $i to 774..."
+              sudo chmod -R 774 $i
+          else
+              echo "Permissions look ok for $i, skipping. Use --force-perms to override"
+          fi
+      done
+
+      touch $WROOT/protected/runtime/testme
+      touch $WROOT/protected/files/testme
+
+      if [ $(stat -c '%U' $WROOT/protected/runtime/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/runtime/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/runtime/testme") != 774 ]; then
+          echo "setting sticky bit for protected/runtime"
+          sudo chmod -R g+s $WROOT/protected/runtime
+      fi
+
+      if [ $(stat -c '%U' $WROOT/protected/files/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/files/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/files/testme") != 774 ]; then
+          echo "setting sticky bit for protected/files"
+          sudo chmod -R g+s $WROOT/protected/files
+      fi
+
+      # re-own composer and npm config folders in user home directory (sots issues caused if sudo was used to composer/npm update previously)
+    	sudo chown -R $curuser ~/.config 2>/dev/null || :
+    	sudo chown -R $curuser ~/.composer 2>/dev/null || :
+  fi
+	#  update ImageMagick policy to allow PDFs
+	sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &> /dev/null
+	sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &> /dev/null
 fi
 
 if [ $buildassests = 1 ]; then
 	echo "(re)building assets..."
 	# use curl to ping the login page - forces php/apache to rebuild the assets directory
-	curl -s http://localhost/site/login > /dev/null
-    curl -s http://localhost:8888/site/login > /dev/null
+	curl -s http://localhost > /dev/null
 fi
 
 # Set some git properties
 
-git config core.fileMode false 2>/dev/null
+git -C $WROOT config core.fileMode false 2>/dev/null
 # Set to cache password in memory (should only ask once per day or each reboot)
 git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
+
+# restart apache
+if [ "$restart" == "1" ]; then
+    echo -e "\nrestarting apache..\n"
+    sudo service apache2 restart &> /dev/null
+fi
 
 echo ""
 echo "...Done"

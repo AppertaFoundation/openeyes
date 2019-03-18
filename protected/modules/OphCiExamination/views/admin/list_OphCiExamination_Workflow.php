@@ -16,9 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <?php $this->renderPartial('//base/_messages')?>
+
 <div class="hidden" id="add-new-form" style="margin-bottom: 10px">
-	<?php
+<?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'clinical-create',
             'enableAjaxValidation' => false,
@@ -28,36 +30,52 @@
     $this->endWidget();
     ?>
 </div>
-<div class="box admin">
-	<h2><?php echo $title ?></h2>
-	<form id="admin_workflows">
-		<table class="standard">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>Name</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ($model_list as $i => $model) {
-    ?>
-					<tr class="clickable" data-id="<?php echo $model->id?>" data-uri="OphCiExamination/admin/editWorkflow/<?php echo $model->id?>">
-						<td><input type="checkbox" name="workflows[]" value="<?php echo $model->id?>" /></td>
-						<td>
-							<?php echo $model->name?>
-						</td>
-					</tr>
-				<?php 
-}?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="5">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphCiExamination/admin/addWorkflow'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphCiExamination/admin/deleteWorkflows', 'data-object' => 'email_recipients'))->toHtml()?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+
+<div class="cols-4">
+    <form id="admin_workflows">
+        <table class="standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($model_list as $i => $model) {
+                ?>
+                <tr class="clickable" data-id="<?php echo $model->id ?>"
+                    data-uri="OphCiExamination/admin/editWorkflow/<?php echo $model->id ?>">
+                    <td><input type="checkbox" name="workflows[]" value="<?php echo $model->id ?>"/></td>
+                    <td>
+                        <?php echo $model->name ?>
+                    </td>
+                </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="5">
+                    <?=\CHtml::button(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'id' => 'et_add',
+                            'data-uri' => '/OphCiExamination/admin/addWorkflow',
+                        ]
+                    ); ?>
+                    <?=\CHtml::button(
+                        'Delete',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete',
+                            'data-object' => 'workflows',
+                            'id' => 'et_delete',
+                            'data-uri' => '/OphCiExamination/admin/deleteWorkflows',
+                        ]
+                    ); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

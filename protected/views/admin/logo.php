@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -88,7 +88,7 @@
                     <?php 
                     if (!empty($headerLogo)) { ?>
                         <img src="<?php echo $yourImageUrl.'/'.$headerLogo; ?>"  />
-                        <?php echo CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?><?php echo '<br/><br/><br/>';
+                        <?=\CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?><?php echo '<br/><br/><br/>';
                     } ?>
                     <?php echo $form->fileField($model, 'header_logo'); ?>
                 </td>
@@ -98,7 +98,7 @@
                 <td><?php 
                     if (!empty($secondaryLogo)) { ?>
                         <img src="<?php echo $yourImageUrl.'/'.$secondaryLogo; ?>" >
-                        <?php echo CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
+                        <?=\CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
                         <?php echo '<br/><br/><br/>';
                     } ?> 
                     <?php echo $form->fileField($model, 'secondary_logo'); ?>

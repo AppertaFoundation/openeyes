@@ -18,6 +18,8 @@
  */
 class LeafletSubspecialtyFirmController extends BaseAdminController
 {
+    public $group = 'Consent';
+
     /**
      * Render the view for LeafletSubspecialtyFirm controller
      */

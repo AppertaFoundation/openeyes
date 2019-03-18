@@ -48,7 +48,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             let $row = $(this).closest('tr');
             let $input = $(this);
 
-            if( ($input.hasClass(controller.leftEyeClass) || $input.hasClass(controller.rightEyeClass)) && $input.is(':checked')){
+            if(($input.hasClass(controller.leftEyeClass) || $input.hasClass(controller.rightEyeClass)) && $input.is(':checked')) {
                 $row.find('.' + controller.noEyeClass).prop('checked', false);
             }
 
@@ -57,10 +57,10 @@ OpenEyes.UI = OpenEyes.UI || {};
                 $row.find('.' + controller.rightEyeClass).prop('checked', false);
             }
 
-            if(!$input.is(':checked')){
-               if($row.find('.oe-eyelat-icons input:checkbox:checked').length === 0){
+            if (!$input.is(':checked')) {
+                if($row.find('.oe-eye-lat-icons input:checkbox:checked').length === 0 && $row.find('.' + controller.noEyeClass).length) {
                     $input.prop('checked' , true);
-               }
+                }
             }
 
         });

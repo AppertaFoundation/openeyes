@@ -21,6 +21,7 @@
  */
 class WhiteboardSettingsController extends ModuleAdminController
 {
+    public $group = 'Operation booking';
 
     public function actionSettings()
     {

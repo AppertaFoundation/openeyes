@@ -47,8 +47,8 @@ class DashboardController extends BaseDashboardController
     public function actionCataract()
     {
         $assetManager = Yii::app()->getAssetManager();
+        $assetManager->registerScriptFile('../../node_modules/plotly.js-dist/plotly.js');
         $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
-        $assetManager->registerScriptFile('js/dashboard/dash.js', null, null, AssetManager::OUTPUT_ALL, false);
         $assetManager->registerScriptFile('js/dashboard/initCataract.js', null, null, AssetManager::OUTPUT_ALL, false);
 
         $this->headerTemplate = '//dashboard/header_cataract';
@@ -133,7 +133,7 @@ class DashboardController extends BaseDashboardController
             // generate the temporary file
             if (!file_put_contents("$highchartsDir/$tempName.svg", $svg)) {
                 throw new CHttpException(500, "Couldn't create temporary file. Check that the directory permissions for
-			the /temp directory are set to 777.");
+      the /temp directory are set to 777.");
             }
 
             // Troubleshooting snippet
@@ -179,7 +179,6 @@ class DashboardController extends BaseDashboardController
         $this->headerTemplate = '//dashboard/header_oescape';
 
         $assetManager = Yii::app()->getAssetManager();
-        $assetManager->registerScriptFile('js/dashboard/dash.js', null, null, AssetManager::OUTPUT_ALL, false);
         Yii::app()->clientScript->registerScript('patientId', 'var patientId = '.$id.';', CClientScript::POS_HEAD);
         $assetManager->registerScriptFile('js/dashboard/initOEscape.js', null, null, AssetManager::OUTPUT_ALL, false);
 

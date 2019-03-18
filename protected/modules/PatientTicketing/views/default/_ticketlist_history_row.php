@@ -22,13 +22,24 @@
 ?>
 
 <tr class="history" data-ticket-id="<?= $ass->ticket->id ?>">
-  <td><?= $ass->queue->name ?></td>
-  <td>&nbsp;</td>
-  <td>&nbsp;</td>
-  <td><?= Helper::convertDate2NHS($ass->assignment_date) ?></td>
-  <td><?= $ass->assignment_firm->getNameAndSubspecialty() ?></td>
-  <td><?= $ass->assignment_user->getFullName() ?></td>
-  <td><?= $ass->report ?></td>
-  <td><?= Yii::app()->format->Ntext($ass->notes) ?></td>
-  <td>&nbsp;</td>
+    <td><i class="oe-i child-arrow medium no-click"></i></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><?= Helper::convertDate2NHS($ass->assignment_date) ?></td>
+    <td>
+        <?= $ass->assignment_firm->getNameAndSubspecialty() ?>
+        <br>
+        <small class="fade"><?= $ass->assignment_user->getFullName() ?></small>
+    </td>
+    <td>
+        <div class="clinic-info scroll-content">
+            <?= $ass->report ?>
+        </div>
+    </td>
+    <td>
+        <div class="scroll-content">
+            <?= Yii::app()->format->Ntext($ass->notes) ?>
+        </div>
+    </td>
+    <td>&nbsp;</td>
 </tr>

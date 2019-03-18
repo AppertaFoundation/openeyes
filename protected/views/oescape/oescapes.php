@@ -17,6 +17,7 @@
  */
 ?>
   <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape.js')?>"></script>
+	<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
 
 <?php
 extract($this->getEpisodes());

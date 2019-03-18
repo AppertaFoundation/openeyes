@@ -28,6 +28,10 @@ function setFundalView(ev, pcrEl) {
     }
 
     var $container = getPcrContainer(ev);
+    if ($(ev.target).find(':selected').data('value') === 'Not checked' ) {
+
+        return null;
+    }
     if ($(ev.target).find(':selected').data('value') === 'No view') {
         $container.find(pcrEl).val('Y');
     } else {
@@ -48,8 +52,10 @@ function setDiabeticDisorder(ev, pcrEl) {
         pcrEl = ev.data;
     }
 
-    if ($('input[name^="diabetic_diagnoses"]').length) {
+    if ($('input[name^="diabetic_diagnoses"]').filter('[value=true],[value="1"]').length) {
         $(pcrEl).val('Y');
+    } else {
+        $(pcrEl).val('N');
     }
 
     $(pcrEl).trigger('change');
@@ -66,8 +72,10 @@ function setGlaucomaDisorder(ev, pcrEl) {
         pcrEl = ev.data;
     }
 
-    if ($('input[name^="glaucoma_diagnoses"]').length) {
+    if ($('input[name^="glaucoma_diagnoses"]').filter('[value=true],[value="1"]').length) {
         $(pcrEl).val('Y');
+    } else {
+        $(pcrEl).val('N');
     }
 
     $(pcrEl).trigger('change');

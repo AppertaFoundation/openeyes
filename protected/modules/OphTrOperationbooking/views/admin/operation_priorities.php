@@ -23,11 +23,11 @@
 		<thead>
 		<tr>
 			<th><input type="checkbox" id="checkall" class="sessions" /></th>
-			<th><?php echo CHtml::link('Firm', $this->getUri(array('sortby' => 'firm')))?></th>
-			<th><?php echo CHtml::link('Theatre', $this->getUri(array('sortby' => 'theatre')))?></th>
-			<th><?php echo CHtml::link('Date', $this->getUri(array('sortby' => 'dates')))?></th>
-			<th><?php echo CHtml::link('Time', $this->getUri(array('sortby' => 'time')))?></th>
-			<th><?php echo CHtml::link('Weekday', $this->getUri(array('sortby' => 'weekday')))?></th>
+			<th><?=\CHtml::link('Firm', $this->getUri(array('sortby' => 'firm')))?></th>
+			<th><?=\CHtml::link('Theatre', $this->getUri(array('sortby' => 'theatre')))?></th>
+			<th><?=\CHtml::link('Date', $this->getUri(array('sortby' => 'dates')))?></th>
+			<th><?=\CHtml::link('Time', $this->getUri(array('sortby' => 'time')))?></th>
+			<th><?=\CHtml::link('Weekday', $this->getUri(array('sortby' => 'weekday')))?></th>
 			<th>Available</th>
 			<th>Attributes</th>
 			<input type="hidden" id="select_all" value="0" />
@@ -82,7 +82,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<label for="">Firm:</label>
 	</div>
 	<div class="cols-5 column end">
-		<?php echo CHtml::dropDownList('inline_firm_id', '', Firm::model()->getListWithSpecialties(), array('empty' => '- Don\'t change -'))?>
+		<?=\CHtml::dropDownList('inline_firm_id', '', Firm::model()->getListWithSpecialties(), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
@@ -90,7 +90,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	<div class="cols-2 column">
 		<label for="">Theatre:</label>
 	</div>
-	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_theatre_id', '', CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->active()->findAll(), 'id', 'name'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?=\CHtml::dropDownList('inline_theatre_id', '', CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->active()->findAll(), 'id', 'name'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
@@ -117,7 +117,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	<div class="cols-2 column">
 		<label for="">Start time:</label>
 	</div>
-	<div class="cols-2 column end"><?php echo CHtml::textField('inline_start_time', '', array('size' => 10))?>
+	<div class="cols-2 column end"><?=\CHtml::textField('inline_start_time', '', array('size' => 10))?>
 		<span class="error"></span>
 	</div>
 </div>
@@ -125,7 +125,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	<div class="cols-2 column">
 		<label for="">End time:</label>
 	</div>
-	<div class="cols-2 column end"><?php echo CHtml::textField('inline_end_time', '', array('size' => 10))?>
+	<div class="cols-2 column end"><?=\CHtml::textField('inline_end_time', '', array('size' => 10))?>
 		<span class="error"></span>
 	</div>
 </div>
@@ -133,7 +133,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	<div class="cols-2 column">
 		<label for="">Consultant:</label>
 	</div>
-	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_consultant', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?=\CHtml::dropDownList('inline_consultant', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
@@ -141,7 +141,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	<div class="cols-2 column">
 		<label for="">Paediatric:</label>
 	</div>
-	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_paediatric', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?=\CHtml::dropDownList('inline_paediatric', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
@@ -149,7 +149,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	<div class="cols-2 column">
 		<label for="">Anaesthetist:</label>
 	</div>
-	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_anaesthetist', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?=\CHtml::dropDownList('inline_anaesthetist', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
@@ -157,7 +157,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	<div class="cols-2 column">
 		<label for="">General anaesthetic:</label>
 	</div>
-	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_general_anaesthetic', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?=\CHtml::dropDownList('inline_general_anaesthetic', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
@@ -165,7 +165,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	<div class="cols-2 column">
 		<label for="">Available:</label>
 	</div>
-	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_available', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?=\CHtml::dropDownList('inline_available', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
@@ -173,7 +173,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	<div class="cols-2 column">
 		<label for="">Comments:</label>
 	</div>
-	<div class="cols-5 column end"><?php echo CHtml::textArea('inline_comments', '', array('rows' => 5, 'cols' => 60))?>
+	<div class="cols-5 column end"><?=\CHtml::textArea('inline_comments', '', array('rows' => 5, 'cols' => 60))?>
 		<span class="error"></span>
 	</div>
 </div>

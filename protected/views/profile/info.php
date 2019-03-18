@@ -101,7 +101,7 @@
           <label for="User_qualifications">Display Theme:</label>
         </div>
         <div class="cols-5">
-            <?php echo CHtml::dropDownList('display_theme', $display_theme, array(null => 'Default', 'light' => 'Light', 'dark' => 'Dark')); ?>
+            <?=\CHtml::dropDownList('display_theme', $display_theme, array(null => 'Default', 'light' => 'Light', 'dark' => 'Dark')); ?>
         </div>
       </div>
     </td>

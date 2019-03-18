@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -57,7 +57,7 @@ if ($this->checkClericalEditAccess()) {
                           id="<?= CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_container'; ?>"
                           style="<?php if (!$comments): ?>display: none;<?php endif; ?>"
                           data-comment-button="#<?= $comment_button_id ?>">
-                        <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array(
+                        <?=\CHtml::textArea("{$field_base_name}[comments]", $comments, array(
                             'class' => 'js-comment-field',
                             'rows' => 2,
                             'placeholder' => 'Comments',
@@ -69,17 +69,17 @@ if ($this->checkClericalEditAccess()) {
                 </td>
             <td>
               <label class="inline highlight">
-                  <?php echo CHtml::radioButton($factor_field_name, ($value === 1),
+                  <?=\CHtml::radioButton($factor_field_name, ($value === 1),
                       array('id' => $factor_field_name . '_1', 'value' => 1)) ?>
                 Yes
               </label>
               <label class="inline highlight">
-                  <?php echo CHtml::radioButton($factor_field_name, ($value === 0),
+                  <?=\CHtml::radioButton($factor_field_name, ($value === 0),
                       array('id' => $factor_field_name . '_0', 'value' => 0)) ?>
                 No
               </label>
               <label class="inline highlight">
-                  <?php echo CHtml::radioButton($factor_field_name, ($value === 2),
+                  <?=\CHtml::radioButton($factor_field_name, ($value === 2),
                       array('id' => $factor_field_name . '_2', 'value' => 2)) ?>
                 Unknown
               </label>
@@ -111,7 +111,7 @@ if ($this->checkClericalEditAccess()) {
                             '`active` = ?',
                             array(1),
                             array('order' => 'display_order asc')), 'id', 'name'),
-                    array('empty' => '- Please select -', 'nowrapper' => true , 'class' => 'cols-full'),
+                    array('empty' => 'Select', 'nowrapper' => true , 'class' => 'cols-full'),
                     false,
                     array()) ?>
             </td>
@@ -127,7 +127,7 @@ if ($this->checkClericalEditAccess()) {
                         'id',
                         'name'
                     ),
-                    array('empty' => '- Please select -', 'nowrapper' => true , 'class' => 'cols-full'),
+                    array('empty' => 'Select', 'nowrapper' => true , 'class' => 'cols-full'),
                     false,
                     array()) ?>
                 <?php
@@ -154,7 +154,7 @@ if ($this->checkClericalEditAccess()) {
                         'name'
                     ),
                     array(
-                        'empty' => '- Please select -',
+                        'empty' => 'Select',
                         'nowrapper' => true,
                         'class' => 'cols-full',
                     ),

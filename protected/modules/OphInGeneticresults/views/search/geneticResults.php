@@ -44,25 +44,25 @@
               <tr>
 
                 <td>
-                    <?php echo CHtml::textField('genetics-patient-id', @$_GET['genetics-patient-id']) ?>
+                    <?=\CHtml::textField('genetics-patient-id', @$_GET['genetics-patient-id']) ?>
                 </td>
                  <td>
-                    <?php echo CHtml::textField('genetics-pedigree-id', @$_GET['genetics-pedigree-id']) ?>
+                    <?=\CHtml::textField('genetics-pedigree-id', @$_GET['genetics-pedigree-id']) ?>
                 </td>
 
                 <td>
-                    <?php echo CHtml::dropDownList('gene-id', @$_GET['gene-id'], CHtml::listData(PedigreeGene::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+                    <?=\CHtml::dropDownList('gene-id', @$_GET['gene-id'], CHtml::listData(PedigreeGene::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
                         array('empty' => '- All -')) ?>
                 </td>
                 <td>
-                    <?php echo CHtml::dropDownList('method-id', @$_GET['method-id'],
+                    <?=\CHtml::dropDownList('method-id', @$_GET['method-id'],
                         CHtml::listData(OphInGeneticresults_Test_Method::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- All -')) ?>
                 </td>
                 <td>
-                    <?php echo CHtml::dropDownList('homo', @$_GET['homo'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- All -')) ?>
+                    <?=\CHtml::dropDownList('homo', @$_GET['homo'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- All -')) ?>
                 </td>
                 <td>
-                    <?php echo CHtml::dropDownList('effect-id', @$_GET['effect-id'],
+                    <?=\CHtml::dropDownList('effect-id', @$_GET['effect-id'],
                         CHtml::listData(OphInGeneticresults_Test_Effect::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- All -')) ?>
                 </td>
               </tr>
@@ -102,7 +102,7 @@
                     )) ?>
                 </td>
                 <td>
-                    <?php echo CHtml::textField('query', @$_GET['query']) ?>
+                    <?=\CHtml::textField('query', @$_GET['query']) ?>
                 </td>
                 <td>
                     <div id="diagnosis-search">
@@ -164,19 +164,19 @@
         <table class="standard">
           <thead>
           <tr>
-            <th><?php echo CHtml::link('Result date', $this->getUri(array('sortby' => 'date'))) ?></th>
+            <th><?=\CHtml::link('Result date', $this->getUri(array('sortby' => 'date'))) ?></th>
 <!--            <th>--><?php //echo CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics-patient-id'))) ?><!--</th>-->
-            <th><?php echo CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num'))) ?></th>
-            <th><?php echo CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics-pedigree-id'))) ?></th>
-            <th><?php echo CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name'))) ?></th>
+            <th><?=\CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num'))) ?></th>
+            <th><?=\CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics-pedigree-id'))) ?></th>
+            <th><?=\CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name'))) ?></th>
             <th>Maiden Name</th>
-            <th><?php echo CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
+            <th><?=\CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
 <!--            <th>--><?php //echo CHtml::link('Method', $this->getUri(array('sortby' => 'method'))) ?><!--</th>-->
-            <th><?php echo CHtml::link('Hom', $this->getUri(array('sortby' => 'homo'))) ?></th>
-        <th><?php echo CHtml::link('Base Change', $this->getUri(array('sortby' => 'base_change'))) ?></th>
-        <th><?php echo CHtml::link('Amino Acid Change', $this->getUri(array('sortby' => 'amino_acid_change'))) ?></th>
+            <th><?=\CHtml::link('Hom', $this->getUri(array('sortby' => 'homo'))) ?></th>
+        <th><?=\CHtml::link('Base Change', $this->getUri(array('sortby' => 'base_change'))) ?></th>
+        <th><?=\CHtml::link('Amino Acid Change', $this->getUri(array('sortby' => 'amino_acid_change'))) ?></th>
 <!--            <th>--><?php //echo CHtml::link('Result', $this->getUri(array('sortby' => 'result'))) ?><!--</th>-->
-            <th><?php echo CHtml::link('Effect', $this->getUri(array('sortby' => 'effect'))) ?></th>
+            <th><?=\CHtml::link('Effect', $this->getUri(array('sortby' => 'effect'))) ?></th>
           </tr>
           </thead>
           <tbody>
@@ -188,7 +188,7 @@
                 <td>
                     <?php foreach($test->event->episode->patient->geneticsPatient->pedigrees as $i => $pedigrees): ?>
                         <?php if($i > 0){ echo ", ";} ?>
-                        <?php echo CHtml::link($pedigrees->id, '/Genetics/pedigree/view/id/' . $pedigrees->id ); ?>
+                        <?=\CHtml::link($pedigrees->id, '/Genetics/pedigree/view/id/' . $pedigrees->id ); ?>
                     <?php endforeach; ?>
                 </td>
                   <td><?php echo strtoupper($test->event->episode->patient->last_name) ?>, <?php echo $test->event->episode->patient->first_name ?></td>

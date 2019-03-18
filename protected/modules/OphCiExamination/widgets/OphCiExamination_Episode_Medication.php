@@ -32,11 +32,12 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                     $meds_tag = array();
 
                     if ($entry->drug_id){
-                        foreach ($entry->drug->tags as $item) {
+                      foreach ($entry->drug->tags as $item) {
                             $meds_tag[] = $item->name;
                         }
                     }
                     if ($entry->medication_drug_id){
+
                         foreach ($entry->medication_drug->tags as $item) {
                             $meds_tag[] = $item->name;
                         }
@@ -46,7 +47,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         continue;
                     }
 
-                    $drug_aliases = $entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
+                    $drug_aliases = $entry->drug_id&&$entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
                     $drug_name = $entry->drug_id ? $entry->drug->name.$drug_aliases : $entry->medication_drug->name;
                     $start_date = Helper::mysqlDate2JsTimestamp($entry->start_date);
                     $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);

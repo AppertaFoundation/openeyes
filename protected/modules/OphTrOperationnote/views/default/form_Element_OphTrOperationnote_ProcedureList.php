@@ -39,7 +39,7 @@
             <?php echo $form->radioButtons($element,
                 'eye_id',
                 $element->eyeOptions,
-                ($element->eye() ? $element->eye()->id : null),
+                ($element->eye() ? (intval($element->eye()->id) === Eye::BOTH ? EYE::RIGHT : $element->eye()->id) : null),
                 null,
                 null,
                 null,

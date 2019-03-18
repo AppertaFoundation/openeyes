@@ -26,7 +26,7 @@
     var self = this;
 
     $('.js-lightning-image-preview-page').each(function () {
-      $('<img />', {src: $(this).data('src')}).on('load error', function () {
+      $('<img />', {src: $(this).data('src'), style: 'width:800px'}).on('load error', function () {
         var $page = $(this).closest('.js-lightning-image-preview-page');
         $page.data('loaded', true);
         var $preview = $(this).closest('.js-lightning-image-preview');

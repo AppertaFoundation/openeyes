@@ -44,49 +44,33 @@ if (empty($LR_readings)) {
 }
 ?>
 
-<table class="VA-tbl">
+<table>
   <thead>
   <tr>
-    <th class="VA-tbl-head">
+    <th>
       Visual Acuity (<?= $va_unit?>)
     </th>
-    <th class="VA-tbl-head">
-      Left Eye
-    </th>
-    <th class="VA-tbl-head">
+    <th>
       Right Eye
+    </th>
+    <th>
+      Left Eye
     </th>
   </tr>
   </thead>
   <tbody>
   <?php foreach ($LR_readings as $method => $readings): ?>
     <tr>
-      <td class="VA-tbl-td">
+      <td>
           <?= $method ?>
       </td>
-      <td class="VA-tbl-td">
-          <?= array_key_exists('left', $readings) ? $readings['left'] : ' - ' ?>
-      </td>
-      <td class="VA-tbl-td">
+      <td>
           <?= array_key_exists('right', $readings) ? $readings['right'] : ' - ' ?>
+      </td>
+      <td>
+          <?= array_key_exists('left', $readings) ? $readings['left'] : ' - ' ?>
       </td>
     </tr>
   <?php endforeach; ?>
   </tbody>
 </table>
-<style>
-  .VA-tbl{
-    border-collapse: collapse;
-    border: 1px solid;
-  }
-  .VA-tbl-head {
-    border: 1px solid #ccc !important;
-    background: #f5f5f5;
-    padding: 3px 4px;
-    text-align: center;
-  }
-  .VA-tbl-td {
-    border: 1px solid #ccc !important;
-    padding: 3px 4px;
-  }
-</style>

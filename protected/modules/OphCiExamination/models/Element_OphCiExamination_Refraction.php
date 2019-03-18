@@ -163,6 +163,7 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     {
         return ($this->{$side . '_sphere'} > 0 ? '+' : '') .
             $this->{$side . '_sphere'} . '/' .
+            ($this->{$side . '_cylinder'} > 0 ? '+' : '') .
             $this->{$side . '_cylinder'} . ' X ' .
             $this->{$side . '_axis'} . '° ';
     }
@@ -215,5 +216,10 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     public function getLetter_string()
     {
         return "Refraction:\nright: ".$this->getCombined('right')."\nleft: ".$this->getCombined('left')."\n";
+    }
+    
+    public function getPrint_view()
+    {
+        return 'print_'.$this->getDefaultView();
     }
 }

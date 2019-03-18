@@ -21,6 +21,12 @@ class BaseAdminController extends BaseController
     public $layout = '//layouts/admin';
     public $items_per_page = 30;
 
+    /**
+     * Defines that which sidebar item should be open when the action performed
+     * @var string
+     */
+    public $group = 'Core';
+
     public function accessRules()
     {
         return array(array('allow', 'roles' => array('admin')));
@@ -82,7 +88,9 @@ class BaseAdminController extends BaseController
             'filter_fields' => array(),
             'filters_ready' => true,
             'label_extra_field' => false,
-            'description' => ''
+            'description' => '',
+            'div_wrapper_class' => 'cols-full',
+            'return_url' => false,
         ), $options);
 
         $columns = $model::model()->metadata->columns;
@@ -228,7 +236,12 @@ class BaseAdminController extends BaseController
 
                         Yii::app()->user->setFlash('success', 'List updated.');
 
-                        $this->redirect(Yii::app()->request->url);
+                        if($options['return_url']) {
+                            $this->redirect($options['return_url']);
+                        } else {
+                            $this->redirect(Yii::app()->request->url);
+                        }
+
                     } else {
                         $tx->rollback();
                     }

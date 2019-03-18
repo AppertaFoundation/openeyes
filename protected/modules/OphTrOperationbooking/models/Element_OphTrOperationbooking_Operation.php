@@ -57,6 +57,7 @@
 class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 {
     public $count;
+    public $reschedule;
 
     const LETTER_INVITE = 0;
     const LETTER_REMINDER_1 = 1;
@@ -90,11 +91,15 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         self::COMPLEXITY_HIGH => 'red'
     );
 
+
+
     const OVERNIGHT_STAY_NOT_REQUIRED_ID = 1;
 
     public $service;
 
     public $anaesthetist_required_ids = array();
+
+
 
     /**
      * Returns the static model of the specified AR class.
@@ -131,8 +136,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     {
         return array(
             array('consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, decision_date, special_equipment_details, comments,comments_rtt','safe'),
-            array('site_id, anaesthetist_required, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
-            array('status_id, cancellation_reason_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
+            array('site_id, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
+            array('status_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
             array('priority_id, eye_id, organising_admission_user_id, preassessment_booking_required, overnight_booking_required_id, complexity, is_golden_patient',    'safe'),
 
             array('named_consultant_id', 'RequiredIfFieldValidator', 'field' => 'consultant_required', 'value' => true, 'on' => 'insert'),
@@ -227,6 +232,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'overnight_stay_required_id' => 'Overnight stay required',
             'complexity' => 'Complexity',
             'is_golden_patient' => 'Suitable as golden patient',
+            'cancellation_reason_id' => ($this->reschedule ? 'Reschedule Reason' : 'Cancellation Reason'),
         );
     }
 
@@ -287,9 +293,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                 }
             }
         }
-
         $this->special_equipment = false;
-        $this->preassessment_booking_required = 0;
+        $this->preassessment_booking_required = Yii::app()->params['pre_assessment_booking_default_value'];
         $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
 
         $this->organising_admission_user_id = Yii::app()->user->id;
@@ -338,12 +343,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      */
     protected function beforeSave()
     {
-       foreach($this->anaesthetic_type as $anaesthetic_type){
-           if( in_array($anaesthetic_type->id, $this->anaesthetist_required_ids) ){
-               $this->anaesthetist_required = true;
-           }
-       }
-
         if (!$this->status_id) {
             $this->status_id = 1; //@TODO: change hardcoded id to a query
         }
@@ -482,7 +481,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             self::LETTER_INVITE => 'Invitation',
             self::LETTER_REMINDER_1 => '1st Reminder',
             self::LETTER_REMINDER_2 => '2nd Reminder',
-            self::LETTER_GP => 'Refer to GP',
+            self::LETTER_GP => 'Refer to '.Yii::app()->params['gp_label'],
         );
     }
 
@@ -492,7 +491,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $letterType = ($this->getDueLetter() !== null && isset($letterTypes[$this->getDueLetter()])) ? $letterTypes[$this->getDueLetter()] : false;
 
         if ($letterType == false && $this->getLastLetter() == self::LETTER_GP) {
-            $letterType = 'Refer to GP';
+            $letterType = 'Refer to '.Yii::app()->params['gp_label'];
         }
 
         return $letterType;
@@ -1156,8 +1155,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      * @return array|bool
      */
     public function schedule($booking, $operation_comments, $session_comments, $operation_comments_rtt,
-            $reschedule = false, $cancellation_data = null, $schedule_op = null)
+            $_reschedule = false, $cancellation_data = null, $schedule_op = null)
     {
+        $this->reschedule = $_reschedule;
         if ($schedule_op == null) {
             throw new Exception('schedule_op argument required for scheduling');
         }
@@ -1192,6 +1192,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             $cancellation_comment = $cancellation_data['comment'];
         }
 
+
         if ($this->booking && !$reschedule) {
             // race condition, two users attempted to book the same operation at the same time
             throw new RaceConditionException('This operation has already been scheduled by '.($this->booking->user->fullName));
@@ -1202,9 +1203,11 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             throw new RaceConditionException('This operation has already been scheduled by '.($this->booking->user->fullName));
         }
 
+
         if ($reschedule && $this->booking) {
             if (!$reason = OphTrOperationbooking_Operation_Cancellation_Reason::model()->findByPk($cancellation_reason_id)) {
-                return array(array('Please select a rescheduling reason'));
+                $this->addError('cancellation_reason_id', 'Please select a rescheduling reason');
+                return $this->getErrors();
             }
             $this->booking->cancel($reason, $cancellation_comment, $reschedule);
         }
@@ -1704,5 +1707,15 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function getComplexityColor()
     {
         return array_key_exists($this->complexity, self::$complexity_colors) ? self::$complexity_colors[$this->complexity] : '';
+    }
+
+    public function getAnaesthetist_required(){
+        $anaesthetist_required = false;
+        foreach($this->anaesthetic_type as $anaesthetic_type){
+            if( in_array($anaesthetic_type->id, $this->anaesthetist_required_ids) ){
+                $anaesthetist_required = true;
+            }
+        }
+        return $anaesthetist_required;
     }
 }

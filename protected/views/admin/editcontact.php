@@ -9,108 +9,117 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-        <div class="row divider">
-            <h2>Edit contact</h2>
-        </div>
-        <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
-        <?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'adminform',
-            'enableAjaxValidation' => false,
-            'focus' => '#contactname',
-            'layoutColumns' => array(
-                'label' => 2,
-                'field' => 5,
-            ),
-        )); ?>
-        <div class="cols-6">
-            <table class="standard">
-                <colgroup>
-                    <col class="cols-2">
-                    <col class="cols-4">
-                </colgroup>
-                <tbody>
-                <?php foreach (['title', 'first_name', 'last_name', 'nick_name', 'primary_phone', 'qualifications'] as $field) : ?>
-                    <tr>
-                        <td><?= $contact->getAttributeLabel($field); ?></td>
-                        <td>
-                            <?= CHtml::activeTextField($contact, $field, [
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
-                                'class' => 'cols-full'
-                            ]); ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                <tr>
-                    <td><?= $contact->getAttributeLabel('contact_label_id'); ?></td>
-                    <td>
-                        <?= CHtml::activeDropDownList($contact, 'contact_label_id',
-                            CHtml::listData(ContactLabel::model()->active()->findAll(['order' => 'name']), 'id', 'name'), [
-                                'class' => 'cols-full'
-                            ]
-                        ); ?>
-                    </td>
-                </tr>
-                </tbody>
-                <tfoot>
-                <tr class="pagination-container">
-                    <td colspan="3">
-                        <?= CHtml::htmlButton('Save', [
-                                'class' => 'button large',
-                                'type' => 'submit'
-                        ]) . ' ' .
-                         CHtml::link('Cancel', '/admin/contacts', [
-                                'class' => 'button large',
-                        ]);
-                        ?>
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-        <?php $this->endWidget() ?>
-        <div class="row divider">
-            <h2>Locations</h2>
-        </div>
+<div class="cols-9">
 
-        <form id="admin_contact_locations">
-            <table class="standard">
-                <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php
-                foreach ($contact->locations as $i => $location) { ?>
-                    <tr class="clickable" data-id="<?php echo $location->id ?>"
-                        data-uri="admin/contactLocation?location_id=<?php echo $location->id ?>">
-                        <td><?php echo $location->site_id ? 'Site' : 'Institution' ?></td>
-                        <td><?php echo $location->site_id ? $location->site->name : $location->institution->name ?>
-                            &nbsp;
-                        </td>
-                        <td><button type="button" class="removeLocation hint red" rel="<?php echo $location->id ?>">Remove</button></td>
-                    </tr>
-                <?php } ?>
-                </tbody>
-                <tfoot class="pagination-container">
-                <tr>
-                    <td colspan="3">
-                        <?= CHtml::link('Add', '/admin/addContactLocation?contact_id=' . $contact->id, [
-                                'class' => 'button large',
-                        ]);?>
+    <div class="row divider">
+        <h2>Edit contact</h2>
+    </div>
+
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+    <?php
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'adminform',
+        'enableAjaxValidation' => false,
+        'focus' => '#contactname',
+        'layoutColumns' => array(
+            'label' => 2,
+            'field' => 5,
+        ),
+    )); ?>
+
+    <table class="standard">
+        <colgroup>
+            <col class="cols-2">
+            <col class="cols-4">
+        </colgroup>
+        <tbody>
+        <?php foreach (['title', 'first_name', 'last_name',
+               'nick_name', 'primary_phone', 'qualifications'] as $field) : ?>
+            <tr>
+                <td><?= $contact->getAttributeLabel($field); ?></td>
+                <td>
+                    <?= CHtml::activeTextField($contact, $field, [
+                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'class' => 'cols-full'
+                    ]); ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        <tr>
+            <td><?= $contact->getAttributeLabel('contact_label_id'); ?></td>
+            <td>
+                <?= CHtml::activeDropDownList(
+                    $contact,
+                    'contact_label_id',
+                    CHtml::listData(ContactLabel::model()->active()->findAll(['order' => 'name']), 'id', 'name'),
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr class="pagination-container">
+            <td colspan="3">
+                <?= CHtml::submitButton('Save', [
+                    'class' => 'button large',
+                ]) ?>
+                <?= CHtml::link('Cancel', '/admin/contacts', [
+                    'class' => 'button large',
+                ]) ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <?php $this->endWidget() ?>
+
+    <div class="row divider">
+        <h2>Locations</h2>
+    </div>
+
+    <form id="admin_contact_locations">
+        <table class="standard">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($contact->locations as $i => $location) { ?>
+                <tr class="clickable" data-id="<?php echo $location->id ?>"
+                    data-uri="admin/contactLocation?location_id=<?php echo $location->id ?>">
+                    <td><?php echo $location->site_id ? 'Site' : 'Institution' ?></td>
+                    <td><?php echo $location->site_id ? $location->site->name : $location->institution->name ?></td>
+                    <td>
+                        <button type="button" class="removeLocation hint red" rel="<?php echo $location->id ?>">
+                            Remove
+                        </button>
                     </td>
                 </tr>
-                </tfoot>
-            </table>
-        </form>
+            <?php } ?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="3">
+                    <?= CHtml::link(
+                        'Add',
+                        '/admin/addContactLocation?contact_id=' . $contact->id,
+                        ['class' => 'button large']
+                    ); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
 
 <script type="text/javascript">
     $('.removeLocation').click(function (e) {

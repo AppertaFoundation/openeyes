@@ -30,10 +30,13 @@
 <?php
 $itemSets = array();
 foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
-    $itemSet = array_map(function ($attr) {
+    $items = array_map(function ($attr) {
         return ['label' => $attr['slug']];
     }, $attribute->getAttributeOptions());
-    $itemSets[] = $itemSet;
+    $itemSets[] = ['items' => $items ,
+        'header' => $attribute->label ,
+        'multiSelect' => $attribute->is_multiselect === '1' ? true : false
+    ];
 }
 ?>
 <script type="text/javascript">
@@ -43,18 +46,18 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
 
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-investigation-btn'),
-      itemSets:$.map(<?= CJSON::encode($itemSets) ?>, function ($x) {
-        return new OpenEyes.UI.AdderDialog.ItemSet($x);
-      }),
+      itemSets:$.map(<?= CJSON::encode($itemSets) ?>, function ($itemSet) {
+              return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {
+                  'header': $itemSet.header,
+                  'multiSelect': $itemSet.multiSelect
+              })
+          }),
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {
         var inputText = investigationDiv.find(
           '#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description'
         );
-
-        $(selectedItems).each(function (key, item) {
-          inputText.val(inputText.val() ? inputText.val() + item['label'] : item['label']);
-        });
+				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
         inputText.trigger('oninput');
         return true;
       }

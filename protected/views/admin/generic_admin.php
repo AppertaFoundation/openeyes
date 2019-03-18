@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -17,11 +17,19 @@
 <?php
 if (!@$options['get_row']) {
     $this->renderPartial('//base/_messages') ?>
-	<div class="box admin">
-		<h2><?php echo $title?></h2>
-        <?php if ($options['description']) { echo "<p>{$options['description']}</p>"; } ?>
-<?php }
-$this->widget('GenericAdmin', array_merge(array('model' => $model, 'items' => $items, 'errors' => $errors), $options)); ?>
-<?php	if (!@$options['get_row']) { ?>
-	</div>
+
+    <div class="row divider <?= $options['div_wrapper_class'] ?>" >
+        <h2><?php echo $title ?></h2>
+    </div>
+
+    <?php if ($options['description']) :
+        echo "<p>{$options['description']}</p>";
+    endif;
+} ?>
+
+<?php
+$this->widget('GenericAdmin', array_merge(array('model' => $model, 'items' => $items, 'errors' => $errors), $options));
+?>
+
+<?php if (!@$options['get_row']) { ?>
 <?php }

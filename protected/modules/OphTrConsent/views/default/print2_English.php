@@ -2,8 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,11 +11,11 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="print-form-div <?php echo $css_class ?>">
+<main class="print-main">
     <?php $this->renderPartial('_consent_header') ?>
     <h1 class="print-title">
         Consent form 2<br/>
@@ -45,7 +44,7 @@
             <td><?php echo $this->patient->hos_num ?></td>
         </tr>
         <tr>
-            <th>NHS number</th>
+            <th><?php echo Yii::app()->params['nhs_num_label']?> number</th>
             <td><?php echo $this->patient->nhs_num ?></td>
         </tr>
         <tr>
@@ -83,7 +82,9 @@
         <?php } ?>
         <tr>
             <th>Procedure(s)</th>
-            <td><?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
+            <td>
+                <?= $elements['Element_OphTrConsent_Procedure']->eye ?>
+                <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
                     if ($i > 0) {
                         echo ', ';
                     }
@@ -166,25 +167,25 @@
         alternative treatments (including no treatment) and any particular concerns of this patient
         and <?php echo $this->patient->pos ?> parents.
     </p>
-    <div class="group flex-layout">
+    <?php if ($elements['Element_OphTrConsent_Leaflets']->leaflets) { ?>
+        <div class="group flex-layout">
                 <span class="nowrap">
-                    <span class="checkbox <?php echo $elements['Element_OphTrConsent_Other']->information ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
-                    <span class="dotted-write"></span>
+                    <span class="checkbox <?php echo $elements['Element_OphTrConsent_Leaflets']->leaflets ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
+                    <?php echo $this->renderPartial('view_Element_OphTrConsent_Leaflets', ['element' => $elements['Element_OphTrConsent_Leaflets']]) ?>
                 </span>
-    </div>
-    <div class="group">
-        <span class="checkbox <?php echo $elements['Element_OphTrConsent_Other']->anaesthetic_leaflet ? 'checked' : '' ?>"></span> Anaesthesia leaflet has been provided
-    </div>
+        </div>
+    <?php } ?>
+    <?php if ($elements['Element_OphTrConsent_Other']->anaesthetic_leaflet) { ?>
+        <div class="group">
+            <span class="checkbox <?php echo $elements['Element_OphTrConsent_Other']->anaesthetic_leaflet ? 'checked' : '' ?>"></span> Anaesthesia leaflet has been provided
+        </div>
+    <?php } ?>
     <div class="group">
         This procedure will involve: <span class="checkbox <?php echo $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA') ? 'checked' : '' ?>"></span>
         general and/or regional anaesthesia&nbsp;&nbsp;<span class="checkbox <?php echo $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode(array('Topical', 'LAC', 'LA', 'LAS')) ? 'checked' : '' ?>"></span>
-        local anaesthesia&nbsp;&nbsp;<span class="checkbox <?php echo $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('LAS') ? 'checked' : '' ?>"></span> sedation
+        local anaesthesia&nbsp;&nbsp;<span class="checkbox <?php echo $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('Sedation') ? 'checked' : '' ?>"></span> sedation
     </div>
     <?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
-    <p>
-        Contact details (if child/parent wishes to discuss options later)
-    <div class="dotted-write"></div>
-    </p>
     <br/>
     <?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) { ?>
         <h3>Statement of interpreter</h3>
@@ -227,4 +228,4 @@
         <div class="dotted-write"></div>
         </p>
     <?php } ?>
-</div>
+</main>

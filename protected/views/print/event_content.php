@@ -16,9 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="container content event">
-	<?php $this->renderOpenElements('print');?>
-	<?php $this->renderPartial('//print/event_metadata', array(
-        'hide_modified' => @$hide_modified,
-    ));?>
-</div>
+
+<?php $this->renderOpenElements('print'); ?>
+<div class="spacer"></div>
+<?php $this->renderPartial('//print/event_metadata', array(
+    'hide_modified' => @$hide_modified,
+)); ?>

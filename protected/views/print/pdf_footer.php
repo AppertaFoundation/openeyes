@@ -45,7 +45,7 @@
 
 		var y = document.getElementsByClassName('patient_nhsnum');
 		for (var j=0; j<y.length; j++) {
-			y[j].innerHTML = ", NHS No: " + patient_nhsnums[document_no];
+            y[j].innerHTML = ", {{NHS No}}: " + patient_nhsnums[document_no];
 		}
 
 		var y = document.getElementsByClassName('patient_dob');

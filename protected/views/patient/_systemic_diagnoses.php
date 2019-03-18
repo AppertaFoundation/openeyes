@@ -16,9 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element patient-info associated-data js-toggle-container">
+<section class="element view full patient-info associated-data js-toggle-container">
 	<header class="element-header">
-		<h3 class="box-title">
+		<h3 class="element-title">
 			<span class="icon-patient-clinician-hd_flag"></span>
 			Systemic Diagnoses
 		</h3>
@@ -37,10 +37,10 @@
 			<tbody>
 			<?php foreach ($this->patient->systemicDiagnoses as $diagnosis) {?>
 				<tr>
-					<td><?php echo $diagnosis->dateText?></td>
-					<td><?php echo $diagnosis->eye ? $diagnosis->eye->adjective : ''?> <?php echo $diagnosis->disorder->term?></td>
+					<td><?= $diagnosis->dateText?></td>
+					<td><?= $diagnosis->eye ? $diagnosis->eye->adjective : ''?> <?= $diagnosis->disorder->term?></td>
 					<?php if ($this->checkAccess('OprnEditSystemicDiagnosis')) { ?>
-						<td><a href="#" class="removeDiagnosis" rel="<?php echo $diagnosis->id?>">Remove</a></td>
+						<td><a href="#" class="removeDiagnosis" rel="<?= $diagnosis->id?>">Remove</a></td>
 					<?php } ?>
 				</tr>
 			<?php }?>
@@ -85,25 +85,25 @@
                         ))?>
 
 					<div class="hide" id="add_systemic_diagnosis_loader">
-						<p class="large-offset-<?php echo $form->layoutColumns['label'];?> large-<?php echo $form->layoutColumns['field'];?> column end">
-							<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" />
+						<p class="large-offset-<?= $form->layoutColumns['label'];?> large-<?= $form->layoutColumns['field'];?> column end">
+							<img class="loader" src="<?= Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" />
 								searching...
 						</p>
 					</div>
 
-					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+					<input type="hidden" name="patient_id" value="<?= $this->patient->id?>" />
 
 					<fieldset class="diagnosis_eye data-group">
-						<legend class="<?php echo $form->columns('label');?>">
+						<legend class="<?= $form->columns('label');?>">
 							Side:
 						</legend>
-						<div class="<?php echo $form->columns('field');?>">
+						<div class="<?= $form->columns('field');?>">
 							<label class="inline">
 								<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="" checked="checked" /> None
 							</label>
 							<?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {?>
 								<label class="inline">
-									<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>" /> <?php echo $eye->name?>
+									<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?= $eye->id?>" /> <?= $eye->name?>
 								</label>
 							<?php }?>
 						</div>
@@ -114,7 +114,7 @@
 					<div class="systemic_diagnoses_form_errors alert-box alert hide"></div>
 
 					<div class="buttons">
-						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader hide" />
+						<img src="<?= Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader hide" />
 						<button type="submit" class="secondary small btn_save_systemic_diagnosis">
 							Save
 						</button>

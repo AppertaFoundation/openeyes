@@ -19,14 +19,14 @@ $contact = $pca->location ? $pca->location->contact : $pca->contact;
 ?>
 <tr data-attr-pca-id="<?php echo $pca->id?>"<?php if ($pca->location) {?> data-attr-location-id="<?php echo $pca->location_id?>"<?php } if ($pca->contact) {?> data-attr-contact-id="<?php echo $pca->contact_id?>"<?php }?>>
 	<td>
-		<?php echo CHtml::encode($contact->fullName)?> <br />
-		<?php echo CHtml::encode($contact->qualifications)?>
+		<?=\CHtml::encode($contact->fullName)?> <br />
+		<?=\CHtml::encode($contact->qualifications)?>
 	</td>
 	<td>
-		<?php echo CHtml::encode($pca->locationText)?>
+		<?=\CHtml::encode($pca->locationText)?>
 	</td>
 	<td>
-		<?php echo CHtml::encode($contact->label->name)?>
+		<?=\CHtml::encode($contact->label->name)?>
 	</td>
 	<td>
 		<?php if ($this->checkAccess('OprnEditContact')) {?>

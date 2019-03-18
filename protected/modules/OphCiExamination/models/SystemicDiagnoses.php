@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -103,6 +103,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'diagnoses' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis', 'element_id'),
+            'required_diagnoses_check' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\SystemicDiagnoses_RequiredDiagnosisCheck', 'element_id'),
             'orderedDiagnoses' => array(self::HAS_MANY,
                 'OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis',
                 'element_id',
@@ -157,19 +158,25 @@ class SystemicDiagnoses extends \BaseEventTypeElement
      */
     public function setDefaultOptions(\Patient $patient = null)
     {
-
         if ($patient) {
             $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
-            $both = array(true, false);
-            foreach ($both as $present) {
-                foreach ($patient->getSystemicDiagnoses($present) as $sd) {
-                    $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
-                    $diagnosis->has_disorder = $present ? SystemicDiagnoses_Diagnosis::$PRESENT : SystemicDiagnoses_Diagnosis::$NOT_PRESENT;
-                    $diagnoses[] = $diagnosis;
+                $both = array(true, false);
+                foreach ($both as $present) {
+                    foreach ($patient->getSystemicDiagnoses($present) as $sd) {
+                        $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
+                        $diagnosis->has_disorder = $present ? SystemicDiagnoses_Diagnosis::$PRESENT : SystemicDiagnoses_Diagnosis::$NOT_PRESENT;
+                        $duplicate_diagnosis = false;
+                        foreach ($diagnoses as $current_diagnosis) {
+                            if ($diagnosis->disorder_id === $current_diagnosis->disorder_id) {
+                                $duplicate_diagnosis = true;
+                            }
+                        }
+                        if (!$duplicate_diagnosis) {
+                            $diagnoses[] = $diagnosis;
+                        }
+                    }
                 }
-            }
-
             $this->diagnoses = $diagnoses;
         }
     }

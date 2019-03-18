@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -34,7 +34,7 @@
             <tbody>
             <tr class="col-gap">
                 <td>
-                    <?php echo CHtml::textField(
+                    <?=\CHtml::textField(
                         'search[query]',
                         $search['query'],
                         [
@@ -122,12 +122,20 @@
         <tfoot class="pagination-container">
         <tr>
             <td colspan="4">
-                <?php echo CHtml::button(
+                <?=\CHtml::button(
+                    'Add',
+                    [
+                        'class' => 'button large',
+                        'data-uri' => '/oeadmin/procedure/edit',
+                        'name' => 'add',
+                        'id' => 'et_add',
+                    ]
+                ); ?>
+                <?=\CHtml::submitButton(
                     'Delete',
                     [
                         'class' => 'button large disabled',
                         'data-uri' => '/oeadmin/procedure/delete',
-                        'type' => 'submit',
                         'name' => 'delete',
                         'data-object' => 'procedures',
                         'id' => 'et_delete',

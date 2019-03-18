@@ -9,10 +9,13 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
+<div class="cols-9">
+
     <?php if (!$contacts) : ?>
         <div class="row divider">
             <div class="alert-box issue"><b>No results found</b></div>
@@ -29,14 +32,14 @@
                 <tbody>
                 <tr class="col-gap">
                     <td>
-                        <?php echo CHtml::textField(
+                        <?=\CHtml::textField(
                             'q',
                             (isset($_GET['q']) ? $_GET['q'] : ''),
                             ['class' => 'cols-full', 'placeholder' => "Name"]
                         ); ?>
                     </td>
                     <td>
-                        <?php echo CHtml::dropDownList(
+                        <?=\CHtml::dropDownList(
                             'label',
                             isset($_GET['label']) ? $_GET['label'] :'',
                             CHtml::listData(
@@ -88,11 +91,11 @@
         <tfoot class="pagination-container">
         <tr>
             <td colspan="2">
-                <?php echo CHtml::htmlButton(
+                <?=\CHtml::submitButton(
                     'Add',
                     [
                         'class' => 'button large',
-                        'type' => 'submit', 'id' => 'et_add'
+                        'id' => 'et_add'
                     ]
                 );?>
             </td>
@@ -105,3 +108,4 @@
         </tr>
         </tfoot>
     </table>
+</div>

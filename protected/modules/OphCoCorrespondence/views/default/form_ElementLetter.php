@@ -17,13 +17,11 @@
  */
 ?>
 
-
 <?php echo $form->hiddenInput($element, 'draft', 1) ?>
 <?php
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", \CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpenEyes.OphCoCorrespondence.LetterMacro.js", \CClientScript::POS_HEAD);
 $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $layoutColumns = $form->layoutColumns;
-
 $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
 
 if (!$macro_id) {
@@ -39,24 +37,17 @@ if ($macro_id) {
 $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id : $macro_letter_type_id);
 $patient_id = Yii::app()->request->getQuery('patient_id', null);
 $patient = Patient::model()->findByPk($patient_id);
-
-$creating = $creating ?: false;
+$creating = isset($creating) ? $creating : false;
 ?>
 <?php if ($creating === false): ?>
   <input type="hidden" id="re_default" value="<?php echo $element->calculateRe($element->event->episode->patient) ?>"/>
 <?php endif; ?>
-
 <div class="element-fields full-width flex-layout flex-top col-gap">
-
-    <?php
-    $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
-    if ($correspondeceApp === "on") {
-        ?>
       <div class="cols-3">
         <div class="data-group">
           <table class="cols-full">
             <colgroup>
-              <col class="cols-5">
+              <col class="cols-3">
               <col class="cols-7">
             </colgroup>
             <tbody>
@@ -65,10 +56,13 @@ $creating = $creating ?: false;
                 Macro
               </td>
               <td>
-                  <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros,
-                      array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full')); ?>
+                  <?=\CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros,
+                      array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')); ?>
               </td>
             </tr>
+            <?php
+            $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+            if ($correspondeceApp === "on") { ?>
             <tr>
               <td>
                   <?php echo $element->getAttributeLabel('is_signed_off') ?>:
@@ -84,11 +78,16 @@ $creating = $creating ?: false;
                   ); ?>
               </td>
             </tr>
+            <?php } ?>
             </tbody>
           </table>
         </div>
         <div class="data-group">
           <table class="cols-full pad-top">
+						<colgroup>
+							<col class="cols-3">
+							<col class="cols-7">
+						</colgroup>
             <tbody>
             <tr>
               <td>
@@ -96,7 +95,7 @@ $creating = $creating ?: false;
               </td>
               <td>
                   <?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(),
-                      array('empty' => '- Please select -', 'nowrapper' => true)) ?>
+                      array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')) ?>
               </td>
             </tr>
             <tr>
@@ -105,7 +104,7 @@ $creating = $creating ?: false;
               </td>
               <td>
                   <?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'),
-                      array('nowrapper' => true)) ?>
+                      array('nowrapper' => true, 'class' => 'cols-7')) ?>
               </td>
             </tr>
             <tr>
@@ -115,7 +114,7 @@ $creating = $creating ?: false;
               <td>
                   <?php echo $form->dropDownList($element, 'letter_type_id',
                       CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
-                      array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
+                      array('empty' => 'Select', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')) ?>
               </td>
             </tr>
             <!--                  Clinic Date  -->
@@ -125,7 +124,7 @@ $creating = $creating ?: false;
               </td>
               <td>
                   <?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'),
-                      array('nowrapper' => true, 'null' => true)) ?>
+                      array('nowrapper' => true, 'null' => true, 'class' => 'cols-7')) ?>
               </td>
             </tr>
             <!--                    Direct Line-->
@@ -134,7 +133,7 @@ $creating = $creating ?: false;
                 Direct Line
               </td>
               <td>
-                  <?php echo $form->textField($element, 'direct_line', array('nowrapper' => true), array(),
+                  <?php echo $form->textField($element, 'direct_line', array('nowrapper' => true, 'class' => 'cols-full'), array(),
                       array_merge($layoutColumns, array('field' => 2))) ?>
               </td>
             </tr>
@@ -144,13 +143,12 @@ $creating = $creating ?: false;
                 Fax
               </td>
               <td>
-                  <?php echo $form->textField($element, 'fax', array('nowrapper' => true), array(),
+                  <?php echo $form->textField($element, 'fax', array('nowrapper' => true, 'class' => 'cols-full'), array(),
                       array_merge($layoutColumns, array('field' => 2))) ?>
               </td>
             </tr>
             <tr>
                 <?php if ($element->isInternalReferralEnabled()): ?>
-
                   <div
                       class="data-group internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?> ">
                     <div class="cols-2 column"></div>
@@ -159,7 +157,6 @@ $creating = $creating ?: false;
                         <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
                     </div>
                   </div>
-
                 <?php endif; ?>
             </tr>
             </tbody>
@@ -169,8 +166,7 @@ $creating = $creating ?: false;
           <table class="cols-full last-left pad-top">
             <tbody>
             <tr>
-              <td>
-                &nbsp;
+              <td>&nbsp;
               </td>
             </tr>
             <tr>
@@ -322,6 +318,7 @@ $creating = $creating ?: false;
 
                   $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
                   $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
+                  $contact_nickname = isset($address_data['contact_nickname']) ? $address_data['contact_nickname'] : null;
                   $address = isset($address_data['address']) ? $address_data['address'] : null;
 
                   $internal_referral = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
@@ -335,9 +332,10 @@ $creating = $creating ?: false;
                       'defaults' => array(
                           'To' => array(
                               'contact_id' => $contact_id,
-                              'contact_type' => 'GP',
+                              'contact_type' => \Yii::app()->params['gp_label'],
                               'contact_name' => $contact_name,
                               'address' => $address,
+                              'contact_nickname' => $contact_nickname,
                           ),
                           'Cc' => array(
                               'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
@@ -350,19 +348,6 @@ $creating = $creating ?: false;
               } ?>
           </div>
         </div>
-          <?php if (!$element->document_instance): ?>
-            <div class="data-group">
-              <div class="cols-<?php echo $layoutColumns['label']; ?> column">
-                  <?php echo $form->dropDownListNoPost('address_target', $element->address_targets,
-                      $element->address_target,
-                      array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width')) ?>
-              </div>
-              <div class="cols-6 column end">
-                  <?php echo $form->textArea($element, 'address',
-                      array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
-              </div>
-            </div>
-          <?php endif; ?>
         <div class="data-group">
           <table class="cols-full">
             <colgroup>
@@ -409,26 +394,7 @@ $creating = $creating ?: false;
                 From
               </td>
               <td>
-                  <?php
-                  $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                      'id' => 'OphCoCorrespondence_footerAutoComplete',
-                      'name' => 'OphCoCorrespondence_footerAutoComplete',
-                      'value' => '',
-                      'sourceUrl' => array('default/users/correspondence-footer/true'),
-                      'options' => array(
-                          'minLength' => '3',
-                          'select' => "js:function(event, ui) {
-									$('#ElementLetter_footer').val(ui.item.correspondence_footer_text);
-									$('#OphCoCorrespondence_footerAutoComplete').val('');
-									return false;
-								}",
-                      ),
-                      'htmlOptions' => array(
-                          'placeholder' => 'type to search for users',
-                          'class' => 'cols-full search',
-                      ),
-                  ));
-                  ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                   <?php echo $form->textArea($element, 'footer',
                       array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
               </td>
@@ -438,73 +404,32 @@ $creating = $creating ?: false;
                 Enclosures
               </td>
               <td>
-                  <?php if (!$element->document_instance): ?>
-                    <div class="data-group">
-                      <div class="cols-<?php echo $layoutColumns['label']; ?> column">
-                          <?php echo $form->dropDownListNoPost('cc', $element->address_targets, '',
-                              array('empty' => '- Cc -', 'nowrapper' => true)) ?>
-                      </div>
-                      <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
-                          <?php echo $form->textArea($element, 'cc',
-                              array('rows' => 8, 'label' => false, 'nowrapper' => true), false,
-                              array('class' => 'address')) ?>
-                      </div>
-                      <div id="cc_targets">
-                          <?php foreach ($element->cc_targets as $cc_target) {
-                              ?>
-                            <input type="hidden" name="CC_Targets[]" value="<?php echo $cc_target ?>"/>
-                              <?php
-                          } ?>
-                      </div>
-                    </div>
-                  <?php endif; ?>
-
-                  <?php if (is_array(@$_POST['EnclosureItems'])) { ?>
-                      <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
-                      <div class="enclosureItem"><?php echo CHtml::textField("EnclosureItems[$key]", $value,
-                              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?><a
-                            href="#" class="removeEnclosure">Remove</a></div>
-                      <?php } ?>
-                  <?php } else { ?>
-                      <?php foreach ($element->enclosures as $i => $item) { ?>
-                      <div class="enclosureItem"><?php echo CHtml::textField("EnclosureItems[enclosure$i]",
-                              $item->content,
-                              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?><a
-                            href="#" class="removeEnclosure">Remove</a></div>
-                      <?php } ?>
-                  <?php } ?>
 
                 <input type="hidden" name="update_enclosures" value="1"/>
                 <div id="enclosureItems"
                      class="<?php echo !is_array(@$_POST['EnclosureItems']) && empty($element->enclosures) ? ' hide' : ''; ?>">
                     <?php if (is_array(@$_POST['EnclosureItems'])) { ?>
                         <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
-                        <div class=" row collapse in enclosureItem">
-                          <div class="cols-8 column">
-                              <?php echo CHtml::textField("EnclosureItems[$key]", $value,
-                                  array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                          </div>
-                          <div class="cols-4 column end">
-                            <div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
-                          </div>
+                            <div class="data-group collapse in enclosureItem flex-layout">
+                                <?=\CHtml::textField("EnclosureItems[$key]", $value,
+                                    array('autocomplete' => Yii::app()->params['html_autocomplete'] , 'class' => 'cols-full')) ?>
+                                			<i class="oe-i trash removeEnclosure"></i>
+                            </div>
                         </div>
                         <?php } ?>
                     <?php } else { ?>
                         <?php foreach ($element->enclosures as $i => $item) { ?>
-                        <div class="data-group collapse in enclosureItem">
-                          <div class="cols-8 column">
-                              <?php echo CHtml::textField("EnclosureItems[enclosure$i]", $item->content,
-                                  array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                          </div>
-                          <div class="cols-4 column end">
-                            <div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
-                          </div>
-                        </div>
+                  <div class="data-group collapse in enclosureItem flex-layout">
+                      <?=\CHtml::textField("EnclosureItems[enclosure$i]", $item->content,
+                          array('autocomplete' => Yii::app()->params['html_autocomplete'] , 'class' => 'cols-full')) ?>
+                      <i class="oe-i trash removeEnclosure"></i>
+                  </div>
                         <?php } ?>
                     <?php } ?>
                 </div>
-                <button class="addEnclosure secondary small" type="button">
-                  Add
+          <div class="add-data-actions">
+              <button class="addEnclosure secondary small" type="button">Add</button>
+          </div>
                 </button>
               </td>
             </tr>
@@ -512,8 +437,9 @@ $creating = $creating ?: false;
           </table>
         </div>
       </div>
-    <?php } ?>
 </div>
+</section> <!--this closing tag closes a <section> tag that was opened in a different file. To be fixed later on. -->
+<section class="element edit full edit-xxx">
 <div id="attachments_content_container">
     <?php
     $associated_content = EventAssociatedContent::model()
@@ -543,6 +469,35 @@ $creating = $creating ?: false;
         "ElementLetter_body",
         <?= CJSON::encode(\Yii::app()->params['tinymce_default_options'])?>
         );
+
+    OpenEyes.UI.AutoCompleteSearch.init({
+      input: $('#oe-autocompletesearch'),
+      url: baseUrl + 'users/correspondence-footer/true',
+      onSelect: function(){
+        let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+        $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
+      }
+    });
+    $('#ElementLetter_use_nickname').on('click', function(){
+      let nickname_check = $(this).is(':checked');
+      let addressee = $('#DocumentTarget_0_attributes_contact_name').val();
+      let recipient_to = addressee.split(' ');
+      let nickname;
+
+      if(recipient_to.length > 1){
+        addressee = recipient_to[0]+' '+(recipient_to[2] !== undefined ? recipient_to[2] : recipient_to[1]);
+
+        if(nickname_check){
+          nickname = $('#DocumentTarget_0_attributes_contact_nickname').val();
+          if(nickname.length > 0){
+            addressee = nickname;
+          }
+        }
+      }
+
+      $('#ElementLetter_introduction').val('Dear '+addressee+',');
+
+    });
   });
 </script>
 

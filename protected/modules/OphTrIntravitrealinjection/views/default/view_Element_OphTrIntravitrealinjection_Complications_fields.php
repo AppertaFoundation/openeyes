@@ -17,7 +17,7 @@
  */
 ?>
 
-<table class="label-value">
+<table class="borders">
   <tbody>
   <tr>
     <td>

@@ -43,7 +43,7 @@ if ($treatment && $treatment->decisiontree) {
                   <select
                       id="Element_OphCoTherapyapplication_PatientSuitability_<?php echo $side; ?>_DecisionTreeResponse_<?php echo $node->id; ?>"
                       name="Element_OphCoTherapyapplication_PatientSuitability[<?php echo $side; ?>_DecisionTreeResponse][<?php echo $node->id; ?>]">
-                    <option value="">- Please select-</option>
+                    <option value="">Select</option>
                     <option value="0" <?php if ($val == '0') {
                         echo 'selected';
                     } ?>>No
@@ -57,7 +57,7 @@ if ($treatment && $treatment->decisiontree) {
                   <select
                       id="Element_OphCoTherapyapplication_PatientSuitability_<?php echo $side; ?>_DecisionTreeResponse_<?php echo $node->id; ?>"
                       name="Element_OphCoTherapyapplication_PatientSuitability[<?php echo $side; ?>_DecisionTreeResponse][<?php echo $node->id; ?>]">
-                    <option value="">- Please select-</option>
+                    <option value="">Select</option>
                       <?php foreach ($node->response_type->getChoices() as $id => $label) { ?>
                         <option value="<?php echo $id; ?>" <?php if ($val == $id) {
                             echo 'selected';
@@ -77,13 +77,13 @@ if ($treatment && $treatment->decisiontree) {
     <?php } else { ?>
       <div class="field-value">Please select a treatment to determine compliance.</div>
     <?php } ?>
-  <div id="<?php echo $side; ?>_outcome_unknown" style="display: none;" class="outcome unknown">Unknown</div>
+  <span id="<?php echo $side; ?>_outcome_unknown" style="display: none;" class="outcome unknown highlighter orange">Unknown</span>
     <?php foreach (OphCoTherapyapplication_DecisionTreeOutcome::model()->findAll() as $outcome) { ?>
-      <div id="<?php echo $side; ?>_outcome_<?php echo $outcome->id ?>" style="display: none;"
-           class="outcome <?php echo $outcome->isCompliant() ? 'compliant' : 'non-compliant'; ?>"
+      <span id="<?php echo $side; ?>_outcome_<?php echo $outcome->id ?>" style="display: none;"
+           class="outcome highlighter <?php echo $outcome->isCompliant() ? 'compliant good' : 'non-compliant warning'; ?>"
            data-comp-val="<?php echo $outcome->isCompliant() ? '1' : '0'; ?>">
           <?php echo $outcome->name; ?>
-      </div>
+      </span>
     <?php } ?>
     <?php echo $form->hiddenInput($element, $side . '_nice_compliance') ?>
 </div>

@@ -39,7 +39,7 @@
 $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'display_order', 'condition'=>'active = 1'));
 
 ?>
-<?php echo CHtml::form('/OphDrPrescription/default/update/'.$id.'?reason=selected', 'get'); ?>
+<?=\CHtml::form('/OphDrPrescription/default/update/'.$id.'?reason=selected', 'get'); ?>
     <input type="hidden" name="do_not_save" value="1" />
     <input type="hidden" name="reason" id="reason" />
 
@@ -64,7 +64,7 @@ $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'displa
         </div>
     </div>
 
-<?php echo CHtml::endForm() ?>
+<?=\CHtml::endForm() ?>
 <br/>
   <div class="alert-box warning">
     Any old paper copies of this prescription MUST BE DESTROYED.

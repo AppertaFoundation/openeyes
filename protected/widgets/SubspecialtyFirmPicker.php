@@ -22,6 +22,9 @@ class SubspecialtyFirmPicker extends \BaseFieldWidget
     public $firms = [];
     public $model;
 
+    public $template = "<tr><td>{SubspecialtyLabel}</td><td>{SubspecialtyDropDown}</td></tr>
+                        <tr><td>{ContextLabel}</td><td>{ContextDropDown}</td></tr>";
+
     public $firm_id;
     public $subspecialty_id;
 
@@ -34,8 +37,84 @@ class SubspecialtyFirmPicker extends \BaseFieldWidget
     {
         parent::init();
         $this->subspecialties = \Subspecialty::model()->findAll();
-        if($this->model->subspecialty_id){
+        if ($this->model->subspecialty_id) {
             $this->firms = \Firm::model()->getList($this->model->subspecialty_id);
+        }
+    }
+
+    /**
+     * Renders the main content of the view.
+     * The content is divided into sections, such as summary, items, pager.
+     * Each section is rendered by a method named as "renderXyz", where "Xyz" is the section name.
+     * The rendering results will replace the corresponding placeholders in {@link template}.
+     */
+    public function render()
+    {
+        ob_start();
+        echo preg_replace_callback(
+            "/{(\w+)}/",
+            array($this, 'renderSection'),
+            $this->template
+        );
+        ob_end_flush();
+    }
+
+
+    public function renderSubspecialtyLabel()
+    {
+        echo 'Subspecialty';
+    }
+
+    public function renderSubspecialtyDropDown()
+    {
+        echo CHtml::activeDropDownList(
+            $this->model,
+            'subspecialty_id',
+            Subspecialty::model()->getList(),
+            ['empty' => 'Select', 'class' => 'js-subspecialty-dropdown cols-full']
+        );
+    }
+
+
+    public function renderContextLabel()
+    {
+        echo Firm::contextLabel();
+    }
+
+    public function renderContextDropDown()
+    {
+        $firms = $this->model->subspecialty_id ? Firm::model()->getList($this->model->subspecialty_id) : [];
+        echo CHtml::activeDropDownList(
+            $this->model,
+            'firm_id',
+            $firms,
+            [
+                'class' => 'js-firm-dropdown cols-full',
+                'empty' => 'All ' . Firm::contextLabel() . 's',
+                'disabled' => !$firms ? 'disabled' : false,
+            ]
+        );
+    }
+
+    /**
+     * Renders a section.
+     * This method is invoked by {@link render} for every placeholder found in {@link template}.
+     * It should return the rendering result that would replace the placeholder.
+     * @param array $matches the matches, where $matches[0] represents the whole placeholder,
+     * while $matches[1] contains the name of the matched placeholder.
+     * @return string the rendering result of the section
+     */
+    protected function renderSection($matches)
+    {
+        $method = 'render' . $matches[1];
+        if (method_exists($this, $method)) {
+            $this->$method();
+            $html = ob_get_contents();
+            ob_clean();
+
+            return $html;
+        } else {
+            return $matches[0];
         }
     }
 }

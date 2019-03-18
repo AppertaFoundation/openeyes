@@ -17,7 +17,7 @@
  */
 ?>
 <div class="eyedraw-fields">
-    <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
+    <?=\CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
   <div class="data-group">
     <div class="cols-6 column end">
       <label for="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'; ?>">
@@ -28,6 +28,6 @@
       <span class="data-value" id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display' ?>"></span>
     </div>
   </div>
-    <?php echo CHtml::activeTextArea($element, $side . '_description',
+    <?=\CHtml::activeTextArea($element, $side . '_description',
           array('rows' => '1', 'placeholder' => $element->getAttributeLabel($side . '_description'))) ?>
 </div>

@@ -11,27 +11,30 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-<h2>Edit Unique Codes</h2>
-
-<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
-
 <div class="cols-5">
+    <div class="row divider">
+        <h2>Edit Unique Codes</h2>
+    </div>
+
+    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
+
     <form method = "POST">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <colgroup>
-                <col class="cols-4">
+                <col class="cols-2">
                 <col class="cols-5">
             </colgroup>
+
             <tbody>
             <tr>
                 <td>Code</td>
-                <td> <?php echo CHtml::activeTextField(
+                <td> <?=\CHtml::activeTextField(
                     $unique_code,
                     'code',
                     [
@@ -43,28 +46,27 @@
             <tr>
                 <td>Active</td>
                 <td>
-                    <?php echo CHTML::activeCheckBox($unique_code, 'active'); ?>
+                    <?=\CHtml::activeCheckBox($unique_code, 'active'); ?>
                 </td>
             </tr>
             </tbody>
+
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
-                            'class' => 'button small button',
+                            'class' => 'button large',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Cancel',
                         [
-                            'class' => 'warning button small',
+                            'class' => 'button large',
                             'data-uri' => '/oeadmin/uniqueCodes/list',
-                            'type' => 'submit',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

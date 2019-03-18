@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -59,22 +59,21 @@ $form = $this->beginWidget(
             <tfoot>
             <tr>
                 <td colspan="6">
-                    <?php echo CHtml::htmlButton(
+                    <?=\CHtml::htmlButton(
                         'Add',
                         [
-                            'class' => 'small primary button',
+                            'class' => 'button large',
                             'name' => 'admin-add',
                             'type' => 'button',
                             'data-model' => 'OphTrConsent_Leaflet',
                             'id' => 'et_admin-add'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
-                            'class' => 'small primary button',
+                            'class' => 'button large',
                             'name' => 'admin-save',
-                            'type' => 'submit',
                             'id' => 'et_admin-save'
                         ]
                     ); ?>

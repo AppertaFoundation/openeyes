@@ -23,7 +23,7 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
 <?php if (@$htmlOptions['nowrapper']) { ?>
 
     <?php if (!$no_element) { ?>
-    <input type="hidden" value="" name="<?php echo CHtml::modelName($element) ?>[<?php echo $field ?>]">
+    <input type="hidden" value="" name="<?=\CHtml::modelName($element) ?>[<?php echo $field ?>]">
     <?php } ?>
 
     <?php foreach ($data as $id => $data_value) { ?>
@@ -36,15 +36,22 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
             }
         } ?>
     <label class="inline highlight <?= $label_class ?>">
-        <?php echo CHtml::checkBox("{$name}[]",
-            (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options); ?>
-        <?php echo CHtml::encode($data_value) ?>
+        <?php
+          if(is_array($selected_items)){
+            $is_checked = in_array($id, $selected_items);
+          } else {
+            $is_checked = (!is_null($value) && $value == $id) && (!is_string($value) || $value != '');
+          }
+        ?>
+        <?=\CHtml::checkBox("{$name}[]",
+            $is_checked, $options); ?>
+        <?=\CHtml::encode($data_value) ?>
     </label>
     <?php } ?>
 
 <?php } else { ?>
 
-  <fieldset id="<?php echo CHtml::modelName($element) . '_' . $name ?>"
+  <fieldset id="<?=\CHtml::modelName($element) . '_' . $name ?>"
             class="cols-full flex-layout flex-left <?= $fieldset_class ?>"<?php if ($hidden) { ?> style="display: none;"<?php } ?>>
       <?php
       // Added hidden input below to enforce posting of current form element name.
@@ -53,18 +60,18 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
       ?>
       <?php if ($label): ?>
         <label class="cols-<?php echo $layoutColumns['label']; ?> column">
-            <?php if ($field_value) { ?><?php echo CHtml::encode($label); ?>
-            <?php } elseif (!$label_above) { ?><?php echo CHtml::encode($label); ?>:<?php } ?>
+            <?php if ($field_value) { ?><?=\CHtml::encode($label); ?>
+            <?php } elseif (!$label_above) { ?><?=\CHtml::encode($label); ?>:<?php } ?>
         </label>
       <?php endif; ?>
       <?php if (!$no_element && $field) { ?>
-        <input type="hidden" value="" name="<?php echo CHtml::modelName($element) ?>[<?php echo $field ?>]">
+        <input type="hidden" value="" name="<?=\CHtml::modelName($element) ?>[<?php echo $field ?>]">
       <?php } ?>
     <div class="cols-<?php echo $layoutColumns['field']; ?>">
         <?php $i = 0; ?>
         <?php if ($label_above) { ?>
           <label for="">
-              <?php echo CHtml::encode($label) ?>
+              <?=\CHtml::encode($label) ?>
           </label>
         <?php } ?>
         <?php foreach ($data as $id => $data_value) { ?>
@@ -83,7 +90,7 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
               $is_checked = in_array($id, $selected_items);
               echo CHtml::checkBox("{$name}[]", $is_checked, $options);
               ?>
-              <?php echo CHtml::encode($data_value) ?>
+              <?=\CHtml::encode($data_value) ?>
           </label>
         <?php } ?>
     </div>

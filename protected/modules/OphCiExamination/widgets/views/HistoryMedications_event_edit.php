@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -130,22 +130,29 @@ $element_errors = $element->getErrors();
       element: $('#<?=$model_name?>_element')
     });
 
-    <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
-    new OpenEyes.UI.AdderDialog({
-      openButton: $('#add-medication-btn'),
-      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          array_map(function ($key, $medication) {
-              return ['label' => $medication['value'], 'id' => $medication['id'] , 'tags' => $medication['tags']];
-          },array_keys($medications),  $medications)
-      ) ?>, {'multiSelect': true})],
-      onReturn: function (adderDialog, selectedItems) {
-        medicationsController.addEntry(selectedItems);
-        return true;
-      },
-      searchOptions: {
-        searchSource: medicationsController.options.searchSource,
-      }
-    });
+      <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);?>
+      new OpenEyes.UI.AdderDialog({
+          openButton: $('#add-medication-btn'),
+          itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+              array_map(function ($key, $medication) {
+                  return ['label' => $medication['value'], 'id' => $medication['id'], 'tags' => $medication['tags']];
+              }, array_keys($medications), $medications)
+          ) ?>, {'multiSelect': true})],
+          onReturn: function (adderDialog, selectedItems) {
+              medicationsController.addEntry(selectedItems);
+              return true;
+          },
+          searchOptions: {
+              searchSource: medicationsController.options.searchSource,
+          },
+          enableCustomSearchEntries: true,
+      });
   });
+
+      $(".js-end-date-display").on("click", 'button.js-change-end-date', function (event) {
+          event.preventDefault();
+          $(this).closest(".js-end-date-display").hide();
+          $(this).closest(".js-stop-date").find("[id ^= 'js-stop-date-toolkit-']").show();
+      });
 
 </script>

@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -18,7 +18,7 @@
     <h2>Document sub types</h2>
   </div>
   <div class="cols-4 column end">
-      <?php echo CHtml::htmlButton('Add sub type', array('class' => 'button small addSubType'))?>
+      <?=\CHtml::htmlButton('Add sub type', array('class' => 'button large addSubType'))?>
   </div>
 <b> i say yes</b>
 </div>

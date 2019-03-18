@@ -74,7 +74,7 @@
                 <td></td>
                 <td>
                     <span id="projected_duration_<?php echo $identifier ?>">
-                        <?php echo CHtml::encode($totalDuration) ?> mins
+                        <?=\CHtml::encode($totalDuration) ?> mins
                     </span>
                     <span class="fade">(calculated)</span>
                 </td>
@@ -195,37 +195,64 @@
       updateProcedureSelect(m[1]);
     });
 
-    function updateProcedureSelect(identifier) {
-      var subsection_field = $('select[id=subsection_id_' + identifier + ']');
-      var subsection = subsection_field.val();
-      if (subsection != '') {
-
-
-        $.ajax({
-          'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
-          'type': 'POST',
-          'data': {'subsection': subsection, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
-          'success': function (data) {
-            $('select[name=select_procedure_id_' + identifier + ']').attr('disabled', false);
-            $('select[name=select_procedure_id_' + identifier + ']').html(data);
-
-            // remove any items in the removed_stack
-            $('select[name=select_procedure_id_' + identifier + '] option').map(function () {
-              var obj = $(this);
-
-              $.each(window["removed_stack_" + identifier], function (key, value) {
-                if (value["id"] == obj.val()) {
-                  obj.remove();
-                }
-              });
-            });
-
-            $('select[name=select_procedure_id_' + identifier + ']').parent().css('visibility' , 'visible');
-          }
+    function initialiseProcedureAdder() {
+        $('.add-options[data-id="subsections"]').on('click' , 'li' , function(){
+                updateProcedureDialog($(this).data('id'));
         });
-      } else {
-        $('select[name=select_procedure_id_' + identifier + ']').parent().hide();
-      }
+        if ($('.add-options[data-id="subsections"] > li').length === 0) {
+            $('.add-options[data-id="subsections"]').hide();
+        }
+
+        if ($('.add-options[data-id="select"] > li').length === 0) {
+            $('.add-options[data-id="select"]').hide();
+        }
+    }
+
+    function updateProcedureDialog(subsection) {
+        if (subsection !== '') {
+            $.ajax({
+                'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
+                'type': 'POST',
+                'data': {'subsection': subsection, 'dialog': true, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
+                'success': function (data) {
+                    $('.add-options[data-id="select"]').each(function () {
+                        $(this).html(data);
+                        $(this).show();
+                    });
+                }
+            });
+        }
+    }
+
+    function updateProcedureSelect(identifier) {
+        let subsection_field = $('select[id=subsection_id_' + identifier + ']');
+        let subsection = subsection_field.val();
+        if (subsection !== '') {
+            $.ajax({
+                'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
+                'type': 'POST',
+                'data': {'subsection': subsection, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
+                'success': function (data) {
+                    $('select[name=select_procedure_id_' + identifier + ']').attr('disabled', false);
+                    $('select[name=select_procedure_id_' + identifier + ']').html(data);
+
+                    // remove any items in the removed_stack
+                    $('select[name=select_procedure_id_' + identifier + '] option').map(function () {
+                        var obj = $(this);
+
+                        $.each(window["removed_stack_" + identifier], function (key, value) {
+                            if (value["id"] == obj.val()) {
+                                obj.remove();
+                            }
+                        });
+                    });
+
+                    $('select[name=select_procedure_id_' + identifier + ']').parent().css('visibility' , 'visible');
+                }
+            });
+        } else {
+            $('select[name=select_procedure_id_' + identifier + ']').parent().hide();
+        }
     }
 
     $('select[id^="select_procedure_id"]').unbind('change').change(function () {
@@ -321,11 +348,17 @@
     new OpenEyes.UI.AdderDialog({
       id:'procedure_popup_<?= $identifier ?:''; ?>',
       openButton: $('#add-procedure-list-btn-<?= $identifier ?>'),
-      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+      itemSets: [
+          new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+              array_map(function ($key, $item) {
+                  return ['label' => $item, 'id' => $key];
+              }, array_keys($subsections), $subsections))?>, {'id':'subsections'}),
+          new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $item) {
               return ['label' =>$item, 'id' => $key];
           },array_keys($procedures), $procedures)
-      ) ?>, {'id':'select','multiSelect': true})],
+      ) ?>, {'id':'select','multiSelect': true})
+      ],
 
       onReturn: function (adderDialog, selectedItems) {
         var $selector = $('#select_procedure_id_<?php echo $identifier; ?>');
@@ -338,6 +371,8 @@
         searchSource: '/procedure/autocomplete',
     }
     });
+
+    initialiseProcedureAdder();
   });
 </script>
 

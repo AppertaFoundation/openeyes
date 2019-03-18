@@ -17,29 +17,42 @@
  */
 ?>
 
-<div class="box admin">
+<div class="cols-5">
 
-  <header class="box-header">
-    <h2 class="box-title"><?php echo $title ? $title : 'Examination Admin' ?></h2>
-    <div class="box-actions">
-      <a class="button small"
-         href="<?php echo Yii::app()->createUrl('OphCiExamination/admin/create' . $model_class); ?>?disorder_id=<?php echo $disorder_id ?>">Add
-        New</a>
-    </div>
-  </header>
+    <table class="cols-full standard">
+        <title class="box-title"><?php echo $title ? $title : 'Examination Admin' ?></title>
+        <colgroup>
+            <col class="cols-1">
+            <col class="cols-1">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Disorder Questions</td>
+            <td>
+                <?= CHtml::submitButton(
+                    'Add New',
+                    [
+                        'class' => 'button large',
+                        'name' => 'cancel',
+                        'data-uri' => (Yii::app()->createUrl('OphCiExamination/admin/create' . $model_class) . '?disorder_id=' . $disorder_id),
+                        'id' => 'et_cancel',
+                    ]
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Select disorder:</td>
+            <td>
+                <?php
+                echo CHtml::dropDownList('disorder_id', $disorder_id,
+                    CHtml::listData(OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex::model()->getAllDisorders(),
+                        'id', 'term'), array('empty' => 'Select', 'id' => 'question_disorder'));
+                ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-  <div class="data-group">
-    <div class="cols-2 column">
-      <label for="question_disorder">Select disorder:</label>
-    </div>
-    <div class="cols-6 column end">
-        <?php
-        echo CHtml::dropDownList('disorder_id', $disorder_id,
-            CHtml::listData(OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex::model()->getAllDisorders(),
-                'id', 'term'), array('empty' => '- Please select -', 'id' => 'question_disorder'));
-        ?>
-    </div>
-  </div>
     <?php if (!$disorder_id) { ?>
       <div class="alert-box">
         <strong>Please select a disorder to view the questions</strong>

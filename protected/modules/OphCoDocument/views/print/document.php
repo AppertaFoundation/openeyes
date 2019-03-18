@@ -22,7 +22,7 @@
     }
 ?>
 
-<?php $this->renderPartial('//print/event_header'); ?>
+<?php $this->renderPartial('//print/patient_overview'); ?>
 
 <?php foreach($this->getElements() as $element):  ?>
     <b><?php if($element->sub_type) echo $element->sub_type->name; ?></b>
@@ -30,36 +30,26 @@
         <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->single_document->mimetype), array('element'=>$element, 'index'=>'single_document')); ?>
     <?php endif; ?>
     <?php if(($element->right_document_id) || ($element->left_document_id)): ?>
-        <table border="0">
-          <colgroup>
-            <col class="cols-6">
-            <col class="cols-6">
-          </colgroup>
-            <thead>
-                <tr>
-                    <th>
-                        <?php if($element->right_document_id): ?>Right side<?php endif; ?>
-                    </th>
-                    <th>
-                        <?php if($element->left_document_id): ?>Left side<?php endif; ?>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <?php if($element->right_document_id): ?>
-                            <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->right_document->mimetype), array('element'=>$element, 'index'=>'right_document')); ?>
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <?php if($element->left_document_id): ?>
-                            <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->left_document->mimetype), array('element'=>$element, 'index'=>'left_document')); ?>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div>
+            <?php if ($element->right_document_id) {
+                ?>
+                <div id="right-eye">
+                    <h2>Right eye</h2>
+                    <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->right_document->mimetype), array('element'=>$element, 'index'=>'right_document')); ?>
+                </div>
+            <?php } ?>
+            <hr>
+            <?php if ($element->left_document_id) { ?>
+                <div id="left-eye">
+                    <h2>Left eye</h2>
+                    <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->left_document->mimetype), array('element'=>$element, 'index'=>'left_document')); ?>
+                </div>
+            <?php } ?>
+        </div>
     <?php endif; ?>
     <?php if($element->comment) echo "<br/><b>Comments: </b><br>".nl2br($element->comment); ?>
 <?php endforeach; ?>
+
+
+
+

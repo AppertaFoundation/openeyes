@@ -17,7 +17,7 @@
  */
 ?>
 <div id="diaryTemplate">
-	<div id="d_title">TCIs in date range <?php echo CHtml::encode($_POST['date-start'])?> to <?php echo CHtml::encode($_POST['date-end'])?></div>
+	<div id="d_title">TCIs in date range <?=\CHtml::encode($_POST['date-start'])?> to <?=\CHtml::encode($_POST['date-end'])?></div>
 	<table>
 		<tr>
 			<th>Patient no</th>

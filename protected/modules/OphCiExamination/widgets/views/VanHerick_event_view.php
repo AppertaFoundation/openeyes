@@ -11,18 +11,18 @@
 * @package OpenEyes
 * @link http://www.openeyes.org.uk
 * @author OpenEyes <info@openeyes.org.uk>
-* @copyright Copyright (c) 2018, OpenEyes Foundation
+* @copyright Copyright (c) 2019, OpenEyes Foundation
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 ?>
 
 <div class="element-data element-eyes row">
     <div class="js-element-eye right-eye column">
-      <div class="data-value"><?= $element->hasRight() ? $element->right_van_herick->name : 'Not recorded';?></div>
+      <div class="data-value"><?= $element->hasRight() ? $element->right_van_herick->name : 'Not assessed in this examination';?></div>
     </div>
 
     <div class="js-element-eye left-eye column">
-      <div class="data-value"><?= $element->hasLeft() ? $element->left_van_herick->name : 'Not recorded';?></div>
+      <div class="data-value"><?= $element->hasLeft() ? $element->left_van_herick->name : 'Not assessed in this examination';?></div>
     </div>
 </div>
  

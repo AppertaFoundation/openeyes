@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -34,6 +34,7 @@ $required_diagnoses_ids = array_map(function ($r) {
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+    <input type="hidden" name="diabetic_diagnoses[]"/>
   <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
     <colgroup>
       <col class="cols-3">
@@ -103,6 +104,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                 'id' => '',
                 'disorder_id' => '{{disorder_id}}',
                 'disorder_display' => '{{disorder_display}}',
+                'is_diabetes' => '{{is_diabetes}}',
                 'side_id' => (string)EyeSelector::$NOT_CHECKED,
                 'side_display' => '{{side_display}}',
                 'date' => '{{date}}',
@@ -124,8 +126,8 @@ $required_diagnoses_ids = array_map(function ($r) {
       openButton: $('#add-history-systemic-diagnoses'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($disorder) {
-              return ['label' => $disorder->term, 'id' => $disorder->id];
-          }, CommonSystemicDisorder::getDisorders())
+              return ['label' => $disorder['term'], 'id' => $disorder['id'] , 'is_diabetes' => $disorder['is_diabetes']];
+          }, CommonSystemicDisorder::getDisordersWithDiabetesInformation())
       ) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         systemicDiagnosesController.addEntry(selectedItems);

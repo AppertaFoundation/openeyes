@@ -28,6 +28,8 @@ class MedicationController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
+    public $group = 'Drugs';
+
     /**
      * Lists medications.
      *
@@ -85,6 +87,7 @@ class MedicationController extends BaseAdminController
         $admin->getSearch()->setCriteria($criteria);
 
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->div_wrapper_class = 'cols-7';
         $admin->listModel();
     }
 

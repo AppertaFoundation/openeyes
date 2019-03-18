@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -69,7 +69,7 @@
         if ($queueset->filter_subspecialty) : ?>
           <td class="fade">Subspecialty:</td>
           <td>
-              <?php echo CHtml::dropDownList(
+              <?=\CHtml::dropDownList(
                   'subspecialty-id',
                   @$_POST['subspecialty-id'],
                   Subspecialty::model()->getList(),
@@ -128,13 +128,13 @@
       <td class="fade">Context</td>
       <td>
           <?php if (!@$_POST['subspecialty-id']) { ?>
-              <?php echo CHtml::dropDownList('firm-id', '', array(), array(
+              <?=\CHtml::dropDownList('firm-id', '', array(), array(
                   'class' => 'cols-11',
                   'empty' => 'All ' . Firm::contextLabel() . 's',
                   'disabled' => 'disabled',
               )) ?>
           <?php } else { ?>
-              <?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'],
+              <?=\CHtml::dropDownList('firm-id', @$_POST['firm-id'],
                   Firm::model()->getList(@$_POST['subspecialty-id']), array(
                       'class' => 'cols-11',
                       'empty' => 'All ' . Firm::contextLabel() . 's',

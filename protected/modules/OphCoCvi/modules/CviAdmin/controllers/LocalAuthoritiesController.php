@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -18,8 +18,12 @@
  *
  * @package OEModule\OphCoCvi\CviAdmin\controllers
  */
-class LocalAuthoritiesController extends \BaseAdminController
+class LocalAuthoritiesController extends \AdminController
 {
+    public $layout = '//layouts/admin';
+    public $items_per_page = 30;
+    public $group = 'CVI';
+
     /**
      * @return array
      */
@@ -50,6 +54,7 @@ class LocalAuthoritiesController extends \BaseAdminController
      */
     public function actionList()
     {
+
         \Audit::add('admin-CommissioningBodyService', 'list');
 
         $commissioning_bt = \CommissioningBodyType::model()->findByAttributes(array('shortname' => 'LA'));
@@ -62,8 +67,8 @@ class LocalAuthoritiesController extends \BaseAdminController
         $data['title'] = 'CVI Social Services Depts.';
         $data['commissioning_bt'] = $commissioning_bt;
         $data['service_type'] = $service_type;
-        $data['return_url'] = '/OphCoCvi/localAuthoritiesAdmin/list';
-        $data['base_data_url'] = 'OphCoCvi/localAuthoritiesAdmin/';
+        $data['return_url'] = '/OphCoCvi/admin/localAuthorities/list';
+        $data['base_data_url'] = 'OphCoCvi/admin/localAuthorities/';
 
         $this->render('//admin/commissioning_body_services/index', $data);
     }

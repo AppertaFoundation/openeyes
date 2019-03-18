@@ -48,7 +48,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('conjunctival_flap_type_id')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('conjunctival_flap_type_id')) ?>
               </div>
             </td>
             <td>
@@ -58,7 +58,7 @@
 
           <tr>
             <td>
-              <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('stay_suture')) ?>:</div>
+              <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('stay_suture')) ?>:</div>
             </td>
             <td>
               <div class="data-value"><?php echo $element->stay_suture ? 'Yes' : 'No' ?></div>
@@ -66,7 +66,7 @@
           </tr>
           <tr>
             <td>
-              <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?>:</div>
+              <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('site_id')) ?>:</div>
             </td>
             <td>
               <div class="data-value"><?php echo $element->site ? $element->site->name : 'None' ?></div>
@@ -75,7 +75,7 @@
 
           <tr>
             <td>
-              <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('size_id')) ?></div>
+              <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('size_id')) ?></div>
             </td>
             <td>
               <div class="data-value"><?php echo $element->size ? $element->size->name : 'None' ?></div>
@@ -85,7 +85,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('sclerostomy_type_id')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('sclerostomy_type_id')) ?>
               </div>
             </td>
             <td>
@@ -98,7 +98,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_type_id')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('viscoelastic_type_id')) ?>
               </div>
             </td>
             <td>
@@ -111,7 +111,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_removed')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('viscoelastic_removed')) ?>
               </div>
             </td>
             <td>
@@ -122,7 +122,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_flow_id')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('viscoelastic_flow_id')) ?>
               </div>
             </td>
             <td>

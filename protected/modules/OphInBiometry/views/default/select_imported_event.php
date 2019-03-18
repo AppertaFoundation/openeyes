@@ -24,70 +24,56 @@ $this->moduleNameCssClass .= ' edit';
 
 <div class="data-group">
   <div class="cols-12 column">
-    <section class="element">
+      <div class="alert-box issue">
+          <?php if (count($imported_events) > 0) { ?>
+              The following Biometry reports are available for this patient. <b>Please select a report.</b>
+          <?php } else { ?>
+              There are no imported events.
+          <?php } ?>
+      </div>
+
+    <section class="element view full priority">
         <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'biometry-event-select',
             'enableAjaxValidation' => false,
         ));
 
-        // Event actions
-        $this->event_actions[] = EventAction::button('Continue', 'save', array('level' => 'secondary'),
-            array('form' => 'biometry-event-select', 'class' => 'button small'));
-        ?>
-        <?php $this->displayErrors($errors) ?>
-
-      <header class="element-header">
-        <h3 class="element-title">Select Biometry Report</h3>
-      </header>
+        $this->displayErrors($errors) ?>
 
       <div class="element-fields">
-        <div class="field-info">
-            <?php if (count($imported_events) > 0) { ?>
-              The following Biometry reports are available for this patient:
-            <?php } else { ?>
-              There are no imported events.
-            <?php } ?>
-        </div>
-
         <fieldset>
-          <div class="cols-12 column end">
-              <?php foreach ($imported_events as $imported_event) { ?>
-                <label class="highlight booking">
-										<span class="data-group">
-											<span class="cols-1 column">
-												<input type="radio" value="biometry<?php echo $imported_event->id ?>" name="SelectBiometry"/>
-											</span>
-											<span class="cols-1 column">
-												<img src="<?php echo Yii::app()->assetManager->createUrl('img/small.png', $assetAliasPath) ?>"
-                             alt="op" style="height:15px"/>
-											</span>
-											<span class="cols-2 column">
-												<b>Date and time: </b><br>
-												<span id="date_and_time"><?php
-                            $eventDateTime = explode(' ', $imported_event->event->event_date);
-                            echo date('j M Y', strtotime($eventDateTime[0])) . ' ' . $eventDateTime[1];
-                            ?></span>
-											</span>
-											<span class="cols-1 column">
-												<b>Machine:</b>
-											</span>
-											<span class="cols-3 column">
-												<?php echo $imported_event->device_name . ' (' . $imported_event->device_id . ')';
-                        ?>
-											</span>
-											<span class="cols-1 column">
-												<b>Instrument:</b>
-											</span>
-											<span class="cols-3 column">
-												<?php
-                        echo $imported_event->device_manufacturer . ' ' . $imported_event->device_model;
-                        ?>
-											</span>
-
-										</span>
-                </label>
-              <?php } ?>
-          </div>
+            <input id="biometry_type" type="hidden" name="SelectBiometry"/>
+            <header class="element-header"><h3 class="element-title">Select Biometry Report</h3></header>
+            <div class="element-data full-width">
+                <table class="js-select-biometry clickable-rows large standard">
+                    <thead>
+                    <tr>
+                        <th>Date and time</th>
+                        <th>Machine</th>
+                        <th>Instrument</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($imported_events as $imported_event) { ?>
+                        <tr class="highlight booking">
+                            <td>
+                                <?php
+                                $eventDateTime = explode(' ', $imported_event->event->event_date);
+                                echo date('j M Y', strtotime($eventDateTime[0])) . ' ' . $eventDateTime[1]; ?>
+                            </td>
+                            <td>
+                                <?= $imported_event->device_name . ' (' . $imported_event->device_id . ')' ?>
+                            </td>
+                            <td>
+                                <?= $imported_event->device_manufacturer . ' ' . $imported_event->device_model; ?>
+                            </td>
+                            <td><i id ="biometry<?php echo $imported_event->id?>" class="oe-i direction-right-circle medium pad"></i></td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
         </fieldset>
       </div>
 
@@ -104,3 +90,10 @@ $this->moduleNameCssClass .= ' edit';
 </div>
 
 <?php $this->endContent(); ?>
+
+<script type="text/javascript">
+    $( ".clickable-rows.large.standard tbody tr" ).on( "click", function() {
+        $("#biometry_type").attr('value', $(this).find('i').attr('id'));
+        $("#biometry-event-select").submit();
+    });
+</script>

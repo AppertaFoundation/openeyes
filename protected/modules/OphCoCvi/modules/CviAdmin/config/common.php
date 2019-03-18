@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -45,8 +45,8 @@ $config = [
     'components' => [
         'urlManager' => [
             'rules' => [
-                'OphCoCvi/admin/<controller:\w+>/<action:\w+>' => 'OphCoCvi/CviAdmin/<controller>/<action>',
-                'OphCoCvi/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => 'OphCoCvi/CviAdmin/<controller>/<action>',
+                'OphCoCvi/admin/<controller:\w+>/<action:\w+>' => '/OphCoCvi/CviAdmin/<controller>/<action>',
+                'OphCoCvi/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => '/OphCoCvi/CviAdmin/<controller>/<action>',
             ]
         ]
     ]

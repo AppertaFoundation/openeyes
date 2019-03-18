@@ -17,15 +17,15 @@
  */
 ?>
 
-<li class="queue<?= $queue->active ? '' : ' inactive'?>">
+<li class="queue<?= $queue->active ? '' : ' inactive'?>" style="color:white">
 	<div class="description"><?= $queue->name ?></div>
 	<div class="actions" data-queue-id="<?=$queue->id?>">
-		<span class="edit admin-action js-has-tooltip" data-tooltip-content="edit">e</span> -
-		<span class="add-child admin-action js-has-tooltip" data-tooltip-content="add">+</span> -
-		<span class="active-toggle admin-action js-has-tooltip" data-tooltip-content="<?= $queue->active ? 'deactivate' : 'activate' ?>"><?= $queue->active ? 'x' : 'o' ?></span> -
+		<span class="edit admin-action js-has-tooltip" data-tooltip-content="edit"><i class="oe-i small pencil pro-theme"></i></span> -
+		<span class="add-child admin-action js-has-tooltip" data-tooltip-content="add"><i class="oe-i small plus-circle pro-theme"></i></span> -
+		<span class="active-toggle admin-action js-has-tooltip" data-tooltip-content="<?= $queue->active ? 'deactivate' : 'activate' ?>"><?= $queue->active ? '<i class="oe-i small remove pro-theme"></i>' : 'o' ?></span> -
 		<span class="expansion-controls">
-			<span class="show-children js-has-tooltip" data-tooltip-content="expand" style="display:none;">\/</span>
-			<span class="hide-children js-has-tooltip" data-tooltip-content="collapse">/\</span>
+			<span class="show-children js-has-tooltip" data-tooltip-content="expand" style="display:none;"><i class="oe-i small expand pro-theme"pro-theme"></i></span>
+			<span class="hide-children js-has-tooltip" data-tooltip-content="collapse"><i class="oe-i small collapse pro-theme"></i></span>
 		</span>
 	</div>
 

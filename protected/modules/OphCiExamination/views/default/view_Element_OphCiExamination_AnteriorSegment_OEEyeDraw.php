@@ -22,8 +22,8 @@
         'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id,
         'side' => ($side === 'right') ? 'R' : 'L',
         'mode' => 'view',
-        'width' => 200,
-        'height' => 200,
+        'width' => $this->action->id === 'view' ? 200 : 120,
+        'height' => $this->action->id === 'view' ? 200 : 120,
         'model' => $element,
         'attribute' => $side . '_eyedraw',
         'toggleScale' => 0.72,
@@ -33,8 +33,8 @@
         'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id . '_side',
         'side' => ($side === 'right') ? 'R' : 'L',
         'mode' => 'view',
-        'width' => 132,
-        'height' => 200,
+        'width' => $this->action->id === 'view' ? 132 : 80.4,
+        'height' => $this->action->id === 'view' ? 200 : 120,
         'model' => $element,
         'attribute' => $side . '_eyedraw2',
         'toggleScale' => 0.72,
@@ -50,7 +50,7 @@
 
     <?php if ($description = $element->{$side . '_description'}): ?>
       <div class="data-label"><?php echo $element->getAttributeLabel($side . '_description') ?>:</div>
-      <div class="data-value"><?php echo CHtml::encode($description) ?></div>
+      <div class="data-value"><?=\CHtml::encode($description) ?></div>
     <?php endif; ?>
 
     <?php /* See OE-4283 */ ?>

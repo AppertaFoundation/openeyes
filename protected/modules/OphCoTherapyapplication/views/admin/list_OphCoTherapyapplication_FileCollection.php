@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <div class="hidden" id="add-new-form" style="margin-bottom: 10px">
 	<?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -27,8 +28,8 @@
     $this->endWidget();
     ?>
 </div>
-<div class="box admin">
-	<h2><?php echo $title ?></h2>
+
+<div class="cols-3">
 	<?php $this->renderPartial('//base/_messages')?>
 	<form id="admin_file_collections">
 		<table class="standard">
@@ -51,8 +52,27 @@
 			<tfoot class="pagination-container">
 				<tr>
 					<td colspan="2">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphCoTherapyapplication/admin/addFileCollection'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphCoTherapyapplication/admin/deleteFileCollections', 'data-object' => 'file_collections'))->toHtml()?>
+                        <?=\CHtml::button(
+                            'Add',
+                            [
+                                'class' => 'button large',
+                                'type' => 'submit',
+                                'name' => 'add',
+                                'data-uri' => '/OphCoTherapyapplication/admin/addFileCollection',
+                                'id' => 'et_add'
+                            ]
+                        ); ?>
+                        <?=\CHtml::button(
+                            'Delete',
+                            [
+                                'class' => 'button large',
+                                'type' => 'submit',
+                                'name' => 'delete',
+                                'data-object' => 'file_collections',
+                                'data-uri' => '/OphCoTherapyapplication/admin/deleteFileCollections',
+                                'id' => 'et_delete'
+                            ]
+                        ); ?>
 					</td>
 				</tr>
 			</tfoot>

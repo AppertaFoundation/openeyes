@@ -15,6 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$core_api = new CoreAPI();
 ?>
 <tr class="<?php 
     echo (($i % 2 == 0) ? 'even' : 'edd');
@@ -41,14 +43,14 @@
 	</td>
 	<td>
 		<?php if ($log->patient) {?>
-			<?php echo CHtml::link($log->patient->displayName, array('patient/view/'.$log->patient_id))?>
+			<?=\CHtml::link($log->patient->displayName, array($core_api->generateEpisodeLink($log->patient)))?>
 		<?php } else {?>
 			-
 		<?php }?>
 	</td>
 	<td>
 		<?php if ($log->episode) {?>
-			<?php echo CHtml::link('view', array('patient/episode/'.$log->episode_id))?>
+			<?=\CHtml::link('view', array('patient/episode/'.$log->episode_id))?>
 		<?php } else {?>
 			-
 		<?php }?>

@@ -229,10 +229,12 @@ $(document).ready(function() {
 	$('select').bind('change').change(function() {
 		var selVal = $(this).val();
 		var allergic = false;
+		var allergyName = '';
 		if (selVal) {
 			$(this).find('option').each(function() {
 				if (selVal == $(this).val()) {
 					if ($(this).data('allergic') == '1') {
+						allergyName = $(this).data('allergy');
 						allergic = true;
 					}
 					return false;
@@ -240,10 +242,10 @@ $(document).ready(function() {
 			});
 		}
 		if (allergic) {
-			$(this).closest('.wrapper').addClass('allergyWarning');
+			$(this).closest('.wrapper').prepend('<i class="oe-i warning pad-right js-allergy-warning js-has-tooltip" data-tooltip-content="Allergic to ' + allergyName + '"></i>');
 		}
 		else {
-			$(this).closest('.wrapper').removeClass('allergyWarning');
+			$(this).closest('.wrapper').find('.js-allergy-warning').remove();
 		}
 	})
 

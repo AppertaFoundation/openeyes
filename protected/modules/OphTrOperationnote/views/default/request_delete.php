@@ -21,7 +21,7 @@
 <section class="element">
   <section class="element-fields full-width">
 
-      <?php echo CHtml::form(array('Default/requestDeletion/' . $this->event->id), 'post',
+      <?=\CHtml::form(array('Default/requestDeletion/' . $this->event->id), 'post',
           array('id' => 'deleteForm')) ?>
     <div id="delete_event">
       <h3>Request event deletion</h3>
@@ -31,12 +31,12 @@
         <?php $this->displayErrors($errors) ?>
       <div style="width:300px; margin-bottom: 0.6em;">
         <p>Reason for deletion:</p>
-          <?php echo CHtml::textArea('delete_reason', '', array('cols' => 40)) ?>
+          <?=\CHtml::textArea('delete_reason', '', array('cols' => 40)) ?>
       </div>
       <p>
         <strong>Are you sure you want to proceed?</strong>
       </p>
-        <?php echo CHtml::hiddenField('event_id', $this->event->id); ?>
+        <?=\CHtml::hiddenField('event_id', $this->event->id); ?>
       <button type="submit" class="warning" id="et_deleteevent" name="et_deleteevent">
         Request deletion
       </button>
@@ -44,7 +44,7 @@
         Cancel
       </button>
       <i class="loader spinner" style="display: none;"></i>
-        <?php echo CHtml::endForm(); ?>
+        <?=\CHtml::endForm(); ?>
     </div>
   </section>
 </section>

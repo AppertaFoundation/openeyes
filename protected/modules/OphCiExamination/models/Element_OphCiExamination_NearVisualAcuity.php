@@ -113,4 +113,16 @@ class Element_OphCiExamination_NearVisualAcuity extends Element_OphCiExamination
             $this->right_readings = $right_readings;
         }
     }
+
+    public function afterSave()
+    {
+        foreach (array('left', 'right') as $eye_side) {
+            if ($this->{$eye_side .'_unable_to_assess'} || $this->{$eye_side .'_eye_missing'}) {
+                foreach ($this->{$eye_side .'_readings'} as $reading) {
+                    $reading->delete();
+                }
+            }
+        }
+        parent::afterSave();
+    }
 }

@@ -37,19 +37,10 @@ if ($footer_param !== null) {
 
 ?>
 
-  <h1>
-      <?php
-      if ($this->attachment_print_title) {
-          echo $this->attachment_print_title;
-      } else {
-          echo 'Prescription Form';
-      }
-      ?>
-  </h1>
-
 <?php
 $firm = $element->event->episode->firm;
-$consultantName = $firm->consultant ? $firm->consultant->getFullName() : 'None';
+$cost_code = $firm->cost_code ? " ($firm->cost_code)": '';
+$consultantName = $firm->consultant ? ($firm->consultant->getFullName() . $cost_code) : 'None';
 $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 ?>
 
@@ -67,7 +58,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
     <tr>
       <th>Date of Birth</th>
       <td><?php echo $this->patient->NHSDate('dob') ?> (<?php echo $this->patient->age ?>)</td>
-      <th>NHS Number</th>
+      <th><?php echo Yii::app()->params['nhs_num_label']?> Number</th>
       <td><?php echo $this->patient->getNhsnum() ?></td>
     </tr>
     <tr>
@@ -160,7 +151,7 @@ foreach ($items_data as $group => $items) { ?>
           <tr class="prescriptionComments">
             <td class="prescriptionLabel">Comments:</td>
             <td colspan="<?php echo strpos($group_name, "Hospital") !== false ? 7 : 4 ?>">
-              <i><?php echo CHtml::encode($item->comments); ?></i></td>
+              <i><?=\CHtml::encode($item->comments); ?></i></td>
           </tr>
         <?php }
     } ?>

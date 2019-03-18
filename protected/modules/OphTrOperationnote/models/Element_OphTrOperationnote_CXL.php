@@ -37,6 +37,8 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
 {
     public $service;
 
+    public $requires_eye = false;
+
     /**
      * Returns the static model of the specified AR class.
      *

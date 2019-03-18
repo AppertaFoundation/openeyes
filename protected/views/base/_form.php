@@ -35,55 +35,59 @@ if (!Yii::app()->user->isGuest) {
     $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
     ?>
 
-  <div class="oe-user">
-    <ul class="oe-user-profile-context">
-      <li><em>User</em><?= $user->first_name . ' ' . $user->last_name; ?>
-          <?php if (Yii::app()->params['profile_user_can_edit']) { ?>
-            <a href="<?= Yii::app()->createUrl('/profile'); ?>">profile</a>
-          <?php } ?>
-      </li>
+    <div class="oe-user-banner">
+        <?php $this->renderPartial('//base/_banner_watermark'); ?>
+    </div>
+    <div class="oe-user">
+        <ul class="oe-user-profile-context">
+            <li><em>User</em><?= $user->first_name . ' ' . $user->last_name; ?>
+                <?php if (Yii::app()->params['profile_user_can_edit']) { ?>
+                    <a href="<?= Yii::app()->createUrl('/profile'); ?>">profile</a>
+                <?php } ?>
+            </li>
 
-      <li><em>Site</em><?= Site::model()->findByPk($this->selectedSiteId)->short_name; ?></li>
-      <li>
-        <em><?= Firm::contextLabel() ?></em><?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?>
-        <a id="change-firm" href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>">change</a>
-      </li>
-    </ul>
-  </div>
-  <div class="oe-nav">
-    <ul class="oe-big-icons">
-      <li class="oe-nav-btn">
-        <a class="icon-btn" href="/">
-          <svg viewBox="0 0 80 40" class="icon home">
-            <use xlink:href="<?= $navIconUrl . '#home-icon'; ?>"></use>
-          </svg>
-        </a>
-      </li>
-        <?= $menuHelper->render($navIconUrl) ?>
-      <li class="oe-nav-btn">
-        <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
-          <svg viewBox="0 0 80 40" class="icon clinic ">
-            <use xlink:href="<?= $navIconUrl . '#clinic-icon' ?>"></use>
-          </svg>
-        </a>
-      </li>
-      <li class="oe-nav-btn js-hotlist-panel-wrapper">
-        <div class="nav-js-btn" id="js-nav-hotlist-btn" data-fixable="<?= $this->fixedHotlist ? 'true' : 'false' ?>">
-          <svg viewBox="0 0 80 40" class="icon hotlist">
-            <use xlink:href="<?= $navIconUrl . '#hotlist-icon' ?>"></use>
-          </svg>
-        </div>
-          <?php $this->renderPartial('//base/_hotlist'); ?>
-      </li>
-      <li class="oe-nav-btn">
-        <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>">
-          <svg viewBox="0 0 80 40" class="icon logout">
-            <use xlink:href="<?= $navIconUrl . '#logout-icon'; ?>"></use>
-          </svg>
-          <img src="" class="icon-logout"/>
-        </a>
-      </li>
-    </ul>
-  </div>
+            <li><em>Site</em><?= Site::model()->findByPk($this->selectedSiteId)->short_name; ?></li>
+            <li>
+                <em><?= Firm::contextLabel() ?></em><?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?>
+                <a id="change-firm" href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>">change</a>
+            </li>
+        </ul>
+    </div>
+    <div class="oe-nav">
+        <ul class="oe-big-icons">
+            <li class="oe-nav-btn">
+                <a class="icon-btn" href="/">
+                    <svg viewBox="0 0 80 40" class="icon home">
+                        <use xlink:href="<?= $navIconUrl . '#home-icon'; ?>"></use>
+                    </svg>
+                </a>
+            </li>
+            <?= $menuHelper->render($navIconUrl) ?>
+            <li class="oe-nav-btn">
+                <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
+                    <svg viewBox="0 0 80 40" class="icon clinic ">
+                        <use xlink:href="<?= $navIconUrl . '#clinic-icon' ?>"></use>
+                    </svg>
+                </a>
+            </li>
+            <li class="oe-nav-btn js-hotlist-panel-wrapper">
+                <div class="nav-js-btn" id="js-nav-hotlist-btn"
+                     data-fixable="<?= $this->fixedHotlist ? 'true' : 'false' ?>">
+                    <svg viewBox="0 0 80 40" class="icon hotlist">
+                        <use xlink:href="<?= $navIconUrl . '#hotlist-icon' ?>"></use>
+                    </svg>
+                </div>
+                <?php $this->renderPartial('//base/_hotlist'); ?>
+            </li>
+            <li class="oe-nav-btn">
+                <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>">
+                    <svg viewBox="0 0 80 40" class="icon logout">
+                        <use xlink:href="<?= $navIconUrl . '#logout-icon'; ?>"></use>
+                    </svg>
+                    <img src="" class="icon-logout"/>
+                </a>
+            </li>
+        </ul>
+    </div>
 
 <?php } ?>

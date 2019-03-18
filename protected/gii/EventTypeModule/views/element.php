@@ -11,14 +11,14 @@ sort($field_nums);
 <div class="giiElementContainer" style="margin-bottom: 10px;">
 	<div class="giiElement" style="background:#eee;border:1px solid #999;padding:5px;">
 		<label>Enter a name for the element</label>
-		<h4 style="margin-bottom: 0;"><?php echo CHtml::textField('elementName'.$element_num, @$_POST['elementName'.$element_num], array('size' => 35, 'style' => 'font-size: 16px;', 'class' => 'elementNameTextField')); ?></h4>
+		<h4 style="margin-bottom: 0;"><?=\CHtml::textField('elementName'.$element_num, @$_POST['elementName'.$element_num], array('size' => 35, 'style' => 'font-size: 16px;', 'class' => 'elementNameTextField')); ?></h4>
 		<?php if (isset($this->form_errors['elementName'.$element_num])) {
     ?>
 			<span style="color: #f00;"><?php echo $this->form_errors['elementName'.$element_num]?></span>
 		<?php 
 }?>
 		<label>Element short name (used for table names)</label>
-		<h4 style="margin-bottom: 0;"><?php echo CHtml::textField('elementShortName'.$element_num, @$_POST['elementShortName'.$element_num], array('size' => 35, 'style' => 'font-size: 16px;', 'class' => 'elementShortNameTextField')); ?></h4>
+		<h4 style="margin-bottom: 0;"><?=\CHtml::textField('elementShortName'.$element_num, @$_POST['elementShortName'.$element_num], array('size' => 35, 'style' => 'font-size: 16px;', 'class' => 'elementShortNameTextField')); ?></h4>
 		<?php if (isset($this->form_errors['elementShortName'.$element_num])) {
     ?>
 			<span style="color: #f00;"><?php echo $this->form_errors['elementShortName'.$element_num]?></span>

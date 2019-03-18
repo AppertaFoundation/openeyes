@@ -6,7 +6,7 @@
                 <?= $element->cviStatus->name ?>
             </td>
             <td>
-                <?= Helper::convertMySQL2NHS($element->element_date)?>
+                <?= $element->getHTMLformatedDate() ?>
             </td>
         </tr>
         </tbody>

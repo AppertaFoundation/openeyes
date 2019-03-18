@@ -23,30 +23,27 @@ if (!isset($values)) {
         'id' => $diagnosis->id,
         'disorder_id' => $diagnosis->disorder_id,
         'disorder_display' => $diagnosis->disorder ? $diagnosis->disorder->term : '',
+        'is_glaucoma' => isset($diagnosis->disorder)? (strpos(strtolower($diagnosis->disorder->term), 'glaucoma')) !== false : false,
         'eye_id' => $diagnosis->eye_id,
         'date' => $diagnosis->date,
         'date_display' => \Helper::formatFuzzyDate($diagnosis->date),
         'is_principal' => $diagnosis->principal
     );
 }
-if (isset($values['date']) && strtotime($values['date'])) {
-    list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $values['date']);
-} else if( isset($values['event_date']) && strtotime($values['event_date']) ) {
-
-    // there is event_date but no diagnosis date, this is an update with new diagnoses element
-    list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $values['event_date']);
-    $values['date'] = "$start_sel_year-$start_sel_month-$start_sel_day";
-} else {
-    // no event_date, no diagnosis date, it seems this is a new event
-    $start_sel_day = $start_sel_month = $start_sel_year = null;
+if (!isset($values['date']) || !strtotime($values['date'])) {
+    if (isset($values['event_date']) && strtotime($values['event_date'])) {
+        // there is event_date but no diagnosis date, this is an update with new diagnoses element
+        list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $values['event_date']);
+        $values['date'] = "$start_sel_year-$start_sel_month-$start_sel_day";
+    }
 }
-
 ?>
 <tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row">
     <td>
         <?=$values['disorder_display'];?>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[row_key]" value="<?=$row_count?>" />
+        <input type="hidden" name="glaucoma_diagnoses[]" value="<?=isset($values['is_glaucoma']) ? $values['is_glaucoma'] : 'false'?>" />
 
         <input type="hidden"
                class="savedDiagnosis"

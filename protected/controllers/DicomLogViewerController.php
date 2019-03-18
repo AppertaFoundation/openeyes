@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class DicomLogViewerController extends BaseController
@@ -22,6 +22,8 @@ class DicomLogViewerController extends BaseController
     public $layout = 'admin';
 
     public $items_per_page = 200;
+
+    public $group = 'System';
 
     public function accessRules()
     {
@@ -209,45 +211,41 @@ class DicomLogViewerController extends BaseController
             ->limit($this->items_per_page)
             ->offset(($page - 1) * $this->items_per_page);
 
-        if (@$_REQUEST['hos_num']) {
+        if (isset($_REQUEST['hos_num']) && $_REQUEST['hos_num']) {
             $command->andWhere(['like', 'dil.patient_number', $_REQUEST['hos_num']]);
         }
 
-        if (@$_REQUEST['file_name']) {
+        if (isset($_REQUEST['file_name']) && $_REQUEST['file_name']) {
             $command->andWhere(['like', 'df.filename', '%'.$_REQUEST['file_name'].'%']);
         }
-        if (@$_REQUEST['study_id']) {
+        if (isset($_REQUEST['study_id']) && $_REQUEST['study_id']) {
             $command->andWhere(['like', 'dil.study_instance_id', '%'.$_REQUEST['study_id'].'%']);
         }
-        if (@$_REQUEST['location']) {
+        if (isset($_REQUEST['location']) && $_REQUEST['location']) {
             $command->andWhere(['like', 'dil.study_location', '%'.$_REQUEST['location'].'%']);
         }
-        if (@$_REQUEST['station_id']) {
+        if (isset($_REQUEST['station_id']) && $_REQUEST['station_id']) {
             $command->andWhere(['like', 'dil.station_id', $_REQUEST['station_id']]);
         }
 
-        if (@$_REQUEST['status']) {
+        if (isset($_REQUEST['status']) && $_REQUEST['status']) {
             $command->andWhere(['like', 'dil.status', $_REQUEST['status']]);
         }
 
-        if (@$_REQUEST['type']) {
+        if (isset($_REQUEST['type']) && $_REQUEST['type']) {
             $command->andWhere(['like', 'dil.report_type', $_REQUEST['type']]);
         }
 
-        if ($_REQUEST['date_type'] == 1) {
-            if (@$_REQUEST['date_from'] && @$_REQUEST['date_to']) {
+        if (isset($_REQUEST['date_type']) && $_REQUEST['date_type'] == 1) {
+            if (isset($_REQUEST['date_from']) && isset($_REQUEST['date_to'])) {
                 $command->andWhere('dil.import_datetime > \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_from'])).'\' AND dil.import_datetime < \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_to'].' + 24 Hours')).'\'');
             }
         } else {
-            if (@$_REQUEST['date_from'] && @$_REQUEST['date_to']) {
+            if (isset($_REQUEST['date_from']) && isset($_REQUEST['date_to'])) {
                 $command->andWhere('dil.study_datetime > \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_from'])).'\' AND dil.import_datetime < \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_to'].' + 24 Hours')).'\'');
             }
         }
-       // echo $command->getText();die;
-        $data = array();
-        if ((!empty($_REQUEST['hos_num']) || !empty($_REQUEST['file_name']) || !empty($_REQUEST['study_id']) || !empty($_REQUEST['location']) || !empty($_REQUEST['station_id']) || !empty($_REQUEST['status']) || !empty($_REQUEST['type'] || !empty($_REQUEST['date_from']) || !empty($_REQUEST['date_to'])))) {
-            $data = $command->queryAll();
-        }
+        $data = $command->queryAll();
 
         foreach ($data as $k => $y) {
             $data[$k] = $y;

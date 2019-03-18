@@ -17,83 +17,93 @@
  */
 ?>
 
-
-    <table class="cols-full" id="dicom-log-filter">
+<div id="dicom-log-filter">
+    <table class="standard">
         <colgroup>
             <col class="cols-3">
             <col class="cols-3">
             <col class="cols-3">
             <col class="cols-3">
         </colgroup>
+        <thead>
+        <tr>
+            <td>Station ID</td>
+            <td>Location (like)</td>
+            <td>Patient Number</td>
+            <td>Status</td>
+        </tr>
+        </thead>
+
         <tbody>
         <tr>
-            <td><?php echo CHtml::textField('station_id', /*@$_POST['station_id']*/'IOLM1120642', [
-                    'class' => 'small fixed-width', 'placeholder' => 'Station Id']); ?>
+            <td><?= \CHtml::textField(
+                'station_id',
+                \Yii::app()->request->getPost('station_id'),
+                ['class' => 'small fixed-width cols-11', 'placeholder' => 'Station Id']
+            ); ?>
             </td>
-            <td><?php echo CHtml::textField('location', @$_POST['location'],
-                    ['class' => 'small fixed-width', 'placeholder' => 'Location']); ?></td>
-            <td><?php echo CHtml::textField('hos_num', @$_POST['hos_num'],
-                    ['class' => 'small fixed-width', 'placeholder' => 'Hospital Number']); ?></td>
-            <td><?php echo CHtml::dropDownList('status', 'status',
-                    ['' => 'All Status', 'success' => 'Success', 'failed' => 'Failed']); ?></td>
+            <td><?= \CHtml::textField(
+                'location',
+                \Yii::app()->request->getPost('location'),
+                ['class' => 'small fixed-width cols-11', 'placeholder' => 'Location']
+            ); ?></td>
+            <td><?= \CHtml::textField(
+                'hos_num',
+                \Yii::app()->request->getPost('hos_num'),
+                ['class' => 'small fixed-width cols-11', 'placeholder' => 'Hospital Number']
+            ); ?></td>
+            <td><?= \CHtml::dropDownList(
+                'status',
+                'status',
+                ['' => 'All', 'success' => 'Success', 'failed' => 'Failed'],
+                ['class' => 'cols-11']
+            ); ?></td>
         </tr>
-        <tr class="col-gap">
-            <td><?= CHtml::dropDownList('type', 'type', ['' => 'All types', 'biometry' => 'Biometry']); ?></td>
-            <td><?php
-                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'id' => 'study_id',
-                    'name' => 'study_id',
-                    'value' => '',
-                    'sourceUrl' => array('audit/users'),
-                    'options' => array(
-                        'minLength' => '3',
-                    ),
-                    'htmlOptions' => array(
-                        'placeholder' => 'Type to search for Study Instance ID...',
-                    ),
-                ));
-                ?>
+        </tbody>
+    </table>
+
+    <table class="standard">
+        <colgroup>
+            <col class="cols-2">
+            <col class="cols-5">
+            <col class="cols-5">
+        </colgroup>
+        <thead>
+        <tr>
+            <td>Type</td>
+            <td>Study Instance ID (like)</td>
+            <td>File name (like)</td>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td><?= CHtml::dropDownList(
+                'type',
+                'type',
+                ['' => 'All types', 'biometry' => 'Biometry'],
+                ['class' => 'cols-full']
+                ); ?></td>
+            <td>
+                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'study_id']); ?>
             </td>
             <td>
-                <?php
-                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'id' => 'file_name',
-                    'name' => 'file_name',
-                    'value' => '',
-                    'sourceUrl' => array('audit/users'),
-                    'options' => array(
-                        'minLength' => '3',
-                    ),
-                    'htmlOptions' => array(
-                        'placeholder' => 'Type to search for File name...',
-                    ),
-                ));
-                ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'file_name']); ?>
             </td>
         </tr>
+        </tbody>
+    </table>
+
+    <table class="standard">
+        <tbody>
         <tr>
             <td>
-                <label class="inline" for="import_date">Import date:</label>
-                <?php
-                echo CHtml::radioButton('date_type', true, array(
-                    'value' => '1',
-                    'id' => 'import_date',
-                    'name' => 'date',
-                    'uncheckValue' => null,
-                )); ?>
-            </td>
-            <td>
-                <label class="inline" for="study_date">Study date:</label>
-                <?php
-                echo CHtml::radioButton('study_date', false, array(
-                    'value' => '2',
-                    'id' => 'study_date',
-                    'name' => 'date',
-                    'uncheckValue' => null,
-                ));
-                ?></span>&nbsp;
-            </td>
-            <td>
+                <?=\CHtml::radioButtonList(
+                    'date',
+                    2,
+                    ['1' => 'Import date', '2' => 'Study date'],
+                    ['separator' => '  ']
+                ); ?>
                 <label class="inline" for="date_from">From:</label>
                 <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                     'name' => 'date_from',
@@ -102,13 +112,11 @@
                         'showAnim' => 'fold',
                         'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                     ),
-                    'value' => @$_POST['date_from'],
+                    'value' => \Yii::app()->request->getPost('date_from'),
                     'htmlOptions' => array(
                         'class' => 'small fixed-width',
                     ),
                 )) ?>
-            </td>
-            <td>
                 <label class="inline" for="date_to">To:</label>
                 <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                     'name' => 'date_to',
@@ -117,7 +125,7 @@
                         'showAnim' => 'fold',
                         'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                     ),
-                    'value' => @$_POST['date_to'],
+                    'value' => \Yii::app()->request->getPost('date_to'),
                     'htmlOptions' => array(
                         'class' => 'small fixed-width',
                     ),
@@ -125,11 +133,32 @@
             </td>
         </tr>
         </tbody>
+
         <tfoot class="pagination-container">
         <tr>
-            <td>
+            <td colspan="3">
                 <button type="button" id="dicom-log-search" class="secondary large">Search</button>
             </td>
         </tr>
         </tfoot>
     </table>
+</div>
+<script>
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $('#study_id'),
+        url: '/audit/users',
+        onSelect: function(){
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            $('#study_id').val(AutoCompleteResponse);
+        }
+    });
+
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $('#file_name'),
+        url: '/audit/users',
+        onSelect: function(){
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            $('#file_name').val(AutoCompleteResponse);
+        }
+    });
+</script>

@@ -24,26 +24,8 @@
       <tr>
         <td>Consultant:</td>
         <td>
-            <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                'id' => 'OphTrConsent_consultantAutoComplete',
-                'name' => 'OphTrConsent_consultantAutoComplete',
-                'value' => '',
-                'sourceUrl' => array('default/users'),
-                'options' => array(
-                    'minLength' => '3',
-                    'select' => "js:function(event, ui) {
-								$('#Element_OphTrConsent_Other_consultant_id').val(ui.item.id);
-								$('#Consultant').val(ui.item.fullname);
-								$('#OphTrConsent_consultantAutoComplete').val('');
-								return false;
-							}",
-                ),
-                'htmlOptions' => array(
-                    'placeholder' => 'Search for consultant',
-                    'class' => 'cols-full',
-                ),
-            )); ?>
-            <?php echo CHtml::textField('Consultant',
+            <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
+            <?=\CHtml::textField('Consultant',
                 $element->consultant ? $element->consultant->fullNameAndTitleAndQualifications : '',
                 array(
                     'autocomplete' => Yii::app()->params['html_autocomplete'],
@@ -60,7 +42,6 @@
 
   <div class="cols-6">
     <fieldset>
-        <?php echo $form->checkBox($element, 'information', array('nowrapper' => true)) ?>
         <?php echo $form->checkBox($element, 'anaesthetic_leaflet', array('nowrapper' => true)) ?>
         <?php echo $form->checkBox($element, 'witness_required', array('nowrapper' => true)) ?>
         <?php $hideWitnessName = (!@$_POST['Element_OphTrConsent_Other']['witness_required'] && !$element->witness_name); ?>

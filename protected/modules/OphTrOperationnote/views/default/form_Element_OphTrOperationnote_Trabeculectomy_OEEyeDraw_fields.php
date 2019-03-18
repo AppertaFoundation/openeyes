@@ -212,7 +212,7 @@
                 $('#<?= CHtml::modelName($element)?>'+field_name).show();
             }
             else {
-                $('#<?=CHtml::modelName($element)?>'+field_name).hide();
+                $('#<?=\CHtml::modelName($element)?>'+field_name).hide();
                 $('#<?= CHtml::modelName($element)?>'+field_name).find('textarea').val('');
             }
         }

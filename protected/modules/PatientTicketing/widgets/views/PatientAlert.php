@@ -65,7 +65,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
   <div id="patient-alert-patientticketing"
        class="oe-hotlist-panel"
        data-patient-id="<?= $this->patient->id ?>"
-       style="display: block;">
+       style="display: none;">
     <div class="oe-vc-mode">
       <div class="vc-content">
           <?php foreach ($tickets as $ticket) { ?>
@@ -96,12 +96,9 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
 
                 <?php if ($ticket->event) { ?>
                   <div class="row divider">
-                    <div class="data-label">Date of <?= $ticket->event->eventType->name ?>
-                      : <?= Helper::convertDate2NHS($ticket->event->event_date) ?></div>
-                    <div class="data-value">
-                          <textarea readonly="" rows="1" class="cols-full"
-                                    style="overflow: hidden; overflow-wrap: break-word; height: 25px;"
-                          ><?= $ticket->current_queue_assignment->notes ?></textarea>
+                    <div class="data-label">Date of
+                      <?= $ticket->event->eventType->name ?> :
+                      <?= Helper::convertDate2NHS($ticket->event->event_date) ?>
                     </div>
                   </div>
                 <?php } ?>

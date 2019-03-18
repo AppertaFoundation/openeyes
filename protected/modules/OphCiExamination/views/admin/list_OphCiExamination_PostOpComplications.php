@@ -17,27 +17,43 @@
  */
 ?>
 
-<div id="postop-complications" class="box admin">
+<div id="postop-complications" class="cols-7">
     <div id="draggablelist">
-        <h2>Common Post-Operative Complications</h2>
         <?= CHtml::beginForm(array('/OphCiExamination/admin/updatePostOpComplications'), 'post'); ?>
-            <?= CHtml::label('Subspecialty', 'subspecialty_id'); ?>
-            <?= CHtml::dropDownList('subspecialty_id', $subspecialty_id, CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name', 'specialty.name')); ?>
-            <?= CHtml::hiddenField('item_ids'); ?>
-                <div id="draggablelist-items" class="data-group">
-                    <div class="cols-6 column">
-                        <h2>Currently assigned to</h2>
-                        <?php $this->renderPartial('_postOpComplications_table', array('id' => 'draggablelist-items-enabled', 'items' => $enabled_items)); ?>
-                        <div class="right">
-                            <button class="small" type="submit">Save</button>
-                            <button id="draggablelist-cancel" class="small warning" type="button">Cancel</button>
-                        </div>
-                    </div>
-                    <div class="cols-6 column available-items">
-                        <h2>Available items</h2>
-                        <?php $this->renderPartial('_postOpComplications_table', array('id' => 'draggablelist-items-available', 'items' => $available_items)); ?>
-                    </div>
-                </div>
-        <?= CHtml::endForm(); ?>
+
+        <table id='draggablelist-items' class='standard data-group'>
+            <tbody>
+            <tr>
+                <td><h3>Subspecialty</h3></td>
+                <td>
+                    <?= CHtml::dropDownList(
+                        'subspecialty_id',
+                        $subspecialty_id,
+                        CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name', 'specialty.name')
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <?= CHtml::hiddenField('item_ids'); ?>
+                <td><h3>Currently assigned to</h3></td>
+                <td>
+                    <?php $this->renderPartial('_postOpComplications_table', array('id' => 'draggablelist-items-enabled', 'items' => $enabled_items)); ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <?= CHtml::submitButton('Save', ['class' => 'button large']); ?>
+                    <?= CHtml::button('Cancel', ['class' => 'button large', 'type' => 'button', 'id' => 'draggablelist-cancel']); ?>
+                </td>
+            </tr>
+            <tr class="available-items">
+                <td><h3>Available items</h3></td>
+                <td>
+                    <?php $this->renderPartial('_postOpComplications_table', array('id' => 'draggablelist-items-available', 'items' => $available_items)); ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
+    <?= CHtml::endForm(); ?>
 </div>

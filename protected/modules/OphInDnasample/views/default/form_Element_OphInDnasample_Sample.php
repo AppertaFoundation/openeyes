@@ -21,7 +21,7 @@
     $form->activeWidget('DropDownList', $element, 'type_id',
         array(
             'data' => CHtml::listData(OphInDnasample_Sample_Type::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
-            'htmlOptions' => array('empty' => '- Please select -'),
+            'htmlOptions' => array('empty' => 'Select'),
         ));
 
     /* now way to hide the whole row using the widget : $form->activeWidget('TextField', $element, 'other_sample_type', array('class' => 'hidden')); */
@@ -40,7 +40,7 @@
             <label for="Element_OphInDnasample_Sample_other_sample_type"><?php echo $element->getAttributeLabel('other_sample_type'); ?></label>
         </div>
         <div class="cols-10 column end">
-            <?php echo CHtml::textField('Element_OphInDnasample_Sample[other_sample_type]', $element->other_sample_type); ?>
+            <?=\CHtml::textField('Element_OphInDnasample_Sample[other_sample_type]', $element->other_sample_type); ?>
         </div>
     </div>
 

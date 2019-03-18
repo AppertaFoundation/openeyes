@@ -12,7 +12,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -125,6 +125,17 @@ class OptomPortalConnection
 
         $client = new Zend_Http_Client($this->config['uri'], $clientConfig);
         $client->setHeaders('Accept', 'application/vnd.OpenEyesPortal.v1+json');
+
+        // Revert to pre-PHP5.6 defaults for peer verification, for sites behind a proxy.
+        $streamOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                )
+            );
+
+        $adapter = $client->getAdapter();
+        $adapter->setStreamContext($streamOptions);
 
         $this->client = $client;
     }

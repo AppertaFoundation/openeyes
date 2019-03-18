@@ -1,19 +1,18 @@
 <?php
 
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
@@ -90,9 +89,19 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->hos_num = $patient['hos_num'];
         $this->procedure = implode(', ', array_column($operation, 'term'));
         $this->allergies = $allergyString;
-        $this->iol_model = ($biometry) ? $biometry->attributes['lens_display_name_' . $eyeLabel] . ' <br /> ' . $biometry->attributes['formula_' . $eyeLabel] : 'Unknown';
-        $this->iol_power = ($biometry) ? $biometry->attributes['iol_power_' . $eyeLabel] : 'None';
-        $this->predicted_refractive_outcome = ($biometry) ? $biometry->attributes['predicted_refraction_' . $eyeLabel] : 'Unknown';
+
+        $this->iol_model = 'Unknown';
+        $this->iol_power = 'None';
+        $this->predicted_refractive_outcome = 'Unknown';
+
+        if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, \EYE::BOTH])) {
+            if ($biometry->attributes['lens_display_name_' . $eyeLabel]) {
+                $this->iol_model = $biometry->attributes['lens_display_name_' . $eyeLabel] . ' <br> ' . $biometry->attributes['formula_' . $eyeLabel];
+                $this->iol_power = $biometry->attributes['iol_power_' . $eyeLabel];
+                $this->predicted_refractive_outcome = $biometry->attributes['predicted_refraction_' . $eyeLabel];
+            }
+        }
+
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
         $this->alpha_blocker_name = $blockers;

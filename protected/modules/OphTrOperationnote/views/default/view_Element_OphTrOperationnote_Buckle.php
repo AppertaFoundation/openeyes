@@ -36,7 +36,7 @@
           ));
           ?>
       </div>
-      <div class="eyedraw-data cols-5">
+      <div class="eyedraw-data cols-9">
         <table class="label-value no-lines last-left">
           <colgroup>
             <col class="cols-5">
@@ -45,7 +45,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('drainage_type_id')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('drainage_type_id')) ?>
               </div>
             </td>
             <td>
@@ -57,7 +57,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('drain_haem')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('drain_haem')) ?>
               </div>
             </td>
             <td>
@@ -70,7 +70,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('deep_suture')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('deep_suture')) ?>
               </div>
             </td>
             <td>
@@ -83,12 +83,12 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('report')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('report')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?php echo CHtml::encode($element->report) ?>
+                  <?=\CHtml::encode($element->report) ?>
               </div>
             </td>
           </tr>
@@ -96,7 +96,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('comments')) ?>
               </div>
             </td>
             <td>

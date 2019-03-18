@@ -42,7 +42,7 @@
         'dataProvider' => $dataProvider,
         'template' => '{items}{summary}{pager}',
         'summaryCssClass' => 'left table-summary',
-        'itemsCssClass' => 'grid',
+        'itemsCssClass' => 'standard',
         'summaryText' => 'Showing {start} to {end} of {count}',
         'pager' => array(
             'header' => '',

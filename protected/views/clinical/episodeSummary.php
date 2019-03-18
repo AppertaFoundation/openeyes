@@ -40,7 +40,7 @@ $episode->audit('episode summary', 'view');
       <?php if (Yii::app()->hasModule('OphCiExamination')) { ?>
         <section class="element tile">
           <header class="element-header">
-            <h3 class="element-title">Previous Clinical Management</h3>
+            <h3 class="element-title">Previous Management</h3>
           </header>
           <div class="element-data full-width">
             <div class="tile-data-overflow">

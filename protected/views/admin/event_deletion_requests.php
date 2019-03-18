@@ -9,11 +9,12 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
+<div class="cols-7">
     <form id="admin_event_deletion_requests">
         <input type="hidden" name="YII_CSRF_TOKEN"
                value="<?php echo Yii::app()->request->csrfToken?>" />
@@ -27,6 +28,7 @@
                     <th>Actions</th>
                 </tr>
             </thead>
+
             <tbody>
             <?php
             foreach ($events as $i => $event) {?>
@@ -44,20 +46,18 @@
                     </td>
                     <td><?php echo $event->delete_reason?></td>
                     <td>
-                        <?php echo CHtml::htmlButton(
+                        <?=\CHtml::submitButton(
                             'Approve',
                             [
-                                'class' => 'button small',
-                                'type' => 'submit',
+                                'class' => 'button large',
                                 'id' => 'et_approve',
                                 'name' => 'approve'
                             ]
                         );?>
-                        <?php echo CHtml::htmlButton(
+                        <?=\CHtml::submitButton(
                             'Reject',
                             [
-                                'class' => 'button small',
-                                'type' => 'submit',
+                                'class' => 'button large',
                                 'id' => 'et_reject',
                                 'name' => 'reject'
                             ]
@@ -68,4 +68,4 @@
             </tbody>
         </table>
     </form>
-
+</div>

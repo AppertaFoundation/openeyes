@@ -24,10 +24,10 @@
   <tbody>
   <?php foreach ($elements as $element) { ?>
     <tr>
-      <td class="element <?php echo CHtml::modelName($element) ?>"
+      <td class="element <?=\CHtml::modelName($element) ?>"
           data-element-id="<?php echo $element->id ?>"
           data-element-type-id="<?php echo $element->elementType->id ?>"
-          data-element-type-class="<?php echo CHtml::modelName($element) ?>"
+          data-element-type-class="<?=\CHtml::modelName($element) ?>"
           data-element-type-name="<?php echo $element->elementType->name ?>"
           data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
@@ -52,7 +52,7 @@
             <?php if ($element->canCopy()) { ?>
               <button name="copy" class="copy_element small"
                       data-element-id="<?php echo $element->id ?>"
-                      data-element-type-class="<?php echo CHtml::modelName($element) ?>">
+                      data-element-type-class="<?=\CHtml::modelName($element) ?>">
                 Copy
               </button>
             <?php } ?>

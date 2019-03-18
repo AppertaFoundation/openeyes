@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -85,10 +85,17 @@
                 $('#previous_date_to').val($('#date_to').val());
 
                 $('#dicom-file-list tbody').html();
-                for(let i = 0; i < files.data.length; i++){
-                    let file = files.data[i];
-                    let tr = Mustache.render($('#tr-template').text(), file);
-                    $('#dicom-file-list tbody').append(tr);
+
+                if(files.data) {
+                    for (let i = 0; i < files.data.length; i++) {
+                        let file = files.data[i];
+                        let last_slash = file.filename.lastIndexOf("/")+1;
+                        file.file_ext = file.filename.slice(-4);
+                        file.filename = file.filename.slice(0, last_slash)+" "+file.filename.slice(last_slash,-4);
+
+                        let tr = Mustache.render($('#tr-template').text(), file);
+                        $('#dicom-file-list tbody').append(tr);
+                    }
                 }
 
                 enableButtons();
@@ -142,7 +149,7 @@
 
 <script type="text/template" id="tr-template" style="display: none;">
     <tr data-id="{{id}}" filename="{{filename}}" processor_id="{{processor_id}}" status="{{status}}">
-        <td>{{filename}}</td>
+        <td>{{filename}}<br>{{file_ext}}</td>
         <td>{{import_datetime}}</td>
         <td>{{study_date}}</td>
         <td>{{station_id}}</td>

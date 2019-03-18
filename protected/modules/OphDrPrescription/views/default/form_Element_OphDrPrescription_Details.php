@@ -17,6 +17,7 @@
  */
 ?>
 <?php
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/allergicDrugs.js", \CClientScript::POS_HEAD);
 // we need to separate the public and admin view
 if (is_a(Yii::app()->getController(), 'DefaultController')) {
     echo $form->hiddenInput($element, 'draft', 1);
@@ -81,90 +82,9 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
       </div>
 
       <div>
-
         <button id="add-standard-set-btn" class="button hint green" type="button">Add standard set</button>
-
-        <div id="add-standard-set-popup" class="oe-add-select-search auto-width" style="display: none;">
-          <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-          <ul class="add-options" data-multi="true" data-clickadd="false">
-              <?php foreach ($element->drugSets() as $drug_set): ?>
-                <li data-drug-set="<?= $drug_set->id ?>">
-                  <span class="auto-width"><?= $drug_set->name ?></span>
-                </li>
-              <?php endforeach; ?>
-          </ul>
-        </div>
-
         <button class="button hint green" id="add-prescription-btn" type="button"><i class="oe-i plus pro-theme"></i>
         </button>
-
-        <div id="add-to-prescription-popup" class="oe-add-select-search auto-width"
-             style="width: 600px; display: none;">
-          <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-          <div class="select-icon-btn"><i id="prescription-select-btn" class="oe-i menu selected"></i></div>
-          <button class="button hint green add-icon-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
-
-          <table class="common-drug-options">
-            <thead>
-            <tr>
-              <th>Common Drugs</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>
-                <ul class="add-options">
-                    <?php foreach ($element->commonDrugs() as $commonDrug): ?>
-                      <li data-item-id="<?= $commonDrug->id ?>" data-label="<?= $commonDrug->name ?>">
-                        <span class="auto-width"><?= $commonDrug->name ?></span>
-                      </li>
-                    <?php endforeach; ?>
-                </ul>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <div class="search-icon-btn"><i id="prescription-search-btn" class="oe-i search"></i></div>
-          <div class="prescription-search-options" style="display: none;">
-            <table class="cols-full">
-              <thead>
-              <tr>
-                <th>Filters</th>
-                <th>
-                  <input id="prescription-search-field"
-                         class="cols-full"
-                         placeholder="Search for Drug"
-                         type="text">
-                </th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>
-                  <div id="add-prescription-drug-types" class="flex-layout flex-top flex-left">
-                    <ul class="add-options" style="width: 100%">
-                        <?php foreach ($element->drugTypes() as $drug_type): ?>
-                          <li data-drug-type="<?= $drug_type->id ?>">
-                            <span class="auto-width"><?= $drug_type->name ?></span>
-                          </li>
-                        <?php endforeach; ?>
-                    </ul>
-                  </div>
-                </td>
-                <td class="flex-layout flex-top flex-left">
-                  <ul id="prescription-search-results" class="add-options" data-multi="true" style="width: 100%;">
-                  </ul>
-                  <span id="prescription-search-no-results">No results found</span>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-          <label class="inline highlight">
-            No preservative
-              <?php echo CHtml::checkBox('preservative_free', null, array('class' => 'drugFilter')) ?>
-          </label>
-        </div>
       </div>
     </div>
 
@@ -192,6 +112,41 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
     <?php else: ?>
     var searchListUrl = '<?='/' . Yii::app()->getModule('OphDrPrescription')->id . '/' . Yii::app()->getModule('OphDrPrescription')->defaultController . '/DrugList'; ?>';
     <?php endif; ?>
+
+    var prescriptionDrugSets = <?= CJSON::encode(
+        array_map(function ($drugSet) {
+            return [
+                'label' => $drugSet->name,
+                'id' => $drugSet->id,
+            ];
+        }, $element->drugSets())
+    ) ?>;
+
+    var prescriptionElementCommonDrugs = <?= CJSON::encode(
+        array_map(function ($drug) {
+            return [
+                'label' => $drug['name'],
+                'id' => $drug['id'],
+                'allergies' => CJSON::encode(array_map(function($allergy){
+                        return $allergy->id;
+                        } , $drug->allergies)),
+            ];
+        }, $element->commonDrugs())
+    ) ?>;
+
+    var prescriptionElementDrugTypes = <?= CJSON::encode(
+        array_map(function ($drugType) {
+            return [
+                'label' => $drugType['name'],
+                'id' => $drugType['id'],
+            ];
+        }, $element->drugTypes())
+    ) ?>;
+
+    <?php if(isset($this->patient)){ ?>
+    var patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
+    <?php } ?>
+
 </script>
 
 <?php

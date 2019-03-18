@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class SiteController extends BaseController
@@ -35,10 +35,12 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
+        $search_term = Yii::app()->session['search_term'];
+        Yii::app()->session['search_term']='';
         $this->pageTitle = 'Home';
         $this->fixedHotlist = false;
         $this->layout = 'home';
-        $this->render('index');
+        $this->render('index', array('search_term' => $search_term));
     }
 
     /**
@@ -204,11 +206,6 @@ class SiteController extends BaseController
         $this->renderPartial('/site/debuginfo', array());
     }
 
-    protected function beforeAction($action)
-    {
-        Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
-        return parent::beforeAction($action);
-    }
 
 //    Advanced search is not integrated at the moment, but we leave the code here for later
 //    public function actionAdvancedSearch()

@@ -19,7 +19,7 @@
 
 <div class="element-fields full-width flex-layout">
   <div class="data-group cols-10">
-    <div class="">
+    <div>
         <?php echo $form->textArea(
             $element,
             'comments',
@@ -29,29 +29,16 @@
             array('label' => 2, 'field' => 10)
         ) ?>
     </div>
-    <div class="flex-layout">
-      <div class="cols-2">
-          <?php echo $form->dropDownTextSelection($element, 'postop_instructions', $element->postop_instructions_list,
-              array(),array('label' => 11, 'field' => 11)
-          ) ?>
-        <style>
-          #div_Element_OphTrOperationnote_Comments_postop_instructions_TextSelection select{
-            min-width: 100%;
-            max-width: 100%;
-          }
-        </style>
-      </div>
-      <div class="cols-10">
+      <div>
           <?php echo $form->textArea(
               $element,
               'postop_instructions',
-              array('nowrapper' => true),
+              array(),
               false,
               array('cols' => 30),
-              array('field' => 12)
+              array('label' => 2, 'field' => 10)
           ) ?>
       </div>
-    </div>
   </div>
   <div class="add-data-actions flex-item-bottom">
     <button class="button hint green js-add-select-search" id="add-postop-instruction-btn" type="button">
@@ -72,12 +59,7 @@
           },array_keys($instru_list), $instru_list)) ?>, {'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {
-        $(selectedItems).each(function (key, item) {
-          inputText.val(inputText.val() ?
-            inputText.val() + item['label'] : item['label']
-          );
-        });
-
+				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
         inputText.trigger('oninput');
         return true;
       }

@@ -86,6 +86,7 @@ var docman = (function() {
             $('#docman_block').on("change", '.docman_recipient', function(event){
                 if(event.target.value){
                     docman.getRecipientData(event.target.value, event.target);
+										// $.first('.autosize').trigger('autosize');
                 }
             });
             $('#docman_block').on("change", '.docman_contact_type', function (){
@@ -148,31 +149,31 @@ var docman = (function() {
                         //electronic_sending_method_label is coming from config
                         electronic_sending_method_label = electronic_sending_method_label ? electronic_sending_method_label : 'Electronic';
                             
-                        delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + electronic_sending_method_label;
-                        delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label>';
+                        delivery_methods = '<div><label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + electronic_sending_method_label;
+                        delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){
-                            delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label>';
+                            delivery_methods += '<div><label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>';
                         }
 
                     }
                     else if(contact_type == 'INTERNALREFERRAL'){
                         internal_referral_method_label = internal_referral_method_label ? internal_referral_method_label : 'Electronic (Internal Referral)';
 
-                        delivery_methods = '<label><input value="Internalreferral" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + internal_referral_method_label;
-                        delivery_methods += '<input type="hidden" value="Internalreferral" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label>';
+                        delivery_methods = '<div><label><input value="Internalreferral" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + internal_referral_method_label;
+                        delivery_methods += '<input type="hidden" value="Internalreferral" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){
-                            delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label>';
+                            delivery_methods += '<div><label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>>';
                         }
                     }
                     else
                     {
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){
-                            delivery_methods = '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked> Print</label>';
+                            delivery_methods = '<div><label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked> Print</label></div>';
                         }
                     }
                     $(this).find('.docman_delivery_method').html(delivery_methods);
@@ -285,8 +286,7 @@ var docman = (function() {
         }
 
             if(contact_id != 'OTHER' ){
-
-                if(other_rowindex !== undefined){
+            	if(other_rowindex !== undefined){
                     current_type = current_type.toLowerCase();
                     type = current_type[0].toUpperCase() + current_type.slice(1);
 
@@ -300,17 +300,20 @@ var docman = (function() {
                 this.updateRow(rowindex, contact_id, OE_patient_id, document_set_id_param);
                 this.updateRow(other_rowindex, other_id, OE_patient_id, document_set_id_param);
 
-            } else if(contact_id == 'OTHER'){
+            } else if(contact_id.toUpperCase() === 'OTHER'){
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val('');
                 $('#Document_Target_Address_' + rowindex ).val('');
+								$('#Document_Target_Address_' + rowindex).trigger('autosize');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val('');
-
+								$('#DocumentTarget_' + rowindex + '_attributes_contact_type').removeAttr('disabled');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
                 $('#yDocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
                 //set readonly
                 //$('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', false);
                 $('#Document_Target_Address_' + rowindex).attr('readonly', false);
+                $('#ElementLetter_use_nickname').prop('checked','');
             }
         },
         
@@ -341,7 +344,9 @@ var docman = (function() {
                 'success': function (resp) {
 
                     $('#Document_Target_Address_' + rowindex).val(resp.address);
+										$('#Document_Target_Address_' + rowindex).trigger('autosize');
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val(resp.contact_name);
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val(resp.contact_nickname);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
 
@@ -353,6 +358,7 @@ var docman = (function() {
                     }
 
                     if(rowindex === 0){
+                        $('#ElementLetter_use_nickname').prop('checked','');
                         $("#ElementLetter_introduction").val( resp.text_ElementLetter_introduction );
                     }
                     $('#docman_recipient_' + rowindex).val('');
@@ -402,6 +408,7 @@ var docman = (function() {
                     this.addDocmanMethodMandatory();
                     $('tr.rowindex-' + (++last_row_index) + ' .docman_recipient').trigger('change');
                     $('#dm_table .docman_loader').hide();
+                    $('#dm_table textarea').autosize();
                 }
             });
         },

@@ -110,10 +110,10 @@
           enableButtons(this.options.formSelector);
         }
         else {
-          if (!window.formHasChanged) {
+            // The form data is saved with the above 'form.serialize()'
+            // success should mean this data is already saved, so we don't need to warn the users
             $(window).off('beforeunload');
-          }
-          window.location.href = href;
+            window.location.href = href;
         }
       }.bind(this),
       error: function (jqXHR, status, error) {
@@ -156,6 +156,7 @@
         } else {
           //this.reloadPatientAlert();
           if (response.redirectURL) {
+              window.onbeforeunload = null;
             window.patientTicketChanged = false;
             window.location = response.redirectURL;
           }
@@ -168,7 +169,7 @@
       complete: function () {
         enableButtons(this.options.formSelector);
       }.bind(this)
-    })
+    });
   };
 
 
@@ -196,12 +197,17 @@
       });
 
       var position = this.getSavedScratchpadPosition();
-      if (position) {
-        $(this.options.scratchpadPopupSelector).css({
-          top: position.top,
-          left: position.left
-        });
+      if (position && position.top <= $(window).height() && position.left <= $(window).width()) {
+        // do nothing as postion top and left are already set
+      } else {
+        position.top = 75;
+        position.left = 250
       }
+
+      $(this.options.scratchpadPopupSelector).css({
+        top: position.top,
+        left: position.left
+      });
     }
   };
 
@@ -238,16 +244,53 @@
     return 'sratchpad_' + OE_patient_id;
   };
 
+    //This is set when document is ready
+    var initialContentHash = '';
+
+    function getContentHash() {
+        var result = '';
+        $('main#event-content').children().each(function () {
+            if (!$(this).hasClass('js-patient-messages')) {
+                //Only keep a hash of the content to minimize the size. This takes <10ms
+                result += hashCode($(this).serialize());
+            }
+        });
+        return result;
+    }
+
+    var setOnBeforeUnload = function () {
+        window.onbeforeunload = function (e) {
+            //Check if this is a submit (don't stop users from moving if they are saving)
+            if (e.target.activeElement.type === 'submit') {
+                return null;
+            }
+            if (initialContentHash !== getContentHash()) {
+                return true;
+            } else {
+                return null;
+            }
+        };
+    };
+
+    function hashCode(s) {
+        for(var i = 0, h = 0; i < s.length; i++)
+            h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+        return h;
+    }
+
+    document.addEventListener("DOMContentLoaded", setOnBeforeUnload);
   $(document).ready(function () {
     var ticketMoveController = new TicketMoveController();
     ticketMoveController.loadScratchpadData();
 
-    $(document).on('click', ticketMoveController.options.formClass + ' .js-ok', function (e) {
+    initialContentHash = getContentHash();
+
+    $(document).on('click', ticketMoveController.options.formClass + ' .ok', function (e) {
       e.preventDefault();
       ticketMoveController.submitForm($(this).closest('form'));
     });
 
-    $(document).on('click', ticketMoveController.options.formClass + ' .js-cancel', function () {
+    $(document).on('click', ticketMoveController.options.formClass + ' .cancel', function () {
       var queueset_id = $(this).data('queue');
       var category_id = $(this).data('category');
       delete(window.changedTickets[queueset_id]);

@@ -19,13 +19,13 @@
 <table class="cols-8">
   <tbody>
   <tr>
-    <td><?php echo CHtml::encode($element->getAttributeLabel('eye_id')) ?>:</td>
+    <td><?=\CHtml::encode($element->getAttributeLabel('eye_id')) ?>:</td>
     <td><?php echo $element->eye ? $element->eye->name : 'None' ?></td>
     <td></td>
   </tr>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('procedures')) ?>:
+        <?=\CHtml::encode($element->getAttributeLabel('procedures')) ?>:
     </td>
     <td>
         <?php if (!$element->procedures) { ?>
@@ -42,7 +42,7 @@
   </tr>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id')) ?>:
+        <?=\CHtml::encode($element->getAttributeLabel('anaesthetic_type_id')) ?>:
     </td>
     <td>
         <?php $text = '';
@@ -59,7 +59,7 @@
   </tr>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('add_procs')) ?>:
+        <?=\CHtml::encode($element->getAttributeLabel('add_procs')) ?>:
     </td>
     <td>
       <ul>

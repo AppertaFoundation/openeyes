@@ -2,17 +2,16 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -29,8 +28,8 @@
                     'idSuffix' => 'Cataract',
                     'side' => $element->eye->getShortName(),
                     'mode' => 'view',
-                    'width' => 200,
-                    'height' => 200,
+                    'width' => $this->action->id === 'view' ? 200 : 120,
+                    'height' => $this->action->id === 'view' ? 200 : 120,
                     'model' => $element,
                     'attribute' => 'eyedraw',
                     'idSuffix' => 'Cataract',
@@ -38,7 +37,7 @@
                 ?>
             </div>
 
-            <div class="eyedraw-data" style="width: 100%">
+            <div class="eyedraw-data" style="max-width: 50%">
                 <table class="label-value no-lines last-left">
                     <colgroup>
                         <col class="cols-5">
@@ -46,7 +45,7 @@
                     <tbody>
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('incision_site_id')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('incision_site_id')) ?>
                                 :
                             </div>
                         </td>
@@ -57,7 +56,7 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('length')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('length')) ?>
                                 :
                             </div>
                         </td>
@@ -68,7 +67,7 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('meridian')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('meridian')) ?>
                                 :
                             </div>
                         </td>
@@ -79,7 +78,7 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('incision_type_id')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('incision_type_id')) ?>
                                 :
                             </div>
                         </td>
@@ -90,18 +89,18 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('report2')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('report2')) ?>
                                 :
                             </div>
                         </td>
                         <td>
-                            <div class="data-value"><?php echo CHtml::encode($element->report2) . '<br>' . CHtml::encode($element->comments) ?></div>
+                            <div class="data-value"><?=\CHtml::encode($element->report2) . '<br>' . CHtml::encode($element->comments) ?></div>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_type_id')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('iol_type_id')) ?>
                                 :
                             </div>
                         </td>
@@ -114,41 +113,41 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_power')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('iol_power')) ?>
                                 :
                             </div>
                         </td>
                         <td>
-                            <div class="data-value"><?php echo CHtml::encode($element->iol_power) ?></div>
+                            <div class="data-value"><?=\CHtml::encode($element->iol_power) ?></div>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
                             <div
-                                    class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction')) ?>
+                                    class="data-label"><?=\CHtml::encode($element->getAttributeLabel('predicted_refraction')) ?>
                                 :
                             </div>
                         </td>
                         <td>
-                            <div class="data-value"><?php echo CHtml::encode($element->predicted_refraction) ?></div>
+                            <div class="data-value"><?=\CHtml::encode($element->predicted_refraction) ?></div>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_position_id')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('iol_position_id')) ?>
                                 :
                             </div>
                         </td>
                         <td>
-                            <div class="data-value"><?php echo CHtml::encode($element->iol_position->name) ?></div>
+                            <div class="data-value"><?=\CHtml::encode($element->iol_position->name) ?></div>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('phaco_cde')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('phaco_cde')) ?>
                                 :
                             </div>
                         </td>
@@ -161,12 +160,12 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('pcr_risk')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('pcr_risk')) ?>
                                 :
                             </div>
                         </td>
                         <td>
-                            <div class="data-value"><?php echo CHtml::encode($element->pcr_risk) ?>%</div>
+                            <div class="data-value"><?=\CHtml::encode($element->pcr_risk) ?>%</div>
                         </td>
                     </tr>
 
@@ -175,7 +174,7 @@
                         <tr>
                             <td>
                                 <div class="data-label">
-                                    <?php echo CHtml::encode($element->getAttributeLabel('intraocular_solution_id')) ?>
+                                    <?=\CHtml::encode($element->getAttributeLabel('intraocular_solution_id')) ?>
                                 </div>
                             </td>
                             <td>
@@ -187,7 +186,7 @@
                         <tr>
                             <td>
                                 <div class="data-label">
-                                    <?php echo CHtml::encode($element->getAttributeLabel('skin_preparation_id')) ?>
+                                    <?=\CHtml::encode($element->getAttributeLabel('skin_preparation_id')) ?>
                                 </div>
                             </td>
                             <td>
@@ -207,8 +206,8 @@
                 'idSuffix' => 'Position',
                 'side' => $element->eye->getShortName(),
                 'mode' => 'view',
-                'width' => 200,
-                'height' => 200,
+                'width' => $this->action->id === 'view' ? 200 : 120,
+                'height' => $this->action->id === 'view' ? 200 : 120,
                 'model' => $element,
                 'attribute' => 'eyedraw2',
             ));
@@ -218,30 +217,6 @@
 </section>
 
 <div class="flex-layout flex-left flex-stretch">
-
-    <?php if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnote_Comments::class)): ?>
-        <section class="element view tile">
-            <header class="element-header">
-                <h3 class="element-title"><?php echo CHtml::encode($instructions->getAttributeLabel('postop_instructions')) ?></h3>
-            </header>
-            <div class="element-data full-width">
-                <div class="data-value">
-                    <div class="tile-data-overflow">
-                        <div class="data-value<?php if (!$instructions->postop_instructions) { ?> none<?php } ?>">
-                            <?php echo CHtml::encode($instructions->postop_instructions) ? Yii::app()->format->Ntext($instructions->postop_instructions) : 'None' ?>
-                        </div>
-                        <div class="data-group">
-                            <h4 class="data-label"><?php echo CHtml::encode($instructions->getAttributeLabel('comments')) ?></h4>
-                            <div class="data-value<?php if (!$instructions->comments) { ?> none<?php } ?>">
-                                <?php echo CHtml::encode($instructions->comments) ? Yii::app()->format->Ntext($instructions->comments) : 'None' ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    <?php endif; ?>
-
     <section class="element view tile priority view-agents">
         <header class="element-header">
             <h3 class="element-title">Agent(s)</h3>
@@ -286,7 +261,7 @@
                             <?php } ?>
                             </tbody>
                         </table>
-                        <?php echo CHtml::encode($element->complication_notes) ?>
+                        <?=\CHtml::encode($element->complication_notes) ?>
                     <?php } ?>
                 </div>
             </div>

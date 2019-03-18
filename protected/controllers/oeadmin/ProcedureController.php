@@ -36,6 +36,8 @@ class ProcedureController extends BaseAdminController
      */
     public $itemsPerPage = 30;
 
+    public $group = 'Procedure Management';
+
     /**
      * Lists procedures.
      *
@@ -47,22 +49,22 @@ class ProcedureController extends BaseAdminController
         $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
 
         if (Yii::app()->request->isPostRequest) {
+            $query = trim($search['query']);
             if ($search['query']) {
-                $criteria->params[':query'] = $search['query'];
+                $criteria->params[':query'] = $query;
 
                 $criteria->with = array(
                     'opcsCodes' => array(
                         'select' => false,
-                        'joinType' => 'INNER JOIN',
                     )
                 );
                 $criteria->together = true;
 
-                $criteria->addCondition('term = :query', 'OR');
-                $criteria->addCondition('snomed_code = :query', 'OR');
-                $criteria->addCondition('opcsCodes.name = :query', 'OR');
-                $criteria->addCondition('default_duration = :query', 'OR');
-                $criteria->addCondition('aliases = :query', 'OR');
+                $criteria->addSearchCondition('term', $query, true, 'OR');
+                $criteria->addSearchCondition('snomed_code', $query, true, 'OR');
+                $criteria->addSearchCondition('opcsCodes.name', $query, true, 'OR');
+                $criteria->addCondition('default_duration != 0 AND default_duration  = :query', 'OR');
+                $criteria->addSearchCondition('aliases', $query, true, 'OR');
             }
 
             if ($search['active'] == 1) {
@@ -71,7 +73,6 @@ class ProcedureController extends BaseAdminController
                 $criteria->addCondition('t.active != 1');
             }
         }
-
         $procedure = Procedure::model();
 
         $this->render('/oeadmin/procedure/index', [
@@ -90,17 +91,15 @@ class ProcedureController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
-        $procedure = Procedure::model();
         $errors = [];
-
         $criteria = new CDbCriteria();
         $criteria->with = ['opcsCodes', 'benefits', 'complications'];
         $criteria->together = true;
 
-        $procedure_object = $procedure->findByPk($id, $criteria);
+        $procedure = Procedure::model()->findByPk($id, $criteria);
 
-        if (!$procedure_object) {
-            $this->redirect('/oeadmin/procedure/list/');
+        if (!$procedure) {
+            $procedure = new Procedure();
         }
 
         if (Yii::app()->request->isPostRequest) {
@@ -112,13 +111,13 @@ class ProcedureController extends BaseAdminController
             $user_notes = \Yii::app()->request->getPost('notes', []);
 
             // set user data
-            $procedure_object->term = $user_data['term'];
-            $procedure_object->short_format = $user_data['short_format'];
-            $procedure_object->default_duration = $user_data['default_duration'];
-            $procedure_object->snomed_code = $user_data['snomed_code'];
-            $procedure_object->aliases = $user_data['aliases'];
-            $procedure_object->unbooked = $user_data['unbooked'];
-            $procedure_object->active = $user_data['active'];
+            $procedure->term = $user_data['term'];
+            $procedure->short_format = $user_data['short_format'];
+            $procedure->default_duration = $user_data['default_duration'];
+            $procedure->snomed_code = $user_data['snomed_code'];
+            $procedure->aliases = $user_data['aliases'];
+            $procedure->unbooked = $user_data['unbooked'];
+            $procedure->active = $user_data['active'];
 
             // set notes
             $notes = [];
@@ -127,7 +126,7 @@ class ProcedureController extends BaseAdminController
                 $criteria->addInCondition('id', array_values($user_notes));
                 $notes = ElementType::model()->findAll($criteria);
             }
-            $procedure_object->operationNotes = $notes;
+            $procedure->operationNotes = $notes;
 
             // set opcs_cods
             $opcsCodes = [];
@@ -136,7 +135,7 @@ class ProcedureController extends BaseAdminController
                 $criteria->addInCondition('id', array_values($user_opcs_cods));
                 $opcsCodes = OPCSCode::model()->findAll($criteria);
             }
-            $procedure_object->opcsCodes = $opcsCodes;
+            $procedure->opcsCodes = $opcsCodes;
 
             // set benefits
             $benefits = [];
@@ -145,31 +144,31 @@ class ProcedureController extends BaseAdminController
                 $criteria->addInCondition('id', array_values($user_benefits));
                 $benefits = Benefit::model()->findAll($criteria);
             }
-            $procedure_object->benefits = $benefits;
+            $procedure->benefits = $benefits;
 
             // set complications
             $complications = [];
             if (isset($user_complications)) {
                 $criteria = new \CDbCriteria();
                 $criteria->addInCondition('id', array_values($user_complications));
-                $complications = Benefit::model()->findAll($criteria);
+                $complications = Complication::model()->findAll($criteria);
             }
-            $procedure_object->complications = $complications;
+            $procedure->complications = $complications;
 
             // try saving the data
-            if (!$procedure_object->save()) {
-                $errors = $procedure_object->getErrors();
+            if (!$procedure->save()) {
+                $errors = $procedure->getErrors();
             } else {
                 $this->redirect('/oeadmin/procedure/list/');
             }
         }
 
         $this->render('/oeadmin/procedure/edit', array(
-            'procedure' => $procedure_object,
+            'procedure' => $procedure,
             'opcs_code' => OPCSCode::model()->findAll(),
             'benefits' => Benefit::model()->findAll(),
             'complications' => Complication::model()->findAll(),
-            'notes' => ElementType::model()->findAll(),
+            'notes' => ElementType::model()->findAll('event_type_id=?', array(EventType::model()->find('class_name=?', array('OphTrOperationnote'))->id)),
             'errors' => $errors,
         ));
     }

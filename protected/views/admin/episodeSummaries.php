@@ -15,7 +15,7 @@
 ?>
 <div id="episode-summary" class="box admin">
     <div id="draggablelist">
-        <?php echo CHtml::beginForm(array('/admin/updateEpisodeSummary'), 'post'); ?>
+        <?=\CHtml::beginForm(array('/admin/updateEpisodeSummary'), 'post'); ?>
         <div class="cols-5 column">
             <table class="standard">
                 <colgroup>
@@ -26,7 +26,7 @@
                     <tr>
                         <td id="subspecialty_id"><h2>Subspecialty</h2></td>
                         <td>
-                            <?php echo CHtml::dropDownList(
+                            <?=\CHtml::dropDownList(
                                 'subspecialty_id',
                                 $subspecialty_id,
                                 CHtml::listData(
@@ -42,7 +42,7 @@
                 </tbody>
             </table>
         </div>
-        <?php echo CHtml::hiddenField('item_ids'); ?>
+        <?=\CHtml::hiddenField('item_ids'); ?>
              <div id="draggablelist-items" class="data-group">
                  <div class="cols-5 column">
                      <h2>Enabled items</h2>
@@ -66,11 +66,11 @@
                  </div>
              </div>
         <div class="right">
-            <button class="small" type="submit">Save</button>
+            <button class="button large" type="submit">Save</button>
             <button id="draggablelist-cancel"
-                    class="small warning"
+                    class="button large"
                     type="button">Cancel</button>
         </div>
-        <?php echo CHtml::endForm(); ?>
+        <?=\CHtml::endForm(); ?>
      </div>
 </div>

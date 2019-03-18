@@ -16,50 +16,73 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<h1><?php echo $title ?></h1>
-<?php $this->renderPartial('//base/_messages')?>
+
+<?php $this->renderPartial('//base/_messages') ?>
+
 <div class="hidden" id="add-new-form" style="margin-bottom: 10px">
-	<?php
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'clinical-create',
-            'enableAjaxValidation' => false,
-            'action' => Yii::app()->createURL($this->module->getName().'/admin/addTreatmentDrug'),
+        'id' => 'clinical-create',
+        'enableAjaxValidation' => false,
+        'action' => Yii::app()->createURL($this->module->getName() . '/admin/addTreatmentDrug'),
     ));
 
     $this->endWidget();
     ?>
 </div>
-<div class="box admin">
-	<form id="admin_treatment_drugs">
-		<table class="standard">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>Name</th>
-					<th>Available</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ($model_list as $i => $model) {?>
-					<tr class="clickable" data-id="<?php echo $model->id?>" data-uri="OphTrIntravitrealinjection/admin/editTreatmentDrug/<?php echo $model->id?>">
-						<td><input type="checkbox" name="treatment_drugs[]" value="<?php echo $model->id?>" /></td>
-						<td>
-							<?php echo $model->name?>
-						</td>
-						<td>
-							<?php echo $model->active ? 'Yes' : 'No'?>
-						</td>
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="2">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphTrIntravitrealinjection/admin/addTreatmentDrug'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphTrIntravitrealinjection/admin/deleteTreatmentDrugs', 'data-object' => 'treatment_drugs'))->toHtml()?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+
+<div class="cols-5">
+    <form id="admin_treatment_drugs">
+        <table class="standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Name</th>
+                <th>Available</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($model_list as $i => $model) { ?>
+                <tr class="clickable" data-id="<?php echo $model->id ?>"
+                    data-uri="OphTrIntravitrealinjection/admin/editTreatmentDrug/<?php echo $model->id ?>">
+                    <td><input type="checkbox" name="treatment_drugs[]" value="<?php echo $model->id ?>"/></td>
+                    <td>
+                        <?php echo $model->name ?>
+                    </td>
+                    <td>
+                        <?php echo ($model->active) ?
+                            ('<i class="oe-i tick small"></i>') :
+                            ('<i class="oe-i remove small"></i>'); ?>
+                    </td>
+                </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="3">
+                    <?=\CHtml::submitButton(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'name' => 'add',
+                            'data-uri' => '/OphTrIntravitrealinjection/admin/addTreatmentDrug',
+                            'id' => 'et_add'
+                        ]
+                    ); ?>
+                    <?=\CHtml::submitButton(
+                        'Delete',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete',
+                            'data-object' => 'treatment_drugs',
+                            'data-uri' => '/OphTrIntravitrealinjection/admin/deleteTreatmentDrugs',
+                            'id' => 'et_delete'
+                        ]
+                    ); ?>
+
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

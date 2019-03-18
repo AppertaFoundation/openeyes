@@ -16,44 +16,53 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Steps</h2>
-	<form id="admin_workflow_steps">
-		<table class="standard">
-			<thead>
-				<tr>
-					<th>Position</th>
-					<th>Step</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody class="sortable">
-				<?php
-                foreach ($model->steps as $i => $step) {
-                    ?>
-					<tr class="selectable" data-id="<?php echo $step->id?>">
-						<td><?php echo $step->position?></td>
-						<td><?php echo $step->name?></td>
-                        <td>
-                        <?php if($step->isDeletable()):  ?>
-                            <a href="#" class="removeElementSet" rel="<?php echo $step->id?>">Remove</a>
-                        <?php else: ?>
-                            <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="Step is in use and cannot be deleted."></i>
-                        <?php endif; ?>
-                        </td>
-					</tr>
-				<?php 
-                }?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="3">
-						<?php echo EventAction::button('Add step', 'add_step', null, array('class' => 'small'))->toHtml()?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+
+<div class="row divider">
+    <h2>Steps</h2>
 </div>
-<div class="box_admin" id="step_element_types">
-</div>
+
+<form id="admin_workflow_steps">
+    <table class="standard">
+        <thead>
+        <tr>
+            <th>Position</th>
+            <th>Step</th>
+            <th colspan="2">Actions</th>
+        </tr>
+        </thead>
+
+        <tbody class="sortable">
+        <?php
+        foreach ($model->steps as $i => $step) {
+            ?>
+            <tr class="selectable" data-id="<?php echo $step->id ?>">
+                <td><?php echo $step->position ?></td>
+                <td><?php echo $step->name ?></td>
+                <td>
+                    <?php if ($step->isDeletable()) : ?>
+                        <a href="#" class="removeElementSet" rel="<?php echo $step->id ?>">Remove</a>
+                    <?php else : ?>
+                        <i class="js-has-tooltip oe-i info small pad right"
+                           data-tooltip-content="Step is in use and cannot be deleted."></i>
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <a href="#" class="js-elementSetActiveStatus" data-stepid="<?php echo $step->id ?>"><?= ($step->is_active ? "Disable" : "Enable"); ?></a>
+                </td>
+            </tr>
+            <?php
+        } ?>
+        </tbody>
+
+        <tfoot class="pagination-container">
+        <tr>
+            <td colspan="3">
+                <?php echo EventAction::button('Add step', 'add_step', null, array('class' => 'small'))->toHtml() ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <div class="box_admin" id="step_element_types">
+    </div>
+</form>

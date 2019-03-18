@@ -38,21 +38,30 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     /**
      * @var array
      */
-    protected $graphConfig = array(
-        'chart' => array('renderTo' => '', 'type' => 'column'),
-        'legend' => array('enabled' => false),
-        'title' => array('text' => 'Refractive Outcome: mean sphere (D)'),
-        'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}%, ±1D: {{1}}%'),
-        'xAxis' => array(
-            'title' => array('text' => 'PPOR - POR (Dioptres)'),
-        ),
-        'yAxis' => array(
-            'title' => array('text' => 'Number of eyes'),
-        ),
-        'tooltip' => array(
-            'headerFormat' => '<b>Refractive Outcome</b><br>',
-            'pointFormat' => '<i>Diff Post Op</i>: {point.category} <br /> <i>Num Eyes</i>: {point.y}',
-        ),
+
+    protected $plotlyConfig = array(
+      'type' => 'bar',
+      'showlegend' => false,
+      'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
+      'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
+      'title' => '',
+      'font' => array(
+        'family' => 'Roboto,Helvetica,Arial,sans-serif',
+      ),
+      'xaxis' => array(
+        'title' => 'PPOR - POR (Dioptres)',
+        'range' => [0,40],
+        'ticks' => 'outside',
+        'tickvals' => [],
+        'ticktext' => [],
+        'tickangle' => -45,
+      ),
+      'yaxis' => array(
+        'title' => 'Number of eyes',
+        'showline' => true,
+        'showgrid' => true,
+        'ticks' => 'outside',
+      ),
     );
 
     /**
@@ -86,7 +95,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
 
         $this->command->select('post_examination.episode_id, note_event.episode_id, note_event.event_date as op_date, note_event.id, op_procedure.eye_id,
         post_examination.event_date as post_exam_date, post_examination.event_date as post_exam_date, post_examination.id as post_id, patient.id as patient_id,
-        left_sphere, right_sphere, left_cylinder, right_cylinder, predicted_refraction')
+        left_sphere, right_sphere, left_cylinder, right_cylinder, predicted_refraction, note_event.id as event_id')
             ->from('et_ophtroperationnote_surgeon')
             ->join('event note_event', 'note_event.id = et_ophtroperationnote_surgeon.event_id')
             ->join('et_ophtroperationnote_procedurelist op_procedure', 'op_procedure.event_id = note_event.id #And the operation notes procedures')
@@ -102,9 +111,12 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             )
             ->join('et_ophciexamination_refraction', 'post_examination.id = et_ophciexamination_refraction.event_id')
             ->join('et_ophtroperationnote_cataract', 'note_event.id = et_ophtroperationnote_cataract.event_id')
-            ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
-            ->andWhere('post_examination.deleted <> 1 and note_event.deleted <> 1')
+            ->where('post_examination.deleted <> 1 and note_event.deleted <> 1')
             ->order('post_exam_date desc');
+
+        if ($surgeon !== 'all'){
+            $this->command->andWhere('surgeon_id = :surgeon', array('surgeon' => $surgeon));
+        }
 
         if ($dateFrom) {
             $this->command->andWhere('note_event.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
@@ -134,69 +146,80 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     /**
      * @return array
      */
-    public function dataSet()
-    {
-        $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->procedures);
-        $count = array();
 
-        $this->padCategories();
+    public function dataset(){
 
-        // fill up the array with 0, have to send 0 to highcharts if there is no data
-        foreach ($this->graphConfig['xAxis']['categories'] as $xCat) {
-            $count[] = 0;
+      if ($this->allSurgeons){
+          $surgeon = 'all';
+      }  else{
+          $surgeon = $this->surgeon;
+      }
+      $data = $this->queryData($surgeon, $this->from, $this->to, $this->months, $this->procedures);
+      $count = array();
+
+      $this->padPlotlyCategories();
+
+      // fill up the array with 0, have to send 0 to highcharts if there is no data
+      for ($i = -10; $i <= 10; $i += 0.5) {
+        $count[] = array(0,array());
+      }
+      $bestvalues = array();
+      foreach ($data as $row) {
+        $side = 'right';
+        if ($row['eye_id'] === '1') {
+          $side = 'left';
         }
-        $bestvalues = array();
+        $diff = (float) $row['predicted_refraction'] - ((float) $row[$side.'_sphere'] + ((float) $row[$side.'_cylinder'] / 2));
 
-        foreach ($data as $row) {
-            $side = 'right';
-            if ($row['eye_id'] === '1') {
-                $side = 'left';
-            }
-            $diff = (float) $row['predicted_refraction'] - ((float) $row[$side.'_sphere'] + ((float) $row[$side.'_cylinder'] / 2));
+        $diff = round($diff * 2) / 2;
+        $diff_index = array_search($diff, $this->plotlyConfig['xaxis']['ticktext']);
 
-            $diff = round($diff * 2) / 2;
-
-            $diff_index = array_search($diff, $this->graphConfig['xAxis']['categories']);
-
-            if ($diff_index >= 0 && $diff_index <= (count($this->graphConfig['xAxis']['categories']) - 1)) {
+            if ($diff_index >= 0 && $diff_index <= (count($this->plotlyConfig['xaxis']['tickvals']) - 1)) {
                 if (!array_key_exists($row['patient_id'].$side, $bestvalues)) {
-                    $bestvalues[$row['patient_id'].$side] = $diff_index;
-                } elseif (abs($this->graphConfig['xAxis']['categories'][$diff_index]) < abs($this->graphConfig['xAxis']['categories'][$bestvalues[$row['patient_id'].$side]])) {
-                    $bestvalues[$row['patient_id'].$side] = $diff_index;
+                    $bestvalues[$row['patient_id'].$side] = array($diff_index,$row['event_id']);
+//                    $bestvalues[$row['patient_id'].$side] = $diff_index;
+                } elseif (abs($this->plotlyConfig['xaxis']['tickvals'][$diff_index]) < abs($this->plotlyConfig['xaxis']['tickvals'][$bestvalues[$row['patient_id'].$side][0]])) {
+//                    $bestvalues[$row['patient_id'].$side] = $diff_index;
+                    $bestvalues[$row['patient_id'].$side] = array($diff_index,$row['event_id']);
+
                 }
             }
-        }
+      }
 
         foreach ($bestvalues as $key => $diff) {
-            if (!array_key_exists("$diff", $count)) {
-                $count["$diff"] = 0;
+            if (!array_key_exists("$diff[0]", $count)) {
+                $count["$diff[0]"] = array(0,array());
             }
-            ++$count["$diff"];
+            ++$count["$diff[0]"][0];
+            array_push($count["$diff[0]"][1],$diff[1]);
         }
 
         ksort($count, SORT_NUMERIC);
 
         $dataSet = array();
         foreach ($count as $category => $total) {
-            $rowTotal = array((float) $category, $total);
-            $dataSet[] = $rowTotal;
+            $rowTotal = array((float) $category, $total[0],$total[1]);
+            $dataSet[$category] = $rowTotal;
         }
 
-        return $dataSet;
+      $this->plotlyConfig['yaxis']['range'] = [0, max(array_map(function($item){
+        return $item[1];
+      }, $dataSet))];
+      return $dataSet;
     }
 
     /**
      *
      */
-    protected function padCategories()
-    {
-        for ($i = -10; $i <= 10; $i += 0.5) {
-            $this->graphConfig['xAxis']['categories'][] = $i;
-        }
 
-        $this->graphConfig['xAxis']['min'] = 0;
-        $this->graphConfig['xAxis']['max'] = count($this->graphConfig['xAxis']['categories']) - 1;
+  protected function padPlotlyCategories()
+  {
+    for ($i = -10, $j = 0; $i <= 10; $i += 0.5, $j++) {
+      $this->plotlyConfig['xaxis']['ticktext'][] = $i;
+      $this->plotlyConfig['xaxis']['tickvals'][] = $j;
     }
+  }
+
 
     /**
      * @return string
@@ -213,53 +236,80 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         return json_encode($this->series);
     }
 
+    public function tracesJson(){
+        $dataset = $this->dataset();
+        $trace1 = array(
+          'name' => 'Refractive Outcome',
+          'type' => 'bar',
+          'marker' => array(
+            'color' => '#7cb5ec',
+          ),
+          'x' => array_map(function($item){
+            return $item[0];
+          }, $dataset),
+          'y'=> array_map(function($item){
+            return $item[1];
+          }, $dataset),
+            'customdata' => array_map(function($item){
+                return $item[2];
+            }, $dataset),
+          'hovertext' => array_map(function($item){
+            return '<b>Refractive Outcome</b><br><i>Diff Post</i>: '
+              .$this->plotlyConfig['xaxis']['ticktext'][$item[0]]
+              .'<br><i>Num Eyes:</i> '.$item[1];
+          }, $dataset),
+          'hoverinfo' => 'text',
+          'hoverlabel' => array(
+            'bgcolor' => '#fff',
+            'bordercolor' => '#7cb5ec',
+            'font' => array(
+              'color' => '#000',
+            ),
+          ),
+        );
+
+        $traces = array($trace1);
+        return json_encode($traces);
+    }
     /**
      * @return string
      */
-    public function graphConfig()
-    {
-        if (!isset($this->series[0]['data'])) {
-            $data = $this->dataSet();
-        } else {
-            $data = $this->series[0]['data'];
+    public function plotlyConfig(){
+      $this->padPlotlyCategories();
+
+      $data = $this->dataset();
+      $totalEyes = 0;
+      $plusOrMinusOne = 0;
+      $plusOrMinusHalf = 0;
+      $plusOrMinusHalfPercent = 0;
+      $plusOrMinusOnePercent = 0;
+
+      foreach ($data as $dataRow) {
+        $totalEyes += (int) $dataRow[1];
+
+        // 19 and 21 are the indexes of the -0.5 and +0.5 columns
+        if ($dataRow[0] < 19 || $dataRow[0] > 21) {
+          $plusOrMinusHalf += (int) $dataRow[1];
         }
 
-        $totalEyes = 0;
-        $plusOrMinusOne = 0;
-        $plusOrMinusHalf = 0;
-        $plusOrMinusHalfPercent = 0;
-        $plusOrMinusOnePercent = 0;
-
-        foreach ($data as $dataRow) {
-            $totalEyes += (int) $dataRow[1];
-
-            // 19 and 21 are the indexes of the -0.5 and +0.5 columns
-            if ($dataRow[0] < 19 || $dataRow[0] > 21) {
-                $plusOrMinusHalf += (int) $dataRow[1];
-            }
-
-            // 18 and 22 are the indexes of the -1 and +1 columns
-            if ($dataRow[0] < 18 || $dataRow[0] > 22) {
-                $plusOrMinusOne += (int) $dataRow[1];
-            }
+        // 18 and 22 are the indexes of the -1 and +1 columns
+        if ($dataRow[0] < 18 || $dataRow[0] > 22) {
+          $plusOrMinusOne += (int) $dataRow[1];
         }
-        if ($plusOrMinusOne > 0) {
-            $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '');
-        }
+      }
+      if ($plusOrMinusOne > 0) {
+        $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '');
+      }
 
-        if ($plusOrMinusHalf > 0) {
-            $plusOrMinusHalfPercent = number_format((($plusOrMinusHalf / $totalEyes) * 100), 1, '.', '');
-        }
+      if ($plusOrMinusHalf > 0) {
+        $plusOrMinusHalfPercent = number_format((($plusOrMinusHalf / $totalEyes) * 100), 1, '.', '');
+      }
 
-        $this->graphConfig['subtitle']['text'] = str_replace(
-            array('{{eyes}}', '{{0.5}}', '{{1}}'),
-            array($totalEyes, $plusOrMinusHalfPercent, $plusOrMinusOnePercent),
-            $this->graphConfig['subtitle']['text']
-        );
-
-        $this->graphConfig['chart']['renderTo'] = $this->graphId();
-
-        return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
+      $this->plotlyConfig['title'] = 'Refractive Outcome: mean sphere (D)<br>'
+        . '<sub>Total eyes: ' . $totalEyes
+        . ', ±0.5D: ' .$plusOrMinusHalfPercent
+        . '%, ±1D: '.$plusOrMinusOnePercent.'%</sub>';
+      return json_encode($this->plotlyConfig);
     }
 
     /**
@@ -280,8 +330,11 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     /**
      * @return mixed|string
      */
-    public function renderSearch()
+    public function renderSearch($analytics = false)
     {
+        if ($analytics){
+            $this->searchTemplate = 'application.modules.OphCiExamination.views.reports.refractive_outcome_search_analytics';
+        }
         return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'procedures' => $this->cataractProcedures()));
     }
 }

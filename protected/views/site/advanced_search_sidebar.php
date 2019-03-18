@@ -18,7 +18,7 @@
                     $class = 'selected';
                 }?>
                 <li class="<?=$class?>">
-                    <?php echo CHtml::link($title, Yii::app()->createUrl('/' . $module . '/search/' . $uri), array('class' => $class)) ?>
+                    <?=\CHtml::link($title, Yii::app()->createUrl('/' . $module . '/search/' . $uri), array('class' => $class)) ?>
                 </li>
             <?php } ?>
         </ul>

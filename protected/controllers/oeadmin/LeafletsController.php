@@ -18,6 +18,8 @@
  */
 class LeafletsController extends BaseAdminController
 {
+    public $group = 'Consent';
+
     /**
      * @throws Exception
      */

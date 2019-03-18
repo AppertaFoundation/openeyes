@@ -9,22 +9,22 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-    <div class="admin box">
+    <div class=<?=$admin->div_wrapper_class?>>
 
         <h2><?php echo $admin->getModelDisplayName(); ?></h2>
 
         <form id="generic-admin-list">
+            <table class="standard">
 		<?php
-
         if (is_array($admin->getFilterFields())) {
             foreach ($admin->getFilterFields() as $field => $params) { ?>
-				<div class="large-2 column"><label
-						for="<?php echo $params['dropDownName'] ?>"><?php echo $params['label']; ?>:</label></div>
-				<div class="large-4 column">
+                <tr>
+                    <td><?php echo $params['label']; ?></td>
+                    <td>
 					<?php
                     $searchParams = $this->request->getParam('search');
                 if (isset($searchParams['filterid'][$params['dropDownName']]['value']) && $searchParams['filterid'][$params['dropDownName']]['value'] != '') {
@@ -33,7 +33,7 @@
                     $selectedValue[$params['dropDownName']] = $params['defaultValue'];
                 }
                 if (!isset($params['emptyLabel'])) {
-                    $params['emptyLabel'] = '-- Please select --';
+                    $params['emptyLabel'] = 'Select';
                 }
                 if (isset($params['dependsOnFilterName'])) {
                     $filterQuery = array(
@@ -51,11 +51,12 @@
                     // for some functions we need to exclude fields from search
                     if (isset($params['excludeSearch']) && $params['excludeSearch']) {
                         $fieldName = $params['dropDownName'];
-                        $htmlClass = 'excluded';
+                        $htmlClass = 'excluded cols-full';
                     } else {
                         $fieldName = 'search[filterid]['.$params['dropDownName'].'][value]';
-                        $htmlClass = 'filterfieldselect';
+                        $htmlClass = 'filterfieldselect cols-full';
                     }
+
                 echo CHtml::dropDownList($fieldName,
                         $selectedValue[$params['dropDownName']],
                         CHtml::listData($params['listModel']->findAll($filterQuery),
@@ -66,12 +67,15 @@
                             'empty' => $params['emptyLabel'],
                         ));
                 ?>
-				</div>
+                </td>
+                </tr>
 			<?php
-
             }
         }
         ?>
+            </table>
+
+
             <div class="data-group">
                 <table class="standard">
                     <thead>
@@ -136,27 +140,7 @@
                                     $minLength = 1;
                                     $triggerSearch = '';
                                 }
-                                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                                    'name' => $acFieldData['fieldName'],
-                                    'id' => 'autocomplete_'.$acFieldData['fieldName'],
-                                    'source' => "js:function(request, response) {
-										$.getJSON('".$acFieldData['jsonURL']."', {
-											term : request.term
-										}, response);
-									}",
-                                    'options' => array(
-                                        'select' => "js:function(event, ui) {
-											addItem(ui.item.id, '".$admin->getCustomSaveURL()."');
-											$(this).val('');
-											return false;
-										}",
-                                        'minLength' => $minLength,
-                                    ),
-                                    'htmlOptions' => array(
-                                        'placeholder' => $acFieldData['placeholder'],
-                                        'onFocus' => $triggerSearch,
-                                    ),
-                                ));
+                                $this->widget('application.widgets.AutoCompleteSearch',['field_name' => $acFieldData['fieldName']]);
                             }
                             ?>
                             <b>Select from list to add new</b>
@@ -173,3 +157,16 @@
 <?php
 Yii::app()->assetManager->registerScriptFile('js/oeadmin/listAutocomplete.js', CClientScript::POS_HEAD);
 ?>
+<script>
+    $(document).ready(function(){
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#<?= $acFieldData['fieldName']; ?>'),
+            url: '<?= $acFieldData['jsonURL']; ?>',
+            onSelect: function(){
+                let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                addItem(AutoCompleteResponse.id, '<?= $admin->getCustomSaveURL(); ?>');
+                return false;
+            }
+        });
+    });
+</script>

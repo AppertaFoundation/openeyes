@@ -235,13 +235,24 @@ $(document).ready(function() {
 });
 
 function OphTrOperationbooking_showMatchingRule() {
-	if ($('#lcr_site_id').val() != '' && $('#lcr_firm_id').val() != '') {
+	if ($('#lcr_site_id').val() !== '' && $('#lcr_firm_id').val() !== '') {
+
 		// only require these if they're in the dom
-		if ($('#lcr_is_child').length >0 && $('#lcr_is_child').val() == '') return;
-		if ($('#lcr_rule_type_id').length >0 && $('#lcr_rule_type_id').val() == '') return;
-		if ($('#lcr_subspecialty_id').length >0 && $('#lcr_subspecialty_id').val() == '') return;
-		if ($('#lcr_theatre_id').length >0 && $('#lcr_theatre_id').val() == '') return;
-		if ($('#lcr_service_id').length >0 && $('#lcr_service_id').val() == '') return;
+		if ($('#lcr_is_child').length && $('#lcr_is_child').val() === ''){
+            return;
+		}
+		if ($('#lcr_rule_type_id') && $('#lcr_rule_type_id').val() === '') {
+			return;
+		}
+		if ($('#lcr_subspecialty_id') && $('#lcr_subspecialty_id').val() === '') {
+			return;
+		}
+		if ($('#lcr_theatre_id') && $('#lcr_theatre_id').val() === ''){
+            return;
+		}
+		if ($('#lcr_service_id') && $('#lcr_service_id').val() === ''){
+            return;
+		}
 
 		$.ajax({
 			'type': 'POST',

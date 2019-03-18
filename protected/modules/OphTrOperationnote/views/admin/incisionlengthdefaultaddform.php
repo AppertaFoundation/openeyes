@@ -16,22 +16,54 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Add incision length default</h2>
-	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'adminform',
-        'enableAjaxValidation' => false,
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ));
 
-    ?>
-	<?php echo $form->dropDownList($default, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => 'Select ' . Firm::contextLabel())) ?>
-	<?php echo $form->textField($default, 'value') ?>
-	<?php echo $form->formActions(array('cancel-uri' => '/OphTrOperationnote/admin/viewIncisionLengthDefaults')) ?>
-	<?php $this->endWidget() ?>
+<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'adminform',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+));
+?>
+
+<div class="cols-5">
+    <table class="standard cols-full">
+        <title>Add incision length default</title>
+        <colgroup>
+            <col class="cols-1">
+            <col class="cols-3">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Context</td>
+            <td>
+                <?=\CHtml::activeDropDownList(
+                    $default,
+                    'firm_id',
+                    Firm::model()->getListWithSpecialties(),
+                    ['class' => 'cols-full', 'empty' => 'Select ' . Firm::contextLabel()]
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Value</td>
+            <td>
+                <?=\CHtml::activeTextField(
+                    $default,
+                    'value',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<?php echo $form->formActions(array('cancel-uri' => '/OphTrOperationnote/admin/viewIncisionLengthDefaults')) ?>
+<?php $this->endWidget() ?>
 </div>

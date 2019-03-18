@@ -23,7 +23,7 @@
   <tbody>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?>:
+        <?=\CHtml::encode($element->getAttributeLabel('consultant_id')) ?>:
     </td>
     <td>
         <?php echo $element->consultant->fullNameAndTitle ?>
@@ -32,16 +32,7 @@
   </tr>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('information')) ?>:
-    </td>
-    <td>
-        <?php echo $element->information ? 'Yes' : 'No' ?>
-    </td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_leaflet')) ?>:
+        <?=\CHtml::encode($element->getAttributeLabel('anaesthetic_leaflet')) ?>:
     </td>
     <td>
         <?php echo $element->anaesthetic_leaflet ? 'Yes' : 'No' ?>
@@ -50,7 +41,7 @@
   </tr>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('witness_required')) ?>:
+        <?=\CHtml::encode($element->getAttributeLabel('witness_required')) ?>:
     </td>
     <td>
         <?php echo $element->witness_required ? 'Yes' : 'No' ?>
@@ -61,17 +52,17 @@
   <?php if ($element->witness_required) { ?>
     <tr>
       <td>
-          <?php echo CHtml::encode($element->getAttributeLabel('witness_name')) ?>:
+          <?=\CHtml::encode($element->getAttributeLabel('witness_name')) ?>:
       </td>
       <td>
-          <?php echo CHtml::encode($element->witness_name) ?>
+          <?=\CHtml::encode($element->witness_name) ?>
       </td>
       <td></td>
     </tr>
   <?php } ?>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('interpreter_required')) ?>:
+        <?=\CHtml::encode($element->getAttributeLabel('interpreter_required')) ?>:
     </td>
     <td>
         <?php echo $element->interpreter_required ? 'Yes' : 'No' ?>
@@ -81,10 +72,10 @@
   <?php if ($element->interpreter_required) { ?>
     <tr>
       <td>
-          <?php echo CHtml::encode($element->getAttributeLabel('interpreter_name')) ?>:
+          <?=\CHtml::encode($element->getAttributeLabel('interpreter_name')) ?>:
       </td>
       <td>
-          <?php echo CHtml::encode($element->interpreter_name) ?>
+          <?=\CHtml::encode($element->interpreter_name) ?>
       </td>
       <td></td>
     </tr>
@@ -92,17 +83,17 @@
   <?php if ($element->parent_guardian) { ?>
     <tr>
       <td>
-          <?php echo CHtml::encode($element->getAttributeLabel('parent_guardian')) ?>:
+          <?=\CHtml::encode($element->getAttributeLabel('parent_guardian')) ?>:
       </td>
       <td>
-          <?php echo CHtml::encode($element->parent_guardian) ?>
+          <?=\CHtml::encode($element->parent_guardian) ?>
       </td>
       <td></td>
     </tr>
   <?php } ?>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('include_supplementary_consent')) ?>:
+        <?=\CHtml::encode($element->getAttributeLabel('include_supplementary_consent')) ?>:
     </td>
     <td>
         <?php echo $element->include_supplementary_consent ? 'Yes' : 'No' ?>

@@ -16,6 +16,7 @@
  */
 
 $(document).ready(function() {
+
 	$('select.generic-admin-filter').change(function () { this.form.submit(); });
 
 	$('.editRow').die('click').live('click',function(e) {
@@ -69,17 +70,20 @@ $(document).ready(function() {
 	}
 
 	function appendRow(form) {
-		var dOrder = getNextDisplayOrder();
-		$('.generic-admin tbody').append(form);
-		$('.generic-admin tbody').children('tr:last').find('input[name^="display_order"]').val(dOrder);
-		$('.generic-admin tbody').children('tr:last').children('td:nth-child(2)').children('input').focus();
+		let dOrder = getNextDisplayOrder();
+		let $tbody = $('.generic-admin tbody');
+		let $last_tr;
+
+        $tbody.append(form);
+        $last_tr = $tbody.children('tr:last');
+        $tbody.children('tr:last').find('input[name^="display_order"]').val(dOrder);
+        $last_tr.children('td:nth-child(2)').children('input').focus();
 		//TODO: what is i?
-		$('.generic-admin tbody tr:last').find('input[type="radio"][name="default"]').attr('value',i-1);
+        $last_tr.find('input[type="radio"][name="default"]').attr('value',i-1);
 	}
 
 	$('.generic-admin-add').unbind('click').click(function(e) {
 		e.preventDefault();
-
 
 		var data = {
 			"key" : getNextKey()
@@ -87,7 +91,8 @@ $(document).ready(function() {
 		var template = $('.generic-admin .newRow').html();
 
 		if (template) {
-			appendRow('<tr data-row="'+data.key+'">' + Mustache.render(template, data).replace(/ disabled="disabled"/g,'') + '</tr>');
+			// insert the new row before the template row
+            $('.generic-admin tbody tr:last').before('<tr data-row="'+data.key+'">' + Mustache.render(template, data).replace(/ disabled="disabled"/g,'') + '</tr>');
 		}
 		else {
 			$.ajax({

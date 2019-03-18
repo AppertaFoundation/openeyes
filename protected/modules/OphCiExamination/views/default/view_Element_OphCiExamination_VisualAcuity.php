@@ -17,7 +17,7 @@
  */
 ?>
 
-<?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
+<?=\CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
 
 <div class="element-data element-eyes">
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>

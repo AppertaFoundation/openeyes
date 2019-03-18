@@ -112,7 +112,7 @@
             <i class="oe-i menu medium pad"></i>
           </td>
           <td class="hospital">
-              <?php echo CHtml::link($booking->operation->event->episode->patient->hos_num,
+              <?=\CHtml::link($booking->operation->event->episode->patient->hos_num,
                   Yii::app()->createUrl('/OphTrOperationbooking/default/view/' . $booking->operation->event_id));
               ?></td>
           <td class="confirm">
@@ -122,9 +122,19 @@
                    <?php if ($booking->confirmed) { ?>checked="checked" <?php } ?>/>
           </td>
           <td class="patient">
-              <?php echo strtoupper($booking->operation->event->episode->patient->last_name) ?>
-            , <?php echo $booking->operation->event->episode->patient->first_name ?>
-            (<?php echo $booking->operation->event->episode->patient->age ?>)
+              <?php echo strtoupper($booking->operation->event->episode->patient->last_name) ?>,
+              <?php echo $booking->operation->event->episode->patient->first_name ?>
+              (<?php echo $booking->operation->event->episode->patient->age ?>)
+              <?php
+                $warnings = $booking->operation->event->episode->patient->getWarnings();
+                if ($warnings) {
+                    $msgs = [];
+                    foreach ($warnings as $warn) {
+                        $msgs[] = $warn['long_msg'] . " - " . $warn['details'];
+                    } ?>
+                    <i class="oe-i warning medium pad js-has-tooltip"
+                       data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
+                <?php } ?>
           </td>
           <td class="operation">
               <i class="oe-i circle-<?=$booking->operation->getComplexityColor()?> small pad-right js-has-tooltip" data-tooltip-content="<?=$booking->operation->getComplexityCaption()?> complexity"></i>
@@ -140,21 +150,12 @@
               <?php echo $booking->ward ? $booking->ward->name : 'None' ?>
           </td>
           <td class="alerts">
-
               <?php if ($booking->operation->event->episode->patient->gender == 'M') { ?>
                 <i class="oe-i male medium pad js-has-tooltip" data-tooltip-content="Male"></i>
               <?php } else { ?>
                 <i class="oe-i female medium pad js-has-tooltip" data-tooltip-content="Female"></i>
               <?php } ?>
-              <?php if ($warnings = $booking->operation->event->episode->patient->getWarnings()) {
-                  $msgs = array();
-                  foreach ($warnings as $warn) {
-                      $msgs[] = $warn['long_msg']." - ".$warn['details'];
-                  }
-                  ?>
-                <i class="oe-i exclamation medium pad js-has-tooltip"
-                   data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
-              <?php } ?>
+
 
               <?php if ($booking->operation->comments && preg_match('/\w/', $booking->operation->comments)): ?>
                 <i class="oe-i info medium pad js-has-tooltip"
@@ -165,7 +166,7 @@
               <?php
               if ($booking->operation->comments_rtt && preg_match('/\w/', $booking->operation->comments_rtt)): ?>
                 <i class="oe-i comments medium pad js-has-tooltip"
-                   data-tooltip-content="<?php echo CHtml::encode($booking->operation->comments_rtt, ENT_COMPAT,
+                   data-tooltip-content="<?=\CHtml::encode($booking->operation->comments_rtt, ENT_COMPAT,
                        'UTF-8') ?>"></i>
               <?php endif; ?>
 
@@ -287,10 +288,10 @@
                     Session available
                   </label>
                   <label <?php if ($session->available) { ?>style="display: none; color:#000;"<?php } ?>>
-                      <?php echo CHtml::dropDownList('unavailablereason_id_' . $session->id,
+                      <?=\CHtml::dropDownList('unavailablereason_id_' . $session->id,
                           $session->unavailablereason_id,
                           CHtml::listData($session->getUnavailableReasonList(), 'id', 'name'),
-                          array('empty' => '- Please Select -', 'class' => 'unavailable-reasons')) ?>
+                          array('empty' => 'Select', 'class' => 'unavailable-reasons')) ?>
                   </label>
                   <input style="display: inline-block;" type="text"
                          autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
@@ -326,7 +327,7 @@
         <textarea name="comments_<?php echo $session->id ?>"
                   class="cols-9 comments diaryEditMode"
                   style="display: none;"
-                  data-id="<?php echo $session->id ?>"><?php echo CHtml::encode($session['comments']) ?></textarea>
+                  data-id="<?php echo $session->id ?>"><?=\CHtml::encode($session['comments']) ?></textarea>
           <?php $title = 'Modified on ' . Helper::convertMySQL2NHS($session->last_modified_date) . ' at ' . substr($session->last_modified_date,
                   13, 5) . ' by ' . $session->session_usermodified->fullName; ?>
 
@@ -334,7 +335,7 @@
               data-id="<?php echo $session->id ?>"
               title="<?php echo $title; ?>">
           <i class="oe-i info medium no-click pad"></i>
-          <span class="comment"><?php echo CHtml::encode($session->comments) ?></span>
+          <span class="comment"><?=\CHtml::encode($session->comments) ?></span>
         </span>
       </form>
     </div>

@@ -18,7 +18,7 @@
 ?>
 <tr class="dilationTreatment" data-key="<?php echo $key ?>" data-order="<?php echo $data_order ?>">
   <td>
-      <?php echo CHtml::textField($name_stub . '[' . $key . '][treatment_time]',
+      <?=\CHtml::textField($name_stub . '[' . $key . '][treatment_time]',
           isset($treatment) ? substr($treatment->treatment_time, 0, 5) : $treatment_time,
           array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'input-time')) ?>
   </td>

@@ -66,9 +66,6 @@ class ExaminationCreator
 
             $this->createMessage($episodeId, $userId, $examination, $examinationEvent, $opNoteEventId);
 
-            if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity']) || count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
-                $this->createVisualFunction($userId, $examinationEvent);
-
                 if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])) {
                     $measure = $examination['patient']['eyes'][0]['reading'][0]['visual_acuity'][0]['measure'];
                     $unit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $measure));
@@ -80,7 +77,6 @@ class ExaminationCreator
                     $nearUnit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $nearMeasure));
                     $nearVisualAcuity = $this->createVisualAcuity($userId, $examinationEvent, $nearUnit, true);
                 }
-            }
 
             foreach ($examination['patient']['eyes'] as $eye) {
                 $eyeLabel = strtolower($eye['label']);
@@ -152,28 +148,6 @@ class ExaminationCreator
         }
 
         return $eyeIds;
-    }
-
-    /**
-     * @param $userId
-     * @param $examination
-     * @param $examinationEvent
-     *
-     * @throws \CDbException
-     * @throws \Exception
-     */
-    protected function createVisualFunction($userId, $examinationEvent)
-    {
-        //create VisualFunction, required for visual acuity to show.
-        $visualFunction = new \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction();
-        $visualFunction->event_id = $examinationEvent->id;
-        $visualFunction->eye_id = $this->examinationEyeId;
-        $visualFunction->left_rapd = 0;
-        $visualFunction->right_rapd = 0;
-        $visualFunction->created_user_id = $visualFunction->last_modified_user_id = $userId;
-        if (!$visualFunction->save(true, null, true)) {
-            throw new \CDbException('Visual Function failed: '.print_r($visualFunction->getErrors(), true));
-        }
     }
 
     /**

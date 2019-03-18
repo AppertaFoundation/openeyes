@@ -19,17 +19,17 @@
 <div class="element-data full-width flex-layout flex-top col-gap">
   <div class="cols-6">
     <div class="data-label large-text">
-        <?php echo CHtml::encode($element->getAttributeLabel('benefits')) ?>:
+        <?=\CHtml::encode($element->getAttributeLabel('benefits')) ?>:
     </div>
     <span class="large-text">
-        <?php echo CHtml::encode($element->benefits) ?>
+        <?=\CHtml::encode($element->benefits) ?>
     </span>
   </div>
 
   <div class="cols-6">
     <div class="data-label">
-        <?php echo CHtml::encode($element->getAttributeLabel('risks')) ?>:
+        <?=\CHtml::encode($element->getAttributeLabel('risks')) ?>:
     </div>
-      <?php echo CHtml::encode($element->risks) ?>
+      <?=\CHtml::encode($element->risks) ?>
   </div>
 </div>

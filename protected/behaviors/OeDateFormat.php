@@ -22,6 +22,7 @@
 class OeDateFormat extends CActiveRecordBehavior
 {
     public $date_columns = array();
+    public $fuzzy_date_field = 'date';
 
     /**
      * Converts OE (e.g. 5-Dec-2011) dates to ISO 9075 before save.
@@ -50,5 +51,68 @@ class OeDateFormat extends CActiveRecordBehavior
                 $this->Owner->{$date_column} = '';
             }
         }
+    }
+
+    public function getHTMLformatedDate()
+    {
+        return $this->formatFuzzyDateToHtml();
+    }
+
+    public function getFormatedDate()
+    {
+        return $this->formatFuzzyDate();
+    }
+
+    /**
+     * Converts ISO 9075 dates to an html.
+     * @return string
+     */
+    private function formatFuzzyDateToHtml()
+    {
+        list($day, $month, $year) = $this->formatFuzzyDateSplit();
+        if ($year === '') {
+            return '-';
+        }
+        $day = ltrim($day, "0");
+        return ($day   !== '' ? '<span class="day">'.$day.'</span>'   : '') .
+               ($month !== '' ? '<span class="mth">'.$month.'</span>' : '') .
+               ($year  !== '' ? '<span class="yr">'.$year.'</span>' : '');
+
+    }
+
+    /**
+     * Converts ISO 9075 dates to a string.
+     * @return string
+     */
+    private function formatFuzzyDate() {
+        list($day, $month, $year) = $this->formatFuzzyDateSplit();
+        return $day . $month . $year;
+    }
+
+    /**
+     * Extract day, month and year from the date in the database
+     * @return array
+     */
+    private function formatFuzzyDateSplit() {
+        // get date from model
+        $date = $this->Owner->{$this->fuzzy_date_field};
+
+        // check date format
+        if (!strtotime($date)) {
+            return ['', '', ''];
+        }
+
+        // get month and day
+        preg_match_all('/\b\d{2}\b/', $date, $matches);
+        $month = sizeof($matches[0]) > 0 ? $matches[0][0] : '00';
+        $day = sizeof($matches[0]) > 1 ? $matches[0][1] : '00';
+
+        // get year
+        preg_match('/\b\d{4}\b/', $date, $matches);
+        $year = isset($matches[0]) ? $matches[0] : '00';
+
+        return [$day  !== '00' ? $day . ' ' : '',
+            $month !== '00' ? date("M", mktime(0, 0, 0, $month, 1)) . ' ' : '',
+            $year  !== '0000' ? $year : ''];
     }
 }

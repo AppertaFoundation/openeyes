@@ -40,6 +40,10 @@ class OEFuzzyDateValidator extends CValidator
     {
         $dt = $object->$attribute;
         list($this->year, $this->month, $this->day) = array_pad(explode('-', explode(' ', $dt)[0]), 3,0);
+        if (isset($dt) && $dt !== ""  && (!is_numeric($this->year) || !is_numeric($this->month) || !is_numeric($this->day))) {
+            $this->addError($object, $attribute, 'Date must be in the format YYYY-MM-DD, YYYY-MM or YYYY');
+        }
+
         if ($this->year<13&&$this->day==0){
             $this->day = $this->month;
             $this->month = $this->year;
@@ -61,7 +65,6 @@ class OEFuzzyDateValidator extends CValidator
             $this->validateCompleteDate();
         } elseif ($this->month > 0 && $this->year > 0) {
             $this->validateFuzzyMonthYear();
-        } elseif ($this->year > 0) {
         }
     }
 

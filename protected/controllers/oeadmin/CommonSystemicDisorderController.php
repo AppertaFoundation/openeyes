@@ -18,6 +18,8 @@
  */
 class CommonSystemicDisorderController extends BaseAdminController
 {
+    public $group = 'Disorders';
+
     public function actionList()
     {
         $admin = new AdminListAutocomplete(CommonSystemicDisorder::model(), $this);
@@ -40,6 +42,7 @@ class CommonSystemicDisorderController extends BaseAdminController
             )
         );
         //$admin->searchAll();
+        $admin->div_wrapper_class = 'cols-5';
         $admin->listModel();
     }
 

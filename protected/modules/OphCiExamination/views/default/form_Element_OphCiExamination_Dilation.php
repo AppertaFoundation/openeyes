@@ -74,7 +74,7 @@ foreach ($dilation_drugs as $d_drug) {
                   <td>
                     <div class="flex-layout flex-top flex-left">
                       <ul class="add-options" data-multi="false" data-clickadd="false">
-                          <?php foreach ($element->getUnselectedDilationDrugs($eye_side) as $id => $drug): ?>
+                          <?php foreach ($element->getAllDilationDrugs($eye_side) as $id => $drug): ?>
                             <li data-str="<?= $id ?>"
                                 data-order="<?= $dilation_drugs_order[$id] ?>"><?= $drug ?></li>
                           <?php endforeach; ?>
@@ -118,8 +118,8 @@ foreach ($dilation_drugs as $d_drug) {
             'multi',
             null,
             side.find('.js-add-select-search'),
-            null,
-            popup.find('.close-icon-btn, .add-icon-btn')
+            popup.find('.add-icon-btn'),
+            popup.find('.close-icon-btn')
           );
         })
       </script>

@@ -32,8 +32,8 @@
     <tfoot class="pagination-container">
         <tr>
             <td colspan="5">
-                <?php echo CHtml::link('Add', array('patientMergeRequest/create'), array('class' => 'button small')); ?>
-                <?php echo CHtml::link('Delete', array('patientMergeRequest/delete'), array('id' => 'rq_delete', 'class' => 'button small', 'disabled' => ($filters['show_merged'] ? 'disabled' : ''))); ?>
+                <?=\CHtml::link('Add', array('patientMergeRequest/create'), array('class' => 'button small')); ?>
+                <?=\CHtml::link('Delete', array('patientMergeRequest/delete'), array('id' => 'rq_delete', 'class' => 'button small', 'disabled' => ($filters['show_merged'] ? 'disabled' : ''))); ?>
 
                 <?php echo $this->renderPartial('//admin/_pagination', array(
                         'pagination' => $data_provider->getPagination(),

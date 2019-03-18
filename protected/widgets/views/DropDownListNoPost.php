@@ -31,7 +31,7 @@
 				<option value="" data-order="0"><?php echo $htmlOptions['empty']?></option>
 			<?php }?>
 			<?php $order = 1; foreach ($data as $id => $option) {?>
-				<option value="<?php echo $id?>"<?php if(@$htmlOptions['display_order']){echo ' data-order="'.$htmlOptions['display_order'][$id].'" ';}?><?php if ($id == $selected_value) {?> selected="selected"<?php }?>><?php echo CHtml::encode($option)?></option>
+				<option value="<?php echo $id?>"<?php if(@$htmlOptions['display_order']){echo ' data-order="'.$htmlOptions['display_order'][$id].'" ';}?><?php if ($id == $selected_value) {?> selected="selected"<?php }?>><?=\CHtml::encode($option)?></option>
 			<?php ++$order;}?>
 		</select>
 		<?php if (!@$htmlOptions['nowrapper']) {?>

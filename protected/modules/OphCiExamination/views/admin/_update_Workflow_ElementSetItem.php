@@ -19,7 +19,7 @@
 <div class="box admin">
 	<div class="data-group">
 		<div class="column cols-2">
-			<?php echo CHtml::textField('step_name', $step->name, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+			<?=\CHtml::textField('step_name', $step->name, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 		</div>
 		<div class="column cols-2 end">
 			<?php echo EventAction::button('Save', 'save_step_name', null, array('class' => 'small'))->toHtml()?>
@@ -39,9 +39,9 @@
         <tbody>
         <?php foreach ($step->items as $i => $item) { ?>
           <tr class="clickable" data-id="<?php echo $item->id?>">
-            <td><?php echo $item->element_type->nameWithParent ?></td>
-            <td><?php echo CHtml::activeCheckBox($item, 'is_hidden', array('class' => 'workflow-item-attr'))?></td>
-            <td><?php echo CHtml::activeCheckBox($item, 'is_mandatory', array('class' => 'workflow-item-attr'))?></td>
+            <td><?php echo $item->element_type->name?></td>
+            <td><?=\CHtml::activeCheckBox($item, 'is_hidden', array('class' => 'workflow-item-attr'))?></td>
+            <td><?=\CHtml::activeCheckBox($item, 'is_mandatory', array('class' => 'workflow-item-attr'))?></td>
             <td><a href="#" class="removeElementType" rel="<?php echo $item->id?>" data-element-type-id="<?php echo $item->element_type_id?>">Remove</a></td>
           </tr>
             <?php } ?>
@@ -52,7 +52,7 @@
             <div class="grid-view">
               <div class="data-group">
                 <div class="cols-3 column">
-                    <?php echo CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'nameWithParent'), array('empty' => '- Select -'))?>
+                    <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
                 </div>
                 <div class="cols-3 column end">
                     <?php echo EventAction::button('Add element type', 'add_element_type', null, array('class' => 'small'))->toHtml()?>

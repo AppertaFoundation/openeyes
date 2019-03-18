@@ -35,7 +35,7 @@
     ))?>
 
 	<p>
-		This patient was recently referred to this hospital and a decision was made that surgery was appropriate under the care of <?php echo CHtml::encode($consultantName) ?>.
+		This patient was recently referred to this hospital and a decision was made that surgery was appropriate under the care of <?=\CHtml::encode($consultantName) ?>.
 	</p>
 
 	<p>

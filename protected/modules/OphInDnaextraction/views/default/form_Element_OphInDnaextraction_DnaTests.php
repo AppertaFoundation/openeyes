@@ -34,9 +34,9 @@
         } ?>
 
 
-    <?php echo CHtml::activeHiddenField($element, "id"); ?>
+    <?=\CHtml::activeHiddenField($element, "id"); ?>
 
-  <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
+  <input type="hidden" name="<?=\CHtml::modelName($element); ?>[force_validation]"/>
   <fieldset class="dnatests element-fields">
     <div class="data-group">
       <div class="cols-3 column">

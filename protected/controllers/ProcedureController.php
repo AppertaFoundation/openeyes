@@ -68,8 +68,11 @@ class ProcedureController extends BaseController
             $criteria->order = 'term asc';
 
             $procedures = Procedure::model()->active()->findAll($criteria);
-
-            $this->renderPartial('_procedureOptions', array('procedures' => $procedures), false, false);
+            $view = '_procedureOptions';
+            if(!empty($_POST['dialog'])) {
+                $view = '_procedureDialogOptions';
+            }
+                $this->renderPartial($view, array('procedures' => $procedures), false, false);
         }
     }
 

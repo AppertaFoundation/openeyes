@@ -17,14 +17,14 @@
  */
 ?>
 
-<section class="element patient-info associated-data js-toggle-container">
+<section class="element view full patient-info associated-data js-toggle-container">
     <header class="element-header">
-        <h3 class="element-header">
+        <h3 class="element-title">
             <span class="icon-patient-clinician-hd_flag"></span>
             CVI Status
         </h3>
     </header>
-    <div class="js-toggle-body">
+    <div class="element-data full-width js-toggle-body">
         <?php if ($override = $this->renderOverride('patient_summary_render.cvi_status', array($this->patient))) {
             echo $override;
         } else { ?>
@@ -41,8 +41,8 @@
                     $info = $this->patient->getOPHInfo();
                     ?>
                     <tr>
-                        <td><?php echo Helper::formatFuzzyDate($info->cvi_status_date); ?></td>
-                        <td><?php echo $info->cvi_status->name; ?></td>
+                        <td><?= Helper::formatFuzzyDate($info->cvi_status_date); ?></td>
+                        <td><?= $info->cvi_status->name; ?></td>
                     </tr>
                 </tbody>
             </table>

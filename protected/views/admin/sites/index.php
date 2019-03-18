@@ -9,10 +9,12 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
+<div class="cols-7">
 
     <?php if (!$sites) :?>
     <div class="row divider">
@@ -67,8 +69,8 @@
             </tbody>
             <tfoot class="pagination-container">
                 <tr>
-                    <td colspan="5">
-                        <?php echo CHtml::button(
+                    <td colspan="2">
+                        <?=\CHtml::button(
                             'Add Site',
                             [
                                 'class' => 'button large',
@@ -76,7 +78,7 @@
                             ]
                         ); ?>
                     </td>
-                    <td colspan="4">
+                    <td colspan="2">
                         <?php $this->widget(
                             'LinkPager',
                             ['pages' => $pagination]
@@ -86,3 +88,4 @@
             </tfoot>
         </table>
     </form>
+</div>

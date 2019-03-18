@@ -44,7 +44,7 @@ $form = $this->beginWidget('CActiveForm', array(
     </div>
     <div class="oe-popup-content previous-elements">
       <input type="hidden" name="cat_id" value="<?= $cat_id; ?>"/>
-        <?php echo CHtml::hiddenField('queueset_id', ($queueset ? $queueset->getId() : null)) ?>
+        <?=\CHtml::hiddenField('queueset_id', ($queueset ? $queueset->getId() : null)) ?>
       <ul class="oe-btn-list">
           <?php foreach ($queueset_list as $id => $item) { ?>
             <li id="<?= $id ?>" class="<?= $queueset && (integer)$queueset_id === $id ? 'selected' : '' ?>">
@@ -71,7 +71,7 @@ $this->endWidget(); ?>
   });
 
   $(".oe-btn-list").ready(function () {
-    $("li").click(function (event) {
+    $(".oe-btn-list").on('click' , 'li' , function (event) {
       var $ticketFilter = $('#ticket-filter');
       $ticketFilter.find('input[name="queueset_id"]').val($(this).attr('id'));
       $ticketFilter.submit();

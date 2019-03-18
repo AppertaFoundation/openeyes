@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,35 +11,25 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 <?php $this->beginContent('//patient/event_container', array('no_face' => true)); ?>
     <div>
         <?php
+        $this->event_actions[] = EventAction::link('Cancel Scheduling',
+            Yii::app()->createUrl('/OphTrOperationbooking/default/view/' . $this->operation->event_id),
+            array(),
+            array('id' => 'cancel_scheduling', 'class' => 'red warning'));
+
         $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
         $warnings = $this->patient->getWarnings($clinical);
         $this->title = ($operation->booking ? 'Re-schedule' : 'Schedule') . ' Operation'; ?>
 
-        <div class="alert-box alert with-icon" style="display: <?php if (!is_array($errors)) {
-            echo 'none';
-        } ?>">
-            <p>Please fix the following input errors:</p>
-            <ul>
-                <?php if (is_array($errors)) {
-                foreach ($errors as $errors2) {
-                    foreach ($errors2 as $error) { ?>
-                        <li><?php echo $error ?></li>
-                    <?php }
-                } ?>
-            </ul>
-            <?php } else { ?>
-                <li>&nbsp;</li>
-                </ul>
-            <?php } ?>
-        </div>
+
+        <?php if (isset($errors) && !empty($errors)) { $this->displayErrors($errors);} ?>
 
         <?php if ($warnings) { ?>
             <div class="alert-box warning">
@@ -70,29 +60,6 @@
                 </div>
                 <table class="cols-full last-left">
                     <tbody>
-                    <?php
-                    if ($event->episode->firm_id != $firm->id) { ?>
-                        <tr>
-                            <?php if ($firm->name == 'Emergency List') {
-                                $class = 'alert-box alert';
-                                $message = 'You are booking into the Emergency List.';
-                            } else {
-                                $class = 'alert-box info';
-                                $message = 'You are booking into the list for ';
-                            } ?>
-                            <td>
-                                <?php echo $message; ?>
-                            </td>
-                            <td>
-                                <div class="<?php echo $class; ?>"> <?php echo $firm->name ?></div>
-                            </td>
-                            <?php if (empty($sessions)) { ?>
-                                <div class="alert-box alert">This <?php echo Firm::model()->contextLabel()?> has no scheduled sessions.</div>
-                                <?php
-                            }
-                            ?>
-                        </tr>
-                    <?php } ?>
                     <?php if ($operation->booking) { ?>
                         <tr>
                             <td>
@@ -118,6 +85,9 @@
                         <td>
                             <div class="alert-box info"><?php echo $firm->name ?></div>
                         </td>
+                        <?php if (empty($sessions)) { ?>
+                            <div class="alert-box alert">This <?php echo Firm::model()->contextLabel()?> has no scheduled sessions.</div>
+                        <?php } ?>
                     </tr>
                     <tr>
                         <td>
@@ -142,7 +112,7 @@
                     <?php if (Yii::app()->params['ophtroperationbooking_referral_link']) { ?>
                         <tr>
                             <td>
-                                <?php echo CHtml::label($operation->getAttributeLabel('referral_id') . ':',
+                                <?=\CHtml::label($operation->getAttributeLabel('referral_id') . ':',
                                     'referral_id'); ?>
                             </td>
                             <td>
@@ -219,42 +189,7 @@
                         </tbody>
                     </table>
                 <?php } ?>
-                </tbody>
-            </table>
-        </div>
-        <div class="cols-6">
-            <?php
-            $initial_erod = ($operation->firstBooking) ? $operation->firstBooking->erod : null;
-            $erod = $operation->calculateEROD($firm);
-            if ($initial_erod || $erod) { ?>
-                <table class="cols-full last-left">
-                    <tbody>
-                    <tr>
-                        <td>
-                            <?= CHtml::encode($schedule_options->getAttributeLabel('schedule_options_id')) ?>:
-                        </td>
-                        <td class="large-text">
-                            <?= CHtml::encode($schedule_options->schedule_options->name) ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            EROD
-                        </td>
-                        <td>
-                            <?php if ($erod) {
-                                echo $erod->getDescription();
-                            } else {
-                                echo 'N/A';
-                            }
-                            if ($initial_erod) {
-                                echo ' <span class="initial-erod">Initially: ' . $initial_erod->getDescription();
-                            } ?>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            <?php } ?>
+            </div>
         </div>
 </section>
 <section class="element edit full  edit-select-theatre-date">

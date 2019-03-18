@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -290,13 +290,24 @@ class WorklistManager extends CComponent
     /**
      * @return DateTime
      */
-    public function getGenerationTimeLimitDate()
+    public function getGenerationTimeLimitDate(WorklistDefinition $definition = null, $date_limit = null)
     {
-        $limit = $this->getAppParam('worklist_default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
-        $interval = DateInterval::createFromDateString($limit);
+        if (is_null($date_limit)) {
+            $limit = $this->getAppParam('worklist_default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
+            $interval = DateInterval::createFromDateString($limit);
 
-        $now = new DateTime();
-        return $now->add($interval);
+            $date_limit = new DateTime();
+            $date_limit->add($interval);
+        }
+
+        if ($definition && $definition->active_until) {
+            $active_until = new DateTime($definition->active_until);
+            if ($active_until < $date_limit) {
+                $date_limit = $active_until;
+            }
+        }
+
+        return $date_limit;
     }
 
     /**
@@ -620,7 +631,10 @@ class WorklistManager extends CComponent
         $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
         foreach ($days as $when) {
             foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist) {
-                $worklists[] = $worklist;
+                $worklist_patients = $this->getPatientsForWorklist($worklist);
+                if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
+                    $worklists[] = $worklist;
+                }
             }
         }
 
@@ -884,7 +898,7 @@ class WorklistManager extends CComponent
         if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
             $this->yii->assetManager->registerScriptFile('js/worklist-dashboard.js', null, null, AssetManager::OUTPUT_SCREEN);
 
-            return $this->renderPartial('//worklist/dashboard', array(
+            return $this->renderPartial('//worklist/_worklist', array(
                     'worklist' => $worklist,
                     'worklist_patients' => $this->getPatientsForWorklist($worklist),
                 )
@@ -1084,9 +1098,7 @@ class WorklistManager extends CComponent
      */
     public function generateAutomaticWorklists(WorklistDefinition $definition, $date_limit = null)
     {
-        if (is_null($date_limit)) {
-            $date_limit = $this->getGenerationTimeLimitDate();
-        }
+        $date_limit = $this->getGenerationTimeLimitDate($definition, $date_limit);
 
         $rrule_str = $this->setDateLimitOnRrule($definition->rrule, $date_limit);
         $rrule = $this->getInstanceForClass('\RRule\RRule', array($rrule_str));
@@ -1129,12 +1141,8 @@ class WorklistManager extends CComponent
      *
      * @return bool|int
      */
-    public function generateAllAutomaticWorklists(DateTime $date_limit = null)
+    public function generateAllAutomaticWorklists(DateTime $date_limit)
     {
-        if (is_null($date_limit)) {
-            $date_limit = $this->getGenerationTimeLimitDate();
-        }
-
         $count = 0;
 
         $transaction = $this->startTransaction();

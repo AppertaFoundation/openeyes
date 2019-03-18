@@ -247,6 +247,7 @@ class User extends BaseActiveRecordVersioned
             'is_consultant' => 'Consultant',
             'is_surgeon' => 'Surgeon',
             'doctor_grade_id' => 'Grade',
+            'role' => 'Position'
         );
     }
 

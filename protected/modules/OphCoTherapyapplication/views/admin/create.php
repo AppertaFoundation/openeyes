@@ -16,32 +16,42 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
 
-	<h2>Add <?php echo $title?></h2>
+<div class="row divider cols-7">
+    <h2>Add <?php echo $title ?></h2>
+</div>
 
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'adminform',
-        'enableAjaxValidation' => false,
-        'htmlOptions' => array(
-                'enctype' => 'multipart/form-data',
-        ),
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ))?>
 
-	<?php echo $form->errorSummary($model)?>
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'adminform',
+    'enableAjaxValidation' => false,
+    'htmlOptions' => array(
+        'enctype' => 'multipart/form-data',
+    ),
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+)) ?>
 
-	<?php
-    $this->renderPartial('form_'.get_class($model), array(
+<?php echo $form->errorSummary($model) ?>
+<div class="cols-7">
+    <table class="standard cols-full">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+        <?= $this->renderPartial('form_' . get_class($model), array(
             'model' => $model,
             'form' => $form,
-    ))?>
-
-	<?php echo $form->formActions(array('cancel-uri' => @$cancel_uri))?>
-
-	<?php $this->endWidget()?>
+        )) ?>
+        </tbody>
+    </table>
 </div>
+
+<?php echo $form->formActions(array('cancel-uri' => @$cancel_uri)) ?>
+
+<?php $this->endWidget() ?>
+

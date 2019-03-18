@@ -85,7 +85,7 @@ class DefaultController extends BaseEventTypeController
             if($action == 'update'){
                 if( !Yii::app()->request->isPostRequest && $letter->draft){
 
-                    $gp_targets = $letter->getTargetByContactType("GP");
+                    $gp_targets = $letter->getTargetByContactType(Yii::app()->params['gp_label']);
 
                     foreach($gp_targets as $gp_target){
                         $api->updateDocumentTargetAddressFromContact($gp_target->id, 'Gp', $letter->id);
@@ -164,8 +164,6 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetAddress()
     {
-
-
         if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
             throw new Exception('Unknown patient: '.@$_GET['patient_id']);
         }
@@ -210,7 +208,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        if ($macro->recipient && $macro->recipient->name == 'GP' && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
+        if ($macro->recipient && $macro->recipient->name == Yii::app()->params['gp_label'] && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
             $data['sel_address_target'] = get_class($contact).$contact->id;
         }
 
@@ -256,7 +254,7 @@ class DefaultController extends BaseEventTypeController
                 ));
                 $cc['targets'][] = '<input type="hidden" name="CC_Targets[]" value="Patient'.$patient->id.'" />';
             } else {
-                $data['alert'] = "Letters to the GP should be cc'd to the patient, but this patient does not have a valid address.";
+                $data['alert'] = "Letters to the ".\Yii::app()->params['gp_label']." should be cc'd to the patient, but this patient does not have a valid address.";
             }
         }
 
@@ -466,7 +464,7 @@ class DefaultController extends BaseEventTypeController
             // check if the first recipient is GP
             $docunemt_instance = $letter->document_instance[0];
             $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
-                ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type_gp' => 'GP', ':type_ir' => 'INTERNALREFERRAL', ));
+                ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL', ));
 
             if($to_recipient_gp){
                 // print an extra copy to note
@@ -482,7 +480,7 @@ class DefaultController extends BaseEventTypeController
                     $recipients[] = ($document_target->contact_name . "\n" . $document_target->address);
 
                     //extra printout for note when the main recipient is NOT GP
-                    if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
+                    if($document_target->ToCc == 'To' && $document_target->contact_type != Yii::app()->params['gp_label']){
                         if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
                             $recipients[] = $document_target->contact_name . "\n" . $document_target->address;
                         }
@@ -497,7 +495,7 @@ class DefaultController extends BaseEventTypeController
              */
             if( isset($_GET['print_only_gp']) && $_GET['print_only_gp'] == "1" ){
 
-                $gp_targets = $letter->getTargetByContactType("GP");
+                $gp_targets = $letter->getTargetByContactType(Yii::app()->params['gp_label']);
                 foreach($gp_targets as $gp_target){
                     $recipients[] = $gp_target->contact_name . "\n" . $gp_target->address;
                 }
@@ -611,7 +609,9 @@ class DefaultController extends BaseEventTypeController
         {
             $html_letter =  $this->renderOneRecipient($letter, $recipient);
             $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
-            $this->addPDFToOutput($event->imageDirectory.'/event_'.$pdf_letter.".pdf");
+            if (!isset($_GET['html']) || !$_GET['html']) {
+                $this->addPDFToOutput($event->imageDirectory . '/event_' . $pdf_letter . ".pdf");
+            }
 
             // add attachments for each
             if(count($attachments)>0)
@@ -631,14 +631,15 @@ class DefaultController extends BaseEventTypeController
 
         $pdf_path = $this->getPdfPath($event);
 
-        Yii::log($pdf_path);
         $this->pdf_output->Output("F",   $pdf_path);
 
         $event->unlock();
-        if ($returnContent) {
-            header('Content-Type: application/pdf');
-            header('Content-Length: ' . filesize($pdf_path));
-            readfile($pdf_path);
+        if (!isset($_GET['html']) || !$_GET['html']) {
+            if ($returnContent) {
+                header('Content-Type: application/pdf');
+                header('Content-Length: ' . filesize($pdf_path));
+                readfile($pdf_path);
+            }
         }
 
         //@unlink($pdf_path);
@@ -947,6 +948,9 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionCreateImage($id)
     {
+        // mimic print request so that the print style sheet is applied
+        $assetManager = Yii::app()->assetManager;
+        $assetManager->isPrintRequest  =true;
         try {
             $this->initActionView();
             $this->removeEventImages();
@@ -963,5 +967,17 @@ class DefaultController extends BaseEventTypeController
             $this->saveEventImage('FAILED', ['message' => (string)$ex]);
             throw $ex;
         }
+    }
+
+    /**
+     * After the event was soft deleted, we need to set the output_status' to DELETED
+     * @param $yii_event
+     * @return bool
+     * @throws Exception
+     */
+    public function afterSoftDelete($yii_event)
+    {
+        $letter = ElementLetter::model()->findByAttributes(['event_id' => $this->event->id]);
+        return $letter->markDocumentRelationTreeDeleted();
     }
 }

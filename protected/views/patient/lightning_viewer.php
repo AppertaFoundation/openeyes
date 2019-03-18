@@ -102,11 +102,10 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
         swipe to scan | click to lock
       </div>
     </div>
-    <div class="oe-lightning-quick-view js-lightning-view-image-container">
-      <div class="js-lightning-view-overlay"
-           style="width: <?= $previewWidth ?>px; min-height: 512px; height: 100%; position: absolute;"></div>
-
-      <i class="js-preview-image-loader spinner" style="display: none;"></i>
+      <div class="oe-lightning-quick-view js-lightning-view-image-container">
+          <div class="js-lightning-view-overlay"
+               style="width: <?= $previewWidth ?>px; min-height: 512px; position: absolute;"></div>
+          <i class="js-preview-image-loader spinner" style="display: none;"></i>
         <?php foreach ($previewsByYear as $year => $events) {
             foreach ($events as $event) {
                 $criteria = new CDbCriteria();
@@ -145,6 +144,11 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
 
 <script>
   $(function () {
+    $('body').css('overflow-y','hidden');
     var lightningViewer = new OpenEyes.UI.LightningViewer();
+    var oe_header_height = $('.oe-header').outerHeight();
+    var lightning_timeline_height = $('.lightning-timeline').outerHeight();
+
+    $('.js-lightning-view-overlay').css('height','calc(100% - '+(oe_header_height + lightning_timeline_height)+'px)');
   });
 </script>

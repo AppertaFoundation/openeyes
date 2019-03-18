@@ -16,38 +16,57 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-  <div class="cols-8 column">
-    <h2>Per-operative Drugs</h2>
-  </div>
-	<form id="admin_drugs">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="standard">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>Name</th>
-					<th>Active</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach (OphTrOperationnote_PostopDrug::model()->findAll(array('order' => 'display_order asc')) as $i => $drug) {?>
-					<tr class="clickable" data-id="<?php echo $drug->id?>" data-uri="OphTrOperationnote/admin/editPostOpDrug/<?php echo $drug->id?>">
-						<td><input type="checkbox" name="drugs[]" value="<?php echo $drug->id?>" /></td>
-						<td><?php echo ($drug->active) ? ($drug->name) : ('<s>'.$drug->name.'</s>');?></td>
-						<td><?php echo ($drug->active) ? ('<i class="oe-i tick small"></i>') : ('<i class="oe-i remove small"></i>');?></td>
 
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="3">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphTrOperationnote/admin/addPostOpDrug'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphTrOperationnote/admin/deletePostOpDrugs', 'data-object' => 'drug'))->toHtml()?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+<div class="cols-5">
+    <form id="admin_drugs">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+        <table class="standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Name</th>
+                <th>Active</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <?php foreach (OphTrOperationnote_PostopDrug::model()->findAll(array('order' => 'display_order asc')) as $i => $drug) { ?>
+                <tr class="clickable" data-id="<?php echo $drug->id ?>"
+                    data-uri="OphTrOperationnote/admin/editPostOpDrug/<?php echo $drug->id ?>">
+                    <td><input type="checkbox" name="drugs[]" value="<?php echo $drug->id ?>"/></td>
+                    <td><?php echo ($drug->active) ? ($drug->name) : ('<s>' . $drug->name . '</s>'); ?></td>
+                    <td><?php echo ($drug->active) ? ('<i class="oe-i tick small"></i>') : ('<i class="oe-i remove small"></i>'); ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="3">
+                    <?=\CHtml::button(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'name' => 'add',
+                            'type' => 'submit',
+                            'data-uri' => '/OphTrOperationnote/admin/addPostOpDrug',
+                            'id' => 'et_add'
+                        ]
+                    ); ?>
+                    <?=\CHtml::button(
+                        'Delete',
+                        [
+                            'data-uri' => '/OphTrOperationnote/admin/deletePostOpDrugs',
+                            'data-object' => 'drug',
+                            'class' => 'button large',
+                            'type' => 'submit',
+                            'name' => 'delete',
+                            'id' => 'et_delete',
+                        ]
+                    ); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

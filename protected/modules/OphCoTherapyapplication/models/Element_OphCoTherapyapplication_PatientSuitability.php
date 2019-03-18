@@ -379,4 +379,9 @@ class Element_OphCoTherapyapplication_PatientSuitability extends SplitEventTypeE
             return OphCoTherapyapplication_Processor::STATUS_PENDING;
         }
     }
+
+    public function getContainer_form_view()
+    {
+        return '//patient/element_container_form_no_bin';
+    }
 }

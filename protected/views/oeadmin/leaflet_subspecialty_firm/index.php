@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -28,12 +28,12 @@
             <tr>
                 <td class="fade">Subspecialty:</td>
                 <td>
-                    <?php echo CHtml::dropDownList(
+                    <?=\CHtml::dropDownList(
                         'subspecialty-id',
                         @$_POST['subspecialty-id'],
                         Subspecialty::model()->getList(),
                         [
-                            'empty' => '- Please select -',
+                            'empty' => 'Select',
                             'class' => 'cols-full',
                             'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
                         ]
@@ -44,7 +44,7 @@
                 <td class="fade">Context</td>
                 <td>
                     <?php if (!@$_POST['subspecialty-id']) { ?>
-                        <?php echo CHtml::dropDownList(
+                        <?=\CHtml::dropDownList(
                             'firm-id',
                             '',
                             array(),
@@ -55,7 +55,7 @@
                             ]
                         ) ?>
                     <?php } else { ?>
-                        <?php echo CHtml::dropDownList(
+                        <?=\CHtml::dropDownList(
                             'firm-id',
                             @$_POST['firm-id'],
                             Firm::model()->getList(@$_POST['subspecialty-id']),
@@ -73,61 +73,7 @@
                 <td>Search for Leaflets</td>
                 <td>
                     <div class="flex-layout flex-left">
-                        <?php
-                        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                            'name' => 'add_leaflet',
-                            'id' => 'add-leaflet',
-                            'source' => "js:function(request, response) {
-                            $.ajax({
-                                'url': '" . Yii::app()->createUrl('/oeadmin/LeafletSubspecialtyFirm/search') . "',
-                                'type':'GET',
-                                'data':{'term': request.term},
-                                'beforeSend': function() {
-                                    $('.js-spinner-as-icon').show();
-                                },
-                                'complete': function() {
-                                    $('.js-spinner-as-icon').hide();
-                                },
-                                'success':function(data) {
-                                    data = $.parseJSON(data);
-                                    response(data);
-                                }
-                             });
-                             }",
-                            'options' => array(
-                                'minLength' => 2,
-                                'class' => 'cols-full',
-                                'select' => "js:function(event, ui) {
-                                    var selectedLeafletId = ui.item.id;
-                                    var type_id = -1;
-                                    var type = '';
-                                    
-                                    if ($('#firm-id option:selected').text() === 'All Contexts') {
-                                        type = 'subspecialty';
-                                        type_id = $('#subspecialty-id').val();
-                                    } else {
-                                        type = 'firm';
-                                        type_id = $('#firm-id').val();
-                                    }
-                                    
-                                    $.ajax({
-                                        'type': 'GET',
-                                        'url': baseUrl + '/oeadmin/leafletSubspecialtyFirm/add?leaflet_id=' 
-                                                       + selectedLeafletId + '&type=' + type + '&type_id=' + type_id,
-                                        'success': function (html) {
-                                            reloadLeaflets();
-                                        }
-                                    });
-                                    
-                                    return false;
-                                }",
-                            ),
-                            'htmlOptions' => array(
-                                'placeholder' => 'search for leaflets',
-                                'class' => 'cols-12',
-                            ),
-                        ));
-                        ?>
+                        <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                         <div style="display:none" class="js-spinner-as-icon"><i class="spinner as-icon"></i></div>
                     </div>
                 </td>
@@ -225,7 +171,7 @@
             var subspecialty_id = $(this).val();
 
             if (subspecialty_id === '') {
-                $('#firm-id').find('options').remove();
+                $('#firm-id option').remove();
                 $('#firm-id').append($('<option>').text("All Contexts"));
                 $('#firm-id').attr('disabled', 'disabled');
             } else {
@@ -254,6 +200,34 @@
             } else {
                 // load leaflets specific to the selected context (firm)
                 getLeaflets(firm_id, 'firm', 'firms');
+            }
+        });
+
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#oe-autocompletesearch'),
+            url: '/oeadmin/LeafletSubspecialtyFirm/search',
+            onSelect: function(){
+                let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                var selectedLeafletId = AutoCompleteResponse.id;
+                var type_id = -1;
+                var type = '';
+                
+                if ($('#firm-id option:selected').text() === 'All Contexts') {
+                    type = 'subspecialty';
+                    type_id = $('#subspecialty-id').val();
+                } else {
+                    type = 'firm';
+                    type_id = $('#firm-id').val();
+                }
+                
+                $.ajax({
+                    'type': 'GET',
+                    'url': baseUrl + '/oeadmin/leafletSubspecialtyFirm/add?leaflet_id=' 
+                                   + selectedLeafletId + '&type=' + type + '&type_id=' + type_id,
+                    'success': function (html) {
+                        reloadLeaflets();
+                    }
+                });
             }
         });
     });

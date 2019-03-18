@@ -16,10 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Edit <?php echo $title?></h2>
+<div class="row divider">
+    <h2>Edit <?php echo $title ?></h2>
+</div>
 
-	<?php
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'OphCoTherapyapplication_adminform',
         'enableAjaxValidation' => false,
@@ -30,22 +31,32 @@
             'label' => 2,
             'field' => 5,
         ),
-    ))?>
+    )) ?>
 
-	<?php echo $form->errorSummary($model)?>
+    <?php echo $form->errorSummary($model) ?>
 
-	<?php
-    $this->renderPartial('form_'.get_class($model), array(
-            'model' => $model,
-            'form' => $form,
-    ))?>
+    <div class="cols-7">
+        <table class="standard cols-full">
+            <colgroup>
+                <col class="cols-3">
+                <col class="cols-5">
+            </colgroup>
+            <tbody>
+            <?php
+            $this->renderPartial('form_' . get_class($model), array(
+                'model' => $model,
+                'form' => $form,
+            )) ?>
+            </tbody>
+        </table>
+    </div>
 
-	<?php
+    <?php
     $actions = array();
     if (@$cancel_uri) {
         $actions['cancel-uri'] = $cancel_uri;
     }
-    echo $form->formActions($actions)?>
+    echo $form->formActions($actions) ?>
 
-	<?php $this->endWidget()?>
-</div>
+    <?php $this->endWidget() ?>
+

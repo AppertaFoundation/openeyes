@@ -13,7 +13,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-VA.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-VA.js')?>"></script>
+
   <form action="#OphCiExamination_Episode_VisualAcuityHistory">
     <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
     <input name="patient_id" value=<?= $this->patient->id ?> type="hidden">
@@ -21,42 +23,76 @@
         'va_history_unit_id',
         $va_unit->id,
         CHtml::listData(
-          OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
+          OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
+          model()->active()->findAllByAttributes(array('is_near'=>0)),
           'id',
           'name')
       )?>
   </form>
 <div id="js-hs-chart-VA" class="highchart-area" data-highcharts-chart="2" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
-  <div id="highcharts-VA-right" class="highcharts-VA highcharts-right highchart-section"></div>
-  <div id="highcharts-VA-left" class="highcharts-VA highcharts-left highchart-section" style="display: none;"></div>
+  <div id="plotly-VA-right" class="plotly-VA plotly-right plotly-section" data-eye-side="right"></div>
+  <div id="plotly-VA-left" class="plotly-VA plotly-left plotly-section" data-eye-side="left" style="display: none;"></div>
 </div>
 <script type="text/javascript">
   $(document).ready(function () {
     $('#va_history_unit_id').change(function () { this.form.submit(); });
     var va_ticks = <?= CJavaScript::encode($this->getVaTicks()); ?>;
     OEScape.full_va_ticks = va_ticks;
-    var axis_index = 0;
-    optionsVA['yAxis'][axis_index]['tickPositions'] = va_ticks['tick_position'];
-    optionsVA['yAxis'][axis_index]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
-    <?php if ($widget_no == 1) {?>
-    optionsVA['chart']['height'] = 800;
-    <?php } ?>
-    var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
     var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
 
     var sides = ['left', 'right'];
-    var chart_VA = {};
-    var plotLines = {};
-    //Render the chart to get the size of the plot for tick pruning
-    for (var i in sides) {
-      optionsVA['xAxis']['plotLines'] = [];
-      plotLines[sides[i]] = [];
-      setMarkingEvents(optionsVA, opnote_marking, plotLines, sides[i]);
-      setMarkingEvents(optionsVA, laser_marking, plotLines, sides[i]);
-      chart_VA[sides[i]] = new Highcharts.chart('highcharts-VA-'+sides[i], optionsVA);
-      drawVASeries(chart_VA[sides[i]], VA_data[sides[i]], sides[i]);
-      cleanVATicks(va_ticks, optionsVA, chart_VA[sides[i]], axis_index);
+
+    var widget_count = <?= CJavaScript::encode($widget_no); ?>;
+    var height = (widget_count===1)? 800: 600;
+
+    //Plotly
+    var va_plotly = <?= CJavaScript::encode($this->getPlotlyVaData()); ?>;
+
+    var va_plotly_ticks = pruneYTicks(va_ticks, height, 25);
+
+
+    for (var side of sides){
+      var layout_VA = JSON.parse(JSON.stringify(layout_plotly));
+      layout_VA['shapes'] = [];
+      layout_VA['annotations'] = [];
+      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 150);
+      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 150);
+
+      var data =[{
+        name: 'VA('+side+')',
+        x: va_plotly[side]['x'].map(function (item) {
+          return new Date(item);
+        }),
+        y: va_plotly[side]['y'],
+        line: {
+          color: (side=='right')?'#9fec6d':'#fe6767',
+        },
+        text: va_plotly[side]['x'].map(function (item, index) {
+          var d = new Date(item);
+          return OEScape.toolTipFormatters_plotly.VA( d, va_plotly[side]['y'][index], 'VA('+side+')');
+        }),
+        hoverinfo: 'text',
+        hoverlabel: trace_hoverlabel,
+        type: 'line',
+        mode: 'lines+markers',
+        marker: {
+          symbol: 'circle',
+          size: 10,
+        },
+      }];
+      var yaxis_options = {
+        range: [-15, 150],
+        tickvals: va_plotly_ticks['tick_position'],
+        ticktext: va_plotly_ticks['tick_labels'],
+      };
+      layout_VA['yaxis'] = setYAxis_VA(yaxis_options);
+      layout_VA['height'] = height;
+      layout_VA['xaxis']['rangeslider'] = {};
+
+      Plotly.newPlot(
+        'plotly-VA-'+side, data, layout_VA, options_plotly
+      );
     }
   });
 </script>

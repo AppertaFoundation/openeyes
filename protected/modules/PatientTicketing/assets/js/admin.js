@@ -155,9 +155,9 @@
     });
     formDialog.open();
     // suppress default ok behaviour
-    formDialog.content.off('click', '.js-ok');
+    formDialog.content.off('click', '.ok');
     // manage form submission and response
-    formDialog.content.on('click', '.js-ok', function () {
+    formDialog.content.on('click', '.ok', function () {
       this.submitQueueSetForm(formDialog, this.options.editQueueSetPermissionsURI + '?id=' + queueSetId)
     }.bind(this));
 
@@ -178,9 +178,9 @@
         });
         formDialog.open();
         // suppress default ok behaviour
-        formDialog.content.off('click', '.js-ok');
+        formDialog.content.off('click', '.ok');
         // manage form submission and response
-        formDialog.content.on('click', '.js-ok', function () {
+        formDialog.content.on('click', '.ok', function () {
           this.submitQueueForm(formDialog, this.options.addQueueURI)
         }.bind(this));
       }.bind(this)
@@ -202,10 +202,10 @@
         });
         formDialog.open();
         // suppress default ok behaviour
-        formDialog.content.off('click', '.js-ok');
+        formDialog.content.off('click', '.ok');
         // manage form submission and response
-        formDialog.content.on('click', '.js-ok', function () {
-          this.submitQueueForm(formDialog, this.options.editQueueURI + '?id=' + queueId)
+        formDialog.content.on('click', '.ok', function () {
+          this.submitQueueForm(formDialog, this.options.editQueueURI + '?id=' + queueId);
         }.bind(this));
       }.bind(this)
     });
@@ -247,8 +247,9 @@
             this.displayMessage(resp.message);
           }
           else {
-            this.displayMessage("Queue set saved");
+            this.displayMessage("Queue set saved. Please wait...reloading queue sets");
           }
+          location.reload();
         }
         else {
           formDialog.setContent(resp.form);

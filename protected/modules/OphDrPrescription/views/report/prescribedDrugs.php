@@ -40,40 +40,9 @@
           echo CHtml::dropDownList(null, null,
               CHtml::listData($drugs, 'id', 'tallmanlabel'), array('empty' => '-- Select --', 'id' => 'drug_id'));
           ?>
-          <?php
-          $defaultURL = '/' . Yii::app()->getModule('OphDrPrescription')->id . '/' . Yii::app()->getModule('OphDrPrescription')->defaultController;
-
-          $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-              'name' => 'drug_id',
-              'id' => 'autocomplete_drug_id',
-              'source' => "js:function(request, response) {
-                      $.ajax({
-                        dataType: 'json',
-                        url: '" . $defaultURL . "/DrugList',
-                        data: {
-                          term : request.term,
-                          type_id: $('#drug_type_id').val(),
-                          preservative_free: ($('#preservative_free').is(':checked') ? '1' : ''),
-                        },
-                        success: function(result){ response(result); $('.autocomplete-loader').hide();},
-                          beforeSend: function(){ $('.autocomplete-loader').show(); }
-                         });
-                     }",
-              'options' => array(
-                  'select' => "js:function(event, ui) {
-                          var tr = $('#report-drug-list').find('tr#' + ui.item.id);
-                            if( tr.length == 0 ){
-                              $('.no-drugs').hide();
-                                addItem(ui.item);
-                              }
-                              $(this).val('');
-                              return false;
-                          }",
-              ),
-              'htmlOptions' => array(
-                  'placeholder' => 'search for drugs',
-              ),
-          )); ?>
+          <div class="cols-4">
+            <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
+          </div>
       </td>
       <td>
         <img class="autocomplete-loader" style="display: none;"
@@ -114,8 +83,8 @@
       <td>User</td>
       <td>
           <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
-              <?php echo CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
-                  CHtml::listData($users, 'id', 'fullName'), array('empty' => '--- Please select ---')) ?>
+              <?=\CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
+                  CHtml::listData($users, 'id', 'fullName'), array('empty' => 'Select')) ?>
           <?php else: ?>
               <?php
               $user = User::model()->findByPk(Yii::app()->user->id);
@@ -179,3 +148,17 @@
   <div class="js-report-summary report-summary" style="display: none; overflow: auto">
   </div>
 </div>
+<script>
+  OpenEyes.UI.AutoCompleteSearch.init({
+    input: $('#oe-autocompletesearch'),
+    url: '/OphDrPrescription/default/DrugList',
+    onSelect: function(){
+      let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+      var tr = $('#report-drug-list').find('tr#' + AutoCompleteResponse.id);
+      if( tr.length === 0 ){
+        $('.no-drugs').hide();
+        addItem(AutoCompleteResponse);
+      }
+    }
+  });
+</script>

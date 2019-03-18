@@ -21,31 +21,31 @@
   <h4><?php echo $element->elementType->name ?></h4>
   <div class="colsX clearfix">
     <div class="colStack">
-      <h4><?php echo CHtml::encode($element->getAttributeLabel('spo2')) ?></h4>
+      <h4><?=\CHtml::encode($element->getAttributeLabel('spo2')) ?></h4>
       <div class="eventHighlight">
-        <h4><?php echo CHtml::encode($element->spo2) ?>%</h4>
+        <h4><?=\CHtml::encode($element->spo2) ?>%</h4>
       </div>
     </div>
     <div class="colStack">
-      <h4><?php echo CHtml::encode($element->getAttributeLabel('oxygen')) ?></h4>
+      <h4><?=\CHtml::encode($element->getAttributeLabel('oxygen')) ?></h4>
       <div class="eventHighlight">
-        <h4><?php echo CHtml::encode($element->oxygen) ?>%</h4>
+        <h4><?=\CHtml::encode($element->oxygen) ?>%</h4>
       </div>
     </div>
     <div class="colStack">
-      <h4><?php echo CHtml::encode($element->getAttributeLabel('pulse')) ?></h4>
+      <h4><?=\CHtml::encode($element->getAttributeLabel('pulse')) ?></h4>
       <div class="eventHighlight">
-        <h4><?php echo CHtml::encode($element->pulse) ?></h4>
+        <h4><?=\CHtml::encode($element->pulse) ?></h4>
       </div>
     </div>
     <div class="colStack">
-      <h4><?php echo CHtml::encode($element->getAttributeLabel('intraocular_solution_id')) ?></h4>
+      <h4><?=\CHtml::encode($element->getAttributeLabel('intraocular_solution_id')) ?></h4>
       <div class="eventHighlight">
         <h4><?php echo $element->intraocular_solution ? $element->intraocular_solution->name : 'Not specified' ?></h4>
       </div>
     </div>
     <div class="colStack">
-      <h4><?php echo CHtml::encode($element->getAttributeLabel('skin_preparation_id')) ?></h4>
+      <h4><?=\CHtml::encode($element->getAttributeLabel('skin_preparation_id')) ?></h4>
       <div class="eventHighlight">
         <h4><?php echo $element->skin_preparation ? $element->skin_preparation->name : 'Not specified' ?></h4>
       </div>

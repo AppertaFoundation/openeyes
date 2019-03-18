@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -21,6 +21,8 @@ use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 
 class OphCoMessaging_API extends \BaseAPI
 {
+	const DEFAULT_MESSAGES_FOLDER = 'unread';
+
     public function getMenuItem()
     {
         $user = \Yii::app()->user;
@@ -54,15 +56,21 @@ class OphCoMessaging_API extends \BaseAPI
         $inbox_messages = $this->getInboxMessages($user);
         $sent_messages = $this->getSentMessages($user);
         $urgent_messages = $this->getInboxMessages($user, true);
+        $query_messages = $this->getInboxMessages($user, false, true);
+        $unread_messages = $this->getInboxMessages($user, false, false, true);
 
         // Generate the dashboard widget HTML.
         $dashboard_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.dashboard.message_dashboard', array(
                 'inbox' => $inbox_messages['list'],
                 'sent' => $sent_messages['list'],
                 'urgent' => $urgent_messages['list'],
-                'inbox_unread' => $inbox_messages['unread'],
-                'sent_unread' => $sent_messages['unread'],
-                'urgent_unread' => $urgent_messages['unread'],
+                'query' => $query_messages['list'],
+                'number_inbox_unread' => $inbox_messages['number_unread'],
+                'unread' => $unread_messages['list'],
+                'number_sent_unread' => $sent_messages['number_unread'],
+                'number_urgent_unread' => $urgent_messages['number_unread'],
+                'number_query_unread' => $query_messages['number_unread'],
+                'default_folder' => $this::DEFAULT_MESSAGES_FOLDER,
                 'module_class' => $this->getModuleClass(),
             )
         );
@@ -76,14 +84,30 @@ class OphCoMessaging_API extends \BaseAPI
     }
 
     /**
+     * @param null $user
+     * @return array - list with counts of all unread messages for each folder
+     */
+    public function updateMessagesCount($user = null) {
+        return [
+            'number_inbox_unread' => $this->getInboxMessages($user)['number_unread'],
+            'number_urgent_unread' => $this->getInboxMessages($user, true)['number_unread'],
+            'number_query_unread' => $this->getInboxMessages($user, false, true)['number_unread'],
+            'number_sent_unread' => $this->getSentMessages($user)['number_unread']
+            ];
+    }
+
+    /**
      * Get received messages.
      * 
      * @param \CWebUser $user
      * @param bool $urgent_only
+		 * @param bool $query_only
+		 * @param bool $unread_only
+		 * @param bool $read_only
      *
      * @return array data provider and total unread messages
      */
-    private function getInboxMessages($user = null, $urgent_only = false)
+    private function getInboxMessages($user = null, $urgent_only = false, $query_only = false, $unread_only = false)
     {
         if ($user === null) {
             $user = \Yii::app()->user;
@@ -94,6 +118,8 @@ class OphCoMessaging_API extends \BaseAPI
         $sort->attributes = array(
             'priority' => array('asc' => 'urgent asc',
                                 'desc' => 'urgent desc', ),
+						'is_query' => array('asc' => 'is_query asc',
+																'desc' => 'is_query desc', ),
             'event_date' => array('asc' => 't.created_date asc',
                                 'desc' => 't.created_date desc', ),
             'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
@@ -141,6 +167,18 @@ class OphCoMessaging_API extends \BaseAPI
         if ($urgent_only) {
             $criteria->addCondition('t.urgent != 0');
         }
+				if ($query_only) {
+                    $message_type_query_id = \Yii::app()->db->createCommand()
+                        ->select('id')
+                        ->from('ophcomessaging_message_message_type')
+                        ->where('name = :name', array(':name' => 'Query'))->queryScalar();
+
+					$criteria->addCondition("t.message_type_id = :message_type_id");
+					$params[':message_type_id'] = $message_type_query_id;
+				}
+				if ($unread_only) {
+					$criteria->addCondition('t.marked_as_read != "1"');
+				}
         $criteria->params = $params;
 
         $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
@@ -157,13 +195,12 @@ class OphCoMessaging_API extends \BaseAPI
 
         $unread_criteria = new \CDbCriteria();
         $unread_criteria->addCondition('t.marked_as_read != 1');
-
         $unread_criteria->mergeWith($criteria);
-        $unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
+        $number_unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
 
         return array(
             'list' => $dp,
-            'unread' => $unread_messages
+            'number_unread' => $number_unread_messages,
         );
     }
 
@@ -243,11 +280,11 @@ class OphCoMessaging_API extends \BaseAPI
         $unread_criteria->addCondition('t.marked_as_read != 1');
 
         $unread_criteria->mergeWith($criteria);
-        $unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
+        $number_unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
 
         return array(
             'list' => $dataProvider,
-            'unread' => $unread_messages
+            'number_unread' => $number_unread_messages
         );
     }
 }

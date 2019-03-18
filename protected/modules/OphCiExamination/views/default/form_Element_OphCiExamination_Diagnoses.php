@@ -28,12 +28,6 @@ $firm = Firm::model()->with(array(
 
 $current_episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $firm);
 
-$other_episode_ids = array_map(function ($episodes) {
-    return $episodes->id;
-}, $this->patient->episodes);
-
-unset($other_episode_ids[$current_episode->id]);
-
 $read_only_diagnoses = [];
 foreach ($this->patient->episodes as $ep) {
     $diagnosis = $ep->diagnosis; // Disorder model
@@ -42,6 +36,7 @@ foreach ($this->patient->episodes as $ep) {
             'diagnosis' => $diagnosis,
             'eye' => Eye::methodPostFix($ep->eye_id),
             'subspecialty' => $ep->getSubspecialtyText(),
+            'is_glaucoma' => isset($diagnosis->term)? (strpos(strtolower($diagnosis->term), 'glaucoma')) !== false : false,
         ];
     }
 }
@@ -52,7 +47,8 @@ foreach ($this->patient->episodes as $ep) {
 <?php $model_name = CHtml::modelName($element); ?>
 
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
-    <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
+    <input type="hidden" name="<?=\CHtml::modelName($element); ?>[force_validation]"/>
+    <input type="hidden" name="glaucoma_diagnoses[]"/>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
@@ -124,6 +120,7 @@ foreach ($this->patient->episodes as $ep) {
                     'disorder_display' => '{{disorder_display}}',
                     'eye_id' => '{{eye_id}}',
                     'event_date' => '{{event_date}}',
+                    'is_glaucoma' => '{{is_glaucoma}}',
                     'date' => '{{date}}',
                     'date_display' => '{{date_display}}',
                     'row_count' => '{{row_count}}',
@@ -155,17 +152,35 @@ foreach ($this->patient->episodes as $ep) {
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($disorder_item) {
                 return [
+                        'type' => $disorder_item['type'],
                         'label' => $disorder_item['label'],
                     'id' => $disorder_item['id'] ,
-                    'secondary' => json_encode($disorder_item['secondary'])
+                    'is_glaucoma' => $disorder_item['is_glaucoma'],
+                    'secondary' => json_encode($disorder_item['secondary']),
+                    'alternate' => json_encode($disorder_item['alternate']),
                 ];
             }, $disorder_list)
         ) ?>, {'multiSelect': true})],
         searchOptions: {
           searchSource: diagnosesController.options.searchSource,
+          code: diagnosesController.options.code,
         },
-        onReturn: function (adderDialog, selectedItems) {
-          diagnosesController.addEntry(selectedItems);
+        onReturn: function (adderDialog, selectedItems, selectedAdditions) {
+            var diag = [];
+            for (let i in selectedItems) {
+                let item = selectedItems[i];
+                // If common item is a 'finding', we add it to the findings element instead
+                // Otherwise treat it as a diagnosis
+                if (item.type === 'finding') {
+                    OphCiExamination_AddFinding(item.id, item.label);
+                } else {
+                    diag.push(item);
+                }
+            }
+            diagnosesController.addEntry(diag);
+            if(selectedAdditions){
+              diagnosesController.addEntry(selectedAdditions);
+            }
           return true;
         }
       });

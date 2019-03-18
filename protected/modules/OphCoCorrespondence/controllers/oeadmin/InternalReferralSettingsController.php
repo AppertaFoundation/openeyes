@@ -21,10 +21,11 @@
  */
 class InternalReferralSettingsController extends ModuleAdminController
 {
+    public $group = 'Correspondence';
 
     public function actionSettings()
     {
-        $this->render('/admin/settings',array(
+        $this->render('/admin/settings', array(
             'settings' => OphcocorrespondenceInternalReferralSettings::model()->findAll(),
             'to_locations' => OphCoCorrespondence_InternalReferral_ToLocation::model()->findAll(),
             'sites' => Institution::model()->getCurrent()->sites,
@@ -56,42 +57,44 @@ class InternalReferralSettingsController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
+        $this->render(
+            '/admin/edit_setting',
+            [
+                'metadata' => $metadata,
+                'errors' => $errors,
+                'cancel_uri' => '/OphCoCorrespondence/oeadmin/internalReferralSettings/settings',
+            ]
+        );
     }
-
 
     public function actionUpdateToLocationList()
     {
         $locations_post = Yii::app()->request->getPost('OphCoCorrespondence_InternalReferral_ToLocation', array());
 
-
-
         $transaction = Yii::app()->db->beginTransaction();
 
-        try
-        {
-
+        try {
             $is_ok = true;
 
             //now we save the new ones
-            foreach($locations_post as $location_post){
+            foreach ($locations_post as $location_post) {
                 $site = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByPk($location_post['id']);
 
-                if(!$site){
+                if (!$site) {
                     $site = new OphCoCorrespondence_InternalReferral_ToLocation();
                 }
 
                 $site->site_id = $location_post['site_id'];
                 $site->is_active = $location_post['is_active'];
 
-                if( !$site->save()){
+                if (!$site->save()) {
                     $is_ok = false;
                     break;
                 }
 
             }
 
-            if($is_ok){
+            if ($is_ok) {
                 $transaction->commit();
                 $return = array('success' => true);
             } else {
@@ -99,7 +102,7 @@ class InternalReferralSettingsController extends ModuleAdminController
 
                 $message = null;
                 // we just return the first error now
-                if($site->getErrors()){
+                if ($site->getErrors()) {
                     $message = array_shift($site->getErrors());
                     $message = $message[0];
                 }
@@ -108,8 +111,7 @@ class InternalReferralSettingsController extends ModuleAdminController
                 $return = array('success' => false, 'message' => $message);
             }
 
-        }catch(Exception $e)
-        {
+        } catch (Exception $e) {
             $transaction->rollback();
             $return = array('success' => false, 'message' => $e->getMessage());
         }

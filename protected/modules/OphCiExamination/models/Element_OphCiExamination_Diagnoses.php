@@ -240,8 +240,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      * @return string html table of daignoses and further findings
      *  if either the diagnosis or the finding has a letter macro text, it will replace the usual term
      */
-    public function getLetter_string()
-    {
+    public function getLetter_string() {
         $table_vals = array();
         $subspecialty = null;
         if (isset(\Yii::app()->session['selected_firm_id']) && \Yii::app()->session['selected_firm_id'] !== null) {
@@ -420,14 +419,15 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         if (count($this->diagnoses)) {
             $principal = false;
 
-            foreach ($this->diagnoses as $k => $diagnosis) {
+            $validator = new \OEFuzzyDateValidator();
+
+            foreach ($this->diagnoses as $key => $diagnosis) {
                 if ($diagnosis->principal) {
                     $principal = true;
                 }
-                if(!$diagnosis->eye_id){
-                    $key = $k+1;
-                    $term = isset($diagnosis->disorder)  ? $diagnosis->disorder->term : "($key)";
 
+                $term = isset($diagnosis->disorder)  ? $diagnosis->disorder->term : "($key)";
+                if(!$diagnosis->eye_id){
                     // without this OE tries to perform a save / or at least run the saveComplexAttributes_Element_OphCiExamination_Diagnoses()
                     // where we need to have an eye_id - probably this need further investigation and refactor
                     $this->addError('diagnoses', $term . ': Eye is required');
@@ -435,6 +435,15 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     //this sets the error for the actual model, and checked manually in 'form_Element_OphCiExamination_Diagnoses.php'
                     // to set the proper error highlighting
                     $diagnosis->addError('diagnoses', $term . ': Eye is required');
+                }
+
+                $validator->validateAttribute($diagnosis, 'date');
+
+                //dirty hack here to set the correct error for the date
+                $_date_error = $diagnosis->getError('date');
+                if ($_date_error) {
+                    $this->addError('diagnoses', $term . ': ' . $_date_error);
+                    $diagnosis->clearErrors('date');
                 }
             }
 
@@ -480,4 +489,8 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return $action === 'view' || $action === 'createImage' ? 1 : null;
     }
 
+    public function getDisplayOrder($action)
+    {
+        return $action == 'view' ? 10 : parent::getDisplayOrder($action);
+    }
 }

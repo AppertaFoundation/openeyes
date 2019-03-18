@@ -3,7 +3,7 @@ $error_class = isset($errors['event_date'])? 'error' :'';
 ?>
 <section class="element edit full edit-date">
   <header class="element-header">
-    <h3 class="element-title"><?php echo CHtml::encode($this->event->getAttributeLabel('event_date')) ?></h3>
+    <h3 class="element-title"><?=\CHtml::encode($this->event->getAttributeLabel('event_date')) ?></h3>
   </header>
   <div class="element-fields full-width">
     <div>

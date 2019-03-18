@@ -15,7 +15,7 @@
                 ));
         } ?>
         <div class="data-group">
-            <table class="cols-11 large-text">
+            <table class="cols-11 large-text borders">
                 <colgroup>
                     <col class="cols-3">
                     <col class="cols-2">
@@ -24,7 +24,7 @@
                 <tbody>
                 <tr>
                     <td>
-                        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('lens_id_' . $side)) ?></div>
+                        <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('lens_id_' . $side)) ?></div>
                     </td>
                     <td>
                         <div class="data-value"><?php echo $element->{'lens_' . $side} ? $element->{'lens_' . $side}->display_name : 'None' ?></div>
@@ -36,7 +36,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('formula_id_' . $side)) ?>
+                        <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('formula_id_' . $side)) ?>
                             &nbsp;Used:
                         </div>
                     </td>
@@ -86,13 +86,13 @@
                 <tr>
                     <td>
                         <div class="data-label">
-                            <?php echo CHtml::encode($element->getAttributeLabel('iol_power_' . $side)) ?>:
+                            <?=\CHtml::encode($element->getAttributeLabel('iol_power_' . $side)) ?>:
                         </div>
                     </td>
                     <td>
                         <div class="data-value">
                             <span class="large-text highlighter orange">
-                                <?php echo CHtml::encode(number_format((float)$element->{'iol_power_' . $side}, 2, '.', '')) ?>
+                                <?=\CHtml::encode(number_format((float)$element->{'iol_power_' . $side}, 2, '.', '')) ?>
                             </span>
                         </div>
                     </td>
@@ -104,7 +104,7 @@
                 <tr>
                     <td>
                         <div class="data-label">
-                            <?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction_' . $side)) ?>:
+                            <?=\CHtml::encode($element->getAttributeLabel('predicted_refraction_' . $side)) ?>:
                         </div>
                     </td>
                     <td>

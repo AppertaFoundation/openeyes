@@ -17,32 +17,40 @@
  */
 ?>
 
-<div class="box admin">
-	<?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'OphCiExamination_adminform',
-            'enableAjaxValidation' => false,
-            'layoutColumns' => array(
-                'label' => 2,
-                'field' => 5,
-            ),
-        ));
-        $this->renderPartial('form_'.Helper::getNSShortname($model), array(
-                'model' => $model,
-                'form' => $form,
-        ));
-        echo $form->formActions(array(
-            'submit' => $model->isNewRecord ? 'Create' : 'Save',
-            'cancel' => 'Cancel',
-            'delete' => false,
-            'cancel-uri' => @$cancel_uri,
-        ));
-        $this->endWidget();
-    ?>
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'OphCiExamination_adminform',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+)); ?>
+
+<div class="cols-5">
+
+    <?php
+    $this->renderPartial('form_' . Helper::getNSShortname($model), array(
+        'model' => $model,
+        'form' => $form,
+        'title' => $title,
+    )); ?>
+
+    <?php
+    echo $form->formActions(array(
+        'submit' => $model->isNewRecord ? 'Create' : 'Save',
+        'cancel' => 'Cancel',
+        'delete' => false,
+        'cancel-uri' => @$cancel_uri,
+    ));
+    $this->endWidget(); ?>
+
+    <hr class="divider">
+
     <?php if (@$related_view) {
         $this->renderPartial($related_view, array(
-                'model' => $model,
-        ))?>
-    <?php
-    }?>
+            'model' => $model,
+        )) ?>
+    <?php } ?>
+
 </div>

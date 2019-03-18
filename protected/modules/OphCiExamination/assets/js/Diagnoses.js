@@ -229,9 +229,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
         data = {};
         data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
+        data.date = OpenEyes.Util.formatTimeToFuzzyDate(new Date($('.js-event-date-input').val()));
         data.disorder_id = selectedItems[i].id;
         data.disorder_display = selectedItems[i].label;
         data.eye_id = selectedItems.eye_id;
+        data.is_glaucoma = selectedItems[i].is_glaucoma;
         row = Mustache.render(template, data);
         newRows.push(row);
       }
@@ -244,16 +246,28 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var rows = this.createRow(selectedItems);
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
-            this.appendSecondaryDiagnoses(selectedItems[i].secondary , this.$table.find('tbody tr:last'));
+            this.appendSecondaryDiagnoses(selectedItems[i].secondary , this.$table.find('tbody tr:last'), selectedItems[i].alternate);
             this.selectEye(this.$table.find('tbody tr:last'), selectedItems[i].eye_id);
             this.setDatepicker();
         }
+        $(":input[name^='glaucoma_diagnoses']").trigger('change');
     };
 
-    DiagnosesController.prototype.appendSecondaryDiagnoses = function(secondary_diagnoses , $tr){
-        if(this.subspecialtyRefSpec === 'GL' && secondary_diagnoses.length) {
+    DiagnosesController.prototype.appendSecondaryDiagnoses = function(secondary_diagnoses , $tr, alternate_diagnoses){
+        if(this.subspecialtyRefSpec === 'GL' && secondary_diagnoses !== undefined && secondary_diagnoses.length) {
             $tr.find('.condition-secondary-to-wrapper').show();
             let template = '<option data-id="{{id}}" data-label="{{label}}" data-type="{{type}}">{{label}}  </option>';
+            let template_alternate = '<option data-id="{{id}}" data-label="{{label}}" data-type="{{type}}">{{selection_label}}  </option>';
+
+            if (alternate_diagnoses !== undefined && alternate_diagnoses !== null) {
+                data = {};
+                data.label = alternate_diagnoses['label'];
+                data.selection_label = alternate_diagnoses['selection_label'];
+                data.id = alternate_diagnoses['id'];
+                data.type = 'alternate';
+                var select = Mustache.render(template_alternate, data);
+                $tr.find('.condition-secondary-to').append(select);
+            }
 
             for (var i in secondary_diagnoses) {
                 data = {};
@@ -429,23 +443,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         // iterate over table rows.
         $('#OphCiExamination_diagnoses').children('tr').each(function() {
             if ($(this).find('input[type=hidden][name*=\\[disorder_id\\]]').val() === id) {
-
                 alreadyInList = true;
-                if ($(this).hasClass('js-external')) {
-                    // only want to alter sides for disorders that have been added from external source
-                    // at this point
-                    if(side === 1 || side === 3){
-                        $(this).find('.js-left-eye').prop('checked', true);
-                    }
+                // only want to alter sides for disorders that have been added from external source
+                // at this point
+                $(this).find('.js-left-eye').prop('checked', side === 3 || side === 1);
+                $(this).find('.js-right-eye').prop('checked', side === 3 || side === 2);
 
-                    if(side === 2 || side === 3){
-                        $(this).find('.js-right-eye').prop('checked', true);
-                    }
-
-                    listSide = $(this).find('input[type="radio"]:checked').val();
-                    if (listSide !== side) {
-                        $(this).find('input[type="radio"][value=' + side + ']').prop('checked', true);
-                    }
+                listSide = $(this).find('input[type="radio"]:checked').val();
+                if (listSide !== side) {
+                    $(this).find('input[type="radio"][value=' + side + ']').prop('checked', true);
                 }
                 // stop iterating
                 return false;

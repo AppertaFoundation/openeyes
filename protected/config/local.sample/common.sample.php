@@ -121,6 +121,8 @@ $config = array(
         'OphInGeneticresults',*/
         'OphCoDocument',
         'OphCiDidNotAttend',
+        'OECaseSearch',
+        'OETrial',
     ),
 
     'params' => array(
@@ -178,15 +180,15 @@ $config = array(
                 'username' => 'user@example.com',
                 'password' => 'apipass',
                 'grant_type' => 'password',
-                'client_id' => 'f3d259ddd3ed8ff3843839b',
-                'client_secret' => '4c7f6f8fa93d59c45502c0ae8c4a95b',
+                'client_id' => 'XXd259dddXxXXxXX84383XX',
+                'client_secret' => 'XxXx6f8faXXxXXX455ooo0ae8c4a95b',
             ),
         ),
         'signature_app_url' => 'https://dev.oesign.uk',
         'docman_export_dir' => '/tmp/docman',
         'docman_login_url' => 'http://localhost/site/login',
-        'docman_user' => 'admin',
-        'docman_password' => 'admin',
+        'docman_user' => 'docman_user',
+        'docman_password' => '1234qweR!',
         'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
         // possible values:
         // none => XML output is suppressed

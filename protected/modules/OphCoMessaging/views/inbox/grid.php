@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if ($read_check) {
@@ -59,11 +59,15 @@ $cols = array(
         'type' => 'raw'
     ),
     array(
-        'name' => 'priority',
+        'name' => 'priority_and_type',
         'header' => '',
+        'htmlOptions'=>array('class' => 'nowrap'),
         'value' => function ($data) {
-            return $data->urgent ? '
-            <svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg>' : '';
+        		$urgent_icon = $data->urgent ? '
+            <i class="js-has-tooltip" data-tooltip-content="Urgent"><svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg></i>' : '';
+        		$query_icon = $data->message_type_id === '2' ? '
+						<i class="js-has-tooltip" data-tooltip-content="Reply requested"><svg class="reply-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg></i>' : '';
+            return $urgent_icon . $query_icon;
         },
         'type' => 'raw',
     ),
@@ -80,7 +84,8 @@ $cols = array(
         'name' => 'Message',
         'cssClassExpression' => '"js-message"',
         'value' => function ($data) {
-            return '<div class="message">' . Yii::app()->format->Ntext($data->message_text) . '</div>';
+            return '<div class="js-preview-message message">' . Yii::app()->format->text(rtrim($data->message_text)) . '</div>' .
+							'<div class="js-expanded-message message expand">' . Yii::app()->format->Ntext(rtrim($data->message_text)) . '</div>';
         },
         'type' => 'raw',
     ),
@@ -90,51 +95,34 @@ $cols = array(
         'value' => '\'<i class="oe-i small js-expand-message expand"></i>\'',
         'type' => 'raw',
     ),
+		array(
+        'header' => '',
+        'class' => 'CButtonColumn',
+        'template' => '{mark}',
+        'buttons' => array(
+            'mark' => array(
+                'options' => array('title' => 'Mark as read'),
+                'label' => '<i class="oe-i small tick pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as Read"></i>',
+                'visible' => function ($row, $data) {
+                    return $data->marked_as_read === '0'
+												&& ($data->message_type_id !== '2'
+                        || $data->comments
+                        || (\Yii::app()->user->id === $data->created_user_id));
+                },
+            ),
+        ),
+    ),
     array(
         'name' => 'message-view',
         'header' => '',
         'value' =>
             function ($data) {
-            return '<a href="'.Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id)).'"><i class="oe-i direction-right-circle small pad"></i></a>';
+            return '
+            <a href="'.Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id)).'"><i class="oe-i direction-right-circle small pad"></i></a>';
         },
         'type' => 'raw'
     ),
 );
-
-if (!$read_check) {
-    $cols[] = array(
-        'header' => 'Actions',
-        'class' => 'CButtonColumn',
-        'template' => '{mark}{reply}',
-        'buttons' => array(
-            'mark' => array(
-                'options' => array('title' => 'Mark as read'),
-                'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/markRead/", array(
-                        "id" => $data->event->id,
-                        "returnUrl" => \Yii::app()->request->requestUri))',
-                'label' => '<button class="warning small">dismiss</button>',
-                'visible' => function ($row, $data) {
-                    return !$data->message_type->reply_required
-                        || $data->comments
-                        || (\Yii::app()->user->id === $data->created_user_id);
-                },
-
-            ),
-            'reply' => array(
-                'options' => array('title' => 'Add a comment'),
-                'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/view/", array(
-                                        "id" => $data->event->id,
-                                        "comment" => 1))',
-                'label' => '<button class="secondary small">Reply</button>',
-                'visible' => function ($row, $data) {
-                    return $data->message_type->reply_required
-                        && !$data->comments
-                        && (\Yii::app()->user->id !== $data->created_user_id);
-                },
-            ),
-        ),
-    );
-}
 
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets')) . '/';
 $header_style = 'background: transparent url(' . $asset_path . 'img/small.png) left center no-repeat;';

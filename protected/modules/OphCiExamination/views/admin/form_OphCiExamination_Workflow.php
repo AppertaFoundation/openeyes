@@ -16,5 +16,22 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php echo $form->hiddenField($model, 'id')?>
-<?php echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+
+<div class="row divider">
+    <h2><?php echo $title ?></h2>
+</div>
+
+<table class="standard cols-full">
+    <tbody>
+    <tr>
+        <td >
+            <?php echo $form->hiddenField($model, 'id')?>
+            <?php echo $form->textField(
+                $model,
+                'name',
+                ['autocomplete' => Yii::app()->params['html_autocomplete']]
+            ) ?>
+        </td>
+    </tr>
+    </tbody>
+</table>

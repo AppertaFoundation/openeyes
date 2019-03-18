@@ -9,15 +9,17 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-<div class="row divider">
-    <h2>Edit setting</h2>
-</div>
-<div class="cols-full">
+
+<div class="cols-7">
+
+    <div class="row divider">
+        <h2>Edit setting</h2>
+    </div>
 
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -39,50 +41,34 @@
         <tr>
 
             <td><?= $metadata->name ?></td>
-            <?php if ($metadata->key == 'city_road_satellite_view') : ?>
-                <td>
-                    <div class="alert-box issue">
-                        Removes the 2 check-boxes from Examination->Clinical Management->Cataract Surgical
-                        Management named "At
-                        City Road" and "At Satellite"
-                    </div>
-                </td>
-
-            <?php else : ?>
-                <td>
-                    <?php
-                    $this->renderPartial(
-                        '_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
-                        ['metadata' => $metadata]
-                    );
-                    ?>
-                </td>
-            <?php endif; ?>
+            <td>
+                <?php
+                $this->renderPartial(
+                    '_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
+                    ['metadata' => $metadata]
+                );
+                ?>
+            </td>
         </tr>
         </tbody>
         <tfoot class="pagination-container">
         <tr>
             <td colspan="2">
-                <?php if ($metadata->key != 'city_road_satellite_view') : ?>
-                    <?= CHtml::htmlButton('Save', [
-                            'class' => 'button small',
-                            'name' => 'save',
-                            'type' => 'submit',
-                            'id' => 'et_save'
-                        ]
-                    );
-                    ?>
+                <?= CHtml::submitButton('Save', [
+                        'class' => 'button large',
+                        'name' => 'save',
+                        'id' => 'et_save'
+                    ]
+                );
+                ?>
 
-                    <?= CHtml::htmlButton('Cancel', [
-                            'class' => 'button small',
-                            'name' => 'cancel',
-                            'type' => 'submit',
-                            'id' => 'et_cancel'
-                        ]
-                    );
-                    ?>
-
-                <?php endif; ?>
+                <?= CHtml::submitButton('Cancel', [
+                        'class' => 'button large',
+                        'name' => 'cancel',
+                        'id' => 'et_cancel'
+                    ]
+                );
+                ?>
             </td>
         </tr>
         </tfoot>

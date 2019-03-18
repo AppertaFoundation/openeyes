@@ -23,6 +23,10 @@ class DrugSetController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
+    public $group = 'Drugs';
+
+    public $assetPath;
+
     /**
      * Init the edit admin page, because we have a custom save URL, so we need to use
      * Admin in more then 1 function.
@@ -38,8 +42,8 @@ class DrugSetController extends BaseAdminController
             $admin->setModelId($id);
         }
         $element = Element_OphDrPrescription_Details::model();
-        $admin->setCustomSaveURL('/OphDrPrescription/DrugSetAdmin/SaveDrugSet');
-        $admin->setCustomCancelURL('/OphDrPrescription/DrugSetAdmin/list');
+        $admin->setCustomSaveURL('/OphDrPrescription/admin/drugSet/SaveDrugSet');
+        $admin->setCustomCancelURL('/OphDrPrescription/admin/drugSet/list');
 
         $admin->setEditFields(array(
             'active' => 'checkbox',
@@ -53,10 +57,12 @@ class DrugSetController extends BaseAdminController
             ),
             'setItems' => array(
                 'widget' => 'CustomView',
-                'viewName' => '/default/form_Element_OphDrPrescription_Details',
+                'viewName' => 'application.modules.OphDrPrescription.views.default.form_Element_OphDrPrescription_Details',
                 'viewArguments' => array('element' => $element),
             ),
         ));
+
+        $this->assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('OphDrPrescription.assets'));
 
         return $admin;
     }
@@ -66,16 +72,35 @@ class DrugSetController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(DrugSet::model(), $this);
-        $admin->setListFields(array(
-            'id',
-            'name',
-            'subspecialty.name',
-            'active',
-        ));
-        $admin->searchAll();
-        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel();
+        $criteria = new \CDbCriteria();
+        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '', 'subspecialty_id' => null]);
+
+        if (Yii::app()->request->isPostRequest) {
+            if ($search['query']) {
+                if (is_numeric($search['query'])) {
+                    $criteria->addCondition('id = :query');
+                    $criteria->params[':query'] = $search['query'];
+                } else {
+                    $criteria->addSearchCondition('LOWER(name)', strtolower($search['query']));
+                }
+            }
+            if ($search['subspecialty_id']) {
+                $criteria->addCondition('subspecialty_id = :subspecialty_id');
+                $criteria->params[':subspecialty_id'] = $search['subspecialty_id'];
+            }
+
+
+            if ($search['active'] == 1) {
+                $criteria->addCondition('active = 1');
+            } elseif ($search['active'] != '') {
+                $criteria->addCondition('active != 1');
+            }
+        }
+
+        $this->render('/drugset/index', [
+            'drug_sets' => DrugSet::model()->findAll($criteria),
+            'search' => $search
+        ]);
     }
 
     /**
@@ -87,7 +112,13 @@ class DrugSetController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath);
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/events_and_episodes.js');
+
         $admin = $this->initAdmin($id);
+
         $admin->editModel();
     }
 
@@ -166,7 +197,7 @@ class DrugSetController extends BaseAdminController
                 Yii::app()->user->setFlash('info.save_message',
                     'Unable to save drugs, please add at least one drug to the set. Set name and subspecialty saved.');
             }
-            $this->redirect('/OphDrPrescription/DrugSetAdmin/list');
+            $this->redirect('/OphDrPrescription/admin/drugSet/list');
         } else {
             if ($drugSetId > 0) {
                 $admin = $this->initAdmin($drugSetId);

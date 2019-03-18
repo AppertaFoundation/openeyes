@@ -38,7 +38,7 @@ class SocialHistory extends \BaseEventElementWidget
      */
     protected function updateElementFromData($element, $data)
     {
-        if  (!is_a($element, 'OEModule\OphCiExamination\models\SocialHistory')) {
+        if (!is_a($element, 'OEModule\OphCiExamination\models\SocialHistory')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
         $element->attributes = $data;

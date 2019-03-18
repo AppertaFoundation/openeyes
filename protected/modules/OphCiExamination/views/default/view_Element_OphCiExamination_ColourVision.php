@@ -16,67 +16,62 @@
  */
 ?>
 
-<div class="element-data element-eyes">
-	<div class="js-element-eye right-eye column">
-		<div class="data-group">
-			<?php if ($element->hasRight()) {
-    ?>
-				<table class="element-table">
-					<thead>
-					<tr>
-						<th>Method</th>
-						<th>Result</th>
-					</tr>
-					</thead>
-					<tbody>
-					<?php foreach ($element->right_readings as $reading) {
-    ?>
-						<tr>
-							<td><?php echo $reading->method->name ?></td>
-							<td><?php echo $reading->value->name ?></td>
-						</tr>
-					<?php 
-}
-    ?>
-					</tbody>
-				</table>
-			<?php 
-} else {
-    ?>
-				<div class="data-value not-recorded">None given</div>
-			<?php 
-}?>
-		</div>
-	</div>
-	<div class="js-element-eye left-eye column">
-		<div class="data-group">
-			<?php if ($element->hasLeft()) {
-    ?>
-				<table class="element-table">
-					<thead>
-					<tr>
-						<th>Method</th>
-						<th>Result</th>
-					</tr>
-					</thead>
-					<tbody>
-					<?php foreach ($element->left_readings as $reading) {
-    ?>
-						<tr>
-							<td><?php echo $reading->method->name ?></td>
-							<td><?php echo $reading->value->name ?></td>
-						</tr>
-					<?php 
-}
-    ?>
-					</tbody>
-				</table>
-			<?php 
-} else {
-    ?>
-				<div class="data-value not-recorded">None given</div>
-			<?php 
-}?>
-		</div>
-	</div>
+<div class="element-data element-eyes flex-layout">
+    <div class="js-element-eye right-eye cols-6">
+        <div class="data-group">
+            <?php if ($element->hasRight()) { ?>
+                <table class="element-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($element->right_readings as $reading) {
+                            ?>
+                            <tr>
+                                <td><?php echo $reading->method->name ?></td>
+                                <td><?php echo $reading->value->name ?></td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                <?php } else { ?>
+                <div class="data-value not-recorded">None given</div>
+                <?php } ?>
+        </div>
+    </div>
+    <div class="js-element-eye left-eye cols-6">
+        <div class="data-group">
+            <?php if ($element->hasLeft()) { ?>
+                <table class="element-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($element->left_readings as $reading) {
+                            ?>
+                            <tr>
+                                <td><?php echo $reading->method->name ?></td>
+                                <td><?php echo $reading->value->name ?></td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                <?php
+            } else {
+                ?>
+                <div class="data-value not-recorded">None given</div>
+                <?php }
+            ?>
+        </div>
+    </div>
 </div>

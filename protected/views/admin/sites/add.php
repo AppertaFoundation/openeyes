@@ -9,38 +9,43 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-<h2>Add site</h2>
-<?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
-<?php
-$form = $this->beginWidget(
-    'BaseEventTypeCActiveForm',
-    [
-        'id' => 'adminform',
-        'enableAjaxValidation' => false,
-        'focus' => '#username',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ]
-) ?>
-
 <div class="cols-5">
+
+    <div class="row divider">
+        <h2>Add site</h2>
+    </div>
+
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+    <?php
+    $form = $this->beginWidget(
+        'BaseEventTypeCActiveForm',
+        [
+            'id' => 'adminform',
+            'enableAjaxValidation' => false,
+            'focus' => '#username',
+            'layoutColumns' => array(
+                'label' => 2,
+                'field' => 5,
+            ),
+        ]
+    ) ?>
+
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-3">
             <col class="cols-5">
         </colgroup>
+
         <tbody>
         <tr>
             <td>Institution</td>
             <td>
-                <?php echo CHtml::activeDropDownList(
+                <?= \CHtml::activeDropDownList(
                     $site,
                     'institution_id',
                     CHtml::listData(Institution::model()->findAll(), 'id', 'name'),
@@ -48,12 +53,11 @@ $form = $this->beginWidget(
                 ); ?>
             </td>
         </tr>
-
         <?php foreach (['name', 'short_name', 'remote_id'] as $field) : ?>
             <tr>
                 <td><?php echo $site->getAttributeLabel($field); ?></td>
                 <td>
-                    <?php echo CHtml::activeTextField(
+                    <?= \CHtml::activeTextField(
                         $site,
                         $field,
                         [
@@ -64,14 +68,13 @@ $form = $this->beginWidget(
                 </td>
             </tr>
         <?php endforeach; ?>
-
         <?php
         $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];
         foreach ($address_fields as $field) : ?>
             <tr>
                 <td><?php echo $address->getAttributeLabel($field); ?></td>
                 <td>
-                    <?php echo CHtml::activeTextField(
+                    <?= \CHtml::activeTextField(
                         $address,
                         $field,
                         [
@@ -82,12 +85,11 @@ $form = $this->beginWidget(
                 </td>
             </tr>
         <?php endforeach; ?>
-
         <?php foreach (['telephone', 'fax'] as $field) : ?>
             <tr>
                 <td><?php echo $site->getAttributeLabel($field); ?></td>
                 <td>
-                    <?php echo CHtml::activeTextField(
+                    <?= \CHtml::activeTextField(
                         $site,
                         $field,
                         [
@@ -98,11 +100,10 @@ $form = $this->beginWidget(
                 </td>
             </tr>
         <?php endforeach; ?>
-
         <tr>
             <td>Country</td>
             <td>
-                <?php echo CHtml::activeDropDownList(
+                <?= \CHtml::activeDropDownList(
                     $address,
                     'country_id',
                     CHtml::listData(
@@ -118,22 +119,20 @@ $form = $this->beginWidget(
 
         <tfoot>
         <tr>
-            <td colspan="5">
-                <?php echo CHtml::button(
+            <td colspan="2">
+                <?= \CHtml::submitButton(
                     'Save',
                     [
-                        'class' => 'button large primary event-action',
+                        'class' => 'button large',
                         'name' => 'save',
-                        'type' => 'submit',
                         'id' => 'et_save'
                     ]
                 ); ?>
-                <?php echo CHtml::button(
+                <?= \CHtml::submitButton(
                     'Cancel',
                     [
-                        'class' => 'warning button large primary event-action',
+                        'class' => 'button large',
                         'data-uri' => '/admin/sites',
-                        'type' => 'submit',
                         'name' => 'cancel',
                         'id' => 'et_cancel'
                     ]
@@ -142,7 +141,6 @@ $form = $this->beginWidget(
         </tr>
         </tfoot>
     </table>
+
+    <?php $this->endWidget() ?>
 </div>
-
-<?php $this->endWidget() ?>
-

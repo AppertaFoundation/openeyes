@@ -48,7 +48,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 
   <div id="div_Element_OphTrOperationnote_ProcedureList_id">
     <div class="cols-5 column end">
-        <?php echo CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
+        <?=\CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
             $operationNoteList,
             array(
                 'id' => 'OphCiExamination_postop_complication_operation_note_id-select',
@@ -79,31 +79,8 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                     array()
                 );
                 $eye_macro = $eye_side == 'right' ? \Eye::RIGHT : \Eye::LEFT;
-                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'name' => $eye_side . '_complication_autocomplete_id',
-                    'id' => $eye_side . '_complication_autocomplete_id',
-                    'source' => "js:function(request, response) 
-              {
-                $.getJSON('" . $defaultURL . "/getPostOpComplicationAutocopleteList', {
-                    term : request.term,
-                    eye_id: '" . $eye_macro . "',
-                    element_id: '" . $this->id . "',
-                    operation_note_id: '" . $operation_note_id . "',
-                    ajax: 'ajax',
-                  }, response);     
-                }",
-                    'options' => array(
-                        'select' => "js:function(event, ui) {
-                    addPostOpComplicationTr(ui.item.label,'" . $eye_side . "-complication-list', ui.item.value, 0  );
-                    setPostOpComplicationTableText();
-                    return false;
-                  }",
-                    ),
-                    'htmlOptions' => array(
-                        'placeholder' => 'Search for Complication',
-                        'size' => 40,
-                    ),
-                )); ?>
+                $this->widget('application.widgets.AutoCompleteSearch',['field_name' => $eye_side . '_complication_autocomplete_id']);
+                ?>
             </div>
           </div>
           <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
@@ -154,3 +131,25 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
   </div>
 
 <?php endif; ?>
+<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', false, -1); ?>"></script>
+<script>
+  OpenEyes.UI.AutoCompleteSearch.init({
+          input: $('#right_complication_autocomplete_id'),
+          url: 'getPostOpComplicationAutocopleteList',
+          onSelect: function(){
+              let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+              addPostOpComplicationTr(AutoCompleteResponse.label,'right-complication-list', AutoCompleteResponse.value, 0  );
+              setPostOpComplicationTableText();
+          }
+      });
+
+  OpenEyes.UI.AutoCompleteSearch.init({
+          input: $('#left_complication_autocomplete_id'),
+          url: 'getPostOpComplicationAutocopleteList',
+          onSelect: function(){
+              let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+              addPostOpComplicationTr(AutoCompleteResponse.label,'left-complication-list', AutoCompleteResponse.value, 0  );
+              setPostOpComplicationTableText();
+          }
+      });
+</script>

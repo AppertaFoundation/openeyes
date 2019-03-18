@@ -75,10 +75,11 @@
 
       // find and set up all collapse-groups
         this.$element.find('.collapse-group').each(function() {
-        var group = new CollapseGroup($(this).find('.collapse-group-icon .oe-i'),
+        var group = new CollapseGroup(
+        	$(this),
+					$(this).find('.collapse-group-icon .oe-i'),
           $(this).find('.collapse-group-header'),
-          $(this).find('.collapse-group-content'),
-          $(this).data('collapse'));
+          $(this).find('.collapse-group-content'));
       });
 
       self.$elementContainer = $(document).find(self.options.element_container_selector);
@@ -95,36 +96,24 @@
         }.bind(self));
     };
 
-  function CollapseGroup( icon, header, content, initialState ){
-    var $icon = icon,
+  function CollapseGroup(wrapper, icon, header, content){
+    var $wrapper = wrapper,
+			$icon = icon,
       $header = header,
       $content = content,
+			initialState = $wrapper.attr('data-collapse'),
       expanded = initialState !== 'collapsed';
 
-    $icon.click(function(){
-      change();
-    });
-
-    $header.click(function(e){
-      headerChange(e);
-    });
-
-    function headerChange(e){
-      if(!expanded){
-        e.preventDefault();
-        $content.show();
-        $icon.toggleClass('minus plus');
-        expanded = !expanded;
-      }
-    }
+    $icon.add($header).click(change);
 
     function change(){
       if(expanded){
         $content.hide();
+        $wrapper.attr('data-collapse', 'collapsed');
       } else {
         $content.show();
+        $wrapper.removeAttr('data-collapse');
       }
-
       $icon.toggleClass('minus plus');
       expanded = !expanded;
     }
@@ -195,10 +184,11 @@
         var $parentLi = $(item);
         if (data === undefined)
             data = {};
-        
         // "Click" the sidebar-group-header to open the group if it is closed
-        item.closest('.collapse-group').find('.collapse-group-header').click();
-
+        let $collapse_group = item.closest('.collapse-group');
+        if($collapse_group.attr('data-collapse') === 'collapsed'){
+        	$collapse_group.find('.collapse-group-header').click();
+				}
         addElement($parentLi.clone(true), true, undefined, data, callback);
     };
 
@@ -325,6 +315,15 @@
       } else {
         var itemClass = 'collapse-group';
         var open = $.inArray(itemData.class_name, self.patient_open_elements) !== -1;
+        // Check if element has a child option which is selected
+        if(!open){
+          $.each(itemData.children, function (i, child) {
+            if ($.inArray(child.class_name, self.patient_open_elements)!== -1){
+              open = true;
+              return false;
+            }
+          });
+        }
 
         item = $("<div>")
           .data('element-type-class', itemData.class_name)

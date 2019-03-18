@@ -18,6 +18,8 @@
  */
 class DocumentSubTypesSettingsController extends \ModuleAdminController
 {
+    public $group = 'Document';
+
     /**
      * Renders the index page
      */

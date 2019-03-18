@@ -20,16 +20,16 @@
 $labelCols = $layoutColumns['label'];
 $fieldCols = floor(12 - ($labelCols * count($fields))) / count($fields);
 ?>
-<div id="div_<?php echo CHtml::modelName($element); ?>" class="data-group">
+<div id="div_<?=\CHtml::modelName($element); ?>" class="data-group">
 	<?php foreach ($fields as $i => $field) {?>
 		<div class="cols-<?php echo $labelCols;?> column">
-			<label for="<?php echo CHtml::modelName($element).'_'.$field;?>">
-				<?php echo CHtml::encode($element->getAttributeLabel($field)); ?>:
+			<label for="<?=\CHtml::modelName($element).'_'.$field;?>">
+				<?=\CHtml::encode($element->getAttributeLabel($field)); ?>:
 			</label>
 		</div>
 		<div class="cols-<?php echo $fieldCols;?> column end">
       <div class="cols-<?php echo $layoutColumns['field'];?> column end">
-          <?php echo CHtml::activeDropDownList($element, $field, $datas[$i], $htmlOptions[$i])?>
+          <?=\CHtml::activeDropDownList($element, $field, $datas[$i], $htmlOptions[$i])?>
       </div>
 		</div>
 	<?php }?>

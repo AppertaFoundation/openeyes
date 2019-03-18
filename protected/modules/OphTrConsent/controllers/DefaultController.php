@@ -264,7 +264,7 @@ class DefaultController extends BaseEventTypeController
 
         $template = "print{$template_id}_English";
 
-        $this->render($template, array('elements' => $elements, 'css_class' => @$_GET['vi'] ? 'impaired' : 'normal'));
+        $this->render($template, array('elements' => $elements, 'css_class' => isset($_GET['vi']) && $_GET['vi'] ? 'impaired' : 'normal'));
     }
 
     public function actionPDFPrint($id)

@@ -18,13 +18,13 @@
 $rightIOP = $element->getReading('right');
 $leftIOP = $element->getReading('left');
 ?>
-	<script type="text/javascript">
-		var view_iop_right = <?php echo json_encode($rightIOP);?>;
-		var view_iop_left = <?php echo json_encode($leftIOP);?>;
-	</script>
-<div class="element-data element-eyes">
+<script type="text/javascript">
+        var view_iop_right = <?php echo json_encode($rightIOP);?>;
+        var view_iop_left = <?php echo json_encode($leftIOP);?>;
+</script>
+<div class="element-data element-eyes flex-layout">
     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-  <div class="<?= $eye_side ?>-eye">
+  <div class="cols-6 <?= $eye_side ?>-eye">
       <?php if ($element->hasEye($eye_side)){
         $this->renderPartial("{$element->view_view}_side", array('element' => $element, 'side' => $eye_side));
       } else { ?>

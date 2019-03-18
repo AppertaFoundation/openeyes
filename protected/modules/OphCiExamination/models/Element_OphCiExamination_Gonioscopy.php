@@ -103,7 +103,7 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
 
     public function sidedFields()
     {
-        return array('gonio_sup_id', 'gonio_tem_id', 'gonio_nas_id', 'gonio_inf_id', 'van_herick_id', 'description', 'eyedraw');
+        return array('gonio_sup_id', 'gonio_tem_id', 'gonio_nas_id', 'gonio_inf_id', 'description', 'eyedraw');
     }
 
     public function canCopy()

@@ -117,7 +117,7 @@
                     <?php echo $element->getAttributeLabel($eye_side . '_flourescein_value') ?>:
                 </td>
                 <td>
-                    <?php echo yesOrNo($element->{$eye_side . '_flourescein_value'}); ?>
+                    <?php echo ($element->{$eye_side . '_flourescein_value'}) === '1' ? 'Yes' : 'No'; ?>
                 </td>
               </tr>
               <tr>

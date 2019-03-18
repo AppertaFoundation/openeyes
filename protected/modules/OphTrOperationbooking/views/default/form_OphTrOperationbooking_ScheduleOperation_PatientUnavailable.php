@@ -53,10 +53,10 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
 		?>
 	</td>
 	<td>
-		<?php echo CHtml::dropDownList($element_name.'[patient_unavailables]['.$key.'][reason_id]',
+		<?=\CHtml::dropDownList($element_name.'[patient_unavailables]['.$key.'][reason_id]',
         $unavailable->reason_id,
         CHtml::listData($unavailable->getPatientUnavailbleReasons(), 'id', 'name'),
-        array('class' => 'small', 'empty' => '- Please select -'))?>
+        array('class' => 'small', 'empty' => 'Select'))?>
 	</td>
 	<td class="patient-unavailable-actions">
 			<a class="remove-unavailable" href="#">

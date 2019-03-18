@@ -34,7 +34,6 @@ OpenEyes.Admin = OpenEyes.Admin || {};
 
         this.groupStates = {};
 
-        this.init();
         this.initTriggers();
     }
 
@@ -47,23 +46,7 @@ OpenEyes.Admin = OpenEyes.Admin || {};
         openIconClassName: 'plus'
     };
 
-    Sidebar.prototype.init = function(){
-        let controller = this;
-        controller.groupStates = this.getSavedGroupStates();
-
-        let groups = controller.$sidebar.find(controller.groupSelector);
-        $.each(groups, function(i, group){
-            let $group = $(group);
-            let state = $group.data('collapse');
-            let name = $group.find('h3').text();
-
-            if(controller.groupStates[name] !== undefined && (state !== controller.groupStates[name]) ){
-                controller.toggleGroup($group);
-            }
-        });
-    };
-
-    Sidebar.prototype.initTriggers = function(){
+      Sidebar.prototype.initTriggers = function(){
         var controller = this;
 
         this.$sidebar.on('click', this.toggleAllSelector + ' ' + this.iconSelector, function(){
@@ -79,7 +62,6 @@ OpenEyes.Admin = OpenEyes.Admin || {};
             if (e.target.tagName === 'A'){
                 return;
             }
-
             let action = $(this).find(controller.iconSelector).hasClass(controller.openIconClassName) ? 'expand' : 'collapse';
             controller.toggleGroup($(this).closest(controller.groupSelector), action);
         });

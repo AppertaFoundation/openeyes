@@ -26,7 +26,6 @@
  * @property string $class_name
  *
  * The followings are the available model relations:
- * @property ElementType $parent_element_type
  * @property ElementGroup[] $elementGroups
  * @property EventType $event_type
  */

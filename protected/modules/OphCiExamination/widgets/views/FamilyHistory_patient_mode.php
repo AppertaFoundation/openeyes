@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,12 +11,11 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if (empty($element->entries) && empty($element->no_family_history_date)) { ?>
-    <div class="family-history-status-unknown"
-         style="font-style: italic; color: rgba(255,255,255,0.5);">
+    <div class="nil-recorded">
         Patient family history is unknown
     </div>
 <?php } else {
@@ -30,11 +29,8 @@ if (empty($element->entries) && empty($element->no_family_history_date)) { ?>
         'layoutColumns' => array(
         ),
     ))?>
-    <div class="family-history-status-none"
-         style="
-            font-style: italic;
-            color: rgba(255,255,255,0.5);
-            display: <?php if (empty($element->no_family_history_date) &&  !empty($element->entries)) {echo 'none';} ?>"
+    <div class="nil-recorded"
+         style="<?= empty($element->no_family_history_date) &&  !empty($element->entries) ? 'display: none;':'' ?>"
     >
         Patient has no family history
     </div>

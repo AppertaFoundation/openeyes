@@ -24,7 +24,7 @@ $nextYear = mktime(0, 0, 0, date('m'), 1, date('Y') + 1);
 <div class="element-fields full-width flex-layout flex-top">
     <div class="cols-9">
         <div class="flex-layout data-group">
-            <?php echo CHtml::link('<button class="large">
+            <?=\CHtml::link('<button class="large">
                 <i class="oe-i arrow-left-bold medium pad"></i>
                 Previous month</button>',
                 array('booking/'.($operation->booking ? 're' : '').'schedule/'.$operation->event_id.'?firm_id='.($firm->id ? $firm->id : 'EMG').'&date='.date('Ym', $lastMonth)),
@@ -34,7 +34,7 @@ $nextYear = mktime(0, 0, 0, date('m'), 1, date('Y') + 1);
             <?php if ($nextMonth > $nextYear) {
                 echo '<button href="#" class="large" id="next_month">Next month <i class="oe-i arrow-right-bold medium pad"></i></button>';
             } else {?>
-                <?php echo CHtml::link('<button class="large">Next month <i class="oe-i arrow-right-bold medium pad"></i></button>',
+                <?=\CHtml::link('<button class="large">Next month <i class="oe-i arrow-right-bold medium pad"></i></button>',
                     array('booking/'.($operation->booking ? 're' : '').'schedule/'.$operation->event_id.'?firm_id='.($firm->id ? $firm->id : 'EMG').'&date='.date('Ym', $nextMonth)),
                     array('class' => 'large')
                 )?>

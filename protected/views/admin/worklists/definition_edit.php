@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -41,7 +41,7 @@
             <tr>
                 <td>Name</td>
                 <td>
-                    <?php echo CHtml::activeTextField(
+                    <?=\CHtml::activeTextField(
                         $definition,
                         'name',
                         [
@@ -55,7 +55,7 @@
             <tr>
                 <td>Description</td>
                 <td>
-                    <?php echo CHtml::activeTextArea(
+                    <?=\CHtml::activeTextArea(
                         $definition,
                         'description',
                         [
@@ -78,7 +78,7 @@
             <tr>
                 <td>Start time</td>
                 <td>
-                    <?php echo CHtml::activeTextField(
+                    <?=\CHtml::activeTextField(
                         $definition,
                         'start_time',
                         [
@@ -91,7 +91,7 @@
             </tr><tr>
                 <td>End time</td>
                 <td>
-                    <?php echo CHtml::activeTextField(
+                    <?=\CHtml::activeTextField(
                         $definition,
                         'end_time',
                         [
@@ -109,21 +109,19 @@
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
-                            'class' => 'button large primary event-action',
+                            'class' => 'button large',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Cancel',
                         [
                             'data-uri' => '/worklistAdmin/definitions',
-                            'class' => 'warning button large primary event-action',
-                            'type' => 'submit',
+                            'class' => 'button large',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

@@ -119,7 +119,7 @@
 
 
         <div class="submit-row text-right">
-            <?php echo CHtml::submitButton('Search', ['class' => 'button small primary event-action']); ?>
+            <?=\CHtml::submitButton('Search', ['class' => 'button small primary event-action']); ?>
         </div>
     </div>
     <?php $this->endWidget(); ?>

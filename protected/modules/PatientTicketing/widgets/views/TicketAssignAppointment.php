@@ -45,12 +45,12 @@ if ($outcome = $api->getFollowUp($this->ticket->id)) {
                   ),
                   'value' => preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)
                       ? Helper::convertMySQL2NHS($value) : $value,
-                  'htmlOptions' => null,
+                  'htmlOptions' => ['class'=>'cols-11'],
               )); ?>
           </td>
           <td>
-              <?php echo CHtml::textField($this->form_name . '[appointment_time]',
-                  @$this->form_data[$this->form_name]['appointment_time']) ?>
+              <?=\CHtml::textField($this->form_name . '[appointment_time]',
+                  @$this->form_data[$this->form_name]['appointment_time'], ['class'=>'cols-11']) ?>
           </td>
         </tr>
         </tbody>

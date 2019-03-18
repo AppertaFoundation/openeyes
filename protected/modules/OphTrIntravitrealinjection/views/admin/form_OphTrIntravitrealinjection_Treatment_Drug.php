@@ -17,5 +17,44 @@
  */
 ?>
 
-<?php echo $form->textField($model, 'name')?>
-<?php echo $form->radioBoolean($model, 'active')?>
+<div class="cols-5">
+
+    <div class="row divider">
+        <h2><?php echo $title ?></h2>
+    </div>
+
+    <table class="cols-full last-left standard">
+        <colgroup>
+            <col class="cols-1">
+            <col class="cols-3">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td>
+                <?= CHtml::activeTextField(
+                    $model,
+                    'name',
+                    [
+                        'class' => 'cols-full',
+                        'autocomplete' => Yii::app()->params['html_autocomplete']
+                    ]
+                ) ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Available</td>
+            <td>
+                <?php
+                $isActive = ($model->active == 1 ? 'checked' : '');
+                echo CHtml::activeCheckBox(
+                    $model,
+                    'active',
+                    ['checked' => $isActive]
+                );
+                ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

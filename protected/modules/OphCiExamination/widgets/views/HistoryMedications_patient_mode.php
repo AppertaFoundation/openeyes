@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -40,7 +40,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
   <div class="label">Systemic Medications</div>
   <div class="data">
       <?php if (!$current_systemic_meds && !$stopped_systemic_meds): ?>
-        <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded.</div>
+        <div class="nil-recorded">Nil recorded.</div>
       <?php else: ?>
           <?php if ($current_systemic_meds): ?>
           <table id="<?= $model_name ?>_entry_table">
@@ -49,11 +49,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
                   <td>
-                      <i class="oe-i info small pro-theme js-has-tooltip"
-                         data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
-                      </i>
+                      <?php if($entry->getDoseAndFrequency()) {?>
+                          <i class="oe-i info small pro-theme js-has-tooltip"
+                             data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                          </i>
+                      <?php } ?>
                   </td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
+                <td><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
               </tr>
             <?php endforeach; ?>
             </tbody>
@@ -78,7 +80,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php foreach ($stopped_systemic_meds as $entry): ?>
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
+                <td><span class="oe-date"><?= $entry->getEndDateDisplay() ?></span></td>
                 <td>
                     <?php if ($entry->prescription_item): ?>
                       <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
@@ -103,7 +105,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
     <div class="label">Eye Medications</div>
     <div class="data">
         <?php if (!$current_eye_meds && !$stopped_eye_meds): ?>
-          <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded.</div>
+          <div class="nil-recorded">Nil recorded.</div>
         <?php else: ?>
             <?php if ($current_eye_meds): ?>
             <table id="<?= $model_name ?>_entry_table">
@@ -117,11 +119,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                       ?>
                   </td>
                     <td>
+                        <?php if($entry->getDoseAndFrequency()) {?>
                     <i class="oe-i info small pro-theme js-has-tooltip"
                        data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                     </i>
+                        <?php } ?>
                     </td>
-                  <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
+                  <td><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
                 </tr>
               <?php endforeach; ?>
               </tbody>
@@ -148,7 +152,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                         ?>
                     </td>
-                  <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
+                  <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getEndDateDisplay()) ?></span></td>
                   <td>
                       <?php if ($entry->prescription_item): ?>
                         <a href="<?= $this->getPrescriptionLink($entry) ?>">

@@ -30,7 +30,7 @@
               CHtml::listData(OphTrOperationnote_Trabectome_Power::model()->activeOrPk($element->power_id)->findAll(),
                   'id',
                   'name'),
-              array('empty' => '- Please select -', 'nolabel' => true), false, array('field' => 3)) ?>
+              array('empty' => 'Select', 'nolabel' => true), false, array('field' => 3)) ?>
       </td>
     </tr>
     <tr>
@@ -94,7 +94,7 @@
     <tr style="<?= $element->hasOtherComplication() ? '' : 'display: none;' ?>"
         id="div_<?= CHtml::modelName($element) ?>_complication_other">
       <td>
-        <label for="<?php echo CHtml::modelName($element) ?>_complication_other">
+        <label for="<?=\CHtml::modelName($element) ?>_complication_other">
             <?php echo $element->getAttributeLabel('complication_other') ?>
         </label>
       </td>

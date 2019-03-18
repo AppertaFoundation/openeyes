@@ -16,9 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes">
+<div class="element-data element-eyes flex-layout">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-    <div class="js-element-eye <?= $eye_side ?>-eye column">
+    <div class="js-element-eye cols-6 <?= $eye_side ?>-eye column">
         <?php if ($element->hasEye($eye_side)) {
             $this->renderPartial($element->view_view.'_fields', array('side' => $eye_side, 'element' => $element));
         } else { ?>

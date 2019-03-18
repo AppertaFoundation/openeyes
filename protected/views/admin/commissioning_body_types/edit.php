@@ -9,13 +9,18 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-    <h2><?php echo $cbt->id ? 'Edit' : 'Add'?> commissioning body type</h2>
-    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
+<div class="cols-5">
+
+    <div class="row divider">
+        <h2><?php echo $cbt->id ? 'Edit' : 'Add' ?> commissioning body type</h2>
+    </div>
+
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
     <?php
     $form = $this->beginWidget(
         'BaseEventTypeCActiveForm',
@@ -28,63 +33,60 @@
                 'field' => 5,
             ),
         ]
-    )?>
+    ) ?>
 
-    <div class="cols-5">
-        <table class="standard cols-full">
-            <colgroup>
-                <col class="cols-4">
-                <col class="cols-5">
-            </colgroup>
-            <tbody>
-            <tr>
-                <td>Name</td>
-                <td> <?php echo CHtml::activeTextField(
-                    $cbt,
-                    'name',
+    <table class="standard">
+        <colgroup>
+            <col class="cols-2">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td> <?= \CHtml::activeTextField(
+                $cbt,
+                'name',
+                [
+                    'class' => 'cols-full',
+                    'autocomplete' => Yii::app()->params['html_autocomplete']
+                ]
+            ); ?> </td>
+        </tr>
+        <tr>
+            <td>Short Name</td>
+            <td> <?= \CHtml::activeTextField(
+                $cbt,
+                'shortname',
+                ['class' => 'cols-full']
+            ); ?> </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2">
+                <?= \CHtml::submitButton(
+                    'Save',
                     [
-                        'class' => 'cols-full',
-                        'autocomplete' => Yii::app()->params['html_autocomplete']
+                        'class' => 'button large',
+                        'name' => 'save',
+                        'id' => 'et_save'
                     ]
-                ); ?> </td>
-            </tr>
-            <tr>
-                <td>Short Name</td>
-                <td> <?php echo CHtml::activeTextField(
-                    $cbt,
-                    'shortname',
-                    ['class' => 'cols-full']
-                ); ?> </td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="5">
-                    <?php echo CHtml::button(
-                        'Save',
-                        [
-                            'class' => 'button large primary event-action',
-                            'name' => 'save',
-                            'type' => 'submit',
-                            'id' => 'et_save'
-                        ]
-                    ); ?>
-                    <?php echo CHtml::button(
-                        'Cancel',
-                        [
-                            'class' => 'warning button large primary event-action',
-                            'data-uri' => '/admin/commissioning_body_types',
-                            'type' => 'submit',
-                            'name' => 'cancel',
-                            'id' => 'et_cancel'
-                        ]
-                    ); ?>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
-    </div>
+                ); ?>
+                <?= \CHtml::submitButton(
+                    'Cancel',
+                    [
+                        'class' => 'button large',
+                        'data-uri' => '/admin/commissioning_body_types',
+                        'name' => 'cancel',
+                        'id' => 'et_cancel'
+                    ]
+                ); ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
 
-    <?php $this->endWidget()?>
+    <?php $this->endWidget() ?>
+</div>
 
 

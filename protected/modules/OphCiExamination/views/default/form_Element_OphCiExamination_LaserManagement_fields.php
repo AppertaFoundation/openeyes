@@ -104,7 +104,7 @@ $model_name = CHtml::modelName($element);
             </label>
           </div>
           <div class="column end">
-              <?php echo CHtml::activeDropDownList($element, $eye.'_laser_deferralreason_id', CHtml::listData($deferrals, 'id', 'name'), $deferral_options)?>
+              <?=\CHtml::activeDropDownList($element, $eye.'_laser_deferralreason_id', CHtml::listData($deferrals, 'id', 'name'), $deferral_options)?>
             <div class="cols-full"
                  id="div_<?php echo $model_name.'_'.$eye; ?>_laser_deferralreason_other"
                  style="<?= (!$show_deferral_other)? "display: none":""?>"
@@ -133,11 +133,11 @@ $model_name = CHtml::modelName($element);
             </label>
           </div>
           <div class="column end lasertype">
-              <?=CHtml::activeDropDownList(
+              <?=\CHtml::activeDropDownList(
                   $element,
                   $eye.'_lasertype_id',
                   CHtml::listData($lasertypes, 'id', 'name'),
-                  array('options' => $lasertype_options, 'empty' => '- Please select -')
+                  array('options' => $lasertype_options, 'empty' => 'Select')
               )?>
           </div>
         </div>
@@ -182,8 +182,8 @@ $model_name = CHtml::modelName($element);
       <td>
         <div class="cols-full comments flex-layout flex-left">
           <div class="cols-3">
-            <label for="<?=CHtml::modelName($element)."_".$eye."_comments"?>">
-                <?=CHtml::encode($element->getAttributeLabel($eye."_comments")).':'?>
+            <label for="<?=\CHtml::modelName($element)."_".$eye."_comments"?>">
+                <?=\CHtml::encode($element->getAttributeLabel($eye."_comments")).':'?>
             </label>
           </div>
           <div class="cols-9">

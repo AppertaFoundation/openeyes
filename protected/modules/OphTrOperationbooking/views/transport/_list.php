@@ -17,7 +17,7 @@
  */
 ?>
 <div id="no_gp_warning" class="alert-box alert with-icon hide">
-	One or more patients has no GP practice, please correct in PAS before printing GP letter.
+	One or more patients has no <?php echo \Yii::app()->params['gp_label'] ?> practice, please correct in PAS before printing <?php echo \Yii::app()->params['gp_label'] ?> letter.
 </div>
 <div id="transportList">
 	<table class="standard transport">
@@ -49,7 +49,7 @@
 					<tr class="status <?php echo $operation->transportColour?>">
 						<td><?php echo $operation->event->episode->patient->hos_num?></td>
 						<td class="patient">
-							<?php echo CHtml::link('<strong>'.trim(strtoupper($operation->event->episode->patient->last_name)).'</strong>, '.$operation->event->episode->patient->first_name, Yii::app()->createUrl('OphTrOperationbooking/default/view/'.$operation->event_id))?>
+							<?=\CHtml::link('<strong>'.trim(strtoupper($operation->event->episode->patient->last_name)).'</strong>, '.$operation->event->episode->patient->first_name, Yii::app()->createUrl('OphTrOperationbooking/default/view/'.$operation->event_id))?>
 						</td>
 						<td><?php echo date('j-M-Y', strtotime($operation->latestBooking->session_date))?></td>
 						<td><?php echo $operation->latestBooking->session_start_time?></td>

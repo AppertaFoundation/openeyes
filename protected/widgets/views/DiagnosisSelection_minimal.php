@@ -64,7 +64,7 @@
 				<?php }?>
 				<div class="cols-<?php echo $layoutColumns['field'];?> column end">
 		<?php }?>
-				<?php echo CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array())?>
+				<?=\CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array())?>
 		<?php if (!$nowrapper) {?>
 				</div>
 			</div>
@@ -172,7 +172,7 @@
 
 	<?php if ($secondary_to) {?>
 	function updateSecondaryList(data, include_none) {
-		var options = '<option value="">- Please Select -</option>';
+		var options = '<option value="">Select</option>';
 		if (include_none) {
 			options += '<option value="NONE">None</option>';
 		}

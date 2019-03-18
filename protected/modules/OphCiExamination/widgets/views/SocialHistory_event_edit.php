@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -35,13 +35,16 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('occupation_id')) ?>
       </td>
       <td>
+          <div id="textField_occupation_id" class="cols-8">
+              <?= isset($element->occupation) ?  $element->occupation->name :  'Nothing selected.'; ?>
+          </div>
           <?= $form->dropDownList(
               $element,
               'occupation_id',
               CHtml::listData($element->occupation_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true),
+              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true],
               false,
-              array('label' => 4, 'field' => 4, 'full_dropdown' => true)
+              array('label' => 4, 'field' => 4, 'full_dropdown' => true, 'class' => 'oe-input-is-read-only', 'hidden' => true)
           );
           ?>
           <?= $form->textField(
@@ -52,6 +55,7 @@
                   'autocomplete' => Yii::app()->params['html_autocomplete'],
                   'style' => 'width: 100%',
                   'nowrapper' => true,
+                  'hidden' => true
               ),
               null,
               array('label' => 4, 'field' => 5)
@@ -62,15 +66,16 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('driving_statuses')) ?>
       </td>
       <td>
-          <?= $form->multiSelectList(
-              $element,
-              CHtml::modelName($element) . '[driving_statuses]',
-              'driving_statuses',
-              'id',
-              CHtml::listData($element->driving_statuses_options, 'id', 'name'),
-              array(),
-              array('empty' => '- Select -', 'nowrapper' => true)
-          ); ?>
+          <div id="textField_driving_statuses" class="cols-8">
+              <?php if (isset($element['driving_statuses']) && count($element['driving_statuses']) <= 0) {
+                  echo 'Nothing selected.';
+              } else {
+                  $driving_statuses = array_map(function($driving_status){ return trim($driving_status->name);  },
+                      is_array($element->driving_statuses) ? $element->driving_statuses : []);
+                  echo implode(', ', $driving_statuses);
+              } ?>
+          </div>
+
       </td>
     </tr>
     <tr>
@@ -78,11 +83,14 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('smoking_status_id')) ?>
       </td>
       <td>
+          <div id="textField_smoking_status_id" class="cols-8">
+              <?= isset($element->smoking_status) ?  $element->smoking_status->name :  'Nothing selected.'; ?>
+          </div>
           <?= $form->dropDownList(
               $element,
               'smoking_status_id',
               CHtml::listData($element->smoking_status_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true)
+              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
           );
           ?>
       </td>
@@ -90,13 +98,15 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('accommodation_id')) ?>
       </td>
       <td>
+          <div id="textField_accommodation_id" class="cols-8">
+              <?= isset($element->accommodation) ?  $element->accommodation->name :  'Nothing selected.'; ?>
+          </div>
           <?= $form->dropDownList(
               $element,
               'accommodation_id',
               CHtml::listData($element->accommodation_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true)
-          );
-          ?>
+              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
+          ); ?>
       </td>
     </tr>
     <tr>
@@ -104,6 +114,9 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('alcohol_intake')) ?>
       </td>
       <td class="flex-layout flex-left">
+          <div id="textField_alcohol_intake" class="cols-1 <?= (isset($element->alcohol_intake) ? '' : 'hidden') ?>">
+              <?= isset($element->alcohol_intake) ? $element->alcohol_intake: ''?>
+          </div>
           <?= $form->textField(
               $element,
               'alcohol_intake',
@@ -111,7 +124,8 @@
                   'autocomplete' => Yii::app()->params['html_autocomplete'],
                   'nowrapper' => true,
                   'style' => 'width: 100px; margin-right: 10px;',
-                  'append-text' => 'units/week',
+                  'append-text' => (isset($element->alcohol_intake) ? 'units/week' : 'Nothing selected.'),
+                  'hidden' => true
               )
           );
           ?>
@@ -120,40 +134,46 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('carer_id')) ?>
       </td>
       <td>
+          <div id="textField_carer_id" class="cols-8">
+              <?= isset($element->carer) ?  $element->carer->name :  'Nothing selected.'; ?>
+          </div>
           <?= $form->dropDownList(
               $element,
               'carer_id',
               CHtml::listData($element->carer_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true)
+              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
           );
           ?>
       </td>
     </tr>
     <tr>
-      <td>
-          <?= $form->labelEx($element, $element->getAttributeLabel('substance_misuse_id')) ?>
-      </td>
-      <td>
-          <?= $form->dropDownList(
-              $element,
-              'substance_misuse_id',
-              CHtml::listData($element->substance_misuse_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true)
-          ); ?>
-      </td>
-      <td colspan="2" class="js-comment-container"
-          data-comment-button="#add-social-history-popup .js-add-comments"
-          style="display: <?php if (!$element->comments) {
-              echo 'none';
-          } ?>">
-          <textarea id="<?= $model_name ?>_comments"
-                    name="<?= $model_name ?>[comments]"
-                    class="js-comment-field cols-10"
-                    placeholder="Enter comments here"
-                    autocomplete="off" rows="1"
-                    style="overflow: hidden; word-wrap: break-word; height: 24px;"><?= CHtml::encode($element->comments) ?></textarea>
-        <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
-      </td>
+        <td>
+            <?= $form->labelEx($element, $element->getAttributeLabel('substance_misuse_id')) ?>
+        </td>
+        <td>
+            <div id="textField_substance_misuse_id" class="cols-8">
+                <?= isset($element->substance_misuse) ?  $element->substance_misuse->name :  'Nothing selected.'; ?>
+            </div>
+            <?= $form->dropDownList(
+                $element,
+                'substance_misuse_id',
+                CHtml::listData($element->substance_misuse_options, 'id', 'name'),
+                ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
+            ); ?>
+        </td>
+        <td colspan="2" class="js-comment-container"
+            data-comment-button="#add-social-history-popup .js-add-comments"
+            style="display: <?php if (!$element->comments) {
+                echo 'none';
+            }?>">
+           <textarea id="<?= $model_name ?>_comments"
+                     name="<?= $model_name ?>[comments]"
+                     class="js-comment-field cols-10"
+                     placeholder="Enter comments here"
+                     autocomplete="off" rows="1"
+                     style="overflow: hidden; word-wrap: break-word; height: 24px;"><?= CHtml::encode($element->comments) ?></textarea>
+            <i class="oe-i remove-circle small-icon js-remove-add-comments"></i>
+        </td>
     </tr>
     </tbody>
   </table>
@@ -198,6 +218,8 @@
   });
 
   $(document).ready(function () {
+    // hide the driving status select
+    $('#OEModule_OphCiExamination_models_SocialHistory_driving_statuses').hide();
 
     var controller = new OpenEyes.OphCiExamination.SocialHistoryController();
 
@@ -219,7 +241,7 @@
             <?php
             $selected_driving_statuses = array_map(function ($status) {
                 return $status->id;
-            }, $element->driving_statuses);
+            }, is_array($element->driving_statuses) ? $element->driving_statuses : []);
 
             echo CJSON::encode(array_map(function ($item, $label) use ($selected_driving_statuses) {
                     return [
@@ -268,8 +290,9 @@
 
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) use ($element) {
-                return ['label' => $item, 'id' => $item, 'selected' => $element->alcohol_intake == $item];
-            }, range(1, 20))
+                return ['label' => $item, 'id' => $item,
+                    'selected' => isset($element->alcohol_intake) && $element->alcohol_intake == $item];
+            }, range(0, 20))
         ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake', 'mandatory': true})
       ],
       onReturn: function (adderDialog, selectedItems) {

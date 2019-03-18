@@ -43,11 +43,18 @@
         </div>
     <?php
     $items = array();
+    $itemSets = array();
     foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
         foreach ($attribute->getAttributeOptions() as $option) {
             $items[] = ['label' => (string)$option->slug];
         }
+
+        $itemSets[] = ['items' => $items ,
+            'header' => $attribute->label ,
+            'multiSelect' => $attribute->is_multiselect === '1' ? true : false
+        ];
     } ?>
+
       <script type="text/javascript">
         $(function () {
           var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_<?= $eye_side ?>_description');
@@ -55,12 +62,11 @@
           new OpenEyes.UI.AdderDialog({
             id: 'add-to-adnexal-<?= $eye_side?>',
             openButton: $('#add-examination-adnexal-<?= $eye_side?>'),
-            itemSets: new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($items) ?>, {'multiSelect': true}),
+            itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($itemSet) {
+                return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {'header': $itemSet.header,'multiSelect': $itemSet.multiSelect });
+            }),
             onReturn: function (adderDialog, selectedItems) {
-              $(selectedItems).each(function (key, item) {
-                inputText.val(inputText.val() ? inputText.val() + item['label'] : item['label']
-                );
-              });
+							inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
               inputText.trigger('oninput');
               return true;
             }

@@ -100,7 +100,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     AllergiesController.prototype.isAllergiesChecked = function (value) {
         var valueChecked = false;
-        this.$table.find('input[type=radio]:checked , input[type=hidden]').each(function () {
+        this.$table.find('input[type=radio]:checked , input[type=hidden][id$="has_allergy"]').each(function () {
             if ($(this).val() === value) {
                 valueChecked = true;
                 return false;
@@ -150,11 +150,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     AllergiesController.prototype.updateNoAllergiesState = function () {
-        if (this.$noAllergiesFld.prop('checked') && this.isAllergiesChecked(this.allergyNotCheckedValue)) {
+        if (this.$noAllergiesFld.prop('checked')) {
             this.$noAllergiesFld.prop('checked', false);
             this.$popupSelector.show();
         }
-        if(this.isAllergiesChecked(this.allergyYesValue) || this.isAllergiesChecked(this.allergyNotCheckedValue)){
+        if(this.isAllergiesChecked(this.allergyYesValue)){
             this.$noAllergiesWrapper.hide();
             this.$popupSelector.show();
             this.$noAllergiesFld.prop('checked', false);

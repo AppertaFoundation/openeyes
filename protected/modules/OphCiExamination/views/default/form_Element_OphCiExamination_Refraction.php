@@ -50,11 +50,11 @@
                     <?= CHtml::activeTextField($element, $eye_side . '_cylinder', array('class' => 'cols-11')) ?>
                 </td>
                 <td class="cols-2">
-                    <?php echo CHtml::activeTextField($element, $eye_side . '_axis',
+                    <?=\CHtml::activeTextField($element, $eye_side . '_axis',
                         array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis cols-11')) ?>
                 </td>
                 <td class="cols-4">
-                    <?php echo CHtml::activeDropDownList($element, $eye_side . '_type_id',
+                    <?=\CHtml::activeDropDownList($element, $eye_side . '_type_id',
                         OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->getOptions(),
                         array('class' => 'refractionType cols-full')) ?>
                 </td>
@@ -66,7 +66,7 @@
                 <?php if ($element->{$eye_side . '_type'} && $element->{$eye_side . '_type'}->name !== 'Other'): ?>
                   style="display:none"
                 <?php endif ?>>
-                <?php echo CHtml::activeTextField($element, $eye_side . '_type_other',
+                <?=\CHtml::activeTextField($element, $eye_side . '_type_other',
                     array(
                         'autocomplete' => Yii::app()->params['html_autocomplete'],
                         'placeholder' => 'Other',
@@ -76,7 +76,7 @@
 
             <div id="refraction-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
                  style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#refraction-<?= $eye_side ?>-comment-button">
-                <?php echo CHtml::activeTextArea($element, $eye_side . '_notes',
+                <?=\CHtml::activeTextArea($element, $eye_side . '_notes',
                     array(
                         'rows' => 1,
                         'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
@@ -179,9 +179,8 @@
                   <td>
                     <div class="flex-layout flex-top flex-left">
                       <ul class="add-options refraction-type" data-multi="false" data-clickadd="false">
-                          <?php foreach (OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->findAll(array('order' => 'display_order')) as $type): ?>
-                            <li data-str="<?= $type->id ?>"><span class="restrict-width"><?= $type->name ?></span>
-                            </li>
+                          <?php foreach (OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->getOptions() as $id => $type) : ?>
+                            <li data-str="<?= $id ?>"><span class="restrict-width"><?= $type ?></span></li>
                           <?php endforeach; ?>
                       </ul>
                     </div>
@@ -217,13 +216,15 @@
           );
 
           var axis = $popup.find('.add-options.axis').find('li.selected').data('str');
-          if (axis !== null) {
+          if (axis !== null && typeof axis !== 'undefined') {
             $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_<?= $eye_side ?>_axis').val(axis);
           }
 
           var refraction_type = $popup.find('.add-options.refraction-type').find('li.selected').data('str');
           if (refraction_type !== null) {
-            $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_<?= $eye_side ?>_type_id').val(refraction_type);
+              $type = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_<?= $eye_side ?>_type_id');
+              $type.val(refraction_type);
+              $type.change();
           }
         }
 

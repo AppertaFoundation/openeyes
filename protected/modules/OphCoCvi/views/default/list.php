@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -122,18 +122,20 @@ $cols = array(
 );
 
 ?>
-<h1 class="badge">CVI List</h1>
-<div class="box content">
-    <?php $this->renderPartial('list_filter', array('list_filter' => $list_filter)) ?>
-  <div class="cols-12 column">
-    <div class="box generic">
+<div class="oe-full-header flex-layout">
+    <div class="title wordcaps">CVI List</div>
+</div>
+<div class="oe-full-content subgrid oe-audit">
+    <nav class="oe-full-side-panel audit-filters">
+        <?php $this->renderPartial('list_filter', array('list_filter' => $list_filter)) ?>
+    </nav>
+    <main id="searchResults" class="oe-full-main audit-main">
         <?php $this->widget('zii.widgets.grid.CGridView', array(
-            'itemsCssClass' => 'grid',
+            'itemsCssClass' => 'standard',
             'dataProvider' => $dp,
             'htmlOptions' => array('id' => 'inbox-table'),
             'summaryText' => '<small> {start}-{end} of {count} </small>',
             'columns' => $cols,
         )); ?>
-    </div>
-  </div>
+    </main>
 </div>

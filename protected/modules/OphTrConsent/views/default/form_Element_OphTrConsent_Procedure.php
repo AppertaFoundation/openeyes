@@ -21,7 +21,7 @@
   <?php echo $form->hiddenField($element, 'booking_event_id')?>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('eye_id')); ?>
+        <?=\CHtml::encode($element->getAttributeLabel('eye_id')); ?>
     </td>
     <td>
       <?php echo $form->radioButtons(
@@ -37,13 +37,16 @@
   </tr>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('Anaesthetic Type')); ?>
+        <?=\CHtml::encode($element->getAttributeLabel('Anaesthetic Type')); ?>
     </td>
     <td>
         <?php echo $form->checkBoxes(
             $element,
             'AnaestheticType',
-            'anaesthetic_type',
+            array_map(function($element){
+                return $element['id'];
+              }, $element->anaesthetic_type
+            ),
             'Anaesthetic Type',
             false, false, false, false,
             array(
@@ -57,15 +60,17 @@
   <tr>
     <td>Procedures</td>
     <td>
-        <?php $form->widget('application.widgets.ProcedureSelection', array(
-            'element' => $element,
-            'durations' => false,
-            'identifier' => 'procedures',
-            'read_only' => !@$_GET['unbooked'],
-            'restrict' => 'unbooked',
-            'restrict_common' => 'unbooked',
-            'label' =>''
-        ))?>
+        <?php $form->widget('application.widgets.ProcedureSelection',
+            array(
+                'element' => $element,
+                'durations' => false,
+                'identifier' => 'procedures',
+                'read_only' => (bool)$element->booking_event_id ,
+                'restrict' => 'unbooked',
+                'restrict_common' => 'unbooked',
+                'label' => ''
+            )
+        ) ?>
     </td>
   </tr>
   <tr>

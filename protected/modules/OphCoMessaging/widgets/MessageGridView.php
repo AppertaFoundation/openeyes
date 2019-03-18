@@ -23,9 +23,7 @@ class MessageGridView extends CGridView
     {
         ?>
         <colgroup>
-            <col>
-            <col>
-            <col>
+            <col span="3">
             <col class="cols-2">
         </colgroup>
         <?php

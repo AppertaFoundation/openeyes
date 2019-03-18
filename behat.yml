@@ -13,15 +13,15 @@ default:
             config_script:    protected/config/main.php
 
         Behat\MinkExtension\Extension:
-            base_url:           http://openeyes.vm
+            base_url:           http://localhost
             javascript_session: selenium2
             goutte:             ~
             selenium2:
-                wd_host:        http://192.168.57.30:4444/wd/hub
+                wd_host:        http://localhost:4444/wd/hub
                 browser: 'chrome'
-            saucelabs:
-                connect:  true
-                browser:  'chrome'
                 capabilities:
-                    version:  ''
-                    platform: 'Windows 7'
+                    chrome:
+                        switches:
+                            - "--headless"
+                            - "--disable-gpu"
+

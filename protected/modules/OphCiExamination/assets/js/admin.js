@@ -153,7 +153,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$('div.column.content').on('click', '.workflow-item-attr',  function(){
+    $('#step_element_types').on('click', 'tr.clickable .workflow-item-attr',  function(){
         var item = this,
             $itemTd = $(this).parent(),
             $itemTr = $itemTd.parent(),
@@ -239,6 +239,24 @@ $(document).ready(function() {
 					alert("Something went wrong trying to set the name for the step.  Please try again or contact support for assistance.");
 				} else {
 					$('#admin_workflow_steps tr.selected td:nth-child(2)').text($('#step_name').val());
+				}
+			}
+		});
+	});
+
+	$('.js-elementSetActiveStatus').click(function(){
+		let element = $(this);
+		let element_set_id = element.data('stepid');
+		let element_status = element.text();
+		$.ajax({
+			'type': 'POST',
+			'data': 'workflow_id='+$('#OEModule_OphCiExamination_models_OphCiExamination_Workflow_id').val()+'&element_set_id='+element_set_id+'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
+			'url': baseUrl+'/OphCiExamination/admin/changeWorkflowStepActiveStatus',
+			'success': function(resp){
+				if (resp !== "1") {
+					alert("Something went wrong trying to "+element_status+" the workflow step.  Please try again or contact support for assistance.");
+				} else {
+					element.text((element_status == 'Disable' ? 'Enable' : 'Disable'));
 				}
 			}
 		});

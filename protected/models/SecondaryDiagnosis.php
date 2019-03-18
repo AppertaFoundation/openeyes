@@ -111,6 +111,17 @@ class SecondaryDiagnosis extends BaseActiveRecordVersioned
         ));
     }
 
+    public function behaviors()
+    {
+        return array(
+            'OeDateFormat' => array(
+                'class' => 'application.behaviors.OeDateFormat',
+                'date_columns' => [],
+                'fuzzy_date_field' => 'date',
+            ),
+        );
+    }
+
     public function getDateText()
     {
         return Helper::formatFuzzyDate($this->date);

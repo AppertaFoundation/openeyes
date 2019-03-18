@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -117,6 +117,17 @@ class BaseEventTypeController extends BaseModuleController
     public $pdf_print_documents = 1;
     public $pdf_print_html = null;
     public $attachment_print_title = null;
+
+    /**
+     * Values to change per event
+     *
+     * @var float $resolution_multiplier how much to 'zoom in' on the pdf when changing to png
+     * @var int $image_width width of preview image in pixels
+     * @var int $compression_quality from 1 (lowest) to 100 (highest)
+     */
+    public $resolution_multiplier = 1;
+    public $image_width = 800;
+    public $compression_quality = 50;
 
     /**
      * @var int $element_tiles_wide The number of tiles that can be rendered in a single row
@@ -658,8 +669,8 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function initActionView()
     {
+        $this->readInEventImageSettings();
         $this->moduleStateCssClass = 'view';
-
         $this->initWithEventId(@$_GET['id']);
     }
 
@@ -681,6 +692,9 @@ class BaseEventTypeController extends BaseModuleController
     protected function initActionDelete()
     {
         $this->initWithEventId(@$_GET['id']);
+
+        //on soft delete we call the afterSoftDelete method
+        $this->event->getEventHandlers('onAfterSoftDelete')->add(array($this, 'afterSoftDelete'));
     }
 
     /**
@@ -781,6 +795,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function actionCreate()
     {
+        $this->event->firm_id = $this->selectedFirmId;
         if (!empty($_POST)) {
             // form has been submitted
             if (isset($_POST['cancel'])) {
@@ -1498,52 +1513,53 @@ class BaseEventTypeController extends BaseModuleController
         $return = false,
         $processOutput = false
     ) {
+        if(is_string($action)){
+            if (strcasecmp($action, 'PDFPrint') == 0 || strcasecmp($action, 'saveCanvasImages') == 0) {
+                $action = 'print';
+            }
+            if ($action == 'savePDFprint') {
+                $action = 'print';
+            }
 
-        if (strcasecmp($action, 'PDFPrint') == 0 || strcasecmp($action, 'saveCanvasImages') == 0) {
-            $action = 'print';
+            if($action === 'createImage') {
+                $action = 'view';
+            }
+
+            // Get the view names from the model.
+            $view = isset($element->{$action . '_view'})
+                ? $element->{$action . '_view'}
+                : $element->getDefaultView();
+            $container_view = isset($element->{'container_' . $action . '_view'})
+                ? $element->{'container_' . $action . '_view'}
+                : $element->getDefaultContainerView();
+
+            $use_container_view = ($element->useContainerView && $container_view);
+            $view_data = array_merge(array(
+                'element' => $element,
+                'data' => $data,
+                'form' => $form,
+                'container_view' => $container_view,
+            ), $view_data);
+
+            // Render the view.
+            ($use_container_view) && $this->beginContent($container_view, $view_data);
+            if ($element->widgetClass) {
+                // only wrap the element in a widget if it's not already in one
+                $widget = $element->widget ?:
+                    $this->createWidget($element->widgetClass,
+                        array(
+                            'patient' => $this->patient,
+                            'element' => $view_data['element'],
+                            'data' => $view_data['data'],
+                            'mode' => $this->getElementWidgetMode($action),
+                        ));
+                $widget->form = $view_data['form'];
+                $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
+            } else {
+                $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
+            }
+            ($use_container_view) && $this->endContent();
         }
-        if ($action == 'savePDFprint') {
-            $action = 'print';
-        }
-
-        if($action === 'createImage') {
-            $action = 'view';
-        }
-
-        // Get the view names from the model.
-        $view = isset($element->{$action . '_view'})
-            ? $element->{$action . '_view'}
-            : $element->getDefaultView();
-        $container_view = isset($element->{'container_' . $action . '_view'})
-            ? $element->{'container_' . $action . '_view'}
-            : $element->getDefaultContainerView();
-
-        $use_container_view = ($element->useContainerView && $container_view);
-        $view_data = array_merge(array(
-            'element' => $element,
-            'data' => $data,
-            'form' => $form,
-            'container_view' => $container_view,
-        ), $view_data);
-
-        // Render the view.
-        ($use_container_view) && $this->beginContent($container_view, $view_data);
-        if ($element->widgetClass) {
-            // only wrap the element in a widget if it's not already in one
-            $widget = $element->widget ?:
-                $this->createWidget($element->widgetClass,
-                    array(
-                        'patient' => $this->patient,
-                        'element' => $view_data['element'],
-                        'data' => $view_data['data'],
-                        'mode' => $this->getElementWidgetMode($action),
-                    ));
-            $widget->form = $view_data['form'];
-            $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
-        } else {
-            $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
-        }
-        ($use_container_view) && $this->endContent();
     }
 
     /**
@@ -1943,6 +1959,17 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * Run this function after soft delete happened
+     *
+     * @param $event
+     * @return bool
+     */
+    public function afterSoftDelete($event)
+    {
+        return true;
+    }
+
+    /**
      * Delete the event given by $id. Performs the soft delete action if it's been confirmed by $_POST.
      *
      * @param $id
@@ -2191,34 +2218,42 @@ class BaseEventTypeController extends BaseModuleController
 
     public function actionSaveCanvasImages($id)
     {
-        if (!$event = Event::model()->findByPk($id)) {
+        $this->event = Event::model()->findByPk($id);
+        if (!$this->event) {
             throw new Exception("Event not found: $id");
         }
 
-        if (strtotime($event->last_modified_date) != @$_POST['last_modified_date']) {
+        if (strtotime($this->event->last_modified_date) != @$_POST['last_modified_date']) {
             echo 'outofdate';
 
             return;
         }
 
-        $event->lock();
+        $this->event->lock();
 
-        if (!file_exists($event->imageDirectory)) {
-            if (!@mkdir($event->imageDirectory, 0755, true)) {
+        if (!file_exists($this->event->imageDirectory)) {
+            if (!@mkdir($this->event->imageDirectory, 0755, true)) {
                 throw new Exception("Unable to create directory: $event->imageDirectory");
             }
         }
 
         if (!empty($_POST['canvas'])) {
             foreach ($_POST['canvas'] as $drawingName => $blob) {
-                if (!file_exists($event->imageDirectory . "/$drawingName.png")) {
-                    if (!@file_put_contents($event->imageDirectory . "/$drawingName.png",
-                        base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob)))) {
-                        throw new Exception("Failed to write to $event->imageDirectory/$drawingName.png: check permissions.");
+                $full_path = $this->event->imageDirectory . "/$drawingName.png";
+                if (!file_exists($full_path)) {
+                    if (false === file_put_contents(
+                            $full_path,
+                            base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob))
+                        )
+                    ){
+                        throw new Exception("Failed to write to $full_path.");
                     }
                 }
             }
         }
+
+        // Regenerate the EventImage in the background
+        EventImageManager::actionGenerateImage($this->event->id);
 
         /*
          * TODO: need to check with all events why this was here!!!
@@ -2243,6 +2278,26 @@ class BaseEventTypeController extends BaseModuleController
         */
 
         echo 'ok';
+    }
+
+    public function readInEventImageSettings(){
+        $this->event = Event::model()->findByPk($_GET['id']);
+        if (!isset($this->event) || !isset($this->event->eventType)){return;}
+
+        $event_params = array();
+        if (array_key_exists('event_specific', Yii::app()->params['lightning_viewer']))
+        {
+            $lightning_params = Yii::app()->params['lightning_viewer']['event_specific'];
+            if (array_key_exists($this->event->eventType->name, $lightning_params)){
+                $event_params = $lightning_params[$this->event->eventType->name];
+            }
+        }
+
+        if (!isset($event_params)){return;};
+
+        foreach ($event_params as $key => $value){
+            $this->{$key} = $value;
+        }
     }
 
     public function actionEventImage()
@@ -2276,27 +2331,14 @@ class BaseEventTypeController extends BaseModuleController
 
 
     /**
-     * Gets a value indicating whether this event has any extra information to display in the title
-     * This function will always return false, but can be overridden to return true
-     * iF it is, then getExtraTitleInfo() should also be overridden.
-     *
-     * @return bool
-     */
-    public function hasExtraTitleInfo()
-    {
-        return false;
-    }
-
-    /**
      * Gets the extra info to be displayed in the title of this event
-     * Should only be overridden if hasExtraTitleInfo() has also been overridden
+     * returns null if no extra info exists
      *
-     * @return string HTML to display next to the title
-     * @throws BadMethodCallException thrown if the method hasn't been overridden
+     * @return string|null HTML to display next to the title
      */
     public function getExtraTitleInfo()
     {
-        throw new BadMethodCallException('getExtraTitleInfo() should have been overridden by ' . get_class($this));
+        return null;
     }
 
     protected function updateHotlistItem(Patient $patient)
@@ -2331,18 +2373,19 @@ class BaseEventTypeController extends BaseModuleController
         // Stub an EventImage record so other threads don't try to create the same image
         $eventImage = $this->saveEventImage('GENERATING');
 
+        $this->readInEventImageSettings();
         try {
             $content = $this->getEventAsHtml();
 
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
             $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
-                array('width' => Yii::app()->params['lightning_viewer']['pdf_render_width']));
+                ['width' => Yii::app()->params['lightning_viewer']['image_width'],
+                 'viewport_width' => Yii::app()->params['lightning_viewer']['viewport_width']]);
 
             $input_path = $this->event->getImagePath('preview');
             $output_path = $this->event->getImagePath('preview', '.jpg');
             $imagick = new Imagick($input_path);
-            $this->scaleImageForThumbnail($imagick);
             $imagick->writeImage($output_path);
 
             $this->saveEventImage('CREATED', ['image_path' => $output_path]);
@@ -2366,9 +2409,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function scaleImageForThumbnail($imagick)
     {
-        $imagick->setImageCompressionQuality(Yii::app()->params['lightning_viewer']['compression_quality']);
-
-        $width = Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
+        $width = $this->image_width ?: 800;
         if ($width < $imagick->getImageWidth()) {
             $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
             $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
@@ -2500,6 +2541,16 @@ class BaseEventTypeController extends BaseModuleController
         $pdf_imagick = new Imagick();
         $pdf_imagick->readImage($pdf_path);
         $pdf_imagick->setImageFormat('png');
+        $original_width = $pdf_imagick->getImageGeometry()['width'];
+        if ($this->image_width != 0 && $original_width != $this->image_width){
+            $original_res = $pdf_imagick->getImageResolution()['x'];
+            $new_res = $original_res * ($this->image_width / $original_width);
+
+            $pdf_imagick = new Imagick();
+            $pdf_imagick->setResolution($new_res,$new_res);
+            $pdf_imagick->readImage($pdf_path);
+            $pdf_imagick->setImageCompressionQuality($this->compression_quality);
+        }
 
         $output_path = $this->getPreviewImagePath(['eye' => $eye]);
         if (!$pdf_imagick->writeImages($output_path, false)) {
@@ -2531,21 +2582,15 @@ class BaseEventTypeController extends BaseModuleController
     protected function savePdfPreviewAsEventImage($page, $eye)
     {
         $pagePreviewPath = $this->getPreviewImagePath(['page' => $page, 'eye' => $eye]);
-        Yii::log($pagePreviewPath);
         if (!file_exists($pagePreviewPath)) {
             return false;
         }
 
         $imagickPage = new Imagick();
         $imagickPage->readImage($pagePreviewPath);
-        $this->scaleImageForThumbnail($imagickPage);
 
         // Sometimes the PDf has a transparent background, which should be replaced with white
-        if ($imagickPage->getImageAlphaChannel()) {
-            $imagickPage->setImageAlphaChannel(11);
-            $imagickPage->setImageBackgroundColor('white');
-            $imagickPage->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
-        }
+        $this->whiteOutImageImagickBackground($imagickPage);
 
         $imagickPage->writeImage($pagePreviewPath);
         $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye' => $eye]);
@@ -2555,5 +2600,20 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         return true;
+    }
+
+    /**
+     * Makes transparent imagick images have a white background
+     *
+     * @param $imagick Imagick
+     * @throws Exception
+     */
+    protected function whiteOutImageImagickBackground($imagick){
+        if ($imagick->getImageAlphaChannel()) {
+            // 11 Is the alphachannel_flatten value , a hack until all machines use the same imagick version
+            $imagick->setImageAlphaChannel(defined('Imagick::ALPHACHANNEL_FLATTEN') ? Imagick::ALPHACHANNEL_FLATTEN : 11);
+            $imagick->setImageBackgroundColor('white');
+            $imagick->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
+        }
     }
 }

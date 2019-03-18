@@ -21,7 +21,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
   <tbody>
   <tr>
     <td>
-      <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_clinicalret_id'; ?>">
+      <label for="<?=\CHtml::modelName($element) . '_' . $side . '_clinicalret_id'; ?>">
           <?php echo $element->getAttributeLabel($side . '_clinicalret_id') ?>:
       </label>
     </td>
@@ -56,10 +56,10 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
               echo '<div ' . ($show_div ? ' ' : 'style="display: none;" ') . 'class="' . CHtml::modelName($element) . '_' . $side . '_clinicalret_desc" id="' . CHtml::modelName($element) . '_' . $side . '_clinicalret_desc_' . $clinical->code . '">' . $clinical->description . '</div>';
           } ?>
       </div>
-      <div id="<?php echo CHtml::modelName($element) . '_' . $side . '_all_clinicalret_desc'; ?>"
+      <div id="<?=\CHtml::modelName($element) . '_' . $side . '_all_clinicalret_desc'; ?>"
            class="grade-info-all"
            style="display: none; padding: 10px"
-           data-select-id="<?php echo CHtml::modelName($element) . '_' . $side . '_clinicalret_id'; ?>">
+           data-select-id="<?=\CHtml::modelName($element) . '_' . $side . '_clinicalret_id'; ?>">
             <?php foreach ($clinical_retinopathys as $clinical) {?>
               <div class="status-box <?= getLevelColour($clinical->class)?>">
                 <b>
@@ -75,7 +75,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
   <?php $nsc_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGrading_NSCRetinopathy::model()->activeOrPk($element->{$side . '_nscretinopathy_id'})->findAll() ?>
   <tr>
     <td>
-      <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_nscretinopathy_id'; ?>">
+      <label for="<?=\CHtml::modelName($element) . '_' . $side . '_nscretinopathy_id'; ?>">
           <?php echo $element->getAttributeLabel($side . '_nscretinopathy_id') ?>:
       </label>
     </td>
@@ -115,10 +115,10 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
               echo '<div ' . ($show_div ? ' ' : 'style="display: none;" ') . 'class="' . CHtml::modelName($element) . '_' . $side . '_nscretinopathy_desc" id="' . CHtml::modelName($element) . '_' . $side . '_nscretinopathy_desc_' . $retin->code . '">' . $retin->description . '</div>';
           } ?>
       </div>
-      <div id="<?php echo CHtml::modelName($element) . '_' . $side . '_all_retinopathy_desc'; ?>"
+      <div id="<?=\CHtml::modelName($element) . '_' . $side . '_all_retinopathy_desc'; ?>"
            class="grade-info-all"
            style="display: none; padding:10px;"
-           data-select-id="<?php echo CHtml::modelName($element) . '_' . $side . '_nscretinopathy_id'; ?>">
+           data-select-id="<?=\CHtml::modelName($element) . '_' . $side . '_nscretinopathy_id'; ?>">
             <?php foreach ($nsc_retinopathys as $retin) { ?>
               <div class="status-box <?= getLevelColour($retin->class) ?>">
                 <b>
@@ -133,7 +133,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
   </tr>
   <tr>
     <td>
-      <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_nscretinopathy_photocoagulation'; ?>">
+      <label for="<?=\CHtml::modelName($element) . '_' . $side . '_nscretinopathy_photocoagulation'; ?>">
           <?php echo $element->getAttributelabel($side . '_nscretinopathy_photocoagulation') ?>:
       </label>
     </td>
@@ -146,7 +146,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
   </tr>
   <tr>
     <td>
-      <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_clinicalmac_id'; ?>">
+      <label for="<?=\CHtml::modelName($element) . '_' . $side . '_clinicalmac_id'; ?>">
           <?php echo $element->getAttributelabel($side . '_clinicalmac_id') ?>:
       </label>
     </td>
@@ -178,7 +178,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
       ?>
 		</div>
 
-		<div id="<?php echo CHtml::modelName($element) . '_' . $side . '_all_clinicalmac_desc'; ?>" class="grade-info-all" data-select-id="<?php echo CHtml::modelName($element) . '_' . $side . '_clinicalmac_id'; ?>">
+		<div id="<?=\CHtml::modelName($element) . '_' . $side . '_all_clinicalmac_desc'; ?>" class="grade-info-all" data-select-id="<?=\CHtml::modelName($element) . '_' . $side . '_clinicalmac_id'; ?>">
 			<dl>
 				<?php foreach ($clinical_maculopathys as $clinical) {
           ?>
@@ -194,7 +194,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
   <?php $nsc_maculopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGrading_NSCMaculopathy::model()->activeOrPk($element->{$side . '_nscmaculopathy_id'})->findAll(); ?>
   <tr>
     <td>
-      <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_id'; ?>">
+      <label for="<?=\CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_id'; ?>">
           <?php echo $element->getAttributelabel($side . '_nscmaculopathy_id') ?>:
       </label>
     </td>
@@ -237,10 +237,10 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
           ?>
       </div>
       <!-- div containing the full list of descriptions for nsc maculopathy -->
-      <div id="<?php echo CHtml::modelName($element) . '_' . $side . '_all_maculopathy_desc'; ?>"
+      <div id="<?=\CHtml::modelName($element) . '_' . $side . '_all_maculopathy_desc'; ?>"
            class="grade-info-all"
            style="display: none; padding: 10px;"
-           data-select-id="<?php echo CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_id'; ?>">
+           data-select-id="<?=\CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_id'; ?>">
         <dl>
             <?php foreach ($nsc_maculopathys as $macu) { ?>
               <div class="status-box <?= getLevelColour($macu->class) ?>">
@@ -258,7 +258,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
   </tr>
   <tr>
     <td>
-      <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_photocoagulation'; ?>">
+      <label for="<?=\CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_photocoagulation'; ?>">
           <?php echo $element->getAttributelabel($side . '_nscmaculopathy_photocoagulation') ?>:
       </label>
     </td>
@@ -268,5 +268,3 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
   </tr>
   </tbody>
 </table>
-
-

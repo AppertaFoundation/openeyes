@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -36,37 +36,7 @@
                   <span id="fao-field">
                     <span
                         id="fao_user_display"><?php echo $element->for_the_attention_of_user ? $element->for_the_attention_of_user->getFullnameAndTitle() : ''; ?></span>
-                      <?php
-                      $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                          'name' => 'find_user',
-                          'id' => 'find-user',
-                          'value' => '',
-                          'source' => "js:function(request, response) {
-                             $.ajax({
-                                'url': '" . Yii::app()->createUrl('/user/autocomplete') . "',
-                                 'type':'GET',
-                                 'data':{'term': request.term},
-                                  'success':function(data) {
-                                   data = $.parseJSON(data);
-                                    response(data);
-                                   }
-                                  });
-                              }",
-                          'options' => array(
-                              'minLength' => '3',
-                              'select' => "js:function(event, ui) {
-                                 $('#fao_user_display').html(ui.item.label);
-                                 $('#OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(ui.item.id);
-                                  $('#find-user').val('');
-                                     return false;
-                                  }",
-                          ),
-                          'htmlOptions' => array(
-                              'placeholder' => 'search by name or username',
-                              'class' => 'cols-12',
-                          ),
-                      ));
-                      ?>
+                      <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                     </span>
                 </div>
               <?php } else { ?>
@@ -84,7 +54,7 @@
           <td>
               <?php echo $form->dropDownList($element, 'message_type_id',
                   CHtml::listData(OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')),
-                      'id', 'name'), array('empty' => '- Please select -', 'nolabel' => true), false,
+                      'id', 'name'), array('empty' => 'Select', 'nolabel' => true), false,
                   array('label' => 0, 'field' => 12)) ?>
 
           </td>
@@ -115,7 +85,7 @@
           <td>
               <?php echo $form->textArea($element, 'message_text',
                   array('rows' => 4, 'cols' => 500, 'no_label' => true), false,
-                  array('placeholder' => 'Your Message...'), array('label' => 2, 'field' => 12)) ?>
+                  array('placeholder' => 'Your Message...', 'class' => 'autosize'), array('label' => 2, 'field' => 12)) ?>
           </td>
         </tr>
         </tbody>
@@ -124,3 +94,15 @@
     </div>
   </div>
 </div>
+<script>
+	OpenEyes.UI.AutoCompleteSearch.init({
+		input: $('#oe-autocompletesearch'),
+		url: '/user/autocomplete',
+		onSelect: function () {
+			let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+			$('#fao_user_display').html(AutoCompleteResponse.label);
+			$('#OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(AutoCompleteResponse.id);
+			return false;
+		}
+	});
+</script>

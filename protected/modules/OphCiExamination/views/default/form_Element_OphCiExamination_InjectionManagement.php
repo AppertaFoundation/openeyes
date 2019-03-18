@@ -17,7 +17,7 @@
  */
 ?>
 
-<div class="element-fields flex-layout full-width " id="div_<?php echo CHtml::modelName($element) ?>_injection">
+<div class="element-fields flex-layout full-width " id="div_<?=\CHtml::modelName($element) ?>_injection">
   <div class="data-group">
     <div class="cols-3 column">
       <label>
@@ -29,7 +29,7 @@
         $options = \OEModule\OphCiExamination\models\OphCiExamination_Management_Status::model()
             ->activeOrPk($element->injection_status_id)
             ->findAll();
-        $html_options = array('empty' => '- Please select -', 'options' => array());
+        $html_options = array('empty' => 'Select', 'options' => array());
         foreach ($options as $opt) {
             $html_options['options'][(string)$opt->id] = array(
                 'data-deferred' => $opt->deferred,
@@ -48,7 +48,7 @@
 </div>
 
 <div class="element-fields flex-layout full-width "
-     id="div_<?=CHtml::modelName($element) ?>_injection_deferralreason"
+     id="div_<?=\CHtml::modelName($element) ?>_injection_deferralreason"
      style="<?=(!($element->injection_status && $element->injection_status->deferred))? "display: none;":''?>"
 >
   <div class="data-group">
@@ -60,7 +60,7 @@
     <div class="cols-4 column ">
         <?php
         $options = \OEModule\OphCiExamination\models\OphCiExamination_Management_DeferralReason::model()->activeOrPk($element->injection_deferralreason_id)->findAll();
-        $html_options = array('empty' => '- Please select -', 'options' => array());
+        $html_options = array('empty' => 'Select', 'options' => array());
         foreach ($options as $opt) {
             $html_options['options'][(string)$opt->id] = array('data-other' => $opt->other);
         }
@@ -70,7 +70,7 @@
 </div>
 
 <div class="element-fields flex-layout full-width "
-     id="div_<?php echo CHtml::modelName($element) ?>_injection_deferralreason_other"<?php if (!($element->injection_deferralreason && $element->injection_deferralreason->other)) {
+     id="div_<?=\CHtml::modelName($element) ?>_injection_deferralreason_other"<?php if (!($element->injection_deferralreason && $element->injection_deferralreason->other)) {
     ?> style="display: none;"<?php
 } ?>>
   <div class="data-group">

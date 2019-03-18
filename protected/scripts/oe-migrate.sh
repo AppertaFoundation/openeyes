@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 ## NOTE: This script assumes it is in protected/scripts. If you move it then relative paths will not work!
 

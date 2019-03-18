@@ -16,53 +16,117 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php echo $form->dropdownlist($model, 'drug_id', CHtml::listData($model->getTreatmentDrugs(), 'id', 'name'), array('empty' => '- Please select -', 'class' => 'clearfix'))?>
-<?php echo $form->dropdownlist($model, 'decisiontree_id', 'OphCoTherapyapplication_DecisionTree', array('empty' => '- Please select -'))?>
-<?php echo $form->radioBoolean($model, 'contraindications_required', array(1 => 'Yes', 0 => 'No'), array('field' => 9))?>
-<?php echo $form->textField($model, 'template_code', array('autocomplete' => Yii::app()->params['html_autocomplete']), array(), array('field' => 5))?>
-<div class="cols-10 large-offset-2 column">
-  <span class="field-info">The template code is used to determine what form is attached to application email. Leave blank for the default behaviour.</span>
-</div>
 
-<hr />
+<tr>
+    <td><?= $model->getAttributeLabel('drug_id'); ?></td>
+    <td><?= CHtml::activeDropDownList($model, 'drug_id', CHtml::listData($model->getTreatmentDrugs(), 'id', 'name'), [
+            'empty' => 'Select',
+            'class' => 'cols-full'
+        ]) ?>
+    </td>
+</tr>
+<tr>
+    <td><?= $model->getAttributeLabel('decisiontree_id'); ?></td>
+    <td><?= CHtml::activeDropDownList($model, 'contraindications_required', [1 => 'Yes', 0 => 'No'], [
+            'empty' => 'Select',
+            'class' => 'cols-full'
+        ]) ?>
+    </td>
+</tr>
+<tr>
+    <td><?=$model->getAttributeLabel('contraindications_required'); ?></td>
+    <td>
+        <?=\CHtml::activeRadioButtonList($model, 'contraindications_required', [1 => 'Yes', 0 => 'No'], ['separator' => ' ']); ?>
+    </td>
+</tr>
+<tr>
+    <td><?=$model->getAttributeLabel('template_code'); ?></td>
+    <td>
 
-<?php echo $form->textField($model, 'intervention_name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-<?php echo $form->textArea($model, 'dose_and_frequency', array(), false, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-<?php echo $form->textField($model, 'administration_route', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+        <div class="alert-box info">
+            <b>Info</b> The template code is used to determine what form is attached to application email. Leave blank for the default behaviour.
+        </div>
+        <?=\CHtml::activeTextField($model, 'template_code', [
+            'class' => 'cols-full',
+            'autocomplete' => Yii::app()->params['html_autocomplete']
+        ])?></td>
+</tr>
+<tr>
+    <td><?=$model->getAttributeLabel('intervention_name'); ?></td>
+    <td>
+        <?=\CHtml::activeTextField($model, 'intervention_name', [
+            'class' => 'cols-full',
+            'autocomplete' => Yii::app()->params['html_autocomplete']
+        ])?></td>
+</tr>
+<tr>
+    <td><?=$model->getAttributeLabel('dose_and_frequency'); ?></td>
+    <td>
+        <?=\CHtml::activeTextArea($model, 'dose_and_frequency', [
+            'class' => 'cols-full',
+            'autocomplete' => Yii::app()->params['html_autocomplete']
+        ])?>
+    </td>
+</tr>
+<tr>
+    <td><?=$model->getAttributeLabel('administration_route'); ?></td>
+    <td>
+        <?=\CHtml::activeTextField($model, 'administration_route', [
+            'class' => 'cols-full',
+            'autocomplete' => Yii::app()->params['html_autocomplete']
+        ])?>
+    </td>
+</tr>
+<tr>
+    <td><?=$model->getAttributeLabel('cost_type_id'); ?></td>
+    <td>
 
-<div class="data-group">
-	<div class="cols-2 column">
-		<label for="<?php echo get_class($model).'_cost';?>">
-			<?php echo $model->getAttributeLabel('cost_type_id')?>:
-		</label>
-	</div>
-	<div class="cols-2 column">
-		<?php echo $form->textField($model, 'cost',  array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true))?>
-	</div>
-	<div class="cols-1 column">
-		<label for="<?php echo get_class($model).'_cost_type_id';?>">per</label>
-	</div>
-	<div class="cols-2 column end">
-		<?php echo $form->dropDownList($model, 'cost_type_id', 'OphCoTherapyapplication_Treatment_CostType', array('nowrapper' => true))?>
-	</div>
-</div>
+        <div class="flex-layout cols-12">
+            <?=\CHtml::activeTextField($model, 'cost', [
+                'class' => 'cols-4',
+                'autocomplete' => Yii::app()->params['html_autocomplete']
+            ])?>
+            <div class="cols-2">per</div>
 
-<fieldset class="data-group">
-	<legend class="cols-2 column">
-		<?php echo $model->getAttributeLabel('monitoring_frequency')?>:
-	</legend>
-	<div class="cols-1 column">
-		<label for="<?php echo get_class($model).'_monitoring_frequency';?>">
-			Every
-		</label>
-	</div>
-	<div class="cols-1 column">
-		<?php echo $form->textField($model, 'monitoring_frequency',  array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true))?>
-	</div>
-	<div class="cols-3 column end">
-		<?php echo $form->dropDownList($model, 'monitoring_frequency_period_id', CHtml::listData(Period::model()->findAll(), 'id', 'name'), array('nowrapper' => true))?>
-	</div>
-</fieldset>
+            <?=\CHtml::activeDropDownList($model, 'cost_type_id',
+                CHtml::listData(OphCoTherapyapplication_Treatment_CostType::model()->findAll(), 'id', 'name'),[
+                        'class' => 'cols-4'
+                ]);?>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td><?=$model->getAttributeLabel('monitoring_frequency');?></td>
 
-<?php echo $form->textArea($model, 'duration')?>
-<?php echo $form->textArea($model, 'toxicity')?>
+    <td>
+        <div class="flex-layout cols-12">
+            <div class="cols-2">Every</div>
+            <?=\CHtml::activeTextField($model, 'monitoring_frequency', [
+                'class' => 'cols-2',
+                'autocomplete' => Yii::app()->params['html_autocomplete']
+            ])?>
+            <div class="cols-1"></div>
+            <?=\CHtml::activeDropDownList($model, 'monitoring_frequency_period_id',
+                CHtml::listData(Period::model()->findAll(), 'id', 'name'),[
+                    'class' => 'cols-8'
+                ]);?>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td><?=$model->getAttributeLabel('duration');?></td>
+    <td><?=\CHtml::activeTextArea($model, 'duration', [
+            'class' => 'cols-full',
+            'autocomplete' => Yii::app()->params['html_autocomplete']
+        ])?>
+    </td>
+</tr>
+<tr>
+    <td><?=$model->getAttributeLabel('toxicity');?></td>
+    <td><?=\CHtml::activeTextArea($model, 'toxicity', [
+            'class' => 'cols-full',
+            'autocomplete' => Yii::app()->params['html_autocomplete']
+        ])?>
+    </td>
+</tr>
+

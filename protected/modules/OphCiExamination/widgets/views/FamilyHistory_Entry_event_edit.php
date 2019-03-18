@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -41,7 +41,7 @@ if (!isset($values)) {
     <input type="hidden" name="<?= $field_prefix ?>[relative_id]" value="<?= $values['relative_id'] ?>"/>
       <?= $values['relative_display'] ?>
     <div class="other_relative_wrapper" style="display: none">
-        <?php echo CHtml::textField($field_prefix . '[other_relative]', ( $values['other_condition'] ? $values['other_relative'] : ''),
+        <?=\CHtml::textField($field_prefix . '[other_relative]', ( $values['other_condition'] ? $values['other_relative'] : ''),
             array('class' => 'other_relative_text other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
     </div>
   </td>
@@ -53,7 +53,7 @@ if (!isset($values)) {
     <input type="hidden" name="<?= $field_prefix ?>[condition_id]" value="<?= $values['condition_id'] ?>"/>
       <?= $values['condition_display'] ?>
     <div class="other_condition_wrapper" style="display: none">
-        <?php echo CHtml::textField($field_prefix . '[other_condition]',
+        <?=\CHtml::textField($field_prefix . '[other_condition]',
             ( $values['other_condition'] ? $values['other_condition']: ''), array('class'=>'other_condition_text', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
     </div>
   </td>
@@ -65,7 +65,7 @@ if (!isset($values)) {
 						id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
 						style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
 						data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
-            <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'],
+            <?=\CHtml::textField($field_prefix . '[comments]', $values['comments'],
 							array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
 				<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
 				</span>

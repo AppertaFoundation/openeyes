@@ -20,11 +20,13 @@ class AdminController extends ModuleAdminController
     public $sequences_items_per_page = 20;
     public $sessions_items_per_page = 20;
 
+    public $group = 'Operation booking';
+
     public function actionViewERODRules()
     {
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_EROD_Rule'));
 
-        $this->render('erodrules');
+        $this->render('/admin/erod_rule/index');
     }
 
     public function actionEditERODRule($id)
@@ -98,7 +100,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_EROD_Rule'));
 
-        $this->render('/admin/editerodrule', array(
+        $this->render('/admin/erod_rule/edit', array(
             'erod' => $erod,
             'errors' => $errors,
         ));
@@ -154,7 +156,7 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/editerodrule', array(
+        $this->render('/admin/erod_rule/edit', array(
             'erod' => $erod,
             'errors' => $errors,
         ));
@@ -199,7 +201,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Letter_Contact_Rule'));
 
-        $this->render('lettercontactrules', array(
+        $this->render('/admin/letter_contact_rule/index', array(
             'data' => OphTrOperationbooking_Letter_Contact_Rule::model()->findAllAsTree(),
         ));
     }
@@ -215,11 +217,9 @@ class AdminController extends ModuleAdminController
         $criteria->addCondition('parent_rule_id is null');
         $criteria->order = 'rule_order asc';
 
-        $rule_ids = array();
-
         foreach (OphTrOperationbooking_Letter_Contact_Rule::model()->findAll($criteria) as $rule) {
-            if ($rule->applies($site_id, $subspecialty_id, $theatre_id, $firm_id)) {
-                $final = $rule->parse($site_id, $subspecialty_id, $theatre_id, $firm_id);
+            if ($rule->applies($site_id, $subspecialty_id, $theatre_id, $firm_id, false)) {
+                $final = $rule->parse($site_id, $subspecialty_id, $theatre_id, $firm_id, false);
                 echo json_encode(array($final->id));
 
                 return;
@@ -252,7 +252,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Letter_Contact_Rule'));
 
-        $this->render('editlettercontactrule', array(
+        $this->render('/admin/letter_contact_rule/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -279,7 +279,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'LetterContactRule';
 
-        $this->render('deletelettercontactrule', array(
+        $this->render('/admin/letter_contact_rule/delete', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -308,7 +308,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'LetterContactRule';
 
-        $this->render('editlettercontactrule', array(
+        $this->render('/admin/letter_contact_rule/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -320,7 +320,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Admission_Letter_Warning_Rule'));
 
-        $this->render('letterwarningrules', array(
+        $this->render('/admin/letter_warning_rules/index', array(
             'data' => OphTrOperationbooking_Admission_Letter_Warning_Rule::model()->findAllAsTree(),
         ));
     }
@@ -376,7 +376,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'LetterWarningRule';
 
-        $this->render('editletterwarningrule', array(
+        $this->render('/admin/letter_warning_rules/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -405,7 +405,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'LetterWarningRule';
 
-        $this->render('editletterwarningrule', array(
+        $this->render('/admin/letter_warning_rules/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -432,7 +432,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'LetterWarningRule';
 
-        $this->render('deleteletterwarningrule', array(
+        $this->render('/admin/letter_warning_rules/delete', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -444,7 +444,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
 
-        $this->render('waitinglistcontactrules', array(
+        $this->render('/admin/waiting_list_contact_rules/index', array(
             'data' => OphTrOperationbooking_Waiting_List_Contact_Rule::model()->findAllAsTree(),
         ));
     }
@@ -495,7 +495,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, false, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
 
-        $this->render('editwaitinglistcontactrule', array(
+        $this->render('/admin/waiting_list_contact_rules/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -524,7 +524,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
 
-        $this->render('editwaitinglistcontactrule', array(
+        $this->render('/admin/waiting_list_contact_rules/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -551,7 +551,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'WaitingListContactRule';
 
-        $this->render('deletewaitinglistcontactrule', array(
+        $this->render('/admin/waiting_list_contact_rules/delete', array(
             'rule' => $rule,
             'errors' => $errors,
             'data' => OphTrOperationbooking_Waiting_List_Contact_Rule::model()->findAllAsTree($rule, true, 'textPlain'),
@@ -564,7 +564,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Name_Rule'));
 
-        $this->render('operationnamerules');
+        $this->render('/admin/name_rule/index');
     }
 
     public function actionAddOperationNameRule()
@@ -584,7 +584,7 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/editoperationnamerule', array(
+        $this->render('/admin/name_rule/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -611,7 +611,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Name_Rule'));
 
-        $this->render('/admin/editoperationnamerule', array(
+        $this->render('/admin/name_rule/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -1398,7 +1398,7 @@ class AdminController extends ModuleAdminController
     {
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Theatre'));
 
-        $this->render('theatres');
+        $this->render('/admin/theatre/index');
     }
 
     public function actionAddTheatre()
@@ -1417,7 +1417,7 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/edittheatre', array(
+        $this->render('/admin/theatre/edit', array(
             'theatre' => $theatre,
             'errors' => $errors,
         ));
@@ -1444,7 +1444,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Theatre'));
 
-        $this->render('/admin/edittheatre', array(
+        $this->render('/admin/theatre/edit', array(
             'theatre' => $theatre,
             'errors' => $errors,
         ));
@@ -1516,35 +1516,43 @@ class AdminController extends ModuleAdminController
     {
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Ward'));
 
-        $this->render('wards');
+        $this->render(
+            '/admin/ward/index',
+            [
+                'wards' => OphTrOperationbooking_Operation_Ward::model()->findAll(),
+            ]);
     }
 
     public function actionEditWard($id)
     {
+
         if (!$ward = OphTrOperationbooking_Operation_Ward::model()->findByPk($id)) {
             throw new Exception("Ward not found: $id");
         }
 
-        $errors = array();
+        $errors = [];
 
         if (!empty($_POST)) {
-            $ward->attributes = $_POST['OphTrOperationbooking_Operation_Ward'];
+            $attributes = \Yii::app()->request->getPost('OphTrOperationbooking_Operation_Ward');
+            $ward->attributes = $attributes;
 
             $ward->restriction = 0;
 
-            if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_male']) {
+            $ward->active = isset($attributes['active']) ? $attributes['active'] : null;
+
+            if (isset($attributes['restriction_male'])) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_MALE;
             }
-            if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_female']) {
+            if (isset($attributes['restriction_female'])) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_FEMALE;
             }
-            if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_child']) {
+            if (isset($attributes['restriction_child'])) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_CHILD;
             }
-            if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_adult']) {
+            if (isset($attributes['restriction_adult'])) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_ADULT;
             }
-            if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_observation']) {
+            if (isset($attributes['restriction_observation'])) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_OBSERVATION;
             }
             if (!$ward->save()) {
@@ -1558,10 +1566,10 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Ward'));
 
-        $this->render('/admin/editward', array(
+        $this->render('/admin/ward/edit', [
             'ward' => $ward,
             'errors' => $errors,
-        ));
+        ]);
     }
 
     public function actionAddWard()
@@ -1582,7 +1590,7 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/editward', array(
+        $this->render('/admin/ward/edit', array(
             'ward' => $ward,
             'errors' => $errors,
         ));
@@ -1626,12 +1634,13 @@ class AdminController extends ModuleAdminController
                     'empty' => '- Edit rights -',
                 ),
             ),
+            'div_wrapper_class' => 'cols-5',
         ));
     }
 
     public function actionScheduleOptions()
     {
-        $this->genericAdmin('Operation scheduling options', 'OphTrOperationbooking_ScheduleOperation_Options');
+        $this->genericAdmin('Operation scheduling options', 'OphTrOperationbooking_ScheduleOperation_Options', ['div_wrapper_class' => 'cols-5']);
     }
 
     /**
@@ -1641,7 +1650,7 @@ class AdminController extends ModuleAdminController
     {
         Audit::add('admin', 'list', null, false, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason'));
 
-        $this->render('patientunavailablereasons');
+        $this->render('/admin/patient_unavailable_reasons/index');
     }
 
     /**
@@ -1673,7 +1682,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, false, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason'));
 
-        $this->render('/admin/editpatientunavailablereason', array(
+        $this->render('/admin/patient_unavailable_reasons/edit', array(
             'reason' => $reason,
             'errors' => $errors,
         ));
@@ -1698,10 +1707,10 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/editpatientunavailablereason', array(
-                    'reason' => $reason,
-                    'errors' => $errors,
-                ));
+        $this->render('/admin/patient_unavailable_reasons/edit', array(
+            'reason' => $reason,
+            'errors' => $errors,
+        ));
     }
 
     /**

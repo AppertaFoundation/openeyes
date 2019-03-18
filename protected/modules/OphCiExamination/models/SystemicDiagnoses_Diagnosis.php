@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -41,6 +41,17 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
 
     protected static $sd_attribute_ignore = array('id', 'element_id', 'secondary_diagnosis_id', 'has_disorder');
     protected static $sd_attribute_map = array('side_id' => 'eye_id');
+
+    public function behaviors()
+    {
+        return array(
+            'OeDateFormat' => array(
+                'class' => 'application.behaviors.OeDateFormat',
+                'date_columns' => [],
+                'fuzzy_date_field' => 'date',
+            ),
+        );
+    }
 
     /**
      * Returns the static model of the specified AR class.
@@ -244,9 +255,8 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
         }
         $sd->save();
         $this->secondary_diagnosis_id = $sd->id;
-        $this->save();
+        $this->save(false);
         return $sd;
-
     }
 
     /**

@@ -16,10 +16,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Edit setting</h2>
-	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
-	<?php
+<div class="cols-5">
+    <div class="row divider">
+        <h2>Edit setting</h2>
+    </div>
+
+    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'whiteboard_settingsform',
         'enableAjaxValidation' => false,
@@ -28,23 +32,29 @@
             'label' => 2,
             'field' => 5,
         ),
-    ))?>
-        <?php if ($metadata->key == 'city_road_satellite_view') { ?>
-          <div class="cols-12 column">
-            <div class="alert-box with-icon warning">Removes the 2 check-boxes from Examination->Clinical Management->Cataract Surgical Management named "At City Road" and "At Satellite"</div>
-          </div>
-        <?php } ?>
+    )) ?>
 
-		<div class="data-group">
-			<div class="cols-3 column">
-				<label for="<?php echo $metadata->key?>">
-					<?php echo $metadata->name?>
-				</label>
-			</div>
-			<div class="cols-3 column end">
-				<?php $this->renderPartial('//admin/_admin_setting_'.strtolower(str_replace(' ', '_', $metadata->field_type->name)), array('metadata' => $metadata))?>
-			</div>
-		</div>
-		<?php echo $form->formActions(['cancel-uri' => '/OphTrOperationbooking/oeadmin/WhiteboardSettings/settings'])?>
-	<?php $this->endWidget()?>
+    <table class="standard cols-full" id="finding-table">
+        <colgroup>
+            <col class="cols-8">
+            <col class="cols-4">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td><?php echo $metadata->name ?></td>
+            <td>
+                <?php $this->renderPartial('//admin/_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)), array('metadata' => $metadata)) ?>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2">
+                <?php echo $form->formActions(['cancel-uri' => '/OphTrOperationbooking/oeadmin/WhiteboardSettings/settings']) ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <?php $this->endWidget() ?>
 </div>

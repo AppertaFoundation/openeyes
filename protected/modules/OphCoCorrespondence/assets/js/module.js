@@ -36,7 +36,7 @@ function updateCorrespondence(macro_id)
     var obj = $(this);
 
     if ( macro_id != '') {
-
+        $('.autosize').autosize();
         $.ajax({
             'type': 'GET',
             'dataType': 'json',
@@ -723,13 +723,9 @@ $(document).ready(function() {
 		id += 1;
 
 		var html = [
-			'<div class="data-group collapse in enclosureItem">',
-			'		<div class="cols-8 column">',
-			'			<input type="text" value="" autocomplete="' + window.OE_html_complete + '" name="EnclosureItems[enclosure'+id+']">',
-			'		</div>',
-			'		<div class="cols-4 column end">',
-			'			<div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>',
-			'		</div>',
+			'<div class="data-group collapse in enclosureItem flex-layout">',
+			'			<input type="text" class="cols-full" value="" autocomplete="' + window.OE_html_complete + '" name="EnclosureItems[enclosure'+id+']">',
+			'			<i class="oe-i trash removeEnclosure"></i>',
 			'	</div>'
 		].join('');
 
@@ -737,7 +733,7 @@ $(document).ready(function() {
 		$('input[name="EnclosureItems[enclosure'+id+']"]').select().focus();
 	});
 
-	$('a.removeEnclosure').die('click').live('click',function(e) {
+	$('i.removeEnclosure').die('click').live('click',function(e) {
 		$(this).closest('.enclosureItem').remove();
 		if (!$('#enclosureItems').children().length) {
 			$('#enclosureItems').hide();
@@ -802,48 +798,10 @@ $(document).ready(function() {
         docman.setDeliveryMethods(0);
 	})
 
-	$('#attachments_content_container').on('click', 'button.remove', function(e) {
+	$('#attachments_content_container').on('click', 'i.trash', function(e) {
 		e.preventDefault();
         $(this).closest('tr').remove();
-
-        var table = $('#correspondence_attachments_table');
-        var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
-        $last_row = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
-        if(rows.length == 0){
-            $last_row.attr('data-id', 0);
-		}
 	});
-
-	$('#attachments_content_container').on('change', 'select#attachment_events', function(e){
-        disableButtons();
-
-        $select = $(this);
-        if($select.val() > 0){
-            $.ajax({
-                'type': 'POST',
-                'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
-                'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: $select.val() , 'patient_id': OE_patient_id},
-                'success': function(response) {
-                    if(response.success == 1){
-                    	$last_row = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
-
-                    	$content = $(response.content);
-                        $last_row.before($content);
-
-                        $data_id = parseInt($last_row.attr("data-id"));
-                        $content.attr('data-id', $data_id);
-                        $content.find('.attachments_event_id').attr('name', 'attachments_event_id[' + $data_id+ ']');
-                        $content.find('.attachments_display_title').attr('name', 'attachments_display_title[' + $data_id+ ']');
-
-                        $last_row.attr('data-id', $data_id + 1);
-
-                        $select.val('');
-                        enableButtons();
-                    }
-                }
-            });
-        }
-    });
 });
 
 function savePDFprint( module , event_id , $content, $data_id, title)
@@ -874,7 +832,7 @@ function savePDFprint( module , event_id , $content, $data_id, title)
 var checkAttachmentFileExist = function( index ) {
 
     var table = $('#correspondence_attachments_table');
-    var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
+    var rows = table.find('tbody tr');
 
     if (rows.length == index) {
         return 1;
@@ -989,4 +947,32 @@ function OphCoCorrespondence_do_print(all) {
       enableButtons();
     }
   });
+}
+
+function OphCoCorrespondence_addAttachments(selectedItems){
+	if(selectedItems.length) {
+		disableButtons();
+		for (let key in selectedItems) {
+			$.ajax({
+				'type': 'POST',
+				'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
+				'data': { 'YII_CSRF_TOKEN': YII_CSRF_TOKEN, id: selectedItems[key].id, 'patient_id': OE_patient_id},
+				'success': function (response) {
+					if (response.success == 1) {
+						let $table = $('#correspondence_attachments_table').find('tbody');
+
+						let $data_id = parseInt($table.children().length);
+						let $content = $(response.content);
+
+						$table.append($content);
+						$content.attr('data-id', $data_id);
+						$content.find('.attachments_event_id').attr('name', 'attachments_event_id[' + $data_id + ']');
+						$content.find('.attachments_display_title').attr('name', 'attachments_display_title[' + $data_id + ']');
+
+						enableButtons();
+					}
+				}
+			});
+		}
+	}
 }

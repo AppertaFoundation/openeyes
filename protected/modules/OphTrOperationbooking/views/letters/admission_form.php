@@ -45,7 +45,7 @@ $logoHelper = new LogoHelper();
 
 		<tr>
 			<th>
-				NHS Number
+                <?php echo Yii::app()->params['nhs_num_label']?> Number
 			</th>
 			<td>
 				<?php echo $patient->nhsnum?>
@@ -62,6 +62,7 @@ $logoHelper = new LogoHelper();
 			<th>DOB</th>
 			<td><?php echo $patient->NHSDate('dob')?></td>
 		</tr>
+        <?php if (isset($contact_details) && $contact_details) : ?>
 		<tr>
 			<th>
 				Person collecting:
@@ -76,6 +77,7 @@ $logoHelper = new LogoHelper();
 				<?php echo $contact_details->patient_booking_contact_number; ?>
 			</td>
 		</tr>
+        <?php endif; ?>
 
 	</table>
 
@@ -91,9 +93,9 @@ $logoHelper = new LogoHelper();
 			</th>
 			<td>
 				<?php if ($emergencyList) {?>
-					Emergency List (<?php echo CHtml::encode($firm->consultantName)?>)
+					Emergency List (<?=\CHtml::encode($firm->consultantName)?>)
 				<?php } else {?>
-					<?php echo CHtml::encode($firm->consultantName)?>
+					<?=\CHtml::encode($firm->consultantName)?>
 				<?php }?>
 			</td>
 			<th>
@@ -106,14 +108,14 @@ $logoHelper = new LogoHelper();
 
 		<tr>
 			<th>Service:</th>
-			<td><?php echo CHtml::encode($firm->serviceSubspecialtyAssignment->service->name) ?></td>
+			<td><?=\CHtml::encode($firm->serviceSubspecialtyAssignment->service->name) ?></td>
 			<th>Patient Telephone:</th>
-			<td><?php echo CHtml::encode($patient->primary_phone) ?></td>
+			<td><?=\CHtml::encode($patient->primary_phone) ?></td>
 		</tr>
 
 		<tr>
 			<th>Site:</th>
-			<td><?php echo CHtml::encode($site->name)?></td>
+			<td><?=\CHtml::encode($site->name)?></td>
 			<?php if ($operation->booking) {?>
 				<th>Person organising operation:</th>
 				<td><?php echo $operation->booking->user->getFullName()?></td>
@@ -146,7 +148,7 @@ $logoHelper = new LogoHelper();
                 ?>
 			</td>
 			<th>Total theatre time (mins):</th>
-			<td><?php echo CHtml::encode($operation->total_duration)?></td>
+			<td><?=\CHtml::encode($operation->total_duration)?></td>
 		</tr>
 
 		<tr>
@@ -158,7 +160,7 @@ $logoHelper = new LogoHelper();
 
 		<tr>
 			<th>Intended procedure(s):</th>
-			<td><?php echo CHtml::encode($operation->proceduresCommaSeparated)?></td>
+			<td><?=\CHtml::encode($operation->proceduresCommaSeparated)?></td>
 			<?php if ($operation->booking) {?>
 				<th>Operation date:</th>
 				<td><?php echo $operation->booking->session->NHSDate('date')?></td>

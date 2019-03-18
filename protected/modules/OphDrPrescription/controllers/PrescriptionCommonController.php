@@ -25,6 +25,7 @@ class PrescriptionCommonController extends DefaultController
         'itemFormAdmin' => self::ACTION_TYPE_FORM,
         'saveDrugSetAdmin' => self::ACTION_TYPE_FORM,
         'getDispenseLocation' => self::ACTION_TYPE_FORM,
+        'getSetDrugs' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -45,6 +46,22 @@ class PrescriptionCommonController extends DefaultController
             $this->renderPrescriptionItem($key, $drug_set_item);
             ++$key;
         }
+    }
+
+    public function actionGetSetDrugs($set_id)
+    {
+        $drug_set_items = DrugSetItem::model()->findAllByAttributes(array('drug_set_id' => $set_id));
+        $drugs = [];
+        foreach ($drug_set_items as $drug_set_item) {
+            $drug = $drug_set_item->drug;
+            $drugs[] = [
+                'label' => $drug->name,
+                'allergies' => array_map(function ($allergy) {
+                    return $allergy->id;
+                }, $drug->allergies),
+            ];
+        }
+        echo CJSON::encode($drugs);
     }
 
     /**

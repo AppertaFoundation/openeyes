@@ -23,7 +23,7 @@
       <?php $outcomes = $this->getOutcomeOptions();
       echo CHtml::dropDownList($this->form_name . '[outcome]', @$this->form_data[$this->form_name]['outcome'],
           $outcomes['list_data'],
-          array('empty' => '- Please select -', 'options' => $outcomes['options'], 'class' => 'outcome-select')); ?>
+          array('empty' => 'Select', 'options' => $outcomes['options'], 'class' => 'outcome-select cols-full')); ?>
   </td>
 </tr>
 </tbody>
@@ -35,7 +35,7 @@
   <td>Follow up:</td>
   <td>
       <?php
-      $html_options = array('empty' => '- Please select -', 'options' => array(), 'class' => 'inline');
+      $html_options = array('empty' => 'Select', 'options' => array(), 'class' => 'inline');
       echo CHtml::dropDownList($this->form_name . '[followup_quantity]',
           @$this->form_data[$this->form_name]['followup_quantity'], Yii::app()->params['follow_up_months'],
           $html_options);
@@ -48,10 +48,10 @@
 <tr>
   <td>Clinic location:</td>
   <td>
-      <?php echo CHtml::dropDownList($this->form_name . '[clinic_location]',
+      <?=\CHtml::dropDownList($this->form_name . '[clinic_location]',
           @$this->form_data[$this->form_name]['clinic_location'],
           \CHtml::listData(OEModule\PatientTicketing\models\ClinicLocation::model()->findAll(array('order' => 'display_order asc')),
-              'name', 'name'), $html_options); ?>
+              'name', 'name'), ['empty' => 'Select', 'options' => array(), 'class' => 'cols-full']); ?>
   </td>
 </tr>
 </tbody>

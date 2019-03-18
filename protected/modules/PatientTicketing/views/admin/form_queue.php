@@ -24,68 +24,63 @@
 		<input type="hidden" name="parent_id" value="<?=$parent->id?>" />
 	<?php }?>
 
-	<div>
-		<fieldset class="data-group">
-			<div class="cols-3 column">
-				<label for="name">Name:</label>
-			</div>
-			<div class="cols-8 column end left">
-				<?php echo CHtml::textField('name', $queue->name); ?>
-			</div>
-		</fieldset>
-		<fieldset class="data-group">
-			<div class="cols-3 column">
-				<label for="description">Description:</label>
-			</div>
-			<div class="cols-8 column end left">
-				<?php echo CHtml::textArea('description', $queue->description); ?>
-			</div>
-		</fieldset>
-		<fieldset class="data-group">
-			<div class="cols-3 column">
-				<label for="description">Action Label:</label>
-			</div>
-			<div class="cols-8 column end left">
-				<?php echo CHtml::textField('action_label', $queue->action_label); ?>
-			</div>
-		</fieldset>
-		<fieldset class="data-group">
-			<div class="cols-3 column">
-				<label for="report_definition">Report Definition:</label>
-			</div>
-			<div class="cols-8 column end left">
-				<?php echo CHtml::textArea('report_definition', $queue->report_definition); ?>
-			</div>
-		</fieldset>
-		<fieldset class="data-group">
-			<div class="cols-3 column">
-				<label for="assignment_fields">Assignment Fields:</label>
-			</div>
-			<div class="cols-8 column end left">
-				<?php echo CHtml::textArea('assignment_fields', $queue->assignment_fields); ?>
-			</div>
-		</fieldset>
-		<?php
-        $this->widget('application.widgets.MultiSelectList', array(
-            'element' => $queue,
-            'field' => 'event_types',
-            'relation' => 'event_type_assignments',
-            'relation_id_field' => 'event_type_id',
-            'options' => EventType::model()->getActiveList(),
-            'default_options' => array(),
-            'htmlOptions' => array(
-                'label' => 'Event types',
-                'empty' => '- Select -',
-            ),
-            'hidden' => false,
-            'inline' => false,
-            'noSelectionsMessage' => 'None',
-            'showRemoveAllLink' => false,
-            'layoutColumns' => array(
-                'label' => 3,
-                'field' => 8,
-            ),
-            'sortable' => true,
-        ))?>
+    <div>
+
+    <table class="standard">
+        <colgroup></colgroup>
+        <tbody>
+        <tr>
+            <th>Name:</th>
+            <td><?=\CHtml::textField('name', $queue->name, ['class' => 'cols-full']); ?></td>
+        </tr>
+        <tr>
+            <th>Description:</th>
+            <td><?=\CHtml::textArea('description', $queue->description, ['class' => 'cols-full']); ?></td>
+        </tr>
+        <tr>
+            <th>Action Label:</th>
+            <td><?=\CHtml::textField('action_label', $queue->action_label, ['class' => 'cols-full']); ?></td>
+        </tr>
+        <tr>
+            <th>Report Definition:</th>
+            <td><?=\CHtml::textArea('report_definition', $queue->report_definition, ['class' => 'cols-full']); ?></td>
+        </tr>
+        <tr>
+            <th>Assignment Fields:</th>
+            <td><?=\CHtml::textArea('assignment_fields', $queue->assignment_fields, ['class' => 'cols-full', 'rows' => 5]); ?></td>
+        </tr>
+        <tr>
+            <th>Event types:</th>
+            <th>
+                <?php
+                $this->widget('application.widgets.MultiSelectList', array(
+                    'element' => $queue,
+                    'field' => 'event_types',
+                    'relation' => 'event_type_assignments',
+                    'relation_id_field' => 'event_type_id',
+                    'options' => EventType::model()->getActiveList(),
+                    'default_options' => array(),
+                    'htmlOptions' => array(
+                        'label' => null,
+                        'empty' => '- Select -',
+                        'nowrapper' => true,
+                        'class' => 'cols-full'
+                    ),
+                    'hidden' => false,
+                    'inline' => false,
+                    'noSelectionsMessage' => 'None',
+                    'showRemoveAllLink' => false,
+                    'layoutColumns' => array(
+                        'label' => 3,
+                        'field' => 8,
+                    ),
+                    'sortable' => true,
+                ))?>
+            </th>
+        </tr>
+
+        </tbody>
+    </table>
+
 	</div>
 </form>

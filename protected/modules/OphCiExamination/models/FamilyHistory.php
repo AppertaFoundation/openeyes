@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -121,18 +121,25 @@ class FamilyHistory extends \BaseEventTypeElement
     }
 
     /**
-     * @param \BaseEventTypeElement $element
+     * @param FamilyHistory $element
      * @inheritdoc
      */
     public function loadFromExisting($element)
     {
+        // use previous session's entries
+        $entries = $this->entries;
         $this->no_family_history_date = $element->no_family_history_date;
-        $entries = array();
-        foreach ($element->entries as $entry) {
-            $new = new FamilyHistory_Entry();
-            $new->loadFromExisting($entry);
-            $entries[] = $new;
+
+        // if there are no posted entries from previous session
+        if (!$entries) {
+            // add the entries from the DB
+            foreach ($element->entries as $entry) {
+                $new_entry = new FamilyHistory_Entry();
+                $new_entry->loadFromExisting($entry);
+                $entries[] = $new_entry;
+            }
         }
+
         $this->entries = $entries;
     }
 

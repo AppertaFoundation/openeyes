@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -24,6 +24,7 @@ if (!isset($values)) {
         'id' => $diagnosis->id,
         'disorder_id' => $diagnosis->disorder_id,
         'disorder_display' => $diagnosis->disorder ? $diagnosis->disorder->term : '',
+        'is_diabetes' => isset($diagnosis->disorder)? (strpos(strtolower($diagnosis->disorder->term), 'diabetes')) !== false : false,
         'has_disorder' => $diagnosis->has_disorder,
         'side_id' => $diagnosis->side_id,
         'side_display' => $diagnosis->side ? $diagnosis->side->adjective : 'N/A',
@@ -32,12 +33,8 @@ if (!isset($values)) {
     );
 }
 
-    if (isset($values['date']) && strtotime($values['date'])) {
-        list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $values['date']);
-    } else {
-        $start_sel_day = $start_sel_month = null;
-        $start_sel_year = date('Y');
-        $values['date'] = $start_sel_year . '-00-00'; // default to the year displayed in the select dropdowns
+    if (!isset($values['date']) || !strtotime($values['date'])) {
+        $values['date'] = null; // default to the year displayed in the select dropdowns
     }
 
     $is_new_record = isset($diagnosis) && $diagnosis->isNewRecord ? true : false;
@@ -50,6 +47,7 @@ if (!isset($values)) {
             <?=$values['disorder_display'];?>
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[disorder_id]" value="<?=$values['disorder_id'] ?>" />
+            <input type="hidden" name="diabetic_diagnoses[]" value="<?= isset($values['is_diabetes']) ? $values['is_diabetes'] : 'false'?>" />
         </td>
 
         <td id="<?="{$model_name}_{$row_count}_checked_status"?>">

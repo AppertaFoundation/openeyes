@@ -2,11 +2,11 @@
   <div class="cols-12 column">
     <div class="data-group">
       <div class="cols-3 column">
-        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('axial_length_' . $side)) ?></div>
+        <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('axial_length_' . $side)) ?></div>
       </div>
       <div class="cols-3 column">
         <div class="data-value"
-             id="al_<?php echo $side ?>"><?php echo CHtml::encode($element->{'axial_length_' . $side}) ?></div>
+             id="al_<?php echo $side ?>"><?=\CHtml::encode($element->{'axial_length_' . $side}) ?></div>
       </div>
       <div class="cols-6 column">
         <div class="data-value">SNR = 193.0</div>
@@ -16,10 +16,10 @@
   <div class="cols-12 column">
     <div class="data-group">
       <div class="cols-3 column">
-        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('r1')) ?></div>
+        <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('r1')) ?></div>
       </div>
       <div class="cols-3 column">
-        <div class="data-value" id="r1_<?php echo $side ?>"><?php echo CHtml::encode($element->{'r1_' . $side}) ?></div>
+        <div class="data-value" id="r1_<?php echo $side ?>"><?=\CHtml::encode($element->{'r1_' . $side}) ?></div>
       </div>
       <div class="cols-6 column">
         <div class="data-value" id="r1info_<?php echo $side ?>"></div>
@@ -29,10 +29,10 @@
   <div class="cols-12 column">
     <div class="data-group">
       <div class="cols-3 column">
-        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('r2')) ?></div>
+        <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('r2')) ?></div>
       </div>
       <div class="cols-3 column">
-        <div class="data-value" id="r2_<?php echo $side ?>"><?php echo CHtml::encode($element->{'r2_' . $side}) ?></div>
+        <div class="data-value" id="r2_<?php echo $side ?>"><?=\CHtml::encode($element->{'r2_' . $side}) ?></div>
       </div>
       <div class="cols-6 column">
         <div class="data-value" id="r2info_<?php echo $side ?>"></div>
@@ -42,11 +42,11 @@
   <div class="cols-12 column">
     <div class="data-group">
       <div class="cols-3 column">
-        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('r1_axis' . $side)) ?></div>
+        <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('r1_axis' . $side)) ?></div>
       </div>
       <div class="cols-3 column end">
         <div class="data-value"
-             id="r1_axis_<?php echo $side ?>"><?php echo CHtml::encode($element->{'r1_axis_' . $side}) ?></div>
+             id="r1_axis_<?php echo $side ?>"><?=\CHtml::encode($element->{'r1_axis_' . $side}) ?></div>
       </div>
     </div>
   </div>
@@ -94,8 +94,8 @@
                 'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id,
                 'side' => ($side == 'right') ? 'R' : 'L',
                 'mode' => 'view',
-                'width' => 200,
-                'height' => 200,
+                'width' => $this->action->id === 'view' ? 200 : 120,
+                'height' => $this->action->id === 'view' ? 200 : 120,
             ));
     } ?>
 </div>

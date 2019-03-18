@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if (!$reschedule) {
@@ -51,11 +51,23 @@ if (!$reschedule) {
             <tr>
                 <td><?php echo $counter ?>
                     . <?php echo $booking->operation->event->episode->patient->getDisplayName() ?></td>
-                <td><?php echo $booking->operation->getProceduresCommaSeparated() ?></td>
+
+                <td>
+                    <?php
+                    $procedures = [];
+                    foreach ($booking->operation->procedures as $procedure) {
+                        $icon = $booking->operation->complexity ? OEHtml::icon('circle-' . Element_OphTrOperationbooking_Operation::$complexity_colors[$booking->operation->complexity], ['class' => 'small pad']) : '';
+                        $eye = "[" . Eye::methodPostFix($booking->operation->eye_id) . "] ";
+                        $procedures[] = $icon . $eye . $procedure->term;
+                    }
+
+                    echo empty($procedures) ? 'No procedures' : implode('<br />', $procedures);
+                    ?>
+                </td>
                 <td><?php echo $booking->operation->getAnaestheticTypeDisplay() ?></td>
                 <td><?php echo "{$booking->operation->total_duration} minutes"; ?></td>
                 <td><?php echo $booking->admission_time ?></td>
-                <td><?php echo CHtml::encode($booking->operation->comments) ?></td>
+                <td><?=\CHtml::encode($booking->operation->comments) ?></td>
             </tr>
             <?php ++$counter;
         } ?>
@@ -90,7 +102,7 @@ if (!$reschedule) {
                         Ward
                     </td>
                     <td>
-                        <?php echo CHtml::dropDownList('Booking[ward_id]', @$_POST['Booking']['ward_id'], $operation->getWardOptions($session), array('class' => 'cols-full')) ?>
+                        <?=\CHtml::dropDownList('Booking[ward_id]', @$_POST['Booking']['ward_id'], $operation->getWardOptions($session), array('class' => 'cols-full')) ?>
                         <span id="Booking_ward_id_error"></span>
                     </td>
                 </tr>
@@ -101,7 +113,7 @@ if (!$reschedule) {
                     <td>
                         <input type="text" id="Booking_admission_time" name="Booking[admission_time]" class="cols-full"
                                autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
-                               value="<?php echo CHtml::encode($_POST['Booking']['admission_time']) ?>" size="6"/>
+                               value="<?=\CHtml::encode($_POST['Booking']['admission_time']) ?>" size="6"/>
                         <span id="Booking_admission_time_error"></span>
                     </td>
                 </tr>
@@ -111,7 +123,7 @@ if (!$reschedule) {
                     </td>
                     <td>
                     <textarea id="Session_comments" name="Session[comments]"
-                              class="cols-full"><?php echo CHtml::encode($_POST['Session']['comments']) ?></textarea>
+                              class="cols-full"><?=\CHtml::encode($_POST['Session']['comments']) ?></textarea>
                     </td>
                 </tr>
                 </tbody>
@@ -133,7 +145,7 @@ if (!$reschedule) {
                 <?php if ($reschedule) { ?>
                     <tr>
                         <td>
-                            <?php echo CHtml::label('<strong>Reschedule Reason:</strong> ', 'cancellation_reason'); ?>
+                                <?=\CHtml::label('<strong>Reschedule Reason:</strong> ', 'cancellation_reason'); ?>
                         </td>
                         <td>
                             <?php if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
@@ -141,35 +153,41 @@ if (!$reschedule) {
                             } else {
                                 $listIndex = 2;
                             } ?>
-                            <?php echo CHtml::dropDownList('cancellation_reason', '',
+                            <?=\CHtml::dropDownList('cancellation_reason', '',
                                 OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
-                                array('empty' => 'Select a reason')
+                                [
+                                    'empty' => 'Select a reason',
+                                    //how nice would be use the an activeDropDownList with cancellation_reason_id
+                                    //with the built in error adding feature ... but for some reason all over the
+                                    //OpBooking only "cancellation_reason" is used, this is definitely needs to be refactored
+                                    'class' => $operation->getError('cancellation_reason_id') ? 'error '.$operation->id : '',
+                                ]
                             ); ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <?php echo CHtml::label('<strong>Reschedule Comments:</strong> ', 'cancellation_comment'); ?>
+                            <?=\CHtml::label('<strong>Reschedule Comments:</strong> ', 'cancellation_comment'); ?>
                         </td>
                         <td>
-                    <textarea name="cancellation_comment" class="cols-full"><?php echo CHtml::encode(@$_POST['cancellation_comment']) ?></textarea>
+                            <textarea name="cancellation_comment" class="cols-full"><?=\CHtml::encode(@$_POST['cancellation_comment']) ?></textarea>
                         </td>
                     </tr>
                 <?php } ?>
                 <tr>
                     <td>
-                        <?php echo CHtml::label('<strong>Operation Comments:</strong>', 'operation_comments'); ?>
+                        <?=\CHtml::label('<strong>Operation Comments:</strong>', 'operation_comments'); ?>
                     </td>
                     <td>
-                        <textarea id="operation_comments" name="Operation[comments]" class="cols-full"><?php echo CHtml::encode($_POST['Operation']['comments']) ?></textarea>
+                        <textarea id="operation_comments" name="Operation[comments]" class="cols-full"><?=\CHtml::encode($_POST['Operation']['comments']) ?></textarea>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <?php echo CHtml::label('<strong>RTT Comments:</strong>', 'rtt_comments'); ?>
+                        <?=\CHtml::label('<strong>RTT Comments:</strong>', 'rtt_comments'); ?>
                     </td>
                     <td>
-                        <textarea id="operation_comments" name="Operation[comments_rtt]" class="cols-full"><?php echo CHtml::encode($_POST['Operation']['comments_rtt']) ?></textarea>
+                        <textarea id="operation_comments" name="Operation[comments_rtt]" class="cols-full"><?=\CHtml::encode($_POST['Operation']['comments_rtt']) ?></textarea>
                     </td>
                 </tr>
                 </tbody>

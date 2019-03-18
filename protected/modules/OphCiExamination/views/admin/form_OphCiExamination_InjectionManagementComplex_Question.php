@@ -17,10 +17,41 @@
 */
 ?>
 
-<h2><?php echo $model->isNewRecord ? 'Create' : 'Edit'; ?> Question</h2>
+<div class="row divider">
+    <h2><?php echo $model->isNewRecord ? 'Create' : 'Edit'; ?> Question</h2>
+</div>
 
 <?php echo $form->errorSummary($model); ?>
 
-<?php echo $form->dropDownList($model, 'disorder_id', CHtml::listData(OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex::model()->getAllDisorders(), 'id', 'term'), array('empty' => '- Please select -')); ?>
-
-<?php echo $form->textField($model, 'question', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
+<table class="standard cols-full">
+    <tbody>
+    <tr>
+        <td>Disorder Id</td>
+        <td >
+            <?=\CHtml::activeDropDownList(
+                $model,
+                'disorder_id',
+                CHtml::listData(
+                    OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex::model()->getAllDisorders(),
+                    'id',
+                    'term'
+                ),
+                ['class' => 'cols-full', 'empty' => 'Select']
+            ); ?>
+        </td>
+    </tr>
+    <tr>
+        <td>Question</td>
+        <td>
+            <?=\CHtml::activeTextField(
+                $model,
+                'question',
+                [
+                    'class' => 'cols-full',
+                    'autocomplete' => Yii::app()->params['html_autocomplete']
+                ]
+            ); ?>
+        </td>
+    </tr>
+    </tbody>
+</table>

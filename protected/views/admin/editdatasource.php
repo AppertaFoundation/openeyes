@@ -9,28 +9,30 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-<div class="row divider">
-    <h2><?php echo $source->id ? 'Edit' : 'Add' ?> data source</h2>
-</div>
-
-<?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
-<?php
-$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id' => 'adminform',
-    'enableAjaxValidation' => false,
-    'focus' => '#ImportSource_name',
-    'layoutColumns' => array(
-        'label' => 2,
-        'field' => 5,
-    ),
-)) ?>
-
 <div class="cols-5">
+
+    <div class="row divider">
+        <h2><?php echo $source->id ? 'Edit' : 'Add' ?> data source</h2>
+    </div>
+
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+    <?php
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'adminform',
+        'enableAjaxValidation' => false,
+        'focus' => '#ImportSource_name',
+        'layoutColumns' => array(
+            'label' => 2,
+            'field' => 5,
+        ),
+    )) ?>
+
+
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-2">
@@ -39,16 +41,33 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <tbody>
         <tr>
             <td>Name</td>
-            <td> <?php echo CHtml::activeTextField($source, 'name', ['class' => 'cols-full'],
-                    array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?> </td>
+            <td> <?= \CHtml::activeTextField(
+                $source,
+                'name',
+                ['class' => 'cols-full'],
+                ['autocomplete' => Yii::app()->params['html_autocomplete']]
+            ); ?> </td>
         </tr>
         <tfoot>
         <tr>
             <td colspan="5">
-                <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
-                    'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
-                <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
-                    'data-uri' => '/admin/datasources', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+                <?= \CHtml::submitButton(
+                    'Save',
+                    [
+                        'class' => 'button large',
+                        'name' => 'save',
+                        'id' => 'et_save'
+                    ]
+                ); ?>
+                <?= \CHtml::submitButton(
+                    'Cancel',
+                    [
+                        'class' => 'button large',
+                        'data-uri' => '/admin/datasources',
+                        'name' => 'cancel',
+                        'id' => 'et_cancel'
+                    ]
+                ); ?>
             </td>
         </tr>
         </tfoot>

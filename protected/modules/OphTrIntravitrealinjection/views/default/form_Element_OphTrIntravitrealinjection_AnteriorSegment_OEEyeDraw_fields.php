@@ -26,6 +26,6 @@ foreach (OphTrIntravitrealinjection_LensStatus::model()->activeOrPk($element->{$
 }
 ?>
 <label for="<?php echo get_class($element).'_'.$side.'_lens_status_id';?>">
-	<?php echo CHtml::encode($element->getAttributeLabel($side.'_lens_status_id'));?>:
+	<?=\CHtml::encode($element->getAttributeLabel($side.'_lens_status_id'));?>:
 </label>
-<?php echo $form->dropDownList($element, $side.'_lens_status_id', CHtml::listData($values, 'id', 'name'), array('nowrapper' => true, 'empty' => '- Please select -', 'options' => $options))?>
+<?php echo $form->dropDownList($element, $side.'_lens_status_id', CHtml::listData($values, 'id', 'name'), array('nowrapper' => true, 'empty' => 'Select', 'options' => $options))?>

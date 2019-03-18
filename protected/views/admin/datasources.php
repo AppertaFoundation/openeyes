@@ -9,56 +9,59 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="admin box">
+<div class="cols-5">
     <form id="admin_data_sources">
-        <div class="cols-5">
         <table class="standard">
             <thead>
-                <tr>
-                    <th><input type="checkbox" id="checkall" class="sources" /></th>
-                    <th>Name</th>
-                </tr>
+            <tr>
+                <th><input type="checkbox" id="checkall" class="sources"/></th>
+                <th>Name</th>
+            </tr>
             </thead>
+
             <tbody>
-                <?php
-                foreach (ImportSource::model()->findAll(array('order' => 'name')) as $i => $source) {?>
-                    <tr class="clickable" data-id="<?php echo $source->id?>" data-uri="admin/editdatasource/<?php echo $source->id?>">
-                        <td><input type="checkbox" name="source[]" value="<?php echo $source->id?>" class="sources" /></td>
-                        <td><?php echo $source->name?>&nbsp;</td>
-                    </tr>
-                <?php }?>
+            <?php
+            foreach (ImportSource::model()->findAll(array('order' => 'name')) as $i => $source) { ?>
+                <tr class="clickable" data-id="<?php echo $source->id ?>"
+                    data-uri="admin/editdatasource/<?php echo $source->id ?>">
+                    <td><input type="checkbox" name="source[]" value="<?php echo $source->id ?>" class="sources"/></td>
+                    <td><?php echo $source->name ?>&nbsp;</td>
+                </tr>
+            <?php } ?>
             </tbody>
+
             <tfoot>
-                <td colspan="2">
-                    <?php echo CHtml::button(
-                        'Add',
-                        [
-                            'class' => 'button large',
-                            'name' => 'add',
-                            'id' => 'et_add'
-                        ]
-                    ); ?>
-                    <?php echo CHtml::button(
-                        'Delete',
-                        [
-                            'class' => 'button large',
-                            'name' => 'delete',
-                            'data-object' => 'admin_data_sources',
-                            'id' => 'et_delete'
-                        ]
-                    ); ?>
-                </td>
+            <td colspan="2">
+                <?= \CHtml::button(
+                    'Add',
+                    [
+                        'class' => 'button large',
+                        'name' => 'add',
+                        'id' => 'et_add'
+                    ]
+                ); ?>
+                <?= \CHtml::button(
+                    'Delete',
+                    [
+                        'class' => 'button large',
+                        'name' => 'delete',
+                        'data-uri' => '/admin/deleteDataSources',
+                        'data-object' => 'data_sources',
+                        'id' => 'et_delete'
+                    ]
+                ); ?>
+            </td>
             </tfoot>
         </table>
-        </div>
     </form>
 </div>
+
 <script type="text/javascript">
-    $('#et_delete').click(function(e) {
+    $('#et_delete').click(function (e) {
         e.preventDefault();
 
         if ($('input[type="checkbox"][name="source[]"]:checked').length == 0) {
@@ -70,9 +73,9 @@
 
         $.ajax({
             'type': 'POST',
-            'url': baseUrl+'/admin/deleteDataSources',
-            'data': $('#admin_data_sources').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-            'success': function(resp) {
+            'url': baseUrl + '/admin/deleteDataSources',
+            'data': $('#admin_data_sources').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+            'success': function (resp) {
                 if (resp == "1") {
                     window.location.reload();
                 } else {

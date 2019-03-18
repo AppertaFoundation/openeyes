@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -22,7 +22,7 @@
         <div id="js-listview-info-pro data-group" class="cols-11">
           <ul class="dot-list large-text">
             <li><?php echo $element->is_patient ? 'Yes' : 'No' ?></li>
-            <li><?php echo CHtml::encode($element->NHSDate('signature_date')) ?></li>
+            <li><?=\CHtml::encode($element->NHSDate('signature_date')) ?></li>
           </ul>
         </div>
         <div id="js-listview-info-full data-group" class="cols-6" style="display: none;">
@@ -40,7 +40,7 @@
             <tbody>
             <tr>
               <td><?php echo $element->is_patient ? 'Yes' : 'No' ?></td>
-              <td><?php echo CHtml::encode($element->NHSDate('signature_date')) ?></td>
+              <td><?=\CHtml::encode($element->NHSDate('signature_date')) ?></td>
             </tr>
             </tbody>
           </table>
@@ -48,10 +48,10 @@
               <div class="data-group">
                 <div class="cols-2">
                   <div
-                      class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('representative_name')) ?></div>
+                      class="data-label"><?=\CHtml::encode($element->getAttributeLabel('representative_name')) ?></div>
                 </div>
                 <div class="cols-10">
-                  <div class="data-value"><?php echo CHtml::encode($element->representative_name) ?></div>
+                  <div class="data-value"><?=\CHtml::encode($element->representative_name) ?></div>
                 </div>
               </div>
             <?php } ?>
@@ -76,7 +76,7 @@
                       ?>
                   <input type="hidden" name="signature_file_id" value="<?= $element->signature_file_id ?>"/>
                   <div class="cols-4">
-                      <?php echo CHtml::button('Remove patient signature', array(
+                      <?=\CHtml::button('Remove patient signature', array(
                           'type' => 'button',
                           'id' => 'remove-patient-signature',
                           'name' => 'capturePatientSignature',
@@ -89,7 +89,7 @@
               <?php } else { ?>
                   <?php if ($this->checkEditAccess()) { ?>
                   <div class="cols-12">
-                      <?php echo CHtml::button('Capture patient signature', array(
+                      <?=\CHtml::button('Capture patient signature', array(
                           'type' => 'button',
                           'id' => 'capture-patient-signature',
                           'name' => 'capturePatientSignature',
@@ -109,14 +109,14 @@
                       </ol>
                     </div>
                     <div class="cols-4">
-                        <?php echo CHtml::button('Print first page', array(
+                        <?=\CHtml::button('Print first page', array(
                             'data-print-url' => '/OphCoCvi/default/consentSignature/' . $this->event->id,
                             'type' => 'button',
                             'id' => 'print-for-signature',
                             'name' => 'printForSignature',
                             'class' => 'small button primary event-action',
                         )); ?> <br/><br/>
-                        <?php echo CHtml::link('Retrieve Signature',
+                        <?=\CHtml::link('Retrieve Signature',
                             '/OphCoCvi/default/retrieveConsentSignature/' . $this->event->id,
                             array('class' => 'button small secondary')); ?>
                     </div>

@@ -1,13 +1,13 @@
 <tr data-row="<?=$index?>" >
     <td>
-        <?php echo CHtml::activeHiddenField($instruction, "[$index]id");  ?>
-        <?php echo CHtml::activeTextField($instruction, "[$index]content");  ?>
+        <?=\CHtml::activeHiddenField($instruction, "[$index]id");  ?>
+        <?=\CHtml::activeTextField($instruction, "[$index]content");  ?>
     </td>
     <td>
-        <?php echo CHtml::activeDropDownList($instruction, "[$index]site_id", CHtml::listData(Site::model()->findAll(),'id', 'name')) ?>
+        <?=\CHtml::activeDropDownList($instruction, "[$index]site_id", CHtml::listData(Site::model()->findAll(),'id', 'name')) ?>
     </td>
     <td>
-        <?php echo CHtml::activeDropDownList($instruction, "[$index]subspecialty_id", CHtml::listData(Subspecialty::model()->findAll(),'id', 'name')) ?>
+        <?=\CHtml::activeDropDownList($instruction, "[$index]subspecialty_id", CHtml::listData(Subspecialty::model()->findAll(),'id', 'name')) ?>
     </td>
     <td class="actions">
         <div class="wrapper">

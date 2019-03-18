@@ -24,13 +24,13 @@
 <div class="element-fields">
 	<div class="data-group">
 		<?php foreach ($fields as $field) {?>
-			<?php echo CHtml::hiddenField(CHtml::modelName($element)."[$field]", '0', array('id' => CHtml::modelName($element).'_'.$field.'_hidden'))?>
+			<?=\CHtml::hiddenField(CHtml::modelName($element)."[$field]", '0', array('id' => CHtml::modelName($element).'_'.$field.'_hidden'))?>
 			<?php if (!@$htmlOptions['no-label']) {?>
 				<label>
 			<?php }?>
-			<?php echo CHtml::checkBox(CHtml::modelName($element)."[$field]", $checked[$field], $htmlOptions)?>
+			<?=\CHtml::checkBox(CHtml::modelName($element)."[$field]", $checked[$field], $htmlOptions)?>
 			<?php if (!@$htmlOptions['no-label']) {?>
-				<?php echo CHtml::encode($element->getAttributeLabel($field))?>
+				<?=\CHtml::encode($element->getAttributeLabel($field))?>
 				</label>
 			<?php }?>
 		<?php }?>

@@ -26,7 +26,7 @@ return array(
             ),
             'Core' => array(
                 'Users' => '/admin/users',
-                'context_firm_labels and service_firm_labels' => '/admin/firms',
+                'context_firm_labels and service_firm_labels' => '/Admin/context/index',
                 'Contacts' => '/admin/contacts',
                 'Contact labels' => '/admin/contactlabels',
                 'Data sources' => '/admin/datasources',
@@ -38,7 +38,6 @@ return array(
                 'Commissioning body service types' => '/admin/commissioning_body_service_types',
                 'Event deletion requests' => '/admin/eventDeletionRequests',
                 'Custom episode summaries' => '/admin/episodeSummaries',
-                'Findings' => '/admin/managefindings',
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
                 'Patient Shortcodes' => '/admin/patientshortcodes'
@@ -72,6 +71,7 @@ return array(
                 'Common Ophthalmic Disorders' => '/admin/editcommonophthalmicdisorder',
                 'Secondary Common Ophthalmic Disorders' => '/admin/editsecondarytocommonophthalmicdisorder',
                 'Common Systemic Disorders' => '/oeadmin/CommonSystemicDisorder/list',
+                'Findings' => '/admin/managefindings',
             ),
             'Consent' => array(
                 'Leaflets' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/Leaflets/list'),

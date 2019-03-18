@@ -39,10 +39,13 @@
 <?php
 $itemSets = array();
 foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
-    $itemSet = array_map(function ($attr) {
+    $items = array_map(function ($attr) {
         return ['label' => $attr['slug']];
     }, $attribute->getAttributeOptions());
-    $itemSets[] = $itemSet;
+    $itemSets[] = ['items' => $items ,
+        'header' => $attribute->label ,
+        'multiSelect' => $attribute->is_multiselect === '1' ? true : false
+    ];
 }
 ?>
 
@@ -52,8 +55,8 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
 
     new OpenEyes.UI.AdderDialog({
       openButton: managementDiv.find('.js-add-select-search'),
-      itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($x) {
-        return new OpenEyes.UI.AdderDialog.ItemSet($x);
+      itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($itemSet ) {
+          return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {'header': $itemSet.header,'multiSelect': $itemSet.multiSelect });
       }),
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {

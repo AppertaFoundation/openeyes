@@ -6,74 +6,77 @@ class Homepage extends OpenEyesPage {
 			'siteID' => array (
 					'xpath' => "//*[@id='SiteAndFirmForm_site_id']"
 			),
+			'navList' => array(
+			    'xpath' => "//*[@id='js-nav-shortcuts']"
+            ),
 			'firmDropdown' => array (
-					'xpath' => "//*[@id='SiteAndFirmForm_firm_id']" 
+					'xpath' => "//*[@id='SiteAndFirmForm_firm_id']"
 			),
 			'confirmSiteAndFirmButton' => array (
 					'xpath' => "//*[@id='site-and-firm-form']//*[@value='Confirm change']"
 			),
 			'mainSearch' => array (
-					'xpath' => "//input[@id='query']" 
+					'xpath' => "//input[@id='query']"
 			),
 			'searchSubmit' => array (
-					'xpath' => "//button[@type='submit']" 
+					'xpath' => "//button[@type='submit']"
 			),
 			'changeFirmHeaderLink' => array (
 					'xpath' => "//*[@id='change-firm']"
 			),
 			'invalidLogin' => array (
-					'xpath' => "//*[contains(text(),'Invalid login.')]" 
+					'xpath' => "//*[contains(text(),'Invalid login.')]"
 			),
 			'patientInfoBox' => array (
-					'xpath' => "//*[@class='box patient-info js-toggle-container']" 
+					'xpath' => "//*[@class='box patient-info js-toggle-container']"
 			),
 			'allEpisodesBox' => array (
-					'xpath' => "//*[@class='box patient-info episodes']" 
+					'xpath' => "//*[@class='box patient-info episodes']"
 			),
 			'latestEventBox' => array (
-					'xpath' => "//*[@class='box patient-info episode-links']" 
+					'xpath' => "//*[@class='box patient-info episode-links']"
 			),
 			'associatedDataBoxes' => array (
-					'xpath' => "//*[@class='box patient-info associated-data js-toggle-container']" 
+					'xpath' => "//*[@class='box patient-info associated-data js-toggle-container']"
 			),
 			'addOpthalmicDiagnosis' => array (
-					'xpath' => "//button[@id='btn-add_new_ophthalmic_diagnosis']" 
+					'xpath' => "//button[@id='btn-add_new_ophthalmic_diagnosis']"
 			),
 			'addSystemicDiagnosis' => array (
-					'xpath' => "//button[@id='btn-add_new_systemic_diagnosis']" 
+					'xpath' => "//button[@id='btn-add_new_systemic_diagnosis']"
 			),
 			'addPreviousOperation' => array (
-					'xpath' => "//*[@id='btn-add_previous_operation']" 
+					'xpath' => "//*[@id='btn-add_previous_operation']"
 			),
 			'addMedicationButton' => array (
-					'xpath' => "//button[@id='btn-add_medication']" 
+					'xpath' => "//button[@id='btn-add_medication']"
 			),
 			'editCVIstatusButton' => array (
-					'xpath' => "//*[@id='btn-edit_oph_info']" 
+					'xpath' => "//*[@id='btn-edit_oph_info']"
 			),
 			'addAllergyButton' => array (
-					'xpath' => "//*[@id='btn-add_allergy']" 
+					'xpath' => "//*[@id='btn-add_allergy']"
 			),
 			'addFamilyHistoryButton' => array (
-					'xpath' => "//*[@id='btn-add_family_history']" 
+					'xpath' => "//*[@id='btn-add_family_history']"
 			),
 			'editEvent' => array (
-					'xpath' => "//*[@class='inline-list tabs event-actions']//*[contains(text(),'Edit')]" 
+					'xpath' => "//*[@class='inline-list tabs event-actions']//*[contains(text(),'Edit')]"
 			),
 			'deleteEvent' => array (
-					'xpath' => "//*[@class=' delete event-action button button-icon small']//*[@class='icon-button-small-trash-can']" 
+					'xpath' => "//*[@class=' delete event-action button button-icon small']//*[@class='icon-button-small-trash-can']"
 			),
 			'printButton' => array (
-					'xpath' => "//*[@id='et_print']" 
+					'xpath' => "//*[@id='et_print']"
 			),
 			'addNewEpisodeButton' => array (
-					'xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Add episode')]" 
+					'xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Add episode')]"
 			),
 			'addEventButtons' => array (
-					'xpath' => "//*[@class='button secondary tiny add-event addEvent enabled']" 
+					'xpath' => "//*[@class='button secondary tiny add-event addEvent enabled']"
 			),
 			'prescriptionDisabled' => array (
-					'xpath' => "//*[@title='You do not have permission to add Prescription']" 
+					'xpath' => "//*[@title='You do not have permission to add Prescription']"
 			),
 		'closeSiteAndFirmPopup' => array(
 			'xpath' => "//*[@class='ui-dialog-titlebar-close ui-corner-all']//*[contains(text(),'close')]"
@@ -91,6 +94,13 @@ class Homepage extends OpenEyesPage {
 			'xpath' => "//*[contains(text(),'Reports')]"
 		)
 	);
+
+	public function selectNav($navStr){
+	    $navList = $this->getElement('navList');
+	    $navList->mouseOver();
+        $navList->clickLink($navStr);
+    }
+
 	public function selectSiteID($siteAddress) {
 		$mysite = 'SiteAndFirmForm_site_id';
 		$this->elements['siteID'] = array (
@@ -126,10 +136,10 @@ class Homepage extends OpenEyesPage {
 	public function followLink($link) {
 		$this->clickLink ( $link );
 	}
-	
+
 	public function ConfirmLeavePage() {
 		//$this->driver.Keyboard.PressKey(Keys.Enter);
-	
+
 		//$this->mink->getSession()->getDriver();
 		$this->getSession()->getDriver();
 		$alert = $driver.SwitchTo.Alert();
@@ -139,11 +149,7 @@ class Homepage extends OpenEyesPage {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'invalidLogin' )->getXpath () );
 	}
 	public function isInvalidLoginShown() {
-		if ($this->invalidLoginMessage ()) {
-			print "Invalid Login message displayed OK";
-		} 
-
-		else {
+		if (!$this->invalidLoginMessage ()) {
 			throw new BehaviorException ( "WARNING!!! Invalid Login is NOT displayed WARNING!!!" );
 		}
 	}
@@ -153,22 +159,13 @@ class Homepage extends OpenEyesPage {
 	public function levelOneAccess() {
 		if ($this->modulesUnavailableCheck ()) {
 			throw new BehaviorException ( "WARNING!!! Level 1 RBAC access is NOT functioning correctly WARNING!!!" );
-		} 
-
-		else {
-			print "Level 1 RBAC access working OK";
 		}
 	}
 	public function modulesAvailableCheck() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'patientInfoBox' )->getXpath () );
 	}
 	public function modulesCorrect() {
-		if ($this->modulesAvailableCheck ()) {
-			print "Patient Information modules are being displayed correctly";
-		} 
-
-		else {
-			
+		if (!$this->modulesAvailableCheck ()) {
 			throw new BehaviorException ( "WARNING!!! Patient Information modules are NOT being displayed correctly WARNING!!!" );
 		}
 	}
@@ -178,10 +175,6 @@ class Homepage extends OpenEyesPage {
 	public function levelTwoAccess() {
 		if ($this->modulesUnavailableLevelTwoCheck ()) {
 			throw new BehaviorException ( "WARNING!!! Level 2 RBAC access is NOT functioning correctly WARNING!!!" );
-		} 
-
-		else {
-			print "Level 2 RBAC access working OK";
 		}
 	}
 	public function modulesUnavailableLevelTwoAdditionalChecks() {
@@ -190,10 +183,6 @@ class Homepage extends OpenEyesPage {
 	public function levelTwoAccessAdditionalChecks() {
 		if ($this->modulesUnavailableLevelTwoAdditionalChecks ()) {
 			throw new BehaviorException ( "WARNING!!! Level 2 RBAC access is NOT functioning correctly (edit, print, delete, episode or event) WARNING!!!" );
-		} 
-
-		else {
-			print "Level 2 RBAC access working OK";
 		}
 	}
 	public function hasPrintingBeenDisabled() {
@@ -202,21 +191,13 @@ class Homepage extends OpenEyesPage {
 	public function printDisabled() {
 		if ($this->hasPrintingBeenDisabled ()) {
 			throw new BehaviorException ( "WARNING!!! Level 2 RBAC Printing access IS visible WARNING!!!" );
-		} 
-
-		else {
-			print "Level 2 RBAC Printing access is disabled OK";
 		}
 	}
 	public function printingAccessCheck() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'printButton' )->getXpath () );
 	}
 	public function printAccessCheck() {
-		if ($this->printingAccessCheck ()) {
-			print "Level 3 RBAC Printing access working OK";
-		} 
-
-		else {
+		if (!$this->printingAccessCheck ()) {
 			throw new BehaviorException ( "WARNING!!! Level 3 RBAC Printing access NOT working WARNING!!!" );
 		}
 	}
@@ -224,11 +205,7 @@ class Homepage extends OpenEyesPage {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'prescriptionDisabled' )->getXpath () );
 	}
 	public function levelFourAccess() {
-		if ($this->hasPrescriptionBeenDisabled ()) {
-			print "Level 4 RBAC Prescription has been disabled OK";
-		} 
-
-		else {
+		if (!$this->hasPrescriptionBeenDisabled ()) {
 			throw new BehaviorException ( "WARNING!!! Level 4 RBAC Prescription IS enabled WARNING!!!" );
 		}
 	}
@@ -264,10 +241,7 @@ class Homepage extends OpenEyesPage {
 		$this->elements['homepageAlert'] = array (
 			'xpath' => "//*[//*[@class='messages patient']//*[contains(text(),'$alert')]]"
 		);
-		if($this->getElement('homepageAlert')->isVisible()){
-			print "Alert Displayed Correctly!";
-		}
-		else{
+		if(!$this->getElement('homepageAlert')->isVisible()){
 			throw new BehaviorException("Alert not displayed correctly!");
 		}
 	}

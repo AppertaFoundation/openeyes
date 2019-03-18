@@ -3,7 +3,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +12,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -204,7 +204,7 @@ class SocialHistory extends \BaseEventTypeElement
      */
     public function getDisplayAlcoholIntake()
     {
-        if ($this->alcohol_intake) {
+        if (isset($this->alcohol_intake)) {
             return $this->alcohol_intake . ' units/week';
         }
         return '';
@@ -237,5 +237,19 @@ class SocialHistory extends \BaseEventTypeElement
     public function __toString()
     {
         return implode(' <br /> ', $this->getEntries());
+    }
+
+    /**
+     * @param SocialHistory $element
+     */
+    public function loadFromExisting($element)
+    {
+        foreach (['occupation_id', 'occupation_id', 'smoking_status_id', 'accommodation_id', 'carer_id',
+                     'substance_misuse_id', 'alcohol_intake', 'comments', 'type_of_job', 'driving_statuses'] as $field) {
+            // add only the entries from DB that were not in the previous session
+            if (!$this->$field) {
+                $this->$field = $element->$field;
+            }
+        }
     }
 }

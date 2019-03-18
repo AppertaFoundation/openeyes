@@ -53,7 +53,7 @@
 						<th>
               <input type="text"
                      autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>"
-                     value="<?php echo CHtml::encode($total_duration)?>"
+                     value="<?=\CHtml::encode($total_duration)?>"
                      id="<?php echo $class?>_total_duration_<?php echo $identifier?>"
                      name="<?php echo $class?>[total_duration_<?php echo $identifier?>]"
                      style="width: 60px;" />

@@ -16,34 +16,68 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Edit setting</h2>
-	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'settingsform',
-        'enableAjaxValidation' => false,
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ))?>
-        <?php if ($metadata->key == 'city_road_satellite_view') { ?>
-          <div class="cols-12 column">
-            <div class="alert-box with-icon warning">
-              Removes the 2 check-boxes from Examination->Clinical Management->Cataract Surgical Management named "At City Road" and "At Satellite"
-            </div>
-          </div><?php } ?>
-		<div class="data-group">
-			<div class="cols-3 column">
-				<label for="<?php echo $metadata->key?>">
-					<?php echo $metadata->name?>
-				</label>
-			</div>
-			<div class="cols-3 column end">
-				<?php $this->renderPartial('//admin/_admin_setting_'.strtolower(str_replace(' ', '_', $metadata->field_type->name)), array('metadata' => $metadata))?>
-			</div>
-		</div>
-		<?php echo $form->formActions(['cancel-uri' => '/OphCoCorrespondence/admin/letterSettings/settings'])?>
-	<?php $this->endWidget()?>
+
+<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'settingsformaaaaa',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+)) ?>
+
+<div class="cols-4">
+
+    <div class="row divider">
+        <h2>Edit setting</h2>
+    </div>
+
+    <table class="standard" id="to_location_sites_grid">
+        <thead>
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-1">
+        </colgroup>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td><?= $metadata->name ?></td>
+            <td>
+                <?php $this->renderPartial(
+                    '//admin/_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
+                    array('metadata' => $metadata)
+                ) ?>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2">
+                <?=\CHtml::submitButton(
+                    'Save',
+                    [
+                        'class' => 'button large',
+                        'id' => 'et_save',
+                    ]
+                ); ?>
+                <?=\CHtml::button(
+                    'Cancel',
+                    [
+                        'data-uri' => $cancel_uri,
+                        'class' => 'button large',
+                        'type' => 'button',
+                        'name' => 'cancel',
+                        'id' => 'et_cancel'
+                    ]
+                ); ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
 </div>
+
+<?php $this->endWidget() ?>

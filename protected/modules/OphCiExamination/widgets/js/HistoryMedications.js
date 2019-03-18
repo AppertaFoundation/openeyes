@@ -92,13 +92,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   */
   HistoryMedicationsController.prototype.initialiseFilters = function()
   {
-
     // if there aren't any stopped medications, then the filter is irrelevant
     if (!this.$table.find('tr.originally-stopped').length) {
-      this.$element.find('.show-stopped').hide();
-      this.$element.find('.hide-stopped').hide();
-    } else {
-      this.hideStopped();
+        this.$element.find('.show-stopped').hide();
+        this.$element.find('.hide-stopped').hide();
     }
   };
 
@@ -218,25 +215,27 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.loadDrugDefaults = function($row)
   {
       let drug_id = $row.find("input[name*='[drug_id]']").val();
-      $.getJSON('/medication/drugdefaults', { drug_id: drug_id }, function (res) {
-          for (var name in res) {
-              var $input = $row.find('[name$="[' + name +']"]');
-              if (name === 'dose') {
-                  $input.attr('placeholder', res['dose_unit']);
-                  $input.addClass('numbers-only');
-                  if(res['dose_unit'] === 'mg'){
-                      $input.addClass('decimal');
-                  } else if(!res['dose_unit']){
-                      $input.removeClass('numbers-only decimal');
-                  }
+      if(drug_id !== '') {
+          $.getJSON('/medication/drugdefaults', {drug_id: drug_id}, function (res) {
+              for (let name in res) {
+                  let $input = $row.find('[name$="[' + name + ']"]');
+                  if (name === 'dose') {
+                      $input.attr('placeholder', res['dose_unit']);
+                      $input.addClass('numbers-only');
+                      if (res['dose_unit'] === 'mg') {
+                          $input.addClass('decimal');
+                      } else if (!res['dose_unit']) {
+                          $input.removeClass('numbers-only decimal');
+                      }
 
-                  $input.val('');
-                  $row.find('[name$="[units]"]').val(res['dose_unit']);
-              } else {
-                  $input.val(res[name]).change();
+                      $input.val('');
+                      $row.find('[name$="[units]"]').val(res['dose_unit']);
+                  } else {
+                      $input.val(res[name]).change();
+                  }
               }
-          }
-      });
+          });
+      }
   };
 
   /**
@@ -335,8 +334,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
       if (selectedItems[i]['type'] == 'md'){
         data['medication_drug_id'] = selectedItems[i]['id'];
-      }
-      else {
+      } else {
         data['drug_id'] = selectedItems[i]['id'];
       }
       data['medication_name'] = selectedItems[i]['label'];
@@ -353,7 +351,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
     var rows = this.createRow(selectedItems);
     for(var i in rows){
-      this.$table.find('tbody').append(rows[i]);
+      this.$table.children('tbody').append(rows[i]);
       let $lastRow = this.$table.find('tbody tr:last');
       this.initialiseRow($lastRow);
       this.loadDrugDefaults($lastRow);

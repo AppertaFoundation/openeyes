@@ -17,7 +17,7 @@
  */
 ?>
 <?php $bottom_pad = isset($bottom_pad)?$bottom_pad:false;?>
-<div id="<?php echo CHtml::modelName($element) ?>_<?php echo $side ?>_Questions">
+<div id="<?=\CHtml::modelName($element) ?>_<?php echo $side ?>_Questions">
     <?php
     $name_stub = CHtml::modelName($element) . '[' . $side . '_Answer]';
     foreach ($questions as $question) {?>
@@ -36,11 +36,11 @@
           ?>
         <div class="cols-3 column">
           <label class="inline highlight">
-              <?php echo CHtml::radioButton($name, $value, array('id' => CHtml::modelName($element) . '_' . $side . '_Answer_' . $question->id . '_1', 'value' => 1)) ?>
+              <?=\CHtml::radioButton($name, $value, array('id' => CHtml::modelName($element) . '_' . $side . '_Answer_' . $question->id . '_1', 'value' => 1)) ?>
             Yes
           </label>
           <label class="inline highlight">
-              <?php echo CHtml::radioButton($name, (!is_null($value) && !$value), array('id' => CHtml::modelName($element) . '_' . $side . '_Answer_' . $question->id . '_0', 'value' => 0)) ?>
+              <?=\CHtml::radioButton($name, (!is_null($value) && !$value), array('id' => CHtml::modelName($element) . '_' . $side . '_Answer_' . $question->id . '_0', 'value' => 0)) ?>
             No
           </label>
         </div>

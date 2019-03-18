@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -51,19 +51,17 @@ if (isset($values['date']) && strtotime($values['date'])) {
             <?=\CHtml::hiddenField($field_prefix . "[id]", $values['operation']); ?>
             <?=\CHtml::hiddenField($field_prefix . '[operation]', $values['operation']); ?>
         <?php else : ?>
-            <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
-                'placeholder' => 'Enter procedure name',
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
-                'class' => 'common-operation',
-            )); ?>
+            <?= $values['operation'] ?>
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
+            <input class="common-operation" type="hidden" name="<?=$field_prefix?>[operation]" value="<?= $values['operation'] ?>"
+                   placeholder="Enter procedure name" autocomplete="off"/>
         <?php endif; ?>
     </td>
     <td class="past-surgery-entry has-operation">
         <?php if(!$required) {
             if ($values['had_operation'] === (string)PastSurgery_Operation::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
-                    <?php echo CHtml::radioButton(
+                    <?=\CHtml::radioButton(
                         $field_prefix . '[had_operation]',
                         $values['had_operation'] === (string)PastSurgery_Operation::$PRESENT,
                         array('value' => PastSurgery_Operation::$PRESENT)
@@ -71,7 +69,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
                     yes
                 </label>
                 <label class="inline highlight">
-                    <?php echo CHtml::radioButton(
+                    <?=\CHtml::radioButton(
                         $field_prefix . '[had_operation]',
                         $values['had_operation'] === (string)PastSurgery_Operation::$NOT_PRESENT,
                         array('value' => PastSurgery_Operation::$NOT_PRESENT)
@@ -83,7 +81,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             }
         } else { ?>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton(
+            <?=\CHtml::radioButton(
                 $field_prefix . '[had_operation]',
                 $posted_not_checked,
                 array('value' => PastSurgery_Operation::$NOT_CHECKED)
@@ -91,7 +89,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             Not checked
         </label>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton(
+            <?=\CHtml::radioButton(
                 $field_prefix . '[had_operation]',
                 $values['had_operation'] === (string) PastSurgery_Operation::$PRESENT,
                 array('value' => PastSurgery_Operation::$PRESENT)
@@ -99,7 +97,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             yes
         </label>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton(
+            <?=\CHtml::radioButton(
                 $field_prefix . '[had_operation]',
                 $values['had_operation'] === (string) PastSurgery_Operation::$NOT_PRESENT,
                 array('value' => PastSurgery_Operation::$NOT_PRESENT)
@@ -128,19 +126,25 @@ if (isset($values['date']) && strtotime($values['date'])) {
         ]); ?>
     <?php endif; ?>
 
-    <td>
-        <?php if (!$removable) :?>
-            <?=Helper::formatFuzzyDate($values['date']) ?>
-        <?php else :?>
+
+    <?php if (!$removable) : ?>
+        <td>
+            <?= Helper::formatFuzzyDate($values['date']) ?>
+        </td>
+    <?php else : ?>
         <?php /* I have seen a css class instead of this (???) style="width:90px" */ ?>
+        <td>
             <input id="past-surgery-datepicker-<?= $row_count ?>" style="width:90px"
                    class="date"
                    placeholder="yyyy-mm-dd"
-                   name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" autocomplete="off">
+                   name="<?= $field_prefix ?>[date]" value="<?= $values['date'] ?>" autocomplete="off">
+        </td>
+        <td>
             <i class="js-has-tooltip oe-i info small pad right"
                data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
-        <?php endif; ?>
-    </td>
+        </td>
+    <?php endif; ?>
+
     <?php if ($removable && !$required) : ?>
         <td>
             <i class="oe-i trash remove_item"></i>

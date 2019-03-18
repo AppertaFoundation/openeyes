@@ -8,11 +8,14 @@
 class ResultTypeController  extends ModuleAdminController
 {
     protected $admin;
+    public $group = 'Lab Results';
+
 
     protected function beforeAction($action)
     {
         $this->admin = new Admin(OphInLabResults_Type::model(), $this);
         $this->admin->setModelDisplayName('Lab Result Type');
+        $this->admin->div_wrapper_class = 'cols-5';
 
         return parent::beforeAction($action);
     }
@@ -57,7 +60,7 @@ class ResultTypeController  extends ModuleAdminController
             'result_element_id' => array(
                 'widget' => 'DropDownList',
                 'options' => $options,
-                'htmlOptions' => null,
+                'htmlOptions' => ['class' => 'cols-full'],
                 'hidden' => false,
                 'layoutColumns' => null,
             ),

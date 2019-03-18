@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,61 +11,62 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-<?php if (!$event_logs) : ?>
+<div class="cols-7">
+
+    <?php if (!$event_logs) : ?>
+        <div class="row divider">
+            <div class="alert-box issue"><b>No results found</b></div>
+        </div>
+    <?php endif; ?>
+
     <div class="row divider">
-        <div class="alert-box issue"><b>No results found</b></div>
+        <form id="event_log_search" method="post">
+            <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+            <table class="cols-full">
+                <colgroup>
+                    <col class="cols-8">
+                    <col class="cols-2" span="2">
+                    <col class="cols-1">
+                </colgroup>
+
+                <tbody>
+                <tr class="col-gap">
+                    <td>
+                        <?=\CHtml::textField(
+                            'search[query]',
+                            $search['query'],
+                            [
+                                'class' => 'cols-full',
+                                'placeholder' => "Event Id, Unique Code, Examination Date"
+                            ]
+                        ); ?>
+                    </td>
+                    <td>
+                        <?= \CHtml::dropDownList(
+                            'search[status_value]',
+                            $search['status_value'],
+                            CHtml::listData($statuses, 'id', 'status_value'),
+                            ['empty' => '-All-']
+                        ); ?>
+                    </td>
+                    <td>
+                        <button class="blue hint"
+                                type="submit" id="et_search">Search
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
     </div>
-<?php endif; ?>
 
-<div class="row divider cols-9">
-    <form id="event_log_search" method="post">
+    <form id="admin_eventLogs" method="post">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
-        <table class="cols-full">
-            <colgroup>
-                <col class="cols-8">
-                <col class="cols-2" span="2">
-                <col class="cols-1">
-            </colgroup>
-            <tbody>
-            <tr class="col-gap">
-                <td>
-                    <?php echo CHtml::textField(
-                        'search[query]',
-                        $search['query'],
-                        [
-                            'class' => 'cols-full',
-                            'placeholder' => "Event Id, Unique Code, Examination Date"
-                        ]
-                    ); ?>
-                </td>
-                <td>
-                    <?= \CHtml::dropDownList(
-                        'search[status_value]',
-                        $search['status_value'],
-                        CHtml::listData($statuses, 'id', 'status_value'),
-                        ['empty' => '-All-']
-                    ); ?>
-                </td>
-                <td>
-                    <button class="blue hint"
-                            type="submit" id="et_search">Search
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </form>
-</div>
-
-<form id="admin_eventLogs" method="post">
-    <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
-
-    <div class="cols-9">
         <table class="standard">
             <thead>
             <tr>
@@ -76,12 +77,13 @@
                 <th>Status Value</th>
             </tr>
             </thead>
+
             <tbody>
             <?php
             foreach ($event_logs as $key => $event) { ?>
                 <tr id="$key" class="clickable" data-id="<?php echo $event->id ?>"
                     data-uri="oeadmin/eventLog/edit/<?php echo $event->id ?>?returnUri=">
-                    <td><input type="checkbox" name="select[]" value="<?php echo $event->id ?>" id="select[<?=$event->id ?>]"/><td>
+                    <td><input type="checkbox" name="select[]" value="<?php echo $event->id ?>" id="select[<?=$event->id ?>]"/></td>
                     <td><?php echo $event->event_id ?></td>
                     <td><?php echo $event->unique_code ?></td>
                     <td><?php echo $event->examination_date ?></td>
@@ -93,12 +95,11 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="2">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large disabled',
                             'data-uri' => '/oeadmin/eventLog/delete',
-                            'type' => 'submit',
                             'name' => 'delete',
                             'data-object' => 'eventLogs',
                             'id' => 'et_delete',
@@ -106,7 +107,7 @@
                         ]
                     ); ?>
                 </td>
-                <td colspan="4">
+                <td colspan="3">
                     <?php $this->widget(
                         'LinkPager',
                         ['pages' => $pagination]
@@ -115,8 +116,8 @@
             </tr>
             </tfoot>
         </table>
-    </div>
-</form>
+    </form>
+</div>
 
 <script>
     $(document).ready(function () {

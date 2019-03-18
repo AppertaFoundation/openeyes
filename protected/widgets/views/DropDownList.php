@@ -25,10 +25,10 @@ else:
     $full_dropdown = @$layoutColumns['full_dropdown'];
     $full_dropdown = $full_dropdown?:false;
 ?>
-<div id="div_<?=CHtml::modelName($element)?>_<?=$field?>"
+<div id="div_<?=\CHtml::modelName($element)?>_<?=$field?>"
      class="data-group cols-full <?php
       echo !@$htmlOptions['vertical']?" flex-layout ":"";
-      echo !$stretch?' flex-left ':''
+      echo !$stretch?' ':''
      ?> "
      style="<?=(@$hidden) ?"display: none;":""?>"
 >

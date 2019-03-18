@@ -18,7 +18,7 @@
 ?>
 <?php echo $form->hiddenInput($element, 'report', $element->report) ?>
 <?php echo $form->dropDownList($element, 'drainage_type_id', 'OphTrOperationnote_DrainageType',
-    array('empty' => '- Please select -')) ?>
+    array('empty' => 'Select')) ?>
 <?php echo $form->radioBoolean($element, 'drain_haem') ?>
 <?php echo $form->radioBoolean($element, 'deep_suture') ?>
 <?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 60)) ?>

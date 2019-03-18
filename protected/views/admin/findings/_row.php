@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -23,8 +23,8 @@
         ); ?>
     </td>
     <td>
-        <?php echo CHtml::activeHiddenField($data['finding'], "[" . $data['key'] . "]id");?>
-        <?php echo CHtml::activeTextField(
+        <?=\CHtml::activeHiddenField($data['finding'], "[" . $data['key'] . "]id");?>
+        <?=\CHtml::activeTextField(
             $data['finding'],
             "[" . $data['key'] . "]name",
             [
@@ -57,13 +57,13 @@
     ]);
     ?>
     <td>
-        <?php echo CHtml::activeCheckBox(
+        <?=\CHtml::activeCheckBox(
             $data['finding'],
             "[" . $data['key'] . "]requires_description"
         ) ?>
     </td>
     <td>
-        <?php echo CHtml::activeCheckBox(
+        <?=\CHtml::activeCheckBox(
             $data['finding'],
             "[" . $data['key'] . "]active"
         ) ?>

@@ -62,7 +62,7 @@ ComplianceCalculator.prototype.init = function()
 ComplianceCalculator.prototype.showOutcome = function(outcome_id, source_node_id)
 {
 	var node_elem = this._elem.find('#' + this._side + '_outcome_' + outcome_id);
-	this._elem.find('div.outcome').hide().each(function() {$(this).data('source-node-id', null); });
+	this._elem.find('span.outcome').hide().each(function() {$(this).data('source-node-id', null); });
 	node_elem.show().data('source-node-id', source_node_id);
 	this._elem.find('#Element_OphCoTherapyapplication_PatientSuitability_' + this._side + '_nice_compliance').val(node_elem.data('comp-val'));
 }
@@ -80,7 +80,6 @@ ComplianceCalculator.prototype.hideOutcome = function(outcome_id, source_node_id
 		node_elem.data('source-node-id', null);
 		this._elem.find('#Element_OphCoTherapyapplication_PatientSuitability_' + this._side + '_nice_compliance').val('');
 	}
-
 }
 
 /*
@@ -351,7 +350,7 @@ function OphCoTherapyapplication_PatientSuitability_check(side) {
 
 			if (l2_data) {
 				// need to update the list of options in the level 2 drop down
-				var options = '<option value="">- Please Select -</option>';
+				var options = '<option value="">Select</option>';
 				for (var i in l2_data) {
 					options += '<option value="' + l2_data[i].id + '">' + l2_data[i].term + '</option>';
 				}
@@ -420,7 +419,9 @@ function OphCoTherapyapplication_ExceptionalCircumstances_check(side) {
 		hideSplitElementSide('Element_OphCoTherapyapplication_ExceptionalCircumstances', side);
 		// check if the other side is visible
 		// if it isn't disable the form elements
-		if ($('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('div.js-element-eye.' + side).hasClass('inactive')) {
+		if ($('.Element_OphCoTherapyapplication_ExceptionalCircumstances')
+			.find('div.js-element-eye.' + side)
+			.find('.active-form:hidden')) {
 			$('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('input, select, textarea').each(function() { $(this).attr('disabled', 'disabled') });
 		}
 	}

@@ -29,8 +29,14 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
     }
 
     public function run_oescape(){
-
-        $va_unit_id = @$_GET[$this->va_unit_input] ?: models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'ETDRS Letters'))->id;
+      $va_unit_id = @$_GET[$this->va_unit_input] ?:
+        SettingMetadata::model()->getSetting(
+          'unit_id',
+          ElementType::model()->find(
+            'class_name=?',
+            array('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
+          )
+        );
         $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
 
         $va_ticks = $this->getChartTicks();
@@ -143,7 +149,8 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
     public function getCRTData() {
         $crt_data_list = array('right' => array(), 'left' => array());
         foreach ($this->event_type->api->getEvents($this->patient, false) as $event) {
-            if (($oct = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_OCT'))) {
+            $oct = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_OCT');
+            if ($oct) {
                 if ($oct->hasRight()){
                     $crt = $oct->{"right_sft"};
                     array_push($crt_data_list['right'], array('y'=>$crt?(float)$crt:0, 'x'=>Helper::mysqlDate2JsTimestamp($oct->event->event_date)));
@@ -160,10 +167,41 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
         return $crt_data_list;
     }
 
+
+  public function getPlotlyCRTData() {
+    $crt_data_list = array('right' => array(), 'left' => array());
+    $crt_plotly_list = array('right'=>array('x'=>array(), 'y'=>array()), 'left'=>array('x'=>array(), 'y'=>array()));
+
+
+    foreach ($this->event_type->api->getEvents($this->patient, false) as $event) {
+      $oct = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_OCT');
+      if ($oct) {
+        if ($oct->hasRight()){
+          $crt = $oct->{"right_sft"};
+          array_push($crt_data_list['right'], array('y'=>$crt?(float)$crt:0, 'x'=>date('Y-m-d', Helper::mysqlDate2JsTimestamp($oct->event->event_date)/1000)));
+        }
+        if ($oct->hasLeft()) {
+          $crt = $oct->{"left_sft"};
+          array_push($crt_data_list['left'], array('y'=>$crt?(float)$crt:0, 'x'=>date('Y-m-d', Helper::mysqlDate2JsTimestamp($oct->event->event_date)/1000)));
+        }
+      }
+    }
+    foreach (['left', 'right'] as $side){
+      usort($crt_data_list[$side], array("EpisodeSummaryWidget","sortData"));
+      foreach ($crt_data_list[$side] as $item){
+        $crt_plotly_list[$side]['x'][] = $item['x'];
+        $crt_plotly_list[$side]['y'][] = $item['y'];
+      }
+
+    }
+    return $crt_plotly_list;
+  }
+
     public function getLossLetterMoreThan5(){
         $loss_letter_five_list = array('right' => array(), 'left' => array());
         foreach ($this->event_type->api->getEvents($this->patient, false) as $event) {
-            if (($inj_mang = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex'))) {
+            $inj_mang = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
+            if ($inj_mang) {
                 foreach (['left','right'] as $side) {
                     if ($inj_mang->hasEye($side)){
                         foreach($inj_mang->{$side.'_answers'} as $ra){
@@ -189,7 +227,8 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
 
     public function getInjectionsList(){
         $injection_list = array('right' => array(), 'left' => array());
-        if (($injectionApi = Yii::app()->moduleAPI->get('OphTrIntravitrealinjection'))) {
+        $injectionApi = Yii::app()->moduleAPI->get('OphTrIntravitrealinjection');
+        if ($injectionApi) {
             foreach (['left','right'] as $eye_side){
                 foreach ($injectionApi->previousInjections($this->patient, $this->episode, $eye_side) as $injection) {
                     if (empty($injection_list[$eye_side])||!array_key_exists($injection[$eye_side.'_drug'], $injection_list[$eye_side])){
@@ -221,11 +260,12 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
         $event_type = EventType::model()->find('class_name=?', array('OphCoDocument'));
         $events = Event::model()->getEventsOfTypeForPatient($event_type ,$this->patient);
         foreach ($events as $event) {
-            if ($doc = $event->getElementByClass("Element_OphCoDocument_Document")) {
+          $doc = $event->getElementByClass("Element_OphCoDocument_Document");
+            if ($doc&&$doc->sub_type->name==='OCT') {
                 $single_doc = $doc->single_document;
                 $left_doc = $doc->left_document;
                 $right_doc = $doc->right_document;
-                $date = date('Y-m-d', Helper::mysqlDate2JsTimestamp($event->created_date)/1000);
+                $date = Helper::mysqlDate2JsTimestamp($event->event_date);
                 if ($single_doc) {
                     array_push($MR_documents['right'],
                         array('doc_id'=>$single_doc->id, 'doc_name'=>$single_doc->name, 'date'=>$date));
@@ -250,7 +290,8 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
         $event_type = EventType::model()->find('class_name=?', array('OphCoDocument'));
         $events = Event::model()->getEventsOfTypeForPatient($event_type ,$this->patient);
         foreach ($events as $event) {
-            if ($doc = $event->getElementByClass("Element_OphCoDocument_Document")) {
+          $doc = $event->getElementByClass("Element_OphCoDocument_Document");
+            if ($doc) {
                 $single_doc = $doc->single_document;
                 $left_doc = $doc->left_document;
                 $right_doc = $doc->right_document;
@@ -281,6 +322,35 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
                 $va['side'] = $side;
             }
         }
+
         return $va_data_list;
+    }
+
+    public function getOctFly(){
+      $id_date_map = array('right'=>array(), 'left'=>array());
+
+      $event_type = EventType::model()->find('class_name=?', array('OphCoDocument'));
+      $events = Event::model()->getEventsOfTypeForPatient($event_type ,$this->patient);
+      foreach ($events as $event) {
+        $doc = $event->getElementByClass("Element_OphCoDocument_Document");
+        if ($doc&&$doc->sub_type->name==='OCT') {
+          $single_doc = $doc->single_document;
+          $left_doc = $doc->left_document;
+          $right_doc = $doc->right_document;
+          $date = date('Y-m-d', Helper::mysqlDate2JsTimestamp($event->event_date)/1000);
+          if ($single_doc) {
+            $id_date_map['right'][] = array('x'=>$date, 'id'=>$single_doc->id);
+            $id_date_map['left'][] = array('x'=>$date, 'id'=>$single_doc->id);
+          }
+          if ($right_doc) {
+            $id_date_map['right'][] = array('x'=>$date, 'id'=>$right_doc->id);
+          }
+          if ($left_doc) {
+            $id_date_map['left'][] = array('x'=>$date, 'id'=>$left_doc->id);
+          }
+        }
+      }
+
+      return $id_date_map;
     }
 }

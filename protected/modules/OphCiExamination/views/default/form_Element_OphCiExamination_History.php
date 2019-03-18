@@ -51,7 +51,7 @@
 </script>
 
 <?php
-$itemSets = array();
+$itemSets = [];
 foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
     $items = array();
 
@@ -59,7 +59,10 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
         $items[] = ['label' => (string)$option->slug];
     }
 
-    $itemSets[] = $items;
+    $itemSets[] = ['items' => $items ,
+        'header' => $attribute->label ,
+        'multiSelect' => $attribute->is_multiselect === '1' ? true : false
+    ];
 }
 ?>
 <script type="text/javascript" id="history-add-to-dialog">
@@ -68,20 +71,13 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
 
     new OpenEyes.UI.AdderDialog({
       openButton: $('#show-add-to-history'),
-      itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($x) {
-        return new OpenEyes.UI.AdderDialog.ItemSet($x, {'multiSelect': true});
+      itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($itemSet) {
+        return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {'header': $itemSet.header,'multiSelect': $itemSet.multiSelect });
       }),
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {
-
-        $(selectedItems).each(function (key, item) {
-          inputText.val(inputText.val() ?
-            inputText.val() + item['label'] : item['label']
-          );
-        });
-
+				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
         inputText.trigger('oninput');
-
         return true;
       }
     });

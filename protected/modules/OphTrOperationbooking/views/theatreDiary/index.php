@@ -50,7 +50,7 @@
       <tr>
         <td>Site:</td>
         <td>
-            <?php echo CHtml::dropDownList('site-id', @$_POST['site-id'],
+            <?=\CHtml::dropDownList('site-id', @$_POST['site-id'],
                 Site::model()->getListForCurrentInstitution(), array(
                     'empty' => 'All sites',
                     'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
@@ -60,7 +60,7 @@
       <tr>
         <td>Theatre:</td>
         <td>
-            <?php echo CHtml::dropDownList('theatre-id', @$_POST['theatre-id'], $theatres, array(
+            <?=\CHtml::dropDownList('theatre-id', @$_POST['theatre-id'], $theatres, array(
                 'empty' => 'All theatres',
                 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
             )) ?>
@@ -69,7 +69,7 @@
       <tr>
         <td>Subspeciality:</td>
         <td>
-            <?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'],
+            <?=\CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'],
                 Subspecialty::model()->getList(), array(
                     'empty' => 'All specialties',
                     'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
@@ -80,10 +80,10 @@
         <td><?= Firm::contextLabel() ?>:</td>
         <td>
             <?php if (!@$_POST['subspecialty-id']) { ?>
-                <?php echo CHtml::dropDownList('firm-id', '', array(),
+                <?=\CHtml::dropDownList('firm-id', '', array(),
                     array('empty' => 'All '.Firm::model()->contextLabel().'s', 'disabled' => 'disabled')) ?>
             <?php } else { ?>
-                <?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'],
+                <?=\CHtml::dropDownList('firm-id', @$_POST['firm-id'],
                     Firm::model()->getList(@$_POST['subspecialty-id']), array(
                         'empty' => 'All '.Firm::model()->contextLabel().'s',
                         'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
@@ -94,7 +94,7 @@
       <tr>
         <td>Ward:</td>
         <td>
-            <?php echo CHtml::dropDownList('ward-id', @$_POST['ward-id'], $wards, array(
+            <?=\CHtml::dropDownList('ward-id', @$_POST['ward-id'], $wards, array(
                 'empty' => 'All wards',
                 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
             )) ?>
@@ -103,7 +103,7 @@
       <tr>
         <td>Emergency list</td>
         <td>
-            <?php echo CHtml::checkBox('emergency_list', (@$_POST['emergency_list'] == 1)) ?>
+            <?=\CHtml::checkBox('emergency_list', (@$_POST['emergency_list'] == 1)) ?>
         </td>
       </tr>
       </tbody>
@@ -136,8 +136,8 @@
       <h3>Filter by Date</h3>
 
       <div class="flex-layout">
-          <?php echo CHtml::textField('date-start', @$_POST['date-start'], array('class' => 'cols-5', 'placeholder'=> 'from')) ?>
-          <?php echo CHtml::textField('date-end', @$_POST['date-end'], array('class' => 'cols-5', 'placeholder' => 'to')) ?>
+          <?=\CHtml::textField('date-start', @$_POST['date-start'], array('class' => 'cols-5', 'placeholder'=> 'from')) ?>
+          <?=\CHtml::textField('date-end', @$_POST['date-end'], array('class' => 'cols-5', 'placeholder' => 'to')) ?>
       </div>
 
       <div class="flex-layout v-pad">

@@ -54,11 +54,11 @@
 <table>
 	<tr>
 		<th>Escort</th>
-		<td><?php echo CHtml::encode($transport['escort'])?></td>
+		<td><?=\CHtml::encode($transport['escort'])?></td>
 	</tr>
 	<tr>
 		<th>Mobility</th>
-		<td><?php echo CHtml::encode($transport['mobility'])?></td>
+		<td><?=\CHtml::encode($transport['mobility'])?></td>
 	</tr>
 	<tr>
 		<th>Age</th>
@@ -66,16 +66,16 @@
 	</tr>
 	<tr>
 		<th>Comments</th>
-		<td><?php echo CHtml::encode($transport['comments'])?></td>
+		<td><?=\CHtml::encode($transport['comments'])?></td>
 	</tr>
 	<tr>
 		<th>Oxygen</th>
-		<td><?php echo CHtml::encode($transport['oxygen'])?></td>
+		<td><?=\CHtml::encode($transport['oxygen'])?></td>
 	</tr>
 </table>
 <p>
-	Authorised by: <strong><?php echo CHtml::encode($transport['request_from'])?></strong>
+	Authorised by: <strong><?=\CHtml::encode($transport['request_from'])?></strong>
 </p>
 <p>
-	If you have any questions regarding the above booking, please telephone <?php echo CHtml::encode($transport['contact_name'])?> on <?php echo CHtml::encode($transport['contact_number'])?>
+	If you have any questions regarding the above booking, please telephone <?=\CHtml::encode($transport['contact_name'])?> on <?=\CHtml::encode($transport['contact_number'])?>
 </p>

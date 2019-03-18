@@ -45,3 +45,41 @@
 
   </div>
 </section>
+
+<?php
+if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnote_Comments::class)): ?>
+    <section class="element view tile">
+        <header class="element-header">
+            <h3 class="element-title"><?=\CHtml::encode($instructions->getAttributeLabel('postop_instructions')) ?></h3>
+        </header>
+        <div class="element-data full-width">
+            <div class="data-value">
+                <div class="tile-data-overflow">
+                    <div class="data-value<?php if (!$instructions->postop_instructions) { ?> none<?php } ?>">
+                        <?=\CHtml::encode($instructions->postop_instructions) ? Yii::app()->format->Ntext($instructions->postop_instructions) : 'None' ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<?php endif; ?>
+
+<?php $element = Element_OphTrOperationnote_Comments::model()->findByAttributes(['event_id' => $element->event->id]); ?>
+<section class="element view tile  view-per-operative-comments">
+    <header class="element-header">
+        <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+    </header>
+    <div class="element-data full-width">
+        <div class="data-group">
+            <div class="data-value <?php if (!$element->comments) { ?> none<?php } ?>">
+                <div class="tile-data-overflow">
+                    <?php if (!$element->comments) { ?>
+                        None
+                    <?php } else {
+                        echo $element->comments;
+                    } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

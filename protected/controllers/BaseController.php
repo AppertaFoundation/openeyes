@@ -24,7 +24,7 @@ class BaseController extends Controller
 {
 
     public $renderPatientPanel = false;
-    public $fixedHotlist = false;
+    public $fixedHotlist = true;
     public $selectedFirmId;
     public $selectedSiteId;
     public $firms;
@@ -254,6 +254,7 @@ class BaseController extends Controller
         $this->jsVars['OE_html_autocomplete'] = Yii::app()->params['html_autocomplete'];
         $this->jsVars['OE_event_print_method'] = Yii::app()->params['event_print_method'];
         $this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
+        $this->jsVars['OE_GP_Setting'] = Yii::app()->params['gp_label'];
 
         foreach ($this->jsVars as $key => $value) {
             $value = CJavaScript::encode($value);

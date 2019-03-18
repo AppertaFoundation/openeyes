@@ -42,21 +42,21 @@ $element_Type = $element->getElementType();
             data-element-display-order="<?= $element->elementType->display_order ?>"
   >
         <?php
-        if (isset($_POST[$model_name]['element_dirty'])) {
-            $element_dirty = $_POST[$model_name]['element_dirty'];
+        if (isset($_POST['element_dirty'][$model_name])) {
+            $element_dirty = $_POST['element_dirty'][$model_name];
         } else if ($element->isNewRecord) {
             $element_dirty = 0;
         } else {
             $element_dirty = 1;
         } ?>
 
-        <input type="hidden" name="<?php echo $model_name?>[element_dirty]"
-               value=<?= $element_dirty ?>>
+        <input type="hidden" name="[element_dirty]<?=$model_name?>"
+               value=<?=$element_dirty ?>>
 
         <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
             <header class="element-header">
                 <!-- Add a element remove flag which is used when saving data -->
-                <input type="hidden" name="<?php echo $model_name?>[element_removed]" value="0">
+                <input type="hidden" name="[element_removed]<?php echo $model_name?>" value="0">
                 <!-- Element title -->
                 <h3 class="element-title"><?php echo $element->getFormTitle() ?></h3>
             </header>
@@ -80,9 +80,9 @@ $element_Type = $element->getElementType();
                 <?php } ?>
                 <!-- remove MUST be last element -->
                 <span class="<?= ($this->isRequiredInUI($element)) ? 'disabled' : 'js-remove-element' ?>"
-                      title="<?= ($this->isRequiredInUI($element)) ? 'Mandatory Field' : '' ?>">
+                      title="<?= ($this->isRequiredInUI($element)) ? 'This is a mandatory element and cannot be closed,' : '' ?>">
                     <?php if(!isset($no_bin) || $no_bin == false) { ?>
-                        <i class="oe-i trash-blue"></i>
+                        <i class="oe-i trash-blue <?= ($this->isRequiredInUI($element)) ? 'disabled' : '' ?>"></i>
                      <?php } ?>
           </span>
             </div>

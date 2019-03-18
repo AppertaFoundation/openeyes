@@ -1,7 +1,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -18,9 +18,8 @@ var OpenEyes = OpenEyes || {};
 
 OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
-(function(exports) {
-    function HistoryRisksCore()
-    {
+(function (exports) {
+    function HistoryRisksCore() {
         this.elementTypeClass = OE_MODEL_PREFIX + 'HistoryRisks';
         this.controllerElSelector = '#' + OE_MODEL_PREFIX + 'HistoryRisks_element';
     }
@@ -31,9 +30,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param risks [{id: riskId, comments: [comment, ...]}, ...]
      * @param sourceElementName
      */
-    HistoryRisksCore.prototype.addRisksForSource = function(risks, sourceElementName)
-    {
-        this.callFunctionOnController('setRisksSelected' , [risks]);
+    HistoryRisksCore.prototype.addRisksForSource = function (risks, sourceElementName) {
         this.callFunctionOnController('addRisks', [risks, sourceElementName]);
     };
 
@@ -43,16 +40,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param funcName
      * @param args
      */
-    HistoryRisksCore.prototype.callFunctionOnController = function(funcName, args)
-    {
+    HistoryRisksCore.prototype.callFunctionOnController = function (funcName, args) {
         var core = this;
+
         function controllerFunction() {
             var controller = $(core.controllerElSelector).data('controller');
             controller[funcName].apply(controller, args);
         }
 
         if (!$.find(core.controllerElSelector).length) {
-            var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
+            let sidebar = $('#episodes-and-events').data('patient-sidebar');
             sidebar.addElementByTypeClass(core.elementTypeClass, undefined, controllerFunction);
         } else {
             controllerFunction();
@@ -93,48 +90,46 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     }
 
     HistoryRisksController._defaultOptions = {
-      modelName: 'OEModule_OphCiExamination_models_HistoryRisks',
-      element: undefined,
+        modelName: 'OEModule_OphCiExamination_models_HistoryRisks',
+        element: undefined,
         riskNotCheckedValue: "-9",
         riskNoValue: "0",
         riskYesValue: "1",
-      pcrRiskLinks: [
-          {
-              name: "Cannot Lie Flat",
-              selector:"select.pcr_lie_flat",
-              "function": function(container){
-
-                  $(container).on('change.pcr', 'input[type="radio"]', function(){
-                        if($(this).val() === 1){
-                            $('select.pcr_lie_flat').val("N");
-                        } else {
-                            $('select.pcr_lie_flat').val("Y");
-                        }
-                  });
-              }
-          }]
+        pcrRiskLinks: [
+            {
+                name: "Cannot Lie Flat",
+                selector: "select.pcr_lie_flat",
+                "function": function (is_present) {
+                    if (is_present) {
+                        $('select.pcr_lie_flat').val("N");
+                    } else {
+                        $('select.pcr_lie_flat').val("Y");
+                    }
+                }
+            }]
     };
 
-    HistoryRisksController.prototype.initialiseTriggers = function()
-    {
+    HistoryRisksController.prototype.initialiseTriggers = function () {
         var controller = this;
-        controller.$element.on('change', controller.riskSelector, function(e) {
+        controller.$element.on('change', controller.riskSelector, function (e) {
             var $selected = $(this).find('option:selected');
             var $container = $(this).parents('td');
             var $tr = $(this).closest('tr');
             if ($selected.data('other')) {
                 $container.find(controller.otherWrapperSelector).show();
-            }
-            else {
+            } else {
                 $container.find(controller.otherWrapperSelector).hide();
                 $container.find(controller.otherSelector).val('');
             }
             $tr.off('.pcr');
-            controller.setPcrRisk($tr, $(this).find('option:selected').text());
             controller.dedupeRiskSelectors();
         });
 
-        $(document).ready(function(){
+        $(document).ready(function () {
+            if (controller.$noRisksFld.prop('checked')) {
+                controller.$table.find('tr:not(:first-child)').hide();
+                controller.$popupSelector.hide();
+            }
             controller.updateNoRisksState();
         });
 
@@ -142,11 +137,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             controller.updateNoRisksState();
         });
 
-        this.$popupSelector.on('click', '.js-add-select-search', function(e) {
+        this.$popupSelector.on('click', '.js-add-select-search', function (e) {
             e.preventDefault();
             controller.$table.show();
         });
-      controller.$table.on('click', 'i.trash', function(e) {
+        controller.$table.on('click', 'i.trash', function (e) {
             e.preventDefault();
             var info = $(e.target).parents('tr').find('.risk-display');
             data = {};
@@ -156,48 +151,50 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $(e.target).parents('tr').remove();
 
             controller.updateNoRisksState();
-
             controller.dedupeRiskSelectors();
+            controller.setPcrRisk();
         });
 
-      controller.$noRisksFld.on('click', function() {
+        controller.$noRisksFld.on('click', function () {
             if (controller.$noRisksFld.prop('checked')) {
-                controller.$table.hide();
+                controller.$table.find('tr:not(:first-child)').hide();
                 controller.$popupSelector.hide();
                 controller.setRadioButtonsToNo();
             } else {
-              controller.$popupSelector.show();
-              controller.$table.show();
-              controller.$table.find('input[type=radio]:checked').prop('checked', false);
+                controller.$popupSelector.show();
+                controller.$table.find('tr:not(:first-child)').show();
+                controller.$table.find('input[type=radio]:checked').prop('checked', false);
             }
         });
     };
 
-    HistoryRisksController.prototype.setPcrRisk = function(container, text)
-    {
+    HistoryRisksController.prototype.setPcrRisk = function () {
         var controller = this;
 
-        for (var idx in controller.pcrRiskLinks) {
-            var link = controller.pcrRiskLinks[idx];
-            if (link.name === text && typeof link.function) {
-                link.function(container);
-                $(container).find('input[type="radio"]:checked').trigger('change');
+        let present_risks = controller.$table.find('tbody tr .risk-display').map(function () {
+            return $(this).text().trim();
+        }).get();
 
+        for (let idx in controller.pcrRiskLinks) {
+            let pcr_link = controller.pcrRiskLinks[idx];
+
+            if (typeof pcr_link.function === 'function') {
+                pcr_link.function($.inArray(pcr_link.name, present_risks) !== -1);
             }
         }
     };
+
 
     /**
      * Show the no risks form section if there are no table entries or
      * if any of the values are checked to Yes or Not Checked
      */
-    HistoryRisksController.prototype.updateNoRisksState = function()
-    {
+    HistoryRisksController.prototype.updateNoRisksState = function () {
         if (this.$noRisksFld.prop('checked') && this.isRisksChecked(this.riskNotCheckedValue)) {
             this.$noRisksFld.prop('checked', false);
             this.$popupSelector.show();
         }
-        if(this.isRisksChecked(this.riskYesValue) || this.isRisksChecked(this.riskNotCheckedValue)){
+        if (this.isRisksChecked(this.riskYesValue) || this.isRisksChecked(this.riskNotCheckedValue)) {
             this.$noRisksWrapper.hide();
             this.$popupSelector.show();
             this.$noRisksFld.prop('checked', false);
@@ -212,7 +209,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param value
      * @returns {boolean}
      */
-    HistoryRisksController.prototype.isRisksChecked = function(value){
+    HistoryRisksController.prototype.isRisksChecked = function (value) {
         var valueChecked = false;
 
         this.$table.find('input[type=radio]:checked , input[type=hidden]').each(function () {
@@ -238,63 +235,49 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param data
      * @returns {*}
      */
-    HistoryRisksController.prototype.createRow = function()
-    {
-        let selected_option = this.$risksOptions.find('.selected');
-
-      var newRows = [];
-      var template = this.templateText;
-      var tableSelector = this.tableSelector;
-
-      selected_option.each(function (e) {
-        data = {};
-        data['row_count'] = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key')+ newRows.length;
-        data['risk_id'] = $(this).data('id');
-        data['risk_display'] = $(this).data('str');
-        var new_row = Mustache.render(
-          template,
-          data );
-        var row_tem = $(new_row);
-        if ($(this).data('str')==='Other'){
-          row_tem.find('span').show();
+    HistoryRisksController.prototype.createRow = function (risk_id, risk_name) {
+        let template = this.templateText;
+        let tableSelector = this.tableSelector;
+        let data = {};
+        data['row_count'] = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key');
+        data['risk_id'] = risk_id;
+        data['risk_display'] = risk_name;
+        let new_row = Mustache.render(template, data);
+        let row_item = $(new_row);
+        if (risk_name === 'Other') {
+            row_item.find('.js-other-risk').show();
+            row_item.find('.js-not-other-risk').hide();
         }
-        newRows.push(row_tem);
-        $(this).remove();
-      });
-      return newRows;
+        return row_item;
     };
 
     /**
      * Add a history risks row
      */
-    HistoryRisksController.prototype.addEntry = function()
-    {
-        var rows = this.createRow();
-      for(var i in rows){
-        this.$table.find('tbody').append(rows[i]);
-
-      }
+    HistoryRisksController.prototype.addEntry = function (risk_id, risk_name) {
+        var row = this.createRow(risk_id, risk_name);
+        this.$table.find('tbody').append(row);
         this.updateNoRisksState();
-        $('.flex-item-bottom').find('.selected').removeClass('selected');
+
+        this.setPcrRisk();
     };
 
     /**
      * Run through each Risk drop down and ensure selected options are not
      * available in other rows.
      */
-    HistoryRisksController.prototype.dedupeRiskSelectors = function()
-    {
+    HistoryRisksController.prototype.dedupeRiskSelectors = function () {
         var self = this;
         var selectedRisks = [];
-        self.$element.find(self.riskSelector).each(function() {
+        self.$element.find(self.riskSelector).each(function () {
             var $selected = $(this).find('option:selected');
             if ($selected.val() && !$selected.data('other')) {
                 selectedRisks.push($selected.val());
             }
         });
 
-        self.$element.find(self.riskSelector).each(function() {
-            $(this).find('option').each(function() {
+        self.$element.find(self.riskSelector).each(function () {
+            $(this).find('option').each(function () {
                 if (!$(this).is(':selected') && ($.inArray($(this).val(), selectedRisks) > -1)) {
                     $(this).hide();
                 } else {
@@ -307,8 +290,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * Update the risks table with the given list of risks with comments
      */
-    HistoryRisksController.prototype.addRisks = function(risks, sourceName)
-    {
+    HistoryRisksController.prototype.addRisks = function (risks, sourceName) {
         for (var idx in risks) {
             if (risks.hasOwnProperty(idx)) {
                 risk_id = risks[idx].id;
@@ -321,27 +303,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
-     * Mark the Risks as selected as the addRisks method looks
-     * for the selected risks and adds them to the table.
-     * This method is used when risks are coming from medications
-     */
-    HistoryRisksController.prototype.setRisksSelected = function(risks){
-        for(let i = 0 ; i < risks.length ; i++){
-            this.$risksOptions.find('li[data-id="' + risks[i].id + '"]').addClass('selected');
-        }
-    };
-
-    /**
      * Find the table row for the given risk id if it exists.
      *
      * @param risk_id
      * @returns $('tr')|{undefined}
      */
-    HistoryRisksController.prototype.findTableRowForRisk = function(risk_id)
-    {
+    HistoryRisksController.prototype.findTableRowForRisk = function (risk_id) {
         var self = this;
         var row = undefined;
-        self.$table.find('tbody tr').each(function() {
+        self.$table.find('tbody tr').each(function () {
             if ($(this).find(self.riskSelector).val() == risk_id) {
                 row = $(this);
                 return false;
@@ -353,12 +323,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * get or create a table row for the given risk
      */
-    HistoryRisksController.prototype.getTableRowForRisk = function(risk_id)
-    {
+    HistoryRisksController.prototype.getTableRowForRisk = function (risk_id) {
         var self = this;
         var row = self.findTableRowForRisk(risk_id);
         if (row === undefined) {
-            self.addEntry();
+            self.addEntry(null, null);
             row = self.$table.find('tbody tr:last');
             row.find(self.riskSelector).val(risk_id);
         }
@@ -370,8 +339,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param row
      * @param comments
      */
-    HistoryRisksController.prototype.setHasRiskAndComments = function(row, comments)
-    {
+    HistoryRisksController.prototype.setHasRiskAndComments = function (row, comments) {
         // select the appropriate radio option
         row.find(this.hasRiskSelector + '[value="1"]').prop('checked', 'checked').trigger('change');
 
@@ -394,16 +362,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * Create an internal map of risk ids to names
      */
-    HistoryRisksController.prototype.initialiseRiskIdMap = function()
-    {
+    HistoryRisksController.prototype.initialiseRiskIdMap = function () {
         var self = this;
         self.riskIdMap = {};
-        var tmpRow = self.createRow({});
-        $(tmpRow).find('td:first select option').each(function() {
+        var tmpRow = self.createRow(null, null);
+        $(tmpRow).find('td:first select option').each(function () {
             self.riskIdMap[$(this).val()] = $(this).text();
         });
         // map out those that are not in the dropdown list.
-        self.$table.find('tr td:first').each(function() {
+        self.$table.find('tr td:first').each(function () {
             var text = $(this).text();
             if (text.length) {
                 self.riskIdMap[$(this).find(self.riskSelector).val()] = text;
@@ -416,8 +383,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param riskLabel
      * @returns {*}
      */
-    HistoryRisksController.prototype.getRiskIdForLabel = function(riskLabel)
-    {
+    HistoryRisksController.prototype.getRiskIdForLabel = function (riskLabel) {
         var self = this;
 
         if (self.riskIdMap === undefined) {
@@ -428,7 +394,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
 
         if (!self.riskLabelMap.hasOwnProperty(riskLabel)) {
-            $.each(self.riskIdMap, function(id, name) {
+            $.each(self.riskIdMap, function (id, name) {
                 if (name.toLowerCase().indexOf(riskLabel.toLowerCase()) >= 0) {
                     self.riskLabelMap[riskLabel] = id;
                 }
@@ -441,28 +407,28 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      *
      * @param riskLabel
      */
-    HistoryRisksController.prototype.getRiskStatus = function(riskLabel)
-    {
+    HistoryRisksController.prototype.getRiskStatus = function (riskLabel) {
         var riskId = this.getRiskIdForLabel(riskLabel);
         var row = this.findTableRowForRisk(riskId);
-        if (row === undefined)
+        if (row === undefined) {
             return undefined;
+        }
 
         var selected = row.find('input:checked');
         return selected ? selected.val() : undefined;
     };
 
-  /**
-   *
-   */
-  HistoryRisksController.prototype.appendSelectList = function (data) {
-      var span = "<span class='auto-width'>"+data['name']+"</span>";
-      var list_item = $('<li>')
-      .attr('data-str', data['name'])
-      .attr('data-id', data['id']);
-    list_item.append(span);
-    this.$risksOptions.append(list_item);
-  };
+    /**
+     *
+     */
+    HistoryRisksController.prototype.appendSelectList = function (data) {
+        var span = "<span class='auto-width'>" + data['name'] + "</span>";
+        var list_item = $('<li>')
+            .attr('data-str', data['name'])
+            .attr('data-id', data['id']);
+        list_item.append(span);
+        this.$risksOptions.append(list_item);
+    };
 
-  exports.HistoryRisksController = HistoryRisksController;
-})(OpenEyes.OphCiExamination)
+    exports.HistoryRisksController = HistoryRisksController;
+})(OpenEyes.OphCiExamination);

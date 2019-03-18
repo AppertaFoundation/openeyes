@@ -77,6 +77,18 @@ class OphTrOperationbookingModule extends BaseEventTypeModule
         $element_enabled = Yii::app()->params['disable_theatre_diary'];
         return isset($element_enabled) && $element_enabled == 'on';
     }
+
+    /**
+     * @return bool
+     *
+     * Returns true if the Golden Patient is disabled
+     */
+
+    public function isGoldenPatientDisabled()
+    {
+        $golden_patient_enabled = Yii::app()->params['op_booking_disable_golden_patient'];
+        return isset($golden_patient_enabled) && $golden_patient_enabled == 'on';
+    }
 }
 
 /**

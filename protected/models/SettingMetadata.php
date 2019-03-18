@@ -225,4 +225,10 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
         return $setting->value;
     }
+
+    public function scopes() {
+        return array(
+            'byDisplayOrder' => array('order' => 'display_order DESC, name DESC'),
+        );
+    }
 }

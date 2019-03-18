@@ -583,7 +583,8 @@ class Element_OphCiExamination_InjectionManagementComplex extends \SplitEventTyp
      */
     public function getLevel2Disorders($disorder)
     {
-        $disorders = array();
+        $disorders = [];
+        $disorder_ids = [];
 
         if ($api = Yii::app()->moduleAPI->get('OphCoTherapyapplication')) {
             $disorders = $api->getLevel2Disorders($disorder->id);

@@ -1,26 +1,23 @@
-<div class="element-data">
-    <div class="data-group">
-        <div class="cols-6 column">
-            <div
-                class="field-info"><b><?php echo CHtml::encode($element->getAttributeLabel('comments_'.$side)) ?></b>:</div>
-        </div>
-        <div class="cols-6 column end">
-            <div class="field-info<?php
-            if ($element->{'comments_'.$side}){
-                ?> iolDisplay<?php
-            }
-?>"><?php echo CHtml::encode($element->{'comments_'.$side}) ?></div>
-        </div>
-    </div>
-</div>
-<div class="element-data">
-    <div class="data-group">
-        <div class="cols-6 column">
-            <div
-                class="field-info"><b><?php echo CHtml::encode($element->getAttributeLabel('target_refraction_'.$side)) ?></b>:</div>
-            </div>
-        <div class="cols-6 column end">
-            <div class="field-info"><?php echo CHtml::encode($element->{'target_refraction_'.$side}) ?></div>
-        </div>
-    </div>
+<div class="data-value">
+    <table class="large last-left">
+        <colgroup>
+            <col class="cols-6" span="2">
+        </colgroup>
+        <tr>
+            <td>
+                <b><?php echo CHtml::encode($element->getAttributeLabel('comments_' . $side)) ?></b>
+            </td>
+            <td class="field-info<?php if ($element->{'comments_' . $side}) { ?> iolDisplay<?php } ?>">
+                <?php echo CHtml::encode($element->{'comments_' . $side}) ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b><?php echo CHtml::encode($element->getAttributeLabel('target_refraction_' . $side)) ?></b>
+            </td>
+            <td>
+                <?php echo CHtml::encode($element->{'target_refraction_' . $side}) ?>
+            </td>
+        </tr>
+    </table>
 </div>

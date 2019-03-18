@@ -31,27 +31,27 @@
         <input type="hidden" value="search" name="search">
         <div>
             <div>
-                <?php echo CHtml::textField('sample_id', @$_GET['sample_id'], array('placeholder' => 'Sample Id'))?>
+                <?=\CHtml::textField('sample_id', @$_GET['sample_id'], array('placeholder' => 'Sample Id'))?>
             </div>
 
             <div>
-                <?php echo CHtml::textField('genetics_patient_id', @$_GET['genetics_patient_id'], array('placeholder' => 'Subject Id'))?>
+                <?=\CHtml::textField('genetics_patient_id', @$_GET['genetics_patient_id'], array('placeholder' => 'Subject Id'))?>
             </div>
             <div>
-                <?php echo CHtml::textField('genetics_pedigree_id', @$_GET['genetics_pedigree_id'], array('placeholder' => 'Family Id'))?>
+                <?=\CHtml::textField('genetics_pedigree_id', @$_GET['genetics_pedigree_id'], array('placeholder' => 'Family Id'))?>
             </div>
             <div></div>
             <div>
-                <?php echo CHtml::textField('hos_num', @$_GET['hos_num'], array('placeholder' => 'Hospital Number'))?>
+                <?=\CHtml::textField('hos_num', @$_GET['hos_num'], array('placeholder' => 'Hospital Number'))?>
             </div>
             <div>
-                <?php echo CHtml::textField('first_name', @$_GET['first_name'], array('placeholder' => 'First Name'))?>
+                <?=\CHtml::textField('first_name', @$_GET['first_name'], array('placeholder' => 'First Name'))?>
             </div>
             <div>
-                <?php echo CHtml::textField('last_name', @$_GET['last_name'], array('placeholder' => 'Last Name'))?>
+                <?=\CHtml::textField('last_name', @$_GET['last_name'], array('placeholder' => 'Last Name'))?>
             </div>
             <div>
-                <?php echo CHtml::textField('maiden_name', @$_GET['maiden_name'], array('placeholder' => 'Maiden Name'))?>
+                <?=\CHtml::textField('maiden_name', @$_GET['maiden_name'], array('placeholder' => 'Maiden Name'))?>
             </div>
 
             <div>
@@ -84,11 +84,11 @@
                 ))?>
             </div>
             <div>
-                <?php echo CHtml::textField('comment', @$_GET['comment'],array('placeholder' => 'Comments'))?>
+                <?=\CHtml::textField('comment', @$_GET['comment'],array('placeholder' => 'Comments'))?>
             </div>
             <div style="font-size:12px;">
                 Sample Type:
-                <?php echo CHtml::dropDownList('sample-type',
+                <?=\CHtml::dropDownList('sample-type',
                     @$_GET['sample-type'],
                     CHtml::listData(OphInDnasample_Sample_Type::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
                     array('empty' => '- All -','style' => 'width:64%')
@@ -117,7 +117,7 @@
         <div>
             <div>
                 <div class="submit-row text-right" style="margin-left:auto">
-                    <?php echo CHtml::submitButton('Search', ['class' => 'button small primary event-action', 'id' => 'search_dna_sample', 'form' => 'generic-search-form']); ?>
+                    <?=\CHtml::submitButton('Search', ['class' => 'button small primary event-action', 'id' => 'search_dna_sample', 'form' => 'generic-search-form']); ?>
                 </div>
             </div>
         </div>
@@ -143,17 +143,17 @@
 			<table class="standard">
 				<thead>
 					<tr>
-                        <th><?php echo CHtml::link('Sample Id', $this->getUri(array('sortby' => 'sample_id')))?></th>
-                        <th><?php echo CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics_patient_id')))?></th>
-                        <th><?php echo CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics_pedigree_id')))?></th>
-						<th><?php echo CHtml::link('Hospital No', $this->getUri(array('sortby' => 'hos_num')))?></th>
-						<th><?php echo CHtml::link('Patient Name', $this->getUri(array('sortby' => 'patient_name')))?></th>
-						<th><?php echo CHtml::link('Maiden Name', $this->getUri(array('sortby' => 'maiden_name')))?></th>
-						<th><?php echo CHtml::link('Date Taken', $this->getUri(array('sortby' => 'date_taken')))?></th>
-						<th><?php echo CHtml::link('Sample Type', $this->getUri(array('sortby' => 'sample_type')))?></th>
-						<th><?php echo CHtml::link('Volume', $this->getUri(array('sortby' => 'volume')))?></th>
-						<th><?php echo CHtml::link('Comment', $this->getUri(array('sortby' => 'comment')))?></th>
-						<th><?php echo CHtml::link('Diagnosis', $this->getUri(array('sortby' => 'diagnosis')))?></th>
+                        <th><?=\CHtml::link('Sample Id', $this->getUri(array('sortby' => 'sample_id')))?></th>
+                        <th><?=\CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics_patient_id')))?></th>
+                        <th><?=\CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics_pedigree_id')))?></th>
+						<th><?=\CHtml::link('Hospital No', $this->getUri(array('sortby' => 'hos_num')))?></th>
+						<th><?=\CHtml::link('Patient Name', $this->getUri(array('sortby' => 'patient_name')))?></th>
+						<th><?=\CHtml::link('Maiden Name', $this->getUri(array('sortby' => 'maiden_name')))?></th>
+						<th><?=\CHtml::link('Date Taken', $this->getUri(array('sortby' => 'date_taken')))?></th>
+						<th><?=\CHtml::link('Sample Type', $this->getUri(array('sortby' => 'sample_type')))?></th>
+						<th><?=\CHtml::link('Volume', $this->getUri(array('sortby' => 'volume')))?></th>
+						<th><?=\CHtml::link('Comment', $this->getUri(array('sortby' => 'comment')))?></th>
+						<th><?=\CHtml::link('Diagnosis', $this->getUri(array('sortby' => 'diagnosis')))?></th>
 
 					</tr>
 				</thead>
@@ -167,7 +167,7 @@
                         ?>
 						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInDnasample/default/view/'.$result['id'])?>">
                             <td><?php echo $result['sample_id']?></td>
-                            <td><?php echo CHtml::link($result['genetics_patient_id'], '/Genetics/subject/view/id/' . $result['genetics_patient_id']); ?></td>
+                            <td><?=\CHtml::link($result['genetics_patient_id'], '/Genetics/subject/view/id/' . $result['genetics_patient_id']); ?></td>
 
                             <td>
                                 <?php

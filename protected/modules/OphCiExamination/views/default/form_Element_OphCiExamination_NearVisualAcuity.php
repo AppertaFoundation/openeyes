@@ -29,7 +29,7 @@ $key = 0;
   <div>
       <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-          <?php echo CHtml::dropDownList(
+          <?=\CHtml::dropDownList(
               'nearvisualacuity_unit_change',
               @$element->unit_id,
               CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
