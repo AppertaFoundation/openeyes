@@ -186,7 +186,7 @@ if ($api) {
                 $method_name = ${$_method_name};
                 $_data = $eye_side . 'NearData';
                 $data = ${$_data};
-                if (count($rightNearData)) { ?>
+                if (count( ($eye_side == 'left' ? $leftNearData : $rightNearData ))) { ?>
                     <div class="data-value">
                         <?= $unitname ?>
                     </div>
