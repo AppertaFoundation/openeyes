@@ -143,7 +143,7 @@ $episodes_list = array(); ?>
                         </span>
                     </span>
 
-                    <span class="event-date oe-date <?php echo ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
+                    <span class="event-date oe-date <?= ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
                     <?php echo $event->event_date
                         ? $event->NHSDateAsHTML('event_date')
                         : $event->NHSDateAsHTML('created_date');

@@ -389,7 +389,8 @@ class OphTrOperationnote_API extends BaseAPI
      */
     public function getLaterality($event_id)
     {
-        if (!$operation_note = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($event_id))) {
+        $operation_note = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($event_id));
+        if (!$operation_note) {
             throw new Exception("Operation note (procedure list) event not found: $event_id");
         }
 

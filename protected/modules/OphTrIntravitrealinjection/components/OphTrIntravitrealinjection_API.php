@@ -332,7 +332,8 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      */
     public function getLaterality($event_id)
     {
-        if (!$injection_treatment = Element_OphTrIntravitrealinjection_Treatment::model()->find('event_id=?', array($event_id))) {
+        $injection_treatment = Element_OphTrIntravitrealinjection_Treatment::model()->find('event_id=?', array($event_id));
+        if (!$injection_treatment) {
             throw new Exception("Intravitreal injection treatment event not found: $event_id");
         }
 
