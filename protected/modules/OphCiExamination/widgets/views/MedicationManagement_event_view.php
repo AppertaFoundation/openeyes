@@ -18,8 +18,11 @@
 <?php /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */ ?>
 <?php $el_id =  CHtml::modelName($element) . '_element'; ?>
 
-    <?php foreach (array("Continued", "Stopped", "Prescribed", "Other") as $section): ?>
-        <?php $method = "get{$section}Entries"; ?>
+    <?php foreach (array(
+                       "Continued" => "getContinuedEntries",
+					   "Started" => "getEntriesStartedToday",
+                       "Stopped" => "getStoppedEntries",
+                   ) as $section => $method): ?>
         <?php if (!empty($entries = $element->$method())): ?>
             <div class="element-data">
                 <div class="data-value">

@@ -101,7 +101,7 @@ class MedicationManagement extends BaseMedicationElement
         $event_date_YYYYMMDD = substr($event_date, 0, 4).substr($event_date, 5, 2).substr($event_date, 8, 2);
 
         return array_filter($this->visible_entries, function($e) use($event_date_YYYYMMDD) {
-            return ($e->prescribe == 0 && $e->start_date_string_YYYYMMDD <= $event_date_YYYYMMDD && is_null($e->end_date_string_YYYYMMDD));
+            return ($e->start_date_string_YYYYMMDD < $event_date_YYYYMMDD && is_null($e->end_date_string_YYYYMMDD));
         });
     }
 
