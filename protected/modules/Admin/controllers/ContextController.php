@@ -96,7 +96,7 @@ class ContextController extends BaseAdminController
         $this->render('edit', array(
             'firm' => $firm,
             'errors' => @$errors,
-            'siteSecretaries' => $siteSecretaries,
+            'siteSecretaries' => $site_secretaries,
             'subspecialties_list_data' => CHtml::listData(Subspecialty::model()->findAll(['order' => 'name']), 'id', 'name'),
             'consultant_list_data' => CHtml::listData(User::model()->findAll(['order' => 'first_name,last_name']), 'id', 'fullName'),
 
