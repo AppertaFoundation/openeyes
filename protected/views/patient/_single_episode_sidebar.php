@@ -134,16 +134,14 @@ $episodes_list = array(); ?>
                         <?= $event->getEventIcon() ?>
                     </span>
                     <span class="event-extra">
-                        <span class="oe-eye-lat-icons">
-                            <?php
-                            $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
-                            if (method_exists($api, 'getLaterality')) {
-                                $this->widget('EyeLateralityWidget', array('eye' => $api->getLaterality($event->id)));
-                            } ?>
-                        </span>
+                        <?php
+                        $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
+                        if (method_exists($api, 'getLaterality')) {
+                            $this->widget('EyeLateralityWidget', ['eye' => $api->getLaterality($event->id), 'pad' => '']);
+                        } ?>
                     </span>
 
-                    <span class="event-date oe-date <?= ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
+                    <span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
                     <?php echo $event->event_date
                         ? $event->NHSDateAsHTML('event_date')
                         : $event->NHSDateAsHTML('created_date');

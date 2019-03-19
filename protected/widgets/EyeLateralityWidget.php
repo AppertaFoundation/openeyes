@@ -22,6 +22,7 @@ class EyeLateralityWidget extends CWidget
     public $laterality;
     public $eye;
     public $size = 'small';
+    public $pad = 'pad';
 
     public function run()
     {
@@ -55,8 +56,8 @@ class EyeLateralityWidget extends CWidget
         $this->beginWidget('CondenseHtmlWidget');
         ?>
       <span class="oe-eye-lat-icons">
-        <i class="oe-i laterality <?= $this->size ?> pad <?php echo $right ? 'R' : 'NA' ?>"></i>
-        <i class="oe-i laterality <?= $this->size ?> pad <?php echo $left ? 'L' : 'NA' ?>"></i>
+        <i class="oe-i laterality <?= $this->size ?> <?= $this->pad ?> <?php echo $right ? 'R' : 'NA' ?>"></i>
+        <i class="oe-i laterality <?= $this->size ?> <?= $this->pad ?> <?php echo $left ? 'L' : 'NA' ?>"></i>
       </span>
         <?php
         $this->endWidget();
