@@ -33,6 +33,7 @@ OpenEyes.OphDrPrescription = OpenEyes.OphDrPrescription || {};
     };
 
     AllergicDrugsController.prototype.fillAllergicDrugsAndAllergiesArray = function (drug) {
+        console.log(drug['allergies'], this.patientAllergies);
         if(drug['allergies'] === "") {
             return;
         }

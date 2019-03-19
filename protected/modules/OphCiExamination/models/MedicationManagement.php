@@ -35,6 +35,8 @@ namespace OEModule\OphCiExamination\models;
  * @property \User $createdUser
  * @property \User $lastModifiedUser
  * @property \Element_OphDrPrescription_Details $prescription
+ *
+ * @method auditAllergicDrugEntries($target, $action = "allergy_override")
  */
 class MedicationManagement extends BaseMedicationElement
 {
@@ -50,6 +52,18 @@ class MedicationManagement extends BaseMedicationElement
 	public function tableName()
 	{
 		return 'et_ophciexamination_medicationmanagement';
+	}
+
+	public function behaviors()
+	{
+		return array_merge(
+			parent::behaviors(),
+			array(
+				"AllergicDrugEntriesBehavior" => array(
+					"class" => "application.behaviors.AllergicDrugEntriesBehavior",
+				),
+			)
+		);
 	}
 
 	/**
@@ -432,4 +446,21 @@ class MedicationManagement extends BaseMedicationElement
     {
         return;
     }
+
+    protected function afterSave()
+	{
+		parent::afterSave();
+		$this->auditAllergicDrugEntries("medication_management");
+	}
+
+	/**
+	 * @return MedicationManagementEntry[]
+	 *
+	 * Compatibility function for AllergicDrugEntriesBehavior
+	 */
+
+	public function getEntries()
+	{
+		return $this->entries;
+	}
 }
