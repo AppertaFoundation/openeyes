@@ -28,7 +28,8 @@
               foreach ($this->patient->trials as $trialPatient): //
                   ?>
                 <tr>
-                  <td><?php if (Yii::app()->user->checkAccess('TaskViewTrial')) {
+                  <td>
+                      <?php if (!is_null($trialPatient->trial->getUserPermission(Yii::app()->user->id)) && (Yii::app()->user->checkAccess('TaskViewTrial'))) {
                           echo CHtml::link(CHtml::encode($trialPatient->trial->name),
                               Yii::app()->controller->createUrl('/OETrial/trial/permissions',
                                   array('id' => $trialPatient->trial_id)));
