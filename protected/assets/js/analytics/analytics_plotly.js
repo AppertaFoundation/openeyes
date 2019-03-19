@@ -40,6 +40,8 @@ var analytics_layout = {
         tickfont: {
             color: '#fff',
         },
+        ticksuffix: 'weeks',
+        showticksuffix: 'last',
     },
     yaxis:{
         /*Ticks setting*/

@@ -227,7 +227,7 @@
                                     <span class="service-selected js-hs-filters js-hs-surgeon"
                                           id="js-chart-filter-clinical-surgeon-custom"
                                           data-name="custom_surgeon">
-                                        <?=$current_user->getFullName();?>
+                                        <?= $current_user->getFullName();?>
                                     </span>
                                 </li>
                             <?php } ?>
@@ -263,13 +263,13 @@
             </div>
         <div id="js-charts-service">
             <ul class="charts">
-                <li><a href="#" id="js-hs-app-follow-up-coming" class="js-plot-display-label">Follow-Up</a></li>
-                <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected js-plot-display-label">Delayed</a></li>
-                <li><a href="#" id="js-hs-app-follow-up-waiting" class="js-plot-display-label">Waiting Time</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-coming" class="js-plot-display-label">Followups coming due</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected js-plot-display-label">Overdue followups</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-waiting" class="js-plot-display-label">Waiting time for new patients</a></li>
             </ul>
             <div id="js-service-data-filter" class="" style="display: block">
                 <div class="service-filters custom-filters">
-                    <div class="flex-item" style="position: relative; top: -25px; left: 100px;"><!-- OE UI Filter options (id: service-filters) -->
+                    <div class="flex-item" style="position: relative; top: -25px; left: 200px;"><!-- OE UI Filter options (id: service-filters) -->
                         <div class="oe-filter-options" id="oe-filter-options-service-filters"
                              data-filter-id="service-filters"><!-- simple button to popup filter options -->
                             <button class="oe-filter-btn green hint" id="oe-filter-btn-service-filters">
