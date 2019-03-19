@@ -1843,6 +1843,11 @@ class PatientController extends BaseController
         PatientUserReferral &$patient_user_referral,
         &$patient_identifiers)
     {
+
+        if(!$this->checkForReferralFiles($referral, $patient)) {
+            return false;
+        }
+
         if (!$contact->save()) {
             return false;
         }
@@ -2189,6 +2194,29 @@ class PatientController extends BaseController
     }
 
     /**
+     * Return bites based on the ini_get returns value e.g. 2M
+     * @param $val
+     * @return int|string
+     */
+    public function return_bytes($val) {
+        $val = trim($val);
+        $last = strtolower($val[strlen($val)-1]);
+        switch($last) {
+            case 'g':
+                $val *= (1024 * 1024 * 1024); //1073741824
+                break;
+            case 'm':
+                $val *= (1024 * 1024); //1048576
+                break;
+            case 'k':
+                $val *= 1024;
+                break;
+        }
+
+        return $val;
+    }
+
+    /**
      * Takes an uploaded file from $_FILES and saves it to a document event under the current context/firm
      *
      * @param Patient $patient To save the referral document to
@@ -2216,14 +2244,16 @@ class PatientController extends BaseController
 
         $document_saved = false;
         foreach ($_FILES as $file) {
+
             $tmp_name = $file["tmp_name"]["uploadedFile"];
 
-            //If no document is selected this can throw errors
-            if ($tmp_name == '') {
+            if($tmp_name == '') {
                 continue;
             }
+
             $p_file = ProtectedFile::createFromFile($tmp_name);
             $p_file->name = $file["name"]["uploadedFile"];
+
             if ($p_file->save()) {
                 unlink($tmp_name);
                 $document = new Element_OphCoDocument_Document();
@@ -2269,6 +2299,49 @@ class PatientController extends BaseController
         }
         return !$referral->hasErrors();
     }
+
+    public function checkForReferralFiles($referral, $patient){
+
+        // To get allowed file types from the model
+        $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
+
+        // To get maximum file size that can be uploaded from the model
+        $max_document_size = $this->return_bytes(ini_get('upload_max_filesize'));
+
+        foreach ($_FILES as $file) {
+            $name = $file["name"]["uploadedFile"];
+            $size = $file["size"]["uploadedFile"];
+            $type = $file["type"]["uploadedFile"];
+
+
+            //Check only if document has been added
+            if ($name != '') {
+
+                // PHP automatically discards the files that exceed the maximum file upload limit.
+                // So when the size parameter is 0 and the name is not null, it means the file size is large
+                if ($size == 0) {
+                    $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . $max_document_size / 1048576 . " MB ";
+                    $referral->addError('uploadedFile', $message);
+                    return false;
+                }
+
+                // Check for compatible file types
+                else if (!in_array($type, $allowed_file_types)) {
+                    $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
+                    $referral->addError('uploadedFile', $message);
+                    return false;
+                }
+            }
+            // The file field is empty. It should throw error for referral scenario
+            else if($patient->getScenario() == 'referral') {
+                $message = "Referral requires a letter file";
+                $referral->addError('uploadedFile', $message);
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     /**
      * @param Patient $patient
