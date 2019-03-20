@@ -1609,6 +1609,20 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     }
 
     /**
+     * Calculates the total number of complex procedures this operation requires.
+     *
+     * @return int
+     */
+    public function getComplexProcedureCount()
+    {
+        if($this->complexity == self::COMPLEXITY_HIGH) {
+            return $this->getProcedureCount();
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * Whether the referral for the operation is still changeable - simple wrapper at the moment.
      *
      * @return bool

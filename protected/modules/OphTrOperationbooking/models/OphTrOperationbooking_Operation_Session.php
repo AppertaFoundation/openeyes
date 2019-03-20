@@ -45,6 +45,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 {
     public static $DEFAULT_UNAVAILABLE_REASON = 'This session is unavailable at this time';
     public static $TOO_MANY_PROCEDURES_REASON = 'This operation has too many procedures for this session';
+    public static $TOO_MANY_COMPLEX_PROCEDURES_REASON = 'This operation has too many complex procedures for this session';
 
     /**
      * Returns the static model of the specified AR class.
@@ -293,6 +294,21 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     }
 
     /**
+     * Get the total number of complex procedures booked into this session across all bookings.
+     *
+     * @return int
+     */
+    public function getBookedComplexProcedureCount()
+    {
+      $total = 0;
+
+      foreach ($this->activeBookings as $booking) {
+        $total += $booking->complexProcedureCount;
+      }
+      return $total;
+    }
+
+    /**
      * Return the remaining number of procedures allowed in this session.
      *
      * @return int
@@ -304,6 +320,20 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         }
 
         return $this->max_procedures - $this->getBookedProcedureCount();
+    }
+
+    /**
+     * Return the remaining number of complex procedures allowed in this session.
+     *
+     * @return int
+     */
+    public function getAvailableComplexProcedureCount()
+    {
+      if (!$this->max_complex_procedures) {
+        return;
+      }
+
+      return $this->max_complex_procedures - $this->getBookedComplexProcedureCount();
     }
 
     /**
@@ -321,6 +351,12 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 
         if ($this->max_procedures) {
             if ($this->getBookedProcedureCount() + $operation->getProcedureCount() > $this->max_procedures) {
+                return false;
+            }
+        }
+
+        if ($this->max_complex_procedures) {
+            if ($this->getBookedComplexProcedureCount() + $operation->getComplexProcedureCount() > $this->max_complex_procedures) {
                 return false;
             }
         }
@@ -361,6 +397,12 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         if ($this->max_procedures) {
             if ($this->getBookedProcedureCount() + $operation->getProcedureCount() > $this->max_procedures) {
                 return self::$TOO_MANY_PROCEDURES_REASON;
+            }
+        }
+
+        if ($this->max_complex_procedures) {
+            if ($this->getBookedComplexProcedureCount() + $operation->getComplexProcedureCount() > $this->max_complex_procedures) {
+                return self::$TOO_MANY_COMPLEX_PROCEDURES_REASON;
             }
         }
 
