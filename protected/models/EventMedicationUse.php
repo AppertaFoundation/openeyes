@@ -275,7 +275,7 @@ class EventMedicationUse extends BaseElement
 
     public function routeOptions()
     {
-        return MedicationLaterality::model()->findAll();
+        return (!is_null($this->route) && $this->route->has_laterality == 1) ? MedicationLaterality::model()->findAll("deleted_date IS NULL") : array();
     }
 
     public function getLateralityDisplay()

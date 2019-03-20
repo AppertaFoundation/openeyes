@@ -14,6 +14,7 @@
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property int $has_laterality
  *
  * The followings are the available model relations:
  * @property EventMedicationUse[] $eventMedicationUses
@@ -45,7 +46,8 @@ class MedicationRoute extends BaseActiveRecordVersioned
 		return array(
 			array('term, code, source_type, source_subtype', 'length', 'max'=>45),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
-			array('deleted_date, last_modified_date, created_date', 'safe'),
+			array('has_laterality', 'numerical', 'integerOnly' => true, 'min' => 0, 'max' =>1),
+			array('deleted_date, last_modified_date, created_date, has_laterality', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, term, code, source_type, source_subtype, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
@@ -84,6 +86,8 @@ class MedicationRoute extends BaseActiveRecordVersioned
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
+			'has_laterality' => 'Has Laterality',
+			'getHasLateralityIcon' => 'Has Laterality',
 		);
 	}
 
@@ -115,6 +119,7 @@ class MedicationRoute extends BaseActiveRecordVersioned
 		$criteria->compare('last_modified_date',$this->last_modified_date,true);
 		$criteria->compare('created_user_id',$this->created_user_id,true);
 		$criteria->compare('created_date',$this->created_date,true);
+		$criteria->compare('has_lateralty',$this->has_laterality,false);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -161,9 +166,11 @@ class MedicationRoute extends BaseActiveRecordVersioned
 
     public function isEyeRoute()
 	{
-		return in_array($this->id, array(
-			self::ROUTE_INTRAVITREAL,
-			self::ROUTE_EYE
-		));
+		return $this->has_laterality == 1;
+	}
+
+	public function getHasLateralityIcon()
+	{
+		return $this->has_laterality == 1 ? "<i class=\"oe-i tick small\"></i>" : "<i class=\"oe-i remove small\"></i>";
 	}
 }
