@@ -83,6 +83,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             array('sequence_id, theatre_id', 'length', 'max' => 10),
             array('unavailablereason_id', 'validateRequiredIfAttrMatches', 'match_attr' => 'available', 'match_val' => false, 'message' => 'unavailable reason required if session unavailable.'),
             array('max_procedures', 'numerical', 'integerOnly' => true, 'min' => 1),
+            array('max_complex_procedures', 'numerical', 'integerOnly' => true, 'min' => 1),
             array('sequence_id, comments, available, unavailablereason_id, consultant, paediatric, anaesthetist, general_anaesthetic, firm_id, theatre_id, start_time, end_time, deleted, default_admission_time', 'safe'),
             array('date', 'CDateValidator', 'format' => array('yyyy-mm-dd', 'd MMM yyyy')),
             array('start_time, end_time, default_admission_time', 'CDateValidator', 'format' => array('h:m:s', 'h:m')),
