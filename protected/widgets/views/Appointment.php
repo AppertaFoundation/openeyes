@@ -9,9 +9,8 @@
         <col class="cols-3">
     </colgroup>
     <tbody>
-    <tbody>
     <?php
-    foreach ($worklists_patient as $worklist_patient) {
+    foreach ($worklist_patients as $worklist_patient) {
         $time = date('H:i', strtotime($worklist_patient->when));
         $date = date('d M Y', strtotime($worklist_patient->worklist->start));
         $worklist_name = $worklist_patient->worklist->name;
@@ -52,7 +51,7 @@
     </thead>
     <tbody style="display: none;">
     <?php
-    foreach ($worklists_past_patient as $worklist_patient) {
+    foreach ($past_worklist_patient as $worklist_patient) {
         $time = date('H:i', strtotime($worklist_patient->when));
         $date = date('d M Y', strtotime($worklist_patient->worklist->start));
         $worklist_name = $worklist_patient->worklist->name; ?>
