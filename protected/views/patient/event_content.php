@@ -60,9 +60,7 @@
                   });
               });
           </script>
-          <?php if(file_exists($this->getViewFile('event_content'))){ ?>
-            <?php $this->renderPartial('event_content'); ?>
-          <?php } ?>
+
           <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
           <i class="oe-i history large pad-left js-has-tooltip js-change-event-date"
              data-tooltip-content="Change Event date"
