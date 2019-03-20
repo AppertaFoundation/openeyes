@@ -26,23 +26,19 @@
     </colgroup>
     <tbody>
     <?php
-    foreach ($worklist_patients as $worklist_patient) {
-        $time = date('H:i', strtotime($worklist_patient->when));
-        $date = date('d M Y', strtotime($worklist_patient->worklist->start));
-        $worklist_name = $worklist_patient->worklist->name;
+    foreach ($worklist_patients_attributes as $worklist_patients_attribute) {
+        $time = date('H:i', strtotime($worklist_patients_attribute->time));
+        $date = date('d M Y', strtotime($worklist_patients_attribute->date));
+        $worklist_name = $worklist_patients_attribute->worklistName;
+        $worklist_status = $worklist_patients_attribute->attribute_value;
         ?>
         <tr>
             <td><span class="time"><?= $time ?></span></td>
             <td><?= $worklist_name ?></td>
             <td><span class="oe-date"><?= $date ?></span></td>
 
-            <?php
-            foreach ($worklist_patient->worklist->displayed_mapping_attributes as $attr) {
-                if ($attr->name === "Status") {
-                    $worklist_status = $attr->values[0]->attribute_value;
-                    ?>
-                    <td><?= $worklist_status ?></td>
-                <?php } ?>
+            <?php if ($worklist_status) { ?>
+                <td><?= $worklist_status ?></td>
             <?php } ?>
         </tr>
     <?php } ?>
@@ -67,21 +63,19 @@
     </thead>
     <tbody style="display: none;">
     <?php
-    foreach ($past_worklist_patient as $worklist_patient) {
-        $time = date('H:i', strtotime($worklist_patient->when));
-        $date = date('d M Y', strtotime($worklist_patient->worklist->start));
-        $worklist_name = $worklist_patient->worklist->name; ?>
+    foreach ($past_worklist_patient_attributes as $worklist_patients_attribute) {
+        $time = date('H:i', strtotime($worklist_patients_attribute->time));
+        $date = date('d M Y', strtotime($worklist_patients_attribute->date));
+        $worklist_name = $worklist_patients_attribute->worklistName;
+        $worklist_status = $worklist_patients_attribute->attribute_value;
+        ?>
         <tr>
             <td><span class="time"><?= $time ?></span></td>
             <td><?= $worklist_name ?></td>
             <td><span class="oe-date"><?= $date ?></span></td>
 
-            <?php
-            foreach ($worklist_patient->worklist->displayed_mapping_attributes as $attr) {
-                if ($attr->name === "Status") {
-                    $worklist_status = $attr->values[0]->attribute_value; ?>
-                    <td><?= $worklist_status ?></td>
-                <?php } ?>
+            <?php if ($worklist_status) { ?>
+                <td><?= $worklist_status ?></td>
             <?php } ?>
         </tr>
     <?php } ?>
