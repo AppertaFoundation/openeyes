@@ -340,10 +340,11 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      * Test whether the given operation can be booked into this session.
      *
      * @param $operation
+     * @param $softRequirement  if it is true, overbooking will not be prevented when complex cases reached the maximum
      *
      * @return bool
      */
-    public function operationBookable($operation)
+    public function operationBookable($operation, $softRequirement = false)
     {
         if (!$this->available) {
             return false;
@@ -355,7 +356,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             }
         }
 
-        if ($this->max_complex_procedures) {
+        if (!$softRequirement && $this->max_complex_procedures) {
             if ($this->getBookedComplexProcedureCount() + $operation->getComplexProcedureCount() > $this->max_complex_procedures) {
                 return false;
             }

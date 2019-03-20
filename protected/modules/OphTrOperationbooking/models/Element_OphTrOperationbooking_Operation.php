@@ -1146,6 +1146,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      * @param bool                                            $reschedule
      * @param null                                            $cancellation_data
      * @param Element_OphTrOperationbooking_ScheduleOperation $schedule_op
+     * @param bool                                            $softRequirement
      *
      * @throws RaceConditionException
      * @throws Exception
@@ -1155,7 +1156,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      * @return array|bool
      */
     public function schedule($booking, $operation_comments, $session_comments, $operation_comments_rtt,
-            $_reschedule = false, $cancellation_data = null, $schedule_op = null)
+            $_reschedule = false, $cancellation_data = null, $schedule_op = null, $softRequirement = false)
     {
         $this->reschedule = $_reschedule;
         if ($schedule_op == null) {
@@ -1172,7 +1173,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             return array(array('Cannot book patient into a session they are not available for.'));
         }
 
-        if (!$session->operationBookable($this)) {
+        if (!$session->operationBookable($this, $softRequirement)) {
             return array(array('Attempted to book operation into incompatible session: '.$session->unbookableReason($this)));
         }
 

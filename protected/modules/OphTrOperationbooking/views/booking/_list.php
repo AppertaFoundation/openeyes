@@ -97,7 +97,7 @@ if (!$reschedule) {
         </tfoot>
     </table>
 </div>
-<?php if ($bookable) { ?>
+<?php if ($soft_bookable) { ?>
     <div class="flex-layout flex-top col-gap">
         <div class="cols-6">
             <table class="standard">

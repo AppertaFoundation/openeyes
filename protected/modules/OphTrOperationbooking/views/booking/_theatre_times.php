@@ -91,7 +91,7 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                     <?php if (isset($selectedSession) && !$selectedSession->operationBookable($operation)) { ?>
                         <tr>
                             <td style="float:left">
-                                <span class="session-unavailable">
+                                <span class="session-unavailable <?= $selectedSession->operationBookable($operation, true) ? "alert-box warning" : ""  ?> ">
                                     <?=\CHtml::encode($selectedSession->unbookableReason($operation)) ?>
                                 </span>
                             </td>
