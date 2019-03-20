@@ -89,8 +89,8 @@ if (!isset($values)) {
 					id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
 					style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
 					data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
-                  <?= CHtml::textField($field_prefix . '[comments]', $values['comments'], array(
-										'class' => 'js-comment-field',
+                  <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], array(
+										'class' => 'js-comment-field autosize',
 										'autocomplete' => 'off',
 									)) ?>
 			<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>

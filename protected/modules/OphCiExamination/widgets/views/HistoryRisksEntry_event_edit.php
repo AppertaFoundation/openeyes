@@ -91,8 +91,11 @@ if (!isset($values)) {
 							id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
 							style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
 							data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
-      <input type="text" class="js-comment-field" name="<?= $field_prefix ?>[comments]"
-						 value="<?= $values['comments'] ?>" id="<?= strtr($field_prefix, '[]', '__') ?>_comments"/>
+        <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], array(
+                                        'class' => 'js-comment-field autosize',
+                                        'autocomplete' => 'off',
+                                        'id' => strtr($field_prefix, '[]', '__').'_comments'
+                                    )) ?>
       <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
     </span>
 		<button

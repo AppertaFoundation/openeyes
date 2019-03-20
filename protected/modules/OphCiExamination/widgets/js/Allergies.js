@@ -172,6 +172,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.dedupeAllergySelectors();
         this.updateNoAllergiesState();
         this.showEditableIfOther();
+        $('.autosize').autosize();
     };
 
     /**
