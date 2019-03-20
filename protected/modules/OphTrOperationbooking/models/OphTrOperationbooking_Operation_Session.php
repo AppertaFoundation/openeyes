@@ -34,6 +34,7 @@
  * @property int $theatre_id
  * @property int $unavailablereason_id
  * @property int $max_procedures
+ * @property int $max_complex_procedures
  *
  * The followings are the available model relations:
  * @property OphTrOperationbooking_Operation_Sequence $sequence
@@ -182,6 +183,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             'default_admission_time' => 'Default admission time',
             'unavailablereason_id' => 'Reason unavailable',
             'max_procedures' => 'Max procedures',
+            'max_complex_procedures' => 'Max complex procedures',
         );
     }
 
