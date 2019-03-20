@@ -54,20 +54,18 @@
         url: '<?=Yii::app()->createUrl('/disorder/autocomplete');?>',
         maxHeight: '200px',
         onSelect: function(){
-            let AutoCompleteResponse =  $('<?="#{$class}_{$field}_searchbox";?>').data('response');
-            var ui = {item:AutoCompleteResponse};
+            let AutoCompleteResponse =  OpenEyes.UI.AutoCompleteSearch.getResponse();
             var matched = false;
             $('<?="#".$class. "_".$field;?>').children('option').map(function() {
-                if ($(this).val() == ui.item.id) {
+                if ($(this).val() == AutoCompleteResponse.id) {
                     matched = true;
                 }
             });
             if (!matched) {
-                $('<?="#".$class. "_".$field;?>').append('<option value=\"' + ui.item.id + '\">'+ui.item.value+'</option>');
+                $('<?="#".$class. "_".$field;?>').append('<option value=\"' + AutoCompleteResponse.id + '\">'+AutoCompleteResponse.value+'</option>');
             }
-            $('<?="#".$class. "_".$field;?>').val(ui.item.id).trigger('change');
+            $('<?="#".$class. "_".$field;?>').val(AutoCompleteResponse.id).trigger('change');
             $('<?= "#".$class."_".$field."_searchbox";?>').parent().addClass('hide');
-            $('<?="#{$class}_{$field}_searchbox";?>').removeData('response');
         }
     });
 	$(document).ready(function() {
