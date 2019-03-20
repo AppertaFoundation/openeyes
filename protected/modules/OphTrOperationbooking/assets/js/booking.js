@@ -182,7 +182,16 @@ $(document).ready(function() {
 	});
 
 	$('#bookingForm button#confirm_slot').on('click',function(e) {
-		$('#bookingForm').submit();
+		if($('#operationNotBookableFlag').length) {
+			e.preventDefault();
+			let dialog = new OpenEyes.UI.Dialog.Confirm({
+				content: "Are you sure that you wish to book one more complex procedure?"
+			});
+			dialog.on('ok', function () {
+				$('#bookingForm').submit();
+			}.bind(this));
+			dialog.open();
+		}
 	});
 
 	$(this).undelegate('#Element_OphTrOperationbooking_Operation_referral_id', 'change').delegate('#Element_OphTrOperationbooking_Operation_referral_id', 'change', function() {
