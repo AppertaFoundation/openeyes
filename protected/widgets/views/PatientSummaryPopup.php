@@ -273,46 +273,50 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
       </div>
     </div>
 
-    <!-- oe-popup-overflow handles scrolling if data overflow height -->
-    <div class="oe-popup-overflow quicklook-data-groups">
-      <!-- Data -->
-      <div class="group">
-        <div class="label">Surgical History</div>
-        <div class="data">
-            <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
-                'patient' => $this->patient,
-                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-            )); ?>
-        </div>
-      </div>
-        <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class, array(
-            'patient' => $this->patient,
-            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-        )); ?>
+      <!-- oe-popup-overflow handles scrolling if data overflow height -->
+      <div class="oe-popup-overflow quicklook-data-groups">
+          <div class="group">
+              <div class="label">Surgical History</div>
+              <div class="data">
+                  <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
+                      'patient' => $this->patient,
+                      'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                  )); ?>
+              </div>
+          </div>
 
+          <div class="group">
+              <div class="label">Appointments</div>
+              <div class="data">
+                  <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme']) ?>
+              </div>
+          </div>
 
-      <div class="group">
-        <div class="label">Family</div>
-        <div class="data">
-            <?php $this->widget(\OEModule\OphCiExamination\widgets\FamilyHistory::class, array(
-                'patient' => $this->patient,
-                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-            )); ?>
-        </div>
-      </div>
-      <!-- group-->
+          <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class, array(
+              'patient' => $this->patient,
+              'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+          )); ?>
 
-      <div class="group">
-        <div class="label">Social</div>
-        <div class="data">
-            <?php $this->widget(\OEModule\OphCiExamination\widgets\SocialHistory::class, array(
-                'patient' => $this->patient,
-                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-            )); ?>
-        </div>
-      </div>
-    </div><!-- 	.oe-popup-overflow -->
+          <div class="group">
+              <div class="label">Family</div>
+              <div class="data">
+                  <?php $this->widget(\OEModule\OphCiExamination\widgets\FamilyHistory::class, array(
+                      'patient' => $this->patient,
+                      'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                  )); ?>
+              </div>
+          </div>
 
+          <div class="group">
+              <div class="label">Social</div>
+              <div class="data">
+                  <?php $this->widget(\OEModule\OphCiExamination\widgets\SocialHistory::class, array(
+                      'patient' => $this->patient,
+                      'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                  )); ?>
+              </div>
+          </div>
+      </div><!-- 	.oe-popup-overflow -->
   </div><!-- .flex-layout -->
 </div>
 

@@ -74,6 +74,7 @@
         </table>
     </form>
     <?php } else {?>
+        <?= EventAction::link('Add Definition', '/worklistAdmin/definitionUpdate/', array(), array('class' => 'button primary small'))->toHtml()?>
         <div class="alert-box info">No automatic worklists have been defined. You may add one by clicking the button above ...</div>
     <?php } ?>
 </div>

@@ -59,7 +59,7 @@ class WorklistAttribute extends BaseActiveRecord
         // class name for the relations automatically generated below.
         return array(
             'worklist' => array(self::BELONGS_TO, 'Worklist', 'worklist_id'),
-            'values' => array(self::HAS_MANY, 'WorklistPatientAttribute', 'worklist_id'),
+            'values' => array(self::HAS_MANY, 'WorklistPatientAttribute', 'worklist_attribute_id'),
         );
     }
 
