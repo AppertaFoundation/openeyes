@@ -5,7 +5,6 @@ var analytics_layout = {
     },
     autosize: false,
     height: 800,
-    width: 1460,
     margin:{
         l:50,
         t:30,
@@ -28,6 +27,11 @@ var analytics_layout = {
         },
     },
     xaxis: {
+        titlefont: {
+            family: 'sans-serif',
+            size: 12,
+            color: '#fff',
+        },
         showgrid: false,
         /*Ticks setting*/
         ticks: 'outside',

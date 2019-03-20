@@ -60,8 +60,6 @@
             OpenEyes.Dash.init('#nod-audit-grid');
             OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=NodAudit&template=analytics', null, 10);
         }
-        $('.mdl-cell').css('width','1000px');
-        $('.mdl-cell').css('height','600px');
         viewAllDates();
         if ($('#analytics_allsurgeons').val() == 'on'){
             viewAllSurgeons();

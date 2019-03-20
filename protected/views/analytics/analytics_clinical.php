@@ -20,6 +20,7 @@
         }];
         clinical_layout['margin']['l'] = 250;
         clinical_layout['xaxis']['showticksuffix'] = 'none';
+        clinical_layout['xaxis']['title'] = 'Number of Patient';
         clinical_layout['yaxis']['showgrid'] = false;
         clinical_layout['yaxis']['tickvals'] = clinical_data['y'];
         clinical_layout['yaxis']['ticktext'] = clinical_data['text'];

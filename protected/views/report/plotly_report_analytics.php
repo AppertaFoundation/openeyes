@@ -16,12 +16,15 @@
 </div>
 <script>
     var layout = JSON.parse('<?= $report->plotlyConfig();?>');
+    var plotly_min_width = 800;
+    var page_width = $('.analytics-charts').width();
+    var layout_width = plotly_min_width > page_width? plotly_min_width : page_width;
     layout['font'] = {
             color: '#fff'
         };
     layout['paper_bgcolor'] = '#101925';
     layout['plot_bgcolor'] = '#101925';
-    layout['width'] = '1460';
+    layout['width'] = layout_width;
     layout['height'] = '800';
     layout['xaxis']['rangemode'] = 'tozero';
     layout['xaxis']['linecolor'] = '#fff';
