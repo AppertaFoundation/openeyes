@@ -290,13 +290,15 @@ class WorklistManager extends CComponent
     /**
      * @return DateTime
      */
-    public function getGenerationTimeLimitDate(WorklistDefinition $definition = null)
+    public function getGenerationTimeLimitDate(WorklistDefinition $definition = null, $date_limit = null)
     {
-        $limit = $this->getAppParam('worklist_default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
-        $interval = DateInterval::createFromDateString($limit);
+        if (is_null($date_limit)) {
+            $limit = $this->getAppParam('worklist_default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
+            $interval = DateInterval::createFromDateString($limit);
 
-        $date_limit = new DateTime();
-        $date_limit->add($interval);
+            $date_limit = new DateTime();
+            $date_limit->add($interval);
+        }
 
         if ($definition && $definition->active_until) {
             $active_until = new DateTime($definition->active_until);
@@ -304,6 +306,7 @@ class WorklistManager extends CComponent
                 $date_limit = $active_until;
             }
         }
+
         return $date_limit;
     }
 
@@ -1095,9 +1098,7 @@ class WorklistManager extends CComponent
      */
     public function generateAutomaticWorklists(WorklistDefinition $definition, $date_limit = null)
     {
-        if (is_null($date_limit)) {
-            $date_limit = $this->getGenerationTimeLimitDate($definition);
-        }
+        $date_limit = $this->getGenerationTimeLimitDate($definition, $date_limit);
 
         $rrule_str = $this->setDateLimitOnRrule($definition->rrule, $date_limit);
         $rrule = $this->getInstanceForClass('\RRule\RRule', array($rrule_str));
@@ -1140,12 +1141,8 @@ class WorklistManager extends CComponent
      *
      * @return bool|int
      */
-    public function generateAllAutomaticWorklists(DateTime $date_limit = null)
+    public function generateAllAutomaticWorklists(DateTime $date_limit)
     {
-        if (is_null($date_limit)) {
-            $date_limit = $this->getGenerationTimeLimitDate();
-        }
-
         $count = 0;
 
         $transaction = $this->startTransaction();
