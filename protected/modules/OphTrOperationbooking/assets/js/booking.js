@@ -185,7 +185,7 @@ $(document).ready(function() {
 		if($('#operationNotBookableFlag').length) {
 			e.preventDefault();
 			let dialog = new OpenEyes.UI.Dialog.Confirm({
-				content: "Are you sure that you wish to book one more complex procedure?"
+				content: "The allowed number of complex procedures has been already been reached for this session. Are you sure you want to add another complex procedure?"
 			});
 			dialog.on('ok', function () {
 				$('#bookingForm').submit();
