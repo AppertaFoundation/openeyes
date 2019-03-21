@@ -16,4 +16,35 @@
  */
 
 
-echo "ABCDEF";
+?>
+
+<?php
+$model_name = CHtml::modelName($element);
+$pastIOPs = $this->getPastIOPs();
+?>
+
+<div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
+    <table id="<?= $model_name ?>_entry_table" class="cols-10">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-3">
+            <col class="cols-4">
+            <col class="cols-2">
+        </colgroup>
+        <tbody>
+
+        <?php
+            foreach ($pastIOPs as $IOP) { ?>
+                <tr>
+                    <td><?= $IOP->id ?></td>
+                    <td><?= $IOP->event_id ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+    <div class="add-data-actions flex-item-bottom" id="history-allergy-popup">
+        <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i
+                    class="oe-i plus pro-theme"></i></button>
+    </div>
+</div>
