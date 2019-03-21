@@ -735,7 +735,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                                     continue;
                                 }
 
-                                $hasFreeProcedures = true;
+                                $hasFreeProcedures |= $session->operationBookingPreferred($this);
 
                                 if ($session->availableMinutes >= $this->total_duration) {
                                     ++$open;
