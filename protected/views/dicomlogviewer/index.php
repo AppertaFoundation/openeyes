@@ -74,7 +74,7 @@
             },
             'success': function (data) {
                 let files = JSON.parse(data);
-
+console.log(files);
                 $('#previous_site_id').val($('#site_id').val());
                 $('#previous_firm_id').val($('#firm_id').val());
                 $('#previous_user').val($('#user').val());
@@ -155,7 +155,7 @@
         <td>{{station_id}}</td>
         <td>{{location}}</td>
         <td>{{type}}</td>
-        <td>{{hos_num}}</td>
+        <td><a href="/patient/search?term={{patient_number}}">{{patient_number}}</a></td>
         <td>{{status}}</td>
         <td>{{study_id}}</td>
         <td>{{comment}}</td>
