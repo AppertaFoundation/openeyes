@@ -673,7 +673,7 @@ class AdminController extends BaseAdminController
                     throw new Exception('Unable to save contact: ' . print_r($contact->getErrors(), true));
                 }
                 Audit::add('admin-Contact', 'edit', $contact->id);
-                $this->redirect('/admin/contacts?q=' . $contact->fullName);
+                $this->redirect('/admin/contacts');
             }
         } else {
             Audit::add('admin-Contact', 'view', $id);
