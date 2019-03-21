@@ -182,7 +182,9 @@ $(document).ready(function() {
 	});
 
 	$('#bookingForm button#confirm_slot').on('click',function(e) {
-		if($('#js-operation-not-preferred-to-book-flag').length) {
+		if($(this).data('booking-is-preferred') === true) {
+			$('#bookingForm').submit();
+		} else {
 			e.preventDefault();
 			let dialog = new OpenEyes.UI.Dialog.Confirm({
 				content: "The allowed number of complex procedures has been already been reached for this session. Are you sure you want to add another complex procedure?"
@@ -191,8 +193,6 @@ $(document).ready(function() {
 				$('#bookingForm').submit();
 			}.bind(this));
 			dialog.open();
-		} else {
-			$('#bookingForm').submit();
 		}
 	});
 
