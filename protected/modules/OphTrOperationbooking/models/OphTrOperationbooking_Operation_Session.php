@@ -344,11 +344,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      * @return bool
      */
     public function isTherePlaceForComplexProcedure($operation) {
-
-        if(!$this->operationBookable($operation)) {
-            return false;
-        }
-
         if ($this->max_complex_procedures) {
             $operation_complex_procedure_count = $operation->getComplexProcedureCount();
             if($operation_complex_procedure_count > 0) {
@@ -357,10 +352,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
                 }
             }
         }
-
         return true;
     }
-
 
 
     /**
