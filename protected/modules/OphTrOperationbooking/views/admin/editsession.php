@@ -61,6 +61,16 @@
 		</fieldset>
 	<?php } ?>
     <?php echo $form->textField($session, 'max_complex_procedures', array(), array(), array('field' => 2)); ?>
+    <?php if ($current = $session->getBookedComplexProcedureCount()) { ?>
+        <fieldset id="complex_procedure_count_wrapper" class="data-group <?php if ($session->max_complex_procedures && $current > $session->max_complex_procedures) { echo ' warn'; }?>">
+            <div class="cols-2 column">
+                <div class="field-label">Current Booked Complex Procedures:</div>
+            </div>
+            <div class="cols-5 column end">
+                <div class="field-value" id="current-complex-proc-count"><?php echo $current ?></div>
+            </div>
+        </fieldset>
+    <?php } ?>
 	<?php echo $form->radioBoolean($session, 'consultant')?>
 	<?php echo $form->radioBoolean($session, 'paediatric')?>
 	<?php echo $form->radioBoolean($session, 'anaesthetist')?>
