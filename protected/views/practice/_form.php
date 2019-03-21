@@ -27,7 +27,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 <?php echo $form->labelEx($contact, 'first_name'); ?>
             </td>
             <td>
-                <?php echo $form->textField($contact, 'first_name', array('size' => 15, 'maxlength' => 50)); ?>
+                <?php echo $form->textField($contact, 'first_name', array('size' => 30, 'maxlength' => 50)); ?>
                 <?php echo $form->error($contact, 'first_name'); ?>
             </td>
         </tr>
