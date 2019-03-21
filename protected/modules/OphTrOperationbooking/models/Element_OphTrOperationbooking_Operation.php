@@ -1030,6 +1030,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                 continue;
             }
 
+            if ($session->max_complex_procedures > 0 && $this->getComplexProcedureCount() > $session->getAvailableComplexProcedureCount()) {
+                continue;
+            }
+
             $erod = new OphTrOperationbooking_Operation_EROD();
             $erod->session_id = $session->id;
             $erod->session_date = $session->date;
