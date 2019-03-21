@@ -45,7 +45,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 {
     public static $DEFAULT_UNAVAILABLE_REASON = 'This session is unavailable at this time';
     public static $TOO_MANY_PROCEDURES_REASON = 'This operation has too many procedures for this session';
-    public static $TOO_MANY_COMPLEX_PROCEDURES_REASON = 'The allowed number of complex procedures has been reached for this session';
 
     /**
      * Returns the static model of the specified AR class.
@@ -397,26 +396,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         }
 
         return true;
-    }
-
-    /**
-     * Return the reason an operation booking into this session is not preferred.
-     *
-     * @param $operation
-     *
-     * @return string
-     */
-    public function notPreferredReason($operation)
-    {
-        if(!$this->operationBookable($operation)) {
-            return $this->unbookableReason($operation);
-        }
-
-        if ($this->max_complex_procedures) {
-            if ($this->getBookedComplexProcedureCount() + $operation->getComplexProcedureCount() > $this->max_complex_procedures) {
-                return self::$TOO_MANY_COMPLEX_PROCEDURES_REASON;
-            }
-        }
     }
 
     /**

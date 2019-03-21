@@ -88,11 +88,21 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                             </td>
                         <?php } ?>
                     </tr>
-                    <?php if (isset($selectedSession) && !$selectedSession->operationBookingPreferred($operation)) { ?>
+                    <?php if (isset($selectedSession) && !$selectedSession->operationBookable($operation)) { ?>
                         <tr>
                             <td style="float:left">
                                 <span class="session-unavailable alert-box warning">
-                                    <?=\CHtml::encode($selectedSession->notPreferredReason($operation)) ?>
+                                    <?=\CHtml::encode($selectedSession->unbookableReason($operation)) ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <?php if (isset($selectedSession) && $selectedSession->operationBookable($operation) &&
+                        !$selectedSession->operationBookingPreferred($operation)) { ?>
+                        <tr>
+                            <td style="float:left">
+                                <span class="session-unavailable alert-box warning">
+                                    The allowed number of complex procedures has been reached for this session
                                 </span>
                             </td>
                         </tr>
