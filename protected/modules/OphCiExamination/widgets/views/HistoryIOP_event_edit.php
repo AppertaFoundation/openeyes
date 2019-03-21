@@ -23,6 +23,10 @@ $model_name = CHtml::modelName($element);
 $pastIOPs = $this->getPastIOPs();
 ?>
 
+<?php if ($this->element):
+    echo \CHtml::activeHiddenField($this->element, "id");
+endif; ?>
+
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
     <table id="<?= $model_name ?>_entry_table" class="cols-10">
         <colgroup>
