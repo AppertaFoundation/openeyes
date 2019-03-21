@@ -669,4 +669,15 @@ class OphTrOperationbooking_API extends BaseAPI
         return $status_id !== false ? $status_id : OphTrOperationbooking_Operation_Status::STATUS_SCHEDULED;
     }
 
+    /**
+     * get laterality of event by looking at the operation element eye side
+     *
+     * @param $event_id
+     * @return mixed
+     * @throws Exception
+     */
+    public function getLaterality($event_id)
+    {
+        return $this->getEyeForOperation($event_id);
+    }
 }
