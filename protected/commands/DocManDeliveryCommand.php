@@ -405,7 +405,7 @@ EOH;
             'location_code' => isset($element_letter->toLocation) ? $element_letter->toLocation->site->location_code : '',
             'output_type' => $document_output->output_type,
 
-            'visit_id' => $this->event->pas_visit_id,
+            'visit_id' => $this->event->worklist_patient_id,
         ];
 
         $xml = $this->renderFile($this->xml_template, ['data' => $data], true);

@@ -282,9 +282,9 @@ class WorklistManager extends CComponent
     /**
      * @return WorklistDefinition[]
      */
-    public function getWorklistDefinitions()
+    public function getWorklistDefinitions($exclude_unbooked = false)
     {
-        return $this->getModelForClass('WorklistDefinition')->findAll();
+        return $this->getModelForClass('WorklistDefinition' . ($exclude_unbooked ? ':withoutUnbooked' : '') )->findAll();
     }
 
     /**
@@ -630,6 +630,8 @@ class WorklistManager extends CComponent
         $content = '';
         $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
         foreach ($days as $when) {
+
+
             foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist) {
                 $worklist_patients = $this->getPatientsForWorklist($worklist);
                 if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
@@ -675,7 +677,7 @@ class WorklistManager extends CComponent
         $model = $this->getModelForClass('Worklist');
         $model->automatic = true;
         $model->on = $when;
-        foreach ($model->with(array('worklist_definition', 'worklist_definition.display_contexts', 'worklist_patients'))->search(false)->getData() as $wl) {
+        foreach ($model->with(array('worklist_definition:withoutUnbooked', 'worklist_definition.display_contexts', 'worklist_patients'))->search(false)->getData() as $wl) {
             if ($this->shouldDisplayWorklistForContext($wl, $site, $firm)) {
                 $worklists[] = $wl;
             }
@@ -1138,8 +1140,8 @@ class WorklistManager extends CComponent
      * Returns false for errors, otherwise a total count of worklist instances that have been created.
      *
      * @param DateTime $date_limit
-     *
      * @return bool|int
+     * @throws CException
      */
     public function generateAllAutomaticWorklists(DateTime $date_limit)
     {
@@ -1149,7 +1151,7 @@ class WorklistManager extends CComponent
 
         try {
             $this->disableAudit();
-            $definitions = $this->getModelForClass('WorklistDefinition')->findAll();
+            $definitions = $this->getModelForClass('WorklistDefinition')->withoutUnbooked()->findAll();
             $definition_count = 0;
             foreach ($definitions as $definition) {
                 $result = $this->generateAutomaticWorklists($definition, $date_limit);

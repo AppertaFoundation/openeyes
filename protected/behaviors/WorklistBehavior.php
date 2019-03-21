@@ -46,11 +46,11 @@ class WorklistBehavior extends CBehavior
 
                 //set pas_visit_id
                 if ($assignment) {
-                    $this->owner->event->pas_visit_id = $assignment->resource_id;
+                    $this->owner->event->worklist_patient_id = $assignment->resource_id;
                 }
 
             } else {
-                $this->owner->event->pas_visit_id = null;
+                $this->owner->event->worklist_patient_id = null;
 
                 // Using the closest worklist_patient.id matching the current patient and current date
                 $worklist_patients = WorklistPatient::model()->findAllByAttributes(['patient_id' => $patient_id]);
@@ -63,7 +63,7 @@ class WorklistBehavior extends CBehavior
                 $worklist_patient_id = key($interval);
 
                 if ($worklist_patient_id && ($assignment = $this->getPasApiAssignment($worklist_patient_id))) {
-                    $this->owner->event->pas_visit_id = $assignment->resource_id;
+                    $this->owner->event->worklist_patient_id = $assignment->resource_id;
                 }
             }
         }
