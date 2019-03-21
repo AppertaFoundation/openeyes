@@ -37,4 +37,17 @@ class HistoryIOP extends \BaseEventElementWidget
     protected function updateElementFromData($element, $data)
     {
     }
+
+    public function getPastIOPs() {
+
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        $iops = $exam_api->getElements(
+            'models\Element_OphCiExamination_IntraocularPressure',
+            $this->patient,
+            false,
+            null,
+            null);
+
+        return $iops;
+    }
 }
