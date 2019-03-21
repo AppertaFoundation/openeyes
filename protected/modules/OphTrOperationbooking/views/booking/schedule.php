@@ -245,7 +245,7 @@
                     'bookings' => $bookings,
                     'reschedule' => $operation->booking,
                     'bookable' => $bookable,
-                    'soft_bookable' => $soft_bookable,
+                    'booking_is_preferred' => $booking_is_preferred,
                     'errors' => $errors,
                 ), false, false) ?>
             <?php } ?>

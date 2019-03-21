@@ -121,7 +121,7 @@ class BookingController extends OphTrOperationbookingEventController
                     foreach ($theatre->sessions as $_session) {
                         if ($session->id == $_session->id) {
                             $bookable = $_session->operationBookable($operation);
-                            $soft_bookable = $_session->operationBookable($operation, true);
+                            $booking_is_preferred = $_session->operationBookingPreferred($operation);
                         }
                     }
                 }
@@ -156,8 +156,7 @@ class BookingController extends OphTrOperationbookingEventController
                             $_POST['Operation']['comments_rtt'],
                             $this->reschedule,
                             $cancellation_data,
-                            $schedule_options,
-                            true
+                            $schedule_options
                         );
 
                         if ($result !== true) {
@@ -213,7 +212,7 @@ class BookingController extends OphTrOperationbookingEventController
             'session' => @$session,
             'bookings' => @$bookings,
             'bookable' => @$bookable,
-            'soft_bookable' => @$soft_bookable,
+            'booking_is_preferred' => @$booking_is_preferred,
             'errors' => @$errors,
         ));
     }

@@ -336,6 +336,31 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
       return $this->max_complex_procedures - $this->getBookedComplexProcedureCount();
     }
 
+
+    /**
+     * Test whether the given operation booking into this session is preferred.
+     *
+     * @param $operation
+     *
+     * @return bool
+     */
+    public function operationBookingPreferred($operation) {
+
+        if(!$this->operationBookable($operation)) {
+            return false;
+        }
+
+        if ($this->max_complex_procedures) {
+            if ($this->getBookedComplexProcedureCount() + $operation->getComplexProcedureCount() > $this->max_complex_procedures) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+
     /**
      * Test whether the given operation can be booked into this session.
      *
@@ -356,12 +381,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             }
         }
 
-        if (!$softRequirement && $this->max_complex_procedures) {
-            if ($this->getBookedComplexProcedureCount() + $operation->getComplexProcedureCount() > $this->max_complex_procedures) {
-                return false;
-            }
-        }
-
         $helper = $this->getHelper();
         if ($helper->checkSessionCompatibleWithOperation($this, $operation)) {
             return false;
@@ -376,6 +395,26 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         }
 
         return true;
+    }
+
+    /**
+     * Return the reason an operation booking into this session is not preferred.
+     *
+     * @param $operation
+     *
+     * @return string
+     */
+    public function notPreferredReason($operation)
+    {
+        if(!$this->operationBookable($operation)) {
+            return $this->unbookableReason($operation);
+        }
+
+        if ($this->max_complex_procedures) {
+            if ($this->getBookedComplexProcedureCount() + $operation->getComplexProcedureCount() > $this->max_complex_procedures) {
+                return self::$TOO_MANY_COMPLEX_PROCEDURES_REASON;
+            }
+        }
     }
 
     /**
@@ -398,12 +437,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         if ($this->max_procedures) {
             if ($this->getBookedProcedureCount() + $operation->getProcedureCount() > $this->max_procedures) {
                 return self::$TOO_MANY_PROCEDURES_REASON;
-            }
-        }
-
-        if ($this->max_complex_procedures) {
-            if ($this->getBookedComplexProcedureCount() + $operation->getComplexProcedureCount() > $this->max_complex_procedures) {
-                return self::$TOO_MANY_COMPLEX_PROCEDURES_REASON;
             }
         }
 
