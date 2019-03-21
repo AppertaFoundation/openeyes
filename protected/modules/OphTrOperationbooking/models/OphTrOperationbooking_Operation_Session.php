@@ -351,8 +351,11 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         }
 
         if ($this->max_complex_procedures) {
-            if ($this->getBookedComplexProcedureCount() + $operation->getComplexProcedureCount() > $this->max_complex_procedures) {
-                return false;
+            $operation_complex_procedure_count = $operation->getComplexProcedureCount();
+            if($operation_complex_procedure_count > 0) {
+                if ($this->getBookedComplexProcedureCount() + $operation_complex_procedure_count > $this->max_complex_procedures) {
+                    return false;
+                }
             }
         }
 
