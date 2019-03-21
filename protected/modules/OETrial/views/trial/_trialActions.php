@@ -11,11 +11,13 @@
             <?php echo CHtml::link('Add Participants',
                 $this->createUrl('/OECaseSearch/caseSearch', array('trial_id' => $trial->id))); ?>
         </li>
+      <?php if (CsvController::uploadAccess()): ?>
         <li>
           <a href = <?=  Yii::app()->createURL('csv/upload',
               array('context' => 'trials', 'backuri' => '/OETrial/trial/view/'.$trial->id)
           ) ?> >Upload trial patients</a>
         </li>
+      <?php endif; ?>
       <?php endif; ?>
     <li>
         <?php echo CHtml::link('Trial Permissions',
