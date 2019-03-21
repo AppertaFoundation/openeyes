@@ -45,7 +45,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 {
     public static $DEFAULT_UNAVAILABLE_REASON = 'This session is unavailable at this time';
     public static $TOO_MANY_PROCEDURES_REASON = 'This operation has too many procedures for this session';
-    public static $TOO_MANY_COMPLEX_PROCEDURES_REASON = 'This operation has too many complex procedures for this session';
+    public static $TOO_MANY_COMPLEX_PROCEDURES_REASON = 'The allowed number of complex procedures has been reached for this session';
 
     /**
      * Returns the static model of the specified AR class.
