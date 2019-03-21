@@ -35,7 +35,7 @@
         <tr>
             <th>Procedure</th>
             <?php if ($durations) { ?>
-                <th>Duration (adjusted for complexity)</th>
+                <th colspan="2">Duration (adjusted for complexity)</th>
             <?php } ?>
             <th></th>
         </tr>
@@ -79,7 +79,7 @@
                 <td></td>
                 <td>
                     <span id="projected_duration_<?php echo $identifier ?>">
-                        <?= \CHtml::encode($totalDuration) ?> mins
+                        <span><?= \CHtml::encode($totalDuration) ?></span> mins
                     </span>
                     <span class="fade">(calculated)</span>
                 </td>
@@ -113,6 +113,8 @@
     const high_complexity = "10";
     const high_percentage = typeof op_booking_inc_time_high_complexity !== "undefined" ? parseInt(window.op_booking_inc_time_high_complexity) : 20;
     const low_percentage = typeof op_booking_decrease_time_low_complexity !== "undefined" ? parseInt(window.op_booking_decrease_time_low_complexity) : 10;
+    const identifier = "<?= $identifier ?>";
+    const $projected_duration = $('#projected_duration_' + identifier + ' span');
 
     // Note: Removed_stack is probably not the best name for this. Selected procedures is more accurate.
     // It is used to suppress procedures from the add a procedure inputs
@@ -156,18 +158,18 @@
             $span.text(adjustedDuration);
         });
 
-        if (parseInt($('#projected_duration_' + identifier).text()) === parseInt($('#<?php echo $class?>_total_duration_' + identifier).val())) {
+        if (parseInt($projected_duration.text()) === parseInt($('#<?php echo $class?>_total_duration_' + identifier).val())
+            || $('#<?php echo $class?>_total_duration_' + identifier).val() === '') {
             $('#<?php echo $class?>_total_duration_' + identifier).val(adjustedTotalDuration);
             $('#<?php echo $class?>_total_duration_' + identifier).data('total-duration', totalDuration);
         }
-        $('#projected_duration_' + identifier).text(adjustedTotalDuration + " mins");
+        $projected_duration.text(adjustedTotalDuration);
     }
 
     $('#typeProcedure').on('click', '.removeProcedure', function () {
         let $table = $(this).closest("[id^='procedureList_']");
-        let identifier;
         if ($table) {
-            identifier = $table.attr('id').match(/^procedureList_(.*?)$/);
+            let identifier = $table.attr('id').match(/^procedureList_(.*?)$/);
             removeProcedure($(this).closest('tr'), identifier[1]);
         }
 
@@ -177,10 +179,11 @@
     function removeProcedure($table_row, identifier) {
         var length = $table_row.siblings('tr').length;
         var procedure_id = $table_row.find('input[type="hidden"]:first').val();
+        const $procedure_list = $('#procedureList_' + identifier);
 
         $table_row.remove();
 
-        $('#projected_duration_' + identifier).text(0);
+        $projected_duration.text(0);
         $('#<?php echo $class?>_total_duration_' + identifier).val(0);
 
         <?php if ($durations) {?>
@@ -188,13 +191,13 @@
         <?php }?>
 
         if (length < 1) {
-            $('#procedureList_' + identifier).css('visibility', 'hidden');
+            $procedure_list.css('visibility', 'hidden');
             <?php if ($durations) {?>
-            $('#procedureList_' + identifier).find('.durations').hide();
+            $procedure_list.find('.durations').hide();
             <?php }?>
         }
 
-        if (typeof (window.callbackRemoveProcedure) == 'function') {
+        if (typeof (window.callbackRemoveProcedure) === 'function') {
             callbackRemoveProcedure(procedure_id);
         }
 
@@ -333,7 +336,7 @@
     <?php if ($durations): ?>
     $(document).ready(function () {
         if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
-            $('#projected_duration_<?php echo $identifier?>').html((parseInt($('#projected_duration_<?php echo $identifier?>').html().match(/[0-9]+/)) * 2) + " mins");
+            $('#projected_duration_<?php echo $identifier?> span').html(parseInt($('#projected_duration_<?php echo $identifier?> span').html()));
         }
         $('input[name="<?php echo $class?>[eye_id]"]').click(function () {
             updateTotalDuration('<?php echo $identifier?>');
