@@ -12,7 +12,9 @@
                 $this->createUrl('/OECaseSearch/caseSearch', array('trial_id' => $trial->id))); ?>
         </li>
         <li>
-          <a href="/csv/upload?context=trialPatients">Upload trial patients</a>
+          <a href = <?=  Yii::app()->createURL('csv/upload',
+              array('context' => 'trials', 'backuri' => '/OETrial/trial/view/'.$trial->id)
+          ) ?> >Upload trial patients</a>
         </li>
       <?php endif; ?>
     <li>
