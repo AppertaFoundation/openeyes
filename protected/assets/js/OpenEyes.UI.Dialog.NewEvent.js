@@ -184,7 +184,7 @@
             $(this).addClass('selected');
             self.updateEventList();
 
-            if(self.options.mode == 'ChangeContext' && (self.options.showSteps == false || self.options.workflowSteps[$(this).data('context-id')] === undefined)){
+            if(self.options.mode === 'ChangeContext' && (self.options.showSteps === false || self.options.workflowSteps[$(this).data('context-id')] === undefined)){
                 self.changeEventContext();
             }
         });
@@ -392,7 +392,7 @@
                 var context = self.contextsBySubspecialtyId[subspecialtyId][i];
                 list += '<li class="step-2" data-context-id="' + context.id + '">' + context.name + '</li>';
                 
-                if(self.options.mode == 'ChangeContext' && parseInt(context.id) === self.options.currentFirm){
+                if(self.options.mode === 'ChangeContext' && parseInt(context.id) === self.options.currentFirm){
                     contextListIdx = i;
                 } else if (contextListIdx === undefined && String(context.id) === defaultContextId) {
                     contextListIdx = i;
@@ -419,8 +419,8 @@
         var self = this;
         var selected = self.content.find('.step-2.selected');
         if (selected.length) {
-            if(self.options.mode == 'NewEvent'){
-                var selectedSubspecialty = self.subspecialtiesById[self.content.find(selectors.subspecialtyItem + '.selected').data('subspecialtyId')];
+            if(self.options.mode === 'NewEvent'){
+                let selectedSubspecialty = self.subspecialtiesById[self.content.find(selectors.subspecialtyItem + '.selected').data('subspecialtyId')];
                 if (selectedSubspecialty.supportServices) {
                     // Filter list based on whether Support Services is being chosen.
                     self.content.find(selectors.eventTypeItem).each(function () {
@@ -491,7 +491,7 @@
         const newSubspecialty = $(selectors.newSubspecialtyItem);
         const selectedWorkflowStepItem = $(selectors.workflowStepItem).filter('.selected');
         
-        if(selectedContextItem.length != 0){
+        if(selectedContextItem.length !== 0){
             if((parseInt(self.options.userContext.id) !== selectedContextItem.data('context-id')) || (parseInt(self.options.currentStep.id) !== selectedWorkflowStepItem.data('workflow-id'))){
                 let postData = {
                     YII_CSRF_TOKEN: YII_CSRF_TOKEN,
@@ -502,11 +502,16 @@
                     selectedWorkflowStepId: selectedWorkflowStepItem.data('workflow-id')
                 };
                 
-                if(newSubspecialty.length != 0){
+                if(newSubspecialty.length !== 0){
                     postData.selectedSubspecialtyId = newSubspecialty.data('service-id')
                 }
                 $.post("/ChangeEvent/UpdateEpisode",postData,function(successful){
-                    if(successful == "true"){
+                    if(successful === "true"){
+                        let event_title = self.options.eventType;
+                        if(selectedWorkflowStepItem.text()){
+                            event_title += " ("+selectedWorkflowStepItem.text()+")"
+                        }
+                        $('h2.event-title').text(event_title);
                         $('.'+self.options.popupClass+' .close-icon-btn').trigger('click');
                     }
                 });

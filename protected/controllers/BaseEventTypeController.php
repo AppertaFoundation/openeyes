@@ -900,7 +900,7 @@ class BaseEventTypeController extends BaseModuleController
 
             $this->event_tabs[] = array(
                 'label' => 'Change Context',
-                'class' => 'change_context'
+                'class' => 'js-change_context'
             );
         }
 

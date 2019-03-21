@@ -2,7 +2,6 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -142,6 +141,7 @@
                 workflowSteps: <?= CJSON::encode($workflowSteps) ?>,
                 currentStep: <?= CJSON::encode($currentStep) ?>,
                 currentFirm: <?= $currentFirm ?>,
+                eventType: "<?= $eventType ?>",
             }).open();
         });
     });
