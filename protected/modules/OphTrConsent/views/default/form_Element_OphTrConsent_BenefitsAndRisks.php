@@ -30,7 +30,7 @@
           <?php echo $form->textArea(
               $element,
               'benefits',
-              array('rows' => 4, 'cols' => 80, 'nowrapper' => true)
+              array('rows' => 4, 'cols' => 80, 'nowrapper' => true,'htmlOptions' => array('style' => 'max-height:200px; resize:none'))
           ) ?>
       </td>
     </tr>
@@ -42,7 +42,7 @@
           <?php echo $form->textArea(
               $element,
               'risks',
-              array('rows' => 4, 'cols' => 80, 'nowrapper' => true)
+              array('rows' => 4, 'cols' => 80, 'nowrapper' => true,'htmlOptions' => array('style' => 'max-height:200px; resize:none'))
           ) ?>
       </td>
     </tr>
