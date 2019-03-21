@@ -217,7 +217,7 @@ class BookingController extends OphTrOperationbookingEventController
             'errors' => isset($errors) ? $errors : null,
         ));
     }
-/// 'soft_bookable' => isset($soft_bookable) ? $soft_bookable : null;
+
     /**
      * Reschedule an operation for the given event.
      *
