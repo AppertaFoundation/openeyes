@@ -204,7 +204,6 @@ $this->beginContent('//patient/episodes_container', array(
                     </div>
                 </div>
             </section>
-
             <section class="element view full view-xxx" id="idg-ele-view-eye-procedures">
                 <header class="element-header"><h3 class="element-title">Surgical History</h3></header>
                 <div class="element-data full-width">
@@ -212,6 +211,17 @@ $this->beginContent('//patient/episodes_container', array(
                         <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
                             'patient' => $this->patient,
                             'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                        )); ?>
+                    </div>
+                </div>
+            </section>
+            <section class="element view full view-xxx" id="idg-ele-view-eye-medications">
+                <header class="element-header"><h3 class="element-title">Eye Medications</h3></header>
+                <div class="element-data full-width">
+                    <div class="data-value">
+                        <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class, array(
+                            'patient' => $this->patient,
+                            'mode' => BaseEventElementWidget::$PATIENT_LANDING_PAGE_MODE,
                         )); ?>
                     </div>
                 </div>
@@ -259,17 +269,6 @@ $this->beginContent('//patient/episodes_container', array(
                             <tbody>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-            </section>
-            <section class="element view full view-xxx" id="idg-ele-view-eye-medications">
-                <header class="element-header"><h3 class="element-title">Eye Medications</h3></header>
-                <div class="element-data full-width">
-                    <div class="data-value">
-                        <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class, array(
-                            'patient' => $this->patient,
-                            'mode' => BaseEventElementWidget::$PATIENT_LANDING_PAGE_MODE,
-                        )); ?>
                     </div>
                 </div>
             </section>
