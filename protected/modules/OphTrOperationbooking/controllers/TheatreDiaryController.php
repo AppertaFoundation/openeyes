@@ -483,6 +483,7 @@ class TheatreDiaryController extends BaseModuleController
                 $session->available = $_POST['available_'.$session->id];
                 $session->unavailablereason_id = $_POST['unavailablereason_id_'.$session->id];
                 $session->max_procedures = $_POST['max_procedures_'.$session->id];
+                $session->max_complex_procedures = $_POST['max_complex_procedures_'.$session->id];
             }
 
 
