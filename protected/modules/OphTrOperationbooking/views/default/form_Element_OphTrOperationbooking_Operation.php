@@ -318,14 +318,14 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
             </tr>
             <tr>
                 <td>
-                    Doctor organizing admission
+                    Doctor organising admission
                 </td>
                 <td>
                     <input type="hidden" name="<?=\CHtml::modelName($element) ?>[organising_admission_user_id]"
                            id="<?=\CHtml::modelName($element) ?>_organising_admission_user_id"
                            value="<?php echo $element->organising_admission_user_id ?>"/>
                     <span class="organising_admission_user">
-                        <?php echo $element->organising_admission_user ? $element->organising_admission_user->reversedFullname . ' <i href="#" class="remove_organising_admission_user oe-i remove-circle small pad-left"></i>' : 'None' ?>
+                        <?php echo $element->organising_admission_user ? $element->organising_admission_user->getReversedFullname() . ' <i href="#" class="remove_organising_admission_user oe-i remove-circle small pad-left"></i>' : 'None' ?>
                     </span>
                 </td>
                 <td>
