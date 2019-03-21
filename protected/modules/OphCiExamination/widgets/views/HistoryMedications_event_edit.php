@@ -33,7 +33,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
-  <div class="data-group flex-layout cols-10">
+  <div class="data-group flex-layout full">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
       <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
       <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="js-do-not-save-entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>

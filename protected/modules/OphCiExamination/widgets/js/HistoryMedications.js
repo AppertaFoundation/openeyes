@@ -234,10 +234,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if($input.val() == "1") {
             $input.val(0);
             $icon.css("opacity", "");
+            $row.find(".js-disppense-location option").empty();
+            $row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
         }
         else {
             $input.val(1);
             $icon.css("opacity", 1);
+            $row.find(".js-duration,.js-dispense-condition,.js-dispense-location").show();
         }
       });
 
@@ -262,7 +265,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           $start_date_ctrl[0].addEventListener('pickmeup-change', function(e){controls_onchange(e);});
       }
 
-        //  controller.updateRowRouteOptions($row);
+      $row.on("change", ".js-dispense-condition", function(){
+          controller.getDispenseLocation($(this));
+          return false;
+      });
+  };
+
+  HistoryMedicationsController.prototype.getDispenseLocation = function($dispense_condition)
+  {
+      $.get("/OphDrPrescription/PrescriptionCommon/GetDispenseLocation", {
+          condition_id: $dispense_condition.val(),
+      }, function (data) {
+          var $dispense_location = $dispense_condition.closest('tr').find('.js-dispense-location');
+          $dispense_location.find('option').remove();
+          $dispense_location.append(data);
+          $dispense_location.show();
+      });
   };
 
     HistoryMedicationsController.prototype.showStopControls = function($row)

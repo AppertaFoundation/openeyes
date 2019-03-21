@@ -323,8 +323,8 @@ class MedicationManagement extends BaseMedicationElement
 						'duration' => $entry->duration,
 						'dose' => $entry->dose,
 						'start_date_string_YYYYMMDD' => $entry->start_date_string_YYYYMMDD,
-						'dispense_location_id' => 2,
-						'dispense_condition_id' => 1
+						'dispense_location_id' => $entry->dispense_location_id,
+						'dispense_condition_id' => $entry->dispense_condition_id
 					));
 					if(!$prescription_Item->save()) {
 						throw new \Exception("Error while saving prescription item: ".print_r($prescription_Item->errors, true));
@@ -422,24 +422,21 @@ class MedicationManagement extends BaseMedicationElement
     private function getPrescriptionItem(\EventMedicationUse $entry)
     {
         $item = new \OphDrPrescription_Item();
+
         $item->dose = $entry->dose;
         $item->frequency_id = $entry->frequency_id;
         $item->route_id = $entry->route_id;
         $item->medication_id = $entry->medication_id;
-
-        /* We can't get defaults as we don't know from which set the medication comes - so we're hard-coding :-( */
-
-        $item->duration= 13; /* 'Until review */
-        $item->dispense_condition_id = 1; /* Hospital to supply */
-        $item->dispense_location_id = 2; /* Pharmacy */
-
+        $item->duration= $entry->duration;
+        $item->dispense_condition_id = $entry->dispense_condition_id;
+        $item->dispense_location_id = $entry->dispense_location_id;
         $item->laterality = $entry->laterality;
-        $item->usage_type = \OphDrPrescription_Item::getUsageType();
-        $item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();
+		$item->start_date_string_YYYYMMDD = $entry->start_date_string_YYYYMMDD;
 
-        $item->start_date_string_YYYYMMDD = $entry->start_date_string_YYYYMMDD;
+		$item->usage_type = \OphDrPrescription_Item::getUsageType();
+		$item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();
 
-        return $item;
+		return $item;
     }
 
     public function loadFromExisting($element)

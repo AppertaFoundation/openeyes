@@ -37,25 +37,30 @@ $element_errors = $element->getErrors();
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
-    <div class="field-row flex-layout cols-10">
+    <div class="field-row flex-layout full">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <table class="cols-full entries js-entry-table" id="<?= $model_name ?>_entry_table cols-full">
             <colgroup>
                 <col class="cols-2">
-                <col class="cols-4">
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
+                <col class="cols-2">
+                <col class="cols-2">
+                <col class="cols-1">
+                <col class="cols-1">
+                <col class="cols-1">
+                <col class="cols-1">
+                <col class="cols-1">
+                <col class="cols-1">
             </colgroup>
             <thead>
             <tr>
                 <th>Drug</th>
                 <th>Dose/frequency/route</th>
                 <th>Started</th>
-                <th>Stopped (Optional)</th>
+                <th>Stopped</th>
                 <th>Reason</th>
+                <th>Duration</th>
+                <th>Disp. cond.</th>
+                <th>Disp. loc.</th>
                 <th></th>
             </tr>
             </thead>

@@ -159,8 +159,30 @@ $is_new = isset($is_new) ? $is_new : false;
         </div>
     </td>
     <td>
-        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'js-stop-reason', 'style' => $is_new || is_null($entry->end_date) ? "display:none" : null)) ?>
+        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'js-stop-reason cols-11', 'style' => $is_new || is_null($entry->end_date) ? "display:none" : null)) ?>
         <?php /* <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a> */ ?>
+    </td>
+    <?php $prescribe_available = $entry->prescribe ? "display: block" : "display: none"; ?>
+    <td>
+		<?=\CHtml::dropDownList($field_prefix.'[duration]', $entry->duration,
+			CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),
+			array('empty' => '- Select -', 'class' => 'cols-full js-duration', 'style' => $prescribe_available)) ?>
+    </td>
+    <td>
+		<?=\CHtml::dropDownList($field_prefix.'[dispense_condition_id]',
+			$entry->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
+				'condition' => "active or id='" . $entry->dispense_condition_id . "'",
+				'order' => 'display_order',
+			)), 'id', 'name'), array('class' => 'js-dispense-condition cols-11', 'empty' => '- Select -', 'style' => $prescribe_available)); ?>
+
+    </td>
+    <td>
+		<?php
+		$locations = $entry->dispense_condition ? $entry->dispense_condition->locations : array('');
+		$style = $entry->dispense_condition ? '' : 'display: none;';
+		echo CHtml::dropDownList($field_prefix.'[dispense_location_id]', $entry->dispense_location_id,
+			CHtml::listData($locations, 'id', 'name'), array('class' => 'js-dispense-location cols-11', 'style' => $prescribe_available));
+		?>
     </td>
     <td>
         <span class="icon-switch js-btn-prescribe <?php if(!$prescribe_access): ?>js-readonly<?php endif; ?>">

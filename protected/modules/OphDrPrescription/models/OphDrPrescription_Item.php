@@ -171,6 +171,8 @@ class OphDrPrescription_Item extends EventMedicationUse
 			'frequency_id',
 			'duration',
 			'dose',
+			'dispense_condition_id',
+			'dispense_location_id',
 		);
 
 		if(!$mgment_item = \OEModule\OphCiExamination\models\MedicationManagementEntry::model()->findByAttributes(array("prescription_item_id" =>$this->id))) {

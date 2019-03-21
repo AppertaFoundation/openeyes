@@ -18,6 +18,14 @@
 
     namespace OEModule\OphCiExamination\models;
 
+	/**
+	 * Class MedicationManagementEntry
+	 * @package OEModule\OphCiExamination\models
+	 *
+	 * @property \OphDrPrescription_DispenseCondition $dispense_condition
+	 * @property \OphDrPrescription_DispenseLocation $dispense_location
+	 */
+
     class MedicationManagementEntry extends \EventMedicationUse
     {
         public static function getUsageType()
@@ -45,7 +53,8 @@
         public function relations()
         {
             return array_merge(parent::relations(), array(
-                // TODO define element relation
+				'dispense_condition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'dispense_condition_id'),
+				'dispense_location' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'dispense_location_id'),
             ));
         }
 
@@ -84,6 +93,8 @@
 				'frequency_id',
 				'duration',
 				'dose',
+				'dispense_condition_id',
+				'dispense_location_id',
 			);
 
 			$identical = true;

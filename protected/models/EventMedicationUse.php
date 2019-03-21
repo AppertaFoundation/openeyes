@@ -112,7 +112,7 @@ class EventMedicationUse extends BaseElement
 			array('usage_subtype', 'default', 'value' => static::getUsageSubType(), 'on' => 'insert'),
 			array('start_date_string_YYYYMMDD, end_date_string_YYYYMMDD', 'length', 'max'=>8),
 			array('last_modified_date, created_date, event_id', 'safe'),
-			array('dose, route_id, frequency_id', 'required', 'on' => 'to_be_prescribed'),
+			array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
