@@ -191,6 +191,8 @@ $(document).ready(function() {
 				$('#bookingForm').submit();
 			}.bind(this));
 			dialog.open();
+		} else {
+			$('#bookingForm').submit();
 		}
 	});
 

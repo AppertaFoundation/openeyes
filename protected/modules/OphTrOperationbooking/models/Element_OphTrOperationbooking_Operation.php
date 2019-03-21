@@ -1621,9 +1621,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     {
         if($this->complexity == self::COMPLEXITY_HIGH) {
             return $this->getProcedureCount();
-        } else {
-            return 0;
         }
+        return 0;
     }
 
     /**

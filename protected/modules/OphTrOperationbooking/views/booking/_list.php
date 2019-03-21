@@ -22,13 +22,14 @@ if (!$reschedule) {
 ?>
 <header class="element-header">
     <h3 class="element-title">Other operations in this session:
-        (<?php echo abs($session->availableMinutes) . " min {$session->minuteStatus}"; ?>
-        <?php if ($session->max_procedures) {
-            echo ', ' . $session->getAvailableProcedureCount() . '/' . $session->max_procedures . ' procedures left' ?>
-        <?php } ?>
-        <?php if($session->max_complex_procedures) {
-            echo ', ' . $session->getAvailableComplexProcedureCount() . '/' . $session->max_complex_procedures . ' complex procedures left' ?>
-        <?php } ?>)</h3>
+        (<?php echo abs($session->availableMinutes) . " min {$session->minuteStatus}";
+        if ($session->max_procedures) {
+            echo ', ' . $session->getAvailableProcedureCount() . '/' . $session->max_procedures . ' procedures left';
+        }
+        if($session->max_complex_procedures) {
+            echo ', ' . $session->getAvailableComplexProcedureCount() . '/' . $session->max_complex_procedures . ' complex procedures left';
+        } ?>)
+    </h3>
 </header>
 <div class="element-actions">
     <span class="js-remove-element">

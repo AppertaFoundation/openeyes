@@ -206,17 +206,17 @@ class BookingController extends OphTrOperationbookingEventController
             'firm' => $firm,
             'firm_list' => $booked_firm_list,
             'date' => $date,
-            'selectedDate' => @$selectedDate,
+            'selectedDate' => isset($selectedDate) ? $selectedDate : null,
             'sessions' => $operation->getFirmCalendarForMonth($firm, $date, $schedule_options),
-            'theatres' => @$theatres,
-            'session' => @$session,
-            'bookings' => @$bookings,
-            'bookable' => @$bookable,
-            'booking_is_preferred' => @$booking_is_preferred,
-            'errors' => @$errors,
+            'theatres' => isset($theatres) ? $theatres : null,
+            'session' => isset($session) ? $session : null,
+            'bookings' => isset($bookings) ? $bookings : null,
+            'bookable' => isset($bookable) ? $bookable : null,
+            'booking_is_preferred' => isset($booking_is_preferred) ? $booking_is_preferred : null,
+            'errors' => isset($errors) ? $errors : null,
         ));
     }
-
+/// 'soft_bookable' => isset($soft_bookable) ? $soft_bookable : null;
     /**
      * Reschedule an operation for the given event.
      *

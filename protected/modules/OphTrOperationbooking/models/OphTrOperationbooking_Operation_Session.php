@@ -330,7 +330,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     public function getAvailableComplexProcedureCount()
     {
       if (!$this->max_complex_procedures) {
-        return;
+        return 0;
       }
 
       return $this->max_complex_procedures - $this->getBookedComplexProcedureCount();

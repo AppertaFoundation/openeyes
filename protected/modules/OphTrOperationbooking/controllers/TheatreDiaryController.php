@@ -476,14 +476,14 @@ class TheatreDiaryController extends BaseModuleController
             }
 
             if ($this->checkAccess('OprnEditTheatreSessionDetails')) {
-                $session->consultant = $_POST['consultant_'.$session->id];
-                $session->paediatric = $_POST['paediatric_'.$session->id];
-                $session->anaesthetist = $_POST['anaesthetist_'.$session->id];
-                $session->general_anaesthetic = $_POST['general_anaesthetic_'.$session->id];
-                $session->available = $_POST['available_'.$session->id];
-                $session->unavailablereason_id = $_POST['unavailablereason_id_'.$session->id];
-                $session->max_procedures = $_POST['max_procedures_'.$session->id];
-                $session->max_complex_procedures = $_POST['max_complex_procedures_'.$session->id];
+                $session->consultant = isset($_POST['consultant_'.$session->id]) ? $_POST['consultant_'.$session->id] : null ;
+                $session->paediatric = isset($_POST['paediatric_'.$session->id]) ? $_POST['paediatric_'.$session->id] : null ;
+                $session->anaesthetist = isset($_POST['anaesthetist_'.$session->id]) ? $_POST['anaesthetist_'.$session->id] : null ;
+                $session->general_anaesthetic = isset($_POST['general_anaesthetic_'.$session->id]) ? $_POST['general_anaesthetic_'.$session->id] : null ;
+                $session->available = isset($_POST['available_'.$session->id]) ? $_POST['available_'.$session->id] : null ;
+                $session->unavailablereason_id = isset($_POST['unavailablereason_id_'.$session->id]) ? $_POST['unavailablereason_id_'.$session->id] : null ;
+                $session->max_procedures = isset($_POST['max_procedures_'.$session->id]) ? $_POST['max_procedures_'.$session->id] : null ;
+                $session->max_complex_procedures = isset($_POST['max_complex_procedures_'.$session->id]) ? $_POST['max_complex_procedures_'.$session->id] : null ;
             }
 
 
