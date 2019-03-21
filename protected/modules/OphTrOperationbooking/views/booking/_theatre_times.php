@@ -98,7 +98,7 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                         </tr>
                     <?php } ?>
                     <?php if (isset($selectedSession) && $selectedSession->operationBookable($operation) &&
-                        !$selectedSession->operationBookingPreferred($operation)) { ?>
+                        !$selectedSession->isTherePlaceForComplexProcedure($operation)) { ?>
                         <tr>
                             <td style="float:left">
                                 <span class="session-unavailable alert-box warning">

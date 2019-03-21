@@ -121,7 +121,7 @@ class BookingController extends OphTrOperationbookingEventController
                     foreach ($theatre->sessions as $_session) {
                         if ($session->id == $_session->id) {
                             $bookable = $_session->operationBookable($operation);
-                            $booking_is_preferred = $_session->operationBookingPreferred($operation);
+                            $there_is_place_for_complex_procedure = $_session->isTherePlaceForComplexProcedure($operation);
                         }
                     }
                 }
@@ -212,7 +212,8 @@ class BookingController extends OphTrOperationbookingEventController
             'session' => isset($session) ? $session : null,
             'bookings' => isset($bookings) ? $bookings : null,
             'bookable' => isset($bookable) ? $bookable : null,
-            'booking_is_preferred' => isset($booking_is_preferred) ? $booking_is_preferred : null,
+            'there_is_place_for_complex_procedure' => isset($there_is_place_for_complex_procedure) ?
+                $there_is_place_for_complex_procedure : null,
             'errors' => isset($errors) ? $errors : null,
         ));
     }

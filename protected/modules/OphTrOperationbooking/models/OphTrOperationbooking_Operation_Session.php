@@ -337,13 +337,13 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 
 
     /**
-     * Test whether the given operation booking into this session is preferred.
+     * Test whether there is place in this session for complex procedures of the given operation
      *
      * @param $operation
      *
      * @return bool
      */
-    public function operationBookingPreferred($operation) {
+    public function isTherePlaceForComplexProcedure($operation) {
 
         if(!$this->operationBookable($operation)) {
             return false;
