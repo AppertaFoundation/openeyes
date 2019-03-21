@@ -103,6 +103,8 @@ if (is_array($ordered_episodes)):
                   $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
                   $event_name = $event->getEventName();
                   $event_image = EventImage::model()->find('event_id = :event_id', array(':event_id' => $event->id));
+                  $patientTicketing_API = new \OEModule\PatientTicketing\components\PatientTicketing_API();
+                  $virtual_clinic_event = $patientTicketing_API->getTicketForEvent($event);
                   ?>
 
               <li id="js-sideEvent<?php echo $event->id ?>"
@@ -130,7 +132,8 @@ if (is_array($ordered_episodes)):
 
                 <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
                     <span
-                        class="event-type js-event-a <?= ($event->hasIssue()) ? ($event->hasIssue('ready') ? 'ready' : 'alert') : '' ?>">
+                        class="event-type js-event-a <?= (($event->hasIssue()) ? ($event->hasIssue('ready') ? 'ready' : 'alert') : '')
+                            . ($virtual_clinic_event ? ' virtual-clinic' : '') ?>">
                         <?= $event->getEventIcon() ?>
                   </span>
 
