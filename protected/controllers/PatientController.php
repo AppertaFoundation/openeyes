@@ -148,6 +148,9 @@ class PatientController extends BaseController
         $this->patient = Patient::model()->findByPk($id);
         $this->pageTitle = "Summary";
 
+        $episodes = $this->patient->episodes;
+        $legacyepisodes = $this->patient->legacyepisodes;
+        $supportserviceepisodes = $this->patient->supportserviceepisodes;
 
         $criteria = new \CDbCriteria();
         $criteria->with = ['episode', 'episode.patient'];
@@ -157,9 +160,16 @@ class PatientController extends BaseController
         $criteria->limit = 3;
         $events = Event::model()->findAll($criteria);
 
+        $no_episodes = count($episodes) < 1 && count($supportserviceepisodes) < 1 && count($legacyepisodes) < 1;
+
+        if ($no_episodes) {
+            $this->layout = '//layouts/events_and_episodes_no_header';
+        }
+
         $this->render('landing_page', array(
             'events' => $events,
             'patient' => $this->patient,
+            'noEpisodes' => $no_episodes,
         ));
     }
 
