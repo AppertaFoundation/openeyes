@@ -191,6 +191,7 @@ fi
 
 dbconnectionstring="sudo mysql -u $username $dbpassword --port=$port --host=$host"
 
+echo databse connection string="$dbconnectionstring"
 
 if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null; then
 		dwservrunning=1
@@ -199,10 +200,10 @@ if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null; then
 fi
 
 if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
-	
+
 	## If no branch is specified, use build branch or fallback to master
 	[ "$branch" = "0" ] && branch=${BUILD_BRANCH:-"master"} || :
-	
+
 	## Checkout new sample database branch
 	echo "Downloading database for $branch"
 
@@ -213,8 +214,8 @@ echo "Clearing current database"
 
 echo "
 drop database if exists openeyes;
-create database openeyes;
-grant all privileges on openeyes.* to 'openeyes'@'%' identified by 'openeyes';
+create database ${DATABASE_NAME:-openeyes};
+grant all privileges on ${DATABASE_NAME:-"openeyes"}.* to '${username:-"openeyes"}'@'%' identified by '${dbpassword:-"openeyes"}';
 flush privileges;
 " > /tmp/openeyes-mysql-create.sql
 
@@ -234,7 +235,7 @@ if [ $cleanbase = "0" ]; then
   [ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
 
 	echo "Re-importing database"
-	eval $dbconnectionstring -D openeyes < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
+	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
 fi
 
 # Force default institution code to match common.php
@@ -249,7 +250,7 @@ if [ ! -z $icode ]; then
 
 	echo "UPDATE institution SET remote_id = '$icode' WHERE id = 1;" > /tmp/openeyes-mysql-institute.sql
 
-	eval $dbconnectionstring -D openeyes < /tmp/openeyes-mysql-institute.sql
+	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < /tmp/openeyes-mysql-institute.sql
 
 	rm /tmp/openeyes-mysql-institute.sql
 fi
@@ -264,7 +265,7 @@ if [ $demo = "1" ]; then
 	do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D openeyes < $MODULEROOT/sample/sql/demo/pre-migrate/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
 			sudo bash "$MODULEROOT/sample/sql/demo/pre-migrate/$f"
@@ -290,7 +291,7 @@ if [ $demo = "1" ]; then
 	do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D openeyes < $MODULEROOT/sample/sql/demo/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
 			sudo bash "$MODULEROOT/sample/sql/demo/$f"
@@ -308,7 +309,7 @@ if grep -q "'Genetics'," $WROOT/protected/config/local/common.php && ! grep -q "
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D openeyes < $MODULEROOT/sample/sql/demo/genetics/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/genetics/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
 			sudo bash "$MODULEROOT/sample/sql/demo/genetics/$f"
@@ -321,8 +322,8 @@ fi
 if [ ! $nobanner = "1" ]; then
 	echo "setting banner to: $bannertext"
 	echo "
-	use openeyes;
-	UPDATE openeyes.setting_installation s SET s.value='$bannertext' WHERE s.key='watermark';
+	use ${DATABASE_NAME:-'openeyes'};
+	UPDATE ${DATABASE_NAME:-"openeyes"}.setting_installation s SET s.value=\"$bannertext\" WHERE s.key=\"watermark\";
 	" | sudo tee /tmp/openeyes-mysql-setbanner.sql > /dev/null
 
 	eval $dbconnectionstring < /tmp/openeyes-mysql-setbanner.sql
@@ -339,7 +340,7 @@ if [ $demo = "1" ]; then
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D openeyes < $MODULEROOT/sample/sql/demo/local-post/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/local-post/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
 			sudo bash "$MODULEROOT/sample/sql/demo/local-post/$f"
