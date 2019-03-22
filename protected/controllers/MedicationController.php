@@ -134,7 +134,7 @@ class MedicationController extends BaseController
     public function actionRetrieveDrugRouteOptions($route_id)
     {
         $route = MedicationRoute::model()->findByPk($route_id);
-        if(in_array($route->term, ['Eye', 'Ocular', 'Intraocular', 'Intravitreal'])) {
+        if($route->has_laterality) {
             echo json_encode([
                 ['id' =>1, 'name' => 'Left'],
                 ['id' =>2, 'name' => 'Right'],

@@ -733,7 +733,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     $select.append('<option value="' + item.id +'">' + item.name + '</option>');
                   });
 
-                  if($row.data("medication").laterality !== "") {
+                  if(typeof $row.data("medication") !== "undefined" && $row.data("medication").laterality !== "") {
                       $select.val($row.data("medication").laterality);
                   }
 

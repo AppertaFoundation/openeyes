@@ -69,6 +69,7 @@ return array(
                 'Tags' => '/TagsAdmin/list',
                 'Drug types' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/drugType'),
                 */
+                'Routes' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/routesAdmin/list'),
                 'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
                 'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
                 'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
