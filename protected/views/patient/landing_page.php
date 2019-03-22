@@ -108,7 +108,7 @@ $this->beginContent('//patient/episodes_container', array(
                         </td>
                     <?php } else { ?>
                         <td>Refraction:</td>
-                        <td><small class="fade">NA</small></td>>
+                        <td><small class="fade">NA</small></td>
                     <?php } ?>
                 </tr>
                 <tr>
