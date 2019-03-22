@@ -134,6 +134,22 @@ $element_errors = $element->getErrors();
         );
         ?>
     </script>
+    <script type="text/template" class="taper-template hidden">
+        <?php
+            $empty_entry = new OphDrPrescription_ItemTaper();
+
+            $this->render(
+                "MedicationManagementEntryTaper_event_edit",
+                array(
+                    "element" => $element,
+                    "entry" => $empty_entry,
+                    "row_count" => "{{row_count}}",
+                    "taper_count" => "{{taper_count}}",
+                    "field_prefix" => $model_name."[entries][{{row_count}}][taper][{{taper_count}}]"
+                )
+            );
+        ?>
+    </script>
 </div>
 <script type="text/javascript">
 

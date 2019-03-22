@@ -34,6 +34,8 @@ class OphDrPrescription_Item extends EventMedicationUse
 
     public $original_item_id;
 
+    public $taper_support = true;
+
     /**
      * Returns the static model of the specified AR class.
      */
@@ -183,6 +185,42 @@ class OphDrPrescription_Item extends EventMedicationUse
 			$this->setAttribute($attribute, $mgment_item->getAttribute($attribute));
 		}
 
-		return $this->save();
+		$this->save();
+		$this->updateTapers($mgment_item->tapers);
     }
+
+	public function updateTapers(array $tapers)
+	{
+		foreach ($this->tapers as $taper) {
+			$taper->delete();
+		}
+
+		foreach ($tapers as $taper) {
+			$new_taper = new OphDrPrescription_ItemTaper();
+			$new_taper->setAttributes([
+				'item_id' => $this->id,
+				'frequency_id' => $taper->frequency_id,
+				'duration_id' => $taper->duration_id,
+				'dose' => $taper->dose
+			]);
+
+			$new_taper->save();
+		}
+    }
+
+	public function saveTapers()
+	{
+		foreach ($this->tapers as $taper) {
+			$taper->item_id = $this->id;
+			$taper->save();
+		}
+    }
+
+	public function beforeDelete()
+	{
+		\Yii::app()->db->createCommand("DELETE FROM ".\OphDrPrescription_ItemTaper::model()->tableName(). " WHERE item_id = :item_id")->
+		bindValues(array(":item_id" => $this->id))->execute();
+
+		return parent::beforeDelete();
+	}
 }

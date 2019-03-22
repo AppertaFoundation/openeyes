@@ -249,6 +249,13 @@ class MedicationManagement extends BaseMedicationElement
                 $entry->id = $id;
             }
 
+			if(!$entry->saveTapers()) {
+				foreach ($entry->errors as $err) {
+					$this->addError('entries', implode(', ', $err));
+				}
+				return false;
+			}
+
             $saved_ids[] = $entry->id;
 
             if($entry->prescribe) {
@@ -326,9 +333,20 @@ class MedicationManagement extends BaseMedicationElement
 						'dispense_location_id' => $entry->dispense_location_id,
 						'dispense_condition_id' => $entry->dispense_condition_id
 					));
+					$p_tapers = array();
+					foreach ($entry->tapers as $taper) {
+						$new_taper = new \OphDrPrescription_ItemTaper();
+						$new_taper->item_id = null;
+						$new_taper->frequency_id = $taper->frequency_id;
+						$new_taper->duration_id = $taper->duration_id;
+						$new_taper->dose = $taper->dose;
+						$p_tapers[] = $new_taper;
+					}
+					$prescription_Item->tapers = $p_tapers;
 					if(!$prescription_Item->save()) {
 						throw new \Exception("Error while saving prescription item: ".print_r($prescription_Item->errors, true));
 					}
+					$prescription_Item->saveTapers();
 					$entry->prescription_item_id = $prescription_Item->id;
 					$entry->save();
 					$changed = true;
@@ -386,16 +404,12 @@ class MedicationManagement extends BaseMedicationElement
             }
 
             $item->id = \Yii::app()->db->getLastInsertId();
+            $item->saveTapers();
 
             $original_item_id = $item->original_item_id;
-            $orig_item = MedicationManagementEntry::model()->findByPk($original_item_id);
-            if($orig_item) {
-                $orig_item->setAttribute('prescription_item_id', $item->id);
-
-                if(!$orig_item->save()) {
-                    \Yii::trace(print_r($orig_item->errors, true));
-                }
-            }
+            \Yii::app()->db->createCommand("UPDATE ".MedicationManagementEntry::model()->tableName().
+											" set prescription_item_id = :p_item_id WHERE id = :orig_item_id")
+				->bindValues(array(":p_item_id" => $item->id, ":orig_item_id" => $original_item_id))->execute();
         }
 
         $this->prescription_id = $prescription_details->id;
@@ -435,6 +449,19 @@ class MedicationManagement extends BaseMedicationElement
 
 		$item->usage_type = \OphDrPrescription_Item::getUsageType();
 		$item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();
+
+		$item_tapers = array();
+		if(!empty($entry->tapers)) {
+			foreach ($entry->tapers as $taper) {
+				$new_taper = new \OphDrPrescription_ItemTaper();
+				$new_taper->item_id = null;
+				$new_taper->frequency_id = $taper->frequency_id;
+				$new_taper->duration_id = $taper->duration_id;
+				$new_taper->dose = $taper->dose;
+				$item_tapers[] = $new_taper;
+			}
+		}
+		$item->tapers = $item_tapers;
 
 		return $item;
     }

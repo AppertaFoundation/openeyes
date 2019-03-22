@@ -149,9 +149,20 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     // removal button for table entries
     controller.$table.on('click', controller.options.removeButtonSelector, function(e) {
-      e.preventDefault();
-      $(e.target).parents('tr').remove();
+        e.preventDefault();
+        var $row = $(e.target).closest("tr");
+        var key = $row.attr("data-key");
+        var $tapers = controller.$table.find("tr[data-parent-key="+key+"]");
+        $tapers.remove();
+        $row.remove();
     });
+
+    // removal button for tapers
+      controller.$table.on("click", ".js-remove-taper", function(e){
+          e.preventDefault();
+          var $row = $(e.target).closest("tr");
+          $row.remove();
+      });
 
     // setup current table row behaviours
     controller.$table.find('tbody tr').each(function() {
@@ -236,11 +247,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $icon.css("opacity", "");
             $row.find(".js-disppense-location option").empty();
             $row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
+            $row.find(".js-add-taper").hide();
         }
         else {
             $input.val(1);
             $icon.css("opacity", 1);
-            $row.find(".js-duration,.js-dispense-condition,.js-dispense-location").show();
+            $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
         }
       });
 
@@ -269,6 +281,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.getDispenseLocation($(this));
           return false;
       });
+
+      $row.on("click", ".js-add-taper", function(){
+          controller.addTaper($row);
+          return false;
+      });
   };
 
   HistoryMedicationsController.prototype.getDispenseLocation = function($dispense_condition)
@@ -281,6 +298,39 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           $dispense_location.append(data);
           $dispense_location.show();
       });
+  };
+
+  HistoryMedicationsController.prototype.addTaper = function($row)
+  {
+      var row_count = $row.attr("data-key");
+      var next_taper_count = 0;
+      var last_taper_count;
+      var controller = this;
+
+      var $tapers = controller.$table.find("tr[data-parent-key="+row_count+"]");
+      if($tapers.length > 0) {
+          last_taper_count = parseInt($tapers.last().attr("data-taper-key"));
+          next_taper_count = last_taper_count + 1;
+      }
+
+      var markup = Mustache.render(
+          this.$element.find('.taper-template').text(),
+          {
+              'row_count' : row_count,
+              'taper_count' : next_taper_count
+          }
+      );
+
+      var $lastrow;
+
+      if($tapers.length>0) {
+          $lastrow = $tapers.last();
+      }
+      else {
+          $lastrow = $row;
+      }
+
+      $(markup).insertAfter($lastrow);
   };
 
     HistoryMedicationsController.prototype.showStopControls = function($row)

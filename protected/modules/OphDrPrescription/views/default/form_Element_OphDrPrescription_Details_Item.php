@@ -102,7 +102,7 @@
           CHtml::listData(MedicationFrequency::model()->activeOrPk([$item->frequency_id])->findAll(array()), 'id', 'term'),
           array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
   </td>
-  <td class="prescriptionItemDuration">
+  <td class="prescriptionItemDurationId">
       <?=\CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][duration]', $item->duration,
           CHtml::listData(DrugDuration::model()->activeOrPk($item->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),
           array('empty' => '-- Select --', 'class' => 'cols-11')) ?>

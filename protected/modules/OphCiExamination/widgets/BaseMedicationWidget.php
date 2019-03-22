@@ -132,8 +132,22 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 
                 $entry->originallyStopped = !array_key_exists("originallyStopped", $entry_data) ? false : (bool)$entry_data['originallyStopped'];
 
-                $entries[] = $entry;
+                // add tapers
 
+				if($entry->taper_support) {
+					$tapers = array();
+					if(array_key_exists("taper", $entry_data)) {
+						foreach ($entry_data['taper'] as $taper_data) {
+							$taper = new \OphDrPrescription_ItemTaper();
+							$taper->setAttributes($taper_data);
+							$tapers[] = $taper;
+						}
+					}
+
+					$entry->tapers = $tapers;
+				}
+
+				$entries[] = $entry;
             }
 
             $element->entries = $entries;

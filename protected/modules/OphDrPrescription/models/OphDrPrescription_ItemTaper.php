@@ -20,6 +20,9 @@
  * The followings are the available columns in table 'ophdrprescription_item_taper':.
  *
  * @property int $id
+ * @property int $frequency_id
+ * @property int $duration_id
+ * @property int $item_id
  * @property string $dose
  * @property DrugDuration $duration
  * @property MedicationFrequency $frequency
@@ -119,5 +122,11 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
         $return .= ' for '.$this->duration->name;
 
         return $return;
+    }
+
+	public function compareTo(OphDrPrescription_ItemTaper $taper)
+	{
+		$fields = array('frequency_id, duration_id', 'dose');
+		return $this->getAttributes($fields) == $taper->getAttributes($fields);
     }
 }

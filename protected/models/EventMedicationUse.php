@@ -65,6 +65,9 @@ class EventMedicationUse extends BaseElement
 
     public $is_copied_from_previous_event = false;
 
+    /** @var bool Whether tapers can be added */
+    public $taper_support = false;
+
     /* temporaryly saved properties to keep edit mode consistent through pages */
     public $group;
     public $chk_prescribe;
@@ -158,7 +161,7 @@ class EventMedicationUse extends BaseElement
 			'medication' => array(self::BELONGS_TO, Medication::class, 'medication_id'),
 			'route' => array(self::BELONGS_TO, MedicationRoute::class, 'route_id'),
             'stopReason' => array(self::BELONGS_TO, HistoryMedicationsStopReason::class, 'stop_reason_id'),
-            'prescriptionItem' => array(self::BELONGS_TO, self::class, 'prescription_item_id'),
+            'prescriptionItem' => array(self::BELONGS_TO, OphDrPrescription_Item::class, 'prescription_item_id'),
             'medicationLaterality' => array(self::BELONGS_TO, MedicationLaterality::class, 'laterality'),
             'drugDuration' => array(self::BELONGS_TO, DrugDuration::class, 'duration')
 		);

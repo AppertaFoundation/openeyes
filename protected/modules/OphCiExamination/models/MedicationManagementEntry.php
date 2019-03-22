@@ -24,10 +24,14 @@
 	 *
 	 * @property \OphDrPrescription_DispenseCondition $dispense_condition
 	 * @property \OphDrPrescription_DispenseLocation $dispense_location
+	 * @property \OphDrPrescription_ItemTaper[] $tapers
 	 */
 
     class MedicationManagementEntry extends \EventMedicationUse
     {
+
+    	public $taper_support = true;
+
         public static function getUsageType()
         {
             return "OphCiExamination";
@@ -55,6 +59,7 @@
             return array_merge(parent::relations(), array(
 				'dispense_condition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'dispense_condition_id'),
 				'dispense_location' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'dispense_location_id'),
+				'tapers' => array(self::HAS_MANY, \OphDrPrescription_ItemTaper::class, "item_id"),
             ));
         }
 
@@ -104,6 +109,63 @@
 				}
 			}
 
+			$prescription_tapers = $this->prescriptionItem->tapers;
+			if(count($this->tapers) != count($prescription_tapers)) {
+				$identical = false;
+			}
+			else {
+				foreach ($this->tapers as $key => $taper) {
+					if(!$taper->compareTo($prescription_tapers[$key])) {
+						$identical = false;
+					}
+				}
+			}
+
 			return $identical;
+		}
+
+		public function afterValidate()
+		{
+			// validate Tapers
+			foreach ($this->tapers as $key => $taper) {
+				$taper->item_id = $this->id;
+				if(!$taper->validate()) {
+					foreach ($taper->getErrors() as $field=>$error) {
+						$this->addError($field, "Taper ".($key+1).' - '.implode(', ', $error));
+					}
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public function saveTapers()
+		{
+			// delete existing tapers
+
+			\Yii::app()->db->createCommand("DELETE FROM ".\OphDrPrescription_ItemTaper::model()->tableName(). " WHERE item_id = :item_id")->
+				bindValues(array(":item_id" => $this->id))->execute();
+
+			// add new ones
+			foreach ($this->tapers as $taper) {
+				$taper->item_id = $this->id;
+				if(!$taper->save()) {
+					foreach ($taper->getErrors() as $err) {
+						$this->addError("tapers", $err);
+					}
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public function beforeDelete()
+		{
+			\Yii::app()->db->createCommand("DELETE FROM ".\OphDrPrescription_ItemTaper::model()->tableName(). " WHERE item_id = :item_id")->
+			bindValues(array(":item_id" => $this->id))->execute();
+
+			return parent::beforeDelete();
 		}
     }

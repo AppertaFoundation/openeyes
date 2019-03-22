@@ -48,6 +48,8 @@ if (isset($entry->end_date_string_YYYYMMDD) && !is_null($entry->end_date_string_
 $prescribe = isset($entry->prescribe) ? $entry->prescribe : ($row_type == "prescribed");
 $stop = isset($entry->stop) ? $entry->stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;
+
+$prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none";
 ?>
 
 <tr
@@ -63,6 +65,9 @@ $is_new = isset($is_new) ? $is_new : false;
 >
 
     <td>
+        <button class="js-add-taper" type="button" title="Add taper" style="<?=$prescribe_hide_style?>">
+            <i class="oe-i child-arrow small"></i>
+        </button>
         <span class="js-prepended_markup">
             <?php
             if(!is_null($entry->medication_id)) {
@@ -162,18 +167,17 @@ $is_new = isset($is_new) ? $is_new : false;
         <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'js-stop-reason cols-11', 'style' => $is_new || is_null($entry->end_date) ? "display:none" : null)) ?>
         <?php /* <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a> */ ?>
     </td>
-    <?php $prescribe_available = $entry->prescribe ? "display: block" : "display: none"; ?>
     <td>
 		<?=\CHtml::dropDownList($field_prefix.'[duration]', $entry->duration,
 			CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),
-			array('empty' => '- Select -', 'class' => 'cols-full js-duration', 'style' => $prescribe_available)) ?>
+			array('empty' => '- Select -', 'class' => 'cols-full js-duration', 'style' => $prescribe_hide_style)) ?>
     </td>
     <td>
 		<?=\CHtml::dropDownList($field_prefix.'[dispense_condition_id]',
 			$entry->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
 				'condition' => "active or id='" . $entry->dispense_condition_id . "'",
 				'order' => 'display_order',
-			)), 'id', 'name'), array('class' => 'js-dispense-condition cols-11', 'empty' => '- Select -', 'style' => $prescribe_available)); ?>
+			)), 'id', 'name'), array('class' => 'js-dispense-condition cols-11', 'empty' => '- Select -', 'style' => $prescribe_hide_style)); ?>
 
     </td>
     <td>
@@ -181,7 +185,7 @@ $is_new = isset($is_new) ? $is_new : false;
 		$locations = $entry->dispense_condition ? $entry->dispense_condition->locations : array('');
 		$style = $entry->dispense_condition ? '' : 'display: none;';
 		echo CHtml::dropDownList($field_prefix.'[dispense_location_id]', $entry->dispense_location_id,
-			CHtml::listData($locations, 'id', 'name'), array('class' => 'js-dispense-location cols-11', 'style' => $prescribe_available));
+			CHtml::listData($locations, 'id', 'name'), array('class' => 'js-dispense-location cols-11', 'style' => $prescribe_hide_style));
 		?>
     </td>
     <td>
@@ -194,3 +198,23 @@ $is_new = isset($is_new) ? $is_new : false;
         <?php } ?>
     </td>
 </tr>
+<?php
+
+if(!empty($entry->tapers)) {
+    $tcount = 0;
+    foreach ($entry->tapers as $taper) {
+		$this->render(
+			"MedicationManagementEntryTaper_event_edit",
+			array(
+				"element" => $this->element,
+				"entry" => $taper,
+				"row_count" => $row_count,
+				"taper_count" => $tcount,
+				"field_prefix" => $model_name."[entries][$row_count][taper][$tcount]"
+			)
+		);
+		$tcount++;
+    }
+}
+
+?>

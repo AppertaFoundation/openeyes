@@ -80,7 +80,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
     protected function afterSave()
     {
         if(!$this->do_not_save_entries) {
-           $this->saveEntries();
+        	$this->saveEntries();
         }
         parent::afterSave();
     }
