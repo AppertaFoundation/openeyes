@@ -16,38 +16,51 @@
             <?= $extra_info ?>
         </div>
       <?php endif; ?>
+
   </h2>
+
     <?php if ($this->title != 'Please select booking') { ?>
-      <div class="event-title-extra-info flex-layout">
-          <?php $errors = $this->event->getErrors();
-          $error_class = isset($errors['event_date']) ? 'error' : '';
-          ?>
-          <?php
-          $this->widget('application.widgets.DatePicker', array(
-              'element' => $this->event,
-              'name' => CHtml::modelName($this->event) . "[event_date]",
-              'field' => 'event_date',
-              'options' => array('maxDate' => 'today'),
-              'htmlOptions' => array(
-                  'style' => 'display:none;',
-                  'form' => $form_id,
-                  'nowrapper' => true,
-                  'class' => 'js-event-date-input ' . $error_class
-              ),
-              'layoutColumns' => array(
-                  'label' => 2,
-                  'field' => 2,
-              ),
-          ));
-          ?>
-          <script>
-              $(document).ready(function () {
-                  var $date_input = $('.js-event-date-input');
-                  $('.js-change-event-date').on('click', function () {
-                      $date_input.show();
-                      $('.js-event-date').hide();
-                      $('.js-change-event-date').hide();
-                  });
+        <div class="event-title-extra-info flex-layout">
+            <?php if (isset($this->event->firm)): ?>
+                <div>
+                    <b>Subspecialty: </b>
+                    <?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name ; ?>
+                </div>
+                <div>
+                    <b>&nbsp;Context: </b>
+                    <?= $this->event->firm->name; ?>
+                </div>
+            <?php endif; ?>
+
+            <?php $errors = $this->event->getErrors();
+            $error_class = isset($errors['event_date']) ? 'error' : '';
+            ?>
+            <?php
+            $this->widget('application.widgets.DatePicker', array(
+                'element' => $this->event,
+                'name' => CHtml::modelName($this->event) . "[event_date]",
+                'field' => 'event_date',
+                'options' => array('maxDate' => 'today'),
+                'htmlOptions' => array(
+                    'style' => 'display:none;',
+                    'form' => $form_id,
+                    'nowrapper' => true,
+                    'class' => 'js-event-date-input ' . $error_class
+                ),
+                'layoutColumns' => array(
+                    'label' => 2,
+                    'field' => 2,
+                ),
+            ));
+            ?>
+            <script>
+                $(document).ready(function () {
+                    var $date_input = $('.js-event-date-input');
+                    $('.js-change-event-date').on('click', function () {
+                        $date_input.show();
+                        $('.js-event-date').hide();
+                        $('.js-change-event-date').hide();
+                    });
 
                   $('.pickmeup.pmu-view-days').on('click', function () {
                       if ($(this).hasClass('pmu-hidden')) {
