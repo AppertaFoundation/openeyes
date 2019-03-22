@@ -167,10 +167,10 @@ $(document).ready(function() {
 		e.preventDefault();
 		var limit = parseInt($('#current-proc-count').html());
 		if (limit > 0 && parseInt($(this).val()) < limit) {
-			$('#current-proc-count').parent().parent().addClass('warn');
+			$('#current-proc-count').parent().parent().addClass('alert-box alert');
 		}
 		else {
-			$('#current-proc-count').parent().parent().removeClass('warn');
+			$('#current-proc-count').parent().parent().removeClass('alert-box alert');
 		}
 	});
 
