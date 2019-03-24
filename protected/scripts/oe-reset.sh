@@ -33,6 +33,8 @@ else
     dbpassword=""
 fi
 
+
+
 if [ ! -z "$MYSQL_SUPER_USER" ] ; then
     username="$MYSQL_SUPER_USER"
 elif [ -f "/run/secrets/MYSQL_SUPER_USER" ] ; then
@@ -42,9 +44,10 @@ else
     username="root"
 fi
 
-
 port=${DATABASE_PORT:-"3306"}
 host=${DATABASE_HOST:-"localhost"}
+# If we're using docker secrets, override DATABASE_PASSWORD with the secret. Else the environment variable will use it's default value
+[ -f /run/secrets/DATABASE_PASSWORD ] && pass="$(</run/secrets/DATABASE_PASSWORD)" || pass=${DATABASE_PASSWORD:-"openeyes"}
 
 
 # Process commandline parameters
@@ -189,9 +192,7 @@ if [ ! -z $dbpassword ]; then
 	dbpassword="-p$dbpassword"
 fi
 
-dbconnectionstring="sudo mysql -u $username $dbpassword --port=$port --host=$host"
-
-echo databse connection string="$dbconnectionstring"
+dbconnectionstring="mysql -u $username $dbpassword --port=$port --host=$host"
 
 if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null; then
 		dwservrunning=1
@@ -210,17 +211,16 @@ if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
     bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams
 fi
 
-echo "Clearing current database"
+echo "Clearing current database..."
 
-echo "
-drop database if exists openeyes;
-create database ${DATABASE_NAME:-openeyes};
-grant all privileges on ${DATABASE_NAME:-"openeyes"}.* to '${username:-"openeyes"}'@'%' identified by '${dbpassword:-"openeyes"}';
-flush privileges;
-" > /tmp/openeyes-mysql-create.sql
+dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant all privileges on ${DATABASE_NAME:-openeyes}.* to '${DATABASE_USER:-openeyes}'@'%' identified by '$pass'; flush privileges;"
 
-eval $dbconnectionstring < /tmp/openeyes-mysql-create.sql
-rm /tmp/openeyes-mysql-create.sql
+echo ""
+# write-out command to console (helps with debugging)
+echo "$dbconnectionstring -e \"$dbresetsql\""
+# run the same command
+eval "$dbconnectionstring -e \"$dbresetsql\""
+echo ""
 
 if [ $nofiles = "0" ]; then
 	echo Deleting protected files
