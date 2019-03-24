@@ -95,10 +95,10 @@ do
     		;;
         # TODO: fix genetics
     	# --genetics-enable)
-    	# 	sudo bash /vagrant/install/add-genetics.sh
+    	# 	bash /vagrant/install/add-genetics.sh
     	# ;;
     	# --genetics-disable)
-    	# 	sudo bash /vagrant/install/add-genetics.sh -r
+    	# 	bash /vagrant/install/add-genetics.sh -r
     	# ;;
     	-p) # set dbpassword and move on to next param
             dbpassword="$2"
@@ -268,7 +268,7 @@ if [ $demo = "1" ]; then
 			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			sudo bash "$MODULEROOT/sample/sql/demo/pre-migrate/$f"
+			bash -l "$MODULEROOT/sample/sql/demo/pre-migrate/$f"
 		fi
 	done
 fi
@@ -294,7 +294,7 @@ if [ $demo = "1" ]; then
 			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			sudo bash "$MODULEROOT/sample/sql/demo/$f"
+			bash -l "$MODULEROOT/sample/sql/demo/$f"
 		fi
 	done
 fi
@@ -312,7 +312,7 @@ if grep -q "'Genetics'," $WROOT/protected/config/local/common.php && ! grep -q "
 			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/genetics/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			sudo bash "$MODULEROOT/sample/sql/demo/genetics/$f"
+			bash -l "$MODULEROOT/sample/sql/demo/genetics/$f"
 		fi
     done
 
@@ -343,7 +343,7 @@ if [ $demo = "1" ]; then
 			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/local-post/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			sudo bash "$MODULEROOT/sample/sql/demo/local-post/$f"
+			bash -l "$MODULEROOT/sample/sql/demo/local-post/$f"
 		fi
     done
 fi
