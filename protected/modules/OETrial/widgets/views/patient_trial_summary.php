@@ -31,7 +31,7 @@
                   <td>
                       <?php if (!is_null($trialPatient->trial->getUserPermission(Yii::app()->user->id)) && (Yii::app()->user->checkAccess('TaskViewTrial'))) {
                           echo CHtml::link(CHtml::encode($trialPatient->trial->name),
-                              Yii::app()->controller->createUrl('/OETrial/trial/permissions',
+                              Yii::app()->controller->createUrl('/OETrial/trial/view',
                                   array('id' => $trialPatient->trial_id)));
                       } else {
                           echo CHtml::encode($trialPatient->trial->name);
