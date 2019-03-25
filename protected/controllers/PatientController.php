@@ -88,7 +88,7 @@ class PatientController extends BaseController
                 'roles' => array('OprnEditSocialHistory'),
             ),
             array('allow',
-                'actions' => array('create', 'update', 'findDuplicates'),
+                'actions' => array('create', 'update', 'findDuplicates', 'findDuplicatesByIdentifier'),
                 'roles' => array('TaskAddPatient'),
             )
         );
@@ -2220,6 +2220,23 @@ class PatientController extends BaseController
         }
     }
 
+  public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null){
+
+        $patients = Patient::findDuplicatesByIdentifier($identifier_code, $identifier_value, $id);
+
+        if (isset($patients['error'])){
+            $this->renderPartial('crud/_conflicts_error', array(
+                'errors' => $patients['error'],
+            ));
+        } else {
+            if (count($patients) !== 0) {
+                $this->renderPartial('crud/_conflicts_identifier', array(
+                    'patients' => $patients,
+                    'identifier_code' => $identifier_code,
+                ));
+            }
+        }
+  }
 
     /**
      * Ajax method for viewing previous elements.

@@ -2132,6 +2132,20 @@ class Patient extends BaseActiveRecordVersioned
     return array('error' => array_merge($validPatient->getErrors(), $validContact->getErrors()));
   }
 
+  public static function findDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null){
+      $sql = '
+            SELECT p.*
+            FROM patient p 
+            JOIN patient_identifier pid
+              ON p.id = pid.patient_id
+            WHERE pid.value = :identifier_value
+              AND pid.code = :identifier_code
+              AND (:id IS NULL OR p.id != :id)';
+
+      return Patient::model()->findAllBySql($sql, array(':identifier_code' => $identifier_code, ':identifier_value' => $identifier_value, ':id' => $id));
+
+  }
+
     /**
      * Returns an array of summarised patient Systemic diagnoses
      * @return array
