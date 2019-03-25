@@ -21,9 +21,6 @@
  */
 ?>
 
-<?php Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js') ?>
-<?php Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.ChangeContext.js', null, -10) ?>
-
 <script type="text/html" id="change-subspecialty-template">
   <li class="oe-specialty-service {{classes}}"
       data-id="{{id}}"

@@ -196,7 +196,7 @@
             }
         });
 
-        self.content.on('click', selectors.workflowStepItem, function (e) {
+        self.content.on('click', selectors.workflowStepItem, function () {
             self.content.find(selectors.workflowStepItem).removeClass('selected');
             $(this).addClass('selected');
             self.changeEventContext();
