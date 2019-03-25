@@ -78,6 +78,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                                addGpItem("selected_practice_wrapper",event);
                                $("#practice-form")[0].reset();
                                 $("#js-add-practice-event").css("display","none");
+                                $("#practice-alert-box").css("display","none");
                                 }
                           }',
                             ]

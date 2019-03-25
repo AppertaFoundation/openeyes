@@ -110,6 +110,7 @@
                                             removeSelectedGP();
                                             addGpItem("selected_gp_wrapper",event);
                                             $("#js-add-practitioner-event").css("display","none");
+                                            $("#practitioner-alert-box").css("display","none");
                                             $("#gp-form")[0].reset();
                                             $("#selected_contact_label_wrapper").css("display","none");
                                             $("#selected_contact_label_wrapper").find(".js-name").text("");
