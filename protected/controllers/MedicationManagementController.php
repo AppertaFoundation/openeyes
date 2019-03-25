@@ -90,6 +90,11 @@
                 }
                 else {
 
+					$infoBox = new MedicationInfoBox();
+					$infoBox->medication_id = $med->id;
+					$infoBox->init();
+					$tooltip = $infoBox->getHTML();
+
                     $ret_data[] = array_merge($med->getAttributes(), [
                             'label' => $med->getLabel(),
                             'dose_unit_term' => '',
@@ -99,7 +104,7 @@
                             'route_id' => null,
                             'tabsize' => null,
                             'will_copy' => false,
-                            'prepended_markup' => ''
+                            'prepended_markup' => $tooltip
                         ]
                     );
                 }

@@ -85,14 +85,21 @@
                 elseif($medication->isVTM()) {
                     $data['Type'] = "Virtual Therapeutic Moiety (VTM)";
                 }
+                elseif($medication->source_type == Medication::SOURCE_TYPE_LOCAL){
+                	$data['Type'] = "Local";
+				}
 
-                if($medication->source_type == "LEGACY" && $medication->source_subtype == "medication_drug" && $medication->preferred_code != "") {
+                if($medication->source_type == Medication::SOURCE_TYPE_LEGACY && $medication->source_subtype == "medication_drug" && $medication->preferred_code != "") {
                 	$data["SNOMED code"] = $medication->preferred_code;
 				}
 
                 $data['Sets'] = implode(', ', array_map(function ($e){
                     return $e->name;
                 } , $medication->getMedicationSetsForCurrentSubspecialty()));
+
+                if($data['Sets'] == "") {
+                	unset($data['Sets']);
+				}
 
             }
 
