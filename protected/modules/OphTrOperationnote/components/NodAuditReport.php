@@ -17,7 +17,7 @@ class NodAuditReport extends Report implements ReportInterface
      */
     public function __construct($app)
     {
-        $this->months = $app->getRequest()->getQuery('months', 1);
+        $this->months = $app->getRequest()->getQuery('months', 4);
         $this->months = ceil($this->months*30);
 
         parent::__construct($app);
