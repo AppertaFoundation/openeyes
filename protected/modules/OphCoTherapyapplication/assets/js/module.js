@@ -767,32 +767,7 @@ $(document).ready(function() {
 		}).open();
 
 	});
-
-	removeWhiteSpaceForTextAreaLabels('patient_different');
-	removeWhiteSpaceForTextAreaLabels('patient_gain');
-
-	removeWhiteSpaceForStandardInterventionLabels();
-
-	removeWhiteSpaceForNonStandardInterventionLabels();
-
 });
-
-function removeWhiteSpaceForTextAreaLabels(elementId) {
-	document.getElementById('Element_OphCoTherapyapplication_ExceptionalCircumstances_right_' + elementId)['labels']['0']['style']['whiteSpace']='normal';
-	document.getElementById('Element_OphCoTherapyapplication_ExceptionalCircumstances_left_' + elementId)['labels']['0']['style']['whiteSpace']='normal';
-	document.getElementById('Element_OphCoTherapyapplication_ExceptionalCircumstances_right_intervention_id')['childNodes']['1']['style']['whiteSpace']='normal';
-
-}
-
-function removeWhiteSpaceForStandardInterventionLabels() {
-	document.getElementById('Element_OphCoTherapyapplication_ExceptionalCircumstances_right_intervention_id')['childNodes']['1']['style']['whiteSpace']='normal';
-	document.getElementById('Element_OphCoTherapyapplication_ExceptionalCircumstances_left_intervention_id')['childNodes']['1']['style']['whiteSpace']='normal';
-}
-
-function removeWhiteSpaceForNonStandardInterventionLabels() {
-	document.getElementById('Element_OphCoTherapyapplication_ExceptionalCircumstances_right_standard_previous')['childNodes']['1']['childNodes']['1']['style']['whiteSpace']='normal';
-	document.getElementById('Element_OphCoTherapyapplication_ExceptionalCircumstances_left_standard_previous')['childNodes']['1']['childNodes']['1']['style']['whiteSpace']='normal';
-}
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
 
