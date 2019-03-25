@@ -88,13 +88,29 @@ class RefMedicationAdminController extends BaseAdminController
 		return $ret_array;
 	}
 
+	protected function _getSourceTypes()
+	{
+		$values = Yii::app()->db->createCommand("SELECT DISTINCT source_type FROM ".Medication::model()->tableName())->queryColumn();
+		$ret_array = array();
+		foreach ($values as $value) {
+			$ret_array[$value] = $value;
+		}
+		return $ret_array;
+	}
+
     protected function _getEditFields($model)
 	{
 		return array(
 			'preferred_term'=>'Preferred term',
 			'short_term'=>'Short term',
 			'preferred_code'=>'Preferred code',
-			'source_type' => 'Source type',
+			'source_type' => array(
+				'widget' => 'DropDownList',
+				'options' => $this->_getSourceTypes(),
+				'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+				'hidden' => false,
+				'layoutColumns' => array()
+			),
 			'source_subtype'=> array(
 				'widget' => 'DropDownList',
 				'options' => $this->_getSourceSubtypes(),
