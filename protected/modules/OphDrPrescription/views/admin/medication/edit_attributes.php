@@ -9,7 +9,7 @@
             array_filter($all_options, function($e) use($attr) {
                 return $e->medication_attribute_id == $attr->id;
             }), 'id', function($e) {
-			return $e->value." - ".$e->description;
+			return $e->description." - ".$e->value;
 		});
     }
 
