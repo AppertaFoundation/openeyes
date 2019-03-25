@@ -51,19 +51,57 @@ class WorklistBehavior extends CBehavior
 
             } else {
                 $this->owner->event->worklist_patient_id = null;
-
+                $worklist_patient = null;
                 // Using the closest worklist_patient.id matching the current patient and current date
-                $worklist_patients = WorklistPatient::model()->findAllByAttributes(['patient_id' => $patient_id]);
+                //$worklist_patients = WorklistPatient::model()->findAllByAttributes(['patient_id' => $patient_id]);
 
-                $interval = [];
-                foreach ($worklist_patients as $worklist_patient) {
-                    $interval[$worklist_patient->id] = abs(strtotime($worklist_patient->when) - time());
+                /** @TODO CONFIG DAYS */
+                //The nearest booked appointment within 1 month (past or future)
+/*                $criteria = new \CDbCriteria();
+                $criteria->addCondition('patient_id = :patient_id');
+                $criteria->addCondition('when >= :start_date AND when <= :end_date');
+                $criteria->params = [
+                    ':start_date' => date('Y-m-d H:i:s', strtotime("-30 days")),
+                    ':end_date' => date('Y-m-d H:i:s', strtotime("+30 days"))
+                ];*/
+
+                //The nearest booked appointment within 1 month(default) (past or future)
+                $criteria = new \CDbCriteria();
+                $criteria->addCondition('patient_id = :patient_id');
+                $criteria->addCondition('when >= :start_date AND when <= :end_date');
+                $criteria->order = 'ORDER BY TIMESTAMPDIFF(MINUTE, `when`, NOW())';
+                $criteria->params = [
+                    ':start_date' => date('Y-m-d H:i:s', strtotime("-30 days")),
+                    ':end_date' => date('Y-m-d H:i:s', strtotime("+30 days"))
+                ];
+
+                $worklist_patient = WorklistPatient::model()->find($criteria);
+
+                //The nearest booked future appointment
+                if (!$worklist_patient) {
+                    $criteria = new \CDbCriteria();
+                    $criteria->addCondition('patient_id = :patient_id');
+                    $criteria->addCondition('when >= :date');
+                    $criteria->order = 'ORDER BY TIMESTAMPDIFF(MINUTE, `when`, NOW())';
+                    //onward from +30day(default) as we already checked the next 30 days(default) above
+                    $criteria->params = [':date' => date('Y-m-d H:i:s', strtotime("+30 days"))];
+                    $worklist_patient = WorklistPatient::model()->find($criteria);
                 }
-                asort($interval);
-                $worklist_patient_id = key($interval);
 
-                if ($worklist_patient_id && ($assignment = $this->getPasApiAssignment($worklist_patient_id))) {
-                    $this->owner->event->worklist_patient_id = $assignment->resource_id;
+                if ($worklist_patient) {
+                    $assignment = $this->getPasApiAssignment($worklist_patient->id);
+                    if ($assignment) {
+                        $this->owner->event->worklist_patient_id = $assignment->resource_id;
+                    }
+                } else {
+                    // UNBOOKED
+                    $unbooked_worklist_manager = new \UnbookedWorklist();
+                    $site = $this->worklist_manager->getCurrentSite();
+                    $firm = $this->getCurrentFirm();
+
+                    $unbooked_worklist = $unbooked_worklist_manager->getWorklist(date('Y-m-d'), $site->id, $firm->subspecialty->id);
+
+                    $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
                 }
             }
         }
