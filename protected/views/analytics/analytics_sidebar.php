@@ -39,8 +39,7 @@
                                data-plotid="#js-hs-chart-analytics-clinical-others"
                                data-filterid="#js-clinical-data-filter-custom"
                                class="clinical-plot-button js-plot-display-label">
-                                <?php if ($specialty == "Glaucoma"){ echo "Vision-IOP"; }
-                                 if ($specialty == "Medical Retina"){ echo "Vision-CRT"; }?>
+                                Change in vision
                             </a>
                         </li>
                     <?php }?>
@@ -74,7 +73,7 @@
                             </ul>
                         </div>
                         <?php if (isset($user_list)) { ?>
-                        <div class="flex-item" style="position: relative; top: -75px; left: -175px;">
+                        <div class="flex-item" style="position: relative; top: -75px; left: -140px;">
                             <div class="oe-filter-options"
                                  id="oe-filter-options-clinical-filters"
                                  data-filter-id="clinical-filters"><!-- simple button to popup filter options -->
@@ -109,7 +108,7 @@
                 <div id="js-clinical-data-filter-custom"
                      class="js-hs-filter-analytics-clinical"
                      style="display: none; ">
-                    <div class="flex-item" style="position: relative; top: -25px; left: 100px;"><!-- OE UI Filter options (id: custom-filters) -->
+                    <div class="flex-item" style="position: relative; top: -25px; left: 120px;"><!-- OE UI Filter options (id: custom-filters) -->
                         <div class="oe-filter-options" id="oe-filter-options-custom-filters"
                              data-filter-id="custom-filters"><!-- simple button to popup filter options -->
                             <button class="oe-filter-btn green hint"
@@ -141,8 +140,8 @@
                                             <div class="options-group" data-filter-ui-id="js-chart-filter-plot">
                                                 <h3>Plot</h3>
                                                 <ul class="btn-list">
-                                                    <li class="selected">VA (absolute)</li>
-                                                    <li>VA (change)</li>
+                                                    <li>VA (absolute)</li>
+                                                    <li class="selected">VA (change)</li>
                                                 </ul>
                                             </div><!-- options-group -->
                                             <div class="options-group" data-filter-ui-id="js-chart-filter-protocol">
@@ -167,8 +166,8 @@
                                             <div class="options-group" data-filter-ui-id="js-chart-filter-plot">
                                                 <h3>Plot</h3>
                                                 <ul class="btn-list">
-                                                    <li class="selected">VA (absolute)</li>
-                                                    <li>VA (change)</li>
+                                                    <li>VA (absolute)</li>
+                                                    <li  class="selected">VA (change)</li>
                                                 </ul>
                                             </div><!-- options-group -->
                                         <?php } ?>
@@ -249,11 +248,11 @@
                             <?php if ($specialty == "Medical Retina") { ?>
                                 <li>Treatment: <span id="js-chart-filter-treatment" class="js-hs-filters js-hs-custom-mr-treatment" data-name="custom_treatment">All</span></li>
                                 <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-mr-diagnosis" data-name="custom_diagnosis">All</span></li>
-                                <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters js-hs-custom-mr-plot-type" data-name="custom_plot">VA (absolute)</span></li>
+                                <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters js-hs-custom-mr-plot-type" data-name="custom_plot">VA (change)</span></li>
                                 <li>Protocol: <span id="js-chart-filter-protocol" class="js-hs-filters" data-name="custom_protocol">ALL</span></li>
                             <?php }else{ ?>
                                 <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-gl-diagnosis" data-name="custom_diagnosis">All</span></li>
-                                <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters js-hs-custom-mr-plot-type" data-name="custom_plot">VA (absolute)</span></li>
+                                <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters js-hs-custom-mr-plot-type" data-name="custom_plot">VA (change)</span></li>
                                 <li>Procedure: <span id="js-chart-filter-procedure" class="js-hs-filters js-hs-custom-gl-procedure" data-name="custom_procedure">All</span></li>
                             <?php } ?>
                         </ul>
@@ -379,7 +378,6 @@
     $('#search-form').on('submit', function (e) {
         e.preventDefault();
         $.ajax({
-
             url: '/analytics/updateData',
             data:$('#search-form').serialize() + getDataFilters(),
             dataType:'json',
