@@ -85,9 +85,10 @@
                 elseif($medication->isVTM()) {
                     $data['Type'] = "Virtual Therapeutic Moiety (VTM)";
                 }
-                else {
-                    $data['Type'] = "Unknown";
-                }
+
+                if($medication->source_type == "LEGACY" && $medication->source_subtype == "medication_drug" && $medication->preferred_code != "") {
+                	$data["SNOMED code"] = $medication->preferred_code;
+				}
 
                 $data['Sets'] = implode(', ', array_map(function ($e){
                     return $e->name;
