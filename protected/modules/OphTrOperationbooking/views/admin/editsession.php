@@ -67,16 +67,16 @@
             <tr>
                 <td><?= $form->labelEx($session, 'start_time'); ?></td>
                 <td>
-                    <?= $form->textField($session, 'start_time', ['class' => 'time-picker', 'nowrapper' => true])?>
+                    <?= $form->textField($session, 'start_time', ['nowrapper' => true])?>
                 </td>
             </tr>
             <tr>
                 <td><?= $form->labelEx($session, 'end_time'); ?></td>
-                <td><?= $form->textField($session, 'end_time', ['class' => 'time-picker', 'nowrapper' => true])?></td>
+                <td><?= $form->textField($session, 'end_time', ['nowrapper' => true])?></td>
             </tr>
             <tr>
                 <td><?= $form->labelEx($session, 'default_admission_time'); ?></td>
-                <td><?= $form->textField($session, 'default_admission_time', ['class' => 'time-picker', 'nowrapper' => true])?></td>
+                <td><?= $form->textField($session, 'default_admission_time', ['nowrapper' => true])?></td>
             </tr>
             <tr>
                 <td><?= $form->labelEx($session, 'max_procedures'); ?></td>
@@ -225,5 +225,4 @@
 		e.preventDefault();
 		$('#confirm_delete_session').dialog('close');
 	});
-	$('.time-picker').timepicker({ 'timeFormat': 'H:i:s', 'step' : 5 });
 </script>
