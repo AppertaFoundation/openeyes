@@ -108,7 +108,11 @@ class HistoryMedications extends BaseMedicationWidget
         if(!is_null($element)) {
             /** @var MedicationManagementElement $element*/
             foreach ($element->entries as $entry) {
-                $entries[]= clone $entry;
+            	/** @var \EventMedicationUse $new_entry */
+                $new_entry = clone $entry;
+                $new_entry->id = null;
+                $new_entry->setIsNewRecord(true);
+				$entries[] = $new_entry;
             }
         }
 

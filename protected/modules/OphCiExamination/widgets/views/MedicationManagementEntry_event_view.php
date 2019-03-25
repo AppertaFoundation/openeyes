@@ -24,9 +24,33 @@
         &nbsp;<i class="oe-i drug-rx small" title="Prescribed"></i>
         <?php endif; ?>
     </td>
+    <td>
+        <?php echo $entry->getAdministrationDisplay(); ?>
+    </td>
+    <td><?php echo $entry->duration ? $entry->drugDuration->name : '' ?></td>
+    <td>
+        <?php if($entry->dispense_condition_id) { echo $entry->dispense_condition->name . " / " . $entry->dispense_location->name; } ?>
+    </td>
     <td><?php $laterality = $entry->getLateralityDisplay(); ?>
         <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
         <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
     </td>
     <td><?= $entry->getStartDateDisplay() ?></td>
 </tr>
+<?php if($entry->taper_support): ?>
+    <?php foreach ($entry->tapers as $taper): ?>
+    <td>
+        <i class="oe-i child-arrow small no-click pad"></i>
+        <em class="fade">then</em>
+    </td>
+    <td>
+		<?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $entry->dose_unit_term) : $taper->dose ?>
+        <?php echo $taper->frequency->term; ?>
+    </td>
+    <td>
+        <?php echo $taper->duration->name; ?>
+    </td>
+    <td></td>
+    <td></td>
+    <?php endforeach; ?>
+<?php endif; ?>

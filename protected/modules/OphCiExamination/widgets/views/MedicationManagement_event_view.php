@@ -17,7 +17,6 @@
 ?>
 <?php /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */ ?>
 <?php $el_id =  CHtml::modelName($element) . '_element'; ?>
-
     <?php foreach (array(
                        "Continued" => "getContinuedEntries",
 					   "Started" => "getEntriesStartedToday",
@@ -29,15 +28,29 @@
                     <div class="tile-data overflow">
                         <table>
                             <colgroup>
-                                <col>
-                                <col width="55px">
-                                <col width="85px">
+                                <col class="cols-3" />
+                                <col class="cols-3"/>
+                                <col class="cols-1"/>
+                                <col class="cols-3"/>
+                                <col class="cols-1" />
+                                <col class="cols-1"/>
                             </colgroup>
                             <thead>
                             <tr>
                                 <th><?php echo $section; ?></th>
                                 <th></th>
                                 <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <th>Medication</th>
+                                <th>Dose/Route/Frequency</th>
+                                <th>Duration</th>
+                                <th>Dispense Condition/Location</th>
+                                <th>Laterality</th>
+                                <th>Start date</th>
                             </tr>
                             </thead>
                             <tbody>
