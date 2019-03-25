@@ -21,6 +21,16 @@ class AdminController extends \ModuleAdminController
 
     public $defaultAction = 'letterMacros';
 
+
+    /**
+     * Save ordering of the objects.
+     */
+    public function actionSort()
+    {
+        $admin = new Admin(LetterMacro::model(), $this);
+        $admin->sortModel();
+    }
+
     public function actionLetterMacros()
     {
         $macros = $this->getMacros();
@@ -29,6 +39,11 @@ class AdminController extends \ModuleAdminController
 
         $unique_names = CHtml::listData($macros, 'name', 'name');
         asort($unique_names);
+
+
+        $assetManager = Yii::app()->getAssetManager();
+        $assetManager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
+        $assetManager->registerScriptFile('/js/oeadmin/list.js');
 
         $this->render('letter_macros', array(
             'macros' => $macros,
@@ -157,7 +172,7 @@ class AdminController extends \ModuleAdminController
             }
         }
 
-        $criteria->order = 'site_id asc, subspecialty_id asc, firm_id asc, name asc';
+        $criteria->order = 'display_order asc, site_id asc, subspecialty_id asc, firm_id asc, name asc';
 
         return LetterMacro::model()->findAll($criteria);
     }
