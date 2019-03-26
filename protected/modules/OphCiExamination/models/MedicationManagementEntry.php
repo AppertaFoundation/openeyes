@@ -51,6 +51,23 @@
             return parent::model($className);
         }
 
+		public function rules()
+		{
+			return array_merge(
+				parent::rules(),
+				array(
+					array('start_date_string_YYYYMMDD', 'validateStartDate'),
+				)
+			);
+        }
+
+		public function validateStartDate()
+		{
+			if(!$this->hidden && empty($this->start_date_string_YYYYMMDD)) {
+				$this->addError('start_date_string_YYYYMMDD', "Start date cannot be blank");
+			}
+        }
+
         /**
          * @return array relational rules.
          */
