@@ -1,13 +1,13 @@
 <?php
 
-class m190321_141548_unbooked_worklist extends OEMigration
+class m190321_141548_unbooked_worklist_data_migration extends OEMigration
 {
 
 	// Use safeUp/safeDown to do migration with transaction
 	public function safeUp()
 	{
-        $this->addColumn('event', 'worklist_patient_id', 'INT(11) NOT NULL');
-        $this->addColumn('event_version', 'worklist_patient_id', 'INT(11) NOT NULL');
+        $this->addColumn('event', 'worklist_patient_id', 'INT(11) DEFAULT NULL');
+        $this->addColumn('event_version', 'worklist_patient_id', 'INT(11) DEFAULT NULL');
 
         $dataProvider = new CActiveDataProvider('Event');
 
@@ -27,7 +27,11 @@ class m190321_141548_unbooked_worklist extends OEMigration
         $this->dropColumn('event', 'pas_visit_id');
         $this->dropColumn('event_version', 'pas_visit_id');
 
-        $this->addForeignKey('event_worklist_patient_worklist_patient_fk', 'event', 'worklist_patient_id', 'worklist_patient','worklist_patient_id');
+        //refresh event table schema
+        Yii::app()->db->schema->getTable('event', true);
+        Yii::app()->db->schema->getTable('event_version', true);
+
+        $this->addForeignKey('event_ibfk_worklist_patient', 'event', 'worklist_patient_id', 'worklist_patient','id');
 	}
 
 	private function getWorklistPatientId($event)
