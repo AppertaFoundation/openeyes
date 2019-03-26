@@ -43,7 +43,7 @@ $core_api = new CoreAPI();
 	</td>
 	<td>
 		<?php if ($log->patient) {?>
-			<?=\CHtml::link($log->patient->displayName, array($core_api->generateEpisodeLink($log->patient)))?>
+			<?=\CHtml::link($log->patient->displayName, array($core_api->generatePatientLandingPageLink($log->patient)))?>
 		<?php } else {?>
 			-
 		<?php }?>
