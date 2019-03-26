@@ -1,7 +1,7 @@
 $(document).ready(function(){
     $('.autosize').autosize();
 
-    $('#et_delete_operator').click(function(e) {
+    $('#et_delete_generic_procedure_data').click(function(e) {
         e.preventDefault();
 
         let $checked = $('input[name="genericProcedures[]"]:checked');

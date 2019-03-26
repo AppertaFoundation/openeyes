@@ -87,7 +87,7 @@
                             'class' => 'button large',
                             'name' => 'delete_operator',
                             'data-object' => 'users',
-                            'id' => 'et_delete_operator'
+                            'id' => 'et_delete_generic_procedure_data'
                         ]
                     ); ?>
                 </td>
