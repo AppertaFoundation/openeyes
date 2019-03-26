@@ -36,6 +36,6 @@ $this->renderPartial('/admin/form_' . get_class($model), array(
     'title' => $title,
 )) ?>
 
-<?php echo $form->formActions(array('cancel-uri' => @$cancel_uri)) ?>
+<?php echo $form->formActions(array('cancel-uri' => isset($cancel_uri)? $cancel_uri : "")) ?>
 
 <?php $this->endWidget() ?>
