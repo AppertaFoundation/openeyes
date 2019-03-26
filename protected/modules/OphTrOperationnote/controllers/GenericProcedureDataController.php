@@ -86,7 +86,7 @@ class GenericProcedureDataController extends ModuleAdminController
     {
         $request = Yii::app()->getRequest();
         $model = OphTrOperationNote_Generic_Procedure_Data::model()->findByPk((int)$request->getParam('id'));
-        if ($model) {
+        if (!$model) {
             throw new Exception('Generic Procedure Data not found with id ' . $request->getParam('id'));
         }
 
