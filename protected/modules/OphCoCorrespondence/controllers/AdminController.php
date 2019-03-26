@@ -21,14 +21,13 @@ class AdminController extends \ModuleAdminController
 
     public $defaultAction = 'letterMacros';
 
-
-    /**
-     * Save ordering of the objects.
-     */
-    public function actionSort()
-    {
-        $admin = new Admin(LetterMacro::model(), $this);
-        $admin->sortModel();
+    public function actions() {
+        return [
+            'sort' => [
+                'class' => 'SaveDisplayOrderAction',
+                'model' => LetterMacro::model(),
+                ],
+        ];
     }
 
     public function actionLetterMacros()
