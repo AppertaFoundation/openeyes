@@ -57,9 +57,14 @@
 </main>
 <script>
     var plotly_min_width = 800;
+    var plotly_min_height = 650;
     var page_width = $('.analytics-charts').width();
+    var page_height = $('.oe-analytics').height()-50;
     var layout_width = plotly_min_width > page_width? plotly_min_width : page_width;
+    var layout_height = plotly_min_height > page_height? plotly_min_height : page_height;
+
     analytics_layout['width'] = layout_width;
+    analytics_layout['height'] = layout_height;
 
     <?php if($specialty === 'Cataract'){?>
         $( document ).ready(function () {

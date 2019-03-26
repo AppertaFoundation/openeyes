@@ -17,6 +17,10 @@
 <script>
     var layout = JSON.parse('<?= $report->plotlyConfig();?>');
     var plotly_min_width = 800;
+    var plotly_min_height = 650;
+    var page_height = $('.oe-analytics').height()-50;
+    var layout_height = plotly_min_height > page_height? plotly_min_height : page_height;
+
     var page_width = $('.analytics-charts').width();
     var layout_width = plotly_min_width > page_width? plotly_min_width : page_width;
     layout['font'] = {
@@ -25,7 +29,7 @@
     layout['paper_bgcolor'] = '#101925';
     layout['plot_bgcolor'] = '#101925';
     layout['width'] = layout_width;
-    layout['height'] = '800';
+    layout['height'] = layout_height;
     layout['xaxis']['rangemode'] = 'tozero';
     layout['xaxis']['linecolor'] = '#fff';
     layout['yaxis']['linecolor'] = '#fff';

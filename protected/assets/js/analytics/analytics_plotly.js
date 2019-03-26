@@ -4,7 +4,6 @@ var analytics_layout = {
         color: '#fff',
     },
     autosize: false,
-    height: 800,
     margin:{
         l:50,
         t:30,
