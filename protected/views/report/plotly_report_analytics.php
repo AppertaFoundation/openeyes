@@ -17,8 +17,8 @@
 <script>
     var data =  <?= $report->tracesJson();?>;
     var layout = JSON.parse('<?= $report->plotlyConfig();?>');
-    var plotly_min_width = 800;
-    var plotly_min_height = 650;
+    const plotly_min_width = 800;
+    const plotly_min_height = 650;
     var page_height = $('.oe-analytics').height()-50;
     var layout_height = plotly_min_height > page_height? plotly_min_height : page_height;
 

@@ -56,8 +56,8 @@
         ?>
 </main>
 <script>
-    var plotly_min_width = 800;
-    var plotly_min_height = 650;
+    const plotly_min_width = 800;
+    const plotly_min_height = 650;
     var page_width = $('.analytics-charts').width();
     var page_height = $('.oe-analytics').height()-50;
     var layout_width = plotly_min_width > page_width? plotly_min_width : page_width;
