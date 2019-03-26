@@ -15,7 +15,6 @@
  */
 class GenericProcedureDataController extends ModuleAdminController
 {
-    //public $defaultAction = "manageLasers";
     public $group = 'Operation Note';
 
     public function actionList()
@@ -151,7 +150,6 @@ class GenericProcedureDataController extends ModuleAdminController
         $criteria->addInCondition('id', $_POST['genericProcedures']);
 
         OphTrOperationNote_Generic_Procedure_Data::model()->deleteAll($criteria);
-
         echo '1';
     }
 

@@ -27,14 +27,14 @@
 
                 </colgroup>
                 <tr>
-                    <td><?=CHtml::textField('search[query]', $search['query'], [
+                    <td><?= CHtml::textField('search[query]', $search['query'], [
                             'placeholder' => 'Search Term , Procedure Id - (all are case sensitive)',
                             'class' => 'cols-full',
                         ]); ?>
                     </td>
                     <td>
                         <input type="hidden" name="YII_CSRF_TOKEN"
-                               value="<?=Yii::app()->request->csrfToken ?>"/>
+                               value="<?= Yii::app()->request->csrfToken ?>"/>
                         <button class="blue hint" id="search-button" formmethod="post" type="submit">Search</button>
                     </td>
                 </tr>
@@ -59,7 +59,7 @@
                     <td><?php echo $model->procedure->term ?></td>
                     <td style="overflow-wrap: break-word;"><?= $model->default_text ?></td>
                     <td>
-                        <?=\CHtml::link(
+                        <?= \CHtml::link(
                             'Edit',
                             '/OphTrOperationnote/GenericProcedureData/edit/' . $model->id,
                             ['class' => 'small event-action']
@@ -71,7 +71,7 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="5">
-                    <?=\CHtml::button(
+                    <?= \CHtml::button(
                         'Add',
                         [
                             'class' => 'button large',
@@ -81,7 +81,7 @@
                             'id' => 'et_add'
                         ]
                     ); ?>
-                    <?=\CHtml::submitButton(
+                    <?= \CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large',
