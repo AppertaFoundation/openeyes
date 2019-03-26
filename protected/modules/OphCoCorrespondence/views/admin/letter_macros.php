@@ -75,7 +75,7 @@
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
     <input type="hidden" name="page" value="1">
     <div class="data-group">
-        <table class="standard generic-admin sortable">
+        <table class="standard generic-admin sortable" id="et_sort" data-uri = "/OphCoCorrespondence/admin/sortLetterMacros">
             <thead>
             <tr>
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
@@ -101,17 +101,6 @@
 <div class="cols-4 column end">
     <?=\CHtml::htmlButton('Delete macros', array('class' => 'button large deleteMacros')) ?>
 </div>
-
-<?php echo EventAction::button(
-    'Sort',
-    'sort',
-    [],
-    [
-        'class' => 'button large',
-        'style' => 'display:none;',
-        'data-uri' => '/OphCoCorrespondence/admin/sortLetterMacros'
-    ]
-)->toHtml() ?>
 
 <script>
     $('.generic-admin.sortable tbody').sortable({
