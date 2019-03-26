@@ -24,7 +24,7 @@ alias cdscripts="cd $SCRIPTDIR"
 alias cdiolm="cd $WROOT/protected/javamodules/IOLMasterImport"
 alias cdprotected="cd $WROOT/protected"
 alias cdconfig="cd $WROOT/protected/config/local"
-alias cdtests=c"d $WROOT/protected/tests"
+alias cdtests="cd $WROOT/protected/tests"
 
 alias oelogson="tail $WROOT/protected/runtime/application.log -f &"
 alias oelogsoff="kill -9 $(pgrep -f protected/runtime/application.log)"
