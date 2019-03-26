@@ -627,7 +627,7 @@ class Event extends BaseActiveRecordVersioned
         if ($this->is_automated && $this->automated_source) {
             // TODO: this really should be in the module API with some kind of default text here
             if (property_exists($this->automated_source, 'goc_number')) {
-                $result .= ' - Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')'. "<br>";
+                $result .= 'Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')'. "<br>";
 
             }
             if(property_exists($this->automated_source, 'address')){
