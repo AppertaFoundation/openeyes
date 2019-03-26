@@ -85,9 +85,7 @@ class OphTrOperationNote_Generic_Procedure_Data extends BaseActiveRecord
     {
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
-
         $criteria = new CDbCriteria();
-
         $criteria->compare('id', $this->id, true);
 
         return new CActiveDataProvider(get_class($this), array(
