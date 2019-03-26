@@ -104,8 +104,6 @@
 
 <script>
     $('.generic-admin.sortable tbody').sortable({
-        stop: function(event, ui) {
-            OpenEyes.Admin.saveSorted(event, ui);
-        }
+        stop: OpenEyes.Admin.saveSorted
     });
 </script>
