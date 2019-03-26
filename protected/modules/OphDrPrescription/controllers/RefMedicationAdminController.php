@@ -249,6 +249,24 @@ class RefMedicationAdminController extends BaseAdminController
 		}
 		$model->medicationSearchIndexes = $alt_terms;
 
+		// ensure that preferred_term exists as alternative term
+
+		$pref_term_exists = false;
+		foreach ($model->medicationSearchIndexes as $si) {
+			if($si->alternative_term == $model->preferred_term) {
+				$pref_term_exists = true;
+			}
+		}
+
+		if(!$pref_term_exists) {
+			$alt_term = new MedicationSearchIndex();
+			$alt_term->setAttributes(array(
+				'medication_id' => $model->id,
+				'alternative_term' => $model->preferred_term,
+			));
+			$model->medicationSearchIndexes = array_merge($model->medicationSearchIndexes, [$alt_term]);
+		}
+
 		// update attribute assignments
 
 		$attr_assignments = [];

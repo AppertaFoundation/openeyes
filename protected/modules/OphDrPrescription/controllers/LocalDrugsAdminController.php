@@ -26,7 +26,7 @@ class LocalDrugsAdminController extends RefMedicationAdminController
 		return array(
 			'preferred_term'=>'Preferred term',
 			'short_term'=>'Short term',
-			'preferred_code'=>'Preferred code',
+			//'preferred_code'=>'Preferred code',
 			'source_subtype'=> array(
 				'widget' => 'DropDownList',
 				'options' => $this->_getSourceSubtypes(),
