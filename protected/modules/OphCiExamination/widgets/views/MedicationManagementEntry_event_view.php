@@ -39,6 +39,7 @@
 </tr>
 <?php if($entry->taper_support): ?>
     <?php foreach ($entry->tapers as $taper): ?>
+<tr>
     <td>
         <i class="oe-i child-arrow small no-click pad"></i>
         <em class="fade">then</em>
@@ -52,5 +53,6 @@
     </td>
     <td></td>
     <td></td>
+</tr>
     <?php endforeach; ?>
 <?php endif; ?>
