@@ -20,4 +20,5 @@ class DmdDrugsAdminController extends RefMedicationAdminController
 {
     protected $source_type = "DM+D";
     protected $display_name = "DM+D drugs";
+    protected $list_mode_buttons = false;
 }

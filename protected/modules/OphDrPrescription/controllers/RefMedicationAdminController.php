@@ -28,6 +28,8 @@ class RefMedicationAdminController extends BaseAdminController
     protected $source_type;
     protected $display_name;
 
+    protected $list_mode_buttons = true;
+
     public function actionList()
     {
         $admin = new Admin(Medication::model(), $this);
@@ -58,7 +60,7 @@ class RefMedicationAdminController extends BaseAdminController
 
         $admin->setModelDisplayName($this->display_name);
 
-        $admin->listModel();
+        $admin->listModel($this->list_mode_buttons);
     }
 
     public function actionEdit($id = null)
