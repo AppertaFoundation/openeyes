@@ -105,7 +105,7 @@ class EventMedicationUse extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('usage_type, medication_id, start_date_string_YYYYMMDD', 'required'),
+			array('usage_type, medication_id', 'required'),
 			array('first_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly'=>true),
 			array('dose', 'numerical'),
 			array('laterality', 'validateLaterality'),
