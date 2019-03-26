@@ -29,14 +29,6 @@ class OphTrOperationNote_Generic_Procedure_Data extends BaseActiveRecord
     public $service;
 
     /**
-     * Returns the static model of the specified AR class.
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
-
-    /**
      * @return string the associated database table name
      */
     public function tableName()
