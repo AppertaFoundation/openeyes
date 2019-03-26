@@ -49,11 +49,8 @@ class SaveDisplayOrderAction extends \CAction
                 //Add one because display_order not zero indexed.
                 //Times by page number to get correct order across pages.
                 $model->display_order = ($displayOrder + 1) * $page;
-                if (!$model->validate()) {
-                    throw new CHttpException(400, 'Order was invalid');
-                }
                 if (!$model->save()) {
-                    throw new CHttpException(500, 'Unable to save order');
+                    throw new Exception('Unable to save order: ' . print_r($model->getErrors(), true));
                 }
             }
         }
