@@ -678,7 +678,8 @@ class AnalyticsController extends BaseController
         $average = $data_set['average'];
         $count = $data_set['count'];
 
-        return sqrt((($square_sum-(2*$average*$sum))/$count) + $square_average);
+        $SD = sqrt((($square_sum-(2*$average*$sum))/$count) + $square_average);
+        return number_format($SD, 2, '.', '');
     }
     /**
      * @return mixed

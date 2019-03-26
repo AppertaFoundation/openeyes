@@ -49,7 +49,6 @@ var analytics_layout = {
     yaxis:{
         /*Ticks setting*/
         ticks: 'outside',
-        tickformat: ',d',
         showgrid: true,
         gridcolor: '#aaa',
         showticklabels: true,
