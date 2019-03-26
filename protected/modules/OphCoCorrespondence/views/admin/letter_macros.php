@@ -109,7 +109,7 @@
     [
         'class' => 'button large',
         'style' => 'display:none;',
-        'data-uri' => '/OphCoCorrespondence/admin/sort'
+        'data-uri' => '/OphCoCorrespondence/admin/sortLetterMacros'
     ]
 )->toHtml() ?>
 

@@ -23,7 +23,7 @@ class AdminController extends \ModuleAdminController
 
     public function actions() {
         return [
-            'sort' => [
+            'sortLetterMacros' => [
                 'class' => 'SaveDisplayOrderAction',
                 'model' => LetterMacro::model(),
                 ],
