@@ -482,7 +482,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var controller = this;
 
         $.each(selectedItems, function (i, medication) {
-            if(medication.allergy_ids.toString() === "") {
+            if(typeof medication.allergy_ids === "undefined" || medication.allergy_ids.toString() === "") {
                 return;
             }
 
@@ -774,7 +774,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     HistoryMedicationsController.prototype.getAllergyWarning = function(medication)
     {
-        if(medication.allergy_ids.toString() === "") {
+        if(typeof medication.allergy_ids === "undefined" || medication.allergy_ids.toString() === "") {
             return "";
         }
 

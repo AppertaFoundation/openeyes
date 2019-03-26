@@ -37,6 +37,10 @@ class Medication extends BaseActiveRecordVersioned
 {
 	const ATTR_PRESERVATIVE_FREE = "PRESERVATIVE_FREE";
 
+	const SOURCE_TYPE_LEGACY = "LEGACY";
+	const SOURCE_TYPE_LOCAL = "LOCAL";
+	const SOURCE_TYPE_DMD = "DM+D";
+
 	protected $auto_update_relations = true;
 
 	/**
