@@ -13,7 +13,8 @@ class m190321_114813_create_history_iop_element extends OEMigration
         $this->addForeignKey('et_ophciexamination_history_iop_eye_fk', 'et_ophciexamination_history_iop', 'eye_id', 'eye', 'id');
         $this->createElementType('OphCiExamination', 'History IOP', array(
             'class_name' => 'OEModule\OphCiExamination\models\HistoryIOP',
-            'display_order' => 1
+            'display_order' => 1,
+            'group_name' => 'History'
         ));
     }
     public function down()

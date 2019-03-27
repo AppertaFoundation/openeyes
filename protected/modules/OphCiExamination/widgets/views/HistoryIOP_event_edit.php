@@ -24,31 +24,37 @@ $pastIOPs = $this->getPastIOPs();
 ?>
 
 <?php if ($this->element):
+    echo \Chtml::hiddenField(CHtml::modelName($element) . "[stefan]", 4,[]);
+    echo \Chtml::hiddenField(CHtml::modelName($element) . "[attributes][id]", $this->element->id,[]);
     echo \CHtml::activeHiddenField($this->element, "id");
 endif; ?>
 
-<div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
-    <table id="<?= $model_name ?>_entry_table" class="cols-10">
-        <colgroup>
-            <col class="cols-3">
-            <col class="cols-3">
-            <col class="cols-4">
-            <col class="cols-2">
-        </colgroup>
-        <tbody>
-
-        <?php
-            foreach ($pastIOPs as $IOP) { ?>
-                <tr>
-                    <td><?= $IOP->id ?></td>
-                    <td><?= $IOP->event_id ?></td>
-                </tr>
-            <?php } ?>
-            </tbody>
-        </table>
-
-    <div class="add-data-actions flex-item-bottom" id="history-allergy-popup">
-        <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i
-                    class="oe-i plus pro-theme"></i></button>
-    </div>
+<div class="element-data element-eyes flex-layout">
+<!--    --><?php //echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
+        <div class="cols-6 js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?=$eye_side?>">
+            <div class="active-form data-group flex-layout">
+                <a class="remove-side">
+                    <i class="oe-i remove-circle small"></i>
+                </a>
+                <?php $this->render(
+                    'HistoryIOP_event_edit_side',
+                    [
+                        'side' => $eye_side,
+                        'element' => $this->element,
+                        'form' => $form,
+                        'model_name' => $model_name,
+                        'pastIOPs' => $pastIOPs,
+                    ]
+                )?>
+            </div>
+            <div class="inactive-form" style="display: none;">
+                <div class="add-side">
+                    <a href="#">
+                        Add <?=$eye_side?> eye
+                    </a>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
 </div>

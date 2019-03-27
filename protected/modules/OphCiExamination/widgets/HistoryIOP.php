@@ -29,13 +29,18 @@ class HistoryIOP extends \BaseEventElementWidget
     {
         return new HistoryIopElement();
     }
+
     /**
-     * @param HistoryIopElement $element
+     * Basic setting of element attributes from provided data. Should be overridden to
+     * handle any complex attributes
+     *
+     * @param $element
      * @param $data
-     * @throws \CException
      */
     protected function updateElementFromData($element, $data)
     {
+//        echo "<pr>" . print_r($data, 1) . "</pr></br>";
+//        die;
     }
 
     public function getPastIOPs() {

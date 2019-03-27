@@ -37,6 +37,10 @@ namespace OEModule\OphCiExamination\models;
  */
 class HistoryIOP extends \BaseEventTypeElement
 {
+
+    public $entries2 = [];
+    public $stefan;
+
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
@@ -58,6 +62,14 @@ class HistoryIOP extends \BaseEventTypeElement
         return 'et_ophciexamination_history_iop';
     }
 
+    public function __set($name, $value) {
+        if ($name == 'stefan') {
+            $this->stefan = $value;
+        } else {
+            parent::__set($name, $value);
+        }
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -67,11 +79,29 @@ class HistoryIOP extends \BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, eye_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
-            array('last_modified_date, created_date', 'safe'),
+            array('last_modified_date, created_date, entries2, stefan', 'safe'),
+            array('entries2', 'validateEntries2'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, event_id, eye_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
         );
+    }
+
+    public function validateEntries2()
+    {
+        echo "<pr>" . print_r($this->stefan, 1) . "</pr></br>";
+//        die;
+//        if(is_array($this->entries)) {
+//            foreach ($this->entries as $entry) {
+//                $entry['time']
+//                $entry['instrument']
+//                $entry['date']
+//
+//            }
+//        }
+//        $this->addError("custom", "this is a message");
+//        echo "<pr>" . print_r("validate IOP", 1) . "</pr></br>";
+//        die;
     }
 
     /**

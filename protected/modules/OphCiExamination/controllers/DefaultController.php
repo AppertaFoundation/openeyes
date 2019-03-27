@@ -1139,6 +1139,58 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    protected function saveComplexAttributes_HistoryIOP($element, $data, $index)
+    {
+        // TODO: check if this is correct @Sabi
+        // no need for transaction + rollback because it's done in actionUpdate($id) before:
+        //       $success = $this->saveEvent($_POST);
+
+      /*  foreach (['left', 'right'] as $side) {
+            if (array_key_exists("{$side}_values", $data) && $data["{$side}_values"]) {
+                for ($index = 0; $index < count($data["{$side}_values"]); $index++) {
+
+                    if (!strlen($data["{$side}_iop_date"][$index]['examination_date'])) {
+                        throw new \Exception('There is no date set for the selected IOP element.');
+                    }
+
+                    // create a new event and set the event_date as selected iop date
+                    $examinationEvent = new \Event();
+                    $examinationEvent->episode_id = $this->element->event->episode_id;
+                    $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
+                    $examinationEvent->event_date = \DateTime::createFromFormat('m/d/Y', $data["{$side}_iop_date"][$index]['examination_date'])->format('Y-m-d');
+                    $examinationEvent->event_type_id = $this->element->event->event_type_id;
+                    $examinationEvent->is_automated = 1;
+
+                    if (!$examinationEvent->save()) {
+                        throw new \Exception('Unable to save a new examination for the IOP readings: '.print_r($examinationEvent->errors, true));
+                    }
+
+                    // create a new iop element
+                    $iop_element = new Element_OphCiExamination_IntraocularPressure();
+                    $iop_element->event_id = $examinationEvent->id;
+
+                    if (!$iop_element->save(false)) {
+                        throw new \Exception('Unable to save a new IOP element: ' . print_r($iop_element->errors, true));
+                    }
+
+                    // create a reading record from the values the user has given
+                    $reading = new OphCiExamination_IntraocularPressure_Value();
+                    $reading->attributes = $data["{$side}_values"][$index];
+                    $reading->element_id = $iop_element->id;
+
+                    if (!$reading->save()) {
+                        throw new \Exception('Unable to save reading for the IOP element: ' . print_r($reading->errors, true));
+                    }
+                }
+            }
+        }
+
+        $element->attributes = $data['attributes'];*/
+
+//      echo "<pr>" . print_r("here", 1) . "</pr></br>";
+//      die;
+    }
+
     /**
      * custom validation for virtual clinic referral.
      *
