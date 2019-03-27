@@ -294,7 +294,8 @@ class PasApiObserver
 
     public function getPasApiAllowedSearchParams()
     {
-        return isset(\Yii::app()->params['pas_api_allowed_params']) ? \Yii::app()->params['pas_api_allowed_params'] : [];
+        $pas_api_allowed_params = \Yii::app()->params['pas_api_allowed_params'];
+        return isset($pas_api_allowed_params) && $pas_api_allowed_params ? $pas_api_allowed_params : [];
     }
 
     public function getValidAllowedSearchParams()
