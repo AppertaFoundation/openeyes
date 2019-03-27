@@ -76,7 +76,7 @@ class PasApiObserver
             $pas_params[$param] = isset($params[$param]) ? $params[$param] : "";
         }
 
-        if (!$this->isPASqueryRequired($params)) {
+        if (!$this->isPASqueryRequired($pas_params)) {
             // no need to update the record
             return false;
         }
