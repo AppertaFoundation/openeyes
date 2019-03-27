@@ -79,7 +79,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201901011500',
+            'time' => '201903131430',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -414,7 +414,7 @@ return array(
         'reports' => array(
         ),
         'opbooking_disable_both_eyes' => true,
-        //'html_autocomplete' => 'off',
+        'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
         // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.

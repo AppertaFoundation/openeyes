@@ -28,7 +28,7 @@
         </thead>
         <tbody>
         <?php foreach ($patient_list as $patient) { ?>
-            <tr id="<?=$patient->id?>" class="analytics-patient-list-row clickable" data-link="<?=$coreAPI->generateEpisodeLink($patient)?>" style="display: none">
+            <tr id="<?=$patient->id?>" class="analytics-patient-list-row clickable" data-link="<?=$coreAPI->generatePatientLandingPageLink($patient)?>" style="display: none">
                 <td class="drill_down_patient_list js-csv-data" style="text-align: center;vertical-align: center;"><?= $patient->hos_num; ?></td>
                 <td class="drill_down_patient_list" style="text-align: center;vertical-align: center;"><?= $patient->getFullName(); ?></td>
                 <td style="text-align: center;vertical-align: center;"><?=$patient->dob?></td>
