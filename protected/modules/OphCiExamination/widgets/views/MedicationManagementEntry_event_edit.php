@@ -98,6 +98,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[hidden]" class="js-hidden" value="<?=$entry->hidden ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
+            <input type="hidden" name="<?= $field_prefix ?>[locked]" value="<?= $locked ?>" class="js-locked" />
         </td>
         <td class="dose-frequency-route">
             <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
@@ -110,11 +111,19 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 <div class="flex-layout">
                     <div class="alternative-display inline">
                         <div class="alternative-display-element textual" <?php if($direct_edit || $dfrl_validation_error){ echo 'style="display: none;"'; }?>>
+							<?php if($locked == 0): ?>
                             <a class="textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
-                                <span class="textual-display-dose"><?= $entry->dose.' '.$entry->dose_unit_term; ?></span>&nbsp;
-                                <span class="textual-display-frequency"><?= $entry->frequency; ?></span>&nbsp;
-                                <span class="textual-display-route-laterality"><?= ($entry->laterality ? $entry->medicationLaterality->name : ''); ?> <?= (is_null($entry->route_id) ? "" : $entry->route); ?></span>
+                            <?php else: ?>
+                            <div class="textual-display">
+							<?php endif; ?>
+                                <span class="js-textual-display-dose"><?= $entry->dose.' '.$entry->dose_unit_term; ?></span>&nbsp;
+                                <span class="js-textual-display-frequency"><?= $entry->frequency; ?></span>&nbsp;
+                                <span class="js-textual-display-route-laterality"><?= ($entry->laterality ? $entry->medicationLaterality->name : ''); ?> <?= (is_null($entry->route_id) ? "" : $entry->route); ?></span>
+                            <?php if($locked == 1): ?>
+                            </div>
+                            <?php else: ?>
                             </a>
+                            <?php endif; ?>
                         </div>
                         <div class="alternative-display-element" <?php if(!$direct_edit && !$dfrl_validation_error){ echo 'style="display: none;"'; }?>>
                             <input class="cols-1 js-dose" style="width: 14%; display: inline-block;"  type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />

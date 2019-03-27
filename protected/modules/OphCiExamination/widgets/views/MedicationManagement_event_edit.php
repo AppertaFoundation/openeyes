@@ -89,6 +89,7 @@ $element_errors = $element->getErrors();
                                     'is_last' => ($row_count == $total_count - 1),
                                     'prescribe_access' => $prescribe_access,
                                     'patient' => $this->patient,
+                                    'locked' => $entry->locked
                                 )
                             );
                             $row_count++;
@@ -130,6 +131,7 @@ $element_errors = $element->getErrors();
                 'is_new' => true,
                 'prescribe_access' => $prescribe_access,
                 'patient' => $this->patient,
+                'locked' => '{{locked}}{{^locked}}0{{/locked}}',
             )
         );
         ?>

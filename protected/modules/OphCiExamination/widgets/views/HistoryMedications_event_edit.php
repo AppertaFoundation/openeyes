@@ -161,6 +161,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
             onAddedEntry: function ($row, controller) {
                 if(typeof controller.MMController !== "undefined") {
                     var data = $row.data("medication");
+                    data.locked = 1;
                     if(data.will_copy) {
                         $new_row = controller.MMController.addEntry([data], false);
                         controller.bindEntries($row, $new_row);
