@@ -507,12 +507,13 @@
                 }
                 $.post("/ChangeEvent/UpdateEpisode",postData,function(successful){
                     if(successful === "true"){
-                        let event_title = self.options.eventType;
-                        if(selectedWorkflowStepItem.text()){
-                            event_title += " ("+selectedWorkflowStepItem.text()+")"
-                        }
-                        $('h2.event-title').text(event_title);
                         $('.'+self.options.popupClass+' .close-icon-btn').trigger('click');
+                        $('#change-firm').trigger('click');
+                        $('body').on('DOMNodeInserted','#site-and-firm-form',function(){
+                            $(this).closest('.oe-popup').css('visibility','hidden');
+                            $('#SiteAndFirmForm_firm_id').find('option[value="'+postData.selectedContextId+'"]').attr('selected','selected').trigger('change');
+                            $('#site-and-firm-form').trigger('submit');
+                        });
                     }
                 });
             }
