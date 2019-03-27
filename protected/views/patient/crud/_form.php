@@ -343,7 +343,7 @@ foreach ($ethnic_list as $key=>$item){
                     <ul class="oe-multi-select js-selected_gp">
                         <li>
                   <span class="js-name">
-                      <?= $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?>
+                      <?= $patient->gp_id ? Gp::model()->findByPk(array('id' => $patient->gp_id))->getCorrespondenceName() : '' ?>
                   </span>
                             <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
                         </li>
@@ -369,7 +369,7 @@ foreach ($ethnic_list as $key=>$item){
               <ul class="oe-multi-select js-selected_practice">
                 <li>
                   <span class="js-name">
-                      <?= $patient->practice_id ? $patient->practice->getAddressLines() : '' ?>
+                      <?= $patient->practice_id ? Practice::model()->findByPk(array('id' => $patient->practice_id))->getAddressLines() : '' ?>
                   </span>
                   <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
                 </li>

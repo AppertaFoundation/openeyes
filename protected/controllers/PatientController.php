@@ -2277,16 +2277,7 @@ class PatientController extends BaseController
             $patient_source = $_POST['Patient']['patient_source'];
             if($patient_source == Patient::PATIENT_SOURCE_REFERRAL){
                 //If there is no existing referral letter document, add an error
-                $command = Yii::app()->db->createCommand()->setText("
-                    select count(*) 'referral letters'
-                    from patient p
-                    join episode e on p.id = e.patient_id
-                    join event e2 on e.id = e2.episode_id
-                    join et_ophcodocument_document d on d.event_id = e2.id
-                      and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
-                    where p.id = $patient->id;"
-                );
-                if ($command->queryScalar() == 0){
+                if ($this->checkExistingReferralLetter($patient)){
                     $referral->addError('uploadedFile', 'Referral requires a letter file');
                 }
             }
@@ -2333,9 +2324,8 @@ class PatientController extends BaseController
                 }
             }
             // The file field is empty. It should throw error for referral scenario
-            else if($patient->getScenario() == 'referral') {
-                $message = "Referral requires a letter file";
-                $referral->addError('uploadedFile', $message);
+            else if($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
+                $referral->addError('uploadedFile', 'Referral requires a letter file');
                 return false;
             }
         }
@@ -2364,6 +2354,23 @@ class PatientController extends BaseController
             }
         }
         return [$episode, $episode_is_new];
+    }
+
+    /**
+     * @param $patient
+     * @return bool any existing referral letter for this patient will return false
+     */
+    protected function checkExistingReferralLetter($patient){
+        $command = Yii::app()->db->createCommand()->setText("
+                    select count(*) 'referral letters'
+                    from patient p
+                    join episode e on p.id = e.patient_id
+                    join event e2 on e.id = e2.episode_id
+                    join et_ophcodocument_document d on d.event_id = e2.id
+                      and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
+                    where e2.deleted = 0 and p.id = $patient->id;"
+        );
+        return ($command->queryScalar() == 0);
     }
 
 }
