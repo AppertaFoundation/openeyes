@@ -55,6 +55,8 @@ class PasApiObserver
 
     public function search($data)
     {
+        //Todo change to setting
+        $pasapi_allowed_search_params =['hos_num'];
 
         if( !$this->isAvailable() ){
             // log ?
@@ -66,8 +68,11 @@ class PasApiObserver
         //will be accessed at the \Patient model's search function
         $results = &$data['results'];
         $patient = $data['patient'];
+        $params = $data['params'];
+        $params['hos_num'] = $patient->hos_num;
+        $params['nhs_num'] = $patient->nhs_num;
 
-        if( !$this->isPASqueryRequired($patient) ){
+        if( !$this->isPASqueryRequired($params , $pasapi_allowed_search_params) ){
             // no need to update the record
             return false;
         }
@@ -239,14 +244,20 @@ class PasApiObserver
      * @param \Patient $patient
      * @return bool
      */
-    public function isPASqueryRequired(\Patient $patient)
+    public function isPASqueryRequired($params , $pasapi_allowed_search_params)
     {
-        if( !empty($patient->hos_num) || !empty($patient->nhs_num)){
+        if(isset($pasapi_allowed_search_params) && !empty($pasapi_allowed_search_params)){
+            foreach($params as $key => $param){
+                if(!isset($pasapi_allowed_search_params[$key]) || empty(isset($pasapi_allowed_search_params[$key]))){
+                    return false;
+                }
+            }
+        } else if( !empty($params['hos_num']) || !empty($params['nhs_num'])){
 
             // validate the hos_num and hns_num
             $patient_search = new \PatientSearch();
-            $hos_num = $patient_search->getHospitalNumber($patient->hos_num);
-            $nhs_num = $patient_search->getNHSnumber($patient->nhs_num);
+            $hos_num = $patient_search->getHospitalNumber($params['hos_num']->hos_num);
+            $nhs_num = $patient_search->getNHSnumber($params['nhs_num']);
 
             //get the patient
             $patient_criteria = new \CDbCriteria();
