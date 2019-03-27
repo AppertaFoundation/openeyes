@@ -72,7 +72,7 @@ class PasApiObserver
         $params['hos_num'] = $patient->hos_num;
         $params['nhs_num'] = $patient->nhs_num;
 
-        if( !$this->isPASqueryRequired($params , $pasapi_allowed_search_params) ){
+        if( !$this->isPASqueryRequired($params) ){
             // no need to update the record
             return false;
         }
