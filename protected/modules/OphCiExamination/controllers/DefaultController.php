@@ -1204,6 +1204,23 @@ class DefaultController extends \BaseEventTypeController
     {
         $errors = parent::setAndValidateElementsFromData($data);
 
+        if(isset($data['OEModule_OphCiExamination_models_HistoryIOP'])){
+            echo "<pr>" . print_r($data['OEModule_OphCiExamination_models_HistoryIOP'], 1) . "</pr></br>";
+            die;
+            //        die;
+            //        if(is_array($this->entries)) {
+            //            foreach ($this->entries as $entry) {
+            //                $entry['time']
+            //                $entry['instrument']
+            //                $entry['date']
+            //
+            //            }
+            //        }
+            //        $this->addError("custom", "this is a message");
+            //        echo "<pr>" . print_r("validate IOP", 1) . "</pr></br>";
+            //        die;
+        }
+
         if ($history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications')) {
             if ($history_meds->hasRisks()) {
                 if (!$this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryRisks')) {

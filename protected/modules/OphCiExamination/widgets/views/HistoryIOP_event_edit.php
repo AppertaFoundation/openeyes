@@ -24,8 +24,6 @@ $pastIOPs = $this->getPastIOPs();
 ?>
 
 <?php if ($this->element):
-    echo \Chtml::hiddenField(CHtml::modelName($element) . "[stefan]", 4,[]);
-    echo \Chtml::hiddenField(CHtml::modelName($element) . "[attributes][id]", $this->element->id,[]);
     echo \CHtml::activeHiddenField($this->element, "id");
 endif; ?>
 

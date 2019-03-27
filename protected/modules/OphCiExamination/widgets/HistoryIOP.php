@@ -39,8 +39,6 @@ class HistoryIOP extends \BaseEventElementWidget
      */
     protected function updateElementFromData($element, $data)
     {
-//        echo "<pr>" . print_r($data, 1) . "</pr></br>";
-//        die;
     }
 
     public function getPastIOPs() {
