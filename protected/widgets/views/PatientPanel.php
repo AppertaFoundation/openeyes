@@ -39,7 +39,7 @@ $deceased = $this->patient->isDeceased();
      data-patient-id="<?= $this->patient->id ?>"
 >
     <div class="patient-name">
-        <a href="<?= (new CoreAPI())->generateEpisodeLink($this->patient); ?>">
+        <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
             <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
             <span class="patient-firstname">
       <?php echo $this->patient->getFirst_name(); ?>
