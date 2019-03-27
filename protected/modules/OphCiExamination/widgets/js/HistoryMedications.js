@@ -404,7 +404,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
 
     HistoryMedicationsController.prototype.getRowData = function($row, old_values)
-    {
+    { console.log("gettin rowdata");
         var rc = $row.attr("data-key");
         var obj = {};
         $.each(this.fields, function(i, field){
