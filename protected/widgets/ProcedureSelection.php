@@ -122,7 +122,7 @@ class ProcedureSelection extends BaseFieldWidget
     {
         $adjusted_duration = $duration;
         $increase = SettingMetadata::model()->getSetting('op_booking_inc_time_high_complexity');
-        $decrease = SettingMetadata::model()->getSetting('op_booking_inc_time_low_complexity');
+        $decrease = SettingMetadata::model()->getSetting('op_booking_decrease_time_low_complexity');
 
         if ($complexity == Element_OphTrOperationbooking_Operation::COMPLEXITY_HIGH && $increase) {
             $adjusted_duration = (1 + ((int)$increase/100)) * $duration; // if increase=20 than 1.2 * duration
