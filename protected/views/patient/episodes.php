@@ -40,7 +40,7 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
         'episodes' => array(),
         'context_firm' => $this->firm,
         'patient_id' => $this->patient->id,
-        'eventTypes' => EventType::model()->getEventTypeModules(),
+        'event_types' => EventType::model()->getEventTypeModules(),
     ));?>
 <?php } else {
 

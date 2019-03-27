@@ -127,7 +127,7 @@ $this->renderPartial('//patient/add_new_event', array(
     'episodes' => $active_episodes,
     'context_firm' => $this->firm,
     'patient_id' => $this->patient->id,
-    'eventTypes' => EventType::model()->getEventTypeModules(),
+    'event_types' => EventType::model()->getEventTypeModules(),
 )); ?>
 
 <?php
