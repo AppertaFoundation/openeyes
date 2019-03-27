@@ -23,7 +23,7 @@ use OEModule\PASAPI\models\PasApiAssignment;
 
 class PasApiObserver
 {
-    private $SEARCH_PARAMS = ['hos_num', 'nhs_num', 'first_name', 'last_name', 'maiden_name'];
+    const SEARCH_PARAMS = ['hos_num', 'nhs_num', 'first_name', 'last_name', 'maiden_name'];
     /**
      * Objet to parsing XML
      * @var null
@@ -299,7 +299,7 @@ class PasApiObserver
         $valid = true;
         if (isset($allowed_search_params) && !empty($allowed_search_params)) {
             foreach ($allowed_search_params as $key => $allowed_search_param) {
-                if (!array_key_exists($key, $this->SEARCH_PARAMS)) {
+                if (!array_key_exists($key, self::SEARCH_PARAMS)) {
                     $valid = false;
                 }
             }
