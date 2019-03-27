@@ -255,7 +255,8 @@ class PasApiObserver
                     }
                 }
             }
-        } else if (!empty($params['hos_num']) || !empty($params['nhs_num'])) {
+        }
+        if (!empty($params['hos_num']) || !empty($params['nhs_num'])) {
 
             // validate the hos_num and hns_num
             $patient_search = new \PatientSearch();
@@ -271,7 +272,7 @@ class PasApiObserver
 
             $_patient = \Patient::model()->find($patient_criteria);
 
-            if( $_patient ){
+            if ($_patient) {
                 // get the assignment
                 $criteria = new \CDbCriteria();
                 $criteria->addCondition('resource_type ="Patient"');
@@ -280,7 +281,7 @@ class PasApiObserver
 
                 $assignment = PasApiAssignment::model()->find($criteria);
 
-                if($assignment && !$assignment->isStale()){
+                if ($assignment && !$assignment->isStale()) {
                     return false;
                 }
             }
