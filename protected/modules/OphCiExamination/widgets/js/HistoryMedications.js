@@ -55,6 +55,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           'to_be_copied',
           'prepended_markup',
           'set_ids',
+          'locked'
       ];
 
     this.initialiseFilters();
@@ -221,6 +222,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
       var controller = this;
 
+      controller.updateTextualDisplay($row);
+      if($row.find(".js-locked").val() === "1") {
+          var $txt_display = $row.find(".dose-frequency-route a.textual-display");
+          $txt_display.removeAttr("onclick").removeAttr("href");
+          $row.find(".dose-frequency-route .alternative-display-element").hide();
+          $row.find(".dose-frequency-route .alternative-display-element.textual").show();
+      }
+
       $row.on('click', '.medication-rename', function(e) {
           e.preventDefault();
           controller.resetSearchRow($row, true);
@@ -258,8 +267,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       var controls_onchange = function (e) {
           controller.updateBoundEntry($row);
-          if($(e.target).hasClass("route") && typeof $row.data('bound_entry') !== 'undefined') {
-              controller.updateRowRouteOptions($row.data('bound_entry'));
+          controller.updateTextualDisplay($row);
+          if(typeof $row.data('bound_entry') !== 'undefined') {
+              controller.updateTextualDisplay($row.data('bound_entry'));
+              if($(e.target).hasClass("route")) {
+                  controller.updateRowRouteOptions($row.data('bound_entry'));
+              }
           }
       };
 
@@ -535,6 +548,18 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return true;
     };
 
+    HistoryMedicationsController.prototype.updateTextualDisplay = function ($row) {
+        $row.find(".js-textual-display-dose").text($row.find(".js-dose").val() + " " + $row.find(".js-dose-unit-term").text());
+        $row.find(".js-textual-display-frequency").text($row.find(".js-frequency option:selected").text());
+        var route_lat = "";
+        var $lat_ctrl = $row.find(".admin-route-options");
+        if($lat_ctrl.val() !== "") {
+            route_lat = $lat_ctrl.find("option:selected").text()+" ";
+        }
+        route_lat+=$row.find(".js-route option:selected").text();
+        $row.find(".js-textual-display-route-laterality").text(route_lat);
+    };
+
     HistoryMedicationsController.prototype.updateAllergyStatuses = function(new_allergy_ids)
     {
         var allergies = this.getMergedAllergies();
@@ -603,9 +628,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $row.appendTo($target);
         var data = this.getRowData($origin, old_values);
         data.usage_type = $target.attr("data-usage-type");
+        data.locked = 1;
 
-        this.boundController.initialiseRow($row);
         this.boundController.setRowData($row, data);
+        this.boundController.initialiseRow($row);
 
         $row.find(".js-prepended_markup:visible").load("/medicationManagement/getInfoBox?medication_id="+data.medication_id);
 
@@ -626,7 +652,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var data = this.getRowData($row);
         var controller = $bound_entry.closest(".element-fields").data("controller_instance");
         controller.setRowData($bound_entry, data);
-        controller.updateRowRouteOptions($bound_entry);
+        //controller.updateRowRouteOptions($bound_entry);
 
         if(data.end_date !== "") {
             controller.showStopControls($bound_entry);

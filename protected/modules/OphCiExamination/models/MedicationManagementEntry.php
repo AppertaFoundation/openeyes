@@ -29,8 +29,10 @@
 
     class MedicationManagementEntry extends \EventMedicationUse
     {
-
     	public $taper_support = true;
+
+    	/** @var int Temporary flag to store locked (non-editable) status */
+    	public $locked = 0;
 
         public static function getUsageType()
         {

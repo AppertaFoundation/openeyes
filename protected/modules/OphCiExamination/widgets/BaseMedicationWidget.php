@@ -77,14 +77,6 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 
                 if($id && array_key_exists($id, $entries_by_id)) {
                     $entry = $entries_by_id[$id];
-                    // If laterality changes close medication and start new
-                    if($entry->laterality != $entry_data['laterality']) {
-                        $entry->end_date = date('Y-m-d');
-                        $entries[] = $entry;
-                        $class = $element::$entry_class;
-                        $entry = new $class;
-                        $entry_data['id'] = null;
-                    }
                 }
                 else {
                     $class = $element::$entry_class;
@@ -131,6 +123,10 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                 }
 
                 $entry->originallyStopped = !array_key_exists("originallyStopped", $entry_data) ? false : (bool)$entry_data['originallyStopped'];
+
+                if(property_exists($entry, "locked") && array_key_exists("locked", $entry_data)) {
+                	$entry->locked = $entry_data['locked'];
+				}
 
                 // add tapers
 
