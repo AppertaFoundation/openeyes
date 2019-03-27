@@ -61,10 +61,12 @@ class UnbookedWorklist extends CComponent
              * of the time so the worklist end time ends up 23:59:00 regardless that in the definition is 23:59:59
              */
             $today = new \DateTime();
-            return $this->worklist_manager->generateAutomaticWorklists($definition, $today->modify('tomorrow'));
+            if ($this->worklist_manager->generateAutomaticWorklists($definition, $today->modify('tomorrow'))) {
+                $unbooked_worklist = $this->getWorklist($date, $site_id, $subspecialty_id, $firm_id);
+            }
         }
 
-        return null;
+        return $unbooked_worklist;
     }
 
     /**
