@@ -1,4 +1,5 @@
 <?php
+
 namespace OEModule\PASAPI\components;
 
 use OEModule\PASAPI\models\PasApiAssignment;
@@ -22,6 +23,7 @@ use OEModule\PASAPI\models\PasApiAssignment;
 
 class PasApiObserver
 {
+    private $SEARCH_PARAMS = ['hos_num', 'nhs_num', 'first_name', 'last_name', 'maiden_name'];
     /**
      * Objet to parsing XML
      * @var null
@@ -55,8 +57,6 @@ class PasApiObserver
 
     public function search($data)
     {
-        //Todo change to setting
-        $pasapi_allowed_search_params =['hos_num'];
 
         if( !$this->isAvailable() ){
             // log ?
@@ -244,15 +244,16 @@ class PasApiObserver
      * @param \Patient $patient
      * @return bool
      */
-    public function isPASqueryRequired($params , $pasapi_allowed_search_params)
+    public function isPASqueryRequired($params)
     {
-        if(isset($pasapi_allowed_search_params) && !empty($pasapi_allowed_search_params)){
-            foreach($params as $key => $param){
-                if(!isset($pasapi_allowed_search_params[$key]) || empty(isset($pasapi_allowed_search_params[$key]))){
+        $pasapi_allowed_search_params = $this->getPasApiAllowedSearchParams();
+        if ($this->validateAllowedSearchParams($pasapi_allowed_search_params)) {
+            foreach ($params as $key => $param) {
+                if (!isset($pasapi_allowed_search_params[$key]) || empty($pasapi_allowed_search_params[$key])) {
                     return false;
                 }
             }
-        } else if( !empty($params['hos_num']) || !empty($params['nhs_num'])){
+        } else if (!empty($params['hos_num']) || !empty($params['nhs_num'])) {
 
             // validate the hos_num and hns_num
             $patient_search = new \PatientSearch();
@@ -286,4 +287,24 @@ class PasApiObserver
         return true;
     }
 
+    public function getPasApiAllowedSearchParams()
+    {
+        return isset(\Yii::app()->params['pas_api_allowed_params']) ? \Yii::app()->params['pas_api_allowed_params'] : [];
+    }
+
+    public function validateAllowedSearchParams($allowed_search_params)
+    {
+        $valid = true;
+        if (isset($allowed_search_params) && !empty($allowed_search_params)) {
+            foreach ($allowed_search_params as $key => $allowed_search_param) {
+                if (!array_key_exists($key, $this->SEARCH_PARAMS)) {
+                    $valid = false;
+                }
+            }
+        } else {
+            $valid = false;
+        }
+
+        return $valid;
+    }
 }
