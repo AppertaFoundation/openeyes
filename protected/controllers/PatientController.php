@@ -49,7 +49,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer', 'summary'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -143,6 +143,36 @@ class PatientController extends BaseController
         $this->redirect(array('episodes', 'id' => $id));
     }
 
+    public function actionSummary($id) {
+        $this->layout = '//layouts/events_and_episodes';
+        $this->patient = Patient::model()->findByPk($id);
+        $this->pageTitle = "Summary";
+
+        $episodes = $this->patient->episodes;
+        $legacy_episodes = $this->patient->legacyepisodes;
+        $support_service_episodes = $this->patient->supportserviceepisodes;
+
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['episode', 'episode.patient'];
+        $criteria->addCondition('patient.id=:patient_id');
+        $criteria->params['patient_id'] = $this->patient->id;
+        $criteria->order = 't.last_modified_date desc';
+        $criteria->limit = 3;
+        $events = Event::model()->findAll($criteria);
+
+        $no_episodes = count($episodes) < 1 && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
+
+        if ($no_episodes) {
+            $this->layout = '//layouts/events_and_episodes_no_header';
+        }
+
+        $this->render('landing_page', array(
+            'events' => $events,
+            'patient' => $this->patient,
+            'no_episodes' => $no_episodes,
+        ));
+    }
+
     public function actionSearch()
     {
         $term = \Yii::app()->request->getParam('term', '');
@@ -186,7 +216,7 @@ class PatientController extends BaseController
         } elseif ($itemCount == 1) {
             $item = $dataProvider->getData()[0];
             $api = new CoreAPI();
-            $this->redirect(array($api->generateEpisodeLink($item)));
+            $this->redirect(array($api->generatePatientLandingPageLink($item)));
         } else {
             $this->renderPatientPanel = false;
             $this->pageTitle = $term . ' - Search';
@@ -258,7 +288,7 @@ class PatientController extends BaseController
             //display the flash message
             Yii::app()->user->setFlash('warning.no-results', $merged->getMergedMessage());
 
-            $this->redirect( ($redirect_link ? $redirect_link : $primary_patient->generateEpisodeLink()));
+            $this->redirect( ($redirect_link ? $redirect_link : (new CoreAPI())->generatePatientLandingPageLink($this->patient)));
         }
     }
 
@@ -316,7 +346,7 @@ class PatientController extends BaseController
             'title' => empty($episodes) ? '' : 'Episode summary',
             'episodes' => $episodes,
             'site' => $site,
-            'cssClass' => 'episodes-list',
+            'css_class' => 'episodes-list',
             'noEpisodes' => $no_episodes,
         ));
     }

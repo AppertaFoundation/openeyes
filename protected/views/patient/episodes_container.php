@@ -20,6 +20,6 @@
 <?php $this->renderPartial('//patient/episodes_sidebar') ?>
 
 <?php $this->renderPartial('//patient/episode_content', array(
-    'cssClass' => $cssClass,
+    'cssClass' => $css_class,
     'content' => $content,
 )) ?>

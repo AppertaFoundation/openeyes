@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/bin/bash -l
+## Resets various caches and configs
 
-### Copies contents of profile.d to /etc/profile.d and expands variables
+## NOTE: This script assumes it is in protected/scripts. If you move it then relative paths will not work!
 
 # Find fuill folder path where this script is located, then find root folder
 SOURCE="${BASH_SOURCE[0]}"
@@ -13,14 +14,22 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 
-noenvs=0
+testtorun="$WROOT/protected/tests/unit"
+phpunitconfigxml="$WROOT/protected/tests/phpunit.xml"
+phpunitpath="$WROOT/vendor/phpunit/phpunit/phpunit.php"
 
 while [[ $# -gt 0 ]]
 do
     p="$1"
 
     case $p in
-	    --no-envs) noenvs=1
+	    --test-file)
+        testtorun="$2"
+        shift
+	      ;;
+      --configuration)
+        phpunitconfigxml="$2"
+        shift
         ;;
 	    *)  [ ! -z $p ] && echo "Unknown command line: $p" || :
         ;;
@@ -29,21 +38,4 @@ do
 shift # move to next parameter
 done
 
-
-# Copy each file in ./profile.d to /etc/profile.d, expand variables and set source
-shopt -s nullglob
-for f in $(ls $SCRIPTDIR/profile.d | sort -V)
-do
-  # If we're not updaing envs, then skip that file
-  [[ $noenvs = 1 && $f == openeyes-env.sh ]] && continue || :
-
-  if [[ $f == *.sh ]]; then
-    echo "importing $f"
-    sed "s|\$SCRIPTDIR|$SCRIPTDIR|; s|\$WROOT|$WROOT|" $SCRIPTDIR/profile.d/$f | sudo tee /etc/profile.d/$f &> /dev/null
-    sudo chmod 755 /etc/profile.d/$f
-    source /etc/profile.d/$f
-  fi
-
-done
-
-echo -e "\n* New settings will be available on next login *\n"
+eval php $phpunitpath --configuration $phpunitconfigxml $testtorun
