@@ -20,7 +20,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 
 ?>
 
-<?php if($noEpisodes) { ?>
+<?php if($no_episodes) { ?>
     <div class="oe-sem-no-events">
         <h3>No Events</h3>
         <div class="alert-box alert">
@@ -39,7 +39,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         'episodes' => array(),
         'context_firm' => $this->firm,
         'patient_id' => $this->patient->id,
-        'eventTypes' => EventType::model()->getEventTypeModules(),
+        'event_types' => EventType::model()->getEventTypeModules(),
     ));?>
 <?php } else { ?>
 
@@ -49,7 +49,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
     </nav>
 
     <?php $this->beginContent('//patient/episodes_container', [
-        'cssClass' => isset($cssClass) ? $cssClass : '',
+        'css_class' => isset($cssClass) ? $cssClass : '',
         'episode' => isset($current_episode) ? $current_episode : ''
     ]);
     ?>

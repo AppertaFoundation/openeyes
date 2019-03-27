@@ -149,8 +149,8 @@ class PatientController extends BaseController
         $this->pageTitle = "Summary";
 
         $episodes = $this->patient->episodes;
-        $legacyepisodes = $this->patient->legacyepisodes;
-        $supportserviceepisodes = $this->patient->supportserviceepisodes;
+        $legacy_episodes = $this->patient->legacyepisodes;
+        $support_service_episodes = $this->patient->supportserviceepisodes;
 
         $criteria = new \CDbCriteria();
         $criteria->with = ['episode', 'episode.patient'];
@@ -160,7 +160,7 @@ class PatientController extends BaseController
         $criteria->limit = 3;
         $events = Event::model()->findAll($criteria);
 
-        $no_episodes = count($episodes) < 1 && count($supportserviceepisodes) < 1 && count($legacyepisodes) < 1;
+        $no_episodes = count($episodes) < 1 && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
 
         if ($no_episodes) {
             $this->layout = '//layouts/events_and_episodes_no_header';
@@ -169,7 +169,7 @@ class PatientController extends BaseController
         $this->render('landing_page', array(
             'events' => $events,
             'patient' => $this->patient,
-            'noEpisodes' => $no_episodes,
+            'no_episodes' => $no_episodes,
         ));
     }
 
@@ -346,7 +346,7 @@ class PatientController extends BaseController
             'title' => empty($episodes) ? '' : 'Episode summary',
             'episodes' => $episodes,
             'site' => $site,
-            'cssClass' => 'episodes-list',
+            'css_class' => 'episodes-list',
             'noEpisodes' => $no_episodes,
         ));
     }

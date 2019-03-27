@@ -45,7 +45,7 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
 <?php } else {
 
     $this->beginContent('//patient/episodes_container', array(
-        'cssClass' => isset($cssClass) ? $cssClass : '',
+        'css_class' => isset($cssClass) ? $cssClass : '',
         'episode' => isset($current_episode)? $current_episode: ''
     ));
 
