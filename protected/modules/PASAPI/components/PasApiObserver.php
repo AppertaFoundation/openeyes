@@ -249,8 +249,10 @@ class PasApiObserver
         $pasapi_allowed_search_params = $this->getPasApiAllowedSearchParams();
         if ($this->validateAllowedSearchParams($pasapi_allowed_search_params)) {
             foreach ($params as $key => $param) {
-                if (!isset($pasapi_allowed_search_params[$key]) || empty($pasapi_allowed_search_params[$key])) {
-                    return false;
+                if (isset($param) && $param) {
+                    if (!$param && !isset($pasapi_allowed_search_params[$key]) || empty($pasapi_allowed_search_params[$key])) {
+                        return false;
+                    }
                 }
             }
         } else if (!empty($params['hos_num']) || !empty($params['nhs_num'])) {
