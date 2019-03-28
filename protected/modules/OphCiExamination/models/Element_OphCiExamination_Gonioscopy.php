@@ -158,7 +158,9 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
             'left_eyedraw' => 'EyeDraw',
             'right_eyedraw' => 'EyeDraw',
             'left_ed_report' => 'Report',
-            'right_ed_report' => 'Report'
+            'right_ed_report' => 'Report',
+            'left_iris_conf_id' => 'Iris configuration',
+            'right_iris_conf_id' => 'Iris configuration',
         );
     }
 
@@ -203,6 +205,15 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
     {
         return \CHtml::listData(OphCiExamination_Gonioscopy_Description::model()
                 ->findAll(array('order' => 'display_order')), 'id', 'name');
+    }
+
+    /**
+     * @return array
+     */
+    public function getIrisConfigurationOptions()
+    {
+      return \CHtml::listData(OphCiExamination_Gonioscopy_IrisConfiguration::model()
+        ->findAll(['order' => 'display_order']), 'id', 'name');
     }
 
     /**
