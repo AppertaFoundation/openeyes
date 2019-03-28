@@ -40,6 +40,8 @@ namespace OEModule\OphCiExamination\models;
  * @property string $right_eyedraw
  * @property string $left_ed_report
  * @property string $right_ed_report
+ * @property int $right_iris_conf_id
+ * @property int $left_iris_conf_id
  *
  * The followings are the available model relations:
  * @property Event $event
