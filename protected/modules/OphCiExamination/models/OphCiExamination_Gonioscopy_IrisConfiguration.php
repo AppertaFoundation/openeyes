@@ -38,6 +38,27 @@ class OphCiExamination_Gonioscopy_IrisConfiguration extends \BaseActiveRecordVer
     }
 
     /**
+     * @return int
+     */
+    public static function getIdOfNotRecorded()
+    {
+        return 1;
+    }
+
+    /**
+     * @param int $id
+     * @return string
+     */
+    public static function getNameFromId($id)
+    {
+        $iris = self::model()->findByPk($id);
+        if(!isset($iris)) {
+          return self::getNameFromId(self::getIdOfNotRecorded());
+        }
+        return $iris->name;
+    }
+
+    /**
      * @return string the associated database table name
      */
     public function tableName()
