@@ -80,6 +80,7 @@
       </td>
       <td class="step-event-types" style="visibility: hidden;">
         <h3>Change last workflow step</h3>
+        <button class="button green js-confirm-context-change" type="button" style="display: none;">Confirm change</button>
         <ul id="event-type-list" class="event-type-list">
         </ul>
 

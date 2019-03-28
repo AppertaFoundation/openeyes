@@ -197,12 +197,15 @@ class ChangeEventController extends BaseController
             if($episode->patient_id == $patient_id){
                 $action = 'update';
                 $selected_subspecialty_id = \Yii::app()->request->getPost('selectedSubspecialtyId');
+                $data = 'Context changed, firm remains the same';
                 if($selected_subspecialty_id){
                     if($episode->firm_id != $selected_subspecialty_id){
+                        $current_firm = \Firm::model()->findByPk($episode->firm_id);
                         $episode = new \Episode;
                         $episode->patient_id = $patient_id;
                         $episode->start_date = date('Y-m-d H:i:s');
                         $action = 'change-firm';
+                        $data = 'Changed from '.$current_firm->name.' to '.\Firm::model()->findByPk($selected_subspecialty_id)->name;
                     }
                     $episode->firm_id = $selected_subspecialty_id;
                     $episode->last_modified_user_id = Yii::app()->user->id;
@@ -210,7 +213,7 @@ class ChangeEventController extends BaseController
                 }
 
                 if($episode->save()) {
-                    Audit::add('episode', $action, $data = null, $log_message = null, $properties);
+                    Audit::add('episode', $action, $data, $log_message = null, $properties);
 
                     $selected_workflow_step_id =  \Yii::app()->request->getPost('selectedWorkflowStepId');
                     if($selected_workflow_step_id){
@@ -218,14 +221,15 @@ class ChangeEventController extends BaseController
                         $step->step_id = $selected_workflow_step_id;
 
                         if($step->save()) {
-                            Audit::add('element set assignment', 'update', $data = null, $log_message = null, $properties);
+                            $data = 'Changed step to '.\OEModule\OphCiExamination\models\OphCiExamination_ElementSet::model()->findByPk($selected_workflow_step_id)->name;
+                            Audit::add('element set assignment', 'update', $data, $log_message = null, $properties);
                         }                        
                     }
 
                     $event->episode_id = $episode->id;
                     $event->last_modified_user_id = Yii::app()->user->id;
                     $event->last_modified_date = date('Y-m-d H:i:s');
-                    $event->firm_id = $_POST['selectedContextId'];
+                    $event->firm_id = \Yii::app()->request->getPost('selectedContextId');
 
                     if($event->save()) {
                         Audit::add('event', 'update', $data = null, $log_message = null, $properties);

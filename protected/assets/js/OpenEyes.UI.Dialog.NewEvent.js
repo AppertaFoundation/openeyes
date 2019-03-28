@@ -67,6 +67,7 @@
         removeNewSubspecialty: '.change-new-specialty',
         eventTypeItem: '.oe-event-type',
         workflowStepItem: '.oe-event-workflow-step',
+        confirmChangeBtn: '.js-confirm-context-change'
     };
 
     /**
@@ -183,12 +184,9 @@
             self.content.find(selectors.contextItem).removeClass('selected');
             $(this).addClass('selected');
             self.updateEventList();
-
-            if(self.options.mode === 'ChangeContext' && (self.options.showSteps === false || self.options.workflowSteps[$(this).data('context-id')] === undefined)){
-                self.changeEventContext();
-            }
         });
 
+        // selection of event
         self.content.on('click', selectors.eventTypeItem, function (e) {
             if (!$(this).hasClass('add_event_disabled')) {
                 // can proceed
@@ -196,11 +194,17 @@
             }
         });
 
+        // selection of workflow
         self.content.on('click', selectors.workflowStepItem, function () {
             self.content.find(selectors.workflowStepItem).removeClass('selected');
             $(this).addClass('selected');
             self.changeEventContext();
         });
+
+        self.content.on('click', selectors.confirmChangeBtn, function () {
+            self.changeEventContext();
+        });
+
     };
 
     NewEventDialog.prototype.setDefaultSelections = function () {
@@ -431,6 +435,8 @@
                 } else {
                     self.content.find(selectors.eventTypeItem).show();
                 }                
+            }else if(self.options.mode === 'ChangeContext' && (self.options.showSteps === false || self.options.workflowSteps[$(selectors.contextItem).data('context-id')] === undefined)){
+                $('.js-confirm-context-change').show();
             }
 
             if(self.options.mode == 'ChangeContext'  && this.options.showSteps){
@@ -512,7 +518,7 @@
                         // MutationObserver
                         let observer = new MutationObserver(function(mutationsList, observer){
                             for(let mutation of mutationsList) {
-                                if (mutation.type == 'childList' && mutation.addedNodes.length > 0){
+                                if (mutation.type === 'childList' && mutation.addedNodes.length > 0){
                                     for(let nodeList of mutation.addedNodes){
                                         if(nodeList.id === 'site-and-firm-form'){
                                             // stop observing
