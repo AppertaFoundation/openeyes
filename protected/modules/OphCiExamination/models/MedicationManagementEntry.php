@@ -58,16 +58,10 @@
 			return array_merge(
 				parent::rules(),
 				array(
-					array('start_date_string_YYYYMMDD', 'validateStartDate'),
+					array('start_date_string_YYYYMMDD', 'required', "on" => ["visible", "to_be_prescribed"]),
+					array('start_date_string_YYYYMMDD', "OEFuzzyDateValidator"),
 				)
 			);
-        }
-
-		public function validateStartDate()
-		{
-			if(!$this->hidden && empty($this->start_date_string_YYYYMMDD)) {
-				$this->addError('start_date_string_YYYYMMDD', "Start date cannot be blank");
-			}
         }
 
         /**
