@@ -93,6 +93,7 @@ class WorklistBehavior extends CBehavior
                     $worklist_patient = WorklistPatient::model()->find($criteria);
                 }
 
+
                 if (!$worklist_patient) {
 
                     // UNBOOKED
@@ -102,9 +103,13 @@ class WorklistBehavior extends CBehavior
                     $firm = \Firm::model()->findByPk($firm_id);
                     $subspecialty_id = isset($firm->subspecialty->id) ? $firm->subspecialty->id : null;
 
-                    $unbooked_worklist = $unbooked_worklist_manager->getWorklist(new \DateTime(), $site_id, $subspecialty_id);
+                    $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty_id);
 
-                    $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
+                    if ($unbooked_worklist) {
+                        $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
+                    } else {
+                        \OELog::log("Unbooked worklist cannot be found for patient_id: {$patient_id}");
+                    }
                 }
 
                 if ($worklist_patient) {

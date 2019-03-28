@@ -35,38 +35,38 @@ class UnbookedWorklist extends CComponent
      * @return bool|null
      * @throws Exception
      */
-    public function getWorklist(DateTime $date, $site_id, $subspecialty_id, $firm_id = null)
+    public function createWorklist(DateTime $date, $site_id, $subspecialty_id, $firm_id = null)
     {
+        $tomorrow = clone $date;
+        $tomorrow = $tomorrow->modify('tomorrow');
         $definition = $this->getDefinition($site_id, $subspecialty_id, $firm_id);
 
         if (!$definition) {
             $definition = $this->createWorklistDefinition($site_id, $subspecialty_id, $firm_id);
-        }
-
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition('worklist_definition_id = :worklist_definition_id');
-        $criteria->addCondition('start >= :start');
-        $criteria->addCondition('end < :end');
-        $criteria->params[':start'] = $date->modify('today')->format('Y-m-d H:i:s'); // The time is set to 00:00:00
-        $criteria->params[':end'] = $date->modify('tomorrow')->format('Y-m-d H:i:s'); // Midnight of tomorrow
-        $criteria->params[':worklist_definition_id'] = $definition->id;
-
-        $unbooked_worklist = Worklist::model()->find($criteria);
-
-        if (!$unbooked_worklist) {
 
             //generate worklist by definition
             /**
              * Regarding to the worklist.end time, the generateAutomaticWorklists() function strips the seconds
              * of the time so the worklist end time ends up 23:59:00 regardless that in the definition is 23:59:59
              */
-            $today = new \DateTime();
-            if ($this->worklist_manager->generateAutomaticWorklists($definition, $today->modify('tomorrow'))) {
-                $unbooked_worklist = $this->getWorklist($date, $site_id, $subspecialty_id, $firm_id);
-            }
+            //generate or skipp if no need to generate
+            $this->worklist_manager->generateAutomaticWorklists($definition, $tomorrow);
         }
 
-        return $unbooked_worklist;
+        return $this->getWorklist($date, $definition->id);
+    }
+
+    public function getWorklist(DateTime $date, $definition_id)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('worklist_definition_id = :worklist_definition_id');
+        $criteria->addCondition('start >= :start');
+        $criteria->addCondition('end < :end');
+        $criteria->params[':start'] = $date->modify('today')->format('Y-m-d H:i:s'); // The time is set to 00:00:00
+        $criteria->params[':end'] = $date->modify('tomorrow')->format('Y-m-d H:i:s'); // Midnight of tomorrow
+        $criteria->params[':worklist_definition_id'] = $definition_id;
+
+        return Worklist::model()->find($criteria);
     }
 
     /**
@@ -95,7 +95,7 @@ class UnbookedWorklist extends CComponent
             $criteria->params[':firm_id'] = $firm_id;
         }
 
-        return WorklistDefinition::model()->resetScope(true)->find($criteria);
+        return WorklistDefinition::model()->find($criteria);
     }
 
 
@@ -119,7 +119,6 @@ class UnbookedWorklist extends CComponent
         $definition->start_time = '00:00:00';
         $definition->end_time = '23:59:59';
         $definition->active_from = $today->modify('midnight')->format('Y-m-d H:i:s');
-        $definition->active_until = $today->modify('tomorrow')->format('Y-m-d H:i:s');
 
         if ($definition->save()) {
             $context = new \WorklistDefinitionDisplayContext();
