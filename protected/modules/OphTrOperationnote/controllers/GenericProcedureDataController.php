@@ -108,7 +108,7 @@ class GenericProcedureDataController extends ModuleAdminController
         $this->render('edit', array(
             'model' => $model,
             'title' => 'Add Generic Procedure Data',
-            'cancel_uri' => '/OphTrOperationnote/GenericProcedureData/lis',
+            'cancel_uri' => '/OphTrOperationnote/GenericProcedureData/list',
         ));
     }
 
