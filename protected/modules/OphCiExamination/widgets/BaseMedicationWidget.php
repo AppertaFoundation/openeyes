@@ -143,6 +143,13 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 					$entry->tapers = $tapers;
 				}
 
+				if($entry->hidden) {
+                	$entry->setScenario("hidden");
+				}
+				elseif($entry->getScenario() !== "to_be_prescribed") {
+					$entry->setScenario("visible");
+				}
+
 				$entries[] = $entry;
             }
 
