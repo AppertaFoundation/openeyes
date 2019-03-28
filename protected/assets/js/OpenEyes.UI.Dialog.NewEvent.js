@@ -509,11 +509,23 @@
                     if(successful === "true"){
                         $('.'+self.options.popupClass+' .close-icon-btn').trigger('click');
                         $('#change-firm').trigger('click');
-                        $('body').on('DOMNodeInserted','#site-and-firm-form',function(){
-                            $(this).closest('.oe-popup').css('visibility','hidden');
-                            $('#SiteAndFirmForm_firm_id').find('option[value="'+postData.selectedContextId+'"]').attr('selected','selected').trigger('change');
-                            $('#site-and-firm-form').trigger('submit');
+                        // MutationObserver
+                        let observer = new MutationObserver(function(mutationsList, observer){
+                            for(let mutation of mutationsList) {
+                                if (mutation.type == 'childList' && mutation.addedNodes.length > 0){
+                                    for(let nodeList of mutation.addedNodes){
+                                        if(nodeList.id === 'site-and-firm-form'){
+                                            // stop observing
+                                            observer.disconnect();
+                                            $('#site-and-firm-form').closest('.oe-popup').css('visibility','hidden');
+                                            $('#SiteAndFirmForm_firm_id').find('option[value="'+postData.selectedContextId+'"]').attr('selected','selected').trigger('change');
+                                            $('#site-and-firm-form').trigger('submit');
+                                        }
+                                    }
+                                }
+                            }
                         });
+                        observer.observe(document.getElementsByTagName('body')[0], { attributes: true, childList: true, subtree: true });
                     }
                 });
             }
