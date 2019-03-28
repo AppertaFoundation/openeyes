@@ -194,12 +194,12 @@ class ChangeEventController extends BaseController
             $episode = \Episode::model()->findByPk($event->episode_id);
             $properties = array('patient_id' => $patient_id, 'episode_id' => $episode->id, 'event_id' => $event->id, 'event_type_id' => $event->event_type_id);
 
-            if($episode->patient_id == $patient_id){
+            if($episode->patient_id === $patient_id){
                 $action = 'update';
                 $selected_subspecialty_id = \Yii::app()->request->getPost('selectedSubspecialtyId');
                 $data = 'Context changed, firm remains the same';
                 if($selected_subspecialty_id){
-                    if($episode->firm_id != $selected_subspecialty_id){
+                    if($episode->firm_id !== $selected_subspecialty_id){
                         $current_firm = \Firm::model()->findByPk($episode->firm_id);
                         $episode = new \Episode;
                         $episode->patient_id = $patient_id;

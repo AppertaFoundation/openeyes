@@ -138,7 +138,7 @@
 
     NewEventDialog.prototype.updateTitle = function (subspecialty) {
         var title = this.options.title;
-        if (subspecialty !== undefined && this.options.mode == 'NewEvent') {
+        if (subspecialty !== undefined && this.options.mode === 'NewEvent') {
             title = 'Add a new ' + subspecialty.name + ' event';
         }
         this.setTitle(title);
@@ -439,7 +439,7 @@
                 $('.js-confirm-context-change').show();
             }
 
-            if(self.options.mode == 'ChangeContext'  && this.options.showSteps){
+            if(self.options.mode === 'ChangeContext'  && this.options.showSteps){
                 let list = '';
                 const workflowSteps = self.options.workflowSteps[selected.data('context-id')];
                 const currentWorkflowStep = self.options.currentStep;
