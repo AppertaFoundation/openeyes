@@ -2361,6 +2361,9 @@ class PatientController extends BaseController
      * @return bool any existing referral letter for this patient will return false
      */
     protected function checkExistingReferralLetter($patient){
+        if (!isset($patient->id)){
+            return true;
+        }
         $command = Yii::app()->db->createCommand()->setText("
                     select count(*) 'referral letters'
                     from patient p
