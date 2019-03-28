@@ -9,6 +9,7 @@
         service_layout['xaxis']['range'] = [0, 80];
         service_layout['yaxis']['title'] = 'Patient count';
         service_layout['yaxis']['tickformat'] = 'd';
+        service_layout['yaxis']['range'] = [0, 20];
 
         var overdue_data = {
             name: "Overdue followups",
