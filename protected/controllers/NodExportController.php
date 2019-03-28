@@ -3205,6 +3205,8 @@ FROM
     , CASE vam.name
       WHEN 'Glasses' THEN 'Aided'
       WHEN 'Contact lens' THEN 'Aided'
+      WHEN 'Auto-refraction' THEN 'Aided'
+      WHEN 'Formal refraction' THEN 'Aided'
       ELSE vam.name
       END AS method
     , evar.value AS reading_base_value

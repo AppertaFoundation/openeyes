@@ -87,7 +87,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
   <!-- exit oes and go back to previous page -->
   <div id="js-exit-oescape"
        data-link="<?php $core_api = new CoreAPI();
-       echo $core_api->generateEpisodeLink($this->patient) ?>">
+       echo $core_api->generatePatientLandingPageLink($this->patient) ?>">
     <i class="oe-i remove-circle"></i>
   </div>
 </nav>
