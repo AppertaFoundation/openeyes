@@ -54,7 +54,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             'withoutUnbooked' => [
                 'with' => [
                     'mappings' => [
-                        'condition' => 'mappings.key != "UNBOOKED"'
+                        'condition' => 'mappings.key != "UNBOOKED" OR mappings.key IS NULL'
                     ]
                 ],
             ],

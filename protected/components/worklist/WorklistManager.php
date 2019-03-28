@@ -627,7 +627,6 @@ class WorklistManager extends CComponent
         $site = $this->getCurrentSite();
         $firm = $this->getCurrentFirm();
 
-        $content = '';
         $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
         foreach ($days as $when) {
 
@@ -677,7 +676,7 @@ class WorklistManager extends CComponent
         $model = $this->getModelForClass('Worklist');
         $model->automatic = true;
         $model->on = $when;
-        foreach ($model->with(array('worklist_definition:withoutUnbooked', 'worklist_definition.display_contexts', 'worklist_patients'))->search(false)->getData() as $wl) {
+        foreach ($model->with(array('worklist_definition', 'worklist_definition.display_contexts', 'worklist_patients'))->search(false)->getData() as $wl) {
             if ($this->shouldDisplayWorklistForContext($wl, $site, $firm)) {
                 $worklists[] = $wl;
             }
