@@ -43,34 +43,6 @@ class DisorderController extends BaseAdminController
         ));
     }
 
-    public function actionIndex()
-    {
-        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
-        $criteria = new \CDbCriteria();
-        if (Yii::app()->request->isPostRequest) {
-            if ($search['query']) {
-                if (is_numeric($search['query'])) {
-                    $criteria->addCondition('id = :id');
-                    $criteria->params[':id'] = $search['query'];
-                } else {
-                    $criteria->addSearchCondition('pas_code', $search['query'], true, 'OR');
-                    $criteria->addSearchCondition('cost_code', $search['query'], true, 'OR');
-                    $criteria->addSearchCondition('name', $search['query'], true, 'OR');
-                }
-            }
-            if ($search['active'] == 1) {
-                $criteria->addCondition('active = 1');
-            } elseif ($search['active'] !== '') {
-                $criteria->addCondition('active != 1');
-            }
-        }
-        $this->render('index', array(
-            'pagination' => $this->initPagination(Firm::model(), $criteria),
-            'firms' => Firm::model()->findAll($criteria),
-            'search' => $search
-        ));
-    }
-
     public function actionEdit()
     {
         $request = Yii::app()->getRequest();
