@@ -72,6 +72,7 @@ return array(
                 'Secondary Common Ophthalmic Disorders' => '/admin/editsecondarytocommonophthalmicdisorder',
                 'Common Systemic Disorders' => '/oeadmin/CommonSystemicDisorder/list',
                 'Findings' => '/admin/managefindings',
+                'Disorders' => '/oeadmin/disorder/list',
             ),
             'Consent' => array(
                 'Leaflets' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/Leaflets/list'),

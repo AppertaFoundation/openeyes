@@ -183,12 +183,11 @@ class DisorderController extends BaseController
      */
     public function actionAutocomplete()
     {
-        Yii::log(CVarDumper::dumpAsString("asdkjfhkasjdfkljsaf"));
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
             $params = array();
             if (isset($_GET['term']) && $term = $_GET['term']) {
-                $criteria->addCondition('LOWER(term) LIKE :term COLLATE utf8_general_ci');
+                $criteria->addCondition(array('LOWER(term) LIKE :term', 'LOWER(aliases) LIKE :term'), 'OR');
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
             $criteria->order = 'term';
