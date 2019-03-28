@@ -299,6 +299,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.addTaper($row);
           return false;
       });
+
+      var med = $row.data("medication");
+      if($row.find(".js-unit-dropdown").length > 0 && typeof med !== "undefined" && typeof med.dose_unit_term === "undefined") {
+          $row.find(".js-unit-dropdown").removeAttr("disabled").show();
+          $row.find(".dose_unit_term").attr("disabled", "disabled");
+      }
   };
 
   HistoryMedicationsController.prototype.getDispenseLocation = function($dispense_condition)
@@ -421,7 +427,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var rc = $row.attr("data-key");
         var obj = {};
         $.each(this.fields, function(i, field){
-            var $element = $row.find("[name$='[entries]["+rc+"]["+field+"]']");
+            var $element = $row.find("[name$='[entries]["+rc+"]["+field+"]']").not(":disabled");
             var elementval = $element.val();
             if(typeof old_values !== "undefined" && old_values) {
                 var oldval = $element.attr("data-oldvalue");

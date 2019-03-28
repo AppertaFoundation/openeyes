@@ -27,7 +27,7 @@ foreach ($element->getFrequencyOptions() as $k=>$v) {
 $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
 $element_errors = $element->getErrors();
 $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'name');
-$unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'id', 'description');
+$unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
@@ -97,7 +97,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                         'is_last' => ($row_count == $total_count - 1),
                         'is_new' => $entry->getIsNewRecord(),
 						'patient' => $this->patient,
-                        'unit_options' => $unit_options
+                        'unit_options' => $unit_options,
                     )
                 );
             }

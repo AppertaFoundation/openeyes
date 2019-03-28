@@ -95,15 +95,9 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                     </div>
                     <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
                         <input class="cols-1 js-dose" style="width: 14%; display: inline-block;" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
-
-                        <?php // TODO: Not this way! The JS should set this on adding a new item! ?>
-
-                        <?php if($entry->dose_unit_term): ?>
-                            <span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
-                            <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
-                        <?php else: ?>
-                            <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'class' => 'js-unit cols-2')); ?>
-                        <?php endif; ?>
+                        <span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
+                        <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
+                        <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=>'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:none')); ?>
                         <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-3')) ?>
                         <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class'=>'js-route cols-2')) ?>
                         <?php echo CHtml::dropDownList($field_prefix . '[laterality]',
