@@ -31,6 +31,9 @@
 
   <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?></div>
 
+    <div class="data-label"><?= $element->getAttributeLabel($side . '_iris_conf_id') ?>:</div>
+    <div class="data-value"><?= Yii::app()->format->Ntext($element->getIrisConfigurationName($side)) ?></div>
+
     <?php if ($element->{$side . '_description'}) { ?>
       <div class="data-label"><?= $element->getAttributeLabel($side . '_description') ?>:</div>
       <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_description'}) ?></div>

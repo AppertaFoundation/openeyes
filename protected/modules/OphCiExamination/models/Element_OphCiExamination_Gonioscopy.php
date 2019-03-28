@@ -93,7 +93,7 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
                 array('eye_id, left_gonio_sup_id, left_gonio_tem_id, left_gonio_nas_id, left_gonio_inf_id,
 						right_gonio_sup_id, right_gonio_tem_id, right_gonio_nas_id, right_gonio_inf_id,
 						left_description, right_description, left_eyedraw, right_eyedraw,
-						left_ed_report, right_ed_report', 'safe'),
+						left_ed_report, right_ed_report, right_iris_conf_id, left_iris_conf_id', 'safe'),
                 array('left_eyedraw, left_ed_report', 'requiredIfSide', 'side' => 'left'),
                 array('right_eyedraw, right_ed_report', 'requiredIfSide', 'side' => 'right'),
                 // The following rule is used by search().
@@ -214,6 +214,15 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
     {
       return \CHtml::listData(OphCiExamination_Gonioscopy_IrisConfiguration::model()
         ->findAll(['order' => 'display_order']), 'id', 'name');
+    }
+
+    /**
+     * @param string $side
+     * @return string
+     */
+    public function getIrisConfigurationName($side)
+    {
+      return OphCiExamination_Gonioscopy_IrisConfiguration::model()->findByPk($this->{$side . '_iris_conf_id'})->name;
     }
 
     /**
