@@ -2236,6 +2236,7 @@ class PatientController extends BaseController
         $event->episode_id = $episode->id;
         $event->firm_id = $firm_id;
         $event->event_type_id = EventType::model()->findByAttributes(array('name' => 'Document'))->id;
+        $event->event_date = date('Y-m-d');
         $referral_letter_type_id = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Referral Letter'))->id;
 
         if (!$event->save()) {
