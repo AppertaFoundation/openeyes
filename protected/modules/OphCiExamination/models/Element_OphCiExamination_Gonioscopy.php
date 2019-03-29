@@ -218,8 +218,7 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
      */
     public function getIrisOptions()
     {
-      return \CHtml::listData(OphCiExamination_Gonioscopy_Iris::model()
-        ->findAll(['order' => 'display_order']), 'id', 'name');
+      return OphCiExamination_Gonioscopy_Iris::model()->findAll(['order' => 'display_order']);
     }
 
     /**
