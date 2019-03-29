@@ -137,9 +137,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         if ($procedures) {
             $this->command
                 ->join('ophtroperationnote_procedurelist_procedure_assignment proc_ass', 'proc_ass.procedurelist_id = op_procedure.id')
-                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = proc_ass.proc_id and proc_ass.proc_id in (:procedures)', array('procedures' => implode(',', $procedures)));
+                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = proc_ass.proc_id ')
+                ->andWhere('proc_ass.proc_id in ('.implode(',',$procedures).')');
         }
-
         return $this->command->queryAll();
     }
 
@@ -156,7 +156,6 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
       }
       $data = $this->queryData($surgeon, $this->from, $this->to, $this->months, $this->procedures);
       $count = array();
-
       $this->padPlotlyCategories();
 
       // fill up the array with 0, have to send 0 to highcharts if there is no data
