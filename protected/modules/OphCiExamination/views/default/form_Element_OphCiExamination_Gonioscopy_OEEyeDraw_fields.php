@@ -117,10 +117,10 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
   </div>
 
   <div class="data-group">
-    <label for="<?= CHtml::modelName($element) . '_' . $side . '_iris_conf_id'; ?>">
-      <?= $element->getAttributeLabel($side . '_iris_conf_id') ?>:
+    <label for="<?= CHtml::modelName($element) . '_' . $side . '_iris_id'; ?>">
+      <?= $element->getAttributeLabel($side . '_iris_id') ?>:
     </label>
-    <?=\CHtml::activeDropDownList($element, $side . '_iris_conf_id', $element->getIrisConfigurationOptions(),
+    <?=\CHtml::activeDropDownList($element, $side . '_iris_id', $element->getIrisOptions(),
     [
       'empty' => 'Not recorded',
       'class' => 'iris-configuration',

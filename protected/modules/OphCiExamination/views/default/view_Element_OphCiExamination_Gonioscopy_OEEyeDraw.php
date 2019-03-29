@@ -31,10 +31,10 @@
 
   <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?></div>
 
-    <?php $irisConfiguration = $element->{$side . '_iris_conf'};
-    if (isset($irisConfiguration)) { ?>
-      <div class="data-label"><?= $element->getAttributeLabel($side . '_iris_conf_id') ?>:</div>
-      <div class="data-value"><?= Yii::app()->format->Ntext($irisConfiguration->name) ?></div>
+    <?php $iris = $element->{$side . '_iris'};
+    if (isset($iris)) { ?>
+      <div class="data-label"><?= $element->getAttributeLabel($side . '_iris_id') ?>:</div>
+      <div class="data-value"><?= Yii::app()->format->Ntext($iris->name) ?></div>
     <?php } ?>
 
     <?php if ($element->{$side . '_description'}) { ?>

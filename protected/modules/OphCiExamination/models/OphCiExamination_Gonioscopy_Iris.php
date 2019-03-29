@@ -19,18 +19,18 @@
 namespace OEModule\OphCiExamination\models;
 
 /**
- * This is the model class for table "ophciexamination_gonioscopy_iris_configuration".
+ * This is the model class for table "ophciexamination_gonioscopy_iris".
  *
  * @property int $id
  * @property string $name
  * @property int $display_order
  */
-class OphCiExamination_Gonioscopy_IrisConfiguration extends \BaseActiveRecordVersioned
+class OphCiExamination_Gonioscopy_Iris extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphCiExamination_Gonioscopy_IrisConfiguration the static model class
+     * @return OphCiExamination_Gonioscopy_Iris the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -42,7 +42,7 @@ class OphCiExamination_Gonioscopy_IrisConfiguration extends \BaseActiveRecordVer
      */
     public function tableName()
     {
-        return 'ophciexamination_gonioscopy_iris_configuration';
+        return 'ophciexamination_gonioscopy_iris';
     }
 
     /**
