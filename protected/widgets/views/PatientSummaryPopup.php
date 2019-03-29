@@ -61,7 +61,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     <div class="cols-left">
       <div class="popup-overflow">
         <div class="subtitle">Demographics</div>
-        <table class="patient-demographics" style="position: relative; right: 0;">
+        <table class="patient-demographics" style="position: relative; right: 0; cursor: default;">
           <tbody>
           <tr>
             <td>Born</td>
@@ -105,7 +105,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 
         <div class="subtitle">&nbsp;</div>
 
-        <table class="patient-demographics" style="position: relative; right: 0;">
+        <table class="patient-demographics" style="position: relative; right: 0; cursor: default;">
           <tbody>
           <tr>
             <td><?php echo 'Referring '.Yii::app()->params['general_practitioner_label'] ?></td>
