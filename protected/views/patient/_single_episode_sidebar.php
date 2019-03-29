@@ -41,45 +41,7 @@ $current_subspecialty = null;
 $episodes_list = array(); ?>
 <div class="sidebar-eventlist">
 <?php if (is_array($ordered_episodes)):
-    foreach ($ordered_episodes as $specialty_episodes): ?>
-
-      <ul class="subspecialties">
-          <?php foreach ($specialty_episodes['episodes'] as $i => $episode) {
-              // TODO deal with support services possibly?
-              $id = $episode->getSubspecialtyID();
-              $subspecialty_name = $episode->getSubspecialtyText();
-              if (!$id) {
-                  if ($episode->support_services) {
-                      $id = 'SS';
-                      $tag = 'Ss';
-                  } else {
-                      $id = "Le";
-                      $tag = $id;
-                  }
-              } else {
-                  $tag = $episode->subspecialty->ref_spec;
-              }
-
-              $selected = '';
-              if ($current_episode && $current_episode->getSubspecialtyID() == $id) {
-                  $selected = 'selected';
-                  $current_subspecialty = $current_episode->getSubspecialty();
-              }
-
-              if (!array_key_exists($id, $subspecialty_labels)) {
-                  $subspecialty_labels[$id] = $subspecialty_name; ?>
-                <li class="subspecialty event <?= $selected ?>"
-                    data-subspecialty-id="<?= $id ?>"
-                    data-definition='<?= CJSON::encode(NewEventDialogHelper::structureEpisode($episode)) ?>'>
-                  <a href="<?= Yii::app()->createUrl('/patient/episode/' . $episode->id) ?>">
-                      <?= $subspecialty_name ?><span class="tag"><?= $tag ?></span>
-                  </a>
-                </li>
-              <?php }
-          } ?>
-      </ul>
-
-
+    foreach ($ordered_episodes as $specialty_episodes): ?>         
         <ul class="events" id="js-events-by-date">
           <?php foreach ($specialty_episodes['episodes'] as $i => $episode): ?>
             <!-- Episode events -->
@@ -165,7 +127,7 @@ $this->renderPartial('//patient/add_new_event', array(
     'episodes' => $active_episodes,
     'context_firm' => $this->firm,
     'patient_id' => $this->patient->id,
-    'eventTypes' => EventType::model()->getEventTypeModules(),
+    'event_types' => EventType::model()->getEventTypeModules(),
 )); ?>
 
 <?php
