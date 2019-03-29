@@ -5,7 +5,7 @@
  */
 class PatientIdentifierParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    public $textValue;
+    public $number;
 
     public $code;
 
@@ -34,7 +34,7 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     {
         return array_merge(parent::attributeNames(), array(
                 'code',
-                'textValue',
+                'number',
             )
         );
     }
@@ -45,7 +45,7 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     public function attributeLabels()
     {
         return array(
-            'textValue' => 'Value',
+            'number' => 'Number',
             'code' => 'Code'
         );
     }
@@ -57,7 +57,8 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('textValue', 'required'),
+            array('number', 'required'),
+            array('number','numerical'),
             array('code', 'required'),
             array('code','safe')
         ));
@@ -79,8 +80,8 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
             </div>
 
             <div class="parameter-option">
-                <?php echo CHtml::activeTextField($this, "[$id]textValue"); ?>
-                <?php echo CHtml::error($this, "[$id]textValue"); ?>
+                <?php echo CHtml::activeTextField($this, "[$id]number"); ?>
+                <?php echo CHtml::error($this, "[$id]number"); ?>
             </div>
         </div>
         <?php
@@ -108,7 +109,7 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_id_number_$this->id" => $this->textValue,
+            "p_id_number_$this->id" => $this->number,
             "p_code_$this->id" => $this->code,
         );
     }
@@ -118,7 +119,7 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
      */
     public function getAuditData()
     {
-        return "$this->name: $this->operation $this->code $this->textValue";
+        return "$this->name: $this->operation $this->code $this->number";
     }
     /**
      * @return array contains all identifier codes
