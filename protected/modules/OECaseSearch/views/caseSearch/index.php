@@ -17,7 +17,7 @@ $this->pageTitle = 'Case Search';
         ?>
     </div>
 </div>
-<div class="oe-grid oe-full-content pro-theme" style="height: 100%; width: 100%">
+<div class="oe-grid oe-full-content oe-worklists" style="height: 100%; width: 100%">
     <nav class="oe-full-side-panel">
         <h3>Actions</h3>
         <ul>
