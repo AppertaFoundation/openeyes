@@ -45,6 +45,8 @@ namespace OEModule\OphCiExamination\models;
  *
  * The followings are the available model relations:
  * @property Event $event
+ * @property OphCiExamination_Gonioscopy_IrisConfiguration $right_iris_conf
+ * @property OphCiExamination_Gonioscopy_IrisConfiguration $left_iris_conf
  */
 class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
 {
@@ -133,6 +135,8 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
                 'right_gonio_tem' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Description', 'right_gonio_tem_id'),
                 'right_gonio_nas' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Description', 'right_gonio_nas_id'),
                 'right_gonio_inf' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Description', 'right_gonio_inf_id'),
+                'left_iris_conf' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_IrisConfiguration', 'left_iris_conf_id'),
+                'right_iris_conf' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_IrisConfiguration', 'right_iris_conf_id'),
                 'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
         );
     }
