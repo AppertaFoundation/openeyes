@@ -12,14 +12,13 @@ class m190328_134435_create_iris_table extends OEMigration
       ],
       true);
 
-    $this->insert('ophciexamination_gonioscopy_iris',
-      ['name' => 'Flat', 'display_order' => '1',]);
-    $this->insert('ophciexamination_gonioscopy_iris',
-      ['name' => 'Plateau', 'display_order' => '2',]);
-    $this->insert('ophciexamination_gonioscopy_iris',
-      ['name' => 'Concave', 'display_order' => '3',]);
-    $this->insert('ophciexamination_gonioscopy_iris',
-      ['name' => 'Bombé', 'display_order' => '4',]);
+    $this->insertMultiple('ophciexamination_gonioscopy_iris',
+      [
+        ['name' => 'Flat', 'display_order' => '1',],
+        ['name' => 'Plateau', 'display_order' => '2',],
+        ['name' => 'Concave', 'display_order' => '3',],
+        ['name' => 'Bombé', 'display_order' => '4',],
+      ]);
 	}
 
 	public function down()
