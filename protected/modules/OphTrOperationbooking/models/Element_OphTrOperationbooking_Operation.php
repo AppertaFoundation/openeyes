@@ -700,7 +700,11 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $rtt_date = $this->getRTTBreach();
 
         $criteria = new CDbCriteria();
-        $criteria->compare('firm_id', $firm->id);
+        if(isset($firm->id)) {
+            $criteria->compare('firm_id', $firm->id);
+        } else {
+            $criteria->addCondition('firm_id is null');
+        }
         $criteria->compare('available', 1);
         $criteria->addSearchCondition('date', "$year-$month-%", false);
         $criteria->order = 'date asc';
