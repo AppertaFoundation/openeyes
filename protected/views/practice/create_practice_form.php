@@ -81,7 +81,8 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                                 $("#practice-alert-box").css("display","none");
                                 }
                           }',
-                            ]
+                            ],
+                            array('class' => 'button hint green')
                         );
                         ?>
                     </td>

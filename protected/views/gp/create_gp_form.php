@@ -118,7 +118,8 @@
                                             $("#selected_contact_label_wrapper").find(".hidden_id").val("");
                                     }
                                   }',
-                                )
+                                ),
+                                array('class' => 'button hint green')
                             );
                         }
                         ?>
