@@ -2076,8 +2076,9 @@ class Patient extends BaseActiveRecordVersioned
 
     $currentDate = new DateTime(date('j M Y'));
     $date_of_birth = new DateTime($this->dob);
+    $min_date_of_birth = new DateTime("1900-01-01");
 
-    if ($date_of_birth > $currentDate || $this->getAge() > 100) {
+    if ($date_of_birth > $currentDate || $date_of_birth < $min_date_of_birth) {
       $this->addError($attribute,'Invalid date. Value does not fall within the expected range.');
     }
 
