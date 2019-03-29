@@ -15,6 +15,7 @@
   <div id="<?=$report->graphId();?>" class="chart-container"></div>
 </div>
 <script>
+    var data =  <?= $report->tracesJson();?>;
     var layout = JSON.parse('<?= $report->plotlyConfig();?>');
     var plotly_min_width = 800;
     var plotly_min_height = 650;
@@ -30,9 +31,12 @@
     layout['plot_bgcolor'] = '#101925';
     layout['width'] = layout_width;
     layout['height'] = layout_height;
+    layout['xaxis']['mirror'] = true;
     layout['xaxis']['rangemode'] = 'tozero';
     layout['xaxis']['linecolor'] = '#fff';
     layout['yaxis']['linecolor'] = '#fff';
+    layout['yaxis']['automargin'] = true;
+    layout['yaxis']['mirror'] = true;
     if (layout['yaxis']['showgrid']){
         layout['yaxis']['gridcolor'] = '#aaa';
     }
@@ -43,7 +47,7 @@
         layout['shapes'][0]['line']['color'] = '#fff';
     <?php }?>
     Plotly.newPlot('<?=$report->graphId();?>',
-    <?= $report->tracesJson();?>,
+        data,
         layout,
     {
       modeBarButtonsToRemove: ['sendDataToCloud','zoom2d', 'pan', 'pan2d',

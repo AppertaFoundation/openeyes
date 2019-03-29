@@ -47,6 +47,11 @@ var analytics_layout = {
         showticksuffix: 'last',
     },
     yaxis:{
+        titlefont: {
+            family: 'sans-serif',
+            size: 12,
+            color: '#fff',
+        },
         /*Ticks setting*/
         ticks: 'outside',
         showgrid: true,
