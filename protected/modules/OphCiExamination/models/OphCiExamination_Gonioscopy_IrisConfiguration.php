@@ -72,7 +72,9 @@ class OphCiExamination_Gonioscopy_IrisConfiguration extends \BaseActiveRecordVer
     public function rules()
     {
         return [
-                ['name', 'required'],
+          ['name', 'required'],
+          ['name', 'length', 'max'=>20],
+          ['id, name', 'safe', 'on' => 'search'],
         ];
     }
 
