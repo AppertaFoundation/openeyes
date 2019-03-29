@@ -28,16 +28,6 @@ namespace OEModule\OphCiExamination\models;
 class OphCiExamination_Gonioscopy_Iris extends \BaseActiveRecordVersioned
 {
     /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_Gonioscopy_Iris the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
-
-    /**
      * @return string the associated database table name
      */
     public function tableName()
