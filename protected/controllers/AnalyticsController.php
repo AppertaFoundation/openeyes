@@ -9,6 +9,7 @@ class AnalyticsController extends BaseController
     const PERIOD_WEEK = 7;
     const PERIOD_MONTH = 30;
     const PERIOD_YEAR = 365;
+    const FOLLOWUP_WEEK_LIMITED = 78;
     private $current_user ;
 
   public $layout = '//layouts/events_and_episodes';
@@ -90,7 +91,7 @@ class AnalyticsController extends BaseController
             $user_list = User::model()->findAll();
         }
 
-
+        Yii::log(var_export($follow_patient_list, true));
         $this->render('/analytics/analytics_container',
             array(
                 'specialty'=>'All',
@@ -1519,22 +1520,41 @@ class AnalyticsController extends BaseController
                               continue;
                           //Follow up is overdue
                           $over_weeks = intval(($current_time - $due_time)/self::DAYTIME_ONE / self::PERIOD_WEEK);
-                          array_push($followup_csv_data['overdue'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$over_weeks));
-                          if(!array_key_exists($over_weeks, $followup_patient_list['overdue'])){
-                              $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
-                          } else {
-                              array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                          if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED){
+                              array_push($followup_csv_data['overdue'],
+                                  array(
+                                      $current_patient->getFirst_name(),
+                                      $current_patient->getLast_name(),
+                                      $current_patient->hos_num,
+                                      $current_patient->dob,
+                                      $current_patient->getAge(),
+                                      $current_patient->getDiagnosesTermsArray(),
+                                      $over_weeks));
+                              if(!array_key_exists($over_weeks, $followup_patient_list['overdue'])){
+                                  $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                              } else {
+                                  array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                              }
                           }
-
                       } else {
                           if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time)
                               continue;
                           $coming_weeks = intval(($due_time - $current_time)/self::DAYTIME_ONE/self::PERIOD_WEEK);
-                          array_push($followup_csv_data['coming'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$coming_weeks));
-                          if(!array_key_exists($coming_weeks, $followup_patient_list['coming'])){
-                              $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
-                          } else {
-                              array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                          if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED){
+                              array_push($followup_csv_data['coming'],
+                                  array(
+                                      $current_patient->getFirst_name(),
+                                      $current_patient->getLast_name(),
+                                      $current_patient->hos_num,
+                                      $current_patient->dob,
+                                      $current_patient->getAge(),
+                                      $current_patient->getDiagnosesTermsArray(),
+                                      $coming_weeks));
+                              if(!array_key_exists($coming_weeks, $followup_patient_list['coming'])){
+                                  $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
+                              } else {
+                                  array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                              }
                           }
                       }
                   }
@@ -1577,22 +1597,43 @@ class AnalyticsController extends BaseController
                       continue;
                   //Follow up is overdue
                   $over_weeks = intval(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
-                  array_push($followup_csv_data['overdue'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$over_weeks));
-                  if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
-                      $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
-                  } else {
-                      array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                  if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED){
+                      array_push($followup_csv_data['overdue'],
+                          array(
+                              $current_patient->getFirst_name(),
+                              $current_patient->getLast_name(),
+                              $current_patient->hos_num,
+                              $current_patient->dob,
+                              $current_patient->getAge(),
+                              $current_patient->getDiagnosesTermsArray(),
+                              $over_weeks)
+                      );
+                      if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
+                          $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                      } else {
+                          array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                      }
                   }
               } else {
                   if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time)
                       continue;
 
                   $coming_weeks = intval(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
-                  array_push($followup_csv_data['coming'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$coming_weeks));
-                  if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
-                      $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
-                  } else {
-                      array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                  if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
+                      array_push($followup_csv_data['coming'],
+                          array(
+                              $current_patient->getFirst_name(),
+                              $current_patient->getLast_name(),
+                              $current_patient->hos_num,
+                              $current_patient->dob,
+                              $current_patient->getAge(),
+                              $current_patient->getDiagnosesTermsArray(),
+                              $coming_weeks));
+                      if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
+                          $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
+                      } else {
+                          array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                      }
                   }
               }
           }
@@ -1631,15 +1672,31 @@ class AnalyticsController extends BaseController
                   $appointment_time = Helper::mysqlDate2JsTimestamp($current_patient_on_worklist->when)/1000;
                   if($appointment_time >= $current_referral_date){
                       $waiting_time = ceil((($appointment_time - $current_referral_date)/(self::WEEKTIME)));
-                      array_push($followup_csv_data['waiting'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$waiting_time));
-                      if (! isset($followup_patient_list['waiting'][$waiting_time])){
-                          $followup_patient_list['waiting'][$waiting_time]= array();
-                      }
-                      if (!array_key_exists($current_patient->id, $this->patient_list)){
-                          $this->patient_list[$current_patient->id] = $current_patient;
-                      }
-                      array_push($followup_patient_list['waiting'][$waiting_time],$current_patient->id);
                   }
+              }
+              else {
+                  $current_time = time();
+                  if($current_time > $current_referral_date) {
+                      $waiting_time = ceil((($current_time - $current_referral_date)/(self::WEEKTIME)));
+                  }
+              }
+              if (isset($waiting_time) && $waiting_time <= self::FOLLOWUP_WEEK_LIMITED) {
+                  array_push($followup_csv_data['waiting'],
+                      array(
+                          $current_patient->getFirst_name(),
+                          $current_patient->getLast_name(),
+                          $current_patient->hos_num,
+                          $current_patient->dob,
+                          $current_patient->getAge(),
+                          $current_patient->getDiagnosesTermsArray(),
+                          $waiting_time));
+                  if (! isset($followup_patient_list['waiting'][$waiting_time])){
+                      $followup_patient_list['waiting'][$waiting_time]= array();
+                  }
+                  if (!array_key_exists($current_patient->id, $this->patient_list)){
+                      $this->patient_list[$current_patient->id] = $current_patient;
+                  }
+                  array_push($followup_patient_list['waiting'][$waiting_time],$current_patient->id);
               }
           }
       }
