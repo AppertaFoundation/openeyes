@@ -31,7 +31,8 @@
     <?php endforeach ?>
     </tbody>
   </table>
-    <?php if ($element->{"{$side}_comments"}): ?>
-    <span class="large-text" style="padding-left: 5px"><?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?></span>
-    <?php endif; ?>
 <?php endif ?>
+
+<?php if ($element->{"{$side}_comments"}): ?>
+    <span class="large-text" style="padding-left: 5px"><?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?></span>
+<?php endif; ?>
