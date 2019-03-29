@@ -17,10 +17,10 @@ class m190328_134435_create_iris_table extends OEMigration
         ['name' => 'Bombé', 'display_order' => '4',],
     ]);
 
-    $this->addColumn('et_ophciexamination_gonioscopy', 'right_iris_id', 'INT(10)');
-    $this->addColumn('et_ophciexamination_gonioscopy', 'left_iris_id', 'INT(10)');
-    $this->addColumn('et_ophciexamination_gonioscopy_version', 'right_iris_id', 'INT(10)');
-    $this->addColumn('et_ophciexamination_gonioscopy_version', 'left_iris_id', 'INT(10)');
+    $this->addColumn('et_ophciexamination_gonioscopy', 'right_iris_id', 'INT(10) DEFAULT NULL');
+    $this->addColumn('et_ophciexamination_gonioscopy', 'left_iris_id', 'INT(10) DEFAULT NULL');
+    $this->addColumn('et_ophciexamination_gonioscopy_version', 'right_iris_id', 'INT(10) DEFAULT NULL');
+    $this->addColumn('et_ophciexamination_gonioscopy_version', 'left_iris_id', 'INT(10) DEFAULT NULL');
 
     $this->addForeignKey('et_ophciexamination_gonioscopy_right_iris_id_fk',
       'et_ophciexamination_gonioscopy', 'right_iris_id',
