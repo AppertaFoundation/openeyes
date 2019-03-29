@@ -1025,12 +1025,12 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
-    public function actionGetScaleForInstrument()
+    public function actionGetScaleForInstrument($name)
     {
         if ($instrument = models\OphCiExamination_Instrument::model()->findByPk(@$_GET['instrument_id'])) {
             if ($scale = $instrument->scale) {
                 $value = new models\OphCiExamination_IntraocularPressure_Value();
-                $this->renderPartial('_qualitative_scale', array('value' => $value, 'scale' => $scale, 'side' => @$_GET['side'], 'index' => @$_GET['index']));
+                $this->renderPartial('_qualitative_scale', array('name' => $name, 'value' => $value, 'scale' => $scale, 'side' => @$_GET['side'], 'index' => @$_GET['index']));
             }
         }
     }
@@ -1139,26 +1139,26 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    private function getOtherSide($side1, $side2, $selectedSide) {
+        return $selectedSide === $side1 ? $side2 : $side1;
+    }
+
     protected function saveComplexAttributes_HistoryIOP($element, $data, $index)
     {
         // TODO: check if this is correct @Sabi
         // no need for transaction + rollback because it's done in actionUpdate($id) before:
         //       $success = $this->saveEvent($_POST);
 
-      /*  foreach (['left', 'right'] as $side) {
+        $data = $data['OEModule_OphCiExamination_models_HistoryIOP'];
+        foreach (['left', 'right'] as $side) {
             if (array_key_exists("{$side}_values", $data) && $data["{$side}_values"]) {
                 for ($index = 0; $index < count($data["{$side}_values"]); $index++) {
-
-                    if (!strlen($data["{$side}_iop_date"][$index]['examination_date'])) {
-                        throw new \Exception('There is no date set for the selected IOP element.');
-                    }
-
                     // create a new event and set the event_date as selected iop date
                     $examinationEvent = new \Event();
-                    $examinationEvent->episode_id = $this->element->event->episode_id;
+                    $examinationEvent->episode_id = $element->event->episode_id;
                     $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
-                    $examinationEvent->event_date = \DateTime::createFromFormat('m/d/Y', $data["{$side}_iop_date"][$index]['examination_date'])->format('Y-m-d');
-                    $examinationEvent->event_type_id = $this->element->event->event_type_id;
+                    $examinationEvent->event_date = \DateTime::createFromFormat('d/m/Y', $data["{$side}_values"][$index]['examination_date'])->format('Y-m-d');
+                    $examinationEvent->event_type_id = $element->event->event_type_id;
                     $examinationEvent->is_automated = 1;
 
                     if (!$examinationEvent->save()) {
@@ -1166,15 +1166,16 @@ class DefaultController extends \BaseEventTypeController
                     }
 
                     // create a new iop element
-                    $iop_element = new Element_OphCiExamination_IntraocularPressure();
+                    $iop_element = new models\Element_OphCiExamination_IntraocularPressure();
                     $iop_element->event_id = $examinationEvent->id;
+                    $iop_element[$this->getOtherSide('left', 'right', $side) . "_comments"] = "IOP values not recorded for this eye.";
 
                     if (!$iop_element->save(false)) {
                         throw new \Exception('Unable to save a new IOP element: ' . print_r($iop_element->errors, true));
                     }
 
                     // create a reading record from the values the user has given
-                    $reading = new OphCiExamination_IntraocularPressure_Value();
+                    $reading = new models\OphCiExamination_IntraocularPressure_Value();
                     $reading->attributes = $data["{$side}_values"][$index];
                     $reading->element_id = $iop_element->id;
 
@@ -1185,10 +1186,7 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-        $element->attributes = $data['attributes'];*/
-
-//      echo "<pr>" . print_r("here", 1) . "</pr></br>";
-//      die;
+        $element->attributes = $data;
     }
 
     /**
@@ -1205,20 +1203,34 @@ class DefaultController extends \BaseEventTypeController
         $errors = parent::setAndValidateElementsFromData($data);
 
         if(isset($data['OEModule_OphCiExamination_models_HistoryIOP'])){
-            echo "<pr>" . print_r($data['OEModule_OphCiExamination_models_HistoryIOP'], 1) . "</pr></br>";
-            die;
-            //        die;
-            //        if(is_array($this->entries)) {
-            //            foreach ($this->entries as $entry) {
-            //                $entry['time']
-            //                $entry['instrument']
-            //                $entry['date']
-            //
-            //            }
-            //        }
-            //        $this->addError("custom", "this is a message");
-            //        echo "<pr>" . print_r("validate IOP", 1) . "</pr></br>";
-            //        die;
+            $historyIOP = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryIOP');
+            $entries = $data['OEModule_OphCiExamination_models_HistoryIOP'];
+            foreach (['left_values', 'right_values'] as $side_values) {
+                if (isset($entries[$side_values])) {
+                    foreach ($entries[$side_values] as $index => $value) {
+                        $reading = new models\OphCiExamination_IntraocularPressure_Value();
+                        $reading->attributes = $value;
+                        if (!$reading->validate()) {
+                            $readingErrors = $reading->getErrors();
+                            foreach ($readingErrors as $readingErrorAttributeName => $readingErrorMessage) {
+                                $historyIOP->addError($side_values . '_' . $index . '_' . $readingErrorAttributeName, $readingErrorMessage[0]);
+                                $errors[$this->event_type->name][] = $readingErrorMessage[0];
+                            }
+                        }
+                        if (!$value['examination_date']) {
+                            $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'there must be a date set for the iop value');
+                            $errors[$this->event_type->name][] = 'there must be a date set for the iop value';
+                        } else {
+                            $date = \DateTime::createFromFormat('d/m/Y', $value['examination_date']);
+                            $errorsDate = \DateTime::getLastErrors();
+                            if (!$date || !empty($errorsDate['warning_count'])) {
+                                $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: d/m/Y');
+                                $errors[$this->event_type->name][] = 'Date is wrongly formatted: format accepted: d/m/Y';
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         if ($history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications')) {

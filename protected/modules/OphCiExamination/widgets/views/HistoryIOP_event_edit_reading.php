@@ -41,9 +41,10 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
     </td>
     <td class="scale_values" style="<?= (!$value->instrument || !$value->instrument->scale) ? "display: none":""?>">
         <?php if ($value->instrument && $value->instrument->scale) {
-            echo $this->renderPartial(
-                '_qualitative_scale',
+            echo $this->render(
+                'application.modules.OphCiExamination.views.default._qualitative_scale',
                 array(
+                    'name' => CHtml::modelName($element),
                     'value' => $value,
                     'side' => $side,
                     'index' => $index,
@@ -56,20 +57,21 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
         <?= CHtml::textField(
             "{$base_name}[reading_time]",
             $time,
-            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-11')
+            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'fixed-width-small')
         ) ?>
     </td>
     <td>
         <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-            'name' => CHtml::modelName($element) . "[{$side}_iop_date][{$index}][examination_date]",
+            'name' => "{$base_name}[examination_date]",
             'htmlOptions' => [
-                'class' => 'iop-date'
+                'class' => 'iop-date',
+                'autocomplete' => 'off',
             ],
             'options' => array(
                 'showAnim' => 'fold',
-                'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                'dateFormat' => 'dd/mm/yy',
             ),
-            'value' => @$_GET["{$base_name}[iop_date]"],
+            'value' =>  $examinationDate,
         )) ?>
     </td>
 

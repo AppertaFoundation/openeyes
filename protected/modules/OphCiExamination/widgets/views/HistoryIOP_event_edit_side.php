@@ -18,7 +18,8 @@
 use OEModule\OphCiExamination\models;
 
 $url = Yii::app()->assetManager->getPublishedPathOfAlias('application.modules.OphCiExamination.assets');
-\Yii::app()->clientScript->registerScriptFile($url . '/js/IntraocularPressure.js');
+\Yii::app()->clientScript->registerScriptFile($url . '/js/CurrentManagement.js');
+
 ?>
 
 <div class="cols-9">
@@ -27,90 +28,80 @@ $url = Yii::app()->assetManager->getPublishedPathOfAlias('application.modules.Op
         <colgroup>
             <col class="cols-3">
             <col class="cols-2">
+            <col class="cols-3">
+            <col class="cols-4">
         </colgroup>
-        <thead>
-        <tr>
-            <th>Instrument</th>
-            <th>mm Hg</th>
-            <th>Time</th>
-            <th>Date</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
+        <tbody>
+        <?php
+        // show input after validation fail
+        $instrument_model = OEModule\OphCiExamination\models\OphCiExamination_Instrument::model();
+        if ($_POST && isset($_POST['OEModule_OphCiExamination_models_HistoryIOP']["{$side}_values"])) {
+            foreach ($_POST['OEModule_OphCiExamination_models_HistoryIOP']["{$side}_values"] as $index => $value) {
+                $recorded_value = new models\OphCiExamination_IntraocularPressure_Value();
+                if (isset($value['qualitative_reading_id'])) {
+                    $recorded_value->instrument = models\OphCiExamination_Instrument::model()->findByPk($value['instrument_id']);
+                    $recorded_value = new models\OphCiExamination_IntraocularPressure_Value();
+                    $recorded_value->instrument->scale = models\OphCiExamination_Qualitative_Scale::model()->findByAttributes(['name' => 'digital']);
+                } else {
+                    $recorded_value->reading_id = $value['reading_id'];
+                }
+
+                $this->render(
+                    "HistoryIOP_event_edit_reading",
+                    array(
+                        'element' => $element,
+                        'form' => $form,
+                        'side' => $side,
+                        'index' => $index,
+                        'time' => substr($value['reading_time'], 0, 5),
+                        'instrumentId' => $value['instrument_id'],
+                        'instrumentName' => $instrument_model->findByPk($value['instrument_id'])->name,
+                        'value' => $recorded_value,
+                        'examinationDate' => $value['examination_date'],
+                    )
+                );
+
+            }
+        }
+        ?>
+        </tbody>
     </table>
 
-<!--    TODO: remove display: NONE  -->
-    <table id="<?= $model_name ?>_entry_table" class="cols-10" style="display: none">
+    <table id="<?= $model_name ?>_entry_table">
         <colgroup>
             <col class="cols-3">
             <col class="cols-3">
-            <col class="cols-2">
-            <col class="cols-2">
-            <col class="cols-2">
+            <col class="cols-5">
+            <col class="cols-1">
         </colgroup>
-        <tbody>
-        <tr class="divider">
-            <td>Goldmann</td>
-            <td>11 mmHg</td>
-            <td>
-                <input class="fixed-width-small" value="12:15">
-                <?php
-                $this->widget('application.widgets.DatePicker', array(
-                    'element' => new \OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value(),
-                    'name' => 'reading_time',
-                    'field' => 'reading_time',
-                    'options' => array('maxDate' => 'today'),
-                    'htmlOptions' => array(
-                        'form' => null, // TODO get form
-                        'nowrapper' => true,
-                        'class' => 'js-iop-date-input'
-                    ),
-                    'layoutColumns' => array(
-                        'label' => 2,
-                        'field' => 2,
-                    ),
-                ));
-                ?>
-            </td>
-
-            <td>
-                <div class="cols-full ">
-                    <button class="button  js-add-comments" data-input="block1" style="">
-                        <i class="oe-i comments small-icon "></i>
-                    </button>
-                    <div id="block1" class="cols-full" style="display: none;">
-                        <div class=" flex-layout flex-left">
-                        <textarea placeholder="Comments" autocomplete="off" rows="1" class="js-input-comments cols-full "
-                                  style="overflow-x: hidden; overflow-wrap: break-word;"></textarea>
-                            <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
-                        </div>
-                    </div>
-                </div>
-            </td>
-            <td><i class="oe-i trash"></i></td>
-        </tr>
-
+        <thead>
+            <th>Past IOPs</th>
+            <th></th>
+            <th></th>
+            <th colspan="2"><i class="oe-i small pad js-patient-expand-btn expand"></i></th>
+        </thead>
+        <tbody style="display: none">
         <?php foreach ($pastIOPs as $iop) { ?>
             <?php $date = $iop->event->event_date; ?>
             <?php foreach ($iop->{$side.'_values'} as $iop_value) { ?>
                 <tr>
                     <td><?=$iop_value->instrument->name?></td>
-                    <td><?=$iop_value->reading->value?>mmHg</td>
-                    <td>
+                    <td><?= $iop_value->instrument->scale ? $iop_value->qualitative_reading->name : $iop_value->reading->name.'mm Hg' ?></td>
+                    <td colspan="2">
                         <i class="oe-i time small no-click pad-right"></i>
                         <?=$iop_value->reading_time?>
                         <span class="oe-date"><?=date('d M Y', strtotime($date));?></span>
                     </td>
-                    <td colspan="2">
-                        <i class="oe-i comments-added medium js-has-tooltip" data-tooltip-content="Comments shown here...">
-                        </i>
+                    <td>
+                        <?php if (isset($iop->{$side.'_comments'})) { ?>
+                        <i class="oe-i comments-added medium js-has-tooltip" data-tooltip-content="<?= $iop->{$side.'_comments'} ?>"></i>
+                        <?php } ?>
                     </td>
                 </tr>
             <?php } ?>
         <?php } ?>
         </tbody>
     </table>
-
 </div>
 
 <div class="add-data-actions flex-item-bottom">
@@ -135,6 +126,7 @@ $url = Yii::app()->assetManager->getPublishedPathOfAlias('application.modules.Op
             'instrument' => '{{instrument}}',
             'instrumentId' => '{{instrumentId}}',
             'instrumentName' => '{{instrumentName}}',
+            'examinationDate' => '{{examinationDate}}',
             'value' => new models\OphCiExamination_IntraocularPressure_Value(),
         )
     );
@@ -170,7 +162,7 @@ $url = Yii::app()->assetManager->getPublishedPathOfAlias('application.modules.Op
                 };
 
                 // activate the datePicker
-                $('.iop-date').datepicker();
+                $('.iop-date').datepicker({ dateFormat: 'dd/mm/yy' });
 
                 return true;
             },
@@ -195,5 +187,57 @@ $url = Yii::app()->assetManager->getPublishedPathOfAlias('application.modules.Op
         ));
 
         table.show();
+    }
+
+    // TODO: copy pasted from IOP.js; need to move them into a separate .js file
+    $(document).ready(function () {
+        function deleteReading(e) {
+            var table = $(this).closest('table');
+            if (table.find('tbody tr').length <= 1) table.hide();
+
+            if ($(this).closest('tr').data('side') == 'left') {
+                setCurrentManagementIOP('left');
+            } else {
+                setCurrentManagementIOP('right');
+            }
+
+            $(this).closest('tr').remove();
+
+            return false;
+        }
+
+        $("#OEModule_OphCiExamination_models_HistoryIOP_readings_right").on("click", "i.trash", null, deleteReading);
+        $("#OEModule_OphCiExamination_models_HistoryIOP_readings_right").on("click", "i.trash", null, deleteReading);
+
+        $('select.IOPinstrument').die('change').live('change', function (e) {
+            e.preventDefault();
+
+            var instrument_id = $(this).val();
+
+            var scale_td = $(this).closest('tr').children('td.scale_values');
+            var index = $(this).closest('tr').data('index');
+            var side = $(this).closest('tr').data('side');
+
+            getScaleDropdown(instrument_id, scale_td, index, side);
+        });
+    });
+
+    function getScaleDropdown(instrument_id, scale_td, index, side){
+        $.ajax({
+            'type': 'GET',
+            'url': baseUrl + '/OphCiExamination/default/getScaleForInstrument?name=OEModule_OphCiExamination_models_HistoryIOP' +
+                '&instrument_id=' + instrument_id + '&side=' + side + '&index=' + index,
+            'success': function (html) {
+                if (html.length > 0) {
+                    scale_td.html(html);
+                    scale_td.show();
+                    scale_td.prev('td').hide();
+                } else {
+                    scale_td.html('');
+                    scale_td.hide();
+                    scale_td.prev('td').show();
+                }
+            }
+        });
     }
 </script>

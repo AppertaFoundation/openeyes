@@ -47,7 +47,8 @@ $(document).ready(function () {
 function getScaleDropdown(instrument_id, scale_td, index, side){
     $.ajax({
         'type': 'GET',
-        'url': baseUrl + '/OphCiExamination/default/getScaleForInstrument?instrument_id=' + instrument_id + '&side=' + side + '&index=' + index,
+        'url': baseUrl + '/OphCiExamination/default/getScaleForInstrument?name=OEModule_OphCiExamination_models_HistoryIOP' +
+            '&instrument_id=' + instrument_id + '&side=' + side + '&index=' + index,
         'success': function (html) {
             if (html.length > 0) {
                 scale_td.html(html);

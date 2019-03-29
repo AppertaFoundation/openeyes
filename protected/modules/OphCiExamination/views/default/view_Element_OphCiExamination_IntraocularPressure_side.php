@@ -21,7 +21,7 @@
     <tbody>
     <?php foreach ($element->{"{$side}_values"} as $value): ?>
       <tr>
-        <td><?= $value->instrument->scale ? $value->qualitative_reading->name : $value->reading->name ?>mm Hg</td>
+        <td><?= $value->instrument->scale ? $value->qualitative_reading->name : $value->reading->name.'mm Hg' ?></td>
         <td>
           <i class="oe-i time small no-click pad"></i>
             <?= substr($value->reading_time, 0, 5) ?>
