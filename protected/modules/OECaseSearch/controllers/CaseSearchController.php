@@ -107,6 +107,7 @@ class CaseSearchController extends BaseModuleController
             if (!isset($_SESSION['last_search']) || empty($_SESSION['last_search'])) {
                 $_SESSION['last_search'] = $ids;
             }
+            $_SESSION['last_search_params'] = $parameters;
         }
 
         // If there are no IDs found, pass -1 as the value (as this will not match with anything).
@@ -129,7 +130,7 @@ class CaseSearchController extends BaseModuleController
 
         $this->render('index', array(
             'paramList' => $paramList,
-            'params' => $parameters,
+            'params' => (empty($parameters) && isset($_SESSION['last_search_params']))?  $_SESSION['last_search_params']:$parameters,
             'fixedParams' => $fixedParameters,
             'patients' => $patientData,
         ));
@@ -157,6 +158,7 @@ class CaseSearchController extends BaseModuleController
     public function actionClear()
     {
         unset($_SESSION['last_search']);
+        unset($_SESSION['last_search_params']);
     }
 
     public function beforeAction($action)
