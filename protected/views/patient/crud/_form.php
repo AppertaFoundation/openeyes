@@ -125,6 +125,7 @@ foreach ($ethnic_list as $key=>$item){
         <td style="text-align: left;">
             <?php
             if ((bool)strtotime($patient->dob)) {
+                $patient->dob = str_replace('/', '-', $patient->dob);
                 $dob = new DateTime($patient->dob);
                 $patient->dob = $dob->format('d/m/Y');
             } else {
