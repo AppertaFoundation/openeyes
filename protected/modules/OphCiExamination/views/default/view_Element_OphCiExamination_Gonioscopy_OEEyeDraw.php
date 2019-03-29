@@ -32,7 +32,7 @@
   <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?></div>
 
     <?php $iris = $element->{$side . '_iris'};
-    if (isset($iris)) { ?>
+    if ($iris) { ?>
       <div class="data-label"><?= $element->getAttributeLabel($side . '_iris_id') ?>:</div>
       <div class="data-value"><?= Yii::app()->format->Ntext($iris->name) ?></div>
     <?php } ?>
