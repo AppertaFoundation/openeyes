@@ -223,27 +223,6 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
     }
 
     /**
-     * @param string $side
-     * @return string
-     */
-    public function getIrisConfigurationName($side)
-    {
-      return OphCiExamination_Gonioscopy_IrisConfiguration::getNameFromId($this->{$side . '_iris_conf_id'});
-    }
-
-    /**
-     * @param string $side
-     * @return bool
-     */
-    public function irisConfigurationIsRecorded($side)
-    {
-      $id = $this->{$side . '_iris_conf_id'};
-      if(!isset($id))
-        return false;
-      return $id != OphCiExamination_Gonioscopy_IrisConfiguration::getIdOfNotRecorded();
-    }
-
-    /**
      * @return array
      */
     public function sidedDefaults()

@@ -13,8 +13,6 @@ class m190328_134435_create_iris_configuration_table extends OEMigration
       true);
 
     $this->insert('ophciexamination_gonioscopy_iris_configuration',
-      ['name' => 'Not recorded', 'display_order' => '0',]);
-    $this->insert('ophciexamination_gonioscopy_iris_configuration',
       ['name' => 'Flat', 'display_order' => '1',]);
     $this->insert('ophciexamination_gonioscopy_iris_configuration',
       ['name' => 'Plateau', 'display_order' => '2',]);

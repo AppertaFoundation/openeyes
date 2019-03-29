@@ -122,6 +122,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
     </label>
     <?=\CHtml::activeDropDownList($element, $side . '_iris_conf_id', $element->getIrisConfigurationOptions(),
     [
+      'empty' => 'Not recorded',
       'class' => 'iris-configuration',
       'options' => $html_options,
     ]) ?>
