@@ -7,7 +7,7 @@ class m190328_134435_create_iris_table extends OEMigration
     $this->createOETable('ophciexamination_gonioscopy_iris',
       [
       'id' => 'pk',
-      'name' => 'varchar(20) NOT NULL',
+      'name' => 'varchar(50) NOT NULL',
       'display_order' => 'tinyint(3) unsigned DEFAULT \'0\'',
       ],
       true);

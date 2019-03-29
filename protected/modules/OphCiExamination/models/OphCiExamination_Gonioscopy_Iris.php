@@ -42,7 +42,7 @@ class OphCiExamination_Gonioscopy_Iris extends \BaseActiveRecordVersioned
     {
         return [
           ['name', 'required'],
-          ['name', 'length', 'max'=>20],
+          ['name', 'length', 'max' => 50],
           ['id, name', 'safe', 'on' => 'search'],
         ];
     }
