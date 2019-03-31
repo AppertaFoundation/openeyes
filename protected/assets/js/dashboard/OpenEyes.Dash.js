@@ -112,12 +112,21 @@
             var chart,
                 $searchForm = $(this),
                 chartId = $searchForm.parents('.report-container').find('.chart-container').attr('id');
+            if($('#js-analytics-spinner').length){
+                $("#"+chartId).hide();
+                $('#js-analytics-spinner').show();
+            }
 
             $.ajax({
                 url: $(this).attr('action'),
                 data: $searchForm.serialize() + '&' + $('#search-form').serialize(),
                 dataType: 'json',
                 success: function (data, textStatus, jqXHR) {
+
+                    if($('#js-analytics-spinner').length){
+                        $('#js-analytics-spinner').hide();
+                        $("#"+chartId).show();
+                    }
 
                     if(typeof Dash.postUpdate[chartId] === 'function'){
                         Dash.postUpdate[chartId](data);

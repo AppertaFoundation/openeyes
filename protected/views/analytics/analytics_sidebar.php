@@ -375,14 +375,29 @@
         }
     });
 
+    function getCurrentShownPlotId(){
+        var plot_id;
+        $('.js-plotly-plot').each(function () {
+            if($(this).is(':visible')){
+                plot_id =  $(this)[0].id;
+                return false;
+            }
+        });
+        return plot_id;
+    }
+
     $('#search-form').on('submit', function (e) {
         e.preventDefault();
+        let current_plot = $("#"+getCurrentShownPlotId());
+        current_plot.hide();
+        $('#js-analytics-spinner').show();
         $.ajax({
             url: '/analytics/updateData',
             data:$('#search-form').serialize() + getDataFilters(),
             dataType:'json',
-
             success: function (data, textStatus, jqXHR) {
+                $('#js-analytics-spinner').hide();
+                current_plot.show();
                 plotUpdate(data);
             }
         });

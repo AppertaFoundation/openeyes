@@ -46,6 +46,7 @@
                 }
             }
         ?>
+        <div id="js-analytics-spinner" style="display: none;"><i class="spinner"></i></div>
     </div>
         <?php
         if ($specialty !== 'Cataract'){
