@@ -163,7 +163,7 @@ fi
 # import eyedraw config
 if [ "$eyedraw" = "1" ]; then
 	printf "\n\nImporting eyedraw configuration...\n\n"
-	sudo php $WROOT/protected/yiic eyedrawconfigload --filename=$WROOT/protected/config/core/OE_ED_CONFIG.xml 2>/dev/null
+	php $WROOT/protected/yiic eyedrawconfigload --filename=$WROOT/protected/config/core/OE_ED_CONFIG.xml 2>/dev/null
 fi
 
 # Clear caches

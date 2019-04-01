@@ -33,7 +33,9 @@ $logoHelper = new LogoHelper();
     </header>
 
     <h1 class="print-title"><?php if($this->attachment_print_title != null ){ echo $this->attachment_print_title; } else { echo $event_type;} ?></h1>
-
+	  <?php if ($this->event->is_automated) {
+	  	  $this->renderPartial('//patient/event_automated');
+	  } ?>
     <main class="print-main">
         <?php $this->renderPartial('//print/patient_overview')?>
         <?php $this->renderPartial('//print/event_content', array(

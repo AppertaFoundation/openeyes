@@ -38,48 +38,11 @@ if (count($legacyepisodes)) {
 <?php
 $subspecialty_labels = array();
 $current_subspecialty = null;
-$episodes_list = array();
-
-if (is_array($ordered_episodes)):
-    foreach ($ordered_episodes as $specialty_episodes): ?>
-
-      <ul class="subspecialties">
-          <?php foreach ($specialty_episodes['episodes'] as $i => $episode) {
-              // TODO deal with support services possibly?
-              $id = $episode->getSubspecialtyID();
-              $subspecialty_name = $episode->getSubspecialtyText();
-              if (!$id) {
-                  if ($episode->support_services) {
-                      $id = 'SS';
-                      $tag = 'Ss';
-                  } else {
-                      $id = "Le";
-                      $tag = $id;
-                  }
-              } else {
-                  $tag = $episode->subspecialty->ref_spec;
-              }
-
-              $selected = '';
-              if ($current_episode && $current_episode->getSubspecialtyID() == $id) {
-                  $selected = 'selected';
-                  $current_subspecialty = $current_episode->getSubspecialty();
-              }
-
-              if (!array_key_exists($id, $subspecialty_labels)) {
-                  $subspecialty_labels[$id] = $subspecialty_name; ?>
-                <li class="subspecialty event <?= $selected ?>"
-                    data-subspecialty-id="<?= $id ?>"
-                    data-definition='<?= CJSON::encode(NewEventDialogHelper::structureEpisode($episode)) ?>'>
-                  <a href="<?= Yii::app()->createUrl('/patient/episode/' . $episode->id) ?>">
-                      <?= $subspecialty_name ?><span class="tag"><?= $tag ?></span>
-                  </a>
-                </li>
-              <?php }
-          } ?>
-      </ul>
-
-      <ul class="events">
+$episodes_list = array(); ?>
+<div class="sidebar-eventlist">
+<?php if (is_array($ordered_episodes)):
+    foreach ($ordered_episodes as $specialty_episodes): ?>         
+        <ul class="events" id="js-events-by-date">
           <?php foreach ($specialty_episodes['episodes'] as $i => $episode): ?>
             <!-- Episode events -->
               <?php
@@ -129,12 +92,18 @@ if (is_array($ordered_episodes)):
                 </div>
 
                 <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
-                    <span
-                        class="event-type js-event-a <?= ($event->hasIssue()) ? ($event->hasIssue('ready') ? 'ready' : 'alert') : '' ?>">
+                    <span class="event-type js-event-a <?= ($event->hasIssue()) ? ($event->hasIssue('ready') ? 'ready' : 'alert') : '' ?>">
                         <?= $event->getEventIcon() ?>
-                  </span>
+                    </span>
+                    <span class="event-extra">
+                        <?php
+                        $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
+                        if (method_exists($api, 'getLaterality')) {
+                            $this->widget('EyeLateralityWidget', ['eye' => $api->getLaterality($event->id), 'pad' => '']);
+                        } ?>
+                    </span>
 
-                  <span class="event-date oe-date <?php echo ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
+                    <span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
                     <?php echo $event->event_date
                         ? $event->NHSDateAsHTML('event_date')
                         : $event->NHSDateAsHTML('created_date');
@@ -148,6 +117,7 @@ if (is_array($ordered_episodes)):
       </ul>
     <?php endforeach;
 endif; ?>
+</div>
 
 <?php
 
@@ -157,9 +127,22 @@ $this->renderPartial('//patient/add_new_event', array(
     'episodes' => $active_episodes,
     'context_firm' => $this->firm,
     'patient_id' => $this->patient->id,
-    'eventTypes' => EventType::model()->getEventTypeModules(),
-)); ?>
-
+    'event_types' => EventType::model()->getEventTypeModules(),
+));
+if($this->editable){
+  $this->renderPartial('//patient/change_event_context', array(
+      'button_selector' => '.js-change_context',
+      'view_subspecialty' => $current_subspecialty,
+      'episodes' => $active_episodes,
+      'context_firm' => $this->firm,
+      'patient_id' => $this->patient->id,
+      'workflowSteps' => OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps(),
+      'currentStep' => (isset($this->event->eventType->class_name) && $this->event->eventType->class_name == 'OphCiExamination' ? $this->getCurrentStep() : '' ),
+      'currentFirm' => (isset($this->event->firm_id) ? $this->event->firm_id : '""'), // for some strange reason '' doesn't reslove to an empty str 
+      'event_types' => $this->event->eventType->name
+  ));
+}
+?>
 <?php
 $subspecialty_label_list = array();
 foreach ($subspecialty_labels as $id => $label) {
