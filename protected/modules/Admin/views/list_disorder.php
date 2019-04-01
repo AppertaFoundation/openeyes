@@ -44,6 +44,7 @@
     <form id="admin_list_disorders">
         <table class="standard cols-full">
             <colgroup>
+                <col>
                 <col class="cols-1">
                 <col class="cols-3">
                 <col class="cols-3">
@@ -53,6 +54,7 @@
             <thead>
             <tr>
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Id</th>
                 <th>Fully Specified Name</th>
                 <th>Term</th>
                 <th>Aliases</th>
@@ -64,6 +66,7 @@
                 <tr class="clickable" data-id="<?php echo $model->id ?>"
                     data-uri="Admin/disorder/edit/<?php echo $model->id ?>">
                     <td><input type="checkbox" name="disorders[]" value="<?php echo $model->id ?>"/></td>
+                    <td><?php echo $model->id ?></td>
                     <td><?php echo $model->fully_specified_name ?></td>
                     <td style="overflow-wrap: break-word;"><?= $model->term ?></td>
                     <td><?= $model->aliases ?></td>

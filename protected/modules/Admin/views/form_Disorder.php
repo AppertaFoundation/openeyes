@@ -26,6 +26,16 @@
         </colgroup>
         <tbody>
         <tr>
+            <td>Id</td>
+            <td class="cols-full">
+                <?= \CHtml::activeTextArea(
+                    $model,
+                    'id',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
             <td>Fully Specified Name</td>
             <td class="cols-full">
                 <?= \CHtml::activeTextArea(
