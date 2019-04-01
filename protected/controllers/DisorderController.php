@@ -25,11 +25,11 @@ class DisorderController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('index', 'view'),
-                'roles' => array('@'),
+                'actions' => array('index', 'view', 'autocomplete'),
+                'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
-                'actions'=>array('create','update','index','view', 'delete', 'autocomplete'),
+                'actions'=>array('create','update','index','view', 'delete'),
                 'users'=>array('TaskCreateDisorder', 'admin'),
             ),
             array('deny',  // deny all users
