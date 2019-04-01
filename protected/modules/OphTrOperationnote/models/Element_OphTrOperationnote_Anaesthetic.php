@@ -386,6 +386,14 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         return false;
     }
 
+    /**
+		 * @return string
+		 */
+    public function getAnaestheticTypeDisplay()
+		{
+			return implode(', ', $this->anaesthetic_type);
+		}
+
     public function afterValidate()
     {
         if( !count($this->anaesthetic_type_assignments)){
@@ -394,6 +402,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
 
         $type_ga =  AnaestheticType::model()->findByAttributes(array('code' => 'GA'));
         $type_noA =  AnaestheticType::model()->findByAttributes(array('code' => 'NoA'));
+        $type_la =  AnaestheticType::model()->findByAttributes(array('code' => 'LA'));
 
         $assignments_count = count($this->anaesthetic_type_assignments);
         $delivery_method_count = count($this->anaesthetic_delivery_assignments);
@@ -431,7 +440,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
 
         //Anything else seleted than GA(alone) or No Anaesthetic
         if( $assignments_count > 1 || ( $assignments_count == 1 && !in_array($this->anaesthetic_type_assignments[0]->anaesthetic_type_id, array($type_ga->id, $type_noA->id))) ){
-            if( !count($this->anaesthetic_delivery_assignments)){
+            if($this->anaesthetic_type_assignments[0]->anaesthetic_type_id === $type_la->id && !count($this->anaesthetic_delivery_assignments)){
                 $this->addError('anaesthetic_delivery', 'LA Delivery Methods cannot be empty.');
             }
 

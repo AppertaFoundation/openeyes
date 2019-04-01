@@ -268,5 +268,3 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
   </tr>
   </tbody>
 </table>
-
-

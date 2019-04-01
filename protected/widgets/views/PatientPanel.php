@@ -39,7 +39,7 @@ $deceased = $this->patient->isDeceased();
      data-patient-id="<?= $this->patient->id ?>"
 >
     <div class="patient-name">
-        <a href="<?= (new CoreAPI())->generateEpisodeLink($this->patient); ?>">
+        <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
             <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
             <span class="patient-firstname">
       <?php echo $this->patient->getFirst_name(); ?>
@@ -123,7 +123,7 @@ $deceased = $this->patient->isDeceased();
                     </a>
                 </div>
             <?php endif; ?>
-            <?php if (Yii::app()->moduleAPI->get('OETrial')) { ?>
+            <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
                 <div class="patient-trials js-trials-btn">
                     <svg viewBox="0 0 30 30" class="icon">
                         <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>

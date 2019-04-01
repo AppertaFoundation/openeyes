@@ -23,7 +23,6 @@
  *
  * @property string $id
  * @property int $event_id
- * @property int $information
  * @property int $witness_required
  * @property int $interpreter_required
  * @property string $witness_name
@@ -67,11 +66,11 @@ class Element_OphTrConsent_Other extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, information, witness_required, parent_guardian, interpreter_required, witness_name, interpreter_name, anaesthetic_leaflet, consultant_id, include_supplementary_consent', 'safe'),
-            array('information, witness_required, interpreter_required, anaesthetic_leaflet, consultant_id', 'required'),
+            array('event_id, witness_required, parent_guardian, interpreter_required, witness_name, interpreter_name, anaesthetic_leaflet, consultant_id, include_supplementary_consent', 'safe'),
+            array('witness_required, interpreter_required, anaesthetic_leaflet, consultant_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, information, witness_required, interpreter_required, parent_guardian, anaesthetic_leaflet, consultant_id', 'safe', 'on' => 'search'),
+            array('id, event_id, witness_required, interpreter_required, parent_guardian, anaesthetic_leaflet, consultant_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -100,7 +99,6 @@ class Element_OphTrConsent_Other extends BaseEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-            'information' => 'An information leaflet has been provided',
             'anaesthetic_leaflet' => 'Anaesthetic leaflet has been provided',
             'witness_required' => 'Witness required',
             'interpreter_required' => 'Interpreter required',
@@ -124,7 +122,6 @@ class Element_OphTrConsent_Other extends BaseEventTypeElement
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
-        $criteria->compare('information', $this->information);
         $criteria->compare('witness_required', $this->witness_required);
         $criteria->compare('interpreter_required', $this->interpreter_required);
         $criteria->compare('parent_guardian', $this->parent_guardian);

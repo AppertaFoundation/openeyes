@@ -15,7 +15,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -176,19 +176,15 @@ class CoreAPI
         }
     }
 
-    /*
-     * Generate episode link for patient
+
+    /**
+     * Generate landing page for patient
      * @param Patient $patient
+     * @param array $params
      * @return string
      */
-    public function generateEpisodeLink(Patient $patient, $params = [])
-    {
-        $episode = $this->getEpisodeForCurrentContext($patient);
-        if( $episode !== null){
-            return $this->yii->createURL("/patient/episode/", array("id" => $episode->id) + $params );
-        } else {
-            return $this->yii->createURL("/patient/episodes/", array("id" => $patient->id) + $params);
-        }
+    public function generatePatientLandingPageLink(Patient $patient, $params = []) {
+        return $this->yii->createURL("/patient/summary/", array("id" => $patient->id) + $params );
     }
 
     public function generateLatestEventLink(Patient $patient) {

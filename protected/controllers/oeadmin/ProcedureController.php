@@ -151,7 +151,7 @@ class ProcedureController extends BaseAdminController
             if (isset($user_complications)) {
                 $criteria = new \CDbCriteria();
                 $criteria->addInCondition('id', array_values($user_complications));
-                $complications = Benefit::model()->findAll($criteria);
+                $complications = Complication::model()->findAll($criteria);
             }
             $procedure->complications = $complications;
 
@@ -168,7 +168,7 @@ class ProcedureController extends BaseAdminController
             'opcs_code' => OPCSCode::model()->findAll(),
             'benefits' => Benefit::model()->findAll(),
             'complications' => Complication::model()->findAll(),
-            'notes' => ElementType::model()->findAll(),
+            'notes' => ElementType::model()->findAll('event_type_id=?', array(EventType::model()->find('class_name=?', array('OphTrOperationnote'))->id)),
             'errors' => $errors,
         ));
     }

@@ -1,9 +1,12 @@
 <?php
+
 use Behat\Behat\Exception\BehaviorException;
-class TheatreDiaries extends OpenEyesPage {
+
+class TheatreDiaries extends OpenEyesPage
+{
     protected $path = "/site/OphTrOperationbooking/theatreDiary/index";
-    protected $elements = array (
-        'startDate' => array (
+    protected $elements = array(
+        'startDate' => array(
             'xpath' => "//*[@name='date-start']"
         ),
         'endDate' => array(
@@ -19,32 +22,30 @@ class TheatreDiaries extends OpenEyesPage {
             'xpath' => "//*[contains(text(),'Invalid end date')]"
         )
     );
-    public function searchWith($startDate, $endDate) {
-        $this->getElement ( 'startDate' )->setValue ( $startDate );
-        $this->getElement ( 'endDate' )->setValue ( $endDate );
+
+    public function searchWith($startDate, $endDate)
+    {
+        $this->getElement('startDate')->setValue($startDate);
+        $this->getElement('endDate')->setValue($endDate);
         sleep(5);
-        $this->getElement ( 'searchButton' )->press ();
+        $this->getElement('searchButton')->press();
     }
 
-    public function searchAndConfirmNoError(){
+    public function searchAndConfirmNoError()
+    {
         sleep(15);
-        if ($this->startDateErrorShown()||$this->endDateErrorShown()) {
-            //throw new BehaviorException ( "Test Failed!!!" );
-        print "TEST FAILED!!!";
-        }
-
-        else {
-            print "Test Passed!";
+        if ($this->startDateErrorShown() || $this->endDateErrorShown()) {
+            throw new BehaviorException ("Test Failed!!!");
         }
     }
 
-    public function startDateErrorShown(){
-        return ( bool ) $this->find ( 'xpath', $this->getElement ( 'invalidStartDate' )->getXpath () );
-        ;
+    public function startDateErrorShown()
+    {
+        return ( bool )$this->find('xpath', $this->getElement('invalidStartDate')->getXpath());
     }
 
-    public function endDateErrorShown(){
-        return ( bool ) $this->find ( 'xpath', $this->getElement ( 'invalidEndDate' )->getXpath () );
-        ;
+    public function endDateErrorShown()
+    {
+        return ( bool )$this->find('xpath', $this->getElement('invalidEndDate')->getXpath());
     }
 }
