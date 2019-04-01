@@ -34,7 +34,7 @@ class DisorderController extends BaseAdminController
                 }
             }
         }
-        $this->render('/admin/list_disorder', array(
+        $this->render('/list_disorder', array(
             'pagination' => $this->initPagination(Disorder::model(), $criteria),
             'model_list' => Disorder::model()->findAll($criteria),
             'title' => 'Manage Disorder',
@@ -64,11 +64,11 @@ class DisorderController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/edit', array(
+        $this->render('/edit', array(
             'model' => $model,
             'title' => 'Edit Disorder',
             'errors' => isset($errors) ? $errors : null,
-            'cancel_uri' => '/oeadmin/disorder/list',
+            'cancel_uri' => '/Admin/disorder/list',
         ));
     }
 
@@ -87,10 +87,10 @@ class DisorderController extends BaseAdminController
                 $errors = $model->getErrors();
             }
         }
-        $this->render('/admin/edit', array(
+        $this->render('/edit', array(
             'model' => $model,
             'title' => 'Add Disorder',
-            'cancel_uri' => '/oeadmin/Disorder/list',
+            'cancel_uri' => '/Admin/Disorder/list',
             'errors' => isset($errors) ? $errors : null,
         ));
     }

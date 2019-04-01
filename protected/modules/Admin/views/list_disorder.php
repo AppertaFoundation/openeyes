@@ -62,7 +62,7 @@
             <tbody>
             <?php foreach ($model_list as $i => $model) { ?>
                 <tr class="clickable" data-id="<?php echo $model->id ?>"
-                    data-uri="oeadmin/disorder/edit/<?php echo $model->id ?>">
+                    data-uri="Admin/disorder/edit/<?php echo $model->id ?>">
                     <td><input type="checkbox" name="disorders[]" value="<?php echo $model->id ?>"/></td>
                     <td><?php echo $model->fully_specified_name ?></td>
                     <td style="overflow-wrap: break-word;"><?= $model->term ?></td>

@@ -30,7 +30,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 <?php echo $form->errorSummary($model) ?>
 
 <?php
-$this->renderPartial('/admin/form_' . get_class($model), array(
+$this->renderPartial('/form_' . get_class($model), array(
     'model' => $model,
     'form' => $form,
     'title' => $title,

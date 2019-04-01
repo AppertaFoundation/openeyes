@@ -128,7 +128,7 @@ $(document).ready(function () {
 
         $.ajax({
             'type': 'POST',
-            'url': baseUrl+'/oeadmin/Disorder/delete',
+            'url': baseUrl+'/Admin/Disorder/delete',
             'data': $checked.serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
             'success': function(resp) {
                 if (resp === "1") {
