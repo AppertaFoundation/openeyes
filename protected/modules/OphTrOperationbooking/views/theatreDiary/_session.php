@@ -192,6 +192,7 @@
           <?php
           $minutes_status = ($session->availableMinutes > 0);
           $proc_status = (!$session->max_procedures || $session->getAvailableProcedureCount() > 0);
+          $complex_proc_status = (!$session->max_complex_procedures || $session->getAvailableComplexProcedureCount() > 0);
           $status = ($minutes_status && $proc_status && $session->available);
           ?>
         <td colspan="10" data-minutes-available="<?= $session->availableMinutes ?>"
@@ -214,6 +215,19 @@
                     (Overbooked by <span
                           class="overbooked-proc-val"><?= abs($session->getAvailableProcedureCount()); ?></span>)</span>
                   </span>
+            <span data-curr-complex-proccount="<?php echo $session->getBookedComplexProcedureCount() ?>"
+                class="complex-procedure-count" id="complex_procedure_count_<?php echo $session->id ?>"
+                <?php if (!$session->max_complex_procedures) { ?>style="display: none;"<?php } ?>>
+                <br/>
+                <span class="complex-available-val">
+                    <?= $complex_proc_status ? $session->getAvailableComplexProcedureCount() : '0' ?>
+                </span> complex procedure(s) available
+                <span class="overbooked"<?php if ($session->getAvailableComplexProcedureCount() >= 0) { ?> style="display: none;"<?php } ?>>
+                    (Overbooked by
+                    <span
+                            class="overbooked-complex-proc-val"><?= abs($session->getAvailableComplexProcedureCount()); ?></span>)
+                </span>
+            </span>
             <span class="session-unavailable" id="session_unavailable_<?php echo $session->id ?>"
                 <?php if ($session->available) { ?> style="display:none;" <?php } ?>> - session unavailable
             <span id="session_unavailablereason_<?php echo $session->id ?>">
@@ -246,6 +260,12 @@
                   title="Max <?php echo $session->max_procedures ?>">Max <span
                     class="max-procedures-val"><?php echo $session->max_procedures ?></span>
                 Procedures
+              </div>
+              <div<?php if (!$session->max_complex_procedures) { ?> style="display: none;"<?php } ?>
+                  id="max_complex_procedures_icon_<?php echo $session->id ?>" class="max-complex-procedures"
+                  title="Max Complex <?php echo $session->max_complex_procedures ?>">Max <span
+                    class="max-complex-procedures-val"><?php echo $session->max_complex_procedures ?></span>
+                Complex Procedures
               </div>
             </div>
 
@@ -301,6 +321,16 @@
                   <label style="display: inline-block;">
                       <?php echo $session->getAttributeLabel('max_procedures'); ?>
                   </label>
+                  <div>
+                    <input style="display: inline-block;" type="text"
+                           autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
+                           class="limited-width" id="max_complex_procedures_<?php echo $session->id ?>" maxlength="2"
+                           size="2" name="max_complex_procedures_<?php echo $session->id ?>"
+                           value="<?php echo $session->max_complex_procedures; ?>"/>
+                    <label style="display: inline-block;">
+                      <?php echo $session->getAttributeLabel('max_complex_procedures'); ?>
+                    </label>
+                  </div>
                 </div>
               <?php } else { ?>
                 <input type="hidden" id="consultant_<?php echo $session->id ?>"

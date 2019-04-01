@@ -393,6 +393,32 @@ $(document).ready(function() {
 						$('#procedure_count_'+session_id).hide();
 					}
 
+					if ($('#max_complex_procedures_'+session_id).val()) {
+						var overbooked = 0;
+						var max = $('#max_complex_procedures_'+session_id).val();
+						$('#max_complex_procedures_icon_'+session_id).find('.max-complex-procedures-val').html(max);
+						$('#max_complex_procedures_icon_'+session_id).show();
+						var avail = max - $('#complex_procedure_count_'+session_id).data('curr-complex-proccount');
+						if (avail <= 0) {
+							overbooked = Math.abs(avail);
+							avail = 0;
+							markSessionUnavailable = true;
+						}
+						$('#complex_procedure_count_'+session_id).find('.complex-available-val').html(avail);
+						$('#complex_procedure_count_'+session_id).show();
+						if (overbooked > 0) {
+							$('#complex_procedure_count_'+session_id+' .overbooked').find('.overbooked-complex-proc-val').html(overbooked);
+							$('#complex_procedure_count_'+session_id+' .overbooked').show();
+						}
+						else {
+							$('#complex_procedure_count_'+session_id+' .overbooked').hide();
+						}
+					}
+					else {
+						$('#max_complex_procedures_icon_'+session_id).hide();
+						$('#complex_procedure_count_'+session_id).hide();
+					}
+
 					if (markSessionUnavailable) {
 						$('#tfoot_'+session_id).find('td').removeClass('available');
 					}
