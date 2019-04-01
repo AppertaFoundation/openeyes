@@ -150,11 +150,9 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.j
         PatientPanel.patientPopups.init($('[id=oe-patient-details][data-patient-id=<?= $this->patient->id?>]'));
         // PatientPanel.patientPopups.init();
 
-        $('.js-patient-expand-btn').each(function () {
-            $(this).click(function () {
-                $(this).toggleClass('collapse expand');
-                $(this).parents('table').find('tbody').toggle();
-            });
+        $('body').on('click', '.js-patient-expand-btn', function () {
+            $(this).toggleClass('collapse expand');
+            $(this).parents('table').find('tbody').toggle();
         });
     });
 </script>

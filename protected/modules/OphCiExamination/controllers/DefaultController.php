@@ -366,6 +366,7 @@ class DefaultController extends \BaseEventTypeController
                 models\HistoryMedications::class,
                 models\FamilyHistory::class,
                 models\SocialHistory::class,
+                models\HistoryIOP::class,
             ), true);
         });
 
@@ -1145,24 +1146,21 @@ class DefaultController extends \BaseEventTypeController
 
     protected function saveComplexAttributes_HistoryIOP($element, $data, $index)
     {
-        // TODO: check if this is correct @Sabi
-        // no need for transaction + rollback because it's done in actionUpdate($id) before:
-        //       $success = $this->saveEvent($_POST);
-
         $data = $data['OEModule_OphCiExamination_models_HistoryIOP'];
+
         foreach (['left', 'right'] as $side) {
             if (array_key_exists("{$side}_values", $data) && $data["{$side}_values"]) {
-                for ($index = 0; $index < count($data["{$side}_values"]); $index++) {
+                foreach ($data["{$side}_values"] as $index => $values) {
                     // create a new event and set the event_date as selected iop date
                     $examinationEvent = new \Event();
                     $examinationEvent->episode_id = $element->event->episode_id;
                     $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
-                    $examinationEvent->event_date = \DateTime::createFromFormat('d/m/Y', $data["{$side}_values"][$index]['examination_date'])->format('Y-m-d');
+                    $examinationEvent->event_date = \DateTime::createFromFormat('d/m/Y', $values['examination_date'])->format('Y-m-d');
                     $examinationEvent->event_type_id = $element->event->event_type_id;
                     $examinationEvent->is_automated = 1;
 
                     if (!$examinationEvent->save()) {
-                        throw new \Exception('Unable to save a new examination for the IOP readings: '.print_r($examinationEvent->errors, true));
+                        throw new \Exception('Unable to save a new examination for the IOP readings: ' . print_r($examinationEvent->errors, true));
                     }
 
                     // create a new iop element
@@ -1176,7 +1174,7 @@ class DefaultController extends \BaseEventTypeController
 
                     // create a reading record from the values the user has given
                     $reading = new models\OphCiExamination_IntraocularPressure_Value();
-                    $reading->attributes = $data["{$side}_values"][$index];
+                    $reading->attributes = $values;
                     $reading->element_id = $iop_element->id;
 
                     if (!$reading->save()) {
@@ -1217,7 +1215,7 @@ class DefaultController extends \BaseEventTypeController
                                 $errors[$this->event_type->name][] = $readingErrorMessage[0];
                             }
                         }
-                        if (!$value['examination_date']) {
+                        if (!isset($value['examination_date']) || !$value['examination_date']) {
                             $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'there must be a date set for the iop value');
                             $errors[$this->event_type->name][] = 'there must be a date set for the iop value';
                         } else {

@@ -17,6 +17,7 @@
 
 
 ?>
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryIOP.js') ?>"></script>
 
 <?php
 $model_name = CHtml::modelName($element);
@@ -28,13 +29,9 @@ $pastIOPs = $this->getPastIOPs();
 endif; ?>
 
 <div class="element-data element-eyes flex-layout">
-<!--    --><?php //echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
         <div class="cols-6 js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?=$eye_side?>">
             <div class="active-form data-group flex-layout">
-                <a class="remove-side">
-                    <i class="oe-i remove-circle small"></i>
-                </a>
                 <?php $this->render(
                     'HistoryIOP_event_edit_side',
                     [

@@ -61,18 +61,9 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
         ) ?>
     </td>
     <td>
-        <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-            'name' => "{$base_name}[examination_date]",
-            'htmlOptions' => [
-                'class' => 'iop-date',
-                'autocomplete' => 'off',
-            ],
-            'options' => array(
-                'showAnim' => 'fold',
-                'dateFormat' => 'dd/mm/yy',
-            ),
-            'value' =>  $examinationDate,
-        )) ?>
+        <input class="iop-date" autocomplete="off" type="text" value="<?=$examinationDate?>"
+           id="<?=CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_examination_date'?>"
+           name="<?=$base_name?>[examination_date]">
     </td>
 
     <td class="cols-2"><?= CHtml::hiddenField("{$base_name}[eye_id]", ($side == 'left') ? Eye::LEFT : Eye::RIGHT) ?><i
