@@ -17,6 +17,8 @@
 
 class MedicationSetAutoRulesAdminController extends BaseAdminController
 {
+	public $group = "Drugs";
+
 	public function actionList()
 	{
 		$admin = new Admin(MedicationSet::model(), $this);

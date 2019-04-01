@@ -18,6 +18,8 @@
 
 class RefSetAdminController extends BaseAdminController
 {
+	public $group = 'Drugs';
+
     public function actionList()
     {
         $admin = new Admin(MedicationSet::model(), $this);
@@ -52,37 +54,13 @@ class RefSetAdminController extends BaseAdminController
 
         $admin->setEditFields(array(
             'name'=>'Name',
-            'rules' =>  array(
-                'widget' => 'GenericAdmin',
-                'options' => array(
-                    'model' => MedicationSetRule::class,
-                    'extra_fields' =>  array(
-                        array(
-                            'field' => 'site_id',
-                            'type' => 'lookup',
-                            'model' => Site::class,
-                            'allow_null' => true
-                        ),
-                        array(
-                            'field' => 'subspecialty_id',
-                            'type' => 'lookup',
-                            'model' => Subspecialty::class,
-                            'allow_null' => true
-                        ),
-                        array(
-                            'field' => 'usage_code',
-                            'type' => 'text',
-                            'allow_null' => true
-                        ),
-                    ),
-                    'label_extra_field' => true,
-                    'items' => !is_null($id) ? MedicationSet::model()->findByPk($id)->medicationSetRules : array(),
-                    'filters_ready' => true,
-                    'cannot_save' => true,
-                    'no_form' => true,
-                ),
-                'label' => 'Rules'
-            ),
+            'rules' => array(
+				'widget' => 'CustomView',
+				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
+				'viewArguments' => array(
+					'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet()
+				)
+			),
 
         ));
         $admin->setModelDisplayName("Medication set");
@@ -118,10 +96,10 @@ class RefSetAdminController extends BaseAdminController
             $existing_ids[] = $rule->id;
         }
 
-        $ids = Yii::app()->request->getPost('id');
+        $ids = @Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['id'];
         if(is_array($ids)) {
             foreach ($ids as $key => $rid) {
-                if($rid === '') {
+                if($rid == -1) {
                     $medSetRule = new MedicationSetRule();
                 }
                 else {
@@ -131,9 +109,9 @@ class RefSetAdminController extends BaseAdminController
 
                 $medSetRule->setAttributes(array(
                     'medication_set_id' => $model->id,
-                    'site_id' => Yii::app()->request->getPost('site_id')[$key],
-                    'subspecialty_id' => Yii::app()->request->getPost('subspecialty_id')[$key],
-                    'usage_code' => Yii::app()->request->getPost('usage_code')[$key],
+                    'site_id' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['site_id'][$key],
+                    'subspecialty_id' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['subspecialty_id'][$key],
+                    'usage_code' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['usage_code'][$key],
                 ));
 
                 $medSetRule->save();
