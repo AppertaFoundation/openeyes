@@ -185,10 +185,20 @@ $this->pageTitle = 'Case Search';
         }
     }
 
+    function getMaxId(){
+      var id_max = -1;
+      $('.parameter').each(function () {
+        if ($(this)[0].id > id_max){
+          id_max = $(this)[0].id;
+        }
+      });
+      return id_max;
+    }
+
 
     $(document).ready(function () {
         //null coallese the id of the last parameter
-        var parameter_id_counter = $('.parameter').last().attr('id') || -1;
+        var parameter_id_counter = getMaxId();
         $('#js-add-param').on('change', function () {
             var dropDown = this;
             if (!dropDown.value) {
