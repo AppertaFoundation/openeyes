@@ -56,7 +56,7 @@
                 <th>Fully Specified Name</th>
                 <th>Term</th>
                 <th>Aliases</th>
-                <th>Specialty Id</th>
+                <th>Specialty</th>
             </tr>
             </thead>
             <tbody>
@@ -67,7 +67,7 @@
                     <td><?php echo $model->fully_specified_name ?></td>
                     <td style="overflow-wrap: break-word;"><?= $model->term ?></td>
                     <td><?= $model->aliases ?></td>
-                    <td><?= $model->specialty_id ?></td>
+                    <td><?= isset($model->specialty) ? $model->specialty->name : "" ?></td>
                 </tr>
             <?php } ?>
             </tbody>

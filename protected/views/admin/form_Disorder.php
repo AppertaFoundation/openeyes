@@ -57,12 +57,18 @@
             </td>
         </tr>
         <tr>
-            <td>Subspecialty</td>
+            <td>Specialty</td>
             <td>
-                <?= \CHtml::activeNumberField(
+                <?=\CHtml::activeDropDownList(
                     $model,
                     'specialty_id',
-                    ['class' => 'cols-full']
+                    CHtml::listData(
+                        Specialty::model()->findAll(),
+                        'id',
+                        'name',
+                        'specialty.name'
+                    ),
+                    ['empty' => 'None', 'class' => 'cols-full']
                 ); ?>
             </td>
         </tr>
