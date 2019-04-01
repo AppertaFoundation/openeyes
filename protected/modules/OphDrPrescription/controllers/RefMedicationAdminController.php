@@ -30,6 +30,8 @@ class RefMedicationAdminController extends BaseAdminController
 
     protected $list_mode_buttons = true;
 
+	public $group = 'Drugs';
+
     public function actionList()
     {
         $admin = new Admin(Medication::model(), $this);

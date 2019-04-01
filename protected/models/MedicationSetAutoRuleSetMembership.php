@@ -14,7 +14,7 @@
  *
  * The followings are the available model relations:
  * @property MedicationSet $targetMedicationSet
- * @property MedicationSet $sourceMedicationsSet
+ * @property MedicationSet $sourceMedicationSet
  * @property User $createdUser
  * @property User $lastModifiedUser
  */
