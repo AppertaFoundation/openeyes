@@ -183,4 +183,62 @@ class ChangeEventController extends BaseController
 
         $this->redirect('/patient/view/'.$this->patient->id);
     }
+
+    function actionUpdateEpisode(){
+        $outcome = 'false';
+        $event_id = \Yii::app()->request->getPost('eventId');
+        $patient_id = \Yii::app()->request->getPost('patientId');
+
+        if($event_id && $patient_id){
+            $event = \Event::model()->findByPk($event_id);
+            $episode = \Episode::model()->findByPk($event->episode_id);
+            $properties = array('patient_id' => $patient_id, 'episode_id' => $episode->id, 'event_id' => $event->id, 'event_type_id' => $event->event_type_id);
+
+            if($episode->patient_id === $patient_id){
+                $action = 'update';
+                $selected_subspecialty_id = \Yii::app()->request->getPost('selectedSubspecialtyId');
+                $data = 'Context changed, firm remains the same';
+                if($selected_subspecialty_id){
+                    if($episode->firm_id !== $selected_subspecialty_id){
+                        $current_firm = \Firm::model()->findByPk($episode->firm_id);
+                        $episode = new \Episode;
+                        $episode->patient_id = $patient_id;
+                        $episode->start_date = date('Y-m-d H:i:s');
+                        $action = 'change-firm';
+                        $data = 'Changed from '.$current_firm->name.' to '.\Firm::model()->findByPk($selected_subspecialty_id)->name;
+                    }
+                    $episode->firm_id = $selected_subspecialty_id;
+                    $episode->last_modified_user_id = Yii::app()->user->id;
+                    $episode->last_modified_date = date('Y-m-d H:i:s');                    
+                }
+
+                if($episode->save()) {
+                    Audit::add('episode', $action, $data, $log_message = null, $properties);
+
+                    $selected_workflow_step_id =  \Yii::app()->request->getPost('selectedWorkflowStepId');
+                    if($selected_workflow_step_id){
+                        $step = \OEModule\OphCiExamination\models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id));
+                        $step->step_id = $selected_workflow_step_id;
+
+                        if($step->save()) {
+                            $data = 'Changed step to '.\OEModule\OphCiExamination\models\OphCiExamination_ElementSet::model()->findByPk($selected_workflow_step_id)->name;
+                            Audit::add('element set assignment', 'update', $data, $log_message = null, $properties);
+                        }                        
+                    }
+
+                    $event->episode_id = $episode->id;
+                    $event->last_modified_user_id = Yii::app()->user->id;
+                    $event->last_modified_date = date('Y-m-d H:i:s');
+                    $event->firm_id = \Yii::app()->request->getPost('selectedContextId');
+
+                    if($event->save()) {
+                        Audit::add('event', 'update', $data = null, $log_message = null, $properties);
+                        $outcome = 'true';
+                    }
+                }
+            }            
+        }
+
+        echo $outcome;
+    }
 }

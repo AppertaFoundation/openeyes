@@ -184,9 +184,8 @@ if ($api) {
                 <?php
                 $_method_name = 'methodname' . ucfirst($eye_side);
                 $method_name = ${$_method_name};
-                $_data = $eye_side . 'NearData';
-                $data = ${$_data};
-                if (count($rightNearData)) { ?>
+                $data = ${$eye_side . 'NearData'};
+                if (count($data)) { ?>
                     <div class="data-value">
                         <?= $unitname ?>
                     </div>
