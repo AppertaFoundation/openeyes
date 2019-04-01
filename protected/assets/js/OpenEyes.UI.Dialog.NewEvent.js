@@ -435,8 +435,10 @@
                 } else {
                     self.content.find(selectors.eventTypeItem).show();
                 }                
-            }else if(self.options.mode === 'ChangeContext' && (self.options.showSteps === false || self.options.workflowSteps[$(selectors.contextItem).data('context-id')] === undefined)){
+            }else if(self.options.mode === 'ChangeContext' && (self.options.showSteps === false || self.options.workflowSteps[$(selected).data('context-id')] === undefined)){
                 $('.js-confirm-context-change').show();
+            } else {
+                $('.js-confirm-context-change').hide();
             }
 
             if(self.options.mode === 'ChangeContext'  && this.options.showSteps){

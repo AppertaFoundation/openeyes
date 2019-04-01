@@ -139,7 +139,7 @@
                 workflowSteps: <?= CJSON::encode($workflowSteps) ?>,
                 currentStep: <?= CJSON::encode($currentStep) ?>,
                 currentFirm: <?= $currentFirm ?>,
-                eventType: "<?= $eventType ?>",
+                eventType: "<?= $event_types ?>",
             }).open();
         });
     });
