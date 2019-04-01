@@ -117,27 +117,4 @@ $(document).ready(function () {
 
     $globalFirmRights.trigger('change');
 
-    $('#et_delete_disorder').click(function(e) {
-        e.preventDefault();
-
-        let $checked = $('input[name="disorders[]"]:checked');
-        if ($checked.length === 0) {
-            alert('Please select one or more generic procedure data to delete.');
-            return;
-        }
-
-        $.ajax({
-            'type': 'POST',
-            'url': baseUrl+'/oeadmin/Disorder/delete',
-            'data': $checked.serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-            'success': function(resp) {
-                if (resp === "1") {
-                    window.location.reload();
-                } else {
-                    alert("Something went wrong trying to delete the disorder(s).\n\nPlease try again or contact support for assistance.");
-                }
-            }
-        });
-    });
-
 });
