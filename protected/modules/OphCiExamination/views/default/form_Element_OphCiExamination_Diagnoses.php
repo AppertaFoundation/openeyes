@@ -26,12 +26,12 @@ $firm = Firm::model()->with(array(
     'serviceSubspecialtyAssignment' => array('subspecialty'),
 ))->findByPk(Yii::app()->session['selected_firm_id']);
 
-$current_episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $firm);
+$current_episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm);
 
 $read_only_diagnoses = [];
 foreach ($this->patient->episodes as $ep) {
     $diagnosis = $ep->diagnosis; // Disorder model
-    if ($diagnosis && $diagnosis->specialty && $diagnosis->specialty->code == 130 && $ep->id != $current_episode->id) {
+    if ($diagnosis && $diagnosis->specialty && $diagnosis->specialty->code == 130 && $ep->id != $this->episode->id) {
         $read_only_diagnoses[] = [
             'diagnosis' => $diagnosis,
             'eye' => Eye::methodPostFix($ep->eye_id),
