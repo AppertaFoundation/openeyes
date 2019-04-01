@@ -72,7 +72,7 @@ class AnalyticsController extends BaseController
             'date_from' => 0,
             'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
         );
-
+        $this->getPatientList();
         $follow_patient_list = $this->getFollowUps($subspecialty_id);
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
         $clinical_data = array(
@@ -91,7 +91,6 @@ class AnalyticsController extends BaseController
             $user_list = User::model()->findAll();
         }
 
-        Yii::log(var_export($follow_patient_list, true));
         $this->render('/analytics/analytics_container',
             array(
                 'specialty'=>'All',
@@ -127,6 +126,7 @@ class AnalyticsController extends BaseController
       );
   }
   public function actionMedicalRetina(){
+      $this->getPatientList();
       list($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data,$clinical_data) = $this->getClinicalSpecialityData('Medical Retina');
       $this->render('/analytics/analytics_container',
           array(
@@ -142,6 +142,8 @@ class AnalyticsController extends BaseController
       );
   }
   public function actionGlaucoma(){
+      $this->getPatientList();
+
       list($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data,$clinical_data) = $this->getClinicalSpecialityData('Glaucoma');
       $this->render('/analytics/analytics_container',
           array(
@@ -157,6 +159,13 @@ class AnalyticsController extends BaseController
       );
   }
 
+  private function getPatientList(){
+        $this->patient_list = array();
+        $all_patients = Patient::model()->findAll();
+        foreach ($all_patients as $patient) {
+            $this->patient_list[$patient->id] = $patient;
+        }
+  }
   public function sortByTime($a, $b){
       if($a['event_time']==$b['event_time'])
           return 0;
@@ -609,11 +618,6 @@ class AnalyticsController extends BaseController
                         $initial_reading[$element['patient_id']]['event_date'] = $current_time;
                     }
 
-
-                    if (!array_key_exists($current_patient->id, $this->patient_list)) {
-                        $this->patient_list[$current_patient->id] = $current_patient;
-                    }
-
                     if (!array_key_exists($current_patient->id, $patient_list)) {
                         $patient_list[$current_patient->id] = array();
                     }
@@ -772,9 +776,6 @@ class AnalyticsController extends BaseController
                 /* Add patient in this->patient_list if not exist, prepare for drill down list,
                 Get each patient's left and right eye readings as well as event time */
                 if ($this->validateFilters( $current_patient->getAge(), $current_protocol, $current_time)) {
-                    if (!array_key_exists($current_patient->id, $this->patient_list)) {
-                        $this->patient_list[$current_patient->id] = $current_patient;
-                    }
 
                     if (!array_key_exists($current_patient->id, $patient_list)) {
                         $patient_list[$current_patient->id] = array();
@@ -925,9 +926,6 @@ class AnalyticsController extends BaseController
                   $current_protocol = "";
                   $validation = $this->validateFilters( $current_patient->getAge(), $current_protocol, $current_time);
                   if ($this->validateFilters($current_patient->getAge(), $current_protocol, $current_time)) {
-                      if (!array_key_exists($current_patient->id, $this->patient_list)) {
-                          $this->patient_list[$current_patient->id] = $current_patient;
-                      }
 
                       if (!array_key_exists($current_patient->id, $patient_list)) {
                           $patient_list[$current_patient->id] = array();
@@ -1087,9 +1085,6 @@ class AnalyticsController extends BaseController
         $patients_list = array();
         foreach ($query_list as $patient){
             $patients_list[] = $patient['patient_id'];
-            if (!array_key_exists($patient['patient_id'], $this->patient_list)){
-                $this->patient_list[$patient['patient_id']] = Patient::model()->findByPk($patient['patient_id']);
-            }
         }
         return $patients_list;
     }
@@ -1131,6 +1126,29 @@ class AnalyticsController extends BaseController
         return array_merge_recursive($principal_diagnoses,$secondary_diagnoses);
     }
 
+    public function getPatientWithoutDisorders(){
+        $command_disorder_patient = Yii::app()->db->createCommand()
+            ->select('patient.id', 'DISTINCT')
+            ->from('patient')
+            ->leftJoin('episode', 'patient.id = episode.patient_id')
+            ->where('episode.disorder_id IS NOT NULL');
+        $patient_with_disorder = $command_disorder_patient->queryAll();
+
+        $command_secondary_disorder_patient = Yii::app()->db->createCommand()
+            ->select('patient_id', 'DISTINCT')
+            ->from('secondary_diagnosis')
+            ->where(array('not in', 'patient_id', array_column($patient_with_disorder, 'id')));
+        $patient_with_secondary_disorder = $command_secondary_disorder_patient->queryAll();
+
+
+        $command_no_disorder_patient = Yii::app()->db->createCommand()
+            ->select('id', 'DISTINCT')
+            ->from('patient')
+            ->where(array('not in', 'id', array_merge_recursive(array_column($patient_with_secondary_disorder, 'patient_id'), array_column($patient_with_disorder, 'id'))));
+
+        $patient_without_disorder = $command_no_disorder_patient->queryAll();
+        return $patient_without_disorder;
+    }
 
   public function getDisorders($subspecialty_id=null, $surgeon_id = null, $start_date = null, $end_date = null){
       $disorder_list = array(
@@ -1145,6 +1163,7 @@ class AnalyticsController extends BaseController
           'text' => array(),
           'customdata' => array(),
       );
+      $patient_without_disorder = array_column($this->getPatientWithoutDisorders(), 'id');
       $disorder_patient_list = array();
       $other_patient_list = array();
       $other_disorder_list = array();
@@ -1180,9 +1199,6 @@ class AnalyticsController extends BaseController
       $diagnoses = $this->queryDiagnosis($subspecialty_id,$surgeon_id,$start_date,$end_date);
       foreach ($diagnoses as $current_diagnosis){
           $current_patient = Patient::model()->findByPk($current_diagnosis['patient_id']);
-          if (!array_key_exists($current_patient->id, $this->patient_list)){
-              $this->patient_list[$current_patient->id] = $current_patient;
-          }
 
           $disorder_id = $current_diagnosis['disorder_id'];
           $diagnosis_item = Disorder::model()->findByPk($disorder_id);
@@ -1233,6 +1249,15 @@ class AnalyticsController extends BaseController
           $disorder_list['x'][] = count($other_patient_list);
           $disorder_list['text'][] = 'Other';
           $disorder_list['customdata'][] = $other_drill_down_list;
+          $i++;
+      }
+
+      if (count($patient_without_disorder)){
+          $disorder_list['y'][] = $i;
+          $disorder_list['x'][] = count($patient_without_disorder);
+          $disorder_list['text'][] = 'No Diagnoses';
+          $disorder_list['customdata'][] = $patient_without_disorder;
+
       }
       $disorder_list_csv = array_values($disorder_list_csv);
       $disorder_list['csv_data'] = $disorder_list_csv;
@@ -1507,10 +1532,6 @@ class AnalyticsController extends BaseController
                   $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
                   $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
 
-                  if (!array_key_exists($current_patient->id, $this->patient_list)){
-                      $this->patient_list[$current_patient->id] = $current_patient;
-                  }
-
                   $quantity = $followup_item->followup_quantity;
                   if($quantity > 0) {
                       $period_date = $quantity * $this->getPeriodDate($followup_item->followup_period->name);
@@ -1663,7 +1684,7 @@ class AnalyticsController extends BaseController
                       continue;
                   }
               }
-              $current_referral_date = Helper::mysqlDate2JsTimestamp($referral_element->created_date) / 1000;
+              $current_referral_date = Helper::mysqlDate2JsTimestamp($current_event->event_date) / 1000;
               if( ($start_date && $current_referral_date < $start_date) ||
                   ($end_date && $current_referral_date > $end_date))
                   continue;
@@ -1693,9 +1714,7 @@ class AnalyticsController extends BaseController
                   if (! isset($followup_patient_list['waiting'][$waiting_time])){
                       $followup_patient_list['waiting'][$waiting_time]= array();
                   }
-                  if (!array_key_exists($current_patient->id, $this->patient_list)){
-                      $this->patient_list[$current_patient->id] = $current_patient;
-                  }
+
                   array_push($followup_patient_list['waiting'][$waiting_time],$current_patient->id);
               }
           }
