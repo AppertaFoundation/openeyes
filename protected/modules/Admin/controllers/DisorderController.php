@@ -108,7 +108,7 @@ class DisorderController extends BaseAdminController
                         Audit::add('admin-disorder', 'delete', $disorder);
                     }
                 } catch (Exception $e) {
-                    throw new Exception('Unable to delete Disorder: ' . print_r($disorder->getErrors(), true));
+                    throw new Exception('Unable to delete Disorder: ' . print_r($e->getMessage(), true));
                 }
             }
         }
