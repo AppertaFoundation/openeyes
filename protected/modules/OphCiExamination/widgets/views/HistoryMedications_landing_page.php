@@ -75,7 +75,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <tr>
                 <th>Stopped</th>
                 <th></th>
-                <th>
+                <th colspan="2">
                     <i class="oe-i small pad js-patient-expand-btn expand"></i>
                 </th>
             </tr>
