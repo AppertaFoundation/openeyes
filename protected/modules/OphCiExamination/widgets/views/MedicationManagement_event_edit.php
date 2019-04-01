@@ -30,7 +30,7 @@ foreach ($element->getFrequencyOptions() as $k=>$v) {
 $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
 
 $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'name');
-
+$unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
 
 $element_errors = $element->getErrors();
 ?>
@@ -89,7 +89,8 @@ $element_errors = $element->getErrors();
                                     'is_last' => ($row_count == $total_count - 1),
                                     'prescribe_access' => $prescribe_access,
                                     'patient' => $this->patient,
-                                    'locked' => $entry->locked
+                                    'locked' => $entry->locked,
+									'unit_options' => $unit_options,
                                 )
                             );
                             $row_count++;
@@ -132,6 +133,7 @@ $element_errors = $element->getErrors();
                 'prescribe_access' => $prescribe_access,
                 'patient' => $this->patient,
                 'locked' => '{{locked}}{{^locked}}0{{/locked}}',
+				'unit_options' => $unit_options,
             )
         );
         ?>
