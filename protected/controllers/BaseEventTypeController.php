@@ -983,6 +983,15 @@ class BaseEventTypeController extends BaseModuleController
                 }
             }
         } else {
+            $episode = Episode::getCurrentEpisodeByFirm($this->patient->id, Firm::model()->findByPk($this->selectedFirmId));
+            if ($episode == null) {
+                $episode = new Episode();
+                $episode->patient_id = $this->patient->id;
+                $episode->firm_id = $this->selectedFirmId;
+                $episode->support_services = false;
+                $episode->start_date = date('Y-m-d H:i:s');
+                $episode->save();
+            }
             // get the elements
             $this->setOpenElementsFromCurrentEvent('update');
             $this->updateHotlistItem($this->patient);
