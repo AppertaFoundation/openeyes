@@ -25,7 +25,7 @@ $logoHelper = new LogoHelper();
 </header>
 
 <?php if ($element->site) {?>
-    <div class="right-align">
+    <div style="text-align: right;">
             <?php
             echo $element->site->getLetterAddress(array(
                 'include_name' => true,
