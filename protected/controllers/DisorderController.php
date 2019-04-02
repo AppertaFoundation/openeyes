@@ -25,11 +25,11 @@ class DisorderController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('index', 'view'),
-                'roles' => array('@'),
+                'actions' => array('index', 'view', 'autocomplete'),
+                'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
-                'actions'=>array('create','update','index','view', 'delete', 'autocomplete'),
+                'actions'=>array('create','update','index','view', 'delete'),
                 'users'=>array('TaskCreateDisorder', 'admin'),
             ),
             array('deny',  // deny all users
@@ -183,12 +183,11 @@ class DisorderController extends BaseController
      */
     public function actionAutocomplete()
     {
-        Yii::log(CVarDumper::dumpAsString("asdkjfhkasjdfkljsaf"));
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
             $params = array();
             if (isset($_GET['term']) && $term = $_GET['term']) {
-                $criteria->addCondition('LOWER(term) LIKE :term COLLATE utf8_general_ci');
+                $criteria->addCondition(array('LOWER(term) LIKE :term', 'LOWER(aliases) LIKE :term'), 'OR');
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
             $criteria->order = 'term';
