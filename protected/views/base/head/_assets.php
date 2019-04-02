@@ -1,6 +1,12 @@
 <?php $assetManager = Yii::app()->getAssetManager();?>
 <?php
-Yii::app()->params['image_generation'] ? $display_theme = 'dark':$display_theme = SettingMetadata::model()->getSetting('display_theme');
+if(Yii::app()->params['image_generation']) {
+    $display_theme = 'dark';
+}
+else {
+    $user_theme = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"', array(":user_id"=>Yii::app()->user->id));
+    $display_theme = $user_theme ? $user_theme : SettingMetadata::model()->getSetting('display_theme');
+}
 $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
 $basic_assets_path = Yii::getPathOfAlias('application.assets');
 Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblue_path) . '/css/eyedraw_draw_icons.min.css');
