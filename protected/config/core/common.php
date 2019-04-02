@@ -79,7 +79,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201901011500',
+            'time' => '201903131430',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -380,18 +380,28 @@ return array(
                     'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
                     'position' => 90,
                 ),
+                'disorder' => array(
+                    'title' => 'Manage Disorders',
+                    'uri' => "/disorder/index",
+                    'requires_setting' => array('setting_key'=>'user_add_disorder', 'required_value'=>'on'),
+                    'position' => 91,
+            ),
                 'gps' => array(
                     'title' => 'Practitioners',
                     'uri' => 'gp/index',
                     'position' => 10,
                     'restricted' => array('TaskViewGp', 'TaskCreateGp'),
                 ),
-// temporarily disabled
-//			'worklist' => array(
-//				'title' => 'Worklists',
-//				'uri' => '/worklist',
-//				'position' => 3,
-//			),
+                'analytics' => array(
+                  'title' => 'Analytics',
+                  'uri' => '/Analytics/medicalRetina',
+                  'position' => 11,
+                ),
+                'worklist' => array(
+                  'title' => 'Worklists',
+                  'uri' => '/worklist',
+                  'position' => 3,
+                ),
         ),
         'admin_menu' => array(
         ),
@@ -404,7 +414,7 @@ return array(
         'reports' => array(
         ),
         'opbooking_disable_both_eyes' => true,
-        //'html_autocomplete' => 'off',
+        'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
         // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
@@ -591,7 +601,7 @@ return array(
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.1',
+      'oe_version' => '3.2a',
       'gp_label' => 'GP'
     ),
 );

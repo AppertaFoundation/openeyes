@@ -104,7 +104,17 @@ class OperationBookingContext extends PageObjectContext {
 		$operationBooking = $this->getPage ( 'OperationBooking' );
 		$operationBooking->preopassessmentNo ();
 	}
-	
+    /**
+     * @Given /^I select Yes for Does the patient require pre-op assessment by an anaesthetist$/
+     */
+    public function iSelectYesForDoesThePatientRequirePreOpAssessmentByAnAnaesthetist() {
+        /**
+         *
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage ( 'OperationBooking' );
+        $operationBooking->preopassessmentYes ();
+    }
 	/**
 	 * @Given /^I select a Anaesthetic type Topical$/
 	 */
@@ -423,7 +433,7 @@ class OperationBookingContext extends PageObjectContext {
 		 * @var OperationBooking $operationBooking
 		 */
 		$operationBooking = $this->getPage ( 'OperationBooking' );
-		$operationBooking->sessionRTTComments ( $RTTcomments );
+		$operationBooking->enterRTTComments ( $RTTcomments );
 	}
 	
 	/**
@@ -485,4 +495,98 @@ class OperationBookingContext extends PageObjectContext {
 		$operationBooking = $this->getPage ( 'OperationBooking' );
 		$operationBooking->consultantValidationCheck ();
 	}
+
+	/**
+     * @Then/^I select operation complexity "([^"]*)"$/
+     */
+	public function iSelectOperationComplexity($complexity){
+	    /**
+         * @var OperationBooking $operationBooking
+         */
+	    $operationBooking=$this->getPage('OperationBooking');
+	    $operationBooking->selectOperationComplexity($complexity);
+    }
+    /**
+     * @Then/^I select schedule option "([^"]*)"$/
+     */
+    public function iSelectScheduleOption($option){
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking=$this->getPage('OperationBooking');
+        $operationBooking->selectScheduleTime($option);
+    }
+    /**
+     * @Given/^I select special equipment required yes$/
+     */
+    public function iSelectSpecialEquipmentRequiredYes(){
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking=$this->getPage('OperationBooking');
+        $operationBooking->specialEquipment(1);
+    }
+    /**
+     * @Given/^I select special equipment required no$/
+     */
+    public function iSelectSpecialEquipmentRequiredNo(){
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking=$this->getPage('OperationBooking');
+        $operationBooking->specialEquipment(0);
+    }
+    /**
+     * @Then/^I enter special equipment details "([^"]*)"$/
+     */
+    public function iEnterSpecialEquipmentDetails($details){
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking=$this->getPage('OperationBooking');
+        $operationBooking->speicialEquipmentDetails($details);
+    }
+    /**
+     * @Then/^I enter collector name "([^"]*)"$/
+     */
+    public function iEnterCollectorName($name){
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking=$this->getPage('OperationBooking');
+        $operationBooking->collecterName($name);
+    }
+    /**
+     * @Then/^I enter collector number "([^"]*)"$/
+     */
+    public function iEnterCollectorNumber($number){
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking=$this->getPage('OperationBooking');
+        $operationBooking->collecterNumber($number);
+    }
+    /**
+     * @Then/^I select overnight stay required "([^"]*)"$/
+     */
+    public function iSelectOvernightStayRequired($option){
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking=$this->getPage('OperationBooking');
+        $operationBooking->overnightRequiredOption($option);
+    }
+
+    /**
+     * @Then /^I Save the Operation Booking and confirm it saved correctly$/
+     */
+    public function iSaveTheOperationBookingAndConfirmItSavedCorrectly()
+    {
+        /**
+         * @var OperationBooking $ob
+         */
+        $ob = $this->getPage('OperationBooking');
+        $ob->saveAndScheduleLater();
+    }
+
 }
