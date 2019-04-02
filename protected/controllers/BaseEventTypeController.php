@@ -2375,7 +2375,9 @@ class BaseEventTypeController extends BaseModuleController
 
         $this->readInEventImageSettings();
         try {
+            Yii::app()->params['image_generation'] = true;      // Change the theme to dark for lightning viewer image
             $content = $this->getEventAsHtml();
+            Yii::app()->params['image_generation'] = false;     // Chane the theme back to normal
 
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
@@ -2426,7 +2428,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function getEventAsHtml()
     {
-        ProfileController::changeDisplayTheme(Yii::app()->user->id, 'dark');
         ob_start();
 
         $this->setOpenElementsFromCurrentEvent('view');
