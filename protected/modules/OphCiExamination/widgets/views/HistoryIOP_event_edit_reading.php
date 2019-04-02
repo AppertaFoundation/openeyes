@@ -30,25 +30,25 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
             $value,
             'reading_id',
             'OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading',
-            array(
+            [
                 'nowrapper' => true,
                 'data-base-name' => $base_name,
                 'name' => "{$base_name}[reading_id]",
                 'prompt' => '--'
-            )
+            ]
         ) ?>
     </td>
     <td class="scale_values" style="<?= (!$value->instrument || !$value->instrument->scale) ? "display: none":""?>">
         <?php if ($value->instrument && $value->instrument->scale) {
             echo $this->render(
                 'application.modules.OphCiExamination.views.default._qualitative_scale',
-                array(
+                [
                     'name' => CHtml::modelName($element),
                     'value' => $value,
                     'side' => $side,
                     'index' => $index,
                     'scale' => $value->instrument->scale
-                )
+                ]
             );
         } ?>
     </td>
@@ -56,7 +56,7 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
         <?= CHtml::textField(
             "{$base_name}[reading_time]",
             $time,
-            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'fixed-width-small')
+            ['autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'fixed-width-small']
         ) ?>
     </td>
     <td>

@@ -46,9 +46,9 @@ class HistoryIOP extends \BaseEventTypeElement
 
     public function behaviors()
     {
-        return array(
+        return [
             'PatientLevelElementBehaviour' => 'PatientLevelElementBehaviour',
-        );
+        ];
     }
 
     /**
@@ -66,13 +66,13 @@ class HistoryIOP extends \BaseEventTypeElement
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array('event_id, eye_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
-            array('last_modified_date, created_date', 'safe'),
+        return [
+            ['event_id, eye_id, last_modified_user_id, created_user_id', 'length', 'max'=>10],
+            ['last_modified_date, created_date', 'safe'],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, event_id, eye_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
-        );
+            ['id, event_id, eye_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'],
+        ];
     }
 
     /**
@@ -82,12 +82,12 @@ class HistoryIOP extends \BaseEventTypeElement
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
-            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-        );
+        return [
+            'createdUser' => [self::BELONGS_TO, 'User', 'created_user_id'],
+            'event' => [self::BELONGS_TO, 'Event', 'event_id'],
+            'eye' => [self::BELONGS_TO, 'Eye', 'eye_id'],
+            'lastModifiedUser' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
+        ];
     }
 
     /**
@@ -95,7 +95,7 @@ class HistoryIOP extends \BaseEventTypeElement
      */
     public function attributeLabels()
     {
-        return array(
+        return [
             'id' => 'ID',
             'event_id' => 'Event',
             'eye_id' => 'Eye',
@@ -103,7 +103,7 @@ class HistoryIOP extends \BaseEventTypeElement
             'last_modified_date' => 'Last Modified Date',
             'created_user_id' => 'Created User',
             'created_date' => 'Created Date',
-        );
+        ];
     }
 
     /**
@@ -132,9 +132,9 @@ class HistoryIOP extends \BaseEventTypeElement
         $criteria->compare('created_user_id',$this->created_user_id,true);
         $criteria->compare('created_date',$this->created_date,true);
 
-        return new CActiveDataProvider($this, array(
+        return new CActiveDataProvider($this, [
             'criteria'=>$criteria,
-        ));
+        ]);
     }
 
     /**

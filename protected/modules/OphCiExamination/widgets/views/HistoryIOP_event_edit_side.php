@@ -38,7 +38,7 @@ use OEModule\OphCiExamination\models;
 
                 $this->render(
                     "HistoryIOP_event_edit_reading",
-                    array(
+                    [
                         'element' => $element,
                         'form' => $form,
                         'side' => $side,
@@ -48,7 +48,7 @@ use OEModule\OphCiExamination\models;
                         'instrumentName' => $instrument_model->findByPk($value['instrument_id'])->name,
                         'value' => $recorded_value,
                         'examinationDate' => $value['examination_date'],
-                    )
+                    ]
                 );
             }
         }
@@ -100,7 +100,7 @@ use OEModule\OphCiExamination\models;
     <?php
     $this->render(
         "HistoryIOP_event_edit_reading",
-        array(
+        [
             'element' => $element,
             'form' => $form,
             'side' => $side,
@@ -111,7 +111,7 @@ use OEModule\OphCiExamination\models;
             'instrumentName' => '{{instrumentName}}',
             'examinationDate' => '{{examinationDate}}',
             'value' => new models\OphCiExamination_IntraocularPressure_Value(),
-        )
+        ]
     );
     ?>
 </script>

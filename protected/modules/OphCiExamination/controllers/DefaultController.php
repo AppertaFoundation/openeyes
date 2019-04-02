@@ -1031,7 +1031,7 @@ class DefaultController extends \BaseEventTypeController
         if ($instrument = models\OphCiExamination_Instrument::model()->findByPk(@$_GET['instrument_id'])) {
             if ($scale = $instrument->scale) {
                 $value = new models\OphCiExamination_IntraocularPressure_Value();
-                $this->renderPartial('_qualitative_scale', array('name' => $name, 'value' => $value, 'scale' => $scale, 'side' => @$_GET['side'], 'index' => @$_GET['index']));
+                $this->renderPartial('_qualitative_scale', ['name' => $name, 'value' => $value, 'scale' => $scale, 'side' => @$_GET['side'], 'index' => @$_GET['index']]);
             }
         }
     }
