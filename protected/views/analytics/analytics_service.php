@@ -9,7 +9,6 @@
         service_layout['xaxis']['range'] = [0, 80];
         service_layout['yaxis']['title'] = 'Patient count';
         service_layout['yaxis']['tickformat'] = 'd';
-        service_layout['yaxis']['range'] = [0, 20];
         service_layout['yaxis']['dtick'] = 1;
 
         var overdue_data = {
@@ -22,7 +21,7 @@
             type: 'bar',
         };
 
-        var overdue_max = Math.max(overdue_data['y'])+5 > 20? Math.max(overdue_data['y']) + 5: 20;
+        var overdue_max = Math.max(...overdue_data['y'])+5 > 20? Math.max(...overdue_data['y']) + 5: 20;
         var overdue_count = overdue_data['y'].reduce((a, b) => a + b, 0);
 
         var coming_data ={
@@ -34,7 +33,7 @@
             customdata: Object.values(service_data['coming']),
             type: 'bar',
         };
-        var coming_max = Math.max(coming_data['y'])+5 > 20? Math.max(coming_data['y']) + 5: 20;
+        var coming_max = Math.max(...coming_data['y'])+5 > 20? Math.max(...coming_data['y']) + 5: 20;
         var coming_count = coming_data['y'].reduce((a, b) => a + b, 0);
 
 
@@ -47,7 +46,7 @@
             customdata: Object.values(service_data['waiting']),
             type: 'bar',
         };
-        var waiting_max = Math.max(waiting_data['y'])+5 > 20? Math.max(waiting_data['y']) + 5: 20;
+        var waiting_max = Math.max(...waiting_data['y'])+5 > 20? Math.max(...waiting_data['y']) + 5: 20;
         var waiting_count = waiting_data['y'].reduce((a, b) => a + b, 0);
 
         var first_plot_data;
