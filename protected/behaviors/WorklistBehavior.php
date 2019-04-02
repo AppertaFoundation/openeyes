@@ -56,20 +56,6 @@ class WorklistBehavior extends CBehavior
 
 /** @TODO CONFIG DAYS */
 
-                //The nearest booked appointment within 1 month(default) (past or future)
-/*                $criteria = new \CDbCriteria();
-                $criteria->addCondition('patient_id = :patient_id');
-                $criteria->addCondition('t.when >= :start_date AND t.when <= :end_date');
-                $criteria->order = 'TIMESTAMPDIFF(MINUTE, t.when, NOW())';
-                $criteria->params = [
-                    ':patient_id' => $patient_id,
-                    ':start_date' => date('Y-m-d H:i:s', strtotime("-30 days")),
-                    ':end_date' => date('Y-m-d H:i:s', strtotime("+30 days"))
-                ];
-
-                $worklist_patient = WorklistPatient::model()->find($criteria);
-*/
-
                 /*
                  * The relevant worklist is determined as (in order of precedence):
                  *  - The nearest booked appointment within 1 month(default) (past or future) OR

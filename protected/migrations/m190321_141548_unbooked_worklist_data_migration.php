@@ -1,4 +1,5 @@
 <?php
+use \OEModule\PASAPI\models\PasApiAssignment;
 
 class m190321_141548_unbooked_worklist_data_migration extends OEMigration
 {
@@ -36,7 +37,7 @@ class m190321_141548_unbooked_worklist_data_migration extends OEMigration
 
 	private function getWorklistPatientId($event)
     {
-        $assignment = \OEModule\PASAPI\models\PasApiAssignment::model()->findByAttributes(['resource_id' => $event->pas_visit_id]);
+        $assignment = PasApiAssignment::model()->findByAttributes(['resource_id' => $event->pas_visit_id]);
 
         if ($assignment) {
             return $assignment->internal_id;

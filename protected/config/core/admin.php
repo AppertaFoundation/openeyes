@@ -42,8 +42,8 @@ return array(
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
                 'Patient Shortcodes' => '/admin/patientshortcodes'
             ),
-            'Worklists' => array(
-                'Automatic Worklists Definitions' => '/worklistAdmin/definitions',
+            'Worklist' => array(
+                'Automatic Worklists Definitions' => '/Admin/worklist/definitions',
             ),
             'Procedure Management' => array(
                 'Procedures' => '/oeadmin/procedure/list',
