@@ -182,7 +182,7 @@ $(document).ready(function() {
 	});
 
 	$('#bookingForm button#confirm_slot').on('click',function(e) {
-		if($(this).data('place-for-complex-procedure') === true) {
+		if($(this).data('there-is-place-for-complex-procedure') === true) {
 			$('#bookingForm').submit();
 		} else {
 			e.preventDefault();

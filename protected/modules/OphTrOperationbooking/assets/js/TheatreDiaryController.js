@@ -397,19 +397,19 @@ $(document).ready(function() {
                     const $complexProcedureCount = $('#complex_procedure_count_'+session_id);
 					let $maxComplexProceduresIcon = $('#max_complex_procedures_icon_'+session_id);
 					if (maxComplexProcedures) {
-						let overBookedProcedures = 0;
+						let overBookedComplexProcedures = 0;
                         $maxComplexProceduresIcon.find('.max-complex-procedures-value').html(maxComplexProcedures);
                         $maxComplexProceduresIcon.show();
-						let availableProcedures = maxComplexProcedures - $complexProcedureCount.data('current-complex-procedure-count');
-						if (availableProcedures <= 0) {
-                            overBookedProcedures = Math.abs(availableProcedures);
-                            availableProcedures = 0;
+						let availableComplexProcedures = maxComplexProcedures - $complexProcedureCount.data('current-complex-procedure-count');
+						if (availableComplexProcedures <= 0) {
+                            overBookedComplexProcedures = Math.abs(availableComplexProcedures);
+							availableComplexProcedures = 0;
 						}
-                        $complexProcedureCount.find('.available-complex-procedure-count').html(availableProcedures);
+                        $complexProcedureCount.find('.available-complex-procedure-count').html(availableComplexProcedures);
                         $complexProcedureCount.show();
                         const $complexProcedureOverbookedMessage = $complexProcedureCount.find('.overbooked');
-						if (overBookedProcedures > 0) {
-							$complexProcedureOverbookedMessage.find('.overbooked-complex-procedure-count').html(overBookedProcedures);
+						if (overBookedComplexProcedures > 0) {
+							$complexProcedureOverbookedMessage.find('.overbooked-complex-procedure-count').html(overBookedComplexProcedures);
 							$complexProcedureOverbookedMessage.show();
 						}
 						else {
