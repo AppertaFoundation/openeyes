@@ -19,15 +19,8 @@ use OEModule\OphCiExamination\models;
 
 ?>
 
-<div class="cols-9">
-    <table id="<?= CHtml::modelName($element) . '_readings_' . $side ?>"
-           class="cols-full">
-        <colgroup>
-            <col class="cols-3">
-            <col class="cols-2">
-            <col class="cols-3">
-            <col class="cols-4">
-        </colgroup>
+<div class="cols-full">
+    <table id="<?= CHtml::modelName($element) . '_readings_' . $side ?>" class="cols-full">
         <tbody>
         <?php
         // show input after validation fail
@@ -57,25 +50,18 @@ use OEModule\OphCiExamination\models;
                         'examinationDate' => $value['examination_date'],
                     )
                 );
-
             }
         }
         ?>
         </tbody>
     </table>
 
-    <table id="<?= $model_name ?>_entry_table">
-        <colgroup>
-            <col class="cols-3">
-            <col class="cols-3">
-            <col class="cols-5">
-            <col class="cols-1">
-        </colgroup>
+    <table id="<?= $model_name ?>_entry_table" class="cols-full">
         <thead>
-            <th>Past IOPs</th>
-            <th></th>
-            <th></th>
-            <th colspan="2"><i class="oe-i small pad js-patient-expand-btn expand"></i></th>
+        <th>Past IOPs</th>
+        <th></th>
+        <th></th>
+        <th colspan="2"><i class="oe-i small pad js-patient-expand-btn expand"></i></th>
         </thead>
         <tbody style="display: none">
         <?php foreach ($pastIOPs as $iop) { ?>
@@ -90,8 +76,8 @@ use OEModule\OphCiExamination\models;
                         <span class="oe-date"><?=date('d M Y', strtotime($date));?></span>
                     </td>
                     <td>
-                        <?php if (isset($iop->{$side.'_comments'})) { ?>
-                        <i class="oe-i comments-added medium js-has-tooltip" data-tooltip-content="<?= $iop->{$side.'_comments'} ?>"></i>
+                        <?php if (isset($iop->{$side.'_comments'}) && $iop->{$side.'_comments'}) { ?>
+                            <i class="oe-i comments-added medium js-has-tooltip" data-tooltip-content="<?= $iop->{$side.'_comments'} ?>"></i>
                         <?php } ?>
                     </td>
                 </tr>

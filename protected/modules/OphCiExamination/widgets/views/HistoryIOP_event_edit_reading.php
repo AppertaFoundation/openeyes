@@ -34,7 +34,6 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
                 'nowrapper' => true,
                 'data-base-name' => $base_name,
                 'name' => "{$base_name}[reading_id]",
-                'class' => 'cols-11',
                 'prompt' => '--'
             )
         ) ?>
@@ -62,10 +61,37 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
     </td>
     <td>
         <input class="iop-date" autocomplete="off" type="text" value="<?=$examinationDate?>"
-           id="<?=CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_examination_date'?>"
+           id="<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_examination_date'?>"
            name="<?=$base_name?>[examination_date]">
     </td>
 
-    <td class="cols-2"><?= CHtml::hiddenField("{$base_name}[eye_id]", ($side == 'left') ? Eye::LEFT : Eye::RIGHT) ?><i
-            class="oe-i trash"></i></td>
+    <td>
+        <div class="flex-layout flex-right">
+            <span class="js-comment-container cols-full flex-layout"
+                id="<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_container' ?>"
+                style="display: none;>"
+                data-comment-button="#<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_button' ?>">
+                <?= CHtml::textArea($base_name . '['.$side.'_comments]', "", [
+                    'rows' => 1,
+                    'class' => 'js-comment-field',
+                    'id' => CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_'.$side.'_comments',
+                ]) ?>
+
+              <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+            </span>
+
+            <button
+                    id="<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_button' ?>"
+                    type="button"
+                    class="button js-add-comments"
+                    data-comment-container="#<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_container' ?>">
+                <i class="oe-i comments small-icon"></i>
+            </button>
+        </div>
+    </td>
+
+    <td>
+        <?= CHtml::hiddenField("{$base_name}[eye_id]", ($side == 'left') ? Eye::LEFT : Eye::RIGHT) ?>
+        <i class="oe-i trash"></i>
+    </td>
 </tr>

@@ -1166,6 +1166,9 @@ class DefaultController extends \BaseEventTypeController
                     // create a new iop element
                     $iop_element = new models\Element_OphCiExamination_IntraocularPressure();
                     $iop_element->event_id = $examinationEvent->id;
+                    if (isset($values["{$side}_comments"]) && $values["{$side}_comments"]) {
+                        $iop_element["{$side}_comments"] = $values["{$side}_comments"];
+                    }
                     $iop_element[$this->getOtherSide('left', 'right', $side) . "_comments"] = "IOP values not recorded for this eye.";
 
                     if (!$iop_element->save(false)) {
