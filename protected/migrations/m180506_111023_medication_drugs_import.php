@@ -14,7 +14,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
         $this->createIndex('fk_ref_medication_frequency_oidx', 'medication_frequency', 'original_id');
         
         /* 
-         * set medicaftion_set and medication_set_rule tables
+         * set medication_set and medication_set_rule tables
          */
        
         $drug_sets = Yii::app()->db
@@ -184,11 +184,14 @@ class m180506_111023_medication_drugs_import extends CDbMigration
         
                 $command = Yii::app()->db;
                 $command->createCommand("
-                          INSERT INTO medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id) 
-                        VALUES ('LEGACY', '".$drugs_table."', :drug_name, '', :source_old_id)
+                          INSERT INTO medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id, default_form_id, default_route_id, default_dose_unit_term) 
+                        VALUES ('LEGACY', '".$drugs_table."', :drug_name, '', :source_old_id, :default_form_id, :default_route_id, :default_dose_unit_term)
                     ")
                 ->bindValue(':drug_name', $drug['name'])
                 ->bindValue(':source_old_id', $drug['original_id'])
+                ->bindValue(':default_form_id', $drug['ref_form_id'])
+                ->bindValue(':default_route_id', $drug['ref_route_id'])
+                ->bindValue(':default_dose_unit_term', $drug['dose_unit'])
                 ->execute();
                 $ref_medication_id = $command->getLastInsertID();
 

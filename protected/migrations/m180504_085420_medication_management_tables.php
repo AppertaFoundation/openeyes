@@ -20,10 +20,13 @@ class m180504_085420_medication_management_tables extends OEMigration
             'amp_term'          => 'VARCHAR(255) NULL',
             'amp_code'          => 'VARCHAR(255) NULL',
             'deleted_date'      => 'DATE NULL',
-            'source_old_id'     => 'INT NULL'
-        ), true, "new_medication");
+            'source_old_id'     => 'INT NULL',
+			'default_route_id'      => 'INT NULL',
+			'default_dose_unit_term'    => 'VARCHAR(255) NULL',
+			'default_form_id'           => 'INT NULL',
+		), true, "new_medication");
 
-        $this->createOETable('medication_search_index', array(
+		$this->createOETable('medication_search_index', array(
             'id'                => 'pk',
             'medication_id' => 'INT NULL',
             'alternative_term'    => 'TEXT NOT NULL',
@@ -62,8 +65,12 @@ class m180504_085420_medication_management_tables extends OEMigration
             'source_subtype'            => 'VARCHAR(45) NULL',
             'deleted_date'              => 'DATE NULL',
         ), true);
-        
-        $this->createOETable('medication_frequency', array(
+
+		$this->addForeignKey('fkm_default_route', 'medication', 'default_route_id', 'medication_route', 'id', 'NO ACTION' ,'NO ACTION');
+		$this->addForeignKey('fkm_default_form', 'medication', 'default_form_id', 'medication_form', 'id', 'NO ACTION' ,'NO ACTION');
+
+
+		$this->createOETable('medication_frequency', array(
             'id'                => 'pk',
             'term'              => 'VARCHAR(255) NULL',
             'code'              => 'VARCHAR(45) NULL',
