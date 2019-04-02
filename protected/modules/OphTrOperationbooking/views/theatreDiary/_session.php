@@ -215,17 +215,17 @@
                     (Overbooked by <span
                           class="overbooked-proc-val"><?= abs($session->getAvailableProcedureCount()); ?></span>)</span>
                   </span>
-            <span data-curr-complex-proccount="<?php echo $session->getBookedComplexProcedureCount() ?>"
-                class="complex-procedure-count" id="complex_procedure_count_<?php echo $session->id ?>"
-                <?php if (!$session->max_complex_procedures) { ?>style="display: none;"<?php } ?>>
+            <span data-current-complex-procedure-count="<?= $session->getBookedComplexProcedureCount() ?>"
+                class="complex-procedure-count" id="complex_procedure_count_<?= $session->id ?>"
+                <?= $session->max_complex_procedures ? "" : "style='display: none;'"  ?>>
                 <br/>
-                <span class="complex-available-val">
+                <span class="available-complex-procedure-count">
                     <?= $complex_proc_status ? $session->getAvailableComplexProcedureCount() : '0' ?>
                 </span> complex procedure(s) available
-                <span class="overbooked"<?php if ($session->getAvailableComplexProcedureCount() >= 0) { ?> style="display: none;"<?php } ?>>
+                <span class="overbooked" <?= $session->getAvailableComplexProcedureCount() >= 0 ? "style = 'display: none;'" : "" ?>>
                     (Overbooked by
                     <span
-                            class="overbooked-complex-proc-val"><?= abs($session->getAvailableComplexProcedureCount()); ?></span>)
+                            class="overbooked-complex-procedure-count"><?= abs($session->getAvailableComplexProcedureCount()); ?></span>)
                 </span>
             </span>
             <span class="session-unavailable" id="session_unavailable_<?php echo $session->id ?>"
@@ -261,10 +261,10 @@
                     class="max-procedures-val"><?php echo $session->max_procedures ?></span>
                 Procedures
               </div>
-              <div<?php if (!$session->max_complex_procedures) { ?> style="display: none;"<?php } ?>
+              <div <?= $session->max_complex_procedures ? "" :  "style='display: none;'" ?>
                   id="max_complex_procedures_icon_<?php echo $session->id ?>" class="max-complex-procedures"
                   title="Max Complex <?php echo $session->max_complex_procedures ?>">Max <span
-                    class="max-complex-procedures-val"><?php echo $session->max_complex_procedures ?></span>
+                    class="max-complex-procedures-value"><?php echo $session->max_complex_procedures ?></span>
                 Complex Procedures
               </div>
             </div>

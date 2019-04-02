@@ -393,30 +393,32 @@ $(document).ready(function() {
 						$('#procedure_count_'+session_id).hide();
 					}
 
-					if ($('#max_complex_procedures_'+session_id).val()) {
-						var overbooked = 0;
-						var max = $('#max_complex_procedures_'+session_id).val();
-						$('#max_complex_procedures_icon_'+session_id).find('.max-complex-procedures-val').html(max);
-						$('#max_complex_procedures_icon_'+session_id).show();
-						var avail = max - $('#complex_procedure_count_'+session_id).data('curr-complex-proccount');
-						if (avail <= 0) {
-							overbooked = Math.abs(avail);
-							avail = 0;
-							markSessionUnavailable = true;
+                    const maxComplexProcedures = $('#max_complex_procedures_'+session_id).val();
+                    const $complexProcedureCount = $('#complex_procedure_count_'+session_id);
+					let $maxComplexProceduresIcon = $('#max_complex_procedures_icon_'+session_id);
+					if (maxComplexProcedures) {
+						let overBookedProcedures = 0;
+                        $maxComplexProceduresIcon.find('.max-complex-procedures-value').html(maxComplexProcedures);
+                        $maxComplexProceduresIcon.show();
+						let availableProcedures = maxComplexProcedures - $complexProcedureCount.data('current-complex-procedure-count');
+						if (availableProcedures <= 0) {
+                            overBookedProcedures = Math.abs(availableProcedures);
+                            availableProcedures = 0;
 						}
-						$('#complex_procedure_count_'+session_id).find('.complex-available-val').html(avail);
-						$('#complex_procedure_count_'+session_id).show();
-						if (overbooked > 0) {
-							$('#complex_procedure_count_'+session_id+' .overbooked').find('.overbooked-complex-proc-val').html(overbooked);
-							$('#complex_procedure_count_'+session_id+' .overbooked').show();
+                        $complexProcedureCount.find('.available-complex-procedure-count').html(availableProcedures);
+                        $complexProcedureCount.show();
+                        const $complexProcedureOverbookedMessage = $complexProcedureCount.find('.overbooked');
+						if (overBookedProcedures > 0) {
+							$complexProcedureOverbookedMessage.find('.overbooked-complex-procedure-count').html(overBookedProcedures);
+							$complexProcedureOverbookedMessage.show();
 						}
 						else {
-							$('#complex_procedure_count_'+session_id+' .overbooked').hide();
+							$complexProcedureOverbookedMessage.hide();
 						}
 					}
 					else {
-						$('#max_complex_procedures_icon_'+session_id).hide();
-						$('#complex_procedure_count_'+session_id).hide();
+                        $maxComplexProceduresIcon.hide();
+                        $complexProcedureCount.hide();
 					}
 
 					if (markSessionUnavailable) {
