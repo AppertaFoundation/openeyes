@@ -21,6 +21,9 @@
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property int $default_form_id
+ * @property int $default_route_id
+ * @property string $default_dose_unit_term
  *
  * The followings are the available model relations:
  * @property EventMedicationUse[] $eventMedicationUses
@@ -32,6 +35,8 @@
  * @property MedicationAttributeOption[] $medicationAttributeOptions
  * @property MedicationAttributeAssignment[] $medicationAttributeAssignments
  * @property \OEModule\OphCiExamination\models\OphCiExaminationAllergy[] $allergies
+ * @property MedicationRoute $defaultRoute
+ * @property MedicationForm $defaultForm
  */
 class Medication extends BaseActiveRecordVersioned
 {
@@ -63,7 +68,7 @@ class Medication extends BaseActiveRecordVersioned
 			array('source_type, last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('source_subtype', 'length', 'max' => 45),
 			array('preferred_term, short_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code', 'length', 'max'=>255),
-			array('deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems', 'safe'),
+			array('deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems, default_route_id, default_form_id, default_dose_unit_term', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code, 
@@ -83,16 +88,15 @@ class Medication extends BaseActiveRecordVersioned
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'medicationSets' => array(self::MANY_MANY, MedicationSet::class, 'medication_set_item(medication_id, medication_set_id)'),
-
 			'medicationSetItems' => array(self::HAS_MANY, MedicationSetItem::class, 'medication_id'),
-
 			// We need to set up a duplicate relation to be used with allergies, otherwise BaseActiveRecord::afterSave wont auto-save the medicationSetItems
 			'medicationSetItems2' => array(self::HAS_MANY, MedicationSetItem::class, 'medication_id'),
-
 			'medicationSearchIndexes' => array(self::HAS_MANY, MedicationSearchIndex::class, 'medication_id'),
             'medicationAttributeAssignments' => array(self::HAS_MANY, MedicationAttributeAssignment::class, 'medication_id'),
             'medicationAttributeOptions' => array(self::HAS_MANY, MedicationAttributeOption::class, 'medication_attribute_assignment(medication_id,medication_attribute_option_id)'),
 			'allergies' => array(self::HAS_MANY, \OEModule\OphCiExamination\models\OphCiExaminationAllergy::class, array('medication_set_id' => "medication_set_id"), "through" => "medicationSetItems2"),
+			"defaultForm" => array(self::BELONGS_TO, MedicationForm::class, 'default_form_id'),
+			"defaultRoute" => array(self::BELONGS_TO, MedicationRoute::class, 'default_route_id'),
 		);
 	}
 
