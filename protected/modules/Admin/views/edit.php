@@ -14,6 +14,7 @@
  */
 ?>
 
+<?= $this->renderPartial('//admin/_form_errors', array('errors' => isset($errors) ? $errors : null)); ?>
 <?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => 'adminform',

@@ -16,6 +16,11 @@
 
 <?php $this->renderPartial('//base/_messages') ?>
 
+<div class="alert-box error with-icon js-admin-errors" style="display:none">
+    <p>Could not be deleted:</p>
+    <div class="js-admin-error-container"></div>
+</div>
+
 <div class="cols-12">
     <div class="row divider">
         <form id="disorder-search-form" action="#" method="post">

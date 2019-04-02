@@ -97,22 +97,26 @@ class DisorderController extends BaseAdminController
 
     public function actionDelete()
     {
-        $result = 1;
+        $result = [];
+        $result['status'] = 1;
+        $result['errors'] = "";
 
         if (!empty($_POST['disorders'])) {
             foreach (Disorder::model()->findAllByPk($_POST['disorders']) as $disorder) {
                 try {
                     if (!$disorder->delete()) {
-                        $result = 0;
+                        $result['status'] = 0;
+                        $result['errors'][]= $disorder->getErrors();
                     } else {
                         Audit::add('admin-disorder', 'delete', $disorder);
                     }
                 } catch (Exception $e) {
-                    throw new Exception('Unable to delete Disorder: ' . print_r($e->getMessage(), true));
+                    $result['status'] = 0;
+                    $result['errors'][]= "Disorder: " . $disorder->term . " is in use";
                 }
             }
         }
 
-        echo $result;
+        echo json_encode($result);
     }
 }

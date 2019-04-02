@@ -35,21 +35,21 @@ $(document).ready(function () {
     var showHideEmpty = function (el, min) {
         if (el.find('.draggablelist-item').length > min) {
             el.find('.draggablelist-empty').hide();
-         } else {
+        } else {
 
-           el.find('.draggablelist-empty').show();
-         }
-      };
-    
-        //-----------------------------------------------
- 	// Common Post-Op Complications
- 	//-----------------------------------------------
- 
-     $('#postop-complications #subspecialty_id').change(
-         function () {
-             window.location.href = baseUrl + '/OphCiExamination/admin/postOpComplications?subspecialty_id=' + this.value;
-         }
-     );
+            el.find('.draggablelist-empty').show();
+        }
+    };
+
+    //-----------------------------------------------
+    // Common Post-Op Complications
+    //-----------------------------------------------
+
+    $('#postop-complications #subspecialty_id').change(
+        function () {
+            window.location.href = baseUrl + '/OphCiExamination/admin/postOpComplications?subspecialty_id=' + this.value;
+        }
+    );
 
     var items_enabled = $('#draggablelist-items-enabled');
     var items_available = $('#draggablelist-items-available');
@@ -106,9 +106,9 @@ $(document).ready(function () {
     });
 
     // when changing the global rights radiobutton, remove the firms
-    $globalFirmRights.on('change', function(){
+    $globalFirmRights.on('change', function () {
         $wrapper = $('#User_firms').closest('.multi-select');
-        if($("input:radio[name='User[global_firm_rights]']:checked").val() === '1'){
+        if ($("input:radio[name='User[global_firm_rights]']:checked").val() === '1') {
             $wrapper.hide();
         } else {
             $wrapper.show();
@@ -117,7 +117,7 @@ $(document).ready(function () {
 
     $globalFirmRights.trigger('change');
 
-    $('#et_delete_disorder').click(function(e) {
+    $('#et_delete_disorder').click(function (e) {
         e.preventDefault();
 
         let $checked = $('input[name="disorders[]"]:checked');
@@ -128,13 +128,20 @@ $(document).ready(function () {
 
         $.ajax({
             'type': 'POST',
-            'url': baseUrl+'/Admin/Disorder/delete',
-            'data': $checked.serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-            'success': function(resp) {
-                if (resp === "1") {
+            'url': baseUrl + '/Admin/Disorder/delete',
+            'data': $checked.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+            'success': function (response) {
+                response = JSON.parse(response);
+                if (response['status'] === "1") {
                     window.location.reload();
                 } else {
-                    alert("Something went wrong trying to delete the disorder(s).\n\nPlease try again or contact support for assistance.");
+                    $('.js-admin-errors').show();
+                    let $errorContainer = $('.js-admin-error-container');
+                    $errorContainer.html("");
+
+                    response['errors'].forEach(function (error) {
+                        $errorContainer.append('<p class="js-admin-errors">' + error + '</p>');
+                    });
                 }
             }
         });
