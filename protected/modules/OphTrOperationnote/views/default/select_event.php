@@ -84,7 +84,11 @@ $warnings = $this->patient->getWarnings($clinical);
 												<img src="<?php echo Yii::app()->assetManager->createUrl('img/small.png', $assetAliasPath)?>" alt="op" style="height:15px" />
 											</span>
 											<span class="large-3 column <?php echo $theatre_diary_disabled ? 'hide' : ''?>">
-												<?php if(!$theatre_diary_disabled){ echo $operation->booking->session->NHSDate('date'); } ?>
+												<?php if(!$theatre_diary_disabled){ 
+															if($operation->booking){
+																echo $operation->booking->session->NHSDate('date'); 
+															}
+														} ?>
 											</span>
 
 											<span class="large-3 column">
