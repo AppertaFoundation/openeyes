@@ -209,9 +209,16 @@ GROUP BY patient_id
     {
         $bindValues = array();
 
-        if ($this->operation === 'BETWEEN') {
-            $bindValues["p_v_min_$this->id"] = (int)$this->minValue;
-            $bindValues["p_v_max_$this->id"] = (int)$this->maxValue;
+	if ($this->operation === 'BETWEEN') {
+	    $this->minValue = (int)$this->minValue;
+            $this->maxValue = (int)$this->maxValue;
+            if($this->minValue > $this->maxValue){
+	    	$temp = $this->minValue;
+		$this->minValue = $this->maxValue;
+		$this->maxValue = $temp;
+	    }	    
+            $bindValues["p_v_min_$this->id"] = $this->minValue;
+            $bindValues["p_v_max_$this->id"] = $this->maxValue;
         } else {
             $bindValues["p_v_value_$this->id"] = (int)$this->textValue;
         }
