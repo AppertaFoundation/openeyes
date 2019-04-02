@@ -94,8 +94,20 @@ $episodes_list = array(); ?>
                 </div>
 
                 <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
-                    <span class="event-type js-event-a <?= (($event->hasIssue()) ? ($event->hasIssue('ready') ? 'ready' : 'alert') : '')
-                            . ($virtual_clinic_event ? ' virtual-clinic' : '') ?>">
+                    <?php $event_icon_class = "";
+                    if ($event->hasIssue()) {
+                        if ($event->hasIssue('ready')) {
+                            $event_icon_class .= ' ready';
+                        } else {
+                            $event_icon_class .= ' alert';
+
+                        }
+                    }
+                    if ($virtual_clinic_event) {
+                        $event_icon_class .= ' virtual-clinic';
+                    }
+                    ?>
+                    <span class="event-type js-event-a<?=$event_icon_class?>">
                         <?= $event->getEventIcon() ?>
                     </span>
                     <span class="event-extra">
