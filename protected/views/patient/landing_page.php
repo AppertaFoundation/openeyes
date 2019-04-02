@@ -20,17 +20,39 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 
 ?>
 
-<nav class="event-header no-face">
-    <i class="oe-i-e large i-Patient"></i>
-    <?php $this->renderPartial('//patient/event_actions'); ?>
-</nav>
+<?php if($no_episodes) { ?>
+    <div class="oe-sem-no-events">
+        <h3>No Events</h3>
+        <div class="alert-box alert">
+            There are currently no events for this patient.<br>Click the "Add Event" button to begin recording events.
+        </div>
+        <nav class="sidebar-header">
+            <?php if ($this->checkAccess('OprnCreateEpisode')) { ?>
+                <button id="add-event" class="button green add-event" type="button">Add Event</button>
+            <?php } else { ?>
+                <button class="button add-event disabled">You have View Only rights and cannot create events</button>
+            <?php } ?>
+        </nav>
+    </div>
+    <?php $this->renderPartial('//patient/add_new_event',array(
+        'button_selector' => '#add-event',
+        'episodes' => array(),
+        'context_firm' => $this->firm,
+        'patient_id' => $this->patient->id,
+        'event_types' => EventType::model()->getEventTypeModules(),
+    ));?>
+<?php } else { ?>
 
-<?php
-$this->beginContent('//patient/episodes_container', array(
-    'cssClass' => isset($cssClass) ? $cssClass : '',
-    'episode' => isset($current_episode) ? $current_episode : ''
-));
-?>
+    <nav class="event-header no-face">
+        <i class="oe-i-e large i-Patient"></i>
+        <?php $this->renderPartial('//patient/event_actions'); ?>
+    </nav>
+
+    <?php $this->beginContent('//patient/episodes_container', [
+        'css_class' => isset($cssClass) ? $cssClass : '',
+        'episode' => isset($current_episode) ? $current_episode : ''
+    ]);
+    ?>
     <h2 class="event-title">Patient Overview </h2>
     <div class="flex-layout flex-top">
         <div class="patient-overview">
@@ -86,7 +108,9 @@ $this->beginContent('//patient/episodes_container', array(
                 } else { ?>
                     <tr>
                         <td>VA:</td>
-                        <td><small class="fade">NA</small></td>
+                        <td>
+                            <small class="fade">NA</small>
+                        </td>
                     </tr>
                 <?php } ?>
 
@@ -108,7 +132,9 @@ $this->beginContent('//patient/episodes_container', array(
                         </td>
                     <?php } else { ?>
                         <td>Refraction:</td>
-                        <td><small class="fade">NA</small></td>>
+                        <td>
+                            <small class="fade">NA</small>
+                        </td>
                     <?php } ?>
                 </tr>
                 <tr>
@@ -141,12 +167,13 @@ $this->beginContent('//patient/episodes_container', array(
                             <?= $event->getEventIcon() ?>
                         </td>
                         <td>
-                            <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>"><?php echo $event->getEventName() ?></a>
+                            <a href="<?php echo $event_path . $event->id ?>"
+                               data-id="<?php echo $event->id ?>"><?php echo $event->getEventName() ?></a>
                         </td>
                         <td><?= $event->user->title . " " . $event->user->first_name . " " . $event->user->last_name ?></td>
                         <td>
                             <small class="fade oe-date">
-                                <?php if ($event->created_date !== $event->last_modified_date || $event->created_date !== $event->event_date ) {
+                                <?php if ($event->created_date !== $event->last_modified_date || $event->created_date !== $event->event_date) {
                                     echo 'Updated: '; ?>
                                     <span class="oe-date">
                                         <?= $event->NHSDateAsHTML('last_modified_date'); ?>
@@ -267,4 +294,5 @@ $this->beginContent('//patient/episodes_container', array(
         </div>
     </div>
 
-<?php $this->endContent();
+    <?php $this->endContent();
+} ?>
