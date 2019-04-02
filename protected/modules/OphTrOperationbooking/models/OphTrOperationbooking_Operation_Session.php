@@ -344,7 +344,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      * @return bool
      */
     public function isTherePlaceForComplexProcedure($operation) {
-        if (isset($this->max_complex_procedures)) {
+        if (!is_null($this->max_complex_procedures)) {
             $operation_complex_procedure_count = $operation->getComplexProcedureCount();
             if($operation_complex_procedure_count > 0) {
                 if ($this->getBookedComplexProcedureCount() + $operation_complex_procedure_count > $this->max_complex_procedures) {
