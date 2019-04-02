@@ -1781,11 +1781,11 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Medications</PRIMARY_TERM>
+          <PRIMARY_TERM>Medication History</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>PMH</TERM>
             <TERM>Medical History</TERM>
-            <TERM>Medication History</TERM>
+            <TERM>Medications</TERM>
           </SECONDARY_TERM_LIST>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryMedications</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>

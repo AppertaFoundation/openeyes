@@ -11,10 +11,12 @@
             {{ &infobox }} {{ medication }}
         </td>
         <td align="center">
-            <?php echo CHtml::dropDownList('MedicationSet[medications][include_parent][]', '0', $yesorno); ?>
+            <input type="hidden" name="MedicationSet[medications][include_parent][]" value="{{ include_parents_id }}" />
+            {{include_parents}}
         </td>
         <td align="center">
-            <?php echo CHtml::dropDownList('MedicationSet[medications][include_children][]', '0', $yesorno); ?>
+            <input type="hidden" name="MedicationSet[medications][include_children][]" value="{{ include_children_id }}" />
+            {{include_children}}
         </td>
         <td>
             <a href="javascript:void(0);" class="js-delete-medication-assignment"><i class="oe-i trash"></i></a>
@@ -52,10 +54,12 @@
                 <?php $this->widget('MedicationInfoBox', array('medication_id' => $assignment->medication_id)); ;?><?php echo $assignment->medication->preferred_term; ?>
             </td>
             <td align="center">
-				<?php echo CHtml::dropDownList('MedicationSet[medications][include_parent][]', $assignment->include_parent, $yesorno); ?>
+                <input type="hidden" name="MedicationSet[medications][include_parent][]" value="<?=$assignment->include_parent?>" />
+				<?php echo $yesorno[$assignment->include_parent]; ?>
             </td>
             <td align="center">
-				<?php echo CHtml::dropDownList('MedicationSet[medications][include_children][]', $assignment->include_children, $yesorno); ?>
+                <input type="hidden" name="MedicationSet[medications][include_children][]" value="<?=$assignment->include_children?>" />
+				<?php echo $yesorno[$assignment->include_children]; ?>
             </td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-medication-assignment"><i class="oe-i trash"></i></a>
@@ -73,8 +77,30 @@
             <script type="text/javascript">
                 new OpenEyes.UI.AdderDialog({
                     openButton: $('#add-medication-assignment'),
-                    itemSets: [],
+                    itemSets: [
+                        new OpenEyes.UI.AdderDialog.ItemSet([{"id": 1, "label": "Yes"}, {"id": 0, "label": "No"}], {"id": "inc_parents", 'multiSelect': false, header: "Include parents?"}),
+                        new OpenEyes.UI.AdderDialog.ItemSet([{"id": 1, "label": "Yes"}, {"id": 0, "label": "No"}], {"id": "inc_children", 'multiSelect': false, header: "Include children?"})
+                    ],
                     onReturn: function (adderDialog, selectedItems) {
+
+                        var row = {};
+                        $.each(selectedItems, function(i,e){
+                            if(typeof e.itemSet === "undefined") {
+                                row.medication = Object.assign({}, e);
+                                return;
+                            }
+                            if(e.itemSet.options.id == "inc_parents") {
+                                row.include_parents = e.id
+                            }
+                            else if(e.itemSet.options.id == "inc_children") {
+                                row.include_children = e.id;
+                            }
+                        });
+
+                        if(typeof row.medication === "undefined") {
+                            return false;
+                        }
+
                         var $body = $("#individual_medications_tbl > tbody");
                         var lastkey = $body.find("tr:last").attr("data-key");
                         if(isNaN(lastkey)) {
@@ -85,9 +111,13 @@
                         Mustache.parse(template);
                         var rendered = Mustache.render(template, {
                             "key": key,
-                            "medication": selectedItems[0].preferred_term,
-                            "id" : selectedItems[0].id,
-                            "infobox" : selectedItems[0].prepended_markup
+                            "medication": row.medication.preferred_term,
+                            "id" : row.medication.id,
+                            "infobox" : row.medication.prepended_markup,
+                            "include_parents": row.include_parents == 1 ? "yes" : "no",
+                            "include_children": row.include_children == 1 ? "yes" : "no",
+                            "include_parents_id": row.include_parents,
+                            "include_children_id": row.include_children
                         });
                         $body.append(rendered);
                         return true;
@@ -96,7 +126,6 @@
                         searchSource: '/medicationManagement/findRefMedications',
                     },
                     enableCustomSearchEntries: false,
-                    //searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"}
                 });
             </script>
         </td>
