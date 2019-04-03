@@ -33,6 +33,16 @@ class m190321_141548_unbooked_worklist_data_migration extends OEMigration
         Yii::app()->db->schema->getTable('event_version', true);
 
         $this->addForeignKey('event_ibfk_worklist_patient', 'event', 'worklist_patient_id', 'worklist_patient','id');
+
+        $this->insert('setting_metadata', array('element_type_id' => null,
+                'field_type_id' => 4,
+                'key' => 'worklist_search_appt_within',
+                'name' => 'Search worklist appointment within (days)',
+                'default_value' => '30',
+                'data' => ''
+            )
+        );
+        $this->insert('setting_installation', array('key' => 'worklist_search_appt_within', 'value' => '30'));
 	}
 
 	private function getWorklistPatientId($event)

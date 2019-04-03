@@ -54,7 +54,11 @@ class WorklistBehavior extends CBehavior
                 $this->owner->event->worklist_patient_id = null;
                 $worklist_patient = null;
 
-/** @TODO CONFIG DAYS */
+                $search_days = (string)SettingMetadata::model()->getSetting('worklist_search_appt_within');
+                //if the setting is invalid we fall back to 30days
+                if (!ctype_digit($search_days)) {
+                    $search_days = 30;
+                }
 
                 /*
                  * The relevant worklist is determined as (in order of precedence):
@@ -74,7 +78,7 @@ class WorklistBehavior extends CBehavior
                     $criteria->order = 'TIMESTAMPDIFF(MINUTE, t.when, NOW())';
                     $criteria->params = [
                         ':patient_id' => $patient_id,
-                        ':start_date' => date('Y-m-d H:i:s', strtotime("-30 days"))
+                        ':start_date' => date('Y-m-d H:i:s', strtotime("-{$search_days} days"))
                     ];
                     $worklist_patient = WorklistPatient::model()->find($criteria);
                 }
