@@ -14,7 +14,7 @@
 
 $(document).ready(function () {
   function deleteReading(e) {
-    var table = $(this).closest('table');
+    let table = $(this).closest('table');
     if (table.find('tbody tr').length <= 1) table.hide();
 
     if ($(this).closest('tr').data('side') == 'left') {
@@ -34,20 +34,20 @@ $(document).ready(function () {
   $('select.IOPinstrument').die('change').live('change', function (e) {
     e.preventDefault();
 
-    var instrument_id = $(this).val();
+    let instrument_id = $(this).val();
 
-    var scale_td = $(this).closest('tr').children('td.scale_values');
-    var index = $(this).closest('tr').data('index');
-    var side = $(this).closest('tr').data('side');
+    let scale_td = $(this).closest('tr').children('td.scale_values');
+    let index = $(this).closest('tr').data('index');
+    let side = $(this).closest('tr').data('side');
 
-    getScaleDropdown(instrument_id, scale_td, index, side);
+    getScaleDropdown('OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value', instrument_id, scale_td, index, side);
   });
 });
 
-function getScaleDropdown(instrument_id, scale_td, index, side){
+function getScaleDropdown(element_name, instrument_id, scale_td, index, side){
     $.ajax({
         'type': 'GET',
-        'url': baseUrl + '/OphCiExamination/default/getScaleForInstrument?name=OEModule_OphCiExamination_models_HistoryIOP' +
+        'url': baseUrl + '/OphCiExamination/default/getScaleForInstrument?name=' + element_name +
             '&instrument_id=' + instrument_id + '&side=' + side + '&index=' + index,
         'success': function (html) {
             if (html.length > 0) {

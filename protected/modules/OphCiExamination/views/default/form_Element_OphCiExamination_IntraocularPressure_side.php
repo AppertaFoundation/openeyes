@@ -134,8 +134,8 @@ $comments = $side . '_comments';
                 let $scale_td = $table_row.find("td.scale_values");
                 let index = $table_row.data('index');
 
-                getScaleDropdown(selectedItems[i]['id'], $scale_td, index, '<?=$side?>');
-            };
+                getScaleDropdown('OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value', selectedItems[i]['id'], $scale_td, index, '<?=$side?>');
+            }
             return true;
         },
     });

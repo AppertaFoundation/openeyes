@@ -25,13 +25,16 @@ use OEModule\OphCiExamination\models;
         <?php
         // show input after validation fail
         $instrument_model = OEModule\OphCiExamination\models\OphCiExamination_Instrument::model();
-        if ($_POST && isset($_POST['OEModule_OphCiExamination_models_HistoryIOP']["{$side}_values"])) {
+        if (isset($_POST['OEModule_OphCiExamination_models_HistoryIOP']["{$side}_values"])) {
+            $scaleValues = models\OphCiExamination_Qualitative_Scale::model()->findByAttributes(['name' => 'digital']);
+
             foreach ($_POST['OEModule_OphCiExamination_models_HistoryIOP']["{$side}_values"] as $index => $value) {
                 $recorded_value = new models\OphCiExamination_IntraocularPressure_Value();
                 if (isset($value['qualitative_reading_id'])) {
                     $recorded_value->instrument = models\OphCiExamination_Instrument::model()->findByPk($value['instrument_id']);
                     $recorded_value = new models\OphCiExamination_IntraocularPressure_Value();
-                    $recorded_value->instrument->scale = models\OphCiExamination_Qualitative_Scale::model()->findByAttributes(['name' => 'digital']);
+                    $recorded_value->instrument->scale = $scaleValues;
+                    $recorded_value->qualitative_reading_id = $value['qualitative_reading_id'];
                 } else {
                     $recorded_value->reading_id = $value['reading_id'];
                 }
@@ -119,10 +122,10 @@ use OEModule\OphCiExamination\models;
 
 <script type="text/javascript">
     $(function () {
-        var side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
+        let side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
 
         new OpenEyes.UI.AdderDialog({
-            id: 'add-to-iop',
+            id: 'add-iop-value-to-historyIOP',
             openButton: side.find('.js-add-select-search'),
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                 array_map(function ($instrument) {
@@ -132,7 +135,7 @@ use OEModule\OphCiExamination\models;
             ) ?>, {'multiSelect': true})],
             onReturn: function (adderDialog, selectedItems) {
                 for (let i = 0; i < selectedItems.length; i++) {
-                    OphCiExamination_IntraocularPressure_addReading(
+                    HistoryIOP_addReading(
                         '<?=$side?>',
                         selectedItems[i]['id'],
                         selectedItems[i]['label']);
@@ -141,8 +144,8 @@ use OEModule\OphCiExamination\models;
                     let $scale_td = $table_row.find("td.scale_values");
                     let index = $table_row.data('index');
 
-                    getScaleDropdown(selectedItems[i]['id'], $scale_td, index, '<?=$side?>');
-                };
+                    getScaleDropdown("OEModule_OphCiExamination_models_HistoryIOP", selectedItems[i]['id'], $scale_td, index, '<?=$side?>');
+                }
 
                 // activate the datePicker
                 $('.iop-date').datepicker({ dateFormat: 'dd/mm/yy', maxDate: '0', showAnim: 'fold'});
@@ -152,9 +155,9 @@ use OEModule\OphCiExamination\models;
         });
     });
 
-    function OphCiExamination_IntraocularPressure_addReading(side, instrumentId, instrumentName) {
-        var table = $("#OEModule_OphCiExamination_models_HistoryIOP_readings_" + side);
-        var indices = table.find('tr').map(function () {
+    function HistoryIOP_addReading(side, instrumentId, instrumentName) {
+        let table = $("#OEModule_OphCiExamination_models_HistoryIOP_readings_" + side);
+        let indices = table.find('tr').map(function () {
             return $(this).data('index');
         });
 

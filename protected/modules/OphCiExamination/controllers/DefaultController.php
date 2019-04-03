@@ -1204,6 +1204,7 @@ class DefaultController extends \BaseEventTypeController
         $errors = parent::setAndValidateElementsFromData($data);
 
         if(isset($data['OEModule_OphCiExamination_models_HistoryIOP'])){
+            $et_name = models\HistoryIOP::model()->getElementTypeName();
             $historyIOP = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryIOP');
             $entries = $data['OEModule_OphCiExamination_models_HistoryIOP'];
             foreach (['left_values', 'right_values'] as $side_values) {
@@ -1213,20 +1214,22 @@ class DefaultController extends \BaseEventTypeController
                         $reading->attributes = $value;
                         if (!$reading->validate()) {
                             $readingErrors = $reading->getErrors();
-                            foreach ($readingErrors as $readingErrorAttributeName => $readingErrorMessage) {
-                                $historyIOP->addError($side_values . '_' . $index . '_' . $readingErrorAttributeName, $readingErrorMessage[0]);
-                                $errors[$this->event_type->name][] = $readingErrorMessage[0];
+                            foreach ($readingErrors as $readingErrorAttributeName => $readingErrorMessages) {
+                                foreach ($readingErrorMessages as $readingErrorMessage) {
+                                    $historyIOP->addError($side_values . '_' . $index . '_' . $readingErrorAttributeName, $readingErrorMessage);
+                                    $errors[$et_name][] = $readingErrorMessage;
+                                }
                             }
                         }
                         if (!isset($value['examination_date']) || !$value['examination_date']) {
                             $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'there must be a date set for the iop value');
-                            $errors[$this->event_type->name][] = 'there must be a date set for the iop value';
+                            $errors[$et_name][] = 'There must be a date set for the iop value';
                         } else {
                             $date = \DateTime::createFromFormat('d/m/Y', $value['examination_date']);
                             $errorsDate = \DateTime::getLastErrors();
                             if (!$date || !empty($errorsDate['warning_count'])) {
                                 $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: d/m/Y');
-                                $errors[$this->event_type->name][] = 'Date is wrongly formatted: format accepted: d/m/Y';
+                                $errors[$et_name][] = 'Date is wrongly formatted: format accepted: d/m/Y';
                             }
                         }
                     }

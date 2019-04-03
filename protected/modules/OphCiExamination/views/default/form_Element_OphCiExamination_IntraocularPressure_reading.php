@@ -41,6 +41,7 @@ $base_name = CHtml::modelName($value) . "[{$side}_values][{$index}]";
           echo $this->renderPartial(
                   '_qualitative_scale',
                   array(
+                      'name' => CHtml::modelName($value),
                       'value' => $value,
                       'side' => $side,
                       'index' => $index,
