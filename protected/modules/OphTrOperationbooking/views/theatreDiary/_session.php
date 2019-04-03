@@ -192,7 +192,7 @@
           <?php
           $minutes_status = ($session->availableMinutes > 0);
           $proc_status = (!$session->max_procedures || $session->getAvailableProcedureCount() > 0);
-          $complex_proc_status = (!$session->max_complex_procedures || $session->getAvailableComplexProcedureCount() > 0);
+          $there_is_place_for_complex_booking = (is_null($session->max_complex_bookings) || $session->getAvailableComplexBookingCount() > 0);
           $status = ($minutes_status && $proc_status && $session->available);
           ?>
         <td colspan="10" data-minutes-available="<?= $session->availableMinutes ?>"
@@ -215,17 +215,17 @@
                     (Overbooked by <span
                           class="overbooked-proc-val"><?= abs($session->getAvailableProcedureCount()); ?></span>)</span>
                   </span>
-            <span data-current-complex-procedure-count="<?= $session->getBookedComplexProcedureCount() ?>"
-                class="complex-procedure-count" id="complex_procedure_count_<?= $session->id ?>"
-                <?= $session->max_complex_procedures ? "" : "style='display: none;'"  ?>>
+            <span data-current-complex-booking-count="<?= $session->getComplexBookingCount() ?>"
+                class="complex-booking-count" id="complex_booking_count_<?= $session->id ?>"
+                <?= is_null($session->max_complex_bookings) ? "style='display: none;'" : "" ?>>
                 <br/>
-                <span class="available-complex-procedure-count">
-                    <?= $complex_proc_status ? $session->getAvailableComplexProcedureCount() : '0' ?>
-                </span> complex procedure(s) available
-                <span class="overbooked" <?= $session->getAvailableComplexProcedureCount() >= 0 ? "style = 'display: none;'" : "" ?>>
+                <span class="available-complex-booking-count">
+                    <?= $there_is_place_for_complex_booking ? $session->getAvailableComplexBookingCount() : '0' ?>
+                </span> complex booking(s) available
+                <span class="overbooked" <?= $session->getAvailableComplexBookingCount() >= 0 ? "style = 'display: none;'" : "" ?>>
                     (Overbooked by
                     <span
-                            class="overbooked-complex-procedure-count"><?= abs($session->getAvailableComplexProcedureCount()); ?></span>)
+                            class="overbooked-complex-booking-count"><?= abs($session->getAvailableComplexBookingCount()); ?></span>)
                 </span>
             </span>
             <span class="session-unavailable" id="session_unavailable_<?php echo $session->id ?>"
@@ -261,11 +261,11 @@
                     class="max-procedures-val"><?php echo $session->max_procedures ?></span>
                 Procedures
               </div>
-              <div <?= $session->max_complex_procedures ? "" :  "style='display: none;'" ?>
-                  id="max_complex_procedures_icon_<?php echo $session->id ?>" class="max-complex-procedures"
-                  title="Max Complex <?php echo $session->max_complex_procedures ?>">Max <span
-                    class="max-complex-procedures-value"><?php echo $session->max_complex_procedures ?></span>
-                Complex Procedures
+              <div <?= is_null($session->max_complex_bookings) ? "style='display: none;'" : "" ?>
+                  id="max_complex_bookings_icon_<?php echo $session->id ?>" class="max-complex-bookings"
+                  title="Max Complex <?php echo $session->max_complex_bookings ?>">Max <span
+                    class="max-complex-bookings-value"><?php echo $session->max_complex_bookings ?></span>
+                Complex Booking(s)
               </div>
             </div>
 
@@ -324,11 +324,11 @@
                   <div>
                     <input style="display: inline-block;" type="text"
                            autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
-                           class="limited-width" id="max_complex_procedures_<?php echo $session->id ?>" maxlength="2"
-                           size="2" name="max_complex_procedures_<?php echo $session->id ?>"
-                           value="<?php echo $session->max_complex_procedures; ?>"/>
+                           class="limited-width" id="max_complex_bookings_<?php echo $session->id ?>" maxlength="2"
+                           size="2" name="max_complex_bookings_<?php echo $session->id ?>"
+                           value="<?php echo $session->max_complex_bookings; ?>"/>
                     <label style="display: inline-block;">
-                      <?php echo $session->getAttributeLabel('max_complex_procedures'); ?>
+                      <?php echo $session->getAttributeLabel('max_complex_bookings'); ?>
                     </label>
                   </div>
                 </div>

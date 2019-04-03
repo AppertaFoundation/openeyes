@@ -323,11 +323,11 @@ class OphTrOperationbooking_Operation_Booking extends BaseActiveRecordVersioned
     /**
      * Pass through convenience function.
      *
-     * @return int
+     * @return bool
      */
-    public function getComplexProcedureCount()
+    public function isComplex()
     {
-      return $this->operation->getComplexProcedureCount();
+      return $this->operation->isComplex();
     }
 
     /**

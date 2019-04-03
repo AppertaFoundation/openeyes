@@ -90,13 +90,13 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                     </tr>
                     <?php if (isset($selectedSession)) {
                         $operationBookable = $selectedSession->operationBookable($operation);
-                        $thereIsPlaceForComplexProcedure = $selectedSession->isTherePlaceForComplexProcedure($operation);
-                        if(!$operationBookable || !$thereIsPlaceForComplexProcedure) { ?>
+                        $thereIsPlaceForComplexBooking = $selectedSession->isTherePlaceForComplexBooking($operation);
+                        if(!$operationBookable || !$thereIsPlaceForComplexBooking) { ?>
                             <tr>
                                 <td style="float:left">
                                     <span class="session-unavailable alert-box warning">
                                         <?=$operationBookable ?
-                                            "The allowed number of complex procedures has been reached for this session" :
+                                            "The allowed number of complex bookings has been reached for this session" :
                                             \CHtml::encode($selectedSession->unbookableReason($operation)) ?>
                                     </span>
                                 </td>

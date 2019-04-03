@@ -60,15 +60,16 @@
 			</div>
 		</fieldset>
 	<?php } ?>
-    <?= $form->textField($session, 'max_complex_procedures', [], [], ['field' => 2]); ?>
-    <?php $current = $session->getBookedComplexProcedureCount();
+    <?= $form->textField($session, 'max_complex_bookings', [], [], ['field' => 2]); ?>
+    <?php $current = $session->getComplexBookingCount();
         if ($current) { ?>
-        <fieldset id="complex_procedure_count_wrapper" class="data-group <?php if ($session->max_complex_procedures && $current > $session->max_complex_procedures) { echo ' warn'; }?>">
+        <fieldset id="complex_booking_count_wrapper" class="data-group
+        <?php if (!is_null($session->max_complex_bookings) && $current > $session->max_complex_bookings) { echo ' warn'; }?>">
             <div class="cols-2 column">
-                <div class="field-label">Current Booked Complex Procedures:</div>
+                <div class="field-label">Current Complex Bookings:</div>
             </div>
             <div class="cols-5 column end">
-                <div class="field-value" id="current-complex-proc-count"><?= $current ?></div>
+                <div class="field-value" id="current-complex-booking-count"><?= $current ?></div>
             </div>
         </fieldset>
     <?php } ?>

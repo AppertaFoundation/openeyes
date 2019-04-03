@@ -182,16 +182,16 @@ $(document).ready(function() {
 	});
 
 	$('#bookingForm button#confirm_slot').on('click',function(e) {
-		if($(this).data('there-is-place-for-complex-procedure') === true) {
+		if($(this).data('there-is-place-for-complex-booking') === true) {
 			$('#bookingForm').submit();
 		} else {
 			e.preventDefault();
 			let dialog = new OpenEyes.UI.Dialog.Confirm({
-				content: "The allowed number of complex procedures has been already been reached for this session. Are you sure you want to add another complex procedure?"
+				content: "The allowed number of complex bookings has been already been reached for this session. Are you sure you want to add another complex booking?"
 			});
 			dialog.on('ok', function () {
 				$('#bookingForm').submit();
-			}.bind(this));
+			});
 			dialog.open();
 		}
 	});

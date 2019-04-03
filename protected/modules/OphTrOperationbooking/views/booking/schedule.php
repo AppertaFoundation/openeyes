@@ -245,7 +245,7 @@
                     'bookings' => $bookings,
                     'reschedule' => $operation->booking,
                     'bookable' => $bookable,
-                    'there_is_place_for_complex_procedure' => $there_is_place_for_complex_procedure,
+                    'there_is_place_for_complex_booking' => $there_is_place_for_complex_booking,
                     'errors' => $errors,
                 ), false, false) ?>
             <?php } ?>

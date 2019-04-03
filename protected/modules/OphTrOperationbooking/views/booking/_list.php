@@ -26,8 +26,8 @@ if (!$reschedule) {
         if ($session->max_procedures) {
             echo ', ' . $session->getAvailableProcedureCount() . '/' . $session->max_procedures . ' procedures left';
         }
-        if(!is_null($session->max_complex_procedures)) {
-            echo ', ' . $session->getAvailableComplexProcedureCount() . '/' . $session->max_complex_procedures . ' complex procedures left';
+        if(!is_null($session->max_complex_bookings)) {
+            echo ', ' . $session->getAvailableComplexBookingCount() . '/' . $session->max_complex_bookings . ' complex bookings left';
         } ?>)
     </h3>
 </header>
@@ -204,7 +204,7 @@ if (!$reschedule) {
         Date/Time currently selected:<?php echo Helper::convertDate2NHS($session['date']); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?>
     </div>
     <div class="data-group">
-        <button type="submit" class="large green hint" id="confirm_slot" data-there-is-place-for-complex-procedure="<?= $session->isTherePlaceForComplexProcedure($operation) ? "true" : "false" ?>">Confirm slot</button>
+        <button type="submit" class="large green hint" id="confirm_slot" data-there-is-place-for-complex-booking="<?= $session->isTherePlaceForComplexBooking($operation) ? "true" : "false" ?>">Confirm slot</button>
         <button type="button" class="large red hint" id="cancel_scheduling"><?php echo 'Cancel '.($reschedule ? 're-' : '').'scheduling';?></button>
     </div>
     <?php
