@@ -28,7 +28,7 @@
     <?php
     foreach ($worklist_patients_attributes as $worklist_patients_attribute) {
         $time = date('H:i', strtotime($worklist_patients_attribute->time));
-        $date = date('d M Y', strtotime($worklist_patients_attribute->date));
+        $date = \Helper::convertDate2NHS($worklist_patients_attribute->date);
         $worklist_name = $worklist_patients_attribute->worklistName;
         $worklist_status = $worklist_patients_attribute->attribute_value;
         ?>
@@ -65,7 +65,7 @@
     <?php
     foreach ($past_worklist_patient_attributes as $worklist_patients_attribute) {
         $time = date('H:i', strtotime($worklist_patients_attribute->time));
-        $date = date('d M Y', strtotime($worklist_patients_attribute->date));
+        $date = \Helper::convertDate2NHS($worklist_patients_attribute->date);
         $worklist_name = $worklist_patients_attribute->worklistName;
         $worklist_status = $worklist_patients_attribute->attribute_value;
         ?>
