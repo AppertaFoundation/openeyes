@@ -315,6 +315,10 @@ class ElementLetter extends BaseEventTypeElement
             }
         }
 
+        $patientOptometrist = $patient->getPatientOptometrist();
+        if($patientOptometrist){
+            $options['Optometrist'.$patientOptometrist->id] = $patientOptometrist->fullname.' (Optometrist)';
+        }
         // get the ids of the commissioning body types that should be shown as potential recipients to filter against
         $cbt_ids = array();
         foreach (OphCoCorrespondence_CommissioningBodyType_Recipient::model()->getCommissioningBodyTypes() as $cbt) {

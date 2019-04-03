@@ -355,9 +355,15 @@ class OphCoCorrespondence_API extends BaseAPI
             $data['to']['contact_id'] = $contact->contact->id;
         }
 
+        if ($macro->recipient && $macro->recipient->name == 'Optometrist') {
+            $contact = $contact = $patient->getPatientOptometrist();
+            $data['to']['contact_type'] = "Optometrist";
+            $data['to']['contact_id'] = $contact->id;
+        }
+
         if (isset($contact)) {
             $data['to']['contact_name'] = method_exists($contact, "getCorrespondenceName") ? $contact->getCorrespondenceName() : $contact->getFullName();
-            $data['to']['contact_nickname'] = $this->getNickname($contact->contact->id);
+            $data['to']['contact_nickname'] = $this->getNickname(isset($contact->contact) ? $contact->contact->id : $contact->id);
             $data['to']['address'] = $contact->getLetterAddress(array(
                                     'patient' => $patient,
                                     'include_name' => false,
@@ -408,6 +414,23 @@ class OphCoCorrespondence_API extends BaseAPI
                     'include_prefix' => false,
                 ));
             $k++;
+        }
+
+        if ($macro->cc_optometrist) {
+            $cc_contact = $contact = $patient->getPatientOptometrist();
+            if($cc_contact) {
+                $data['cc'][$k]['contact_type'] = "Optometrist";
+                $data['cc'][$k]['contact_name'] = $cc_contact->getCorrespondenceName();
+                $data['cc'][$k]['contact_id'] = $cc_contact->id;
+                $data['cc'][$k]['address'] = $cc_contact->getLetterAddress(array(
+                    'patient' => $patient,
+                    'include_name' => false,
+                    'include_label' => false,
+                    'delimiter' => "\n",
+                    'include_prefix' => false,
+                ));
+                $k++;
+            }
         }
 
         if ($macro->cc_drss) {
@@ -622,14 +645,18 @@ class OphCoCorrespondence_API extends BaseAPI
             throw new Exception('Invalid contact format: '.$contact_string);
         }
 
+
         if ($m[1] == 'Contact') {
             // NOTE we are assuming that Contact must be a Person model here
             $contact = Person::model()->find('contact_id=?', array($m[2]));
+        } else if($m[1] == 'Optometrist') {
+            $contact = Contact::model()->findByPk($m[2]);
         } else {
             if (!$contact = $m[1]::model()->findByPk($m[2])) {
                 throw new Exception("{$m[1]} not found: {$m[2]}");
             }
         }
+
 
         if (method_exists($contact, 'isDeceased') && $contact->isDeceased()) {
             return json_encode(array('errors' => 'DECEASED'));
@@ -638,14 +665,14 @@ class OphCoCorrespondence_API extends BaseAPI
         $text_ElementLetter_address = $contact->getLetterAddress(array(
             'patient' => $patient,
             'include_name' => true,
-            'include_label' => true,
+            'include_label' => false,
             'delimiter' => "\n",
         ));
         
         $address = $contact->getLetterAddress(array(
             'patient' => $patient,
             'include_name' => false,
-            'include_label' => true,
+            'include_label' => false,
             'delimiter' => "\n",
         ));
         
@@ -673,17 +700,19 @@ class OphCoCorrespondence_API extends BaseAPI
             $contact_type = 'DRSS';
         } else if($m[1] == 'Practice'){
             $contact_type = 'Gp';
+        } else if ($m[1] == 'Optometrist') {
+            $contact_type = 'Optometrist';
         }
         
-        if( !in_array($contact_type, array('Gp','Patient','DRSS')) ){
+        if( !in_array($contact_type, array('Gp','Patient','DRSS', 'Optometrist')) ){
             $contact_type = 'Other';
         }
 
         return $data = array(
             'contact_type' => $contact_type,
-            'contact_id' => isset($contact->contact->id) ? $contact->contact->id : null,
+            'contact_id' => isset($contact->contact) ? $contact->contact->id : $contact->id,
             'contact_name' => $correspondence_name,
-            'contact_nickname' => isset($contact->contact->nick_name) ? $contact->contact->nick_name : null,           
+            'contact_nickname' => isset($contact->contact) ? $contact->contact->nick_name : $contact->nick_name,
             'address' => $address ? $address : "The contact does not have a valid address.",
             'text_ElementLetter_address' => $text_ElementLetter_address,
             'text_ElementLetter_introduction' => $contact->getLetterIntroduction(array(

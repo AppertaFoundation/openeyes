@@ -17,13 +17,13 @@
  */
 class ContactBehavior extends CActiveRecordBehavior
 {
-    public function getLetterAddress($params = array())
+    public function getLetterAddress($params = array() , $contact = null)
     {
         if (@$params['contact']) {
             $contactRelation = @$params['contact'];
             $contact = $this->owner->$contactRelation;
         } else {
-            $contact = $this->owner->contact;
+            $contact = isset($this->owner->contact) ? $this->owner->contact : $this->owner;
         }
         $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
 

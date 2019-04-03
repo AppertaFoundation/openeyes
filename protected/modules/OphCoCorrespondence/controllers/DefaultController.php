@@ -212,6 +212,11 @@ class DefaultController extends BaseEventTypeController
             $data['sel_address_target'] = get_class($contact).$contact->id;
         }
 
+        if ($macro->recipient && $macro->recipient->name == 'Optometrist' ) {
+            $contact = $patient->getPatientOptometrist();
+            $data['sel_address_target'] = get_class($contact).$contact->id;
+        }
+
         if (isset($contact)) {
             $address = $contact->getLetterAddress(array(
                 'patient' => $patient,
@@ -268,6 +273,21 @@ class DefaultController extends BaseEventTypeController
                 ));
             $cc['targets'][] = '<input type="hidden" name="CC_Targets[]" value="'.get_class($cc_contact).$cc_contact->id.'" />';
         }
+
+        if ($macro->cc_optometrist) {
+            $cc_contact = $contact = $patient->getPatientOptometrist();
+            if($cc_contact) {
+                $cc['text'][] = $cc_contact->getLetterAddress(array(
+                    'patient' => $patient,
+                    'include_name' => true,
+                    'include_label' => true,
+                    'delimiter' => ', ',
+                    'include_prefix' => true,
+                ));
+                $cc['targets'][] = '<input type="hidden" name="CC_Targets[]" value="' . get_class($cc_contact) . $cc_contact->id . '" />';
+            }
+        }
+
 
         if ($macro->cc_drss) {
             $commissioningbodytype = CommissioningBodyType::model()->find('shortname = ?', array('CCG'));

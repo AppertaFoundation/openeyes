@@ -152,6 +152,13 @@ class Contact extends BaseActiveRecordVersioned
         ));
     }
 
+    public function behaviors()
+    {
+        return array(
+            'ContactBehavior' => 'ContactBehavior',
+        );
+    }
+
     /**
      * @return string Full name
      */
