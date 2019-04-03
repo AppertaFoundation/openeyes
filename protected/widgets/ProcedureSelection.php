@@ -39,6 +39,7 @@ class ProcedureSelection extends BaseFieldWidget
     public $callback = false;
     public $layout = false;
     public $popupButton = true;
+    public $complexity = null;
 
     public function run()
     {
@@ -52,7 +53,6 @@ class ProcedureSelection extends BaseFieldWidget
                 $this->adjusted_total_duration = $this->total_duration;
             }
         } else {
-            $this->element->complexity = isset($_POST['Element_OphTrOperationbooking_Operation']['complexity']) ? $_POST['Element_OphTrOperationbooking_Operation']['complexity'] : $this->element->complexity;
             $this->selected_procedures = array();
             if (isset($_POST['Procedures_' . $this->identifier]) && is_array($_POST['Procedures_' . $this->identifier])) {
                 foreach ($_POST['Procedures_' . $this->identifier] as $proc_id) {
