@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,10 +9,11 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 Yii::import('application.controllers.*');
+use OEModule\OphCiExamination\models;
 
 /**
  * Class PatientController
@@ -49,7 +47,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer', 'summary'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -143,6 +141,36 @@ class PatientController extends BaseController
         $this->redirect(array('episodes', 'id' => $id));
     }
 
+    public function actionSummary($id) {
+        $this->layout = '//layouts/events_and_episodes';
+        $this->patient = Patient::model()->findByPk($id);
+        $this->pageTitle = "Summary";
+
+        $episodes = $this->patient->episodes;
+        $legacy_episodes = $this->patient->legacyepisodes;
+        $support_service_episodes = $this->patient->supportserviceepisodes;
+
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['episode', 'episode.patient'];
+        $criteria->addCondition('patient.id=:patient_id');
+        $criteria->params['patient_id'] = $this->patient->id;
+        $criteria->order = 't.last_modified_date desc';
+        $criteria->limit = 3;
+        $events = Event::model()->findAll($criteria);
+
+        $no_episodes = count($episodes) < 1 && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
+
+        if ($no_episodes) {
+            $this->layout = '//layouts/events_and_episodes_no_header';
+        }
+
+        $this->render('landing_page', array(
+            'events' => $events,
+            'patient' => $this->patient,
+            'no_episodes' => $no_episodes,
+        ));
+    }
+
     public function actionSearch()
     {
         $term = \Yii::app()->request->getParam('term', '');
@@ -186,7 +214,7 @@ class PatientController extends BaseController
         } elseif ($itemCount == 1) {
             $item = $dataProvider->getData()[0];
             $api = new CoreAPI();
-            $this->redirect(array($api->generateEpisodeLink($item)));
+            $this->redirect(array($api->generatePatientLandingPageLink($item)));
         } else {
             $this->renderPatientPanel = false;
             $this->pageTitle = $term . ' - Search';
@@ -258,7 +286,7 @@ class PatientController extends BaseController
             //display the flash message
             Yii::app()->user->setFlash('warning.no-results', $merged->getMergedMessage());
 
-            $this->redirect( ($redirect_link ? $redirect_link : $primary_patient->generateEpisodeLink()));
+            $this->redirect( ($redirect_link ? $redirect_link : (new CoreAPI())->generatePatientLandingPageLink($this->patient)));
         }
     }
 
@@ -316,7 +344,7 @@ class PatientController extends BaseController
             'title' => empty($episodes) ? '' : 'Episode summary',
             'episodes' => $episodes,
             'site' => $site,
-            'cssClass' => 'episodes-list',
+            'css_class' => 'episodes-list',
             'noEpisodes' => $no_episodes,
         ));
     }
@@ -446,7 +474,8 @@ class PatientController extends BaseController
         ));
     }
 
-    public function actionOEscape($subspecialty_id, $patient_id){
+    public function actionOEscape($subspecialty_id, $patient_id)
+    {
 
         $subspecialty = Subspecialty::model()->findByPk($subspecialty_id);
         $patient = Patient::model()->findByPk($patient_id);
@@ -461,18 +490,57 @@ class PatientController extends BaseController
 
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
-        $this->event_tabs = array(
-            array(
+        $this->event_tabs = [
+            [
                 'label' => 'View',
                 'active' => true,
-            ),
-        );
+            ],
+        ];
+
+        $header_data = [];
+        if ($subspecialty->ref_spec == 'GL') {
+            $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+            $cct_element = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+                $this->patient,
+                false //use context
+            );
+
+            $criteria = new \CDbCriteria();
+            $criteria->with = ['event.episode'];
+            $criteria->addCondition('episode.patient_id = :patient_id');
+            $criteria->params[':patient_id'] = $this->patient->id;
+            $criteria->order = "event.event_date ASC";
+            $iop = models\Element_OphCiExamination_IntraocularPressure::model()->find($criteria);
+
+            if ($cct_element) {
+                if ($cct_element->hasLeft()) {
+                    $header_data['CCT']['left'] = $cct_element->left_value;
+                }
+                if ($cct_element->hasRight()) {
+                    $header_data['CCT']['right'] = $cct_element->right_value;
+                }
+                $header_data['CCT']['date'] = \Helper::convertMySQL2NHS($cct_element->event->event_date);
+            }
+
+            if ($iop) {
+                $header_data['IOP']['right'] = $iop->getReading('right');
+                $header_data['IOP']['left'] = $iop->getReading('left');
+                $header_data['IOP']['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
+            }
+
+            $max_iop = $exam_api->getMaxIOPValues($patient);
+            if ($max_iop) {
+                $header_data['IOP_MAX']['right'] = $max_iop['right'];
+                $header_data['IOP_MAX']['left'] = $max_iop['left'];
+            }
+        }
 
         $this->render('/oescape/oescapes', array(
             'title' => '' ,
             'subspecialty' => $subspecialty,
             'site' => $site,
             'noEpisodes' => false,
+            'header_data' => $header_data
         ));
     }
 
