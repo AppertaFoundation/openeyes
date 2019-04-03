@@ -897,6 +897,11 @@ class BaseEventTypeController extends BaseModuleController
                 'label' => 'Edit',
                 'href' => Yii::app()->createUrl($this->event->eventType->class_name . '/default/update/' . $this->event->id),
             );
+
+            $this->event_tabs[] = array(
+                'label' => 'Change Context',
+                'class' => 'js-change_context'
+            );
         }
 
         if ($this->checkDeleteAccess()) {

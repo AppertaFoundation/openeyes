@@ -66,6 +66,8 @@ $episodes_list = array(); ?>
                   $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
                   $event_name = $event->getEventName();
                   $event_image = EventImage::model()->find('event_id = :event_id', array(':event_id' => $event->id));
+                  $patientTicketing_API = new \OEModule\PatientTicketing\components\PatientTicketing_API();
+                  $virtual_clinic_event = $patientTicketing_API->getTicketForEvent($event);
                   ?>
 
               <li id="js-sideEvent<?php echo $event->id ?>"
@@ -92,7 +94,20 @@ $episodes_list = array(); ?>
                 </div>
 
                 <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
-                    <span class="event-type js-event-a <?= ($event->hasIssue()) ? ($event->hasIssue('ready') ? 'ready' : 'alert') : '' ?>">
+                    <?php $event_icon_class = "";
+                    if ($event->hasIssue()) {
+                        if ($event->hasIssue('ready')) {
+                            $event_icon_class .= ' ready';
+                        } else {
+                            $event_icon_class .= ' alert';
+
+                        }
+                    }
+                    if ($virtual_clinic_event) {
+                        $event_icon_class .= ' virtual-clinic';
+                    }
+                    ?>
+                    <span class="event-type js-event-a<?=$event_icon_class?>">
                         <?= $event->getEventIcon() ?>
                     </span>
                     <span class="event-extra">
@@ -128,8 +143,21 @@ $this->renderPartial('//patient/add_new_event', array(
     'context_firm' => $this->firm,
     'patient_id' => $this->patient->id,
     'event_types' => EventType::model()->getEventTypeModules(),
-)); ?>
-
+));
+if($this->editable){
+  $this->renderPartial('//patient/change_event_context', array(
+      'button_selector' => '.js-change_context',
+      'view_subspecialty' => $current_subspecialty,
+      'episodes' => $active_episodes,
+      'context_firm' => $this->firm,
+      'patient_id' => $this->patient->id,
+      'workflowSteps' => OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps(),
+      'currentStep' => (isset($this->event->eventType->class_name) && $this->event->eventType->class_name == 'OphCiExamination' ? $this->getCurrentStep() : '' ),
+      'currentFirm' => (isset($this->event->firm_id) ? $this->event->firm_id : '""'), // for some strange reason '' doesn't reslove to an empty str 
+      'event_types' => $this->event->eventType->name
+  ));
+}
+?>
 <?php
 $subspecialty_label_list = array();
 foreach ($subspecialty_labels as $id => $label) {
