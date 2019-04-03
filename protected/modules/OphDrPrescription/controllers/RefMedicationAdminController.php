@@ -128,6 +128,21 @@ class RefMedicationAdminController extends BaseAdminController
 			'vmp_code' => 'VMP code',
 			'amp_term' => 'AMP term',
 			'amp_code' => 'AMP code',
+			'default_form_id' => array(
+				'widget' => 'DropDownList',
+				'options' => CHtml::listData(MedicationForm::model()->findAll("deleted_date IS NULL"), "id", "term"),
+				'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+				'hidden' => false,
+				'layoutColumns' => array()
+			),
+			'default_route_id' => array(
+				'widget' => 'DropDownList',
+				'options' => CHtml::listData(MedicationRoute::model()->findAll("deleted_date IS NULL"), "id", "term"),
+				'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+				'hidden' => false,
+				'layoutColumns' => array()
+			),
+			'default_dose_unit_term' => 'Default dose unit',
 			'attributes' => array(
 				'widget' => 'CustomView',
 				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_attributes',

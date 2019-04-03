@@ -404,6 +404,9 @@ EOD;
 		$sql[] = "ALTER TABLE {$this->tablePrefix}amp_amps ADD INDEX idx_amp_apid (apid)";
 		$sql[] = "ALTER TABLE {$this->tablePrefix}amp_amps ADD INDEX idx_amp_vpid (vpid)";
 		$sql[] = "ALTER TABLE {$this->tablePrefix}vtm_vtm ADD INDEX idx_vtm_vtmid (vtmid)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_unit_of_measure ADD INDEX idx_uom_cd (cd)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_form ADD INDEX idx_lfrm_cd (cd)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_route ADD INDEX idx_lrt_cd (cd)";
 
 		$cmdcount = count($sql);
 		$i=1;
@@ -467,7 +470,7 @@ EOD;
 		}
 
         $scripts = [
-            'delete', 'copy_amp', 'copy_vmp', 'copy_vtm', 'forms_routes', 'sets', 'ref_medication_sets', 'ref_medication_sets_load', 'add_formulary', 'search_index'
+            'delete', 'forms_routes',  'copy_amp', 'copy_vmp', 'copy_vtm', 'sets', 'ref_medication_sets', 'ref_medication_sets_load', 'add_formulary', 'search_index'
         ];
 
         foreach ($scripts as $script) {

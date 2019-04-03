@@ -122,7 +122,10 @@ class Medication extends BaseActiveRecordVersioned
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
-            'will_copy' => 'Will copy'
+            'will_copy' => 'Will copy',
+			'default_form_id' => 'Default form',
+			'default_route_id' => 'Default route',
+			'default_dose_unit_term' => 'Default dose unit'
 		);
 	}
 
