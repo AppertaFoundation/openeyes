@@ -195,10 +195,11 @@ $element_errors = $element->getErrors();
         });
 
         <?php
-        $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);
-        foreach ($medications as &$medication) {
-            $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
-        }
+            $site_id = $this->getApp()->session->get('selected_site_id');
+            $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true, $site_id);
+            foreach ($medications as &$medication) {
+                $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+            }
         ?>
 
         new OpenEyes.UI.AdderDialog({

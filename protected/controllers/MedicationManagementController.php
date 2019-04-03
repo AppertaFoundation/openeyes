@@ -60,59 +60,30 @@
                 $crit2->params['med_id'] = $med->id;
                 $crit2->limit = 1;
 
-                $med_set_item = MedicationSetItem::model()->findAll($crit2);
-                if(!empty($med_set_item)) {
-                    $med_set_item = $med_set_item[0];
+                $infoBox = new MedicationInfoBox();
+				$infoBox->medication_id = $med->id;
+				$infoBox->init();
+				$tooltip = $infoBox->getHTML();
 
-                    $infoBox = new MedicationInfoBox();
-                    $infoBox->medication_id = $med->id;
-                    $infoBox->init();
-                    $tooltip = $infoBox->getHTML();
-
-                    $ret_data[] = array_merge($med->getAttributes(), [
-                            'label' => $med->getLabel(). ($med->isMemberOf("Formulary") ? " (*)" : ""),
-                            'dose_unit_term' => $med_set_item->default_dose_unit_term,
-                            'dose' => $med_set_item->default_dose,
-                            'default_form' => $med_set_item->default_form_id,
-                            'frequency_id' => $med_set_item->default_frequency_id,
-                            'route_id' => $med_set_item->default_route_id,
-                            'tabsize' => null,
-                            'will_copy' => $med->getToBeCopiedIntoMedicationManagement(),
-                            'prepended_markup' => $tooltip,
-                            'set_ids' => array_map(function ($e){
-                                return $e->id;
-                            } , $med->getMedicationSetsForCurrentSubspecialty()),
-							'allergy_ids' => array_map(function ($e) {
-								return $e->id;
-							}, $med->allergies),
-                        ]
-                    );
-                }
-                else {
-
-					$infoBox = new MedicationInfoBox();
-					$infoBox->medication_id = $med->id;
-					$infoBox->init();
-					$tooltip = $infoBox->getHTML();
-
-                    $ret_data[] = array_merge($med->getAttributes(), [
-                            'label' => $med->getLabel(),
-                            'dose_unit_term' => '',
-                            'dose' => '',
-                            'default_form' => null,
-                            'frequency_id' => null,
-                            'route_id' => null,
-                            'tabsize' => null,
-                            'will_copy' => false,
-                            'prepended_markup' => $tooltip
-                        ]
-                    );
-                }
-
-
+				$ret_data[] = array_merge($med->getAttributes(), [
+						'label' => $med->getLabel(). ($med->isMemberOf("Formulary") ? " (*)" : ""),
+						'dose_unit_term' => $med->default_dose_unit_term,
+						'dose' => 1,
+						'default_form' => $med->default_form_id,
+						'frequency_id' => null,
+						'route_id' => $med->default_route_id,
+						'tabsize' => null,
+						'will_copy' => $med->getToBeCopiedIntoMedicationManagement(),
+						'prepended_markup' => $tooltip,
+						'set_ids' => array_map(function ($e){
+							return $e->id;
+						} , $med->getMedicationSetsForCurrentSubspecialty()),
+						'allergy_ids' => array_map(function ($e) {
+							return $e->id;
+						}, $med->allergies),
+					]
+				);
             }
-
-
 
             echo CJSON::encode($ret_data);
         }

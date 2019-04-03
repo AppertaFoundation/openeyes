@@ -294,19 +294,23 @@ class Medication extends BaseActiveRecordVersioned
         return implode(", ", $terms);
     }
 
-    private function listByUsageCode($usage_code, $subspecialty_id = null, $raw = false)
+    private function listByUsageCode($usage_code, $subspecialty_id = null, $raw = false, $site_id = null)
     {
         $criteria = new CDbCriteria();
         $criteria->compare('medicationSetRules.usage_code',$usage_code);
         if(!is_null($subspecialty_id)) {
             $criteria->compare('medicationSetRules.subspecialty_id', $subspecialty_id);
         }
+        if(!is_null($site_id)) {
+        	$criteria->compare("medicationSetRules.site_id", $site_id);
+		}
         $sets = MedicationSet::model()->with('medicationSetRules')->findAll($criteria);
 
         $return = [];
         $ids = [];
 
         /** @var MedicationSet[] $sets */
+
         foreach ($sets as $set) {
             foreach ($set->items as $item) {
                 if(in_array($item->medication->id, $ids)) {
@@ -317,11 +321,11 @@ class Medication extends BaseActiveRecordVersioned
                     'value' => $item->medication->preferred_term,
                     'name' => $item->medication->preferred_term,
                     'id' => $item->medication->id,
-                    'dose_unit_term' => $item->default_dose_unit_term,
+                    'dose_unit_term' => $item->default_dose_unit_term != "" ? $item->default_dose_unit_term : $item->medication->default_dose_unit_term,
                     'dose' => $item->default_dose,
-                    'default_form' => $item->default_form_id,
+                    'default_form' => $item->default_form_id ? $item->default_form_id : $item->medication->default_form_id,
                     'frequency_id' => $item->default_frequency_id,
-                    'route' => $item->default_route_id,
+                    'route_id' => $item->default_route_id ? $item->default_route_id : $item->medication->default_route_id,
                     'will_copy' => $item->medication->getToBeCopiedIntoMedicationManagement(),
                     'set_ids' =>  array_map(function ($e){
                         return $e->id;
@@ -341,9 +345,9 @@ class Medication extends BaseActiveRecordVersioned
         return $raw ? $return : CHtml::listData($return, 'id', 'label');
     }
 
-    public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false)
+    public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false, $site_id = null)
     {
-        return $this->listByUsageCode("Common subspecialty medications", $subspecialty_id, $raw);
+        return $this->listByUsageCode("Common subspecialty medications", $subspecialty_id, $raw, $site_id);
     }
 
     public function listCommonSystemicMedications($raw = false)
