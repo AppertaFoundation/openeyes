@@ -6,7 +6,8 @@
     "rlanvin/php-rrule": "1.2.0",
     "endroid/qrcode": "^1.7",
     "setasign/fpdi-fpdf": "1.6.1",
-    "xthiago/pdf-version-converter": "dev-master"
+    "xthiago/pdf-version-converter": "dev-master",
+    "phpoffice/phpspreadsheet": "^1.6"
   },
   "require-dev": {
     "behat/behat": "~2",
