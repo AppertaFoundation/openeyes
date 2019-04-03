@@ -415,6 +415,25 @@ foreach ($ethnic_list as $key=>$item){
             </div>
           </td>
         </tr>
+        <?php
+        if(Yii::app()->controller->action->id == 'update'){?>
+            <tr>
+                <td>
+                    <?= $form->label($patient, 'created_date') ?>
+                </td>
+                <td>
+                    <label for="patient_create_date"><?= date("d-M-Y", strtotime($patient->created_date))?></label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->label($patient, 'last_modified_date') ?>
+                </td>
+                <td>
+                    <label for="patient_create_date"><?= date("d-M-Y", strtotime($patient->last_modified_date))?></label>
+                </td>
+            </tr>
+        <?php } ?>
         </tbody>
       </table>
     </div>

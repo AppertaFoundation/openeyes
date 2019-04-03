@@ -129,6 +129,22 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                   <td><?php echo $this->referredTo->getFullNameAndTitle();?></td>
               </tr>
           <?php }?>
+          <tr>
+              <td>
+                  Created Date:
+              </td>
+              <td>
+                  <label for="patient_create_date"><?= date("d-M-Y", strtotime($this->patient->created_date))?></label>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                  Last Modified Date:
+              </td>
+              <td>
+                  <label for="patient_create_date"><?= date("d-M-Y", strtotime($this->patient->last_modified_date))?></label>
+              </td>
+          </tr>
           </tbody>
         </table>
       </div><!-- .popup-overflow -->
