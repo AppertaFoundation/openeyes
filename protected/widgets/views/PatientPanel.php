@@ -48,7 +48,6 @@ $deceased = $this->patient->isDeceased();
         </a>
     </div>
 
-    <div class="flex-layout">
         <div class="patient-details">
             <div class="hospital-number">
                 <span>No. </span>
@@ -77,7 +76,6 @@ $deceased = $this->patient->isDeceased();
                 <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $this->patient->getAge(); ?>
             </div>
         </div>
-        <div class="flex-layout flex-right">
             <?php if (!$deceased) { ?>
                 <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
                     <div class="patient-allergies-risks risk-warning js-allergies-risks-btn">
@@ -130,8 +128,6 @@ $deceased = $this->patient->isDeceased();
                     </svg>
                 </div>
             <?php } ?>
-        </div>
-    </div>
     <!-- Widgets (extra icons, links etc) -->
     <ul class="patient-widgets">
         <?php foreach ($this->widgets as $widget) {
