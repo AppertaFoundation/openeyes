@@ -667,6 +667,18 @@ EOD;
 		Yii::app()->db->createCommand($cmd)->execute();
 		echo " OK".PHP_EOL;
 
+		$this->printMsg("Applying VMP form, route, unit properties to AMPs", false);
+
+		$cmd = "UPDATE medication AS amp
+				LEFT JOIN medication vmp ON amp.vmp_code = vmp.preferred_code
+				SET amp.default_route_id = vmp.default_route_id, amp.default_form_id = vmp.default_form_id, amp.default_dose_unit_term = vmp.default_dose_unit_term
+				WHERE amp.source_type = 'DM+D' AND amp.source_subtype = 'AMP'
+				AND vmp.source_type = 'DM+D' AND vmp.source_subtype = 'VMP'
+				";
+
+		Yii::app()->db->createCommand($cmd)->execute();
+		echo " OK".PHP_EOL;
+
         @unlink('/tmp/ref_medication_set.csv');
 
         echo "Data imported to OE.".PHP_EOL;
