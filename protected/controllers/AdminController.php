@@ -768,6 +768,60 @@ class AdminController extends BaseAdminController
         ));
     }
 
+    public function actionEditAddress()
+    {
+        $request = Yii::app()->getRequest();
+        $model = Address::model()->findByPk((int)$request->getParam('id'));
+        $contact_id = $request->getParam('contact_id');
+        if (!$model) {
+            throw new Exception('Address not found with id ' . $request->getParam('id'));
+        }
+        if ($request->getPost('Address')) {
+            $model->attributes = $request->getPost('Address');
+            if (!$model->validate()) {
+                $errors = $model->getErrors();
+            } else {
+                if ($model->save()) {
+                    Yii::app()->user->setFlash('success', 'Address saved');
+                    $this->redirect(array('admin/editContact?contact_id=' . $contact_id));
+                } else {
+                    $errors = $model->getErrors();
+                }
+            }
+        }
+
+        $this->render('edit', array(
+            'model' => $model,
+            'title' => 'Edit Address',
+            'errors' => isset($errors) ? $errors : null,
+            'cancel_uri' => '/admin/editContact?contact_id=' . $request->getParam('contact_id'),
+        ));
+    }
+
+    public function actionAddAddress()
+    {
+        $model = new Address();
+        $request = Yii::app()->getRequest();
+        $model->contact_id = $request->getParam('contact_id');
+
+        if ($request->getPost('Address')) {
+            $model->attributes = $request->getPost('Address');
+            if ($model->save()) {
+                Audit::add('admin', 'create', serialize($model->attributes), false, array('model' => 'Address'));
+                Yii::app()->user->setFlash('success', 'Address created');
+                $this->redirect(array('admin/editContact?contact_id=' . $model->contact_id));
+            } else {
+                $errors = $model->getErrors();
+            }
+        }
+        $this->render('edit', array(
+            'model' => $model,
+            'title' => 'Add Address',
+            'cancel_uri' => '/admin/editContact?contact_id=' . $request->getParam('contact_id'),
+            'errors' => isset($errors) ? $errors : null,
+        ));
+    }
+
     public function actionGetInstitutionSites()
     {
         $institution = Institution::model()->findByPk(@$_GET['institution_id']);

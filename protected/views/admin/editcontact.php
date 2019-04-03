@@ -39,7 +39,7 @@
         </colgroup>
         <tbody>
         <?php foreach (['title', 'first_name', 'last_name',
-               'nick_name', 'primary_phone', 'qualifications'] as $field) : ?>
+               'nick_name', 'primary_phone', 'fax', 'qualifications' , 'national_code'] as $field) : ?>
             <tr>
                 <td><?= $contact->getAttributeLabel($field); ?></td>
                 <td>
@@ -61,6 +61,15 @@
                 ); ?>
             </td>
         </tr>
+        <tr>
+            <td><?= $contact->getAttributeLabel('active'); ?></td>
+            <td>
+                <?= CHtml::activeCheckBox(
+                    $contact,
+                    'active'
+                ); ?>
+            </td>
+        </tr>
         </tbody>
         <tfoot>
         <tr class="pagination-container">
@@ -79,6 +88,61 @@
     <?php $this->endWidget() ?>
 
     <div class="row divider">
+        <h2>Addresses</h2>
+    </div>
+
+    <form id="admin_contact_addresses">
+        <table class="standard">
+            <thead>
+            <tr>
+                <th>Email</th>
+                <th>Address Line One</th>
+                <th>Address Line Two</th>
+                <th>City</th>
+                <th>Postcode</th>
+                <th>County</th>
+                <th>Country</th>
+                <th>Date Start</th>
+                <th>Date End</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($contact->addresses as $index => $address) { ?>
+                <tr class="clickable" data-id="<?php echo $address->id ?>"
+                    data-uri="admin/editaddress?id=<?php echo $address->id ?>&contact_id=<?= $contact->id?>">
+                    <td><?= $address->email ?></td>
+                    <td><?= $address->address1 ?></td>
+                    <td><?= $address->address2 ?></td>
+                    <td><?= $address->city ?></td>
+                    <td><?= $address->postcode ?></td>
+                    <td><?= $address->county ?></td>
+                    <td><?= $address->country->name ?></td>
+                    <td><?= $address->date_start ?></td>
+                    <td><?= $address->date_end ?></td>
+                    <td>
+                        <button type="button" class="removeLocation hint red" rel="<?php echo $address->id ?>">
+                            Remove
+                        </button>
+                    </td>
+                </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="9">
+                    <?= CHtml::link(
+                        'Add',
+                        '/admin/addAddress?contact_id=' . $contact->id,
+                        ['class' => 'button large']
+                    ); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+
+    <div class="row divider">
         <h2>Locations</h2>
     </div>
 
@@ -93,13 +157,13 @@
             </thead>
             <tbody>
             <?php
-            foreach ($contact->locations as $i => $location) { ?>
-                <tr class="clickable" data-id="<?php echo $location->id ?>"
-                    data-uri="admin/contactLocation?location_id=<?php echo $location->id ?>">
-                    <td><?php echo $location->site_id ? 'Site' : 'Institution' ?></td>
-                    <td><?php echo $location->site_id ? $location->site->name : $location->institution->name ?></td>
+            foreach ($contact->locations as $i => $address) { ?>
+                <tr class="clickable" data-id="<?php echo $address->id ?>"
+                    data-uri="admin/contactLocation?location_id=<?php echo $address->id ?>">
+                    <td><?php echo $address->site_id ? 'Site' : 'Institution' ?></td>
+                    <td><?php echo $address->site_id ? $address->site->name : $address->institution->name ?></td>
                     <td>
-                        <button type="button" class="removeLocation hint red" rel="<?php echo $location->id ?>">
+                        <button type="button" class="removeLocation hint red" rel="<?php echo $address->id ?>">
                             Remove
                         </button>
                     </td>

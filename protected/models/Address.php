@@ -82,6 +82,7 @@ class Address extends BaseActiveRecordVersioned
     {
         return array(
             'country' => array(self::BELONGS_TO, 'Country', 'country_id'),
+            'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
             'type' => array(self::BELONGS_TO, 'AddressType', 'address_type_id'),
         );
     }
