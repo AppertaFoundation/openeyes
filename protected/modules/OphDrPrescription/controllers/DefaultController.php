@@ -617,10 +617,10 @@ class DefaultController extends BaseEventTypeController
                 /** @var MedicationSetItem $source */
                 $item->medication_id = $source->medication_id;
                 $item->frequency_id = $source->default_frequency_id;
-                $item->form_id = $source->default_form_id;
+                $item->form_id = $source->default_form_id ? $source->default_form_id : $source->medication->default_form_id;
                 $item->dose = $source->default_dose;
-                $item->dose_unit_term = $source->default_dose_unit_term;
-                $item->route_id = $source->default_route_id;
+                $item->dose_unit_term = $source->default_dose_unit_term ? $source->default_dose_unit_term : $source->medication->default_dose_unit_term;
+                $item->route_id = $source->default_route_id ? $source->default_route_id : $source->medication->default_route_id;
                 $item->duration = $source->default_duration_id;
 
 
