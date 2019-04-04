@@ -395,7 +395,7 @@ $(document).ready(function() {
 
 					const maxComplexBookings = $('#max_complex_bookings_'+session_id).val();
 					const $complexBookingCount = $('#complex_booking_count_'+session_id);
-					let $maxComplexBookingsIcon = $('#max_complex_bookings_icon_'+session_id);
+					const $maxComplexBookingsIcon = $('#max_complex_bookings_icon_'+session_id);
 					if (maxComplexBookings) {
 						let overBookedComplexBookings = 0;
 						$maxComplexBookingsIcon.find('.max-complex-bookings-value').html(maxComplexBookings);
