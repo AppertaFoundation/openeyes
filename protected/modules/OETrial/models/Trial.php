@@ -302,6 +302,9 @@ class Trial extends BaseActiveRecordVersioned
       case 'Treatment Type':
         $sortBySql = 'ISNULL(treatment_type_id), t.treatment_type_id';
         break;
+      case 'Accepted/Rejected Date':
+          $sortBySql = 'ISNULL(status_update_date), t.status_update_date';
+          break;
     }
 
     $sortExpr = "$sortBySql $sort_dir, c.last_name ASC, c.first_name ASC";
