@@ -396,7 +396,8 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->compare('t.id', $this->id);
         $criteria->join = 'JOIN contact ON contact_id = contact.id';
         if (isset($params['first_name'])) {
-            $criteria->compare('contact.first_name', $params['first_name'], false);
+            //$criteria->compare('contact.first_name', $params['first_name'], false);
+            $criteria->addSearchCondition('contact.first_name', $params['first_name'] . '%', false);
         }
         if (isset($params['last_name'])) {
             $criteria->compare('contact.last_name', $params['last_name'], false);
