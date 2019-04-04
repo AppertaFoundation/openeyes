@@ -470,7 +470,7 @@ EOD;
 		}
 
         $scripts = [
-            'delete', 'forms_routes',  'copy_amp', 'copy_vmp', 'copy_vtm', 'sets', 'ref_medication_sets', 'ref_medication_sets_load', 'add_formulary', 'search_index'
+            'delete', 'forms_routes',  'copy_amp', 'copy_vmp', 'copy_vtm', 'sets', 'ref_medication_sets', 'ref_medication_sets_load', 'search_index'
         ];
 
         foreach ($scripts as $script) {
