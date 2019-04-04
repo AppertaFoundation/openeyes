@@ -357,8 +357,10 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if ($macro->recipient && $macro->recipient->name == 'Optometrist') {
             $contact = $contact = $patient->getPatientOptometrist();
-            $data['to']['contact_type'] = "Optometrist";
-            $data['to']['contact_id'] = $contact->id;
+            if (isset($contact)) {
+                $data['to']['contact_type'] = "Optometrist";
+                $data['to']['contact_id'] = $contact->id;
+            }
         }
 
         if (isset($contact)) {

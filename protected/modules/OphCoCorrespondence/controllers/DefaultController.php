@@ -214,7 +214,9 @@ class DefaultController extends BaseEventTypeController
 
         if ($macro->recipient && $macro->recipient->name == 'Optometrist' ) {
             $contact = $patient->getPatientOptometrist();
-            $data['sel_address_target'] = get_class($contact).$contact->id;
+            if(isset($contact)) {
+                $data['sel_address_target'] = get_class($contact) . $contact->id;
+            }
         }
 
         if (isset($contact)) {
