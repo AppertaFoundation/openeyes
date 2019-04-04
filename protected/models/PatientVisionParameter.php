@@ -19,6 +19,10 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
      * @var integer $maxValue Represents a maximum value.
      */
     public $maxValue;
+    /**
+     * @var boolean $bothEyesIndicator Indicate searching for either eyes or both eyes.
+     */
+    public $bothEyesIndicator;
 
     /**
      * PatientVisionParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -39,6 +43,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
         return array_merge(parent::rules(), array(
             array('textValue, minValue, maxValue', 'numerical', 'min' => 0),
             array('textValue, minValue, maxValue', 'values'),
+            array('bothEyesIndicator','safe'),
         ));
     }
 
@@ -52,6 +57,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
             'textValue',
             'minValue',
             'maxValue',
+            'bothEyesIndicator',
         ));
     }
 
@@ -66,6 +72,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
             'minValue' => 'Minimum Value',
             'maxValue' => 'Maximum Value',
             'id' => 'ID',
+            'bothEyesIndicator'=>'Both Eyes',
         );
     }
 
@@ -151,6 +158,17 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
                 <?php echo CHtml::error($this, "[$id]textValue"); ?>
             </div>
             <div class="parameter-option">
+                <p>Search for both eyes</p>
+            </div>
+            <div class="parameter-option">
+                <?php echo CHtml::activeCheckBox(
+                  $this,
+                  "[$id]bothEyesIndicator",
+                    array()
+                );
+                ?>
+            </div>
+            <div class="parameter-option">
                 <p>ETDRS Letters</p>
             </div>
         </div>
@@ -165,6 +183,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function query($searchProvider)
     {
+        $second_operation = 'OR';
         switch ($this->operation) {
             case 'BETWEEN':
                 $op = 'BETWEEN';
@@ -179,27 +198,57 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
                 throw new CHttpException(400, 'Invalid operator specified.');
         }
 
-        $queryStr = 'SELECT distinct t2.patient_id FROM
-(
-SELECT t1.patient_id, t1.va_value
-FROM
-(
-SELECT patient.id AS patient_id, ovr.value AS va_value
-FROM patient
-LEFT JOIN episode e ON patient.id = e.patient_id
-LEFT JOIN event ON event.episode_id = e.id
-LEFT JOIN et_ophciexamination_visualacuity eov ON event.id = eov.event_id
-LEFT JOIN ophciexamination_visualacuity_reading ovr ON eov.id = ovr.element_id
-ORDER BY ovr.last_modified_date DESC
-) t1
-GROUP BY patient_id
-) t2 WHERE t2.va_value';
-
-        if ($op === 'BETWEEN') {
-            return "$queryStr BETWEEN :p_v_min_$this->id AND :p_v_max_$this->id";
+        if ($this->bothEyesIndicator){
+            $second_operation = 'AND';
         }
 
-        return "$queryStr $op :p_v_value_$this->id";
+        $queryStr = 'SELECT DISTINCT t5.patient_id
+FROM (
+       SELECT DISTINCT patient_id, MAX(left_va_value) AS left_va_value, MAX(right_va_value) AS right_va_value
+       FROM (
+              SELECT patient_id                      AS patient_id,
+                     IF(va_side = 0, va_value, NULL) AS left_va_value,
+                     IF(va_side = 1, va_value, NULL) AS right_va_value
+              FROM (
+                     SELECT t1.patient_id, t1.va_value, t1.va_side, t1.date
+                     FROM (SELECT patient.id             AS patient_id,
+                                  ovr.value              AS va_value,
+                                  ovr.side               AS va_side,
+                                  ovr.last_modified_date AS date
+                           FROM patient
+                                  LEFT JOIN episode e ON patient.id = e.patient_id
+                                  LEFT JOIN event ON event.episode_id = e.id
+                                  LEFT JOIN et_ophciexamination_visualacuity eov ON event.id = eov.event_id
+                                  LEFT JOIN ophciexamination_visualacuity_reading ovr ON eov.id = ovr.element_id
+                           WHERE ovr.value IS NOT NULL
+                             AND ovr.side IS NOT NULL
+                             AND ovr.last_modified_date IS NOT NULL) t1
+                     WHERE t1.date = (SELECT MAX(t2.date)
+                                      FROM (SELECT patient.id             AS patient_id,
+                                                   ovr.value              AS va_value,
+                                                   ovr.side               AS va_side,
+                                                   ovr.last_modified_date AS date
+                                            FROM patient
+                                                   LEFT JOIN episode e ON patient.id = e.patient_id
+                                                   LEFT JOIN event ON event.episode_id = e.id
+                                                   LEFT JOIN et_ophciexamination_visualacuity eov ON event.id = eov.event_id
+                                                   LEFT JOIN ophciexamination_visualacuity_reading ovr ON eov.id = ovr.element_id
+                                            WHERE ovr.value IS NOT NULL
+                                              AND ovr.side IS NOT NULL
+                                              AND ovr.last_modified_date IS NOT NULL) t2
+                                      WHERE t2.patient_id = t1.patient_id
+                                        AND t1.va_side = t2.va_side)
+                   ) t3) t4
+       GROUP BY patient_id) t5
+ WHERE';
+
+        $subQueryStr = " (t5.left_va_value $op :p_v_value_$this->id) $second_operation (t5.right_va_value $op :p_v_value_$this->id)";
+
+        if ($op === 'BETWEEN') {
+            $subQueryStr = " (t5.left_va_value BETWEEN :p_v_min_$this->id AND :p_v_max_$this->id) $second_operation (t5.right_va_value BETWEEN :p_v_min_$this->id AND :p_v_max_$this->id)";
+        }
+
+        return $queryStr.$subQueryStr;
     }
 
     /**
@@ -209,14 +258,14 @@ GROUP BY patient_id
     {
         $bindValues = array();
 
-	if ($this->operation === 'BETWEEN') {
-	    $this->minValue = (int)$this->minValue;
+        if ($this->operation === 'BETWEEN') {
+            $this->minValue = (int)$this->minValue;
             $this->maxValue = (int)$this->maxValue;
-            if($this->minValue > $this->maxValue){
-	    	$temp = $this->minValue;
-		$this->minValue = $this->maxValue;
-		$this->maxValue = $temp;
-	    }	    
+            if ($this->minValue > $this->maxValue) {
+                $temp = $this->minValue;
+                $this->minValue = $this->maxValue;
+                $this->maxValue = $temp;
+            }
             $bindValues["p_v_min_$this->id"] = $this->minValue;
             $bindValues["p_v_max_$this->id"] = $this->maxValue;
         } else {
