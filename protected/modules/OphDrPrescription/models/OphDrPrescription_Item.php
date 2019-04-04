@@ -99,11 +99,18 @@ class OphDrPrescription_Item extends EventMedicationUse
             if($defaults) {
                 /** @var MedicationSetItem $defaults */
                 $this->frequency_id = $defaults->default_frequency_id;
-                $this->route_id = $defaults->default_route_id;
+                $this->route_id = $defaults->default_route_id ? $defaults->default_route_id : $this->medication->default_route_id;
                 $this->dose = $defaults->default_dose;
-                $this->dose_unit_term = $defaults->default_dose_unit_term;
-                $this->form_id = $defaults->default_form_id;
+                $this->dose_unit_term = $defaults->default_dose_unit_term ? $defaults->default_dose_unit_term : $this->medication->default_dose_unit_term;
+                $this->form_id = $defaults->default_form_id ? $defaults->default_form_id : $this->medication->default_form_id;
             }
+            else {
+				$this->frequency_id = null;
+				$this->route_id = $this->medication->default_route_id;
+				$this->dose = 1;
+				$this->dose_unit_term = $this->medication->default_dose_unit_term;
+				$this->form_id = $this->medication->default_form_id;
+			}
         }
     }
 
