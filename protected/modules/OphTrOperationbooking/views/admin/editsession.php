@@ -64,7 +64,7 @@
     <?php $current = $session->getComplexBookingCount();
         if ($current) { ?>
         <fieldset id="complex_booking_count_wrapper" class="data-group
-        <?php if (!is_null($session->max_complex_bookings) && $current > $session->max_complex_bookings) { echo ' warn'; }?>">
+        <?php if ($session->isComplexBookingCountLimited() && $current > $session->max_complex_bookings) { echo ' warn'; }?>">
             <div class="cols-2 column">
                 <div class="field-label">Current Complex Bookings:</div>
             </div>

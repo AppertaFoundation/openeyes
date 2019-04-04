@@ -1030,7 +1030,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                 continue;
             }
 
-            if (!is_null($session->max_complex_bookings) && $this->isComplex() && $session->getAvailableComplexBookingCount() <= 0) {
+            if ($session->isComplexBookingCountLimited() && $this->isComplex() && $session->getAvailableComplexBookingCount() <= 0) {
                 continue;
             }
 

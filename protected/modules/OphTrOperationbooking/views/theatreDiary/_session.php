@@ -192,7 +192,7 @@
           <?php
           $minutes_status = ($session->availableMinutes > 0);
           $proc_status = (!$session->max_procedures || $session->getAvailableProcedureCount() > 0);
-          $there_is_place_for_complex_booking = (is_null($session->max_complex_bookings) || $session->getAvailableComplexBookingCount() > 0);
+          $there_is_place_for_complex_booking = (!$session->isComplexBookingCountLimited() || $session->getAvailableComplexBookingCount() > 0);
           $status = ($minutes_status && $proc_status && $session->available);
           ?>
         <td colspan="10" data-minutes-available="<?= $session->availableMinutes ?>"
@@ -217,7 +217,7 @@
                   </span>
             <span data-current-complex-booking-count="<?= $session->getComplexBookingCount() ?>"
                 class="complex-booking-count" id="complex_booking_count_<?= $session->id ?>"
-                <?= is_null($session->max_complex_bookings) ? "style='display: none;'" : "" ?>>
+                <?= $session->isComplexBookingCountLimited() ? "" : "style='display: none;'" ?>>
                 <br/>
                 <span class="available-complex-booking-count">
                     <?= $there_is_place_for_complex_booking ? $session->getAvailableComplexBookingCount() : '0' ?>
@@ -261,7 +261,7 @@
                     class="max-procedures-val"><?php echo $session->max_procedures ?></span>
                 Procedures
               </div>
-              <div <?= is_null($session->max_complex_bookings) ? "style='display: none;'" : "" ?>
+              <div <?= $session->isComplexBookingCountLimited() ? "" : "style='display: none;'" ?>
                   id="max_complex_bookings_icon_<?php echo $session->id ?>" class="max-complex-bookings"
                   title="Max Complex <?php echo $session->max_complex_bookings ?>">Max <span
                     class="max-complex-bookings-value"><?php echo $session->max_complex_bookings ?></span>
