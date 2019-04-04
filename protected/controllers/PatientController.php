@@ -146,9 +146,9 @@ class PatientController extends BaseController
         $term = \Yii::app()->request->getParam('term', '');
 
         $patientSearch = new PatientSearch();
-      $dataProvider = $patientSearch->search($term);
-      $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
-      $search_terms = $patientSearch->getSearchTerms();
+        $dataProvider = $patientSearch->search($term);
+        $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
+        $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
             Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');
@@ -182,9 +182,15 @@ class PatientController extends BaseController
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
-            $item = $dataProvider->getData()[0];
+            $patient = $dataProvider->getData()[0];
             $api = new CoreAPI();
-            $this->redirect(array($api->generateEpisodeLink($item)));
+
+            //in case the PASAPI returns 1 new patient we perform a new search
+            if ($patient->isNewRecord && $patient->hos_num) {
+                $this->redirect(['/patient/search', 'term' => $patient->hos_num]);
+            }
+
+            $this->redirect([$api->generateEpisodeLink($patient)]);
         } else {
             $this->renderPatientPanel = false;
             $this->pageTitle = $term . ' - Search';

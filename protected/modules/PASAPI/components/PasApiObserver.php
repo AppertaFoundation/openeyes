@@ -67,7 +67,7 @@ class PasApiObserver
         $results = &$data['results'];
         $patient = $data['patient'];
 
-        if( !$this->isPASqueryRequired($patient) ){
+        if (!$this->isPASqueryRequired($patient) ) {
             // no need to update the record
             return false;
         }
@@ -274,5 +274,4 @@ class PasApiObserver
 
         return true;
     }
-
 }
