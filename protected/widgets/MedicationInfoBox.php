@@ -89,7 +89,7 @@
                 	$data['Type'] = "Local";
 				}
 
-                if($medication->source_type == Medication::SOURCE_TYPE_LEGACY && $medication->source_subtype == "medication_drug" && $medication->preferred_code != "") {
+                if($medication->source_type == Medication::SOURCE_TYPE_LEGACY && $medication->preferred_code != "") {
                 	$data["SNOMED code"] = $medication->preferred_code;
 				}
 
