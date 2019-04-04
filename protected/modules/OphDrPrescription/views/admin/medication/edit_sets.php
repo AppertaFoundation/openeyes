@@ -74,7 +74,7 @@
             $id = is_null($assignment->id) ? -1 : $assignment->id;
 		    $rowkey++
         ?>
-        <tr data-key="<?=$rowkey?>">
+        <tr data-key="<?=$rowkey?>" <?php if($assignment->medicationSet->hidden): ?>style="display:none;" <?php endif; ?>>
             <td>
                 <input type="hidden" name="Medication[medicationSetItems][id][]" value="<?=$id?>" />
                 <input type="hidden" name="Medication[medicationSetItems][medication_set_id][]" value="<?=$assignment->medication_set_id?>" />
