@@ -20,8 +20,8 @@ class Appointment extends BaseCWidget
 {
 
     public $patient;
-    public $past_worklist_patient_attributes;
-    public $worklist_patients_attributes;
+    public $past_worklist_patients;
+    public $worklist_patients;
     public $pro_theme = '';
 
     public function init()
@@ -39,8 +39,14 @@ class Appointment extends BaseCWidget
         $criteria_past->addCondition('t.when < NOW()');
         $criteria_past->order = 't.when asc';
 
-        $this->worklist_patients_attributes = WorklistPatient::model()->findAll($criteria);
-        $this->past_worklist_patient_attributes = WorklistPatient::model()->findAll($criteria_past);
+        $this->worklist_patients = WorklistPatient::model()->findAllByAttributes(
+            ['patient_id' => $this->patient->id],
+            $criteria
+        );
+        $this->past_worklist_patients = WorklistPatient::model()->findAllByAttributes(
+            ['patient_id' => $this->patient->id],
+            $criteria_past
+        );
     }
 
     public function render($view, $data = null, $return = false)
