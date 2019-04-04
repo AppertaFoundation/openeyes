@@ -29,25 +29,18 @@ class Appointment extends BaseCWidget
         parent::init();
 
         $criteria = new \CDbCriteria();
-        $criteria->join = " JOIN worklist_attribute wa ON t.worklist_attribute_id = wa.id";
-        $criteria->join .= " JOIN worklist w ON w.id = wa.worklist_id";
-        $criteria->join .= " JOIN worklist_patient wp ON wp.worklist_id=w.id AND wp.id = t.worklist_patient_id";
-        $criteria->select = ['attribute_value', 'wp.when as time', 'w.name as worklistName', 'w.start as date'];
-        $criteria->addCondition('wp.patient_id = :patient_id');
-        $criteria->addCondition('wa.name = "Status"');
-        $criteria->params[':patient_id'] = $this->patient->id;
-
+        $criteria->join = " JOIN worklist w ON w.id = t.worklist_id";
 
         $criteria_past = clone $criteria;
 
-        $criteria->addCondition('wp.when >= NOW()');
-        $criteria->order = 'wp.when asc';
+        $criteria->addCondition('t.when >= NOW()');
+        $criteria->order = 't.when asc';
 
-        $criteria_past->addCondition('wp.when < NOW()');
-        $criteria_past->order = 'wp.when asc';
+        $criteria_past->addCondition('t.when < NOW()');
+        $criteria_past->order = 't.when asc';
 
-        $this->past_worklist_patient_attributes = WorklistPatientAttribute::model()->findAll($criteria_past);
-        $this->worklist_patients_attributes = WorklistPatientAttribute::model()->findAll($criteria);
+        $this->worklist_patients_attributes = WorklistPatient::model()->findAll($criteria);
+        $this->past_worklist_patient_attributes = WorklistPatient::model()->findAll($criteria_past);
     }
 
     public function render($view, $data = null, $return = false)

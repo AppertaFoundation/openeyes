@@ -27,10 +27,10 @@
     <tbody>
     <?php
     foreach ($worklist_patients_attributes as $worklist_patients_attribute) {
-        $time = date('H:i', strtotime($worklist_patients_attribute->time));
-        $date = \Helper::convertDate2NHS($worklist_patients_attribute->date);
-        $worklist_name = $worklist_patients_attribute->worklistName;
-        $worklist_status = $worklist_patients_attribute->attribute_value;
+        $time = date('H:i', strtotime($worklist_patients_attribute->when));
+        $date = \Helper::convertDate2NHS($worklist_patients_attribute->worklist->start);
+        $worklist_name = $worklist_patients_attribute->worklist->name;
+        $worklist_status = $worklist_patients_attribute->getWorklistPatientAttribute()->attribute_value;
         ?>
         <tr>
             <td><span class="time"><?= $time ?></span></td>
@@ -64,10 +64,10 @@
     <tbody style="display: none;">
     <?php
     foreach ($past_worklist_patient_attributes as $worklist_patients_attribute) {
-        $time = date('H:i', strtotime($worklist_patients_attribute->time));
-        $date = \Helper::convertDate2NHS($worklist_patients_attribute->date);
-        $worklist_name = $worklist_patients_attribute->worklistName;
-        $worklist_status = $worklist_patients_attribute->attribute_value;
+        $time = date('H:i', strtotime($worklist_patients_attribute->when));
+        $date = \Helper::convertDate2NHS($worklist_patients_attribute->worklist->start);
+        $worklist_name = $worklist_patients_attribute->worklist->name;
+        $worklist_status = $worklist_patients_attribute->getWorklistPatientAttribute()->attribute_value;
         ?>
         <tr>
             <td><span class="time"><?= $time ?></span></td>

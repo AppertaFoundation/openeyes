@@ -29,11 +29,6 @@
  */
 class WorklistPatientAttribute extends BaseActiveRecordVersioned
 {
-
-    public $worklistName;
-    public $time;
-    public $date;
-
     /**
      * @return string the associated database table name
      */

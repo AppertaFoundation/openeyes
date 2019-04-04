@@ -153,4 +153,17 @@ class WorklistPatient extends BaseActiveRecordVersioned
 
         return $res;
     }
+
+    public function getWorklistPatientAttribute() {
+        $criteria = new \CDbCriteria();
+        $criteria->join = " JOIN worklist_attribute wa ON wa.id = t.worklist_attribute_id";
+        $criteria->addCondition('t.worklist_patient_id = :worklist_patient_id');
+        $criteria->addCondition('wa.name = "Status"');
+        $criteria->addCondition('wa.worklist_id = :worklist_id');
+        $criteria->params[':worklist_patient_id'] = $this->id;
+        $criteria->params[':worklist_id'] = $this->worklist->id;
+        $results = WorklistPatientAttribute::model()->find($criteria);
+
+        return $results;
+    }
 }
