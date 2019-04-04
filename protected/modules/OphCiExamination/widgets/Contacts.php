@@ -41,7 +41,10 @@ class Contacts extends \BaseEventElementWidget
     {
         parent::init();
 
-       $this->contacts = \PatientContactAssignment::model()->findAll("patient_id = ". $this->patient->id);
+        $criteria = new \CDbCriteria();
+        $criteria->join = "JOIN patient_contact_assignment pca ON t.id = pca.contact_id";
+        $this->contacts = \Contact::model()->findAll($criteria);
+//       \PatientContactAssignment::model()->findAll("patient_id = ? AND" $this->patient->id);
     }
 
 }

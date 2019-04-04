@@ -21,19 +21,17 @@
 $model_name = CHtml::modelName($element);
 $element_errors = $element->getErrors();
 ?>
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group flex-layout cols-10">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
         <table id="<?= $model_name ?>_entry_table" class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
             <colgroup>
-                <col class="cols-1">
                 <col class="cols-2">
-                <col class="cols-2">
-                <col class="cols-2">
-                <col class="cols-2">
-                <col class="cols-2">
-                <col class="cols-1">
-                <col class="cols-1">
+                <col class="cols-4">
+                <col>
+                <col>
                 <col class="cols-1">
             </colgroup>
             <thead>
@@ -54,8 +52,8 @@ $element_errors = $element->getErrors();
             foreach ($this->contacts as $contact) { ?>
                 <tr>
                     <td><?= $contact->title; ?></td>
-                    <td><?= $contact->first_name; ?></td>
-                    <td><?= $contact->last_name; ?></td>
+                    <td><?= $contact->firstName; ?></td>
+                    <td><?= $contact->lastName; ?></td>
                     <td><?= $contact->label ? $contact->label->name : ""; ?></td>
                     <td><?= $contact->address ? $contact->address->address1 : ""; ?></td>
                     <td><?= $contact->address ? $contact->address->address2 : ""; ?></td>

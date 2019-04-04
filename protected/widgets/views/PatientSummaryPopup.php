@@ -124,15 +124,15 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 
                             if (isset($contact) && !$contact->gp) { ?>
                                 <tr>
-                                    <td><?php echo $contact->label->name ?></td>
+                                    <td><?= $contact->label ? $contact->label->name : "" ?></td>
                                     <td><?= $contact->fullName ?></td>
                                 </tr>
                                 <tr>
-                                    <td><?php echo $contact->label->name ?> Address</td>
-                                    <td><?= $contact->address->letterLine ?></td>
+                                    <td>Address</td>
+                                    <td><?= $contact->address ? $contact->address->letterLine : "" ?></td>
                                 </tr>
                                 <tr>
-                                    <td><?php echo $contact->label->name ?> Telephone</td>
+                                    <td>Telephone</td>
                                     <td><?= $contact->primary_phone ?></td>
                                 </tr>
                             <?php }
