@@ -1,20 +1,21 @@
 <?php
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+use \OEModule\PASAPI\models\PasApiAssignment;
+use \OEModule\PASAPI\resources\PatientAppointment;
 
 class WorklistBehavior extends CBehavior
 {
@@ -47,7 +48,7 @@ class WorklistBehavior extends CBehavior
 
                 //set pas_visit_id
                 if ($assignment) {
-                    $this->owner->event->worklist_patient_id = $assignment->resource_id;
+                    $this->owner->event->worklist_patient_id = $worklist_patient->id;
                 }
 
             } else {
@@ -112,8 +113,8 @@ class WorklistBehavior extends CBehavior
     public function getPasApiAssignment($worklist_patient_id)
     {
         //Should this come from the PatientAppointment resource instead of directly from PasApiAssignment ???
-        return \OEModule\PASAPI\models\PasApiAssignment::model()->findByAttributes([
-            'resource_type' => \OEModule\PASAPI\resources\PatientAppointment::$resource_type,
+        return PasApiAssignment::model()->findByAttributes([
+            'resource_type' => PatientAppointment::$resource_type,
             'internal_id' => $worklist_patient_id,
             'internal_type' => '\WorklistPatient']);
     }
