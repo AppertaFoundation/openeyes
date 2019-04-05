@@ -16,7 +16,7 @@
  */
 ?>
 
-<div class="admin box">
+<div class="admin box cols-6">
     <h2>Mapping Items for <?= $definition->name ?></h2>
     <?php echo EventAction::link('Definitions List', '/Admin/worklist/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
     <?php if ($this->manager->canUpdateWorklistDefinition($definition)) {
@@ -27,7 +27,7 @@
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <?php if ($definition->displayed_mappings) {?>
         <h3>Displayed Mapping Items</h3>
-        <table class="generic-admin standard">
+        <table class="table standard">
             <thead>
             <tr>
                 <th>Order</th>

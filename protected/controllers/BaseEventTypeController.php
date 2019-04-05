@@ -853,7 +853,7 @@ class BaseEventTypeController extends BaseModuleController
             ),
         );
 
-        $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
+        $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
         $this->event_actions = array(
             EventAction::link('Cancel',
                 Yii::app()->createUrl($cancel_url),
@@ -895,6 +895,11 @@ class BaseEventTypeController extends BaseModuleController
             $this->event_tabs[] = array(
                 'label' => 'Edit',
                 'href' => Yii::app()->createUrl($this->event->eventType->class_name . '/default/update/' . $this->event->id),
+            );
+
+            $this->event_tabs[] = array(
+                'label' => 'Change Context',
+                'class' => 'js-change_context'
             );
         }
 

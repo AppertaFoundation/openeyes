@@ -18,7 +18,7 @@
 
 <?php Yii::app()->clientScript->registerPackage('tagsinput'); ?>
 
-<div class="admin box">
+<div class="admin box cols-8">
     <h2><?= $mapping->isNewRecord ? 'Create' : 'Edit'?> Worklist Definition Mapping</h2>
 
     <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
