@@ -114,9 +114,9 @@ class UnbookedWorklist extends CComponent
         $site = Site::model()->findByPk($site_id);
         $today = new \DateTime();
         $definition = new \WorklistDefinition();
-        $definition->name = 'Unbooked';
+        $definition->name = "Unbooked - {$subspecialty->name} - {$site->name}";
         $definition->description = 'Patients for unbooked worklist';
-        $definition->worklist_name = "Unbooked - {$subspecialty->name} - {$site->name}";
+        $definition->worklist_name = null;
         $definition->rrule = 'FREQ=DAILY';
         $definition->start_time = '00:00:00';
         $definition->end_time = '23:59:59';
