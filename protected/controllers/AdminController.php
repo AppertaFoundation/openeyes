@@ -822,6 +822,25 @@ class AdminController extends BaseAdminController
         ));
     }
 
+    public function actionRemoveAddress()
+    {
+        $location_id = isset($_POST['address_id']) ? $_POST['address_id'] : null;
+        $address = Address::model()->findByPk($location_id);
+        if (!$address) {
+            throw new Exception('Address not found: ' . $location_id);
+        }
+
+        if (!$address->delete()) {
+            echo '-1';
+
+            return;
+        }
+
+        Audit::add('admin-Address', 'delete', $location_id);
+
+        return '1';
+    }
+
     public function actionGetInstitutionSites()
     {
         $institution = Institution::model()->findByPk(@$_GET['institution_id']);

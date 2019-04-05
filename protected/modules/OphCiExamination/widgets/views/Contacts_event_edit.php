@@ -23,47 +23,75 @@ $element_errors = $element->getErrors();
 ?>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group flex-layout cols-10">
-        <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-        <table id="<?= $model_name ?>_entry_table" class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
+        <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+        <table id="<?= $model_name ?>_entry_table"
+               class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
             <colgroup>
                 <col class="cols-1">
                 <col class="cols-2">
                 <col class="cols-2">
                 <col class="cols-2">
                 <col class="cols-2">
-                <col class="cols-2">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
             </colgroup>
             <thead>
             <tr>
-                <th>Title</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Contact Type</th>
-                <th>Address One</th>
-                <th>Address Two</th>
-                <th>City</th>
-                <th>Postcode</th>
+                <th>Type</th>
+                <th>Name</th>
                 <th>Email</th>
+                <th>Phone Number</th>
+                <th>Address</th>
             </tr>
             </thead>
             <tbody>
             <?php
             foreach ($this->contacts as $contact) { ?>
                 <tr>
-                    <td><?= $contact->title; ?></td>
-                    <td><?= $contact->first_name; ?></td>
-                    <td><?= $contact->last_name; ?></td>
                     <td><?= $contact->label ? $contact->label->name : ""; ?></td>
-                    <td><?= $contact->address ? $contact->address->address1 : ""; ?></td>
-                    <td><?= $contact->address ? $contact->address->address2 : ""; ?></td>
-                    <td><?= $contact->address ? $contact->address->city : ""; ?></td>
-                    <td><?= $contact->address ? $contact->address->postcode : ""; ?></td>
+                    <td><?= $contact->getFullName(); ?></td>
                     <td><?= $contact->address ? $contact->address->email : ""; ?></td>
+                    <td><?= $contact->primary_phone; ?></td>
+                    <td><?= $contact->address ? $contact->address->getLetterLine() : ""; ?></td>
                 </tr>
             <?php } ?>
             </tbody>
         </table>
     </div>
+
+    <div class="flex-layout flex-right">
+        <div class="add-data-actions flex-item-bottom" id="contacts-popup">
+            <button class="button hint green js-add-select-search" id="add-contacts-btn" type="button">
+                <i class="oe-i plus pro-theme"></i>
+            </button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            <?php $contacts = \Contact::model()->getActiveContacts($this->patient->id);
+            ?>
+            new OpenEyes.UI.AdderDialog({
+                openButton: $('#add-contacts-btn'),
+                itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    array_map(function ($key, $contact) {
+                        return ['label' => $contact['first_name'] . " (" . $contact->label->name . ")",
+                            'id' => $contact['id'],
+                            'title' => $contact->title,
+                            'last_name' => $contact->last_name,
+                            'first_name' => $contact->first_name,
+                            'contact_label' => $contact->label ? $contact->label->name : "",
+                        ];
+                    }, array_keys($contacts), $contacts)
+                ) ?>, {'multiSelect': true})],
+                onReturn: function (adderDialog, selectedItems) {
+                    for (let i = 0; i < selectedItems.length; ++i) {
+
+                    }
+                },
+                searchOptions: {
+                    searchSource: ""
+                },
+                enableCustomSearchEntries: true,
+            });
+        });
+    </script>

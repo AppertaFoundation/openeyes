@@ -121,7 +121,7 @@
                     <td><?= $address->date_start ?></td>
                     <td><?= $address->date_end ?></td>
                     <td>
-                        <button type="button" class="removeLocation hint red" rel="<?php echo $address->id ?>">
+                        <button type="button" class="removeAddress hint red" rel="<?php echo $address->id ?>">
                             Remove
                         </button>
                     </td>
@@ -129,6 +129,7 @@
             <?php } ?>
             </tbody>
             <tfoot class="pagination-container">
+            <?php if(!$contact->addresses){ ?>
             <tr>
                 <td colspan="9">
                     <?= CHtml::link(
@@ -138,6 +139,7 @@
                     ); ?>
                 </td>
             </tr>
+            <?php } ?>
             </tfoot>
         </table>
     </form>
@@ -197,6 +199,33 @@
             'type': 'POST',
             'data': 'location_id=' + location_id + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
             'url': baseUrl + '/admin/removeLocation',
+            'success': function (resp) {
+                if (resp == "0") {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "This contact location is currently associated with one or more patients and so cannot be removed.\n\nYou can click on the location row to view the patients involved."
+                    }).open();
+                } else if (resp == "-1") {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "There was an unexpected error trying to remove the location, please try again or contact support for assistance."
+                    }).open();
+                } else {
+                    row.remove();
+                }
+            }
+        });
+    });
+
+    $('.removeAddress').click(function (e) {
+        e.preventDefault();
+
+        var address_id = $(this).attr('rel');
+
+        var row = $(this).parent().parent();
+
+        $.ajax({
+            'type': 'POST',
+            'data': 'address_id=' + address_id + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+            'url': baseUrl + '/admin/removeAddress',
             'success': function (resp) {
                 if (resp == "0") {
                     new OpenEyes.UI.Dialog.Alert({

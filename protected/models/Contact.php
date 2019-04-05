@@ -259,4 +259,17 @@ class Contact extends BaseActiveRecordVersioned
 
         return false;
     }
+
+    public function getActiveContacts($patient_id)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('t.active = 1');
+       // $criteria->join = "LEFT JOIN patient_contact_assignment pca ON t.id = pca.contact_id ";
+        $criteria->join .= "JOIN contact_label cl ON cl.id = t.contact_label_id";
+     //   $criteria->addCondition('pca.patient_id = NULL OR pca.patient_id != '. $patient_id);
+//        $criteria->with('label');
+        $criteria->addCondition('cl.is_private = 0');
+        // IS PRIVATE FOR CONTACT LABEL
+        return Contact::model()->with('label')->findAll($criteria);
+    }
 }
