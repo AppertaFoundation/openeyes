@@ -15,15 +15,17 @@
 $(document).ready(function () {
   function deleteReading(e) {
     let table = $(this).closest('table');
+    const $tr = $(this).closest('tr');
+
     if (table.find('tbody tr').length <= 1) table.hide();
 
-    if ($(this).closest('tr').data('side') == 'left') {
+    if ($tr.data('side') == 'left') {
       setCurrentManagementIOP('left');
     } else {
       setCurrentManagementIOP('right');
     }
 
-    $(this).closest('tr').remove();
+    $tr.remove();
 
     return false;
   }
@@ -35,10 +37,11 @@ $(document).ready(function () {
     e.preventDefault();
 
     let instrument_id = $(this).val();
+    const $tr = $(this).closest('tr');
 
-    let scale_td = $(this).closest('tr').children('td.scale_values');
-    let index = $(this).closest('tr').data('index');
-    let side = $(this).closest('tr').data('side');
+    let scale_td = $tr.children('td.scale_values');
+    let index = $tr.data('index');
+    let side = $tr.data('side');
 
     getScaleDropdown('OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value', instrument_id, scale_td, index, side);
   });
