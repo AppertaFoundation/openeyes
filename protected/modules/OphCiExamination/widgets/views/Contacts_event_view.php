@@ -21,47 +21,39 @@
 $model_name = CHtml::modelName($element);
 $element_errors = $element->getErrors();
 ?>
-<script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
-<script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group flex-layout cols-10">
-        <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-        <table id="<?= $model_name ?>_entry_table" class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
+        <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+        <table id="<?= $model_name ?>_entry_table"
+               class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
             <colgroup>
-                <col class="cols-2">
-                <col class="cols-4">
-                <col>
-                <col>
                 <col class="cols-1">
+                <col class="cols-2">
+                <col class="cols-2">
+                <col class="cols-2">
+                <col class="cols-2">
             </colgroup>
             <thead>
             <tr>
-                <th>Title</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Contact Type</th>
-                <th>Address One</th>
-                <th>Address Two</th>
-                <th>City</th>
-                <th>Postcode</th>
+                <th>Type</th>
+                <th>Name</th>
                 <th>Email</th>
+                <th>Phone Number</th>
+                <th>Address</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="contact-assignment-table">
             <?php
             foreach ($this->contacts as $contact) { ?>
-                <tr>
-                    <td><?= $contact->title; ?></td>
-                    <td><?= $contact->firstName; ?></td>
-                    <td><?= $contact->lastName; ?></td>
-                    <td><?= $contact->label ? $contact->label->name : ""; ?></td>
-                    <td><?= $contact->address ? $contact->address->address1 : ""; ?></td>
-                    <td><?= $contact->address ? $contact->address->address2 : ""; ?></td>
-                    <td><?= $contact->address ? $contact->address->city : ""; ?></td>
-                    <td><?= $contact->address ? $contact->address->postcode : ""; ?></td>
-                    <td><?= $contact->address ? $contact->address->email : ""; ?></td>
-                </tr>
+                <?= $this->render(
+                    'ContactsEntry_event_edit',
+                    array(
+                        'entry' => $contact,
+                        'model_name' => $model_name,
+                        'removable' => true,
+                        'is_template' => true,)); ?>
             <?php } ?>
             </tbody>
         </table>
     </div>
+</div>

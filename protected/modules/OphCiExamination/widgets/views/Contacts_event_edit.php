@@ -42,16 +42,16 @@ $element_errors = $element->getErrors();
                 <th>Address</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="contact-assignment-table">
             <?php
             foreach ($this->contacts as $contact) { ?>
-                <tr>
-                    <td><?= $contact->label ? $contact->label->name : ""; ?></td>
-                    <td><?= $contact->getFullName(); ?></td>
-                    <td><?= $contact->address ? $contact->address->email : ""; ?></td>
-                    <td><?= $contact->primary_phone; ?></td>
-                    <td><?= $contact->address ? $contact->address->getLetterLine() : ""; ?></td>
-                </tr>
+                <?= $this->render(
+                    'ContactsEntry_event_edit',
+                    array(
+                        'entry' => $contact,
+                        'model_name' => $model_name,
+                        'removable' => true,
+                        'is_template' => true,)); ?>
             <?php } ?>
             </tbody>
         </table>
@@ -64,34 +64,73 @@ $element_errors = $element->getErrors();
             </button>
         </div>
     </div>
+</div>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
+<script type="text/template" class="entry-template hidden" id="contact-entry-template">
+    <?php
 
-            <?php $contacts = \Contact::model()->getActiveContacts($this->patient->id);
-            ?>
-            new OpenEyes.UI.AdderDialog({
-                openButton: $('#add-contacts-btn'),
-                itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    array_map(function ($key, $contact) {
-                        return ['label' => $contact['first_name'] . " (" . $contact->label->name . ")",
-                            'id' => $contact['id'],
-                            'title' => $contact->title,
-                            'last_name' => $contact->last_name,
-                            'first_name' => $contact->first_name,
-                            'contact_label' => $contact->label ? $contact->label->name : "",
-                        ];
-                    }, array_keys($contacts), $contacts)
-                ) ?>, {'multiSelect': true})],
-                onReturn: function (adderDialog, selectedItems) {
-                    for (let i = 0; i < selectedItems.length; ++i) {
+    $empty_entry = new Contact();
+    echo $this->render(
+        'ContactsEntry_event_edit',
+        array(
+            'entry' => $empty_entry,
+            'model_name' => $model_name,
+            'removable' => true,
+            'is_template' => true,
+            'values' => array(
+                'id' => '{{ id }}',
+                'label' => '{{label}}',
+                'full_name' => '{{full_name}}',
+                'email' => '{{email}}',
+                'phone' => '{{phone}}',
+                'address' => '{{address}}'
+            ),
+        )
+    );
+    ?>
+</script>
 
-                    }
-                },
-                searchOptions: {
-                    searchSource: ""
-                },
-                enableCustomSearchEntries: true,
-            });
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        <?php $contacts = \Contact::model()->getActiveContacts($this->patient->id);
+        ?>
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#add-contacts-btn'),
+            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                array_map(function ($key, $contact) {
+                    return [
+                        'label' => $contact['first_name'] . " (" . $contact->label->name . ")",
+                        'id' => $contact['id'],
+                        'name' => $contact->getFullName(),
+                        'email' => $contact->address ? $contact->address->email : "",
+                        'phone' => $contact->primary_phone,
+                        'address' => $contact->address ? $contact->address->getLetterLine() : "",
+                        'contact_label' => $contact->label ? $contact->label->name : "",
+                    ];
+                }, array_keys($contacts), $contacts)
+            ) ?>, {'multiSelect': true})],
+            onReturn: function (adderDialog, selectedItems) {
+                let templateText = $('#contact-entry-template').text();
+                let newRows = [];
+                for (let i = 0; i < selectedItems.length; ++i) {
+                    data = {};
+                    data.id = selectedItems[i].id;
+                    data.label = selectedItems[i].contact_label;
+                    data.full_name = selectedItems[i].name;
+                    data.email = selectedItems[i].email;
+                    data.phone = selectedItems[i].phone;
+                    data.address = selectedItems[i].address;
+                    row = Mustache.render(templateText, data);
+                    newRows.push(row);
+                }
+                $('#contact-assignment-table').append(newRows);
+            },
+            searchOptions: {
+                searchSource: "/OphCiExamination/contact/autocomplete"
+            },
+            enableCustomSearchEntries: true,
+            searchAsTypedPrefix: 'Add a new contact:'
         });
-    </script>
+    });
+</script>

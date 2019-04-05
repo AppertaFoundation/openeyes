@@ -1266,6 +1266,19 @@ class DefaultController extends \BaseEventTypeController
         models\OphCiExamination_FurtherFindings_Assignment::model()->deleteAll($criteria);
     }
 
+    protected function saveComplexAttributes_Element_OphCiExamination_Contacts($element, $data, $index){
+        $patient = \Patient::model()->findByPk($this->patient->id);
+        $contact_ids = $data["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'];
+        if(!empty($contact_ids)){
+            foreach($contact_ids as $contact_id) {
+                $patientContactAssignment = new \PatientContactAssignment;
+                $patientContactAssignment->patient_id = $patient->id;
+                $patientContactAssignment->contact_id = $contact_id;
+                $patientContactAssignment->save();
+            }
+        }
+    }
+
     /**
      * Is this element required in the UI? (Prevents the user from being able
      * to remove the element.).
