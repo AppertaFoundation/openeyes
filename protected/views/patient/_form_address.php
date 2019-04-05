@@ -95,9 +95,9 @@
       <?= $form->error($address, 'country_id') ?>
   </td>
   <td>
-      <?= $form->dropDownList($address, 'country_id', $countries,
-          array('options' => array(array_search('Australia', $countries)=>array('selected'=>true)),
-              'placeholder' => 'Country')) ?>
+      <?= $form->dropDownList($address, 'country_id', $countries, (in_array(Yii::app()->params['default_country'],$countries)) ?
+          array('options' => array(array_search(Yii::app()->params['default_country'], $countries)=>array('selected'=>true)),
+              'placeholder' => 'Country') : array('empty' => '-- select --'))  ?>
   </td>
 </tr>
 
