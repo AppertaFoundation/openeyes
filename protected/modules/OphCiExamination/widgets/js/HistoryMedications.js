@@ -224,8 +224,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       controller.updateTextualDisplay($row);
       if($row.find(".js-locked").val() === "1") {
-          var $txt_display = $row.find(".dose-frequency-route a.textual-display");
-          $txt_display.removeAttr("onclick").removeAttr("href");
+          var $txt_display = $row.find(".dose-frequency-route .textual-display");
+          $txt_display.replaceWith('<span class="textual-display">'+$txt_display.html()+'</span>');
           $row.find(".dose-frequency-route .alternative-display-element").hide();
           $row.find(".dose-frequency-route .alternative-display-element.textual").show();
       }
