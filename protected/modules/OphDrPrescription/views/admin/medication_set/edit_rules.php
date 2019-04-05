@@ -17,7 +17,16 @@
 				{{subspecialty.label}}
 			</td>
 			<td>
-				<?php echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', ""); ?>
+				<?php
+					if (!empty($usage_code)) {
+					?>
+						<input type="hidden" name="MedicationSet[medicationSetRules][usage_code][]" value="<?=$usage_code?>" />
+					<?php
+						echo $usage_code;
+					} else {
+						echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', "", array('readonly' => true));
+					}
+				?>
 			</td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
@@ -53,7 +62,13 @@
 				<?=($rule->subspecialty_id ? CHtml::encode($rule->subspecialty->name) : "")?>
 			</td>
 			<td>
-				<?php echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', $rule->usage_code); ?>
+				<?php
+				if (!empty($usage_code)) {
+					echo $usage_code;
+				} else {
+					echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', $rule->usage_code);
+				}
+				?>
 			</td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
