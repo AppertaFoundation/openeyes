@@ -34,11 +34,6 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->rules->canEditEpisode( $this->getSupportServicesEpisode()));
     }
 
-    public function testCanEditEpisode_NormalFirm_SupportServicesEpisode()
-    {
-        $this->assertFalse($this->rules->canEditEpisode( $this->getSupportServicesEpisode()));
-    }
-
     public function testCanEditEpisode_SupportServicesFirm_LegacyEpisode()
     {
         $this->assertFalse($this->rules->canEditEpisode( $this->getLegacyEpisode()));
@@ -49,19 +44,9 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canEditEpisode($this->getLegacyEpisode()));
     }
 
-    public function testCanEditEpisode_SupportServicesFirm_NormalEpisode()
-    {
-        $this->assertFalse($this->rules->canEditEpisode( $this->getNormalEpisode()));
-    }
-
     public function testCanEditEpisode_NormalFirm_NormalEpisode_MatchingSubspecialty()
     {
         $this->assertTrue($this->rules->canEditEpisode( $this->getNormalEpisode(42)));
-    }
-
-    public function testCanEditEpisode_NormalFirm_NormalEpisode_NonMatchingSubspecialty()
-    {
-        $this->assertFalse($this->rules->canEditEpisode( $this->getNormalEpisode(43)));
     }
 
     public function testCanCreateEvent_Disabled()
@@ -112,11 +97,6 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanCreateEvent_NoEventType_LegacyEpisode()
     {
         $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getLegacyEpisode()));
-    }
-
-    public function testCanCreateEvent_NoEventType_WrongSubspecialtyEpisode()
-    {
-        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(42), $this->getNormalEpisode(43)));
     }
 
     public function testCanEditEvent_DeletePending()
@@ -247,19 +227,19 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanRequestEventDeletion_WrongSubspecialty()
     {
         $event = $this->getEvent(array('episode' => $this->getNormalEpisode(43)));
-        $this->assertFalse($this->rules->canRequestEventDeletion($this->getNormalFirm(42), $event));
+        $this->assertFalse($this->rules->canRequestEventDeletion($event));
     }
 
     public function testCanRequestEventDeletion_CorrectSubspecialty()
     {
         $event = $this->getEvent(array('episode' => $this->getNormalEpisode(42)));
-        $this->assertTrue($this->rules->canRequestEventDeletion($this->getNormalFirm(42), $event));
+        $this->assertTrue($this->rules->canRequestEventDeletion($event));
     }
 
     public function testCanRequestEventDeletion_LegacyEpisode()
     {
         $event = $this->getEvent(array('episode' => $this->getLegacyEpisode()));
-        $this->assertFalse($this->rules->canRequestEventDeletion($this->getNormalFirm(), $event));
+        $this->assertFalse($this->rules->canRequestEventDeletion($event));
     }
 
     public function testDefaultCanCreateEventWithNoSuffix()
