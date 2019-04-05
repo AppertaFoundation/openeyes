@@ -78,7 +78,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($contact, 'title') ?>
         </td>
         <td>
-            <?= $form->textField($contact, 'title', array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Title')) ?>
+            <?= $form->textField($contact, 'title', array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Title', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       <tr>
@@ -113,7 +113,7 @@ foreach ($ethnic_list as $key=>$item){
         </td>
         <td>
             <?= $form->textField($contact, 'maiden_name',
-                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name')) ?>
+                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       <tr class="patient-duplicate-check">
@@ -201,7 +201,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($contact, 'primary_phone') ?>
         </td>
         <td>
-            <?= $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20)) ?>
+            <?= $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20, 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       <tr>
@@ -211,7 +211,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($address, 'email') ?>
         </td>
         <td>
-            <?= $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255)) ?>
+            <?= $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255, 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       </tbody>
@@ -231,9 +231,9 @@ foreach ($ethnic_list as $key=>$item){
           <td>
             <?php if (in_array("admin", Yii::app()->user->getRole(Yii::app()->user->getId())))
             {
-                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num'), 'autocomplete' => Yii::app()->params['html_autocomplete']));
             } else{
-                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'readonly'=>true, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'readonly'=>true, 'placeholder' => $patient->getAttributeLabel('hos_num'), 'autocomplete' => Yii::app()->params['html_autocomplete']));
             }
             ?>
           </td>
@@ -249,6 +249,7 @@ foreach ($ethnic_list as $key=>$item){
                       'maxlength' => 40,
                       'data-child_row' => '.nhs-num-status',
                       'placeholder' => $patient->getAttributeLabel('nhs_num'),
+                      'autocomplete' => Yii::app()->params['html_autocomplete']
                   )); ?>
               <?= $form->error($patient, 'nhs_num') ?>
           </td>

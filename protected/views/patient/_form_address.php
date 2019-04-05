@@ -39,7 +39,7 @@
       <?= $form->error($address, 'address1') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1')) ?>
+      <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
   </td>
 </tr>
 
@@ -50,7 +50,7 @@
       <?= $form->error($address, 'address2') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2')) ?>
+      <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
 
   </td>
 </tr>
@@ -61,7 +61,7 @@
       <?= $form->error($address, 'city') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City')) ?>
+      <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
   </td>
 </tr>
 
@@ -72,7 +72,7 @@
       <?= $form->error($address, 'postcode') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode')) ?>
+      <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
   </td>
 </tr>
 
@@ -83,7 +83,7 @@
       <?= $form->error($address, Yii::app()->params['county_label']) ?>
   </td>
   <td>
-      <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'))) ?>
+      <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'), 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
 
   </td>
 </tr>
