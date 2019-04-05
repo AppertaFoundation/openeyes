@@ -1063,7 +1063,7 @@ class WorklistManager extends CComponent
                 'end' => $range_date->format('Y-m-d H:i:s'),
                 'scheduled' => true,
                 'description' => $definition->description,
-                'name' => $this->generateWorklistName($definition, $date),
+                'name' => $definition->worklist_name ? $definition->worklist_name : $this->generateWorklistName($definition, $date),
             );
 
             $instance->save();
