@@ -17,8 +17,8 @@
  */
 ?>
 <div class="box admin">
-	<h2><?php echo $session->id ? 'Edit' : 'Add'?> session</h2>
-	<?php
+    <h2><?php echo $session->id ? 'Edit' : 'Add'?> session</h2>
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
         'enableAjaxValidation' => false,
@@ -28,164 +28,264 @@
             'field' => 5,
         ),
     ))?>
-	<?php echo $form->errorSummary($session); ?>
-	<?php if ($session->sequence_id) {?>
-		<?php echo $form->textField($session, 'sequence_id', array('readonly' => true), array(), array('field' => 2))?>
-	<?php }?>
-	<?php echo $form->dropDownList($session, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => '- Emergency -'))?>
-	<?php echo $form->dropDownList($session, 'theatre_id', 'OphTrOperationbooking_Operation_Theatre', array('empty' => '- None -'))?>
-	<?php if ($session->id) {?>
-		<div id="div_OphTrOperationbooking_Operation_Session_date" class="data-group">
-			<div class="cols-2 column">
-				<div class="field-label">Date:</div>
-			</div>
-			<div class="cols-5 column end">
-				<div class="field-value"><?php echo $session->NHSDate('date')?></div>
-			</div>
-		</div>
-	<?php } else {?>
-		<?php echo $form->datePicker($session, 'date', array(), array(), array('field' => 2))?>
-	<?php }?>
-	<?php echo $form->textField($session, 'start_time', array('class' => 'time-picker'), array(), array('field' => 2))?>
-	<?php echo $form->textField($session, 'end_time', array('class' => 'time-picker'), array(), array('field' => 2))?>
-	<?php echo $form->textField($session, 'default_admission_time', array('class' => 'time-picker'), array(), array('field' => 2))?>
-	<?php echo $form->textField($session, 'max_procedures', array(), array(), array('field' => 2)); ?>
-	<?php if ($current = $session->getBookedProcedureCount()) { ?>
-		<fieldset id="procedure_count_wrapper" class="data-group <?php if ($session->max_procedures && $current > $session->max_procedures) { echo ' warn'; }?>">
-			<div class="cols-2 column">
-				<div class="field-label">Current Booked Procedures:</div>
-			</div>
-			<div class="cols-5 column end">
-				<div class="field-value" id="current-proc-count"><?php echo $current ?></div>
-			</div>
-		</fieldset>
-	<?php } ?>
-	<?php echo $form->radioBoolean($session, 'consultant')?>
-	<?php echo $form->radioBoolean($session, 'paediatric')?>
-	<?php echo $form->radioBoolean($session, 'anaesthetist')?>
-	<?php echo $form->radioBoolean($session, 'general_anaesthetic')?>
-	<?php echo $form->radioBoolean($session, 'available')?>
-	<fieldset id="unavailablereason_id_wrapper" class="data-group"<?php if ($session->available) {?> style="display: none;"<?php } ?>>
-		<div class="cols-2 column">
-			<label for="OphTrOperationbooking_Operation_Session_unavailablereason_id"><?php echo $session->getAttributeLabel('unavailablereason_id'); ?>:</label>
-		</div>
-		<div class="cols-5 column end">
-			<?php echo $form->dropDownList($session, 'unavailablereason_id', CHtml::listData($session->getUnavailableReasonList(), 'id', 'name'), array('empty' => 'Select', 'nowrapper' => true))?>
-		</div>
-	</fieldset>
-	<?php echo $form->errorSummary($session); ?>
-	<?php echo $form->formActions(array(
+    <?php echo $form->errorSummary($session); ?>
+    <table class="standard">
+        <colgroup>
+            <col class="cols-2">
+            <col class="cols-2">
+        </colgroup>
+        <tbody>
+        <?php if ($session->sequence_id) {?>
+            <tr>
+                <td>
+                    <?= $session->getAttributeLabel('sequence_id'); ?>
+                </td>
+                <td>
+                    <?php echo $form->textField($session, 'sequence_id', array('readonly' => true, 'nowrapper' => true), array(), array('field' => 2))?>
+                </td>
+            </tr>
+        <?php }?>
+        <tr>
+            <td>
+                <?= $session->getAttributeLabel('firm_id'); ?>
+            </td>
+            <td>
+                <?php echo $form->dropDownList($session, 'firm_id', Firm::model()->getListWithSpecialties(),
+                    array('empty' => '- Emergency -', 'nowrapper' => true))?>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <?= $session->getAttributeLabel('theatre_id'); ?>
+            </td>
+            <td>
+                <?php echo $form->dropDownList($session, 'theatre_id', 'OphTrOperationbooking_Operation_Theatre',
+                    array('empty' => '- None -', 'nowrapper' => true))?>
+            </td>
+        </tr>
+        <?php if ($session->id) {?>
+            <tr id="div_OphTrOperationbooking_Operation_Session_date">
+                <td> Date: </td>
+                <td> <?php echo $session->NHSDate('date')?></td>
+            </tr>
+        <?php } else {?>
+            <td>
+                <?= $session->getAttributeLabel('date'); ?>
+            </td>
+            <td>
+                <?php echo $form->datePicker($session, 'date', array(), array('nowrapper' => true), array('field' => 2))?>
+            </td>
+        <?php }?>
+        </tr>
+        <tr>
+            <td>
+                <?= $session->getAttributeLabel('start_time'); ?>
+            </td>
+            <td>
+                <?php echo $form->textField($session, 'start_time', array('class' => 'time-picker', 'nowrapper' => true), array(), array('field' => 2))?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= $session->getAttributeLabel('end_time'); ?>
+            </td>
+            <td>
+                <?php echo $form->textField($session, 'end_time', array('class' => 'time-picker', 'nowrapper' => true), array(), array('field' => 2))?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= $session->getAttributeLabel('default_admission_time'); ?>
+            </td>
+            <td>
+                <?php echo $form->textField($session, 'default_admission_time', array('class' => 'time-picker', 'nowrapper' => true), array(), array('field' => 2))?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= $session->getAttributeLabel('max_procedures'); ?>
+            </td>
+            <td>
+                <?php echo $form->textField($session, 'max_procedures', array('nowrapper' => true), array(), array('field' => 2)); ?>
+            </td>
+        </tr>
+        <?php if ($current = $session->getBookedProcedureCount()) { ?>
+            <tr id="procedure_count_wrapper" class="data-group <?php if ($session->max_procedures && $current > $session->max_procedures) { echo ' warn'; }?>">
+                <td>
+                    <div class="field-label">Current Booked Procedures:</div>
+                </td>
+                <td>
+                    <div class="field-value" id="current-proc-count"><?php echo $current ?></div>
+                </td>
+            </tr>
+        <?php } ?>
+        <tr>
+            <td>
+                <?= $session->getAttributeLabel('consultant'); ?>
+            </td>
+            <td>
+                <?php echo $form->radioBoolean($session, 'consultant', array('nowrapper' => true))?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= $session->getAttributeLabel('paediatric'); ?>
+            </td>
+            <td>
+                <?php echo $form->radioBoolean($session, 'paediatric', array('nowrapper' => true))?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= $session->getAttributeLabel('anaesthetist'); ?>
+            </td>
+            <td>
+                <?php echo $form->radioBoolean($session, 'anaesthetist', array('nowrapper' => true))?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= $session->getAttributeLabel('general_anaesthetic'); ?>
+            </td>
+            <td>
+                <?php echo $form->radioBoolean($session, 'general_anaesthetic', array('nowrapper' => true))?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= $session->getAttributeLabel('available'); ?>
+            </td>
+            <td>
+                <?php echo $form->radioBoolean($session, 'available', array('nowrapper' => true))?>
+            </td>
+        </tr>
+        <tr id="unavailablereason_id_wrapper" class="data-group"<?php if ($session->available) {?> style="display: none;"<?php } ?>>
+            <td class="cols-2 column">
+                <label for="OphTrOperationbooking_Operation_Session_unavailablereason_id"><?php echo $session->getAttributeLabel('unavailablereason_id'); ?>:</label>
+            </td>
+            <td class="cols-5 column end">
+                <?php echo $form->dropDownList($session, 'unavailablereason_id', CHtml::listData($session->getUnavailableReasonList(), 'id', 'name'), array('empty' => 'Select', 'nowrapper' => true))?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <?php echo $form->errorSummary($session); ?>
+    <?php echo $form->formActions(array(
         'delete' => $session->id ? 'Delete' : false,
     ));?>
-	<?php $this->endWidget()?>
+    <?php $this->endWidget()?>
 </div>
 
 <div id="confirm_delete_session" title="Confirm delete session" style="display: none;">
-	<div id="delete_session">
-		<div class="alert-box alert with-icon">
-			<strong>WARNING: This will remove the session from the system.<br/>This action cannot be undone.</strong>
-		</div>
-		<p>
-			<strong>Are you sure you want to proceed?</strong>
-		</p>
-		<div class="buttons">
-			<input type="hidden" id="medication_id" value="" />
-			<button type="submit" class="warning btn_remove_session">Remove session</button>
-			<button type="submit" class="secondary btn_cancel_remove_session">Cancel</button>
-			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-		</div>
-	</div>
+    <div id="delete_session">
+        <div class="alert-box alert with-icon">
+            <strong>WARNING: This will remove the session from the system.<br/>This action cannot be undone.</strong>
+        </div>
+        <p>
+            <strong>Are you sure you want to proceed?</strong>
+        </p>
+        <div class="buttons">
+            <input type="hidden" id="medication_id" value="" />
+            <button type="submit" class="warning btn_remove_session">Remove session</button>
+            <button type="submit" class="secondary btn_cancel_remove_session">Cancel</button>
+            <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+        </div>
+    </div>
 </div>
+
+
 <script type="text/javascript">
-	$('input[name="OphTrOperationbooking_Operation_Session[available]"]').live('change', function() {
-		if ($(this).val() == '1') {
-			$('#unavailablereason_id_wrapper').hide();
-			$('#OphTrOperationbooking_Operation_Session_unavailablereason_id').data('orig', $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val());
-			$('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val('');
-		}
-		else {
-			$('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val($('#OphTrOperationbooking_Operation_Session_unavailablereason_id').data('orig'));
-			$('#unavailablereason_id_wrapper').show();
-		}
-	});
+    $('input[name="OphTrOperationbooking_Operation_Session[available]"]').live('change', function() {
+        if ($(this).val() == '1') {
+            $('#unavailablereason_id_wrapper').hide();
+            $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').data('orig', $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val());
+            $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val('');
+        }
+        else {
+            $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val($('#OphTrOperationbooking_Operation_Session_unavailablereason_id').data('orig'));
+            $('#unavailablereason_id_wrapper').show();
+        }
+    });
 
-	handleButton($('#et_cancel'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessions';
-	});
+    handleButton($('#et_cancel'),function(e) {
+        e.preventDefault();
+        window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessions';
+    });
 
-	handleButton($('#et_save'),function(e) {
-		$('#adminform').submit();
-	});
+    handleButton($('#et_save'),function(e) {
+        $('#adminform').submit();
+    });
 
-	handleButton($('#et_delete'),function(e) {
-		e.preventDefault();
-		$.ajax({
-			'type': 'POST',
-			'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteSessions',
-			'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'success': function(resp) {
-				if (resp == "1") {
-					enableButtons();
+    handleButton($('#et_delete'),function(e) {
+        e.preventDefault();
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteSessions',
+            'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+            'success': function(resp) {
+                if (resp == "1") {
+                    enableButtons();
 
-					$('#confirm_delete_session').dialog({
-						resizable: false,
-						modal: true,
-						width: 560
-					});
-				} else {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "This session has one or more active bookings and so cannot be deleted."
-					}).open();
-					enableButtons();
-				}
-			}
-		});
-	});
+                    $('#confirm_delete_session').dialog({
+                        resizable: false,
+                        modal: true,
+                        width: 560
+                    });
+                } else {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "This session has one or more active bookings and so cannot be deleted."
+                    }).open();
+                    enableButtons();
+                }
+            }
+        });
+    });
 
-	handleButton($('.btn_remove_session'),function(e) {
-		e.preventDefault();
+    handleButton($('.btn_remove_session'),function(e) {
+        e.preventDefault();
 
-		$.ajax({
-			'type': 'POST',
-			'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteSessions',
-			'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'success': function(resp) {
-				if (resp == "1") {
-					$.ajax({
-						'type': 'POST',
-						'url': baseUrl+'/OphTrOperationbooking/admin/deleteSessions',
-						'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-						'success': function(resp) {
-							if (resp == "1") {
-								window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessions';
-							} else {
-								new OpenEyes.UI.Dialog.Alert({
-									content: "There was an unexpected error deleting the session, please try again or contact support for assistance",
-									onClose: function() {
-										enableButtons();
-										$('#confirm_delete_sessions').dialog('close');
-									}
-								}).open();
-							}
-						}
-					});
-				} else {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "This session has one or more active bookings and so cannot be deleted.",
-						onClose: function() {
-							enableButtons();
-							$('#confirm_delete_sessions').dialog('close');
-						}
-					}).open();
-				}
-			}
-		});
-	});
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteSessions',
+            'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+            'success': function(resp) {
+                if (resp == "1") {
+                    $.ajax({
+                        'type': 'POST',
+                        'url': baseUrl+'/OphTrOperationbooking/admin/deleteSessions',
+                        'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+                        'success': function(resp) {
+                            if (resp == "1") {
+                                window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessions';
+                            } else {
+                                new OpenEyes.UI.Dialog.Alert({
+                                    content: "There was an unexpected error deleting the session, please try again or contact support for assistance",
+                                    onClose: function() {
+                                        enableButtons();
+                                        $('#confirm_delete_sessions').dialog('close');
+                                    }
+                                }).open();
+                            }
+                        }
+                    });
+                } else {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "This session has one or more active bookings and so cannot be deleted.",
+                        onClose: function() {
+                            enableButtons();
+                            $('#confirm_delete_sessions').dialog('close');
+                        }
+                    }).open();
+                }
+            }
+        });
+    });
 
-	$('.btn_cancel_remove_session').click(function(e) {
-		e.preventDefault();
-		$('#confirm_delete_session').dialog('close');
-	});
-	$('.time-picker').timepicker({ 'timeFormat': 'H:i:s', 'step' : 5 });
+    $('.btn_cancel_remove_session').click(function(e) {
+        e.preventDefault();
+        $('#confirm_delete_session').dialog('close');
+    });
+    $('.time-picker').timepicker({ 'timeFormat': 'H:i:s', 'step' : 5 });
 </script>
