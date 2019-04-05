@@ -37,6 +37,7 @@ class CaseSearchController extends BaseModuleController
         $parameters = array();
         $auditValues = array();
         $fixedParameters = $this->module->getFixedParams();
+        $parameterList = array();
         $ids = array();
         if (isset($_SESSION['last_search'])) {
             $ids = $_SESSION['last_search'];
@@ -52,6 +53,7 @@ class CaseSearchController extends BaseModuleController
         foreach ($this->module->getConfigParam('parameters') as $group) {
             foreach ($group as $parameter) {
                 $paramName = $parameter . 'Parameter';
+                array_push($parameterList,$paramName);
                 if (isset($_POST[$paramName])) {
                     foreach ($_POST[$paramName] as $id => $param) {
                         $newParam = new $paramName;
@@ -64,7 +66,6 @@ class CaseSearchController extends BaseModuleController
                 }
             }
         }
-
         foreach ($fixedParameters as $parameter) {
             if (isset($_POST[get_class($parameter)])) {
                 foreach ($_POST[get_class($parameter)] as $id => $param) {
@@ -125,8 +126,17 @@ class CaseSearchController extends BaseModuleController
             ),
         ));
 
+
         // Get the list of parameter types for display on-screen.
         $paramList = $this->module->getParamList();
+        if (isset($_SESSION['last_search_params']) && !empty($_SESSION['last_search_params'])){
+            foreach ($_SESSION['last_search_params'] as $key => $last_search_param){
+                $last_search_param_name = get_class($last_search_param);
+                if (!in_array($last_search_param_name,$parameterList)){
+                    unset($_SESSION['last_search_params'][$key]);
+                }
+            }
+        }
 
         $this->render('index', array(
             'paramList' => $paramList,
