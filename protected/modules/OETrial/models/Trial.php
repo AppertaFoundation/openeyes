@@ -54,6 +54,14 @@ class Trial extends BaseActiveRecordVersioned
    * The return code for actionRemovePermission() if the user tried to remove themselves from the Trial
    */
   const REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF = 'remove_self_fail';
+    /**
+     * The return code for actionRemovePermission() if the user tried to remove admin from the Trial
+     */
+    const REMOVE_PERMISSION_RESULT_CANT_REMOVE_ADMIN = 'remove_admin_fail';
+    /**
+     * The return code for actionRemovePermission() if the user tried to remove owner from the Trial
+     */
+    const REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER = 'remove_owner_fail';
 
   /**
    * The return code for actionTransitionState() if the transition was a success
@@ -204,16 +212,24 @@ class Trial extends BaseActiveRecordVersioned
     if ($this->getIsNewRecord()) {
 
       // Create a new permission assignment for the user that created the Trial
-      $newPermission = new UserTrialAssignment();
-      $newPermission->user_id = Yii::app()->user->id;
-      $newPermission->trial_id = $this->id;
-      $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
-      $newPermission->role = 'Trial Owner';
-      $newPermission->is_principal_investigator = 1;
-
-      if (!$newPermission->save()) {
-        throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
-          . print_r($newPermission->getErrors(), true));
+      $current_user_id = Yii::app()->user->id;
+      $admin_user_group = User::model()->findAllByRoles(array('admin'));
+      if (!in_array($current_user_id,$admin_user_group)){
+          array_push($admin_user_group,$current_user_id);
+      }
+      foreach ($admin_user_group as $user_id){
+          $newPermission = new UserTrialAssignment();
+          $newPermission->user_id = $user_id;
+          $newPermission->trial_id = $this->id;
+          $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
+          if ($user_id == $current_user_id){
+              $newPermission->role = 'Trial Owner';
+              $newPermission->is_principal_investigator = 1;
+          }
+          if (!$newPermission->save()) {
+              throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
+                  . print_r($newPermission->getErrors(), true));
+          }
       }
     }
   }
@@ -429,12 +445,21 @@ class Trial extends BaseActiveRecordVersioned
       $logMessage = null;
       /* @var UserTrialAssignment $permission */
       $assignment = UserTrialAssignment::model()->findByPk($permission_id);
+      $admin_user_group = User::model()->findAllByRoles(array('admin'));
       if ($assignment->trial->id !== $this->id) {
         throw new Exception('Cannot remove permission from another trial');
       }
 
       if ($assignment->user_id === Yii::app()->user->id) {
-        return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF;
+          return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF;
+      }
+
+      if ($assignment->user_id === $assignment->created_user_id){
+          return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER;
+      }
+
+      if (in_array($assignment->user_id,$admin_user_group)){
+          return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_ADMIN;
       }
 
       // The last Manage permission in a trial can't be removed (there always has to be one manager for a trial)

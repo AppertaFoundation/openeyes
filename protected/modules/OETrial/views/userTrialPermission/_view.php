@@ -47,7 +47,7 @@ $permission = TrialController::getCurrentUserPermission();
 
     <?php if ($permission && $permission->can_manage): ?>
       <td>
-          <?php if ($data->user_id !== Yii::app()->user->id): ?>
+          <?php if ($data->user_id !== Yii::app()->user->id && $data->user_id !== $data->created_user_id && !in_array($data->user_id,User::model()->findAllByRoles(array('admin')))): ?>
             <span class="js-remove-permission">
               <i class="oe-i trash"></i>
             </span>
