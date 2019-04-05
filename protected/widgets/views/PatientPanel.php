@@ -104,6 +104,9 @@ $deceased = $this->patient->isDeceased();
                     <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
                 </svg>
             </div>
+
+            <?php
+            if (Yii::app()->user->checkAccess('OprnViewClinical')){?>
             <div class="patient-management js-management-btn">
                 <svg viewBox="0 0 30 30" class="icon">
                     <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
@@ -114,7 +117,9 @@ $deceased = $this->patient->isDeceased();
                     <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
                 </svg>
             </div>
-            <?php if ($this->patient->isEditable()): ?>
+            <?php }?>
+
+          <?php if ($this->patient->isEditable()): ?>
                 <div class="patient-local-edit js-patient-local-edit-btn"
                 <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials))  echo 'style ="top: 35px; right: 0px"'?>
                 >
