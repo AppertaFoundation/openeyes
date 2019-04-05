@@ -96,7 +96,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
     public function testCanCreateEvent_WrongSubspecialtyEpisode()
     {
-        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(42), $this->getNormalEpisode(43), $this->getNonSupportServicesEventType()));
+        $this->assertFalse($this->rules->canCreateEvent($this->getNormalEpisode(43), $this->getNonSupportServicesEventType()));
     }
 
     public function testCanCreateEvent_NoData()
@@ -116,7 +116,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
     public function testCanCreateEvent_NoEventType_WrongSubspecialtyEpisode()
     {
-        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(42), $this->getNormalEpisode(43)));
+        $this->assertFalse($this->rules->canCreateEvent($this->getNormalEpisode(43)));
     }
 
     public function testCanEditEvent_DeletePending()
