@@ -1046,6 +1046,7 @@ class DefaultController extends \BaseEventTypeController
                                 'condition' => 'episode.deleted = 0 and episode.id = '.$this->episode->id,
                             ),
                         ),
+                      'order' => 'event.created_date desc',
                     ),
                 ))->find()) {
                 foreach ($previous_om->attributes as $key => $value) {
