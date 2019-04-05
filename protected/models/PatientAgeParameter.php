@@ -108,7 +108,7 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
         ?>
       <div class="flex-layout flex-left js-case-search-param">
         <div class="parameter-option">
-            <p><?= $this->getLabel() ?></p>
+            <?= $this->getDisplayTitle() ?>
         </div>
         <div class="parameter-option">
             <?php echo CHtml::activeDropDownList(

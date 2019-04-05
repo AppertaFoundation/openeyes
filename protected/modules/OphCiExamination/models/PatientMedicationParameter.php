@@ -58,8 +58,10 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
         );
         ?>
 
-        <div class="flex-layout flex-left">
-          <?= $this->getDisplayTitle()?>
+      <div class="flex-layout flex-left js-case-search-param">
+        <div class="parameter-option">
+            <?= $this->getDisplayTitle() ?>
+        </div>
             <div style="padding-right: 15px;">
                 <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
                 <?php echo CHtml::error($this, "[$id]operation"); ?>

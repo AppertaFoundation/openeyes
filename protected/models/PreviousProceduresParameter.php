@@ -60,12 +60,14 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         );
         ?>
 
-        <div class="flex-layout flex-left">
-            <?= $this->getDisplayTitle() ?>
-            <div style="padding-right: 15px;">
-                <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
-                <?php echo CHtml::error($this, "[$id]operation"); ?>
+      <div class="flex-layout flex-left js-case-search-param">
+            <div class="parameter-option">
+                <?= $this->getDisplayTitle() ?>
             </div>
+                <div style="padding-right: 15px;">
+                    <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
+                    <?php echo CHtml::error($this, "[$id]operation"); ?>
+                </div>
 
             <div>
                 <?php

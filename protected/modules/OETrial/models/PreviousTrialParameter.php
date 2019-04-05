@@ -89,8 +89,10 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         );
 
         ?>
-        <div class="flex-layout flex-left flex-top">
-            <?= $this->getDisplayTitle()?>
+        <div class="flex-layout flex-left js-case-search-param">
+            <div class="parameter-option">
+                <?= $this->getDisplayTitle()?>
+            </div>
             <div class="parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops,
                     array('prompt' => 'Select One...')); ?>

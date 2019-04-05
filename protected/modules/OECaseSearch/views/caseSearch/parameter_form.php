@@ -17,6 +17,10 @@
           <?php $model->renderParameter($id); ?>
           <?php echo CHtml::activeHiddenField($model, "[$id]id"); ?>
       </div>
+
+      <div class="js-case-search-placeholder">
+      </div>
+
       <div class="cols-2">
         <i id="<?= $id ?>-remove" class="oe-i trash"></i>
       </div>
@@ -28,12 +32,15 @@
       $('.parameter').each(function(){
         if($(this).index() == 0){
           $(this).find('.js-case-search-AND-label').remove();
+          $(this).find('.js-case-search-placeholder').html("<pre>       </pre>");
         }
       });
     });
     $('#<?= $id?>-remove').on('click', function () {
       if ($(this).closest('.parameter').index() == 0){
         $('.js-case-search-AND-label').first().remove();
+        $(this).closest('.parameter').find('.js-case-search-placeholder').remove();
+        $('.js-case-search-placeholder').first().html("<pre>       </pre>");
       }
       this.closest('.parameter').remove();
     })
