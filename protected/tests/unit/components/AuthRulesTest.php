@@ -259,7 +259,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
             'EventType',
             array('rbac_operation_suffix' => 'Test')
         );
-        $this->assertTrue($this->rules->canCreateEvent($this->getNormalEpisode(), $event_type));
+        $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
 
     public function testCantCreateEventEventTypeSuffix()
