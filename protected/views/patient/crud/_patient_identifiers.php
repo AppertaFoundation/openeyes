@@ -28,15 +28,16 @@
         </td>
         <td>
             <?php
+
+            echo $form->textField($patient_identifier,'value',array(
+                    'placeholder' => $patient_identifier->getPlaceholder(),
+		    'maxlength' => 255,
+		    'name' => 'PatientIdentifier['.$index.'][value]',
+                    !$patient_identifier->isEditable() ? 'readonly' : '' => 'readonly',
+            ));
             echo CHtml::hiddenField('PatientIdentifier[' . $index . '][id]', $patient_identifier->id);
             echo CHtml::hiddenField('PatientIdentifier[' . $index . '][code]', $patient_identifier->code);
-            echo CHtml::textField('PatientIdentifier[' . $index . '][value]',
-                $patient_identifier->value,
-                array(
-                    'placeholder' => $patient_identifier->getPlaceholder(),
-                    'maxlength' => 255,
-                    !$patient_identifier->isEditable() ? 'readonly' : '' => 'readonly',
-                )); ?>
+            ?>
         </td>
       </tr>
         <?php

@@ -39,6 +39,7 @@ class PatientIdentifier extends BaseActiveRecordVersioned
             array('patient_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('code', 'length', 'max' => 50),
             array('value', 'length', 'max' => 255),
+            array('value','numerical'),
             array('last_modified_date, created_date', 'safe'),
         );
 
