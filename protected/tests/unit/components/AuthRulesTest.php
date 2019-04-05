@@ -79,11 +79,6 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getLegacyEpisode(), $this->getNonSupportServicesEventType()));
     }
 
-    public function testCanCreateEvent_WrongSubspecialtyEpisode()
-    {
-        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(42), $this->getNormalEpisode(43), $this->getNonSupportServicesEventType()));
-    }
-
     public function testCanCreateEvent_NoData()
     {
         $this->assertTrue($this->rules->canCreateEvent());
@@ -221,13 +216,6 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $event = $this->getEvent();
         $event->expects($this->any())->method('showDeleteIcon')->will($this->returnValue(false));
         $this->assertFalse($this->rules->canRequestEventDeletion( $event));
-    }
-
-
-    public function testCanRequestEventDeletion_WrongSubspecialty()
-    {
-        $event = $this->getEvent(array('episode' => $this->getNormalEpisode(43)));
-        $this->assertFalse($this->rules->canRequestEventDeletion($event));
     }
 
     public function testCanRequestEventDeletion_CorrectSubspecialty()
