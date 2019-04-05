@@ -30,54 +30,58 @@
         $time = date('H:i', strtotime($worklist_patient->when));
         $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
         $worklist_name = $worklist_patient->worklist->name;
-        $worklist_status = $worklist_patient->getWorklistPatientAttribute()->attribute_value;
+        $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
         ?>
         <tr>
             <td><span class="time"><?= $time ?></span></td>
             <td><?= $worklist_name ?></td>
             <td><span class="oe-date"><?= $date ?></span></td>
-
-            <?php if ($worklist_status) { ?>
-                <td><?= $worklist_status ?></td>
-            <?php } ?>
+            <td>
+                <?php if (isset($worklist_status)) { ?>
+                    <?= $worklist_status->attribute_value ?>
+                <?php } ?>
+            </td>
         </tr>
     <?php } ?>
     </tbody>
 </table>
 
-<table class="patient-appointments">
-    <colgroup>
-        <col class="cols-2">
-        <col class="cols-5">
-        <col class="cols-2">
-        <col class="cols-3">
-    </colgroup>
-    <thead>
-    <tr>
-        <th colspan="2">Past appointments</th>
-        <th></th>
-        <th>
-            <i class="oe-i small pad js-patient-expand-btn expand <?= $pro_theme ?>"></i>
-        </th>
-    </tr>
-    </thead>
-    <tbody style="display: none;">
-    <?php
-    foreach ($past_worklist_patients as $worklist_patient) {
-        $time = date('H:i', strtotime($worklist_patient->when));
-        $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
-        $worklist_name = $worklist_patient->worklist->name;
-        $worklist_status = $worklist_patient->getWorklistPatientAttribute()->attribute_value;
-        ?>
+<?php if ($past_worklist_patients) { ?>
+    <table class="patient-appointments">
+        <colgroup>
+            <col class="cols-2">
+            <col class="cols-5">
+            <col class="cols-2">
+            <col class="cols-3">
+        </colgroup>
+        <thead>
         <tr>
-            <td><span class="time"><?= $time ?></span></td>
-            <td><?= $worklist_name ?></td>
-            <td><span class="oe-date"><?= $date ?></span></td>
-
-            <?php if ($worklist_status) { ?>
-                <td><?= $worklist_status ?></td>
-            <?php } ?>
+            <th colspan="2">Past appointments</th>
+            <th></th>
+            <th>
+                <i class="oe-i small pad js-patient-expand-btn expand <?= $pro_theme ?>"></i>
+            </th>
         </tr>
-    <?php } ?>
-    </tbody>
-</table>
+        </thead>
+        <tbody style="display: none;">
+        <?php
+        foreach ($past_worklist_patients as $worklist_patient) {
+            $time = date('H:i', strtotime($worklist_patient->when));
+            $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
+            $worklist_name = $worklist_patient->worklist->name;
+            $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
+            ?>
+            <tr>
+                <td><span class="time"><?= $time ?></span></td>
+                <td><?= $worklist_name ?></td>
+                <td><span class="oe-date"><?= $date ?></span></td>
+                <td>
+                    <?php if (isset($worklist_status)) { ?>
+                        <?= $worklist_status->attribute_value ?>
+                    <?php } ?>
+                </td>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+<?php } ?>

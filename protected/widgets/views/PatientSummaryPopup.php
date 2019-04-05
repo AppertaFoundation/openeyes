@@ -284,13 +284,6 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
               </div>
           </div>
 
-          <div class="group">
-              <div class="label">Appointments</div>
-              <div class="data">
-                  <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme']) ?>
-              </div>
-          </div>
-
           <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class,
               [
                   'patient' => $this->patient,
@@ -351,7 +344,12 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
           </table>
       </div><!-- .popup-overflow -->
     </div><!-- left -->
-
+      <div class="cols-right">
+          <div class="popup-overflow">
+              <div class="subtitle">Appointments</div>
+              <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme']) ?>
+          </div><!-- .popup-overflow -->
+      </div>
   </div><!-- flex -->
 </div>
 
