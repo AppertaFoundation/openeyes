@@ -482,7 +482,8 @@ class MedicationSet extends BaseActiveRecordVersioned
 				// Include items from sub set
 				$table = MedicationSetItem::model()->tableName();
 				Yii::log("Adding sub set items into ".$this->name);
-				$items = Yii::app()->db->createCommand("SELECT medication_id FROM $table WHERE medication_set_id = $auto_id")->queryColumn();
+				$items = Yii::app()->db->createCommand("SELECT medication_id FROM $table WHERE medication_set_id = $auto_id
+														AND medication_id NOT IN (SELECT medication_id FROM $table WHERE medication_set_id = {$this->id})")->queryColumn();
 				$values = array();
 				foreach ($items as $id) {
 					$values[] = "({$this->id},$id)";
