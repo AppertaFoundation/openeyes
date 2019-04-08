@@ -42,6 +42,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 	public $tmp_sets = [];
 	public $tmp_meds = [];
 
+	private static $_processed = [];
 
 	/**
 	 * @return string the associated database table name
@@ -380,28 +381,52 @@ class MedicationSet extends BaseActiveRecordVersioned
 
 	public function populateAuto()
 	{
-		if(!$this->automatic) {
+		if(!$this->automatic || in_array($this->id, self::$_processed)) {
+			Yii::log("Skipping ".$this->name." because it's already processed.");
 			return false;
 		}
+
+		self::$_processed[] = $this->id;
+
+		Yii::log("Started processing ".$this->name);
 
 		$cmd = Yii::app()->db->createCommand();
 		/** @var CDbCommand $cmd */
 		$cmd->select('id', 'DISTINCT')->from('medication');
 		$attribute_option_ids = array_map(function ($e){ return $e->id; }, $this->autoRuleAttributes);
-		$set_ids = array_map(function ($e) { return $e->id; }, $this->autoRuleSets);
+
+		$auto_set_ids = array_map(function ($e) {
+				return $e->id;
+			},
+			array_filter($this->autoRuleSets, function($e){
+				return $e->automatic == 1;
+			})
+		);
+
+		$nonauto_set_ids = array_map(function ($e) {
+				return $e->id;
+			},
+			array_filter($this->autoRuleSets, function($e){
+				return $e->automatic == 0;
+			})
+		);
+
 		$no_condition = true;
+
 		if(!empty($attribute_option_ids)) {
 			$cmd->orWhere("id IN (SELECT medication_id FROM ".MedicationAttributeAssignment::model()->tableName()."
 												WHERE medication_attribute_option_id IN (".implode(",", $attribute_option_ids).")
 												)");
 			$no_condition = false;
 		}
-		if(!empty($set_ids)) {
+
+		if(!empty($nonauto_set_ids)) {
 			$cmd->orWhere("id IN (SELECT medication_id FROM ".MedicationSetItem::model()->tableName()."
-												WHERE medication_set_id IN (".implode(",", $set_ids).")
+												WHERE medication_set_id IN (".implode(",", $nonauto_set_ids).")
 												)");
 			$no_condition = false;
 		}
+
 		foreach ($this->medicationSetAutoRuleMedications as $medicationSetAutoRuleMedication) {
 			if($medicationSetAutoRuleMedication->include_parent) {
 				$medication = $medicationSetAutoRuleMedication->medication;
@@ -441,6 +466,68 @@ class MedicationSet extends BaseActiveRecordVersioned
 			Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
 									VALUES ".implode(",", $values))->execute();
 		}
+
+		Yii::log("Processed non-auto rules in ".$this->name);
+
+		// process auto sub sets recursively
+		if(!empty($auto_set_ids)) {
+			foreach ($auto_set_ids as $auto_id) {
+				if(!in_array($auto_id, self::$_processed)) {
+					// Sub set is not already processed
+					$included_set = self::model()->findByPk($auto_id);
+					/** @var self $included_set */
+					$included_set->populateAuto();
+				}
+
+				// Include items from sub set
+				$table = MedicationSetItem::model()->tableName();
+				Yii::log("Adding sub set items into ".$this->name);
+				$items = Yii::app()->db->createCommand("SELECT medication_id FROM $table WHERE medication_set_id = $auto_id")->queryColumn();
+				$values = array();
+				foreach ($items as $id) {
+					$values[] = "({$this->id},$id)";
+				}
+				Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
+									VALUES ".implode(",", $values))->execute();
+			}
+		}
+
+		Yii::log("Done processing ".$this->name);
+
 		return count($ids);
+	}
+
+	/**
+	 * Runs processing routine for all auto sets
+	 *
+	 * @return array	The list of ids that were processed
+	 */
+
+	public static function populateAutoSets()
+	{
+		self::$_processed = [];
+		foreach (self::model()->findAll("automatic = 1") as $set) {
+			/** @var self $set */
+			$set->populateAuto();
+		}
+
+		return self::$_processed;
+	}
+
+	public function beforeDelete()
+	{
+		if($this->automatic) {
+			foreach ($this->medicationSetAutoRuleSetMemberships as $set_m) {
+				$set_m->delete();
+			}
+			foreach ($this->medicationSetAutoRuleMedications as $med) {
+				$med->delete();
+			}
+			foreach ($this->medicationAutoRuleAttributes as $attribute) {
+				$attribute->delete();
+			}
+		}
+
+		return true;
 	}
 }
