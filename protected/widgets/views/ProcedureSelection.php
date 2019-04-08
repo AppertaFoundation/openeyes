@@ -43,7 +43,7 @@
         <tbody class="body">
         <?php
         foreach ($selected_procedures as $procedure) : ?>
-            <?php $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $this->element->complexity); ?>
+            <?php $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
 
             <tr class="item">
                 <td class="procedure">
@@ -54,7 +54,7 @@
                 <?php if ($durations) { ?>
                 <td class="duration">
                     <span data-default-duration="<?= $procedure->default_duration ?>">
-                    <?= $this->adjustTimeByComplexity($procedure->default_duration, $this->element->complexity); ?>
+                    <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
                     </span> mins
                 </td>
                 <?php } ?>
@@ -62,7 +62,6 @@
                     <span class="removeProcedure"><i class="oe-i trash"></i></span>
                 </td>
             </tr>
-
 
         <?php endforeach; ?>
 
