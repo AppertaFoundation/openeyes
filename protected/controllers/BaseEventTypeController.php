@@ -430,6 +430,18 @@ class BaseEventTypeController extends BaseModuleController
             throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
         }
 
+        if($_REQUEST){
+            $_REQUEST = $this->sanitizeInput($_REQUEST);
+        }
+
+        if($_POST){
+            $_POST = $this->sanitizeInput($_POST);
+        }
+
+        if($_GET){
+            $_GET = $this->sanitizeInput($_GET);
+        }
+
         $this->initAction($action->id);
 
         $this->verifyActionAccess($action);
@@ -629,7 +641,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function initActionCreate()
     {
-        $_REQUEST = $this->sanitizeInput($_REQUEST);
         $this->moduleStateCssClass = 'edit';
 
         $this->setPatient($_REQUEST['patient_id']);

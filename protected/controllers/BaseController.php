@@ -412,7 +412,7 @@ class BaseController extends Controller
     }
 
     public function sanitizeInput($input){
-        $allowable_tags = "<b><table><hr>";
+        $allowable_tags = "<b><table><thead><tbody><tr><th><td>";
         if(count($input) > 0){
             foreach ($input as $key => $value) {
                 if(is_array($value) || is_object($value)){
