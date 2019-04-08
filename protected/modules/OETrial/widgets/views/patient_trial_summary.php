@@ -17,6 +17,7 @@
                 <th>Study Coordinator</th>
                 <th>Treatment</th>
                 <th>Trial Status</th>
+                <th>Accepted/Rejected Date</th>
                 <th>Trial Type</th>
                 <th>Date Started</th>
                 <th>Date Ended</th>
@@ -51,6 +52,7 @@
                   </td>
                   <td><?= $trialPatient->treatmentType->name; ?></td>
                   <td><?= $trialPatient->status->name; ?></td>
+                  <td><?= Helper::formatFuzzyDate($trialPatient->status_update_date); ?></td>
                   <td><?= $trialPatient->trial->trialType->name; ?></td>
                   <td><?= $trialPatient->trial->getStartedDateForDisplay(); ?></td>
                   <td><?= $trialPatient->trial->getClosedDateForDisplay(); ?></td>
