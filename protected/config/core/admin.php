@@ -42,8 +42,8 @@ return array(
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
                 'Patient Shortcodes' => '/admin/patientshortcodes'
             ),
-            'Worklists' => array(
-                'Automatic Worklists Definitions' => '/worklistAdmin/definitions',
+            'Worklist' => array(
+                'Automatic Worklists Definitions' => '/Admin/worklist/definitions',
             ),
             'Procedure Management' => array(
                 'Procedures' => '/oeadmin/procedure/list',
@@ -72,6 +72,7 @@ return array(
                 'Secondary Common Ophthalmic Disorders' => '/admin/editsecondarytocommonophthalmicdisorder',
                 'Common Systemic Disorders' => '/oeadmin/CommonSystemicDisorder/list',
                 'Findings' => '/admin/managefindings',
+                'Disorders' => '/Admin/disorder/list',
             ),
             'Consent' => array(
                 'Leaflets' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/Leaflets/list'),

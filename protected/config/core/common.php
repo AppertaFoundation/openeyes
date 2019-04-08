@@ -30,6 +30,7 @@ return array(
         'application.models.elements.*',
         'application.components.*',
         'application.components.reports.*',
+        'application.components.worklist.*',
         'application.extensions.tcpdf.*',
         'application.modules.*',
         'application.commands.*',
@@ -414,7 +415,7 @@ return array(
         'reports' => array(
         ),
         'opbooking_disable_both_eyes' => true,
-        //'html_autocomplete' => 'off',
+        'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
         // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
@@ -602,6 +603,8 @@ return array(
         'Italian'
       ),
       'oe_version' => '3.2a',
-      'gp_label' => 'GP'
+      'gp_label' => 'GP',
+      // number of days in the future to retrieve worklists for the automatic dashboard render
+      'worklist_dashboard_future_days' => 0
     ),
 );
