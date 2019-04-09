@@ -416,7 +416,9 @@
             if($(this).is('span')){
                 if ($(this).html() !== 'All'){
                     if ($(this).hasClass('js-hs-surgeon')){
-                        filters += '&'+$(this).data('name')+'='+side_bar_user_list[$(this).html()];
+                        if(side_bar_user_list !== null){
+                            filters += '&'+$(this).data('name')+'='+side_bar_user_list[$(this).html()];
+                        }
                     }else if($(this).data('name') == "service_diagnosis"){
                         filters += '&'+$(this).data('name')+'='+Object.keys(service_common_disorders).find(key => service_common_disorders[key] ===$(this).html());
                     }else if($(this).hasClass('js-hs-custom-mr-diagnosis')){
