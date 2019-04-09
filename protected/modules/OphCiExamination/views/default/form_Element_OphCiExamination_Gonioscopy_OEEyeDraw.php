@@ -36,7 +36,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => $doodleToolBarArray,
     'onReadyCommandArray' => $onReadyCommandArray,
     'bindingArray' => $bindingArray,
-    'listenerArray' => array('OphCiExamination_Gonioscopy_Eyedraw_Controller', 'autoReportListener'),
+    'listenerArray' => array('OphCiExamination_Gonioscopy_Eyedraw_Controller', 'autoReportListener', 'gonioscopyListener'),
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
     'mode' => 'edit',

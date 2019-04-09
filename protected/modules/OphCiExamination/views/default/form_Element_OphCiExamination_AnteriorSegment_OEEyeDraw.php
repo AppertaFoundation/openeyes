@@ -56,7 +56,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'KeraticPrecipitates', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
             'Patch', 'SidePort', 'RK', 'CornealGraft', 'EndothelialKeratoplasty', 'CornealSuture', 'ContinuousCornealSuture', 'CornealThinning', 'PeripheralVascularisation')
     ),
-    'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
+    'listenerArray' => array('anteriorSegmentListener', 'OphCiExamination_Gonioscopy_AnteriorSegment_Listener', 'autoReportListener'),
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
     'mode' => 'edit',
