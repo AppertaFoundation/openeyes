@@ -108,6 +108,11 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                     <table class="patient-demographics" style="position: relative; right: 0;">
                         <tbody>
                         <tr>
+                            <td>
+                                <h2>PAS Contacts</h2>
+                            </td>
+                        </tr>
+                        <tr>
                             <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
                             <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
                         </tr>
@@ -119,10 +124,17 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                             <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
                             <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
                         </tr>
-                        <?php foreach ($this->patient->contactAssignments as $contactAssignment) {
+                        <tr>
+                            <td>
+                                <h2>Patient Contacts</h2>
+                            </td>
+                        </tr>
+                        <?php
+                        $gp_contact_id = $this->patient->gp ? $this->patient->gp->contact->id : null;
+                        foreach ($this->patient->contactAssignments as $contactAssignment) {
                             $contact = $contactAssignment->contact;
 
-                            if (isset($contact) && !$contact->gp) { ?>
+                            if (isset($contact) && $contact->id != $gp_contact_id) { ?>
                                 <tr>
                                     <td><?= $contact->label ? $contact->label->name : "" ?></td>
                                     <td><?= $contact->fullName ?></td>
