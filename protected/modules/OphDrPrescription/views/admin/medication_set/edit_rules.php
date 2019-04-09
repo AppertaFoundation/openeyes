@@ -24,7 +24,7 @@
 					<?php
 						echo $usage_code;
 					} else {
-						echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', "", array('readonly' => true));
+						echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', "");
 					}
 				?>
 			</td>
@@ -64,6 +64,9 @@
 			<td>
 				<?php
 				if (!empty($usage_code)) {
+					?>
+					<input type="hidden" name="MedicationSet[medicationSetRules][usage_code][]" value="<?=$rule->usage_code?>" />
+					<?php
 					echo $usage_code;
 				} else {
 					echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', $rule->usage_code);

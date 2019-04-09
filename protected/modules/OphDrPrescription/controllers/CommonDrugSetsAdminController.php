@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class CommonDrugSetsAdminController extends BaseAdminController
+class CommonDrugSetsAdminController extends RefSetAdminController
 {
 	public $group = 'Drugs';
 
@@ -38,18 +38,21 @@ class CommonDrugSetsAdminController extends BaseAdminController
         /*
          * array('' => 'All') = add All option in search field (Name)
          * */
+
+        $admin->getSearch()->addSearchItem('name');
         $admin->getSearch()->addSearchItem('medicationSetRules.site_id', array(
             'type' => 'dropdown',
-            'options' => array('' => 'All') + CHtml::listData(Site::model()->findAll(), 'id', 'name')
+            'options' => array('' => 'All sites') + CHtml::listData(Site::model()->findAll(), 'id', 'name')
 
         ));
 
         $admin->getSearch()->addSearchItem('medicationSetRules.subspecialty_id', array(
             'type' => 'dropdown',
-            'options' => array('' => 'All') + CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
+            'options' => array('' => 'All subspecialties') + CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
         ));
 
         // we set default search options
+
 
         if ($this->request->getParam('search') == '') {
             $admin->getSearch()->initSearch(array(
@@ -75,12 +78,16 @@ class CommonDrugSetsAdminController extends BaseAdminController
 
     public function actionToList($id)
     {
-        $this->redirect('/OphDrPrescription/refMedicationSetAdmin/list?ref_set_id='.$id);
+        $this->redirect(['/OphDrPrescription/refSetAdmin/edit/'.$id.'?usage_code=COMMON_OPH']);
     }
 
     public function actionEdit()
     {
-        $this->redirect(['/OphDrPrescription/refSetAdmin/edit', 'usage_code' => 'COMMON_OPH']);
+        if (!empty($_GET['default']['name'])) {
+            $this->redirect(['/OphDrPrescription/refSetAdmin/edit?default[name]='.$_GET['default']['name'].'&usage_code=COMMON_OPH']);
+        } else {
+            $this->redirect(['/OphDrPrescription/refSetAdmin/edit', 'usage_code' => 'COMMON_OPH']);
+        }
     }
 
     public function actionDelete()

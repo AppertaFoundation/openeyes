@@ -50,6 +50,7 @@ class RefSetAdminController extends BaseAdminController
 
     public function actionEdit($id = null, $usage_code = null)
     {
+
         $admin = new Admin(MedicationSet::model(), $this);
 
         $admin->setEditFields(array(
@@ -70,7 +71,7 @@ class RefSetAdminController extends BaseAdminController
         }
 
         if (!empty($usage_code)) {
-            $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id.'/'.$usage_code);
+            $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id.'?usage_code='.$usage_code);
         } else {
             $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id);
         }
@@ -129,7 +130,7 @@ class RefSetAdminController extends BaseAdminController
             MedicationSetRule::model()->deleteByPk($deleted_ids);
         }
 
-        if (!empty($usage_code)) {
+        if (empty($usage_code)) {
             $this->redirect('/OphDrPrescription/refSetAdmin/list');
         } else {
             $this->redirect('/OphDrPrescription/commonDrugSetsAdmin/list');
