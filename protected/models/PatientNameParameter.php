@@ -93,9 +93,9 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
 FROM patient p 
 JOIN contact c 
   ON c.id = p.contact_id
-WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_$this->id)) OR
-     (SOUNDEX(c.first_name) = SOUNDEX(:p_n_name_$this->id) OR levenshtein_ratio(c.first_name, :p_n_name_$this->id) >= 30)
-      OR (SOUNDEX(c.last_name) = SOUNDEX(:p_n_name_$this->id) OR levenshtein_ratio(c.last_name, :p_n_name_$this->id) >= 30)
+WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_like_$this->id)) OR (LOWER(CONCAT(c.last_name, ' ', c.first_name)) $op LOWER(:p_n_name_like_$this->id)) OR
+     SOUNDEX(c.first_name) = SOUNDEX(:p_n_name_$this->id)
+      OR SOUNDEX(c.last_name) = SOUNDEX(:p_n_name_$this->id)
 ";
     }
 
@@ -107,7 +107,8 @@ WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_$this->
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_n_name_$this->id" => '%' . $this->patient_name . '%',
+            "p_n_name_like_$this->id" => '%' . $this->patient_name . '%',
+            "p_n_name_$this->id" => $this->patient_name,
         );
     }
 
