@@ -41,11 +41,22 @@ class Contacts extends \BaseEventElementWidget
     {
         parent::init();
 
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition('patient_id = '. $this->patient->id);
-        $criteria->join = "JOIN patient_contact_assignment pca ON t.id = pca.contact_id";
-        $this->contacts = \Contact::model()->findAll($criteria);
-//       \PatientContactAssignment::model()->findAll("patient_id = ? AND" $this->patient->id);
+        if (isset($_POST["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"])) {
+            $contact_ids = isset($_POST["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id']) ?
+                $_POST["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'] : [];
+            if (!empty($contact_ids)) {
+                foreach ($contact_ids as $contact_id) {
+                    $this->contacts[] = \Contact::model()->findByPk($contact_id);
+                }
+            }
+        } else {
+            $criteria = new \CDbCriteria();
+            $gp = $this->patient->gp;
+            $criteria->addCondition('patient_id = ' . $this->patient->id);
+            $criteria->addCondition('t.id != ' . $gp->contact->id);
+            $criteria->join = "JOIN patient_contact_assignment pca ON t.id = pca.contact_id";
+            $this->contacts = \Contact::model()->findAll($criteria);
+        }
     }
 
 }
