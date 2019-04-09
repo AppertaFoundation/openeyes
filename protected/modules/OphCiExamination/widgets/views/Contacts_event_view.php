@@ -22,7 +22,40 @@ $model_name = CHtml::modelName($element);
 $element_errors = $element->getErrors();
 ?>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
-    <div class="data-group flex-layout cols-10">
+    <div class="data-group cols-10">
+        <h1>PAS Contacts</h1>
+        <div class="cols-full">
+            <table id="<?= $model_name ?>_entry_table"
+                   class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
+                <colgroup>
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?= $this->render(
+                    'ContactsEntry_event_edit',
+                    array(
+                        'entry' => $this->patient->gp->contact,
+                        'model_name' => $model_name,
+                        'removable' => false,
+                        'is_template' => true,)); ?>
+                </tbody>
+            </table>
+        </div>
+        <hr class="divider">
+        <h1>Patient Contacts</h1>
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <table id="<?= $model_name ?>_entry_table"
                class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
