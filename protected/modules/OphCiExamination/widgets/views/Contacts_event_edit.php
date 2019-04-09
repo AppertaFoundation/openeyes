@@ -22,39 +22,75 @@ $model_name = CHtml::modelName($element);
 $element_errors = $element->getErrors();
 ?>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
-    <div class="data-group flex-layout cols-10">
+    <div class="data-group cols-10">
+        <h1>PAS Contacts</h1>
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
-        <table id="<?= $model_name ?>_entry_table"
-               class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
-            <colgroup>
-                <col class="cols-1">
-                <col class="cols-2">
-                <col class="cols-2">
-                <col class="cols-2">
-                <col class="cols-2">
-            </colgroup>
-            <thead>
-            <tr>
-                <th>Type</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone Number</th>
-                <th>Address</th>
-            </tr>
-            </thead>
-            <tbody id="contact-assignment-table">
-            <?php
-            foreach ($this->contacts as $contact) { ?>
+        <div class="cols-full">
+            <table id="<?= $model_name ?>_entry_table"
+                   class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
+                <colgroup>
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                </tr>
+                </thead>
+                <tbody>
                 <?= $this->render(
                     'ContactsEntry_event_edit',
                     array(
-                        'entry' => $contact,
+                        'entry' => $this->patient->gp->contact,
                         'model_name' => $model_name,
-                        'removable' => true,
+                        'removable' => false,
                         'is_template' => true,)); ?>
-            <?php } ?>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
+        <hr class="divider">
+        <h1>Patient Contacts</h1>
+        <div class="cols-full">
+            <table id="<?= $model_name ?>_entry_table"
+                   class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
+                <colgroup>
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col>
+                    <col>
+                    <col class="cols-2">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="contact-assignment-table">
+                <?php
+                foreach ($this->contacts as $contact) { ?>
+                    <?= $this->render(
+                        'ContactsEntry_event_edit',
+                        array(
+                            'entry' => $contact,
+                            'model_name' => $model_name,
+                            'removable' => true,
+                            'is_template' => true,)); ?>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="flex-layout flex-right">
@@ -95,34 +131,45 @@ $element_errors = $element->getErrors();
 
         <?php $contacts = \Contact::model()->getActiveContacts($this->patient->id);
         ?>
+
+        // removal button for table entries
+        $('#contact-assignment-table').on('click', 'i.trash', function (e) {
+            e.preventDefault();
+            $(e.target).parents('tr').remove();
+        });
+        // Default dialog options.
+        var options = {
+            id: 'site-and-firm-dialog',
+            title: 'Add a new contact'
+        };
+
         new OpenEyes.UI.AdderDialog({
             openButton: $('#add-contacts-btn'),
-            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                array_map(function ($key, $contact) {
-                    return [
-                        'label' => $contact['first_name'] . " (" . $contact->label->name . ")",
-                        'id' => $contact['id'],
-                        'name' => $contact->getFullName(),
-                        'email' => $contact->address ? $contact->address->email : "",
-                        'phone' => $contact->primary_phone,
-                        'address' => $contact->address ? $contact->address->getLetterLine() : "",
-                        'contact_label' => $contact->label ? $contact->label->name : "",
-                    ];
-                }, array_keys($contacts), $contacts)
-            ) ?>, {'multiSelect': true})],
             onReturn: function (adderDialog, selectedItems) {
                 let templateText = $('#contact-entry-template').text();
                 let newRows = [];
-                for (let i = 0; i < selectedItems.length; ++i) {
-                    data = {};
-                    data.id = selectedItems[i].id;
-                    data.label = selectedItems[i].contact_label;
-                    data.full_name = selectedItems[i].name;
-                    data.email = selectedItems[i].email;
-                    data.phone = selectedItems[i].phone;
-                    data.address = selectedItems[i].address;
-                    row = Mustache.render(templateText, data);
-                    newRows.push(row);
+                for (let index = 0; index < selectedItems.length; ++index) {
+
+                    if (selectedItems[index].type == "custom") {
+                        new OpenEyes.UI.Dialog($.extend({}, options, {
+                            url: baseUrl + '/OphCiExamination/contact/ContactPage',
+                            width: 500,
+                            data: {
+                                returnUrl: "",
+                                patient_id: window.OE_patient_id || null
+                            }
+                        })).open();
+                    } else {
+                        data = {};
+                        data.id = selectedItems[index].id;
+                        data.label = selectedItems[index].contact_label;
+                        data.full_name = selectedItems[index].name;
+                        data.email = selectedItems[index].email;
+                        data.phone = selectedItems[index].phone;
+                        data.address = selectedItems[index].address;
+                        row = Mustache.render(templateText, data);
+                        newRows.push(row);
+                    }
                 }
                 $('#contact-assignment-table').append(newRows);
             },

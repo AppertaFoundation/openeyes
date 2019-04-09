@@ -50,7 +50,7 @@ $element_errors = $element->getErrors();
                     array(
                         'entry' => $contact,
                         'model_name' => $model_name,
-                        'removable' => true,
+                        'removable' => false,
                         'is_template' => true,)); ?>
             <?php } ?>
             </tbody>

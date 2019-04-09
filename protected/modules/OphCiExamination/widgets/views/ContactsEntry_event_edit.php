@@ -10,17 +10,22 @@ if (!isset($values)) {
         'phone' => $entry->primary_phone,
         'address' => $entry->address ? $entry->address->getLetterLine() : "",
     );
-} 
+}
 
 ?>
 
 
 <tr>
-    <input type="hidden" name="<?= $model_name ?>[contact_id][]" value="<?= $values['id'] ?>" />
     <td><?= $values['label'] ?></td>
     <td><?= $values['full_name'] ?></td>
     <td><?= $values['email'] ?></td>
     <td><?= $values['phone'] ?></td>
     <td><?= $values['address'] ?></td>
+    <?php if (isset($removable) && $removable) { ?>
+        <input type="hidden" name="<?= $model_name ?>[contact_id][]" value="<?= $values['id'] ?>"/>
+    <td>
+        <i class="oe-i trash"></i>
+    </td>
+    <?php } ?>
 </tr>
 
