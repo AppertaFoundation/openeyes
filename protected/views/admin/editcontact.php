@@ -110,7 +110,7 @@
             <?php
             foreach ($contact->addresses as $index => $address) { ?>
                 <tr class="clickable" data-id="<?php echo $address->id ?>"
-                    data-uri="admin/editaddress?id=<?php echo $address->id ?>&contact_id=<?= $contact->id?>">
+                    data-uri="Admin/address/edit?id=<?php echo $address->id ?>&contact_id=<?= $contact->id?>">
                     <td><?= $address->email ?></td>
                     <td><?= $address->address1 ?></td>
                     <td><?= $address->address2 ?></td>
@@ -129,17 +129,15 @@
             <?php } ?>
             </tbody>
             <tfoot class="pagination-container">
-            <?php if(!$contact->addresses){ ?>
-            <tr>
+            <tr class="js-address-add-container" style="display:<?= $contact->addresses ? "none" : ""?>">
                 <td colspan="9">
                     <?= CHtml::link(
                         'Add',
-                        '/admin/addAddress?contact_id=' . $contact->id,
+                        '/Admin/address/add?contact_id=' . $contact->id,
                         ['class' => 'button large']
                     ); ?>
                 </td>
             </tr>
-            <?php } ?>
             </tfoot>
         </table>
     </form>
@@ -225,7 +223,7 @@
         $.ajax({
             'type': 'POST',
             'data': 'address_id=' + address_id + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-            'url': baseUrl + '/admin/removeAddress',
+            'url': baseUrl + '/Admin/address/delete',
             'success': function (resp) {
                 if (resp == "0") {
                     new OpenEyes.UI.Dialog.Alert({
@@ -237,6 +235,7 @@
                     }).open();
                 } else {
                     row.remove();
+                    $('.js-address-add-container').show();
                 }
             }
         });

@@ -1,4 +1,3 @@
-
 <?php
 /**
  * (C) OpenEyes Foundation, 2019
@@ -109,23 +108,13 @@
         <tr>
             <td>Date Start</td>
             <td>
-                <?= \CHtml::activeDateTimeField(
-                    $model,
-                    'date_start',
-                    ['class' => 'cols-full autosize',
-                        'style' => 'overflow: hidden; ']
-                ); ?>
+                <?php echo $form->datePicker($model, 'date_start', array(), array('nowrapper' => true, 'null' => true)) ?>
             </td>
         </tr>
         <tr>
             <td>Date End</td>
             <td>
-                <?= \CHtml::activeDateTimeField(
-                    $model,
-                    'date_end',
-                    ['class' => 'cols-full autosize',
-                        'style' => 'overflow: hidden; ']
-                ); ?>
+                <?php echo $form->datePicker($model, 'date_end', array(), array('nowrapper' => true, 'null' => true)) ?>
             </td>
         </tr>
         </tbody>

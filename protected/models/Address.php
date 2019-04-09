@@ -219,4 +219,19 @@ class Address extends BaseActiveRecordVersioned
 
         return false;
     }
+
+    public function beforeValidate()
+    {
+        if($this->date_start == ""){
+            $this->date_start = null;
+        }
+
+        if($this->date_end == ""){
+            $this->date_end = null;
+        }
+        $this->date_start = Helper::convertNHS2MySQL($this->date_start);
+        $this->date_end = Helper::convertNHS2MySQL($this->date_end);
+        return parent::beforeValidate();
+    }
+
 }
