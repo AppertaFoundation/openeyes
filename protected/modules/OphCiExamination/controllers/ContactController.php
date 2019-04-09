@@ -60,7 +60,7 @@ class ContactController extends \BaseController
     protected function contactStructure(\Contact $contact)
     {
         return array(
-            'label' => $contact['first_name'] . " (" . $contact->label->name . ")",
+            'label' => $contact->getFullName() . " (" . $contact->label->name . ")",
             'id' => $contact['id'],
             'name' => $contact->getFullName(),
             'email' => $contact->address ? $contact->address->email : "",
@@ -68,5 +68,45 @@ class ContactController extends \BaseController
             'address' => $contact->address ? $contact->address->getLetterLine() : "",
             'contact_label' => $contact->label ? $contact->label->name : "",
         );
+    }
+
+    public function actionContactPage()
+    {
+        $this->renderPartial('//contacts/add_new_contact_assignment', array(), false, true);
+    }
+
+    public function actionSaveNewContact()
+    {
+        if (\Yii::app()->request->isAjaxRequest) {
+            if (isset($_POST['data'])) {
+                $transaction = \Yii::app()->db->beginTransaction();
+
+                $data = json_decode($_POST['data']);
+                $contact = new \Contact();
+                $contact->first_name = $data->first_name;
+                $contact->last_name = $data->last_name;
+                $contact->primary_phone = $data->primary_phone;
+                $contact->contact_label_id = $data->contact_label_id;
+
+
+                $address = new \Address();
+                $address->address1 = $data->address1;
+                $address->address2 = $data->address2;
+                $address->city = $data->city;
+                $address->email = $data->email;
+                $address->postcode = $data->postcode;
+                $address->country_id = $data->country;
+                $address->address_type_id = 3;
+
+
+
+                $contact->save();
+                $address->contact_id = $contact->id;
+                $address->save();
+
+                $transaction->commit();
+            }
+            echo CJSON::encode($this->contactStructure($contact));
+        }
     }
 }
