@@ -1567,8 +1567,8 @@ class AnalyticsController extends BaseController
             $command_filtered_patients_by_diagnosis = Yii::app()->db->createCommand()
                 ->select('dp.patient_id','distinct')
                 ->from('('.$this->queryDiagnosesFilteredPatientListCommand(null)->getText().') AS dp');
-            $referral_document_command->andWhere('p.id IN '.$command_filtered_patients_by_diagnosis->getText());
-            $followup_elements_command->andWhere('p.id IN '.$command_filtered_patients_by_diagnosis->getText());
+            $referral_document_command->andWhere('p.id IN ('.$command_filtered_patients_by_diagnosis->getText().')');
+            $followup_elements_command->andWhere('p.id IN ('.$command_filtered_patients_by_diagnosis->getText().')');
         }
         $followup_elements = $followup_elements_command->queryAll();
         $current_time = time();
