@@ -133,7 +133,12 @@ class RefSetAdminController extends BaseAdminController
         if (empty($usage_code)) {
             $this->redirect('/OphDrPrescription/refSetAdmin/list');
         } else {
-            $this->redirect('/OphDrPrescription/commonDrugSetsAdmin/list');
+            if ($usage_code == 'COMMON_SYSTEMIC') {
+                $this->redirect('/OphDrPrescription/commonSystemicDrugSetsAdmin/list');
+            } else if ($usage_code == 'COMMON_OPH') {
+                $this->redirect('/OphDrPrescription/commonDrugSetsAdmin/list');
+            }
+
         }
 
     }
