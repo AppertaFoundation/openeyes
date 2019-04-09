@@ -37,7 +37,6 @@ class AnalyticsController extends BaseController
       ),
     );
   }
-
   public function actionAnalyticsReports(){
       $this->current_user = User::model()->findByPk(Yii::app()->user->id);
       $firm_id = $this->current_user->last_firm_id;
@@ -64,6 +63,7 @@ class AnalyticsController extends BaseController
      * The function grab data for all the plots.
      */
     public function actionAllSubspecialties(){
+        $this->getPatientList();
         $this->checkAuth();
         $subspecialty_id = null;
         $this->current_user = User::model()->findByPk(Yii::app()->user->id);
@@ -72,7 +72,6 @@ class AnalyticsController extends BaseController
             'date_from' => 0,
             'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
         );
-        $this->getPatientList();
         $follow_patient_list = $this->getFollowUps($subspecialty_id);
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
         $clinical_data = array(
@@ -104,6 +103,7 @@ class AnalyticsController extends BaseController
         );
     }
   public function actionCataract(){
+      $this->getPatientList();
       $assetManager = Yii::app()->getAssetManager();
       $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
       $current_user = User::model()->findByPk(Yii::app()->user->id);
@@ -143,7 +143,6 @@ class AnalyticsController extends BaseController
   }
   public function actionGlaucoma(){
       $this->getPatientList();
-
       list($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data,$clinical_data) = $this->getClinicalSpecialityData('Glaucoma');
       $this->render('/analytics/analytics_container',
           array(
@@ -160,11 +159,30 @@ class AnalyticsController extends BaseController
   }
 
   private function getPatientList(){
-        $this->patient_list = array();
-        $all_patients = Patient::model()->findAll();
-        foreach ($all_patients as $patient) {
-            $this->patient_list[$patient->id] = $patient;
-        }
+      $paitent_list_command = Yii::app()->db->createCommand()->select('DISTINCT p.hos_num as hos_num, p.id AS id, CONCAT(c.first_name, \' \', c.last_name) AS name, p.dob as dob, YEAR(CURRENT_DATE) - YEAR(p.dob) AS age, p.gender as gender, patient_diagnoses.diagnoses AS diagnoses,patient_procedures.procedures AS procedures')->from('patient p')->leftJoin('contact c','p.contact_id = c.id')->leftJoin('(SELECT patient_id AS patient_id, GROUP_CONCAT(diagnoses) AS diagnoses
+                  FROM (
+                         SELECT ep.patient_id AS patient_id, GROUP_CONCAT(d.term) AS diagnoses
+                         FROM episode ep
+                                LEFT JOIN disorder d ON ep.disorder_id = d.id
+                         WHERE d.term IS NOT NULL
+                         GROUP BY ep.patient_id
+                         UNION
+                         SELECT sd.patient_id AS patient_id, GROUP_CONCAT(d.term) AS diagnoses
+                         FROM secondary_diagnosis sd
+                                LEFT JOIN disorder d ON sd.disorder_id = d.id
+                         WHERE d.term IS NOT NULL
+                         GROUP BY sd.patient_id
+                       ) t2
+                  GROUP BY t2.patient_id) patient_diagnoses','patient_diagnoses.patient_id = p.id')->leftJoin('(SELECT e2.patient_id, GROUP_CONCAT(p.short_format) AS procedures
+                  FROM et_ophtroperationnote_procedurelist eop
+                         LEFT JOIN ophtroperationnote_procedurelist_procedure_assignment oppa
+                                   ON eop.id = oppa.procedurelist_id
+                         LEFT JOIN proc p ON oppa.proc_id = p.id
+                         LEFT JOIN event e ON eop.event_id = e.id
+                         LEFT JOIN episode e2 ON e.episode_id = e2.id
+                  WHERE p.short_format IS NOT NULL
+                  GROUP BY e2.patient_id) patient_procedures','patient_procedures.patient_id = p.id');
+      $this->patient_list = $paitent_list_command->queryAll();
   }
   public function sortByTime($a, $b){
       if($a['event_time']==$b['event_time'])
@@ -625,12 +643,13 @@ class AnalyticsController extends BaseController
 
                     if  (!array_key_exists($current_patient->id, $this->custom_csv_data) && (isset($reading))){
                         $this->custom_csv_data[$current_patient->id] = array(
-                            'first_name'=>$current_patient->getFirst_name(),
-                            'second_name'=>$current_patient->getLast_name(),
-                            'hos_num'=>$current_patient->hos_num,
-                            'dob'=>$current_patient->dob,
-                            'age'=>$current_patient->getAge(),
-                            'diagnoses'=>$current_patient->getDiagnosesTermsArray(),
+//                            'first_name'=>$current_patient->getFirst_name(),
+//                            'second_name'=>$current_patient->getLast_name(),
+//                            'hos_num'=>$current_patient->hos_num,
+//                            'dob'=>$current_patient->dob,
+//                            'age'=>$current_patient->getAge(),
+//                            'diagnoses'=>$current_patient->getDiagnosesTermsArray(),
+                            'patient_id'=>$current_patient->id,
                             'left'=>array(
                                 "VA"=>array(),
                                 "CRT"=>array(),
@@ -791,12 +810,13 @@ class AnalyticsController extends BaseController
                     }
                     if  (!array_key_exists($current_patient->id, $this->custom_csv_data) && (isset($right_reading) || isset($left_reading))){
                         $this->custom_csv_data[$current_patient->id] = array(
-                            'first_name'=>$current_patient->getFirst_name(),
-                            'second_name'=>$current_patient->getLast_name(),
-                            'hos_num'=>$current_patient->hos_num,
-                            'dob'=>$current_patient->dob,
-                            'age'=>$current_patient->getAge(),
-                            'diagnoses'=>$current_patient->getDiagnosesTermsArray(),
+//                            'first_name'=>$current_patient->getFirst_name(),
+//                            'second_name'=>$current_patient->getLast_name(),
+//                            'hos_num'=>$current_patient->hos_num,
+//                            'dob'=>$current_patient->dob,
+//                            'age'=>$current_patient->getAge(),
+//                            'diagnoses'=>$current_patient->getDiagnosesTermsArray(),
+                            'patient_id' => $current_patient->id,
                             'left'=>array(
                                 "VA"=>array(),
                                 "CRT"=>array(),
@@ -966,12 +986,13 @@ class AnalyticsController extends BaseController
                       }
                       if  (!array_key_exists($current_patient->id, $this->custom_csv_data) && ($right_reading || $left_reading)){
                           $this->custom_csv_data[$current_patient->id] = array(
-                              'first_name'=>$current_patient->getFirst_name(),
-                              'second_name'=>$current_patient->getLast_name(),
-                              'hos_num'=>$current_patient->hos_num,
-                              'dob'=>$current_patient->dob,
-                              'age'=>$current_patient->getAge(),
-                              'diagnoses'=>$current_patient->getDiagnosesTermsArray(),
+//                              'first_name'=>$current_patient->getFirst_name(),
+//                              'second_name'=>$current_patient->getLast_name(),
+//                              'hos_num'=>$current_patient->hos_num,
+//                              'dob'=>$current_patient->dob,
+//                              'age'=>$current_patient->getAge(),
+//                              'diagnoses'=>$current_patient->getDiagnosesTermsArray(),
+                              'pateint_id' => $current_patient->id,
                               'left'=>array(
                                   "VA"=>array(),
                                   "CRT"=>array(),
@@ -1495,239 +1516,249 @@ class AnalyticsController extends BaseController
      * Todo: split this function into small chunk of code to make it more readable
      *
      */
-  public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null, $diagnosis=null){
-
-      $followup_patient_list = array(
-          'overdue' => array(),
-          'coming' => array(),
-          'waiting' => array(),
-      );
-      $followup_csv_data = array(
-          'overdue' => array(),
-          'coming' => array(),
-          'waiting' => array(),
-      );
-
-      $followup_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->findAll();
-
-      $current_time = time();
-      foreach ($followup_elements as $followup_item){
-          $current_event = $followup_item->event;
-          if (isset($current_event->episode)){
-
-              /* Calculate the coming and overdue followups */
-              $event_time = Helper::mysqlDate2JsTimestamp($current_event->event_date)/1000;
-              if( ($start_date && $event_time < $start_date) ||
-                  ($end_date && $event_time > $end_date))
-                  continue;
-              $current_episode = $current_event->episode;
-                  $current_patient = $current_episode->patient;
-                  if ($diagnosis){
-                      $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient->id);
-                      if (!in_array($diagnosis,$current_patient_diagnoses)){
-                          continue;
-                      }
-                  }
-                  $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
-                  $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
-                  $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
-
-                  $quantity = $followup_item->followup_quantity;
-                  if($quantity > 0) {
-                      $period_date = $quantity * $this->getPeriodDate($followup_item->followup_period->name);
-                      $due_time = $event_time + $period_date*self::DAYTIME_ONE;
-                      if( $due_time < $current_time){
-                          if ($latest_time > $event_time)
-                              continue;
-                          //Follow up is overdue
-                          $over_weeks = intval(($current_time - $due_time)/self::DAYTIME_ONE / self::PERIOD_WEEK);
-                          if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED){
-                              array_push($followup_csv_data['overdue'],
-                                  array(
-                                      $current_patient->getFirst_name(),
-                                      $current_patient->getLast_name(),
-                                      $current_patient->hos_num,
-                                      $current_patient->dob,
-                                      $current_patient->getAge(),
-                                      $current_patient->getDiagnosesTermsArray(),
-                                      $over_weeks));
-                              if(!array_key_exists($over_weeks, $followup_patient_list['overdue'])){
-                                  $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
-                              } else {
-                                  array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
-                              }
-                          }
-                      } else {
-                          if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time)
-                              continue;
-                          $coming_weeks = intval(($due_time - $current_time)/self::DAYTIME_ONE/self::PERIOD_WEEK);
-                          if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED){
-                              array_push($followup_csv_data['coming'],
-                                  array(
-                                      $current_patient->getFirst_name(),
-                                      $current_patient->getLast_name(),
-                                      $current_patient->hos_num,
-                                      $current_patient->dob,
-                                      $current_patient->getAge(),
-                                      $current_patient->getDiagnosesTermsArray(),
-                                      $coming_weeks));
-                              if(!array_key_exists($coming_weeks, $followup_patient_list['coming'])){
-                                  $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
-                              } else {
-                                  array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
-                              }
-                          }
-                      }
-                  }
-
-          }
-      }
-
-      $patient_tickets = \OEModule\PatientTicketing\models\Ticket::model()->findAll();
-      $patientticket_api = new \OEModule\PatientTicketing\components\PatientTicketing_API();
-      foreach ($patient_tickets as $ticket) {
-          $ticket_followup = $patientticket_api->getFollowUp($ticket->id);
-          $current_event = $ticket->event;
-          $assignment_time = Helper::mysqlDate2JsTimestamp($ticket_followup['assignment_date']) / 1000;
-          if( ($start_date && $assignment_time < $start_date) ||
-              ($end_date && $assignment_time > $end_date))
-              continue;
-          if (isset($this->surgeon)){
-              if ($this->surgeon !== $current_event->created_user_id){
-                  continue;
-              }
-          }
-
-          $current_patient = $ticket->patient;
-          if ($diagnosis){
-              $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient->id);
-              if (!in_array($diagnosis,$current_patient_diagnoses)){
-                  continue;
-              }
-          }
-          $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
-          $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
-          $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
-          $quantity = $ticket_followup['followup_quantity'];
-          if ($quantity > 0) {
-              $period_date = $quantity * $this->getPeriodDate($ticket_followup['followup_period']);
-              $due_time = $assignment_time + $period_date * self::DAYTIME_ONE;
-
-              if ($due_time < $current_time) {
-                  if ($latest_time > $assignment_time)
-                      continue;
-                  //Follow up is overdue
-                  $over_weeks = intval(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
-                  if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED){
-                      array_push($followup_csv_data['overdue'],
-                          array(
-                              $current_patient->getFirst_name(),
-                              $current_patient->getLast_name(),
-                              $current_patient->hos_num,
-                              $current_patient->dob,
-                              $current_patient->getAge(),
-                              $current_patient->getDiagnosesTermsArray(),
-                              $over_weeks)
-                      );
-                      if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
-                          $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
-                      } else {
-                          array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
-                      }
-                  }
-              } else {
-                  if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time)
-                      continue;
-
-                  $coming_weeks = intval(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
-                  if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                      array_push($followup_csv_data['coming'],
-                          array(
-                              $current_patient->getFirst_name(),
-                              $current_patient->getLast_name(),
-                              $current_patient->hos_num,
-                              $current_patient->dob,
-                              $current_patient->getAge(),
-                              $current_patient->getDiagnosesTermsArray(),
-                              $coming_weeks));
-                      if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
-                          $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
-                      } else {
-                          array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
-                      }
-                  }
-              }
-          }
-      }
-
-      /* Get the waiting follow up data, uses Document event with referral letter type and worklist time
-      To calculate how long a patient will wait frm the date of referral to the date assigned in a worklist*/
-      $referral_document_elements = Element_OphCoDocument_Document::model()->findAll();
-
-      foreach ($referral_document_elements as $referral_element){
-          if ($referral_element->sub_type->name !== 'Referral Letter'){
-              continue;
-          }
-          $current_event = $referral_element->event;
-          if (isset($current_event)){
-              $current_episode = $current_event->episode;
-
-              if (isset($this->surgeon)){
-                  if ($this->surgeon !== $current_event->created_user_id){
-                      continue;
-                  }
-              }
-              $current_patient = $current_episode->patient;
-              if (isset($diagnosis)){
-                  $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient->id);
-                  if (!in_array($diagnosis,$current_patient_diagnoses)){
-                      continue;
-                  }
-              }
-              $current_referral_date = Helper::mysqlDate2JsTimestamp($current_event->event_date) / 1000;
-              if( ($start_date && $current_referral_date < $start_date) ||
-                  ($end_date && $current_referral_date > $end_date))
-                  continue;
-              $current_patient_on_worklist = WorklistPatient::model()->findByAttributes(array('patient_id'=>$current_patient->id), array('order'=>'t.when ASC'));
-              if (isset($current_patient_on_worklist) && !empty($current_patient_on_worklist)){
-                  $appointment_time = Helper::mysqlDate2JsTimestamp($current_patient_on_worklist->when)/1000;
-                  if($appointment_time >= $current_referral_date){
-                      $waiting_time = ceil((($appointment_time - $current_referral_date)/(self::WEEKTIME)));
-                  }
-              }
-              else {
-                  $current_time = time();
-                  if($current_time > $current_referral_date) {
-                      $waiting_time = ceil((($current_time - $current_referral_date)/(self::WEEKTIME)));
-                  }
-              }
-              if (isset($waiting_time) && $waiting_time <= self::FOLLOWUP_WEEK_LIMITED) {
-                  array_push($followup_csv_data['waiting'],
-                      array(
-                          $current_patient->getFirst_name(),
-                          $current_patient->getLast_name(),
-                          $current_patient->hos_num,
-                          $current_patient->dob,
-                          $current_patient->getAge(),
-                          $current_patient->getDiagnosesTermsArray(),
-                          $waiting_time));
-                  if (! isset($followup_patient_list['waiting'][$waiting_time])){
-                      $followup_patient_list['waiting'][$waiting_time]= array();
-                  }
-
-                  array_push($followup_patient_list['waiting'][$waiting_time],$current_patient->id);
-              }
-          }
-      }
-
-      ksort($followup_patient_list['waiting']);
-      ksort($followup_patient_list['overdue']);
-      ksort($followup_patient_list['coming']);
-      return array(
-          'plot_data'=>$followup_patient_list,
-          'csv_data'=>$followup_csv_data,
-          );
-  }
+    public function getLatestEventByType($event_type_name,$subspecialty_id)
+    {
+        $event_type_command = '';
+        $command = Yii::app()->db->createCommand()
+            ->from('event e')
+            ->leftJoin('episode e2','e.episode_id = e2.id')
+            ->leftJoin('patient p','p.id = e2.patient_id')
+            ->leftJoin('event_type e3','e3.id = e.event_type_id')
+            ->leftJoin('firm','e2.firm_id = firm.id')
+            ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = firm.service_subspecialty_assignment_id')
+            ->where('p.deleted <> 1 and e.deleted <> 1 and e2.deleted <>1');
+        if (isset($event_type_name)){
+            $command->andWhere('lower(e3.name) like lower(\'%'.$event_type_name.'%\')');
+            $event_type_command = ' and lower(e3.name) like lower(\'%'.$event_type_name.'%\')';
+        }
+        $command->andWhere('e.event_date = (
+                select MAX(e4.event_date) from event e4
+                left join episode e5 ON e4.episode_id = e5.id
+                left join patient p2 ON e5.patient_id = p2.id
+                left join event_type e6 ON e6.id = e4.event_type_id
+                WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0 and p2.deleted = 0'.$event_type_command.')');
+//      if (isset($subspecialty_id)){
+//          $command->andWhere('ssa.subspecialty_id=:subspecialty_id', array(':subspecialty_id'=>$subspecialty_id));
+//      }
+        return $command;
+    }
+    public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null, $diagnosis=null){
+        $followup_patient_list = array(
+            'overdue' => array(),
+            'coming' => array(),
+            'waiting' => array(),
+        );
+        $followup_csv_data = array(
+            'overdue' => array(),
+            'coming' => array(),
+            'waiting' => array(),
+        );
+        $followup_elements_command =  $this->getLatestEventByType('examination',$subspecialty_id);
+        $followup_elements_command->select('e.id as event_id, p.id as patient_id, e.event_date as event_date, DATE_ADD(event_date, INTERVAL IF(period.name = \'weeks\', 7 ,IF( period.name = \'months\', 30, IF(period.name = \'years\', 365, 1)))*eoc.followup_quantity DAY) as due_date, CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = \'weeks\', 7 ,IF( period.name = \'months\', 30, IF(period.name = \'years\', 365, 1)))*eoc.followup_quantity DAY),current_date())/7 AS INT) as weeks')
+            ->leftJoin('et_ophciexamination_clinicoutcome eoc','eoc.event_id = e.id')
+            ->leftJoin('period','period.id = eoc.followup_period_id')
+            ->andWhere('eoc.id IS NOT NULL and eoc.followup_period_id IS NOT NULL');
+        $referral_document_command = $this->getLatestEventByType('document',$subspecialty_id);
+        $referral_document_command->select('e.id as event_id, p.id as patient_id, e.event_date as event_date')
+            ->leftJoin('et_ophcodocument_document eod','e.id = eod.event_id')
+            ->leftJoin('ophcodocument_sub_types ost','eod.event_sub_type = ost.id')
+            ->andWhere('ost.name = "Referral Letter"');
+        if ($diagnosis){
+            $command_filtered_patients_by_diagnosis = Yii::app()->db->createCommand()
+                ->select('dp.patient_id','distinct')
+                ->from('('.$this->queryDiagnosesFilteredPatientListCommand(null)->getText().') AS dp');
+            $referral_document_command->andWhere('p.id IN '.$command_filtered_patients_by_diagnosis->getText());
+            $followup_elements_command->andWhere('p.id IN '.$command_filtered_patients_by_diagnosis->getText());
+        }
+        $followup_elements = $followup_elements_command->queryAll();
+        $current_time = time();
+        foreach ($followup_elements as $followup_item){
+            /* Calculate the coming and overdue followups */
+            $event_time = Helper::mysqlDate2JsTimestamp($followup_item['event_date'])/1000;
+            if( ($start_date && $event_time < $start_date) ||
+                ($end_date && $event_time > $end_date))
+                continue;
+            $current_patient = Patient::model()->findByPk($followup_item['patient_id']);
+            $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
+            $latest_time = isset($latest_worklist_time)? max($event_time, $latest_worklist_time):$event_time;
+            $due_time = Helper::mysqlDate2JsTimestamp($followup_item['due_date'])/1000;
+            if( $followup_item['weeks'] <= 0){
+                if ($latest_time > $event_time)
+                    continue;
+                //Follow up is overdue
+                $over_weeks = -$followup_item['weeks'];
+                if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED){
+                    array_push($followup_csv_data['overdue'],
+                        array(
+//                            $current_patient->getFirst_name(),
+//                            $current_patient->getLast_name(),
+//                            $current_patient->hos_num,
+//                            $current_patient->dob,
+//                            $current_patient->getAge(),
+//                            $current_patient->getDiagnosesTermsArray(),
+//                            $over_weeks
+                            'patient_id'=>$current_patient->id,
+                            'over_weeks'=>$over_weeks,
+                        ));
+                    if(!array_key_exists($over_weeks, $followup_patient_list['overdue'])){
+                        $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                    } else {
+                        array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                    }
+                }
+            } else {
+                if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time)
+                    continue;
+                $coming_weeks = $followup_item['weeks'];
+                if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED){
+                    array_push($followup_csv_data['coming'],
+                        array(
+//                            $current_patient->getFirst_name(),
+//                            $current_patient->getLast_name(),
+//                            $current_patient->hos_num,
+//                            $current_patient->dob,
+//                            $current_patient->getAge(),
+//                            $current_patient->getDiagnosesTermsArray(),
+//                            $coming_weeks
+                            'patient_id'=>$current_patient->id,
+                            'over_weeks'=>$coming_weeks,
+                        ));
+                    if(!array_key_exists($coming_weeks, $followup_patient_list['coming'])){
+                        $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
+                    } else {
+                        array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                    }
+                }
+            }
+        }
+        $patient_tickets = \OEModule\PatientTicketing\models\Ticket::model()->findAll();
+        $patientticket_api = new \OEModule\PatientTicketing\components\PatientTicketing_API();
+        foreach ($patient_tickets as $ticket) {
+            $ticket_followup = $patientticket_api->getFollowUp($ticket->id);
+            $current_event = $ticket->event;
+            $assignment_time = Helper::mysqlDate2JsTimestamp($ticket_followup['assignment_date']) / 1000;
+            if( ($start_date && $assignment_time < $start_date) ||
+                ($end_date && $assignment_time > $end_date))
+                continue;
+            if (isset($this->surgeon)){
+                if ($this->surgeon !== $current_event->created_user_id){
+                    continue;
+                }
+            }
+            $current_patient = $ticket->patient;
+            if ($diagnosis){
+                $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient->id);
+                if (!in_array($diagnosis,$current_patient_diagnoses)){
+                    continue;
+                }
+            }
+            $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
+            $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
+            $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
+            $quantity = $ticket_followup['followup_quantity'];
+            if ($quantity > 0) {
+                $period_date = $quantity * $this->getPeriodDate($ticket_followup['followup_period']);
+                $due_time = $assignment_time + $period_date * self::DAYTIME_ONE;
+                if ($due_time < $current_time) {
+                    if ($latest_time > $assignment_time)
+                        continue;
+                    //Follow up is overdue
+                    $over_weeks = intval(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                    if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED){
+                        array_push($followup_csv_data['overdue'],
+                            array(
+//                                $current_patient->getFirst_name(),
+//                                $current_patient->getLast_name(),
+//                                $current_patient->hos_num,
+//                                $current_patient->dob,
+//                                $current_patient->getAge(),
+//                                $current_patient->getDiagnosesTermsArray(),
+//                                $over_weeks
+                                'patient_id'=>$current_patient->id,
+                                'over_weeks'=>$over_weeks,
+                            )
+                        );
+                        if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
+                            $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                        } else {
+                            array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                        }
+                    }
+                } else {
+                    if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time)
+                        continue;
+                    $coming_weeks = intval(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                    if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
+                        array_push($followup_csv_data['coming'],
+                            array(
+//                                $current_patient->getFirst_name(),
+//                                $current_patient->getLast_name(),
+//                                $current_patient->hos_num,
+//                                $current_patient->dob,
+//                                $current_patient->getAge(),
+//                                $current_patient->getDiagnosesTermsArray(),
+//                                $coming_weeks
+                                'patient_id'=>$current_patient->id,
+                                'coming_weeks'=>$coming_weeks,
+                            ));
+                        if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
+                            $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
+                        } else {
+                            array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                        }
+                    }
+                }
+            }
+        }
+        /* Get the waiting follow up data, uses Document event with referral letter type and worklist time
+        To calculate how long a patient will wait frm the date of referral to the date assigned in a worklist*/
+        $referral_document_elements = $referral_document_command->queryAll();
+        foreach ($referral_document_elements as $referral_element){
+            $current_patient = Patient::model()->findByPk($referral_element['patient_id']);
+            $current_referral_date = Helper::mysqlDate2JsTimestamp($referral_element['event_date']) / 1000;
+            if( ($start_date && $current_referral_date < $start_date) ||
+                ($end_date && $current_referral_date > $end_date))
+                continue;
+            $current_patient_on_worklist = WorklistPatient::model()->findByAttributes(array('patient_id'=>$current_patient->id), array('order'=>'t.when ASC'));
+            if (isset($current_patient_on_worklist) && !empty($current_patient_on_worklist)){
+                $appointment_time = Helper::mysqlDate2JsTimestamp($current_patient_on_worklist->when)/1000;
+                if($appointment_time >= $current_referral_date){
+                    $waiting_time = ceil((($appointment_time - $current_referral_date)/(self::WEEKTIME)));
+                }
+            }
+            else {
+                $current_time = time();
+                if($current_time > $current_referral_date) {
+                    $waiting_time = ceil((($current_time - $current_referral_date)/(self::WEEKTIME)));
+                }
+            }
+            if (isset($waiting_time) && $waiting_time <= self::FOLLOWUP_WEEK_LIMITED) {
+                array_push($followup_csv_data['waiting'],
+                    array(
+//                        $current_patient->getFirst_name(),
+//                        $current_patient->getLast_name(),
+//                        $current_patient->hos_num,
+//                        $current_patient->dob,
+//                        $current_patient->getAge(),
+//                        $current_patient->getDiagnosesTermsArray(),
+//                        $waiting_time
+                        'patient_id'=>$current_patient->id,
+                        'waiting_weeks'=>$waiting_time,
+                    ));
+                if (! isset($followup_patient_list['waiting'][$waiting_time])){
+                    $followup_patient_list['waiting'][$waiting_time]= array();
+                }
+                array_push($followup_patient_list['waiting'][$waiting_time],$current_patient->id);
+            }
+        }
+        ksort($followup_patient_list['waiting']);
+        ksort($followup_patient_list['overdue']);
+        ksort($followup_patient_list['coming']);
+        return array(
+            'plot_data'=>$followup_patient_list,
+            'csv_data'=>$followup_csv_data,
+        );
+    }
 
   protected function queryAllDiagnosisForPatient($patient_id){
       $command = Yii::app()->db->createCommand()

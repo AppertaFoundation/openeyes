@@ -27,23 +27,23 @@
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($patient_list as $patient) { ?>
-            <tr id="<?=$patient->id?>" class="analytics-patient-list-row clickable" data-link="<?=$coreAPI->generatePatientLandingPageLink($patient)?>" style="display: none">
-                <td class="drill_down_patient_list js-csv-data" style="text-align: center;vertical-align: center;"><?= $patient->hos_num; ?></td>
-                <td class="drill_down_patient_list" style="text-align: center;vertical-align: center;"><?= $patient->getFullName(); ?></td>
-                <td style="text-align: center;vertical-align: center;"><?=$patient->dob?></td>
-                <td class="js-anonymise js-csv-data" style="text-align: center;vertical-align: center;"><?= $patient->getAge(); ?></td>
-                <td class="js-anonymise js-csv-data" style="text-align: center;vertical-align: center;"><?= $patient->gender; ?></td>
-                <td style="text-align: center;vertical-align: center;"><?= $patient->getUniqueDiagnosesString();?></td>
-                <?php
-                    $operations = $operation_API->getOperationsSummaryData($patient);
-                    $procedure_lists = "";
-                    foreach ($operations as $operation){
-                        $procedure_lists = $procedure_lists.$operation['operation'].",";
-                    }
-                    $procedure_lists = substr($procedure_lists,0,-1);
-                ?>
-                <td class="text-left" style="vertical-align: center;"><?=$procedure_lists; ?></td>
+        <?php
+        foreach ($patient_list as $patient) {
+            ?>
+            <tr id="<?= $patient['id'] ?>" class="analytics-patient-list-row clickable"
+                data-link="<?php echo Yii::app()->createUrl("/patient/summary/" . $patient['id']); ?>"
+                style="display: none">
+                <td class="drill_down_patient_list js-csv-data js-csv-hos_num"
+                    style="text-align: center;vertical-align: center;"><?= $patient['hos_num']; ?></td>
+                <td class="drill_down_patient_list js-csv-name"
+                    style="text-align: center;vertical-align: center;"><?= $patient['name']; ?></td>
+                <td style="text-align: center;vertical-align: center;" class="js-csv-dob"><?= $patient['dob'] ?></td>
+                <td class="js-anonymise js-csv-data js-csv-age"
+                    style="text-align: center;vertical-align: center;"><?= $patient['age']; ?></td>
+                <td class="js-anonymise js-csv-gender"
+                    style="text-align: center;vertical-align: center;"><?= $patient['gender']; ?></td>
+                <td style="text-align: center; vertical-align: center;" class="js-csv-diagnoses"><?= $patient['diagnoses']; ?></td>
+                <td class="text-left" style="vertical-align: center;" class="js-csv-procedures"><?= $patient['procedures']; ?></td>
             </tr>
         <?php } ?>
         </tbody>
@@ -61,3 +61,4 @@
         $('.analytics-patient-list-row').hide();
     })
 </script>
+
