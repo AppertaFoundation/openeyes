@@ -1266,16 +1266,42 @@ class DefaultController extends \BaseEventTypeController
         models\OphCiExamination_FurtherFindings_Assignment::model()->deleteAll($criteria);
     }
 
-    protected function saveComplexAttributes_Element_OphCiExamination_Contacts($element, $data, $index){
+    protected function saveComplexAttributes_Element_OphCiExamination_Contacts($element, $data, $index)
+    {
         $patient = \Patient::model()->findByPk($this->patient->id);
-        $contact_ids = $data["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'];
-        if(!empty($contact_ids)){
-            foreach($contact_ids as $contact_id) {
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts']) &&
+            isset($data["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'])) {
+            $contact_ids = $data["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'];
+        } else {
+            $contact_ids = [];
+        }
+        $patientContactAssignments = \PatientContactAssignment::model()->findAll(
+            "patient_id = ?", [$patient->id]);
+
+
+        foreach ($contact_ids as $contact_id) {
+
+            $foundExistingAssignment = false;
+            foreach ($patientContactAssignments as $patientContactAssignment) {
+                if ($patientContactAssignment->contact_id == $contact_id) {
+                    $foundExistingAssignment = true;
+                    break;
+                }
+            }
+            if (!$foundExistingAssignment) {
                 $patientContactAssignment = new \PatientContactAssignment;
                 $patientContactAssignment->patient_id = $patient->id;
                 $patientContactAssignment->contact_id = $contact_id;
                 $patientContactAssignment->save();
             }
+        }
+
+        $patientContactAssignments = array_filter($patientContactAssignments, function ($assignment) use ($contact_ids) {
+            return !in_array($assignment->contact_id, $contact_ids);
+        });
+
+        foreach ($patientContactAssignments as $patientContactAssignment) {
+            $patientContactAssignment->delete();
         }
     }
 
