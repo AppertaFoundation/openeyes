@@ -16,19 +16,24 @@
  */
 
 /**
- * @var \OEModule\OphCiExamination\models\HistoryMedicationsEntry[] $current
- * @var \OEModule\OphCiExamination\models\HistoryMedicationsEntry[] $stopped
+ * @var \OEModule\OphCiExamination\models\HistoryMedications $element
+ * @var \EventMedicationUse[] $current
+ * @var \EventMedicationUse[] $stopped
  */
 
 $model_name = CHtml::modelName($element);
 
-$systemic_filter = function ($entry) {
-    return $entry['route_id'] != 1;
+$eye_filter = function($e) {
+	/** @var EventMedicationUse $e */
+	return !is_null($e->route_id) && $e->route->has_laterality;
 };
 
-$eye_filter = function ($entry) {
-    return $entry['route_id'] == 1;
+$systemic_filter = function ($entry) use ($eye_filter){
+    return !$eye_filter($entry);
 };
+
+$current = $element->current_entries;
+$stopped = $element->closed_entries;
 
 $current_eye_meds = array_filter($current, $eye_filter);
 $stopped_eye_meds = array_filter($stopped, $eye_filter);
@@ -91,7 +96,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     </td>
                     <td class="date"><span class="oe-date"><?= Helper::convertDate2HTML($entry->getEndDateDisplay()) ?></span></td>
                     <td>
-                        <?php if ($entry->prescription_item): ?>
+                        <?php if ($entry->prescriptionItem): ?>
                             <a href="<?= $this->getPrescriptionLink($entry) ?>">
                   <span class="js-has-tooltip fa oe-i eye small"
                         data-tooltip-content="View prescription"></span>
