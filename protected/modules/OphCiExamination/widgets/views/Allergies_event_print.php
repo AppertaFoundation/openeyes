@@ -5,7 +5,7 @@
         <div class="cols-12">
             <?php if (!count($element->entries)) : ?>
             <div class="data-value not-recorded">
-                No diagnoses recorded during this encounter
+							Patient has no allergies (confirmed)
             </div>
             <?php else : ?>
                 <?php

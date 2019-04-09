@@ -17,8 +17,7 @@
 ?>
 
 <div class="admin box">
-    <h2>Worklist Patients: <?= $worklist->name ?> (<?=$worklist->worklist_definition->name?>)</h2>
-<?= EventAction::link('All Instances', '/worklistAdmin/definitionWorklists/'.$worklist->worklist_definition_id, array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-&nbsp;<?= EventAction::link('Definition Mappings', '/worklistAdmin/definitionMappings/'.$worklist->worklist_definition_id, array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-<?= $this->manager->renderWorklistForDashboard($worklist); ?>
+    <h2>Generated Instances for <?= $definition->name ?></h2>
+    <?php echo EventAction::link('Definitions List', '/Admin/worklist/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
+    <?php $this->renderPartial('definition_worklists_table', array('definition' => $definition)) ?>
 </div>

@@ -46,13 +46,15 @@ class ProcedureController extends BaseController
 
     public function actionDetails()
     {
-        if (!empty($_GET['name']) && ($proc = Procedure::model()->findByAttributes(array('term' => $_GET['name'])))) {
+        $name = \Yii::app()->request->getParam('name');
+        $proc = $name ? Procedure::model()->findByAttributes(['term' => $name]) : null;
+        if ($proc) {
             $this->renderPartial(
                 '_ajaxProcedure',
                 array(
                     'proc' => $proc,
-                    'durations' => @$_GET['durations'],
-                    'identifier' => @$_GET['identifier'],
+                    'durations' => \Yii::app()->request->getParam('durations'),
+                    'identifier' => \Yii::app()->request->getParam('identifier'),
                 )
             );
         }
