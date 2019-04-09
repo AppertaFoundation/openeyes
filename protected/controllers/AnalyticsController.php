@@ -1598,7 +1598,7 @@ class AnalyticsController extends BaseController
 //                            $current_patient->getDiagnosesTermsArray(),
 //                            $over_weeks
                             'patient_id'=>$current_patient->id,
-                            'over_weeks'=>$over_weeks,
+                            'weeks'=>$over_weeks,
                         ));
                     if(!array_key_exists($over_weeks, $followup_patient_list['overdue'])){
                         $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
@@ -1621,7 +1621,7 @@ class AnalyticsController extends BaseController
 //                            $current_patient->getDiagnosesTermsArray(),
 //                            $coming_weeks
                             'patient_id'=>$current_patient->id,
-                            'over_weeks'=>$coming_weeks,
+                            'weeks'=>$coming_weeks,
                         ));
                     if(!array_key_exists($coming_weeks, $followup_patient_list['coming'])){
                         $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
@@ -1675,7 +1675,7 @@ class AnalyticsController extends BaseController
 //                                $current_patient->getDiagnosesTermsArray(),
 //                                $over_weeks
                                 'patient_id'=>$current_patient->id,
-                                'over_weeks'=>$over_weeks,
+                                'weeks'=>$over_weeks,
                             )
                         );
                         if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
@@ -1699,7 +1699,7 @@ class AnalyticsController extends BaseController
 //                                $current_patient->getDiagnosesTermsArray(),
 //                                $coming_weeks
                                 'patient_id'=>$current_patient->id,
-                                'coming_weeks'=>$coming_weeks,
+                                'weeks'=>$coming_weeks,
                             ));
                         if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
                             $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
@@ -1743,7 +1743,7 @@ class AnalyticsController extends BaseController
 //                        $current_patient->getDiagnosesTermsArray(),
 //                        $waiting_time
                         'patient_id'=>$current_patient->id,
-                        'waiting_weeks'=>$waiting_time,
+                        'weeks'=>$waiting_time,
                     ));
                 if (! isset($followup_patient_list['waiting'][$waiting_time])){
                     $followup_patient_list['waiting'][$waiting_time]= array();
