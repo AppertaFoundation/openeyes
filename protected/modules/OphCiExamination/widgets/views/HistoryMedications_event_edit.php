@@ -140,6 +140,9 @@ $element_errors = $element->getErrors();
           ) ?>, {'multiSelect': true})],
           onReturn: function (adderDialog, selectedItems) {
               medicationsController.addEntry(selectedItems);
+              $('#<?=$model_name?>_element').find('.js-search-autocomplete').val('');
+              $('#<?=$model_name?>_element').find('.has-filter span').hide();
+              $('#<?=$model_name?>_element').find('.js-search-results li').remove();
               return true;
           },
           searchOptions: {
