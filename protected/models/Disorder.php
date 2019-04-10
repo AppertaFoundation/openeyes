@@ -160,8 +160,8 @@ class Disorder extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('fully_specified_name', $this->fully_specified_name, true);
-        $criteria->compare('term', $this->term, true);
+        $criteria->compare('lower(fully_specified_name)', strtolower($this->fully_specified_name), true);
+        $criteria->compare('lower(term)', strtolower($this->term), true);
 
         return new CActiveDataProvider(get_class($this), array('criteria' => $criteria));
     }
