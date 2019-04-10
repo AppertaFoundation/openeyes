@@ -1949,25 +1949,25 @@ var gonioscopyDrawings = [];
 
 function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
     this.notificationHandler = function (message) {
-        let doodlesToSyncInGonioscopy = [
-            "AngleGradeNorth",
-            "AngleGradeEast",
-            "AngleGradeSouth",
-            "AngleGradeWest",
-        ];
-        let doodleChanged;
-        let doodleChangedIsAngleGradeDoodle = false;
-
         switch (message.eventName) {
             case 'ready':
             case 'doodlesLoaded':
                 OphCiExamination_Gonioscopy_switch_mode(drawing.canvas, drawing.firstDoodleOfClass('Gonioscopy').getParameter('mode'));
                 break;
-            case 'parameterChanged':
+            case 'parameterChanged': {
                 if (message.object.doodle.className == 'Gonioscopy' && message.object.parameter == 'mode') {
                     OphCiExamination_Gonioscopy_switch_mode(drawing.canvas, message.object.value);
                 }
-                doodleChanged = message.object.doodle;
+
+                let doodlesToSyncInGonioscopy = [
+                    "AngleGradeNorth",
+                    "AngleGradeEast",
+                    "AngleGradeSouth",
+                    "AngleGradeWest",
+                ];
+
+                let doodleChanged = message.object.doodle;
+                let doodleChangedIsAngleGradeDoodle = false;
                 for(let i = 0; i < doodlesToSyncInGonioscopy.length; ++i) {
                     if (doodleChanged.className === doodlesToSyncInGonioscopy[i]) {
                         doodleChangedIsAngleGradeDoodle = true;
@@ -1988,6 +1988,7 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
                     });
                 }
                 break;
+            }
             case 'reset':
             case 'resetEdit':
                 $(drawing.canvasParent).closest('.ed-body').find('select.gonioExpert').val(2).trigger('change');
