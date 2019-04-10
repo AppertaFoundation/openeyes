@@ -1949,6 +1949,15 @@ var gonioscopyDrawings = [];
 
 function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
     this.notificationHandler = function (message) {
+        let doodlesToSyncInGonioscopy = [
+            "AngleGradeNorth",
+            "AngleGradeEast",
+            "AngleGradeSouth",
+            "AngleGradeWest",
+        ];
+        let doodleChanged;
+        let doodleChangedIsAngleGradeDoodle = false;
+
         switch (message.eventName) {
             case 'ready':
             case 'doodlesLoaded':
@@ -1958,16 +1967,7 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
                 if (message.object.doodle.className == 'Gonioscopy' && message.object.parameter == 'mode') {
                     OphCiExamination_Gonioscopy_switch_mode(drawing.canvas, message.object.value);
                 }
-
-                let doodlesToSyncInGonioscopy = [
-                    "AngleGradeNorth",
-                    "AngleGradeEast",
-                    "AngleGradeSouth",
-                    "AngleGradeWest",
-                ];
-
-                let doodleChanged = message.object.doodle;
-                let doodleChangedIsAngleGradeDoodle = false;
+                doodleChanged = message.object.doodle;
                 for(let i = 0; i < doodlesToSyncInGonioscopy.length; ++i) {
                     if (doodleChanged.className === doodlesToSyncInGonioscopy[i]) {
                         doodleChangedIsAngleGradeDoodle = true;

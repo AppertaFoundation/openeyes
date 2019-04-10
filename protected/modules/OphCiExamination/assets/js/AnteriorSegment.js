@@ -396,16 +396,18 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     let anteriorSegmentDoodle = this.primaryDrawing.firstDoodleOfClass('AntSeg');
     if ($(".OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment")[0] && anteriorSegmentDoodle) {
       // if Anterior Segment section does not exist, then sync is not needed
+      let change;
+      let angleGradeNorthDoodle;
       switch (msgArray['eventName']) {
         case 'afterReset':
         case 'ready':
-          let angleGradeNorthDoodle = this.gonioscopyDrawing.firstDoodleOfClass("AngleGradeNorth");
+          angleGradeNorthDoodle = this.gonioscopyDrawing.firstDoodleOfClass("AngleGradeNorth");
           if (angleGradeNorthDoodle && anteriorSegmentDoodle.colour) {
             this.setDoodleParameter(anteriorSegmentDoodle, 'colour', angleGradeNorthDoodle, 'colour', true);
           }
           break;
         case 'parameterChanged':
-          let change = msgArray['object'];
+          change = msgArray['object'];
           if (change.doodle.className === 'AngleGradeNorth' && change.parameter === 'colour') {
             let angleGradeNorthDoodle = change.doodle;
             this.setDoodleParameter(angleGradeNorthDoodle, 'colour', anteriorSegmentDoodle, 'colour', true);
