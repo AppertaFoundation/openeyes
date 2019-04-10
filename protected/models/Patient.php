@@ -141,7 +141,7 @@ class Patient extends BaseActiveRecordVersioned
 
             array('nhs_num', 'numerical'),
 
-            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
+            array('dob, is_deceased, date_of_death, ethnic_group_id, patient_referral_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
             array('deleted', 'safe'),
             array('dob', 'dateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('dob','dateOfBirthRangeValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),

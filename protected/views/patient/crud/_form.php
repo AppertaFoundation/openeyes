@@ -341,7 +341,7 @@ foreach ($ethnic_list as $key=>$item){
             </td>
             <td>
                 <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_pr_id']); ?>
-                <div id="selected_pr_wrapper" style="<?= !$patient->patient_referral_id ? 'display: none;' : 'color: white;' ?>">
+                <div id="selected_pr_wrapper" style="<?= !isset($patient->patient_referral_id) ? 'display: none;' : 'color: white;' ?>">
                     <ul class="oe-multi-select js-selected_pr">
                         <li>
                   <span class="js-name">
@@ -358,7 +358,17 @@ foreach ($ethnic_list as $key=>$item){
                 </div>
             </td>
         </tr>
+        <?php $isPRSameASGP = false;
+        if ((isset($patient->patient_referral_id) && isset($patient->gp_id) && ($patient->patient_referral_id === $patient->gp_id) )) {
+            $isPRSameASGP = true;
+        } ?>
         <tr>
+            <td>
+                <?= CHtml::checkBox('is_pr_gp', $isPRSameASGP, array('data-child_row' => '#js-patient-gp-row')) ?>
+                Is Referring Practitioner patient's GP?
+            </td>
+        </tr>
+        <tr id="js-patient-gp-row" style="<?= $isPRSameASGP ? 'display: none': ''; ?>">
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                 <?= $form->label($patient, 'gp_id') ?>
                 <br/>
@@ -381,7 +391,6 @@ foreach ($ethnic_list as $key=>$item){
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
                 </div>
-
             </td>
         </tr>
         <tr>
@@ -480,6 +489,10 @@ foreach ($ethnic_list as $key=>$item){
             let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
             removeSelectedPR();
             addItemPatientForm('selected_pr_wrapper', {item: AutoCompleteResponse});
+            if ($('#is_pr_gp').is(':checked')){
+                removeSelectedGP();
+                addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse});
+            }
         }
     });
   OpenEyes.UI.AutoCompleteSearch.init({

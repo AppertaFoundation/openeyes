@@ -9,7 +9,7 @@ function removeSelectedPR(){
   $('#no_pr_result').hide();
   $('.js-selected_pr .js-name').text('');
   $('#selected_pr_wrapper').hide();
-  $('#Patient_pr_id').val('');
+  $('#Patient_patient_referral_id').val('');
 }
 function removeSelectedGP() {
   $('#no_gp_result').hide();
@@ -74,6 +74,21 @@ $(function () {
 
     $(selector).find('input').val('');
     $(selector).toggle($(this).is(':checked'));
+  });
+
+  $('#is_pr_gp').on('change', function () {
+    var selector = $(this).data('child_row');
+    var isChecked = $(this).is(':checked');
+    if (isChecked){
+      $(selector).hide();
+      $('#Patient_gp_id').val($('#Patient_patient_referral_id').val());
+    } else {
+      $(selector).show();
+    }
+  });
+
+  $('#selected_pr_wrapper').on('click', '.js-remove-pr', function () {
+    removeSelectedPR();
   });
 
   $('#selected_gp_wrapper').on('click', '.js-remove-gp', function () {
