@@ -255,11 +255,17 @@ class Patient extends BaseActiveRecordVersioned
         $format_check = preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/", $this->$attribute);
 
         $patient_dob_date = DateTime::createFromFormat('d-m-Y', $this->$attribute);
+
         $current_date =  new DateTime("now");
         $earliest_date =  new DateTime('01-01-1900');
         $current_date->format('d-m-Y');
 
-        if( !$patient_dob_date || !$format_check){
+        if(!$patient_dob_date)
+        {
+            $patient_dob_date = DateTime::createFromFormat('Y-m-d', $this->$attribute);
+            $format_check = preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->$attribute);
+        }
+        if(!$patient_dob_date || !$format_check){
             $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
         }
         if( $patient_dob_date > $current_date){
@@ -280,6 +286,11 @@ class Patient extends BaseActiveRecordVersioned
             $current_date->format('d-m-Y');
             $earliest_date =  new DateTime('01-01-1900');
 
+            if(!$patient_dod_date)
+            {
+                $patient_dod_date = DateTime::createFromFormat('Y-m-d', $this->$attribute);
+                $format_check = preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->$attribute);
+            }
             if (!$this->date_of_death) {
                 $this->addError($attribute, 'Date of death cannot be blank.');
             } elseif( !$format_check) {
