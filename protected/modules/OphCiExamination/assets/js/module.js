@@ -1967,10 +1967,15 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
                 ];
 
                 let doodleChanged = message.object.doodle;
-                if ((doodleChanged.className === doodlesToSyncInGonioscopy[0] ||
-                    doodleChanged.className === doodlesToSyncInGonioscopy[1] ||
-                    doodleChanged.className === doodlesToSyncInGonioscopy[2] ||
-                    doodleChanged.className === doodlesToSyncInGonioscopy[3]) && message.object.parameter === 'colour' ) {
+                let doodleChangedIsAngleGradeDoodle = false;
+                for(let i = 0; i < doodlesToSyncInGonioscopy.length; ++i) {
+                    if (doodleChanged.className === doodlesToSyncInGonioscopy[i]) {
+                        doodleChangedIsAngleGradeDoodle = true;
+                        break;
+                    }
+                }
+
+                if (doodleChangedIsAngleGradeDoodle && message.object.parameter === 'colour' ) {
                     let doodleFromUpdate = drawing.firstDoodleOfClass(doodleChanged.className);
                     doodlesToSyncInGonioscopy.forEach(function(doodleName) {
                         if(doodleName != doodleChanged.className) {
