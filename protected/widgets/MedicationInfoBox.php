@@ -89,9 +89,7 @@
                 	$data['Type'] = "Local";
 				}
 
-                if($medication->source_type == Medication::SOURCE_TYPE_LEGACY && $medication->preferred_code != "") {
-                	$data["SNOMED code"] = $medication->preferred_code;
-				}
+				$data["Code"] = $medication->preferred_code ? $medication->preferred_code : "N/A";
 
                 $data['Sets'] = implode(', ', array_map(function ($e){
                     return $e->name;
