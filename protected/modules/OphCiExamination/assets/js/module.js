@@ -1945,31 +1945,7 @@ function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGl
     $(":input[name^='glaucoma_diagnoses']").trigger('change');
 }
 
-var gonioscopyDrawingRight;
-var gonioscopyDrawingLeft;
-
-function OphCiExamination_Gonioscopy_AnteriorSegment_Listener(anteriorSegmentDrawing) {
-    let gonioscopyDrawing = anteriorSegmentDrawing.eye === 1 ? gonioscopyDrawingLeft : gonioscopyDrawingRight;
-    if(!gonioscopyDrawing)
-        return;
-
-    this.notificationHandler = function (message) {
-        switch (message.eventName) {
-            case 'ready':
-                let angleGradeNorthDoodle = gonioscopyDrawing.firstDoodleOfClass('AngleGradeNorth');
-                let colour = angleGradeNorthDoodle.getParameter('colour');
-                let anteriorSegmentDoodle = anteriorSegmentDrawing.firstDoodleOfClass('AntSeg');
-                if(anteriorSegmentDoodle.colour != colour) {    // sync anterior segment iris colour with gonioscopy
-                    anteriorSegmentDoodle.setParameterFromString('colour', colour, true);
-                    anteriorSegmentDoodle.drawing.repaint();
-                }
-                break;
-        }
-    };
-
-    anteriorSegmentDrawing.registerForNotifications(this);
-    gonioscopyListener(gonioscopyDrawing);
-}
+var gonioscopyDrawings = [];
 
 function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
     this.notificationHandler = function (message) {
@@ -1994,7 +1970,7 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
                 if ((doodleChanged.className === doodlesToSyncInGonioscopy[0] ||
                     doodleChanged.className === doodlesToSyncInGonioscopy[1] ||
                     doodleChanged.className === doodlesToSyncInGonioscopy[2] ||
-                    doodleChanged.className === doodlesToSyncInGonioscopy[3]) && message.object.parameter == 'colour' ) {
+                    doodleChanged.className === doodlesToSyncInGonioscopy[3]) && message.object.parameter === 'colour' ) {
                     let doodleFromUpdate = drawing.firstDoodleOfClass(doodleChanged.className);
                     doodlesToSyncInGonioscopy.forEach(function(doodleName) {
                         if(doodleName != doodleChanged.className) {
@@ -2014,11 +1990,16 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
         }
     };
     drawing.registerForNotifications(this);
-
-    if(drawing.eye === 1) {
-        gonioscopyDrawingLeft = drawing;
-    } else {
-        gonioscopyDrawingRight = drawing;
+    gonioscopyDrawings[drawing.eye] = drawing;
+    if(typeof anteriorSegmentDrawings !== 'undefined') {
+        let anteriorSegmentDrawing = anteriorSegmentDrawings[drawing.eye];
+        if(!anteriorSegmentDrawing)
+            return;
+        let anteriorSegmentCanvas = $(anteriorSegmentDrawing.canvas);
+        let anteriorSegmentController = anteriorSegmentCanvas.data('controller');
+        if(anteriorSegmentController) {
+            anteriorSegmentController.setGonioscopyDrawing(drawing);
+        }
     }
 }
 
