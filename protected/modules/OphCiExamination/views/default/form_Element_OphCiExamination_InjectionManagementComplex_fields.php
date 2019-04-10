@@ -127,6 +127,7 @@ $el_model_name = CHtml::modelName($element);
                 'dropdownOptions' => $l2_attrs,
                 'label' => true,
                 'nowrapper' => true,
+                'searchBtn' => false,
                 'layoutColumns' => array(
                     'field' => 12
                 ),

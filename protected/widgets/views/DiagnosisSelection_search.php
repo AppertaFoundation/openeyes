@@ -30,23 +30,28 @@
 				<div class="dropdown-row">
 					<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => 'Select') : array_merge($dropdownOptions, array('style' => 'width : 100%'))) : ''?>
                 </div>
-        <div class="autocomplete-row" style="display: none">
+                <?php if($searchBtn){ ?>
+                <div class="autocomplete-row" style="display: none">
             <?php
             $this->widget('application.widgets.AutoCompleteSearch',['field_name' => "{$class}_{$field}_searchbox"]);
             ?>
         </div>
+                <?php }?>
 			</div>
 			<div class="cols-2 column">
 				<div class="postfix">
+                    <?php if($searchBtn){ ?>
 					<button class="oe-i search pad-left" id="<?php echo $class.'_'.$field.'_search'?>" style="height: 28px; width: 28px;" type="button">
 						<span class="icon-button-small-search" ></span>
 						<span style="display: none">Search</span>
 					</button>
+                    <?php }?>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<?php if($searchBtn){ ?>
 <script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', false, -1); ?>"></script>
 <script type="text/javascript">
     OpenEyes.UI.AutoCompleteSearch.init({
@@ -80,3 +85,4 @@
 	});
 
 </script>
+<?php }?>
