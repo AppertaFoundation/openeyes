@@ -533,8 +533,12 @@ class AnalyticsController extends BaseController
         return $command_final_table->queryAll();
     }
 
-    public function queryDiagnosesFilteredPatientListCommand($eye_side){
-        $diagnoses = isset($this->filters['custom_diagnosis'])? $this->filters['custom_diagnosis']: null;
+    public function queryDiagnosesFilteredPatientListCommand($eye_side,$caller = 'custom'){
+        if ($caller == 'followup'){
+            $diagnoses = isset($this->filters['service_diagnosis'])? $this->filters['service_diagnosis']: null;
+        }else{
+            $diagnoses = isset($this->filters['custom_diagnosis'])? $this->filters['custom_diagnosis']: null;
+        }
         $command_principal = Yii::app()->db->createCommand()
             ->select('e.patient_id as patient_id','DISTINCT')
             ->from('episode e')
@@ -560,8 +564,13 @@ class AnalyticsController extends BaseController
         }
 
         if (isset($diagnoses)){
-            $command_principal->andWhere('e.disorder_id IN ('.implode(",",$diagnoses).')');
-            $command_secondary->andWhere('sd.disorder_id IN ('.implode(",",$diagnoses).')');
+            if(is_array($diagnoses)){
+                $command_principal->andWhere('e.disorder_id IN ('.implode(",",$diagnoses).')');
+                $command_secondary->andWhere('sd.disorder_id IN ('.implode(",",$diagnoses).')');
+            }else{
+                $command_principal->andWhere('e.disorder_id IN ('.$diagnoses.')');
+                $command_secondary->andWhere('sd.disorder_id IN ('.$diagnoses.')');
+            }
         }
         return $command_secondary->union($command_principal->getText());
     }
@@ -1566,7 +1575,7 @@ class AnalyticsController extends BaseController
         if ($diagnosis){
             $command_filtered_patients_by_diagnosis = Yii::app()->db->createCommand()
                 ->select('dp.patient_id','distinct')
-                ->from('('.$this->queryDiagnosesFilteredPatientListCommand(null)->getText().') AS dp');
+                ->from('('.$this->queryDiagnosesFilteredPatientListCommand(null,'followup')->getText().') AS dp');
             $referral_document_command->andWhere('p.id IN ('.$command_filtered_patients_by_diagnosis->getText().')');
             $followup_elements_command->andWhere('p.id IN ('.$command_filtered_patients_by_diagnosis->getText().')');
         }
