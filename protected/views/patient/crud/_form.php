@@ -335,6 +335,31 @@ foreach ($ethnic_list as $key=>$item){
         </tr>
         <tr>
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
+                <?= $form->label($patient, 'patient_referral_id') ?>
+                <br/>
+                <?= $form->error($patient, 'patient_referral_id') ?>
+            </td>
+            <td>
+                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_pr_id']); ?>
+                <div id="selected_pr_wrapper" style="<?= !$patient->patient_referral_id ? 'display: none;' : 'color: white;' ?>">
+                    <ul class="oe-multi-select js-selected_pr">
+                        <li>
+                  <span class="js-name">
+                      <?= $patient->patient_referral_id ? Gp::model()->findByPk(array('id' => $patient->patient_referral_id))->getCorrespondenceName() : '' ?>
+                  </span>
+                            <i class="oe-i remove-circle small-icon pad-left js-remove-pr"></i>
+                        </li>
+                    </ul>
+                    <?= CHtml::hiddenField('Patient[patient_referral_id]', $patient->patient_referral_id, array('class' => 'hidden_id')) ?>
+                </div>
+                <a id="js-add-pr-btn" href="#">Add Referring Practitioner</a>
+                <div id="no_pr_result" style="display: none;">
+                    <div>No result</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                 <?= $form->label($patient, 'gp_id') ?>
                 <br/>
                 <?= $form->error($patient, 'gp_id') ?>
@@ -352,7 +377,7 @@ foreach ($ethnic_list as $key=>$item){
                     </ul>
                     <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
                 </div>
-                <a id="js-add-practitioner-btn" href="#">Add Referring Practitioner</a>
+                <a id="js-add-gp-btn" href="#">Add General Practitioner</a>
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
                 </div>
@@ -447,6 +472,16 @@ foreach ($ethnic_list as $key=>$item){
 </div>
 <?php $this->endWidget(); ?>
 <script>
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $('#autocomplete_pr_id'),
+        url: '/patient/gpList',
+        maxHeight: '200px',
+        onSelect: function(){
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            removeSelectedPR();
+            addItemPatientForm('selected_pr_wrapper', {item: AutoCompleteResponse});
+        }
+    });
   OpenEyes.UI.AutoCompleteSearch.init({
     input: $('#autocomplete_gp_id'),
     url: '/patient/gpList',
@@ -490,20 +525,44 @@ $this->renderPartial('../practice/create_practice_form',
 ?>
 <?php
 $gpcontact = new Contact('manage_gp');
-$this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'context' => 'AJAX'), false);
+$patientReferralContact = new Contact('manage_gp');
+$this->renderPartial('../gp/create_gp_form',
+    array(
+            'model' => $gpcontact,
+        'context' => 'AJAX',
+        'select_wrapper'=>'selected_gp_wrapper',
+        'id' => 'js-add-gp-event'
+    ),
+    false);
+$this->renderPartial('../gp/create_gp_form',
+    array(
+            'model' => $patientReferralContact,
+        'context' => 'AJAX',
+        'select_wrapper'=>'selected_pr_wrapper',
+        'id' => 'js-add-pr-event'), false);
+
 ?>
 
 
+
+
 <script>
-    $('#js-cancel-add-practitioner').click(function(event){
+    $('.js-cancel-add-practitioner').click(function(event){
         event.preventDefault();
         $("#gp-form")[0].reset();
         $("#errors").text("");
         $(".alert-box").css("display","none");
-        $('#js-add-practitioner-event').css('display','none');
+        console.log($('.js-add-practitioner-event'));
+        $('.js-add-practitioner-event').css('display','none');
+
     });
-    $('#js-add-practitioner-btn').click(function(event){
-        $('#js-add-practitioner-event').css('display','');
+    $('#js-add-gp-btn').click(function(event){
+        $('#js-add-gp-event').css('display','');
+        return false;
+    });
+
+    $('#js-add-pr-btn').click(function(event){
+        $('#js-add-pr-event').css('display','');
         return false;
     });
 

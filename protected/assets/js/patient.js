@@ -5,7 +5,12 @@ function addItemPatientForm(wrapper_id, ui) {
   $wrapper.show();
   $wrapper.find('.hidden_id').val(ui.item.value);
 }
-
+function removeSelectedPR(){
+  $('#no_pr_result').hide();
+  $('.js-selected_pr .js-name').text('');
+  $('#selected_pr_wrapper').hide();
+  $('#Patient_pr_id').val('');
+}
 function removeSelectedGP() {
   $('#no_gp_result').hide();
   $('.js-selected_gp .js-name').text('');

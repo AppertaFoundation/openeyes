@@ -1,4 +1,4 @@
-<div class="oe-popup-wrap" id="js-add-practitioner-event" style="display: none; z-index:100">
+<div class="oe-popup-wrap js-add-practitioner-event" id= "<?= $id; ?>" style="display: none; z-index:100">
     <div class="oe-popup">
         <div class="form">
             <?php
@@ -17,7 +17,7 @@
             <div class="title">
                 Add Referring Practitioner
                 <div class="close-icon-btn">
-                    <i id="js-cancel-add-practitioner" class="oe-i remove-circle pro-theme"></i>
+                    <i id="" class="oe-i remove-circle pro-theme js-cancel-add-practitioner"></i>
                 </div>
             </div>
             <div class="alert-box warning" id="practitioner-alert-box" style="display:none;">
@@ -108,8 +108,8 @@
                                         $("#practitioner-alert-box").css("display","");
                                     }else{
                                             removeSelectedGP();
-                                            addGpItem("selected_gp_wrapper",event);
-                                            $("#js-add-practitioner-event").css("display","none");
+                                            addGpItem("'. $select_wrapper .'",event);
+                                            $(".js-add-practitioner-event").css("display","none");
                                             $("#practitioner-alert-box").css("display","none");
                                             $("#gp-form")[0].reset();
                                             $("#selected_contact_label_wrapper").css("display","none");

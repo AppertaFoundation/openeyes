@@ -1720,6 +1720,7 @@ class PatientController extends BaseController
         $patient_identifiers = $this->getPatientIdentifiers($patient);
 
         $gpcontact = new Contact();
+        $patient_referral_contact = new Contact();
         $practicecontact = new Contact();
         $practiceaddress = new Address();
         $practice = new Practice();
@@ -1791,6 +1792,7 @@ class PatientController extends BaseController
             'patientuserreferral' => isset($patient_user_referral) ? $patient_user_referral : new PatientUserReferral(),
             'patient_identifiers' => $patient_identifiers,
             'gpcontact' => $gpcontact,
+            'pr_contact' => $patient_referral_contact,
             'practicecontact' => $practicecontact,
             'practiceaddress' => $practiceaddress,
             'practice' => $practice
