@@ -25,7 +25,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             var $wrapper = $(anchor).closest(".alternative-display-element");
             $wrapper.hide();
             $wrapper.siblings(".alternative-display-element").show();
-            $wrapper.closest(".alternative-display").next(".alt-display-trigger").hide();
+            var $col = $wrapper.closest(".alternative-display");
+            $col.next(".alt-display-trigger").hide();
+
+            var $dropdown = $col.find(".js-unit-dropdown");
+            var $input = $col.find(".dose_unit_term");
+
+            if($dropdown.length > 0 && $input.val() == "") {
+                $dropdown.removeAttr("disabled").show();
+                $input.attr("disabled", "disabled");
+            }
         };
     }
 
