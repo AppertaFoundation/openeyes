@@ -56,6 +56,11 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                                 <?php echo abs($session->availableMinutes) ?> min
                                 <?php echo $session->minuteStatus ?>
                             </div>
+                            <div class="time">
+                                <?= "&nbsp;" . $session->start_time ?>
+                                 -
+                                <?= $session->end_time ?>
+                            </div>
                             <div class="specialists">
                                 <?php if ($session->consultant) { ?>
                                     <div class="consultant" title="Consultant Present">Consultant</div>
