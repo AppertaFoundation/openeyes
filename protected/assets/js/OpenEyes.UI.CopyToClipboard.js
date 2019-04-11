@@ -14,11 +14,11 @@ OpenEyes.UI = OpenEyes.UI || {};
     }
 
     CopyToClipboardController._defaultOptions = {
-        'selector': '.copy-to-clipboard',
+        'selector': '.js-copy-to-clipboard',
         'wrapper': 'body',
         'callback': function($element){
-            $("<span>",{"class":"copy-to-clipboard-copied", "style":"color:lightgreen;margin-left:5px;"}).text("copied").insertAfter($element);
-            $(".copy-to-clipboard-copied").fadeOut(2000, function(){ $(".copy-to-clipboard-copied").remove(); });
+            $("<span>",{"class":"js-copy-to-clipboard-copied", "style":"color:lightgreen;margin-left:5px;"}).text("copied").insertAfter($element);
+            $(".js-copy-to-clipboard-copied").fadeOut(2000, function(){ $(".js-copy-to-clipboard-copied").remove(); });
         },
     };
 
