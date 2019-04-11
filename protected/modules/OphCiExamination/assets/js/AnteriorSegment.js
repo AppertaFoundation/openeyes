@@ -237,7 +237,13 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
       let angleGradeNorthDoodle = this.gonioscopyDrawing.firstDoodleOfClass('AngleGradeNorth');
       let anteriorSegmentDoodle = this.primaryDrawing.firstDoodleOfClass('AntSeg');
       if(angleGradeNorthDoodle && anteriorSegmentDoodle) {
-        this.setDoodleParameter(angleGradeNorthDoodle, 'colour', anteriorSegmentDoodle, 'colour', true);
+        const defaultIrisColour = 'Blue';
+        // if angleGradeNorthDoodle.colour is default and anteriorSegmentDoodle.colour is not,
+        // we can assume that anteriorSegmentDoodle has been changed and the other hasn't
+        const anteriorSegmentDoodleIsTheSource = angleGradeNorthDoodle.colour === defaultIrisColour && anteriorSegmentDoodle.colour !== defaultIrisColour;
+        const sourceDoodle      = anteriorSegmentDoodleIsTheSource ? anteriorSegmentDoodle : angleGradeNorthDoodle;
+        const destinationDoodle = anteriorSegmentDoodleIsTheSource ? angleGradeNorthDoodle : anteriorSegmentDoodle;
+        this.setDoodleParameter(sourceDoodle, 'colour', destinationDoodle, 'colour', true);
       }
     }
   };
