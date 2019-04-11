@@ -487,11 +487,8 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
   return AnteriorSegmentController;
 })(ED);
 
-var anteriorSegmentDrawings = [];
-
 function anteriorSegmentListener(_drawing) {
   var canvas = $(_drawing.canvas);
-  anteriorSegmentDrawings[_drawing.eye] = _drawing;
   var drawingId = $(_drawing.canvas).attr('id');
   var secondary = drawingId.endsWith('_side');
   if (secondary) {
@@ -508,11 +505,13 @@ function anteriorSegmentListener(_drawing) {
     controller.setSecondary(_drawing);
   } else {
     controller.setPrimary(_drawing);
-    if(typeof gonioscopyDrawings !== 'undefined') {
-      let gonioscopyDrawing = gonioscopyDrawings[_drawing.eye];
-      if(gonioscopyDrawing) {
-        controller.setGonioscopyDrawing(gonioscopyDrawing);
-      }
+
+    const gonioscopyCanvas = $(".OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy").
+      find("[data-side='" + (_drawing.eye === 1 ? "left" : "right") + "']").
+      find('canvas');
+    const gonioscopyDrawing = ED.getInstance(gonioscopyCanvas.data('drawing-name'));
+    if(gonioscopyDrawing) {
+      controller.setGonioscopyDrawing(gonioscopyDrawing);
     }
   }
 }

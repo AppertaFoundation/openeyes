@@ -1945,8 +1945,6 @@ function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGl
     $(":input[name^='glaucoma_diagnoses']").trigger('change');
 }
 
-var gonioscopyDrawings = [];
-
 function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
     this.notificationHandler = function (message) {
         switch (message.eventName) {
@@ -1996,12 +1994,11 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
         }
     };
     drawing.registerForNotifications(this);
-    gonioscopyDrawings[drawing.eye] = drawing;
-    if(typeof anteriorSegmentDrawings !== 'undefined') {
-        let anteriorSegmentDrawing = anteriorSegmentDrawings[drawing.eye];
-        if(!anteriorSegmentDrawing)
-            return;
-        let anteriorSegmentCanvas = $(anteriorSegmentDrawing.canvas);
+
+    const anteriorSegmentCanvas = $(".OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment").
+        find("[data-side='" + (drawing.eye === 1 ? "left" : "right") + "']").
+        find('canvas');
+    if(anteriorSegmentCanvas) {
         let anteriorSegmentController = anteriorSegmentCanvas.data('controller');
         if(anteriorSegmentController) {
             anteriorSegmentController.setGonioscopyDrawing(drawing);
