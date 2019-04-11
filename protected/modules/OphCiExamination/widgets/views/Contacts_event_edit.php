@@ -48,7 +48,8 @@ $element_errors = $element->getErrors();
                 <?= $this->render(
                     'ContactsEntry_event_edit',
                     array(
-                        'entry' => $this->patient->gp->contact,
+                        'contact' => $this->patient->gp->contact,
+                        'show_comments' => false,
                         'model_name' => $model_name,
                         'removable' => false,
                         'is_template' => true,)); ?>
@@ -74,19 +75,24 @@ $element_errors = $element->getErrors();
                     <th>Email</th>
                     <th>Phone Number</th>
                     <th>Address</th>
-                    <th></th>
+                    <th>Comments</th>
                 </tr>
                 </thead>
                 <tbody id="contact-assignment-table">
                 <?php
-                foreach ($this->contacts as $contact) { ?>
+                foreach ($this->contact_assignments as $contact_assignment) { ?>
                     <?= $this->render(
                         'ContactsEntry_event_edit',
                         array(
-                            'entry' => $contact,
+                            'element' => $element,
+                            'form' => $form,
+                            'entry' => $contact_assignment,
+                            'show_comments' => true,
                             'model_name' => $model_name,
                             'removable' => true,
-                            'is_template' => true,)); ?>
+                            'is_template' => true
+                        )
+                    ); ?>
                 <?php } ?>
                 </tbody>
             </table>
@@ -105,16 +111,18 @@ $element_errors = $element->getErrors();
 <script type="text/template" class="entry-template hidden" id="contact-entry-template">
     <?php
 
-    $empty_entry = new Contact();
+    $empty_entry = new PatientContactAssignment();
     echo $this->render(
         'ContactsEntry_event_edit',
         array(
             'entry' => $empty_entry,
             'model_name' => $model_name,
+            'form' => $form,
+            'show_comments' => true,
             'removable' => true,
             'is_template' => true,
             'values' => array(
-                'id' => '{{ id }}',
+                'id' => '{{id}}',
                 'label' => '{{label}}',
                 'full_name' => '{{full_name}}',
                 'email' => '{{email}}',

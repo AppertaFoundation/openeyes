@@ -42,6 +42,7 @@ class AddressController extends BaseAdminController
             'cancel_uri' => '/admin/editContact?contact_id=' . $request->getParam('contact_id'),
         ));
     }
+
     public function actionAdd()
     {
         $model = new Address();
@@ -66,6 +67,7 @@ class AddressController extends BaseAdminController
             'errors' => isset($errors) ? $errors : null,
         ));
     }
+
     public function actionDelete()
     {
         $location_id = isset($_POST['address_id']) ? $_POST['address_id'] : null;

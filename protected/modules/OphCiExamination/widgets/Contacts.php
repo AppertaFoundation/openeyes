@@ -27,7 +27,8 @@ class Contacts extends \BaseEventElementWidget
     public $form;
     public $element;
 
-    public $contacts = [];
+    public $contact_assignments = [];
+    public $gp_contact_assignment;
 
     /**
      * @return \Element_OphCiExamination_Contacts
@@ -46,17 +47,25 @@ class Contacts extends \BaseEventElementWidget
                 $_POST["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'] : [];
             if (!empty($contact_ids)) {
                 foreach ($contact_ids as $contact_id) {
-                    $this->contacts[] = \Contact::model()->findByPk($contact_id);
+                    $criteria = new \CDbCriteria();
+                    $criteria->addCondition('t.patient_id = ' . $this->patient->id);
+                    $criteria->addCondition('t.contact_id = ' . $contact_id);
+                    $this->contact_assignments[] = \PatientContactAssignment::model()->findByPk($contact_id);
                 }
             }
         } else {
             $criteria = new \CDbCriteria();
             $gp = $this->patient->gp;
-            $criteria->addCondition('patient_id = ' . $this->patient->id);
-            $criteria->addCondition('t.id != ' . $gp->contact->id);
-            $criteria->join = "JOIN patient_contact_assignment pca ON t.id = pca.contact_id";
-            $this->contacts = \Contact::model()->findAll($criteria);
+            $criteria->addCondition('t.patient_id = ' . $this->patient->id);
+            $criteria->addCondition('t.contact_id != ' . $gp->contact->id);
+            $this->contact_assignments = \PatientContactAssignment::model()->findAll($criteria);
         }
+
+        $criteria = new \CDbCriteria();
+        $gp = $this->patient->gp;
+        $criteria->addCondition('t.patient_id = ' . $this->patient->id);
+        $criteria->addCondition('t.contact_id = ' . $gp->contact->id);
+        $this->gp_contact_assignment = \PatientContactAssignment::model()->findAll($criteria);
     }
 
 }

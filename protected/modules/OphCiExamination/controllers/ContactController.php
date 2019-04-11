@@ -60,7 +60,7 @@ class ContactController extends \BaseController
     protected function contactStructure(\Contact $contact)
     {
         return array(
-            'label' => $contact->getFullName() . isset($contact->label) && isset($contact->label->name) ? " (" . $contact->label->name . ")" : "",
+            'label' => $contact->getFullName() . (isset($contact->label) && isset($contact->label->name) ? " (" . $contact->label->name . ")" : ""),
             'id' => $contact['id'],
             'name' => $contact->getFullName(),
             'email' => $contact->address ? $contact->address->email : "",

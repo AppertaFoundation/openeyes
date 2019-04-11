@@ -1272,6 +1272,7 @@ class DefaultController extends \BaseEventTypeController
         if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts']) &&
             isset($data["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'])) {
             $contact_ids = $data["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'];
+            $comments = $data["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['comments'];
         } else {
             $contact_ids = [];
         }
@@ -1279,11 +1280,13 @@ class DefaultController extends \BaseEventTypeController
             "patient_id = ?", [$patient->id]);
 
 
-        foreach ($contact_ids as $contact_id) {
+        foreach ($contact_ids as $key => $contact_id) {
 
             $foundExistingAssignment = false;
             foreach ($patientContactAssignments as $patientContactAssignment) {
                 if ($patientContactAssignment->contact_id == $contact_id) {
+                    $patientContactAssignment->comment = $comments[$key];
+                    $patientContactAssignment->save();
                     $foundExistingAssignment = true;
                     break;
                 }
@@ -1292,6 +1295,7 @@ class DefaultController extends \BaseEventTypeController
                 $patientContactAssignment = new \PatientContactAssignment;
                 $patientContactAssignment->patient_id = $patient->id;
                 $patientContactAssignment->contact_id = $contact_id;
+                $patientContactAssignment->comment = isset($comments[$key]) ? $comments[$key] : null;
                 $patientContactAssignment->save();
             }
         }
