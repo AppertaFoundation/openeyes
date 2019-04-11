@@ -467,6 +467,29 @@ function showHideIOLFields(_drawing, resetPosition) {
     
     }
 
+    let posteriorChamberIOLPresent = false;
+    const eyedrawPosteriorChamberIOLClass = 'PCIOL';
+
+    for (var i in _drawing.doodleArray) {
+        if (_drawing.doodleArray[i].className === eyedrawPosteriorChamberIOLClass) {
+            posteriorChamberIOLPresent = true;
+            break;
+        }
+    }
+
+    if(posteriorChamberIOLPresent) {
+        $('#tr_Element_OphTrOperationnote_Cataract_iol_type').show();
+        if($("#Element_OphTrOperationnote_Cataract_iol_type_id option:selected").text() === '-') {
+            $('#Element_OphTrOperationnote_Cataract_iol_type_id').val('');
+        }
+    } else {
+        $('#tr_Element_OphTrOperationnote_Cataract_iol_type').hide();
+        $("#Element_OphTrOperationnote_Cataract_iol_type_id option").each(function() {
+            if($(this).text() === '-') {
+                $(this).attr('selected', 'selected');
+            }
+        });
+    }
 }
 
 function AngleMarksController(_drawing) {
