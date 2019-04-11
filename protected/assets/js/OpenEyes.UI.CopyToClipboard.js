@@ -11,7 +11,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.callback = this.options.callback;
 
         this.initialiseTriggers();
-    };
+    }
 
     CopyToClipboardController._defaultOptions = {
         'selector': '.copy-to-clipboard',
@@ -23,23 +23,21 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     CopyToClipboardController.prototype.initialiseTriggers = function(){
-
-        var controller = this;
-        var $wrapper = $(controller.wrapper);
+        let controller = this;
+        let $wrapper = $(controller.wrapper);
 
         $wrapper.on('click', this.selector, function(e) {
             e.preventDefault();
-            var text = ( $(this).val() ? $(this).val() : $(this).text() );
+            let text = ( $(this).val() ? $(this).val() : $(this).text() );
 
             if (controller.copyToClipboard(text) && typeof controller.callback === "function") {
                 controller.callback($(this));
             }
         });
-
     };
 
     CopyToClipboardController.prototype.copyToClipboard = function(text, callback){
-        var controller = this,
+        let controller = this,
             $input  = $('<input>', {'style':'position:absolute;top:-500px'}).val( text.trim() ),
             result = false;
 
@@ -50,7 +48,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $input.remove();
         return result;
-    }
+    };
 
     exports.CopyToClipboardController = CopyToClipboardController;
 
