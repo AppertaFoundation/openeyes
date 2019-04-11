@@ -36,10 +36,9 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
     };
 
-    CopyToClipboardController.prototype.copyToClipboard = function(text, callback){
-        let controller = this,
-            $input  = $('<input>', {'style':'position:absolute;top:-500px'}).val( text.trim() ),
-            result = false;
+    CopyToClipboardController.prototype.copyToClipboard = function(text){
+        let $input  = $('<input>', {'style':'position:absolute;top:-500px'}).val( text.trim() ),
+            result;
 
         $('body').append($input);
 
