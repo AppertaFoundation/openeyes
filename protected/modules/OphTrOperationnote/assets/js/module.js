@@ -470,8 +470,8 @@ function showHideIOLFields(_drawing, resetPosition) {
     let posteriorChamberIOLPresent = false;
     const eyedrawPosteriorChamberIOLClass = 'PCIOL';
 
-    for (let doodle in _drawing.doodleArray) {
-        if (_drawing.doodleArray[doodle].className === eyedrawPosteriorChamberIOLClass) {
+    for (let doodleArrayIndex in _drawing.doodleArray) {
+        if (_drawing.doodleArray[doodleArrayIndex].className === eyedrawPosteriorChamberIOLClass) {
             posteriorChamberIOLPresent = true;
             break;
         }
