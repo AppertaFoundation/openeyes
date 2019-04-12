@@ -29,10 +29,9 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 			'adminListAction'
 		));
 
-		$crit = new CDbCriteria();
-		$crit->addCondition("automatic = 1");
-		$admin->getSearch()->setCriteria($crit);
+		$admin->getSearch()->getCriteria()->addCondition("automatic = 1");
 		$admin->getSearch()->setItemsPerPage(30);
+		$admin->getSearch()->addSearchItem('name');
 
 		$admin->setModelDisplayName("Automatic medication sets");
 		$admin->setListTemplate('application.modules.OphDrPrescription.views.admin.auto_set_rule.list');
