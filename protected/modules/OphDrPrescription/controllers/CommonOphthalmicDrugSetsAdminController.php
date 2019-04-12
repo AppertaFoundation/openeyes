@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class CommonDrugSetsAdminController extends RefSetAdminController
+class CommonOphthalmicDrugSetsAdminController extends RefSetAdminController
 {
 	public $group = 'Drugs';
 
@@ -29,7 +29,6 @@ class CommonDrugSetsAdminController extends RefSetAdminController
         ));
 
         $admin->getSearch()->setItemsPerPage(30);
-
 
         $default_site_id = Yii::app()->session['selected_site_id'];
         $default_subspecialty_id = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
@@ -65,13 +64,13 @@ class CommonDrugSetsAdminController extends RefSetAdminController
             );
         }
 
+        $admin->autosets = MedicationSet::model()->findAll("automatic=1");
+
         $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \'COMMON_OPH\'');
-
-
         $admin->setListFieldsAction('toList');
         $admin->setEditFields('edit');
-
-        $admin->setModelDisplayName("Common Drug Sets");
+        $admin->setListTemplate('application.modules.OphDrPrescription.views.admin.common_ophthalmic_drug_sets.list');
+        $admin->setModelDisplayName("Common Ophthalmic Drug Sets");
         $admin->listModel();
     }
 
@@ -83,8 +82,9 @@ class CommonDrugSetsAdminController extends RefSetAdminController
 
     public function actionEdit()
     {
+
         if (!empty($_GET['default']['name'])) {
-            $this->redirect(['/OphDrPrescription/refSetAdmin/edit?default[name]='.$_GET['default']['name'].'&usage_code=COMMON_OPH']);
+            $this->redirect(['/OphDrPrescription/refSetAdmin/edit?default[name]='.$_GET['default']['name'].'&default[site_id]='.$_GET['default']['medicationSetRules.site_id'].'&default[subspecialty_id]='.$_GET['default']['medicationSetRules.subspecialty_id'].'&usage_code=COMMON_OPH']);
         } else {
             $this->redirect(['/OphDrPrescription/refSetAdmin/edit', 'usage_code' => 'COMMON_OPH']);
         }
@@ -108,6 +108,20 @@ class CommonDrugSetsAdminController extends RefSetAdminController
         }
 
         exit("1");
+    }
+
+
+    public function actionRedirect()
+    {
+        echo '<pre>';
+        print_r($_POST);
+        echo '</pre>';
+        exit;
+        if (!empty($_GET['default']['name'])) {
+            $this->redirect(['/OphDrPrescription/refSetAdmin/edit?default[name]='.$_GET['default']['name'].'&usage_code=COMMON_OPH']);
+        } else {
+            $this->redirect(['/OphDrPrescription/refSetAdmin/edit', 'usage_code' => 'COMMON_OPH']);
+        }
     }
 
 }
