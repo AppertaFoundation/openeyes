@@ -220,7 +220,6 @@ class PatientController extends BaseController
                 $this->redirect(['/patient/search', 'term' => $patient->hos_num]);
             }
 
-            $this->redirect([$api->generateEpisodeLink($patient)]);
             $this->redirect(array($api->generatePatientLandingPageLink($patient)));
 
         } else {
