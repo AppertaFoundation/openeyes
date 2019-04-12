@@ -246,6 +246,7 @@ class AdminController extends BaseAdminController
 
     public function actionManageFindings()
     {
+        $this->group = 'Disorders';
         if (Yii::app()->request->isPostRequest) {
             $findings = Yii::app()->request->getParam('Finding', []);
             $subspecialities_ids = Yii::app()->request->getParam('subspecialty-ids', []);
