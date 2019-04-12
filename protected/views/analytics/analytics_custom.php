@@ -10,6 +10,7 @@
         custom_data = <?= CJavaScript::encode($custom_data); ?>;
         window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
         custom_layout['xaxis']['rangeslider'] = {};
+        custom_layout['xaxis']['ticksuffix'] = 'weeks';
         custom_layout['yaxis2'] = {
             side: 'right',
             overlaying: 'y',

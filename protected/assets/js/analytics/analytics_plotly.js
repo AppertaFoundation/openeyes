@@ -43,8 +43,8 @@ var analytics_layout = {
         tickfont: {
             color: '#fff',
         },
-        ticksuffix: 'weeks',
         showticksuffix: 'last',
+        mirror: true
     },
     yaxis:{
         titlefont: {
@@ -55,7 +55,7 @@ var analytics_layout = {
         /*Ticks setting*/
         ticks: 'outside',
         showgrid: true,
-        gridcolor: '#aaa',
+        gridcolor: '#8c8c8c',
         showticklabels: true,
         showline: true,
         linecolor: '#fff',
@@ -63,6 +63,7 @@ var analytics_layout = {
         tickfont: {
             color: '#fff',
         },
+        mirror: true
     },
 };
 
