@@ -26,34 +26,32 @@
         </colgroup>
         <tbody>
         <tr>
-            <td>Id</td>
-            <td class="cols-full">
-                <?= \CHtml::activeTextField(
-                    $model,
-                    'id',
-                    ['class' => 'cols-full']
-                ); ?>
+            <td class="cols=full">
+                <div id="div_Term" class="data-group flex-layout cols-full">
+                    <div class="cols-1">
+                        <label for="Term">Procedure Term</label>
+                    </div>
+                    <div class="cols-8">
+                        <?= $model->procedure->term ?>
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>
-            <td>Procedure Id</td>
-            <td>
-                <?= \CHtml::activeTextArea(
-                    $model,
-                    'proc_id',
-                    ['class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>Default Text</td>
-            <td>
-                <?= \CHtml::activeTextArea(
-                    $model,
-                    'default_text',
-                    ['class' => 'cols-full autosize',
-                        'style' => 'overflow: hidden; ']
-                ); ?>
+            <td class="cols=full">
+                <div id="div_DefaultText" class="data-group flex-layout cols-full">
+                    <div class="cols-1">
+                        <label for="DefaultText">Default Text</label>
+                    </div>
+                    <div class="cols-8">
+                        <?= \CHtml::activeTextArea(
+                            $model,
+                            'default_text',
+                            ['class' => 'cols-full autosize',
+                                'style' => 'overflow: hidden; ']
+                        ); ?>
+                    </div>
+                </div>
             </td>
         </tr>
         </tbody>
