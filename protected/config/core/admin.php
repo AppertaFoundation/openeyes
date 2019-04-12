@@ -56,6 +56,7 @@ return array(
                 'All Medications' => '/OphDrPrescription/refMedicationAdmin/list',
                 'Common Subspecialty Medications' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonSubspecialtyMedicationsAdmin/list'),
                 'Common Systemic Medications' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonSystemicMedicationsAdmin/list'),
+                'Prescription Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/prescriptionDrugSetsAdmin/list'),
                 'Formulary Drugs' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/formularyDrugsAdmin/list'),
                 'Local Drugs' => '/OphDrPrescription/localDrugsAdmin/list',
                 'DM+D Drugs' => '/OphDrPrescription/dmdDrugsAdmin/list',

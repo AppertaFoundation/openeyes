@@ -48,8 +48,9 @@ class RefSetAdminController extends BaseAdminController
         $this->redirect('/OphDrPrescription/refMedicationAdmin/list?ref_set_id='.$id);
     }
 
-    public function actionEdit($id = null)
+    public function actionEdit($id = null, $usage_code = null)
     {
+
         $admin = new Admin(MedicationSet::model(), $this);
 
         $admin->setEditFields(array(
@@ -58,7 +59,8 @@ class RefSetAdminController extends BaseAdminController
 				'widget' => 'CustomView',
 				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
 				'viewArguments' => array(
-					'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet()
+					'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
+					'usage_code' => !empty($usage_code) ? $usage_code : ''
 				)
 			),
 
@@ -67,12 +69,17 @@ class RefSetAdminController extends BaseAdminController
         if($id) {
             $admin->setModelId($id);
         }
-        $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id);
+
+        if (!empty($usage_code)) {
+            $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id.'?usage_code='.$usage_code);
+        } else {
+            $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id);
+        }
 
         $admin->editModel();
     }
 
-    public function actionSave($id = null)
+    public function actionSave($id = null, $usage_code = null)
     {
         if(is_null($id)) {
             $model = new MedicationSet();
@@ -123,7 +130,19 @@ class RefSetAdminController extends BaseAdminController
             MedicationSetRule::model()->deleteByPk($deleted_ids);
         }
 
-        $this->redirect('/OphDrPrescription/refSetAdmin/list');
+        if (empty($usage_code)) {
+            $this->redirect('/OphDrPrescription/refSetAdmin/list');
+        } else {
+            if ($usage_code == 'COMMON_SYSTEMIC') {
+                $this->redirect('/OphDrPrescription/commonSystemicDrugSetsAdmin/list');
+            } else if ($usage_code == 'COMMON_OPH') {
+                $this->redirect('/OphDrPrescription/commonDrugSetsAdmin/list');
+            } else if ($usage_code == 'PRESCRIPTION_SET') {
+                $this->redirect('/OphDrPrescription/prescriptionDrugSetsAdmin/list');
+            }
+
+        }
+
     }
 
     public function actionDelete()
