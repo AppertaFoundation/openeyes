@@ -237,7 +237,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
       let angleGradeNorthDoodle = this.gonioscopyDrawing.firstDoodleOfClass('AngleGradeNorth');
       let anteriorSegmentDoodle = this.primaryDrawing.firstDoodleOfClass('AntSeg');
       if(angleGradeNorthDoodle && anteriorSegmentDoodle) {
-        const defaultIrisColour = 'Blue';
+        const defaultIrisColour = (typeof default_iris_colour) !== 'undefined' ? default_iris_colour : 'Blue';
         // if angleGradeNorthDoodle.colour is default and anteriorSegmentDoodle.colour is not,
         // we can assume that anteriorSegmentDoodle has been changed and the other hasn't
         const anteriorSegmentDoodleIsTheSource = angleGradeNorthDoodle.colour === defaultIrisColour && anteriorSegmentDoodle.colour !== defaultIrisColour;

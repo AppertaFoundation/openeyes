@@ -87,7 +87,7 @@
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>AntSeg</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Anterior segment</TITLE>
-      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"AntSeg","pupilSize":"Large","apexY":-260,"rotation":0,"pxe":false,"coloboma":false,"colour":"Blue","ectropion":false,"cornealSize":"Not Checked","cells":"Not Checked","flare":"Not Checked","order":1}</INIT_DOODLE_JSON>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"AntSeg","pupilSize":"Large","apexY":-260,"rotation":0,"pxe":false,"coloboma":false,"ectropion":false,"cornealSize":"Not Checked","cells":"Not Checked","flare":"Not Checked","order":1}</INIT_DOODLE_JSON>
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>Cypass</EYEDRAW_CLASS_MNEMONIC>
