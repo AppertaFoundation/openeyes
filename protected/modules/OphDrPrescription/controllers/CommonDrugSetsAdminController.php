@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class CommonSubspecialtyMedicationsAdminController extends BaseAdminController
+class CommonDrugSetsAdminController extends RefSetAdminController
 {
 	public $group = 'Drugs';
 
@@ -30,41 +30,84 @@ class CommonSubspecialtyMedicationsAdminController extends BaseAdminController
 
         $admin->getSearch()->setItemsPerPage(30);
 
+
         $default_site_id = Yii::app()->session['selected_site_id'];
         $default_subspecialty_id = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
 
+
+        /*
+         * array('' => 'All') = add All option in search field (Name)
+         * */
+
+        $admin->getSearch()->addSearchItem('name');
         $admin->getSearch()->addSearchItem('medicationSetRules.site_id', array(
             'type' => 'dropdown',
-            'options' => CHtml::listData(Site::model()->findAll(), 'id', 'name'),
+            'options' => array('' => 'All sites') + CHtml::listData(Site::model()->findAll(), 'id', 'name')
+
         ));
 
         $admin->getSearch()->addSearchItem('medicationSetRules.subspecialty_id', array(
             'type' => 'dropdown',
-            'options' => CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
+            'options' => array('' => 'All subspecialties') + CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
         ));
 
         // we set default search options
+
+
         if ($this->request->getParam('search') == '') {
             $admin->getSearch()->initSearch(array(
                     'filterid' => array(
                         'medicationSetRules.site_id' => $default_site_id,
                         'medicationSetRules.subspecialty_id' => $default_subspecialty_id,
-                        'medicationSetRules.usage_code' => 'Common subspecialty medications'
+                        'medicationSetRules.usage_code' => 'COMMON_OPH'
                     ),
                 )
             );
         }
 
-        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \'Common subspecialty medications\'');
+        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \'COMMON_OPH\'');
+
 
         $admin->setListFieldsAction('toList');
+        $admin->setEditFields('edit');
 
-        $admin->setModelDisplayName("Common Subspecialty Medications");
-        $admin->listModel(false);
+        $admin->setModelDisplayName("Common Drug Sets");
+        $admin->listModel();
     }
+
 
     public function actionToList($id)
     {
-        $this->redirect('/OphDrPrescription/refMedicationSetAdmin/list?ref_set_id='.$id);
+        $this->redirect(['/OphDrPrescription/refSetAdmin/edit/'.$id.'?usage_code=COMMON_OPH']);
     }
+
+    public function actionEdit()
+    {
+        if (!empty($_GET['default']['name'])) {
+            $this->redirect(['/OphDrPrescription/refSetAdmin/edit?default[name]='.$_GET['default']['name'].'&usage_code=COMMON_OPH']);
+        } else {
+            $this->redirect(['/OphDrPrescription/refSetAdmin/edit', 'usage_code' => 'COMMON_OPH']);
+        }
+    }
+
+    public function actionDelete()
+    {
+        $ids_to_delete = Yii::app()->request->getPost('MedicationSet')['id'];
+        if(is_array($ids_to_delete)) {
+            foreach ($ids_to_delete as $id) {
+                $model = MedicationSet::model()->findByPk($id);
+                /** @var MedicationSet $model */
+                foreach ($model->medicationSetRules as $rule) {
+                    $rule->delete();
+                }
+                foreach ($model->items as $i) {
+                    $i->delete();
+                }
+                $model->delete();
+            }
+        }
+
+        exit("1");
+    }
+
 }
