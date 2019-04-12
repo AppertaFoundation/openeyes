@@ -5,7 +5,7 @@ class m190411_153415_add_system_setting_for_default_iris_colour extends CDbMigra
 	public function up()
 	{
     $this->insert('setting_metadata', [
-      'field_type_id' => 2,
+      'field_type_id' => SettingFieldType::model()->find('name = ?' , ["Dropdown list"])->id,
       'key' => 'OphCiExamination_default_iris_colour',
       'name' => 'Examination Default Iris Colour',
       'default_value' => 'Blue',
