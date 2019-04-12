@@ -131,7 +131,7 @@ class PasApiObserver
                 $_patient = $_assignment->getInternal();
 
                 // If the patient is in our DB or only 1 patient returned we save it
-                if (!$_patient->isNewRecord || $patient_count == 1) {
+                if (!$_patient->isNewRecord && $patient_count == 1) {
 
                     // we could check the $_assignment->isStale() but the request already done, we have the new data, why would we throw it away
 
