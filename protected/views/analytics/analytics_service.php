@@ -80,7 +80,7 @@
             $('#js-hs-app-follow-up-waiting').removeClass('selected');
             $('#js-hs-app-new').removeClass('selected');
             $('#js-service-data-filter').show();
-            service_layout['xaxis']['title'] = "Followups coming due(weeks)";
+            service_layout['xaxis']['title'] = "Followups coming due (weeks)";
             service_layout['yaxis']['range'] = [0, coming_max];
             Plotly.react(
                 'js-hs-chart-analytics-service', [coming_data] ,service_layout, analytics_options
@@ -93,7 +93,7 @@
             $('#js-hs-app-follow-up-waiting').removeClass('selected');
             $('#js-hs-app-new').removeClass('selected');
             $('#js-service-data-filter').show();
-            service_layout['xaxis']['title'] = "Overdue followups(weeks)";
+            service_layout['xaxis']['title'] = "Overdue followups (weeks)";
             service_layout['yaxis']['range'] = [0, overdue_max];
             Plotly.react(
                 'js-hs-chart-analytics-service', [overdue_data] ,service_layout, analytics_options
