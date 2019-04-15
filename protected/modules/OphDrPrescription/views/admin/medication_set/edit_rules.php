@@ -3,6 +3,7 @@
 	$rowkey = 0;
 	$sites = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name]; }, Site::model()->findAll());
 	$subspecialties = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name]; }, Subspecialty::model()->findAll());
+
 ?>
 <h3>Usage Rules</h3>
 <script id="rule_row_template" type="x-tmpl-mustache">
@@ -54,7 +55,7 @@
 		if (!empty($_GET['default']['site_id']) AND !empty($_GET['default']['subspecialty_id'])) :
 			$siteName = Site::model()->find($_GET['default']['site_id'])->name;
 			$subspecialtyName = Subspecialty::model()->find($_GET['default']['subspecialty_id'])->name;
-			$rules = MedicationSetRule::model()->findByAttributes(['site_id' => $_GET['default']['site_id'], 'subspecialty_id' => $_GET['default']['subspecialty_id']]);
+			$rules = MedicationSetRule::model()->findByAttributes(['site_id' => $_GET['default']['site_id'], 'subspecialty_id' => $_GET['default']['subspecialty_id'], 'medication_set_id' => $_GET['id']]);
 		?>
 			<?php if (empty($rules)) : ?>
 			<tr  data-key="1">
