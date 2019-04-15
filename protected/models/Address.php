@@ -220,6 +220,11 @@ class Address extends BaseActiveRecordVersioned
         return false;
     }
 
+    public function getDefaultCountryId(){
+        $default_country_setting = SettingMetadata::model()->getSetting('default_country');
+        return Country::model()->find('name = ?' , [$default_country_setting])->id;
+    }
+
     public function beforeValidate()
     {
         if($this->date_start == ""){

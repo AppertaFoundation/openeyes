@@ -150,7 +150,11 @@ $form = $this->beginWidget('CActiveForm', array(
                     'code
                         '
                 ),
-                ['empty' => 'None', 'class' => 'cols-full js-contact-field', 'data-label' => 'country']
+                [
+                    'empty' => 'None',
+                    'options' => array(Address::model()->getDefaultCountryId() => array('selected' => true)),
+                    'class' => 'cols-full js-contact-field', 'data-label' => 'country'
+                ]
             ); ?>
         </td>
     </tr>

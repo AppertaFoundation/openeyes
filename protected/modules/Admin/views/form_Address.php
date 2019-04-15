@@ -101,7 +101,10 @@
                         'code
                         '
                     ),
-                    ['empty' => 'None', 'class' => 'cols-full']
+                    [
+                        'empty' => 'None',
+                        'options' => array(Address::model()->getDefaultCountryId() => array('selected' => true)),
+                        'class' => 'cols-full']
                 ); ?>
             </td>
         </tr>
