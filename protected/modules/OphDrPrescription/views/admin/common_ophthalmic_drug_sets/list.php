@@ -206,19 +206,17 @@ if (!isset($uniqueid)) {
 
              $('.save-option').click(function (e) {
                  var radioValue = $('input[type="radio"]:checked').val();
-                 if (radioValue == 1) {
-                     window.location.href = baseUrl + '/OphDrPrescription/refSetAdmin/edit/usage_code/COMMON_OPH';
-                 }
-                 /*
-                 $.ajax({
-                     'type': 'POST',
-                     'url': baseUrl + '/OphDrPrescription/commonOphthalmicDrugSetsAdmin/redirect',
-                     'data': $('#generic-admin-list').serialize(),
-                     'success': function (resp) {
+                 var searchName = $('#search_name').val();
+                 var searchSite = $('#search_medicationSetRules\\.site_id').val();
+                 var searchSubspecialty = $('#search_medicationSetRules\\.subspecialty_id').val();
 
-                     }
-                 });
-                 */
+                 if (radioValue == 1) {
+                     window.location.href = baseUrl + '/OphDrPrescription/refSetAdmin/edit?default[name]='+searchName+'&default[site_id]='+searchSite+'&default[subspecialty_id]='+searchSubspecialty+'&usage_code=COMMON_OPH';
+                 } else if (radioValue == 2) {
+                     var medicationSetId = $('.choose-option-list').val();
+                     window.location.href = baseUrl + '/OphDrPrescription/refSetAdmin/edit/'+medicationSetId+'?default[site_id]='+searchSite+'&default[subspecialty_id]='+searchSubspecialty+'&usage_code=COMMON_OPH';
+                 }
+
              });
 
          });

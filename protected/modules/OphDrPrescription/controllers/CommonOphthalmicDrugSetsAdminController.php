@@ -110,18 +110,4 @@ class CommonOphthalmicDrugSetsAdminController extends RefSetAdminController
         exit("1");
     }
 
-
-    public function actionRedirect()
-    {
-        echo '<pre>';
-        print_r($_POST);
-        echo '</pre>';
-        exit;
-        if (!empty($_GET['default']['name'])) {
-            $this->redirect(['/OphDrPrescription/refSetAdmin/edit?default[name]='.$_GET['default']['name'].'&usage_code=COMMON_OPH']);
-        } else {
-            $this->redirect(['/OphDrPrescription/refSetAdmin/edit', 'usage_code' => 'COMMON_OPH']);
-        }
-    }
-
 }

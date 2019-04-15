@@ -50,6 +50,43 @@
 	</tr>
 	</thead>
 	<tbody>
+		<?php
+		if (!empty($_GET['default']['site_id']) AND !empty($_GET['default']['subspecialty_id'])) :
+			$siteName = Site::model()->find($_GET['default']['site_id'])->name;
+			$subspecialtyName = Subspecialty::model()->find($_GET['default']['subspecialty_id'])->name;
+			$rules = MedicationSetRule::model()->findByAttributes(['site_id' => $_GET['default']['site_id'], 'subspecialty_id' => $_GET['default']['subspecialty_id']]);
+		?>
+			<?php if (empty($rules)) : ?>
+			<tr  data-key="1">
+				<td>
+					<input type="hidden" name="MedicationSet[medicationSetRules][id][]" value="1" />
+					<input type="hidden" name="MedicationSet[medicationSetRules][site_id][]" value="<?=$_GET['default']['site_id']?>" />
+					<?=($siteName ? CHtml::encode($siteName) : "")?>
+				</td>
+				<td>
+					<input type="hidden" name="MedicationSet[medicationSetRules][subspecialty_id][]" value="<?=$_GET['default']['subspecialty_id']?>" />
+					<?=($subspecialtyName ? CHtml::encode($subspecialtyName) : "")?>
+				</td>
+				<td>
+					<?php
+					if (!empty($_GET['usage_code'])) {
+						?>
+						<input type="hidden" name="MedicationSet[medicationSetRules][usage_code][]" value="<?=$_GET['usage_code']?>" />
+						<?php
+						echo $_GET['usage_code'];
+					} else {
+						echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', $_GET['usage_code']);
+					}
+					?>
+				</td>
+				<td>
+					<a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
+				</td>
+			</tr>
+			<?php endif; ?>
+		<?php endif; ?>
+
+
 		<?php foreach ($medication_set->medicationSetRules as $rule): ?>
 		<tr data-key="<?=$rowkey++?>">
 			<td>
@@ -78,6 +115,7 @@
             </td>
 		</tr>
 		<?php endforeach; ?>
+
 	</tbody>
     <tfoot class="pagination-container">
         <tr>
