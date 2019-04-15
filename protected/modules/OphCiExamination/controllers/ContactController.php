@@ -42,12 +42,15 @@ class ContactController extends \BaseController
                 $criteria->addCondition(array('t.active = 1'));
                 $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
             }
-            if(isset($_GET['filter']) && $contact_label_id = $_GET['filter']){
-                $contact_label = \ContactLabel::model()->findByPk($contact_label_id);
-                $criteria->addCondition(array(
-                        'cl.name = ' . '"'. $contact_label->name . '"'
-                    )
-                );
+            if(isset($_GET['filter']) ){
+                $contact_label_id = $_GET['filter'];
+                if($contact_label_id != 'false') {
+                    $contact_label = \ContactLabel::model()->findByPk($contact_label_id);
+                    $criteria->addCondition(array(
+                            'cl.name = ' . '"' . $contact_label->name . '"'
+                        )
+                    );
+                }
             }
             $criteria->order = 'cl.name';
 

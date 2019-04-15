@@ -53,8 +53,8 @@
         createBlackoutDiv: true,
         enableCustomSearchEntries: false,
         searchAsTypedPrefix: 'As typed: ',
-        filter:false,
-        filterDataId:"",
+        filter: false,
+        filterDataId: "",
     };
 
     /**
@@ -176,12 +176,15 @@
             dialog.runItemSearch($(this).val());
         });
 
-        if(dialog.options.filter){
-            let filterContainer = dialog.popup.
-            find('ul[data-id="' + this.options.filterDataId +'"]');
-            filterContainer.on('click','li', function(){
-                filterContainer.find('li.selected').not(this).removeClass('selected');
-                dialog.runItemSearch(dialog.popup.find('input.search').val() , $(this).data('id'));
+        if (dialog.options.filter) {
+            let filterContainer = dialog.popup.find('ul[data-id="' + this.options.filterDataId + '"]');
+            filterContainer.on('click', 'li', function () {
+                let filterValue = false;
+                if (!$(this).hasClass('selected')) {
+                    filterContainer.find('li.selected').not(this).removeClass('selected');
+                    filterValue = $(this).data('id');
+                }
+                dialog.runItemSearch(dialog.popup.find('input.search').val(), filterValue);
             })
         }
 
@@ -447,15 +450,13 @@
      * Performs a search using the given text
      * @param {string} text The term to search with
      */
-    AdderDialog.prototype.runItemSearch = function (text , filterValue) {
+    AdderDialog.prototype.runItemSearch = function (text, filterValue) {
         let dialog = this;
         if (this.searchRequest !== null) {
             this.searchRequest.abort();
         }
-        if(typeof filterValue == "undefined" && this.options.filter){
-            let selectedFilter = this.popup.
-            find('ul[data-id="' + this.options.filterDataId +'"]').
-            find('li.selected');
+        if (typeof filterValue == "undefined" && this.options.filter) {
+            let selectedFilter = this.popup.find('ul[data-id="' + this.options.filterDataId + '"]').find('li.selected');
             filterValue = selectedFilter.data('id');
         }
 
