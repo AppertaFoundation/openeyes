@@ -140,7 +140,13 @@ $element_errors = $element->getErrors();
 <script type="text/javascript">
     $(document).ready(function () {
 
-        <?php $contacts = \Contact::model()->getActiveContacts($this->patient->id);
+        <?php $contact_labels = ContactLabel::model()->findAll(
+        [
+            'select' => 't.name,t.id',
+            'group' => 't.name',
+            'distinct' => true
+        ]
+    );
         ?>
 
         // removal button for table entries
@@ -155,6 +161,10 @@ $element_errors = $element->getErrors();
         };
 
         new OpenEyes.UI.AdderDialog({
+            itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                array_map(function ($contact_label) {
+                    return ['label' => $contact_label->name, 'id' => $contact_label->id];
+                }, $contact_labels)) ?>, {'header':'Contact Type', 'id':'contact-type-filter'})],
             openButton: $('#add-contacts-btn'),
             onReturn: function (adderDialog, selectedItems) {
                 let templateText = $('#contact-entry-template').text();
@@ -189,7 +199,9 @@ $element_errors = $element->getErrors();
                 searchSource: "/OphCiExamination/contact/autocomplete"
             },
             enableCustomSearchEntries: true,
-            searchAsTypedPrefix: 'Add a new contact:'
+            searchAsTypedPrefix: 'Add a new contact:',
+            filter:true,
+            filterDataId:"contact-type-filter",
         });
     });
 </script>
