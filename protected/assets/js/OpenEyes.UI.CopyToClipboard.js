@@ -28,7 +28,8 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $wrapper.on('click', this.selector, function(e) {
             e.preventDefault();
-            let text = ( $(this).val() ? $(this).val() : $(this).text() );
+            let targetToCopy = ($('.js-to-copy-to-clipboard').length == 1 ? $('.js-to-copy-to-clipboard') : $(this))
+            let text = ( targetToCopy.val() ? targetToCopy.val() : targetToCopy.text() );
 
             if (controller.copyToClipboard(text) && typeof controller.callback === "function") {
                 controller.callback($(this));
