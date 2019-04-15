@@ -22,7 +22,7 @@ $model_name = CHtml::modelName($element);
 $element_errors = $element->getErrors();
 ?>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
-    <div class="data-group cols-10">
+    <div class="data-group cols-full">
         <h1>PAS Contacts</h1>
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <div class="cols-full">
@@ -64,9 +64,11 @@ $element_errors = $element->getErrors();
                 <colgroup>
                     <col class="cols-2">
                     <col class="cols-2">
-                    <col>
-                    <col>
                     <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-1">
                 </colgroup>
                 <thead>
                 <tr>
@@ -76,6 +78,7 @@ $element_errors = $element->getErrors();
                     <th>Phone Number</th>
                     <th>Address</th>
                     <th>Comments</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody id="contact-assignment-table">
@@ -180,6 +183,7 @@ $element_errors = $element->getErrors();
                     }
                 }
                 $('#contact-assignment-table').append(newRows);
+                $('.autosize').autosize();
             },
             searchOptions: {
                 searchSource: "/OphCiExamination/contact/autocomplete"

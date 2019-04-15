@@ -87,7 +87,7 @@ class ContactController extends \BaseController
                 $contact->last_name = $data->last_name;
                 $contact->primary_phone = $data->primary_phone;
                 $contact->contact_label_id = $data->contact_label_id;
-
+                $contact->active = $data->active;
 
                 $address = new \Address();
                 $address->address1 = $data->address1;

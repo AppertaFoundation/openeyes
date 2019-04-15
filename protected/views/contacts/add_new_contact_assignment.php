@@ -23,13 +23,13 @@ $form = $this->beginWidget('CActiveForm', array(
     'id' => 'js-add-new-contact-form',
 ));
 ?>
-<table class="standard">
+<table>
     <colgroup>
         <col class="cols-3">
     </colgroup>
     <tbody>
     <tr>
-        <td class="title">
+        <td>
             <?= "First Name" ?>
         </td>
         <td>
@@ -44,7 +44,7 @@ $form = $this->beginWidget('CActiveForm', array(
         </td>
     </tr>
     <tr>
-        <td class="title">
+        <td>
             <?= "Last Name" ?>
         </td>
         <td>
@@ -59,7 +59,7 @@ $form = $this->beginWidget('CActiveForm', array(
         </td>
     </tr>
     <tr>
-        <td class="title">
+        <td>
             <?= "Email" ?>
         </td>
         <td>
@@ -74,7 +74,7 @@ $form = $this->beginWidget('CActiveForm', array(
         </td>
     </tr>
     <tr>
-        <td class="title">
+        <td>
             <?= "Phone Number" ?>
         </td>
         <td>
@@ -90,7 +90,7 @@ $form = $this->beginWidget('CActiveForm', array(
         </td>
     </tr>
     <tr>
-        <td class="title">
+        <td>
             <?= "Address Line One" ?>
         </td>
         <td>
@@ -105,7 +105,7 @@ $form = $this->beginWidget('CActiveForm', array(
         </td>
     </tr>
     <tr>
-        <td class="title">
+        <td>
             <?= "Address Line Two" ?>
         </td>
         <td>
@@ -121,7 +121,7 @@ $form = $this->beginWidget('CActiveForm', array(
     </tr>
 
     <tr>
-        <td class="title">
+        <td>
             <?= "City" ?>
         </td>
         <td>
@@ -136,7 +136,7 @@ $form = $this->beginWidget('CActiveForm', array(
         </td>
     </tr>
     <tr>
-        <td class="title">
+        <td>
             Country
         </td>
         <td>
@@ -159,24 +159,7 @@ $form = $this->beginWidget('CActiveForm', array(
         </td>
     </tr>
     <tr>
-        <td class="title">
-            Contact Type
-        </td>
         <td>
-            <?= \CHtml::dropDownList(
-                'contact_label_id',
-                '',
-                CHtml::listData(
-                    ContactLabel::model()->findAll(),
-                    'id',
-                    'name'
-                ),
-                ['empty' => 'None', 'class' => 'cols-full js-contact-field', 'data-label' => 'contact_label_id']
-            ); ?>
-        </td>
-    </tr>
-    <tr>
-        <td class="title">
             <?= "Postcode" ?>
         </td>
         <td>
@@ -187,6 +170,43 @@ $form = $this->beginWidget('CActiveForm', array(
                     'class' => 'cols-full js-contact-field',
                     'placeholder' => "Postcode"
                 ]
+            ); ?>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Contact Type
+        </td>
+        <td>
+            <?php ?>
+            <?= \CHtml::dropDownList(
+                'contact_label_id',
+                '',
+                CHtml::listData(
+                    ContactLabel::model()->findAll(
+                        [
+                            'select' => 't.name,t.id',
+                            'group' => 't.name',
+                            'distinct' => true
+                        ]
+                    ),
+                    'id',
+                    'name'
+                ),
+                ['empty' => 'None', 'class' => 'cols-full js-contact-field', 'data-label' => 'contact_label_id']
+            ); ?>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Make this contact available for other patients (leaving unchecked will make this contact private to the
+            current patient only)
+        </td>
+        <td>
+            <?= \CHtml::checkBox(
+                'active',
+                true,
+                ['class' => 'js-contact-field', 'data-label' => 'active']
             ); ?>
         </td>
     </tr>
@@ -206,30 +226,35 @@ $form = $this->beginWidget('CActiveForm', array(
             event.preventDefault();
             let data = {};
             $('.js-contact-field').each(function () {
-                data[$(this).data('label')] = $(this).val();
-                //  console.log(data);
-            })
 
-            console.log(JSON.stringify(data));
+                if($(this).data('label') === 'active'){
+
+                    data[$(this).data('label')] = $(this).is(":checked");
+                }else {
+                    data[$(this).data('label')] = $(this).val();
+                }
+            })
 
             // do ajax to save contact and new address
             $.ajax({
                 'type': 'POST',
                 'data': "data=" + JSON.stringify(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
                 'url': baseUrl + '/OphCiExamination/contact/saveNewContact',
-                'success': function (resp) {
+                'success': function (response) {
 
-                    resp = JSON.parse(resp);
+                    response = JSON.parse(response);
                     data = {};
-                    data.id = resp.id;
-                    data.label = resp.contact_label;
-                    data.full_name = resp.name;
-                    data.email = resp.email;
-                    data.phone = resp.phone;
-                    data.address = resp.address;
+                    data.id = response.id;
+                    data.label = response.contact_label;
+                    data.full_name = response.name;
+                    data.email = response.email;
+                    data.phone = response.phone;
+                    data.address = response.address;
+                    data.active = response.active;
                     let templateText = $('#contact-entry-template').text();
                     row = Mustache.render(templateText, data);
                     $('#contact-assignment-table').append(row);
+                    $('.autosize').autosize();
 
                     $('.oe-popup-wrap').remove();
 

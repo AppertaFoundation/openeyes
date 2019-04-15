@@ -31,7 +31,7 @@ if (!isset($values)) {
     <td>
         <textarea id="<?= $model_name ?>_comments"
                   name="<?= $model_name ?>[comments][]"
-                  class="js-comment-field"
+                  class="cols-full autosize"
                   style="overflow: hidden; overflow-wrap: break-word;"><?= CHtml::encode($comment) ?></textarea>
     </td>
     <?php } ?>
