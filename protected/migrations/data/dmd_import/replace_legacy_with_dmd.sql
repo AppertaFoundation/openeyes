@@ -1,29 +1,22 @@
-INSERT INTO medication_set_item (medication_id, medication_set_id, default_form_id, default_route_id)
+CREATE TEMPORARY TABLE tmp_medication_match
+SELECT legacy.id AS legacy_id, legacy.preferred_term AS legacy_term, legacy.preferred_code AS legacy_code, dmd.id AS dmd_id, dmd.preferred_term AS dmd_term, dmd.preferred_code AS dmd_code
+FROM medication AS legacy
+LEFT JOIN medication AS dmd ON dmd.preferred_code = legacy.preferred_code
+WHERE legacy.source_type = 'LEGACY' AND legacy.source_subtype = 'medication_drug'
+AND dmd.source_type = 'DM+D';
 
-SELECT t2.id,
-      rms.medication_id,
-      rms.default_form_id,
-      rms.default_route_id
+UPDATE event_medication_use AS emu
+LEFT JOIN tmp_medication_match AS tmp ON tmp.legacy_id = emu.medication_id
+SET emu.medication_id = tmp.dmd_id
+WHERE tmp.legacy_id IS NOT NULL;
 
-FROM medication t1
-LEFT JOIN medication_drug AS md ON md.id = t1.source_old_id
-LEFT JOIN medication_set_item rms ON t1.id = rms.medication_id
-LEFT JOIN medication t2 ON t2.vmp_code COLLATE utf8_unicode_ci = md.external_code COLLATE utf8_unicode_ci
-WHERE
-  t2.source_type = 'DM+D' AND
-    t2.source_subtype = 'VMP'
+UPDATE medication_set_item AS msi
+LEFT JOIN tmp_medication_match AS tmp ON tmp.legacy_id = msi.medication_id
+SET msi.medication_id = tmp.dmd_id
+WHERE tmp.legacy_id IS NOT NULL;
 
-UNION
+DELETE FROM medication_search_index WHERE medication_id IN (SELECT legacy_id FROM tmp_medication_match);
+DELETE FROM medication_attribute_assignment WHERE medication_id IN (SELECT legacy_id FROM tmp_medication_match);
+DELETE FROM medication WHERE id IN (SELECT legacy_id FROM tmp_medication_match);
 
-SELECT t2.id,
-  rms.medication_set_id,
-  rms.default_form_id,
-  rms.default_route_id
-
-FROM medication t1
-  LEFT JOIN medication_drug AS md ON md.id = t1.source_old_id
-  LEFT JOIN medication_set_item rms ON t1.id = rms.medication_id
-  LEFT JOIN medication t2 ON t2.vtm_code COLLATE utf8_unicode_ci = md.external_code COLLATE utf8_unicode_ci
-WHERE
-  t2.source_type = 'DM+D' AND
-  t2.source_subtype = 'VTM';
+UPDATE medication SET source_type = 'LOCAL' WHERE source_type='LEGACY';

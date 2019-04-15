@@ -29,10 +29,9 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 			'adminListAction'
 		));
 
-		$crit = new CDbCriteria();
-		$crit->addCondition("automatic = 1");
-		$admin->getSearch()->setCriteria($crit);
+		$admin->getSearch()->getCriteria()->addCondition("automatic = 1");
 		$admin->getSearch()->setItemsPerPage(30);
+		$admin->getSearch()->addSearchItem('name');
 
 		$admin->setModelDisplayName("Automatic medication sets");
 		$admin->setListTemplate('application.modules.OphDrPrescription.views.admin.auto_set_rule.list');
@@ -155,8 +154,31 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 
 	public function actionPopulateAll()
 	{
-		exec("php ".Yii::app()->basePath."/yiic populateAutoMedicationSets &");
+		shell_exec("php ".Yii::app()->basePath."/yiic populateAutoMedicationSets >/dev/null 2>&1 &");
 		Yii::app()->user->setFlash('success', "Rebuild process started at ".date('H:i').".");
 		$this->redirect('/OphDrPrescription/medicationSetAutoRulesAdmin/list');
+	}
+
+	public function actionDelete()
+	{
+		$ids = Yii::app()->request->getPost("MedicationSet");
+		$ids = $ids['id'];
+		foreach ($ids as $id) {
+			$set = MedicationSet::model()->findByPk($id);
+			$trans = Yii::app()->db->trans_start();
+			try{
+				$set->delete();
+			}
+			catch (Exception $e) {
+				$trans->rollback();
+				echo 0;
+				exit;
+			}
+
+			$trans->commit();
+		}
+
+		echo 1;
+		exit;
 	}
 }

@@ -111,6 +111,7 @@ class EventMedicationUse extends BaseElement
 			array('laterality', 'validateLaterality'),
 			array('event_id, copied_from_med_use_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('usage_type, usage_subtype, dose_unit_term', 'length', 'max'=>45),
+			array('dose_unit_term', 'validateDoseUnitTerm'),
 			array('usage_type', 'default', 'value' => static::getUsageType(), 'on' => 'insert'),
 			array('usage_subtype', 'default', 'value' => static::getUsageSubType(), 'on' => 'insert'),
 			array('start_date_string_YYYYMMDD, end_date_string_YYYYMMDD', 'OEFuzzyDateValidator'),
@@ -131,6 +132,17 @@ class EventMedicationUse extends BaseElement
         if (!$this->laterality && $this->route_id && in_array($this->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL))) {
             $this->addError('option_id', "You must specify laterality for route '{$this->route->term}'");
         }
+    }
+
+	/**
+	 * Dose unit is required only if the dose is set
+	 */
+
+	public function validateDoseUnitTerm()
+	{
+		if(!$this->hidden && $this->dose_unit_term == "" && $this->dose != "") {
+			$this->addError("dose_unit_term", "You must select a dose unit if the dose is set.");
+		}
     }
 
     /**

@@ -25,7 +25,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             var $wrapper = $(anchor).closest(".alternative-display-element");
             $wrapper.hide();
             $wrapper.siblings(".alternative-display-element").show();
-            $wrapper.closest(".alternative-display").next(".alt-display-trigger").hide();
+            var $col = $wrapper.closest(".alternative-display");
+            $col.next(".alt-display-trigger").hide();
+
+            var $dropdown = $col.find(".js-unit-dropdown");
+            var $input = $col.find(".dose_unit_term");
+
+            if($dropdown.length > 0 && $input.val() == "") {
+                $dropdown.removeAttr("disabled").show();
+                $input.attr("disabled", "disabled");
+            }
         };
     }
 
@@ -224,8 +233,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       controller.updateTextualDisplay($row);
       if($row.find(".js-locked").val() === "1") {
-          var $txt_display = $row.find(".dose-frequency-route a.textual-display");
-          $txt_display.removeAttr("onclick").removeAttr("href");
+          var $txt_display = $row.find(".dose-frequency-route .textual-display");
+          $txt_display.replaceWith('<span class="textual-display">'+$txt_display.html()+'</span>');
           $row.find(".dose-frequency-route .alternative-display-element").hide();
           $row.find(".dose-frequency-route .alternative-display-element.textual").show();
       }

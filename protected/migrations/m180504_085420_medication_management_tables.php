@@ -26,6 +26,8 @@ class m180504_085420_medication_management_tables extends OEMigration
 			'default_form_id'           => 'INT NULL',
 		), true, "new_medication");
 
+	    $this->createIndex("idx_med_code", "medication", "preferred_code");
+
 		$this->createOETable('medication_search_index', array(
             'id'                => 'pk',
             'medication_id' => 'INT NULL',

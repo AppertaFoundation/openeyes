@@ -559,7 +559,7 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * @return MedicationSet
+     * @return MedicationSet|null
      */
 
     public function getCommonDrugsRefSet()
@@ -567,11 +567,17 @@ class DefaultController extends BaseEventTypeController
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
-        return MedicationSetRule::model()->findByAttributes(array(
-            'subspecialty_id' => $subspecialty_id,
-            'site_id' => $site_id,
-            'usage_code' => 'Common subspecialty medications'
-        ))->medicationSet;
+		$rule = MedicationSetRule::model()->findByAttributes(array(
+			'subspecialty_id' => $subspecialty_id,
+			'site_id' => $site_id,
+			'usage_code' => 'Common subspecialty medications'
+		));
+		if($rule) {
+			return $rule->medicationSet;
+		}
+		else {
+			return null;
+		}
     }
 
     /**

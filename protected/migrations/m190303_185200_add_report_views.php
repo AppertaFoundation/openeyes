@@ -4,7 +4,7 @@ class m190303_185200_add_report_views extends CDbMigration
 {
 	public function safeUp()
 	{
-	    $this->execute("CREATE VIEW `v_patient_events` AS
+	    $this->execute("CREATE OR REPLACE VIEW `v_patient_events` AS
     SELECT
         `p`.`id` AS `patient_id`,
         `ev`.`id` AS `event_id`,
@@ -39,7 +39,7 @@ class m190303_185200_add_report_views extends CDbMigration
             AND (`ep`.`deleted` = 0));");
 
 
-	    $this->execute("CREATE VIEW `v_patient_details` AS
+	    $this->execute("CREATE OR REPLACE VIEW `v_patient_details` AS
     SELECT
         `p`.`id` AS `patient_id`,
         `p`.`hos_num` AS `hos_num`,
@@ -94,7 +94,7 @@ class m190303_185200_add_report_views extends CDbMigration
 
 
 
-			$this->execute("CREATE VIEW `v_patient_gp_details` AS
+			$this->execute("CREATE OR REPLACE VIEW `v_patient_gp_details` AS
     SELECT
         `p`.`id` AS `patient_id`,
         `gp`.`nat_id` AS `gp_code`,
