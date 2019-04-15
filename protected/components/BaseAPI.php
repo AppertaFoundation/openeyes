@@ -214,6 +214,34 @@ class BaseAPI
     }
 
     /**
+     * Returns the given element type from the most recent Events that occurred on the same day for this module, if that element is present.
+     * Otherwise will return null.
+     *
+     * @param $element
+     * @param Patient $patient
+     * @param boolean $use_context
+     * @param string $before - date formatted string
+     * @return BaseEventTypeElement|null
+     */
+    public function getElementFromLatestEvents($element, Patient $patient, $use_context = false, $before = null)
+    {
+        if ($events = $this->getEvents($patient, $use_context, $before)) {
+            $latest_event = $events[0];
+            $event_ids = array_map(function($event) use ($latest_event){
+                if($event->event_date === $latest_event->event_date){
+                    return $event->id;
+                }
+            }, $events);
+            $criteria = new CDbCriteria();
+            $criteria->addInCondition('event_id', $event_ids);
+
+            return $element::model()
+                ->with('event')
+                ->findAll($criteria);
+        }
+    }
+
+    /**
      * @param $element
      * @param Patient $patient
      * @param bool $use_context

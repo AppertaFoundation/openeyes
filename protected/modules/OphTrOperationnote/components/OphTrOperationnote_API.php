@@ -30,12 +30,18 @@ class OphTrOperationnote_API extends BaseAPI
     {
         $return = '';
 
-        if($plist =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
-            foreach ($plist->procedures as $i => $procedure) {
-                if ($i) {
+        if($procedureList =  $this->getElementFromLatestEvents('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
+
+            foreach ($procedureList as $procedureIndex => $plist) {
+                foreach ($plist->procedures as $i => $procedure) {
+                    if ($i) {
+                        $return .= ', ';
+                    }
+                    $return .= $plist->eye->adjective . ' ' . $procedure->term;
+                }
+                if ($procedureIndex !== (count($procedureList)-1)) {
                     $return .= ', ';
                 }
-                $return .= $plist->eye->adjective . ' ' . $procedure->term;
             }
         }
 
