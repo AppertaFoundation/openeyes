@@ -31,8 +31,10 @@ class ContactController extends \BaseController
                     'LOWER(first_name) LIKE :term',
                     'LOWER(last_name) LIKE :term',
                     'LOWER(cl.name) LIKE :term',
+                    'LOWER(t.national_code) LIKE :term',
                     'LOWER(last_name) LIKE :term'), 'OR');
                 $criteria->addCondition(array('cl.is_private = 0'));
+                $criteria->addCondition(array('t.active = 1'));
                 $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
             }
             $criteria->order = 'cl.name';
@@ -60,7 +62,10 @@ class ContactController extends \BaseController
     protected function contactStructure(\Contact $contact)
     {
         return array(
-            'label' => $contact->getFullName() . (isset($contact->label) && isset($contact->label->name) ? " (" . $contact->label->name . ")" : ""),
+            'label' => $contact->getFullName() .
+                (isset($contact->label) && isset($contact->label->name) ?
+                    " (" . $contact->label->name . ")" : "")
+                . (isset($contact->national_code) ? "(" . $contact->national_code . ")" : ""),
             'id' => $contact['id'],
             'name' => $contact->getFullName(),
             'email' => $contact->address ? $contact->address->email : "",
@@ -97,7 +102,6 @@ class ContactController extends \BaseController
                 $address->postcode = $data->postcode;
                 $address->country_id = $data->country;
                 $address->address_type_id = 3;
-
 
 
                 $contact->save();
