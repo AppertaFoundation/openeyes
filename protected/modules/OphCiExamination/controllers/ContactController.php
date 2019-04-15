@@ -25,6 +25,7 @@ class ContactController extends \BaseController
         if (\Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
             $criteria->join = "join contact_label cl on cl.id = t.contact_label_id";
+            $criteria->join .= " join address ad on ad.contact_id = t.id";
             $params = array();
             if (isset($_GET['term']) && $term = $_GET['term']) {
                 $criteria->addCondition(array(
@@ -32,6 +33,8 @@ class ContactController extends \BaseController
                     'LOWER(last_name) LIKE :term',
                     'LOWER(cl.name) LIKE :term',
                     'LOWER(t.national_code) LIKE :term',
+                    'LOWER(ad.address1) LIKE :term',
+                    'LOWER(ad.address2) LIKE :term',
                     'LOWER(last_name) LIKE :term'), 'OR');
                 $criteria->addCondition(array('cl.is_private = 0'));
                 $criteria->addCondition(array('t.active = 1'));
@@ -65,7 +68,8 @@ class ContactController extends \BaseController
             'label' => $contact->getFullName() .
                 (isset($contact->label) && isset($contact->label->name) ?
                     " (" . $contact->label->name . ")" : "")
-                . (isset($contact->national_code) ? "(" . $contact->national_code . ")" : ""),
+                . (isset($contact->national_code) ? "(" . $contact->national_code . ")" : "") .
+                " " . ($contact->address ? $contact->address->getLetterLine() : ""),
             'id' => $contact['id'],
             'name' => $contact->getFullName(),
             'email' => $contact->address ? $contact->address->email : "",
