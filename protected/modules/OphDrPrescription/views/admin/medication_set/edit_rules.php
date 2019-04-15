@@ -55,8 +55,13 @@
 		if (!empty($_GET['default']['site_id']) AND !empty($_GET['default']['subspecialty_id'])) :
 			$siteName = Site::model()->find($_GET['default']['site_id'])->name;
 			$subspecialtyName = Subspecialty::model()->find($_GET['default']['subspecialty_id'])->name;
-			$rules = MedicationSetRule::model()->findByAttributes(['site_id' => $_GET['default']['site_id'], 'subspecialty_id' => $_GET['default']['subspecialty_id'], 'medication_set_id' => $_GET['id']]);
-		?>
+
+			if (!empty($_GET['id'])) {
+				$rules = MedicationSetRule::model()->findByAttributes(['site_id' => $_GET['default']['site_id'], 'subspecialty_id' => $_GET['default']['subspecialty_id'], 'medication_set_id' => $_GET['id']]);
+			} else {
+				$rules = array();
+			}
+				?>
 			<?php if (empty($rules)) : ?>
 			<tr  data-key="1">
 				<td>
