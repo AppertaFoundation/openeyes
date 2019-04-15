@@ -651,6 +651,9 @@ class OphCoCorrespondence_API extends BaseAPI
         if ($m[1] == 'Contact') {
             // NOTE we are assuming that Contact must be a Person model here
             $contact = Person::model()->find('contact_id=?', array($m[2]));
+            if($contact == null){
+                $contact = Contact::model()->findByPk($m[2]);
+            }
         } else if($m[1] == 'Optometrist') {
             $contact = Contact::model()->findByPk($m[2]);
         } else {
