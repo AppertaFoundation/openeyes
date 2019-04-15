@@ -35,6 +35,7 @@ class ContactController extends \BaseController
                     'LOWER(t.national_code) LIKE :term',
                     'LOWER(ad.address1) LIKE :term',
                     'LOWER(ad.address2) LIKE :term',
+                    'LOWER(ad.postcode) LIKE :term',
                     'LOWER(last_name) LIKE :term'), 'OR');
                 $criteria->addCondition(array('cl.is_private = 0'));
                 $criteria->addCondition(array('t.active = 1'));
