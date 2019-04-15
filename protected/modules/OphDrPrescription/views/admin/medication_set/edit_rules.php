@@ -52,25 +52,27 @@
 	</thead>
 	<tbody>
 		<?php
-		if (!empty($_GET['default']['site_id']) AND !empty($_GET['default']['subspecialty_id'])) :
+		$rules = array();
+		$siteName = '';
+		$subspecialtyName = '';
+		if (!empty($_GET['default']['site_id']) AND !empty($_GET['default']['subspecialty_id'])) {
 			$siteName = Site::model()->find($_GET['default']['site_id'])->name;
 			$subspecialtyName = Subspecialty::model()->find($_GET['default']['subspecialty_id'])->name;
 
 			if (!empty($_GET['id'])) {
 				$rules = MedicationSetRule::model()->findByAttributes(['site_id' => $_GET['default']['site_id'], 'subspecialty_id' => $_GET['default']['subspecialty_id'], 'medication_set_id' => $_GET['id']]);
-			} else {
-				$rules = array();
 			}
-				?>
+		}
+		?>
 			<?php if (empty($rules)) : ?>
-			<tr  data-key="1">
+			<tr data-key="<?=$rowkey++?>">
 				<td>
 					<input type="hidden" name="MedicationSet[medicationSetRules][id][]" value="1" />
-					<input type="hidden" name="MedicationSet[medicationSetRules][site_id][]" value="<?=$_GET['default']['site_id']?>" />
+					<input type="hidden" name="MedicationSet[medicationSetRules][site_id][]" value="<?= (!empty($_GET['default']['site_id']) ? $_GET['default']['site_id'] : "null")?>" />
 					<?=($siteName ? CHtml::encode($siteName) : "")?>
 				</td>
 				<td>
-					<input type="hidden" name="MedicationSet[medicationSetRules][subspecialty_id][]" value="<?=$_GET['default']['subspecialty_id']?>" />
+					<input type="hidden" name="MedicationSet[medicationSetRules][subspecialty_id][]" value="<?=(!empty($_GET['default']['subspecialty_id']) ? $_GET['default']['subspecialty_id'] : "null")?>" />
 					<?=($subspecialtyName ? CHtml::encode($subspecialtyName) : "")?>
 				</td>
 				<td>
@@ -90,7 +92,7 @@
 				</td>
 			</tr>
 			<?php endif; ?>
-		<?php endif; ?>
+
 
 
 		<?php foreach ($medication_set->medicationSetRules as $rule): ?>
