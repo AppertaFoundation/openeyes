@@ -23,6 +23,11 @@ $form = $this->beginWidget('CActiveForm', array(
     'id' => 'js-add-new-contact-form',
 ));
 ?>
+<div class="alert-box error with-icon js-contact-error-box" style="display:none">
+    <p>Please fix the following input errors:</p>
+    <ul class="js-contact-errors">
+    </ul>
+</div>
 <table>
     <colgroup>
         <col class="cols-3">
@@ -203,13 +208,25 @@ $form = $this->beginWidget('CActiveForm', array(
             current patient only)
         </td>
         <td>
+            <label class="inline highlight">
+                Available
             <?= \CHtml::checkBox(
                 'active',
                 true,
                 ['class' => 'js-contact-field', 'data-label' => 'active']
             ); ?>
+            </label>
         </td>
     </tr>
+    </tbody>
+</table>
+<div class="alert-box error with-icon js-contact-error-box" style="display:none">
+    <p>Please fix the following input errors:</p>
+    <ul class="js-contact-errors">
+    </ul>
+</div>
+<table>
+    <tbody>
     <tr>
         <td colspan="2" class="align-right">
             <?= \CHtml::submitButton('Submit', array('class' => 'green hint js-add-new-contact')); ?>
@@ -225,12 +242,13 @@ $form = $this->beginWidget('CActiveForm', array(
         $('.js-add-new-contact').on('click', function (event) {
             event.preventDefault();
             let data = {};
+
             $('.js-contact-field').each(function () {
 
-                if($(this).data('label') === 'active'){
+                if ($(this).data('label') === 'active') {
 
                     data[$(this).data('label')] = $(this).is(":checked");
-                }else {
+                } else {
                     data[$(this).data('label')] = $(this).val();
                 }
             })
@@ -242,22 +260,33 @@ $form = $this->beginWidget('CActiveForm', array(
                 'url': baseUrl + '/OphCiExamination/contact/saveNewContact',
                 'success': function (response) {
                     response = JSON.parse(response);
+                    if (response.errors) {
 
-                    data = {};
-                    data.id = response.id;
-                    data.label = response.contact_label;
-                    data.full_name = response.name;
-                    data.email = response.email;
-                    data.phone = response.phone;
-                    data.address = response.address;
-                    data.active = response.active;
+                        $('.js-contact-error-box').show();
+                        let $errorsList = $('.js-contact-errors');
+                        $errorsList.html("");
+                        Object.keys(response.errors).forEach(function (key) {
+                            $errorsList.append("<li><a>" + response.errors[key] + "</a> </li>");
+                        });
 
-                    let templateText = $('#contact-entry-template').text();
-                    row = Mustache.render(templateText, data);
+                    } else {
+                        $('.js-contact-error-box').hide();
+                        data = {};
+                        data.id = response.id;
+                        data.label = response.contact_label;
+                        data.full_name = response.name;
+                        data.email = response.email;
+                        data.phone = response.phone;
+                        data.address = response.address;
+                        data.active = response.active;
 
-                    $('#contact-assignment-table').append(row);
-                    $('.autosize').autosize();
-                    $('.oe-popup-wrap').remove();
+                        let templateText = $('#contact-entry-template').text();
+                        row = Mustache.render(templateText, data);
+
+                        $('#contact-assignment-table').append(row);
+                        $('.autosize').autosize();
+                        $('.oe-popup-wrap').remove();
+                    }
                 }
             });
         });

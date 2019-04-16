@@ -101,9 +101,11 @@ class ContactController extends \BaseController
         if (\Yii::app()->request->isAjaxRequest) {
             if (isset($_POST['data'])) {
                 $transaction = \Yii::app()->db->beginTransaction();
+                $errors = [];
 
                 $data = json_decode($_POST['data']);
                 $contact = new \Contact();
+                $contact->scenario = 'self_register';
                 $contact->first_name = $data->first_name;
                 $contact->last_name = $data->last_name;
                 $contact->primary_phone = $data->primary_phone;
@@ -120,13 +122,26 @@ class ContactController extends \BaseController
                 $address->address_type_id = 3;
 
 
-                $contact->save();
+                if(!$contact->save()) {
+                    $errors = $contact->getErrors();
+                }
                 $address->contact_id = $contact->id;
-                $address->save();
+                if(!$address->save()) {
+                    $errors = array_merge($errors, $address->getErrors());
+                }
 
-                $transaction->commit();
+                if(trim($data->address1) == "" && trim($data->primary_phone) == "" && trim($data->email) == ""){
+                    $errors['missing_address'] = "Address or phone number or an email should be provided";
+                }
+                if( !empty($errors)) {
+                    $transaction->rollback();
+                    echo CJSON::encode(['errors' => $errors]);
+                } else {
+                    $transaction->commit();
+                    echo CJSON::encode($this->contactStructure($contact));
+                }
             }
-            echo CJSON::encode($this->contactStructure($contact));
+
         }
     }
 }

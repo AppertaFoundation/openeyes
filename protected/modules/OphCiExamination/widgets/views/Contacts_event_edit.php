@@ -193,8 +193,10 @@ $element_errors = $element->getErrors();
                         newRows.push(row);
                     }
                 }
-                $('#contact-assignment-table').append(newRows);
-                $('.autosize').autosize();
+                if(newRows.length > 0) {
+                    $('#contact-assignment-table').append(newRows);
+                    $('.autosize').autosize();
+                }
             },
             searchOptions: {
                 searchSource: "/OphCiExamination/contact/autocomplete"
