@@ -22,14 +22,20 @@ class OEPhoneNumberValidator extends CValidator
 
     public function validateAttribute($object, $attribute)
     {
-        $value=str_replace(' ','',$object->$attribute);
+        $object->$attribute=str_replace( array(' ','-'),'',$object->$attribute);
+
+        $value = $object->$attribute;
 
         if($this->allowEmpty && $this->isEmpty($value))
             return;
 
+        if (!$this->isEmpty($value) && $value[0] == '+'){
+            $value = substr($value,0);
+        }
+
         if(!is_numeric($value))
         {
-            $message=$this->message!==null?$this->message:Yii::t('yii','{attribute} must be a number.');
+            $message=$this->message!==null?$this->message:Yii::t('yii','{attribute} must be a valid telephone number.');
             $this->addError($object,$attribute,$message);
             return;
         }
