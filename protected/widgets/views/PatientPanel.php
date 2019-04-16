@@ -39,7 +39,7 @@ $deceased = $this->patient->isDeceased();
      data-patient-id="<?= $this->patient->id ?>"
 >
     <div class="patient-name">
-        <a href="<?= (new CoreAPI())->generateEpisodeLink($this->patient); ?>">
+        <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
             <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
             <span class="patient-firstname">
       <?php echo $this->patient->getFirst_name(); ?>
@@ -52,7 +52,7 @@ $deceased = $this->patient->isDeceased();
         <div class="patient-details">
             <div class="hospital-number">
                 <span>No. </span>
-                <?php echo $this->patient->hos_num ?>
+                <span class="js-copy-to-clipboard" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></span>
             </div>
             <div class="nhs-number">
                 <span><?php echo Yii::app()->params['nhs_num_label'] ?></span>

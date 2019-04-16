@@ -55,6 +55,7 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Window.js'); ?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.Form.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Search.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.CopyToClipboard.js')?>
 <?php $assetManager->registerScriptFile('js/script.js')?>
 <?php $assetManager->registerScriptFile('components/foundation/js/foundation.min.js');?>
 <?php $assetManager->registerScriptFile('components/foundation/js/foundation/foundation.dropdown.js');?>
