@@ -99,7 +99,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 "",
                 ['data-label' => 'address1',
                     'class' => 'cols-full js-contact-field',
-                    'placeholder' => "Address Line One\""
+                    'placeholder' => "Address Line One"
                 ]
             ); ?>
         </td>
@@ -241,8 +241,8 @@ $form = $this->beginWidget('CActiveForm', array(
                 'data': "data=" + JSON.stringify(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
                 'url': baseUrl + '/OphCiExamination/contact/saveNewContact',
                 'success': function (response) {
-
                     response = JSON.parse(response);
+
                     data = {};
                     data.id = response.id;
                     data.label = response.contact_label;
@@ -251,14 +251,13 @@ $form = $this->beginWidget('CActiveForm', array(
                     data.phone = response.phone;
                     data.address = response.address;
                     data.active = response.active;
+
                     let templateText = $('#contact-entry-template').text();
                     row = Mustache.render(templateText, data);
+
                     $('#contact-assignment-table').append(row);
                     $('.autosize').autosize();
-
                     $('.oe-popup-wrap').remove();
-
-
                 }
             });
         });

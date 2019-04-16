@@ -142,9 +142,10 @@ $element_errors = $element->getErrors();
 
         <?php $contact_labels = ContactLabel::model()->findAll(
         [
+            'condition' => 'is_private = 0',
             'select' => 't.name,t.id',
             'group' => 't.name',
-            'distinct' => true
+            'distinct' => true,
         ]
     );
         ?>
@@ -161,17 +162,17 @@ $element_errors = $element->getErrors();
         };
 
         new OpenEyes.UI.AdderDialog({
-            itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                 array_map(function ($contact_label) {
                     return ['label' => $contact_label->name, 'id' => $contact_label->id];
-                }, $contact_labels)) ?>, {'header':'Contact Type', 'id':'contact-type-filter'})],
+                }, $contact_labels)) ?>, {'header': 'Contact Type', 'id': 'contact-type-filter'})],
             openButton: $('#add-contacts-btn'),
             onReturn: function (adderDialog, selectedItems) {
                 let templateText = $('#contact-entry-template').text();
                 let newRows = [];
                 for (let index = 0; index < selectedItems.length; ++index) {
 
-                    if (selectedItems[index].type == "custom") {
+                    if (selectedItems[index].type === "custom") {
                         new OpenEyes.UI.Dialog($.extend({}, options, {
                             url: baseUrl + '/OphCiExamination/contact/ContactPage',
                             width: 500,
@@ -200,8 +201,8 @@ $element_errors = $element->getErrors();
             },
             enableCustomSearchEntries: true,
             searchAsTypedPrefix: 'Add a new contact:',
-            filter:true,
-            filterDataId:"contact-type-filter",
+            filter: true,
+            filterDataId: "contact-type-filter",
         });
     });
 </script>
