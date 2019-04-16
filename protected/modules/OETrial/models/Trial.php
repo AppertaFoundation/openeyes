@@ -92,6 +92,7 @@ class Trial extends BaseActiveRecordVersioned
         'max' => 10,
       ),
       array('started_date, closed_date', 'OEDateValidator', 'on' => 'manual'),
+      array('closed_date','closedDateValidator','on'=>'manual'),
       array('description, last_modified_date, created_date, ethics_number', 'safe'),
     );
   }
@@ -194,7 +195,11 @@ class Trial extends BaseActiveRecordVersioned
     }
 
     foreach (array('started_date', 'closed_date') as $date_column) {
-      $this->$date_column = Helper::convertNHS2MySQL($this->$date_column);;
+        if (isset($this->$date_column) && !empty($this->$date_column)){
+            $this->$date_column = Helper::convertNHS2MySQL($this->$date_column);
+        }else{
+            $this->$date_column = null;
+        }
     }
 
     return true;
@@ -583,5 +588,18 @@ class Trial extends BaseActiveRecordVersioned
     {
       $study_coordinators = UserTrialAssignment::model()->findAll('trial_id=? and is_study_coordinator = 1', array($this->id));
       return $study_coordinators;
+    }
+    public function closedDateValidator($attribute, $params)
+    {
+        if ($this->hasErrors('closed_date')) {
+            return;
+        }
+        if (isset($this->started_date) && isset($this->$attribute)){
+            $started_date = new DateTime($this->started_date);
+            $closed_date =  new DateTime($this->$attribute);
+            if ($closed_date < $started_date){
+                $this->addError($attribute,'Invalid date. Closed date cannot be earlier than started date.');
+            }
+        }
     }
 }
