@@ -38,7 +38,7 @@ function current_custom_data_to_csv(additional_type,anonymized=false){
     } else {
         var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses, VA-L, "+additional_type+"-L, VA-R,"+additional_type+"-R\n";
     }
-    var data = Object.values(window.csv_data_for_report['clinical_data']);
+    var data = Object.values(window.csv_data_for_report['custom_data']);
     var file_name = "clinical_data";
     data.forEach(function (item) {
         if (!anonymized){
@@ -106,12 +106,14 @@ $('#js-download-csv').click(function () {
     if($('#js-btn-service').hasClass('selected')){
         current_service_data_to_csv();
     }else if($('#js-btn-clinical').hasClass('selected')){
+        if($('#js-hs-clinical-diagnoses').hasClass('selected')){
             current_clinical_data_to_csv();
-    }else if($('#js-btn-custom').hasClass("selected")){
-        if ($('#js-mr-specialty-tab').hasClass('selected')){
-            current_custom_data_to_csv("CRT");
-        }else{
-            current_custom_data_to_csv("IOP");
+        }else if($('#js-hs-clinical-custom').hasClass("selected")) {
+            if ($('#js-mr-specialty-tab').hasClass('selected')) {
+                current_custom_data_to_csv("CRT");
+            } else {
+                current_custom_data_to_csv("IOP");
+            }
         }
     }
 });
@@ -120,11 +122,14 @@ $('#js-download-anonymized-csv').click(function () {
     if($('#js-btn-service').hasClass('selected')){
         current_service_data_to_csv(true);
     }else if($('#js-btn-clinical').hasClass('selected')){
-        current_clinical_data_to_csv(true);
-    }else if($('#js-btn-custom').hasClass("selected")){
-        if ($('#js-mr-specialty-tab').hasClass('selected')){
-            current_custom_data_to_csv("CRT",true);
-        }else{
-            current_custom_data_to_csv("IOP",true);
+        if($('#js-hs-clinical-diagnoses').hasClass('selected')){
+            current_clinical_data_to_csv(true);
+        }else if($('#js-hs-clinical-custom').hasClass("selected")) {
+            if ($('#js-mr-specialty-tab').hasClass('selected')) {
+                current_custom_data_to_csv("CRT",true);
+            } else {
+                current_custom_data_to_csv("IOP",true);
+            }
         }
-}});
+    }
+});

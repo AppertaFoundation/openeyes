@@ -57,7 +57,8 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
             <?php $form->widget('application.widgets.ProcedureSelection', array(
                 'element' => $element,
                 'durations' => true,
-                'label' => ''
+                'label' => '',
+                'complexity' => $element->complexity
             )) ?>
         </div>
         </div>

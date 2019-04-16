@@ -54,6 +54,8 @@ class DefaultController extends OphTrOperationbookingEventController
                 'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});',CClientScript::POS_END);
 
             $this->jsVars['nhs_date_format'] = Helper::NHS_DATE_FORMAT_JS;
+            $this->jsVars['op_booking_inc_time_high_complexity'] = SettingMetadata::model()->getSetting('op_booking_inc_time_high_complexity');
+            $this->jsVars['op_booking_decrease_time_low_complexity'] = SettingMetadata::model()->getSetting('op_booking_decrease_time_low_complexity');
         }
 
         $return = parent::beforeAction($action);

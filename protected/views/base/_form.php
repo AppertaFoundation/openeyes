@@ -40,15 +40,15 @@ if (!Yii::app()->user->isGuest) {
     </div>
     <div class="oe-user">
         <ul class="oe-user-profile-context">
-            <li><em>User</em><?= $user->first_name . ' ' . $user->last_name; ?>
+            <li><?= $user->first_name . ' ' . $user->last_name; ?>
                 <?php if (Yii::app()->params['profile_user_can_edit']) { ?>
                     <a href="<?= Yii::app()->createUrl('/profile'); ?>">profile</a>
                 <?php } ?>
             </li>
 
-            <li><em>Site</em><?= Site::model()->findByPk($this->selectedSiteId)->short_name; ?></li>
+            <li><?= Site::model()->findByPk($this->selectedSiteId)->short_name; ?></li>
             <li>
-                <em><?= Firm::contextLabel() ?></em><?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?>
+                <?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?>
                 <a id="change-firm" href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>">change</a>
             </li>
         </ul>
