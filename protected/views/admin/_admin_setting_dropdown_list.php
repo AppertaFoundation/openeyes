@@ -13,10 +13,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
+<?php $selectedKey = $metadata->getSetting($metadata->key); ?>
 <select name="<?= $metadata->key ?>" id="<?= $metadata->key ?>">
   <?php foreach (unserialize($metadata->data) as $key => $value) {?>
-    <option <?= $metadata->getSetting($metadata->key) == $key ? 'selected="selected"' : '' ?>
+    <option
+      <?= $selectedKey == $key ? 'selected="selected"' : '' ?>
       value="<?= $key ?>">
-      <?= $value ?></option>
+      <?= $value ?>
+    </option>
   <?php } ?>
 </select>
