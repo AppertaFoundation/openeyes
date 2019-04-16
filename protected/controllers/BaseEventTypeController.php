@@ -749,7 +749,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function checkEditAccess()
     {
-        return $this->checkAccess('OprnEditEvent', $this->firm, $this->event);
+        return $this->checkAccess('OprnEditEvent',$this->event);
     }
 
     /**
@@ -757,7 +757,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function checkDeleteAccess()
     {
-        return $this->checkAccess('OprnDeleteEvent', Yii::app()->session['user'], $this->firm, $this->event);
+        return $this->checkAccess('OprnDeleteEvent', Yii::app()->session['user'], $this->event);
     }
 
     /**
@@ -765,7 +765,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function checkRequestDeleteAccess()
     {
-        return $this->checkAccess('OprnRequestEventDeletion', $this->firm, $this->event);
+        return $this->checkAccess('OprnRequestEventDeletion', $this->event);
     }
 
     /**
@@ -987,6 +987,15 @@ class BaseEventTypeController extends BaseModuleController
                 }
             }
         } else {
+            $episode = Episode::getCurrentEpisodeByFirm($this->patient->id, Firm::model()->findByPk($this->selectedFirmId));
+            if ($episode == null) {
+                $episode = new Episode();
+                $episode->patient_id = $this->patient->id;
+                $episode->firm_id = $this->selectedFirmId;
+                $episode->support_services = false;
+                $episode->start_date = date('Y-m-d H:i:s');
+                $episode->save();
+            }
             // get the elements
             $this->setOpenElementsFromCurrentEvent('update');
             $this->updateHotlistItem($this->patient);
@@ -1028,7 +1037,7 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @internal param int $import_previous
      */
-    public function actionElementForm($id, $patient_id, $previous_id = null)
+    public function actionElementForm($id, $patient_id, $previous_id = null , $event_id = null)
     {
         // first prevent invalid requests
         $element_type = ElementType::model()->findByPk($id);
@@ -1045,7 +1054,12 @@ class BaseEventTypeController extends BaseModuleController
 
         $this->patient = $patient;
 
-        $this->setFirmFromSession();
+        if($event_id != null){
+            $event = Event::model()->findByPk($event_id);
+            $this->firm = $event->episode->firm;
+        } else {
+            $this->setFirmFromSession();
+        }
 
         $this->episode = $this->getEpisode();
 
