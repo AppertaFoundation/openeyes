@@ -52,14 +52,22 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                         } elseif ($session->operationBookable($operation)) {
                             echo ' bookable';
                         } ?>" id="bookingSession<?php echo $session->id ?>">
-                            <div class="session_timeleft time-left available">
-                                <?php echo abs($session->availableMinutes) ?> min
-                                <?php echo $session->minuteStatus ?>
-                            </div>
-                            <div class="time">
-                                <?= "&nbsp;" . $session->start_time ?>
-                                 -
-                                <?= $session->end_time ?>
+                            <div class="session_timeleft">
+                                <div class="time-left available">
+                                  <?php echo abs($session->availableMinutes) ?> min
+                                  <?php echo $session->minuteStatus ?>
+                                </div>
+                                <div class="time" >
+                                  <?= $session->start_time ?>
+                                    -
+                                  <?= $session->end_time ?>
+                                </div>
+                              <?php if ($session->max_procedures) { ?>
+                                  <div class="available-procedures" title="Available procedures"><?= $session->getAvailableProcedureCount() ?> Procedure(s) available</div>
+                              <?php } ?>
+                              <?php if ($session->isComplexBookingCountLimited()) { ?>
+                                  <div class="available-complex-bookings" title="Available complex bookings"><?= $session->getAvailableComplexBookingCount() ?> Complex Booking(s) available</div>
+                              <?php } ?>
                             </div>
                             <div class="specialists">
                                 <?php if ($session->consultant) { ?>
@@ -74,6 +82,12 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                                 <?php } ?>
                                 <?php if ($session->paediatric) { ?>
                                     <div class="paediatric" title="Paediatric Session">Paediatric</div>
+                                <?php } ?>
+                                <?php if ($session->max_procedures) { ?>
+                                    <div class="max-procedures" title="Max procedures">Max <?= $session->max_procedures ?> Procedures</div>
+                                <?php } ?>
+                                <?php if ($session->isComplexBookingCountLimited()) { ?>
+                                    <div class="max-complex-bookings" title="Max complex bookings">Max <?= $session->max_complex_bookings ?> Complex Bookings</div>
                                 <?php } ?>
                             </div>
                         </td>
