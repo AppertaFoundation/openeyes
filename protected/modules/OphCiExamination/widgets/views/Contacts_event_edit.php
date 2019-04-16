@@ -181,7 +181,7 @@ $element_errors = $element->getErrors();
                                 patient_id: window.OE_patient_id || null
                             }
                         })).open();
-                    } else {
+                    } else if (!selectedItems[index].itemSet) {
                         data = {};
                         data.id = selectedItems[index].id;
                         data.label = selectedItems[index].contact_label;
