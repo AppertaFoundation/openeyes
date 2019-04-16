@@ -64,29 +64,29 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                                 </div>
                               <?php if ($session->max_procedures) { ?>
                                   <div class="available-procedures" title="Available procedures"><?= $session->getAvailableProcedureCount() ?> Procedure(s) available</div>
-                              <?php } ?>
-                              <?php if ($session->isComplexBookingCountLimited()) { ?>
+                              <?php }
+                              if ($session->isComplexBookingCountLimited()) { ?>
                                   <div class="available-complex-bookings" title="Available complex bookings"><?= $session->getAvailableComplexBookingCount() ?> Complex Booking(s) available</div>
                               <?php } ?>
                             </div>
                             <div class="specialists">
                                 <?php if ($session->consultant) { ?>
                                     <div class="consultant" title="Consultant Present">Consultant</div>
-                                <?php } ?>
-                                <?php if ($session->anaesthetist) { ?>
+                                <?php }
+                                if ($session->anaesthetist) { ?>
                                     <div class="anaesthetist" title="Anaesthetist Present">Anaesthetist
                                         <?php if ($session->general_anaesthetic) { ?>
                                             (GA)
                                         <?php } ?>
                                     </div>
-                                <?php } ?>
-                                <?php if ($session->paediatric) { ?>
+                                <?php }
+                                if ($session->paediatric) { ?>
                                     <div class="paediatric" title="Paediatric Session">Paediatric</div>
-                                <?php } ?>
-                                <?php if ($session->max_procedures) { ?>
+                                <?php }
+                                if ($session->max_procedures) { ?>
                                     <div class="max-procedures" title="Max procedures">Max <?= $session->max_procedures ?> Procedures</div>
-                                <?php } ?>
-                                <?php if ($session->isComplexBookingCountLimited()) { ?>
+                                <?php }
+                                if ($session->isComplexBookingCountLimited()) { ?>
                                     <div class="max-complex-bookings" title="Max complex bookings">Max <?= $session->max_complex_bookings ?> Complex Bookings</div>
                                 <?php } ?>
                             </div>
