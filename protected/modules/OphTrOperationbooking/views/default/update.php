@@ -35,16 +35,38 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             ),
         ));
         // Event actions
-        $this->event_actions[] = EventAction::button('Save', 'save',
-            array(
-                'id' => 'et_save',
-                'level' => 'save',
-            ),
-            array(
-                'form' => $form_id,
-            )
-        );
+        if(isset($_GET["waiting-list"]) && $_GET["waiting-list"]){
+            $this->event_actions = array(
+                EventAction::link('Cancel',
+                    Yii::app()->createUrl('/OphTrOperationbooking/waitingList/index'),
+                    array('level' => 'cancel')
+                ),
+            );
+            $this->event_actions[] = EventAction::button('Confirm', 'confirm',
+                array(
+                    'id' => 'et_confirm',
+                    'level' => 'confirm',
+                ),
+                array(
+                    'form' => $form_id,
+                )
+            );
+        } else {
+            $this->event_actions[] = EventAction::button('Save', 'save',
+                array(
+                    'id' => 'et_save',
+                    'level' => 'save',
+                ),
+                array(
+                    'form' => $form_id,
+                )
+            ); 
+        }
+
         ?>
+        <?php if(isset($_GET["waiting-list"]) && $_GET["waiting-list"]){ ?>
+            <input type="hidden" name="schedule_now" id="schedule_now" value="1">
+        <?php } ?>
 		<?php if (Yii::app()->params['OphTrOperationbooking_duplicate_proc_warn']) {?>
 			<input type="hidden" name="event_id" value="<?= $this->event->id ?>" />
 		<?php } ?>
