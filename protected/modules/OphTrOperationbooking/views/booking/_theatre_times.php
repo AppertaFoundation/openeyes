@@ -54,8 +54,8 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                         } ?>" id="bookingSession<?php echo $session->id ?>">
                             <div class="session_timeleft">
                                 <div class="time-left available">
-                                  <?php echo abs($session->availableMinutes) ?> min
-                                  <?php echo $session->minuteStatus ?>
+                                  <?= abs($session->availableMinutes) ?> min
+                                  <?= $session->minuteStatus ?>
                                 </div>
                                 <div class="time" >
                                   <?= $session->start_time ?>
