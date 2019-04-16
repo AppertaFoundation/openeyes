@@ -139,7 +139,7 @@ $config = array(
         'google_analytics_account' => '',
         'local_users' => array('admin', 'username'),
         //'log_events' => true,
-        'institution_code' => 'NEW',
+        'institution_code' => getenv('OE_INSTITUTION_CODE') ? getenv('OE_INSTITUTION_CODE') : 'NEW',
         'specialty_codes' => array(130),
         //'default_site_code' => '',
         'specialty_sort' => array(130, 'SUP'),
@@ -169,23 +169,23 @@ $config = array(
         // any appointments sent in before this date will not trigger errors when sent in
         //'worklist_ignore_date => 'Y-m-d',
         'portal' => array(
-            'uri' => 'http://api.localhost:8000',
-            'frontend_url' => 'https://localhost:8000/', #url for the optom portal (read by patient shourtcode [pul])
+            'uri' => getenv('OE_PORTAL_URI') ? getenv('OE_PORTAL_URI') : 'http://api.localhost:8000',
+            'frontend_url' => getenv('OE_PORTAL_EXTERNAL_URI') ? getenv('OE_PORTAL_EXTERNAL_URI') : 'https://localhost:8000/', #url for the optom portal (read by patient shourtcode [pul])
             'endpoints' => array(
                 'auth' => '/oauth/access',
                 'examinations' => '/examinations/searches',
                 'signatures' => '/signatures/searches'
             ),
             'credentials' => array(
-                'username' => 'user@example.com',
-                'password' => 'apipass',
+                'username' =>  getenv('OE_PORTAL_USERNAME') ? getenv('OE_PORTAL_USERNAME') : 'email@example.com',
+                'password' => getenv('OE_PORTAL_PASSWORD') ? getenv('OE_PORTAL_PASSWORD') : ( rtrim(@file_get_contents("/run/secrets/OE_PORTAL_PASSWORD")) ? rtrim(file_get_contents("/run/secrets/OE_PORTAL_PASSWORD")) : 'apipass' ),
                 'grant_type' => 'password',
-                'client_id' => 'XXd259dddXxXXxXX84383XX',
-                'client_secret' => 'XxXx6f8faXXxXXX455ooo0ae8c4a95b',
+                'client_id' => getenv('OE_PORTAL_CLIENT_ID') ? getenv('OE_PORTAL_CLIENT_ID') : ( rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_ID")) ? rtrim(file_get_contents("/run/secrets/OE_PORTAL_CLIENT_ID")) : '' ),
+                'client_secret' => getenv('OE_PORTAL_CLIENT_SECRET') ? getenv('OE_PORTAL_CLIENT_SECRET') : ( rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) ? rtrim(file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) : '' ),
             ),
         ),
-        'signature_app_url' => 'https://dev.oesign.uk',
-        'docman_export_dir' => '/tmp/docman',
+        'signature_app_url' => getenv('OE_SIGNATUE_APP_URL') ? getenv('OE_SIGNATUE_APP_URL') : 'https://dev.oesign.uk',
+        'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/tmp/docman',
         'docman_login_url' => 'http://localhost/site/login',
         'docman_user' => 'docman_user',
         'docman_password' => '1234qweR!',

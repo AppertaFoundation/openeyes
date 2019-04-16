@@ -231,6 +231,16 @@ class SocialHistory extends \BaseEventTypeElement
         return $res;
     }
 
+    public function beforeValidate()
+    {
+      if (!parent::beforeValidate()) {
+        return false;
+      }
+      if ($this->alcohol_intake == "")
+        $this->alcohol_intake = null;
+      return true;
+    }
+
     /**
      * @return string
      */
