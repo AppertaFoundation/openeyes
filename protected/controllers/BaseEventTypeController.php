@@ -150,11 +150,10 @@ class BaseEventTypeController extends BaseModuleController
 
     public function behaviors()
     {
-        return array(
-            'CreateEventBehavior' => array(
-                'class' => 'application.behaviors.CreateEventControllerBehavior',
-            ),
-        );
+        return array_merge(parent::behaviors(),[
+            'WorklistBehavior' => ['class' => 'application.behaviors.WorklistBehavior',],
+            'CreateEventBehavior' => ['class' => 'application.behaviors.CreateEventControllerBehavior',]
+        ]);
     }
 
     public function getPageTitle()

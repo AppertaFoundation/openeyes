@@ -14,10 +14,31 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
+ ?>
 
-<div class="admin box">
-    <h2>Generated Instances for <?= $definition->name ?></h2>
-    <?php echo EventAction::link('Definitions List', '/worklistAdmin/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-    <?php $this->renderPartial('//admin/worklists/definition_worklists_table', array('definition' => $definition)) ?>
-</div>
+<?php if ($definition->display_contexts) {?>
+    <table class="generic-admin standard">
+        <thead>
+        <tr>
+            <th>Site</th>
+            <th>Subspecialty</th>
+            <th><?php echo Firm::contextLabel() ?></th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($definition->display_contexts as $display_context) { ?>
+            <tr>
+                <td><?=$display_context->siteDisplay ?></td>
+                <td><?=$display_context->subspecialtyDisplay ?></td>
+                <td><?=$display_context->firmDisplay ?></td>
+                <td><a href="/Admin/worklist/definitionDisplayContextDelete/<?= $display_context->id ?>">Delete</a></td>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+<?php } else {?>
+    <div class="alert-box">
+        No restrictions are defined, worklists will be displayed in all view contexts.
+    </div>
+<?php } ?>
