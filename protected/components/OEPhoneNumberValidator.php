@@ -26,6 +26,11 @@ class OEPhoneNumberValidator extends CValidator
 
         $value = $object->$attribute;
 
+        if (preg_match('/\(/',$value) && preg_match('/\)/',$value) && (strpos($value,'(') < strpos($value,')'))){
+            $value = preg_replace('/\(/','',$value,1);
+            $value = preg_replace('/\)/','',$value,1);
+        }
+
         if($this->allowEmpty && $this->isEmpty($value))
             return;
 
