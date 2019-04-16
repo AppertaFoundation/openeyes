@@ -374,7 +374,7 @@ class PatientController extends BaseController
             ),
         );
 
-        if ($this->checkAccess('OprnEditEpisode', $this->firm, $this->episode) && $this->episode->firm) {
+        if ($this->checkAccess('OprnEditEpisode', $this->episode) && $this->episode->firm) {
             $this->event_tabs[] = array(
                 'label' => 'Edit',
                 'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
@@ -399,7 +399,7 @@ class PatientController extends BaseController
             throw new SystemException('Episode not found: '.$id);
         }
 
-        if (!$this->checkAccess('OprnEditEpisode', $this->firm, $this->episode) || isset($_POST['episode_cancel'])) {
+        if (!$this->checkAccess('OprnEditEpisode', $this->episode) || isset($_POST['episode_cancel'])) {
             $this->redirect(array('patient/episode/'.$this->episode->id));
 
             return;
