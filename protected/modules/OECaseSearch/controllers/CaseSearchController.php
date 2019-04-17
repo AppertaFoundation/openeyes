@@ -60,9 +60,6 @@ class CaseSearchController extends BaseModuleController
                     foreach ($_POST[$paramName] as $id => $param) {
                         $newParam = new $paramName;
                         $newParam->attributes = $_POST[$paramName][$id];
-                        if ($newParam->name == "patient_name"){
-                            $this->resultOrder .= 'levenshtein_ratio(last_name, \''.$newParam->patient_name.'\')+levenshtein_ratio(first_name, \''.$newParam->patient_name.'\')';
-                        }
                         if (!$newParam->validate()) {
                             $valid = false;
                         }
@@ -114,6 +111,14 @@ class CaseSearchController extends BaseModuleController
                 $_SESSION['last_search'] = $ids;
             }
             $_SESSION['last_search_params'] = $parameters;
+        }
+
+        if (isset($_SESSION['last_search_params'])){
+            foreach ($_SESSION['last_search_params'] as $key => $param) {
+                if ($param->name == "patient_name"){
+                    $this->resultOrder .= 'levenshtein_ratio(last_name, \''.$param->patient_name.'\')+levenshtein_ratio(first_name, \''.$param->patient_name.'\')';
+                }
+            }
         }
 
         // If there are no IDs found, pass -1 as the value (as this will not match with anything).
