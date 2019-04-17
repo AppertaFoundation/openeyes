@@ -337,6 +337,26 @@ class DefaultController extends OphTrOperationbookingEventController
             }
         }
 
+        $element_operation = null;
+        foreach ($this->open_elements as $element) {
+          if (get_class($element) == 'Element_OphTrOperationbooking_Operation') {
+            $element_operation = $element;
+            break;
+          }
+        }
+        if($element_operation) {
+          $anaesthetic_type_ids = isset($data['AnaestheticType']) ? $data['AnaestheticType'] : [];
+          foreach($anaesthetic_type_ids as $anaesthetic_type_id){
+            if ($anaesthetic = AnaestheticType::model()->findByPk($anaesthetic_type_id ) ) {
+              if (in_array($anaesthetic->id, $element_operation->anaesthetist_required_ids) && !$element_operation->booking->session->anaesthetist) {
+                $errors['Operation'][] = 'The booked session does not have an anaesthetist present, you must change the session or cancel the booking before making this change';
+              }
+              if ($anaesthetic->code == 'GA' && !$element_operation->booking->session->general_anaesthetic) {
+                $errors['Operation'][] = 'General anaesthetic is not available for the booked session, you must change the session or cancel the booking before making this change';
+              }
+            }
+          }
+        }
         return $errors;
     }
 
