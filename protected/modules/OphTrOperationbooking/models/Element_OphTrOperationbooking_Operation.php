@@ -1197,6 +1197,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                 return $this->getErrors();
             }
             $this->booking->cancel($reason, $cancellation_comment, $reschedule);
+            $this->booking = $booking;
         }
 
         foreach (array('date', 'start_time', 'end_time', 'theatre_id') as $field) {
