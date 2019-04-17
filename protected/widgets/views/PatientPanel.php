@@ -51,7 +51,7 @@ $deceased = $this->patient->isDeceased();
     <div class="patient-details">
         <div class="hospital-number">
             <span>No. </span>
-            <?php echo $this->patient->hos_num ?>
+            <span class="js-copy-to-clipboard" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></span>
         </div>
         <div class="nhs-number">
             <span><?php echo Yii::app()->params['nhs_num_label'] ?></span>
@@ -60,7 +60,6 @@ $deceased = $this->patient->isDeceased();
                 <i class="oe-i <?= $this->patient->nhsNumberStatus->icon->class_name ?: 'exclamation' ?> small"></i>
             <?php endif; ?>
         </div>
-
         <div class="patient-gender">
             <em>Gender</em>
             <?php echo $this->patient->getGenderString() ?>

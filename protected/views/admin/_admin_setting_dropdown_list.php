@@ -1,7 +1,5 @@
 <?php
 /**
- * OpenEyes.
- *
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -11,14 +9,18 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-<div class="admin box">
-    <h2>Worklist Patients: <?= $worklist->name ?> (<?=$worklist->worklist_definition->name?>)</h2>
-<?= EventAction::link('All Instances', '/worklistAdmin/definitionWorklists/'.$worklist->worklist_definition_id, array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-&nbsp;<?= EventAction::link('Definition Mappings', '/worklistAdmin/definitionMappings/'.$worklist->worklist_definition_id, array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-<?= $this->manager->renderWorklistForDashboard($worklist); ?>
-</div>
+<?php $selectedKey = $metadata->getSetting($metadata->key); ?>
+<select name="<?= $metadata->key ?>" id="<?= $metadata->key ?>">
+  <?php foreach (unserialize($metadata->data) as $key => $value) {?>
+    <option
+      <?= $selectedKey == $key ? 'selected="selected"' : '' ?>
+      value="<?= $key ?>">
+      <?= $value ?>
+    </option>
+  <?php } ?>
+</select>
