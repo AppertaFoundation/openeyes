@@ -41,6 +41,9 @@ class CaseSearchController extends BaseModuleController
         $fixedParameters = $this->module->getFixedParams();
         $parameterList = array();
         $ids = array();
+        $pagination = array(
+            'pageSize' => 10,
+        );
         if (isset($_SESSION['last_search'])) {
             $ids = $_SESSION['last_search'];
         }
@@ -111,6 +114,7 @@ class CaseSearchController extends BaseModuleController
                 $_SESSION['last_search'] = $ids;
             }
             $_SESSION['last_search_params'] = $parameters;
+            $pagination['currentPage'] = 0;
         }
 
         if (isset($_SESSION['last_search_params'])){
@@ -134,9 +138,7 @@ class CaseSearchController extends BaseModuleController
         $patientData = new CActiveDataProvider('Patient', array(
             'criteria' => $criteria,
             'totalItemCount' => count($ids),
-            'pagination' => array(
-                'pageSize' => 10,
-            ),
+            'pagination' => $pagination,
         ));
 
 
