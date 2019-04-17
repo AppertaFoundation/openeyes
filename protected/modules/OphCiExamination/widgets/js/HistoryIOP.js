@@ -15,7 +15,7 @@ $(document).ready(function () {
     $("#OEModule_OphCiExamination_models_HistoryIOP_readings_left").on("click", "i.trash", null, deleteReading);
 });
 
-function getScaleDropdown(element_name, instrument_id, scale_td, index, side){
+function getScaleDropdownHistoryIOP(element_name, instrument_id, scale_td, index, side){
     $.ajax({
         'type': 'GET',
         'url': baseUrl + '/OphCiExamination/default/getScaleForInstrument?name=' + element_name +

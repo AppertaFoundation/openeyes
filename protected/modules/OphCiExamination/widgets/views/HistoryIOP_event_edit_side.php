@@ -144,7 +144,7 @@ use OEModule\OphCiExamination\models;
                     let $scale_td = $table_row.find("td.scale_values");
                     let index = $table_row.data('index');
 
-                    getScaleDropdown("OEModule_OphCiExamination_models_HistoryIOP", selectedItems[i]['id'], $scale_td, index, '<?=$side?>');
+                    getScaleDropdownHistoryIOP("OEModule_OphCiExamination_models_HistoryIOP", selectedItems[i]['id'], $scale_td, index, '<?=$side?>');
                 }
 
                 // activate the datePicker

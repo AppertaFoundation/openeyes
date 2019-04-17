@@ -1194,9 +1194,10 @@ class DefaultController extends \BaseEventTypeController
      * Custom validation on HistoryIOP element
      *
      * @param $data
+     * @param $errors
      * @return mixed
      */
-    protected function setAndValidateHistoryIopFromData($data) {
+    protected function setAndValidateHistoryIopFromData($data, $errors) {
         $et_name = models\HistoryIOP::model()->getElementTypeName();
         $historyIOP = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryIOP');
         $entries = $data['OEModule_OphCiExamination_models_HistoryIOP'];
@@ -1249,14 +1250,7 @@ class DefaultController extends \BaseEventTypeController
         }
 
         if ($history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications')) {
-            if ($history_meds->hasRisks()) {
-                if (!$this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryRisks')) {
-                    if (!array_key_exists($this->event_type->name, $errors)) {
-                        $errors[$this->event_type->name] = array();
-                    }
-                    $errors[$this->event_type->name][] = 'History Risks element is required when History Medications has entries with associated Risks';
-                }
-            }
+            $errors = $this->setAndValidateHistoryRisksFromData($errors, $history_meds);
         }
 
         $posted_risk = [];
@@ -1266,48 +1260,92 @@ class DefaultController extends \BaseEventTypeController
 
         // Element was open, we check the required risks
         if(isset($data['OEModule_OphCiExamination_models_HistoryRisks'])){
-            $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-
-            $missing_risks = [];
-            foreach ($exam_api->getRequiredRisks($this->patient) as $required_risk) {
-                if( !in_array($required_risk->id, $posted_risk) ){
-                    $missing_risks[] = $required_risk;
-                }
-            }
-
-            $et_name = models\HistoryRisks::model()->getElementTypeName();
-            foreach ($missing_risks as $missing_risk) {
-                $errors[$et_name][$missing_risk->name] = 'Missing required risks: ' . $missing_risk->name;
-            }
+            $errors = $this->setAndValidateHistoryRisksFromData($errors, $posted_risk);
         }
 
         if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
-            $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
-            $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
-            if ($status && $status->patientticket) {
-                $err = array();
-                $queue = null;
-                if (!$data['patientticket_queue']) {
-                    $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
-                } elseif (!$queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue'])) {
-                    $err['patientticket_queue'] = 'Virtual Clinic not found';
-                }
-                if ($queue) {
-                    if (!$api->canAddPatientToQueue($this->patient, $queue)) {
-                        $err['patientticket_queue'] = 'Cannot add Patient to Queue';
-                    } else {
-                        list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
-                        $err = array_merge($err, $fld_errs);
-                    }
-                }
+            $errors = $this->setAndValidatePatientTicketingFromData($data, $errors, $api);
+        }
 
-                if (count($err)) {
-                    $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-                    if (@$errors[$et_name]) {
-                        $errors[$et_name] = array_merge($errors[$et_name], $err);
-                    } else {
-                        $errors[$et_name] = $err;
-                    }
+        return $errors;
+    }
+
+    /**
+     * @param $errors
+     * @param $history_meds
+     */
+    protected function setAndValidateHistoryMedicationsFromData($errors, $history_meds)
+    {
+        if ($history_meds->hasRisks()) {
+            if (!$this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryRisks')) {
+                if (!array_key_exists($this->event_type->name, $errors)) {
+                    $errors[$this->event_type->name] = array();
+                }
+                $errors[$this->event_type->name][] = 'History Risks element is required when History Medications has entries with associated Risks';
+            }
+        }
+    }
+
+
+    /**
+     * @param $errors
+     * @param $posted_risk
+     * @return mixed
+     */
+    protected function setAndValidateHistoryRisksFromData($errors, $posted_risk)
+    {
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+
+        $missing_risks = [];
+        foreach ($exam_api->getRequiredRisks($this->patient) as $required_risk) {
+            if( !in_array($required_risk->id, $posted_risk) ){
+                $missing_risks[] = $required_risk;
+            }
+        }
+
+        $et_name = models\HistoryRisks::model()->getElementTypeName();
+        foreach ($missing_risks as $missing_risk) {
+            $errors[$et_name][$missing_risk->name] = 'Missing required risks: ' . $missing_risk->name;
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Custom validation for patient ticketing
+     *
+     * @param $data
+     * @param $errors
+     * @param $api
+     * @return mixed
+     */
+    protected function setAndValidatePatientTicketingFromData($data, $errors, $api)
+    {
+        $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
+        $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
+        if ($status && $status->patientticket) {
+            $err = array();
+            $queue = null;
+            if (!$data['patientticket_queue']) {
+                $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
+            } elseif (!$queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue'])) {
+                $err['patientticket_queue'] = 'Virtual Clinic not found';
+            }
+            if ($queue) {
+                if (!$api->canAddPatientToQueue($this->patient, $queue)) {
+                    $err['patientticket_queue'] = 'Cannot add Patient to Queue';
+                } else {
+                    list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
+                    $err = array_merge($err, $fld_errs);
+                }
+            }
+
+            if (count($err)) {
+                $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
+                if (@$errors[$et_name]) {
+                    $errors[$et_name] = array_merge($errors[$et_name], $err);
+                } else {
+                    $errors[$et_name] = $err;
                 }
             }
         }
