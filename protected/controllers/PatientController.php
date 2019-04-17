@@ -212,9 +212,16 @@ class PatientController extends BaseController
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
-            $item = $dataProvider->getData()[0];
+            $patient = $dataProvider->getData()[0];
             $api = new CoreAPI();
-            $this->redirect(array($api->generatePatientLandingPageLink($item)));
+
+            //in case the PASAPI returns 1 new patient we perform a new search
+            if ($patient->isNewRecord && $patient->hos_num) {
+                $this->redirect(['/patient/search', 'term' => $patient->hos_num]);
+            }
+
+            $this->redirect(array($api->generatePatientLandingPageLink($patient)));
+
         } else {
             $this->renderPatientPanel = false;
             $this->pageTitle = $term . ' - Search';
