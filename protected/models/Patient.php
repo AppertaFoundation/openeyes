@@ -136,9 +136,8 @@ class Patient extends BaseActiveRecordVersioned
 
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
+            array('nhs_num', 'nhsNumValidator'), // 'on' => 'manual'
             array('gender,is_local', 'length', 'max' => 1),
-
-            array('nhs_num', 'numerical'),
 
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
             array('deleted', 'safe'),
@@ -222,6 +221,29 @@ class Patient extends BaseActiveRecordVersioned
             } elseif (!empty($this->hos_num)) {
                 $this->addError($attribute, 'Not a valid Hospital Number');
             }
+        }
+    }
+
+
+    public function nhsNumValidator($attribute, $params){
+        $medicareNo = preg_replace("/[^\d]/", "", $this->nhs_num);
+
+        // Check for 11 digits
+        $length = strlen($medicareNo);
+        if ($length==11) {
+            // Test leading digit and checksum
+            if (preg_match("/^([2-6]\d{7})(\d)/", $medicareNo, $matches)) {
+                $base = $matches[1];
+                $checkDigit = $matches[2];
+                $sum = 0;
+                $weights = array(1,3,7,9,1,3,7,9);
+                foreach ($weights as $position=>$weight) {
+                    $sum += $base[$position] * $weight;
+                }
+                return ($sum % 10) == intval($checkDigit);
+            }
+        } else {
+            $this->addError($attribute, 'Not a valid Medicare Number');
         }
     }
 
