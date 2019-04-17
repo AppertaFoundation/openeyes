@@ -344,7 +344,7 @@ class DefaultController extends OphTrOperationbookingEventController
             break;
           }
         }
-        if($element_operation) {
+        if($operation_element && $operation_element->booking) {
           $anaesthetic_type_ids = isset($data['AnaestheticType']) ? $data['AnaestheticType'] : [];
           foreach($anaesthetic_type_ids as $anaesthetic_type_id){
             $anaesthetic = AnaestheticType::model()->findByPk($anaesthetic_type_id);
