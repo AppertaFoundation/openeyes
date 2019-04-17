@@ -1219,11 +1219,17 @@ class DefaultController extends \BaseEventTypeController
                         $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'there must be a date set for the iop value');
                         $errors[$et_name][] = 'There must be a date set for the iop value';
                     } else {
-                        $date = \DateTime::createFromFormat('d/m/Y', $value['examination_date']);
-                        $errorsDate = \DateTime::getLastErrors();
-                        if (!$date || !empty($errorsDate['warning_count'])) {
-                            $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: d/m/Y');
-                            $errors[$et_name][] = 'Date is wrongly formatted: format accepted: d/m/Y';
+                        // don't accept event dates set in the future
+                        if (\DateTime::createFromFormat('d/m/Y', $value['examination_date'])->getTimestamp() > time()) {
+                            $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'Event Date cannot be in the future.');
+                            $errors[$et_name][] = 'Event Date cannot be in the future.';
+                        } else {
+                            $date = \DateTime::createFromFormat('d/m/Y', $value['examination_date']);
+                            $errorsDate = \DateTime::getLastErrors();
+                            if (!$date || !empty($errorsDate['warning_count'])) {
+                                $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: d/m/Y');
+                                $errors[$et_name][] = 'Date is wrongly formatted: format accepted: d/m/Y';
+                            }
                         }
                     }
                 }
