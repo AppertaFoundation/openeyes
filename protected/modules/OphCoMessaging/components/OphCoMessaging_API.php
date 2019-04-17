@@ -21,7 +21,7 @@ use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 
 class OphCoMessaging_API extends \BaseAPI
 {
-	const DEFAULT_MESSAGES_FOLDER = 'unread';
+    const DEFAULT_MESSAGES_FOLDER = 'unread';
 
     public function getMenuItem()
     {
@@ -93,17 +93,17 @@ class OphCoMessaging_API extends \BaseAPI
             'number_urgent_unread' => $this->getInboxMessages($user, true)['number_unread'],
             'number_query_unread' => $this->getInboxMessages($user, false, true)['number_unread'],
             'number_sent_unread' => $this->getSentMessages($user)['number_unread']
-            ];
+        ];
     }
 
     /**
      * Get received messages.
-     * 
+     *
      * @param \CWebUser $user
      * @param bool $urgent_only
-		 * @param bool $query_only
-		 * @param bool $unread_only
-		 * @param bool $read_only
+     * @param bool $query_only
+     * @param bool $unread_only
+     * @param bool $read_only
      *
      * @return array data provider and total unread messages
      */
@@ -117,21 +117,21 @@ class OphCoMessaging_API extends \BaseAPI
 
         $sort->attributes = array(
             'priority' => array('asc' => 'urgent asc',
-                                'desc' => 'urgent desc', ),
-						'is_query' => array('asc' => 'is_query asc',
-																'desc' => 'is_query desc', ),
+                'desc' => 'urgent desc', ),
+            'is_query' => array('asc' => 'is_query asc',
+                'desc' => 'is_query desc', ),
             'event_date' => array('asc' => 't.created_date asc',
-                                'desc' => 't.created_date desc', ),
+                'desc' => 't.created_date desc', ),
             'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
-                                    'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
+                'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
             'hos_num' => array('asc' => 'patient.hos_num asc',
-                                'desc' => 'patient.hos_num desc', ),
+                'desc' => 'patient.hos_num desc', ),
             'age' => array('asc' => 'patient.dob desc',
-                            'desc' => 'patient.dob asc', ),
+                'desc' => 'patient.dob asc', ),
             'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
-                            'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
+                'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
             'gender' => array('asc' => 'patient.gender asc',
-                                'desc' => 'patient.gender desc', ),
+                'desc' => 'patient.gender desc', ),
         );
 
         $sort->defaultOrder = 'event_date desc';
@@ -143,15 +143,13 @@ class OphCoMessaging_API extends \BaseAPI
         $criteria = new \CDbCriteria();
         $criteria->select = array(
             '*',
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.message_text, IF(comment.marked_as_read = 0, comment.comment_text, t.message_text))  as message_text'),
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_date, IF(comment.marked_as_read = 0, comment.created_date, t.created_date))  as created_date'),
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_user_id, IF(comment.marked_as_read = 0, comment.created_user_id, t.created_user_id)) as created_user_id'),
+            new \CDbExpression('IF(last_comment.created_user_id = :uid, t.message_text, IF(last_comment.marked_as_read = 0, last_comment.comment_text, t.message_text))  as message_text'),
+            new \CDbExpression('IF(last_comment.created_user_id = :uid, t.created_date, IF(last_comment.marked_as_read = 0, last_comment.created_date, t.created_date))  as created_date'),
+            new \CDbExpression('IF(last_comment.created_user_id = :uid, t.created_user_id, IF(last_comment.marked_as_read = 0, last_comment.created_user_id, t.created_user_id)) as created_user_id'),
         );
 
-        $criteria->addCondition('t.for_the_attention_of_user_id = :uid');
-        $criteria->addCondition('t.created_user_id = :uid AND comment.marked_as_read = 0', 'OR');
-        $criteria->join = 'LEFT JOIN ophcomessaging_message_comment AS comment ON t.id = comment.element_id';
-        $criteria->with = array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
+        $criteria->addCondition('t.for_the_attention_of_user_id = :uid OR t.created_user_id = :uid');
+        $criteria->with = array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact' , 'last_comment');
         $criteria->together = true;
         if ($from) {
             $criteria->addCondition('DATE(t.created_date) >= :from');
@@ -167,18 +165,19 @@ class OphCoMessaging_API extends \BaseAPI
         if ($urgent_only) {
             $criteria->addCondition('t.urgent != 0');
         }
-				if ($query_only) {
-                    $message_type_query_id = \Yii::app()->db->createCommand()
-                        ->select('id')
-                        ->from('ophcomessaging_message_message_type')
-                        ->where('name = :name', array(':name' => 'Query'))->queryScalar();
+        if ($query_only) {
+            $message_type_query_id = \Yii::app()->db->createCommand()
+                ->select('id')
+                ->from('ophcomessaging_message_message_type')
+                ->where('name = :name', array(':name' => 'Query'))->queryScalar();
 
-					$criteria->addCondition("t.message_type_id = :message_type_id");
-					$params[':message_type_id'] = $message_type_query_id;
-				}
-				if ($unread_only) {
-					$criteria->addCondition('t.marked_as_read != "1"');
-				}
+            $criteria->addCondition("t.message_type_id = :message_type_id");
+            $params[':message_type_id'] = $message_type_query_id;
+        }
+        if ($unread_only) {
+            $criteria->addCondition('(t.marked_as_read != "1" AND t.for_the_attention_of_user_id = :uid) OR (last_comment.marked_as_read != "1"
+            AND last_comment.created_user_id != :uid)');
+        }
         $criteria->params = $params;
 
         $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
@@ -194,7 +193,8 @@ class OphCoMessaging_API extends \BaseAPI
             ));
 
         $unread_criteria = new \CDbCriteria();
-        $unread_criteria->addCondition('t.marked_as_read != 1');
+        $unread_criteria->addCondition('(t.marked_as_read != 1  AND t.for_the_attention_of_user_id = :uid)
+         OR (last_comment.marked_as_read != 1  AND last_comment.created_user_id != :uid)');
         $unread_criteria->mergeWith($criteria);
         $number_unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
 
@@ -206,7 +206,7 @@ class OphCoMessaging_API extends \BaseAPI
 
     /**
      * Get sent messages.
-     * 
+     *
      * @param \CWebUser $user
      *
      * @return array data provider and total unread messages
@@ -221,17 +221,17 @@ class OphCoMessaging_API extends \BaseAPI
 
         $sort->attributes = array(
             'priority' => array('asc' => 'urgent asc',
-                                'desc' => 'urgent desc', ),
+                'desc' => 'urgent desc', ),
             'event_date' => array('asc' => 't.created_date asc',
-                                'desc' => 't.created_date desc', ),
+                'desc' => 't.created_date desc', ),
             'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
-                                    'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
+                'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
             'hos_num' => array('asc' => 'patient.hos_num asc',
-                                'desc' => 'patient.hos_num desc', ),
+                'desc' => 'patient.hos_num desc', ),
             'age' => array('asc' => 'patient.dob desc',
                 'desc' => 'patient.dob asc', ),
             'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
-                            'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
+                'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
             'gender' => array('asc' => 'patient.gender asc',
                 'desc' => 'patient.gender desc', ),
         );

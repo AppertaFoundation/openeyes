@@ -26,7 +26,7 @@ $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_com
     (is_array($operationNoteList) ? key($operationNoteList) : null));
 
 $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
-$subspecialty_id = $this->firm->serviceSubspecialtyAssignment ? $this->firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 
 $right_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element->id, $operation_note_id,
     $subspecialty_id, \Eye::RIGHT);
