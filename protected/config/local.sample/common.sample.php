@@ -182,7 +182,7 @@ $config = array(
                 'client_secret' => getenv('OE_PORTAL_CLIENT_SECRET') ? getenv('OE_PORTAL_CLIENT_SECRET') : ( rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) ? rtrim(file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) : '' ),
             ),
         ),
-        'signature_app_url' => getenv('OE_SIGNATUE_APP_URL') ? getenv('OE_SIGNATUE_APP_URL') : 'https://dev.oesign.uk',
+        'signature_app_url' => getenv('OE_SIGNATURE_APP_URL') ? getenv('OE_SIGNATURE_APP_URL') : 'https://dev.oesign.uk',
         'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/tmp/docman',
         'docman_login_url' => 'http://localhost/site/login',
         'docman_user' => 'docman_user',
