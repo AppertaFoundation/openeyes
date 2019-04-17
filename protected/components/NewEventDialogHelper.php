@@ -38,13 +38,16 @@ class NewEventDialogHelper
     {
         if ($subspecialty = $episode->getSubspecialty()) {
             $structured_subspecialty = static::structureSubspecialty($subspecialty);
+            $firm = static::structureFirm(\Firm::model()->findByPk($episode->firm_id));
         } else {
             $structured_subspecialty = static::$support_services_subspecialty;
+            $firm = '';
         }
         return array(
             'id' => $episode->id,
             'service' => $episode->firm ? $episode->firm->name : '',
-            'subspecialty' => $structured_subspecialty
+            'subspecialty' => $structured_subspecialty,
+            'firm' => $firm
         );
     }
 

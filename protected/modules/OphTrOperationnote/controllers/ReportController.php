@@ -293,7 +293,11 @@ class ReportController extends BaseReportController
     public function actionCataractComplicationTotal()
     {
         $reportObj = new CataractComplicationsReport(Yii::app());
-
-        $this->renderJSON(array($reportObj->getTotalComplications(), $reportObj->getTotalOperations()));
+        if ($reportObj->allSurgeons){
+            $surgeon = 'all';
+        }else{
+            $surgeon = 'this_surgeon';
+        }
+        $this->renderJSON(array($reportObj->getTotalComplications($surgeon), $reportObj->getTotalOperations($surgeon)));
     }
 }

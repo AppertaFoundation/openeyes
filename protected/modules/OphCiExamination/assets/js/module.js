@@ -1952,11 +1952,41 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
             case 'doodlesLoaded':
                 OphCiExamination_Gonioscopy_switch_mode(drawing.canvas, drawing.firstDoodleOfClass('Gonioscopy').getParameter('mode'));
                 break;
-            case 'parameterChanged':
+            case 'parameterChanged': {
                 if (message.object.doodle.className == 'Gonioscopy' && message.object.parameter == 'mode') {
                     OphCiExamination_Gonioscopy_switch_mode(drawing.canvas, message.object.value);
                 }
+
+                let doodlesToSyncInGonioscopy = [
+                    "AngleGradeNorth",
+                    "AngleGradeEast",
+                    "AngleGradeSouth",
+                    "AngleGradeWest",
+                ];
+
+                let doodleChanged = message.object.doodle;
+                let doodleChangedIsAngleGradeDoodle = false;
+                for(let i = 0; i < doodlesToSyncInGonioscopy.length; ++i) {
+                    if (doodleChanged.className === doodlesToSyncInGonioscopy[i]) {
+                        doodleChangedIsAngleGradeDoodle = true;
+                        break;
+                    }
+                }
+
+                if (doodleChangedIsAngleGradeDoodle && message.object.parameter === 'colour' ) {
+                    let doodleFromUpdate = drawing.firstDoodleOfClass(doodleChanged.className);
+                    doodlesToSyncInGonioscopy.forEach(function(doodleName) {
+                        if(doodleName != doodleChanged.className) {
+                            let doodleToUpdate = drawing.firstDoodleOfClass(doodleName);
+                            if(doodleToUpdate && doodleToUpdate.colour != doodleFromUpdate.colour) {
+                                doodleToUpdate.setParameterFromString('colour', doodleFromUpdate.colour, true);
+                                doodleToUpdate.drawing.repaint();
+                            }
+                        }
+                    });
+                }
                 break;
+            }
             case 'reset':
             case 'resetEdit':
                 $(drawing.canvasParent).closest('.ed-body').find('select.gonioExpert').val(2).trigger('change');
@@ -1964,6 +1994,16 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
         }
     };
     drawing.registerForNotifications(this);
+
+    const anteriorSegmentCanvas = $(".OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment").
+        find("[data-side='" + (drawing.eye === 1 ? "left" : "right") + "']").
+        find('canvas');
+    if(anteriorSegmentCanvas) {
+        let anteriorSegmentController = anteriorSegmentCanvas.data('controller');
+        if(anteriorSegmentController) {
+            anteriorSegmentController.setGonioscopyDrawing(drawing);
+        }
+    }
 }
 
 function OphCiExamination_Gonioscopy_init() {

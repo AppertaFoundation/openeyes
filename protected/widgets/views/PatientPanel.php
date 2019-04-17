@@ -39,7 +39,7 @@ $deceased = $this->patient->isDeceased();
      data-patient-id="<?= $this->patient->id ?>"
 >
     <div class="patient-name">
-        <a href="<?= (new CoreAPI())->generateEpisodeLink($this->patient); ?>">
+        <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
             <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
             <span class="patient-firstname">
       <?php echo $this->patient->getFirst_name(); ?>
@@ -52,7 +52,7 @@ $deceased = $this->patient->isDeceased();
         <div class="patient-details">
             <div class="hospital-number">
                 <span>No. </span>
-                <?php echo $this->patient->hos_num ?>
+                <span class="js-copy-to-clipboard" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></span>
             </div>
             <div class="nhs-number">
                 <span><?php echo Yii::app()->params['nhs_num_label'] ?></span>
@@ -123,7 +123,7 @@ $deceased = $this->patient->isDeceased();
                     </a>
                 </div>
             <?php endif; ?>
-            <?php if (Yii::app()->moduleAPI->get('OETrial')) { ?>
+            <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
                 <div class="patient-trials js-trials-btn">
                     <svg viewBox="0 0 30 30" class="icon">
                         <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>

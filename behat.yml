@@ -19,9 +19,9 @@ default:
             selenium2:
                 wd_host:        http://localhost:4444/wd/hub
                 browser: 'chrome'
-            saucelabs:
-                connect:  true
-                browser:  'chrome'
                 capabilities:
-                    version:  ''
-                    platform: 'Windows 7'
+                    chrome:
+                        switches:
+                            - "--headless"
+                            - "--disable-gpu"
+

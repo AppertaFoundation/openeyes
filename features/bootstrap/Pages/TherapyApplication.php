@@ -513,11 +513,7 @@ class TherapyApplication extends OpenEyesPage {
 		$this->getElement ( 'saveTherapyApplication' )->click ();
 
 		$this->getSession ()->wait ( 5000 );
-		if ($this->hasTherapySaved ()) {
-			print "Therapy has been saved OK";
-		} 
-
-		else {
+		if (!$this->hasTherapySaved ()) {
 			throw new BehaviorException ( "WARNING!!!  Therapy has NOT been saved!!  WARNING!!" );
 		}
 	}

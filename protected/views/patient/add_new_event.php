@@ -71,7 +71,7 @@
           <h6 style="margin-top:5px"><?= Firm::serviceLabel() ?></h6>
           <div class="no-subspecialty"><h6>Select Subspecialty</h6></div>
           <div class="fixed-service" style="display: none;"></div>
-          <select class="select-service" style="display: none;">
+          <select class="select-service cols-10" style="display: none;">
           </select>
 
           <button class="add-subspecialty-btn button hint green" id="js-add-subspecialty-btn"><i class="oe-i plus"></i></button>
@@ -85,7 +85,7 @@
       <td class="step-event-types" style="visibility: hidden;">
         <h3>Select New Event</h3>
         <ul id="event-type-list" class="event-type-list">
-            <?php foreach ($eventTypes as $eventType) {
+            <?php foreach ($event_types as $eventType) {
                 $args = $this->getCreateArgsForEventTypeOprn($eventType, array('episode'));
                 if (call_user_func_array(array($this, 'checkAccess'), $args)) {
                     ?>
