@@ -232,12 +232,12 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
    * Synchronise iris colour from Gonioscopy if Gonioscopy section exists
    *
    */
-  AnteriorSegmentController.prototype.SyncIrisColourFromGonioscopy = function() {
+  AnteriorSegmentController.prototype.SyncIrisColourWithGonioscopy = function() {
     if(this.gonioscopyDrawing && $(".OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy")[0]) {
       let angleGradeNorthDoodle = this.gonioscopyDrawing.firstDoodleOfClass('AngleGradeNorth');
       let anteriorSegmentDoodle = this.primaryDrawing.firstDoodleOfClass('AntSeg');
       if(angleGradeNorthDoodle && anteriorSegmentDoodle) {
-        const defaultIrisColour = 'Blue';
+        const defaultIrisColour = (typeof default_iris_colour) !== 'undefined' ? default_iris_colour : 'Blue';
         // if angleGradeNorthDoodle.colour is default and anteriorSegmentDoodle.colour is not,
         // we can assume that anteriorSegmentDoodle has been changed and the other hasn't
         const anteriorSegmentDoodleIsTheSource = angleGradeNorthDoodle.colour === defaultIrisColour && anteriorSegmentDoodle.colour !== defaultIrisColour;
@@ -258,7 +258,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
   AnteriorSegmentController.prototype.primaryDrawingNotification = function (msgArray) {
     switch (msgArray['eventName']) {
       case 'afterReset':
-        this.SyncIrisColourFromGonioscopy();
+        this.SyncIrisColourWithGonioscopy();
         break;
       case 'ready':
         if (this.secondaryDrawingReady()) {
@@ -269,7 +269,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         if(typeof pcr_init === 'function'){
             pcr_init();
         }
-        this.SyncIrisColourFromGonioscopy();
+        this.SyncIrisColourWithGonioscopy();
         break;
       case 'doodlesLoaded':
         if (this.resetting) {
@@ -403,14 +403,16 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     if ($(".OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment")[0] && anteriorSegmentDoodle) {
       // if Anterior Segment section does not exist, then sync is not needed
       switch (msgArray['eventName']) {
-        case 'afterReset':
-        case 'ready': {
-          let angleGradeNorthDoodle = this.gonioscopyDrawing.firstDoodleOfClass("AngleGradeNorth");
-          if (angleGradeNorthDoodle && anteriorSegmentDoodle.colour) {
-            this.setDoodleParameter(anteriorSegmentDoodle, 'colour', angleGradeNorthDoodle, 'colour', true);
+        case 'afterReset': {
+            let angleGradeNorthDoodle = this.gonioscopyDrawing.firstDoodleOfClass("AngleGradeNorth");
+            if (angleGradeNorthDoodle && anteriorSegmentDoodle.colour) {
+              this.setDoodleParameter(anteriorSegmentDoodle, 'colour', angleGradeNorthDoodle, 'colour', true);
+            }
           }
           break;
-        }
+        case 'ready':
+          this.SyncIrisColourWithGonioscopy();
+          break;
         case 'parameterChanged': {
           let change = msgArray['object'];
           if (change.doodle.className === 'AngleGradeNorth' && change.parameter === 'colour') {
