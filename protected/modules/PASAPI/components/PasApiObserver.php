@@ -60,7 +60,7 @@ class PasApiObserver
 
         if( !$this->isAvailable() ){
             // log ?
-       //     return false;
+            return false;
         }
 
         $resource_model = "\\OEModule\\PASAPI\\resources\\Patient";
