@@ -15,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+$url = Yii::app()->assetManager->getPublishedPathOfAlias('application.modules.OphCiExamination.assets');
+\Yii::app()->clientScript->registerScriptFile($url . '/js/IntraocularPressure.js');
 
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryIOP.js') ?>"></script>
