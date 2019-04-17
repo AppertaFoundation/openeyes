@@ -101,7 +101,8 @@ class OphTrOperationbooking_API extends BaseAPI
         $criteria = new CDbCriteria();
         $criteria->addInCondition('status_id', array(
             OphTrOperationbooking_Operation_Status::STATUS_SCHEDULED,
-            OphTrOperationbooking_Operation_Status::STATUS_RESCHEDULED
+            OphTrOperationbooking_Operation_Status::STATUS_RESCHEDULED,
+            OphTrOperationbooking_Operation_Status::STATUS_REQUIRES_SCHEDULING
         ));
 
         return $this->getElements(
