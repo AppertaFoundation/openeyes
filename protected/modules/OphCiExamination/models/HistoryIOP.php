@@ -70,7 +70,6 @@ class HistoryIOP extends \BaseEventTypeElement
             ['event_id, eye_id, last_modified_user_id, created_user_id', 'length', 'max'=>10],
             ['last_modified_date, created_date', 'safe'],
             // The following rule is used by search().
-            // @todo Please remove those attributes that should not be searched.
             ['id, event_id, eye_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'],
         ];
     }
@@ -120,8 +119,6 @@ class HistoryIOP extends \BaseEventTypeElement
      */
     public function search()
     {
-        // @todo Please modify the following code to remove attributes that should not be searched.
-
         $criteria=new CDbCriteria;
 
         $criteria->compare('id',$this->id);
@@ -135,16 +132,5 @@ class HistoryIOP extends \BaseEventTypeElement
         return new CActiveDataProvider($this, [
             'criteria'=>$criteria,
         ]);
-    }
-
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return HistoryIOP the static model class
-     */
-    public static function model($className=__CLASS__)
-    {
-        return parent::model($className);
     }
 }
