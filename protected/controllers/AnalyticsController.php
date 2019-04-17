@@ -162,7 +162,7 @@ class AnalyticsController extends BaseController
   }
 
   private function getPatientList(){
-      $paitent_list_command = Yii::app()->db->createCommand()->select('DISTINCT p.hos_num as hos_num, p.id AS id, CONCAT(c.first_name, \' \', c.last_name) AS name, p.dob as dob, YEAR(CURRENT_DATE) - YEAR(p.dob) AS age, p.gender as gender, patient_diagnoses.diagnoses AS diagnoses,patient_procedures.procedures AS procedures')->from('patient p')->leftJoin('contact c','p.contact_id = c.id')->leftJoin('(SELECT patient_id AS patient_id, GROUP_CONCAT(diagnoses) AS diagnoses
+      $paitent_list_command = Yii::app()->db->createCommand()->select('DISTINCT p.hos_num as hos_num, p.id AS id, CONCAT(c.first_name, \' \', c.last_name) AS name, p.dob as dob, IF(p.date_of_death IS NOT NULL, YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0), YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age, p.gender as gender, patient_diagnoses.diagnoses AS diagnoses,patient_procedures.procedures AS procedures')->from('patient p')->leftJoin('contact c','p.contact_id = c.id')->leftJoin('(SELECT patient_id AS patient_id, GROUP_CONCAT(diagnoses) AS diagnoses
                   FROM (
                          SELECT ep.patient_id AS patient_id, GROUP_CONCAT(d.term) AS diagnoses
                          FROM episode ep
@@ -314,10 +314,10 @@ class AnalyticsController extends BaseController
   public function validateAgeAndDateFilters($age, $date){
       $return_value = true;
       if (isset($this->filters['age_min'])){
-          $return_value = ($age >= (int)$this->filters['age_min']);
+          $return_value = ((int)$age >= (int)$this->filters['age_min']);
       }
       if (isset($this->filters['age_max']) && $return_value){
-          $return_value = ($age <= (int)$this->filters['age_max']);
+          $return_value = ((int)$age <= (int)$this->filters['age_max']);
       }
       if (isset($this->filters['date_to']) && $return_value){
           $return_value = ($date < $this->filters['date_to']);
@@ -1055,7 +1055,6 @@ class AnalyticsController extends BaseController
           foreach (['left','right'] as $side){
               if (isset($this->filters['plot_va_change']) && $this->filters['plot_va_change']){
                   $this->filters['plot_va_change_initial_va_value'] = (empty(${$side.'_va_list'}))? null: ${$side.'_va_list'}[0]['average'];
-                  $this->filters['plot_va_change_initial_second_value'] = (empty(${$side.'_second_list'}))? null: ${$side.'_second_list'}[0]['average'];
               }
               $custom_data[] = array(
                   array(
@@ -1089,9 +1088,6 @@ class AnalyticsController extends BaseController
                       'x' => array_keys(${$side.'_second_list'}),
                       'y' => array_map(
                           function ($item){
-                              if (isset($this->filters['plot_va_change_initial_second_value'])){
-                                  $item['average'] -= $this->filters['plot_va_change_initial_second_value'];
-                              }
                               return $item['average'];
                           }, array_values(${$side.'_second_list'})),
                       'customdata'=>array_map(
