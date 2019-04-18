@@ -102,10 +102,9 @@ class RefSetAdminController extends BaseAdminController
         $this->_setModelData($model, $data);
         $model->save();
 
-
         foreach ($model->medicationSetItems as $item) {
             $item->medication_set_id = $model->id;
-            $item->save();
+            try{ $item->save(); }catch(Exception $e){ print_r($item->getAttributes()); exit; }
         }
 
 

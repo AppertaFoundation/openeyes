@@ -57,7 +57,7 @@
 </script>
 <script type="text/javascript">
     $(function(){
-        $(document).on("click", ".js-delete-set", function (e) {
+        $(document).on("click", ".js-delete-attribute", function (e) {
             $(e.target).closest("tr").remove();
         });
     });
@@ -88,7 +88,7 @@
         <tr data-key="<?=$rowkey?>">
             <td>
                 <input type="hidden" name="MedicationSet[medicationSetItems][id][]" value="<?=$id?>" />
-                <input type="hidden" name="MedicationSet[medicationSetItems][medication_id][]" value="<?=$assignment->id?>" />
+                <input type="hidden" name="MedicationSet[medicationSetItems][medication_id][]" value="<?=$assignment->medication_id?>" />
                 <?=CHtml::encode($assignment->medication->preferred_term)?>
             </td>
             <td>
