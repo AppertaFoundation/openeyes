@@ -102,7 +102,6 @@ class RefSetAdminController extends BaseAdminController
         $this->_setModelData($model, $data);
         $model->save();
 
-
         $existing_ids = array();
         $updated_ids = array();
         foreach ($model->medicationSetRules as $rule) {

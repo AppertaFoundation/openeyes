@@ -16,10 +16,6 @@
 
     $medicationSet = MedicationSet::model()->findByAttributes(['id' => $id]);
     $medicationSetItems = $medicationSet->medications;
-echo '<pre>';
-print_r($medicationSetItems);
-echo '</pre>';
-exit;
 
 ?>
 <script id="set_row_template" type="x-tmpl-mustache">
