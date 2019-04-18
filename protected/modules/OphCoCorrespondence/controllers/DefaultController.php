@@ -283,7 +283,6 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-
         if ($macro->cc_drss) {
             $commissioningbodytype = CommissioningBodyType::model()->find('shortname = ?', array('CCG'));
             if ($commissioningbodytype && $commissioningbody = $patient->getCommissioningBodyOfType($commissioningbodytype)) {

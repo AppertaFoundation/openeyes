@@ -136,7 +136,6 @@ class PortalExamsCommand extends CConsoleCommand
                     $importStatus = ImportStatus::model()->find('status_value = "Duplicate Event"');
                     $examinationEventLog->import_success = $importStatus->id;
                     $examinationEventLog->optometrist = $examination['op_tom']['name'];
-
                     $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
                     $examinationEventLog->optometrist_address = $examination['op_tom']['address'];
                     echo 'Duplicate record found for ' . $examination['patient']['unique_identifier'] . PHP_EOL;

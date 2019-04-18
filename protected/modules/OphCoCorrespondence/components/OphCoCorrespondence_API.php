@@ -647,7 +647,6 @@ class OphCoCorrespondence_API extends BaseAPI
             throw new Exception('Invalid contact format: '.$contact_string);
         }
 
-
         if ($m[1] == 'Contact') {
             // NOTE we are assuming that Contact must be a Person model here
             $contact = Person::model()->find('contact_id=?', array($m[2]));
@@ -661,7 +660,6 @@ class OphCoCorrespondence_API extends BaseAPI
                 throw new Exception("{$m[1]} not found: {$m[2]}");
             }
         }
-
 
         if (method_exists($contact, 'isDeceased') && $contact->isDeceased()) {
             return json_encode(array('errors' => 'DECEASED'));
@@ -680,7 +678,6 @@ class OphCoCorrespondence_API extends BaseAPI
             'include_label' => false,
             'delimiter' => "\n",
         ));
-        
 
         if (!$address) {
             $address = '';
