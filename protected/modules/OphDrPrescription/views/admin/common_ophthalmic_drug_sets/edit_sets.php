@@ -16,35 +16,39 @@
 
     $medicationSet = MedicationSet::model()->findByAttributes(['id' => $id]);
     $medicationSetItems = $medicationSet->medications;
+echo '<pre>';
+print_r($medicationSetItems);
+echo '</pre>';
+exit;
 
 ?>
 <script id="set_row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
         <td>
-        <input type="hidden" name="Medication[medicationSetItems][id][]" value="-1" />
-        <input type="hidden" name="Medication[medicationSetItems][medication_id][]" value="{{medication.id}}" />
+        <input type="hidden" name="MedicationSet[medicationSetItems][id][]" value="-1" />
+        <input type="hidden" name="MedicationSet[medicationSetItems][medication_id][]" value="{{medication.id}}" />
         {{medication.label}}
         </td>
        <td>
-            <?php echo CHtml::textField('Medication[medicationSetItems][default_dose][]', "1"); ?>
+            <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose][]', "1"); ?>
         </td>
         <td>
-            <?php echo CHtml::textField('Medication[medicationSetItems][default_dose_unit_term][]', '{{unit.label}}'); ?>
+            <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose_unit_term][]', '{{unit.label}}'); ?>
         </td>
         <td>
-            <input type="hidden" name="Medication[medicationSetItems][default_form_id][]" value="{{form.id}}" />
+            <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][]" value="{{form.id}}" />
             {{form.label}}
         </td>
         <td>
-            <input type="hidden" name="Medication[medicationSetItems][default_route_id][]" value="{{route.id}}" />
+            <input type="hidden" name="MedicationSet[medicationSetItems][default_route_id][]" value="{{route.id}}" />
             {{route.label}}
         </td>
         <td>
-            <input type="hidden" name="Medication[medicationSetItems][default_frequency_id][]" value="{{frequency.id}}" />
+            <input type="hidden" name="MedicationSet[medicationSetItems][default_frequency_id][]" value="{{frequency.id}}" />
             {{frequency.label}}
         </td>
         <td>
-            <input type="hidden" name="Medication[medicationSetItems][default_duration_id][]" value="{{duration.id}}" />
+            <input type="hidden" name="MedicationSet[medicationSetItems][default_duration_id][]" value="{{duration.id}}" />
             {{duration.label}}
         </td>
         <td>
@@ -82,30 +86,30 @@
         ?>
         <tr data-key="<?=$rowkey?>" <?php if($assignment->medicationSet->hidden): ?>style="display:none;" <?php endif; ?>>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][id][]" value="<?=$id?>" />
-                <input type="hidden" name="Medication[medicationSetItems][medication_set_id][]" value="<?=$assignment->medication_set_id?>" />
+                <input type="hidden" name="MedicationSet[medicationSetItems][id][]" value="<?=$id?>" />
+                <input type="hidden" name="MedicationSet[medicationSetItems][medication_set_id][]" value="<?=$assignment->medication_set_id?>" />
                 <?=CHtml::encode($assignment->medicationSet->name)?>
             </td>
             <td>
-				<?php echo CHtml::textField('Medication[medicationSetItems][default_dose][]', $assignment->default_dose); ?>
+				<?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose][]', $assignment->default_dose); ?>
             </td>
             <td>
-				<?php echo CHtml::textField('Medication[medicationSetItems][default_dose_unit_term][]', $assignment->default_dose_unit_term); ?>
+				<?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose_unit_term][]', $assignment->default_dose_unit_term); ?>
             </td>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][default_form_id][]" value="<?=$assignment->default_form_id?>" />
+                <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][]" value="<?=$assignment->default_form_id?>" />
 				<?=$assignment->default_form_id ? CHtml::encode($assignment->defaultForm->term) : ""?>
             </td>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][default_route_id][]" value="<?=$assignment->default_route_id?>" />
+                <input type="hidden" name="MedicationSet[medicationSetItems][default_route_id][]" value="<?=$assignment->default_route_id?>" />
 				<?=$assignment->default_route_id ? CHtml::encode($assignment->defaultRoute->term) : ""?>
             </td>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][default_frequency_id][]" value="<?=$assignment->default_frequency_id?>" />
+                <input type="hidden" name="MedicationSet[medicationSetItems][default_frequency_id][]" value="<?=$assignment->default_frequency_id?>" />
 				<?=$assignment->default_frequency_id ? CHtml::encode($assignment->defaultFrequency->term) : ""?>
             </td>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][default_duration_id][]" value="<?=$assignment->default_duration_id?>" />
+                <input type="hidden" name="MedicationSet[medicationSetItems][default_duration_id][]" value="<?=$assignment->default_duration_id?>" />
 				<?=$assignment->default_duration_id ? CHtml::encode($assignment->defaultDuration->name) : ""?>
             </td>
             <td>

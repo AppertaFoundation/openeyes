@@ -99,7 +99,9 @@ class RefSetAdminController extends BaseAdminController
         /** @var MedicationSet $model */
 
         $data = Yii::app()->request->getPost('MedicationSet');
-        $model->setAttributes($data);
+        $this->_setModelData($model, $data);
+        $model->save();
+
 
         $existing_ids = array();
         $updated_ids = array();
@@ -134,6 +136,7 @@ class RefSetAdminController extends BaseAdminController
             MedicationSetRule::model()->deleteByPk($deleted_ids);
         }
 
+
         if (empty($usage_code)) {
             $this->redirect('/OphDrPrescription/refSetAdmin/list');
         } else {
@@ -145,6 +148,43 @@ class RefSetAdminController extends BaseAdminController
 
         }
 
+    }
+
+    private function _setModelData(MedicationSet $model, $data)
+    {
+        $model->setAttributes($data);
+        $model->validate();
+
+        $medicationSetItems = array();
+        if(array_key_exists('medicationSetItems', $data)) {
+            foreach ($data['medicationSetItems']['id'] as $key => $medicationSetItem_id) {
+                $attributes = array();
+
+                foreach (MedicationSetItem::model()->attributeNames() as $attr_name) {
+                    if(array_key_exists($attr_name, $data['medicationSetItems'])) {
+                        $attributes[$attr_name] = array_key_exists($key, $data['medicationSetItems'][$attr_name]) ? $data['medicationSetItems'][$attr_name][$key] : null;
+                    }
+                }
+
+                if($medicationSetItem_id == -1) {
+                    $medicationSetItem = new MedicationSetItem();
+                }
+                else {
+                    $medicationSetItem = MedicationSetItem::model()->findByPk($medicationSetItem_id);
+                }
+
+                $medicationSetItem->setAttributes($attributes);
+                $medicationSetItem->medication_set_id = $model->id;
+
+                if(!$medicationSetItem->validate(array('medication_id', 'default_form_id', 'default_route_id', 'default_frequency_id', 'default_duration_id'))) {
+                    $model->addErrors($medicationSetItem->getErrors());
+                }
+
+                $medicationSetItems[] = $medicationSetItem;
+            }
+        }
+
+        $model->medicationSetItems = $medicationSetItems;
     }
 
     public function actionDelete()
