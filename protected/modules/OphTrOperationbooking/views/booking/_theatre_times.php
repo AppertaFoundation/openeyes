@@ -56,6 +56,11 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                                 <?php echo abs($session->availableMinutes) ?> min
                                 <?php echo $session->minuteStatus ?>
                             </div>
+                            <div class="time">
+                                <?= "&nbsp;" . $session->start_time ?>
+                                 -
+                                <?= $session->end_time ?>
+                            </div>
                             <div class="specialists">
                                 <?php if ($session->consultant) { ?>
                                     <div class="consultant" title="Consultant Present">Consultant</div>
@@ -88,16 +93,22 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                             </td>
                         <?php } ?>
                     </tr>
-                    <?php if (isset($selectedSession) && !$selectedSession->operationBookable($operation)) { ?>
-                        <tr>
-                            <td style="float:left">
-                                <span class="session-unavailable">
-                                    <?=\CHtml::encode($selectedSession->unbookableReason($operation)) ?>
-                                </span>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php if (isset($selectedSession)) {
+                        $operationBookable = $selectedSession->operationBookable($operation);
+                        $thereIsPlaceForComplexBooking = $selectedSession->isTherePlaceForComplexBooking($operation);
+                        if(!$operationBookable || !$thereIsPlaceForComplexBooking) { ?>
+                            <tr>
+                                <td style="float:left">
+                                    <span class="session-unavailable alert-box warning">
+                                        <?=$operationBookable ?
+                                            "The allowed number of complex bookings has been reached for this session" :
+                                            \CHtml::encode($selectedSession->unbookableReason($operation)) ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php }
+                    }
+                } ?>
                 <?php ++$i;
             } ?>
             </tfoot>
