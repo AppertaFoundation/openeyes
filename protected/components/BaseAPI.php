@@ -223,15 +223,22 @@ class BaseAPI
      * @param string $before - date formatted string
      * @return BaseEventTypeElement|null
      */
-    public function getElementFromLatestEvents($element, Patient $patient, $use_context = false, $before = null)
+    public function getElementFromLatestSameDayEvents($element, Patient $patient, $use_context = false, $before = null)
     {
-        if ($events = $this->getEvents($patient, $use_context, $before)) {
+        $events = $this->getEvents($patient, $use_context, $before);
+        if ($events) {
             $latest_event = $events[0];
-            $event_ids = array_map(function($event) use ($latest_event){
+            $event_ids = [];
+
+            ## Seeing as the events are in chronological order, same date events should be next to each other
+            foreach($events AS $event){
                 if($event->event_date === $latest_event->event_date){
-                    return $event->id;
+                    $event_ids[] = $event->id;
+                } else {                
+                    ## therefore once the array index has moved passed relevant matches, all other events are irrelevant
+                    break;
                 }
-            }, $events);
+            }
             $criteria = new CDbCriteria();
             $criteria->addInCondition('event_id', $event_ids);
 

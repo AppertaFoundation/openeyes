@@ -29,9 +29,8 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLetterProcedures($patient , $use_context = false)
     {
         $return = '';
-
-        if($procedureList =  $this->getElementFromLatestEvents('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
-
+        $procedureList =  $this->getElementFromLatestSameDayEvents('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)
+        if($procedureList){
             foreach ($procedureList as $procedureIndex => $plist) {
                 foreach ($plist->procedures as $i => $procedure) {
                     if ($i) {
