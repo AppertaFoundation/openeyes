@@ -84,24 +84,29 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
     public function findWorkflow($firm_id, $status_id)
     {
         $subspecialty_id = null;
+        $firm = \Firm::model()->findByPk($firm_id);
 
-        if ($firm = \Firm::model()->findByPk($firm_id)) {
+        if ($firm) {
             $subspecialty_id = ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
         }
-
-        if ($rule = self::model()->find('subspecialty_id=? and firm_id=? and episode_status_id=?', array($subspecialty_id, $firm_id, $status_id))) {
+        
+        $rule = self::model()->find('subspecialty_id=? and firm_id=? and episode_status_id=?', array($subspecialty_id, $firm_id, $status_id));
+        if ($rule) {
             return $rule->workflow;
         }
-
-        if ($rule = self::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $status_id))) {
+        
+        $rule = self::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $status_id));
+        if ($rule) {
             return $rule->workflow;
         }
-
-        if ($rule = self::model()->find('subspecialty_id=?', array($subspecialty_id))) {
+        
+        $rule = self::model()->find('subspecialty_id=?', array($subspecialty_id));
+        if ($rule) {
             return $rule->workflow;
         }
-
-        if ($rule = self::model()->find('subspecialty_id is null and episode_status_id is null')) {
+        
+        $rule = self::model()->find('subspecialty_id is null and episode_status_id is null');
+        if ($rule) {
             return $rule->workflow;
         }
 
@@ -221,5 +226,14 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
         }
 
         return parent::beforeValidate();
+    }
+
+    public function findWorkflowSteps(){
+        $workflowSteps = [];
+        $rules = self::model()->findAll('firm_id > 0');
+        foreach ($rules as $rule) {
+            $workflowSteps[$rule->firm_id] = $rule->workflow->active_steps;
+        }
+        return $workflowSteps;
     }
 }
