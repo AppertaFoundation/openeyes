@@ -80,6 +80,7 @@ class ContactLabelTest extends CDbTestCase
             'id' => 'ID',
             'name' => 'Name',
             'letter_template_only' => 'Letter Template Only',
+            'is_private ' => 'Is Private'
         );
         $this->assertEquals($expected, $this->model->attributeLabels());
     }
