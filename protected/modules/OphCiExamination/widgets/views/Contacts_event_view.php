@@ -26,7 +26,7 @@ $element_errors = $element->getErrors();
         <h1>PAS Contacts</h1>
         <div class="cols-full">
             <table id="<?= $model_name ?>_entry_table"
-                   class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
+                   class="cols-full">
                 <colgroup>
                     <col class="cols-2">
                     <col class="cols-2">
