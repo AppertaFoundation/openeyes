@@ -83,7 +83,7 @@
 						<?php
 						echo $_GET['usage_code'];
 					} else {
-						echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', $_GET['usage_code']);
+						echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', "");
 					}
 					?>
 				</td>
@@ -170,3 +170,4 @@
         </tr>
     </tfoot>
 </table>
+

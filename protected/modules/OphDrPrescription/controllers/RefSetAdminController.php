@@ -63,7 +63,13 @@ class RefSetAdminController extends BaseAdminController
 					'usage_code' => !empty($usage_code) ? $usage_code : ''
 				)
 			),
-
+            'sets' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.common_ophthalmic_drug_sets.edit_sets',
+                'viewArguments' => array(
+                    'id' => $id
+                )
+            ),
         ));
         $admin->setModelDisplayName("Medication set");
         if($id) {
@@ -93,6 +99,10 @@ class RefSetAdminController extends BaseAdminController
         /** @var MedicationSet $model */
 
         $data = Yii::app()->request->getPost('MedicationSet');
+        echo '<pre>';
+        print_r($_POST);
+        echo '</pre>';
+        exit;
         $model->setAttributes($data);
 
         $model->save();
