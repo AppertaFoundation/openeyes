@@ -78,9 +78,14 @@ class PortalExamsCommand extends CConsoleCommand
                 continue;
             }
             $duplicateRecord = UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode);
+            $this->saveOptometristAsPatientContact(
+                $examination['op_tom']['name'],
+                $examination['op_tom']['address'],
+                $examination['op_tom']['goc_number'],
+                $opNoteEvent->episode->patient_id
+            );
             if (($duplicateRecord['count'] < 1)) {
                 $transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
-
                 try {
                     $examinationEvent = $creator->save($opNoteEvent->episode_id, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEvent->id);
                 } catch (Exception $e) {
@@ -131,6 +136,7 @@ class PortalExamsCommand extends CConsoleCommand
                     $importStatus = ImportStatus::model()->find('status_value = "Duplicate Event"');
                     $examinationEventLog->import_success = $importStatus->id;
                     $examinationEventLog->optometrist = $examination['op_tom']['name'];
+
                     $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
                     $examinationEventLog->optometrist_address = $examination['op_tom']['address'];
                     echo 'Duplicate record found for '.$examination['patient']['unique_identifier'].PHP_EOL;
@@ -139,6 +145,37 @@ class PortalExamsCommand extends CConsoleCommand
                     }
                 }
             }
+        }
+    }
+
+    private function saveOptometristAsPatientContact($name, $address, $goc_number, $patient_id)
+    {
+        $optometrist_contact = \Contact::model()->with('address')->find('address.address1 = ? AND national_code = ?', [$address, $goc_number]);
+        if ($optometrist_contact == null) {
+            $optometrist_contact_label = ContactLabel::model()->find("name = ?", ['Optometrist']);
+            $optometrist_contact = new Contact();
+            $optometrist_contact->contact_label_id = $optometrist_contact_label->id;
+            $optometrist_contact->national_code = $goc_number;
+            $optometrist_contact->last_name = $name;
+
+            $optometrist_contact->save();
+
+            $optometrist_address = new Address();
+            $optometrist_address->address1 = $address;
+            $optometrist_address->address_type_id = 3;
+            $optometrist_address->contact_id = $optometrist_contact->id;
+
+            $optometrist_address->save();
+        }
+
+        $patient_contact_assignment = PatientContactAssignment::model()->find("patient_id = ? AND contact_id = ?", [$patient_id, $optometrist_address->id]);
+
+        if ($patient_contact_assignment == null) {
+            $patient_contact_assignment = new PatientContactAssignment();
+            $patient_contact_assignment->contact_id = $optometrist_contact->id;
+            $patient_contact_assignment->patient_id = $patient_id;
+
+            $patient_contact_assignment->save();
         }
     }
 
