@@ -14,8 +14,11 @@
     $freqs = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationFrequency::model()->findAllByAttributes(['deleted_date' => null]));
     $durations = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name];},MedicationDuration::model()->findAllByAttributes(['deleted_date' => null]));
 
-    $medicationSet = MedicationSet::model()->findByAttributes(['id' => $id]);
-    $medicationSetItems = $medicationSet->medications;
+    $medicationSetItems = [];
+    if (!empty($id)) {
+        $medicationSet = MedicationSet::model()->findByAttributes(['id' => $id]);
+        $medicationSetItems = $medicationSet->medicationSetItems;
+    }
 
 ?>
 <script id="set_row_template" type="x-tmpl-mustache">
@@ -74,17 +77,19 @@
         </tr>
     </thead>
     <tbody>
-    <?php foreach ($medicationSetItems as $assignment): ?>
+    <?php
+    foreach ($medicationSetItems as $assignment):
+        ?>
 		<?php
-            $set_id = $assignment->medication_set_id;
+            //$set_id = $assignment->medication_set_id;
             $id = is_null($assignment->id) ? -1 : $assignment->id;
 		    $rowkey++
         ?>
-        <tr data-key="<?=$rowkey?>" <?php if($assignment->medicationSet->hidden): ?>style="display:none;" <?php endif; ?>>
+        <tr data-key="<?=$rowkey?>">
             <td>
                 <input type="hidden" name="MedicationSet[medicationSetItems][id][]" value="<?=$id?>" />
-                <input type="hidden" name="MedicationSet[medicationSetItems][medication_set_id][]" value="<?=$assignment->medication_set_id?>" />
-                <?=CHtml::encode($assignment->medicationSet->name)?>
+                <input type="hidden" name="MedicationSet[medicationSetItems][medication_id][]" value="<?=$assignment->id?>" />
+                <?=CHtml::encode($assignment->medication->preferred_term)?>
             </td>
             <td>
 				<?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose][]', $assignment->default_dose); ?>

@@ -102,6 +102,14 @@ class RefSetAdminController extends BaseAdminController
         $this->_setModelData($model, $data);
         $model->save();
 
+
+        foreach ($model->medicationSetItems as $item) {
+            $item->medication_set_id = $model->id;
+            $item->save();
+        }
+
+
+
         $existing_ids = array();
         $updated_ids = array();
         foreach ($model->medicationSetRules as $rule) {
@@ -156,6 +164,7 @@ class RefSetAdminController extends BaseAdminController
 
         $medicationSetItems = array();
         if(array_key_exists('medicationSetItems', $data)) {
+
             foreach ($data['medicationSetItems']['id'] as $key => $medicationSetItem_id) {
                 $attributes = array();
 
@@ -180,8 +189,10 @@ class RefSetAdminController extends BaseAdminController
                 }
 
                 $medicationSetItems[] = $medicationSetItem;
+
             }
         }
+
 
         $model->medicationSetItems = $medicationSetItems;
     }
