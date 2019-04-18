@@ -214,6 +214,51 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
     }
 
     /**
+     * Load in the correction values for the eyedraw fields
+     *
+     * @param Patient|null $patient
+     * @throws \CException
+     */
+    public function setDefaultOptions(\Patient $patient = null)
+    {
+      parent::setDefaultOptions($patient);
+
+      if ($patient === null) {
+        throw new \CException('patient object required for setting ' . get_class($this) . ' default options');
+      }
+      $processor = new \EDProcessor();
+      $processor->loadElementEyedrawDoodles($patient, $this,\Eye::LEFT, 'left_eyedraw');
+      $processor->loadElementEyedrawDoodles($patient, $this,\Eye::RIGHT, 'right_eyedraw');
+    }
+
+    /**
+     * Ensure we remove any doodles shredded out of this element for object persistence
+     *
+     * @return bool
+     * @inheritdoc
+     */
+    public function beforeDelete()
+    {
+      $processor = new \EDProcessor();
+      $processor->removeElementEyedraws($this);
+      return parent::beforeDelete();
+    }
+
+    /**
+     * Performs the shredding of Eyedraw data for the patient record
+     *
+     */
+    public function afterSave()
+    {
+      $processor = new \EDProcessor();
+      $processor->shredElementEyedraws($this, [
+        'left_eyedraw' => \Eye::LEFT,
+        'right_eyedraw' => \Eye::RIGHT,
+      ]);
+      parent::afterSave();
+    }
+
+    /**
      * @return array
      */
     public function getIrisOptions()

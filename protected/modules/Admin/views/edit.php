@@ -1,7 +1,5 @@
 <?php
 /**
- * OpenEyes.
- *
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -11,13 +9,34 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-<div class="admin box">
-    <h2>Generated Instances for <?= $definition->name ?></h2>
-    <?php echo EventAction::link('Definitions List', '/worklistAdmin/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-    <?php $this->renderPartial('//admin/worklists/definition_worklists_table', array('definition' => $definition)) ?>
-</div>
+<?= $this->renderPartial('//admin/_form_errors', array('errors' => isset($errors) ? $errors : null)); ?>
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'adminform',
+    'enableAjaxValidation' => false,
+    'htmlOptions' => array(
+        'enctype' => 'multipart/form-data',
+    ),
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+)) ?>
+
+<?php echo $form->errorSummary($model) ?>
+
+<?php
+$this->renderPartial('/form_' . get_class($model), array(
+    'model' => $model,
+    'form' => $form,
+    'title' => $title,
+)) ?>
+
+<?php echo $form->formActions(array('cancel-uri' => isset($cancel_uri) ? $cancel_uri : "")) ?>
+
+<?php $this->endWidget() ?>
