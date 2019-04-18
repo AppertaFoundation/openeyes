@@ -290,7 +290,6 @@ var docman = (function() {
                     current_type = current_type.toLowerCase();
                     type = current_type[0].toUpperCase() + current_type.slice(1);
 
-
                     if(type !== 'Other' && type !== undefined && type !== '- type -'){
                         other_id = $("#docman_recipient_" + other_rowindex + " option[value*='" + type + "']" ).val();
                     }
