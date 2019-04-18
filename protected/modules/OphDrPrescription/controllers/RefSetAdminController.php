@@ -99,13 +99,7 @@ class RefSetAdminController extends BaseAdminController
         /** @var MedicationSet $model */
 
         $data = Yii::app()->request->getPost('MedicationSet');
-        echo '<pre>';
-        print_r($_POST);
-        echo '</pre>';
-        exit;
         $model->setAttributes($data);
-
-        $model->save();
 
         $existing_ids = array();
         $updated_ids = array();
