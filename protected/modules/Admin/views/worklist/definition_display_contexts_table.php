@@ -16,15 +16,29 @@
  */
  ?>
 
-<div class="admin box">
-    <h2>Confirm Delete</h2>
-    <p>Are you sure you want to delete all the instances for the worklist definition <?= $definition->name ?>?
-        There are currently <?= $definition->getWorklistCount() ?> instances that have been generated.</p>
-
-    <form id="definition-delete" method="POST">
-        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <input type="hidden" name="confirm_delete" value="<?= $definition->id ?>"/>
-        <input type="submit" class="button warning small" value="Confirm" />
-        <?= EventAction::link('Cancel', '/worklistAdmin/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml() ?>
-    </form>
-</div>
+<?php if ($definition->display_contexts) {?>
+    <table class="generic-admin standard">
+        <thead>
+        <tr>
+            <th>Site</th>
+            <th>Subspecialty</th>
+            <th><?php echo Firm::contextLabel() ?></th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($definition->display_contexts as $display_context) { ?>
+            <tr>
+                <td><?=$display_context->siteDisplay ?></td>
+                <td><?=$display_context->subspecialtyDisplay ?></td>
+                <td><?=$display_context->firmDisplay ?></td>
+                <td><a href="/Admin/worklist/definitionDisplayContextDelete/<?= $display_context->id ?>">Delete</a></td>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+<?php } else {?>
+    <div class="alert-box">
+        No restrictions are defined, worklists will be displayed in all view contexts.
+    </div>
+<?php } ?>

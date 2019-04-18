@@ -288,15 +288,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                 <header class="element-header"><h3 class="element-title">Appointments</h3></header>
                 <div class="element-data full-width">
                     <div class="data-value">
-                        <table class="patient-appointments">
-                            <colgroup>
-                                <col class="cols-3">
-                                <col class="cols-5">
-                                <col class="cols-2">
-                            </colgroup>
-                            <tbody>
-                            </tbody>
-                        </table>
+                        <?php $this->widget('Appointment', ['patient' => $this->patient]) ?>
                     </div>
                 </div>
             </section>
