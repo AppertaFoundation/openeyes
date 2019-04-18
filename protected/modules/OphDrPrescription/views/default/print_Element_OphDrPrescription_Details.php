@@ -131,12 +131,7 @@ foreach ($items_data as $group => $items) { ?>
           <td class="prescriptionLabel">then</td>
           <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->drug->dose_unit) : $taper->dose ?></td>
           <td>-</td>
-          <td><?php if ($data['copy'] == 'patient') {
-                  echo $taper->frequency->long_name;
-              } else {
-                  echo $taper->frequency->name;
-              } ?>
-          </td>
+          <td><?=$taper->frequency->long_name?></td>
           <td><?php echo $taper->duration->name ?></td>
             <?php if (strpos($group_name, "Hospital") !== false) { ?>
               <td></td>
