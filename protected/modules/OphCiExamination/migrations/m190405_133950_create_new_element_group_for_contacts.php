@@ -14,7 +14,7 @@ class m190405_133950_create_new_element_group_for_contacts extends CDbMigration
         ));
         $element_group_id = $this->dbConnection->createCommand()->select('MAX(id)')->from('element_group')->queryScalar();
 
-        $this->update('element_type', array('element_group_id' => $element_group_id),
+        $this->update('element_type', array('element_group_id' => $element_group_id, 'display_order' => 130),
             'class_name  = :class_name',
             array(':class_name' => "OEModule\OphCiExamination\models\Element_OphCiExamination_Contacts"));
 
