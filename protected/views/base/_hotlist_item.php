@@ -22,7 +22,7 @@ $core_api = new CoreAPI();
 ?>
 <tr class="js-hotlist-<?= $hotlistItem->is_open ? 'open' : 'closed' ?>-patient"
     data-id="<?= $hotlistItem->id ?>"
-    data-patient-href="<?= $core_api->generateEpisodeLink($hotlistItem->patient) ?>"
+    data-patient-href="<?= $core_api->generatePatientLandingPageLink($hotlistItem->patient) ?>"
 >
     <td><?= CHtml::encode($hotlistItem->patient->hos_num) ?></td>
     <td>

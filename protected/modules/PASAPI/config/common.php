@@ -66,6 +66,7 @@ return [
             // set cache_time to null (never stale] to never update the object from PAS
             // set cache_time to 0 (always stale] to update the object from PAS every time
             'cache_time' => 300, //sec
+            'allowed_params' => [],
         ],
     ],
 ];
