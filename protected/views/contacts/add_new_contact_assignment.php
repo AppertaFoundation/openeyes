@@ -212,16 +212,6 @@ $form = $this->beginWidget('CActiveForm', array(
             Make this contact available for other patients (leaving unchecked will make this contact private to the
             current patient only)
         </td>
-        <td>
-            <label class="inline highlight">
-                Available
-                <?= \CHtml::checkBox(
-                    'active',
-                    true,
-                    ['class' => 'js-contact-field', 'data-label' => 'active']
-                ); ?>
-            </label>
-        </td>
     </tr>
     <tr>
         <td colspan="2" class="align-right">

@@ -108,7 +108,7 @@ class ContactController extends \BaseController
                 $contact->last_name = $data->last_name;
                 $contact->primary_phone = $data->primary_phone;
                 $contact->contact_label_id = $data->contact_label_id;
-                $contact->active = $data->active;
+                $contact->active = 1;
 
                 $address = new \Address();
                 $address->address1 = $data->address1;
@@ -126,6 +126,10 @@ class ContactController extends \BaseController
                 $address->contact_id = $contact->id;
                 if (!$address->save()) {
                     $errors = array_merge($errors, $address->getErrors());
+                }
+
+                if($data->contact_label_id == ""){
+                    $errors['missing_contact_label'] = "Please select a Contact Type";
                 }
 
                 if (trim($data->address1) == "" && trim($data->primary_phone) == "" && trim($data->email) == "") {
