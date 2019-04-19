@@ -83,7 +83,15 @@ class ContactController extends \BaseController
 
     public function actionContactPage()
     {
-        $this->renderPartial('//contacts/add_new_contact_assignment', array(), false, true);
+        $selected_contact_type = null;
+        if (isset($_GET['selected_contact_type'])) {
+            $selected_contact_type = $_GET['selected_contact_type'];
+        }
+        $this->renderPartial('//contacts/add_new_contact_assignment',
+            array('selected_contact_type' => $selected_contact_type),
+            false,
+            true
+        );
     }
 
     public function actionSaveNewContact()

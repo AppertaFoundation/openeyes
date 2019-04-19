@@ -168,19 +168,17 @@ $element_errors = $element->getErrors();
                 }, $contact_labels)) ?>, {'header': 'Contact Type', 'id': 'contact-type-filter'})],
             openButton: $('#add-contacts-btn'),
             onReturn: function (adderDialog, selectedItems) {
+                let selectedFilter;
+                let createContactPageDialog = false;
                 let templateText = $('#contact-entry-template').text();
                 let newRows = [];
                 for (let index = 0; index < selectedItems.length; ++index) {
 
+                    if(selectedItems[index].itemSet){
+                        selectedFilter = selectedItems[index].id;
+                    }
                     if (selectedItems[index].type === "custom") {
-                        new OpenEyes.UI.Dialog($.extend({}, options, {
-                            url: baseUrl + '/OphCiExamination/contact/ContactPage',
-                            width: 500,
-                            data: {
-                                returnUrl: "",
-                                patient_id: window.OE_patient_id || null
-                            }
-                        })).open();
+                        createContactPageDialog = true;
                     } else if (!selectedItems[index].itemSet) {
                         data = {};
                         data.id = selectedItems[index].id;
@@ -192,6 +190,18 @@ $element_errors = $element->getErrors();
                         row = Mustache.render(templateText, data);
                         newRows.push(row);
                     }
+                }
+
+                if(createContactPageDialog){
+                    new OpenEyes.UI.Dialog($.extend({}, options, {
+                        url: baseUrl + '/OphCiExamination/contact/ContactPage',
+                        width: 500,
+                        data: {
+                            returnUrl: "",
+                            selected_contact_type: selectedFilter,
+                            patient_id: window.OE_patient_id || null
+                        }
+                    })).open();
                 }
                 if(newRows.length > 0) {
                     $('#contact-assignment-table').append(newRows);

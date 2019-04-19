@@ -198,7 +198,12 @@ $form = $this->beginWidget('CActiveForm', array(
                     'id',
                     'name'
                 ),
-                ['empty' => 'None', 'class' => 'cols-full js-contact-field', 'data-label' => 'contact_label_id']
+                [
+                    'empty' => 'None',
+                    'class' => 'cols-full js-contact-field',
+                    'data-label' => 'contact_label_id',
+                    'options' => array($selected_contact_type => array('selected' => true)),
+                ]
             ); ?>
         </td>
     </tr>
@@ -210,11 +215,11 @@ $form = $this->beginWidget('CActiveForm', array(
         <td>
             <label class="inline highlight">
                 Available
-            <?= \CHtml::checkBox(
-                'active',
-                true,
-                ['class' => 'js-contact-field', 'data-label' => 'active']
-            ); ?>
+                <?= \CHtml::checkBox(
+                    'active',
+                    true,
+                    ['class' => 'js-contact-field', 'data-label' => 'active']
+                ); ?>
             </label>
         </td>
     </tr>
