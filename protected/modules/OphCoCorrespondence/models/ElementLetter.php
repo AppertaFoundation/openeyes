@@ -369,7 +369,7 @@ class ElementLetter extends BaseEventTypeElement
             } else {
                 // Note that this index will always be the basis for a Person model search - if PCA has a wider use case than this,
                 // this will need to be revisited
-                if($pca->contact->label->name != 'Optometrist') {
+                if(!isset($pca->contact->label) || $pca->contact->name != 'Optometrist') {
                     $options['Contact' . $pca->contact_id] = $pca->contact->fullName . ' (' . $pca->contact->label->name;
                     if ($pca->contact->address) {
                         $options['Contact' . $pca->contact_id] .= ', ' . $pca->contact->address->address1 . ')';
