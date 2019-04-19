@@ -50,7 +50,9 @@ $element_errors = $element->getErrors();
                     array(
                         'contact' => $this->patient->gp->contact,
                         'show_comments' => false,
+                        'row_count' => 0,
                         'model_name' => $model_name,
+                        'field_prefix' => $model_name,
                         'removable' => false,
                         'is_template' => true,)); ?>
                 </tbody>
@@ -83,6 +85,7 @@ $element_errors = $element->getErrors();
                 </thead>
                 <tbody id="contact-assignment-table">
                 <?php
+                $row_count = 0;
                 foreach ($this->contact_assignments as $contact_assignment) { ?>
                     <?= $this->render(
                         'ContactsEntry_event_edit',
@@ -91,11 +94,14 @@ $element_errors = $element->getErrors();
                             'form' => $form,
                             'entry' => $contact_assignment,
                             'show_comments' => true,
+                            'row_count' => $row_count,
+                            'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
                             'model_name' => $model_name,
                             'removable' => true,
                             'is_template' => true
                         )
-                    ); ?>
+                    );
+                    $row_count++; ?>
                 <?php } ?>
                 </tbody>
             </table>
@@ -123,6 +129,8 @@ $element_errors = $element->getErrors();
             'form' => $form,
             'show_comments' => true,
             'removable' => true,
+            'field_prefix' => $model_name . '[entries][{{row_count}}]',
+            'row_count' => '{{row_count}}',
             'is_template' => true,
             'values' => array(
                 'id' => '{{id}}',
@@ -172,9 +180,10 @@ $element_errors = $element->getErrors();
                 let createContactPageDialog = false;
                 let templateText = $('#contact-entry-template').text();
                 let newRows = [];
+                let tableSelector = '#<?=$model_name?>_entry_table';
                 for (let index = 0; index < selectedItems.length; ++index) {
 
-                    if(selectedItems[index].itemSet){
+                    if (selectedItems[index].itemSet) {
                         selectedFilter = selectedItems[index].id;
                     }
                     if (selectedItems[index].type === "custom") {
@@ -187,12 +196,13 @@ $element_errors = $element->getErrors();
                         data.email = selectedItems[index].email;
                         data.phone = selectedItems[index].phone;
                         data.address = selectedItems[index].address;
+                        data.row_count = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key') + newRows.length;
                         row = Mustache.render(templateText, data);
                         newRows.push(row);
                     }
                 }
 
-                if(createContactPageDialog){
+                if (createContactPageDialog) {
                     new OpenEyes.UI.Dialog($.extend({}, options, {
                         url: baseUrl + '/OphCiExamination/contact/ContactPage',
                         width: 500,
@@ -203,7 +213,7 @@ $element_errors = $element->getErrors();
                         }
                     })).open();
                 }
-                if(newRows.length > 0) {
+                if (newRows.length > 0) {
                     $('#contact-assignment-table').append(newRows);
                     $('.autosize').autosize();
                 }

@@ -22,40 +22,9 @@ $model_name = CHtml::modelName($element);
 $element_errors = $element->getErrors();
 ?>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
-    <div class="data-group cols-10">
-        <h1>PAS Contacts</h1>
-        <div class="cols-full">
-            <table id="<?= $model_name ?>_entry_table"
-                   class="cols-full">
-                <colgroup>
-                    <col class="cols-2">
-                    <col class="cols-2">
-                    <col class="cols-2">
-                    <col class="cols-2">
-                    <col class="cols-2">
-                </colgroup>
-                <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone Number</th>
-                    <th>Address</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <?php $gp_contact = $this->patient->gp->contact; ?>
-                    <td><?= $gp_contact->label ? $gp_contact->label->name : "" ?></td>
-                    <td><?= $gp_contact->getFullName() ?></td>
-                    <td><?= $gp_contact->address ? $gp_contact->address->email : "" ?></td>
-                    <td><?= $gp_contact->primary_phone ?></td>
-                    <td><?= $gp_contact->address ? $gp_contact->address->getLetterLine() : "" ?></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <h1>Patient Contacts</h1>
+    <div class="data-group cols-full">
+
+
         <div class="cols-full">
             <table id="<?= $model_name ?>_entry_table"
                    class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
@@ -77,6 +46,15 @@ $element_errors = $element->getErrors();
                 </tr>
                 </thead>
                 <tbody id="contact-assignment-table">
+                <tr>
+                    <?php $gp_contact = $this->patient->gp->contact; ?>
+                    <td><?= $gp_contact->label ? $gp_contact->label->name : "" ?></td>
+                    <td><?= $gp_contact->getFullName() ?></td>
+                    <td><?= $gp_contact->address ? $gp_contact->address->email : "" ?></td>
+                    <td><?= $gp_contact->primary_phone ?></td>
+                    <td><?= $gp_contact->address ? $gp_contact->address->getLetterLine() : "" ?></td>
+                    <td></td>
+                </tr>
                 <?php
                 foreach ($this->contact_assignments as $contact_assignment) { ?>
                     <?php $contact = $contact_assignment->contact; ?>
