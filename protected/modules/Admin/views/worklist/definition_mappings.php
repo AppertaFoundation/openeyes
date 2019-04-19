@@ -16,18 +16,18 @@
  */
 ?>
 
-<div class="admin box">
+<div class="admin box cols-6">
     <h2>Mapping Items for <?= $definition->name ?></h2>
-    <?php echo EventAction::link('Definitions List', '/worklistAdmin/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
+    <?php echo EventAction::link('Definitions List', '/Admin/worklist/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
     <?php if ($this->manager->canUpdateWorklistDefinition($definition)) {
-    echo EventAction::link('Add Mapping', '/worklistAdmin/addDefinitionMapping/'.$definition->id, array('level' => 'primary'), array('class' => 'button small'))->toHtml();
+    echo EventAction::link('Add Mapping', '/Admin/worklist/addDefinitionMapping/'.$definition->id, array('level' => 'primary'), array('class' => 'button small'))->toHtml();
 }?>
     <?php if ($definition->mappings) { ?>
     <form id="mapping-list" method="POST">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <?php if ($definition->displayed_mappings) {?>
         <h3>Displayed Mapping Items</h3>
-        <table class="generic-admin standard">
+        <table class="table standard">
             <thead>
             <tr>
                 <th>Order</th>
@@ -42,8 +42,8 @@
                                                            value="<?php echo $mapping->id ?>"></td>
                     <td><?= $mapping->key ?></td>
                     <td><?php if ($this->manager->canUpdateWorklistDefinition($definition)) {?>
-                        <a href="/worklistAdmin/definitionMappingUpdate/<?= $mapping->id ?>">Edit</a> |
-                        <a href="/worklistAdmin/definitionMappingDelete/<?= $mapping->id ?>">Delete</a>
+                        <a href="/Admin/worklist/definitionMappingUpdate/<?= $mapping->id ?>">Edit</a> |
+                        <a href="/Admin/worklist/definitionMappingDelete/<?= $mapping->id ?>">Delete</a>
                         <?php } else {?>
                             <span title="Cannot change mappings for un-editable definition">
                             Edit | Delete
@@ -63,7 +63,7 @@
                         array(
                             'class' => 'small',
                             'style' => 'display:none;',
-                            'data-uri' => '/worklistAdmin/definitionMappingSort/'.$definition->id,
+                            'data-uri' => '/Admin/worklist/definitionMappingSort/'.$definition->id,
                             'data-object' => 'WorklistDefinitionMapping',
                         )
                     )->toHtml() ?>
@@ -90,8 +90,8 @@
                         <td class="reorder">-</td>
                         <td><?=$mapping->key?></td>
                         <td><?php if ($this->manager->canUpdateWorklistDefinition($definition)) {?>
-                            <a href="/worklistAdmin/definitionMappingUpdate/<?=$mapping->id?>">Edit</a> |
-                            <a href="/worklistAdmin/definitionMappingDelete/<?=$mapping->id?>" disabled="disabled">Delete</a></td>
+                            <a href="/Admin/worklist/definitionMappingUpdate/<?=$mapping->id?>">Edit</a> |
+                            <a href="/Admin/worklist/definitionMappingDelete/<?=$mapping->id?>" disabled="disabled">Delete</a></td>
                         <?php } else {?>
                             <span title="Cannot change mappings for un-editable definition">
                             Edit | Delete
