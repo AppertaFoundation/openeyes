@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -29,13 +29,7 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
             </div>
 
             <!-- Open Items -->
-            <table class="activity-list open" style="table-layout: fixed;">
-                <colgroup>
-                    <col style="width: 50px;">
-                    <col style="width: 40%;">
-                    <col style="width: 30%">
-                    <col style="width: 50px;">
-                </colgroup>
+            <table class="activity-list open">
                 <tbody>
 
                 <?php foreach ($openHotlistItems as $hotlistItem) : ?>

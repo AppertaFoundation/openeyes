@@ -135,4 +135,13 @@ return array(
         'is_local' => 0,
     ),
 
+    'patient9' => array(
+        'hos_num' => 5550101,
+        'first_name' => 'Rod',
+        'last_name' => 'Flange',
+        'dob' => '1979-09-08',
+        'title' => 'MR',
+        'primary_phone' => '0208 1111111',
+        'address_id' => 1,
+    ),
 );

@@ -4,7 +4,7 @@
  * Created by Mike Smith <mike.smith@camc-ltd.co.uk>.
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class BaseEventElementWidget extends CWidget
@@ -25,6 +25,7 @@ class BaseEventElementWidget extends CWidget
     public static $EVENT_EDIT_MODE = 16;
     public static $EPISODE_SUMMARY_MODE = 32;
     public static $DATA_MODE = 64;
+    public static $PATIENT_LANDING_PAGE_MODE = 128;
 
     /**
      * @var string of the module name.
@@ -100,7 +101,8 @@ class BaseEventElementWidget extends CWidget
             array(
                 static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
                 static::$EVENT_VIEW_MODE, static::$EVENT_PRINT_MODE,
-                static::$EVENT_EDIT_MODE, static::$DATA_MODE
+                static::$EVENT_EDIT_MODE, static::$DATA_MODE,
+                static::$PATIENT_LANDING_PAGE_MODE
             ),
             true
         );
@@ -370,6 +372,8 @@ class BaseEventElementWidget extends CWidget
             case static::$DATA_MODE:
                 throw new \SystemException('No view to render when ' . static::class . ' in DATA_MODE');
                 break;
+            case static::$PATIENT_LANDING_PAGE_MODE:
+                return $short_name . '_landing_page';
             default:
                 return $short_name . '_patient_mode';
         }

@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -193,30 +193,6 @@
 </div>
 
 <script type="text/javascript">
-
-  var disabledSocialHistoryFields = [
-    $('#<?= $model_name ?>_occupation_id'),
-    $('#<?= $model_name ?>_smoking_status_id'),
-    $('#<?= $model_name ?>_alcohol_intake'),
-    $('#<?= $model_name ?>_substance_misuse_id'),
-    $('#<?= $model_name ?>_driving_statuses'),
-    $('#<?= $model_name ?>_accommodation_id'),
-    $('#<?= $model_name ?>_carer_id'),
-  ];
-
-  // Disable all form fields
-  disabledSocialHistoryFields.forEach(function (field) {
-    field.attr('disabled', 'disabled');
-  });
-
-  // Re-enable all fields on form submit (otherwise the data isn't sent)
-  // Note: document.currentScript relies on this being run outside of $(document).ready
-  $(document.currentScript).closest('form').submit(function () {
-    disabledSocialHistoryFields.forEach(function (field) {
-      field.removeAttr('disabled');
-    });
-  });
-
   $(document).ready(function () {
     // hide the driving status select
     $('#OEModule_OphCiExamination_models_SocialHistory_driving_statuses').hide();

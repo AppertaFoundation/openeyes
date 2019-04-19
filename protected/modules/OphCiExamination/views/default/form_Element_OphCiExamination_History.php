@@ -51,8 +51,9 @@
 </script>
 
 <?php
+$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 $itemSets = [];
-foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
     $items = array();
 
     foreach ($attribute->getAttributeOptions() as $option) {
@@ -76,15 +77,8 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
       }),
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {
-
-        $(selectedItems).each(function (key, item) {
-          inputText.val(inputText.val() ?
-            inputText.val() + item['label'] : item['label']
-          );
-        });
-
+				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
         inputText.trigger('oninput');
-
         return true;
       }
     });

@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -51,7 +51,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkManageMyMessageAccess()
     {
-        return $this->checkAccess('OprnViewClinical') && $this->isIntendedRecipient();
+        return $this->checkAccess('OprnViewClinical') && ($this->isIntendedRecipient() || $this->isSender());
     }
 
     /**
@@ -71,7 +71,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function getEventViewUrl()
     {
-        return \Yii::app()->createUrl('/'.$this->getModule()->name.'/Default/view/'.$this->event->id);
+        return \Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/view/' . $this->event->id);
     }
 
     /**
@@ -140,7 +140,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $el = $this->getMessageElement();
 
-        if ($el->comments && $this->isSender(\Yii::app()->user)) {
+        if ($el->comments) {
             $this->markCommentRead($el);
         } else {
             $this->markMessageRead($el);
@@ -174,20 +174,26 @@ class DefaultController extends \BaseEventTypeController
     public function actionMarkUnread($id)
     {
         $el = $this->getMessageElement();
-        $el->marked_as_read = false;
-        $transaction = \Yii::app()->db->beginTransaction();
-        try {
-            $el->save();
-            $this->updateEvent();
 
-            $this->event->audit('event', 'marked unread');
+        if ($el->comments) {
+            $el->last_comment->marked_as_read = false;
+            $el->last_comment->save();
+        } else {
+            $el->marked_as_read = false;
+            $transaction = \Yii::app()->db->beginTransaction();
+            try {
+                $el->save();
+                $this->updateEvent();
 
-            \Yii::app()->user->setFlash('success', '<a href="'.$this->getEventViewUrl()."\">{$this->event_type->name}</a> marked as unread.");
+                $this->event->audit('event', 'marked unread');
 
-            $transaction->commit();
-        } catch (\Exception $e) {
-            $transaction->rollback();
-            throw $e;
+                \Yii::app()->user->setFlash('success', '<a href="' . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as unread.");
+
+                $transaction->commit();
+            } catch (\Exception $e) {
+                $transaction->rollback();
+                throw $e;
+            }
         }
         $this->redirectAfterAction();
     }
@@ -213,8 +219,9 @@ class DefaultController extends \BaseEventTypeController
     {
         $element = $this->getMessageElement();
 
-        if (count($element->comments)) {
-            throw new \CHttpException(409, 'Only one comment allowed per message.');
+        if (isset($element->last_comment)) {
+            $element->last_comment->marked_as_read = 1;
+            $element->last_comment->save();
         }
 
         $comment = new OphCoMessaging_Message_Comment();
@@ -323,11 +330,11 @@ class DefaultController extends \BaseEventTypeController
         if (is_null($user)) {
             $user = \Yii::app()->user;
         }
+        $messageElement = $this->getMessageElement();
+        $canComment = $messageElement->message_type->reply_required && (!$messageElement->comments && $this->isIntendedRecipient($user)
+                || (($this->isSender($user) || $this->isIntendedRecipient($user)) && $messageElement->comments && $messageElement->last_comment->created_user_id != $user->getId()));
 
-        return $this->getMessageElement()->message_type->reply_required
-                && $this->isIntendedRecipient($user)
-                && !$this->isSender($user)
-                && !$this->getMessageElement()->comments;
+        return $canComment;
     }
 
     /**
@@ -335,7 +342,8 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return \OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message
      */
-    protected function getMessageElement()
+    protected
+    function getMessageElement()
     {
         if (!$this->message_el) {
             $this->message_el = $this->event->getElementByClass('\OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message');
@@ -350,7 +358,7 @@ class DefaultController extends \BaseEventTypeController
     public function canMarkRead()
     {
         $el = $this->getMessageElement();
-        if ($el->comments && $this->isSender(\Yii::app()->user)) {
+        if ($el->comments) {
             return $this->canMarkCommentRead($el);
         } else {
             return $this->canMarkMessageRead($el);
@@ -375,12 +383,11 @@ class DefaultController extends \BaseEventTypeController
 
     protected function canMarkCommentRead($el)
     {
-        if ($this->isSender(\Yii::app()->user)) {
-            foreach ($el->comments as $comment) {
-                if (!$comment->marked_as_read) {
-                    return true;
-                }
-            }
+        $user = \Yii::app()->user;
+        if ($el->last_comment->created_user_id != $user->getId() &&
+            ($this->isIntendedRecipient($user) || $this->isSender($user))
+            && !$el->last_comment->marked_as_read) {
+            return true;
         }
 
         return false;
@@ -392,9 +399,14 @@ class DefaultController extends \BaseEventTypeController
     public function canMarkUnRead()
     {
         $el = $this->getMessageElement();
-        if ($this->isIntendedRecipient()
-            && $el->marked_as_read
-        ) {
+        $user = \Yii::app()->user;
+        if ($el->comments) {
+            if ($el->last_comment->created_user_id != $user->getId() &&
+                ($this->isIntendedRecipient($user) || $this->isSender($user))
+                && $el->last_comment->marked_as_read) {
+                return true;
+            }
+        } else if ($this->isIntendedRecipient() && $el->marked_as_read) {
             return true;
         }
 

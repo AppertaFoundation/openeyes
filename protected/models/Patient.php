@@ -257,6 +257,7 @@ class Patient extends BaseActiveRecordVersioned
         $earliest_date =  new DateTime('01-01-1900');
         $current_date->format('d-m-Y');
 
+
         if( !$patient_dob_date || !$format_check){
             $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
         }
@@ -272,10 +273,21 @@ class Patient extends BaseActiveRecordVersioned
             //because 02/02/198 is valid according to DateTime::createFromFormat('d-m-Y', ...)
             $format_check = preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/", $this->$attribute);
 
-            $patient_dob_date = DateTime::createFromFormat('d-m-Y', $this->$attribute);
+            $patient_dob_date = DateTime::createFromFormat('d-m-Y', $this->dob);
+            $patient_dod_date = DateTime::createFromFormat('d-m-Y', $this->$attribute);
+            $current_date =  new DateTime("now");
+            $current_date->format('d-m-Y');
+            $earliest_date =  new DateTime('01-01-1900');
 
-            if( !$patient_dob_date || !$format_check){
+
+            if( !$patient_dod_date || !$format_check){
                 $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
+            }else if( $patient_dod_date < $patient_dob_date){
+                $this->addError($attribute,"Patient's Date of Death cannot be earlier than Date of Birth ".$this->dob);
+            }else if( $patient_dod_date > $current_date){
+                $this->addError($attribute, 'Date of Death can only be earlier than the current date or can be the current date '.$current_date->format('d/m/Y'));
+            }elseif ($patient_dod_date < $earliest_date){
+                $this->addError($attribute, "Patient's Date of Death cannot be earlier than ".$earliest_date->format('d/m/Y'));
             }
         }
     }
@@ -361,22 +373,6 @@ class Patient extends BaseActiveRecordVersioned
     return 'None';
   }
 
-    public function search_nr($params)
-    {
-        $criteria = new CDbCriteria();
-        $criteria->join = 'JOIN contact ON contact_id = contact.id';
-        $criteria->compare('LOWER(first_name)', strtolower($params['first_name']), false);
-        $criteria->compare('LOWER(last_name)', strtolower($params['last_name']), false);
-        $criteria->compare('LOWER(maiden_name)', strtolower($params['maiden_name']), false);
-        $criteria->compare('dob', $this->dob, false);
-        $criteria->compare('gender', $this->gender, false);
-        $criteria->compare('hos_num', $this->hos_num, false);
-        $criteria->compare('nhs_num', $this->nhs_num, false);
-        $criteria->compare('deleted', 0);
-
-        return $this->count($criteria);
-    }
-
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -396,7 +392,7 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->compare('t.id', $this->id);
         $criteria->join = 'JOIN contact ON contact_id = contact.id';
         if (isset($params['first_name'])) {
-            $criteria->compare('contact.first_name', $params['first_name'], false);
+            $criteria->addSearchCondition('contact.first_name', $params['first_name'] . '%', false);
         }
         if (isset($params['last_name'])) {
             $criteria->compare('contact.last_name', $params['last_name'], false);
@@ -1841,6 +1837,20 @@ class Patient extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->addCondition('episode.patient_id = :pid');
         $criteria->params = array(':pid' => $this->id);
+        $criteria->order = 't.event_date DESC, t.created_date DESC';
+        $criteria->limit = 1;
+
+        return Event::model()->with('episode')->find($criteria);
+    }
+
+    public function getLatestExaminationEvent(){
+        $event_type = EventType::model()->findByAttributes(array("name"=>"Examination"));
+
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('episode.patient_id = :pid');
+        $criteria->addCondition('event_type_id = :etypeid');
+        $criteria->params = array(':pid' => $this->id, ':etypeid' => $event_type->id);
+
         $criteria->order = 't.event_date DESC, t.created_date DESC';
         $criteria->limit = 1;
 

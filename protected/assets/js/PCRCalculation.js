@@ -28,6 +28,10 @@ function setFundalView(ev, pcrEl) {
     }
 
     var $container = getPcrContainer(ev);
+    if ($(ev.target).find(':selected').data('value') === 'Not checked' ) {
+
+        return null;
+    }
     if ($(ev.target).find(':selected').data('value') === 'No view') {
         $container.find(pcrEl).val('Y');
     } else {

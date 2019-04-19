@@ -100,7 +100,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     AllergiesController.prototype.isAllergiesChecked = function (value) {
         var valueChecked = false;
-        this.$table.find('input[type=radio]:checked , input[type=hidden]').each(function () {
+        this.$table.find('input[type=radio]:checked , input[type=hidden][id$="has_allergy"]').each(function () {
             if ($(this).val() === value) {
                 valueChecked = true;
                 return false;
@@ -122,9 +122,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param allergies
      * @returns {*}
      */
-    AllergiesController.prototype.createRows = function (allergies) {
-        if (allergies === undefined)
-            allergies = {};
+    AllergiesController.prototype.createRows = function (allergies = {}) {
         var newRows = [];
         var template = this.templateText;
         var tableSelector = this.tableSelector;
@@ -143,9 +141,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.showEditableIfOther = function () {
         var controller = this;
         $(this.allergySelector).each(function () {
-            var isOther = (this.value == controller.options.allergyOtherValue);
-            $(this.closest('tr')).find('.js-not-other-allergy').toggle(!isOther);
-            $(this.closest('tr')).find('.js-other-allergy').toggle(isOther);
+            let $tr = $(this).closest('tr');
+            let row_other_allergy = $tr.find('.js-other-allergy');
+            let show_other_input = (parseInt(this.value) === controller.options.allergyOtherValue && row_other_allergy.find('input').val() === '');
+
+            $tr.find('.js-not-other-allergy').toggle(!show_other_input);
+            row_other_allergy.toggle(show_other_input);
         });
     };
 

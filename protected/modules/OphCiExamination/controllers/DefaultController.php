@@ -79,7 +79,7 @@ class DefaultController extends \BaseEventTypeController
     {
         Yii::app()->assetManager->registerScriptFile('js/spliteventtype.js', null, null, \AssetManager::OUTPUT_SCREEN);
         $this->jsVars['OE_MODEL_PREFIX'] = 'OEModule_OphCiExamination_models_';
-
+        $this->jsVars['default_iris_colour'] = \SettingMetadata::model()->getSetting('OphCiExamination_default_iris_colour');
         return parent::beforeAction($action);
     }
 
@@ -799,10 +799,12 @@ class DefaultController extends \BaseEventTypeController
             $checker = 'has'.ucfirst($side);
             if ($element->$checker()) {
                 if (isset($data[$model_name][$side.'_treatments'])) {
-                    foreach ($data[$model_name][$side.'_treatments'] as $idx => $p_treat) {
+                    foreach ($data[$model_name][$side . '_treatments'] as $idx => $p_treat) {
+                        $dilation = null;
                         if (@$p_treat['id']) {
                             $dilation = models\OphCiExamination_Dilation_Treatment::model()->findByPk($p_treat['id']);
-                        } else {
+                        }
+                        if ($dilation == null) {
                             $dilation = new models\OphCiExamination_Dilation_Treatment();
                         }
                         $dilation->attributes = $p_treat;

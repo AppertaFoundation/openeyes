@@ -19,7 +19,6 @@ fi
 # Process commandline parameters
 SCRIPTROOT="" # will be passed in from oe-checkout.sh
 WROOT="" # will be passed in from oe-checkout.sh
-gitroot=${OE_GITROOT:-'openeyes'}
 force=0
 killmodules=0
 resetconfig=0
@@ -39,7 +38,7 @@ fixparams=""
 showhelp=0
 sample=0
 sampleonly=0
-sshidentity=""
+usessh=""
 changesshid=0
 
 # parse SCRIPTDIR and WROOT first. Strip from list of params
@@ -67,7 +66,7 @@ do
 done
 set -- "${PARAMS[@]}" # restore positional parameters
 
-# Read in stored git config (root, usessh, etc) and modules config
+# Read in stored git config and modules config
 source $SCRIPTDIR/git.conf
 source $SCRIPTDIR/modules.conf
 
@@ -132,10 +131,6 @@ do
             delete=(openeyes)
             modules=( "${modules[@]/$delete}" ) # removes openeyes from modules list
         ;;
-    	--sshidentity|-sshidentity)
-            sshidentity=$2
-            shift # shift past parameter
-    	;;
     	*)  if [ ! -z "$1" ]; then
     			if [ "$branch" == "$defaultbranch" ]; then
     				branch=$1
@@ -206,13 +201,18 @@ $(ssh-agent)  2>/dev/null
 ssh git@github.com -T
 [ "$?" == "1" ] && usessh=1 || usessh=0
 
+# Backwards comaptibility, use OE_GITROOT if it exists and GIT_ORG if not
+# If both exist, GIT_ORG takes preference
+[ ! -z "$OE_GITROOT" ] && GIT_ORG=${GIT_ORG:-$OE_GITROOT}
+
+# If GIT_ORG is not specified then - If using https we defualt to appertafoundation. If using ssh we default to openeyes
+[ -z "$GIT_ORG" ] && { [ "$usessh" == "0" ] && gitroot="appertafoundation" || gitroot="openeyes";} || gitroot=$GIT_ORG
+
 # Set the base string for SSH or HTTP accordingly
 [ "$usessh" == "1" ] && basestring="git@github.com:$gitroot" || basestring="https://github.com/$gitroot"
 
 # store git settings out to disk
-echo "gitroot=$gitroot
-usessh=$usessh
-sshidentity=$sshidentity" | sudo tee $SCRIPTDIR/git.conf > /dev/null
+echo "usessh=$usessh" | sudo tee $SCRIPTDIR/git.conf > /dev/null
 
 # Set to cache password in memory (should only ask once per day or each reboot)
 git config --global credential.helper 'cache --timeout=86400'
@@ -334,7 +334,7 @@ for module in ${modules[@]}; do
 		if [ ! "$nopull" = "1" ]; then
 			echo "Pulling latest changes: "
 			git -C $MODGITROOT pull
-			git -C $MODGITROOT submodule update --init
+			git -C $MODGITROOT submodule update --init --force
 		fi
 	fi
 
@@ -348,7 +348,7 @@ WARNING: Resetting local config to defaults
 fi
 
 # Now reset/relink various config files etc
-if [ "$fix" = "1" ]; then bash $SCRIPTDIR/oe-fix.sh $fixparams; fi
+[ "$fix" = "1" ] && bash $SCRIPTDIR/oe-fix.sh $fixparams || :
 
 # Show summary of checkout
 if [ ! "$nosummary" = "1" ]; then

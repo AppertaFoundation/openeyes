@@ -148,11 +148,7 @@ class AnaestheticAudit extends OpenEyesPage
 		$this->getElement ( 'save' )->click ();
 
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
-		if ($this->hasASASaved ()) {
-			print "ASA has been saved OK";
-		} 
-
-		else {
+		if (!$this->hasASASaved ()) {
 			throw new BehaviorException ( "WARNING!!!  ASA has NOT been saved!!  WARNING!!" );
 		}
 	}
@@ -169,14 +165,13 @@ class AnaestheticAudit extends OpenEyesPage
 		$this->getDriver()->wait ( 5000, "window.$ && $('#et_deleteevent').css('display') == 'inline-block'" );
 		$this->getElement ( 'confirmDeleteEvent' )->click ();
 
-		if ($this->deleteSuccessCheck ()) {
-			print "Event Delete was Successful";
-		} else {
+		if (!$this->deleteSuccessCheck ()) {
 			throw new BehaviorException ( "WARNING!!! Deletion of event has NOT been successful WARNING!!!" );
 		}
 	}
 
-    public function validationErrors() {
+    public function validationErrorCheck() {
+        $this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
         foreach (array(
                      'anaesthetistValidationError',
                      'vitalRespiratoryValidationError',
@@ -192,13 +187,5 @@ class AnaestheticAudit extends OpenEyesPage
             throw new BehaviorException("Didn't find validation error message for $error");
         }
         return true;
-	}
-
-	public function validationErrorCheck() {
-		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
-
-		if ($this->validationErrors ()) {
-			print "All Validation errors have been displayed correctly";
-		}
 	}
 }

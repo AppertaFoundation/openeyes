@@ -28,6 +28,7 @@ function addElement(element, animate, previous_id, params, callback) {
     var core_params = {
         id: element_type_id,
         patient_id: OE_patient_id,
+        event_id: OE_event_id,
         previous_id: previous_id
     };
 

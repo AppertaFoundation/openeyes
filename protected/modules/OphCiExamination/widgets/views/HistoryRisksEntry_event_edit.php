@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -14,7 +14,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -41,9 +41,9 @@ if (!isset($values)) {
         <?php
         echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id']);
         echo CHtml::hiddenField($field_prefix . '[other]', $values['other']); ?>
-        <label class="risk-display" data-id="<?= $values['risk_id'] ?>"
-               data-label="<?= $values['risk_display'] ?>"><?= $values['risk_display']; ?></label>
-        <span class="<?= $model_name ?>_other_wrapper" style="display: <?= $values['risk_display'] !== 'Other' ?'none':'' ?>">
+        <label class="risk-display js-not-other-risk" data-id="<?= $values['risk_id'] ?>"
+               data-label="<?= $values['risk_display'] ?>"><?= ( $values['risk_display'] !== 'Other'? $values['risk_display'] : $values['other']); ?></label>
+        <span class="<?= $model_name ?>_other_wrapper js-other-risk" style="display: <?= $values['risk_display'] !== 'Other' || !empty($values['other']) ?'none':'' ?>">
         <?=\CHtml::textField($field_prefix . '[other]', $values['other'],
             array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
     </span>

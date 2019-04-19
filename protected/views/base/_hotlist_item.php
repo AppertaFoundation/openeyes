@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -22,7 +22,7 @@ $core_api = new CoreAPI();
 ?>
 <tr class="js-hotlist-<?= $hotlistItem->is_open ? 'open' : 'closed' ?>-patient"
     data-id="<?= $hotlistItem->id ?>"
-    data-patient-href="<?= $core_api->generateEpisodeLink($hotlistItem->patient) ?>"
+    data-patient-href="<?= $core_api->generatePatientLandingPageLink($hotlistItem->patient) ?>"
 >
     <td><?= CHtml::encode($hotlistItem->patient->hos_num) ?></td>
     <td>

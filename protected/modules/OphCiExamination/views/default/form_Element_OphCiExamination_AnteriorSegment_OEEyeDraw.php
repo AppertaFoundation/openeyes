@@ -52,9 +52,9 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'TransilluminationDefect', 'Hypopyon', 'Hyphaema', 'CornealScar', 'Rubeosis', 'SectorIridectomy', 'ACIOL',
             'LasikFlap', 'CornealSuture', 'ConjunctivalSuture', 'TrabySuture', 'DendriticUlcer','AdenoviralKeratitis',
             'CornealLaceration', 'MarginalKeratitis', 'MetallicForeignBody', 'Pingueculum', 'Pterygium' , 'CapsularTensionRing'),
-        array('SPEE', 'CornealEpithelialDefect', 'CornealOpacity', 'Conjunctivitis', 'PosteriorSynechia',
+        array('BandKeratophy', 'SPEE', 'CornealEpithelialDefect', 'CornealOpacity', 'Conjunctivitis', 'PosteriorSynechia',
             'KeraticPrecipitates', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
-            'Patch', 'SidePort', 'RK',)
+            'Patch', 'SidePort', 'RK', 'CornealGraft', 'EndothelialKeratoplasty', 'CornealSuture', 'ContinuousCornealSuture', 'CornealThinning', 'PeripheralVascularisation')
     ),
     'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
     'idSuffix' => $side.'_'.$element->elementType->id,

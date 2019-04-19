@@ -12,7 +12,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -38,13 +38,16 @@ class NewEventDialogHelper
     {
         if ($subspecialty = $episode->getSubspecialty()) {
             $structured_subspecialty = static::structureSubspecialty($subspecialty);
+            $firm = static::structureFirm(\Firm::model()->findByPk($episode->firm_id));
         } else {
             $structured_subspecialty = static::$support_services_subspecialty;
+            $firm = '';
         }
         return array(
             'id' => $episode->id,
             'service' => $episode->firm ? $episode->firm->name : '',
-            'subspecialty' => $structured_subspecialty
+            'subspecialty' => $structured_subspecialty,
+            'firm' => $firm
         );
     }
 

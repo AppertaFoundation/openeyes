@@ -5,7 +5,7 @@ namespace OEModule\PASAPI\resources;
 /*
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -14,7 +14,7 @@ namespace OEModule\PASAPI\resources;
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -110,8 +110,14 @@ class Patient extends BaseResource
         $this->assignProperty($patient, 'nhs_num', 'NHSNumber');
         $this->assignProperty($patient, 'hos_num', 'HospitalNumber');
         $this->assignProperty($patient, 'dob', 'DateOfBirth');
-        $this->assignProperty($patient, 'date_of_death', 'DateOfDeath');
         $this->assignProperty($patient, 'is_deceased', 'IsDeceased');
+
+        // Special case to resurrect patients.
+        if ($this->partial_record && !$patient->is_deceased && !property_exists($this, 'DateOfDeath')) {
+            $patient->date_of_death = null;
+        } else {
+            $this->assignProperty($patient, 'date_of_death', 'DateOfDeath');
+        }
 
         $this->mapGender($patient);
         $this->mapEthnicGroup($patient);
@@ -199,7 +205,7 @@ class Patient extends BaseResource
                 if ($gp = \Gp::model()->findByAttributes(array('nat_id' => $code))) {
                     $patient->gp_id = $gp->id;
                 } else {
-                    $this->addWarning('Could not find '.Yii::app()->params['gp_label'].' for code '.$code);
+                    $this->addWarning('Could not find '.\Yii::app()->params['gp_label'].' for code '.$code);
                 }
             } else {
                 $patient->gp_id = null;
@@ -308,7 +314,7 @@ class Patient extends BaseResource
                 if ($status = \NhsNumberVerificationStatus::model()->findByAttributes(array('code' => $code))) {
                     $patient->nhs_num_status_id = $status->id;
                 } else {
-                    $this->addWarning('Unrecognised'. Yii::app()->params['nhs_num_label'].' number status code '.$code);
+                    $this->addWarning('Unrecognised '.\Yii::app()->params['nhs_num_label'].' number status code '.$code);
                 }
             } else {
                 $patient->nhs_num_status_id = null;

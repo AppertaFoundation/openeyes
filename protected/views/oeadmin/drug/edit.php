@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -17,15 +17,17 @@
 <div class="cols-7">
 
     <div class="row divider">
-        <h2>Edit Formulary Drugs</h2>
+        <h2><?php echo $model->id ? 'Edit' : 'Add'?> Formulary Drugs</h2>
     </div>
 
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
+        'enableAjaxValidation' => false,
         'focus' => '#contactname',
     )) ?>
 
+    <?php echo $form->errorSummary($model); ?>
     <table class="standard">
         <tbody>
         <?php
