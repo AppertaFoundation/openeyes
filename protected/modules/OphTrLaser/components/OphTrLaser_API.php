@@ -18,5 +18,19 @@
  */
 class OphTrLaser_API extends BaseAPI
 {
-
+    /**
+     * get laterality of event by looking at the treatment element eye side
+     *
+     * @param $event_id
+     * @return mixed
+     * @throws Exception
+     */
+    public function getLaterality($event_id)
+    {
+        $laser_treatment = Element_OphTrLaser_Treatment::model()->find('event_id=?', array($event_id));
+        if (!$laser_treatment) {
+            throw new Exception("Laser treatment event not found: $event_id");
+        }
+        return $laser_treatment->eye;
+    }
 }

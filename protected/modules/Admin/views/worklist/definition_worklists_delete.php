@@ -14,12 +14,17 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
+ ?>
 
 <div class="admin box">
-    <h2>Display Context(s) for <?= $definition->name ?></h2>
-    <?php echo EventAction::link('Definitions List', '/worklistAdmin/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-    <?php echo EventAction::link('View Definition', '/worklistAdmin/definition/'.$definition->id, array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-    <?php echo EventAction::link('Add Context', '/worklistAdmin/definitionDisplayContextAdd/'.$definition->id, array('level' => 'primary'), array('class' => 'button small'))->toHtml()?>
-    <?php $this->renderPartial('//admin/worklists/definition_display_contexts_table', array('definition' => $definition)); ?>
+    <h2>Confirm Delete</h2>
+    <p>Are you sure you want to delete all the instances for the worklist definition <?= $definition->name ?>?
+        There are currently <?= $definition->getWorklistCount() ?> instances that have been generated.</p>
+
+    <form id="definition-delete" method="POST">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+        <input type="hidden" name="confirm_delete" value="<?= $definition->id ?>"/>
+        <input type="submit" class="button warning small" value="Confirm" />
+        <?= EventAction::link('Cancel', '/Admin/worklist/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml() ?>
+    </form>
 </div>

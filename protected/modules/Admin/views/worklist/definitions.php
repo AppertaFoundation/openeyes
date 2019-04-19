@@ -33,16 +33,16 @@
                 <tr>
                     <td class="reorder">&uarr;&darr;<input type="hidden" name="item_ids[]" value="<?php echo $definition->id ?>"></td>
                     <td><?=$definition->name?></td>
-                    <td><?php if ($this->manager->canUpdateWorklistDefinition($definition)) {?><a href="/worklistAdmin/definitionUpdate/<?=$definition->id?>">Edit</a> |<?php }?>
-                        <a href="/worklistAdmin/definition/<?=$definition->id?>">View</a> |
-                        <a href="/worklistAdmin/definitionWorklists/<?=$definition->id?>">Instances (<?=$definition->worklistCount?>)</a> |
-                        <a href="/worklistAdmin/definitionMappings/<?=$definition->id?>">Mapping Items(<?=$definition->mappingCount?>)</a> |
-                        <a href="/worklistAdmin/definitionDisplayContexts/<?=$definition->id?>">Display Context (<?=$definition->displayContextCount > 0 ? 'limited' : 'any';?>)</a> |
+                    <td><?php if ($this->manager->canUpdateWorklistDefinition($definition)) {?><a href="/Admin/worklist/definitionUpdate/<?=$definition->id?>">Edit</a><?php }?>
+                        <a class="button small" href="/Admin/worklist/definition/<?=$definition->id?>">View</a>
+                        <a class="button small" href="/Admin/worklist/definitionWorklists/<?=$definition->id?>">Instances (<?=$definition->worklistCount?>)</a>
+                        <a class="button small" href="/Admin/worklist/definitionMappings/<?=$definition->id?>">Mapping Items(<?=$definition->mappingCount?>)</a>
+                        <a class="button small" href="/Admin/worklist/definitionDisplayContexts/<?=$definition->id?>">Display Context (<?=$definition->displayContextCount > 0 ? 'limited' : 'any';?>)</a>
                         <?php if ($definition->worklistCount) {?>
-                            <a href="/worklistAdmin/definitionWorklistsDelete/<?=$definition->id?>">Delete Instances</a>
+                            <a class="button small" href="/Admin/worklist/definitionWorklistsDelete/<?=$definition->id?>">Delete Instances</a>
                         <?php } else { ?>
-                            <a href="/worklistAdmin/definitionGenerate/<?=$definition->id?>">Generate</a> |
-                            <a href="/worklistAdmin/definitionDelete/<?=$definition->id?>">Delete</a>
+                            <a class="button small" href="/Admin/worklist/definitionGenerate/<?=$definition->id?>">Generate</a>
+                            <a class="button small" href="/Admin/worklist/definitionDelete/<?=$definition->id?>">Delete</a>
                         <?php }?>
                     </td>
                 </tr>
@@ -51,12 +51,8 @@
             <tfoot>
             <tr>
                 <td colspan="4">
-                    <?php echo EventAction::link(
-                        'Add Definition',
-                        '/worklistAdmin/definitionUpdate/',
-                        array(),
-                        array('class' => 'button large')
-                    )->toHtml()?>
+
+                    <?=\OEHtml::linkButton('Add Definition', '/Admin/worklist/definitionUpdate/');?>
                     <?php echo EventAction::button(
                         'Sort',
                         'sort',
@@ -64,7 +60,7 @@
                         array(
                             'class' => 'button large',
                             'style' => 'display:none;',
-                            'data-uri' => '/worklistAdmin/definitionSort/',
+                            'data-uri' => '/Admin/worklist/definitionSort/',
                             'data-object' => 'WorklistDefinition',
                         )
                     )->toHtml() ?>
@@ -74,6 +70,7 @@
         </table>
     </form>
     <?php } else {?>
+        <?= EventAction::link('Add Definition', '/worklistAdmin/definitionUpdate/', [], ['class' => 'button primary small'])->toHtml()?>
         <div class="alert-box info">No automatic worklists have been defined. You may add one by clicking the button above ...</div>
     <?php } ?>
 </div>
