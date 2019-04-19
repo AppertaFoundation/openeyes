@@ -33,7 +33,7 @@ class PortalExamsCommand extends CConsoleCommand
         $this->config = $connection->getConfig();
         $examinations = $this->examinationSearch();
 
-        $defaultInvoiceStatus = \OEModule\OphCiExamination\models\InvoiceStatus::model()->findByAttributes( array('name' => 'No status'));
+        $defaultInvoiceStatus = \OEModule\OphCiExamination\models\InvoiceStatus::model()->findByAttributes(array('name' => 'No status'));
 
         $eventType = EventType::model()->find('name = "Examination"');
         $portalUser = $user->portalUser();
@@ -56,7 +56,7 @@ class PortalExamsCommand extends CConsoleCommand
             $opNoteEvent = UniqueCodes::model()->eventFromUniqueCode($uniqueCode);
             $examinationEventLog = new AutomaticExaminationEventLog();
             if (!$opNoteEvent) {
-                echo 'No Event found for identifier: '.$examination['patient']['unique_identifier'].PHP_EOL;
+                echo 'No Event found for identifier: ' . $examination['patient']['unique_identifier'] . PHP_EOL;
                 $existingUnfound = $examinationEventLog->findByAttributes(array('unique_code' => $uniqueCode));
                 if ($existingUnfound) {
                     $examinationEventLog = $existingUnfound;
@@ -73,7 +73,7 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
                 $examinationEventLog->optometrist_address = $examination['op_tom']['address'];
                 if (!$examinationEventLog->save()) {
-                    echo '$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true);
+                    echo '$examination_event_log failed: ' . print_r($examinationEventLog->getErrors(), true);
                 }
                 continue;
             }
@@ -102,10 +102,10 @@ class PortalExamsCommand extends CConsoleCommand
                     $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
                     $examinationEventLog->optometrist_address = $examination['op_tom']['address'];
                     if (!$examinationEventLog->save()) {
-                        throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
+                        throw new CDbException('$examination_event_log failed: ' . print_r($examinationEventLog->getErrors(), true));
                     }
-                    echo 'Failed for examination '.$examination['patient']['unique_identifier'].' with exception: '.
-                        $e->getMessage().'on line '.$e->getLine().' in file '.$e->getFile().PHP_EOL.$e->getTraceAsString();
+                    echo 'Failed for examination ' . $examination['patient']['unique_identifier'] . ' with exception: ' .
+                        $e->getMessage() . 'on line ' . $e->getLine() . ' in file ' . $e->getFile() . PHP_EOL . $e->getTraceAsString();
                     continue;
                 }
                 $importStatus = ImportStatus::model()->find('status_value = "Success Event"');
@@ -120,10 +120,10 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
                 $examinationEventLog->optometrist_address = $examination['op_tom']['address'];
                 if (!$examinationEventLog->save()) {
-                    throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
+                    throw new CDbException('$examination_event_log failed: ' . print_r($examinationEventLog->getErrors(), true));
                 }
                 $transaction->commit();
-                echo 'Examination imported: '.$examinationEvent->id.PHP_EOL;
+                echo 'Examination imported: ' . $examinationEvent->id . PHP_EOL;
             } else {
                 if ($duplicateRecord['examination_data'] !== json_encode($examination)) {
                     $eventType = EventType::model()->find('name = "Examination"');
@@ -139,9 +139,9 @@ class PortalExamsCommand extends CConsoleCommand
 
                     $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
                     $examinationEventLog->optometrist_address = $examination['op_tom']['address'];
-                    echo 'Duplicate record found for '.$examination['patient']['unique_identifier'].PHP_EOL;
+                    echo 'Duplicate record found for ' . $examination['patient']['unique_identifier'] . PHP_EOL;
                     if (!$examinationEventLog->save()) {
-                        echo '$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true).PHP_EOL;
+                        echo '$examination_event_log failed: ' . print_r($examinationEventLog->getErrors(), true) . PHP_EOL;
                     }
                 }
             }
@@ -150,33 +150,9 @@ class PortalExamsCommand extends CConsoleCommand
 
     private function saveOptometristAsPatientContact($name, $address, $goc_number, $patient_id)
     {
-        $optometrist_contact = \Contact::model()->with('address')->find('address.address1 = ? AND national_code = ?', [$address, $goc_number]);
-        if ($optometrist_contact == null) {
-            $optometrist_contact_label = ContactLabel::model()->find("name = ?", ['Optometrist']);
-            $optometrist_contact = new Contact();
-            $optometrist_contact->contact_label_id = $optometrist_contact_label->id;
-            $optometrist_contact->national_code = $goc_number;
-            $optometrist_contact->last_name = $name;
-
-            $optometrist_contact->save();
-
-            $optometrist_address = new Address();
-            $optometrist_address->address1 = $address;
-            $optometrist_address->address_type_id = 3;
-            $optometrist_address->contact_id = $optometrist_contact->id;
-
-            $optometrist_address->save();
-        }
-
-        $patient_contact_assignment = PatientContactAssignment::model()->find("patient_id = ? AND contact_id = ?", [$patient_id, $optometrist_address->id]);
-
-        if ($patient_contact_assignment == null) {
-            $patient_contact_assignment = new PatientContactAssignment();
-            $patient_contact_assignment->contact_id = $optometrist_contact->id;
-            $patient_contact_assignment->patient_id = $patient_id;
-
-            $patient_contact_assignment->save();
-        }
+        $optometrist_contact = $this->getAndSaveOptometristContact($name, $goc_number);
+        $this->saveOptometristAddress($address, $optometrist_contact);
+        $this->savePatientOptometristContactAssignment($patient_id, $optometrist_contact);
     }
 
     /**
@@ -186,7 +162,7 @@ class PortalExamsCommand extends CConsoleCommand
      */
     protected function examinationSearch()
     {
-        $this->client->setUri($this->config['uri'].$this->config['endpoints']['examinations']);
+        $this->client->setUri($this->config['uri'] . $this->config['endpoints']['examinations']);
         $eventLog = new AutomaticExaminationEventLog();
         $last = $eventLog->latestSuccessfulEvent();
         if ($last) {
@@ -196,5 +172,69 @@ class PortalExamsCommand extends CConsoleCommand
         $response = $this->client->request('POST');
 
         return json_decode($response->getBody(), true);
+    }
+
+    /**
+     * @param $name
+     * @param $goc_number
+     * @return array|Contact|mixed|null
+     * @throws Exception
+     */
+    private function getAndSaveOptometristContact($name, $goc_number)
+    {
+        $optometrist_contact = \Contact::model()->find('national_code = ?', [$goc_number]);
+        if ($optometrist_contact == null) {
+            $optometrist_contact_label = ContactLabel::model()->find("name = ?", ['Optometrist']);
+            $optometrist_contact = new Contact();
+            $optometrist_contact->contact_label_id = $optometrist_contact_label->id;
+            $optometrist_contact->national_code = $goc_number;
+            $optometrist_contact->last_name = $name;
+
+            $optometrist_contact->save();
+        }
+        return $optometrist_contact;
+    }
+
+    /**
+     * @param $address
+     * @param $optometrist_contact
+     * @throws Exception
+     */
+    private function saveOptometristAddress($address, $optometrist_contact)
+    {
+        $optometrist_address = Address::model()->find('address1 = ?', [$address]);
+        if ($optometrist_address == null) {
+            $optometrist_address = new Address();
+            $optometrist_address->address1 = $address;
+            $optometrist_address->country_id = Address::model()->getDefaultCountryId();
+            $optometrist_address->address_type_id = AddressType::model()->find('name = ? ', ['Correspondence'])->id;
+            $optometrist_address->contact_id = $optometrist_contact->id;
+
+            $optometrist_address->save();
+        }
+    }
+
+    /**
+     * @param $patient_id
+     * @param $optometrist_contact
+     * @throws Exception
+     */
+    private function savePatientOptometristContactAssignment($patient_id, $optometrist_contact)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('t.patient_id = :patient_id');
+        $criteria->addCondition('t.contact_id = :contact_id');
+        $criteria->params[':patient_id'] = $patient_id;
+        $criteria->params[':contact_id'] = $optometrist_contact->id;
+
+        $patient_contact_assignment = PatientContactAssignment::model()->find($criteria);
+
+        if ($patient_contact_assignment == null) {
+            $patient_contact_assignment = new PatientContactAssignment();
+            $patient_contact_assignment->contact_id = $optometrist_contact->id;
+            $patient_contact_assignment->patient_id = $patient_id;
+
+            $patient_contact_assignment->save();
+        }
     }
 }
