@@ -193,30 +193,6 @@
 </div>
 
 <script type="text/javascript">
-
-  var disabledSocialHistoryFields = [
-    $('#<?= $model_name ?>_occupation_id'),
-    $('#<?= $model_name ?>_smoking_status_id'),
-    $('#<?= $model_name ?>_alcohol_intake'),
-    $('#<?= $model_name ?>_substance_misuse_id'),
-    $('#<?= $model_name ?>_driving_statuses'),
-    $('#<?= $model_name ?>_accommodation_id'),
-    $('#<?= $model_name ?>_carer_id'),
-  ];
-
-  // Disable all form fields
-  disabledSocialHistoryFields.forEach(function (field) {
-    field.attr('disabled', 'disabled');
-  });
-
-  // Re-enable all fields on form submit (otherwise the data isn't sent)
-  // Note: document.currentScript relies on this being run outside of $(document).ready
-  $(document.currentScript).closest('form').submit(function () {
-    disabledSocialHistoryFields.forEach(function (field) {
-      field.removeAttr('disabled');
-    });
-  });
-
   $(document).ready(function () {
     // hide the driving status select
     $('#OEModule_OphCiExamination_models_SocialHistory_driving_statuses').hide();
