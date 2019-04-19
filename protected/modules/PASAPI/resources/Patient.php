@@ -110,8 +110,14 @@ class Patient extends BaseResource
         $this->assignProperty($patient, 'nhs_num', 'NHSNumber');
         $this->assignProperty($patient, 'hos_num', 'HospitalNumber');
         $this->assignProperty($patient, 'dob', 'DateOfBirth');
-        $this->assignProperty($patient, 'date_of_death', 'DateOfDeath');
         $this->assignProperty($patient, 'is_deceased', 'IsDeceased');
+
+        // Special case to resurrect patients.
+        if ($this->partial_record && !$patient->is_deceased && !property_exists($this, 'DateOfDeath')) {
+            $patient->date_of_death = null;
+        } else {
+            $this->assignProperty($patient, 'date_of_death', 'DateOfDeath');
+        }
 
         $this->mapGender($patient);
         $this->mapEthnicGroup($patient);
@@ -199,7 +205,7 @@ class Patient extends BaseResource
                 if ($gp = \Gp::model()->findByAttributes(array('nat_id' => $code))) {
                     $patient->gp_id = $gp->id;
                 } else {
-                    $this->addWarning('Could not find '.Yii::app()->params['gp_label'].' for code '.$code);
+                    $this->addWarning('Could not find '.\Yii::app()->params['gp_label'].' for code '.$code);
                 }
             } else {
                 $patient->gp_id = null;
@@ -308,7 +314,7 @@ class Patient extends BaseResource
                 if ($status = \NhsNumberVerificationStatus::model()->findByAttributes(array('code' => $code))) {
                     $patient->nhs_num_status_id = $status->id;
                 } else {
-                    $this->addWarning('Unrecognised'. Yii::app()->params['nhs_num_label'].' number status code '.$code);
+                    $this->addWarning('Unrecognised '.\Yii::app()->params['nhs_num_label'].' number status code '.$code);
                 }
             } else {
                 $patient->nhs_num_status_id = null;

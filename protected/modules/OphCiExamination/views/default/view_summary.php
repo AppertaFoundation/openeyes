@@ -121,7 +121,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
   </section>
 
     <div class="collapse-tile-group">
-    <i class="oe-i small reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
+    <i class="oe-i medium reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
   </div>
 </div>
 
@@ -242,6 +242,6 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
   </section>
 
   <div class="collapse-tile-group">
-    <i class="oe-i small reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
+    <i class="oe-i medium reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
   </div>
 </div>

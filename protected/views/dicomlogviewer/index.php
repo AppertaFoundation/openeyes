@@ -44,7 +44,7 @@
             <tr>
                 <th>File Name</th>
                 <th>Import Date</th>
-                <th>Study date</th>
+                <th>Study Date</th>
                 <th>Station ID</th>
                 <th>Location</th>
                 <th>Type</th>
@@ -151,13 +151,13 @@
     <tr data-id="{{id}}" filename="{{filename}}" processor_id="{{processor_id}}" status="{{status}}">
         <td>{{filename}}<br>{{file_ext}}</td>
         <td>{{import_datetime}}</td>
-        <td>{{study_date}}</td>
+        <td>{{study_datetime}}</td>
         <td>{{station_id}}</td>
-        <td>{{location}}</td>
-        <td>{{type}}</td>
-        <td>{{hos_num}}</td>
+        <td>{{study_location}}</td>
+        <td>{{report_type}}</td>
+        <td><a href="/patient/search?term={{patient_number}}">{{patient_number}}</a></td>
         <td>{{status}}</td>
-        <td>{{study_id}}</td>
+        <td>{{study_instance_id}}</td>
         <td>{{comment}}</td>
         <td class="more"><a class="button small">More</a></td>
     </tr>
