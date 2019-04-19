@@ -3,11 +3,6 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
-
-use CDbCriteria;
-use CJSON;
-use Disorder;
-
 class ContactController extends \BaseController
 {
     public function accessRules()
@@ -23,28 +18,25 @@ class ContactController extends \BaseController
     public function actionAutocomplete()
     {
         if (\Yii::app()->request->isAjaxRequest) {
-            $criteria = new CDbCriteria();
+            $criteria = new \CDbCriteria();
             $criteria->join = "join contact_label cl on cl.id = t.contact_label_id";
             $criteria->join .= " join address ad on ad.contact_id = t.id";
-            $params = array();
             if (isset($_GET['term']) && $term = $_GET['term']) {
 
-                $criteria->addCondition(array(
-                    'LOWER(first_name) LIKE :term',
-                    'LOWER(last_name) LIKE :term',
-                    'LOWER(cl.name) LIKE :term',
-                    'LOWER(t.national_code) LIKE :term',
-                    'LOWER(ad.address1) LIKE :term',
-                    'LOWER(ad.address2) LIKE :term',
-                    'LOWER(ad.postcode) LIKE :term',
-                    'LOWER(last_name) LIKE :term'), 'OR');
+                $criteria->addSearchCondition('last_name', $term, true, 'OR');
+                $criteria->addSearchCondition('first_name', $term, true, 'OR');
+                $criteria->addSearchCondition('cl.name', $term, true, 'OR');
+                $criteria->addSearchCondition('t.national_code', $term, true, 'OR');
+                $criteria->addSearchCondition('ad.address1', $term, true, 'OR');
+                $criteria->addSearchCondition('ad.address2', $term, true, 'OR');
+                $criteria->addSearchCondition('ad.postcode', $term, true, 'OR');
+                $criteria->addSearchCondition('last_name', $term, true, 'OR');
                 $criteria->addCondition(array('cl.is_private = 0'));
                 $criteria->addCondition(array('t.active = 1'));
-                $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
             }
-            if(isset($_GET['filter']) ){
+            if (isset($_GET['filter'])) {
                 $contact_label_id = $_GET['filter'];
-                if($contact_label_id != 'false') {
+                if ($contact_label_id != 'false') {
                     $contact_label = \ContactLabel::model()->findByPk($contact_label_id);
                     $criteria->addCondition(array(
                             'cl.name = ' . '"' . $contact_label->name . '"'
@@ -57,21 +49,19 @@ class ContactController extends \BaseController
             // Limit results
             $criteria->limit = '200';
 
-            $criteria->params = $params;
-
             $contacts = \Contact::model()->findAll($criteria);
             $return = array();
             foreach ($contacts as $contact) {
                 $return[] = $this->contactStructure($contact);
             }
-            echo CJSON::encode($return);
+            echo \CJSON::encode($return);
         }
     }
 
     /**
      * Generate array structure of disorder for JSON structure return
      *
-     * @param Disorder $disorder
+     * @param \Contact $contact
      * @return array
      */
     protected function contactStructure(\Contact $contact)
@@ -122,23 +112,23 @@ class ContactController extends \BaseController
                 $address->address_type_id = 3;
 
 
-                if(!$contact->save()) {
+                if (!$contact->save()) {
                     $errors = $contact->getErrors();
                 }
                 $address->contact_id = $contact->id;
-                if(!$address->save()) {
+                if (!$address->save()) {
                     $errors = array_merge($errors, $address->getErrors());
                 }
 
-                if(trim($data->address1) == "" && trim($data->primary_phone) == "" && trim($data->email) == ""){
+                if (trim($data->address1) == "" && trim($data->primary_phone) == "" && trim($data->email) == "") {
                     $errors['missing_address'] = "Address or phone number or an email should be provided";
                 }
-                if( !empty($errors)) {
+                if (!empty($errors)) {
                     $transaction->rollback();
-                    echo CJSON::encode(['errors' => $errors]);
+                    echo \CJSON::encode(['errors' => $errors]);
                 } else {
                     $transaction->commit();
-                    echo CJSON::encode($this->contactStructure($contact));
+                    echo \CJSON::encode($this->contactStructure($contact));
                 }
             }
 

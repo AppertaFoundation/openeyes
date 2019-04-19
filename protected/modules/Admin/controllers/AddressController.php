@@ -24,15 +24,11 @@ class AddressController extends BaseAdminController
         }
         if ($request->getPost('Address')) {
             $model->attributes = $request->getPost('Address');
-            if (!$model->validate()) {
-                $errors = $model->getErrors();
+            if ($model->save()) {
+                Yii::app()->user->setFlash('success', 'Address saved');
+                $this->redirect(array('/admin/editContact?contact_id=' . $contact_id));
             } else {
-                if ($model->save()) {
-                    Yii::app()->user->setFlash('success', 'Address saved');
-                    $this->redirect(array('/admin/editContact?contact_id=' . $contact_id));
-                } else {
-                    $errors = $model->getErrors();
-                }
+                $errors = $model->getErrors();
             }
         }
         $this->render('/edit', array(
