@@ -363,6 +363,7 @@ var docman = (function() {
                     }
                     $('#docman_recipient_' + rowindex).val('');
                     $('#dm_table .docman_loader').hide();
+                    $('.autosize').autosize();
                 }
             });
         },
