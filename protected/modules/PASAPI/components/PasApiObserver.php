@@ -130,20 +130,29 @@ class PasApiObserver
                 $_assignment = $resource->getAssignment();
                 $_patient = $_assignment->getInternal();
 
-                // If the patient is in our DB or only 1 patient returned we save it
-                if (!$_patient->isNewRecord || $patient_count == 1) {
-
-                    // we could check the $_assignment->isStale() but the request already done, we have the new data, why would we throw it away
-
+                $save_resource = function() use ($resource, $_patient, $data, $node) {
                     $resource->partial_record = !$_patient->isNewRecord;
                     if (!$resource->save() && ($data['patient'] instanceof \Patient)) {
                         $data['patient']->addPasError('Patient not updated from PAS, some data may be out of date or incomplete');
                         \OELog::log('PASAPI Patient resource model could not be saved. Hos num: ' . $node->HospitalNumber . ' ' . print_r($resource->errors, true));
                     }
-                } else {
-                    // we do not save this Patient, just display on the patient/view page's list
-                    $patient = $this->buildPatientObject($resource);
-                    $results[] = $patient;
+                };
+
+                //if XML contains only one patient we always save
+                if ($patient_count == 1) {
+                    $save_resource();
+                } else if ($patient_count > 1) {
+
+                    //XML contains more patients, some of them may exist in the local DB, we save those
+                    //but not add to the $results array because Patient model's search function will retrieve them
+                    if (!$_patient->isNewRecord) {
+                        $save_resource();
+                    } else {
+                        //unsaved patients are added to the $results array - it will displayed to the user to pick one then PASAPI will
+                        //perform a search by hos_num, XML will return only one result and it will be saved
+                        $patient = $this->buildPatientObject($resource);
+                        $results[] = $patient;
+                    }
                 }
 
                 $xml_handler->next('Patient');
