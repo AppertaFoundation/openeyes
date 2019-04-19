@@ -16,22 +16,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
-<section>
-    <header class="element-header">
-        <h3 class="element-title">Biometry</h3>
-    </header>
-  <div class="element-data element-eyes">
-      <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-          <div class="<?= $eye_side ?>-eye">
-              <h3 class="<?= $eye_side ?>-color-text"><?=\CHtml::encode($element->getAttributeLabel($eye_side)) ?></h3>
-              <?php if ($element->hasEye($eye_side)) {
-                  $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data_Fields',
-                      array('side' => $eye_side, 'element' => $element));
-              } else { ?>
-                  <div class="data-value not-recorded">Not recorded</div>
-              <?php } ?>
-          </div>
-      <?php endforeach; ?>
-  </div>
-</section>
+<div class="element-data element-eyes">
+		<?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+				<div class="<?= $eye_side ?>-eye">
+						<h3 class="<?= $eye_side ?>-color-text"><?=\CHtml::encode($element->getAttributeLabel($eye_side)) ?></h3>
+						<?php if ($element->hasEye($eye_side)) {
+								$this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data_Fields',
+										array('side' => $eye_side, 'element' => $element));
+						} else { ?>
+								<div class="data-value not-recorded">Not recorded</div>
+						<?php } ?>
+				</div>
+		<?php endforeach; ?>
+</div>

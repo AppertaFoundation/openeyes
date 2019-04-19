@@ -20,12 +20,11 @@
 class AuthRules
 {
     /**
-     * @param Firm    $firm
      * @param Episode $episode
      *
      * @return bool
      */
-    public function canEditEpisode(Firm $firm, Episode $episode)
+    public function canEditEpisode(Episode $episode)
     {
         if ($episode->change_tracker) {
             // firm/subspecialty  is irrelevant for change tracking episodes.
@@ -35,11 +34,7 @@ class AuthRules
             return false;
         }
 
-        if ($episode->support_services) {
-            return $firm->isSupportServicesFirm();
-        }
-
-        return $firm->getSubspecialtyID() === $episode->getSubspecialtyID();
+        return true;
     }
 
     /**
@@ -67,8 +62,8 @@ class AuthRules
             }
         }
 
-        if ($firm && $episode) {
-            return $this->canEditEpisode($firm, $episode);
+        if ($episode) {
+            return $this->canEditEpisode($episode);
         }
 
         return true;
@@ -80,13 +75,13 @@ class AuthRules
      *
      * @return bool
      */
-    public function canEditEvent(Firm $firm, Event $event)
+    public function canEditEvent(Event $event)
     {
         if ($event->delete_pending) {
             return false;
         }
 
-        if (!$this->canModifyEvent($firm, $event)) {
+        if (!$this->canModifyEvent($event)) {
             return false;
         }
         if (!$this->isEventUnlocked($event)) {
@@ -98,18 +93,17 @@ class AuthRules
 
     /**
      * @param User  $user
-     * @param Firm  $firm
      * @param Event $event
      *
      * @return bool
      */
-    public function canDeleteEvent(User $user, Firm $firm, Event $event)
+    public function canDeleteEvent(User $user, Event $event)
     {
         if (!($event->created_user_id == $user->id || Yii::app()->user->checkAccess('admin'))) {
             return false;
         }
 
-        if (!$this->canModifyEvent($firm, $event)) {
+        if (!$this->canModifyEvent($event)) {
             return false;
         }
         if (!$this->isEventUnlocked($event)) {
@@ -120,12 +114,11 @@ class AuthRules
     }
 
     /**
-     * @param Firm  $firm
      * @param Event $event
      *
      * @return bool
      */
-    public function canRequestEventDeletion(Firm $firm, Event $event)
+    public function canRequestEventDeletion(Event $event)
     {
         if ($event->delete_pending) {
             return false;
@@ -134,7 +127,7 @@ class AuthRules
             return false;
         }
 
-        if (!$this->canModifyEvent($firm, $event)) {
+        if (!$this->canModifyEvent($event)) {
             return false;
         }
 
@@ -144,18 +137,17 @@ class AuthRules
     /**
      * Common check for all rules that involve editing/deleting events.
      *
-     * @param Firm  $firm
      * @param Event $event
      *
      * @return bool
      */
-    private function canModifyEvent(Firm $firm, Event $event)
+    private function canModifyEvent(Event $event)
     {
         if ($event->episode->patient->isDeceased()) {
             return false;
         }
 
-        return $this->canEditEpisode($firm, $event->episode);
+        return $this->canEditEpisode($event->episode);
     }
 
     /**
