@@ -218,15 +218,6 @@ $form = $this->beginWidget('CActiveForm', array(
             </label>
         </td>
     </tr>
-    </tbody>
-</table>
-<div class="alert-box error with-icon js-contact-error-box" style="display:none">
-    <p>Please fix the following input errors:</p>
-    <ul class="js-contact-errors">
-    </ul>
-</div>
-<table>
-    <tbody>
     <tr>
         <td colspan="2" class="align-right">
             <?= \CHtml::submitButton('Submit', array('class' => 'green hint js-add-new-contact')); ?>
