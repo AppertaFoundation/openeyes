@@ -169,8 +169,20 @@
             placeholder: 'search',
             type: 'text'
         });
+
+        this.searchingSpinnerWrapper = $('<div />', {
+            class: 'doing-search',
+            style: 'display:none'
+        });
+
+        $('<i />', {
+            class: 'spinner as-icon',
+        }).appendTo(this.searchingSpinnerWrapper);
+        this.searchingSpinnerWrapper.append(document.createTextNode("Searching ..."));
+
         let $filterDiv = $('<div />', {class: 'has-filter'}).appendTo(this.searchWrapper);
         $searchInput.appendTo($filterDiv);
+        this.searchingSpinnerWrapper.appendTo($filterDiv);
 
         $searchInput.on('keyup', function () {
             dialog.runItemSearch($(this).val());
@@ -460,6 +472,7 @@
             filterValue = selectedFilter.data('id');
         }
 
+        dialog.searchingSpinnerWrapper.show();
         this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
             term: text,
             filter: filterValue,
@@ -489,6 +502,7 @@
             } else {
                 dialog.searchResultList.toggle(!no_data);
             }
+            dialog.searchingSpinnerWrapper.hide();
         });
     };
 
