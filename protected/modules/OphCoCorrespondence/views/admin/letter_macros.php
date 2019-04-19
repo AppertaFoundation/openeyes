@@ -73,11 +73,13 @@
 
 <form id="admin_letter_macros">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+    <input type="hidden" name="page" value="1">
     <div class="data-group">
-        <table class="standard">
+        <table class="standard generic-admin sortable" id="et_sort" data-uri = "/OphCoCorrespondence/admin/sortLetterMacros">
             <thead>
             <tr>
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Display order</th>
                 <th>ID</th>
                 <th>Owner</th>
                 <th>Name</th>
@@ -100,3 +102,9 @@
 <div class="cols-4 column end">
     <?=\CHtml::htmlButton('Delete macros', array('class' => 'button large deleteMacros')) ?>
 </div>
+
+<script>
+    $('.generic-admin.sortable tbody').sortable({
+        stop: OpenEyes.Admin.saveSorted
+    });
+</script>

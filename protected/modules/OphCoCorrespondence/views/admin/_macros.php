@@ -18,6 +18,10 @@ if (!empty($macros)) {
     foreach ($macros as $i => $macro) {?>
 		<tr class="clickable" data-id="<?php echo $macro->id?>" data-uri="OphCoCorrespondence/admin/editMacro/<?php echo $macro->id?>">
 			<td><input type="checkbox" name="macros[]" value="<?php echo $macro->id?>" /></td>
+            <td class="reorder">
+                <span>&uarr;&darr;</span>
+                <input type="hidden" name="LetterMacro[display_order][]" value="<?= $macro->id ?>">
+            </td>
 			<td><?php echo $macro->id?></td>
 			<td>
 				<?php if ($macro->site) {

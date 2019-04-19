@@ -38,13 +38,13 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
                 <span class="date"><?= isset($header_data['CCT']['date']) ? $header_data['CCT']['date'] : ''; ?></span>
             </div>
             <div class="group">
-                <span class="type">IOP(Base):</span>
+                <span class="type">IOP (Base):</span>
                 <span class="data">R:<?= isset($header_data['IOP']['right']) ? $header_data['IOP']['right'] : ' NR'; ?></span>
                 <span class="data">L:<?= isset($header_data['IOP']['left']) ? $header_data['IOP']['left'] : ' NR'; ?></span>
                 <span class="date"><?= isset($header_data['IOP']['date']) ? $header_data['IOP']['date'] : ''; ?></span>
             </div>
             <div class="group">
-                <span class="type">(Max):</span>
+                <span class="type">IOP (Max):</span>
                 <span class="data">R:<?= isset($header_data['IOP_MAX']['right']) ? $header_data['IOP_MAX']['right'] : ' NR'; ?></span>
                 <span class="data">L:<?= isset($header_data['IOP_MAX']['left']) ? $header_data['IOP_MAX']['left'] : ' NR'; ?></span>
             </div>
