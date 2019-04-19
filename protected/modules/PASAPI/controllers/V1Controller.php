@@ -52,7 +52,7 @@ class V1Controller extends \CController
      * URLManager config, so this captures calls where the id doesn't contain non-numerics.
      *
      * @param string $actionID
-     *
+     * @throws \CException
      * @return \CAction|\CInlineAction
      */
     public function createAction($actionID)

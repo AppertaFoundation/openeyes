@@ -22,7 +22,7 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('eventemitter2/lib/eventemitter2.js', 'application.assets.components')?>
 <?php $assetManager->registerScriptFile('js/jquery.printElement.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.hoverIntent.min.js')?>
-<?php $assetManager->registerScriptFile('js/jquery.autosize.js')?>
+<?php $assetManager->registerScriptFile('../../node_modules/jquery-autosize/jquery.autosize.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.cookie.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.getUrlParam.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.query-object.min.js')?>
@@ -55,14 +55,15 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Window.js'); ?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.Form.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Search.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.CopyToClipboard.js')?>
 <?php $assetManager->registerScriptFile('js/script.js')?>
 <?php $assetManager->registerScriptFile('components/foundation/js/foundation.min.js');?>
 <?php $assetManager->registerScriptFile('components/foundation/js/foundation/foundation.dropdown.js');?>
 <?php $assetManager->registerScriptFile('components/jt.timepicker/jquery.timepicker.js');?>
 <?php $assetManager->registerScriptFile('js/bootstrap-tour-standalone.min.js');?>
 <?php $assetManager->registerScriptFile('js/oelauncher.js');?>
-<?php $assetManager->registerScriptFile('js/sortable/Sortable.min.js', 'application.assets.newblue');?>
-<?php $assetManager->registerScriptFile('js/pickmeup/pickmeup.js', 'application.assets.newblue');?>
+<?php $assetManager->registerScriptFile('../../node_modules/sortablejs/Sortable.min.js', 'application.assets.newblue');?>
+<?php $assetManager->registerScriptFile('../../node_modules/pickmeup/js/pickmeup.js', 'application.assets.newblue');?>
 <?php $assetManager->registerScriptFile('../../node_modules/tinymce/tinymce.js');?>
 <?php $assetManager->registerScriptFile('../../node_modules/plotly.js-dist/plotly.js');?>
 <?php $assetManager->registerScriptFile('../../node_modules/lodash/lodash.min.js');?>
