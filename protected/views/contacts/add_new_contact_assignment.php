@@ -208,12 +208,6 @@ $form = $this->beginWidget('CActiveForm', array(
         </td>
     </tr>
     <tr>
-        <td>
-            Make this contact available for other patients (leaving unchecked will make this contact private to the
-            current patient only)
-        </td>
-    </tr>
-    <tr>
         <td colspan="2" class="align-right">
             <?= \CHtml::submitButton('Submit', array('class' => 'green hint js-add-new-contact')); ?>
         </td>
