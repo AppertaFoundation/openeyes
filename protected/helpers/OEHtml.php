@@ -15,60 +15,67 @@
 
 class OEHtml extends CHtml
 {
-    public static function icon($name, $htmlOption = [])
+    public static function icon($text, $htmlOption = [])
     {
         return self::tag("i", array_merge($htmlOption, [
-            "class" => "oe-i $name"  . (isset($htmlOption["class"]) ? " " . $htmlOption["class"] : ""),
+            "class" => "oe-i $text"  . (isset($htmlOption["class"]) ? " " . $htmlOption["class"] : ""),
         ]),'', true);
     }
 
-    public static function button($name, $htmlOption = [])
+    public static function button($text, $htmlOption = [])
     {
         return \CHtml::button(
-            $name,
-            array_merge($htmlOption, [
+            $text,
+            array_merge([
                 "class" => "button large",
-            ])
+            ], $htmlOption)
         );
     }
 
-    public static function submitButton($name = "Save", $htmlOption = [])
+    public static function submitButton($text = "Save", $htmlOption = [])
     {
         return \CHtml::submitButton(
-            $name,
-            array_merge($htmlOption, [
+            $text,
+            array_merge([
                 "class" => "button large",
                 "name" => "save",
                 "id" => "et_save"
-            ])
+            ], $htmlOption)
         );
     }
 
-    public static function addButton($name = "Add", $htmlOption = [])
+    public static function addButton($text = "Add", $htmlOption = [])
     {
         return \CHtml::submitButton(
-            $name,
-            array_merge($htmlOption, [
+            $text,
+            array_merge([
                 "class" => "button large",
                 "name" => "add",
                 "id" => "et_add"
-            ])
+            ], $htmlOption)
         );
     }
 
-    public static function cancelButton($name = "Cancel", $htmlOption = [])
+    public static function cancelButton($text = "Cancel", $htmlOption = [])
     {
         return \CHtml::submitButton(
-            $name,
-            array_merge($htmlOption, [
+            $text,
+            array_merge([
                 "class" => "warning button large",
                 "name" => "cancel",
                 "id" => "et_cancel"
-            ])
+            ], $htmlOption)
         );
     }
 
-
-
-
+    public static function linkButton($text = "Add", $url = '#', $htmlOption = [])
+    {
+        return \CHtml::link(
+            $text,
+            $url,
+            array_merge([
+                "class" => "button large green hint",
+            ], $htmlOption)
+        );
+    }
 }
