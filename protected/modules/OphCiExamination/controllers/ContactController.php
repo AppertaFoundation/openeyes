@@ -19,7 +19,7 @@ class ContactController extends \BaseController
     {
         if (\Yii::app()->request->isAjaxRequest) {
             $criteria = new \CDbCriteria();
-            $criteria->join = "left join contact_label cl on cl.id = t.contact_label_id";
+            $criteria->join = "left join contact_label cl on cl.id = t.contact_label_id ";
             $criteria->join .= "left join address ad on ad.contact_id = t.id";
             if (isset($_GET['term']) && $term = $_GET['term']) {
 
