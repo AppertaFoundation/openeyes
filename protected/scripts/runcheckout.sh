@@ -348,7 +348,7 @@ WARNING: Resetting local config to defaults
 fi
 
 # Now reset/relink various config files etc
-if [ "$fix" = "1" ]; then bash $SCRIPTDIR/oe-fix.sh $fixparams; fi
+[ "$fix" = "1" ] && bash $SCRIPTDIR/oe-fix.sh $fixparams || :
 
 # Show summary of checkout
 if [ ! "$nosummary" = "1" ]; then
