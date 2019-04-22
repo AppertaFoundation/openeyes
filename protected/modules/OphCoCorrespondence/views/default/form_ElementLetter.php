@@ -485,7 +485,11 @@ $creating = isset($creating) ? $creating : false;
       let nickname;
 
       if(recipient_to.length > 1){
-        addressee = recipient_to[0]+' '+(recipient_to[2] !== undefined ? recipient_to[2] : recipient_to[1]);
+          if(recipient_to.length === 2){
+              addressee = recipient_to[0] + " " + recipient_to[1];
+          } else {
+              addressee = recipient_to[0] + ' ' + (recipient_to[2] !== undefined ? recipient_to[2] : recipient_to[1]);
+          }
 
         if(nickname_check){
           nickname = $('#DocumentTarget_0_attributes_contact_nickname').val();
