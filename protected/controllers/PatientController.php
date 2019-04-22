@@ -2317,29 +2317,6 @@ class PatientController extends BaseController
     }
 
     /**
-     * Return bites based on the ini_get returns value e.g. 2M
-     * @param $val
-     * @return int|string
-     */
-    public function return_bytes($val) {
-        $val = trim($val);
-        $last = strtolower($val[strlen($val)-1]);
-        switch($last) {
-            case 'g':
-                $val *= (1024 * 1024 * 1024); //1073741824
-                break;
-            case 'm':
-                $val *= (1024 * 1024); //1048576
-                break;
-            case 'k':
-                $val *= 1024;
-                break;
-        }
-
-        return $val;
-    }
-
-    /**
      * Takes an uploaded file from $_FILES and saves it to a document event under the current context/firm
      *
      * @param Patient $patient To save the referral document to
@@ -2429,7 +2406,7 @@ class PatientController extends BaseController
         $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
 
         // To get maximum file size that can be uploaded from the model
-        $max_document_size = $this->return_bytes(ini_get('upload_max_filesize'));
+        $max_document_size = Helper::return_bytes(ini_get('upload_max_filesize'));
 
         foreach ($_FILES as $file) {
             $name = $file["name"]["uploadedFile"];
