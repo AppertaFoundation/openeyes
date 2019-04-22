@@ -25,32 +25,17 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
                id="<?= $base_name ?>[instrument_id]" value="<?= $instrumentId ?>"/>
         <div><?= $instrumentName ?></div>
     </td>
-    <td style="<?=($value->instrument && $value->instrument->scale) ? "display: none":"" ?>">
-        <?= $form->dropDownList(
-            $value,
-            'reading_id',
-            'OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading',
-            [
-                'nowrapper' => true,
-                'data-base-name' => $base_name,
-                'name' => "{$base_name}[reading_id]",
-                'prompt' => '--'
-            ]
-        ) ?>
+    <td style="<?= (!$value_reading_id) ? "display: none" : "" ?>">
+        <?php if ($value_reading_id) { ?>
+            <?= $value_reading_name ?>mm Hg
+            <?= CHtml::hiddenField("{$base_name}[reading_id]", $value_reading_id) ?>
+        <?php } ?>
     </td>
-    <td class="scale_values" style="<?= (!$value->instrument || !$value->instrument->scale) ? "display: none":""?>">
-        <?php if ($value->instrument && $value->instrument->scale) {
-            echo $this->render(
-                'application.modules.OphCiExamination.views.default._qualitative_scale',
-                [
-                    'name' => CHtml::modelName($element),
-                    'value' => $value,
-                    'side' => $side,
-                    'index' => $index,
-                    'scale' => $value->instrument->scale
-                ]
-            );
-        } ?>
+    <td class="scale_values" style="<?= (!$value_qualitative_reading_id) ? "display: none" : "" ?>">
+        <?php if ($value_qualitative_reading_id) { ?>
+            <?= $value_qualitative_reading_name ?>
+            <?= CHtml::hiddenField("{$base_name}[qualitative_reading_id]", $value_qualitative_reading_id) ?>
+        <?php } ?>
     </td>
     <td>
         <?= CHtml::textField(

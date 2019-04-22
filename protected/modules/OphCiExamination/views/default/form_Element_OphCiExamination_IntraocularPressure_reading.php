@@ -22,33 +22,17 @@ $base_name = CHtml::modelName($value) . "[{$side}_values][{$index}]";
               array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-11')
       ) ?>
   </td>
-  <td style="<?=($value->instrument && $value->instrument->scale) ? "display: none":"" ?>">
-      <?= $form->dropDownList(
-              $value,
-              'reading_id',
-              'OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading',
-              array(
-                  'nowrapper' => true,
-                  'data-base-name' => $base_name,
-                  'name' => "{$base_name}[reading_id]",
-                  'class' => 'cols-11',
-                  'prompt' => '--'
-              )
-      ) ?>
+  <td style="<?=(!$value_reading_id) ? "display: none":"" ?>">
+      <?php if ($value_reading_id) { ?>
+          <?= $value_reading_name ?>
+          <?= CHtml::hiddenField("{$base_name}[reading_id]", $value_reading_id) ?>
+      <?php } ?>
   </td>
-  <td class="scale_values" style="<?= (!$value->instrument || !$value->instrument->scale) ? "display: none":""?>">
-      <?php if ($value->instrument && $value->instrument->scale) {
-          echo $this->renderPartial(
-                  '_qualitative_scale',
-                  array(
-                      'name' => CHtml::modelName($value),
-                      'value' => $value,
-                      'side' => $side,
-                      'index' => $index,
-                      'scale' => $value->instrument->scale
-                  )
-          );
-      } ?>
+  <td class="scale_values" style="<?= (!$value_qualitative_reading_id) ? "display: none":""?>">
+      <?php if ($value_qualitative_reading_id) { ?>
+        <?= $value_qualitative_reading_name ?>
+        <?= CHtml::hiddenField("{$base_name}[qualitative_reading_id]", $value_qualitative_reading_id) ?>
+      <?php } ?>
   </td>
     <td>
     <input type="hidden" name="<?= $base_name ?>[instrument_id]"

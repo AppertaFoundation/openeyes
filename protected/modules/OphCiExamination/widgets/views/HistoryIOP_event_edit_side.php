@@ -17,6 +17,12 @@
 
 use OEModule\OphCiExamination\models;
 
+$readings = models\OphCiExamination_IntraocularPressure_Reading::model()->findAll();
+$reading_values = [];
+foreach ($readings as $reading) {
+    $reading_values[$reading->name] = $reading->id;
+}
+
 ?>
 
 <div class="cols-full">
@@ -49,6 +55,10 @@ use OEModule\OphCiExamination\models;
                         'time' => substr($value['reading_time'], 0, 5),
                         'instrumentId' => $value['instrument_id'],
                         'instrumentName' => $instrument_model->findByPk($value['instrument_id'])->name,
+                        'value_reading_id' => isset($value->reading) ? $value->reading->id : null,
+                        'value_reading_name' => isset($value->reading) ? $value->reading->name : null,
+                        'value_qualitative_reading_id' => isset($value->qualitative_reading) ? $value->qualitative_reading->id : null,
+                        'value_qualitative_reading_name' => isset($value->qualitative_reading) ? $value->qualitative_reading->name : null,
                         'value' => $recorded_value,
                         'examinationDate' => $value['examination_date'],
                     ]
@@ -113,6 +123,10 @@ use OEModule\OphCiExamination\models;
             'instrumentId' => '{{instrumentId}}',
             'instrumentName' => '{{instrumentName}}',
             'examinationDate' => '{{examinationDate}}',
+            'value_reading_id' => '{{value_reading_id}}',
+            'value_reading_name' => '{{value_reading_name}}',
+            'value_qualitative_reading_id' => '{{value_qualitative_reading_id}}',
+            'value_qualitative_reading_name' => '{{value_qualitative_reading_name}}',
             'value' => new models\OphCiExamination_IntraocularPressure_Value(),
         ]
     );
@@ -123,54 +137,136 @@ use OEModule\OphCiExamination\models;
 <script type="text/javascript">
     $(function () {
         let side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
+        let readings = JSON.parse('<?= print_r(json_encode($reading_values),1) ?>');
+        let previouslySelectedColumn = null;
 
-        new OpenEyes.UI.AdderDialog({
+        let AdderDialog = new OpenEyes.UI.AdderDialog({
             id: 'add-iop-value-to-historyIOP',
             openButton: side.find('.js-add-select-search'),
-            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                array_map(function ($instrument) {
-                    return ['label' => $instrument->name, 'id' => $instrument->id];
-                },
-                    OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
-            ) ?>, {'multiSelect': true})],
-            onReturn: function (adderDialog, selectedItems) {
-                for (let i = 0; i < selectedItems.length; i++) {
-                    HistoryIOP_addReading(
-                        '<?=$side?>',
-                        selectedItems[i]['id'],
-                        selectedItems[i]['label']);
-                    let $table = $("#OEModule_OphCiExamination_models_HistoryIOP_readings_" + '<?=$side?>');
-                    let $table_row = $table.find("tr:last");
-                    let $scale_td = $table_row.find("td.scale_values");
-                    let index = $table_row.data('index');
-
-                    getScaleDropdown("OEModule_OphCiExamination_models_HistoryIOP", selectedItems[i]['id'], $scale_td, index, '<?=$side?>');
+            itemSets: [
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    array_map(function ($instrument) {
+                        return ['label' => $instrument->name, 'id' => $instrument->id, 'scale' => isset($instrument->scale->values) ? true : false];
+                    },OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
+                ) ?>, {'id': 'instrument', 'header': 'Instrument'}),
+                new OpenEyes.UI.AdderDialog.ItemSet([], {'id': 'reading_value', 'header': 'mm Hg',
+                    'splitIntegerNumberColumns': [{'min': 0, 'max': 9},{'min': 0, 'max': 9}],
+                    'style': 'display: none'}),
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    array_map(function ($scale) {
+                        return ['label' => $scale->name, 'id' => $scale->id];
+                    }, models\OphCiExamination_Qualitative_Scale_Value::model()->findAllByAttributes(['scale_id' => models\OphCiExamination_Qualitative_Scale::model()->findByAttributes(['name' => 'digital'])->id]))
+                ) ?>, {'id': 'scale_value', 'header': 'Scale value', 'style': 'display: none'}),
+                new OpenEyes.UI.AdderDialog.ItemSet([], {'id': 'time', 'header': 'Time',
+                    'splitIntegerNumberColumns': [{'min': 1, 'max': 24}],
+                    'decimalValues': [':00' , ':15' , ':30' , ':45'],
+                    'supportDecimalValues': true}),
+            ],
+            onReturn: function (adderDialog, selectedItems, selectedAdditions) {
+                if (selectedItems.length < 1
+                    || selectedItems[0].scale && selectedItems.length < 3
+                    || !selectedItems[0].scale && selectedItems.length < 4) {
+                    return false;
                 }
+
+                let value_reading = 0;
+                for (let i = 1; i < selectedItems.length-1; i++) {
+                    value_reading = 10 * value_reading + parseInt(selectedItems[i].digit);
+                }
+
+                let value_reading_id = selectedItems[0].scale ? null : readings[value_reading];
+                let value_reading_name = selectedItems[0].scale ? null : value_reading;
+                let value_qualitative_reading_id = selectedItems[0].scale ? selectedItems[1]['id'] : null;
+                let value_qualitative_reading_name = selectedItems[0].scale ? selectedItems[1]['label'] : null;
+
+                let H = selectedItems[selectedItems.length - 1].digit;
+                let M = selectedAdditions[0].addition;
+                let time = H + M;
+                if (H < 10) {
+                    time = '0' + time;
+                }
+
+                HistoryIOP_addReading(
+                    '<?=$side?>',
+                    selectedItems[0]['id'],
+                    selectedItems[0]['label'],
+                    time,
+                    value_reading_id,
+                    value_reading_name,
+                    value_qualitative_reading_id,
+                    value_qualitative_reading_name,
+                );
 
                 // activate the datePicker
                 $('.iop-date').datepicker({ dateFormat: 'dd/mm/yy', maxDate: '0', showAnim: 'fold'});
 
+                // hide reading_value and scale_value columns
+                adderDialog.hideColumnById(['reading_value', 'scale_value']);
+
                 return true;
             },
         });
+
+        // show / hide reading value column and scale value column
+        $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye').on('click', 'ul.add-options[data-id="instrument"] li', function() {
+            if ($(this).hasClass("selected")) {
+                if ($(this).data('scale')) {
+                    AdderDialog.hideColumnById(['reading_value']);
+                    AdderDialog.showColumnById(['scale_value']);
+
+                    if (previouslySelectedColumn === 'reading_value') {
+                        AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
+                    }
+                    previouslySelectedColumn = "scale_value";
+                } else {
+                    AdderDialog.showColumnById(['reading_value']);
+                    AdderDialog.hideColumnById(['scale_value']);
+
+                    if (previouslySelectedColumn === 'scale_value') {
+                        AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
+                    }
+                    previouslySelectedColumn = "reading_value";
+                }
+            } else {
+                AdderDialog.hideColumnById(['reading_value']);
+                AdderDialog.hideColumnById(['scale_value']);
+                AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
+            }
+        });
     });
 
-    function HistoryIOP_addReading(side, instrumentId, instrumentName) {
+    function HistoryIOP_addReading(side, instrumentId, instrumentName, time,
+                value_reading_id, value_reading_name, value_qualitative_reading_id, value_qualitative_reading_name) {
         let table = $("#OEModule_OphCiExamination_models_HistoryIOP_readings_" + side);
         let indices = table.find('tr').map(function () {
             return $(this).data('index');
         });
 
-        table.find("tbody").append(
-            Mustache.render(
+
+        let tr = Mustache.render(
             template = $("#OEModule_OphCiExamination_models_HistoryIOP_reading_template_" + side).text(),
             {
                 index: indices.length ? Math.max.apply(null, indices) + 1 : 0,
-                time: (new Date).toTimeString().substr(0, 5),
+                time: time ? time : (new Date).toTimeString().substr(0, 5),
                 instrumentId: instrumentId,
-                instrumentName: instrumentName
+                instrumentName: instrumentName,
+                value_reading_id: value_reading_id,
+                value_reading_name: value_reading_name,
+                value_qualitative_reading_id: value_qualitative_reading_id,
+                value_qualitative_reading_name: value_qualitative_reading_name,
             }
-        ));
+        );
+
+        table.find("tbody").append(tr);
+
+        // hide value reading column
+        if (!value_reading_id) {
+            table.find("tbody tr:last").find('input[name*="[reading_id]"]').parent().remove();
+        }
+        // hide qualitative reading column
+        if (!value_qualitative_reading_id) {
+            table.find("tbody tr:last").find('input[name*="[qualitative_reading_id]"]').parent().remove();
+        }
 
         table.show();
     }
