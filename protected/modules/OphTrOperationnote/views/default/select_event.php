@@ -82,7 +82,9 @@ $warnings = $this->patient->getWarnings($clinical);
                   <td>
                     <span class="cols-3 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
                     <?php if (!$theatre_diary_disabled) {
-                        echo $operation->booking->session->NHSDate('date');
+                        if($operation->booking){
+                          echo $operation->booking->session->NHSDate('date');
+                        }
                     } ?>
                     </span>
                   </td>

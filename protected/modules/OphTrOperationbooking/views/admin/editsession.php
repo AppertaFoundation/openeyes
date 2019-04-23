@@ -27,6 +27,7 @@
         ]
     )?>
 	<?php echo $form->errorSummary($session); ?>
+
     <table class="standard cols-full">
         <tbody>
             <?php if ($session->sequence_id) {?>
