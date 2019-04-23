@@ -29,9 +29,9 @@
       <?php if (!$this->patient->hasRiskStatus()) { ?>
         <div class="data-value flex-layout flex-top">Patient has no known risks.</div>
       <?php } else { ?>
-          <div class="data-value flex-layout flex-top">
-            <div class="cols-11">
-            <div class="cols-11" id="js-listview-risks-pro" style>
+    <div class="flex-layout flex-top">
+        <div class="cols-11">
+              <div id="js-listview-risks-pro" class="cols-full listview-pro">
 <!--                Anticoagulants and alpha blockers being mandatory risk items to be displayed, we check if $element contains these in either yes, or no and if it doesn't in either, we display it as unchecked forcefully-->
                 <?php
                 $anticoagulants = false;
@@ -39,11 +39,11 @@
                 $entries = array_merge($element->getEntriesDisplay('present') , $element->getEntriesDisplay('not_present'));
 
                 foreach ($entries as $entry) {
-                    if (strpos($entry . ' ', 'Anticoagulants') !== false) {
+                    if (strpos($entry['risk'] . ' ', 'Anticoagulants') !== false) {
                         $anticoagulants = true;
                     }
 
-                    if (strpos($entry, 'Alpha blockers') !== false) {
+                    if (strpos($entry['risk'], 'Alpha blockers') !== false) {
                         $alphablockers = true;
                     }
                 }
@@ -54,73 +54,179 @@
                 if ($alphablockers == false) {
                     $not_checked_required_risks[] = 'Alpha blockers';
                 } ?>
-                <ul class="dot-list large">
-                    <?php if ($element->present) { ?>
-                        <li>Present:</li>
-                        <?php foreach ($element->getEntriesDisplay('present') as $entry) { ?>
-                            <li><?= $entry ?></li>
-                        <?php };
-                    } ?>
-                </ul>
-                <ul class="dot-list large">
-                    <?php if ($element->not_checked) { ?>
-                        <li>Not Checked:</li>
-                        <?php foreach ($element->getEntriesDisplay('not_checked') as $entry) { ?>
-                            <li><?= $entry ?></li>
-                        <?php }
-                    } else if (isset($not_checked_required_risks)) { ?>
-                        <li>Not Checked:</li>
-                        <?php foreach ($not_checked_required_risks as $entry) { ?>
-                            <li><?= $entry ?></li>
-                        <?php } ?>
-                    <?php } ?>
-                </ul>
-                <ul class="dot-list large">
-                    <?php if ($element->not_present) { ?>
-                        <li>Not Present:</li>
-                        <?php foreach ($element->getEntriesDisplay('not_present') as $entry) { ?>
-                            <li><?= $entry ?></li>
-                        <?php }
-                    } ?>
-                </ul>
-            </div>
-            <div class="col-6" id="js-listview-risks-full" style="display: none;">
-            <table class="last-left">
-              <colgroup>
-                <col class="cols-4">
-                <col class="cols-4">
-                <col class="cols-4">
-              </colgroup>
-            <thead>
-              <tr>
-                <th>Present</th>
-                <th>Not Checked</th>
-                <th>Not Present</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><?php if ($element->present) { ?>
-                    <span class="large-text"><?= implode('<br>', $element->getEntriesDisplay('present'))?></span>
-                    <?php } ?></td>
-                <td><?php if ($element->not_checked) { ?>
-                    <span class="large-text"><?= implode('<br>', $element->getEntriesDisplay('not_checked')) ?></span>
-                    <?php } else if (isset($not_checked_required_risks) && is_array($not_checked_required_risks)){ ?>
-                    <span class="large-text"><?= implode('<br>', $not_checked_required_risks) ?></span>
-                    <?php } ?>
-                </td>
-                <td> <?php if ($element->not_present) { ?>
-                    <span class="large-text"><?= implode('<br>',$element->getEntriesDisplay('not_present'))?></span>
-                    <?php } ?></td>
-              </tr>
-            </tbody>
-          </table>
+                    <table class="last-left">
+                        <tbody>
+                            <tr>
+                                <td class="nowrap fade">Present</td>
+                                <td>
+                                    <?php if ($element->present) { ?>
+                                        <ul class="dot-list">
+                                            <?php foreach ($element->getEntriesDisplay('present') as $entry) { ?>
+                                                <li>
+                                                    <li><?= $entry['risk'] ?></li>
+                                                    <?php if($entry['comments'] != ''){?>
+                                                        <i class="oe-i comments-added small pad js-has-tooltip" data-tooltip-content="<?= $entry['comments'] ?>" pro"="" list="" mode"=""></i>
+                                                    <?php } ?>
+                                                </li>
+                                            <?php } ?>
+                                        </ul>
+                                    <?php } else { ?>
+                                        <span class="none">None</span>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="nowrap fade">Unchecked</td>
+                                <td>
+                                    <?php if ($element->not_checked) { ?>
+                                        <ul class="dot-list">
+                                            <?php foreach ($element->getEntriesDisplay('not_checked') as $entry) { ?>
+                                                <li>
+                                                    <li><?= $entry['risk'] ?></li>
+                                                    <?php if($entry['comments'] != ''){?>
+                                                        <i class="oe-i comments-added small pad js-has-tooltip" data-tooltip-content="<?= $entry['comments'] ?>" pro"="" list="" mode"=""></i>
+                                                    <?php } ?>
+                                                </li>
+                                            <?php } ?>
+                                        </ul>
+                                    <?php } else if (isset($not_checked_required_risks)) { ?>
+                                        <ul class="dot-list">
+                                            <?php foreach ($not_checked_required_risks as $entry) { ?>
+                                                <li>
+                                                    <li><?= $entry['risk'] ?></li>
+                                                    <?php if($entry['comments'] != ''){?>
+                                                        <i class="oe-i comments-added small pad js-has-tooltip" data-tooltip-content="<?= $entry['comments'] ?>" pro"="" list="" mode"=""></i>
+                                                    <?php } ?>
+                                                </li>
+                                            <?php } ?>
+                                        </ul>
+                                    <?php } else { ?>
+                                        <span class="none">None</span>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="nowrap fade">Absent</td>
+                                <td>
+                                    <?php if ($element->not_present) { ?>
+                                        <ul class="dot-list">
+                                            <?php foreach ($element->getEntriesDisplay('not_present') as $entry) { ?>
+                                                <li>
+                                                    <li><?= $entry['risk'] ?></li>
+                                                    <?php if($entry['comments'] != ''){?>
+                                                        <i class="oe-i comments-added small pad js-has-tooltip" data-tooltip-content="<?= $entry['comments'] ?>" pro"="" list="" mode"=""></i>
+                                                    <?php } ?>
+                                                </li>
+                                            <?php } ?>
+                                        </ul>
+                                    <?php } else { ?>
+                                        <span class="none">None</span>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="js-listview-risks-full" class="cols-full listview-full" style="display: none;">
+                    
+                    <div class="flex-layout">
+                    
+                        <div class="cols-2">Present</div>
+                    
+                        <table class="last-left">
+                          <colgroup>
+                            <col class="cols-4">
+                          </colgroup>
+                        <tbody>
+                            <?php if(count($element->present) >0){ ?>
+                                <?php foreach ($element->getEntriesDisplay('present') as $entry) :?>
+                                        <tr>
+                                            <td><?= $entry['risk']; ?></td>
+                                            <td><span class="none"><?= ($entry['comments'] !== '' ? $entry['comments'] : 'None') ?></span></td>
+                                        </tr>
+                                <?php endforeach; ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td>None</td>
+                                    <td><span class="none">None</span></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                      </table>
+                    </div><!-- .flex-layout -->
+                    
+                    <hr class="divider">
+                    
+                    
+                     <div class="flex-layout">
+                    
+                        <div class="cols-2">Unchecked</div>
+                    
+                        <table class="last-left">
+                          <colgroup>
+                            <col class="cols-4">
+                          </colgroup>
+                        <tbody>
+                            <?php if(count($element->not_checked) >0){ ?>
+                                <?php foreach ($element->getEntriesDisplay('not_checked') as $entry) :?>
+                                        <tr>
+                                            <td><?= $entry['risk']; ?></td>
+                                            <td><span class="none"><?= ($entry['comments'] !== '' ? $entry['comments'] : 'None') ?></span></td>
+                                        </tr>
+                                <?php endforeach; ?>
+                            <?php } else if(isset($not_checked_required_risks) && is_array($not_checked_required_risks)){ ?>
+                                <?php foreach ($not_checked_required_risks as $entry) :?>
+                                        <tr>
+                                            <td><?= $entry['risk']; ?></td>
+                                            <td><span class="none"><?= ($entry['comments'] !== '' ? $entry['comments'] : 'None') ?></span></td>
+                                        </tr>
+                                <?php endforeach; ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td>None</td>
+                                    <td><span class="none">None</span></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                      </table>
+                    </div><!-- .flex-layout -->
+                    
+                    <hr class="divider">
+                    
+                    <div class="flex-layout">
+                    
+                        <div class="cols-2">Absent</div>
+                    
+                        <table class="last-left">
+                          <colgroup>
+                            <col class="cols-4">
+                          </colgroup>
+                        <tbody>
+                            <?php if(count($element->not_present) >0){ ?>
+                                <?php foreach ($element->getEntriesDisplay('not_present') as $entry) :?>
+                                        <tr>
+                                            <td><?= $entry['risk']; ?></td>
+                                            <td><span class="none"><?= ($entry['comments'] !== '' ? $entry['comments'] : 'None') ?></span></td>
+                                        </tr>
+                                <?php endforeach; ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td>None</td>
+                                    <td><span class="none">None</span></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                      </table>
+                    </div><!-- .flex-layout -->
+                              
+                </div>
         </div>
-            </div>
+        <?php if (count($element->entries)) : ?>
             <div>
-              <i class="oe-i small js-listview-expand-btn expand" data-list="risks"></i>
+                <i class="oe-i small js-listview-expand-btn expand" data-list="risks"></i>
             </div>
-          </div>
+        <?php endif; ?>
+    </div>
       <?php } ?>
     </div>
   </div>

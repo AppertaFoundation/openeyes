@@ -373,22 +373,6 @@ class Patient extends BaseActiveRecordVersioned
     return 'None';
   }
 
-    public function search_nr($params)
-    {
-        $criteria = new CDbCriteria();
-        $criteria->join = 'JOIN contact ON contact_id = contact.id';
-        $criteria->compare('LOWER(first_name)', strtolower($params['first_name']), false);
-        $criteria->compare('LOWER(last_name)', strtolower($params['last_name']), false);
-        $criteria->compare('LOWER(maiden_name)', strtolower($params['maiden_name']), false);
-        $criteria->compare('dob', $this->dob, false);
-        $criteria->compare('gender', $this->gender, false);
-        $criteria->compare('hos_num', $this->hos_num, false);
-        $criteria->compare('nhs_num', $this->nhs_num, false);
-        $criteria->compare('deleted', 0);
-
-        return $this->count($criteria);
-    }
-
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -408,7 +392,7 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->compare('t.id', $this->id);
         $criteria->join = 'JOIN contact ON contact_id = contact.id';
         if (isset($params['first_name'])) {
-            $criteria->compare('contact.first_name', $params['first_name'], false);
+            $criteria->addSearchCondition('contact.first_name', $params['first_name'] . '%', false);
         }
         if (isset($params['last_name'])) {
             $criteria->compare('contact.last_name', $params['last_name'], false);
