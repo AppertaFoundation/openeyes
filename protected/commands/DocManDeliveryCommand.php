@@ -1,19 +1,17 @@
 <?php
-
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -359,6 +357,10 @@ EOH;
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
         $sub_obj = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty : null;
+        $pasapi_assignment =  \OEModule\PASAPI\models\PasApiAssignment::model()->findByAttributes([
+                    'resource_type' => \OEModule\PASAPI\resources\PatientAppointment::$resource_type,
+                    'internal_id' => $this->event->worklist_patient_id,
+                    'internal_type' => '\WorklistPatient']);
 
         //I decided to pass each value separately to keep the XML files clean and easier to modify each value if necessary
         $data = [
@@ -405,7 +407,7 @@ EOH;
             'location_code' => isset($element_letter->toLocation) ? $element_letter->toLocation->site->location_code : '',
             'output_type' => $document_output->output_type,
 
-            'visit_id' => $this->event->pas_visit_id,
+            'visit_id' => $pasapi_assignment ? $pasapi_assignment->resource_id : '',
         ];
 
         $xml = $this->renderFile($this->xml_template, ['data' => $data], true);
