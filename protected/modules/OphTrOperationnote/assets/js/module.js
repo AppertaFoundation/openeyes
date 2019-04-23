@@ -467,6 +467,29 @@ function showHideIOLFields(_drawing, resetPosition) {
     
     }
 
+    let posteriorChamberIOLPresent = false;
+    const eyedrawPosteriorChamberIOLClass = 'PCIOL';
+
+    for (let doodleArrayIndex in _drawing.doodleArray) {
+        if (_drawing.doodleArray[doodleArrayIndex].className === eyedrawPosteriorChamberIOLClass) {
+            posteriorChamberIOLPresent = true;
+            break;
+        }
+    }
+
+    if(posteriorChamberIOLPresent) {
+        $('#tr_Element_OphTrOperationnote_Cataract_iol_type').show();
+        if($("#Element_OphTrOperationnote_Cataract_iol_type_id option:selected").text() === '-') {
+            $('#Element_OphTrOperationnote_Cataract_iol_type_id').val('');
+        }
+    } else {
+        $('#tr_Element_OphTrOperationnote_Cataract_iol_type').hide();
+        $("#Element_OphTrOperationnote_Cataract_iol_type_id option").each(function() {
+            if($(this).text() === '-') {
+                $(this).attr('selected', 'selected');
+            }
+        });
+    }
 }
 
 function AngleMarksController(_drawing) {
@@ -534,6 +557,56 @@ function AngleMarksController(_drawing) {
             angleMarks.setParameterFromString('steepK', biometry_data.steepK);
         } else {
             _drawing.deleteDoodle(angleMarks, true);
+        }
+    };
+}
+
+function PCIOLController(_drawing) {
+
+    // Register controller for notifications
+    _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'doodleAdded']);
+
+    // Method called for notification
+    this.notificationHandler = function (_messageArray) {
+        let $iol_position;
+        switch (_messageArray['eventName']) {
+            // Ready notification
+            case 'doodleAdded':
+                $iol_position = $('#Element_OphTrOperationnote_Cataract_iol_position_id');
+
+                $('#eyedrawwidget_Cataract').on('change', '#ed_canvas_edit_Cataract_fixation_control', function(){
+                    let text = $(this).find('option:selected').text();
+                    switch (text) {
+                        case 'In-the-bag':
+                            $iol_position.val(1);
+                            break;
+                        case 'Partly in the bag':
+                            $iol_position.val(2);
+                            break;
+                        case 'Ciliary sulcus':
+                            $iol_position.val(3);
+                            break;
+                    }
+                });
+
+                $iol_position.on('change', function(){
+
+                    if( _drawing.hasDoodleOfClass('PCIOL') ){
+                        let value = $(this).val();
+                        let fixation_value;
+                        var PCIOL = _drawing.allDoodlesOfClass('PCIOL')[0];
+
+                        if (value === "1"){ fixation_value = 'In-the-bag'; }
+                        if (value === "2"){ fixation_value = 'Partly in the bag'; }
+                        if (value === "3"){ fixation_value = 'Ciliary sulcus'; }
+
+                        if(fixation_value){
+                            PCIOL.setSimpleParameter('fixation', fixation_value);
+                        }
+
+                    }
+                });
+                break;
         }
     };
 }
