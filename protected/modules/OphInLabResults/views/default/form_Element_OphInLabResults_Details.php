@@ -27,8 +27,8 @@
                     <option>Select</option>
                     <?php foreach (OphInLabResults_Type::model()->findAll() as $type):?>
                         <option
-                            data-element-id="<?=$type->result_element_id?>"
-                            value="<?=$type->id?>"
+                                data-id="<?=$type->id?>"
+                                value="<?=$type->id?>"
                             <?=($type->id === $element->result_type_id) ? 'selected' : '' ?>
                         >
                             <?=$type->type?>

@@ -18,7 +18,7 @@ OpenEyes.Lab = OpenEyes.Lab || {};
 
 (function (exports) {
     var Form = {};
-    var ajaxElementUri = '/OphInLabResults/Default/elementForm';
+    var ajaxElementUri = '/OphInLabResults/Default/resultForm';
     var $resultTypeSelect;
 
     /**
@@ -42,7 +42,7 @@ OpenEyes.Lab = OpenEyes.Lab || {};
     function loadResultElement(e) {
         var option = e.target.options[e.target.selectedIndex];
 
-        if (!option.dataset.elementId) {
+        if (!option.dataset.id) {
             removeResultElement($('#result-output').parent());
             return false;
         }
@@ -51,7 +51,7 @@ OpenEyes.Lab = OpenEyes.Lab || {};
             url: ajaxElementUri,
             data: {
                 patient_id: OE_patient_id,
-                id: option.dataset.elementId
+                id: option.dataset.id
             },
             dataType: 'html',
             success: function (data) {

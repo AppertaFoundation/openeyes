@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -19,6 +20,11 @@ class DefaultController extends \BaseEventTypeController
 
     protected $show_element_sidebar = false;
 
+    protected static $action_types = [
+        'resultForm' => self::ACTION_TYPE_FORM
+    ];
+
+
     protected function initActionCreate()
     {
         parent::initActionCreate();
@@ -34,5 +40,15 @@ class DefaultController extends \BaseEventTypeController
     protected function registerEditScripts()
     {
         Yii::app()->assetManager->registerScriptFile('js/OpenEyes.Lab.Form.js', 'application.modules.OphInLabResults.assets');
+    }
+
+    public function actionResultForm($id)
+    {
+        $lab_results_type = OphInLabResults_Type::model()->findByPk($id);
+        $field_type = $lab_results_type->fieldType;
+
+        $this->renderPartial('form_' . str_replace(' ', '_', $field_type->name), [
+            'result_type' => $lab_results_type
+        ]);
     }
 }
