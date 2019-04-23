@@ -358,10 +358,10 @@ class DefaultController extends OphTrOperationbookingEventController
             $anaesthetic = AnaestheticType::model()->findByPk($anaesthetic_type_id);
             if ($anaesthetic) {
               if (in_array($anaesthetic->id, $operation_element->anaesthetist_required_ids) && !$operation_element->booking->session->anaesthetist) {
-                $errors['Operation'][] = 'The booked session does not have an anaesthetist present, you must change the session or cancel the booking before making this change';
+                $errors['Operation']['Anaesthetist'] = 'The booked session does not have an anaesthetist present, you must change the session or cancel the booking before making this change';
               }
               if ($anaesthetic->code == 'GA' && !$operation_element->booking->session->general_anaesthetic) {
-                $errors['Operation'][] = 'General anaesthetic is not available for the booked session, you must change the session or cancel the booking before making this change';
+                $errors['Operation']['GeneralAnaesthetist'] = 'General anaesthetic is not available for the booked session, you must change the session or cancel the booking before making this change';
               }
             }
           }
