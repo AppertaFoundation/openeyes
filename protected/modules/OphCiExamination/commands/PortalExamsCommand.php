@@ -149,7 +149,11 @@ class PortalExamsCommand extends CConsoleCommand
 
     private function saveOptometristAsPatientContact($name, $address, $goc_number, $patient_id)
     {
-        $optometrist_contact = $this->getAndSaveOptometristContact($name, $goc_number);
+        $optometrist_contact = $this->getContactByNationalCodeAndAddress($goc_number, $address);
+
+        if ($optometrist_contact == null) {
+            $optometrist_contact = $this->saveOptometristContact($name, $goc_number);
+        }
         $this->saveOptometristAddress($address, $optometrist_contact);
         $this->savePatientOptometristContactAssignment($patient_id, $optometrist_contact);
     }
@@ -173,24 +177,30 @@ class PortalExamsCommand extends CConsoleCommand
         return json_decode($response->getBody(), true);
     }
 
+    private function getContactByNationalCodeAndAddress($goc_number, $address)
+    {
+        return \Contact::model()->with('correspondAddress')->find(
+            'national_code = ? and address1 = ? ',
+            [$goc_number, $address]
+        );
+    }
+
     /**
      * @param $name
      * @param $goc_number
      * @return array|Contact|mixed|null
      * @throws Exception
      */
-    private function getAndSaveOptometristContact($name, $goc_number)
+    private function saveOptometristContact($name, $goc_number)
     {
-        $optometrist_contact = \Contact::model()->find('national_code = ?', [$goc_number]);
-        if ($optometrist_contact == null) {
-            $optometrist_contact_label = ContactLabel::model()->find("name = ?", ['Optometrist']);
-            $optometrist_contact = new Contact();
-            $optometrist_contact->contact_label_id = $optometrist_contact_label->id;
-            $optometrist_contact->national_code = $goc_number;
-            $optometrist_contact->last_name = $name;
+        $optometrist_contact_label = ContactLabel::model()->find("name = ?", ['Optometrist']);
+        $optometrist_contact = new Contact();
+        $optometrist_contact->contact_label_id = $optometrist_contact_label->id;
+        $optometrist_contact->national_code = $goc_number;
+        $optometrist_contact->last_name = $name;
 
-            $optometrist_contact->save();
-        }
+        $optometrist_contact->save();
+
         return $optometrist_contact;
     }
 
@@ -201,8 +211,7 @@ class PortalExamsCommand extends CConsoleCommand
      */
     private function saveOptometristAddress($address, $optometrist_contact)
     {
-        $optometrist_address = Address::model()->find('address1 = ?', [$address]);
-        if ($optometrist_address == null) {
+        if(!isset($optometrist_contact->correspondAddress) || $optometrist_contact->correspondAddress->address1 != $address) {
             $optometrist_address = new Address();
             $optometrist_address->address1 = $address;
             $optometrist_address->country_id = Address::model()->getDefaultCountryId();
