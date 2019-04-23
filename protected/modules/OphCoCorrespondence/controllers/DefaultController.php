@@ -39,13 +39,6 @@ class DefaultController extends BaseEventTypeController
 
     protected $pdf_output;
 
-    public function behaviors()
-    {
-        return array_merge(parent::behaviors(),[
-            'WorklistBehavior' => ['class' => 'application.behaviors.WorklistBehavior',],
-        ]);
-    }
-
     /**
      * Adds direct line phone numbers to jsvars to be used in dropdown select.
      */
@@ -537,12 +530,21 @@ class DefaultController extends BaseEventTypeController
      */
     private function addPDFToOutput($pdf_path)
     {
-        $pagecount = $this->pdf_output->setSourceFile($pdf_path);
-        for ($i = 1; $i <= $pagecount; $i++) {
+        if(file_exists($pdf_path)){
+            $pagecount = $this->pdf_output->setSourceFile($pdf_path);
+            for ($i = 1; $i <= $pagecount; $i++) {
+                $this->pdf_output->AddPage('P');
+                $tplidx = $this->pdf_output->ImportPage($i);
+                $this->pdf_output->useTemplate($tplidx);
+            }
+        } else {
             $this->pdf_output->AddPage('P');
-            $tplidx = $this->pdf_output->ImportPage($i);
-            $this->pdf_output->useTemplate($tplidx);
+            $this->pdf_output->SetFont('Arial','B',16);
+            $this->pdf_output->SetY(($this->pdf_output->GetPageHeight()/2)-10);
+            $this->pdf_output->Cell(0,10,'Attachment unavailable -',0,2,'C');
+            $this->pdf_output->Cell(0,10,'please try re-printing the event to re-generate attachments',0,2,'C');
         }
+
     }
 
     /**
