@@ -722,7 +722,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                                     continue;
                                 }
 
-                                $hasFreeProcedures = true;
+                                $hasFreeProcedures |= $session->isTherePlaceForComplexBooking($this);
 
                                 if ($session->availableMinutes >= $this->total_duration) {
                                     ++$open;
@@ -1014,6 +1014,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
 
             if ($session->max_procedures > 0 && $this->getProcedureCount() > $session->getAvailableProcedureCount()) {
+                continue;
+            }
+
+            if ($session->isComplexBookingCountLimited() && $this->isComplex() && $session->getAvailableComplexBookingCount() <= 0) {
                 continue;
             }
 
@@ -1594,6 +1598,16 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
 
         return $total;
+    }
+
+    /**
+     * Whether the operation is complex
+     *
+     * @return bool
+     */
+    public function isComplex()
+    {
+        return $this->complexity == self::COMPLEXITY_HIGH;
     }
 
     /**
