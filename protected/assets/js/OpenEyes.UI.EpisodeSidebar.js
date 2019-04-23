@@ -153,6 +153,7 @@
         });
 
         self.element.on('mouseenter', '.event-type', function (e) {
+
             var $iconHover = $(e.target);
             var $li = $iconHover.parent().parents('li:first');
             $li.find('.quicklook').show();
@@ -178,6 +179,11 @@
             });
         });
 
+        self.element.find('.events').one('mouseenter',function () {
+            $(this).find('.event').each(function () {
+                setEventImageSrcFromData($(this));
+            });
+        });
 
 
         //Shows the current event image if it's loaded and the quickview is open
@@ -197,9 +203,17 @@
             }
         }
 
+        function setEventImageSrcFromData(li_item) {
+            let event_id = li_item.data('event-id');
+            let quickview = $('.oe-event-quickview');
+            let img = quickview.find('img[data-event-id=' + event_id + ']');
+            if (img.attr('src') ==  undefined){
+                img.attr('src',img.data('src'));
+            }
+        }
+
         function setEventImageSrc(event_id, url){
             let img = $('img[data-event-id=' + event_id + ']');
-            img.attr('src', url);
             img.data('src', url);
         }
 

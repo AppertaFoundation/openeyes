@@ -16,38 +16,23 @@
  */
 ?>
 
-<?php Yii::app()->clientScript->registerPackage('tagsinput'); ?>
-
 <div class="admin box">
-    <h2><?= $mapping->isNewRecord ? 'Create' : 'Edit'?> Worklist Definition Mapping</h2>
-
+    <h2>Display Context For <?=$display_context->worklist_definition->name?></h2>
     <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'mapping-form',
+        'id' => 'display-context-form',
         'enableAjaxValidation' => false,
-        'focus' => '#Worklist_name',
+        'focus' => '#site_id',
         'layoutColumns' => array(
             'label' => 2,
             'field' => 5,
         ),
     ))?>
-    <?php echo $form->checkbox($mapping, 'willdisplay'); ?>
-    <?php echo $form->textField($mapping, 'key', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
-  <div class="cols-8 column large-push-2">
-    <i>If no values are provided for a mapping, any value will be accepted. This is useful for adding information to each worklist entry without restricting matches.</i>
-  </div>
-    <?php echo $form->textField($mapping, 'valuelist', array('autocomplete' => Yii::app()->params['html_autocomplete']),
-        null, array('field' => 2))?>
+    <?php echo $form->dropDownList($display_context, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Any -')) ?>
+    <?php echo $form->dropDownList($display_context, 'subspecialty_id', Subspecialty::model()->getList(), array('empty' => '- Any -')) ?>
+    <?php echo $form->dropDownList($display_context, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => '- Any -')) ?>
 
-    <?php echo $form->formActions(array('cancel-uri' => '/worklistAdmin/definitionMappings/'.$mapping->worklist_definition_id))?>
+    <?php echo $form->formActions(array('cancel-uri' => '/Admin/worklist/definitionDisplayContexts/'.$display_context->worklist_definition->id))?>
     <?php $this->endWidget()?>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#WorklistDefinitionMapping_valuelist').tagsInput({
-            'defaultText': 'add values'
-        });
-    });
-</script>

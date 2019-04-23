@@ -393,6 +393,34 @@ $(document).ready(function() {
 						$('#procedure_count_'+session_id).hide();
 					}
 
+					const maxComplexBookings = $('#max_complex_bookings_'+session_id).val();
+					const $complexBookingCount = $('#complex_booking_count_'+session_id);
+					const $maxComplexBookingsIcon = $('#max_complex_bookings_icon_'+session_id);
+					if (maxComplexBookings) {
+						let overBookedComplexBookings = 0;
+						$maxComplexBookingsIcon.find('.max-complex-bookings-value').html(maxComplexBookings);
+						$maxComplexBookingsIcon.show();
+						let availableComplexBookings = maxComplexBookings - $complexBookingCount.data('current-complex-booking-count');
+						if (availableComplexBookings <= 0) {
+							overBookedComplexBookings = Math.abs(availableComplexBookings);
+							availableComplexBookings = 0;
+						}
+						$complexBookingCount.find('.available-complex-booking-count').html(availableComplexBookings);
+						$complexBookingCount.show();
+						const $complexBookingOverbookedMessage = $complexBookingCount.find('.overbooked');
+						if (overBookedComplexBookings > 0) {
+							$complexBookingOverbookedMessage.find('.overbooked-complex-booking-count').html(overBookedComplexBookings);
+							$complexBookingOverbookedMessage.show();
+						}
+						else {
+							$complexBookingOverbookedMessage.hide();
+						}
+					}
+					else {
+						$maxComplexBookingsIcon.hide();
+						$complexBookingCount.hide();
+					}
+
 					if (markSessionUnavailable) {
 						$('#tfoot_'+session_id).find('td').removeClass('available');
 					}
