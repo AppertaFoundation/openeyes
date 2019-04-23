@@ -45,6 +45,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 
     <nav class="event-header no-face">
         <i class="oe-i-e large i-Patient"></i>
+        <h2 class="event-header-title">Patient Overview</h2>
         <?php $this->renderPartial('//patient/event_actions'); ?>
     </nav>
 
@@ -53,7 +54,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         'episode' => isset($current_episode) ? $current_episode : ''
     ]);
     ?>
-    <h2 class="event-title">Patient Overview </h2>
+
     <div class="flex-layout flex-top">
         <div class="patient-overview">
             <?php

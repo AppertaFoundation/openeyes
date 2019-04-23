@@ -216,9 +216,9 @@ echo "Clearing current database..."
 dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant all privileges on ${DATABASE_NAME:-openeyes}.* to '${DATABASE_USER:-openeyes}'@'%' identified by '$pass'; flush privileges;"
 
 echo ""
-# write-out command to console (helps with debugging)
-echo "$dbconnectionstring -e \"$dbresetsql\""
-# run the same command
+## write-out command to console (helps with debugging)
+#echo "$dbconnectionstring -e \"$dbresetsql\""
+## run the same command
 eval "$dbconnectionstring -e \"$dbresetsql\""
 echo ""
 
@@ -238,8 +238,9 @@ if [ $cleanbase = "0" ]; then
 	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
 fi
 
-# Force default institution code to match common.php
-icode=$(grep -oP '(?<=institution_code. => .).*?(?=.,)' $WROOT/protected/config/local/common.php)
+# Force default institution code to match common.php (note that white-space is important in the common.php file)
+# First checks OE_INSTITUTION_CODE environment variable. Otherwise uses value from common.php
+[ ! -z $OE_INSTITUTION_CODE ] && icode=$OE_INSTITUTION_CODE || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" $WROOT/protected/config/local/common.php)
 if [ ! -z $icode ]; then
 
 	echo "
