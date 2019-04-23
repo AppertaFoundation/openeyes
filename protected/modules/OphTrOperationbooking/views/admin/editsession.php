@@ -60,6 +60,19 @@
 			</div>
 		</fieldset>
 	<?php } ?>
+    <?= $form->textField($session, 'max_complex_bookings', [], [], ['field' => 2]); ?>
+    <?php $current = $session->getComplexBookingCount();
+        if ($current) { ?>
+        <fieldset id="complex_booking_count_wrapper" class="data-group
+        <?php if ($session->isComplexBookingCountLimited() && $current > $session->max_complex_bookings) { echo ' warn'; }?>">
+            <div class="cols-2 column">
+                <div class="field-label">Current Complex Bookings:</div>
+            </div>
+            <div class="cols-5 column end">
+                <div class="field-value" id="current-complex-booking-count"><?= $current ?></div>
+            </div>
+        </fieldset>
+    <?php } ?>
 	<?php echo $form->radioBoolean($session, 'consultant')?>
 	<?php echo $form->radioBoolean($session, 'paediatric')?>
 	<?php echo $form->radioBoolean($session, 'anaesthetist')?>

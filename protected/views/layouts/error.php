@@ -24,7 +24,7 @@
 </head>
 <body class="open-eyes oe-grid">
 <!-- Minimum screed width warning -->
-<div id="oe-minimum-width-warning">Please increase your browser window</div>
+<div id="oe-minimum-width-warning">Device width not supported</div>
 <div class="openeyes-brand">
     <?php $this->renderPartial('//base/_brand'); ?>
 </div>

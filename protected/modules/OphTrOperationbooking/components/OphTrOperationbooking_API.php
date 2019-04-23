@@ -101,7 +101,8 @@ class OphTrOperationbooking_API extends BaseAPI
         $criteria = new CDbCriteria();
         $criteria->addInCondition('status_id', array(
             OphTrOperationbooking_Operation_Status::STATUS_SCHEDULED,
-            OphTrOperationbooking_Operation_Status::STATUS_RESCHEDULED
+            OphTrOperationbooking_Operation_Status::STATUS_RESCHEDULED,
+            OphTrOperationbooking_Operation_Status::STATUS_REQUIRES_SCHEDULING
         ));
 
         return $this->getElements(
@@ -669,4 +670,15 @@ class OphTrOperationbooking_API extends BaseAPI
         return $status_id !== false ? $status_id : OphTrOperationbooking_Operation_Status::STATUS_SCHEDULED;
     }
 
+    /**
+     * get laterality of event by looking at the operation element eye side
+     *
+     * @param $event_id
+     * @return mixed
+     * @throws Exception
+     */
+    public function getLaterality($event_id)
+    {
+        return $this->getEyeForOperation($event_id);
+    }
 }
