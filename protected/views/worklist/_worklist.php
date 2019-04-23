@@ -17,26 +17,95 @@
 ?>
 <?php
 
-/**
- * @var WorklistController $this
- * @var Worklist $worklist
- */
-
-$worklist_patients = $this->manager->getPatientsForWorklist($worklist);
-$worklist_patients->pagination->pageVar = 'page' . $worklist->id;
+$data_provider = $this->manager->getPatientsForWorklist($worklist);
+$data_provider->pagination->pageVar = 'page' . $worklist->id;
 // Get data so that pagination  works
-$worklist_patients->getData();
+$data_provider->getData();
+$core_api = new CoreAPI();
 ?>
-<div class="worklist-group" id="js-worklist-<?=$worklist->id?>">
+
+<div class="worklist-group js-filter-group" id="js-worklist-<?=$worklist->id?>">
+    <div class="worklist-summary flex-layout">
+        <h2 id="worklist_<?= $worklist->id ?>"><?=$worklist->name ?></h2>
+    </div>
+
+    <?php if ($data_provider->totalItemCount <= 0): ?>
+        <div class="alert-box info">
+            No patients in this worklist.
+        </div>
+    <?php else: ?>
+
+    <table class="standard highlight-rows last-right js-worklist-table">
+        <colgroup>
+            <col><!-- check box -->
+            <col><!-- time -->
+            <col class="cols-1"><!-- num -->
+            <col><!-- P1-3 -->
+            <col class="cols-3"><!-- name -->
+            <col class="cols-2"><!-- actions -->
+            <!-- auto widths for reset -->
+        </colgroup>
+        <thead>
+        <tr>
+            <th>
+                <label class="inline highlight ">
+                    <input value="All" name="work-ls-patient-all" type="checkbox"> All
+                </label>
+            </th>
+            <th>Time</th>
+            <th class="nowrap">Hospital No.</th>
+            <th class="nowrap">P1-3</th>
+            <th>Name</th>
+            <th><!-- no header --></th>
+            <th>Gender</th>
+            <th>DoB</th>
+
+            <?php foreach ($worklist->displayed_mapping_attributes as $attr) : ?>
+                <?=$attr->name;?>
+            <?php endforeach; ?>
+
+            <th><!-- go to patient arrow --></th>
+        </tr>
+        </thead>
+
+        <tbody>
+            <?php foreach ($data_provider->getData() as $wl_patient) : ?>
+                <tr>
+                    <td><label class="highlight"><input value="<?=$wl_patient->id;?>" name="worklist_patient[]" type="checkbox"></label></td>
+                    <td><?=$wl_patient->scheduledtime;?></td>
+                    <td><?=$wl_patient->patient->hos_num;?></td>
+                    <td><i class="oe-i triangle-amber js-has-tooltip" data-tooltip-content="Patient Risk: 2 (Medium).<br>Reversible harm from delayed appointment. <br>Previous Cancelled: 0"></i></td>
+                    <td><a href="<?=$core_api->generatePatientLandingPageLink($wl_patient->patient, ['worklist_patient_id' => $wl_patient->id]);?>"><?=$wl_patient->patient->getHSCICName();?></a></td>
+                    <td><span class="oe-pathstep-btn " data-step="{&quot;title&quot;:&quot;PSD: Custom&quot;,&quot;status&quot;:&quot;todo&quot;,&quot;php&quot;:&quot;PSD-popups/todo.php&quot;}">PSD</span></td>
+                    <td><?=$wl_patient->patient->genderString?></td>
+                    <td><?='<span class="oe-date">' . Helper::convertDate2Html(Helper::convertMySQL2NHS($wl_patient->patient->dob)) . '</span>'?></td>
+
+                    <?php foreach ($worklist->displayed_mapping_attributes as $attr) : ?>
+                        <?=$wl_patient->getWorklistAttributeValue($attr);?>
+                    <?php endforeach; ?>
+
+                    <td><a href="/v3.0-SEM/_overview"><i class="oe-i direction-right-circle medium pad"></i></a></td>
+                </tr>
+            <?php endforeach;?>
+        </tbody>
+
+    </table>
+
+    <?php endif; ?>
+</div>
+
+
+
+<div class="worklist-group js-filter-group" id="js-worklist-<?=$worklist->id?>">
 <div class="worklist-summary flex-layout">
   <h2 id="worklist_<?= $worklist->id ?>"><?= $worklist->name ?></h2>
   <div class="summary">
-    <?php $this->widget('LinkPager', ['pages' => $worklist_patients->getPagination()]); ?>
+    <?php $this->widget('LinkPager', ['pages' => $data_provider->getPagination()]); ?>
   </div>
 </div>
 
 <?php
-if ($worklist_patients->totalItemCount <= 0) { ?>
+if ($data_provider->totalItemCount <= 0) { ?>
   <div class="alert-box info">
     No patients in this worklist.
   </div>
@@ -102,22 +171,14 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
 
     $this->widget('application.widgets.ColGroupGridView', array(
         'itemsCssClass' => 'standard clickable-rows',
-        'dataProvider' => $worklist_patients,
+        'dataProvider' => $data_provider,
         'htmlOptions' => array('id' => "worklist-table-{$worklist->id}", 'class' => ''),
         'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
         'template' => '{items}',
         'columns' => $cols,
         'enableHistory' => true,
-        'enablePagination' => false,
+        'enablePagination' => true,
         'rowCssClass' => array('worklist-row'),
     ));
 } ?>
 </div>
-
-<script>
-    $(document).ready(function () {
-        $(".worklist-row").click(function () {
-            window.document.location = $(this).find('.js-worklist-url').data('url');
-        })
-    })
-</script>

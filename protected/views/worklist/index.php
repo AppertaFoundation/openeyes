@@ -5,74 +5,88 @@
 ?>
 
 <div class="oe-full-header flex-layout">
-  <div class="title wordcaps">Worklists</div>
+    <div class="title wordcaps">Worklists</div>
 </div>
 
 <div class="oe-full-content subgrid oe-worklists">
 
-  <nav class="oe-full-side-panel">
-    <p>Automatic Worklists</p>
-    <div class="data-group">
-      <?php $this->renderPartial('//site/change_site_and_firm', array('returnUrl' => Yii::app()->request->url, 'mode' => 'static')); ?>
-    </div>
-    <h3>Filter by Date</h3>
-    <div class="flex-layout">
-      <input id="worklist-date-from" class="cols-5" placeholder="from" type="text" value="<?= @$_GET['date_from'] ?>">
-      <input id="worklist-date-to" class="cols-5" placeholder="to" type="text" value="<?= @$_GET['date_to'] ?>">
-    </div>
-    <h3>Select list</h3>
-    <ul>
-      <li><a class="js-worklist-filter" href="#" data-worklist="all">All</a></li>
+    <nav class="oe-full-side-panel">
+        <p>Automatic Worklists</p>
+        <div class="row">
+            <?php $this->renderPartial('//site/change_site_and_firm', array('returnUrl' => Yii::app()->request->url, 'mode' => 'static')); ?>
+        </div>
+        <h3>Filter by Date</h3>
+        <div class="flex-layout">
+            <input id="worklist-date-from" class="cols-4" placeholder="from" type="text" value="<?= @$_GET['date_from'] ?>">
+            <input id="worklist-date-to" class="cols-4" placeholder="to" type="text" value="<?= @$_GET['date_to'] ?>">
+            <a href="#" class="selected" id="sidebar-clear-date-ranges">All dates</a>
+        </div>
+        <div class="row divider">
+            <button class="cols-full">Search Worklists</button>
+        </div>
+
+        <h3>Select list</h3>
+        <ul>
+            <li><a class="js-worklist-filter" href="#" data-worklist="all">All</a></li>
+            <?php foreach ($worklists as $worklist): ?>
+                <li><a href="#" class="js-worklist-filter"
+                       data-worklist="js-worklist-<?= $worklist->id ?>"><?= $worklist->name ?></a></li>
+            <?php endforeach; ?>
+        </ul>
+        <div class="row">
+            <button class="green hint cols-full" id="js-idg-worklist-ps-add">Add PSD</button>
+        </div>
+        <div class="row">
+            <button class="red cols-full" id="js-idg-worklist-ps-add">Remove selected PSDs</button>
+        </div>
+    </nav>
+
+    <main class="oe-full-main">
         <?php foreach ($worklists as $worklist): ?>
-          <li><a href="#" class="js-worklist-filter" data-worklist="js-worklist-<?= $worklist->id?>"><?= $worklist->name ?></a></li>
+            <?php echo $this->renderPartial('_worklist', array('worklist' => $worklist)); ?>
         <?php endforeach; ?>
-    </ul>
-  </nav>
-  <main class="oe-full-main">
-      <?php foreach ($worklists as $worklist): ?>
-          <?php echo $this->renderPartial('_worklist', array('worklist' => $worklist)); ?>
-      <?php endforeach; ?>
-  </main>
+    </main>
 </div>
 <script type="text/javascript">
-  $(function() {
+    $(function () {
 
-    pickmeup('#worklist-date-from', {
-      format: 'd b Y',
-      hide_on_select: true,
-      date: $('#worklist-date-from').val(),
-      default_date: false,
+        pickmeup('#worklist-date-from', {
+            format: 'd b Y',
+            hide_on_select: true,
+            date: $('#worklist-date-from').val(),
+            default_date: false,
+        });
+        pickmeup('#worklist-date-to', {
+            format: 'd b Y',
+            hide_on_select: true,
+            date: $('#worklist-date-to').val(),
+            default_date: false,
+        });
+
+        $('#worklist-date-from, #worklist-date-to').on('pickmeup-change change', function () {
+            window.location.href = jQuery.query
+                .set('date_from', $('#worklist-date-from').val())
+                .set('date_to', $('#worklist-date-to').val());
+        });
     });
-    pickmeup('#worklist-date-to', {
-      format: 'd b Y',
-      hide_on_select: true,
-      date: $('#worklist-date-to').val(),
-      default_date: false,
+
+    $('.js-worklist-filter').click(function (e) {
+        e.preventDefault();
+        resetFilters();
+        $(this).addClass('selected');
+        updateWorkLists($(this).data('worklist'));
     });
 
-    $('#worklist-date-from, #worklist-date-to').on('pickmeup-change change', function(){
-      window.location.href = jQuery.query
-        .set('date_from', $('#worklist-date-from').val())
-        .set('date_to', $('#worklist-date-to').val());
-    });
-  });
+    function resetFilters() {
+        $('.js-worklist-filter').removeClass('selected');
+    }
 
-  $('.js-worklist-filter').click(function (e) {
-      e.preventDefault();
-      resetFilters();
-      $(this).addClass('selected');
-      updateWorkLists($(this).data('worklist'));
-  });
-  function resetFilters(){
-      $('.js-worklist-filter').removeClass('selected');
-  }
-
-  function updateWorkLists( listID ){
-      if(listID == 'all'){
-          $('.worklist-group').show();
-      } else {
-          $('.worklist-group').hide();
-          $('#'+listID).show();
-      }
-  }
+    function updateWorkLists(listID) {
+        if (listID == 'all') {
+            $('.worklist-group').show();
+        } else {
+            $('.worklist-group').hide();
+            $('#' + listID).show();
+        }
+    }
 </script>
