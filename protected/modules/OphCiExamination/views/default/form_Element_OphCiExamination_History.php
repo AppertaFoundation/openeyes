@@ -51,8 +51,9 @@
 </script>
 
 <?php
+$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 $itemSets = [];
-foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
     $items = array();
 
     foreach ($attribute->getAttributeOptions() as $option) {

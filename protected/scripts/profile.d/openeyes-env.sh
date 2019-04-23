@@ -44,3 +44,16 @@
 ## OE_IOLM_FILE_WATCHER_PATH tells the IOLMasterImport module where to find
 ## the file watcher command. Default is /var/www/openeyes/protected/cli_commands/file_watcher
 # export OE_IOLM_FILE_WATCHER_PATH="/var/www/openeyes/protected/cli_commands/file_watcher"
+
+## Set the institution code (used in common.php to determine the defrault institution)
+# export OE_INSTITUTION_CODE="NEW"
+
+## Config for various external services
+# export OE_DOCMAN_EXPORT_DIRECTORY="/tmp/docman"
+# export OE_PORTAL_URI=""
+# export OE_PORTAL_EXTERNAL_URI=""
+# export OE_PORTAL_USERNAME=""
+# export OE_PORTAL_PASSWORD=""
+# export OE_PORTAL_CLIENT_ID=""
+# export OE_PORTAL_CLIENT_SECRET=""
+# export OE_SIGNATUE_APP_URL=""

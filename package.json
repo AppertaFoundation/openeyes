@@ -21,8 +21,11 @@
     "load-grunt-tasks": "^3.5.0"
   },
   "dependencies": {
+    "lodash": "^4.17.4",
+    "pickmeup": "~3.2.0",
     "plotly.js-dist": "^1.41.3",
+    "sortablejs": "^1.8.4",
     "tinymce": "^4.8.2",
-    "lodash": "^4.17.4"
+    "jquery-autosize": "^1.18.18"
   }
 }
