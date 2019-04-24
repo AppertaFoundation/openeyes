@@ -237,8 +237,14 @@ foreach ($readings as $reading) {
             }
         });
 
-        // select the first instrument by default
-        side.find('ul.add-options[data-id="instrument"] li').first().click();
+        let default_instrument_id = <?= models\Element_OphCiExamination_IntraocularPressure::model()->getSetting('default_instrument_id') ?>;
+        if (default_instrument_id) {
+            // select the default instrument
+            side.find('ul.add-options[data-id="instrument"] li[data-id='+default_instrument_id+']').first().click();
+        } else {
+            // select the first instrument by default
+            side.find('ul.add-options[data-id="instrument"] li').first().click();
+        }
     });
 
     function HistoryIOP_addReading(side, instrumentId, instrumentName, time,
