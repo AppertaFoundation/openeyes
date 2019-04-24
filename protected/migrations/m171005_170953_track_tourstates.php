@@ -6,7 +6,7 @@ class m171005_170953_track_tourstates extends CDbMigration
 	{
 	    $this->createTable('user_feature_tour_state', array(
             'user_id' => 'int(10) unsigned NOT NULL',
-            'tour_id' => 'varchar(511) NOT NULL',
+            'tour_id' => 'varchar(180) NOT NULL', ## This has been reduced from 511 due to it failing when migrating up from clean db. Longest entry in db at time of typing this was 18
             'completed' => 'boolean default false',
             'sleep_until' => 'datetime'
         ));
