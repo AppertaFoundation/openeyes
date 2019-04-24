@@ -41,7 +41,7 @@
                         <td><?= $diagnosis['dob'] ? date('j M Y', strtotime($diagnosis['dob'])) : 'Unknown' ?></td>
                         <td><?= $diagnosis['first_name'] ?></td>
                         <td><?= $diagnosis['last_name'] ?></td>
-                        <td><?= date('j M Y', strtotime($_diagnosis['date'])) ?></td>
+                        <td><?= isset($_diagnosis['date']) ? date('j M Y', strtotime($_diagnosis['date'])) : date('j M Y', $ts) ?></td>
                         <td>
                             <?= $_diagnosis['eye'] . ' ' . $_diagnosis['disorder'] . ' (' . $_diagnosis['type'] . ')'; ?>
                         </td>

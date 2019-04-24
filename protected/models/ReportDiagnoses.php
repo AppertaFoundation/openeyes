@@ -247,8 +247,7 @@ class ReportDiagnoses extends BaseReport
                 $output .= "\"{$diagnosis['hos_num']}\",\"" .
                     ($diagnosis['dob'] ? date('j M Y', strtotime($diagnosis['dob'])) : 'Unknown') .
                     "\",\"{$diagnosis['first_name']}\",\"{$diagnosis['last_name']}\",\"" .
-                    date('j M Y', strtotime($_diagnosis['date'])) . '","';
-                $_diagnosis = array_shift($diagnosis['diagnoses']);
+                isset($_diagnosis['date']) ? date('j M Y', strtotime($_diagnosis['date'])) : date('j M Y', $ts);
                 $output .= $_diagnosis['eye'] . ' ' . $_diagnosis['disorder'] . ' (' . $_diagnosis['type'] . ")\"\n";
             }
         }
