@@ -458,7 +458,6 @@
     AdderDialog.prototype.showColumnById = function(ids) {
         let popup = this.popup;
         ids.forEach(function (id) {
-            console.log(id);
             popup.find('th[data-id="'+id+'"]').show();
             popup.find('[data-id="'+id+'"]').closest('td').show();
         });

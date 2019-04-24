@@ -18,6 +18,12 @@
 use OEModule\OphCiExamination\models;
 
 $readings = models\OphCiExamination_IntraocularPressure_Reading::model()->findAll();
+$scale_readings = models\OphCiExamination_Qualitative_Scale::model()->findByAttributes(['name' => 'digital'])->values;
+$scale_values = [];
+foreach ($scale_readings as $reading) {
+    $scale_values [$reading->id] = $reading->name;
+}
+
 $reading_values = [];
 foreach ($readings as $reading) {
     $reading_values[$reading->name] = $reading->id;
@@ -32,19 +38,7 @@ foreach ($readings as $reading) {
         // show input after validation fail
         $instrument_model = OEModule\OphCiExamination\models\OphCiExamination_Instrument::model();
         if (isset($_POST['OEModule_OphCiExamination_models_HistoryIOP']["{$side}_values"])) {
-            $scaleValues = models\OphCiExamination_Qualitative_Scale::model()->findByAttributes(['name' => 'digital']);
-
             foreach ($_POST['OEModule_OphCiExamination_models_HistoryIOP']["{$side}_values"] as $index => $value) {
-                $recorded_value = new models\OphCiExamination_IntraocularPressure_Value();
-                if (isset($value['qualitative_reading_id'])) {
-                    $recorded_value->instrument = models\OphCiExamination_Instrument::model()->findByPk($value['instrument_id']);
-                    $recorded_value = new models\OphCiExamination_IntraocularPressure_Value();
-                    $recorded_value->instrument->scale = $scaleValues;
-                    $recorded_value->qualitative_reading_id = $value['qualitative_reading_id'];
-                } else {
-                    $recorded_value->reading_id = $value['reading_id'];
-                }
-
                 $this->render(
                     "HistoryIOP_event_edit_reading",
                     [
@@ -55,11 +49,10 @@ foreach ($readings as $reading) {
                         'time' => substr($value['reading_time'], 0, 5),
                         'instrumentId' => $value['instrument_id'],
                         'instrumentName' => $instrument_model->findByPk($value['instrument_id'])->name,
-                        'value_reading_id' => isset($value->reading) ? $value->reading->id : null,
-                        'value_reading_name' => isset($value->reading) ? $value->reading->name : null,
-                        'value_qualitative_reading_id' => isset($value->qualitative_reading) ? $value->qualitative_reading->id : null,
-                        'value_qualitative_reading_name' => isset($value->qualitative_reading) ? $value->qualitative_reading->name : null,
-                        'value' => $recorded_value,
+                        'value_reading_id' => isset($value['reading_id']) ? $value['reading_id'] : null,
+                        'value_reading_name' => isset($value['reading_id']) ? array_search($value['reading_id'], $reading_values) : null,
+                        'value_qualitative_reading_id' => isset($value['qualitative_reading_id']) ? $value['qualitative_reading_id'] : null,
+                        'value_qualitative_reading_name' => isset($value['qualitative_reading_id']) ? $scale_values[$value['qualitative_reading_id']] : null,
                         'examinationDate' => $value['examination_date'],
                     ]
                 );
@@ -127,7 +120,6 @@ foreach ($readings as $reading) {
             'value_reading_name' => '{{value_reading_name}}',
             'value_qualitative_reading_id' => '{{value_qualitative_reading_id}}',
             'value_qualitative_reading_name' => '{{value_qualitative_reading_name}}',
-            'value' => new models\OphCiExamination_IntraocularPressure_Value(),
         ]
     );
     ?>
@@ -198,7 +190,16 @@ foreach ($readings as $reading) {
                 );
 
                 // activate the datePicker
-                $('.iop-date').datepicker({ dateFormat: 'dd/mm/yy', maxDate: '0', showAnim: 'fold'});
+                var datepicker_name = '.iop-date';
+                var datepicker = $(datepicker_name);
+
+                if (datepicker.length != 0) {
+                    pickmeup(datepicker_name, {
+                        format: 'Y-m-d',
+                        hide_on_select: true,
+                        default_date: false
+                    });
+                }
 
                 // hide reading_value and scale_value columns
                 adderDialog.hideColumnById(['reading_value', 'scale_value']);
@@ -208,23 +209,25 @@ foreach ($readings as $reading) {
         });
 
         // show / hide reading value column and scale value column
-        $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye').on('click', 'ul.add-options[data-id="instrument"] li', function() {
+        side.on('click', 'ul.add-options[data-id="instrument"] li', function() {
             if ($(this).hasClass("selected")) {
                 if ($(this).data('scale')) {
                     AdderDialog.hideColumnById(['reading_value']);
                     AdderDialog.showColumnById(['scale_value']);
-
                     if (previouslySelectedColumn === 'reading_value') {
                         AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
                     }
+                    // select the first option as defaul
+                    side.find('ul[data-id="scale_value"] li').first().click();
                     previouslySelectedColumn = "scale_value";
                 } else {
                     AdderDialog.showColumnById(['reading_value']);
                     AdderDialog.hideColumnById(['scale_value']);
-
                     if (previouslySelectedColumn === 'scale_value') {
                         AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
                     }
+                    // select the first option as default
+                    side.find('ul[data-id="reading_value"] li').first().click();
                     previouslySelectedColumn = "reading_value";
                 }
             } else {
@@ -233,6 +236,9 @@ foreach ($readings as $reading) {
                 AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
             }
         });
+
+        // select the first instrument by default
+        side.find('ul.add-options[data-id="instrument"] li').first().click();
     });
 
     function HistoryIOP_addReading(side, instrumentId, instrumentName, time,

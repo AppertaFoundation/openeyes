@@ -37,7 +37,7 @@ foreach ($readings as $reading) {
       <col class="cols-2">
     </colgroup>
     <thead>
-    <tr>
+    <tr style="<?= count($element->{"{$side}_values"}) ? '' : 'display: none;'?>">
       <th>Time</th>
       <th>mm Hg</th>
         <?php if ($element->getSetting('show_instruments')): ?>
@@ -157,6 +157,9 @@ foreach ($readings as $reading) {
                   return false;
               }
 
+              // show header after adding new values
+              side.find('thead tr').show();
+
               let value_reading = 0;
               for (let i = 1; i < selectedItems.length; i++) {
                   value_reading = 10 * value_reading + parseInt(selectedItems[i].digit);
@@ -194,6 +197,8 @@ foreach ($readings as $reading) {
                   if (previouslySelectedColumn === 'reading_value') {
                       AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
                   }
+                  // select the first option as defaul
+                  side.find('ul[data-id="scale_value"] li').first().click();
                   previouslySelectedColumn = "scale_value";
               } else {
                   AdderDialog.showColumnById(['reading_value']);
@@ -202,6 +207,8 @@ foreach ($readings as $reading) {
                   if (previouslySelectedColumn === 'scale_value') {
                       AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
                   }
+                  // select the first option as default
+                  side.find('ul[data-id="reading_value"] li').first().click();
                   previouslySelectedColumn = "reading_value";
               }
           } else {
@@ -210,6 +217,9 @@ foreach ($readings as $reading) {
               AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
           }
       });
+
+      // select the first instrument by default
+      side.find('ul.add-options[data-id="instrument"] li').first().click();
   });
 
   function OphCiExamination_IntraocularPressure_addReading(side, instrumentId, instrumentName,

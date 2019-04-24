@@ -2,7 +2,7 @@
 
 class m190321_114813_create_history_iop_element extends OEMigration
 {
-    public function up()
+    public function safeUp()
     {
         $this->createOETable('et_ophciexamination_history_iop', [
             'id' => 'pk',
@@ -11,15 +11,21 @@ class m190321_114813_create_history_iop_element extends OEMigration
         ], true);
         $this->addForeignKey('et_ophciexamination_history_iop_ev_fk', 'et_ophciexamination_history_iop', 'event_id', 'event', 'id');
         $this->addForeignKey('et_ophciexamination_history_iop_eye_fk', 'et_ophciexamination_history_iop', 'eye_id', 'eye', 'id');
+        $this->insert('element_group', array(
+            'name' => 'HistoryIOP',
+            'event_type_id' => 27,
+            'display_order' => 65,
+        ));
         $this->createElementType('OphCiExamination', 'History IOP', [
             'class_name' => 'OEModule\OphCiExamination\models\HistoryIOP',
-            'display_order' => 1,
-            'group_name' => 'History'
+            'display_order' => 310,
+            'group_name' => 'HistoryIOP'
         ]);
     }
-    public function down()
+    public function safeDown()
     {
         $this->delete('element_type', 'class_name = :class_name', [':class_name' => 'OEModule\OphCiExamination\models\HistoryIOP']);
+        $this->delete('element_group', 'name = :element_group_name', [':element_group_name' => 'HistoryIOP']);
         $this->dropOETable('et_ophciexamination_history_iop_version');
         $this->dropOETable('et_ophciexamination_history_iop');
     }
