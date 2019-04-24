@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -103,7 +104,7 @@ class ReportDiagnoses extends BaseReport
         $query->select($select);
 
         if ($this->condition_type == 'or') {
-            $condition = '( '.implode(' or ', $or_conditions).' )';
+            $condition = '( ' . implode(' or ', $or_conditions) . ' )';
         }
 
         $query->where($condition, $whereParams);
@@ -133,11 +134,11 @@ class ReportDiagnoses extends BaseReport
 
             if ($this->start_date) {
                 $join_condition .= " and {$join_table[1]}$i.$date_field >= :start_date";
-                $whereParams[':start_date'] = date('Y-m-d', strtotime($this->start_date)).' 00:00:00';
+                $whereParams[':start_date'] = date('Y-m-d', strtotime($this->start_date)) . ' 00:00:00';
             }
             if ($this->end_date) {
                 $join_condition .= " and {$join_table[1]}$i.$date_field <= :end_date";
-                $whereParams[':end_date'] = date('Y-m-d', strtotime($this->end_date)).' 23:59:59';
+                $whereParams[':end_date'] = date('Y-m-d', strtotime($this->end_date)) . ' 23:59:59';
             }
 
             $join_method = $this->condition_type == 'and' ? 'join' : 'leftJoin';
@@ -213,21 +214,21 @@ class ReportDiagnoses extends BaseReport
 
     public function description()
     {
-        $description = 'Patients with '.($this->condition_type == 'or' ? 'any' : 'all')." of these diagnoses:\n";
+        $description = 'Patients with ' . ($this->condition_type == 'or' ? 'any' : 'all') . " of these diagnoses:\n";
 
         if (!empty($this->principal)) {
             foreach ($this->principal as $disorder_id) {
-                $description .= Disorder::model()->findByPk($disorder_id)->term." (Principal)\n";
+                $description .= Disorder::model()->findByPk($disorder_id)->term . " (Principal)\n";
             }
         }
 
         if (!empty($this->secondary)) {
             foreach ($this->secondary as $disorder_id) {
-                $description .= Disorder::model()->findByPk($disorder_id)->term." (Secondary)\n";
+                $description .= Disorder::model()->findByPk($disorder_id)->term . " (Secondary)\n";
             }
         }
 
-        return $description.'Between '.$this->start_date.' and '.$this->end_date;
+        return $description . 'Between ' . $this->start_date . ' and ' . $this->end_date;
     }
 
     /**
@@ -237,17 +238,18 @@ class ReportDiagnoses extends BaseReport
      */
     public function toCSV()
     {
-        $output = $this->description()."\n\n";
+        $output = $this->description() . "\n\n";
 
-        $output .= Patient::model()->getAttributeLabel('hos_num').','.Patient::model()->getAttributeLabel('dob').','.Patient::model()->getAttributeLabel('first_name').','.Patient::model()->getAttributeLabel('last_name').",Date,Diagnoses\n";
+        $output .= Patient::model()->getAttributeLabel('hos_num') . ',' . Patient::model()->getAttributeLabel('dob') . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ",Date,Diagnoses\n";
 
         foreach ($this->diagnoses as $ts => $diagnosis) {
-            $output .= "\"{$diagnosis['hos_num']}\",\"".($diagnosis['dob'] ? date('j M Y', strtotime($diagnosis['dob'])) : 'Unknown')."\",\"{$diagnosis['first_name']}\",\"{$diagnosis['last_name']}\",\"".date('j M Y', $ts).'","';
-            $_diagnosis = array_shift($diagnosis['diagnoses']);
-            $output .= $_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].")\"\n";
-
             foreach ($diagnosis['diagnoses'] as $_diagnosis) {
-                $output .= '"","","","","","'.$_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].")\"\n";
+                $output .= "\"{$diagnosis['hos_num']}\",\"" .
+                    ($diagnosis['dob'] ? date('j M Y', strtotime($diagnosis['dob'])) : 'Unknown') .
+                    "\",\"{$diagnosis['first_name']}\",\"{$diagnosis['last_name']}\",\"" .
+                    date('j M Y', strtotime($_diagnosis['date'])) . '","';
+                $_diagnosis = array_shift($diagnosis['diagnoses']);
+                $output .= $_diagnosis['eye'] . ' ' . $_diagnosis['disorder'] . ' (' . $_diagnosis['type'] . ")\"\n";
             }
         }
 

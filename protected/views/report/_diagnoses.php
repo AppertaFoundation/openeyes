@@ -34,33 +34,20 @@
 				</td>
 			</tr>
 		<?php }else{?>
-			<?php foreach ($report->diagnoses as $ts => $diagnosis) {?>
-				<tr>
-					<td><?php echo $diagnosis['hos_num']?></td>
-					<td><?php echo $diagnosis['dob'] ? date('j M Y', strtotime($diagnosis['dob'])) : 'Unknown'?></td>
-					<td><?php echo $diagnosis['first_name']?></td>
-					<td><?php echo $diagnosis['last_name']?></td>
-					<td><?php echo date('j M Y', $ts)?></td>
-					<td>
-						<?php
-                        $_diagnosis = array_shift($diagnosis['diagnoses']);
-    echo $_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].')';
-    ?>
-					</td>
-				</tr>
-				<?php foreach ($diagnosis['diagnoses'] as $_diagnosis) {?>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td><?php echo date('j M Y', strtotime($_diagnosis['date']))?></td>
-						<td>
-							<?php echo $_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].')'?>
-						</td>
-					</tr>
-				<?php }?>
-			<?php }?>
-		<?php }?>
-	</tbody>
+            <?php foreach ($report->diagnoses as $ts => $diagnosis) {
+                foreach ($diagnosis['diagnoses'] as $_diagnosis) { ?>
+                    <tr>
+                        <td><?= $diagnosis['hos_num'] ?></td>
+                        <td><?= $diagnosis['dob'] ? date('j M Y', strtotime($diagnosis['dob'])) : 'Unknown' ?></td>
+                        <td><?= $diagnosis['first_name'] ?></td>
+                        <td><?= $diagnosis['last_name'] ?></td>
+                        <td><?= date('j M Y', strtotime($_diagnosis['date'])) ?></td>
+                        <td>
+                            <?= $_diagnosis['eye'] . ' ' . $_diagnosis['disorder'] . ' (' . $_diagnosis['type'] . ')'; ?>
+                        </td>
+                    </tr>
+                <?php } ?>
+            <?php } ?>
+        <?php } ?>
+    </tbody>
 </table>
