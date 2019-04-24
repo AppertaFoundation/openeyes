@@ -160,13 +160,24 @@ foreach ($readings as $reading) {
               // show header after adding new values
               side.find('thead tr').show();
 
-              let value_reading = 0;
-              for (let i = 1; i < selectedItems.length; i++) {
-                  value_reading = 10 * value_reading + parseInt(selectedItems[i].digit);
+
+              let value_reading_id = null;
+              let value_reading_name = null;
+              if (!selectedItems[0].scale) {
+                  let value_reading = 0;
+                  for (let i = 1; i < selectedItems.length; i++) {
+                      if (selectedItems[i].reading_value == null) {
+                          return false;
+                      }
+                      value_reading = 10 * value_reading + parseInt(selectedItems[i].reading_value);
+                  }
+                  value_reading_id = readings[value_reading];
+                  value_reading_name = value_reading;
               }
 
-              let value_reading_id = selectedItems[0].scale ? null : readings[value_reading];
-              let value_reading_name = selectedItems[0].scale ? null : value_reading;
+              if (selectedItems[0].scale && (selectedItems[1]['id'] == null || selectedItems[1]['label'] == null)) {
+                  return false;
+              }
               let value_qualitative_reading_id = selectedItems[0].scale ? selectedItems[1]['id'] : null;
               let value_qualitative_reading_name = selectedItems[0].scale ? selectedItems[1]['label'] : null;
 
@@ -181,8 +192,8 @@ foreach ($readings as $reading) {
               );
 
               // hide reading_value and scale_value columns
-              adderDialog.hideColumnById(['reading_value', 'scale_value']);
-
+              adderDialog.toggleColumnById(['reading_value', 'scale_value'], false);
+              previouslySelectedColumn = null;
               return true;
           },
       });
@@ -191,41 +202,54 @@ foreach ($readings as $reading) {
       $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye').on('click', 'ul.add-options[data-id="instrument"] li', function() {
           if ($(this).hasClass("selected")) {
               if ($(this).data('scale')) {
-                  AdderDialog.hideColumnById(['reading_value']);
-                  AdderDialog.showColumnById(['scale_value']);
+                  AdderDialog.toggleColumnById(['reading_value'], false);
+                  AdderDialog.toggleColumnById(['scale_value'], true);
 
                   if (previouslySelectedColumn === 'reading_value') {
                       AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
+                      // select the first option as defaul
+                      side.find('ul[data-id="scale_value"] li').first().click();
                   }
-                  // select the first option as defaul
-                  side.find('ul[data-id="scale_value"] li').first().click();
+                  if (!previouslySelectedColumn) {
+                      side.find('ul[data-id="scale_value"] li').first().click();
+                  }
                   previouslySelectedColumn = "scale_value";
               } else {
-                  AdderDialog.showColumnById(['reading_value']);
-                  AdderDialog.hideColumnById(['scale_value']);
+                  AdderDialog.toggleColumnById(['reading_value'], true);
+                  AdderDialog.toggleColumnById(['scale_value'], false);
 
                   if (previouslySelectedColumn === 'scale_value') {
                       AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
+                      // select the first option as default
+                      side.find('ul[data-id="reading_value"] li').first().click();
                   }
-                  // select the first option as default
-                  side.find('ul[data-id="reading_value"] li').first().click();
+                  if (!previouslySelectedColumn) {
+                      side.find('ul[data-id="reading_value"] li').first().click();
+                  }
                   previouslySelectedColumn = "reading_value";
               }
           } else {
-              AdderDialog.hideColumnById(['reading_value']);
-              AdderDialog.hideColumnById(['scale_value']);
+              AdderDialog.toggleColumnById(['reading_value'], false);
+              AdderDialog.toggleColumnById(['scale_value'], false);
               AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
+              previouslySelectedColumn = null;
           }
       });
 
       let default_instrument_id = <?= models\Element_OphCiExamination_IntraocularPressure::model()->getSetting('default_instrument_id') ?>;
-      if (default_instrument_id) {
-          // select the default instrument
-          side.find('ul.add-options[data-id="instrument"] li[data-id='+default_instrument_id+']').first().click();
-      } else {
-          // select the first instrument by default
-          side.find('ul.add-options[data-id="instrument"] li').first().click();
-      }
+      side.find('.js-add-select-search').on('click', function() {
+          let $first_instrument_li = null;
+          if (default_instrument_id) {
+              // select the default instrument
+              $first_instrument_li = side.find('ul.add-options[data-id="instrument"] li[data-id=' + default_instrument_id + ']').first();
+          } else {
+              // select the first instrument by default
+              $first_instrument_li = side.find('ul.add-options[data-id="instrument"] li').first().click();
+          }
+          if (!$first_instrument_li.hasClass('selected')) {
+              $first_instrument_li.click();
+          }
+      });
   });
 
   function OphCiExamination_IntraocularPressure_addReading(side, instrumentId, instrumentName,

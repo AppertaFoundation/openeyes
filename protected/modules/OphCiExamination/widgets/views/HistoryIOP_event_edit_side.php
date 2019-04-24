@@ -131,6 +131,7 @@ foreach ($readings as $reading) {
         let side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
         let readings = JSON.parse('<?= print_r(json_encode($reading_values),1) ?>');
         let previouslySelectedColumn = null;
+        let readingsValueNumberColumns = 2;
 
         let AdderDialog = new OpenEyes.UI.AdderDialog({
             id: 'add-iop-value-to-historyIOP',
@@ -156,26 +157,41 @@ foreach ($readings as $reading) {
             ],
             onReturn: function (adderDialog, selectedItems, selectedAdditions) {
                 if (selectedItems.length < 1
-                    || selectedItems[0].scale && selectedItems.length < 3
-                    || !selectedItems[0].scale && selectedItems.length < 4) {
+                    || selectedItems[0].scale && selectedItems.length < 2
+                    || !selectedItems[0].scale && selectedItems.length < 3) {
                     return false;
                 }
 
-                let value_reading = 0;
-                for (let i = 1; i < selectedItems.length-1; i++) {
-                    value_reading = 10 * value_reading + parseInt(selectedItems[i].digit);
+
+                let value_reading_id = null;
+                let value_reading_name = null;
+                if (!selectedItems[0].scale) {
+                    let value_reading = 0;
+                    for (let i = 1; i <= readingsValueNumberColumns; i++) {
+                        console.log(selectedItems[i].reading_value);
+                        if (selectedItems[i].reading_value == null) {
+                            return false;
+                        }
+                        value_reading = 10 * value_reading + parseInt(selectedItems[i].reading_value);
+                    }
+                    value_reading_id = readings[value_reading];
+                    value_reading_name = value_reading;
                 }
 
-                let value_reading_id = selectedItems[0].scale ? null : readings[value_reading];
-                let value_reading_name = selectedItems[0].scale ? null : value_reading;
+                if (selectedItems[0].scale && (selectedItems[1]['id'] == null || selectedItems[1]['label'] == null)) {
+                    return false;
+                }
                 let value_qualitative_reading_id = selectedItems[0].scale ? selectedItems[1]['id'] : null;
                 let value_qualitative_reading_name = selectedItems[0].scale ? selectedItems[1]['label'] : null;
 
-                let H = selectedItems[selectedItems.length - 1].digit;
-                let M = selectedAdditions[0].addition;
-                let time = H + M;
-                if (H < 10) {
-                    time = '0' + time;
+                let time = "<?=date('H:i') ?>";
+                if (selectedItems[selectedItems.length - 1].time != null) {
+                    let H = selectedItems[selectedItems.length - 1].time;
+                    let M = selectedAdditions[0].addition;
+                    time = H + M;
+                    if (H < 10) {
+                        time = '0' + time;
+                    }
                 }
 
                 HistoryIOP_addReading(
@@ -190,61 +206,69 @@ foreach ($readings as $reading) {
                 );
 
                 // activate the datePicker
-                var datepicker_name = '.iop-date';
-                var datepicker = $(datepicker_name);
-
-                if (datepicker.length != 0) {
-                    pickmeup(datepicker_name, {
-                        format: 'Y-m-d',
-                        hide_on_select: true,
-                        default_date: false
-                    });
-                }
+                addDatePicker($("#OEModule_OphCiExamination_models_HistoryIOP_readings_" + "<?=$side?>" + ' input[id*="OEModule_OphCiExamination_models_HistoryIOP_"].iop-date'));
 
                 // hide reading_value and scale_value columns
-                adderDialog.hideColumnById(['reading_value', 'scale_value']);
-
+                adderDialog.toggleColumnById(['reading_value', 'scale_value'], false);
+                previouslySelectedColumn = null;
                 return true;
             },
         });
+
+         // activate all datepicker inputs
+        console.log("add Date picker H");
+        console.log($("#OEModule_OphCiExamination_models_HistoryIOP_readings_" + "<?=$side?>" + ' input[id*="OEModule_OphCiExamination_models_HistoryIOP_"].iop-date'));
+         addDatePicker($("#OEModule_OphCiExamination_models_HistoryIOP_readings_" + "<?=$side?>" + ' input[id*="OEModule_OphCiExamination_models_HistoryIOP_"].iop-date'));
 
         // show / hide reading value column and scale value column
         side.on('click', 'ul.add-options[data-id="instrument"] li', function() {
             if ($(this).hasClass("selected")) {
                 if ($(this).data('scale')) {
-                    AdderDialog.hideColumnById(['reading_value']);
-                    AdderDialog.showColumnById(['scale_value']);
+                    AdderDialog.toggleColumnById(['reading_value'], false);
+                    AdderDialog.toggleColumnById(['scale_value'], true);
                     if (previouslySelectedColumn === 'reading_value') {
                         AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
+                        side.find('ul[data-id="scale_value"] li').first().click();
                     }
-                    // select the first option as defaul
-                    side.find('ul[data-id="scale_value"] li').first().click();
+                    if (!previouslySelectedColumn) {
+                        side.find('ul[data-id="scale_value"] li').first().click();
+                    }
                     previouslySelectedColumn = "scale_value";
                 } else {
-                    AdderDialog.showColumnById(['reading_value']);
-                    AdderDialog.hideColumnById(['scale_value']);
+                    AdderDialog.toggleColumnById(['reading_value'], true);
+                    AdderDialog.toggleColumnById(['scale_value'], false);
                     if (previouslySelectedColumn === 'scale_value') {
                         AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
+                        side.find('ul[data-id="reading_value"] li').first().click();
                     }
-                    // select the first option as default
-                    side.find('ul[data-id="reading_value"] li').first().click();
+                    if (!previouslySelectedColumn) {
+                        side.find('ul[data-id="reading_value"] li').first().click();
+                    }
                     previouslySelectedColumn = "reading_value";
                 }
             } else {
-                AdderDialog.hideColumnById(['reading_value']);
-                AdderDialog.hideColumnById(['scale_value']);
+                AdderDialog.toggleColumnById(['reading_value'], false);
+                AdderDialog.toggleColumnById(['scale_value'], false);
                 AdderDialog.removeSelectedColumnById(['reading_value', 'scale_value']);
+                previouslySelectedColumn = null;
             }
         });
 
+        // select the default instrument when pressing on the adder button
         let default_instrument_id = <?= models\Element_OphCiExamination_IntraocularPressure::model()->getSetting('default_instrument_id') ?>;
-        if (default_instrument_id) {
-            // select the default instrument
-            side.find('ul.add-options[data-id="instrument"] li[data-id='+default_instrument_id+']').first().click();
-        } else {
-            // select the first instrument by default
-            side.find('ul.add-options[data-id="instrument"] li').first().click();
-        }
+        side.find('.js-add-select-search').on('click', function() {
+            let $first_instrument_li = null;
+            if (default_instrument_id) {
+                // select the default instrument
+                $first_instrument_li = side.find('ul.add-options[data-id="instrument"] li[data-id=' + default_instrument_id + ']').first();
+            } else {
+                // select the first instrument by default
+                $first_instrument_li = side.find('ul.add-options[data-id="instrument"] li').first().click();
+            }
+            if (!$first_instrument_li.hasClass('selected')) {
+                $first_instrument_li.click();
+            }
+        });
     });
 
     function HistoryIOP_addReading(side, instrumentId, instrumentName, time,
@@ -253,7 +277,6 @@ foreach ($readings as $reading) {
         let indices = table.find('tr').map(function () {
             return $(this).data('index');
         });
-
 
         let tr = Mustache.render(
             template = $("#OEModule_OphCiExamination_models_HistoryIOP_reading_template_" + side).text(),

@@ -1,6 +1,17 @@
-$(document).ready(function () {
-    $('.iop-date').datepicker({ dateFormat: 'dd/mm/yy', maxDate: '0', showAnim: 'fold'});
+function addDatePicker(datePickerInputs) {
+    console.log("HERE");
+    for (let i = 0; i < datePickerInputs.length; i++) {
+        console.log(datePickerInputs[i]);
+        pickmeup(datePickerInputs[i], {
+            format: 'Y-m-d',
+            hide_on_select: true,
+            default_date: false,
+            max:  new Date(),
+        });
+    }
+}
 
+$(document).ready(function () {
     function deleteReading() {
         var table = $(this).closest('table');
         if (table.find('tbody tr').length <= 1)

@@ -1028,10 +1028,14 @@ class DefaultController extends \BaseEventTypeController
 
     public function actionGetScaleForInstrument($name)
     {
-        if ($instrument = models\OphCiExamination_Instrument::model()->findByPk(@$_GET['instrument_id'])) {
+        $instrument_id = @$_GET['instrument_id'];
+        $side = @$_GET['side'];
+        $index = @$_GET['index'];
+        $instrument = models\OphCiExamination_Instrument::model()->findByPk($instrument_id);
+        if ($instrument) {
             if ($scale = $instrument->scale) {
                 $value = new models\OphCiExamination_IntraocularPressure_Value();
-                $this->renderPartial('_qualitative_scale', ['name' => $name, 'value' => $value, 'scale' => $scale, 'side' => @$_GET['side'], 'index' => @$_GET['index']]);
+                $this->renderPartial('_qualitative_scale', ['name' => $name, 'value' => $value, 'scale' => $scale, 'side' => $side, 'index' => $index]);
             }
         }
     }
@@ -1155,7 +1159,7 @@ class DefaultController extends \BaseEventTypeController
                     $examinationEvent = new \Event();
                     $examinationEvent->episode_id = $element->event->episode_id;
                     $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
-                    $examinationEvent->event_date = \DateTime::createFromFormat('d/m/Y', $values['examination_date'])->format('Y-m-d');
+                    $examinationEvent->event_date = \DateTime::createFromFormat('Y-m-d', $values['examination_date'])->format('Y-m-d');
                     $examinationEvent->event_type_id = $element->event->event_type_id;
                     $examinationEvent->is_automated = 1;
 
@@ -1220,15 +1224,15 @@ class DefaultController extends \BaseEventTypeController
                         $errors[$et_name][] = 'There must be a date set for the iop value';
                     } else {
                         // don't accept event dates set in the future
-                        if (\DateTime::createFromFormat('d/m/Y', $value['examination_date'])->getTimestamp() > time()) {
+                        if (\DateTime::createFromFormat('Y-m-d', $value['examination_date'])->getTimestamp() > time()) {
                             $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'Event Date cannot be in the future.');
                             $errors[$et_name][] = 'Event Date cannot be in the future.';
                         } else {
-                            $date = \DateTime::createFromFormat('d/m/Y', $value['examination_date']);
+                            $date = \DateTime::createFromFormat('Y-m-d', $value['examination_date']);
                             $errorsDate = \DateTime::getLastErrors();
                             if (!$date || !empty($errorsDate['warning_count'])) {
-                                $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: d/m/Y');
-                                $errors[$et_name][] = 'Date is wrongly formatted: format accepted: d/m/Y';
+                                $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: Y-m-d');
+                                $errors[$et_name][] = 'Date is wrongly formatted: format accepted: Y-m-d';
                             }
                         }
                     }
@@ -1241,11 +1245,11 @@ class DefaultController extends \BaseEventTypeController
     /**
      * custom validation for virtual clinic referral.
      *
-     * @TODO: this should hand off validation to a faked PatientTicket request via the API.
+     * this should hand off validation to a faked PatientTicket request via the API.
      *
      * @param array $data
-     *
-     * @return array
+     * @return array|mixed
+     * @throws \Exception
      */
     protected function setAndValidateElementsFromData($data)
     {
@@ -1255,7 +1259,8 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidateHistoryIopFromData($data, $errors);
         }
 
-        if ($history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications')) {
+        $history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications');
+        if ($history_meds) {
             $errors = $this->setAndValidateHistoryRisksFromData($errors, $history_meds);
         }
 
@@ -1269,7 +1274,8 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidateHistoryRisksFromData($errors, $posted_risk);
         }
 
-        if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
+        $api = Yii::app()->moduleAPI->get('PatientTicketing');
+        if (isset($data['patientticket_queue']) && $api) {
             $errors = $this->setAndValidatePatientTicketingFromData($data, $errors, $api);
         }
 
@@ -1279,6 +1285,7 @@ class DefaultController extends \BaseEventTypeController
     /**
      * @param $errors
      * @param $history_meds
+     * @return mixed
      */
     protected function setAndValidateHistoryMedicationsFromData($errors, $history_meds)
     {
@@ -1290,6 +1297,7 @@ class DefaultController extends \BaseEventTypeController
                 $errors[$this->event_type->name][] = 'History Risks element is required when History Medications has entries with associated Risks';
             }
         }
+        return $errors;
     }
 
 
@@ -1327,7 +1335,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setAndValidatePatientTicketingFromData($data, $errors, $api)
     {
-        $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
+        $co_sid = $data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
         $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
         if ($status && $status->patientticket) {
             $err = array();
@@ -1348,10 +1356,12 @@ class DefaultController extends \BaseEventTypeController
 
             if (count($err)) {
                 $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-                if (@$errors[$et_name]) {
-                    $errors[$et_name] = array_merge($errors[$et_name], $err);
-                } else {
-                    $errors[$et_name] = $err;
+                if(isset($errors[$et_name])) {
+                    if ($errors[$et_name]) {
+                        $errors[$et_name] = array_merge($errors[$et_name], $err);
+                    } else {
+                        $errors[$et_name] = $err;
+                    }
                 }
             }
         }

@@ -284,7 +284,7 @@
             let $divList = $('<div />', {class: "list-wrap"}).appendTo($integerColumnsContainer);
             let $list = $('<ul />', {class: 'add-options number'}).appendTo($divList);
             for (let digit = itemSet.options.splitIntegerNumberColumns[i].min; digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
-                let $listItem = $('<li />', {'data-digit': digit});
+                let $listItem = $('<li data-'+itemSet.options.id+'="'+digit+'"/>');
                 $listItem.append(digit);
                 $listItem.appendTo($list);
             }
@@ -455,19 +455,11 @@
         }
     };
 
-    AdderDialog.prototype.showColumnById = function(ids) {
+    AdderDialog.prototype.toggleColumnById = function(ids, show) {
         let popup = this.popup;
         ids.forEach(function (id) {
-            popup.find('th[data-id="'+id+'"]').show();
-            popup.find('[data-id="'+id+'"]').closest('td').show();
-        });
-    };
-
-    AdderDialog.prototype.hideColumnById = function(ids) {
-        let popup = this.popup;
-        ids.forEach(function (id) {
-            popup.find('th[data-id="'+id+'"]').hide();
-            popup.find('[data-id="'+id+'"]').closest('td').hide();
+            popup.find('th[data-id="'+id+'"]').toggle(show);
+            popup.find('[data-id="'+id+'"]').closest('td').toggle(show);
         });
     };
 
