@@ -27,7 +27,12 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
     ]); ?>
         <div class="hotlist-search-patient">
             <div class="search-patient">
-                <?=\CHtml::textField('query', '', ['id' => 'hotlist-search-text-field', 'class' => 'search', 'placeholder' => 'Search']); ?>
+                <?=\CHtml::textField('query', '', [
+                        'autocomplete' => 'off',
+                        'id' => 'hotlist-search-text-field',
+                        'class' => 'search',
+                        'placeholder' => 'Search',
+                  ]); ?>
                 <button type="submit" id="js-hotlist-find-patient" class="button pro-theme">Find Patient</button>
             </div>
         </div>
