@@ -2,14 +2,14 @@
 
 class m180220_143709_disorder_id_bigint extends CDbMigration
 {
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
 
-	    $this->dropFKs();
+        $this->dropFKs();
 
         //alter columns
-        $this->alterColumnWithVersion('disorder','id','BIGINT UNSIGNED NOT NULL');
+        // $this->alterColumnWithVersion('disorder','id','BIGINT UNSIGNED NOT NULL'); ## Length is already set at 20 which is the default
 
         $this->alterColumnWithVersion('common_ophthalmic_disorder','disorder_id','BIGINT UNSIGNED NULL');
         $this->alterColumnWithVersion('common_ophthalmic_disorder','alternate_disorder_id','BIGINT UNSIGNED NULL');
