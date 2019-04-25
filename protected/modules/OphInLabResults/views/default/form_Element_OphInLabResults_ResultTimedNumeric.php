@@ -23,6 +23,7 @@
       <table class="cols-11">
         <tbody>
           <tr>
+              <?= $form->hiddenInput($element, 'type');?>
               <?php echo $form->textField($element, 'time', $element->getHtmlOptionsForInput('time'), array());?>
           </tr>
           <tr>
