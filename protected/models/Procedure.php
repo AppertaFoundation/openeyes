@@ -187,7 +187,7 @@ class Procedure extends BaseActiveRecordVersioned
 
     protected function addOpNoteElementRelation()
     {
-        if (isset(Yii::app()->modules['OphTrOperationnote'])) {
+        if (isset(Yii::app()->modules['OphTrOperationnote']) && Yii::app()->db->schema->getTable('ophtroperationnote_procedure_element')) {
             $this->metaData->addRelation(
                 'operationNotes',
                 array(
