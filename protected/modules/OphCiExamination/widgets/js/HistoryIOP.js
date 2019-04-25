@@ -1,7 +1,5 @@
 function addDatePicker(datePickerInputs) {
-    console.log("HERE");
     for (let i = 0; i < datePickerInputs.length; i++) {
-        console.log(datePickerInputs[i]);
         pickmeup(datePickerInputs[i], {
             format: 'Y-m-d',
             hide_on_select: true,
