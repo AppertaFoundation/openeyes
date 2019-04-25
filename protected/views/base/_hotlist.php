@@ -20,7 +20,6 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
 
 ?>
 <div class="oe-hotlist-panel" id="js-hotlist-panel">
-    <!-- allow Patient search here, rather than having to go back to the homepage -->
     <?php $this->beginWidget('CActiveForm', [
         'id' => 'hotlist-search-form',
         'action' => Yii::app()->createUrl('site/search'),
@@ -87,7 +86,6 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
         $('#hotlist-search-text-field').keydown(function(event) {
             if (event.which === 13) {
                 this.form.submit();
-                event.preventDefault();
             }
         });
     });
