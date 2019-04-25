@@ -29,13 +29,18 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLetterProcedures($patient , $use_context = false)
     {
         $return = '';
-
-        if($plist =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
-            foreach ($plist->procedures as $i => $procedure) {
-                if ($i) {
+        $procedureList =  $this->getElementFromLatestSameDayEvents('Element_OphTrOperationnote_ProcedureList', $patient, $use_context);
+        if($procedureList){
+            foreach ($procedureList as $procedureIndex => $plist) {
+                foreach ($plist->procedures as $i => $procedure) {
+                    if ($i) {
+                        $return .= ', ';
+                    }
+                    $return .= $plist->eye->adjective . ' ' . $procedure->term;
+                }
+                if ($procedureIndex !== (count($procedureList)-1)) {
                     $return .= ', ';
                 }
-                $return .= $plist->eye->adjective . ' ' . $procedure->term;
             }
         }
 
@@ -379,4 +384,22 @@ class OphTrOperationnote_API extends BaseAPI
             }
         }
     }
+
+    /**
+     * get laterality of event by looking at the procedure list element eye side
+     *
+     * @param $event_id
+     * @return mixed
+     * @throws Exception
+     */
+    public function getLaterality($event_id)
+    {
+        $operation_note = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($event_id));
+        if (!$operation_note) {
+            throw new Exception("Operation note (procedure list) event not found: $event_id");
+        }
+
+        return $operation_note->eye;
+    }
+
 }

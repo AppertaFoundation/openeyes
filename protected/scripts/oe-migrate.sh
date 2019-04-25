@@ -61,8 +61,8 @@ if [ $quiet = 0 ]; then
     php $WROOT/protected/yiic migratemodules --interactive=0 2>&1 | tee -a $WROOT/protected/runtime/migrate.log
 else
 	# Write output to log only (do not show on screen)
-	sudo php $WROOT/protected/yiic migrate --interactive=0 > $WROOT/protected/runtime/migrate.log
-	sudo php $WROOT/protected/yiic migratemodules --interactive=0 >> $WROOT/protected/runtime/migrate.log
+	php $WROOT/protected/yiic migrate --interactive=0 > $WROOT/protected/runtime/migrate.log
+	php $WROOT/protected/yiic migratemodules --interactive=0 >> $WROOT/protected/runtime/migrate.log
 fi
 
 founderrors=0
