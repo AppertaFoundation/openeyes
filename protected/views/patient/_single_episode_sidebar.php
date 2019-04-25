@@ -87,20 +87,51 @@ $episodes_list = array(); ?>
                 <div class="tooltip quicklook" style="display: none; ">
                   <div class="event-name"><?php echo $event_name ?></div>
                   <div class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></div>
-                    <?php if ($event->hasIssue()) { ?>
-                      <div
-                          class="event-issue<?= $event->hasIssue('ready') ? ' ready' : '' ?>"><?php echo $event->getIssueText() ?></div>
+                    <?php $event_icon_class = '';
+                    $event_issue_text = $event->getIssueText();
+                    $event_issue_class = 'event-issue';
+                    if ($event->hasIssue()) {
+                        $event_issue_class .= ($event->hasIssue('ready') ? ' ready' : ' alert');
+                    }
+
+                    $operation = $event->getElementByClass('Element_OphTrOperationbooking_Operation');
+                    if($operation) {
+                        $status_name = $operation->status->name;
+                        $operation_status_to_css_class = [
+                            'Requires scheduling' => 'alert',
+                            'Scheduled' => 'scheduled',
+                            'Requires rescheduling' => 'alert',
+                            'Rescheduled' => 'scheduled ',
+                            'Cancelled' => 'cancelled',
+                            'Completed' => 'done',
+                            // TODO extend this list with new statuses (On hold - OE-8439, Reserved - OE-7194)
+                            // 'On hold ... ' => 'pause',
+                            // 'Reserved ... ' => 'flag',
+                        ];
+                        $css_class = $operation_status_to_css_class[$status_name];
+                        $event_icon_class .= ' ' . $css_class;
+                        if(!$event->hasIssue('Operation requires scheduling')) {
+                            // this needs to be checked to avoid issue duplication, because the issue
+                            // 'Operation requires scheduling' is saved to the database
+                            // as an event issue, while the others are not
+                            $event_issue_class .= ' ' . $css_class;
+                            $event_issue_text .= 'Operation ' . $status_name . "\n";
+                        }
+                    }
+
+                    if (!empty($event_issue_text)) { ?>
+                      <div class="<?= $event_issue_class ?>">
+                        <?= $event_issue_text ?>
+                      </div>
                     <?php } ?>
                 </div>
 
                 <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
-                    <?php $event_icon_class = "";
-                    if ($event->hasIssue()) {
+                    <?php if ($event->hasIssue()) {
                         if ($event->hasIssue('ready')) {
                             $event_icon_class .= ' ready';
                         } else {
                             $event_icon_class .= ' alert';
-
                         }
                     }
                     if ($virtual_clinic_event) {
