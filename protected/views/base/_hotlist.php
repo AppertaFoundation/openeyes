@@ -82,9 +82,10 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
 </div>
 
 <script>
+    let enterKeyCode = 13;
     $(document).ready(function () {
         $('#hotlist-search-text-field').keydown(function(event) {
-            if (event.which === 13) {
+            if (event.which === enterKeyCode) {
                 this.form.submit();
             }
         });
