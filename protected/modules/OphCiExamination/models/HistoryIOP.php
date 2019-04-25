@@ -44,6 +44,8 @@ class HistoryIOP extends \BaseEventTypeElement
     public $widgetClass = 'OEModule\OphCiExamination\widgets\HistoryIOP';
     protected $default_from_previous = false;
 
+    public $examination_dates = [];
+
     public function behaviors()
     {
         return [
@@ -67,6 +69,7 @@ class HistoryIOP extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return [
+            ['examination_dates', 'dateValidatorNotFuture'],
             ['event_id, eye_id, last_modified_user_id, created_user_id', 'length', 'max'=>10],
             ['last_modified_date, created_date', 'safe'],
             // The following rule is used by search().
@@ -87,6 +90,37 @@ class HistoryIOP extends \BaseEventTypeElement
             'eye' => [self::BELONGS_TO, 'Eye', 'eye_id'],
             'lastModifiedUser' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
         ];
+    }
+
+    /**
+     * Validate examination dates
+     *
+     * @param $attribute
+     * @param $params
+     */
+    public function dateValidatorNotFuture($attribute, $params)
+    {
+        foreach (['left_values', 'right_values'] as $side_values) {
+            if (isset($this->$attribute) && $this->$attribute) {
+                $side_attributes = $this->$attribute;
+                foreach ($side_attributes[$side_values] as $index => $date) {
+                    if (!isset($date) || !$date) {
+                        $this->addError($side_values . '_' . $index . '_examination_date', 'there must be a date set for the iop value');
+                    } else {
+                        $dateTime = \DateTime::createFromFormat('Y-m-d', $date);
+                        $errorsDate = \DateTime::getLastErrors();
+                        if (!$dateTime || !empty($errorsDate['warning_count'])) {
+                            $this->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: Y-m-d');
+                        } else {
+                            // don't accept event dates set in the future
+                            if (\DateTime::createFromFormat('Y-m-d', $date)->getTimestamp() > time()) {
+                                $this->addError($side_values . '_' . $index . '_examination_date', 'Event Date cannot be in the future.');
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

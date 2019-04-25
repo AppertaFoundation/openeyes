@@ -168,7 +168,6 @@ foreach ($readings as $reading) {
                 if (!selectedItems[0].scale) {
                     let value_reading = 0;
                     for (let i = 1; i <= readingsValueNumberColumns; i++) {
-                        console.log(selectedItems[i].reading_value);
                         if (selectedItems[i].reading_value == null) {
                             return false;
                         }
@@ -216,8 +215,6 @@ foreach ($readings as $reading) {
         });
 
          // activate all datepicker inputs
-        console.log("add Date picker H");
-        console.log($("#OEModule_OphCiExamination_models_HistoryIOP_readings_" + "<?=$side?>" + ' input[id*="OEModule_OphCiExamination_models_HistoryIOP_"].iop-date'));
          addDatePicker($("#OEModule_OphCiExamination_models_HistoryIOP_readings_" + "<?=$side?>" + ' input[id*="OEModule_OphCiExamination_models_HistoryIOP_"].iop-date'));
 
         // show / hide reading value column and scale value column

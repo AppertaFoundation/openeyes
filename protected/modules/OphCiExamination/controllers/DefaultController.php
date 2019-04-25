@@ -1207,6 +1207,9 @@ class DefaultController extends \BaseEventTypeController
         $entries = $data['OEModule_OphCiExamination_models_HistoryIOP'];
         foreach (['left_values', 'right_values'] as $side_values) {
             if (isset($entries[$side_values])) {
+                // set the examination dates in HistoryIOP model for custom validation
+                $historyIOP->examination_dates[$side_values] = array_column($entries[$side_values], 'examination_date');
+
                 foreach ($entries[$side_values] as $index => $value) {
                     $reading = new models\OphCiExamination_IntraocularPressure_Value();
                     $reading->attributes = $value;
@@ -1219,26 +1222,19 @@ class DefaultController extends \BaseEventTypeController
                             }
                         }
                     }
-                    if (!isset($value['examination_date']) || !$value['examination_date']) {
-                        $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'there must be a date set for the iop value');
-                        $errors[$et_name][] = 'There must be a date set for the iop value';
-                    } else {
-                        // don't accept event dates set in the future
-                        if (\DateTime::createFromFormat('Y-m-d', $value['examination_date'])->getTimestamp() > time()) {
-                            $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'Event Date cannot be in the future.');
-                            $errors[$et_name][] = 'Event Date cannot be in the future.';
-                        } else {
-                            $date = \DateTime::createFromFormat('Y-m-d', $value['examination_date']);
-                            $errorsDate = \DateTime::getLastErrors();
-                            if (!$date || !empty($errorsDate['warning_count'])) {
-                                $historyIOP->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: Y-m-d');
-                                $errors[$et_name][] = 'Date is wrongly formatted: format accepted: Y-m-d';
-                            }
-                        }
-                    }
                 }
             }
         }
+
+        // validate historyIOP (examination dates especially)
+        if (!$historyIOP->validate()) {
+            foreach ($historyIOP->getErrors() as $index => $HistoryIOP_errors) {
+                foreach ($HistoryIOP_errors as $error) {
+                    $errors[$et_name][] = $error;
+                }
+            }
+        }
+
         return $errors;
     }
 
@@ -1254,7 +1250,6 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidateElementsFromData($data)
     {
         $errors = parent::setAndValidateElementsFromData($data);
-
         if(isset($data['OEModule_OphCiExamination_models_HistoryIOP'])) {
             $errors = $this->setAndValidateHistoryIopFromData($data, $errors);
         }
