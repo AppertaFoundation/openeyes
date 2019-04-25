@@ -28,7 +28,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
     <label for="<?php echo $side . '_gonioscopy_mode'; ?>">
       Mode:
     </label>
-      <?=\CHtml::dropDownList($side . '_gonioscopy_mode', $mode,
+      <?=\CHtml::dropDownList($side . '_gonioscopy_mode', '',
           array('Basic' => 'Basic', 'Expert' => 'Expert'), array(
               'class' => 'gonioscopy-mode',
               'options' => array(

@@ -56,6 +56,13 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'form' => $form,
         'side' => $side,
         'element' => $element,
-        'mode' => $mode
     ), true),
 ))?>
+<script>
+    $(document).ready(function(){
+        setTimeout(function(){
+            $('#<?= $side ?>_gonioscopy_mode option').filter('[data-value="<?= $mode ?>"]').attr('selected','selected');
+            $('#<?= $side ?>_gonioscopy_mode').trigger('change');
+        },150);
+    });
+</script>
