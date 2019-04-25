@@ -49,6 +49,26 @@ class ImportDrugsCommand extends CConsoleCommand
         'SUPPCD' => 'SUPPLIER.CD',
     ];
 
+    private $route_mapping = [
+		'1_drug_route'=>'54485002',
+		'2_drug_route'=>'78421000',
+		'3_drug_route'=>'18679011000001101',
+		'4_drug_route'=>'418821007',
+		'5_drug_route'=>'372464004',
+		'6_drug_route'=>'418401004',
+		'7_drug_route'=>'47625008',
+		'8_drug_route'=>'46713006',
+		'9_drug_route'=>'78421000',
+		'10_drug_route'=>'26643006',
+		'11_drug_route'=>'37161004',
+		'12_drug_route'=>'16857009',
+		'13_drug_route'=>'372476004',
+		'14_drug_route'=>'37839007',
+		'15_drug_route'=>'34206005',
+		'16_drug_route'=>'46713006',
+		'17_drug_route'=>'45890007'
+	];
+
     private $tableData = [];
 
     /* SQL TEMPLATES */
@@ -471,7 +491,7 @@ EOD;
 
         $scripts = [
             'delete', 'forms_routes',  'copy_amp', 'copy_vmp', 'copy_vtm', 'sets', 'ref_medication_sets', 'ref_medication_sets_load', 'search_index',
-			'replace_legacy_with_dmd'
+			'replace_legacy_with_dmd', 'laterality_mapping'
         ];
 
         foreach ($scripts as $script) {
@@ -679,6 +699,23 @@ EOD;
 
 		Yii::app()->db->createCommand($cmd)->execute();
 		echo " OK".PHP_EOL;
+
+		// Route mapping
+
+		$this->printMsg("Mapping old to new routes", true);
+		$cmd = [];
+		$cmd[] = "UPDATE event_medication_use SET route_id = :new_route_id WHERE route_id = :old_route_id";
+		$cmd[] = "UPDATE medication SET default_route_id = :new_route_id WHERE default_route_id = :old_route_id";
+		$cmd[] = "UPDATE medication_set_item SET default_route_id = :new_route_id WHERE default_route_id = :old_route_id";
+		foreach ($this->route_mapping as $old_code => $new_code) {
+			$old_route = MedicationRoute::model()->findByAttributes(['code' => $old_code]);
+			$new_route = MedicationRoute::model()->findByAttributes(['code' => $new_code]);
+			$this->printMsg($old_route->term." to ".$new_route->term. ".. ", false);
+			foreach ($cmd as $c) {
+				Yii::app()->db->createCommand($c)->bindParams([':old_route_id' => $old_route->id, ':new_route_id' => $new_route->id])->execute();
+			}
+			echo " OK".PHP_EOL;
+		}
 
         @unlink('/tmp/ref_medication_set.csv');
 
