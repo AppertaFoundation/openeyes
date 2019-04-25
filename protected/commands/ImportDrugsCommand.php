@@ -712,10 +712,21 @@ EOD;
 			$new_route = MedicationRoute::model()->findByAttributes(['code' => $new_code]);
 			$this->printMsg($old_route->term." to ".$new_route->term. ".. ", false);
 			foreach ($cmd as $c) {
-				Yii::app()->db->createCommand($c)->bindParams([':old_route_id' => $old_route->id, ':new_route_id' => $new_route->id])->execute();
+				Yii::app()->db->createCommand($c)
+					->bindParam(':old_route_id', $old_route->getAttribute('id'))
+					->bindParam(':new_route_id', $new_route->getAttribute('id'))
+					->execute();
 			}
 			echo " OK".PHP_EOL;
 		}
+
+		$codes = [];
+		foreach (array_keys($this->route_mapping) as $old_code) {
+			$codes[]= "'".$old_code."'";
+		}
+
+		$cmd = "UPDATE medication_route SET deleted_date = CURRENT_TIMESTAMP() WHERE `code` IN (".implode(",", $codes).")";
+		Yii::app()->db->createCommand($cmd)->execute();
 
         @unlink('/tmp/ref_medication_set.csv');
 
