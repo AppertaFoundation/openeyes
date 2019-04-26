@@ -34,6 +34,32 @@ class m190426_090359_correct_the_values_of_ophciexamination_drgrading_nscretinop
     self::name_changes['U'] => 7,
   ];
 
+  const R2_old_description =
+    'Pre-proliferative retinopathy' .
+    '<ul>' .
+      '<li>Venous beading</li>' .
+      '<li>Venous reduplication</li>' .
+      '<li>Multiple blot haemorrhages</li>' .
+      '<li>Intraretinal microvascular abnormality (IRMA)</li>'.
+    '</ul>';
+
+  const R2_new_description = self::R2_old_description . '<br>' .
+    'Hemorrhages and/or microaneurysms ≥ standard photograph 2A*; and/or:' .
+    '<ul>' .
+      '<li>soft exudates</li>' .
+    '</ul>';
+
+  const R2_new_option_description = self::R2_old_description . '<br>' .
+    '<ul>' .
+      '<li>Soft exudates, and intraretinal microvascular abnormalities all definitely present' .
+        'in at least two of fields four through seven</li>' .
+      '<li>or two of the preceding three lesions present in at least two of fields four through' .
+        'seven and hemorrhages and microaneurysms present in these four fields, equaling or exceeding' .
+        'standard photo 2A in at least one of them</li>' .
+      '<li>or intraretinal microvascular abnormalities present in each of fields four through seven and' .
+        'equaling or exceeding standard photograph 8A in at least two of them</li>' .
+    '</ul>';
+
   private function getFieldFromName($name, $field) {
     return $this->dbConnection->createCommand()
       ->select($field)
@@ -62,6 +88,10 @@ class m190426_090359_correct_the_values_of_ophciexamination_drgrading_nscretinop
     $this->updateField($name, 'display_order', $display_order);
   }
 
+  private function updateDescription($name, $description) {
+    $this->updateField($name, 'description', $description);
+  }
+
   private function updateDisplayOrders($display_orders) {
     foreach($display_orders as $name => $display_order) {
       $this->updateDisplayOrder($name, $display_order);
@@ -76,16 +106,18 @@ class m190426_090359_correct_the_values_of_ophciexamination_drgrading_nscretinop
 
     $this->insert(self::NSCRETINOPATHY_TABLE, [
       'name' => self::name_of_new_option,
-      'description' => "R2 – Severe NPDR description goes here",
+      'description' => self::R2_new_option_description,
       'class' => 'severe',
       'code' => 'SR',
     ]);
 
     $this->updateDisplayOrders(self::new_display_orders);
+    $this->updateDescription(self::name_changes['R2'], self::R2_new_description);
 	}
 
 	public function safeDown()
 	{
+    $this->updateDescription(self::name_changes['R2'], self::R2_old_description);
     $this->delete(self::NSCRETINOPATHY_TABLE, 'id = :id',
       [':id' => $this->getIdFromName(self::name_of_new_option)]);
 
