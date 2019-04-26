@@ -62,7 +62,7 @@ class ContactLabel extends BaseActiveRecordVersioned
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name, type', 'safe', 'on' => 'search'),
-            array('type, is_private', 'safe'),
+            array('type, is_private, max_number_per_patient', 'safe'),
         );
     }
 
@@ -86,7 +86,8 @@ class ContactLabel extends BaseActiveRecordVersioned
             'id' => 'ID',
             'name' => 'Name',
             'letter_template_only' => 'Letter Template Only',
-            'is_private ' => 'Is Private'
+            'is_private' => 'Is Private',
+            'max_number_per_patient' => 'Max Number Per Patient'
         );
     }
 
