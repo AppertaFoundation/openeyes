@@ -95,9 +95,9 @@ class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
 						right_clinicalret_id, left_clinicalmac_id, right_clinicalmac_id, eye_id', 'safe'),
                 array('secondarydiagnosis_disorder_id', 'flagRequired', 'flag' => 'secondarydiagnosis_disorder_required'),
                 array('left_nscretinopathy_id, left_nscmaculopathy_id, left_nscretinopathy_photocoagulation,
-						left_nscmaculopathy_photocoagulation, left_clinicalret_id, left_clinicalmac_id', 'requiredIfSide', 'side' => 'left'),
+						left_nscmaculopathy_photocoagulation, left_clinicalmac_id', 'requiredIfSide', 'side' => 'left'),
                 array('right_nscretinopathy_id, right_nscmaculopathy_id, right_nscretinopathy_photocoagulation,
-						right_nscmaculopathy_photocoagulation, right_clinicalret_id, right_clinicalmac_id', 'requiredIfSide', 'side' => 'right'),
+						right_nscmaculopathy_photocoagulation, right_clinicalmac_id', 'requiredIfSide', 'side' => 'right'),
                 // The following rule is used by search().
                 array('event_id, left_nscretinopathy_id, left_nscmaculopathy_id, left_nscretionopathy_photocoagulation,
 						left_nscmaculopathy_photocoagulation, right_nscretinopathy_id, right_nscmaculopathy_id,
