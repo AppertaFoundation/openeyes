@@ -30,6 +30,7 @@ return array(
         'application.models.elements.*',
         'application.components.*',
         'application.components.reports.*',
+        'application.components.actions.*',
         'application.components.worklist.*',
         'application.extensions.tcpdf.*',
         'application.modules.*',
@@ -395,7 +396,7 @@ return array(
                 ),
                 'analytics' => array(
                   'title' => 'Analytics',
-                  'uri' => '/Analytics/medicalRetina',
+                  'uri' => '/Analytics/analyticsReports',
                   'position' => 11,
                 ),
                 'worklist' => array(

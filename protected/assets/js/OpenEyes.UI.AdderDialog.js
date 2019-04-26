@@ -52,7 +52,9 @@
         width: null,
         createBlackoutDiv: true,
         enableCustomSearchEntries: false,
-        searchAsTypedPrefix: 'As typed: '
+        searchAsTypedPrefix: 'As typed: ',
+        filter: false,
+        filterDataId: "",
     };
 
     /**
@@ -170,12 +172,36 @@
             placeholder: 'search',
             type: 'text'
         });
+
+        this.searchingSpinnerWrapper = $('<div />', {
+            class: 'doing-search',
+            style: 'display:none'
+        });
+
+        $('<i />', {
+            class: 'spinner as-icon',
+        }).appendTo(this.searchingSpinnerWrapper);
+        this.searchingSpinnerWrapper.append(document.createTextNode("Searching ..."));
+
         let $filterDiv = $('<div />', {class: 'has-filter'}).appendTo(this.searchWrapper);
         $searchInput.appendTo($filterDiv);
+        this.searchingSpinnerWrapper.appendTo($filterDiv);
 
         $searchInput.on('keyup', function () {
             dialog.runItemSearch($(this).val());
         });
+
+        if (dialog.options.filter) {
+            let filterContainer = dialog.popup.find('ul[data-id="' + this.options.filterDataId + '"]');
+            filterContainer.on('click', 'li', function () {
+                let filterValue = false;
+                if (!$(this).hasClass('selected')) {
+                    filterContainer.find('li.selected').not(this).removeClass('selected');
+                    filterValue = $(this).data('id');
+                }
+                dialog.runItemSearch(dialog.popup.find('input.search').val(), filterValue);
+            })
+        }
 
         this.noSearchResultsWrapper = $('<span />').text('No results found');
         this.noSearchResultsWrapper.appendTo($filterDiv);
@@ -474,14 +500,20 @@
      * Performs a search using the given text
      * @param {string} text The term to search with
      */
-    AdderDialog.prototype.runItemSearch = function (text) {
+    AdderDialog.prototype.runItemSearch = function (text, filterValue) {
         let dialog = this;
         if (this.searchRequest !== null) {
             this.searchRequest.abort();
         }
+        if (typeof filterValue == "undefined" && this.options.filter) {
+            let selectedFilter = this.popup.find('ul[data-id="' + this.options.filterDataId + '"]').find('li.selected');
+            filterValue = selectedFilter.data('id');
+        }
 
+        dialog.searchingSpinnerWrapper.show();
         this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
             term: text,
+            filter: filterValue,
             code: this.options.searchOptions.code,
             ajax: 'ajax'
         }, function (results) {
@@ -508,6 +540,7 @@
             } else {
                 dialog.searchResultList.toggle(!no_data);
             }
+            dialog.searchingSpinnerWrapper.hide();
         });
     };
 

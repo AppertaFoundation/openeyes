@@ -4,8 +4,9 @@
 <script>
     window.csv_data_for_report = {};
 </script>
-<main class="oe-analytics flex-layout flex-top " style="width: 100%;">
-    <?php
+<main class="oe-analytics flex-layout flex-top cols-full">
+    <div class="cols-3">
+        <?php
         if ($specialty === 'Cataract'){
             $this->renderPartial('//analytics/analytics_sidebar_cataract',
                 array('specialty'=>$specialty,'user_list'=>$user_list,'current_user'=>$current_user)
@@ -15,8 +16,10 @@
                 array('specialty'=>$specialty,'user_list'=>$user_list,'current_user'=>$current_user, 'common_disorders'=>$common_disorders)
             );
         }
- ?>
-    <div class="analytics-charts">
+        ?>
+    </div>
+
+    <div class="analytics-charts cols-9">
         <?php
             if ($specialty !== 'Cataract'){
                 $this->renderPartial('//analytics/analytics_service',
@@ -43,6 +46,7 @@
                 }
             }
         ?>
+        <div id="js-analytics-spinner" style="display: none;"><i class="spinner"></i></div>
     </div>
         <?php
         if ($specialty !== 'Cataract'){
@@ -53,12 +57,20 @@
         ?>
 </main>
 <script>
+    const plotly_min_width = 800;
+    const plotly_min_height = 650;
+    var page_width = $('.analytics-charts').width();
+    var page_height = $('.oe-analytics').height()-50;
+    var layout_width = plotly_min_width > page_width? plotly_min_width : page_width;
+    var layout_height = plotly_min_height > page_height? plotly_min_height : page_height;
+
+    analytics_layout['width'] = layout_width;
+    analytics_layout['height'] = layout_height;
+
     <?php if($specialty === 'Cataract'){?>
         $( document ).ready(function () {
             OpenEyes.Dash.init('#pcr-risk-grid');
             OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk&template=analytics', null, 10);
-            $('.mdl-cell').css('height','600px');
-            $('.mdl-cell').css('width','1000px');
         });
     <?php }?>
 </script>
