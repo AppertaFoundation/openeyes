@@ -4,6 +4,7 @@
 	$sites = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name]; }, Site::model()->findAll());
 	$subspecialties = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name]; }, Subspecialty::model()->findAll());
 
+
 ?>
 <h3>Usage Rules</h3>
 <script id="rule_row_template" type="x-tmpl-mustache">
@@ -55,16 +56,17 @@
 		$rules = array();
 		$siteName = '';
 		$subspecialtyName = '';
-		if (!empty($_GET['default']['site_id']) AND !empty($_GET['default']['subspecialty_id'])) {
-			$siteName = Site::model()->findByPk($_GET['default']['site_id'])->name;
-			$subspecialtyName = Subspecialty::model()->findByPk($_GET['default']['subspecialty_id'])->name;
 
+		if (!empty($usage_code)) {
 			if (!empty($_GET['id'])) {
-				$rules = MedicationSetRule::model()->findByAttributes(['site_id' => $_GET['default']['site_id'], 'subspecialty_id' => $_GET['default']['subspecialty_id'], 'medication_set_id' => $_GET['id']]);
+				$rules = MedicationSetRule::model()->findByAttributes(['medication_set_id' => $_GET['id'], 'usage_code' => $_GET['usage_code']]);
 			}
 		}
 		?>
-			<?php if (empty($rules)) : ?>
+			<?php if (empty($rules) OR empty($_GET['id'])) :
+				$siteName = Site::model()->findByPk($_GET['default']['site_id'])->name;
+				$subspecialtyName = Subspecialty::model()->findByPk($_GET['default']['subspecialty_id'])->name;
+				?>
 			<tr data-key="<?=$rowkey++?>">
 				<td>
 					<input type="hidden" name="MedicationSet[medicationSetRules][id][]" value="-1" />
@@ -95,7 +97,8 @@
 
 
 
-		<?php foreach ($medication_set->medicationSetRules as $rule): ?>
+		<?php
+		foreach ($medication_set->medicationSetRules as $rule): ?>
 		<tr data-key="<?=$rowkey++?>">
 			<td>
 				<input type="hidden" name="MedicationSet[medicationSetRules][id][]" value="<?=$rule->id?>" />

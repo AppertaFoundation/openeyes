@@ -190,7 +190,7 @@ if (!isset($uniqueid)) {
     $('.js-choose-option').click(function (e) {
         e.preventDefault();
         var dialog = new OpenEyes.UI.Dialog({
-            title: 'Please choosen option',
+            title: 'Please choose an option',
         	content: $("#chose-list-content").html(),
          });
          dialog.on('open', function() {
@@ -214,7 +214,16 @@ if (!isset($uniqueid)) {
                      window.location.href = baseUrl + '/OphDrPrescription/refSetAdmin/edit?default[name]='+searchName+'&default[site_id]='+searchSite+'&default[subspecialty_id]='+searchSubspecialty+'&usage_code=COMMON_OPH';
                  } else if (radioValue == 2) {
                      var medicationSetId = $('.choose-option-list').val();
-                     window.location.href = baseUrl + '/OphDrPrescription/refSetAdmin/edit/'+medicationSetId+'?default[site_id]='+searchSite+'&default[subspecialty_id]='+searchSubspecialty+'&usage_code=COMMON_OPH';
+                     //window.location.href = baseUrl + '/OphDrPrescription/refSetAdmin/edit/'+medicationSetId+'?default[site_id]='+searchSite+'&default[subspecialty_id]='+searchSubspecialty+'&usage_code=COMMON_OPH';
+
+                     $.ajax({
+                         'type': 'POST',
+                         'url': baseUrl + '/OphDrPrescription/refSetAdmin/save/'+medicationSetId+'?usage_code=COMMON_OPH',
+                         'data': 'MedicationSet[id]=' + medicationSetId + '&MedicationSet[medicationSetRules][id][0]=-1&MedicationSet[medicationSetRules][site_id][0]=' + searchSite + '&MedicationSet[medicationSetRules][subspecialty_id][0]=' + searchSubspecialty + '&MedicationSet[medicationSetRules][usage_code][0]=COMMON_OPH&YII_CSRF_TOKEN=' + YII_CSRF_TOKEN,
+                         'success': function (resp) {
+                             window.location.href = baseUrl + '/OphDrPrescription/commonOphthalmicDrugSetsAdmin/list';
+                         }
+                     });
                  }
 
              });

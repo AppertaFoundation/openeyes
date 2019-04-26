@@ -52,7 +52,6 @@ class RefSetAdminController extends BaseAdminController
     {
 
         $admin = new Admin(MedicationSet::model(), $this);
-        $admin->setModelDisplayName("Medication set");
 
         if($id) {
             $medicationSet = MedicationSet::model()->findByAttributes(['id' => $id]);
@@ -76,7 +75,6 @@ class RefSetAdminController extends BaseAdminController
                         )
                     ),
                 ));
-                $admin->setModelDisplayName("Medication automatic set");
             } else {
                 $admin->setEditFields(array(
                     'name' => 'Name',
@@ -115,10 +113,18 @@ class RefSetAdminController extends BaseAdminController
 
         }
 
+        $admin->setModelDisplayName("Medication set");
+
         if (!empty($usage_code)) {
             $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id.'?usage_code='.$usage_code);
         } else {
             $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id);
+        }
+
+        if ($usage_code == 'COMMON_OPH') {
+            $admin->setCustomCancelURL('/OphDrPrescription/commonOphthalmicDrugSetsAdmin/list/');
+        } else if ($usage_code == 'COMMON_SYSTEMIC') {
+            $admin->setCustomCancelURL('/OphDrPrescription/commonSystemicDrugSetsAdmin/list/');
         }
 
         $admin->editModel();
@@ -139,6 +145,7 @@ class RefSetAdminController extends BaseAdminController
         /** @var MedicationSet $model */
 
         $data = Yii::app()->request->getPost('MedicationSet');
+
         $existing_item_ids = array();
         foreach ($model->medicationSetItems as $item) {
             $existing_item_ids[] = $item->id;
@@ -146,6 +153,7 @@ class RefSetAdminController extends BaseAdminController
 
         $this->_setModelData($model, $data);
         $model->save();
+
 
         $existing_ids = array();
         $updated_ids = array();
@@ -282,4 +290,6 @@ class RefSetAdminController extends BaseAdminController
 
         exit("1");
     }
+
+
 }

@@ -63,7 +63,7 @@
     });
 </script>
 
-<h3>Medication is member of the following sets</h3>
+<h3>This set contains the following medications</h3>
 <table class="standard" id="medication_set_assignment_tbl">
     <thead>
         <tr>

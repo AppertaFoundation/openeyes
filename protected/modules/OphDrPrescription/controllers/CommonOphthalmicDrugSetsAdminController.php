@@ -25,7 +25,8 @@ class CommonOphthalmicDrugSetsAdminController extends RefSetAdminController
         $admin = new Admin(MedicationSet::model(), $this);
         $admin->setListFields(array(
             'name',
-            'itemsCount'
+            'itemsCount',
+            'automatic',
         ));
 
         $admin->getSearch()->setItemsPerPage(30);
@@ -119,5 +120,6 @@ class CommonOphthalmicDrugSetsAdminController extends RefSetAdminController
 
         exit("1");
     }
+
 
 }
