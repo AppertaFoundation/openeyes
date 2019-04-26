@@ -254,21 +254,6 @@ function updateDRGrades(_drawing, retinopathy, maculopathy, ret_photo, mac_photo
     updateBookingWeeks(side);
 }
 
-function posteriorListener(_drawing) {
-    this.drawing = _drawing;
-    var side = 'right';
-    if (this.drawing.eye) {
-        side = 'left';
-    }
-    this.side = side;
-
-    this.drawing.registerForNotifications(this, 'callBack', ['doodleAdded', 'doodleDeleted', 'parameterChanged']);
-
-    this.callBack = function (_messageArray) {
-        OphCiExamination_DRGrading_update(side);
-    }
-}
-
 /**
  * Listener function for Anterior Segment to make the Traby Flap doodle deletable
  *
@@ -570,28 +555,6 @@ $(document).ready(function() {
                 if ($('.js-active-elements .Element_OphCiExamination_PosteriorPole').length) {
                     $('#drgrading_dirty').show();
                 }
-    });
-
-    $(this).delegate('a#drgrading_dirty', 'click', function(e) {
-        $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_PosteriorPole').find('canvas').each(function() {
-            var drawingName = $(this).attr('data-drawing-name');
-            var drawing = ED.getInstance(drawingName);
-            if (drawing) {
-                // the posterior segment drawing is available to sync values with
-                var grades = gradeCalculator(drawing);
-
-                updateDRGrades(drawing, grades[0], grades[1], grades[2], grades[3], grades[4], grades[5]);
-            }
-        });
-        $(this).hide();
-        e.preventDefault();
-    });
-
-    // When VA updated we may need to update the DR Grade
-    $(this).delegate('.va-selector', 'change', function(e) {
-        side = getSplitElementSide($(this));
-
-        OphCiExamination_DRGrading_update(side);
     });
 
     // end of DR
@@ -1565,55 +1528,6 @@ function OphCiExamination_DRGrading_canUpdate(side) {
     return false;
 }
 
-/**
- * update the dr grades for the given side (if they can be updated)
- *
- * @param side
- */
-function OphCiExamination_DRGrading_update(side) {
-    var physical_side = 'left';
-    if (side == 'left') {
-        physical_side = 'right';
-    }
-    if (OphCiExamination_DRGrading_canUpdate(side)) {
-        var cv = $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_PosteriorPole').find('.js-element-eye.' + physical_side).find('canvas');
-        var drawingName = cv.data('drawing-name');
-        var drawing = ED.getInstance(drawingName);
-        var grades = gradeCalculator(drawing);
-        if (grades) {
-            updateDRGrades(drawing, grades[0], grades[1], grades[2], grades[3], grades[4], grades[5]);
-        }
-    }
-}
-
-function OphCiExamination_PosteriorPole_init() {
-    $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_PosteriorPole').find('canvas').each(function() {
-
-        var drawingName = $(this).attr('data-drawing-name');
-
-        var func = function() {
-            var _drawing = ED.getInstance(drawingName);
-            var side = 'right';
-            if (_drawing.eye) {
-                side = 'left';
-            }
-            var dr_grade = $('#' + _drawing.canvas.id).closest('.element').find('.' + OE_MODEL_PREFIX + dr_grade_et_class);
-            var dr_side = dr_grade.find('.js-element-eye[data-side="'+side+'"]');
-
-            OphCiExamination_DRGrading_dirtyCheck(_drawing);
-
-            if (!$('#drgrading_dirty').is(":visible")) {
-                var grades = gradeCalculator(_drawing);
-                if (grades !== false)
-                    updateDRGrades(_drawing, grades[0], grades[1], grades[2], grades[3], grades[4], grades[5]);
-            }
-        };
-
-        edChecker = getOEEyeDrawChecker();
-        edChecker.registerForReady(func);
-    });
-}
-
 function OphCiExamination_DRGrading_init() {
 
     $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading').find('.drgrading_images_dialog').dialog({
@@ -1622,9 +1536,6 @@ function OphCiExamination_DRGrading_init() {
         resizable: false,
         width: 480
     });
-
-
-    OphCiExamination_PosteriorPole_init();
 
     $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading').find('.grade-info').each(function(){
         var quick = $(this);
