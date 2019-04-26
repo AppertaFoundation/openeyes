@@ -529,9 +529,6 @@ $(document).ready(function() {
         var desc = id.substr(0,id.length-2) + 'desc';
         drGradeEl.find('.'+desc).hide();
         drGradeEl.find('#'+desc + '_' + gradeCode).show();
-        if ($('.js-active-elements .'+OE_MODEL_PREFIX+'Element_OphCiExamination_PosteriorPole').length) {
-            $('#drgrading_dirty').show();
-        }
 
         $(this).closest('.wrapper').removeClass('high severe high-risk proliferative maculopathy moderate pre-prolif mild early background peripheral ungradable low none');
         $(this).closest('.wrapper').addClass($('option:selected', this).attr('class'));
@@ -547,17 +544,7 @@ $(document).ready(function() {
         e.preventDefault();
     });
 
-    $(this).delegate('input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading[right_nscretinopathy_photocoagulation]"], ' +
-        'input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading[left_nscretinopathy_photocoagulation]"], ' +
-        'input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading[right_nscmaculopathy_photocoagulation]"], ' +
-        'input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading[left_nscmaculopathy_photocoagulation]"]'
-            , 'change', function(e) {
-                if ($('.js-active-elements .Element_OphCiExamination_PosteriorPole').length) {
-                    $('#drgrading_dirty').show();
-                }
-    });
 
-    // end of DR
 
     // management
     function isDeferralOther(element, name) {
@@ -1508,9 +1495,6 @@ function OphCiExamination_DRGrading_dirtyCheck(_drawing) {
         dr_grade.find('div .'+OE_MODEL_PREFIX + dr_grade_et_class+'_'+side+'_nscmaculopathy_desc').hide();
         dr_grade.find('div#'+OE_MODEL_PREFIX + dr_grade_et_class+'_'+side+'_nscmaculopathy_desc_' + maculopathy).show();
 
-        if (dirty) {
-            $('#drgrading_dirty').show();
-        }
     dr_grade.find('.js-element-eye[data-side="'+side+'"]').removeClass('uninitialised');
 }
 
@@ -1522,7 +1506,7 @@ function OphCiExamination_DRGrading_dirtyCheck(_drawing) {
 function OphCiExamination_DRGrading_canUpdate(side) {
     var dr_side = $(".js-active-elements ."+OE_MODEL_PREFIX+"Element_OphCiExamination_DRGrading").find('.js-element-eye[data-side="'+side+'"]');
 
-    if (dr_side.length && !dr_side.hasClass('uninitialised') && !$('#drgrading_dirty').is(":visible")) {
+    if (dr_side.length && !dr_side.hasClass('uninitialised')) {
         return true;
     }
     return false;
