@@ -56,6 +56,7 @@ $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
         'queueset' => $queueset,
         'category' => $category,
         'qs_svc' => $qs_svc,
+        'pagination' => $pagination
     ]); ?>
 </div>
 
