@@ -21,7 +21,7 @@
     <header class="element-header"><h3 class="element-title">General Comments</h3></header>
     <div class="element-data eye-divider">
         <div class="element-both-eyes">
-            <div class="data-value">
+            <div class="data-value" style="word-break: break-word;">
                 <?php
                 echo '<b>Device Comments</b>:&nbsp;' . $element->{'comments'};
                 ?>
