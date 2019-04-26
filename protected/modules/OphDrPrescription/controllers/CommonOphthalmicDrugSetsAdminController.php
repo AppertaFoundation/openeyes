@@ -93,17 +93,27 @@ class CommonOphthalmicDrugSetsAdminController extends RefSetAdminController
     public function actionDelete()
     {
         $ids_to_delete = Yii::app()->request->getPost('MedicationSet')['id'];
+
         if(is_array($ids_to_delete)) {
             foreach ($ids_to_delete as $id) {
                 $model = MedicationSet::model()->findByPk($id);
-                /** @var MedicationSet $model */
-                foreach ($model->medicationSetRules as $rule) {
-                    $rule->delete();
+
+                if ($model->automatic == 1) {
+                    foreach ($model->medicationSetRules as $rule) {
+                        if ($rule->usage_code == 'COMMON_OPH') {
+                            $rule->delete();
+                        }
+                    }
+                } else {
+                    foreach ($model->medicationSetRules as $rule) {
+                        $rule->delete();
+                    }
+                    foreach ($model->items as $i) {
+                        $i->delete();
+                    }
+                    $model->delete();
                 }
-                foreach ($model->items as $i) {
-                    $i->delete();
-                }
-                $model->delete();
+
             }
         }
 

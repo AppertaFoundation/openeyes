@@ -56,8 +56,8 @@
 		$siteName = '';
 		$subspecialtyName = '';
 		if (!empty($_GET['default']['site_id']) AND !empty($_GET['default']['subspecialty_id'])) {
-			$siteName = Site::model()->find($_GET['default']['site_id'])->name;
-			$subspecialtyName = Subspecialty::model()->find($_GET['default']['subspecialty_id'])->name;
+			$siteName = Site::model()->findByPk($_GET['default']['site_id'])->name;
+			$subspecialtyName = Subspecialty::model()->findByPk($_GET['default']['subspecialty_id'])->name;
 
 			if (!empty($_GET['id'])) {
 				$rules = MedicationSetRule::model()->findByAttributes(['site_id' => $_GET['default']['site_id'], 'subspecialty_id' => $_GET['default']['subspecialty_id'], 'medication_set_id' => $_GET['id']]);
@@ -67,7 +67,7 @@
 			<?php if (empty($rules)) : ?>
 			<tr data-key="<?=$rowkey++?>">
 				<td>
-					<input type="hidden" name="MedicationSet[medicationSetRules][id][]" value="1" />
+					<input type="hidden" name="MedicationSet[medicationSetRules][id][]" value="-1" />
 					<input type="hidden" name="MedicationSet[medicationSetRules][site_id][]" value="<?= (!empty($_GET['default']['site_id']) ? $_GET['default']['site_id'] : "null")?>" />
 					<?=($siteName ? CHtml::encode($siteName) : "")?>
 				</td>

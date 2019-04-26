@@ -17,6 +17,7 @@
  */
 ?>
 <input type="radio" value="1" name="choose-option-radio" id="choose-option-radio"> Create new set
+<br>
 <input type="radio" value="2" name="choose-option-radio" id="choose-option-radio"> Use an existing automatic set
 
 <div class="choose-option-list-box" style="display: none; height: 250px;">
@@ -26,7 +27,7 @@
         <?php endforeach; ?>
     </select>
 </div>
-
+<br>
 <button class="button large save-option" type="button">Add</button>
 
 <?php

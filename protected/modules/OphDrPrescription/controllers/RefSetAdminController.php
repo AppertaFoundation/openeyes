@@ -52,28 +52,67 @@ class RefSetAdminController extends BaseAdminController
     {
 
         $admin = new Admin(MedicationSet::model(), $this);
-
-        $admin->setEditFields(array(
-            'name'=>'Name',
-            'rules' => array(
-				'widget' => 'CustomView',
-				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
-				'viewArguments' => array(
-					'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
-					'usage_code' => !empty($usage_code) ? $usage_code : ''
-				)
-			),
-            'sets' => array(
-                'widget' => 'CustomView',
-                'viewName' => 'application.modules.OphDrPrescription.views.admin.common_ophthalmic_drug_sets.edit_sets',
-                'viewArguments' => array(
-                    'id' => $id
-                )
-            ),
-        ));
         $admin->setModelDisplayName("Medication set");
+
         if($id) {
+            $medicationSet = MedicationSet::model()->findByAttributes(['id' => $id]);
+
+            if ($medicationSet->automatic != 1) {
+                $admin->setEditFields(array(
+                    'name' => 'Name',
+                    'rules' => array(
+                        'widget' => 'CustomView',
+                        'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
+                        'viewArguments' => array(
+                            'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
+                            'usage_code' => !empty($usage_code) ? $usage_code : ''
+                        )
+                    ),
+                    'sets' => array(
+                        'widget' => 'CustomView',
+                        'viewName' => 'application.modules.OphDrPrescription.views.admin.common_ophthalmic_drug_sets.edit_sets',
+                        'viewArguments' => array(
+                            'id' => $id
+                        )
+                    ),
+                ));
+                $admin->setModelDisplayName("Medication automatic set");
+            } else {
+                $admin->setEditFields(array(
+                    'name' => 'Name',
+                    'rules' => array(
+                        'widget' => 'CustomView',
+                        'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
+                        'viewArguments' => array(
+                            'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
+                            'usage_code' => !empty($usage_code) ? $usage_code : ''
+                        )
+                    ),
+                ));
+            }
+
             $admin->setModelId($id);
+        } else {
+            $admin->setEditFields(array(
+                'name' => 'Name',
+                'rules' => array(
+                    'widget' => 'CustomView',
+                    'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
+                    'viewArguments' => array(
+                        'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
+                        'usage_code' => !empty($usage_code) ? $usage_code : ''
+                    )
+                ),
+                'sets' => array(
+                    'widget' => 'CustomView',
+                    'viewName' => 'application.modules.OphDrPrescription.views.admin.common_ophthalmic_drug_sets.edit_sets',
+                    'viewArguments' => array(
+                        'id' => $id
+                    )
+                ),
+            ));
+
+
         }
 
         if (!empty($usage_code)) {
@@ -87,6 +126,7 @@ class RefSetAdminController extends BaseAdminController
 
     public function actionSave($id = null, $usage_code = null)
     {
+
         if(is_null($id)) {
             $model = new MedicationSet();
         }
@@ -99,15 +139,13 @@ class RefSetAdminController extends BaseAdminController
         /** @var MedicationSet $model */
 
         $data = Yii::app()->request->getPost('MedicationSet');
-        $this->_setModelData($model, $data);
-        $model->save();
-
+        $existing_item_ids = array();
         foreach ($model->medicationSetItems as $item) {
-            $item->medication_set_id = $model->id;
-            try{ $item->save(); }catch(Exception $e){ print_r($item->getAttributes()); exit; }
+            $existing_item_ids[] = $item->id;
         }
 
-
+        $this->_setModelData($model, $data);
+        $model->save();
 
         $existing_ids = array();
         $updated_ids = array();
@@ -115,7 +153,9 @@ class RefSetAdminController extends BaseAdminController
             $existing_ids[] = $rule->id;
         }
 
+
         $ids = @Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['id'];
+
         if(is_array($ids)) {
             foreach ($ids as $key => $rid) {
                 if($rid == -1) {
@@ -140,6 +180,32 @@ class RefSetAdminController extends BaseAdminController
         $deleted_ids = array_diff($existing_ids, $updated_ids);
         if(!empty($deleted_ids)) {
             MedicationSetRule::model()->deleteByPk($deleted_ids);
+        }
+
+
+        $updated_item_ids = array();
+        foreach ($model->medicationSetItems as $item) {
+            $item->medication_set_id = $model->id;
+            $item->save();
+        }
+
+        $itemids = @Yii::app()->request->getPost('MedicationSet')['medicationSetItems']['id'];
+        if(is_array($itemids)) {
+            foreach ($itemids as $key => $rid) {
+
+                if($rid == -1) {
+                    $medSetItem = new MedicationSetItem();
+                }
+                else {
+                    $medSetItem = MedicationSetItem::model()->findByPk($rid);
+                    $updated_item_ids[] = $rid;
+                }
+            }
+        }
+
+        $deleted_item_ids = array_diff($existing_item_ids, $updated_item_ids);
+        if(!empty($deleted_item_ids)) {
+            MedicationSetItem::model()->deleteByPk($deleted_item_ids);
         }
 
 
@@ -199,6 +265,7 @@ class RefSetAdminController extends BaseAdminController
     public function actionDelete()
     {
         $ids_to_delete = Yii::app()->request->getPost('MedicationSet')['id'];
+
         if(is_array($ids_to_delete)) {
             foreach ($ids_to_delete as $id) {
                 $model = MedicationSet::model()->findByPk($id);

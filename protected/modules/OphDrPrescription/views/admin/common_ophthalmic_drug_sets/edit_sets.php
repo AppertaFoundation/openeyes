@@ -57,11 +57,12 @@
 </script>
 <script type="text/javascript">
     $(function(){
-        $(document).on("click", ".js-delete-attribute", function (e) {
+        $(document).on("click", ".js-delete-set", function (e) {
             $(e.target).closest("tr").remove();
         });
     });
 </script>
+
 <h3>Medication is member of the following sets</h3>
 <table class="standard" id="medication_set_assignment_tbl">
     <thead>
@@ -118,15 +119,22 @@
             </td>
         </tr>
     <?php endforeach; ?>
+    <script type="text/javascript">
+        $(function(){
+            $(document).on("click", ".js-delete-attribute", function (e) {
+                $(e.target).closest("tr").remove();
+            });
+        });
+    </script>
     </tbody>
     <tfoot class="pagination-container">
         <tr>
             <td colspan="8">
                 <div class="flex-layout flex-right">
-                    <button class="button hint green js-add-set" type="button"><i class="oe-i plus pro-theme"></i></button>
+                    <button class="button hint green js-add-medication" type="button"><i class="oe-i plus pro-theme"></i></button>
                     <script type="text/javascript">
                         new OpenEyes.UI.AdderDialog({
-                            openButton: $('.js-add-set'),
+                            openButton: $('.js-add-medication'),
                             itemSets: [
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($units) ?>, {'id': 'unit','multiSelect': false, header: "Default unit"}),
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($forms) ?>, {'id': 'form','multiSelect': false, header: "Default form"}),
