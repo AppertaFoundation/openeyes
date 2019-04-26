@@ -9,10 +9,23 @@
         custom_layout = JSON.parse(JSON.stringify(analytics_layout));
         custom_data = <?= CJavaScript::encode($custom_data); ?>;
         window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
+        custom_layout['xaxis']['title'] = "Time(weeks)";
         custom_layout['xaxis']['rangeslider'] = {};
+        custom_layout['yaxis']['title'] = "Visual Acuity";
         custom_layout['yaxis2'] = {
+            title: 'IOP (mm Hg)',
+            titlefont: {
+                family: 'sans-serif',
+                size: 12,
+                color: '#fff',
+            },
             side: 'right',
             overlaying: 'y',
+            linecolor: '#fff',
+            tickcolor: '#fff',
+            tickfont: {
+                color: '#fff',
+            },
         };
         plot(true,custom_layout,custom_data[1]);
         plot(false,custom_layout,custom_data[0])

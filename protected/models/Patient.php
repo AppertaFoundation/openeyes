@@ -2124,7 +2124,7 @@ class Patient extends BaseActiveRecordVersioned
         foreach ($this->episodes as $ep) {
             $d = $ep->diagnosis;
             if ($d && $d->specialty && $d->specialty->code == 130) {
-                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getHTMLformatedDate();
+                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getFormatedDate();
             }
         }
 
@@ -2219,6 +2219,20 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->compare('status', PatientMergeRequest::STATUS_MERGED);
 
         return PatientMergeRequest::model()->find($criteria);
+    }
+
+    public function getPatientOptometrist(){
+        $criteria = new CDbCriteria();
+        $criteria->join = 'join patient_contact_assignment on patient_contact_assignment.contact_id = t.id ';
+        $criteria->join .= 'join contact_label on contact_label.id = t.contact_label_id';
+        $criteria->addCondition('patient_contact_assignment.patient_id = :patient_id');
+        $criteria->addCondition('contact_label.name = :label_name');
+        $criteria->addCondition('t.active= :active');
+        $criteria->params[':label_name'] = "Optometrist";
+        $criteria->params[':patient_id'] = $this->id;
+        $criteria->params[':active'] = 1;
+
+        return Contact::model()->find($criteria);
     }
 
     /**
