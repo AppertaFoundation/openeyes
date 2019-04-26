@@ -4,8 +4,6 @@ var analytics_layout = {
         color: '#fff',
     },
     autosize: false,
-    height: 800,
-    width: 1460,
     margin:{
         l:50,
         t:30,
@@ -28,9 +26,15 @@ var analytics_layout = {
         },
     },
     xaxis: {
+        titlefont: {
+            family: 'sans-serif',
+            size: 12,
+            color: '#fff',
+        },
         showgrid: false,
         /*Ticks setting*/
         ticks: 'outside',
+        tickformat: ',d',
         showticklabels: true,
         rangemode: 'tozero',
         showline: true,
@@ -39,12 +43,19 @@ var analytics_layout = {
         tickfont: {
             color: '#fff',
         },
+        showticksuffix: 'last',
+        mirror: true
     },
     yaxis:{
+        titlefont: {
+            family: 'sans-serif',
+            size: 12,
+            color: '#fff',
+        },
         /*Ticks setting*/
         ticks: 'outside',
         showgrid: true,
-        gridcolor: '#aaa',
+        gridcolor: '#8c8c8c',
         showticklabels: true,
         showline: true,
         linecolor: '#fff',
@@ -52,6 +63,7 @@ var analytics_layout = {
         tickfont: {
             color: '#fff',
         },
+        mirror: true
     },
 };
 
