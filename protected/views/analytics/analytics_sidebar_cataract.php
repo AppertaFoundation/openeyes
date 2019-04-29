@@ -127,7 +127,7 @@
                 break;
             case "RO":
                 OpenEyes.Dash.init('#refractive-outcome-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 10);
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics&procedures[]=all', null, 10);
                 break;
             case "NOD":
                 OpenEyes.Dash.init('#nod-audit-grid');

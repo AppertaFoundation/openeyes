@@ -432,19 +432,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             if ($this->consultant_required && !$this->booking->session->consultant) {
                 $this->addError('consultant', 'The booked session does not have a consultant present, you must change the session or cancel the booking before making this change');
             }
-
-
-            foreach($this->anaesthetic_type as $anaesthetic_type){
-                if ($anaesthetic = AnaestheticType::model()->findByPk($anaesthetic_type->id) ) {
-
-                    if (in_array($anaesthetic->id, $this->anaesthetist_required_ids) && !$this->booking->session->anaesthetist) {
-                        $this->addError('anaesthetist', 'The booked session does not have an anaesthetist present, you must change the session or cancel the booking before making this change');
-                    }
-                    if ($anaesthetic->code == 'GA' && !$this->booking->session->general_anaesthetic) {
-                        $this->addError('ga', 'General anaesthetic is not available for the booked session, you must change the session or cancel the booking before making this change');
-                    }
-                }
-            }
         }
 
         if( !count($this->anaesthetic_type_assignments)){
@@ -700,7 +687,11 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $rtt_date = $this->getRTTBreach();
 
         $criteria = new CDbCriteria();
-        $criteria->compare('firm_id', $firm->id);
+        if($firm->id) {
+            $criteria->compare('firm_id', $firm->id);
+        } else {
+            $criteria->addCondition('firm_id is null');
+        }
         $criteria->compare('available', 1);
         $criteria->addSearchCondition('date', "$year-$month-%", false);
         $criteria->order = 'date asc';
@@ -1214,6 +1205,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                 return $this->getErrors();
             }
             $this->booking->cancel($reason, $cancellation_comment, $reschedule);
+            $this->booking = $booking;
         }
 
         foreach (array('date', 'start_time', 'end_time', 'theatre_id') as $field) {

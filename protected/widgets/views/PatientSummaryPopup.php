@@ -27,249 +27,279 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
-<!-- Show full patient Demographics -->
-<div class="oe-patient-popup patient-popup-demographics" style="display:none;">
-    <?php if ($this->patient->nhsNumberStatus): ?>
-        <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
-            <i class="oe-i exclamation pad-right no-click medium-icon"></i><b>
-                NHS Number: <?= $this->patient->nhsNumberStatus->description; ?></b>
-        </div>
-    <?php endif; ?>
-    <?php if (count($this->patient->identifiers) > 0) { ?>
-      <div class="patient-numbers flex-layout">
-        <div class="local-numbers">
-            <?php foreach ($this->patient->identifiers as $identifier) { ?>
-                <?php if ($identifier->hasValue() || $identifier->displayIfEmpty()) { ?>
-                <div class="num">
-                    <?= $identifier->getLabel() ?>
-                  <label class="inline highlight">
-                      <?= $identifier->value ?>
-                  </label>
+    <!-- Show full patient Demographics -->
+    <div class="oe-patient-popup patient-popup-demographics" style="display:none;">
+        <?php if ($this->patient->nhsNumberStatus): ?>
+            <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
+                <i class="oe-i exclamation pad-right no-click medium-icon"></i><b>
+                    NHS Number: <?= $this->patient->nhsNumberStatus->description; ?></b>
+            </div>
+        <?php endif; ?>
+        <?php if (count($this->patient->identifiers) > 0) { ?>
+            <div class="patient-numbers flex-layout">
+                <div class="local-numbers">
+                    <?php foreach ($this->patient->identifiers as $identifier) { ?>
+                        <?php if ($identifier->hasValue() || $identifier->displayIfEmpty()) { ?>
+                            <div class="num">
+                                <?= $identifier->getLabel() ?>
+                                <label class="inline highlight">
+                                    <?= $identifier->value ?>
+                                </label>
+                            </div>
+                        <?php } ?>
+                    <?php } ?>
                 </div>
-                <?php } ?>
-            <?php } ?>
-        </div>
-        <div class="nhs-number">
-            <?= Yii::app()->params['nhs_num_label'] ?>
-            <?= $this->patient->nhsnum ?>
-        </div>
-      </div>
-    <?php } ?>
-  <div class="flex-layout flex-top">
-    <div class="cols-left">
-      <div class="popup-overflow">
-        <div class="subtitle">Demographics</div>
-        <table class="patient-demographics" style="position: relative; right: 0;">
-          <tbody>
-          <tr>
-            <td>Born</td>
-            <td>
-              <b><?= $this->patient->dob ? $this->patient->NHSDate('dob') : 'Unknown' ?></b>
-              (<?= $this->patient->getAge() ?>y)
-            </td>
-          </tr>
-          <tr>
-            <td>Address</td>
-            <td><?= $this->patient->getSummaryAddress() ?></td>
-          </tr>
-          <tr>
-            <td>Ethnic Group</td>
-            <td><?= $this->patient->getEthnicGroupString() ?></td>
-          </tr>
-          <tr>
-            <td>Telephone</td>
-            <td><?= !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown' ?></td>
-          </tr>
-          <tr>
-            <td>Mobile</td>
-            <td>Unknown</td>
-          </tr>
-          <tr>
-            <td>Email</td>
-            <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
-          </tr>
-          <tr>
-            <td>Next of kin</td>
-            <td>Unknown</td>
-          </tr>
-          </tbody>
-        </table>
-      </div><!-- .popup-overflow -->
-    </div><!-- .cols-left -->
+                <div class="nhs-number">
+                    <?= Yii::app()->params['nhs_num_label'] ?>
+                    <?= $this->patient->nhsnum ?>
+                </div>
+            </div>
+        <?php } ?>
+        <div class="flex-layout flex-top">
+            <div class="cols-left">
+                <div class="popup-overflow">
+                    <div class="subtitle">Demographics</div>
+                    <table class="patient-demographics" style="position: relative; right: 0;">
+                        <tbody>
+                        <tr>
+                            <td>Born</td>
+                            <td>
+                                <b><?= $this->patient->dob ? $this->patient->NHSDate('dob') : 'Unknown' ?></b>
+                                (<?= $this->patient->getAge() ?>y)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Address</td>
+                            <td><?= $this->patient->getSummaryAddress() ?></td>
+                        </tr>
+                        <tr>
+                            <td>Ethnic Group</td>
+                            <td><?= $this->patient->getEthnicGroupString() ?></td>
+                        </tr>
+                        <tr>
+                            <td>Telephone</td>
+                            <td><?= !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown' ?></td>
+                        </tr>
+                        <tr>
+                            <td>Mobile</td>
+                            <td>Unknown</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
+                        </tr>
+                        <tr>
+                            <td>Next of kin</td>
+                            <td>Unknown</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div><!-- .popup-overflow -->
+            </div><!-- .cols-left -->
 
-    <div class="cols-right">
+            <div class="cols-right">
 
-      <div class="popup-overflow">
+                <div class="popup-overflow">
 
-        <div class="subtitle">&nbsp;</div>
+                    <div class="subtitle">&nbsp;</div>
 
-        <table class="patient-demographics" style="position: relative; right: 0;">
-          <tbody>
-          <tr>
-            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
-            <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
-          </tr>
-          <tr>
-            <td><?php echo Yii::app()->params['gp_label']?> Address</td>
-            <td><?= ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></td>
-          </tr>
-          <tr>
-            <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
-            <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
-          </tr>
-          </tbody>
-        </table>
-      </div><!-- .popup-overflow -->
-    </div><!-- .cols-right -->
-  </div><!-- flex -->
-</div>
+                    <table class="patient-demographics" style="position: relative; right: 0;">
+                        <tbody>
+                        <tr>
+                            <td>
+                                <h2>PAS Contacts</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                            <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
+                            <td><?= ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
+                            <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h2>Patient Contacts</h2>
+                            </td>
+                        </tr>
+                        <?php
+                        $gp_contact_id = $this->patient->gp ? $this->patient->gp->contact->id : null;
+                        foreach ($this->patient->contactAssignments as $contactAssignment) {
+                            $contact = $contactAssignment->contact;
 
-<!-- Patient Quicklook popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
-<div class="oe-patient-popup patient-summary-quicklook" style="display:none;">
-  <div class="situational-awareness flex-layout flex-left flex-top">
-      <?php
-      $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
-      $visualAcuityLeft = $exam_api->getLetterVisualAcuityLeft($patient);
+                            if (isset($contact) && $contact->id != $gp_contact_id) { ?>
+                                <tr>
+                                    <td><?= $contact->label ? $contact->label->name : "" ?></td>
+                                    <td><?= $contact->fullName ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Address</td>
+                                    <td><?= $contact->address ? $contact->address->letterLine : "" ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Telephone</td>
+                                    <td><?= $contact->primary_phone ?></td>
+                                </tr>
+                            <?php }
+                        } ?>
+                        </tbody>
+                    </table>
+                </div><!-- .popup-overflow -->
+            </div><!-- .cols-right -->
+        </div><!-- flex -->
+    </div>
 
-      if ($visualAcuityLeft || $visualAcuityRight) {
-          $lDate = $exam_api->getLetterVisualAcuityDate($patient, 'left');
-          $rDate = $exam_api->getLetterVisualAcuityDate($patient, 'right');
-          ?>
-        <div class="group">
-            <?php if ($lDate == $rDate) { ?>
-              <span class="data">R <?= $visualAcuityRight ?: 'NA'; ?>
+    <!-- Patient Quicklook popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
+    <div class="oe-patient-popup patient-summary-quicklook" style="display:none;">
+        <div class="situational-awareness flex-layout flex-left flex-top">
+            <?php
+            $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
+            $visualAcuityLeft = $exam_api->getLetterVisualAcuityLeft($patient);
+
+            if ($visualAcuityLeft || $visualAcuityRight) {
+                $lDate = $exam_api->getLetterVisualAcuityDate($patient, 'left');
+                $rDate = $exam_api->getLetterVisualAcuityDate($patient, 'right');
+                ?>
+                <div class="group">
+                    <?php if ($lDate == $rDate) { ?>
+                        <span class="data">R <?= $visualAcuityRight ?: 'NA'; ?>
               </span>
-              <span class="data"
-                    style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
+                        <span class="data"
+                              style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
                   <?= $exam_api->getLetterVAMethodName($patient, 'right') ?>
               </span>
-              <span class="data">
+                        <span class="data">
                 L <?= $visualAcuityLeft ?: 'NA' ?>
               </span>
-              <span class="data"
-                    style="display : <?= $visualAcuityLeft ? '' : 'none' ?>">
+                        <span class="data"
+                              style="display : <?= $visualAcuityLeft ? '' : 'none' ?>">
                   <?= $exam_api->getLetterVAMethodName($patient, 'left') ?>
               </span>
-              <span class="oe-date"
-                    style="text-align: left;">
+                        <span class="oe-date"
+                              style="text-align: left;">
                   <?= Helper::convertDate2NHS($rDate); ?>
               </span>
-            <?php } else { ?>
-              <span class="data">
+                    <?php } else { ?>
+                        <span class="data">
                 R <?= $visualAcuityRight ?: 'NA'; ?>
               </span>
-              <span class="data"
-                    style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
+                        <span class="data"
+                              style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
                   <?= $exam_api->getLetterVAMethodName($patient, 'right') ?>
               </span>
-              <span class="oe-date"
-                    style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
+                        <span class="oe-date"
+                              style="display : <?= $visualAcuityRight ? '' : 'none' ?>">
                   <?= Helper::convertDate2NHS($rDate); ?>
               </span>
-              <span class="data">
+                        <span class="data">
                 L <?= $visualAcuityLeft ?: 'NA' ?>
               </span>
-              <span class="data"
-                    style="display : <?= $visualAcuityLeft ? '' : 'none' ?>">
+                        <span class="data"
+                              style="display : <?= $visualAcuityLeft ? '' : 'none' ?>">
                   <?= $exam_api->getLetterVAMethodName($patient, 'left') ?>
               </span>
-              <span class="oe-date"
-                    style="text-align: left; display : <?= $visualAcuityLeft ? '' : 'none' ?>">
+                        <span class="oe-date"
+                              style="text-align: left; display : <?= $visualAcuityLeft ? '' : 'none' ?>">
                   <?= Helper::convertDate2NHS($lDate); ?>
               </span>
-            <?php } ?>
-        </div>
-      <?php } else { ?>
-        <div class="group">
-          <span class="data-value not-available">VA: NA</span>
-        </div>
-      <?php } ?>
-
-    <div class="group">
-        <?php
-        $leftRefraction = $correspondence_api->getLastRefraction($patient, 'left');
-        $rightRefraction = $correspondence_api->getLastRefraction($patient, 'right');
-        if ($leftRefraction !== null || $rightRefraction !== null) {
-            ?>
-          <span class="data">R <?= $rightRefraction ?: 'NA' ?></span>
-          <span class="data">L <?= $leftRefraction ?: 'NA' ?></span>
-          <span class="oe-date"
-                style="text-align: left"><?= Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient)) ?></span>
-        <?php } else { ?>
-          <span class="data-value not-available">Refraction: NA</span>
-        <?php } ?>
-    </div>
-
-    <div class="group">
-        <?php if ($this->cviStatus[0] !== 'Unknown') { ?>
-          <span class="data">CVI Status: <?= $this->cviStatus[0]; ?></span>
-          <span class="oe-date"> <?= $this->cviStatus[1] && $this->cviStatus[1] !== '0000-00-00' ? \Helper::convertDate2HTML($this->cviStatus[1]) : 'N/A' ?></span>
-        <?php } else { ?>
-          <span class="data">CVI Status: NA</span>
-        <?php } ?>
-    </div>
-  </div>
-  <div class="flex-layout flex-top">
-    <!-- oe-popup-overflow handles scrolling if data overflow height -->
-    <div class="oe-popup-overflow quicklook-data-groups">
-      <div class="group">
-        <div class="label">Eye diagnoses</div>
-        <div class="data">
-          <table>
-            <tbody>
-            <?php
-            $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
-            if (count($ophthalmic_diagnoses) === 0) { ?>
-              <tr>
-                <td>
-                  <div class="nil-recorded">Nil recorded</div>
-                </td>
-              </tr>
+                    <?php } ?>
+                </div>
+            <?php } else { ?>
+                <div class="group">
+                    <span class="data-value not-available">VA: NA</span>
+                </div>
             <?php } ?>
 
-            <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
-                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis, 3); ?>
-              <tr>
-                <td><?= $name ?></td>
-                <td>
-                    <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
-                </td>
-                <td>
-                  <span class="oe-date"><?= $date ?></span>
-                </td>
-              </tr>
-            <?php } ?>
-            </tbody>
-          </table>
+            <div class="group">
+                <?php
+                $leftRefraction = $correspondence_api->getLastRefraction($patient, 'left');
+                $rightRefraction = $correspondence_api->getLastRefraction($patient, 'right');
+                if ($leftRefraction !== null || $rightRefraction !== null) {
+                    ?>
+                    <span class="data">R <?= $rightRefraction ?: 'NA' ?></span>
+                    <span class="data">L <?= $leftRefraction ?: 'NA' ?></span>
+                    <span class="oe-date"
+                          style="text-align: left"><?= Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient)) ?></span>
+                <?php } else { ?>
+                    <span class="data-value not-available">Refraction: NA</span>
+                <?php } ?>
+            </div>
+
+            <div class="group">
+                <?php if ($this->cviStatus[0] !== 'Unknown') { ?>
+                    <span class="data">CVI Status: <?= $this->cviStatus[0]; ?></span>
+                    <span class="oe-date"> <?= $this->cviStatus[1] && $this->cviStatus[1] !== '0000-00-00' ? \Helper::convertDate2HTML($this->cviStatus[1]) : 'N/A' ?></span>
+                <?php } else { ?>
+                    <span class="data">CVI Status: NA</span>
+                <?php } ?>
+            </div>
         </div>
-      </div>
-      <!-- group-->
-      <div class="group">
-        <div class="label">Systemic Diagnoses</div>
-        <div class="data">
-          <table>
-            <tbody>
-            <?php if (count($this->patient->systemicDiagnoses) === 0) { ?>
-              <tr>
-                <td>
-                  <div class="nil-recorded">Nil recorded</div>
-                </td>
-              </tr>
-            <?php } ?>
-            <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) { ?>
-              <tr>
-                <td> <?= $diagnosis->disorder->term ?></td>
-                <td>
-                    <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
-                </td>
-                <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
-              </tr>
-            <?php } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+        <div class="flex-layout flex-top">
+            <!-- oe-popup-overflow handles scrolling if data overflow height -->
+            <div class="oe-popup-overflow quicklook-data-groups">
+                <div class="group">
+                    <div class="label">Eye diagnoses</div>
+                    <div class="data">
+                        <table>
+                            <tbody>
+                            <?php
+                            $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
+                            if (count($ophthalmic_diagnoses) === 0) { ?>
+                                <tr>
+                                    <td>
+                                        <div class="nil-recorded">Nil recorded</div>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+
+                            <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
+                                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis, 3); ?>
+                                <tr>
+                                    <td><?= $name ?></td>
+                                    <td>
+                                        <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+                                    </td>
+                                    <td>
+                                        <span class="oe-date"><?= $date ?></span>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- group-->
+                <div class="group">
+                    <div class="label">Systemic Diagnoses</div>
+                    <div class="data">
+                        <table>
+                            <tbody>
+                            <?php if (count($this->patient->systemicDiagnoses) === 0) { ?>
+                                <tr>
+                                    <td>
+                                        <div class="nil-recorded">Nil recorded</div>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                            <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) { ?>
+                                <tr>
+                                    <td> <?= $diagnosis->disorder->term ?></td>
+                                    <td>
+                                        <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
+                                    </td>
+                                    <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="oe-popup-overflow quicklook-data-groups">
@@ -315,19 +345,19 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
   </div><!-- .flex-layout -->
 </div>
 
-<div class="oe-patient-popup patient-popup-management" style="display: none;">
-  <div class="flex-layout flex-top">
-    <div class="cols-left">
-      <div class="popup-overflow">
-        <div class="subtitle">Management Summaries</div>
-          <table class="management-summaries">
-              <tbody>
-              <?php $summaries = $exam_api->getManagementSummaries($patient);
-              if (sizeof($summaries) != 0) {
-                  foreach ($summaries as $summary) { ?>
-                      <tr>
-                          <td><?= $summary->service ?></td>
-                          <td class="fade">
+    <div class="oe-patient-popup patient-popup-management" style="display: none;">
+        <div class="flex-layout flex-top">
+            <div class="cols-left">
+                <div class="popup-overflow">
+                    <div class="subtitle">Management Summaries</div>
+                    <table class="management-summaries">
+                        <tbody>
+                        <?php $summaries = $exam_api->getManagementSummaries($patient);
+                        if (sizeof($summaries) != 0) {
+                            foreach ($summaries as $summary) { ?>
+                                <tr>
+                                    <td><?= $summary->service ?></td>
+                                    <td class="fade">
                                 <span class="oe-date">
                                     <span class="day"><?= $summary->date[0] ?></span>
                                     <span class="month"><?= $summary->date[1] ?></span>
