@@ -212,7 +212,9 @@ $element_errors = $element->getErrors();
             searchOptions: {
                 searchSource:  window.MMController.options.searchSource,
             },
-            searchFilterEnabled: true
+            booleanSearchFilterEnabled: true,
+            booleanSearchFilterLabel: 'Include branded',
+            booleanSearchFilterURLparam: 'include_branded'
         });
 
 

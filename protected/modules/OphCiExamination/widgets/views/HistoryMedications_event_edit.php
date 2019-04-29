@@ -217,7 +217,9 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
             },
             enableCustomSearchEntries: true,
             searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"},
-            searchFilterEnabled: true
+            booleanSearchFilterEnabled: true,
+            booleanSearchFilterLabel: 'Include branded',
+            booleanSearchFilterURLparam: 'include_branded'
         });
     });
 </script>
