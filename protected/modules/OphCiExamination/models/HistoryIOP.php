@@ -103,7 +103,8 @@ class HistoryIOP extends \BaseEventTypeElement
         foreach (['left_values', 'right_values'] as $side_values) {
             if (isset($this->$attribute) && $this->$attribute) {
                 $side_attributes = $this->$attribute;
-                foreach ($side_attributes[$side_values] as $index => $date) {
+                if(isset($side_attributes[$side_values])) {
+                  foreach ($side_attributes[$side_values] as $index => $date) {
                     if (!isset($date) || !$date) {
                         $this->addError($side_values . '_' . $index . '_examination_date', 'there must be a date set for the iop value');
                     } else {
@@ -118,6 +119,7 @@ class HistoryIOP extends \BaseEventTypeElement
                             }
                         }
                     }
+                  }
                 }
             }
         }
