@@ -50,6 +50,15 @@
                 ); ?>
             </td>
         </tr>
+        <tr>
+            <td>Is Private</td>
+            <td><?= \CHtml::activeCheckBox(
+                    $contactlabel,
+                    'is_private',
+                    []);
+                ?>
+            </td>
+        </tr>
         </tbody>
 
         <tfoot>

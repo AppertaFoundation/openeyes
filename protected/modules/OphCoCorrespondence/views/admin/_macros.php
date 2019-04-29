@@ -37,6 +37,7 @@ if (!empty($macros)) {
 			<td><?php echo $macro->cc_patient ? 'Yes' : 'No'?></td>
 			<td><?php echo $macro->cc_doctor ? 'Yes' : 'No'?></td>
 			<td><?php echo $macro->cc_drss ? 'Yes' : 'No'?></td>
+			<td><?php echo $macro->cc_optometrist ? 'Yes' : 'No'?></td>
 			<td><?php echo $macro->use_nickname ? 'Yes' : 'No'?></td>
 			<td><?php echo $macro->episode_status ? $macro->episode_status->name : '-'?></td>
 		</tr>
