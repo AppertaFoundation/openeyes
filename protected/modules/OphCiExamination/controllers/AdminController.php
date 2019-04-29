@@ -925,30 +925,6 @@ class AdminController extends \ModuleAdminController
 			]);
     }
 
-    public function actionRisks()
-    {
-        $extra_fields = array(
-            array(
-                'field' => 'medicationSets',
-                'type' => 'multilookup',
-                'noSelectionsMessage' => 'No Tags',
-                'htmlOptions' => array(
-                    'empty' => 'Select',
-                    'nowrapper' => true,
-                ),
-                'options' => \CHtml::listData(\MedicationSet::model()->findAll(), 'id', 'name')
-            )
-        );
-
-        $this->genericAdmin(
-            'Edit Risks',
-            'OEModule\OphCiExamination\models\OphCiExaminationRisk',
-            array(
-                'extra_fields' => $extra_fields,
-                'div_wrapper_class' => 'cols-6',
-            ));
-    }
-
     public function actionSocialHistory()
     {
         $this->render('socialhistory');

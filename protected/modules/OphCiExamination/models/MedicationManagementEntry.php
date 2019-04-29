@@ -58,11 +58,21 @@
 			return array_merge(
 				parent::rules(),
 				array(
-					array('start_date_string_YYYYMMDD', 'required', "on" => ["visible", "to_be_prescribed"]),
-					array('start_date_string_YYYYMMDD', "OEFuzzyDateValidator"),
+					array('start_date_string_YYYYMMDD', 'validateStartDate'),
 				)
 			);
         }
+
+        public function validateStartDate()
+		{
+			if($this->start_date_string_YYYYMMDD == "" && !$this->hidden && $this->getScenario() == "to_be_prescribed") {
+				$this->addError("start_date_string_YYYYMMDD", "Start date must not be empty when prescribing");
+			}
+			else {
+				$validator = new \OEFuzzyDateValidator();
+				$validator->validateAttribute($this, "start_date_string_YYYYMMDD");
+			}
+		}
 
         /**
          * @return array relational rules.

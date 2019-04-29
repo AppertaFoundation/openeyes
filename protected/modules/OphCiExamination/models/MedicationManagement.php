@@ -394,13 +394,15 @@ class MedicationManagement extends BaseMedicationElement
         $prescription_details->event_id = $prescription->id;
         $prescription_details->draft = 1;
         
-        if(!$prescription_details->save()){
+        if(!$prescription_details->save(false)){
             \Yii::trace(print_r($prescription_details->errors, true));
+			throw new \Exception("An error occured during saving");
         }
         foreach($prescription_details->items as $item){
             $item->event_id = $prescription->id;
-            if(!$item->save()) {
+            if(!$item->save(false)) {
                 \Yii::trace(print_r($item->errors, true));
+				throw new \Exception("An error occured during saving");
             }
 
             $item->id = \Yii::app()->db->getLastInsertId();
@@ -438,6 +440,7 @@ class MedicationManagement extends BaseMedicationElement
         $item = new \OphDrPrescription_Item();
 
         $item->dose = $entry->dose;
+        $item->dose_unit_term = $entry->dose_unit_term;
         $item->frequency_id = $entry->frequency_id;
         $item->route_id = $entry->route_id;
         $item->medication_id = $entry->medication_id;

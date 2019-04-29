@@ -9,6 +9,9 @@
 		    return ['id' => $e->id, 'label' => $e->description];
         }, $unit_attr->medicationAttributeOptions);
 	}
+	else {
+        $units = array();
+    }
     $forms = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationForm::model()->findAllByAttributes(['deleted_date' => null]));
     $routes = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationRoute::model()->findAllByAttributes(['deleted_date' => null]));
     $freqs = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationFrequency::model()->findAllByAttributes(['deleted_date' => null]));

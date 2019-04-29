@@ -21,6 +21,7 @@ class RoutesAdminController extends BaseAdminController
 	public function actionList()
 	{
 		$admin = new Admin(MedicationRoute::model(), $this);
+		$admin->getSearch()->getCriteria()->addColumnCondition(['deleted_date' => null]);
 		$admin->setListFields(array(
 			'id',
 			'term',
