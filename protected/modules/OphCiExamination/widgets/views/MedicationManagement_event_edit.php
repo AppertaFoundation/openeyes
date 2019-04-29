@@ -50,6 +50,7 @@ $element_errors = $element->getErrors();
                 <col class="cols-1">
                 <col class="cols-1">
                 <col class="cols-1">
+                <col class="cols-1">
             </colgroup>
             <thead>
             <tr>
@@ -61,6 +62,9 @@ $element_errors = $element->getErrors();
                 <th>Duration</th>
                 <th>Disp. cond.</th>
                 <th>Disp. loc.</th>
+                <th>
+                    <i class="oe-i drug-rx small no-click"></i>
+                </th>
                 <th></th>
             </tr>
             </thead>

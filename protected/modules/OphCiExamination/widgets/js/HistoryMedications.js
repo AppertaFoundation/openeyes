@@ -253,23 +253,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
       $row.on("click", ".js-btn-prescribe", function () {
-        var $btn = $(this);
-        if($btn.hasClass("js-readonly")) {
-            return false;
-        }
-        var $input = $btn.find("input");
-        var $icon = $btn.find("i");
-
-        if($input.val() == "1") {
-            $input.val(0);
-            $icon.css("opacity", "");
+        var $input = $(this).closest(".toggle-switch").find("input");
+        var checked = !$input.prop("checked");
+        if(!checked) {
             $row.find(".js-disppense-location option").empty();
             $row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
             $row.find(".js-add-taper").hide();
         }
         else {
-            $input.val(1);
-            $icon.css("opacity", 1);
             $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
         }
       });
