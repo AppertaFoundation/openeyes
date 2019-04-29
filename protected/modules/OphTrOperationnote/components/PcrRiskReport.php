@@ -39,9 +39,6 @@ class PcrRiskReport extends Report implements ReportInterface
       ),
       'xaxis' => array(
         'title' => 'No. Operations',
-        'titlefont' => array(
-          'size' => 11,
-        ),
         'showgrid' => false,
         'ticks' => 'outside',
         'dtick' => 100,
