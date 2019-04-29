@@ -4,6 +4,13 @@ class m190429_124800_change_pcr_risk_element_type_to_the_right_element_group ext
 {
     public function up()
     {
+      $examination_event_type = EventType::model()->find('name = ?', ['Examination']);
+      $pcr_function_element_group = ElementGroup::model()->find('name = :name AND event_type_id = :event_type',
+          [':name' => 'PCR Risk', ':event_type' => $examination_event_type->id]);
+      if (empty($pcr_function_element_group)) {
+          $this->insert('element_group', ['name' => 'PCR Risk', 'event_type_id' => $examination_event_type->id, 'display_order' => 130]);
+      }
+
         $examination_event_type = EventType::model()->find('name = ?', ['Examination']);
         $pcr_function_element_group = ElementGroup::model()->find('name = :name AND event_type_id = :event_type',
             [':name' => 'PCR Risk', ':event_type' => $examination_event_type->id]);
