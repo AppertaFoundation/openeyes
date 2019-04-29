@@ -74,12 +74,15 @@ foreach ($readings as $reading) {
             <?php $date = $iop->event->event_date; ?>
             <?php foreach ($iop->{$side.'_values'} as $iop_value) { ?>
                 <tr>
-                    <td><?=$iop_value->instrument->name?></td>
                     <td><?= $iop_value->instrument->scale ? $iop_value->qualitative_reading->name : $iop_value->reading->name.'mm Hg' ?></td>
+                    <td><?=$iop_value->instrument->name?></td>
                     <td colspan="2">
-                        <i class="oe-i time small no-click pad-right"></i>
-                        <?=$iop_value->reading_time?>
                         <span class="oe-date"><?=date('d M Y', strtotime($date));?></span>
+
+                    </td>
+                    <td>
+                      <i class="oe-i time small no-click pad-left"></i>
+                      <?=$iop_value->reading_time?>
                     </td>
                     <td>
                         <?php if (isset($iop->{$side.'_comments'}) && $iop->{$side.'_comments'}) { ?>

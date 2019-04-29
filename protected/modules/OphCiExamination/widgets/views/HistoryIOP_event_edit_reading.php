@@ -20,11 +20,7 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
 ?>
 
 <tr data-index="<?= $index ?>" data-side="<?= $side ?>" data-index="<?= $index ?>">
-    <td>
-        <input type="hidden" name="<?= $base_name ?>[instrument_id]"
-               id="<?= $base_name ?>[instrument_id]" value="<?= $instrumentId ?>"/>
-        <div><?= $instrumentName ?></div>
-    </td>
+
     <td style="<?= (!$value_reading_id) ? "display: none" : "" ?>">
         <?php if ($value_reading_id) { ?>
             <?= $value_reading_name ?>mm Hg
@@ -38,18 +34,22 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
         <?php } ?>
     </td>
     <td>
+        <input type="hidden" name="<?= $base_name ?>[instrument_id]"
+               id="<?= $base_name ?>[instrument_id]" value="<?= $instrumentId ?>"/>
+        <div><?= $instrumentName ?></div>
+    </td>
+    <td>
+        <input class="iop-date" autocomplete="off" type="text" placeholder="Select date" value="<?=$examinationDate?>"
+           id="<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_examination_date'?>"
+           name="<?=$base_name?>[examination_date]">
+    </td>
+    <td>
         <?= CHtml::textField(
             "{$base_name}[reading_time]",
             $time,
             ['autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'fixed-width-small']
         ) ?>
     </td>
-    <td>
-        <input class="iop-date" autocomplete="off" type="text" value="<?=$examinationDate?>"
-           id="<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_examination_date'?>"
-           name="<?=$base_name?>[examination_date]">
-    </td>
-
     <td>
         <div class="flex-layout flex-right">
             <span class="js-comment-container cols-full flex-layout"
