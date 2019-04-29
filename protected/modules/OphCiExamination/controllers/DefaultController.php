@@ -1161,7 +1161,6 @@ class DefaultController extends \BaseEventTypeController
                     $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
                     $examinationEvent->event_date = \DateTime::createFromFormat('Y-m-d', $values['examination_date'])->format('Y-m-d');
                     $examinationEvent->event_type_id = $element->event->event_type_id;
-                    $examinationEvent->is_automated = 1;
 
                     if (!$examinationEvent->save()) {
                         throw new \Exception('Unable to save a new examination for the IOP readings: ' . print_r($examinationEvent->errors, true));
