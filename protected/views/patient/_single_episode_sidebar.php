@@ -40,98 +40,96 @@ $subspecialty_labels = array();
 $current_subspecialty = null;
 $episodes_list = array(); ?>
 <div class="sidebar-eventlist">
-<?php if (is_array($ordered_episodes)):
-    foreach ($ordered_episodes as $specialty_episodes): ?>         
+    <?php if (is_array($ordered_episodes)) { ?>
         <ul class="events" id="js-events-by-date">
-          <?php foreach ($specialty_episodes['episodes'] as $i => $episode): ?>
-            <!-- Episode events -->
-              <?php
-              if ($episode->subspecialty) {
-                  $tag = $episode->subspecialty ? $episode->subspecialty->ref_spec : 'Ss';
-              } else {
-                  $tag = "Le";
-              }
-              $subspecialty_name = $episode->getSubspecialtyText();
-              ?>
-              <?php foreach ($episode->events as $event):
-                  /* @var Event $event */
+            <?php foreach ($ordered_episodes as $specialty_episodes) {
+                  foreach ($specialty_episodes['episodes'] as $i => $episode) {
+                      // Episode events
+                      if ($episode->subspecialty) {
+                          $tag = $episode->subspecialty ? $episode->subspecialty->ref_spec : 'Ss';
+                      } else {
+                          $tag = "Le";
+                      }
+                      $subspecialty_name = $episode->getSubspecialtyText();
+                      foreach ($episode->events as $event) {
+                          /* @var Event $event */
 
-                  $highlight = false;
+                          $highlight = false;
 
-                  if (isset($this->event) && $this->event->id == $event->id) {
-                      $highlight = true;
-                      $current_subspecialty = $episode->subspecialty;
+                          if (isset($this->event) && $this->event->id == $event->id) {
+                              $highlight = true;
+                              $current_subspecialty = $episode->subspecialty;
+                          }
+
+                          $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
+                          $event_name = $event->getEventName();
+                          $event_image = EventImage::model()->find('event_id = :event_id', array(':event_id' => $event->id));
+                          $patientTicketing_API = new \OEModule\PatientTicketing\components\PatientTicketing_API();
+                          $virtual_clinic_event = $patientTicketing_API->getTicketForEvent($event);
+                          ?>
+
+                      <li id="js-sideEvent<?php echo $event->id ?>"
+                          class="event <?php if ($highlight) { ?> selected<?php } ?>"
+                          data-event-id="<?= $event->id ?>"
+                          data-event-date="<?= $event->event_date ?>" data-created-date="<?= $event->created_date ?>"
+                          data-event-year-display="<?= substr($event->NHSDate('event_date'), -4) ?>"
+                          data-event-date-display="<?= $event->NHSDate('event_date') ?>"
+                          data-event-type="<?= $event_name ?>"
+                          data-subspecialty="<?= $subspecialty_name ?>"
+                          data-event-icon='<?= $event->getEventIcon('medium') ?>'
+                          <?php if ($event_image !== null && $event_image->status->name === 'CREATED') { ?>
+                            data-event-image-url="<?= Yii::app()->createUrl('eventImage/view/' . $event_image->event_id) ?>"
+                          <?php } ?>
+                      >
+
+                        <div class="tooltip quicklook" style="display: none; ">
+                          <div class="event-name"><?php echo $event_name ?></div>
+                          <div class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></div>
+                            <?php if ($event->hasIssue()) { ?>
+                              <div
+                                  class="event-issue<?= $event->hasIssue('ready') ? ' ready' : '' ?>"><?php echo $event->getIssueText() ?></div>
+                            <?php } ?>
+                        </div>
+
+                        <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
+                            <?php $event_icon_class = "";
+                            if ($event->hasIssue()) {
+                                if ($event->hasIssue('ready')) {
+                                    $event_icon_class .= ' ready';
+                                } else {
+                                    $event_icon_class .= ' alert';
+
+                                }
+                            }
+                            if ($virtual_clinic_event) {
+                                $event_icon_class .= ' virtual-clinic';
+                            }
+                            ?>
+                            <span class="event-type js-event-a<?=$event_icon_class?>">
+                                <?= $event->getEventIcon() ?>
+                            </span>
+                            <span class="event-extra">
+                                <?php
+                                $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
+                                if (method_exists($api, 'getLaterality')) {
+                                    $this->widget('EyeLateralityWidget', ['eye' => $api->getLaterality($event->id), 'pad' => '']);
+                                } ?>
+                            </span>
+
+                            <span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
+                            <?php echo $event->event_date
+                                ? $event->NHSDateAsHTML('event_date')
+                                : $event->NHSDateAsHTML('created_date');
+                            ?>
+                          </span>
+                          <span class="tag"><?= $tag ?></span>
+                        </a>
+                      </li>
+                      <?php }
                   }
-
-                  $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
-                  $event_name = $event->getEventName();
-                  $event_image = EventImage::model()->find('event_id = :event_id', array(':event_id' => $event->id));
-                  $patientTicketing_API = new \OEModule\PatientTicketing\components\PatientTicketing_API();
-                  $virtual_clinic_event = $patientTicketing_API->getTicketForEvent($event);
-                  ?>
-
-              <li id="js-sideEvent<?php echo $event->id ?>"
-                  class="event <?php if ($highlight) { ?> selected<?php } ?>"
-                  data-event-id="<?= $event->id ?>"
-                  data-event-date="<?= $event->event_date ?>" data-created-date="<?= $event->created_date ?>"
-                  data-event-year-display="<?= substr($event->NHSDate('event_date'), -4) ?>"
-                  data-event-date-display="<?= $event->NHSDate('event_date') ?>"
-                  data-event-type="<?= $event_name ?>"
-                  data-subspecialty="<?= $subspecialty_name ?>"
-                  data-event-icon='<?= $event->getEventIcon('medium') ?>'
-                  <?php if ($event_image !== null && $event_image->status->name === 'CREATED'): ?>
-                    data-event-image-url="<?= Yii::app()->createUrl('eventImage/view/' . $event_image->event_id) ?>"
-                  <?php endif; ?>
-              >
-
-                <div class="tooltip quicklook" style="display: none; ">
-                  <div class="event-name"><?php echo $event_name ?></div>
-                  <div class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></div>
-                    <?php if ($event->hasIssue()) { ?>
-                      <div
-                          class="event-issue<?= $event->hasIssue('ready') ? ' ready' : '' ?>"><?php echo $event->getIssueText() ?></div>
-                    <?php } ?>
-                </div>
-
-                <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
-                    <?php $event_icon_class = "";
-                    if ($event->hasIssue()) {
-                        if ($event->hasIssue('ready')) {
-                            $event_icon_class .= ' ready';
-                        } else {
-                            $event_icon_class .= ' alert';
-
-                        }
-                    }
-                    if ($virtual_clinic_event) {
-                        $event_icon_class .= ' virtual-clinic';
-                    }
-                    ?>
-                    <span class="event-type js-event-a<?=$event_icon_class?>">
-                        <?= $event->getEventIcon() ?>
-                    </span>
-                    <span class="event-extra">
-                        <?php
-                        $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
-                        if (method_exists($api, 'getLaterality')) {
-                            $this->widget('EyeLateralityWidget', ['eye' => $api->getLaterality($event->id), 'pad' => '']);
-                        } ?>
-                    </span>
-
-                    <span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
-                    <?php echo $event->event_date
-                        ? $event->NHSDateAsHTML('event_date')
-                        : $event->NHSDateAsHTML('created_date');
-                    ?>
-                  </span>
-                  <span class="tag"><?= $tag ?></span>
-                </a>
-              </li>
-              <?php endforeach; ?>
-          <?php endforeach; ?>
-      </ul>
-    <?php endforeach;
-endif; ?>
+            } ?>
+        </ul>
+    <?php } ?>
 </div>
 
 <?php

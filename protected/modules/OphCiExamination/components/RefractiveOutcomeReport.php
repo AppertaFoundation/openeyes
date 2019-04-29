@@ -70,7 +70,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     public function __construct($app)
     {
         $this->months = $app->getRequest()->getQuery('months', 0);
-        $this->procedures = $app->getRequest()->getQuery('procedures', array());
+        $this->procedures = $app->getRequest()->getQuery('procedures', array('null'));
 
         //if they selected all set to empty array to ignore procedure check in query
         if (in_array('all', $this->procedures)) {
@@ -137,9 +137,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         if ($procedures) {
             $this->command
                 ->join('ophtroperationnote_procedurelist_procedure_assignment proc_ass', 'proc_ass.procedurelist_id = op_procedure.id')
-                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = proc_ass.proc_id and proc_ass.proc_id in (:procedures)', array('procedures' => implode(',', $procedures)));
+                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = proc_ass.proc_id ')
+                ->andWhere('proc_ass.proc_id in ('.implode(',',$procedures).')');
         }
-
         return $this->command->queryAll();
     }
 
@@ -156,7 +156,6 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
       }
       $data = $this->queryData($surgeon, $this->from, $this->to, $this->months, $this->procedures);
       $count = array();
-
       $this->padPlotlyCategories();
 
       // fill up the array with 0, have to send 0 to highcharts if there is no data
