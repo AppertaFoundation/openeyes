@@ -148,76 +148,33 @@ $element_errors = $element->getErrors();
 
 <script type="text/javascript">
     $(document).ready(function () {
+        let contactController;
+        contactController = new OpenEyes.OphCiExamination.ContactsController({
+            modelName: '<?=$model_name?>',
+            contactFilterId: 'contact-type-filter'
+        });
+
 
         <?php $contact_labels = ContactLabel::model()->findAll(
         [
-            'condition' => 'is_private = 0',
-            'select' => 't.name,t.id',
+            'select' => 't.name,t.id, t.max_number_per_patient',
             'group' => 't.name',
             'distinct' => true,
         ]
-    );
-        ?>
-
-        // removal button for table entries
-        $('#contact-assignment-table').on('click', 'i.trash', function (e) {
-            e.preventDefault();
-            $(e.target).parents('tr').remove();
-        });
-        // Default dialog options.
-        var options = {
-            id: 'site-and-firm-dialog',
-            title: 'Add a new contact'
-        };
+    );?>
 
         new OpenEyes.UI.AdderDialog({
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                 array_map(function ($contact_label) {
-                    return ['label' => $contact_label->name, 'id' => $contact_label->id];
+                    return [
+                        'label' => $contact_label->name,
+                        'id' => $contact_label->id,
+                        'patient_limit' => $contact_label->max_number_per_patient
+                    ];
                 }, $contact_labels)) ?>, {'header': 'Contact Type', 'id': 'contact-type-filter'})],
             openButton: $('#add-contacts-btn'),
             onReturn: function (adderDialog, selectedItems) {
-                let selectedFilter;
-                let createContactPageDialog = false;
-                let templateText = $('#contact-entry-template').text();
-                let newRows = [];
-                let tableSelector = '#<?=$model_name?>_entry_table';
-                for (let index = 0; index < selectedItems.length; ++index) {
-
-                    if (selectedItems[index].itemSet) {
-                        selectedFilter = selectedItems[index].id;
-                    }
-                    if (selectedItems[index].type === "custom") {
-                        createContactPageDialog = true;
-                    } else if (!selectedItems[index].itemSet) {
-                        data = {};
-                        data.id = selectedItems[index].id;
-                        data.label = selectedItems[index].contact_label;
-                        data.full_name = selectedItems[index].name;
-                        data.email = selectedItems[index].email;
-                        data.phone = selectedItems[index].phone;
-                        data.address = selectedItems[index].address;
-                        data.row_count = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key') + newRows.length;
-                        row = Mustache.render(templateText, data);
-                        newRows.push(row);
-                    }
-                }
-
-                if (createContactPageDialog) {
-                    new OpenEyes.UI.Dialog($.extend({}, options, {
-                        url: baseUrl + '/OphCiExamination/contact/ContactPage',
-                        width: 500,
-                        data: {
-                            returnUrl: "",
-                            selected_contact_type: selectedFilter,
-                            patient_id: window.OE_patient_id || null
-                        }
-                    })).open();
-                }
-                if (newRows.length > 0) {
-                    $('#contact-assignment-table').append(newRows);
-                    $('.autosize').autosize();
-                }
+                contactController.addEntry(selectedItems);
             },
             searchOptions: {
                 searchSource: "/OphCiExamination/contact/autocomplete"
