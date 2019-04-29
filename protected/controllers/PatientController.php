@@ -2042,7 +2042,7 @@ class PatientController extends BaseController
             $this->redirect(array('view', 'id' => $patient->id));
         }
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
-<<<<<<< HEAD
+            
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
@@ -2071,37 +2071,7 @@ class PatientController extends BaseController
         }
 
         switch ($patient->patient_source) {
-=======
-            Yii::log(var_export($_POST['Patient'], true));
-          $contact->attributes = $_POST['Contact'];
-          $patient->attributes = $_POST['Patient'];
-          $address->attributes = $_POST['Address'];
-          $patient_identifiers = $this->getPatientIdentifiers($patient);
 
-          if (isset($_POST['PatientReferral'])) {
-            $referral->attributes = $_POST['PatientReferral'];
-          }
-
-          // not to be sync with PAS
-          $patient->is_local = 1;
-
-          if (isset($_POST['PatientUserReferral'])) {
-            if ($_POST['PatientUserReferral']['user_id'] == -1) {
-              if (isset($patient_user_referral->user_id)) {
-                $patient_user_referral->delete();
-              }
-            } elseif ($_POST['PatientUserReferral']['user_id'] != $patient_user_referral->user_id) {
-              if (isset($patient_user_referral->user_id)) {
-                $patient_user_referral->delete();
-              }
-              $patient_user_referral = new PatientUserReferral();
-              $patient_user_referral->attributes = $_POST['PatientUserReferral'];
-            }
-          }
-        }
-
-          switch ($patient->patient_source) {
->>>>>>> CERA-273, add checkbox for gp in add patient page
             case Patient::PATIENT_SOURCE_OTHER:
                 $contact->setScenario('other_register');
                 $patient->setScenario('other_register');
