@@ -22,6 +22,7 @@ $data_provider->pagination->pageVar = 'page' . $worklist->id;
 // Get data so that pagination  works
 $data_provider->getData();
 $core_api = new CoreAPI();
+
 ?>
 
 <div class="worklist-group js-filter-group" id="js-worklist-<?=$worklist->id?>">
@@ -35,62 +36,76 @@ $core_api = new CoreAPI();
         </div>
     <?php else: ?>
 
-    <table class="standard highlight-rows last-right js-worklist-table">
+    <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows last-right js-worklist-table">
         <colgroup>
-            <col><!-- check box -->
-            <col><!-- time -->
-            <col class="cols-1"><!-- num -->
-            <col><!-- P1-3 -->
-            <col class="cols-3"><!-- name -->
-            <col class="cols-2"><!-- actions -->
-            <!-- auto widths for reset -->
+            <col class="cols-1"><!--Time-->
+            <col class="cols-1"><!--Hos Num-->
+            <col class="cols-3"><!--Name-->
+
+            <!--spacing, this will be removed and PSD will be placed here, probably with auto widths for reset -->
+            <?php for ($i = 1; $i<=2-count($worklist->displayed_mapping_attributes); $i++) : ?>
+                <col class="cols-2">
+            <?php endfor;?>
+
+            <col class="cols-1"><!--Gender-->
+            <col class="cols-2"><!--DOB-->
         </colgroup>
         <thead>
         <tr>
-            <th>
+            <!--<th>
                 <label class="inline highlight ">
                     <input value="All" name="work-ls-patient-all" type="checkbox"> All
                 </label>
-            </th>
+            </th>-->
             <th>Time</th>
             <th class="nowrap">Hospital No.</th>
-            <th class="nowrap">P1-3</th>
+            <!--<th class="nowrap">P1-3</th>-->
             <th>Name</th>
-            <th><!-- no header --></th>
+            <?php for ($i = 1; $i<=2-count($worklist->displayed_mapping_attributes); $i++) : ?>
+                <th></th>
+            <?php endfor;?>
             <th>Gender</th>
             <th>DoB</th>
-
             <?php foreach ($worklist->displayed_mapping_attributes as $attr) : ?>
-                <?=$attr->name;?>
+                <th><?=$attr->name;?></th>
             <?php endforeach; ?>
-
-            <th><!-- go to patient arrow --></th>
+            <th></th>
         </tr>
         </thead>
 
         <tbody>
             <?php foreach ($data_provider->getData() as $wl_patient) : ?>
+                <?php $link = $core_api->generatePatientLandingPageLink($wl_patient->patient, ['worklist_patient_id' => $wl_patient->id]);?>
                 <tr>
-                    <td><label class="highlight"><input value="<?=$wl_patient->id;?>" name="worklist_patient[]" type="checkbox"></label></td>
+                    <?php /*<!--PSD--><td><label class="highlight"><input value="<?=$wl_patient->id;?>" name="worklist_patient[]" type="checkbox"></label></td>*/ ?>
                     <td><?=$wl_patient->scheduledtime;?></td>
                     <td><?=$wl_patient->patient->hos_num;?></td>
-                    <td><i class="oe-i triangle-amber js-has-tooltip" data-tooltip-content="Patient Risk: 2 (Medium).<br>Reversible harm from delayed appointment. <br>Previous Cancelled: 0"></i></td>
-                    <td><a href="<?=$core_api->generatePatientLandingPageLink($wl_patient->patient, ['worklist_patient_id' => $wl_patient->id]);?>"><?=$wl_patient->patient->getHSCICName();?></a></td>
-                    <td><span class="oe-pathstep-btn " data-step="{&quot;title&quot;:&quot;PSD: Custom&quot;,&quot;status&quot;:&quot;todo&quot;,&quot;php&quot;:&quot;PSD-popups/todo.php&quot;}">PSD</span></td>
+                    <?php /*<!--PSD--><td><i class="oe-i triangle-amber js-has-tooltip" data-tooltip-content="Patient Risk: 2 (Medium).<br>Reversible harm from delayed appointment. <br>Previous Cancelled: 0"></i></td>*/?>
+                    <td><a href="<?=$link;?>"><?=$wl_patient->patient->getHSCICName();?></a><span style="visibility: hidden;" class="oe-pathstep-btn" data-step="">Spacing</span></td>
+
+                    <?php for ($i = 1; $i<=2-count($worklist->displayed_mapping_attributes); $i++) : ?>
+                        <?php /*visibility: hidden; to keep the nice spacing, when PSD will be ready everything will be clean and shiny */ ?>
+                        <td><span style="visibility: hidden;" class="oe-pathstep-btn " data-step="">Spacing</span></td>
+                    <?php endfor;?>
+                    <?php /*<!--PSD--><td><span class="oe-pathstep-btn " data-step="{&quot;title&quot;:&quot;PSD: Custom&quot;,&quot;status&quot;:&quot;todo&quot;,&quot;php&quot;:&quot;PSD-popups/todo.php&quot;}">PSD</span></td>*/?>
                     <td><?=$wl_patient->patient->genderString?></td>
                     <td><?='<span class="oe-date">' . Helper::convertDate2Html(Helper::convertMySQL2NHS($wl_patient->patient->dob)) . '</span>'?></td>
 
                     <?php foreach ($worklist->displayed_mapping_attributes as $attr) : ?>
-                        <?=$wl_patient->getWorklistAttributeValue($attr);?>
+                        <td><?=$wl_patient->getWorklistAttributeValue($attr);?></td>
                     <?php endforeach; ?>
-
-                    <td><a href="/v3.0-SEM/_overview"><i class="oe-i direction-right-circle medium pad"></i></a></td>
+                    <td><a href="<?=$link?>"><i class="oe-i direction-right-circle medium pad"></i></a></td>
                 </tr>
             <?php endforeach;?>
         </tbody>
-
+        <tfoot>
+        <tr>
+            <td colspan="8">
+                <?php $this->widget('LinkPager', [ 'pages' => $data_provider->getPagination() ]); ?>
+            </td>
+        </tr>
+        </tfoot>
     </table>
-
     <?php endif; ?>
 </div>
 
