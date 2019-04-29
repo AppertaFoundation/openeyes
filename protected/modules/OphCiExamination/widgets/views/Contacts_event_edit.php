@@ -21,6 +21,7 @@
 $model_name = CHtml::modelName($element);
 $element_errors = $element->getErrors();
 ?>
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('Contacts.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group cols-full">
         <h1>PAS Contacts</h1>
