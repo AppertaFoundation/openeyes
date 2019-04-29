@@ -18,6 +18,8 @@
 abstract class BaseDrugSetsAdminController extends BaseAdminController
 {
 
+    public $group = 'Drugs';
+
     public function actionList()
     {
 
@@ -70,7 +72,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
         $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \''.$this->usage_code.'\'');
         $admin->setListFieldsAction('toEdit');
         $admin->setListTemplate('application.modules.OphDrPrescription.views.admin.common_drug_sets.list');
-        $admin->setModelDisplayName("Common Drug Sets");
+        $admin->setModelDisplayName($this->modelDisplayName);
         $admin->listModel();
     }
 
