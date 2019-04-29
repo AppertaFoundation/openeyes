@@ -341,7 +341,7 @@ foreach ($ethnic_list as $key=>$item){
             </td>
             <td>
                 <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_pr_id']); ?>
-                <div id="selected_pr_wrapper" style="<?= !isset($patient->patient_referral_id) ? 'display: none;' : 'color: white;' ?>">
+                <div id="selected_pr_wrapper" style="<?= !isset($patient->patient_referral_id) || ($patient->patient_referral_id === '') ? 'display: none;' : '' ?>">
                     <ul class="oe-multi-select js-selected_pr">
                         <li>
                   <span class="js-name">
@@ -359,7 +359,7 @@ foreach ($ethnic_list as $key=>$item){
             </td>
         </tr>
         <?php $isPRSameASGP = false;
-        if ((isset($patient->patient_referral_id) && isset($patient->gp_id) && ($patient->patient_referral_id === $patient->gp_id) )) {
+        if ( isset($patient->patient_referral_id) && isset($patient->gp_id) && ($patient->patient_referral_id !== '') && ($patient->gp_id !== '') && ($patient->patient_referral_id === $patient->gp_id)) {
             $isPRSameASGP = true;
         } ?>
         <tr>
@@ -376,7 +376,7 @@ foreach ($ethnic_list as $key=>$item){
             </td>
             <td>
                 <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_gp_id']); ?>
-                <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : 'color: white;' ?>">
+                <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
                     <ul class="oe-multi-select js-selected_gp">
                         <li>
                   <span class="js-name">
@@ -387,10 +387,10 @@ foreach ($ethnic_list as $key=>$item){
                     </ul>
                     <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
                 </div>
-                <a id="js-add-gp-btn" href="#">Add General Practitioner</a>
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
                 </div>
+                <a id="js-add-gp-btn" href="#">Add General Practitioner</a>
             </td>
         </tr>
         <tr>
