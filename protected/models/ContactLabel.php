@@ -25,6 +25,7 @@
  * @property string $name
  * @property int $letter_template_only
  * @property int $is_private
+ * @property int $max_number_per_patient
  */
 class ContactLabel extends BaseActiveRecordVersioned
 {
@@ -61,7 +62,7 @@ class ContactLabel extends BaseActiveRecordVersioned
             array('name', 'length', 'max' => 40),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, type', 'safe', 'on' => 'search'),
+            array('id, name, type, max_number_per_patient', 'safe', 'on' => 'search'),
             array('type, is_private, max_number_per_patient', 'safe'),
         );
     }
