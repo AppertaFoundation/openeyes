@@ -3,6 +3,7 @@
 
     $rowkey = 0;
     $sets = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name];}, MedicationSet::model()->findAllByAttributes(['hidden' => 0, 'deleted_date' => null]));
+    $units = [];
     if($unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
 		$units = array_map(function($e){
 		    return ['id' => $e->id, 'label' => $e->description];

@@ -19,16 +19,8 @@
 				{{subspecialty.label}}
 			</td>
 			<td>
-				<?php
-					if (!empty($usage_code)) {
-					?>
-						<input type="hidden" name="MedicationSet[medicationSetRules][usage_code][]" value="<?=$usage_code?>" />
-					<?php
-						echo $usage_code;
-					} else {
-						echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', "");
-					}
-				?>
+				<input type="hidden" name="MedicationSet[medicationSetRules][usage_code][]" value="<?=$this->usage_code?>" />
+				<?=$this->usage_code?>
 			</td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
@@ -57,15 +49,13 @@
 		$siteName = '';
 		$subspecialtyName = '';
 
-		if (!empty($usage_code)) {
-			if (!empty($_GET['id'])) {
-				$rules = MedicationSetRule::model()->findByAttributes(['medication_set_id' => $_GET['id'], 'usage_code' => $_GET['usage_code']]);
-			}
+		if (!empty($_GET['id'])) {
+			$rules = MedicationSetRule::model()->findByAttributes(['medication_set_id' => $_GET['id'], 'usage_code' => $this->usage_code]);
 		}
 		?>
 			<?php if (empty($rules) OR empty($_GET['id'])) :
-				$siteName = Site::model()->findByPk($_GET['default']['site_id'])->name;
-				$subspecialtyName = Subspecialty::model()->findByPk($_GET['default']['subspecialty_id'])->name;
+				$siteName = Site::model()->findByPk($_GET['default']['site_id']) ? Site::model()->findByPk($_GET['default']['site_id'])->name : '';
+				$subspecialtyName = Subspecialty::model()->findByPk($_GET['default']['subspecialty_id']) ? Subspecialty::model()->findByPk($_GET['default']['subspecialty_id'])->name : '';
 				?>
 			<tr data-key="<?=$rowkey++?>">
 				<td>
@@ -78,16 +68,8 @@
 					<?=($subspecialtyName ? CHtml::encode($subspecialtyName) : "")?>
 				</td>
 				<td>
-					<?php
-					if (!empty($_GET['usage_code'])) {
-						?>
-						<input type="hidden" name="MedicationSet[medicationSetRules][usage_code][]" value="<?=$_GET['usage_code']?>" />
-						<?php
-						echo $_GET['usage_code'];
-					} else {
-						echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', "");
-					}
-					?>
+					<input type="hidden" name="MedicationSet[medicationSetRules][usage_code][]" value="<?=$this->usage_code?>" />
+					<?=$this->usage_code?>
 				</td>
 				<td>
 					<a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
@@ -110,16 +92,8 @@
 				<?=($rule->subspecialty_id ? CHtml::encode($rule->subspecialty->name) : "")?>
 			</td>
 			<td>
-				<?php
-				if (!empty($usage_code)) {
-					?>
-					<input type="hidden" name="MedicationSet[medicationSetRules][usage_code][]" value="<?=$rule->usage_code?>" />
-					<?php
-					echo $usage_code;
-				} else {
-					echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', $rule->usage_code);
-				}
-				?>
+				<input type="hidden" name="MedicationSet[medicationSetRules][usage_code][]" value="<?=$rule->usage_code?>" />
+				<?=$rule->usage_code?>
 			</td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>

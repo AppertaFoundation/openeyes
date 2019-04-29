@@ -203,13 +203,16 @@ class RefMedicationAdminController extends BaseAdminController
         /** @var CDbTransaction $trans */
 		$trans = Yii::app()->db->beginTransaction();
 
+
 		if($model->save(false)) {
 			$trans->commit();
 		}
 
 		foreach ($model->medicationSetItems as $item) {
+
 			// If the set is an automatic set, then the rule will be updated to include the drug
 			$medicationSet = MedicationSet::model()->findByPk($item->medication_set_id);
+
 			/** @var MedicationSet $medicationSet */
 			if($medicationSet->automatic) {
 				$has_medication_in_list = false;
