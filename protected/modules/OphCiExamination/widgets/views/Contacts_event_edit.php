@@ -27,8 +27,8 @@ $element_errors = $element->getErrors();
         <h1>PAS Contacts</h1>
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <div class="cols-full">
-            <table id="<?= $model_name ?>_entry_table"
-                   class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
+            <table id="<?= $model_name ?>_pas_table"
+                    class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
                 <colgroup>
                     <col class="cols-2">
                     <col class="cols-2">
@@ -84,7 +84,7 @@ $element_errors = $element->getErrors();
                     <th></th>
                 </tr>
                 </thead>
-                <tbody id="contact-assignment-table">
+                <tbody>
                 <?php
                 $row_count = 0;
                 foreach ($this->contact_assignments as $contact_assignment) { ?>
@@ -118,7 +118,7 @@ $element_errors = $element->getErrors();
     </div>
 </div>
 
-<script type="text/template" class="entry-template hidden" id="contact-entry-template">
+<script type="text/template" class="entry-template hidden" id="<?= CHtml::modelName($element) . '_entry_template' ?>">
     <?php
 
     $empty_entry = new PatientContactAssignment();
