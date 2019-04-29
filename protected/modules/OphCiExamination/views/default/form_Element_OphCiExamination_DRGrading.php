@@ -46,16 +46,11 @@ function getLevelColour($risk_level){
 	<?php if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets').'/img/drgrading.jpg')) {
     ?>
 			<a href="#" class="drgrading_images_link"><img src="<?php echo $this->assetPath ?>/img/photo_sm.png" /></a>
-			<a href="#" id="drgrading_dirty" style="display: none;">re-sync</a>
 			<div class="drgrading_images_dialog" title="DR Grading Images">
 				<img src="<?php echo $this->assetPath ?>/img/drgrading.jpg">
 			</div>
 	<?php 
-} else {
-    ?>
-		<a href="#" id="drgrading_dirty" style="display: none;">re-sync</a>
-	<?php 
-}?>
+} ?>
 </div>
 <?php $this->endClip('element-title-additional');?>
 

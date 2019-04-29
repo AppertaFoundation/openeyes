@@ -20,6 +20,22 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
 
 ?>
 <div class="oe-hotlist-panel" id="js-hotlist-panel">
+    <?php $this->beginWidget('CActiveForm', [
+        'id' => 'hotlist-search-form',
+        'action' => Yii::app()->createUrl('site/search'),
+    ]); ?>
+        <div class="hotlist-search-patient">
+            <div class="search-patient">
+                <?=\CHtml::textField('query', '', [
+                        'autocomplete' => 'off',
+                        'id' => 'hotlist-search-text-field',
+                        'class' => 'search',
+                        'placeholder' => 'Search',
+                  ]); ?>
+                <button type="submit" id="js-hotlist-find-patient" class="button pro-theme">Find Patient</button>
+            </div>
+        </div>
+    <?php $this->endWidget(); ?>
     <div class="patient-activity">
         <div class="patients-open">
             <div class="overview">
@@ -64,3 +80,14 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
         <div id="hotlist-quicklook" class="hotlist-quicklook"></div>
     </div>
 </div>
+
+<script>
+    let enterKeyCode = 13;
+    $(document).ready(function () {
+        $('#hotlist-search-text-field').keydown(function(event) {
+            if (event.which === enterKeyCode) {
+                this.form.submit();
+            }
+        });
+    });
+</script>
