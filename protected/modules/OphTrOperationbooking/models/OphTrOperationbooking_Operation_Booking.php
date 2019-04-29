@@ -321,6 +321,16 @@ class OphTrOperationbooking_Operation_Booking extends BaseActiveRecordVersioned
     }
 
     /**
+     * Pass through convenience function.
+     *
+     * @return bool
+     */
+    public function isComplex()
+    {
+      return $this->operation->isComplex();
+    }
+
+    /**
      * check if admission time is less than session_end_time.
      */
     public function lessThanSessionEndTimeValidate()

@@ -20,9 +20,9 @@ class m150515_094332_connectToCataractElement extends CDbMigration
         /* this migration is responsible for connecting both the cataract and biometry element together to operation note procedures
         */
 
-        $currentTables = $this->dbConnection->getSchema()->getTableNames();
+        $findTable = Yii::app()->db->schema->getTable('ophtroperationnote_procedure_element');
 
-        if (!in_array('ophtroperationnote_procedure_element', $currentTables)) {
+        if (!$findTable) {
             echo '**WARNING** Cannot run migration, because OphTrOperationnote modules tables are not presented! Please install OphTrOperationnote module, and run this migration manually!';
         } else {
             // we connect the element with the operation note module

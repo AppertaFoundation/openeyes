@@ -105,6 +105,14 @@ $(document).ready(function () {
        $('.js-hs-filter-analytics-clinical').hide();
        $($(this).data('filterid')).show();
        $($(this).data('plotid')).show();
+        $.ajax({
+            url: '/analytics/updateData',
+            data:$('#search-form').serialize() + getDataFilters(),
+            dataType:'json',
+            success: function (data, textStatus, jqXHR) {
+                plotUpdate(data);
+            }
+        });
     });
 
 });
