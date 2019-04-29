@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class BaseCommonDrugSetsAdminController extends BaseAdminController
+abstract class BaseDrugSetsAdminController extends BaseAdminController
 {
 
     public function actionList()
@@ -69,7 +69,6 @@ class BaseCommonDrugSetsAdminController extends BaseAdminController
 
         $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \''.$this->usage_code.'\'');
         $admin->setListFieldsAction('toEdit');
-        $admin->setEditFields('edit');
         $admin->setListTemplate('application.modules.OphDrPrescription.views.admin.common_drug_sets.list');
         $admin->setModelDisplayName("Common Drug Sets");
         $admin->listModel();

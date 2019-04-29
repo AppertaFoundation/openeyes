@@ -15,67 +15,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class CommonOphthalmicDrugSetsAdminController extends BaseCommonDrugSetsAdminController
+class CommonOphthalmicDrugSetsAdminController extends BaseDrugSetsAdminController
 {
 	public $usage_code = 'COMMON_OPH';
-
-    public function actionList()
-    {
-
-        $admin = new Admin(MedicationSet::model(), $this);
-
-        $admin->setListFields(array(
-            'name',
-            'itemsCount',
-            'automatic',
-        ));
-
-        $admin->getSearch()->setItemsPerPage(30);
-
-        $default_site_id = Yii::app()->session['selected_site_id'];
-        $default_subspecialty_id = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
-
-
-        /*
-         * array('' => 'All') = add All option in search field (Name)
-         * */
-
-        $admin->getSearch()->addSearchItem('name');
-        $admin->getSearch()->addSearchItem('medicationSetRules.site_id', array(
-            'type' => 'dropdown',
-            'options' => array('' => 'All sites') + CHtml::listData(Site::model()->findAll(), 'id', 'name')
-
-        ));
-
-        $admin->getSearch()->addSearchItem('medicationSetRules.subspecialty_id', array(
-            'type' => 'dropdown',
-            'options' => array('' => 'All subspecialties') + CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
-        ));
-
-        // we set default search options
-
-
-        if ($this->request->getParam('search') == '') {
-            $admin->getSearch()->initSearch(array(
-                    'filterid' => array(
-                        'medicationSetRules.site_id' => $default_site_id,
-                        'medicationSetRules.subspecialty_id' => $default_subspecialty_id,
-                        'medicationSetRules.usage_code' => $this->usage_code
-                    ),
-                )
-            );
-        }
-
-        $admin->autosets = MedicationSet::model()->findAll("automatic=1");
-
-        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \''.$this->usage_code.'\'');
-        $admin->setListFieldsAction('toEdit');
-        $admin->setEditFields('edit');
-        $admin->setListTemplate('application.modules.OphDrPrescription.views.admin.common_drug_sets.list');
-        $admin->setModelDisplayName("Common Ophthalmic Drug Sets");
-        $admin->listModel();
-    }
-
+	public $modelDisplayName = 'Common Ophthalmic Drug Sets';
 
 
 }
