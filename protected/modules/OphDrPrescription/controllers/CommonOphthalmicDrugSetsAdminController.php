@@ -15,14 +15,15 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class CommonOphthalmicDrugSetsAdminController extends RefSetAdminController
+class CommonOphthalmicDrugSetsAdminController extends BaseCommonDrugSetsAdminController
 {
-	public $group = 'Drugs';
+	public $usage_code = 'COMMON_OPH';
 
     public function actionList()
     {
 
         $admin = new Admin(MedicationSet::model(), $this);
+
         $admin->setListFields(array(
             'name',
             'itemsCount',
@@ -59,7 +60,7 @@ class CommonOphthalmicDrugSetsAdminController extends RefSetAdminController
                     'filterid' => array(
                         'medicationSetRules.site_id' => $default_site_id,
                         'medicationSetRules.subspecialty_id' => $default_subspecialty_id,
-                        'medicationSetRules.usage_code' => 'COMMON_OPH'
+                        'medicationSetRules.usage_code' => $this->usage_code
                     ),
                 )
             );
@@ -67,59 +68,14 @@ class CommonOphthalmicDrugSetsAdminController extends RefSetAdminController
 
         $admin->autosets = MedicationSet::model()->findAll("automatic=1");
 
-        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \'COMMON_OPH\'');
-        $admin->setListFieldsAction('toList');
+        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \''.$this->usage_code.'\'');
+        $admin->setListFieldsAction('toEdit');
         $admin->setEditFields('edit');
-        $admin->setListTemplate('application.modules.OphDrPrescription.views.admin.common_ophthalmic_drug_sets.list');
+        $admin->setListTemplate('application.modules.OphDrPrescription.views.admin.common_drug_sets.list');
         $admin->setModelDisplayName("Common Ophthalmic Drug Sets");
         $admin->listModel();
     }
 
-
-    public function actionToList($id)
-    {
-        $this->redirect(['/OphDrPrescription/refSetAdmin/edit/'.$id.'?usage_code=COMMON_OPH']);
-    }
-
-    public function actionEdit()
-    {
-
-        if (!empty($_GET['default']['name'])) {
-            $this->redirect(['/OphDrPrescription/refSetAdmin/edit?default[name]='.$_GET['default']['name'].'&default[site_id]='.$_GET['default']['medicationSetRules.site_id'].'&default[subspecialty_id]='.$_GET['default']['medicationSetRules.subspecialty_id'].'&usage_code=COMMON_OPH']);
-        } else {
-            $this->redirect(['/OphDrPrescription/refSetAdmin/edit', 'usage_code' => 'COMMON_OPH']);
-        }
-    }
-
-    public function actionDelete()
-    {
-        $ids_to_delete = Yii::app()->request->getPost('MedicationSet')['id'];
-
-        if(is_array($ids_to_delete)) {
-            foreach ($ids_to_delete as $id) {
-                $model = MedicationSet::model()->findByPk($id);
-
-                if ($model->automatic == 1) {
-                    foreach ($model->medicationSetRules as $rule) {
-                        if ($rule->usage_code == 'COMMON_OPH') {
-                            $rule->delete();
-                        }
-                    }
-                } else {
-                    foreach ($model->medicationSetRules as $rule) {
-                        $rule->delete();
-                    }
-                    foreach ($model->items as $i) {
-                        $i->delete();
-                    }
-                    $model->delete();
-                }
-
-            }
-        }
-
-        exit("1");
-    }
 
 
 }

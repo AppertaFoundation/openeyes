@@ -184,7 +184,7 @@ if (!isset($uniqueid)) {
     </form>
 <?php endif; ?>
 </div>
-<script type="x-template" id="chose-list-content"><?= $this->renderPartial('application.modules.OphDrPrescription.views.admin.common_ophthalmic_drug_sets.add_dialog_content',
+<script type="x-template" id="chose-list-content"><?= $this->renderPartial('application.modules.OphDrPrescription.views.admin.common_drug_sets.add_dialog_content',
         array('admin' => $admin)); ?></script>
 <script type="text/javascript">
     $('.js-choose-option').click(function (e) {
@@ -211,17 +211,16 @@ if (!isset($uniqueid)) {
                  var searchSubspecialty = $('#search_medicationSetRules\\.subspecialty_id').val();
 
                  if (radioValue == 1) {
-                     window.location.href = baseUrl + '/OphDrPrescription/refSetAdmin/edit?default[name]='+searchName+'&default[site_id]='+searchSite+'&default[subspecialty_id]='+searchSubspecialty+'&usage_code=COMMON_OPH';
+                     window.location.href = baseUrl + '/OphDrPrescription/<?=Yii::app()->controller->id?>/edit?default[name]='+searchName+'&default[site_id]='+searchSite+'&default[subspecialty_id]='+searchSubspecialty;
                  } else if (radioValue == 2) {
                      var medicationSetId = $('.choose-option-list').val();
-                     //window.location.href = baseUrl + '/OphDrPrescription/refSetAdmin/edit/'+medicationSetId+'?default[site_id]='+searchSite+'&default[subspecialty_id]='+searchSubspecialty+'&usage_code=COMMON_OPH';
 
                      $.ajax({
                          'type': 'POST',
-                         'url': baseUrl + '/OphDrPrescription/refSetAdmin/save/'+medicationSetId+'?usage_code=COMMON_OPH',
-                         'data': 'MedicationSet[id]=' + medicationSetId + '&MedicationSet[medicationSetRules][id][0]=-1&MedicationSet[medicationSetRules][site_id][0]=' + searchSite + '&MedicationSet[medicationSetRules][subspecialty_id][0]=' + searchSubspecialty + '&MedicationSet[medicationSetRules][usage_code][0]=COMMON_OPH&YII_CSRF_TOKEN=' + YII_CSRF_TOKEN,
+                         'url': baseUrl + '/OphDrPrescription/<?=Yii::app()->controller->id?>/save/'+medicationSetId,
+                         'data': 'MedicationSet[id]=' + medicationSetId + '&MedicationSet[medicationSetRules][id][0]=-1&MedicationSet[medicationSetRules][site_id][0]=' + searchSite + '&MedicationSet[medicationSetRules][subspecialty_id][0]=' + searchSubspecialty + '&MedicationSet[medicationSetRules][usage_code][0]=<?=$this->usage_code?>&YII_CSRF_TOKEN=' + YII_CSRF_TOKEN,
                          'success': function (resp) {
-                             window.location.href = baseUrl + '/OphDrPrescription/commonOphthalmicDrugSetsAdmin/list';
+                             window.location.href = baseUrl + '/OphDrPrescription/<?=Yii::app()->controller->id?>/list';
                          }
                      });
                  }

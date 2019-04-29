@@ -15,21 +15,22 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class CommonSystemicDrugSetsAdminController extends RefSetAdminController
+class CommonSystemicDrugSetsAdminController extends BaseCommonDrugSetsAdminController
 {
-	public $group = 'Drugs';
+    public $usage_code = 'COMMON_SYSTEMIC';
 
     public function actionList()
     {
 
         $admin = new Admin(MedicationSet::model(), $this);
+
         $admin->setListFields(array(
             'name',
-            'itemsCount'
+            'itemsCount',
+            'automatic',
         ));
 
         $admin->getSearch()->setItemsPerPage(30);
-
 
         $default_site_id = Yii::app()->session['selected_site_id'];
         $default_subspecialty_id = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
@@ -59,55 +60,20 @@ class CommonSystemicDrugSetsAdminController extends RefSetAdminController
                     'filterid' => array(
                         'medicationSetRules.site_id' => $default_site_id,
                         'medicationSetRules.subspecialty_id' => $default_subspecialty_id,
-                        'medicationSetRules.usage_code' => 'COMMON_SYSTEMIC'
+                        'medicationSetRules.usage_code' => $this->usage_code
                     ),
                 )
             );
         }
 
-        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \'COMMON_SYSTEMIC\'');
+        $admin->autosets = MedicationSet::model()->findAll("automatic=1");
 
-
-        $admin->setListFieldsAction('toList');
+        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \''.$this->usage_code.'\'');
+        $admin->setListFieldsAction('toEdit');
         $admin->setEditFields('edit');
-
-        $admin->setModelDisplayName("Common Drug Sets");
+        $admin->setListTemplate('application.modules.OphDrPrescription.views.admin.common_drug_sets.list');
+        $admin->setModelDisplayName("Common Systemic Drug Sets");
         $admin->listModel();
-    }
-
-
-    public function actionToList($id)
-    {
-        $this->redirect(['/OphDrPrescription/refSetAdmin/edit/'.$id.'?usage_code=COMMON_SYSTEMIC']);
-    }
-
-    public function actionEdit()
-    {
-        if (!empty($_GET['default']['name'])) {
-            $this->redirect(['/OphDrPrescription/refSetAdmin/edit?default[name]='.$_GET['default']['name'].'&usage_code=COMMON_SYSTEMIC']);
-        } else {
-            $this->redirect(['/OphDrPrescription/refSetAdmin/edit', 'usage_code' => 'COMMON_SYSTEMIC']);
-        }
-    }
-
-    public function actionDelete()
-    {
-        $ids_to_delete = Yii::app()->request->getPost('MedicationSet')['id'];
-        if(is_array($ids_to_delete)) {
-            foreach ($ids_to_delete as $id) {
-                $model = MedicationSet::model()->findByPk($id);
-                /** @var MedicationSet $model */
-                foreach ($model->medicationSetRules as $rule) {
-                    $rule->delete();
-                }
-                foreach ($model->items as $i) {
-                    $i->delete();
-                }
-                $model->delete();
-            }
-        }
-
-        exit("1");
     }
 
 }
