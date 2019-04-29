@@ -286,11 +286,11 @@ $(document).ready(function () {
 
 
 
-	$(this).on('mouseout', '.js-has-tooltip', function (e) {
+	$(this).on('mouseout', '.js-has-tooltip', function () {
 		$('body').find(".oe-tooltip").remove();
 	});
 
-	$(this).on('mouseover', '.js-has-tooltip', function (e) {
+	$(this).on('mouseover', '.js-has-tooltip', function () {
 		var text = $(this).data('tooltip-content');
 		var leftPos, toolCSS;
 
@@ -300,10 +300,10 @@ $(document).ready(function () {
 
 		// check for the available space for tooltip:
 		if ( ( $( window ).width() - iconPos.left) < 100 ){
-			leftPos = (iconPos.left - 188) + iconPos.width // tooltip is 200px (left offset on the icon)
+			leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
 			toolCSS = "oe-tooltip offset-left";
 		} else {
-			leftPos = (iconPos.left - 100) + iconCenter - 0.5 	// tooltip is 200px (center on the icon)
+			leftPos = (iconPos.left - 100) + iconCenter - 0.5; 	// tooltip is 200px (center on the icon)
 			toolCSS = "oe-tooltip";
 		}
 
