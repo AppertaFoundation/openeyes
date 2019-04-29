@@ -8,7 +8,6 @@ class m190415_102116_change_gps_contact_label_to_general_practicioner extends CD
         if ($general_practicioner_label == null) {
             $general_practicioner_label = new ContactLabel();
             $general_practicioner_label->name = "General Practitioner";
-            $general_practicioner_label->is_private = 0;
             $general_practicioner_label->save();
         }
         $general_practicioners = Gp::model()->with('contact')->findAll(
