@@ -84,10 +84,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let createContactPageDialog = false;
         let newRows = [];
         let contactTypeLimitReached = false;
+        let selectedItemsValid = false;
 
         for (let index = 0; index < selectedItems.length; ++index) {
             if (selectedItems[index].type === "custom") {
                 createContactPageDialog = true;
+                selectedItemsValid = true;
             } else if (selectedItems[index].itemSet) {
                 selectedFilter = selectedItems[index].id;
                 selectedFilterName = selectedItems[index].label;
@@ -96,6 +98,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 selectedFilterName = selectedItems[index].contact_label;
                 patientContactLimit = controller.getContactLabelLimit(selectedFilterName);
                 newRows = controller.createRows(selectedItems[index]);
+                selectedItemsValid = true;
             }
         }
 
@@ -103,8 +106,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             contactTypeLimitReached = controller.isContactTypeAboveLimit(selectedFilterName, patientContactLimit);
         }
 
-        if (contactTypeLimitReached) {
-            controller.showPatientContactLimitDialog(controller, selectedFilterName, patientContactLimit, createContactPageDialog, newRows);
+        if (contactTypeLimitReached && selectedItemsValid) {
+            controller.showPatientContactLimitDialog(selectedFilterName, patientContactLimit, createContactPageDialog, newRows);
         } else {
             if (createContactPageDialog) {
                 controller.openAddNewContactDialog(selectedFilter);
@@ -142,7 +145,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return contactLabelCount >= contactLimit;
     };
 
-    ContactsController.prototype.showPatientContactLimitDialog = function(selectedFilterName, patientContactLimit, createContactPageDialog, newRows) {
+    ContactsController.prototype.showPatientContactLimitDialog = function (
+        selectedFilterName,
+        patientContactLimit,
+        createContactPageDialog,
+        newRows
+    ) {
         let controller = this;
         if (controller.pasContactLabels.includes(selectedFilterName)) {
             new OpenEyes.UI.Dialog.Alert({
@@ -189,7 +197,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     ContactsController.prototype.initialiseDialogTriggers = function (contactDialog) {
         let controller = this;
-
         let contactLabelError = "";
 
         contactDialog.content.on('change', '#contact_label_id', function () {
@@ -200,59 +207,74 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 contactTypeLimitReached = controller.isContactTypeAboveLimit(selectedLabel, contactLabelLimit);
             }
 
-            if (contactTypeLimitReached) {
-                $('.js-contact-error-box').show();
-                let $errorsList = $('.js-contact-errors');
-                $errorsList.html("");
-                contactLabelError = "You have reached the limit for " + selectedLabel +
-                    " if you would like to insert a new one you have to delete one first";
-                $errorsList.append("<li><a>" + contactLabelError + "</a> </li>");
-            } else {
-                $('.js-contact-error-box').hide();
-                contactLabelError = "";
-            }
+            contactLabelError = controller.handleContactTypeLabelError(contactTypeLimitReached, selectedLabel);
         });
 
         contactDialog.content.on('click', '.js-add-new-contact', function (event) {
             event.preventDefault();
-            let data = {};
-
-            $('.js-contact-field').each(function () {
-
-                if ($(this).data('label') === 'active') {
-                    data[$(this).data('label')] = $(this).is(":checked");
-                } else {
-                    data[$(this).data('label')] = $(this).val();
-                }
-            });
+            let data = controller.getDataFromAddNewContactDialog();
             data['contact_label_error'] = contactLabelError;
+            controller.saveNewContact(data);
+        });
+    };
 
-            // do ajax to save contact and new address
-            $.ajax({
-                'type': 'POST',
-                'data': "data=" + JSON.stringify(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-                'url': baseUrl + '/OphCiExamination/contact/saveNewContact',
-                'success': function (response) {
-                    response = JSON.parse(response);
-                    if (response.errors) {
+    ContactsController.prototype.handleContactTypeLabelError = function (contactTypeLimitReached, selectedLabel) {
+        let contactLabelError;
+        if (contactTypeLimitReached) {
+            $('.js-contact-error-box').show();
+            let $errorsList = $('.js-contact-errors');
+            $errorsList.html("");
+            contactLabelError = "You have reached the limit for " + selectedLabel +
+                " if you would like to insert a new one you have to delete one first";
+            $errorsList.append("<li><a>" + contactLabelError + "</a> </li>");
+        } else {
+            $('.js-contact-error-box').hide();
+            contactLabelError = "";
+        }
 
-                        $('.js-contact-error-box').show();
-                        let $errorsList = $('.js-contact-errors');
-                        $errorsList.html("");
+        return contactLabelError;
+    };
 
-                        Object.keys(response.errors).forEach(function (key) {
-                            $errorsList.append("<li><a>" + response.errors[key] + "</a> </li>");
-                        });
-                    } else {
-                        let row;
-                        $('.js-contact-error-box').hide();
-                        row = controller.createRows(response);
-                        controller.$table.append(row);
-                        $('.autosize').autosize();
-                        $('.oe-popup-wrap').remove();
-                    }
+    ContactsController.prototype.getDataFromAddNewContactDialog = function () {
+        let data = {};
+
+        $('.js-contact-field').each(function () {
+            if ($(this).data('label') === 'active') {
+                data[$(this).data('label')] = $(this).is(":checked");
+            } else {
+                data[$(this).data('label')] = $(this).val();
+            }
+        });
+
+        return data;
+    };
+
+    ContactsController.prototype.saveNewContact = function (data) {
+        let controller = this;
+        $.ajax({
+            'type': 'POST',
+            'data': "data=" + JSON.stringify(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+            'url': baseUrl + '/OphCiExamination/contact/saveNewContact',
+            'success': function (response) {
+                response = JSON.parse(response);
+
+                if (response.errors) {
+                    $('.js-contact-error-box').show();
+                    let $errorsList = $('.js-contact-errors');
+                    $errorsList.html("");
+
+                    Object.keys(response.errors).forEach(function (key) {
+                        $errorsList.append("<li><a>" + response.errors[key] + "</a> </li>");
+                    });
+                } else {
+                    let row;
+                    $('.js-contact-error-box').hide();
+                    row = controller.createRows(response);
+                    controller.$table.append(row);
+                    $('.autosize').autosize();
+                    $('.oe-popup-wrap').remove();
                 }
-            });
+            }
         });
     };
 
@@ -265,13 +287,5 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
     };
 
-    /**
-     * Show the table. (useful for when adding a row to an empty and thus hidden table)
-     */
-    ContactsController.prototype.showTable = function () {
-        this.$table.show();
-    };
-
     exports.ContactsController = ContactsController;
-
 })(OpenEyes.OphCiExamination);
