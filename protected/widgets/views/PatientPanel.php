@@ -48,90 +48,85 @@ $deceased = $this->patient->isDeceased();
         </a>
     </div>
 
-    <div class="flex-layout">
-        <div class="patient-details">
-            <div class="hospital-number">
-                <span>No. </span>
-                <?php echo $this->patient->hos_num ?>
-            </div>
-            <div class="nhs-number">
-                <span><?php echo Yii::app()->params['nhs_num_label'] ?></span>
-                <?php echo $this->patient->nhsnum ?>
-                <?php if ($this->patient->nhsNumberStatus) : ?>
-                    <i class="oe-i <?= $this->patient->nhsNumberStatus->icon->class_name ?: 'exclamation' ?> small"></i>
-                <?php endif; ?>
-            </div>
-
-            <div class="patient-gender">
-                <em>Gender</em>
-                <?php echo $this->patient->getGenderString() ?>
-            </div>
-            <?php if ($trialContext) {
-                echo $trialContext->renderPatientTrialStatus();
-                echo $trialContext->renderAddToTrial();
-            } ?>
-            <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
-                <?php if ($deceased): ?>
-                    <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death); ?>
-                <?php endif; ?>
-                <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $this->patient->getAge(); ?>
-            </div>
+    <div class="patient-details">
+        <div class="hospital-number">
+            <span>No. </span>
+            <span class="js-copy-to-clipboard" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></span>
         </div>
-        <div class="flex-layout flex-right">
-            <?php if (!$deceased) { ?>
-                <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
-                    <div class="patient-allergies-risks risk-warning js-allergies-risks-btn">
-                        <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
-                        <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
-                        <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
-                    </div>
-                <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
-                    <div class="patient-allergies-risks unknown js-allergies-risks-btn">
-                        Allergies, Alerts
-                    </div>
-                <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
-                    <div class="patient-allergies-risks no-risk js-allergies-risks-btn">
-                        Allergies, Alerts
-                    </div>
-                <?php } else { /*either risk or allergy status in unknown*/ ?>
-                    <div class="patient-allergies-risks unknown js-allergies-risks-btn">
-                        Allergies, Alerts
-                    </div>
-                <?php }
-            } ?>
-            <div class="patient-demographics js-demographics-btn" id="js-demographics-btn">
-                <svg viewBox="0 0 60 60" class="icon">
-                    <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
-                </svg>
-            </div>
-            <div class="patient-management js-management-btn">
-                <svg viewBox="0 0 30 30" class="icon">
-                    <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
-                </svg>
-            </div>
-            <div class="patient-quicklook js-quicklook-btn" id="js-quicklook-btn">
-                <svg viewBox="0 0 30 30" class="icon">
-                    <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
-                </svg>
-            </div>
-            <?php if ($this->patient->isEditable()): ?>
-                <div class="patient-local-edit js-patient-local-edit-btn">
-                    <a href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>">
-                        <svg viewBox="0 0 30 30" class="icon">
-                            <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
-                        </svg>
-                    </a>
-                </div>
+        <div class="nhs-number">
+            <span><?php echo Yii::app()->params['nhs_num_label'] ?></span>
+            <?php echo $this->patient->nhsnum ?>
+            <?php if ($this->patient->nhsNumberStatus) : ?>
+                <i class="oe-i <?= $this->patient->nhsNumberStatus->icon->class_name ?: 'exclamation' ?> small"></i>
             <?php endif; ?>
-            <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
-                <div class="patient-trials js-trials-btn">
-                    <svg viewBox="0 0 30 30" class="icon">
-                        <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>
-                    </svg>
-                </div>
-            <?php } ?>
+        </div>
+        <div class="patient-gender">
+            <em>Gender</em>
+            <?php echo $this->patient->getGenderString() ?>
+        </div>
+        <?php if ($trialContext) {
+            echo $trialContext->renderPatientTrialStatus();
+            echo $trialContext->renderAddToTrial();
+        } ?>
+        <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
+            <?php if ($deceased): ?>
+                <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death); ?>
+            <?php endif; ?>
+            <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $this->patient->getAge(); ?>
         </div>
     </div>
+    <?php if (!$deceased) { ?>
+        <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
+            <div class="patient-allergies-risks risk-warning js-allergies-risks-btn">
+                <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
+                <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
+                <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
+            </div>
+        <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
+            <div class="patient-allergies-risks unknown js-allergies-risks-btn">
+                Allergies, Alerts
+            </div>
+        <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
+            <div class="patient-allergies-risks no-risk js-allergies-risks-btn">
+                Allergies, Alerts
+            </div>
+        <?php } else { /*either risk or allergy status in unknown*/ ?>
+            <div class="patient-allergies-risks unknown js-allergies-risks-btn">
+                Allergies, Alerts
+            </div>
+        <?php }
+    } ?>
+    <div class="patient-demographics js-demographics-btn" id="js-demographics-btn">
+        <svg viewBox="0 0 60 60" class="icon">
+            <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
+        </svg>
+    </div>
+    <div class="patient-management js-management-btn">
+        <svg viewBox="0 0 30 30" class="icon">
+            <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
+        </svg>
+    </div>
+    <div class="patient-quicklook js-quicklook-btn" id="js-quicklook-btn">
+        <svg viewBox="0 0 30 30" class="icon">
+            <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
+        </svg>
+    </div>
+    <?php if ($this->patient->isEditable()): ?>
+        <div class="patient-local-edit js-patient-local-edit-btn">
+            <a href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>">
+                <svg viewBox="0 0 30 30" class="icon">
+                    <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
+                </svg>
+            </a>
+        </div>
+    <?php endif; ?>
+    <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
+        <div class="patient-trials js-trials-btn">
+            <svg viewBox="0 0 30 30" class="icon">
+                <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>
+            </svg>
+        </div>
+    <?php } ?>
     <!-- Widgets (extra icons, links etc) -->
     <ul class="patient-widgets">
         <?php foreach ($this->widgets as $widget) {
@@ -150,11 +145,9 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.j
         PatientPanel.patientPopups.init($('[id=oe-patient-details][data-patient-id=<?= $this->patient->id?>]'));
         // PatientPanel.patientPopups.init();
 
-        $('.js-patient-expand-btn').each(function () {
-            $(this).click(function () {
-                $(this).toggleClass('collapse expand');
-                $(this).parents('table').find('tbody').toggle();
-            });
+        $('body').on('click', '.js-patient-expand-btn', function () {
+            $(this).toggleClass('collapse expand');
+            $(this).parents('table').find('tbody').toggle();
         });
     });
 </script>

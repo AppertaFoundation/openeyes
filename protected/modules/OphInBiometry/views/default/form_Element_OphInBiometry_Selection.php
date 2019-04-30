@@ -22,7 +22,7 @@
         <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
       <div id="<?= $eye_side ?>-eye-selection"
            class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) { ?>inactive<?php } ?>"
-           data-side="<?= $eye_side ?>">
+           data-side="<?= $eye_side ?>" style="display: <?=$this->action->id === "create" ? "none" : "" ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
             <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
             <?php $this->renderPartial('form_Element_OphInBiometry_Selection_fields',
@@ -34,5 +34,10 @@
           </div>
         </div>
       </div>
+      <?php if ($this->action->id === "create") {?>
+        <div class="js-element-eye <?= $eye_side ?>-eye column">
+            Selection editing is not available.
+        </div>
+      <?php } ?>
     <?php endforeach; ?>
 </div>

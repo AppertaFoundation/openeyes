@@ -24,6 +24,7 @@
  * @property int $id
  * @property int $patient_id
  * @property int $contact_id
+ * @property String $comment
  *
  * The followings are the available model relations:
  * @property Patient $patient
@@ -59,7 +60,7 @@ class PatientContactAssignment extends BaseActiveRecordVersioned
         return array(
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id', 'safe', 'on' => 'search'),
+            array('id, comment', 'safe', 'on' => 'search'),
         );
     }
 
@@ -86,6 +87,7 @@ class PatientContactAssignment extends BaseActiveRecordVersioned
             'id' => 'ID',
             'patient_id' => 'Patient',
             'contact_id' => 'Contact',
+            'comment' => 'Comments'
         );
     }
 
