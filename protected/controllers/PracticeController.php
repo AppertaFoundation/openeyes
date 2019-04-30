@@ -205,8 +205,8 @@ class PracticeController extends BaseController
     {
         $criteria = new CDbCriteria();
         $criteria->together = true;
-        $criteria->with = array('contact', 'contact.address');
-        $criteria->order = 'last_name';
+        $criteria->with = array('contact');
+        $criteria->order = 'first_name';
 
         if ($search_term !== null) {
             $search_term = strtolower($search_term);
