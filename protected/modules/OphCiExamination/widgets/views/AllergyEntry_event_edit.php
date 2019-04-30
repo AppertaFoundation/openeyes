@@ -85,24 +85,26 @@ if (!isset($values)) {
       <?php } ?>
   </td>
 	<td>
-    <span class="comment-group js-comment-container"
-					id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-					style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
-					data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
-                  <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], array(
-										'class' => 'js-comment-field autosize',
-										'autocomplete' => 'off',
-									)) ?>
-			<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
-        </span>
-		<button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
-						class="button js-add-comments"
-						data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-						type="button"
-						style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
-		>
-			<i class="oe-i comments small-icon"></i>
-		</button>
+    <div class="cols-full">
+      <div class="comment-group js-comment-container flex-layout flex-left"
+  					id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+  					style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
+  					data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
+                    <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], array(
+  										'class' => 'js-comment-field autosize cols-full',
+  										'autocomplete' => 'off',
+  									)) ?>
+  			<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+      </div>
+  		<button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
+  						class="button js-add-comments"
+  						data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+  						type="button"
+  						style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
+  		>
+  			<i class="oe-i comments small-icon"></i>
+  		</button>
+    </div>
 	</td>
 
 

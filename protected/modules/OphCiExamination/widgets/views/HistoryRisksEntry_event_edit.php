@@ -87,25 +87,27 @@ if (!isset($values)) {
         <?php } ?>
     </td>
 	<td>
-        <span class="comment-group js-comment-container"
-							id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
-							style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
-							data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
-        <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], array(
-                                        'class' => 'js-comment-field autosize',
-                                        'autocomplete' => 'off',
-                                        'id' => strtr($field_prefix, '[]', '__').'_comments'
-                                    )) ?>
-      <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
-    </span>
-		<button
-			id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
-			type="button"
-			class="button js-add-comments"
-			style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
-			data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
-			<i class="oe-i comments small-icon"></i>
-		</button>
+    <div class="cols-full">
+      <div class="comment-group js-comment-container flex-layout flex-left"
+						id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
+						style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
+						data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
+      <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], array(
+                                      'class' => 'js-comment-field autosize cols-full',
+                                      'autocomplete' => 'off',
+                                      'id' => strtr($field_prefix, '[]', '__').'_comments'
+                                  )) ?>
+        <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+      </div>
+  		<button
+  			id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
+  			type="button"
+  			class="button js-add-comments"
+  			style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
+  			data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
+  			<i class="oe-i comments small-icon"></i>
+  		</button>
+    </div>
 	</td>
     <?php if ($removable) : ?>
         <td>
