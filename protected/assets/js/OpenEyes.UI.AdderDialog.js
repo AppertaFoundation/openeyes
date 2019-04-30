@@ -52,7 +52,9 @@
         width: null,
         createBlackoutDiv: true,
         enableCustomSearchEntries: false,
-        searchAsTypedPrefix: 'As typed: '
+        searchAsTypedPrefix: 'As typed: ',
+        filter: false,
+        filterDataId: "",
     };
 
     /**
@@ -135,8 +137,8 @@
 
             $(this.options.itemSets).each(function (index, itemSet) {
                 let header = (itemSet.options.header) ? itemSet.options.header : '';
-                $('<th />').text(header).appendTo(headers);
-                let $td = $('<td />').appendTo(dialog.$tr);
+                $('<th style="'+ itemSet.options.style + '" data-id="'+itemSet.options.id + '"/>').text(header).appendTo(headers);
+                let $td = $('<td />', {style: itemSet.options.style}).appendTo(dialog.$tr);
                 let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
                 if (itemSet.options.supportSigns) {
                     dialog.generateSigns(itemSet).appendTo($listContainer);
@@ -144,6 +146,9 @@
                 var $list = dialog.generateItemList(itemSet);
                 let $listDiv = $('<div />').appendTo($listContainer);
                 $list.appendTo($listDiv);
+                if (itemSet.options.splitIntegerNumberColumns) {
+                    dialog.generateIntegerColumns(itemSet).appendTo($list);
+                }
                 if (itemSet.options.supportDecimalValues) {
                     dialog.generateDecimalValues(itemSet).appendTo($listContainer);
                 }
@@ -167,12 +172,36 @@
             placeholder: 'search',
             type: 'text'
         });
+
+        this.searchingSpinnerWrapper = $('<div />', {
+            class: 'doing-search',
+            style: 'display:none'
+        });
+
+        $('<i />', {
+            class: 'spinner as-icon',
+        }).appendTo(this.searchingSpinnerWrapper);
+        this.searchingSpinnerWrapper.append(document.createTextNode("Searching ..."));
+
         let $filterDiv = $('<div />', {class: 'has-filter'}).appendTo(this.searchWrapper);
         $searchInput.appendTo($filterDiv);
+        this.searchingSpinnerWrapper.appendTo($filterDiv);
 
         $searchInput.on('keyup', function () {
             dialog.runItemSearch($(this).val());
         });
+
+        if (dialog.options.filter) {
+            let filterContainer = dialog.popup.find('ul[data-id="' + this.options.filterDataId + '"]');
+            filterContainer.on('click', 'li', function () {
+                let filterValue = false;
+                if (!$(this).hasClass('selected')) {
+                    filterContainer.find('li.selected').not(this).removeClass('selected');
+                    filterValue = $(this).data('id');
+                }
+                dialog.runItemSearch(dialog.popup.find('input.search').val(), filterValue);
+            })
+        }
 
         this.noSearchResultsWrapper = $('<span />').text('No results found');
         this.noSearchResultsWrapper.appendTo($filterDiv);
@@ -268,6 +297,26 @@
         });
 
         return $decimalValuesContainer;
+    };
+
+    /**
+     * Generate an integer with itemSet.options.splitIntegerNumberColumns digits
+     * @param itemSet
+     * @returns {jQuery|HTMLElement}
+     */
+    AdderDialog.prototype.generateIntegerColumns = function (itemSet) {
+        let $integerColumnsContainer = $('<div class="lists-layout"/>');
+        for (let i = 0; i < itemSet.options.splitIntegerNumberColumns.length; i++) {
+            let $divList = $('<div />', {class: "list-wrap"}).appendTo($integerColumnsContainer);
+            let $list = $('<ul />', {class: 'add-options number'}).appendTo($divList);
+            for (let digit = itemSet.options.splitIntegerNumberColumns[i].min; digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
+                let $listItem = $('<li data-'+itemSet.options.id+'="'+digit+'"/>');
+                $listItem.append(digit);
+                $listItem.appendTo($list);
+            }
+        }
+
+        return $integerColumnsContainer;
     };
 
     /**
@@ -432,18 +481,39 @@
         }
     };
 
+    AdderDialog.prototype.toggleColumnById = function(ids, show) {
+        let popup = this.popup;
+        ids.forEach(function (id) {
+            popup.find('th[data-id="'+id+'"]').toggle(show);
+            popup.find('[data-id="'+id+'"]').closest('td').toggle(show);
+        });
+    };
+
+    AdderDialog.prototype.removeSelectedColumnById = function(ids) {
+        let popup = this.popup;
+        ids.forEach(function (id) {
+            popup.find('[data-id="'+id+'"] .selected').removeClass('selected');
+        });
+    };
+
     /**
      * Performs a search using the given text
      * @param {string} text The term to search with
      */
-    AdderDialog.prototype.runItemSearch = function (text) {
+    AdderDialog.prototype.runItemSearch = function (text, filterValue) {
         let dialog = this;
         if (this.searchRequest !== null) {
             this.searchRequest.abort();
         }
+        if (typeof filterValue == "undefined" && this.options.filter) {
+            let selectedFilter = this.popup.find('ul[data-id="' + this.options.filterDataId + '"]').find('li.selected');
+            filterValue = selectedFilter.data('id');
+        }
 
+        dialog.searchingSpinnerWrapper.show();
         this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
             term: text,
+            filter: filterValue,
             code: this.options.searchOptions.code,
             ajax: 'ajax'
         }, function (results) {
@@ -470,6 +540,7 @@
             } else {
                 dialog.searchResultList.toggle(!no_data);
             }
+            dialog.searchingSpinnerWrapper.hide();
         });
     };
 

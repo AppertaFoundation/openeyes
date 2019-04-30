@@ -52,7 +52,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var controller = this;
 
         $(document).ready(function(){
-            if (controller.$noAllergiesFld.prop('checked')){
+            if (controller.$noAllergiesFld.prop('checked') && controller.$noAllergiesWrapper.prop('style').display !== "none"){
                 controller.$table.find('tr:not(:first-child)').hide();
                 controller.$popupSelector.hide();
             }
@@ -173,6 +173,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.dedupeAllergySelectors();
         this.updateNoAllergiesState();
         this.showEditableIfOther();
+        $('.autosize').autosize();
     };
 
     /**

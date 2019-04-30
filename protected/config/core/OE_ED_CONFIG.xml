@@ -2068,34 +2068,9 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
                 </INDEX>
             </INDEX_LIST>
         </INDEX>
-        <INDEX>
-          <PRIMARY_TERM>Visual Acuity</PRIMARY_TERM>
-          <SECONDARY_TERM_LIST>
-            <TERM>VA</TERM>
-            <TERM>DVA</TERM>
-            <TERM>UDVA</TERM>
-            <TERM>CDVA</TERM>
-          </SECONDARY_TERM_LIST>
-          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity</OPEN_ELEMENT_CLASS_NAME>
-        </INDEX>
-        <INDEX>
-          <PRIMARY_TERM>Near Visual Acuity</PRIMARY_TERM>
-          <SECONDARY_TERM_LIST>
-            <TERM>NVA</TERM>
-            <TERM>UNVA</TERM>
-            <TERM>CNVA</TERM>
-          </SECONDARY_TERM_LIST>
-          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity</OPEN_ELEMENT_CLASS_NAME>
-        </INDEX>
-        <INDEX>
-          <PRIMARY_TERM>Colour Vision</PRIMARY_TERM>
-          <SECONDARY_TERM_LIST>
-            <TERM>Ishihara /15</TERM>
-            <TERM>Ishihara /21</TERM>
-            <TERM>Red desaturation</TERM>
-          </SECONDARY_TERM_LIST>
-          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_ColourVision</OPEN_ELEMENT_CLASS_NAME>
-        </INDEX>
+        <!-- Visual Acuity was removed from the element_type table in migration (/OphCiExamination/migrations/m180613_015714_merge_visual_function_element_into_pupils.php) -->
+        <!-- Near Visual Acuity was removed from the element_type table in migration (/OphCiExamination/migrations/m180613_015714_merge_visual_function_element_into_pupils.php) -->
+        <!-- Colour Vision was removed from the element_type table in migration (/OphCiExamination/migrations/m180613_015714_merge_visual_function_element_into_pupils.php) -->
         <INDEX>
           <PRIMARY_TERM>Refraction</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
