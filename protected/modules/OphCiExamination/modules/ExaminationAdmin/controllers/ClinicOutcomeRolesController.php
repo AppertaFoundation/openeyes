@@ -109,22 +109,28 @@ class ClinicOutcomeRolesController extends \ModuleAdminController
   {
     $delete_ids = isset($_POST['select']) ? $_POST['select'] : [];
     $transaction = Yii::app()->db->beginTransaction();
-    foreach ($delete_ids as $role_id) {
-      if ($role = OphCiExamination_ClinicOutcome_Role::model()->findByPk($role_id)) {
-        try {
+    $success = true;
+    try {
+      foreach ($delete_ids as $role_id) {
+        $role = OphCiExamination_ClinicOutcome_Role::model()->findByPk($role_id);
+        if ($role) {
           if (!$role->delete()) {
-            throw new Exception ( "unable to delete" );
+            $success = false;
+            break;
           } else {
             Audit::add('admin-clinic-outcome-role', 'delete', $role);
           }
-        } catch (Exception $e) {
-          $transaction->rollback();
-          return;
         }
       }
+    } catch (Exception $e) {
+      $success = false;
     }
-    $transaction->commit();
-    echo '1';
-  }
 
+    if($success) {
+      $transaction->commit();
+      echo '1';
+    } else {
+      $transaction->rollback();
+    }
+  }
 }
