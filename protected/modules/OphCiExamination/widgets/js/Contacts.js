@@ -86,7 +86,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let contactTypeLimitReached = false;
 
         for (let index = 0; index < selectedItems.length; ++index) {
-
             if (selectedItems[index].type === "custom") {
                 createContactPageDialog = true;
             } else if (selectedItems[index].itemSet) {
@@ -103,7 +102,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if (typeof patientContactLimit !== undefined) {
             contactTypeLimitReached = controller.isContactTypeAboveLimit(selectedFilterName, patientContactLimit);
         }
-
 
         if (contactTypeLimitReached) {
             if (controller.pasContactLabels.includes(selectedFilterName)) {
@@ -147,7 +145,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let controller = this;
         let contactLabel = $(controller.contactFilterSelector).find('li[data-label="' + filterName + '"]');
         return contactLabel.data('patient_limit');
-    }
+    };
 
     ContactsController.prototype.isContactTypeAboveLimit = function (contactLabel, contactLimit) {
         let controller = this;
