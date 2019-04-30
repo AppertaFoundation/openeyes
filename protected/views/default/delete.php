@@ -83,5 +83,10 @@
         $('#js-delete-event').css('display','');
         return false;
     });
+
+    $('#js-delete-event').submit(function () {
+        $('#et_deleteevent').attr('disabled', 'disabled');
+        $('#et_canceldelete').attr('disabled', 'disabled');
+    });
 </script>
 
