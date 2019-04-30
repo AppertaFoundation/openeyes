@@ -6,8 +6,6 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     function TableController(options) {
         this.options = $.extend(true, {}, TableController._defaultOptions, options);
-/*        this.selector = this.options.selector;
-        this.wrapper = this.options.wrapper;*/
 
         this.initialiseTriggers();
     }
@@ -38,7 +36,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                     $table.find('tfoot tr td:first-child').append($loader);
                 },
                 'success': function (data) {
-                    html = $.parseHTML(data);
+                    let html = $.parseHTML(data);
                     let new_table = $(html).find("#" + tableId).html();
                     $table.html(new_table);
                 },
