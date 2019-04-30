@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -16,39 +15,75 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class RefSetAdminController extends BaseAdminController
+abstract class BaseDrugSetsAdminController extends BaseAdminController
 {
-	public $group = 'Drugs';
+
+    public $group = 'Drugs';
 
     public function actionList()
     {
+
         $admin = new Admin(MedicationSet::model(), $this);
+
         $admin->setListFields(array(
-            'id',
             'name',
-            'rulesString',
             'itemsCount',
-            'hiddenString',
-            'adminListAction'
+            'automatic',
         ));
 
-        $admin->getSearch()->addSearchItem('name');
         $admin->getSearch()->setItemsPerPage(30);
-        $admin->getSearch()->getCriteria()->order = 'name ASC';
 
-        $admin->setListFieldsAction('edit');
+        $default_site_id = Yii::app()->session['selected_site_id'];
+        $default_subspecialty_id = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
 
 
-        $admin->setModelDisplayName("Medication sets");
+        /*
+         * array('' => 'All') = add All option in search field (Name)
+         * */
+
+        $admin->getSearch()->addSearchItem('name');
+        $admin->getSearch()->addSearchItem('medicationSetRules.site_id', array(
+            'type' => 'dropdown',
+            'options' => array('' => 'All sites') + CHtml::listData(Site::model()->findAll(), 'id', 'name')
+
+        ));
+
+        $admin->getSearch()->addSearchItem('medicationSetRules.subspecialty_id', array(
+            'type' => 'dropdown',
+            'options' => array('' => 'All subspecialties') + CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
+        ));
+
+        // we set default search options
+
+
+        if ($this->request->getParam('search') == '') {
+            $admin->getSearch()->initSearch(array(
+                    'filterid' => array(
+                        'medicationSetRules.site_id' => $default_site_id,
+                        'medicationSetRules.subspecialty_id' => $default_subspecialty_id,
+                        'medicationSetRules.usage_code' => $this->usage_code
+                    ),
+                )
+            );
+        }
+
+        $admin->autosets = MedicationSet::model()->findAll("automatic=1");
+
+        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \''.$this->usage_code.'\'');
+        $admin->setListFieldsAction('toEdit');
+        $admin->setListTemplate('application.modules.OphDrPrescription.views.admin.common_drug_sets.list');
+        $admin->setModelDisplayName($this->modelDisplayName);
         $admin->listModel();
     }
 
-    public function actionToList($id)
+
+    public function actionToEdit($id)
     {
-        $this->redirect('/OphDrPrescription/refMedicationAdmin/list?ref_set_id='.$id);
+        $this->redirect(['/OphDrPrescription/'.Yii::app()->controller->id.'/edit/'.$id]);
     }
 
-    public function actionEdit($id = null, $usage_code = null)
+
+    public function actionEdit($id = null)
     {
 
         $admin = new Admin(MedicationSet::model(), $this);
@@ -61,15 +96,15 @@ class RefSetAdminController extends BaseAdminController
                     'name' => 'Name',
                     'rules' => array(
                         'widget' => 'CustomView',
-                        'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
+                        'viewName' => 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_rules',
                         'viewArguments' => array(
                             'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
-                            'usage_code' => !empty($usage_code) ? $usage_code : ''
+                            'usage_code' => !empty($this->usage_code) ? $this->usage_code : ''
                         )
                     ),
                     'sets' => array(
                         'widget' => 'CustomView',
-                        'viewName' => 'application.modules.OphDrPrescription.views.admin.common_ophthalmic_drug_sets.edit_sets',
+                        'viewName' => 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_sets',
                         'viewArguments' => array(
                             'id' => $id
                         )
@@ -80,10 +115,10 @@ class RefSetAdminController extends BaseAdminController
                     'name' => 'Name',
                     'rules' => array(
                         'widget' => 'CustomView',
-                        'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
+                        'viewName' => 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_rules',
                         'viewArguments' => array(
                             'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
-                            'usage_code' => !empty($usage_code) ? $usage_code : ''
+                            'usage_code' => !empty($this->usage_code) ? $this->usage_code : ''
                         )
                     ),
                 ));
@@ -95,15 +130,15 @@ class RefSetAdminController extends BaseAdminController
                 'name' => 'Name',
                 'rules' => array(
                     'widget' => 'CustomView',
-                    'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
+                    'viewName' => 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_rules',
                     'viewArguments' => array(
                         'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
-                        'usage_code' => !empty($usage_code) ? $usage_code : ''
+                        'usage_code' => !empty($this->usage_code) ? $this->usage_code : ''
                     )
                 ),
                 'sets' => array(
                     'widget' => 'CustomView',
-                    'viewName' => 'application.modules.OphDrPrescription.views.admin.common_ophthalmic_drug_sets.edit_sets',
+                    'viewName' => 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_sets',
                     'viewArguments' => array(
                         'id' => $id
                     )
@@ -114,23 +149,13 @@ class RefSetAdminController extends BaseAdminController
         }
 
         $admin->setModelDisplayName("Medication set");
-
-        if (!empty($usage_code)) {
-            $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id.'?usage_code='.$usage_code);
-        } else {
-            $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id);
-        }
-
-        if ($usage_code == 'COMMON_OPH') {
-            $admin->setCustomCancelURL('/OphDrPrescription/commonOphthalmicDrugSetsAdmin/list/');
-        } else if ($usage_code == 'COMMON_SYSTEMIC') {
-            $admin->setCustomCancelURL('/OphDrPrescription/commonSystemicDrugSetsAdmin/list/');
-        }
+        $admin->setCustomSaveURL('/OphDrPrescription/'.Yii::app()->controller->id.'/save/'.$id);
+        $admin->setCustomCancelURL('/OphDrPrescription/'.Yii::app()->controller->id.'/list');
 
         $admin->editModel();
     }
 
-    public function actionSave($id = null, $usage_code = null)
+    public function actionSave($id = null)
     {
 
         if(is_null($id)) {
@@ -217,16 +242,7 @@ class RefSetAdminController extends BaseAdminController
         }
 
 
-        if (empty($usage_code)) {
-            $this->redirect('/OphDrPrescription/refSetAdmin/list');
-        } else {
-            if ($usage_code == 'COMMON_SYSTEMIC') {
-                $this->redirect('/OphDrPrescription/commonSystemicDrugSetsAdmin/list');
-            } else if ($usage_code == 'COMMON_OPH') {
-                $this->redirect('/OphDrPrescription/commonOphthalmicDrugSetsAdmin/list');
-            }
-
-        }
+        $this->redirect('/OphDrPrescription/'.Yii::app()->controller->id.'/list');
 
     }
 
@@ -277,14 +293,23 @@ class RefSetAdminController extends BaseAdminController
         if(is_array($ids_to_delete)) {
             foreach ($ids_to_delete as $id) {
                 $model = MedicationSet::model()->findByPk($id);
-                /** @var MedicationSet $model */
-                foreach ($model->medicationSetRules as $rule) {
-                    $rule->delete();
+
+                if ($model->automatic == 1) {
+                    foreach ($model->medicationSetRules as $rule) {
+                        if ($rule->usage_code == $this->usage_code) {
+                            $rule->delete();
+                        }
+                    }
+                } else {
+                    foreach ($model->medicationSetRules as $rule) {
+                        $rule->delete();
+                    }
+                    foreach ($model->items as $i) {
+                        $i->delete();
+                    }
+                    $model->delete();
                 }
-                foreach ($model->items as $i) {
-                    $i->delete();
-                }
-                $model->delete();
+
             }
         }
 

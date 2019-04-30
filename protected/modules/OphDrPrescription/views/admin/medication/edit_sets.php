@@ -3,7 +3,12 @@
 
     $rowkey = 0;
     $sets = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name];}, MedicationSet::model()->findAllByAttributes(['hidden' => 0, 'deleted_date' => null]));
-    $units = array_map(function($e){ return ['id' => $e->id, 'label' => $e->description];} ,MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions);
+    $units = [];
+    if($unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
+		$units = array_map(function($e){
+		    return ['id' => $e->id, 'label' => $e->description];
+        }, $unit_attr->medicationAttributeOptions);
+	}
     $forms = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationForm::model()->findAllByAttributes(['deleted_date' => null]));
     $routes = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationRoute::model()->findAllByAttributes(['deleted_date' => null]));
     $freqs = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationFrequency::model()->findAllByAttributes(['deleted_date' => null]));
