@@ -19,12 +19,8 @@ $this->pageTitle = 'View Practitioner';
                     </li>
                 </ul>
             </nav>
-            <h3 class="box-title">Contact Information:</h3>
-            <a href="#" class="toggle-trigger toggle-hide js-toggle">
-            <span class="icon-showhide">
-                Show/hide this section
-            </span>
-            </a>
+            <br />
+            <h3 class="box-title">Contact Information</h3>
             <div class="js-toggle-body">
                 <table class="standard">
                     <tbody>
@@ -56,6 +52,11 @@ $this->pageTitle = 'View Practitioner';
                     <!--Add the address row here when GPs get tied directly to practices rather than through patient records.-->
                 </table>
             </div>
+            <a href="#" class="toggle-trigger toggle-hide js-toggle">
+            <span class="icon-showhide">
+                Show/hide this section
+            </span>
+            </a>
         </div>
         <?php if (Yii::app()->user->checkAccess('TaskCreateGp')): ?>
             <div class="large-4 column end">
