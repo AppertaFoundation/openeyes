@@ -104,32 +104,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
 
         if (contactTypeLimitReached) {
-            if (controller.pasContactLabels.includes(selectedFilterName)) {
-                new OpenEyes.UI.Dialog.Alert({
-                    content: "You have reached the limit for " + selectedFilterName +
-                        " (only " +
-                        patientContactLimit +
-                        " allowed per patient). To make a change for this contact type you must do so in PAS"
-                }).open();
-            } else if (patientContactLimit !== 1 || createContactPageDialog) {
-                new OpenEyes.UI.Dialog.Alert({
-                    content: "You have reached the limit for " +
-                        selectedFilterName +
-                        " if you would like to insert a new one you have to delete one first"
-                }).open();
-            } else {
-                let dialog = new OpenEyes.UI.Dialog.Confirm({
-                    content: "You have reached the limit for " +
-                        selectedFilterName +
-                        ". Would you like to replace your current " + selectedFilterName
-                });
-                dialog.on('ok', function () {
-                    controller.deleteByContactLabel(selectedFilterName);
-                    controller.$table.find('tbody').append(newRows);
-                    $('.autosize').autosize();
-                }.bind(this));
-                dialog.open();
-            }
+            controller.showPatientContactLimitDialog(controller, selectedFilterName, patientContactLimit, createContactPageDialog, newRows);
         } else {
             if (createContactPageDialog) {
                 controller.openAddNewContactDialog(selectedFilter);
@@ -167,6 +142,36 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return contactLabelCount >= contactLimit;
     };
 
+    ContactsController.prototype.showPatientContactLimitDialog = function(selectedFilterName, patientContactLimit, createContactPageDialog, newRows) {
+        let controller = this;
+        if (controller.pasContactLabels.includes(selectedFilterName)) {
+            new OpenEyes.UI.Dialog.Alert({
+                content: "You have reached the limit for " + selectedFilterName +
+                    " (only " +
+                    patientContactLimit +
+                    " allowed per patient). To make a change for this contact type you must do so in PAS"
+            }).open();
+        } else if (patientContactLimit !== 1 || createContactPageDialog) {
+            new OpenEyes.UI.Dialog.Alert({
+                content: "You have reached the limit for " +
+                    selectedFilterName +
+                    " if you would like to insert a new one you have to delete one first"
+            }).open();
+        } else {
+            let dialog = new OpenEyes.UI.Dialog.Confirm({
+                content: "You have reached the limit for " +
+                    selectedFilterName +
+                    ". Would you like to replace your current " + selectedFilterName
+            });
+            dialog.on('ok', function () {
+                controller.deleteByContactLabel(selectedFilterName);
+                controller.$table.find('tbody').append(newRows);
+                $('.autosize').autosize();
+            }.bind(this));
+            dialog.open();
+        }
+    };
+
     ContactsController.prototype.openAddNewContactDialog = function (filter) {
         let controller = this;
         let contactDialog = new OpenEyes.UI.Dialog($.extend({}, this.addContactDialogOptions, {
@@ -180,7 +185,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }));
         contactDialog.open();
         controller.initialiseDialogTriggers(contactDialog);
-    }
+    };
 
     ContactsController.prototype.initialiseDialogTriggers = function (contactDialog) {
         let controller = this;
@@ -219,8 +224,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 } else {
                     data[$(this).data('label')] = $(this).val();
                 }
-            })
-
+            });
             data['contact_label_error'] = contactLabelError;
 
             // do ajax to save contact and new address
@@ -242,17 +246,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     } else {
                         let row;
                         $('.js-contact-error-box').hide();
-                        data = {};
-                        data.id = response.id;
-                        data.label = response.contact_label;
-                        data.full_name = response.name;
-                        data.email = response.email;
-                        data.phone = response.phone;
-                        data.address = response.address;
-                        data.active = response.active;
-
-                        row = Mustache.render(controller.templateText, data);
-
+                        row = controller.createRows(response);
                         controller.$table.append(row);
                         $('.autosize').autosize();
                         $('.oe-popup-wrap').remove();
