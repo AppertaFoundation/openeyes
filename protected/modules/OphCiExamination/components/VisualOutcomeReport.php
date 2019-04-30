@@ -62,9 +62,6 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
       ),
       'xaxis' => array(
         'title' => 'Visual acuity at surgery (LogMAR)',
-        'titlefont' => array(
-          'size' => 11,
-        ),
         'showline' => true,
         'showgrid' => true,
         'range' => [-1,6],
