@@ -28,8 +28,8 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $wrapper.on('click', this.selector, function(e) {
             e.preventDefault();
-            let targetToCopy = ($('.js-to-copy-to-clipboard').length == 1 ? $('.js-to-copy-to-clipboard') : $(this))
-            let text = ( targetToCopy.val() ? targetToCopy.val() : targetToCopy.text() );
+            let contentToCopy = ($('.js-to-copy-to-clipboard').length == 1 ? $('.js-to-copy-to-clipboard') : $(this))
+            let text = ( contentToCopy.val() ? contentToCopy.val() : contentToCopy.text() );
 
             if (controller.copyToClipboard(text) && typeof controller.callback === "function") {
                 controller.callback($(this));
@@ -38,7 +38,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     CopyToClipboardController.prototype.copyToClipboard = function(text){
-        let $input  = $('<input>', {'style':'position:absolute;top:-500px'}).val( text.trim() ),
+        let $input  = $('<textarea>', {'style':'position:absolute;top:-500px'}).val( text.trim() ),
             result;
 
         $('body').append($input);
