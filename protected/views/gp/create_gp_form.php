@@ -15,7 +15,7 @@
             ?>
             <?php echo $form->errorSummary($model); ?>
             <div class="title">
-                Add Referring Practitioner
+                <div id="gp_adding_title" data-type=""></div>
                 <div class="close-icon-btn">
                     <i id="" class="oe-i remove-circle pro-theme js-cancel-add-practitioner"></i>
                 </div>
@@ -107,15 +107,7 @@
                                         $alertBox.find("#errors").html(event);
                                         $("#practitioner-alert-box").css("display","");
                                     }else{
-                                            removeSelectedGP();
-                                            addGpItem("'. $select_wrapper .'",event);
-                                            $(".js-add-practitioner-event").css("display","none");
-                                            $("#practitioner-alert-box").css("display","none");
-                                            $("#gp-form")[0].reset();
-                                            $("#selected_contact_label_wrapper").css("display","none");
-                                            $("#selected_contact_label_wrapper").find(".js-name").text("");
-                                            $("#selected_contact_label_wrapper").find(".js-name").val("");
-                                            $("#selected_contact_label_wrapper").find(".hidden_id").val("");
+                                         gpAdder(event);
                                     }
                                   }',
                                 ),
@@ -133,6 +125,20 @@
 </div>
 
 <script>
+    function gpAdder(event){
+        let type = $('#gp_adding_title').data('type');
+        removeSelectedGP(type);
+        addGpItem(type,event);
+        $(".js-add-practitioner-event").css("display","none");
+        $("#practitioner-alert-box").css("display","none");
+        $("#gp-form")[0].reset();
+        $("#selected_contact_label_wrapper").css("display","none");
+        $("#selected_contact_label_wrapper").find(".js-name").text("");
+        $("#selected_contact_label_wrapper").find(".js-name").val("");
+        $("#selected_contact_label_wrapper").find(".hidden_id").val("");
+    }
+
+
     OpenEyes.UI.AutoCompleteSearch.init({
         input: $('#autocomplete_contact_label_id'),
         url: '/gp/contactLabelList',
