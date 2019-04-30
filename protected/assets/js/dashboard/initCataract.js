@@ -19,7 +19,7 @@ $(document).ready(function() {
     OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk');
     OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications');
     OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome');
-    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome');
+    OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&procedures[]=all');
 
 });
 

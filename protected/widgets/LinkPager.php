@@ -80,7 +80,7 @@ class LinkPager extends CLinkPager
     private function createPrevPageButton()
     {
         $currentPage = $this->getCurrentPage(false);
-        $page = ($currentPage - 1) > 0 ?: 0;
+        $page = max($currentPage - 1, 0);
 
         return $this->createPageButton($this->prevPageLabel, $page, $this->previousPageCssClass, $currentPage <= 0, false);
     }

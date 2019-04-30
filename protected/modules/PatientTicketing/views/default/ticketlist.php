@@ -57,5 +57,10 @@
         $this->renderPartial('_ticketlist_row', array('i' => $i, 'ticket' => $t, 'can_process' => $can_process));
     } ?>
     </tbody>
+    <tfoot class="pagination-container">
+        <td colspan="9">
+            <?php $this->widget('LinkPager', ['pages' => $pagination]); ?>
+        </td>
+    </tfoot>
   </table>
 </main>
