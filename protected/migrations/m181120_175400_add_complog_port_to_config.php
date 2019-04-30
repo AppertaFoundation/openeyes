@@ -9,8 +9,7 @@ class m181120_175400_add_complog_port_to_config extends CDbMigration
                 'key' => 'COMPLog_port',
                 'name' => 'COMPLog tcp port number (0=off)',
                 'data' => '',
-                'default_value' => '0',
-                'display_order' => 290
+                'default_value' => '0'
             ),
         );
         $id = $this->getDbConnection()->createCommand('select id from setting_field_type where name ="Text Field"')->queryRow();
