@@ -5,17 +5,11 @@ function addItemPatientForm(wrapper_id, ui) {
   $wrapper.show();
   $wrapper.find('.hidden_id').val(ui.item.value);
 }
-function removeSelectedPR(){
-  $('#no_pr_result').hide();
-  $('.js-selected_pr .js-name').text('');
-  $('#selected_pr_wrapper').hide();
-  $('#Patient_patient_referral_id').val('');
-}
-function removeSelectedGP() {
-  $('#no_gp_result').hide();
-  $('.js-selected_gp .js-name').text('');
-  $('#selected_gp_wrapper').hide();
-  $('#Patient_gp_id').val('');
+function removeSelectedGP(type = 'gp') {
+  $('#no_'+type+'_result').hide();
+  $('.js-selected_'+type+' .js-name').text('');
+  $('#selected_'+type+'_wrapper').hide();
+  $('#Patient_'+type+'_id').val('');
 }
 
 function removeSelectedPractice() {

@@ -472,7 +472,6 @@ foreach ($ethnic_list as $key=>$item){
         </tbody>
       </table>
     </div>
-
     <div class="row flex-layout flex-right">
         <?= CHtml::submitButton($patient->isNewRecord ? 'Create new patient' : 'Save patient',
             array('class' => 'button green hint')); ?>
@@ -543,17 +542,9 @@ $this->renderPartial('../gp/create_gp_form',
     array(
             'model' => $gpcontact,
         'context' => 'AJAX',
-        'select_wrapper'=>'selected_gp_wrapper',
         'id' => 'js-add-gp-event'
     ),
     false);
-$this->renderPartial('../gp/create_gp_form',
-    array(
-            'model' => $patientReferralContact,
-        'context' => 'AJAX',
-        'select_wrapper'=>'selected_pr_wrapper',
-        'id' => 'js-add-pr-event'), false);
-
 ?>
 
 
@@ -571,11 +562,15 @@ $this->renderPartial('../gp/create_gp_form',
     });
     $('#js-add-gp-btn').click(function(event){
         $('#js-add-gp-event').css('display','');
+        $('#gp_adding_title').data('type','gp');
+        $('#gp_adding_title').html('Add General Practitioner')
         return false;
     });
 
     $('#js-add-pr-btn').click(function(event){
-        $('#js-add-pr-event').css('display','');
+        $('#js-add-gp-event').css('display','');
+        $('#gp_adding_title').data('type','pr');
+        $('#gp_adding_title').html('Add Referring Practitioner')
         return false;
     });
 
@@ -611,8 +606,8 @@ $this->renderPartial('../gp/create_gp_form',
     });
 
 
-    function addGpItem(wrapper_id, ui){
-        var $wrapper = $('#' + wrapper_id);
+    function addGpItem(type, ui){
+        var $wrapper = $('#selected_'+type+'_wrapper');
         var JsonObj = JSON.parse(ui);
         $wrapper.find('.js-name').text(JsonObj.label);
         $wrapper.show();
