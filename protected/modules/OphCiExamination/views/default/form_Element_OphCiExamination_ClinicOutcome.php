@@ -165,7 +165,10 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
               </td>
               <td class="flex-layout flex-top follow-up-options-follow-up-only"  style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
                   <ul class="add-options" id="follow-up-role-options">
-                      <?php foreach (\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role::model()->findAll() as $role): ?>
+                      <?php $criteria = new \CDbCriteria();
+                      $criteria->addCondition('active = 1');
+                      $criteria->order = 'display_order';
+                      foreach (\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role::model()->findAll($criteria) as $role): ?>
                         <li data-str="<?= $role->name ?>" data-role-id="<?= $role->id ?>"
                             class="<?= $element->role_id == $role->id ? 'selected' : '' ?>">
                           <span class="restrict-width"><?= $role->name ?></span>
