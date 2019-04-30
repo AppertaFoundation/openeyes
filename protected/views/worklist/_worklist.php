@@ -30,7 +30,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
 
 <div class="worklist-group js-filter-group" id="js-worklist-<?=$worklist->id?>-wrapper">
     <div class="worklist-summary flex-layout">
-        <h2 id="worklist_<?= $worklist->id ?>"><?=$worklist->name ?></h2>
+        <h2 id="worklist_<?= $worklist->id ?>"><?=$worklist->name ?> : <?= $worklist->getDisplayDate() ?></h2>
     </div>
 
     <?php if ($data_provider->totalItemCount <= 0): ?>
