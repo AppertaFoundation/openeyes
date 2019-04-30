@@ -127,20 +127,4 @@ class ClinicOutcomeRolesController extends \ModuleAdminController
     echo '1';
   }
 
-  /**
-   * Returns the data model based on the primary key given in the GET variable.
-   * If the data model is not found, an HTTP exception will be raised.
-   * @param integer $id the ID of the model to be loaded
-   * @return OphCiExamination_ClinicOutcome_Role the loaded model
-   * @throws CHttpException
-   */
-  public function loadModel($id)
-  {
-    $model = OphCiExamination_ClinicOutcome_Role::model()->findByPk($id);
-    if ($model === null) {
-      throw new CHttpException(404, 'The requested page does not exist.');
-    }
-
-    return $model;
-  }
 }
