@@ -16,5 +16,5 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $form = new BaseEventTypeCActiveForm();
-$base_name = CHtml::modelName($value)."[{$side}_values][{$index}]";
-echo $form->dropDownList($value, 'qualitative_reading_id', CHtml::listData($scale->values, 'id', 'name'), array('nowrapper' => true, 'name' => "{$base_name}[qualitative_reading_id]"));
+$base_name = $name."[{$side}_values][{$index}]";
+echo $form->dropDownList($value, 'qualitative_reading_id', CHtml::listData($scale->values, 'id', 'name'), ['nowrapper' => true, 'name' => "{$base_name}[qualitative_reading_id]"]);

@@ -235,9 +235,10 @@ class PortalExamsCommand extends CConsoleCommand
         $criteria->params[':patient_id'] = $patient_id;
         $criteria->params[':contact_id'] = $optometrist_contact->id;
 
+        $patient = Patient::model()->findByPk($patient_id);
         $patient_contact_assignment = PatientContactAssignment::model()->find($criteria);
 
-        if ($patient_contact_assignment == null) {
+        if ($patient_contact_assignment == null && $patient->getPatientOptometrist() == null) {
             $patient_contact_assignment = new PatientContactAssignment();
             $patient_contact_assignment->contact_id = $optometrist_contact->id;
             $patient_contact_assignment->patient_id = $patient_id;
