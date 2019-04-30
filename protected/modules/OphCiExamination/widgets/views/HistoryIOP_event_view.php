@@ -14,26 +14,8 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
-<tr class="item">
-  <td class="procedure">
-    <span class="field"><?=\CHtml::hiddenField('Procedures_' . $identifier . '[]',
-            $proc->id,
-            ['class' => 'js-procedure']); ?>
-    </span>
-    <span class="value"><?php echo $proc->term; ?></span>
-  </td>
-    <?php if ($durations) { ?>
-      <td class="duration">
-          <span data-default-duration="<?=$proc->default_duration ?>">
-              <?=$proc->default_duration;?>
-          </span> mins
-      </td>
-    <?php } ?>
-  <td>
-    <span class="removeProcedure">
-      <i class="oe-i trash"></i>
-    </span>
-  </td>
-</tr>
+
+
 
