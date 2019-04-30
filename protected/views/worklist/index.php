@@ -19,10 +19,7 @@
         <div class="flex-layout">
             <input id="worklist-date-from" class="cols-4" placeholder="from" type="text" value="<?= @$_GET['date_from'] ?>">
             <input id="worklist-date-to" class="cols-4" placeholder="to" type="text" value="<?= @$_GET['date_to'] ?>">
-            <a href="#" class="selected" id="sidebar-clear-date-ranges">All dates</a>
-        </div>
-        <div class="row divider">
-            <button class="cols-full">Search Worklists</button>
+            <a href="#" class="selected js-clear-dates" id="sidebar-clear-date-ranges">All dates</a>
         </div>
 
         <h3>Select list</h3>
@@ -33,12 +30,6 @@
                        data-worklist="js-worklist-<?= $worklist->id ?>"><?= $worklist->name ?></a></li>
             <?php endforeach; ?>
         </ul>
-        <div class="row">
-            <button class="green hint cols-full" id="js-idg-worklist-ps-add">Add PSD</button>
-        </div>
-        <div class="row">
-            <button class="red cols-full" id="js-idg-worklist-ps-add">Remove selected PSDs</button>
-        </div>
     </nav>
 
     <main class="oe-full-main">
@@ -70,6 +61,13 @@
         });
     });
 
+    $('.js-clear-dates').on('click', () => {
+        $('#worklist-date-from').val(null);
+        $('#worklist-date-to').val(null);
+
+        window.location.href = window.location.href.substring(0, window.location.href.indexOf('?'));
+    });
+
     $('.js-worklist-filter').click(function (e) {
         e.preventDefault();
         resetFilters();
@@ -86,7 +84,7 @@
             $('.worklist-group').show();
         } else {
             $('.worklist-group').hide();
-            $('#' + listID).show();
+            $('#' + listID + '-wrapper').show();
         }
     }
 </script>

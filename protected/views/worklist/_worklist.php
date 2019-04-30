@@ -23,9 +23,11 @@ $data_provider->pagination->pageVar = 'page' . $worklist->id;
 $data_provider->getData();
 $core_api = new CoreAPI();
 
+Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.TableController.js'), ClientScript::POS_END);
+
 ?>
 
-<div class="worklist-group js-filter-group" id="js-worklist-<?=$worklist->id?>">
+<div class="worklist-group js-filter-group" id="js-worklist-<?=$worklist->id?>-wrapper">
     <div class="worklist-summary flex-layout">
         <h2 id="worklist_<?= $worklist->id ?>"><?=$worklist->name ?></h2>
     </div>
@@ -36,7 +38,7 @@ $core_api = new CoreAPI();
         </div>
     <?php else: ?>
 
-    <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows last-right js-worklist-table">
+    <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows last-right js-table-controller">
         <colgroup>
             <col class="cols-1"><!--Time-->
             <col class="cols-1"><!--Hos Num-->
@@ -72,11 +74,10 @@ $core_api = new CoreAPI();
             <th></th>
         </tr>
         </thead>
-
         <tbody>
             <?php foreach ($data_provider->getData() as $wl_patient) : ?>
                 <?php $link = $core_api->generatePatientLandingPageLink($wl_patient->patient, ['worklist_patient_id' => $wl_patient->id]);?>
-                <tr>
+                <tr data-url="<?=$link;?>" style="cursor:pointer">
                     <?php /*<!--PSD--><td><label class="highlight"><input value="<?=$wl_patient->id;?>" name="worklist_patient[]" type="checkbox"></label></td>*/ ?>
                     <td><?=$wl_patient->scheduledtime;?></td>
                     <td><?=$wl_patient->patient->hos_num;?></td>
@@ -107,93 +108,4 @@ $core_api = new CoreAPI();
         </tfoot>
     </table>
     <?php endif; ?>
-</div>
-
-
-
-<div class="worklist-group js-filter-group" id="js-worklist-<?=$worklist->id?>">
-<div class="worklist-summary flex-layout">
-  <h2 id="worklist_<?= $worklist->id ?>"><?= $worklist->name ?></h2>
-  <div class="summary">
-    <?php $this->widget('LinkPager', ['pages' => $data_provider->getPagination()]); ?>
-  </div>
-</div>
-
-<?php
-if ($data_provider->totalItemCount <= 0) { ?>
-  <div class="alert-box info">
-    No patients in this worklist.
-  </div>
-    <?php
-
-} else {
-    $core_api = new CoreAPI();
-    $cols = array(
-        array(
-            'id' => 'hos_num',
-            'class' => 'CDataColumn',
-            'header' => 'Hospital No.',
-            'value' => '$data->patient->hos_num',
-            'headerHtmlOptions' => array('colgroup' => 'cols-2'),
-        ),
-        array(
-            'id' => 'patient_name',
-            'class' => 'CDataColumn',
-            'header' => 'Name',
-            'value' => function($data) use ($core_api) {
-                return '<div class="js-worklist-url" data-url="'.$core_api->generatePatientLandingPageLink($data->patient, ['worklist_patient_id' => $data->id]).'">'.$data->patient->getHSCICName().'</div>';
-            },
-            'headerHtmlOptions' => array('colgroup' => 'cols-6'),
-            'type' => 'raw',
-        ),
-        array(
-            'id' => 'gender',
-            'class' => 'CDataColumn',
-            'header' => 'Gender',
-            'value' => '$data->patient->genderString',
-            'headerHtmlOptions' => array('colgroup' => 'cols-1'),
-        ),
-        array(
-            'id' => 'dob',
-            'class' => 'CDataColumn',
-            'value' => function ($data) {
-                return '<span class="oe-date">' . Helper::convertDate2Html(Helper::convertMySQL2NHS($data->patient->dob)) . '</span>';
-            },
-            'type' => 'raw',
-        ),
-    );
-    if ($worklist->scheduled) {
-        array_unshift($cols, array(
-            'id' => 'time',
-            'class' => 'CDataColumn',
-            'header' => 'Time',
-            'value' => '$data->scheduledtime',
-            'headerHtmlOptions' => array('colgroup' => 'cols-1'),
-        ));
-    }
-
-    foreach ($worklist->displayed_mapping_attributes as $attr) {
-        $cols[] = array(
-            'id' => "{$worklist->id}-attr-{$attr->id}",
-            'class' => 'CDataColumn',
-            'header' => $attr->name,
-            'value' => function ($data) use ($attr) {
-                return $data->getWorklistAttributeValue($attr);
-            },
-            'type' => 'raw',
-        );
-    }
-
-    $this->widget('application.widgets.ColGroupGridView', array(
-        'itemsCssClass' => 'standard clickable-rows',
-        'dataProvider' => $data_provider,
-        'htmlOptions' => array('id' => "worklist-table-{$worklist->id}", 'class' => ''),
-        'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
-        'template' => '{items}',
-        'columns' => $cols,
-        'enableHistory' => true,
-        'enablePagination' => true,
-        'rowCssClass' => array('worklist-row'),
-    ));
-} ?>
 </div>
