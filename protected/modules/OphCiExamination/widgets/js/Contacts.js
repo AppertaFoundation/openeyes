@@ -113,7 +113,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                         patientContactLimit +
                         " allowed per patient). To make a change for this contact type you must do so in PAS"
                 }).open();
-            } else if (patientContactLimit !== 1) {
+            } else if (patientContactLimit !== 1 || createContactPageDialog) {
                 new OpenEyes.UI.Dialog.Alert({
                     content: "You have reached the limit for " +
                         selectedFilterName +
