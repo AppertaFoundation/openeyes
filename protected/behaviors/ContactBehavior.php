@@ -17,13 +17,13 @@
  */
 class ContactBehavior extends CActiveRecordBehavior
 {
-    public function getLetterAddress($params = array())
+    public function getLetterAddress($params = array() , $contact = null)
     {
         if (@$params['contact']) {
             $contactRelation = @$params['contact'];
             $contact = $this->owner->$contactRelation;
         } else {
-            $contact = $this->owner->contact;
+            $contact = isset($this->owner->contact) ? $this->owner->contact : $this->owner;
         }
         $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
 
@@ -155,7 +155,7 @@ class ContactBehavior extends CActiveRecordBehavior
     {
         if ($this->owner->isNewRecord) {
             // create a base contact object
-            if (!$this->owner->contact_id) {
+            if (isset($this->owner->contact_id) && !$this->owner->contact_id) {
                 $contact = new Contact();
                 if (!$contact->save(false)) {
                     throw new Exception('cannot save institution contact: '.print_r($contact->getErrors(), true));

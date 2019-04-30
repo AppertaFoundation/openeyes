@@ -30,6 +30,8 @@ return array(
         'application.models.elements.*',
         'application.components.*',
         'application.components.reports.*',
+        'application.components.actions.*',
+        'application.components.worklist.*',
         'application.extensions.tcpdf.*',
         'application.modules.*',
         'application.commands.*',
@@ -394,7 +396,7 @@ return array(
                 ),
                 'analytics' => array(
                   'title' => 'Analytics',
-                  'uri' => '/Analytics/medicalRetina',
+                  'uri' => '/Analytics/analyticsReports',
                   'position' => 11,
                 ),
                 'worklist' => array(
@@ -602,6 +604,8 @@ return array(
         'Italian'
       ),
       'oe_version' => '3.2a',
-      'gp_label' => 'GP'
+      'gp_label' => 'GP',
+      // number of days in the future to retrieve worklists for the automatic dashboard render
+      'worklist_dashboard_future_days' => 0
     ),
 );
