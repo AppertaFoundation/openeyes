@@ -1,4 +1,5 @@
 <?php
+
 namespace OEModule\PASAPI\components;
 
 use OEModule\PASAPI\models\PasApiAssignment;
@@ -22,6 +23,7 @@ use OEModule\PASAPI\models\PasApiAssignment;
 
 class PasApiObserver
 {
+    const SEARCH_PARAMS = ['hos_num', 'nhs_num', 'first_name', 'last_name', 'maiden_name'];
     /**
      * Objet to parsing XML
      * @var null
@@ -66,8 +68,15 @@ class PasApiObserver
         //will be accessed at the \Patient model's search function
         $results = &$data['results'];
         $patient = $data['patient'];
+        $params = $data['params'];
+        $params['hos_num'] = $patient->hos_num;
+        $params['nhs_num'] = $patient->nhs_num;
 
-        if( !$this->isPASqueryRequired($patient) ){
+        foreach (self::SEARCH_PARAMS as $param) {
+            $pas_params[$param] = isset($params[$param]) ? $params[$param] : "";
+        }
+
+        if (!$this->isPASqueryRequired($pas_params)) {
             // no need to update the record
             return false;
         }
@@ -84,7 +93,7 @@ class PasApiObserver
                     'nhs_num' => isset($data['patient']->nhs_num) ? $data['patient']->nhs_num : '',
                     'first_name' => isset($data['params']['last_name']) ? $data['params']['last_name'] : $data['params']['last_name'],
                     'last_name' => isset($data['params']['last_name']) ? $data['params']['last_name'] : '',
-                )), true) );
+                )), true));
 
             $data['patient']->addPasError('Error occurred during the PAS synchronization, some data may be out of date or incomplete');
             \Yii::app()->user->setFlash('warning.pas_unavailable', 'PAS is currently unavailable, some data may be out of date or incomplete');
@@ -95,7 +104,7 @@ class PasApiObserver
         // count the Patient nodes
         $patient_count = $this->_xml_helper->countNodes('Patient');
 
-        if(!$patient_count){
+        if (!$patient_count) {
             // empty <PatientList>, nothing to do here
             return true;
         }
@@ -106,15 +115,14 @@ class PasApiObserver
             $xml_handler = $this->_xml_helper->getHandler();
 
             // move to the first <patient /> node
-            while ($xml_handler->read() && $xml_handler->name !== 'Patient');
+            while ($xml_handler->read() && $xml_handler->name !== 'Patient') ;
 
             // now that we're at the right depth, hop to the next <patient/> until the end of the tree
             while ($xml_handler->name === 'Patient') {
                 $node = new \SimpleXMLElement($xml_handler->readOuterXML());
 
                 //$resource is an instance of \OEModule\PASAPI\resources\Patient
-                $resource = $resource_model::fromXml('V1', $xml_handler->readOuterXML(), array(
-                       //'update_only' => true,
+                $resource = $resource_model::fromXml('V1', $xml_handler->readOuterXML(), array(//'update_only' => true,
                 ));
 
                 $resource->id = $node->HospitalNumber;
@@ -122,20 +130,29 @@ class PasApiObserver
                 $_assignment = $resource->getAssignment();
                 $_patient = $_assignment->getInternal();
 
-                // If the patient is in our DB or only 1 patient returned we save it
-                if ( !$_patient->isNewRecord || $patient_count == 1) {
-
-                    // we could check the $_assignment->isStale() but the request already done, we have the new data, why would we throw it away
-
+                $save_resource = function() use ($resource, $_patient, $data, $node) {
                     $resource->partial_record = !$_patient->isNewRecord;
                     if (!$resource->save() && ($data['patient'] instanceof \Patient)) {
                         $data['patient']->addPasError('Patient not updated from PAS, some data may be out of date or incomplete');
                         \OELog::log('PASAPI Patient resource model could not be saved. Hos num: ' . $node->HospitalNumber . ' ' . print_r($resource->errors, true));
                     }
-                } else {
-                    // we do not save this Patient, just display on the patient/view page's list
-                    $patient = $this->buildPatientObject($resource);
-                    $results[] = $patient;
+                };
+
+                //if XML contains only one patient we always save
+                if ($patient_count == 1) {
+                    $save_resource();
+                } else if ($patient_count > 1) {
+
+                    //XML contains more patients, some of them may exist in the local DB, we save those
+                    //but not add to the $results array because Patient model's search function will retrieve them
+                    if (!$_patient->isNewRecord) {
+                        $save_resource();
+                    } else {
+                        //unsaved patients are added to the $results array - it will displayed to the user to pick one then PASAPI will
+                        //perform a search by hos_num, XML will return only one result and it will be saved
+                        $patient = $this->buildPatientObject($resource);
+                        $results[] = $patient;
+                    }
                 }
 
                 $xml_handler->next('Patient');
@@ -192,24 +209,24 @@ class PasApiObserver
 
         $query = array();
 
-        if($_patient->hos_num){
+        if ($_patient->hos_num) {
             $query['hosnum'] = $_patient->hos_num;
-        } elseif($_patient->nhs_num){
+        } elseif ($_patient->nhs_num) {
             $query['nhsnum'] = $_patient->nhs_num;
-        } elseif($params['last_name']){
+        } elseif ($params['last_name']) {
             $query['familyname'] = $params['last_name'];
 
-            if($params['first_name']){
+            if ($params['first_name']) {
                 $query['givenname'] = $params['first_name'];
             }
         }
 
         $error = '';
-        if( !empty($query) ){
+        if (!empty($query)) {
             $xml = $this->_curl->get($url . '?' . http_build_query($query));
             $ch = $this->_curl->curl;
 
-            if(curl_errno($ch)){
+            if (curl_errno($ch)) {
                 $error = 'PASAPI cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
                 \OELog::log($error);
             }
@@ -226,7 +243,7 @@ class PasApiObserver
     public function isAvailable()
     {
         $enabled = (isset(\Yii::app()->params['pasapi']['enabled']) && \Yii::app()->params['pasapi']['enabled'] === true);
-        $available = $enabled && (isset(\Yii::app()->params['pasapi']['url']) && !empty( \Yii::app()->params['pasapi']['url']));
+        $available = $enabled && (isset(\Yii::app()->params['pasapi']['url']) && !empty(\Yii::app()->params['pasapi']['url']));
 
         return $this->available = $available;
     }
@@ -239,14 +256,23 @@ class PasApiObserver
      * @param \Patient $patient
      * @return bool
      */
-    public function isPASqueryRequired(\Patient $patient)
+    public function isPASqueryRequired($params)
     {
-        if( !empty($patient->hos_num) || !empty($patient->nhs_num)){
+        $pasapi_allowed_search_params = $this->getValidAllowedSearchParams();
+        if (is_array($pasapi_allowed_search_params) && !empty($pasapi_allowed_search_params)) {
+            foreach ($params as $key => $param) {
+                if ($param != null && $param != "" && !in_array($key, $pasapi_allowed_search_params)) {
+                    return false;
+                }
+
+            }
+        }
+        if (!empty($params['hos_num']) || !empty($params['nhs_num'])) {
 
             // validate the hos_num and hns_num
             $patient_search = new \PatientSearch();
-            $hos_num = $patient_search->getHospitalNumber($patient->hos_num);
-            $nhs_num = $patient_search->getNHSnumber($patient->nhs_num);
+            $hos_num = $patient_search->getHospitalNumber($params['hos_num']);
+            $nhs_num = $patient_search->getNHSnumber($params['nhs_num']);
 
             //get the patient
             $patient_criteria = new \CDbCriteria();
@@ -257,7 +283,7 @@ class PasApiObserver
 
             $_patient = \Patient::model()->find($patient_criteria);
 
-            if( $_patient ){
+            if ($_patient) {
                 // get the assignment
                 $criteria = new \CDbCriteria();
                 $criteria->addCondition('resource_type ="Patient"');
@@ -266,7 +292,7 @@ class PasApiObserver
 
                 $assignment = PasApiAssignment::model()->find($criteria);
 
-                if($assignment && !$assignment->isStale()){
+                if ($assignment && !$assignment->isStale()) {
                     return false;
                 }
             }
@@ -275,4 +301,18 @@ class PasApiObserver
         return true;
     }
 
+    public function getPasApiAllowedSearchParams()
+    {
+        if( array_key_exists('allowed_params', \Yii::app()->params['pasapi'])) {
+            $pas_api_allowed_params = \Yii::app()->params['pasapi']['allowed_params'];
+        }
+        return isset($pas_api_allowed_params) && is_array($pas_api_allowed_params)? $pas_api_allowed_params : [];
+    }
+
+    public function getValidAllowedSearchParams()
+    {
+        $allowed_search_params = $this->getPasApiAllowedSearchParams();
+        $invalid = array_diff($allowed_search_params, self::SEARCH_PARAMS);
+        return $allowed_search_params = array_diff($allowed_search_params, $invalid);
+    }
 }

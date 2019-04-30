@@ -79,7 +79,7 @@ class DefaultController extends \BaseEventTypeController
     {
         Yii::app()->assetManager->registerScriptFile('js/spliteventtype.js', null, null, \AssetManager::OUTPUT_SCREEN);
         $this->jsVars['OE_MODEL_PREFIX'] = 'OEModule_OphCiExamination_models_';
-
+        $this->jsVars['default_iris_colour'] = \SettingMetadata::model()->getSetting('OphCiExamination_default_iris_colour');
         return parent::beforeAction($action);
     }
 
@@ -366,6 +366,7 @@ class DefaultController extends \BaseEventTypeController
                 models\HistoryMedications::class,
                 models\FamilyHistory::class,
                 models\SocialHistory::class,
+                models\HistoryIOP::class,
             ), true);
         });
 
@@ -1025,12 +1026,16 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
-    public function actionGetScaleForInstrument()
+    public function actionGetScaleForInstrument($name)
     {
-        if ($instrument = models\OphCiExamination_Instrument::model()->findByPk(@$_GET['instrument_id'])) {
+        $instrument_id = @$_GET['instrument_id'];
+        $side = @$_GET['side'];
+        $index = @$_GET['index'];
+        $instrument = models\OphCiExamination_Instrument::model()->findByPk($instrument_id);
+        if ($instrument) {
             if ($scale = $instrument->scale) {
                 $value = new models\OphCiExamination_IntraocularPressure_Value();
-                $this->renderPartial('_qualitative_scale', array('value' => $value, 'scale' => $scale, 'side' => @$_GET['side'], 'index' => @$_GET['index']));
+                $this->renderPartial('_qualitative_scale', ['name' => $name, 'value' => $value, 'scale' => $scale, 'side' => $side, 'index' => $index]);
             }
         }
     }
@@ -1139,28 +1144,118 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    private function getOtherSide($side1, $side2, $selectedSide) {
+        return $selectedSide === $side1 ? $side2 : $side1;
+    }
+
+    protected function saveComplexAttributes_HistoryIOP($element, $data, $index)
+    {
+        $data = $data['OEModule_OphCiExamination_models_HistoryIOP'];
+
+        foreach (['left', 'right'] as $side) {
+            if (array_key_exists("{$side}_values", $data) && $data["{$side}_values"]) {
+                foreach ($data["{$side}_values"] as $index => $values) {
+                    // create a new event and set the event_date as selected iop date
+                    $examinationEvent = new \Event();
+                    $examinationEvent->episode_id = $element->event->episode_id;
+                    $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
+                    $examinationEvent->event_date = \DateTime::createFromFormat('Y-m-d', $values['examination_date'])->format('Y-m-d');
+                    $examinationEvent->event_type_id = $element->event->event_type_id;
+
+                    if (!$examinationEvent->save()) {
+                        throw new \Exception('Unable to save a new examination for the IOP readings: ' . print_r($examinationEvent->errors, true));
+                    }
+
+                    // create a new iop element
+                    $iop_element = new models\Element_OphCiExamination_IntraocularPressure();
+                    $iop_element->event_id = $examinationEvent->id;
+                    if (isset($values["{$side}_comments"]) && $values["{$side}_comments"]) {
+                        $iop_element["{$side}_comments"] = $values["{$side}_comments"];
+                    }
+                    $iop_element[$this->getOtherSide('left', 'right', $side) . "_comments"] = "IOP values not recorded for this eye.";
+
+                    if (!$iop_element->save(false)) {
+                        throw new \Exception('Unable to save a new IOP element: ' . print_r($iop_element->errors, true));
+                    }
+
+                    // create a reading record from the values the user has given
+                    $reading = new models\OphCiExamination_IntraocularPressure_Value();
+                    $reading->attributes = $values;
+                    $reading->element_id = $iop_element->id;
+
+                    if (!$reading->save()) {
+                        throw new \Exception('Unable to save reading for the IOP element: ' . print_r($reading->errors, true));
+                    }
+                }
+            }
+        }
+
+        $element->attributes = $data;
+    }
+
+    /**
+     * Custom validation on HistoryIOP element
+     *
+     * @param $data
+     * @param $errors
+     * @return mixed
+     */
+    protected function setAndValidateHistoryIopFromData($data, $errors) {
+        $et_name = models\HistoryIOP::model()->getElementTypeName();
+        $historyIOP = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryIOP');
+        $entries = $data['OEModule_OphCiExamination_models_HistoryIOP'];
+        foreach (['left_values', 'right_values'] as $side_values) {
+            if (isset($entries[$side_values])) {
+                // set the examination dates in HistoryIOP model for custom validation
+                $historyIOP->examination_dates[$side_values] = array_column($entries[$side_values], 'examination_date');
+
+                foreach ($entries[$side_values] as $index => $value) {
+                    $reading = new models\OphCiExamination_IntraocularPressure_Value();
+                    $reading->attributes = $value;
+                    if (!$reading->validate()) {
+                        $readingErrors = $reading->getErrors();
+                        foreach ($readingErrors as $readingErrorAttributeName => $readingErrorMessages) {
+                            foreach ($readingErrorMessages as $readingErrorMessage) {
+                                $historyIOP->addError($side_values . '_' . $index . '_' . $readingErrorAttributeName, $readingErrorMessage);
+                                $errors[$et_name][] = $readingErrorMessage;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // validate historyIOP (examination dates especially)
+        if (!$historyIOP->validate()) {
+            foreach ($historyIOP->getErrors() as $index => $HistoryIOP_errors) {
+                foreach ($HistoryIOP_errors as $error) {
+                    $errors[$et_name][] = $error;
+                }
+            }
+        }
+
+        return $errors;
+    }
+
     /**
      * custom validation for virtual clinic referral.
      *
-     * @TODO: this should hand off validation to a faked PatientTicket request via the API.
+     * this should hand off validation to a faked PatientTicket request via the API.
      *
      * @param array $data
-     *
-     * @return array
+     * @return array|mixed
+     * @throws \Exception
      */
     protected function setAndValidateElementsFromData($data)
     {
         $errors = parent::setAndValidateElementsFromData($data);
+        if(isset($data['OEModule_OphCiExamination_models_HistoryIOP'])) {
+            $errors = $this->setAndValidateHistoryIopFromData($data, $errors);
+        }
 
-        if ($history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications')) {
-            if ($history_meds->hasRisks()) {
-                if (!$this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryRisks')) {
-                    if (!array_key_exists($this->event_type->name, $errors)) {
-                        $errors[$this->event_type->name] = array();
-                    }
-                    $errors[$this->event_type->name][] = 'History Risks element is required when History Medications has entries with associated Risks';
-                }
-            }
+        $history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications');
+        if ($history_meds) {
+            $errors = $this->setAndValidateHistoryRisksFromData($errors, $history_meds);
         }
 
         $posted_risk = [];
@@ -1170,44 +1265,93 @@ class DefaultController extends \BaseEventTypeController
 
         // Element was open, we check the required risks
         if(isset($data['OEModule_OphCiExamination_models_HistoryRisks'])){
-            $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+            $errors = $this->setAndValidateHistoryRisksFromData($errors, $posted_risk);
+        }
 
-            $missing_risks = [];
-            foreach ($exam_api->getRequiredRisks($this->patient) as $required_risk) {
-                if( !in_array($required_risk->id, $posted_risk) ){
-                    $missing_risks[] = $required_risk;
+        $api = Yii::app()->moduleAPI->get('PatientTicketing');
+        if (isset($data['patientticket_queue']) && $api) {
+            $errors = $this->setAndValidatePatientTicketingFromData($data, $errors, $api);
+        }
+
+        return $errors;
+    }
+
+    /**
+     * @param $errors
+     * @param $history_meds
+     * @return mixed
+     */
+    protected function setAndValidateHistoryMedicationsFromData($errors, $history_meds)
+    {
+        if ($history_meds->hasRisks()) {
+            if (!$this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryRisks')) {
+                if (!array_key_exists($this->event_type->name, $errors)) {
+                    $errors[$this->event_type->name] = array();
                 }
+                $errors[$this->event_type->name][] = 'History Risks element is required when History Medications has entries with associated Risks';
             }
+        }
+        return $errors;
+    }
 
-            $et_name = models\HistoryRisks::model()->getElementTypeName();
-            foreach ($missing_risks as $missing_risk) {
-                $errors[$et_name][$missing_risk->name] = 'Missing required risks: ' . $missing_risk->name;
+
+    /**
+     * @param $errors
+     * @param $posted_risk
+     * @return mixed
+     */
+    protected function setAndValidateHistoryRisksFromData($errors, $posted_risk)
+    {
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+
+        $missing_risks = [];
+        foreach ($exam_api->getRequiredRisks($this->patient) as $required_risk) {
+            if( !in_array($required_risk->id, $posted_risk) ){
+                $missing_risks[] = $required_risk;
             }
         }
 
-        if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
-            $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
-            $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
-            if ($status && $status->patientticket) {
-                $err = array();
-                $queue = null;
-                if (!$data['patientticket_queue']) {
-                    $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
-                } elseif (!$queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue'])) {
-                    $err['patientticket_queue'] = 'Virtual Clinic not found';
-                }
-                if ($queue) {
-                    if (!$api->canAddPatientToQueue($this->patient, $queue)) {
-                        $err['patientticket_queue'] = 'Cannot add Patient to Queue';
-                    } else {
-                        list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
-                        $err = array_merge($err, $fld_errs);
-                    }
-                }
+        $et_name = models\HistoryRisks::model()->getElementTypeName();
+        foreach ($missing_risks as $missing_risk) {
+            $errors[$et_name][$missing_risk->name] = 'Missing required risks: ' . $missing_risk->name;
+        }
 
-                if (count($err)) {
-                    $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-                    if (@$errors[$et_name]) {
+        return $errors;
+    }
+
+    /**
+     * Custom validation for patient ticketing
+     *
+     * @param $data
+     * @param $errors
+     * @param $api
+     * @return mixed
+     */
+    protected function setAndValidatePatientTicketingFromData($data, $errors, $api)
+    {
+        $co_sid = $data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
+        $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
+        if ($status && $status->patientticket) {
+            $err = array();
+            $queue = null;
+            if (!$data['patientticket_queue']) {
+                $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
+            } elseif (!$queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue'])) {
+                $err['patientticket_queue'] = 'Virtual Clinic not found';
+            }
+            if ($queue) {
+                if (!$api->canAddPatientToQueue($this->patient, $queue)) {
+                    $err['patientticket_queue'] = 'Cannot add Patient to Queue';
+                } else {
+                    list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
+                    $err = array_merge($err, $fld_errs);
+                }
+            }
+
+            if (count($err)) {
+                $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
+                if(isset($errors[$et_name])) {
+                    if ($errors[$et_name]) {
                         $errors[$et_name] = array_merge($errors[$et_name], $err);
                     } else {
                         $errors[$et_name] = $err;
@@ -1264,6 +1408,49 @@ class DefaultController extends \BaseEventTypeController
         }
 
         models\OphCiExamination_FurtherFindings_Assignment::model()->deleteAll($criteria);
+    }
+
+    protected function saveComplexAttributes_Element_OphCiExamination_Contacts($element, $data, $index)
+    {
+        $patient = \Patient::model()->findByPk($this->patient->id);
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts']) &&
+            isset($data["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'])) {
+            $contact_ids = $data["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'];
+            $comments = $data["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['comments'];
+        } else {
+            $contact_ids = [];
+        }
+        $patientContactAssignments = \PatientContactAssignment::model()->findAll(
+            "patient_id = ?", [$patient->id]);
+
+
+        foreach ($contact_ids as $key => $contact_id) {
+
+            $foundExistingAssignment = false;
+            foreach ($patientContactAssignments as $patientContactAssignment) {
+                if ($patientContactAssignment->contact_id == $contact_id) {
+                    $patientContactAssignment->comment = $comments[$key];
+                    $patientContactAssignment->save();
+                    $foundExistingAssignment = true;
+                    break;
+                }
+            }
+            if (!$foundExistingAssignment) {
+                $patientContactAssignment = new \PatientContactAssignment;
+                $patientContactAssignment->patient_id = $patient->id;
+                $patientContactAssignment->contact_id = $contact_id;
+                $patientContactAssignment->comment = isset($comments[$key]) ? $comments[$key] : null;
+                $patientContactAssignment->save();
+            }
+        }
+
+        $patientContactAssignments = array_filter($patientContactAssignments, function ($assignment) use ($contact_ids) {
+            return !in_array($assignment->contact_id, $contact_ids);
+        });
+
+        foreach ($patientContactAssignments as $patientContactAssignment) {
+            $patientContactAssignment->delete();
+        }
     }
 
     /**

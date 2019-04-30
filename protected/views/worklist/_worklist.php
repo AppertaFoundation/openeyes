@@ -57,7 +57,7 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
             'class' => 'CDataColumn',
             'header' => 'Name',
             'value' => function($data) use ($core_api) {
-                return '<div class="js-worklist-url" data-url="'.$core_api->generateEpisodeLink($data->patient, ['worklist_patient_id' => $data->id]).'">'.$data->patient->getHSCICName().'</div>';
+                return '<div class="js-worklist-url" data-url="'.$core_api->generatePatientLandingPageLink($data->patient, ['worklist_patient_id' => $data->id]).'">'.$data->patient->getHSCICName().'</div>';
             },
             'headerHtmlOptions' => array('colgroup' => 'cols-6'),
             'type' => 'raw',

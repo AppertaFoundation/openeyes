@@ -2,8 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class DefaultController extends OphTrOperationbookingEventController
@@ -54,6 +53,8 @@ class DefaultController extends OphTrOperationbookingEventController
                 'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});',CClientScript::POS_END);
 
             $this->jsVars['nhs_date_format'] = Helper::NHS_DATE_FORMAT_JS;
+            $this->jsVars['op_booking_inc_time_high_complexity'] = SettingMetadata::model()->getSetting('op_booking_inc_time_high_complexity');
+            $this->jsVars['op_booking_decrease_time_low_complexity'] = SettingMetadata::model()->getSetting('op_booking_decrease_time_low_complexity');
         }
 
         $return = parent::beforeAction($action);
@@ -66,6 +67,18 @@ class DefaultController extends OphTrOperationbookingEventController
             }
         }
         return $return;
+    }
+
+    public function afterUpdateElements($event)
+    {
+        parent::afterUpdateElements($event);
+
+        if (\Yii::app()->request->getPost('schedule_now')) {
+            $api = $this->getApp()->moduleAPI->get('OphTrOperationbooking');
+            $api->setOperationStatus($event->id, "Scheduled");
+
+            $this->successUri = '/OphTrOperationbooking/waitingList/index/';
+        }
     }
 
     /**
@@ -187,9 +200,6 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         parent::initActionCreate();
         $this->initActionEdit();
-        if (@$_POST['schedule_now']) {
-            $this->successUri = 'booking/schedule/';
-        }
     }
 
     /**
@@ -335,6 +345,27 @@ class DefaultController extends OphTrOperationbookingEventController
             }
         }
 
+        $operation_element = null;
+        foreach ($this->open_elements as $element) {
+          if (get_class($element) == 'Element_OphTrOperationbooking_Operation') {
+            $operation_element = $element;
+            break;
+          }
+        }
+        if($operation_element && $operation_element->booking) {
+          $anaesthetic_type_ids = isset($data['AnaestheticType']) ? $data['AnaestheticType'] : [];
+          foreach($anaesthetic_type_ids as $anaesthetic_type_id){
+            $anaesthetic = AnaestheticType::model()->findByPk($anaesthetic_type_id);
+            if ($anaesthetic) {
+              if (in_array($anaesthetic->id, $operation_element->anaesthetist_required_ids) && !$operation_element->booking->session->anaesthetist) {
+                $errors['Operation']['Anaesthetist'] = 'The booked session does not have an anaesthetist present, you must change the session or cancel the booking before making this change';
+              }
+              if ($anaesthetic->code == 'GA' && !$operation_element->booking->session->general_anaesthetic) {
+                $errors['Operation']['GeneralAnaesthetist'] = 'General anaesthetic is not available for the booked session, you must change the session or cancel the booking before making this change';
+              }
+            }
+          }
+        }
         return $errors;
     }
 

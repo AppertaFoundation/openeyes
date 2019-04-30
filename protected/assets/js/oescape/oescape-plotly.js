@@ -91,6 +91,7 @@ var options_plotly = {
 };
 
 function setMarkingEvents_plotly(layout, options, annotation, data, side, y_start, y_end){
+  let current_annotation = [];
   for (var key in data[side]) {
     for (var item of data[side][key]) {
       var current_marker_line = JSON.parse(JSON.stringify(options));
@@ -101,12 +102,15 @@ function setMarkingEvents_plotly(layout, options, annotation, data, side, y_star
       current_marker_line['line']['color'] = (side === 'right') ? '#9fec6d' : '#fe6767';
       layout['shapes'].push(current_marker_line);
 
-
-      var current_annotation = JSON.parse(JSON.stringify(annotation));
-      current_annotation['x']=new Date(item);
-      current_annotation['y']= y_end;
-      current_annotation['text']=key;
-      layout['annotations'].push(current_annotation);
+      if(current_annotation[item] === undefined){
+        current_annotation[item] = JSON.parse(JSON.stringify(annotation));
+        current_annotation[item]['x']=new Date(item);
+        current_annotation[item]['y']= y_end;
+        current_annotation[item]['text']=key;
+      } else {
+        current_annotation[item]['text']+=','+key;
+      }
+      layout['annotations'].push(current_annotation[item]);
     }
   }
 }
