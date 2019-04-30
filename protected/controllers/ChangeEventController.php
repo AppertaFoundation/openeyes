@@ -222,6 +222,7 @@ class ChangeEventController extends BaseController
 
                         if($step->save()) {
                             $data = 'Changed step to '.\OEModule\OphCiExamination\models\OphCiExamination_ElementSet::model()->findByPk($selected_workflow_step_id)->name;
+                            Yii::app()->session['redirectToStep'] = true;
                             Audit::add('element set assignment', 'update', $data, $log_message = null, $properties);
                         }                        
                     }

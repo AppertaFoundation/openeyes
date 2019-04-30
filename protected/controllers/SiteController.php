@@ -118,7 +118,10 @@ class SiteController extends BaseController
     public function actionChangeSiteAndFirm()
     {
         if (!$return_url = @$_GET['returnUrl']) {
-            if (!$return_url = @$_POST['returnUrl']) {
+            if($_POST['returnUrl'] && Yii::app()->session['redirectToStep']){
+                $return_url = str_replace("view", "step", $_POST['returnUrl']);
+                unset(Yii::app()->session['redirectToStep']);
+            } else if (!$return_url = @$_POST['returnUrl']) {
                 throw new CHttpException(500, 'Return URL must be specified');
             }
         }
