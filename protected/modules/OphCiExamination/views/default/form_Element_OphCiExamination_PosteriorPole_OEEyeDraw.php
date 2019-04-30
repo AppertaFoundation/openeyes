@@ -75,7 +75,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         array('addDoodle', ['PostPole']),
         array('deselectDoodles', array()),
     ),
-    'listenerArray' => array('posteriorListener', 'autoReportListener'),
+    'listenerArray' => array('autoReportListener'),
     'idSuffix' => $side . '_' . $element->elementType->id,
     'side' => ($side === 'right') ? 'R' : 'L',
     'mode' => 'edit',
