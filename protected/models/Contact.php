@@ -72,7 +72,7 @@ class Contact extends BaseActiveRecordVersioned
             array('first_name, last_name', 'required', 'on' => array('manualAddPatient','referral','self_register','other_register','manage_gp')),
             array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
             array('first_name', 'required', 'on' => array('manage_practice')),
-            array('first_name', 'length', 'max' => 300, 'on' => 'manager_practice'),
+            array('first_name', 'length', 'max' => 300, 'on' => 'manage_practice'),
             array('primary_phone','OEPhoneNumberValidator'),
         );
     }
