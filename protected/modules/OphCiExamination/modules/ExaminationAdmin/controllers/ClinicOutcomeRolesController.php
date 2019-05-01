@@ -119,6 +119,7 @@ class ClinicOutcomeRolesController extends \ModuleAdminController
         }
       }
     } catch (Exception $e) {
+      \OELog::log($e->getMessage());
       $success = false;
     }
 
@@ -127,6 +128,7 @@ class ClinicOutcomeRolesController extends \ModuleAdminController
       echo '1';
     } else {
       $transaction->rollback();
+      echo '0';
     }
   }
 }
