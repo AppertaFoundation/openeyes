@@ -17,6 +17,10 @@
 <?php $this->renderPartial('//base/_messages') ?>
 
 <div class="cols-12">
+    <div class="alert-box error with-icon js-admin-errors" style="display:none">
+        <p>Could not be deleted:</p>
+        <div class="js-admin-error-container"></div>
+    </div>
     <div class="row divider">
 
     </div>
@@ -79,3 +83,37 @@
         </table>
     </form>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#et_delete_result_type').click(function (e) {
+            e.preventDefault();
+
+            let $checked = $('input[name="resultTypes[]"]:checked');
+            if ($checked.length === 0) {
+                alert('Please select one or more result type data to delete.');
+                return;
+            }
+
+            $.ajax({
+                'type': 'POST',
+                'url': baseUrl + '/OphInLabResults/oeadmin/resultType/delete',
+                'data': $checked.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                'success': function (response) {
+                    response = JSON.parse(response);
+                    if (response['status'] === 1) {
+                        window.location.reload();
+                    } else {
+                        $('.js-admin-errors').show();
+                        let $errorContainer = $('.js-admin-error-container');
+                        $errorContainer.html("");
+
+                        response['errors'].forEach(function (error) {
+                            $errorContainer.append('<p class="js-admin-errors">' + error + '</p>');
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>

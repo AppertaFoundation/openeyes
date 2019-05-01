@@ -27,7 +27,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     ),
 )) ?>
 
-<?php echo $form->errorSummary($model) ?>
+<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
 
 <?php
 $this->renderPartial('/admin/form_' . get_class($model), array(

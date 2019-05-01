@@ -45,6 +45,7 @@
                 )) ?>
             </td>
         </tr>
+
         <tr>
             <td>Default Units</td>
             <td>
@@ -56,7 +57,8 @@
                 ); ?>
             </td>
         </tr>
-        <tr>
+        <tr class="js-field-type-numeric-fields"
+            style="<?= $model->fieldType->name != "Numeric Field" ? "display:none" : "" ?>">
             <td>Custom warning message</td>
             <td>
                 <?= \CHtml::activeTextArea(
@@ -66,7 +68,8 @@
                 ); ?>
             </td>
         </tr>
-        <tr class="js-field-type-numeric-fields" style="<?= $model->fieldType->name != "Numeric Field" ? "display:none" :"" ?>">
+        <tr class="js-field-type-numeric-fields"
+            style="<?= $model->fieldType->name != "Numeric Field" ? "display:none" : "" ?>">
             <td>Min Range</td>
             <td>
                 <?= \CHtml::activeNumberField(
@@ -76,7 +79,8 @@
                 ); ?>
             </td>
         </tr>
-        <tr class="js-field-type-numeric-fields" style="<?= $model->fieldType->name != "Numeric Field" ? "display:none" :"" ?>">
+        <tr class="js-field-type-numeric-fields"
+            style="<?= $model->fieldType->name != "Numeric Field" ? "display:none" : "" ?>">
             <td>Max Range</td>
             <td>
                 <?= \CHtml::activeNumberField(
@@ -86,7 +90,8 @@
                 ); ?>
             </td>
         </tr>
-        <tr class="js-field-type-numeric-fields" style="<?= $model->fieldType->name != "Numeric Field" ? "display:none" :"" ?>">
+        <tr class="js-field-type-numeric-fields"
+            style="<?= $model->fieldType->name != "Numeric Field" ? "display:none" : "" ?>">
             <td>Normal Min</td>
             <td>
                 <?= \CHtml::activeNumberField(
@@ -96,7 +101,8 @@
                 ); ?>
             </td>
         </tr>
-        <tr class="js-field-type-numeric-fields" style="<?= $model->fieldType->name != "Numeric Field" ? "display:none" :"" ?>">
+        <tr class="js-field-type-numeric-fields"
+            style="<?= $model->fieldType->name != "Numeric Field" ? "display:none" : "" ?>">
             <td>Normal Max</td>
             <td>
                 <?= \CHtml::activeNumberField(
@@ -106,7 +112,7 @@
                 ); ?>
             </td>
         </tr>
-        <tr class="js-field-type-numeric-fields">
+        <tr>
             <td>Show on Whiteboard</td>
             <td>
                 <?= \CHtml::activeCheckBox(
@@ -119,15 +125,65 @@
         </tbody>
     </table>
 </div>
+<div class="cols-5 js-drop-down-fields" style="<?= $model->fieldType->name != "Drop-down Field" ? "display:none" : "" ?>">
+    <div class="row-divider">
+        <h2>Field Options</h2>
+    </div>
+    <div class="element-fields flex-layout full-width">
+    <table class="js-field-options-table standard cols-full">
+        <tbody class="js-field-options">
+        <?php if (isset($model->id)) {
+            foreach (OphInLabResults_Type_Options::model()->findAll('type = ? ', [$model->id]) as $option) { ?>
+                <tr>
+                    <td>
+                        <input type="hidden" name="type_options[options_id][]" value="<?= $option->id ?>">
+                        <input type="text" name="type_options[value][]" value="<?= $option->value ?>">
+                    </td>
+                    <td>
+                        <i class="oe-i trash"></i>
+                    </td>
+                </tr>
+            <?php }
+        } ?>
+        </tbody>
+    </table>
+    <div class="add-data-actions flex-item-bottom">
+        <button class="button hint green js-add-select-search" id="add-new-option" type="button">
+            <i class="oe-i plus pro-theme"></i>
+        </button>
+    </div>
+</div>
+</div>
 
 <script type="text/javascript">
-    $(document).ready(function(){
-        $('#OphInLabResults_Type_field_type_id').change(function(event){
+    $(document).ready(function () {
+        $('#add-new-option').on('click', function () {
+            $('.js-field-options').append("<tr>\n" +
+                "                    <td>\n" +
+                "                        <input type=\"hidden\" name=\"type_options[options_id][]\">" +
+                "                        <input type=\"text\" name=\"type_options[value][]\">" +
+                "                    </td>\n" +
+                "                    <td>\n" +
+                "                        <i class=\"oe-i trash\"></i>\n" +
+                "                    </td>\n" +
+                "                </tr>");
+        });
+
+        $('.js-field-options-table').on('click','i.trash', function(){
+            $(this).closest('tr').remove();
+        });
+
+        $('#OphInLabResults_Type_field_type_id').change(function (event) {
             let selectedOption = $(this).find("option:selected").text();
-            if(selectedOption === "Numeric Field"){
+            if (selectedOption === "Numeric Field") {
                 $('.js-field-type-numeric-fields').show();
+                $('.js-drop-down-fields').hide();
+            } else if(selectedOption === "Drop-down Field"){
+               $('.js-drop-down-fields').show();
+                $('.js-field-type-numeric-fields').hide();
             } else {
                 $('.js-field-type-numeric-fields').hide();
+                $('.js-drop-down-fields').hide()
             }
 
         })
