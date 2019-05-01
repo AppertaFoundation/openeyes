@@ -8,6 +8,7 @@
     $(document).ready(function () {
         custom_layout = JSON.parse(JSON.stringify(analytics_layout));
         custom_data = <?= CJavaScript::encode($custom_data); ?>;
+        
         window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
         custom_layout['xaxis']['title'] = "Time(weeks)";
         custom_layout['xaxis']['rangeslider'] = {};
@@ -39,12 +40,13 @@
             id = 'js-hs-chart-analytics-clinical-others-left';
             custom_layout['title'] = "Clinical Section (Left Eye)";
         }
-
+      
         var custom_plot = document.getElementById(id);
         Plotly.newPlot(
             id, custom_data ,custom_layout, analytics_options
         );
 
+        
         custom_plot.on('plotly_click', function (data) {
             for (var i = 0; i < data.points.length; i++) {
                 $('.analytics-charts').hide();
