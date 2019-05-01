@@ -46,7 +46,8 @@ class OphInLabResults_Type extends BaseActiveRecordVersioned
             'result_element_type' => array(self::BELONGS_TO, 'ElementType', 'result_element_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'fieldType' => [self::BELONGS_TO, 'OphInLabResults_Field_Type', 'field_type_id']
+            'fieldType' => [self::BELONGS_TO, 'OphInLabResults_Field_Type', 'field_type_id'],
+            'resultOptions' => [self::HAS_MANY, 'OphInLabResults_Type_Options', 'type']
         );
     }
 
