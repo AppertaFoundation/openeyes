@@ -70,6 +70,8 @@ genetics=0
 preservedb=0
 nocheckout=0
 nosample=""
+nofix=0
+nomigrate=0
 
 # Process command line inputs
 while [[ $# -gt 0 ]]
@@ -96,6 +98,10 @@ do
         ;;
         --no-sample|-ns) nosample=1
           # Don't install the sample database (will use existing or migrate from new)
+        ;;
+      --no-fix) nofix=1
+        ;;
+      --no-migrate) nomigrate=1
         ;;
     	*)  checkoutparams="$checkoutparams $1"
             # Pass anything else through to the checkout command
@@ -226,9 +232,10 @@ if [ $preservedb = 0 ]; then
 
 fi
 
-# call oe-fix - unless nocheckout is set, this will also include dependencies
+# call oe-fix if --no-fix was not specified- Unless nocheckout is set, this will also include dependencies
 [ $nocheckout = 1 ] && fixparams="--no-dependencies" || fixparams=""
-$SCRIPTDIR/oe-fix.sh $fixparams
+[ $nomigrate = 1 ] && fixparams="$fixparams --no-migrate --no-eyedraw" || :
+[ "$nofix" != "1" ] && { $SCRIPTDIR/oe-fix.sh $fixparams; } || :
 
 # unless we are in build mode, configure apache and cron
 if [ "$OE_MODE" != "BUILD" ]; then
@@ -254,10 +261,8 @@ if [ "$OE_MODE" != "BUILD" ]; then
 	  [[ $(ps -ef | grep -v grep | grep apache2 | wc -l) > 0 ]] && sudo service apache2 restart || :
 
     # copy cron tasks
-    sudo cp -f $SCRIPTDIR/.cron/hotlist /etc/cron.d/
-    sudo chmod 0644 /etc/cron.d/hotlist
-    sudo cp -f $SCRIPTDIR/.cron/eventimage /etc/cron.d/
-sudo chmod 0644 /etc/cron.d/eventimage
+    bash $SCRIPTDIR/set-cron.sh
+
 fi
 
 echo ""

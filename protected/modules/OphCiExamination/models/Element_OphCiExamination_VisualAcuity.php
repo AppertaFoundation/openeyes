@@ -150,7 +150,17 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
             $hasReadings = array_key_exists($side.'_readings', $va);
 
             if (($isAssessable&&$hasReadings)||(!$isAssessable&&!$hasReadings)) {
-                continue;
+                if($hasReadings){
+                    // pick out the method_id's from the submitted readings and tally them up
+                    $method_ids = array_column($va[$side.'_readings'], 'method_id');
+
+                    // change values to keys. dupicates keys are dropped as keys must be unique
+                    if(count($method_ids) !== count(array_flip($method_ids))){
+                        $this->addError($side, 'Each method type can only be added once per eye');
+                    }
+                } else {
+                    continue;
+                }
             } elseif ($isAssessable&&!$hasReadings) {
                 $this->addError($side, ucfirst($side).' side has no data.');
             } else {
@@ -500,5 +510,18 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     public function getPrint_view()
     {
         return 'print_'.$this->getDefaultView();
+    }
+    public function getReading($side)
+    {
+        if (!$values = $this->{"{$side}_readings"}) {
+            return;
+        }
+        $sum = 0;
+        foreach ($values as $value) {
+            if ($value->value) {
+                $sum += $value->value;
+            }
+        }
+        return round($sum / count($values));
     }
 }

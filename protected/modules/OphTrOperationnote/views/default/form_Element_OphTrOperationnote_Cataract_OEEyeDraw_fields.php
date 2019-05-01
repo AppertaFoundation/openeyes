@@ -97,7 +97,7 @@
                 <?php echo $form->textArea($element, 'comments', [], false, [ 'rows' => 1 ]) ?>
             </td>
         </tr>
-        <tr>
+        <tr id="tr_Element_OphTrOperationnote_Cataract_iol_type">
             <td>
                 <?php echo $element->getAttributeLabel('iol_type_id'); ?>
             </td>
@@ -266,5 +266,11 @@
     $(document).ready(function () {
         $('#Element_OphTrOperationnote_Cataract_comments').autosize();
         $('#Element_OphTrOperationnote_Cataract_complication_notes').autosize();
+
+        $("#Element_OphTrOperationnote_Cataract_iol_type_id option").each(function() {
+            if($(this).text() === '-') {
+                $(this).hide();
+            }
+        });
     });
 </script>

@@ -91,7 +91,7 @@
             </tr>
         </tbody>
     </table>
-    <h2>To be retained in patient's notes</h2>
+    <h2 class="pageBreak">To be retained in patient's notes</h2>
     <?php for ($i = 0; $i < 2; ++$i) { ?>
             <?php if($i == 1){ ?>
                 <div class="break"></div>
@@ -105,11 +105,11 @@
             </p>
             <p>
                 <strong>The intended benefits:</strong>
-                <?php echo $elements['Element_OphTrConsent_BenefitsAndRisks']->benefits ?>
+                <br><?php echo nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->benefits) ?>
             </p>
             <p>
                 <strong>Serious, frequently occurring or unavoidable risks:</strong>
-                <?php echo $elements['Element_OphTrConsent_BenefitsAndRisks']->risks ?>
+                <br><?php echo nl2br($elements['Element_OphTrConsent_BenefitsAndRisks']->risks) ?>
             </p>
             <?php if (!empty($elements['Element_OphTrConsent_Procedure']->additional_procedures)) { ?>
             <p>Any extra procedures which may become necessary during the procedure(s)</p>

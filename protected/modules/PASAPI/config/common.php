@@ -28,8 +28,8 @@ return [
         'urlManager' => [
             'rules' => [
                 // add a rule so that letters can be used in the external id for the resource
-                ['PASAPI/V1/update', 'pattern' => 'PASAPI/<controller:\w+>/(<resource_type:\w+>?/<id:\w+>]?', 'verb' => 'PUT'],
-                ['PASAPI/V1/delete', 'pattern' => 'PASAPI/<controller:\w+>/(<resource_type:\w+>?/<id:\w+>]?', 'verb' => 'DELETE'],
+                ['PASAPI/V1/update', 'pattern' => 'PASAPI/<controller:\w+>/<resource_type:\w+>/<id:\w+>', 'verb' => 'PUT'],
+                ['PASAPI/V1/delete', 'pattern' => 'PASAPI/<controller:\w+>/<resource_type:\w+>/<id:\w+>', 'verb' => 'DELETE'],
             ],
         ],
 
@@ -66,6 +66,7 @@ return [
             // set cache_time to null (never stale] to never update the object from PAS
             // set cache_time to 0 (always stale] to update the object from PAS every time
             'cache_time' => 300, //sec
+            'allowed_params' => [],
         ],
     ],
 ];

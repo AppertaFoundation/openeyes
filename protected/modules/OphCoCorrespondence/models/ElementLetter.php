@@ -70,8 +70,8 @@ class ElementLetter extends BaseEventTypeElement
             array('to_subspecialty_id', 'internalReferralServiceValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
-            array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
-            array('use_nickname', 'required'),
+            array('date, introduction, body, footer', 'requiredIfNotDraft'),
+            array('use_nickname , site_id', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
@@ -125,6 +125,7 @@ class ElementLetter extends BaseEventTypeElement
             'to_firm_id' => 'To Consultant',
             'is_urgent' => 'Urgent',
             'is_same_condition' => '',
+            'site_id' => 'Site',
         );
     }
 
@@ -314,6 +315,10 @@ class ElementLetter extends BaseEventTypeElement
             }
         }
 
+        $patientOptometrist = $patient->getPatientOptometrist();
+        if($patientOptometrist){
+            $options['Optometrist'.$patientOptometrist->id] = $patientOptometrist->fullname.' (Optometrist)';
+        }
         // get the ids of the commissioning body types that should be shown as potential recipients to filter against
         $cbt_ids = array();
         foreach (OphCoCorrespondence_CommissioningBodyType_Recipient::model()->getCommissioningBodyTypes() as $cbt) {
@@ -358,17 +363,19 @@ class ElementLetter extends BaseEventTypeElement
                     ),
                 ),
             ),
-        ))->findAll('patient_id=?', array($patient->id)) as $pca) {
+        ))->findAll('patient_id=? AND contact.active = ?', array($patient->id, 1)) as $pca) {
             if ($pca->location) {
                 $options['ContactLocation'.$pca->location_id] = $pca->location->contact->fullName.' ('.$pca->location->contact->label->name . ')';
             } else {
                 // Note that this index will always be the basis for a Person model search - if PCA has a wider use case than this,
                 // this will need to be revisited
-                $options['Contact'.$pca->contact_id] = $pca->contact->fullName.' ('.$pca->contact->label->name;
-                if ($pca->contact->address) {
-                    $options['Contact'.$pca->contact_id] .= ', '.$pca->contact->address->address1.')';
-                } else {
-                    $options['Contact'.$pca->contact_id] .= ') - NO ADDRESS';
+                if(!isset($pca->contact->label) || $pca->contact->label->name != 'Optometrist') {
+                    $options['Contact' . $pca->contact_id] = $pca->contact->fullName . ' (' . (isset($pca->contact->label) ? $pca->contact->label->name : "");
+                    if ($pca->contact->address) {
+                        $options['Contact' . $pca->contact_id] .= ', ' . $pca->contact->address->address1 . ')';
+                    } else {
+                        $options['Contact' . $pca->contact_id] .= ') - NO ADDRESS';
+                    }
                 }
             }
         }

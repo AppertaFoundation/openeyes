@@ -30,6 +30,8 @@ return array(
         'application.models.elements.*',
         'application.components.*',
         'application.components.reports.*',
+        'application.components.actions.*',
+        'application.components.worklist.*',
         'application.extensions.tcpdf.*',
         'application.modules.*',
         'application.commands.*',
@@ -79,7 +81,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201901011500',
+            'time' => '201903131430',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -336,13 +338,6 @@ return array(
                     'restricted' => array('Report'),
                     'userrule' => 'isSurgeon',
                 ),
-                'cataract' => array(
-                    'title' => 'Cataract Audit',
-                    'uri' => 'dashboard/cataract',
-                    'position' => 4,
-                    'userrule' => 'isSurgeon',
-                    'restricted' => array('admin'),
-                    'options' => array('target' => '_blank'), ),
                 'nodexport' => array(
                     'title' => 'NOD Export',
                     'uri' => 'NodExport',
@@ -380,18 +375,28 @@ return array(
                     'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
                     'position' => 90,
                 ),
+                'disorder' => array(
+                    'title' => 'Manage Disorders',
+                    'uri' => "/disorder/index",
+                    'requires_setting' => array('setting_key'=>'user_add_disorder', 'required_value'=>'on'),
+                    'position' => 91,
+            ),
                 'gps' => array(
                     'title' => 'Practitioners',
                     'uri' => 'gp/index',
                     'position' => 10,
                     'restricted' => array('TaskViewGp', 'TaskCreateGp'),
                 ),
-// temporarily disabled
-//			'worklist' => array(
-//				'title' => 'Worklists',
-//				'uri' => '/worklist',
-//				'position' => 3,
-//			),
+                'analytics' => array(
+                  'title' => 'Analytics',
+                  'uri' => '/Analytics/analyticsReports',
+                  'position' => 11,
+                ),
+                'worklist' => array(
+                  'title' => 'Worklists',
+                  'uri' => '/worklist',
+                  'position' => 3,
+                ),
         ),
         'admin_menu' => array(
         ),
@@ -404,7 +409,7 @@ return array(
         'reports' => array(
         ),
         'opbooking_disable_both_eyes' => true,
-        //'html_autocomplete' => 'off',
+        'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
         // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
@@ -591,7 +596,11 @@ return array(
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.1',
-      'gp_label' => 'GP'
+      'oe_version' => '3.2a',
+      'gp_label' => 'GP',
+      // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
+      'worklist_dashboard_future_days' => 0,
+      // page size of worklists - recommended to be very large by default, as paging is not generally needed here
+      'worklist_default_pagination_size' => 1000
     ),
 );
