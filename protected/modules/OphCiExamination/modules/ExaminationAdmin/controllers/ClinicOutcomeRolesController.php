@@ -58,15 +58,11 @@ class ClinicOutcomeRolesController extends \ModuleAdminController
     }
     if ($request->getPost('OEModule_OphCiExamination_models_OphCiExamination_ClinicOutcome_Role')) {
       $model->attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_ClinicOutcome_Role');
-      if (!$model->validate()) {
-        $errors = $model->getErrors();
+      if ($model->save()) {
+        Yii::app()->user->setFlash('success', 'Clinic Outcome Role saved');
+        $this->redirect(['index']);
       } else {
-        if ($model->save()) {
-          Yii::app()->user->setFlash('success', 'Clinic Outcome Role saved');
-          $this->redirect(['index']);
-        } else {
-          $errors = $model->getErrors();
-        }
+        $errors = $model->getErrors();
       }
     }
 
