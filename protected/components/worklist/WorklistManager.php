@@ -56,7 +56,7 @@ class WorklistManager extends CComponent
     /**
      * Array of 3 letter days of the week that should be skipped for picking dates to render
      * worklist dashboards for.
-     
+
      * @TODO: leverage for day or week selection for definition setup
      *
      * @var array
@@ -1029,7 +1029,7 @@ class WorklistManager extends CComponent
      */
     public function generateWorklistName($definition, DateTime $date)
     {
-        return $definition->name.' - '.$date->format(Helper::NHS_DATE_FORMAT);
+        return $definition->name;
     }
 
     /**
@@ -1538,4 +1538,3 @@ class WorklistManager extends CComponent
         return \Yii::app()->user->getState("worklist_patient_id", null);
     }
 }
-
