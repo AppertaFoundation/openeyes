@@ -18,7 +18,7 @@ OpenEyes.Lab = OpenEyes.Lab || {};
 
 (function (exports) {
     var Form = {};
-    var ajaxElementUri = '/OphInLabResults/Default/resultForm';
+    var ajaxElementUri = '/OphInLabResults/Default/elementForm';
     var $resultTypeSelect;
 
     /**
@@ -30,7 +30,10 @@ OpenEyes.Lab = OpenEyes.Lab || {};
             $(document).one("element_removed", function () {
                 $resultTypeSelect.val('');
             });
+        } else {
+            $resultTypeSelect.val('');
         }
+        $('#Element_OphInLabResults_Details_result_type_id').attr("disabled", false);
     }
 
     /**
@@ -42,7 +45,7 @@ OpenEyes.Lab = OpenEyes.Lab || {};
     function loadResultElement(e) {
         var option = e.target.options[e.target.selectedIndex];
 
-        if (!option.dataset.id) {
+        if (!option.dataset.elementId) {
             removeResultElement($('#result-output').parent());
             return false;
         }
@@ -51,14 +54,26 @@ OpenEyes.Lab = OpenEyes.Lab || {};
             url: ajaxElementUri,
             data: {
                 patient_id: OE_patient_id,
-                id: option.dataset.id
+                id: option.dataset.elementId,
+                type: option.dataset.typeId,
             },
             dataType: 'html',
             success: function (data) {
                 var $dataElement = $('<section></section>').html(data);
                 $dataElement.find('.js-remove-element').on('click', removeResultElement);
                 $('.lab-results-type').parent().after($dataElement);
+
+                if (option.dataset.fieldTypeName === "Numeric Field") {
+                    $('#Element_OphInLabResults_Entry_result').on('input', function () {
+                        if ($(this).val() > option.dataset.normalMax || $(this).val() < option.dataset.normalMin) {
+                            $('.js-lab-result-warning').show();
+                        } else {
+                            $('.js-lab-result-warning').hide();
+                        }
+                    });
+                }
                 enableButtons();
+                $('#Element_OphInLabResults_Details_result_type_id').attr("disabled", true);
                 $('textarea').autosize();
             }
         });
