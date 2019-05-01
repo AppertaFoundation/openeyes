@@ -1480,6 +1480,10 @@ class OphCiExamination_API extends \BaseAPI
 
                 $class = $element_type->class_name;
 
+                if(!class_exists($class)){
+                    continue;
+                }
+
                 $element = $class::model()->find('event_id=?', array($event->id));
                 if ($element) {
 
