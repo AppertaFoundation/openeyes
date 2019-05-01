@@ -185,9 +185,6 @@
                                     <?php foreach ($not_checked_required_risks as $entry) : ?>
                                         <tr>
                                             <td><?= $entry ?></td>
-                                            <td>
-                                                <span class="none"><?= ($entry['comments'] !== '' ? $entry['comments'] : 'None') ?></span>
-                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php } else { ?>
