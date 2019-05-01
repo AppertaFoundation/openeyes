@@ -511,30 +511,26 @@
                 };
                 
                 if(newSubspecialty.length !== 0){
-                    postData.selectedSubspecialtyId = newSubspecialty.data('service-id')
+                    postData.selectedSubspecialtyId = newSubspecialty.data('service-id');
                 }
-                if(postData != undefined){
-                    $.post("/ChangeEvent/UpdateEpisode",postData,function(successful){
-                        if(successful === "true"){
+                $('nav.event-header').append($('<div>', {"class": 'spinner-loader'}).append($('<i>', {"class": "spinner"})));
+
+                if(postData !== undefined){
+                    $.post("/ChangeEvent/UpdateEpisode", postData, function(result) {
+                        if(result === "true"){
                             $('.'+self.options.popupClass+' .close-icon-btn').trigger('click');
-                            $('#change-firm').trigger('click');
-                            // MutationObserver
-                            let observer = new MutationObserver(function(mutationsList, observer){
-                                for(let mutation of mutationsList) {
-                                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0){
-                                        for(let nodeList of mutation.addedNodes){
-                                            if(nodeList.id === 'site-and-firm-form'){
-                                                // stop observing
-                                                observer.disconnect();
-                                                $('#site-and-firm-form').closest('.oe-popup').css('visibility','hidden');
-                                                $('#SiteAndFirmForm_firm_id').find('option[value="'+postData.selectedContextId+'"]').attr('selected','selected').trigger('change');
-                                                $('#site-and-firm-form').trigger('submit');
-                                            }
-                                        }
-                                    }
-                                }
+
+                            $.post("/site/changesiteandfirm", {
+                                YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+                                SiteAndFirmForm: {
+                                    'site_id': OE_site_id,
+                                    'firm_id': postData.selectedContextId
+                                },
+                                returnUrl: `/OphCiExamination/default/step/${OE_event_id}?patient_id=${OE_patient_id}&step_id=${postData.selectedWorkflowStepId}`
+
+                            }, function() {
+                                window.location.href = `/OphCiExamination/default/step/${OE_event_id}?patient_id=${OE_patient_id}&step_id=${postData.selectedWorkflowStepId}`;
                             });
-                            observer.observe(document.getElementsByTagName('body')[0], { attributes: true, childList: true, subtree: true });
                         }
                     });
                 }

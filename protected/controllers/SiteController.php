@@ -117,17 +117,7 @@ class SiteController extends BaseController
      */
     public function actionChangeSiteAndFirm()
     {
-        if (!$return_url = @$_GET['returnUrl']) {
-            if($_POST['returnUrl'] && Yii::app()->session['redirectToStep']){
-                $return_url = str_replace("view", "step", $_POST['returnUrl']);
-                unset(Yii::app()->session['redirectToStep']);
-            } else if (!$return_url = @$_POST['returnUrl']) {
-                throw new CHttpException(500, 'Return URL must be specified');
-            }
-        }
-        if (@$_GET['patient_id']) {
-            $patient = Patient::model()->findByPk(@$_GET['patient_id']);
-        }
+        $return_url = \Yii::app()->request->getParam('returnUrl');
         $this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $return_url), false, true);
     }
 
