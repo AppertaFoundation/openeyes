@@ -300,7 +300,7 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @return array
      */
-    public function getElements($action='edit')
+    public function getElements($action = 'edit')
     {
         $elements = array();
         if (is_array($this->open_elements)) {
