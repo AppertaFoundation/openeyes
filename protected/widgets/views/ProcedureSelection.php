@@ -42,34 +42,37 @@
         </thead>
         <tbody class="body">
         <?php
-        foreach ($selected_procedures as $procedure) : ?>
-            <?php $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
+        if (!empty($selected_procedures)) {
+            foreach ($selected_procedures as $procedure) {
+                $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
+                <tr class="item">
+                    <td class="procedure">
+                        <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]',
+                            $procedure->id,
+                            ['class' => 'js-procedure']); ?>
+                        </span>
+                        <span class="value"><?=$procedure->term; ?></span>
+                    </td>
 
-            <tr class="item">
-                <td class="procedure">
-                    <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]', $procedure->id); ?></span>
-                    <span class="value"><?=$procedure->term; ?></span>
-                </td>
+                    <?php if ($durations) { ?>
+                    <td class="duration">
+                        <span data-default-duration="<?= $procedure->default_duration ?>">
+                        <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
+                        </span> mins
+                    </td>
+                    <?php } ?>
+                    <td>
+                        <span class="removeProcedure">
+                            <i class="oe-i trash"></i>
+                        </span>
+                    </td>
+                </tr>
 
-                <?php if ($durations) { ?>
-                <td class="duration">
-                    <span data-default-duration="<?= $procedure->default_duration ?>">
-                    <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
-                    </span> mins
-                </td>
-                <?php } ?>
-                <td>
-                    <span class="removeProcedure"><i class="oe-i trash"></i></span>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        <?php
-        if (isset($_POST[$class]['total_duration_' . $identifier])) {
-            $adjusted_total_duration = $_POST[$class]['total_duration_' . $identifier];
-        }
-        ?>
+            <?php }
+            if (isset($_POST[$class]['total_duration_' . $identifier])) {
+                $adjusted_total_duration = $_POST[$class]['total_duration_' . $identifier];
+            }
+        } ?>
         </tbody>
 
         <?php if ($durations) { ?>
@@ -379,9 +382,9 @@
                     });
                 }
 
-                if (callback && typeof (window.callbackAddProcedure) == 'function') {
-                    m = data.match(/<input type=\"hidden\" value=\"([0-9]+)\"/);
-                    var procedure_id = m[1];
+                if (callback && typeof (window.callbackAddProcedure) === 'function') {
+                    let m = data.match(/<input class="js-procedure" type=\"hidden\" value=\"([0-9]+)\"/);
+                    let procedure_id = m[1];
                     callbackAddProcedure(procedure_id);
                 }
             }
@@ -410,6 +413,14 @@
                     ProcedureSelectionSelectByName(selectedItems[i]['label'], true, '<?= $identifier ?>');
                 }
                 return true;
+            },
+            onOpen: function () {
+                $('#procedure_popup_<?=$identifier ?: ''; ?>').find('li').each(function () {
+                    let procedureId = $(this).data('id');
+                    let alreadyUsed = $('#procedureList_<?=$identifier ?: ''; ?>')
+                        .find('.js-procedure[value="' + procedureId + '"]').length > 0;
+                    $(this).toggle(!alreadyUsed);
+                });
             },
             searchOptions: {
                 searchSource: '/procedure/autocomplete',
