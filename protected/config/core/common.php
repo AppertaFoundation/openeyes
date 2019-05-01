@@ -338,13 +338,6 @@ return array(
                     'restricted' => array('Report'),
                     'userrule' => 'isSurgeon',
                 ),
-                'cataract' => array(
-                    'title' => 'Cataract Audit',
-                    'uri' => 'dashboard/cataract',
-                    'position' => 4,
-                    'userrule' => 'isSurgeon',
-                    'restricted' => array('admin'),
-                    'options' => array('target' => '_blank'), ),
                 'nodexport' => array(
                     'title' => 'NOD Export',
                     'uri' => 'NodExport',
