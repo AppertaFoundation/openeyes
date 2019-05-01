@@ -76,7 +76,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $biometry = $this->recentBiometry($patient);
         $blockers = $this->alphaBlockerStatusAndDate($patient);
         $anticoag = $this->anticoagsStatusAndDate($patient);
-        $labResult = Element_OphInLabResults_Inr::model()->findPatientResultByType($patient->id, '1');
+        $labResult = Element_OphInLabResults_Entry::model()->findPatientResultByType($patient->id, '1');
         $allergyString = $this->allergyString($episode);
         $operation = $this->operation($id);
 
