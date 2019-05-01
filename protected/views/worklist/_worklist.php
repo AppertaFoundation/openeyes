@@ -19,7 +19,6 @@
 
 $data_provider = $this->manager->getPatientsForWorklist($worklist);
 $data_provider->pagination->pageVar = 'page' . $worklist->id;
-$data_provider->pagination->pageSize = 50;
 // Get data so that pagination  works
 $data_provider->getData();
 $core_api = new CoreAPI();
