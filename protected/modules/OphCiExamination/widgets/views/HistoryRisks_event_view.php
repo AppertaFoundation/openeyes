@@ -184,7 +184,7 @@
                                 <?php } else if (isset($not_checked_required_risks) && is_array($not_checked_required_risks)) { ?>
                                     <?php foreach ($not_checked_required_risks as $entry) : ?>
                                         <tr>
-                                            <td><?= $entry['risk']; ?></td>
+                                            <td><?= $entry ?></td>
                                             <td>
                                                 <span class="none"><?= ($entry['comments'] !== '' ? $entry['comments'] : 'None') ?></span>
                                             </td>
