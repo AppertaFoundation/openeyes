@@ -51,23 +51,10 @@
     </tbody>
   </table>
 
-  <?=\CHtml::submitButton(
-    'Save',
-    [
-      'class' => 'button large',
-      'name' => 'save',
-      'id' => 'et_save'
-    ]
-  ); ?>
+  <?= \OEHtml::submitButton() ?>
 
-  <?=\CHtml::button(
-    'Cancel',
-    [
-      'class' => 'button large',
-      'type' => 'button',
-      'name' => 'cancel',
-      'id' => 'et_cancel',
-      'data-uri' => '/OphCiExamination/admin/ClinicOutcomeRoles/index/',
-    ]
-  ); ?>
+  <?= \OEHtml::cancelButton("Cancel", [
+    'data-uri' => '/OphCiExamination/admin/ClinicOutcomeRoles/index/',
+  ]) ?>
+
 </div>
