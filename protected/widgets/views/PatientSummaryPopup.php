@@ -105,12 +105,30 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 
         <table class="patient-demographics" style="position: relative; right: 0; cursor: default;">
           <tbody>
+          <?php if(isset($this->patient->patient_referral_id) && Yii::app()->params['institution_code'] === 'CERA'){ ?>
           <tr>
-            <td><?php echo 'Referring '.Yii::app()->params['general_practitioner_label'] ?></td>
-            <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
+              <td><?php echo 'Referring '.Yii::app()->params['general_practitioner_label'] ?></td>
+              <td><?= $this->patient->patient_referral ? $this->patient->patient_referral->contact->fullName : 'Unknown'; ?></td>
           </tr>
           <tr>
               <td><?php echo 'Referring '.Yii::app()->params['general_practitioner_label'].' Role' ?></td>
+              <td><?= ($this->patient->patient_referral && $this->patient->patient_referral->contact->label) ? $this->patient->patient_referral->contact->label->name : 'Unknown'; ?></td>
+          </tr>
+          <tr>
+              <td><?php echo 'Referring '.Yii::app()->params['gp_label']?> Address</td>
+              <td><?= ($this->patient->patient_referral && $this->patient->patient_referral->contact->address) ? $this->patient->patient_referral->contact->address->letterLine : 'Unknown'; ?></td>
+          </tr>
+          <tr>
+              <td><?php echo 'Referring '.Yii::app()->params['gp_label']?> Telephone</td>
+              <td><?= ($this->patient->gp && $this->patient->patient_referral->contact->primary_phone) ? $this->patient->patient_referral->contact->primary_phone : 'Unknown'; ?></td>
+          </tr>
+          <?php } ?>
+          <tr>
+            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+            <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
+          </tr>
+          <tr>
+              <td><?php echo Yii::app()->params['general_practitioner_label'].' Role' ?></td>
               <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
           </tr>
           <tr>

@@ -169,7 +169,7 @@ class Patient extends BaseActiveRecordVersioned
             ),
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
             'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
-            'patient_referral' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
+            'patient_referral' => array(self::BELONGS_TO, 'Gp', 'patient_referral_id'),
             'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
             'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
             'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)',
