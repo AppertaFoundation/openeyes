@@ -1256,7 +1256,7 @@ class DefaultController extends \BaseEventTypeController
 
         $history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications');
         if ($history_meds) {
-            $errors = $this->setAndValidateHistoryRisksFromData($errors, $history_meds);
+            $errors = $this->setAndValidateHistoryMedicationsFromData($errors, $history_meds);
         }
 
         $posted_risk = [];
