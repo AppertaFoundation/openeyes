@@ -16,9 +16,9 @@
  */
 
 /**
-* Class OphInLabResults_Field_Type
+ * Class OphInLabResults_Field_Type
  * @package OEModule\OphCiExamination\models
-*
+ *
  * @property int $id
  * @property String $name
  * @property \User $user
@@ -40,7 +40,6 @@ class OphInLabResults_Field_Type extends BaseActiveRecordVersioned
     {
         return 'ophinlabresults_field_type';
     }
-
 
     /**
      * @return array validation rules for model attributes.
