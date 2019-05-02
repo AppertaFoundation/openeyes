@@ -20,7 +20,8 @@
                             <div class="cols-10">
                                 <?php echo $form->numberField($element, 'result'); ?>
                                 <span class="large-text highlighter orange js-lab-result-warning"
-                                      style="<?php if (isset($element->result) &&
+                                      style="<?php
+                                      if (isset($element->result)&& $element->resultType->normal_min && $element->resultType->normal_min &&
                                           ($element->result > $element->resultType->normal_max || $element->result < $element->resultType->normal_min)) {
                                           echo "display:block";
                                       } else {
@@ -51,13 +52,3 @@
         </div>
     </div>
 </section>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        console.log($('#result-output'));
-        console.log($('#<?= CHtml::modelName($element)?>_result'));
-        $('#<?= CHtml::modelName($element)?>_result').on('input', function () {
-            console.log("show me what's going on");
-        });
-    })
-</script>

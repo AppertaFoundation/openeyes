@@ -48,3 +48,11 @@
         </div>
     </div>
 </section>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#et_save').on('click', function (){
+            $('#Element_OphInLabResults_Details_result_type_id').attr('disabled', false);
+        })
+    })
+</script>

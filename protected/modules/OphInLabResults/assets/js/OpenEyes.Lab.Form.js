@@ -65,10 +65,12 @@ OpenEyes.Lab = OpenEyes.Lab || {};
 
                 if (option.dataset.fieldTypeName === "Numeric Field") {
                     $('#Element_OphInLabResults_Entry_result').on('input', function () {
-                        if ($(this).val() > option.dataset.normalMax || $(this).val() < option.dataset.normalMin) {
-                            $('.js-lab-result-warning').show();
-                        } else {
-                            $('.js-lab-result-warning').hide();
+                        if (option.dataset.normalMax !== "" && option.dataset.normalMin !== "") {
+                            if ($(this).val() > option.dataset.normalMax || $(this).val() < option.dataset.normalMin) {
+                                $('.js-lab-result-warning').show();
+                            } else {
+                                $('.js-lab-result-warning').hide();
+                            }
                         }
                     });
                 }
