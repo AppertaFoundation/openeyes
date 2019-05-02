@@ -30,6 +30,10 @@ class OphInLabResults_Type extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('type, result_element_id, ', 'required'),
+            array('min_range', 'minRangeValidation'),
+            array('max_range', 'maxRangeValidation'),
+            array('normal_min', 'normalMinValueValidation'),
+            array('normal_max', 'normalMaxValueValidation'),
             array('type, result_element_id, field_type_id, default_units, custom_warning_message, min_range, max_range,
             normal_min, normal_max, show_on_whiteboard ', 'safe'),
         );
@@ -61,5 +65,59 @@ class OphInLabResults_Type extends BaseActiveRecordVersioned
             'type' => 'Type',
             'result_element_type' => 'Result Type',
         );
+    }
+
+    public function normalMinValueValidation($attribute, $params)
+    {
+        if ($this->$attribute) {
+            if ($this->normal_max && $this->$attribute > $this->normal_max) {
+                $this->addError(
+                    $attribute, $attribute . ' has to be lower than the normal max value'
+                );
+            }
+            if ($this->min_range && $this->$attribute < $this->min_range) {
+                $this->addError(
+                    $attribute, $attribute . ' has to be higher than the range min'
+                );
+            }
+        }
+    }
+
+    public function normalMaxValueValidation($attribute, $params)
+    {
+        if ($this->$attribute) {
+            if ($this->normal_min && $this->$attribute > $this->normal_min) {
+                $this->addError(
+                    $attribute, $attribute . ' has to be higher than the normal min value'
+                );
+            }
+            if ($this->max_range && $this->$attribute < $this->max_range) {
+                $this->addError(
+                    $attribute, $attribute . ' has to be lower than the range max'
+                );
+            }
+        }
+    }
+
+    public function minRangeValidation($attribute, $params)
+    {
+        if ($this->$attribute && $this->max_range) {
+            if ($this->$attribute > $this->max_range) {
+                $this->addError(
+                    $attribute, $attribute . ' has to be lower than max range'
+                );
+            }
+        }
+    }
+
+    public function maxRangeValidation($attribute, $params)
+    {
+        if ($this->$attribute && $this->min_range) {
+            if ($this->$attribute < $this->min_range) {
+                $this->addError(
+                    $attribute, $attribute . ' has to be higher than min range'
+                );
+            }
+        }
     }
 }
