@@ -70,7 +70,7 @@ class BaseActiveRecord extends CActiveRecord
 
     /**
      * Set the flag to indicate that model should only save to the db if the model is dirty.
-     * 
+     *
      * @param bool $enable
      *
      * @return \BaseActiveRecord
@@ -113,7 +113,7 @@ class BaseActiveRecord extends CActiveRecord
 
     /**
      * Default to the lower case of the class to match naming convention for model tables.
-     * 
+     *
      * @return string
      */
     public function tableName()
@@ -601,7 +601,7 @@ class BaseActiveRecord extends CActiveRecord
 
         /**
          * Check if the model dirty.
-         * 
+         *
          * @return bool true if the model dirty
          */
         public function isModelDirty()
@@ -648,6 +648,13 @@ class BaseActiveRecord extends CActiveRecord
     {
         if ($value = $this->getAttribute($attribute)) {
             return Helper::convertMySQL2NHS($value, $empty_string);
+        }
+    }
+
+    public function ShortDate($attribute, $empty_string = '-')
+    {
+        if ($value = $this->getAttribute($attribute)) {
+            return Helper::convertDate2Short($value, $empty_string);
         }
     }
 

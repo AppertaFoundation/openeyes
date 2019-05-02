@@ -178,6 +178,16 @@ class Worklist extends BaseActiveRecordVersioned
     }
 
     /**
+     * @return string
+     */
+    public function getDisplayShortDate()
+    {
+        $start = $this->ShortDate('start');
+        // Short date only uses start date (as it is for situations where string length is an issue)
+        return $start;
+    }
+
+    /**
      * Get array of mapping attributes for this Worklist, indexed by the name value of the attribute.
      *
      * @return array
