@@ -338,13 +338,6 @@ return array(
                     'restricted' => array('Report'),
                     'userrule' => 'isSurgeon',
                 ),
-                'cataract' => array(
-                    'title' => 'Cataract Audit',
-                    'uri' => 'dashboard/cataract',
-                    'position' => 4,
-                    'userrule' => 'isSurgeon',
-                    'restricted' => array('admin'),
-                    'options' => array('target' => '_blank'), ),
                 'nodexport' => array(
                     'title' => 'NOD Export',
                     'uri' => 'NodExport',
@@ -605,7 +598,9 @@ return array(
       ),
       'oe_version' => '3.2a',
       'gp_label' => 'GP',
-      // number of days in the future to retrieve worklists for the automatic dashboard render
-      'worklist_dashboard_future_days' => 0
+      // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
+      'worklist_dashboard_future_days' => 0,
+      // page size of worklists - recommended to be very large by default, as paging is not generally needed here
+      'worklist_default_pagination_size' => 1000
     ),
 );

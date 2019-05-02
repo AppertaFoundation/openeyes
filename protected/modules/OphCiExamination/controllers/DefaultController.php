@@ -95,7 +95,7 @@ class DefaultController extends \BaseEventTypeController
         } else {
             $elements = $this->event->getElements();
             if ($this->step) {
-                $elements = $this->mergeNextStep($elements);
+                $elements = $this->mergeNextStep($elements, $this->step);
             }
         }
 
@@ -327,7 +327,14 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionStep($id)
     {
-        $this->step = $this->getCurrentStep()->getNextStep();
+        $step_id = \Yii::app()->request->getParam('step_id');
+
+        if ($step_id) {
+            $this->step = models\OphCiExamination_ElementSet::model()->findByPk($step_id);
+        } else {
+            $this->step = $this->getCurrentStep()->getNextStep();
+        }
+
         // This is the same as update, but with a few extras, so we call the update code and then pick up on the action later
         $this->actionUpdate($id);
     }
@@ -533,13 +540,10 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return array
      */
-    protected function mergeNextStep($elements)
+    protected function mergeNextStep($elements, $next_step)
     {
         if (!$event = $this->event) {
             throw new \CException('No event set for step merging');
-        }
-        if (!$next_step = $this->getNextStep($event)) {
-            throw new \CException('No next step available');
         }
 
         //TODO: should we be passing episode here?
@@ -1256,7 +1260,7 @@ class DefaultController extends \BaseEventTypeController
 
         $history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications');
         if ($history_meds) {
-            $errors = $this->setAndValidateHistoryRisksFromData($errors, $history_meds);
+            $errors = $this->setAndValidateHistoryMedicationsFromData($errors, $history_meds);
         }
 
         $posted_risk = [];

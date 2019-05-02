@@ -2135,6 +2135,7 @@ class BaseEventTypeController extends BaseModuleController
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
         $this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
+        $this->jsVars['OE_site_id'] = Yii::app()->session['selected_site_id'];
 
         parent::processJsVars();
     }

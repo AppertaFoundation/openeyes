@@ -19,7 +19,6 @@
 
 $data_provider = $this->manager->getPatientsForWorklist($worklist);
 $data_provider->pagination->pageVar = 'page' . $worklist->id;
-$data_provider->pagination->pageSize = 50;
 // Get data so that pagination  works
 $data_provider->getData();
 $core_api = new CoreAPI();
@@ -30,7 +29,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
 
 <div class="worklist-group js-filter-group" id="js-worklist-<?=$worklist->id?>-wrapper">
     <div class="worklist-summary flex-layout">
-        <h2 id="worklist_<?= $worklist->id ?>"><?=$worklist->name ?></h2>
+        <h2 id="worklist_<?= $worklist->id ?>"><?=$worklist->name ?> : <?= $worklist->getDisplayDate() ?></h2>
     </div>
 
     <?php if ($data_provider->totalItemCount <= 0): ?>
