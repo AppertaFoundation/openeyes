@@ -500,7 +500,7 @@
         const selectedWorkflowStepItem = $(selectors.workflowStepItem).filter('.selected');
         
         if(selectedContextItem.length !== 0){
-            if((parseInt(self.options.userContext.id) !== selectedContextItem.data('context-id')) || (parseInt(self.options.currentStep.id) !== selectedWorkflowStepItem.data('workflow-id'))){
+         //   if((parseInt(self.options.userContext.id) !== selectedContextItem.data('context-id')) || (parseInt(self.options.currentStep.id) !== selectedWorkflowStepItem.data('workflow-id'))) {
                 let postData = {
                     YII_CSRF_TOKEN: YII_CSRF_TOKEN,
                     eventId: OE_event_id,
@@ -515,7 +515,7 @@
                 }
                 $('nav.event-header').append($('<div>', {"class": 'spinner-loader'}).append($('<i>', {"class": "spinner"})));
 
-                if(postData !== undefined){
+                if (postData !== undefined) {
                     $.post("/ChangeEvent/UpdateEpisode", postData, function(result) {
                         if(result === "true"){
                             $('.'+self.options.popupClass+' .close-icon-btn').trigger('click');
@@ -526,17 +526,21 @@
                                     'site_id': OE_site_id,
                                     'firm_id': postData.selectedContextId
                                 },
-                                returnUrl: `/OphCiExamination/default/step/${OE_event_id}?patient_id=${OE_patient_id}&step_id=${postData.selectedWorkflowStepId}`
 
                             }, function() {
-                                window.location.href = `/OphCiExamination/default/step/${OE_event_id}?patient_id=${OE_patient_id}&step_id=${postData.selectedWorkflowStepId}`;
+
+                                if (typeof moduleName && moduleName === 'OphCiExamination') {
+                                    window.location.href = `/OphCiExamination/default/step/${OE_event_id}?patient_id=${OE_patient_id}&step_id=${postData.selectedWorkflowStepId}`;
+                                } else {
+                                    window.location.reload();
+                                }
                             });
                         }
                     });
                 }
-            }
+           // }
         }
-    }
+    };
 
     exports.NewEvent = NewEventDialog;
 }(OpenEyes.UI.Dialog, OpenEyes.Util));
