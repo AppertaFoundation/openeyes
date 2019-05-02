@@ -333,6 +333,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->fileField($referral, 'uploadedFile'); ?>
           </td>
         </tr>
+        <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
         <tr>
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                 <?= $form->label($patient, 'patient_referral_id') ?>
@@ -368,7 +369,8 @@ foreach ($ethnic_list as $key=>$item){
                 Is Referring Practitioner patient's GP?
             </td>
         </tr>
-        <tr id="js-patient-gp-row" style="<?= $isPRSameASGP ? 'display: none': ''; ?>">
+        <?php endif; ?>
+        <tr id="js-patient-gp-row" style="<?= Yii::app()->params['institution_code']=='CERA' && $isPRSameASGP ? 'display: none': ''; ?>">
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                 <?= $form->label($patient, 'gp_id') ?>
                 <br/>
@@ -390,7 +392,10 @@ foreach ($ethnic_list as $key=>$item){
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
                 </div>
-                <a id="js-add-gp-btn" href="#">Add General Practitioner</a>
+                <a id="js-add-gp-btn" href="#">
+                  <?= Yii::app()->params['institution_code']=='CERA'?
+                    "Add General Practitioner": "Add Referring Practitioner"; ?>
+                </a>
             </td>
         </tr>
         <tr>
