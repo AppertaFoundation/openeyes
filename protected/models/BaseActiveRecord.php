@@ -651,7 +651,7 @@ class BaseActiveRecord extends CActiveRecord
         }
     }
 
-    public function ShortDate($attribute, $empty_string = '-')
+    public function shortDate($attribute, $empty_string = '-')
     {
         if ($value = $this->getAttribute($attribute)) {
             return Helper::convertDate2Short($value, $empty_string);
@@ -666,7 +666,8 @@ class BaseActiveRecord extends CActiveRecord
      */
     public function NHSDateAsHTML($attribute, $empty_string = '-')
     {
-        if ($value = $this->getAttribute($attribute)) {
+      $value = $this->getAttribute($attribute);
+      if ($value) {
             return Helper::convertMySQL2HTML($value, $empty_string);
         }
     }
