@@ -36,7 +36,7 @@
       <col class="cols-1"><!-- date -->
       <col class="cols-1">
       <col class="cols-3"><!-- clinical info -->
-      <col class="cols-3"><!-- referral notes -->
+      <col class="cols-3"><!-- notes -->
       <col>
     </colgroup>
     <thead>
@@ -47,7 +47,7 @@
       <th><i class="oe-i arrow-down-bold small pad active"></i></th>
       <th>Context</th>
       <th>Clinic Info</th>
-      <th>Referral Notes</th>
+      <th>Notes</th>
       <!--<th>Ticket Owner</th>-->
       <th></th>
     </tr>
