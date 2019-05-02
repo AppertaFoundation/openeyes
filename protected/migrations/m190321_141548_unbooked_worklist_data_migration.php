@@ -54,7 +54,7 @@ class m190321_141548_unbooked_worklist_data_migration extends OEMigration
         }
 
         //could have been deleted by an appointment cancellation
-        $message = "PasApiAssignment could not found resource_id (pas_visit_id): " . $event->pas_visit_id . ", Event ID: " . $event->event_id;
+        $message = "PasApiAssignment could not found resource_id (pas_visit_id): " . $event->pas_visit_id . ", Event ID: " . $event->id;
         \OELog::log($message);
         return null;
     }
