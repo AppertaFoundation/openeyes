@@ -82,7 +82,7 @@ $(function () {
   });
 
   $('#selected_pr_wrapper').on('click', '.js-remove-pr', function () {
-    removeSelectedPR();
+    removeSelectedGP('pr');
   });
 
   $('#selected_gp_wrapper').on('click', '.js-remove-gp', function () {

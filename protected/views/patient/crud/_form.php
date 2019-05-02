@@ -486,7 +486,7 @@ foreach ($ethnic_list as $key=>$item){
         maxHeight: '200px',
         onSelect: function(){
             let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-            removeSelectedPR();
+            removeSelectedGP('pr');
             addItemPatientForm('selected_pr_wrapper', {item: AutoCompleteResponse});
             if ($('#is_pr_gp').is(':checked')){
                 removeSelectedGP();
