@@ -32,11 +32,12 @@ class Appointment extends BaseCWidget
         $criteria->join = " JOIN worklist w ON w.id = t.worklist_id";
 
         $criteria_past = clone $criteria;
+        $start_of_today = date("Y-m-d");
 
-        $criteria->addCondition('t.when >= NOW()');
+        $criteria->addCondition('t.when >= "' . $start_of_today . '"');
         $criteria->order = 't.when asc';
 
-        $criteria_past->addCondition('t.when < NOW()');
+        $criteria_past->addCondition('t.when < "' . $start_of_today . '"');
         $criteria_past->order = 't.when asc';
 
         $this->worklist_patients = WorklistPatient::model()->findAllByAttributes(
