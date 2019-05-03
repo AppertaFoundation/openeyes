@@ -82,13 +82,15 @@ class UnbookedWorklist extends CComponent
         $criteria = new \CDbCriteria();
         $criteria->with = ['display_contexts', 'mappings.values'];
         $criteria->addCondition('display_contexts.site_id = :site_id');
-        $criteria->addCondition('display_contexts.subspecialty_id = :subspecialty_id');
+        if(\SettingMetadata::model()->getSetting('include_subspecialty_name_in_unbooked_worklists')) {
+          $criteria->addCondition('display_contexts.subspecialty_id = :subspecialty_id');
+          $criteria->params[':subspecialty_id'] = $subspecialty_id;
+        }
 
         $criteria->addCondition('mappings.key = "UNBOOKED"');
         $criteria->addCondition('values.mapping_value = "true"');
 
         $criteria->params[':site_id'] = $site_id;
-        $criteria->params[':subspecialty_id'] = $subspecialty_id;
 
         if ($firm_id) {
             $criteria->addCondition('display_contexts.firm_id = :firm_id');
@@ -110,11 +112,16 @@ class UnbookedWorklist extends CComponent
      */
     public function createWorklistDefinition($site_id, $subspecialty_id, $firm_id = null)
     {
+        $include_subspecialty_name_in_unbooked_worklists = \SettingMetadata::model()->getSetting('include_subspecialty_name_in_unbooked_worklists');
         $subspecialty = Subspecialty::model()->findByPk($subspecialty_id);
         $site = Site::model()->findByPk($site_id);
         $today = new \DateTime();
         $definition = new \WorklistDefinition();
-        $definition->name = "Unbooked - {$subspecialty->name} - {$site->name}";
+        if($include_subspecialty_name_in_unbooked_worklists) {
+          $definition->name = "Unbooked - {$subspecialty->name} - {$site->name}";
+        } else {
+          $definition->name = "Unbooked - {$site->name}";
+        }
         $definition->description = 'Patients for unbooked worklist';
         $definition->worklist_name = null;
         $definition->rrule = 'FREQ=DAILY';
@@ -125,7 +132,9 @@ class UnbookedWorklist extends CComponent
         if ($definition->save()) {
             $context = new \WorklistDefinitionDisplayContext();
             $context->firm_id = $firm_id;
-            $context->subspecialty_id = $subspecialty_id;
+            if($include_subspecialty_name_in_unbooked_worklists) {
+              $context->subspecialty_id = $subspecialty_id;
+            }
             $context->site_id = $site_id;
             $context->worklist_definition_id = $definition->id;
             $context->save();
