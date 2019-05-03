@@ -417,7 +417,7 @@
       <EYEDRAW_CLASS_MNEMONIC>Gonioscopy</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Gonioscopy</TITLE>
       <INIT_DOODLE_JSON>
-        {"scaleLevel":1,"version":1.1,"subclass":"Gonioscopy","apexX":-460,"apexY":-460,"mode":"Basic","order":0}
+        {"scaleLevel":1,"version":1.1,"subclass":"Gonioscopy","apexX":-460,"apexY":-430,"mode":"Basic","order":0}
       </INIT_DOODLE_JSON>
     </DOODLE>
     <DOODLE>
