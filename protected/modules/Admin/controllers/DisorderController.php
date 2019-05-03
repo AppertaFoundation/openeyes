@@ -22,28 +22,25 @@ class DisorderController extends BaseAdminController
         Audit::add('admin', 'list', null, false,
             array('module' => 'OphTrOperationnote',
                 'model' => 'Disorder'));
-        $search = \Yii::app()->request->getQuery('search', ['query' => '']);
+        $query = \Yii::app()->request->getQuery('q');
         $criteria = new \CDbCriteria();
         $criteria->order = 'fully_specified_name';
-        if ($search) {
-            if ($search['query']) {
-                if (is_numeric($search['query'])) {
+        if ($query) {
+                if (is_numeric($query)) {
                     $criteria->addCondition('id = :id');
-                    $criteria->params[':id'] = $search['query'];
+                    $criteria->params[':id'] = $query;
                 } else {
-                    $criteria->addSearchCondition('fully_specified_name', $search['query'], true, 'OR');
-                    $criteria->addSearchCondition('term', $search['query'], true, 'OR');
-                    $criteria->addSearchCondition('aliases', $search['query'], true, 'OR');
+                    $criteria->addSearchCondition('fully_specified_name', strtolower($query), true, 'OR');
+                    $criteria->addSearchCondition('term', strtolower($query), true, 'OR');
+                    $criteria->addSearchCondition('aliases', strtolower($query) , true, 'OR');
                 }
-
-            }
         }
         $this->render('/list_disorder', array(
             'pagination' => $this->initPagination(Disorder::model(), $criteria),
             'model_list' => Disorder::model()->findAll($criteria),
             'title' => 'Manage Disorder',
             'model_class' => 'Disorder',
-            'search' => $search
+            'query' => $query
         ));
     }
 

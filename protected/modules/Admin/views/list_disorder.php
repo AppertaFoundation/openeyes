@@ -23,7 +23,7 @@
 
 <div class="cols-12">
     <div class="row divider">
-        <form id="disorder-search-form">
+        <form id="disorder-search-form" action="/Admin/disorder/list" method="get">
             <table class="standard">
                 <colgroup>
                     <col class="cols-4">
@@ -32,19 +32,18 @@
 
                 </colgroup>
                 <tr>
-                    <td><?= CHtml::textField('search[query]', $search['query'], [
+                    <td><?= CHtml::textField('q', (isset($_GET['q']) ? $_GET['q'] : ''), [
                             'placeholder' => 'Search Term , Fully Specified Name , Aliases - (all are case sensitive)',
                             'class' => 'cols-full',
                         ]); ?>
                     </td>
                     <td>
-                        <button class="blue hint" id="search-button" type="submit">Search</button>
+                        <button class="blue hint" id="search-button" name="search" type="submit">Search</button>
                     </td>
                 </tr>
             </table>
         </form>
     </div>
-    <form id="admin_list_disorders">
         <table class="standard cols-full">
             <colgroup>
                 <col>
@@ -106,5 +105,4 @@
             </tr>
             </tfoot>
         </table>
-    </form>
 </div>
