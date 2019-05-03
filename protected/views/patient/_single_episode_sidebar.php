@@ -40,15 +40,15 @@ $subspecialty_labels = array();
 $current_subspecialty = null;
 $episodes_list = array();
 $operation_status_to_css_class = [
-  'Requires scheduling' => 'alert',
-  'Scheduled' => 'scheduled',
-  'Requires rescheduling' => 'alert',
-  'Rescheduled' => 'scheduled ',
-  'Cancelled' => 'cancelled',
-  'Completed' => 'done',
-  // extend this list with new statuses, e.g.:
-  // 'On hold ... ' => 'pause', for OE-8439
-  // 'Reserved ... ' => 'flag', for OE-7194
+    'Requires scheduling' => 'alert',
+    'Scheduled' => 'scheduled',
+    'Requires rescheduling' => 'alert',
+    'Rescheduled' => 'scheduled ',
+    'Cancelled' => 'cancelled',
+    'Completed' => 'done',
+    'On-Hold' => 'pause'
+    // extend this list with new statuses, e.g.:
+    // 'Reserved ... ' => 'flag', for OE-7194
 ]; ?>
 <div class="sidebar-eventlist">
     <?php if (is_array($ordered_episodes)) { ?>
