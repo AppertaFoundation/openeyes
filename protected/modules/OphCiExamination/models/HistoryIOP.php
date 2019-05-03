@@ -35,7 +35,7 @@ namespace OEModule\OphCiExamination\models;
  * @property Eye $eye
  * @property User $lastModifiedUser
  */
-class HistoryIOP extends \BaseEventTypeElement
+class HistoryIOP extends \SplitEventTypeElement
 {
 
     protected $auto_update_relations = true;

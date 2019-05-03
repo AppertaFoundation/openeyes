@@ -6,6 +6,8 @@ function addDatePicker(datePickerInputs) {
             default_date: false,
             max:  new Date(),
         });
+        // TODO: create a css class for date with width of 90px
+        $(datePickerInputs[i]).css('width','90px');
     }
 }
 
