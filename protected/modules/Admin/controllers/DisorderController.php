@@ -15,6 +15,8 @@
  */
 class DisorderController extends BaseAdminController
 {
+    public $items_per_page = 60;
+
     public function actionList()
     {
         Audit::add('admin', 'list', null, false,
