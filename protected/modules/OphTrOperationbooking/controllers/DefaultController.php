@@ -21,6 +21,8 @@ class DefaultController extends OphTrOperationbookingEventController
         'admissionLetter' => self::ACTION_TYPE_PRINT,
         'admissionForm' => self::ACTION_TYPE_PRINT,
         'verifyProcedures' => self::ACTION_TYPE_CREATE,
+        'putOnHold' => self::ACTION_TYPE_EDIT,
+        'putOffHold' => self::ACTION_TYPE_EDIT
     );
 
     public $eventIssueCreate = 'Operation requires scheduling';
@@ -612,5 +614,44 @@ class DefaultController extends OphTrOperationbookingEventController
         );
 
         return $this->actionPDFPrint($this->operation->event->id);
+    }
+
+    /**
+     * initialise the controller with the event id.
+     */
+    protected function initActionPutOnHold()
+    {
+        $event_id = isset($_GET['id']) ? $_GET['id'] : null;
+        $this->initWithEventId($event_id);
+    }
+
+    public function actionPutOnHold()
+    {
+        if (isset($_POST['et_cancel_put_on_hold'])) {
+            return $this->redirect(array('/' . $this->event_type->class_name . '/default/view/' . $this->event->id));
+        }
+       $this->operation->status_id = OphTrOperationbooking_Operation_Status::model()->find('name = "On-Hold"')->id;
+       if(!$this->operation->save()){
+           var_dump($this->operation->getErrors());
+
+       } else {
+           return $this->redirect(array('default/view/' . $this->event->id));
+       }
+    }
+
+    protected function initActionPutOffHold()
+    {
+        $event_id = isset($_GET['id']) ? $_GET['id'] : null;
+        $this->initWithEventId($event_id);
+    }
+
+    public function actionPutOffHold(){
+        $this->operation->status_id = OphTrOperationbooking_Operation_Status::model()->find('name = "Requires rescheduling"')->id;
+        if(!$this->operation->save()){
+            var_dump($this->operation->getErrors());
+
+        } else {
+            return $this->redirect(array('default/view/' . $this->event->id));
+        }
     }
 }
