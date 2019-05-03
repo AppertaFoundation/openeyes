@@ -22,10 +22,10 @@ class DisorderController extends BaseAdminController
         Audit::add('admin', 'list', null, false,
             array('module' => 'OphTrOperationnote',
                 'model' => 'Disorder'));
-        $search = \Yii::app()->request->getPost('search', ['query' => '']);
+        $search = \Yii::app()->request->getQuery('search', ['query' => '']);
         $criteria = new \CDbCriteria();
         $criteria->order = 'fully_specified_name';
-        if (Yii::app()->request->isPostRequest) {
+        if ($search) {
             if ($search['query']) {
                 if (is_numeric($search['query'])) {
                     $criteria->addCondition('id = :id');

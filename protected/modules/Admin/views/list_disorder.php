@@ -23,7 +23,7 @@
 
 <div class="cols-12">
     <div class="row divider">
-        <form id="disorder-search-form" action="#" method="post">
+        <form id="disorder-search-form">
             <table class="standard">
                 <colgroup>
                     <col class="cols-4">
@@ -38,9 +38,7 @@
                         ]); ?>
                     </td>
                     <td>
-                        <input type="hidden" name="YII_CSRF_TOKEN"
-                               value="<?= Yii::app()->request->csrfToken ?>"/>
-                        <button class="blue hint" id="search-button" formmethod="post" type="submit">Search</button>
+                        <button class="blue hint" id="search-button" type="submit">Search</button>
                     </td>
                 </tr>
             </table>
