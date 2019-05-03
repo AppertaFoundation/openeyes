@@ -104,7 +104,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
                     ),
                     'sets' => array(
                         'widget' => 'CustomView',
-                        'viewName' => 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_sets',
+                        'viewName' => !empty($this->editSetTemaplate) ? $this->editSetTemaplate : 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_sets',
                         'viewArguments' => array(
                             'id' => $id
                         )
@@ -138,7 +138,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
                 ),
                 'sets' => array(
                     'widget' => 'CustomView',
-                    'viewName' => 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_sets',
+                    'viewName' => !empty($this->editSetTemaplate) ? $this->editSetTemaplate : 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_sets',
                     'viewArguments' => array(
                         'id' => $id
                     )

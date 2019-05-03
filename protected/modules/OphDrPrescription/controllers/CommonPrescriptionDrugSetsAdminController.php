@@ -21,6 +21,7 @@ class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminControl
     public $group = 'Drugs';
 	public $usage_code = 'PRESCRIPTION_SET';
 	public $modelDisplayName = 'Common Prescription Drug Sets';
+	public $editSetTemaplate = 'application.modules.OphDrPrescription.views.admin.common_prescription_drug_sets.edit_sets';
 
 
 }
