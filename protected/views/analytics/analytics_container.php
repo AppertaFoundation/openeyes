@@ -9,11 +9,20 @@
         <?php
         if ($specialty === 'Cataract'){
             $this->renderPartial('//analytics/analytics_sidebar_cataract',
-                array('specialty'=>$specialty,'user_list'=>$user_list,'current_user'=>$current_user)
+                array(
+                    'specialty'=>$specialty,
+                    'user_list'=>$user_list,
+                    'current_user'=>$current_user
+                )
             );
         }else{
             $this->renderPartial('//analytics/analytics_sidebar',
-                array('specialty'=>$specialty,'user_list'=>$user_list,'current_user'=>$current_user, 'common_disorders'=>$common_disorders)
+                array(
+                    'specialty'=>$specialty,
+                    'user_list'=>$user_list,
+                    'current_user'=>$current_user,
+                    'common_disorders'=>$common_disorders
+                )
             );
         }
         ?>
@@ -31,14 +40,19 @@
                     <?php  $this->renderPartial('//analytics/analytics_cataract',
                     array('event_list'=> $event_list)); ?>
                     </div>
-                <?php }else{?>
+                <?php } else { ?>
                     <div id="js-hs-chart-analytics-clinical-main" style="display: none;">
                      <?php
                      $this->renderPartial('//analytics/analytics_clinical',
                          array('clinical_data'=>$clinical_data)
                      );
                      if ($specialty !== "All"){
-                            $this->renderPartial('//analytics/analytics_custom', array('custom_data'=>$custom_data));
+                            $this->renderPartial('//analytics/analytics_custom',
+                                array(
+                                    'custom_data'=>$custom_data,
+                                    'specialty' => $specialty
+                                )
+                            );
                         }
                      ?>
                     </div>
@@ -53,8 +67,7 @@
             $this->renderPartial('//analytics/analytics_drill_down_list', array(
                 'patient_list' => $patient_list
             ));
-        }
-        ?>
+        } ?>
 </main>
 <script>
     const plotly_min_width = 800;

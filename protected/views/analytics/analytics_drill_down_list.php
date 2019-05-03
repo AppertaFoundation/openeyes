@@ -34,15 +34,15 @@
                 data-link="<?php echo Yii::app()->createUrl("/patient/summary/" . $patient['id']); ?>"
                 style="display: none">
                 <td class="drill_down_patient_list js-csv-data js-csv-hos_num"
-                    style="text-align: center;vertical-align: center;"><?= $patient['hos_num']; ?></td>
+                    style="vertical-align: center;"><?= $patient['hos_num']; ?></td>
                 <td class="drill_down_patient_list js-csv-name"
-                    style="text-align: center;vertical-align: center;"><?= $patient['name']; ?></td>
-                <td style="text-align: center;vertical-align: center;" class="js-csv-dob"><?= $patient['dob'] ?></td>
+                    style="vertical-align: center;"><?= $patient['name']; ?></td>
+                <td style="vertical-align: center;" class="js-csv-dob"><?= $patient['dob'] ?></td>
                 <td class="js-anonymise js-csv-data js-csv-age"
-                    style="text-align: center;vertical-align: center;"><?= $patient['age']; ?></td>
+                    style="vertical-align: center;"><?= $patient['age']; ?></td>
                 <td class="js-anonymise js-csv-gender"
-                    style="text-align: center;vertical-align: center;"><?= $patient['gender']; ?></td>
-                <td style="text-align: center; vertical-align: center;" class="js-csv-diagnoses"><?= $patient['diagnoses']; ?></td>
+                    style="vertical-align: center;"><?= $patient['gender']; ?></td>
+                <td style="vertical-align: center;" class="js-csv-diagnoses"><?= $patient['diagnoses']; ?></td>
                 <td class="text-left" style="vertical-align: center;" class="js-csv-procedures"><?= $patient['procedures']; ?></td>
             </tr>
         <?php } ?>

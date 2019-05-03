@@ -250,7 +250,7 @@
                                 <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-mr-diagnosis" data-name="custom_diagnosis">All</span></li>
                                 <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters js-hs-custom-mr-plot-type" data-name="custom_plot">VA (change)</span></li>
                                 <li>Protocol: <span id="js-chart-filter-protocol" class="js-hs-filters" data-name="custom_protocol">ALL</span></li>
-                            <?php }else{ ?>
+                            <?php } else { ?>
                                 <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-gl-diagnosis" data-name="custom_diagnosis">All</span></li>
                                 <li>Plot: <span id="js-chart-filter-plot" class="js-hs-filters js-hs-custom-mr-plot-type" data-name="custom_plot">VA (change)</span></li>
                                 <li>Procedure: <span id="js-chart-filter-procedure" class="js-hs-filters js-hs-custom-gl-procedure" data-name="custom_procedure">All</span></li>
@@ -484,6 +484,14 @@
         for (var i = 0; i < custom_charts.length; i++) {
             var chart = $('#'+custom_charts[i])[0];
             chart.layout['title'] = (i)? 'Clinical Section (Right Eye)': 'Clinical Section (Left Eye)';
+            chart.layout['yaxis']['title'] = {
+              font: {
+                family: 'sans-serif',
+                size: 12,
+                color: '#fff',
+              },
+              text: getVATitle(),
+            };
             chart.data[0]['x'] = custom_data[i][0]['x'];
             chart.data[0]['y'] = custom_data[i][0]['y'];
             chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
@@ -502,5 +510,16 @@
     function viewAllDates() {
         $('#analytics_datepicker_from').val("");
         $('#analytics_datepicker_to').val("");
+    }
+    
+    function getVATitle(){
+      var va_mode = $('#js-chart-filter-plot');
+      var va_title;
+      if (va_mode.html().includes('change')) {
+        va_title = "Visual acuity change from baseline (LogMAR)";
+      } else {
+        va_title = "Visual acuity (LogMAR)";
+      }
+      return va_title;
     }
 </script>
