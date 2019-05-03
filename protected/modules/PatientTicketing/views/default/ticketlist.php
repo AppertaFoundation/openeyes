@@ -33,10 +33,10 @@
       <col>
       <col class="cols-2"> <!-- patient -->
       <col>
+      <col class="cols-1"><!-- date -->
       <col class="cols-1">
-      <col class="cols-1">
-      <col class="cols-2"><!-- clinical info -->
-      <col class="cols-4"><!-- referral notes -->
+      <col class="cols-3"><!-- clinical info -->
+      <col class="cols-3"><!-- notes -->
       <col>
     </colgroup>
     <thead>

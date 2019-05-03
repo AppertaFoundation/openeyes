@@ -183,7 +183,6 @@ $form = $this->beginWidget('CActiveForm', array(
             Contact Type
         </td>
         <td>
-            <?php ?>
             <?= \CHtml::dropDownList(
                 'contact_label_id',
                 '',
@@ -216,60 +215,6 @@ $form = $this->beginWidget('CActiveForm', array(
 </table>
 
 <?php $this->endWidget(); ?>
-
 <script>
-    $(document).ready(function () {
-        $('.js-add-new-contact').on('click', function (event) {
-            event.preventDefault();
-            let data = {};
-
-            $('.js-contact-field').each(function () {
-
-                if ($(this).data('label') === 'active') {
-
-                    data[$(this).data('label')] = $(this).is(":checked");
-                } else {
-                    data[$(this).data('label')] = $(this).val();
-                }
-            })
-
-            // do ajax to save contact and new address
-            $.ajax({
-                'type': 'POST',
-                'data': "data=" + JSON.stringify(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-                'url': baseUrl + '/OphCiExamination/contact/saveNewContact',
-                'success': function (response) {
-                    response = JSON.parse(response);
-                    if (response.errors) {
-
-                        $('.js-contact-error-box').show();
-                        let $errorsList = $('.js-contact-errors');
-                        $errorsList.html("");
-                        Object.keys(response.errors).forEach(function (key) {
-                            $errorsList.append("<li><a>" + response.errors[key] + "</a> </li>");
-                        });
-
-                    } else {
-                        $('.js-contact-error-box').hide();
-                        data = {};
-                        data.id = response.id;
-                        data.label = response.contact_label;
-                        data.full_name = response.name;
-                        data.email = response.email;
-                        data.phone = response.phone;
-                        data.address = response.address;
-                        data.active = response.active;
-
-                        let templateText = $('#contact-entry-template').text();
-                        row = Mustache.render(templateText, data);
-
-                        $('#contact-assignment-table').append(row);
-                        $('.autosize').autosize();
-                        $('.oe-popup-wrap').remove();
-                    }
-                }
-            });
-        });
-    });
+    $('#contact_label_id').trigger('change');
 </script>
-

@@ -59,6 +59,14 @@
                 ?>
             </td>
         </tr>
+        <tr>
+            <td>Max Number Per Patient</td>
+            <td>
+                <?= \CHtml::activeNumberField(
+                    $contactlabel,
+                    'max_number_per_patient'); ?>
+            </td>
+        </tr>
         </tbody>
 
         <tfoot>
