@@ -85,6 +85,8 @@ class UnbookedWorklist extends CComponent
         if(\SettingMetadata::model()->getSetting('include_subspecialty_name_in_unbooked_worklists')) {
           $criteria->addCondition('display_contexts.subspecialty_id = :subspecialty_id');
           $criteria->params[':subspecialty_id'] = $subspecialty_id;
+        } else {
+          $criteria->addCondition('display_contexts.subspecialty_id is null');
         }
 
         $criteria->addCondition('mappings.key = "UNBOOKED"');
