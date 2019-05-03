@@ -32,7 +32,7 @@
 
                 </colgroup>
                 <tr>
-                    <td><?= CHtml::textField('q', (isset($_GET['q']) ? $_GET['q'] : ''), [
+                    <td><?= CHtml::textField('q', $query, [
                             'placeholder' => 'Search Term , Fully Specified Name , Aliases - (all are case sensitive)',
                             'class' => 'cols-full',
                         ]); ?>
