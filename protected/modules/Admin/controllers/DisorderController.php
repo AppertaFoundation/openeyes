@@ -24,6 +24,7 @@ class DisorderController extends BaseAdminController
                 'model' => 'Disorder'));
         $search = \Yii::app()->request->getPost('search', ['query' => '']);
         $criteria = new \CDbCriteria();
+        $criteria->order = 'fully_specified_name';
         if (Yii::app()->request->isPostRequest) {
             if ($search['query']) {
                 if (is_numeric($search['query'])) {
@@ -34,7 +35,7 @@ class DisorderController extends BaseAdminController
                     $criteria->addSearchCondition('term', $search['query'], true, 'OR');
                     $criteria->addSearchCondition('aliases', $search['query'], true, 'OR');
                 }
-                $criteria->order = 'fully_specified_name';
+
             }
         }
         $this->render('/list_disorder', array(
