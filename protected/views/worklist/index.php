@@ -27,7 +27,7 @@
             <li><a class="js-worklist-filter" href="#" data-worklist="all">All</a></li>
             <?php foreach ($worklists as $worklist): ?>
                 <li><a href="#" class="js-worklist-filter"
-                       data-worklist="js-worklist-<?= $worklist->id ?>"><?= $worklist->name ?></a></li>
+                       data-worklist="js-worklist-<?= $worklist->id ?>"><?= $worklist->name ?>  : <?= $worklist->getDisplayShortDate() ?></a></li>
             <?php endforeach; ?>
         </ul>
     </nav>

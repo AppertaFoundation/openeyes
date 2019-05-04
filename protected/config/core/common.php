@@ -81,7 +81,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201903131430',
+            'time' => '201905135800',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -596,7 +596,7 @@ return array(
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.2a',
+      'oe_version' => '3.2rc1',
       'gp_label' => 'GP',
       // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
       'worklist_dashboard_future_days' => 0,
