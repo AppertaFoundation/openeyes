@@ -32,13 +32,15 @@
         <?php
             if ($specialty !== 'Cataract'){
                 $this->renderPartial('//analytics/analytics_service',
-                    array('service_data'=>$service_data,'common_disorders'=>$common_disorders));
+                    array(
+                        'service_data'=>$service_data,
+                        'common_disorders'=>$common_disorders,
+                    ));
             }
             if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
-                if ($specialty === 'Cataract'){?>
+                if ($specialty === 'Cataract'){ ?>
                     <div class="mdl-layout__container">
-                    <?php  $this->renderPartial('//analytics/analytics_cataract',
-                    array('event_list'=> $event_list)); ?>
+                    <?php  $this->renderPartial('//analytics/analytics_cataract'); ?>
                     </div>
                 <?php } else { ?>
                     <div id="js-hs-chart-analytics-clinical-main" style="display: none;">
@@ -67,7 +69,12 @@
             $this->renderPartial('//analytics/analytics_drill_down_list', array(
                 'patient_list' => $patient_list
             ));
-        } ?>
+        } else {
+            $this->renderPartial('//analytics/analytics_drill_down_list', array(
+                'event_list'=> $event_list,
+                'patient_list' => $patient_list
+            ));
+        }?>
 </main>
 <script>
     const plotly_min_width = 800;
