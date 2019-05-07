@@ -59,6 +59,7 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
                 <?= CHtml::textArea($base_name . '['.$side.'_comments]', "", [
                     'rows' => 1,
                     'class' => 'js-comment-field',
+                    'data-hide-method' => 'display',
                     'id' => CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_'.$side.'_comments',
                 ]) ?>
 
@@ -69,7 +70,8 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
                     id="<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_button' ?>"
                     type="button"
                     class="button js-add-comments"
-                    data-comment-container="#<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_container' ?>">
+                    data-comment-container="#<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_container' ?>"
+                    data-hide-method="display">
                 <i class="oe-i comments small-icon"></i>
             </button>
         </div>
