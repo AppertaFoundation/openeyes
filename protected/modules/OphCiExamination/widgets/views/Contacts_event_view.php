@@ -45,7 +45,7 @@ $element_errors = $element->getErrors();
                     <th>Comments</th>
                 </tr>
                 </thead>
-                <tbody id="contact-assignment-table">
+                <tbody>
                 <tr>
                     <?php $gp_contact = $this->patient->gp->contact; ?>
                     <td><?= $gp_contact->label ? $gp_contact->label->name : "" ?></td>
