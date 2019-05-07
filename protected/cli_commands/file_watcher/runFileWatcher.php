@@ -107,7 +107,7 @@ function fileEntryExists($fullfilename, $filedata, $mysqli)
 {
     global $allfiles;
     if (isset($allfiles[$fullfilename])) {
-        if ($allfiles[$fullfilename]['filesize'] == $filedata['size'] && $allfiles[$fullfilename]['filedate'] == date('Y-m-d H:i:s', $filedata['mtime'])) {
+        if ($allfiles[$fullfilename]['filesize'] == $filedata['size']) {
             return true;
         } else {
             return false;
