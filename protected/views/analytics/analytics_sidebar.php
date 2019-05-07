@@ -474,7 +474,7 @@
                 clinical_chart.data[0]['text'] = clinical_data.text;
                 clinical_chart.layout['yaxis']['tickvals'] = clinical_data['y'];
                 clinical_chart.layout['yaxis']['ticktext'] = clinical_data['text'];
-                clinical_chart.layout['hovermode'] = 'y';
+                clinical_chart.layout['hoverinfo'] = 'x+y';
                 Plotly.redraw(clinical_chart);
         <?php
             if ($specialty !== 'All'){?>

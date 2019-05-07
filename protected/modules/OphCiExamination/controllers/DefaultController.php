@@ -346,9 +346,11 @@ class DefaultController extends \BaseEventTypeController
         /* @var \OEModule\OphCoCvi\components\OphCoCvi_API $cvi_api */
         $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
         /* @var models\Element_OphCiExamination_VisualAcuity $element */
-        $visualAcuity = array_shift(array_values(array_filter($elements, function ($element) {
+
+        $visual_acuities = array_filter($elements, function ($element) {
             return get_class($element) === models\Element_OphCiExamination_VisualAcuity::class;
-        })));
+        });
+        $visualAcuity = array_shift($visual_acuities);
 
         // Render the CVI alert above all th other elements
         if ($cvi_api) {

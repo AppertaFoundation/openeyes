@@ -82,11 +82,11 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
                     <td><?=$wl_patient->scheduledtime;?></td>
                     <td><?=$wl_patient->patient->hos_num;?></td>
                     <?php /*<!--PSD--><td><i class="oe-i triangle-amber js-has-tooltip" data-tooltip-content="Patient Risk: 2 (Medium).<br>Reversible harm from delayed appointment. <br>Previous Cancelled: 0"></i></td>*/?>
-                    <td><a href="<?=$link;?>"><?=$wl_patient->patient->getHSCICName();?></a><span style="visibility: hidden;" class="oe-pathstep-btn" data-step="">Spacing</span></td>
+                    <td><a href="<?=$link;?>"><?=$wl_patient->patient->getHSCICName();?></a></td>
 
                     <?php for ($i = 1; $i<=2-count($worklist->displayed_mapping_attributes); $i++) : ?>
                         <?php /*visibility: hidden; to keep the nice spacing, when PSD will be ready everything will be clean and shiny */ ?>
-                        <td><span style="visibility: hidden;" class="oe-pathstep-btn " data-step="">Spacing</span></td>
+                        <td></td>
                     <?php endfor;?>
                     <?php /*<!--PSD--><td><span class="oe-pathstep-btn " data-step="{&quot;title&quot;:&quot;PSD: Custom&quot;,&quot;status&quot;:&quot;todo&quot;,&quot;php&quot;:&quot;PSD-popups/todo.php&quot;}">PSD</span></td>*/?>
                     <td><?=$wl_patient->patient->genderString?></td>

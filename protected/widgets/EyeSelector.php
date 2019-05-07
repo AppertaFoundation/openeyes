@@ -43,7 +43,7 @@ class EyeSelector extends BaseCWidget
      * Each section is rendered by a method named as "renderXyz", where "Xyz" is the section name.
      * The rendering results will replace the corresponding placeholders in {@link template}.
      */
-    public function render()
+    public function render($view, $data = null, $return = false)
     {
         ob_start();
         echo preg_replace_callback(
