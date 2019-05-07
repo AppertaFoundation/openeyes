@@ -120,7 +120,10 @@ class CaseSearchController extends BaseModuleController
         if (isset($_SESSION['last_search_params'])){
             foreach ($_SESSION['last_search_params'] as $key => $param) {
                 if ($param->name == "patient_name"){
-                    $this->resultOrder .= 'levenshtein_ratio(last_name, \''.$param->patient_name.'\')+levenshtein_ratio(first_name, \''.$param->patient_name.'\')';
+                    if (!empty($this->resultOrder)){
+                        $this->resultOrder .= ',';
+                    }
+                    $this->resultOrder .= '(levenshtein_ratio(last_name, \''.$param->patient_name.'\')+levenshtein_ratio(first_name, \''.$param->patient_name.'\'))';
                 }
             }
         }
