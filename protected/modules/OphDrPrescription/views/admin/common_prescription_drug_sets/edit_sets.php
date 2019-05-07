@@ -350,7 +350,7 @@ if (!empty($id)) {
         console.log(key);
 
         var dialog = new OpenEyes.UI.AdderDialog({
-            openButton: $('.js-add-taper2'),
+            openButton: $('.js-add-taper'),
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($freqs) ?>, {
                     'id': 'frequency',
