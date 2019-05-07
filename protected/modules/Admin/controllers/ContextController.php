@@ -99,7 +99,7 @@ class ContextController extends BaseAdminController
             'siteSecretaries' => $site_secretaries,
             'subspecialties_list_data' => CHtml::listData(Subspecialty::model()->findAll(['order' => 'name']), 'id', 'name'),
             'consultant_list_data' => CHtml::listData(User::model()->findAll(['order' => 'first_name,last_name']), 'id', 'fullName'),
-
+            'newSiteSecretary' => new FirmSiteSecretary(),
         ));
     }
 }
