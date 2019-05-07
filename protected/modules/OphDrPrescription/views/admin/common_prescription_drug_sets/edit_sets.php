@@ -62,9 +62,15 @@ if (!empty($id)) {
             {{duration.label}}
         </td>
         <td>
+                <button class="button hint green js-add-taper" data-key="{{ key }}"
+                        data-row-id="{{medication.id}}" type="button">add taper
+                </button>
+        </td>
+        <td>
             <a href="javascript:void(0);" class="js-delete-set"><i class="oe-i trash"></i></a>
         </td>
     </tr>
+
 
 </script>
 
@@ -105,6 +111,7 @@ if (!empty($id)) {
             <a href="javascript:void(0);" class="js-delete-taper"><i class="oe-i trash"></i></a>
         </td>
     </tr>
+
 
 </script>
 
@@ -346,8 +353,6 @@ if (!empty($id)) {
         var medication_id = $(e.target).attr("data-row-id");
         var key = $(e.target).attr("data-key");
         var key = parseInt(key);
-
-        console.log(key);
 
         var dialog = new OpenEyes.UI.AdderDialog({
             openButton: $('.js-add-taper'),

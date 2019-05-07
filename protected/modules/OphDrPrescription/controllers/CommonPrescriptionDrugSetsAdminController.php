@@ -109,6 +109,7 @@ class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminControl
             }
         }
 
+        $updated_taper_ids = array();
         $taperids = @Yii::app()->request->getPost('MedicationSet')['medicationSetItemTapers']['id'];
         if(is_array($taperids)) {
             $taperData = Yii::app()->request->getPost('MedicationSet')['medicationSetItemTapers'];
