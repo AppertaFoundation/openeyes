@@ -54,9 +54,9 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
         <div class="flex-layout flex-right">
             <span class="js-comment-container cols-full flex-layout"
                 id="<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_container' ?>"
-                style="display: none;>"
+                style="<?= isset($comment) && strlen($comment) ? '' : 'display: none;' ?>"
                 data-comment-button="#<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_button' ?>">
-                <?= CHtml::textArea($base_name . '['.$side.'_comments]', "", [
+                <?= CHtml::textArea($base_name . '['.$side.'_comments]', $comment, [
                     'rows' => 1,
                     'class' => 'js-comment-field',
                     'data-hide-method' => 'display',
@@ -69,6 +69,7 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
             <button
                     id="<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_button' ?>"
                     type="button"
+                    style="<?= isset($comment) && strlen($comment) ? 'display: none;' : '' ?>"
                     class="button js-add-comments"
                     data-comment-container="#<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_container' ?>"
                     data-hide-method="display">

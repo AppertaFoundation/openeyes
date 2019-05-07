@@ -54,6 +54,7 @@ foreach ($readings as $reading) {
                         'value_qualitative_reading_id' => isset($value['qualitative_reading_id']) ? $value['qualitative_reading_id'] : null,
                         'value_qualitative_reading_name' => isset($value['qualitative_reading_id']) ? $scale_values[$value['qualitative_reading_id']] : null,
                         'examinationDate' => $value['examination_date'],
+                        'comment' => $value["{$side}_comments"],
                     ]
                 );
             }
@@ -123,6 +124,7 @@ foreach ($readings as $reading) {
             'value_reading_name' => '{{value_reading_name}}',
             'value_qualitative_reading_id' => '{{value_qualitative_reading_id}}',
             'value_qualitative_reading_name' => '{{value_qualitative_reading_name}}',
+            'comment' => null,
         ]
     );
     ?>
@@ -289,6 +291,7 @@ foreach ($readings as $reading) {
                 value_reading_name: value_reading_name,
                 value_qualitative_reading_id: value_qualitative_reading_id,
                 value_qualitative_reading_name: value_qualitative_reading_name,
+                comment: null,
             }
         );
 
