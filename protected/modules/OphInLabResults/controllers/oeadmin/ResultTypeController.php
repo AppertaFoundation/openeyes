@@ -26,15 +26,45 @@ class ResultTypeController extends BaseAdminController
 
     public function actionEdit()
     {
+        $savedModelWithErrors = $this->save('edit');
+        $this->render('/admin/edit', array(
+            'model' => $savedModelWithErrors['model'],
+            'title' => 'Edit Results_Type',
+            'errors' => isset($savedModelWithErrors['errors']) ? $savedModelWithErrors['errors'] : null,
+            'cancel_uri' => '/OphInLabResults/oeadmin/resultType/list',
+        ));
+    }
+
+    public function actionAdd()
+    {
         $request = Yii::app()->getRequest();
-        $model = OphInLabResults_Type::model()->findByPk((int)$request->getParam('id'));
-        if (!$model) {
-            throw new Exception('OphInLabResults_Type not found with id ' . $request->getParam('id'));
+        $savedModelWithErrors = $this->save('add');
+        $this->render('/admin/edit', array(
+            'model' => $savedModelWithErrors['model'],
+            'title' => 'Add Results_Type',
+            'errors' => isset($savedModelWithErrors['errors']) ? $savedModelWithErrors['errors'] : null,
+            'cancel_uri' => '/OphInLabResults/oeadmin/resultType/list',
+        ));
+
+    }
+
+    function save($mode)
+    {
+        $errors = [];
+        $request = Yii::app()->getRequest();
+        if ($mode === 'add') {
+            $model = new OphInLabResults_Type();
+            $elementType = ElementType::model()->find('class_name = "Element_OphInLabResults_Entry"');
+        } else {
+            $model = OphInLabResults_Type::model()->findByPk((int)$request->getParam('id'));
         }
+
         if ($request->getPost('OphInLabResults_Type')) {
             $transaction = Yii::app()->db->beginTransaction();
-            $errors = [];
             $model->attributes = $request->getPost('OphInLabResults_Type');
+            if (isset($elementType)) {
+                $model->result_element_id = $elementType->id;
+            }
             if ($model->fieldType->name != "Numeric Field") {
                 $model->min_range = null;
                 $model->max_range = null;
@@ -53,21 +83,27 @@ class ResultTypeController extends BaseAdminController
                 } else {
                     $optionsId = [];
                 }
-                $resultOptions = $model->resultOptions;
+
+                if ($mode === 'edit') {
+                    $resultOptions = $model->resultOptions;
+                }
 
                 foreach ($optionsId as $key => $optionId) {
-
                     $foundExistingOption = false;
-                    foreach ($resultOptions as $resultOption) {
-                        if ($resultOption->id == $optionId) {
-                            $resultOption->value = $values[$key];
-                            if (!$resultOption->save()) {
-                                $errors = array_merge($resultOption->getErrors(), $errors);
+
+                    if ($mode === 'edit') {
+                        foreach ($resultOptions as $resultOption) {
+                            if ($resultOption->id == $optionId) {
+                                $resultOption->value = $values[$key];
+                                if (!$resultOption->save()) {
+                                    $errors = array_merge($resultOption->getErrors(), $errors);
+                                }
+                                $foundExistingOption = true;
+                                break;
                             }
-                            $foundExistingOption = true;
-                            break;
                         }
                     }
+
                     if (!$foundExistingOption) {
                         $resultOption = new \OphInLabResults_Type_Options();
                         $resultOption->type = $model->id;
@@ -78,66 +114,13 @@ class ResultTypeController extends BaseAdminController
                     }
                 }
 
-                $resultOptions = array_filter($resultOptions, function ($resultOption) use ($optionsId) {
-                    return !in_array($resultOption->id, $optionsId);
-                });
+                if ($mode === 'edit') {
+                    $resultOptions = array_filter($resultOptions, function ($resultOption) use ($optionsId) {
+                        return !in_array($resultOption->id, $optionsId);
+                    });
 
-                foreach ($resultOptions as $resultOption) {
-                    $resultOption->delete();
-                }
-            }
-
-            if (empty($errors)) {
-                $transaction->commit();
-                Yii::app()->user->setFlash('success', 'OphInLabResults_Type saved');
-                $this->redirect(array('List'));
-            } else {
-                $transaction->rollback();
-            }
-        }
-        $this->render('/admin/edit', array(
-            'model' => $model,
-            'title' => 'Edit Results Type',
-            'errors' => isset($errors) ? $errors : null,
-            'cancel_uri' => '/OphInLabResults/oeadmin/resultType/list',
-        ));
-    }
-
-    public function actionAdd()
-    {
-        $request = Yii::app()->getRequest();
-        $model = new OphInLabResults_Type();
-        if ($request->getPost('OphInLabResults_Type')) {
-            $transaction = Yii::app()->db->beginTransaction();
-            $errors = [];
-            $model->attributes = $request->getPost('OphInLabResults_Type');
-            $elementType = ElementType::model()->find('class_name = "Element_OphInLabResults_Entry"');
-            $model->result_element_id = $elementType->id;
-            if ($model->fieldType->name != "Numeric Field") {
-                $model->min_range = null;
-                $model->max_range = null;
-                $model->normal_min = null;
-                $model->normal_max = null;
-                $model->custom_warning_message = null;
-            }
-            if (!$model->save()) {
-                $errors = $model->getErrors();
-            }
-
-            if ($model->fieldType->name == "Drop-down Field") {
-                if (isset($_POST['type_options']['options_id'])) {
-                    $optionsId = $_POST['type_options']['options_id'];
-                    $values = $_POST['type_options']['value'];
-                } else {
-                    $optionsId = [];
-                }
-
-                foreach ($optionsId as $key => $optionId) {
-                    $resultOption = new \OphInLabResults_Type_Options();
-                    $resultOption->type = $model->id;
-                    $resultOption->value = $values[$key];
-                    if (!$resultOption->save()) {
-                        $errors = array_merge($resultOption->getErrors(), $errors);
+                    foreach ($resultOptions as $resultOption) {
+                        $resultOption->delete();
                     }
                 }
             }
@@ -149,15 +132,9 @@ class ResultTypeController extends BaseAdminController
             } else {
                 $transaction->rollback();
             }
-
         }
-        $this->render('/admin/edit', array(
-            'model' => $model,
-            'title' => 'Edit Results_Type',
-            'errors' => isset($errors) ? $errors : null,
-            'cancel_uri' => '/OphInLabResults/oeadmin/resultType/list',
-        ));
 
+        return ['model' => $model, 'errors' => $errors];
     }
 
     /**
@@ -190,7 +167,7 @@ class ResultTypeController extends BaseAdminController
             }
         }
 
-        if(!empty($result['errors'])){
+        if (!empty($result['errors'])) {
             $transaction->rollback();
         } else {
             $transaction->commit();
