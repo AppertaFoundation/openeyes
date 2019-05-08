@@ -180,14 +180,14 @@ class DefaultController extends OphTrOperationbookingEventController
     public function actionCreate(){
         $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
         $create_examination_url = Yii::app()->getBaseUrl(true).'/OphCiExamination/Default/create?patient_id=' . $this->patient->id;
-        
+
         $this->jsVars['examination_events_count'] = $this->getExaminationEventCount();
         $this->jsVars['cancel_url'] = $cancel_url;
         $this->jsVars['create_examination_url'] = $create_examination_url;
-        
+
         $require_exam_before_booking = SettingMetadata::model()->findByAttributes(array('key' => 'require_exam_before_booking'))->getSettingName();
         $this->jsVars['require_exam_before_booking'] = strtolower($require_exam_before_booking) == 'on';
-        
+
         parent::actionCreate();
     }
 
@@ -630,13 +630,26 @@ class DefaultController extends OphTrOperationbookingEventController
         if (isset($_POST['et_cancel_put_on_hold'])) {
             return $this->redirect(array('/' . $this->event_type->class_name . '/default/view/' . $this->event->id));
         }
-       $this->operation->status_id = OphTrOperationbooking_Operation_Status::model()->find('name = "On-Hold"')->id;
-       if(!$this->operation->save()){
-           var_dump($this->operation->getErrors());
 
-       } else {
-           return $this->redirect(array('default/view/' . $this->event->id));
-       }
+        $on_hold_reason = isset($_POST['on_hold_reason']) ? $_POST['on_hold_reason'] : null;
+        $on_hold_comments = isset($_POST['on_hold_comments']) && trim($_POST['on_hold_comments']) ? $_POST['on_hold_comments'] : null;
+        $on_hold_other_reason = isset($_POST['other_reason']) && trim($_POST['other_reason']) != "" ? $_POST['other_reason'] : null;
+
+        if ($on_hold_reason != null || $on_hold_reason == 'Other' && $on_hold_other_reason != null) {
+            if ($on_hold_reason == 'Other') {
+                $this->operation->on_hold_reason = $on_hold_other_reason;
+            } else {
+                $this->operation->on_hold_reason = $on_hold_reason;
+            }
+            if (trim($on_hold_comments) == "") {
+                $this->operation->on_hold_comment = null;
+            } else {
+                $this->operation->on_hold_comment = $on_hold_comments;
+            }
+            $this->operation->status_id = OphTrOperationbooking_Operation_Status::model()->find('name = "On-Hold"')->id;
+            $this->operation->save();
+        }
+        return $this->redirect(array('default/view/' . $this->event->id));
     }
 
     protected function initActionPutOffHold()
@@ -645,13 +658,10 @@ class DefaultController extends OphTrOperationbookingEventController
         $this->initWithEventId($event_id);
     }
 
-    public function actionPutOffHold(){
+    public function actionPutOffHold()
+    {
         $this->operation->status_id = OphTrOperationbooking_Operation_Status::model()->find('name = "Requires rescheduling"')->id;
-        if(!$this->operation->save()){
-            var_dump($this->operation->getErrors());
-
-        } else {
-            return $this->redirect(array('default/view/' . $this->event->id));
-        }
+        $this->operation->save();
+        return $this->redirect(array('default/view/' . $this->event->id));
     }
 }
