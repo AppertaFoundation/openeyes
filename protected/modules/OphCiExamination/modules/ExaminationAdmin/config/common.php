@@ -34,6 +34,7 @@ $config = [
             'Drops Options' => '/OphCiExamination/admin/manageDrops',
             'Surgery Management Options' => '/OphCiExamination/admin/manageManagementSurgery',
             'Follow-up Statuses' => '/OphCiExamination/admin/manageClinicOutcomesStatus',
+            'Follow-up Roles' =>  '/OphCiExamination/admin/ClinicOutcomeRoles/index',
             'Cataract surgery reasons' => '/OphCiExamination/admin/primaryReasonForSurgery',
             'Common Post-Op Complications' => '/OphCiExamination/admin/postOpComplications',
             'Medication Stop Reasons' => '/OphCiExamination/admin/HistoryMedicationsStopReason',
