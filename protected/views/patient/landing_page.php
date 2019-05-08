@@ -202,7 +202,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                     <div class="data-value">
                         <table>
                             <colgroup>
-                                <col class="cols-7">
+                                <col class="cols-8">
                             </colgroup>
                             <tbody>
                             <?php
@@ -233,7 +233,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                 </div>
             </section>
             <section class="element view full view-xxx" id="idg-ele-view-eye-procedures">
-                <header class="element-header"><h3 class="element-title">Surgical History</h3></header>
+                <header class="element-header"><h3 class="element-title">Eye Procedures</h3></header>
                 <div class="element-data full-width">
                     <div class="data-value">
                         <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
