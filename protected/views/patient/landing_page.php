@@ -216,7 +216,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                             <?php } ?>
 
                             <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
-                                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis, 3); ?>
+                                list($side, $name, $date, $event_id) = explode('~', $ophthalmic_diagnosis, 4); ?>
                                 <tr>
                                     <td><strong><?= $name ?></strong></td>
                                     <td>
@@ -224,6 +224,11 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                                     </td>
                                     <td class="date">
                                         <span class="oe-date"><?= $date ?></span>
+                                    </td>
+                                    <td>
+                                        <?php if (isset($event_id) && $event_id) { ?>
+                                            <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle small pad"></i></a>
+                                        <?php } ?>
                                     </td>
                                 </tr>
                             <?php } ?>

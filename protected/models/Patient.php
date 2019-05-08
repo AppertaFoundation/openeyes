@@ -2121,10 +2121,13 @@ class Patient extends BaseActiveRecordVersioned
     public function getOphthalmicDiagnosesSummary()
     {
         $principals = array();
+        $api = new \OEModule\OphCiExamination\components\OphCiExamination_API();
+
         foreach ($this->episodes as $ep) {
             $d = $ep->diagnosis;
             if ($d && $d->specialty && $d->specialty->code == 130) {
-                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getFormatedDate();
+                $diagnosis = $api->getPrincipalOphtalmicDiagnosis($ep, $d->id);
+                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getFormatedDate() . '~' . ($diagnosis->element_diagnoses->event_id ? $diagnosis->element_diagnoses->event_id : '');
             }
         }
 
