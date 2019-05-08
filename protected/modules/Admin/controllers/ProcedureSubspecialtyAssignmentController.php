@@ -15,9 +15,10 @@
 
 class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
 {
+  public $group = 'Procedure Management';
+
   public function actionEdit()
   {
-    $this->group = 'Procedure Management';
     $procedures = Procedure::model()->findAll(['order' => 'term']);
     $procedure_options = array_map(function ($procedure) {
         return $procedure->getAttributes(["id", "term"]);
@@ -29,53 +30,62 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
 
     if (Yii::app()->request->isPostRequest) {
       $transaction = Yii::app()->db->beginTransaction();
-      $display_orders = Yii::app()->request->getParam('display_order', []);
-      $assignments = Yii::app()->request->getParam('ProcedureSubspecialtyAssignment', []);
+      try {
+        $display_orders = Yii::app()->request->getParam('display_order', []);
+        $assignments = Yii::app()->request->getParam('ProcedureSubspecialtyAssignment', []);
 
-      $ids = [];
-      foreach ($assignments as $key => $assignment) {
-        $procedureSubspecialtyAssignment = ProcedureSubspecialtyAssignment::model()->findByPk($assignment['id']);
-        if (!$procedureSubspecialtyAssignment) {
-          $procedureSubspecialtyAssignment = new ProcedureSubspecialtyAssignment;
-          $procedureSubspecialtyAssignment['id'] = null;
+        $ids = [];
+        foreach ($assignments as $key => $assignment) {
+          $procedureSubspecialtyAssignment = ProcedureSubspecialtyAssignment::model()->findByPk($assignment['id']);
+          if (!$procedureSubspecialtyAssignment) {
+            $procedureSubspecialtyAssignment = new ProcedureSubspecialtyAssignment;
+            $procedureSubspecialtyAssignment['id'] = null;
+          }
+
+          $procedureSubspecialtyAssignment->proc_id = $assignment['procedure_id'];
+          $procedureSubspecialtyAssignment->display_order = $display_orders[$key];
+          $procedureSubspecialtyAssignment->subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
+
+          if (!$procedureSubspecialtyAssignment->save()) {
+            $errors[] = $procedureSubspecialtyAssignment->getErrors();
+          }
+
+          $ids[] = $procedureSubspecialtyAssignment->id;
         }
 
-        $procedureSubspecialtyAssignment->proc_id = $assignment['procedure_id'];
-        $procedureSubspecialtyAssignment->display_order = $display_orders[$key];
-        $procedureSubspecialtyAssignment->subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
-
-        if (!$procedureSubspecialtyAssignment->save()) {
-          $errors[] = $procedureSubspecialtyAssignment->getErrors();
-        }
-
-        $ids[$procedureSubspecialtyAssignment->id] = $procedureSubspecialtyAssignment->id;
-      }
-
-      if (empty($errors)) {
         //Delete items
         $criteria = new CDbCriteria();
 
         if ($ids) {
-          $criteria->addNotInCondition('id', array_map(function ($id) {
-            return $id;
-          }, $ids));
+          $criteria->addNotInCondition('id', $ids);
         }
 
         $criteria->compare('subspecialty_id', $subspecialty_id);
         $to_delete = ProcedureSubspecialtyAssignment::model()->findAll($criteria);
+
         foreach ($to_delete as $item) {
           if (!$item->delete()) {
-            throw new Exception("Unable to delete ProcedureSubspecialtyAssignment:{$item->primaryKey}");
+            $errorMessage = "Model ProcedureSubspecialtyAssignment could not be deleted";
+            $errors[] = ['id' => [$errorMessage]];
+            \OELog::log($errorMessage . " (ID = $item->id )");
+          } else {
+            Audit::add('admin', 'delete', $item->primaryKey, null, [
+              'module' => (is_object($this->module)) ? $this->module->id : 'core',
+              'model' => ProcedureSubspecialtyAssignment::getShortModelName(),
+            ]);
           }
-          Audit::add('admin', 'delete', $item->primaryKey, null, [
-            'module' => (is_object($this->module)) ? $this->module->id : 'core',
-            'model' => ProcedureSubspecialtyAssignment::getShortModelName(),
-          ]);
         }
+      } catch (Exception $e) {
+        $errorMessage = $e->getMessage();
+        \OELog::log("Exception thrown in function " . __FUNCTION__ . " in file " . __FILE__ . ": " . $errorMessage);
+        $errors[] = ['id' => [$errorMessage]];
+      }
 
+      if (empty($errors)) {
         $transaction->commit();
         Yii::app()->user->setFlash('success', 'List updated.');
       } else {
+        $transaction->rollback();
         foreach ($errors as $error) {
           foreach($error as $attribute => $error_array){
             $display_errors = '<strong>'.$procedureSubspecialtyAssignment->getAttributeLabel($attribute) .
@@ -83,7 +93,6 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
             Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
           }
         }
-        $transaction->rollback();
       }
       $this->redirect(Yii::app()->request->url);
     }
