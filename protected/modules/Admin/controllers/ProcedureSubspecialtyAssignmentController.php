@@ -77,7 +77,7 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
         }
       } catch (Exception $e) {
         $errorMessage = $e->getMessage();
-        \OELog::log("Exception thrown in function " . __FUNCTION__ . " in file " . __FILE__ . ": " . $errorMessage);
+        \OELog::log($errorMessage);
         $errors[] = ['id' => [$errorMessage]];
       }
 
