@@ -94,8 +94,7 @@ class DefaultController extends \BaseEventTypeController
             $elements = $this->getElementsByWorkflow(null, $this->episode);
         } else {
             $elements = $this->event->getElements();
-            $assignment = $this->getElementSetAssignment($this->event);
-            if ($this->step || !$assignment->step_completed) {
+            if ($this->step) {
                 $elements = $this->mergeNextStep($elements);
             }
         }
@@ -328,7 +327,13 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionStep($id)
     {
-        $this->step = $this->getCurrentStep()->getNextStep();
+        $step_id = \Yii::app()->request->getParam('step_id');
+
+        if ($step_id) {
+            $this->step = models\OphCiExamination_ElementSet::model()->findByPk($step_id);
+        } else {
+            $this->step = $this->getCurrentStep()->getNextStep();
+        }
 
         // This is the same as update, but with a few extras, so we call the update code and then pick up on the action later
         $this->actionUpdate($id);
@@ -423,31 +428,35 @@ class DefaultController extends \BaseEventTypeController
     {
         parent::afterUpdateElements($event);
         $this->persistPcrRisk();
-        $this->updateStep($event);
+        if ($this->step) {
+            // Advance the workflow
+            if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
+                // Create initial workflow assignment if event hasn't already got one
+                $assignment = new models\OphCiExamination_Event_ElementSet_Assignment();
+                $assignment->event_id = $event->id;
+            }
+
+            $assignment->step_id = $this->step->id;
+            $assignment->step_completed = 1;
+            if (!$assignment->save()) {
+                throw new \CException('Cannot save assignment');
+            }
+        }
     }
 
     protected function afterCreateElements($event)
     {
         parent::afterCreateElements($event);
         $this->persistPcrRisk();
-        $this->updateStep($event);
-    }
-
-    private function updateStep($event)
-    {
         if ($this->step) {
             // Advance the workflow
-            $assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id));
-            if (!$assignment) {
+            if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
                 // Create initial workflow assignment if event hasn't already got one
                 $assignment = new models\OphCiExamination_Event_ElementSet_Assignment();
                 $assignment->event_id = $event->id;
             }
-            $next_step = $this->getNextStep($event);
-            if (!$next_step) {
-                throw new \CException('No next step available');
-            }
-            $assignment->step_id = $next_step->id;
+
+            $assignment->step_id = $this->step->id;
             $assignment->step_completed = 1;
             if (!$assignment->save()) {
                 throw new \CException('Cannot save assignment');
@@ -533,25 +542,14 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return array
      */
-    protected function mergeNextStep($elements, $next_step)
+    protected function mergeNextStep($elements)
     {
         if (!$event = $this->event) {
             throw new \CException('No event set for step merging');
         }
 
-        //since we have 'Change context' feature that is a possible scenario we change the step
-        //without actually saving the event, that means step related elements never been loaded and saved
-        // (change context then NOT edit the event)
-        //therefore if step_completed is false we load the elements on event update(edit)
-        $assignment = $this->getElementSetAssignment($event);
-        $next_step = $assignment->step_completed ? $this->getNextStep($event) : $this->getCurrentStep();
-
-        if (!$next_step) {
-            throw new \CException('No next step available');
-        }
-
         //TODO: should we be passing episode here?
-        $extra_elements = $this->getElementsByWorkflow($next_step, $this->episode);
+        $extra_elements = $this->getElementsByWorkflow($this->step, $this->episode);
         $extra_by_etid = array();
 
         foreach ($extra_elements as $extra) {
