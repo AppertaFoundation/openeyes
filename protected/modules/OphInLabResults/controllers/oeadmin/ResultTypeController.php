@@ -37,7 +37,6 @@ class ResultTypeController extends BaseAdminController
 
     public function actionAdd()
     {
-        $request = Yii::app()->getRequest();
         $savedModelWithErrors = $this->save('add');
         $this->render('/admin/edit', array(
             'model' => $savedModelWithErrors['model'],
