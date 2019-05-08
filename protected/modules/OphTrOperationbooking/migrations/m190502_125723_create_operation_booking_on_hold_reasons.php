@@ -4,7 +4,6 @@ class m190502_125723_create_operation_booking_on_hold_reasons extends OEMigratio
 {
 	public function up()
 	{
-	    // CREATE OP BOOKING ON HOLD REASONS TABLE
         $this->createOETable('ophtroperationbooking_operation_on_hold_reason',[
             'id' => 'pk',
             'reason' => 'varchar(100) NOT NULL',
