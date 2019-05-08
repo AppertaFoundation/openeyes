@@ -59,7 +59,7 @@
         $('#js-put-on-hold').click(function (event) {
             event.preventDefault();
             $('#on_hold_errors').text("");
-            $('#js-put-operation-on-hold').css('display', 'block');
+            $('#js-put-operation-on-hold').css('display', 'flex');
         });
 
         $('#et_put_on_hold').click(function (event) {
