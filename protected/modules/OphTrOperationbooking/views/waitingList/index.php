@@ -91,6 +91,8 @@
           Invalid hospital number
         </div>
 
+          <h4>Include On-Hold</h4>
+          <?= \CHtml::checkBox('include_on_hold', isset($_POST['include_hos_num']) ? $_POST['include_hos_num'] : 0);?>
         <div class="row">
           <button class="green hint cols-full" type="submit">Search Waiting List</button>
         </div>
