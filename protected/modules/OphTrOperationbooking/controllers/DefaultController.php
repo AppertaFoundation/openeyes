@@ -661,6 +661,8 @@ class DefaultController extends OphTrOperationbookingEventController
     public function actionPutOffHold()
     {
         $this->operation->status_id = OphTrOperationbooking_Operation_Status::model()->find('name = "Requires rescheduling"')->id;
+        $this->operation->on_hold_reason = null;
+        $this->operation->on_hold_comment = null;
         $this->operation->save();
         return $this->redirect(array('default/view/' . $this->event->id));
     }
