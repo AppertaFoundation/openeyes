@@ -16,60 +16,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-    <div class="oe-popup-wrap" id="js-put-operation-on-hold" style="display:none; z-index:100" >
-        <div class="oe-popup">
-            <?= \CHtml::form(array('default/putOnHold/' . $this->event->id), 'post', array('id' => 'putOnHoldForm')) ?>
-            <div class="title">
-                Put Operation Booking On Hold
-            </div>
-            <div class="oe-popup-content delete-event">
-
-                <div class="alert-box warning" style="display:none;">
-
-                    <?php $this->displayErrors(@$errors) ?>
-                    <p id="errors"></p>
-                </div>
-                <table class="row">
-                    <tbody>
-
-                    <tr>
-                        <td>Reason for putting on hold:</td>
-                        <td><?= \CHtml::dropDownList('on_hold_reason',
-                                false,
-                                CHtml::listData(OphTrOperationBooking_Operation_On_Hold_Reason::model()->findAll(), 'reason', 'reason'),
-                                ['empty' => 'Please Select']
-                            ) ?></textarea></td>
-                    </tr>
-                    <tr class="js-other-reason-box" style="display:none;">
-                        <td>Other reason:</td>
-                        <td>
-                            <?= \CHtml::textArea('other_reason', '', array('cols' => 40, 'id' => 'js-on_hold-other-reason-area')) ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Comments:</td>
-                        <td>
-                            <?= \CHtml::textArea('on_hold_comments', '', array('cols' => 40, 'id' => 'js-on_hold-comment-area')) ?>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="flex-layout row">
-                    <h4>Are you sure you want to proceed? </h4>
-                    <?php
-                    echo CHtml::hiddenField('event_id', $this->event->id); ?>
-                    <button type="submit" class="large red hint" id="et_put_on_hold" name="et_put_on_hold">
-                        Put on Hold
-                    </button>
-                    <button type="submit" class="large blue hint cancel-icon-btn" id="et_cancel_put_on_hold"
-                            name="et_cancel_put_on_hold">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-        <?= \CHtml::endForm(); ?>
-    </div>
     <section class="element view full priority view-procedures">
         <header class="element-header">
             <h3 class="element-title">Procedure<?php if (count($element->procedures) != 1) echo 's' ?> & OPCS codes</h3>
@@ -493,10 +439,6 @@ $this->event_actions[] = EventAction::link(
     array('class' => 'small button', 'target' => '_blank')
 );
 if ($element->isEditable()) {
-
-
-
-
     $td_disabled = $this->module->isTheatreDiaryDisabled();
 
     $status = strtolower($element->status->name);
@@ -575,34 +517,3 @@ if ($element->isEditable()) {
     }
 }
 ?>
-
-<script>
-    $(document).ready(function(){
-        $('#on_hold_reason').append(
-            '<option value="Other">Other</option>'
-        );
-        $('#on_hold_reason').on('change', function(){
-            if($(this).val() == "Other"){
-                $('.js-other-reason-box').show();
-            } else {
-                $('.js-other-reason-box').hide();
-            }
-        })
-
-        $('#js-put-on-hold').click(function(event){
-            event.preventDefault();
-            $('#errors').text("");
-            $('#js-put-operation-on-hold').css('display','');
-        });
-
-        $('#et_deleteevent').click(function(event) {
-            var reasonLength = $('#js-text-area').val().length;
-            if(reasonLength > 0){
-                return;
-            } else {
-                $('#errors').text("Please enter the reason for deletion");
-                event.preventDefault();
-            }
-        });
-    })
-</script>
