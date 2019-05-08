@@ -15,7 +15,11 @@ $(function () {
     if ($(this).val().trim() === '') {
       var $container = $(this).closest('.js-comment-container');
       var $button = $($container.data('comment-button'));
-      $button.css('visibility', 'visible');
+      if($button.data('hide-method') === 'display') {
+        $button.show();
+      } else {
+        $button.css('visibility', 'visible');
+      }
       $container.hide();
     }
   });
