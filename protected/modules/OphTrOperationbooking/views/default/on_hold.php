@@ -15,7 +15,7 @@
                     <td>Reason for putting on hold:</td>
                     <td><?= \CHtml::dropDownList('on_hold_reason',
                             false,
-                            CHtml::listData(OphTrOperationBooking_Operation_On_Hold_Reason::model()->findAll(), 'reason', 'reason'),
+                            CHtml::listData(OphTrOperationBooking_Operation_On_Hold_Reason::model()->findAll(), 'reason', 'reason') + ['Other' => 'Other'],
                             ['empty' => 'Please Select']
                         ) ?></textarea></td>
                 </tr>
@@ -52,26 +52,18 @@
 
 <script>
     $(document).ready(function () {
-        $('#on_hold_reason').append(
-            '<option value="Other">Other</option>'
-        );
-
         $('#on_hold_reason').on('change', function () {
-            if ($(this).val() == "Other") {
-                $('.js-other-reason-box').show();
-            } else {
-                $('.js-other-reason-box').hide();
-            }
+            $('.js-other-reason-box').toggle( $(this).val() === "Other");
         });
 
         $('#js-put-on-hold').click(function (event) {
             event.preventDefault();
             $('#on_hold_errors').text("");
-            $('#js-put-operation-on-hold').css('display', '');
+            $('#js-put-operation-on-hold').css('display', 'block');
         });
 
         $('#et_put_on_hold').click(function (event) {
-            var reason = $('#on_hold_reason option:selected');
+            let reason = $('#on_hold_reason option:selected');
             if (reason.val() === "" || reason.val() === "Other" && $('#js-on_hold-other-reason-area').val() === "") {
                 $('.js-error-on-hold-errors-box').show();
                 $('#on_hold_errors').text("Please enter the reason for putting the booking on hold");
