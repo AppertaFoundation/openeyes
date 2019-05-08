@@ -213,19 +213,20 @@ class ChangeEventController extends BaseController
                 }
 
                 if($episode->save()) {
-                    Audit::add('episode', $action, $data, $log_message = null, $properties);
+                    Audit::add('episode', $action, $data, null, $properties);
 
-                    /*$selected_workflow_step_id =  \Yii::app()->request->getPost('selectedWorkflowStepId');
+                    $selected_workflow_step_id =  \Yii::app()->request->getPost('selectedWorkflowStepId');
+
                     if($selected_workflow_step_id){
                         $step = \OEModule\OphCiExamination\models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id));
                         $step->step_id = $selected_workflow_step_id;
+                        $step->step_completed = 0;
 
-                        if($step->save()) {
+                        if ($step->save()) {
                             $data = 'Changed step to '.\OEModule\OphCiExamination\models\OphCiExamination_ElementSet::model()->findByPk($selected_workflow_step_id)->name;
-                            Yii::app()->session['redirectToStep'] = true;
-                            Audit::add('element set assignment', 'update', $data, $log_message = null, $properties);
+                            Audit::add('element set assignment', 'update', $data, null, $properties);
                         }                        
-                    }*/
+                    }
 
                     $event->episode_id = $episode->id;
                     $event->last_modified_user_id = Yii::app()->user->id;

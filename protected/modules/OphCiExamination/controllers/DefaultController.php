@@ -1497,6 +1497,10 @@ class DefaultController extends \BaseEventTypeController
             //if $this->set is null than no workflow rule to apply
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
         }
+
+        if ($this->action->id == 'update' && !$element_assignment->step_completed) {
+            $this->step = $this->getCurrentStep();
+        }
     }
 
     public function actionGetPostOpComplicationList()
