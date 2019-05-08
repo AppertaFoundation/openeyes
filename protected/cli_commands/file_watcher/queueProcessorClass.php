@@ -16,8 +16,7 @@
         public function checkEntries()
         {
             $needToProcess = $this->databaseConnection->query("SELECT * FROM dicom_file_queue WHERE status_id=(SELECT id FROM dicom_process_status WHERE name='new') ORDER BY id DESC LIMIT 10");
-
-            if ($needToProcess) {
+            if ($needToProcess->num_rows) {
                 while ($fileEntry = $needToProcess->fetch_assoc()) {
                     echo 'Running: '.$this->processToRun.' '.$fileEntry['filename']."\n\n";
                     $this->databaseConnection->query("UPDATE dicom_file_queue SET status_id= (SELECT id FROM dicom_process_status WHERE name='in_progress'), last_modified_date=now() WHERE id='".$fileEntry['id']."'");
