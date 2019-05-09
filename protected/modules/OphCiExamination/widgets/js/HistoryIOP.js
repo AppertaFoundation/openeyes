@@ -1,7 +1,7 @@
 function addDatePicker(datePickerInputs) {
     for (let i = 0; i < datePickerInputs.length; i++) {
         pickmeup(datePickerInputs[i], {
-            format: 'Y-m-d',
+            format: 'd-m-Y',
             hide_on_select: true,
             default_date: false,
             max:  new Date(),
