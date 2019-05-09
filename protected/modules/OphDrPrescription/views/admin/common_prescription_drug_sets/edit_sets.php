@@ -33,32 +33,32 @@ if (!empty($id)) {
 
 ?>
 <script id="set_row_template" type="x-tmpl-mustache">
-    <tr data-key="{{ key }}" id="medication_{{ key }}">
+    <tr class="medication_row" data-key="{{ key }}" id="medication_{{ key }}">
         <td>
-        <input type="hidden" name="MedicationSet[medicationSetItems][id][]" value="-1" />
-        <input type="hidden" name="MedicationSet[medicationSetItems][medication_id][]" value="{{medication.id}}" />
+        <input type="hidden" name="MedicationSet[medicationSetItems][id][{{ key }}]" value="-1" />
+        <input type="hidden" name="MedicationSet[medicationSetItems][medication_id][{{ key }}]" value="{{medication.id}}" />
         {{medication.label}}
         </td>
        <td>
-            <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose][]', "1"); ?>
+            <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose][{{ key }}]', "1"); ?>
         </td>
         <td>
-            <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose_unit_term][]', '{{unit.label}}'); ?>
+            <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose_unit_term][{{ key }}]', '{{unit.label}}'); ?>
         </td>
         <td>
-            <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][]" value="{{form.id}}" />
+            <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][{{ key }}]" value="{{form.id}}" />
             {{form.label}}
         </td>
         <td>
-            <input type="hidden" name="MedicationSet[medicationSetItems][default_route_id][]" value="{{route.id}}" />
+            <input type="hidden" name="MedicationSet[medicationSetItems][default_route_id][{{ key }}]" value="{{route.id}}" />
             {{route.label}}
         </td>
         <td>
-            <input type="hidden" name="MedicationSet[medicationSetItems][default_frequency_id][]" value="{{frequency.id}}" />
+            <input type="hidden" name="MedicationSet[medicationSetItems][default_frequency_id][{{ key }}]" value="{{frequency.id}}" />
             {{frequency.label}}
         </td>
         <td>
-            <input type="hidden" name="MedicationSet[medicationSetItems][default_duration_id][]" value="{{duration.id}}" />
+            <input type="hidden" name="MedicationSet[medicationSetItems][default_duration_id][{{ key }}]" value="{{duration.id}}" />
             {{duration.label}}
         </td>
         <td>
@@ -70,7 +70,7 @@ if (!empty($id)) {
             <a href="javascript:void(0);" class="js-delete-set"><i class="oe-i trash"></i></a>
         </td>
     </tr>
-
+    <input type="hidden" class="row_number_{{ key }}" value="1">
 
 
 </script>
@@ -84,10 +84,11 @@ if (!empty($id)) {
 </script>
 
 <script id="set_row_taper_template" type="x-tmpl-mustache">
-    <tr data-key="{{ key }}">
+
+    <tr class="taper_row medication_{{ key }}" data-key="{{ taperrowkey }}">
         <td>
-        <input type="hidden" name="MedicationSet[medicationSetItemTapers][id][]" value="-1" />
-        <input type="hidden" name="MedicationSet[medicationSetItemTapers][medication_set_item_id][]" value="{{medication_id}}" />
+        <input type="hidden" name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][id]" value="-1" />
+        <input type="hidden" name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][medication_set_item_id]" value="{{medication_id}}" />
         <em class="fade">-></em>
         </td>
        <td>
@@ -99,14 +100,14 @@ if (!empty($id)) {
         <td>
         </td>
         <td>
-            <select name="MedicationSet[medicationSetItemTapers][default_frequency_id][]">
+            <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][default_frequency_id]">
             <?php foreach ($freqs as $freq) : ?>
             <option value="<?=$freq['id']?>"><?=$freq['label']?></option>
             <?php endforeach; ?>
             </select>
         </td>
         <td>
-            <select name="MedicationSet[medicationSetItemTapers][default_duration_id][]">
+            <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][default_duration_id]">
             <?php foreach ($durations as $duration) : ?>
             <option value="<?=$duration['id']?>"><?=$duration['label']?></option>
             <?php endforeach; ?>
@@ -118,8 +119,6 @@ if (!empty($id)) {
             <a href="javascript:void(0);" class="js-delete-taper"><i class="oe-i trash"></i></a>
         </td>
     </tr>
-
-
 
 </script>
 
@@ -154,36 +153,36 @@ if (!empty($id)) {
         $id = is_null($assignment->id) ? -1 : $assignment->id;
         $rowkey++
         ?>
-        <tr data-key="<?= $rowkey ?>" id="medication_<?= $rowkey ?>">
+        <tr class="medication_row" data-key="<?= $rowkey ?>" id="medication_<?= $rowkey ?>">
             <td>
-                <input type="hidden" name="MedicationSet[medicationSetItems][id][]" value="<?= $id ?>"/>
-                <input type="hidden" name="MedicationSet[medicationSetItems][medication_id][]"
+                <input type="hidden" name="MedicationSet[medicationSetItems][id][<?= $rowkey ?>]" value="<?= $id ?>"/>
+                <input type="hidden" name="MedicationSet[medicationSetItems][medication_id][<?= $rowkey ?>]"
                        value="<?= $assignment->medication_id ?>"/>
                 <?= CHtml::encode($assignment->medication->preferred_term) ?>
             </td>
             <td>
-                <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose][]', $assignment->default_dose); ?>
+                <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose]['.$rowkey.']', $assignment->default_dose); ?>
             </td>
             <td>
-                <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose_unit_term][]', $assignment->default_dose_unit_term); ?>
+                <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose_unit_term]['.$rowkey.']', $assignment->default_dose_unit_term); ?>
             </td>
             <td>
-                <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][]"
+                <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][<?= $rowkey ?>]"
                        value="<?= $assignment->default_form_id ?>"/>
                 <?= $assignment->default_form_id ? CHtml::encode($assignment->defaultForm->term) : "" ?>
             </td>
             <td>
-                <input type="hidden" name="MedicationSet[medicationSetItems][default_route_id][]"
+                <input type="hidden" name="MedicationSet[medicationSetItems][default_route_id][<?= $rowkey ?>]"
                        value="<?= $assignment->default_route_id ?>"/>
                 <?= $assignment->default_route_id ? CHtml::encode($assignment->defaultRoute->term) : "" ?>
             </td>
             <td>
-                <input type="hidden" name="MedicationSet[medicationSetItems][default_frequency_id][]"
+                <input type="hidden" name="MedicationSet[medicationSetItems][default_frequency_id][<?= $rowkey ?>]"
                        value="<?= $assignment->default_frequency_id ?>"/>
                 <?= $assignment->default_frequency_id ? CHtml::encode($assignment->defaultFrequency->term) : "" ?>
             </td>
             <td>
-                <input type="hidden" name="MedicationSet[medicationSetItems][default_duration_id][]"
+                <input type="hidden" name="MedicationSet[medicationSetItems][default_duration_id][<?= $rowkey ?>]"
                        value="<?= $assignment->default_duration_id ?>"/>
                 <?= $assignment->default_duration_id ? CHtml::encode($assignment->defaultDuration->name) : "" ?>
             </td>
@@ -193,7 +192,7 @@ if (!empty($id)) {
                 </button>
             </td>
             <td>
-                <a href="javascript:void(0);" class="js-delete-attribute"><i class="oe-i trash"></i></a>
+                <a href="javascript:void(0);" class="js-delete-attribute" data-key="<?= $rowkey; ?>"><i class="oe-i trash"></i></a>
             </td>
         </tr>
 
@@ -206,11 +205,11 @@ if (!empty($id)) {
                 $taper_id = is_null($taper->id) ? -1 : $taper->id;
                 $taperrowkey++
                 ?>
-                <tr data-key="<?= $taperrowkey ?>">
+                <tr class="taper_row medication_<?= $rowkey; ?>" data-key="<?= $taperrowkey ?>">
                     <td>
-                        <input type="hidden" name="MedicationSet[medicationSetItemTapers][id][]"
+                        <input type="hidden" name="MedicationSet[medicationSetItems][medicationSetItemTapers][<?= $rowkey ?>][<?=$taperrowkey?>][id]"
                                value="<?= $taper_id ?>"/>
-                        <input type="hidden" name="MedicationSet[medicationSetItemTapers][medication_set_item_id][]"
+                        <input type="hidden" name="MedicationSet[medicationSetItems][medicationSetItemTapers][<?= $rowkey ?>][<?=$taperrowkey?>][medication_set_item_id]"
                                value="<?= $taper->medication_set_item_id ?>"/>
                         <em class="fade">-></em>
                     </td>
@@ -223,7 +222,7 @@ if (!empty($id)) {
                     <td>
                     </td>
                     <td>
-                        <select name="MedicationSet[medicationSetItemTapers][default_frequency_id][]">
+                        <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][<?= $rowkey ?>][<?=$taperrowkey?>][default_frequency_id]">
                             <option value="<?=$taper->frequency_id?>"><?=$taper->frequency->term?></option>
                             <?php foreach ($freqs as $freq) : ?>
                             <?php if($freq['id'] != $taper->frequency_id)?>
@@ -232,8 +231,8 @@ if (!empty($id)) {
                         </select>
                     </td>
                     <td>
-                        <select name="MedicationSet[medicationSetItemTapers][default_duration_id][]">
-                            <option value="<?=$taper->duration_id?>"><?=$taper->medicationDuration->name?></option>
+                        <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][<?= $rowkey ?>][<?=$taperrowkey?>][default_duration_id]">
+                            <option value="<?=$taper->duration_id?>"><?=$taper->duration->name?></option>
                             <?php foreach ($durations as $duration) : ?>
                                 <?php if($duration['id'] != $taper->duration_id) : ?>
                                     <option value="<?=$duration['id']?>"><?=$duration['label']?></option>
@@ -249,13 +248,15 @@ if (!empty($id)) {
                 </tr>
 
             <?php endforeach; ?>
-
+            <input type="hidden" class="row_number_<?= $rowkey; ?>" value="<?= count($assignment->tapers); ?>">
         <?php endif; ?>
 
     <?php endforeach; ?>
     <script type="text/javascript">
         $(function () {
             $(document).on("click", ".js-delete-attribute", function (e) {
+                var rowKey = $(this).attr('data-key');
+                $('.medication_'+rowKey).remove();
                 $(e.target).closest("tr").remove();
             });
         });
@@ -327,7 +328,7 @@ if (!empty($id)) {
                             }
 
                             var $body = $("#medication_set_assignment_tbl > tbody");
-                            var lastkey = $body.find("tr:last").attr("data-key");
+                            var lastkey = $body.find(".medication_row:last").attr("data-key");
 
                             if (isNaN(lastkey)) {
                                 lastkey = 0;
@@ -370,12 +371,23 @@ if (!empty($id)) {
 
         var $body = $("#medication_" + rowKey);
 
+        var row_number = $(".row_number_" + rowKey).val();
+        $(".row_number_" + rowKey).val(parseInt(row_number)+1);
+        var row_number = $(".row_number_" + rowKey).val();
+
+        var lastkey = $("#medication_set_assignment_tbl > tbody").find(".taper_row:last").attr("data-key");
+        if (isNaN(lastkey)) {
+            lastkey = 0;
+        }
+        var taperrowkey = parseInt(lastkey) + 1;
+
         var template = $('#set_row_taper_template').html();
         Mustache.parse(template);
 
         var rendered = Mustache.render(template, {
             "key": rowKey,
             "medication_id": medicationId,
+            "taperrowkey": row_number,
         });
         $body.after(rendered);
 

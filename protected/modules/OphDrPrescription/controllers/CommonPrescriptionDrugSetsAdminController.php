@@ -15,23 +15,20 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminController
-{
+class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminController {
 
     public $group = 'Drugs';
-	public $usage_code = 'PRESCRIPTION_SET';
-	public $modelDisplayName = 'Common Prescription Drug Sets';
-	public $editSetTemaplate = 'application.modules.OphDrPrescription.views.admin.common_prescription_drug_sets.edit_sets';
+    public $usage_code = 'PRESCRIPTION_SET';
+    public $modelDisplayName = 'Common Prescription Drug Sets';
+    public $editSetTemaplate = 'application.modules.OphDrPrescription.views.admin.common_prescription_drug_sets.edit_sets';
 
 
-    public function actionSave($id = null)
-    {
+    public function actionSave($id = null) {
 
-        if(is_null($id)) {
+        if (is_null($id)) {
             $model = new MedicationSet();
-        }
-        else {
-            if(!$model = MedicationSet::model()->findByPk($id)) {
+        } else {
+            if (!$model = MedicationSet::model()->findByPk($id)) {
                 throw new CHttpException(404, 'Page not found');
             }
         }
@@ -62,12 +59,11 @@ class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminControl
 
         $ids = @Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['id'];
 
-        if(is_array($ids)) {
+        if (is_array($ids)) {
             foreach ($ids as $key => $rid) {
-                if($rid == -1) {
+                if ($rid == -1) {
                     $medSetRule = new MedicationSetRule();
-                }
-                else {
+                } else {
                     $medSetRule = MedicationSetRule::model()->findByPk($rid);
                     $updated_ids[] = $rid;
                 }
@@ -84,7 +80,7 @@ class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminControl
         }
 
         $deleted_ids = array_diff($existing_ids, $updated_ids);
-        if(!empty($deleted_ids)) {
+        if (!empty($deleted_ids)) {
             MedicationSetRule::model()->deleteByPk($deleted_ids);
         }
 
@@ -96,13 +92,12 @@ class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminControl
         }
 
         $itemids = @Yii::app()->request->getPost('MedicationSet')['medicationSetItems']['id'];
-        if(is_array($itemids)) {
+        if (is_array($itemids)) {
             foreach ($itemids as $key => $rid) {
 
-                if($rid == -1) {
+                if ($rid == -1) {
                     $medSetItem = new MedicationSetItem();
-                }
-                else {
+                } else {
                     $medSetItem = MedicationSetItem::model()->findByPk($rid);
                     $updated_item_ids[] = $rid;
                 }
@@ -110,85 +105,76 @@ class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminControl
         }
 
         $updated_taper_ids = array();
-        $taperids = @Yii::app()->request->getPost('MedicationSet')['medicationSetItemTapers']['id'];
+        $taperDatas = @Yii::app()->request->getPost('MedicationSet')['medicationSetItems']['medicationSetItemTapers'];
 
-        if(is_array($taperids)) {
-            $taperData = Yii::app()->request->getPost('MedicationSet')['medicationSetItemTapers'];
+        if (is_array($taperDatas)) {
 
-            foreach ($taperids as $key => $rid) {
-                if($rid == -1) {
-                    $medSetItemTaper = new MedicationSetItemTaper();
-                    $medSetItemTaper->medication_set_item_id = $taperData['medication_set_item_id'][$key];
-                    $medSetItemTaper->frequency_id = $taperData['default_frequency_id'][$key];
-                    $medSetItemTaper->duration_id = $taperData['default_duration_id'][$key];
-                    $medSetItemTaper->save();
-                } else {
-                    $medSetItemTaper = MedicationSetItemTaper::model()->findByPk($rid);
-                    $medSetItemTaper->medication_set_item_id = $taperData['medication_set_item_id'][$key];
-                    $medSetItemTaper->frequency_id = $taperData['default_frequency_id'][$key];
-                    $medSetItemTaper->duration_id = $taperData['default_duration_id'][$key];
-                    $medSetItemTaper->update();
+            foreach ($taperDatas as $key => $tapers) {
 
-                    /*
-                    try{
+                foreach ($tapers as $taperKey => $taper) {
+                    $index = $key-1;
+                    if ($taper['id'] == -1) {
+                        $medSetItemTaper = new MedicationSetItemTaper();
+                        $medSetItemTaper->medication_set_item_id = $model->medicationSetItems[$index]->id;
+                        $medSetItemTaper->frequency_id = $taper['default_frequency_id'];
+                        $medSetItemTaper->duration_id = $taper['default_duration_id'];
+                        $medSetItemTaper->save();
+                    } else {
+                        $medSetItemTaper = MedicationSetItemTaper::model()->findByPk($taper['id']);
+                        $medSetItemTaper->frequency_id = $taper['default_frequency_id'];
+                        $medSetItemTaper->duration_id = $taper['default_duration_id'];
                         $medSetItemTaper->update();
-                    }catch(Exception $e){
-                        echo '<pre>';
-                        print_r($medSetItemTaper);
-                        echo '</pre>';
-                        exit;
-                    }
-                    */
 
-                    $updated_taper_ids[] = $rid;
+                        $updated_taper_ids[] = $taper['id'];
+                    }
+
                 }
             }
         }
 
-        $deleted_item_ids = array_diff($existing_item_ids, $updated_item_ids);
-        if(!empty($deleted_item_ids)) {
-            MedicationSetItem::model()->deleteByPk($deleted_item_ids);
-        }
-
 
         $deleted_taper_ids = array_diff($existing_taper_ids, $updated_taper_ids);
-        if(!empty($deleted_taper_ids)) {
+        if (!empty($deleted_taper_ids)) {
             MedicationSetItemTaper::model()->deleteByPk($deleted_taper_ids);
         }
 
 
-        $this->redirect('/OphDrPrescription/'.Yii::app()->controller->id.'/list');
+        $deleted_item_ids = array_diff($existing_item_ids, $updated_item_ids);
+        if (!empty($deleted_item_ids)) {
+            MedicationSetItem::model()->deleteByPk($deleted_item_ids);
+        }
+
+
+        $this->redirect('/OphDrPrescription/' . Yii::app()->controller->id . '/list');
 
     }
 
-    private function _setModelData(MedicationSet $model, $data)
-    {
+    private function _setModelData(MedicationSet $model, $data) {
         $model->setAttributes($data);
         $model->validate();
 
         $medicationSetItems = array();
-        if(array_key_exists('medicationSetItems', $data)) {
+        if (array_key_exists('medicationSetItems', $data)) {
 
             foreach ($data['medicationSetItems']['id'] as $key => $medicationSetItem_id) {
                 $attributes = array();
 
                 foreach (MedicationSetItem::model()->attributeNames() as $attr_name) {
-                    if(array_key_exists($attr_name, $data['medicationSetItems'])) {
+                    if (array_key_exists($attr_name, $data['medicationSetItems'])) {
                         $attributes[$attr_name] = array_key_exists($key, $data['medicationSetItems'][$attr_name]) ? $data['medicationSetItems'][$attr_name][$key] : null;
                     }
                 }
 
-                if($medicationSetItem_id == -1) {
+                if ($medicationSetItem_id == -1) {
                     $medicationSetItem = new MedicationSetItem();
-                }
-                else {
+                } else {
                     $medicationSetItem = MedicationSetItem::model()->findByPk($medicationSetItem_id);
                 }
 
                 $medicationSetItem->setAttributes($attributes);
                 $medicationSetItem->medication_set_id = $model->id;
 
-                if(!$medicationSetItem->validate(array('medication_id', 'default_form_id', 'default_route_id', 'default_frequency_id', 'default_duration_id'))) {
+                if (!$medicationSetItem->validate(array('medication_id', 'default_form_id', 'default_route_id', 'default_frequency_id', 'default_duration_id'))) {
                     $model->addErrors($medicationSetItem->getErrors());
                 }
 
