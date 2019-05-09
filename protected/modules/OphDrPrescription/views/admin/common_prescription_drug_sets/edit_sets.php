@@ -62,8 +62,8 @@ if (!empty($id)) {
             {{duration.label}}
         </td>
         <td>
-                <button class="button hint green js-add-taper" data-key="{{ key }}"
-                        data-row-id="{{medication.id}}" type="button">add taper
+                <button class="button hint green js-add-taper" data-row-key="{{ key }}"
+                        data-medication-id="{{medication.id}}" type="button">add taper
                 </button>
         </td>
         <td>
@@ -180,8 +180,8 @@ if (!empty($id)) {
                 <?= $assignment->default_duration_id ? CHtml::encode($assignment->defaultDuration->name) : "" ?>
             </td>
             <td>
-                <button class="button hint green js-add-taper" data-key="<?= $rowkey ?>"
-                        data-row-id="<?= $assignment->id ?>" type="button">add taper
+                <button class="button hint green js-add-taper" data-row-key="<?= $rowkey ?>"
+                        data-medication-id="<?= $assignment->id ?>" type="button">add taper
                 </button>
             </td>
             <td>
@@ -338,6 +338,50 @@ if (!empty($id)) {
                     });
 
 
+
+                    new OpenEyes.UI.AdderDialog({
+                        openButton: $('.js-add-taper'),
+                        itemSets: [
+                            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($freqs) ?>, {
+                                'id': 'frequency',
+                                'multiSelect': false,
+                                header: "Default frequency"
+                            }),
+                            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($durations) ?>, {
+                                'id': 'duration',
+                                'multiSelect': false,
+                                header: "Default duration"
+                            })
+                        ],
+                        onReturn: function (adderDialog, selectedItems) {
+
+                            var row = {};
+                            $.each(selectedItems, function (i, e) {
+
+                                if (e.itemSet.options.id == "frequency") {
+                                    row.frequency = Object.assign({}, e);
+                                }
+                                else if (e.itemSet.options.id == "duration") {
+                                    row.duration = Object.assign({}, e);
+                                }
+                            });
+
+                            var $body = $("#medication_" + adderDialog.OpenButtonRowKey);
+
+                            var template = $('#set_row_taper_template').html();
+                            Mustache.parse(template);
+
+                            var rendered = Mustache.render(template, {
+                                "key": adderDialog.OpenButtonRowKey,
+                                "medication_id": adderDialog.medicationId,
+                                "frequency": row.frequency,
+                                "duration": row.duration
+                            });
+                            $body.after(rendered);
+                            return true;
+                        },
+                        enableCustomSearchEntries: true,
+                    });
                 </script>
 
 
@@ -347,58 +391,3 @@ if (!empty($id)) {
     </tfoot>
 </table>
 
-<script type="text/javascript">
-    $(".js-add-taper").click(function (e) {
-
-        var medication_id = $(e.target).attr("data-row-id");
-        var key = $(e.target).attr("data-key");
-        var key = parseInt(key);
-
-        var dialog = new OpenEyes.UI.AdderDialog({
-            openButton: $('.js-add-taper'),
-            itemSets: [
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($freqs) ?>, {
-                    'id': 'frequency',
-                    'multiSelect': false,
-                    header: "Default frequency"
-                }),
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($durations) ?>, {
-                    'id': 'duration',
-                    'multiSelect': false,
-                    header: "Default duration"
-                })
-            ],
-            onReturn: function (adderDialog, selectedItems) {
-
-                var row = {};
-                $.each(selectedItems, function (i, e) {
-
-                    if (e.itemSet.options.id == "frequency") {
-                        row.frequency = Object.assign({}, e);
-                    }
-                    else if (e.itemSet.options.id == "duration") {
-                        row.duration = Object.assign({}, e);
-                    }
-                });
-
-
-                var $body = $("#medication_" + key);
-
-                var template = $('#set_row_taper_template').html();
-                Mustache.parse(template);
-
-                var rendered = Mustache.render(template, {
-                    "key": key,
-                    "medication_id": medication_id,
-                    "frequency": row.frequency,
-                    "duration": row.duration
-                });
-                $body.after(rendered);
-                return true;
-            },
-            enableCustomSearchEntries: true,
-        });
-        dialog.open();
-    });
-
-</script>

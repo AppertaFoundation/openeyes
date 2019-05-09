@@ -20,45 +20,40 @@
 
     Util.inherits(EventEmitter, AdderDialog);
 
-  /**
-   * The default AdderDialog options. Custom options will be merged with these.
-   * @name OpenEyes.UI.AdderDialog#_defaultOptions
-   * @property {OpenEyes.UI.AdderDialog.ItemSet[]} [itemSets=null] - The lists of items that the user can select from
-   * @property {object} [openButton=null] - The DOM handle for the button used to open the popup
-   * @property {Function} [onOpen=null] - A callback to be called when the popup is opened
-   * @property {Function} [onClose=null] - A callback to be called when the popup is closed
-   * @property {Function} [onSelect=null] - A callback to be called when an item is selected
-   * @property {Function} [onReturn=null] - A callback to be called when the add button is clicked
-   * @property {boolean} [deselectOnReturn=true] - Whether all items should be deselected when the popup is added
-   * @property {string} [id=null] - The ID of the popup div
-   * @property {string} [popupClass='oe-add-select-search auto-width'] - The classes to use for the popup
-   * @property {string} [liClass='auto-width'] - The class to use for the items
-   * @property {boolean} [createBlackoutDiv] - Whether a blackout div should be created, closing the popup if the user clicks anywhere else
-   * @private
-   */
-  AdderDialog._defaultOptions = {
-      itemSets: [],
-      openButton: null,
-      onOpen: null,
-      onClose: null,
-      onSelect: null,
-      onReturn: null,
-      returnOnSelect: false,
-      deselectOnReturn: true,
-      id: null,
-      popupClass: 'oe-add-select-search auto-width',
-      liClass: 'auto-width',
-      searchOptions: null,
-      width: null,
-      createBlackoutDiv: true,
-      enableCustomSearchEntries: false,
-      searchAsTypedPrefix: 'As typed: ',
-      searchAsTypedItemProperties: {},
-
-      searchFilterEnabled: false,
-      searchFilterLabel: 'Include Branded',
-      searchFilterURLparam: 'include_branded'
-  };
+    /**
+     * The default AdderDialog options. Custom options will be merged with these.
+     * @name OpenEyes.UI.AdderDialog#_defaultOptions
+     * @property {OpenEyes.UI.AdderDialog.ItemSet[]} [itemSets=null] - The lists of items that the user can select from
+     * @property {object} [openButton=null] - The DOM handle for the button used to open the popup
+     * @property {Function} [onOpen=null] - A callback to be called when the popup is opened
+     * @property {Function} [onClose=null] - A callback to be called when the popup is closed
+     * @property {Function} [onSelect=null] - A callback to be called when an item is selected
+     * @property {Function} [onReturn=null] - A callback to be called when the add button is clicked
+     * @property {boolean} [deselectOnReturn=true] - Whether all items should be deselected when the popup is added
+     * @property {string} [id=null] - The ID of the popup div
+     * @property {string} [popupClass='oe-add-select-search auto-width'] - The classes to use for the popup
+     * @property {string} [liClass='auto-width'] - The class to use for the items
+     * @property {boolean} [createBlackoutDiv] - Whether a blackout div should be created, closing the popup if the user clicks anywhere else
+     * @private
+     */
+    AdderDialog._defaultOptions = {
+        itemSets: [],
+        openButton: null,
+        onOpen: null,
+        onClose: null,
+        onSelect: null,
+        onReturn: null,
+        returnOnSelect: false,
+        deselectOnReturn: true,
+        id: null,
+        popupClass: 'oe-add-select-search auto-width',
+        liClass: 'auto-width',
+        searchOptions: null,
+        width: null,
+        createBlackoutDiv: true,
+        enableCustomSearchEntries: false,
+        searchAsTypedPrefix: 'As typed: '
+    };
 
     /**
      * Creates and stores the adder dialog container
@@ -175,28 +170,12 @@
         let $filterDiv = $('<div />', {class: 'has-filter'}).appendTo(this.searchWrapper);
         $searchInput.appendTo($filterDiv);
 
-        var timeout = null;
         $searchInput.on('keyup', function () {
-          var term = $(this).val();
-          if(timeout) {
-            clearTimeout(timeout);
-            timeout = null;
-          }
-          timeout = setTimeout(function(){dialog.runItemSearch(term);
-          }, 500);
+            dialog.runItemSearch($(this).val());
         });
 
         this.noSearchResultsWrapper = $('<span />').text('No results found');
         this.noSearchResultsWrapper.appendTo($filterDiv);
-
-        if(this.options.searchFilterEnabled) {
-            var $searchFilter = $('<div><label class="inline"><input class="js-searchfilter-check" type="checkbox" /> '+this.options.searchFilterLabel+'</label> </div>');
-            $searchFilter.appendTo($filterDiv);
-            this.searchWrapper.find(".js-searchfilter-check").on("click", function(e){
-                var text = $searchInput.val();
-                dialog.runItemSearch(text);
-            });
-        }
 
         this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
         this.searchResultList.appendTo($filterDiv);
@@ -237,14 +216,12 @@
 
         itemSet.items.forEach(function (item) {
 
-      let dataset = AdderDialog.prototype.constructDataset(item);
-      let $listItem = $('<li />', dataset);
-      if(typeof item.prepended_markup !== "undefined") {
-            $(item.prepended_markup).appendTo($listItem);
-        }$('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
-      if (item.selected) {
-        $listItem.addClass('selected');
-      }
+            let dataset = AdderDialog.prototype.constructDataset(item);
+            let $listItem = $('<li />', dataset);
+            $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
+            if (item.selected) {
+                $listItem.addClass('selected');
+            }
 
             $listItem.data('itemSet', itemSet);
             $listItem.appendTo($list);
@@ -397,6 +374,12 @@
     AdderDialog.prototype.setOpenButton = function (openButton) {
         let dialog = this;
         openButton.click(function () {
+            if ($(this).attr('data-row-key') != null) {
+                dialog.OpenButtonRowKey = $(this).attr('data-row-key');
+            }
+            if ($(this).attr('data-medication-id') != null) {
+                dialog.medicationId = $(this).attr('data-medication-id');
+            }
             dialog.open();
             return false;
         });
@@ -465,18 +448,11 @@
             this.searchRequest.abort();
         }
 
-        var ajaxOptions = {
+        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
             term: text,
             code: this.options.searchOptions.code,
             ajax: 'ajax'
-        };
-
-        if(this.options.searchFilterEnabled) {
-            var filter_on = this.searchWrapper.find(".js-searchfilter-check").prop("checked");
-            ajaxOptions[this.options.searchFilterURLparam] = filter_on ? 1 : 0;
-        }
-
-        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, ajaxOptions, function (results) {
+        }, function (results) {
             dialog.searchRequest = null;
             let no_data = !$(results).length;
 
@@ -490,12 +466,9 @@
 
             $(results).each(function (index, result) {
                 var dataset = AdderDialog.prototype.constructDataset(result);
-                var $listItem = $("<li />", dataset);
-                if(typeof result.prepended_markup !== "undefined") {
-                    $(result.prepended_markup).appendTo($listItem);
-                }
-                $('<span />', {class: 'auto-width'}).text(dataset['data-label']).appendTo($listItem);
-                dialog.searchResultList.append($listItem);
+                var item = $("<li />", dataset)
+                    .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
+                dialog.searchResultList.append(item);
             });
 
             if (dialog.options.enableCustomSearchEntries) {
@@ -507,11 +480,10 @@
     };
 
     AdderDialog.prototype.appendCustomEntryOption = function (text, dialog) {
-        let new_entry_data = $.extend({
+        let custom_entry = AdderDialog.prototype.constructDataset({
             label: text,
             type: 'custom'
-        }, dialog.options.searchAsTypedItemProperties);
-        let custom_entry = AdderDialog.prototype.constructDataset(new_entry_data);
+        });
         let item = $("<li />", custom_entry).text(dialog.options.searchAsTypedPrefix)
             .append($('<span />', {class: 'auto-width'}).text(text));
 
