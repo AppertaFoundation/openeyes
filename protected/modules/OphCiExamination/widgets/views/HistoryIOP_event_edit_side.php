@@ -271,6 +271,13 @@ foreach ($readings as $reading) {
                 $first_instrument_li.click();
             }
         });
+
+        // scroll the numbers list so 9 is at top
+        side.find('.js-add-select-search').on('click', function () {
+            let $selected = side.find('ul.add-options.cols-full.single[data-id="time"] ul.number li[data-time="9"]');
+            side.find('ul.add-options.cols-full.single[data-id="time"]').scrollTop($selected.offset().top - $selected.parent().offset().top);
+        });
+
     });
 
     function HistoryIOP_addReading(side, instrumentId, instrumentName, time,
