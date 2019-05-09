@@ -1496,7 +1496,14 @@ class AnalyticsController extends BaseController
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1
-                    )
+                    ),
+                    'hoverinfo' => 'text',
+                    'hovertext' => array_map(
+                        function ($item) {
+                            return "Average: " . $item['average'] . "<br> SD: " . $item['SD'] ."<br> Patient No: ".count($item['patients']);
+                        },
+                        array_values(${$side . '_va_list'})
+                    ),
                 ),
                 array(
                     'name' => $speciality_name === 'Glaucoma' ? 'IOP' : 'CRT',
@@ -1521,7 +1528,14 @@ class AnalyticsController extends BaseController
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1
-                    )
+                    ),
+                    'hoverinfo' => 'text',
+                    'hovertext' => array_map(
+                        function ($item) {
+                            return "Average: " . $item['average'] . "<br> SD: " . $item['SD'] ."<br> Patient No: ".count($item['patients']);
+                        },
+                        array_values(${$side . $second_list_name})
+                    ),
                 )
             );
         }
