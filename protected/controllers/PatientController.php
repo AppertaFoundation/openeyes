@@ -90,7 +90,11 @@ class PatientController extends BaseController
             array('allow',
                 'actions' => array('create', 'update', 'findDuplicates', 'findDuplicatesByIdentifier'),
                 'roles' => array('TaskAddPatient'),
-            )
+            ),
+						array('allow',
+							'actions'=>array('summary'),
+							'roles'=>array('User'),
+						)
         );
     }
 
