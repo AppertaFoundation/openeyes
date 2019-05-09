@@ -374,12 +374,6 @@
     AdderDialog.prototype.setOpenButton = function (openButton) {
         let dialog = this;
         openButton.click(function () {
-            if ($(this).attr('data-row-key') != null) {
-                dialog.OpenButtonRowKey = $(this).attr('data-row-key');
-            }
-            if ($(this).attr('data-medication-id') != null) {
-                dialog.medicationId = $(this).attr('data-medication-id');
-            }
             dialog.open();
             return false;
         });
