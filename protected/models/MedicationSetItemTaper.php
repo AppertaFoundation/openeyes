@@ -59,6 +59,7 @@ class MedicationSetItemTaper extends BaseActiveRecordVersioned
 		// class name for the relations automatically generated below.
 		return array(
 			'duration' => array(self::BELONGS_TO, DrugDuration::class, 'duration_id'),
+			'medicationDuration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
 			'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
 			'medicationSetItem' => array(self::BELONGS_TO, MedicationSetItem::class, 'medication_set_item_id'),
 			'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),

@@ -72,6 +72,7 @@ if (!empty($id)) {
     </tr>
 
 
+
 </script>
 
 <script type="text/javascript">
@@ -98,12 +99,18 @@ if (!empty($id)) {
         <td>
         </td>
         <td>
-            <input type="hidden" name="MedicationSet[medicationSetItemTapers][default_frequency_id][]" value="{{frequency.id}}" />
-            {{frequency.label}}
+            <select name="MedicationSet[medicationSetItemTapers][default_frequency_id][]">
+            <?php foreach ($freqs as $freq) : ?>
+            <option value="<?=$freq['id']?>"><?=$freq['label']?></option>
+            <?php endforeach; ?>
+            </select>
         </td>
         <td>
-            <input type="hidden" name="MedicationSet[medicationSetItemTapers][default_duration_id][]" value="{{duration.id}}" />
-            {{duration.label}}
+            <select name="MedicationSet[medicationSetItemTapers][default_duration_id][]">
+            <?php foreach ($durations as $duration) : ?>
+            <option value="<?=$duration['id']?>"><?=$duration['label']?></option>
+            <?php endforeach; ?>
+            </select>
         </td>
          <td>
         </td>
@@ -111,6 +118,7 @@ if (!empty($id)) {
             <a href="javascript:void(0);" class="js-delete-taper"><i class="oe-i trash"></i></a>
         </td>
     </tr>
+
 
 
 </script>
@@ -203,7 +211,7 @@ if (!empty($id)) {
                         <input type="hidden" name="MedicationSet[medicationSetItemTapers][id][]"
                                value="<?= $taper_id ?>"/>
                         <input type="hidden" name="MedicationSet[medicationSetItemTapers][medication_set_item_id][]"
-                               value="<?= $taper->id ?>"/>
+                               value="<?= $taper->medication_set_item_id ?>"/>
                         <em class="fade">-></em>
                     </td>
                     <td>
@@ -215,14 +223,23 @@ if (!empty($id)) {
                     <td>
                     </td>
                     <td>
-                        <input type="hidden" name="MedicationSet[medicationSetItemTapers][default_frequency_id][]"
-                               value="<?= $taper->frequency_id ?>"/>
-                        <?= $assignment->default_frequency_id ? CHtml::encode($taper->frequency->term) : "" ?>
+                        <select name="MedicationSet[medicationSetItemTapers][default_frequency_id][]">
+                            <option value="<?=$taper->frequency_id?>"><?=$taper->frequency->term?></option>
+                            <?php foreach ($freqs as $freq) : ?>
+                            <?php if($freq['id'] != $taper->frequency_id)?>
+                                <option value="<?=$freq['id']?>"><?=$freq['label']?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </td>
                     <td>
-                        <input type="hidden" name="MedicationSet[medicationSetItemTapers][default_duration_id][]"
-                               value="<?= $taper->duration_id ?>"/>
-                        <?= $assignment->default_duration_id ? CHtml::encode($taper->duration->name) : "" ?>
+                        <select name="MedicationSet[medicationSetItemTapers][default_duration_id][]">
+                            <option value="<?=$taper->duration_id?>"><?=$taper->medicationDuration->name?></option>
+                            <?php foreach ($durations as $duration) : ?>
+                                <?php if($duration['id'] != $taper->duration_id) : ?>
+                                    <option value="<?=$duration['id']?>"><?=$duration['label']?></option>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </select>
                     </td>
                     <td>
                     </td>
@@ -337,51 +354,6 @@ if (!empty($id)) {
                         enableCustomSearchEntries: true,
                     });
 
-
-
-                    new OpenEyes.UI.AdderDialog({
-                        openButton: $('.js-add-taper'),
-                        itemSets: [
-                            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($freqs) ?>, {
-                                'id': 'frequency',
-                                'multiSelect': false,
-                                header: "Default frequency"
-                            }),
-                            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($durations) ?>, {
-                                'id': 'duration',
-                                'multiSelect': false,
-                                header: "Default duration"
-                            })
-                        ],
-                        onReturn: function (adderDialog, selectedItems) {
-
-                            var row = {};
-                            $.each(selectedItems, function (i, e) {
-
-                                if (e.itemSet.options.id == "frequency") {
-                                    row.frequency = Object.assign({}, e);
-                                }
-                                else if (e.itemSet.options.id == "duration") {
-                                    row.duration = Object.assign({}, e);
-                                }
-                            });
-
-                            var $body = $("#medication_" + adderDialog.OpenButtonRowKey);
-
-                            var template = $('#set_row_taper_template').html();
-                            Mustache.parse(template);
-
-                            var rendered = Mustache.render(template, {
-                                "key": adderDialog.OpenButtonRowKey,
-                                "medication_id": adderDialog.medicationId,
-                                "frequency": row.frequency,
-                                "duration": row.duration
-                            });
-                            $body.after(rendered);
-                            return true;
-                        },
-                        enableCustomSearchEntries: true,
-                    });
                 </script>
 
 
@@ -391,3 +363,22 @@ if (!empty($id)) {
     </tfoot>
 </table>
 
+<script type="text/javascript">
+    $(document).on("click", ".js-add-taper", function (e) {
+        var medicationId = $(e.target).attr("data-medication-id");
+        var rowKey = $(e.target).attr("data-row-key");
+
+        var $body = $("#medication_" + rowKey);
+
+        var template = $('#set_row_taper_template').html();
+        Mustache.parse(template);
+
+        var rendered = Mustache.render(template, {
+            "key": rowKey,
+            "medication_id": medicationId,
+        });
+        $body.after(rendered);
+
+    });
+
+</script>

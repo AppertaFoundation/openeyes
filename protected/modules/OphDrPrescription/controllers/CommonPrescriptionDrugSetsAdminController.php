@@ -111,10 +111,11 @@ class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminControl
 
         $updated_taper_ids = array();
         $taperids = @Yii::app()->request->getPost('MedicationSet')['medicationSetItemTapers']['id'];
+
         if(is_array($taperids)) {
             $taperData = Yii::app()->request->getPost('MedicationSet')['medicationSetItemTapers'];
-            foreach ($taperids as $key => $rid) {
 
+            foreach ($taperids as $key => $rid) {
                 if($rid == -1) {
                     $medSetItemTaper = new MedicationSetItemTaper();
                     $medSetItemTaper->medication_set_item_id = $taperData['medication_set_item_id'][$key];
@@ -122,6 +123,23 @@ class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminControl
                     $medSetItemTaper->duration_id = $taperData['default_duration_id'][$key];
                     $medSetItemTaper->save();
                 } else {
+                    $medSetItemTaper = MedicationSetItemTaper::model()->findByPk($rid);
+                    $medSetItemTaper->medication_set_item_id = $taperData['medication_set_item_id'][$key];
+                    $medSetItemTaper->frequency_id = $taperData['default_frequency_id'][$key];
+                    $medSetItemTaper->duration_id = $taperData['default_duration_id'][$key];
+                    $medSetItemTaper->update();
+
+                    /*
+                    try{
+                        $medSetItemTaper->update();
+                    }catch(Exception $e){
+                        echo '<pre>';
+                        print_r($medSetItemTaper);
+                        echo '</pre>';
+                        exit;
+                    }
+                    */
+
                     $updated_taper_ids[] = $rid;
                 }
             }
