@@ -85,7 +85,12 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
 
     public function actionEdit($id = null)
     {
+        $admin = $this->_getAdmin($id);
+        $admin->editModel();
+    }
 
+    private function _getAdmin($id)
+    {
         $admin = new Admin(MedicationSet::model(), $this);
 
         if($id) {
@@ -152,7 +157,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
         $admin->setCustomSaveURL('/OphDrPrescription/'.Yii::app()->controller->id.'/save/'.$id);
         $admin->setCustomCancelURL('/OphDrPrescription/'.Yii::app()->controller->id.'/list');
 
-        $admin->editModel();
+        return $admin;
     }
 
     public function actionSave($id = null)

@@ -23,7 +23,7 @@ $freqs = array_map(function ($e) {
 }, MedicationFrequency::model()->findAllByAttributes(['deleted_date' => null]));
 $durations = array_map(function ($e) {
     return ['id' => $e->id, 'label' => $e->name];
-}, MedicationDuration::model()->findAllByAttributes(['deleted_date' => null]));
+}, MedicationDuration::model()->findAllByAttributes(['deleted_date' => null], array('order'=>'display_order ASC')));
 
 $medicationSetItems = [];
 if (!empty($id)) {
@@ -40,10 +40,12 @@ if (!empty($id)) {
         {{medication.label}}
         </td>
        <td>
-            <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose][{{ key }}]', "1"); ?>
+             <input type="hidden" name="MedicationSet[medicationSetItems][default_dose][{{ key }}]" value="1" />
+            1
         </td>
         <td>
-            <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose_unit_term][{{ key }}]', '{{unit.label}}'); ?>
+            <input type="hidden" name="MedicationSet[medicationSetItems][default_dose_unit_term][{{ key }}]" value="{{unit.id}}" />
+            {{unit.label}}
         </td>
         <td>
             <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][{{ key }}]" value="{{form.id}}" />
@@ -89,7 +91,7 @@ if (!empty($id)) {
         <td>
         <input type="hidden" name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][id]" value="-1" />
         <input type="hidden" name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][medication_set_item_id]" value="{{medication_id}}" />
-        <em class="fade">-></em>
+        <i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em>
         </td>
        <td>
         </td>
@@ -101,6 +103,7 @@ if (!empty($id)) {
         </td>
         <td>
             <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][default_frequency_id]">
+            <option>-- Select --</option>
             <?php foreach ($freqs as $freq) : ?>
             <option value="<?=$freq['id']?>"><?=$freq['label']?></option>
             <?php endforeach; ?>
@@ -108,6 +111,7 @@ if (!empty($id)) {
         </td>
         <td>
             <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][default_duration_id]">
+            <option>-- Select --</option>
             <?php foreach ($durations as $duration) : ?>
             <option value="<?=$duration['id']?>"><?=$duration['label']?></option>
             <?php endforeach; ?>
@@ -131,17 +135,17 @@ if (!empty($id)) {
 </script>
 
 <h3>This set contains the following medications</h3>
-<table class="standard" id="medication_set_assignment_tbl">
+<table class="standard cols-full" id="medication_set_assignment_tbl">
     <thead>
     <tr>
-        <th width="17%">Name</th>
-        <th width="13%">Default dose</th>
-        <th width="13%">Default dose unit</th>
-        <th width="13%">Default form</th>
-        <th width="13%">Default route</th>
-        <th width="13%">Default freq</th>
-        <th width="13%">Default duration</th>
-        <th width="5%">Action</th>
+        <th class="cols-3">Name</th>
+        <th class="cols-1">Default dose</th>
+        <th class="cols-1">Default dose unit</th>
+        <th class="cols-1">Default form</th>
+        <th class="cols-2">Default route</th>
+        <th class="cols-2">Default freq</th>
+        <th class="cols-1">Default duration</th>
+        <th class="cols-1">Action</th>
     </tr>
     </thead>
     <tbody>
@@ -161,10 +165,14 @@ if (!empty($id)) {
                 <?= CHtml::encode($assignment->medication->preferred_term) ?>
             </td>
             <td>
-                <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose]['.$rowkey.']', $assignment->default_dose); ?>
+                <input type="hidden" name="MedicationSet[medicationSetItems][default_dose][<?= $rowkey ?>]"
+                       value="<?= $assignment->default_dose ?>"/>
+                <?= $assignment->default_dose ? CHtml::encode($assignment->default_dose) : "" ?>
             </td>
             <td>
-                <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose_unit_term]['.$rowkey.']', $assignment->default_dose_unit_term); ?>
+                <input type="hidden" name="MedicationSet[medicationSetItems][default_dose_unit_term][<?= $rowkey ?>]"
+                       value="<?= $assignment->default_dose_unit_term ?>"/>
+                <?= $assignment->default_dose_unit_term ? CHtml::encode($assignment->default_dose_unit_term) : "" ?>
             </td>
             <td>
                 <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][<?= $rowkey ?>]"
@@ -211,7 +219,7 @@ if (!empty($id)) {
                                value="<?= $taper_id ?>"/>
                         <input type="hidden" name="MedicationSet[medicationSetItems][medicationSetItemTapers][<?= $rowkey ?>][<?=$taperrowkey?>][medication_set_item_id]"
                                value="<?= $taper->medication_set_item_id ?>"/>
-                        <em class="fade">-></em>
+                        <i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em>
                     </td>
                     <td>
                     </td>
@@ -225,8 +233,9 @@ if (!empty($id)) {
                         <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][<?= $rowkey ?>][<?=$taperrowkey?>][default_frequency_id]">
                             <option value="<?=$taper->frequency_id?>"><?=$taper->frequency->term?></option>
                             <?php foreach ($freqs as $freq) : ?>
-                            <?php if($freq['id'] != $taper->frequency_id)?>
+                                <?php if($freq['id'] != $taper->frequency_id) : ?>
                                 <option value="<?=$freq['id']?>"><?=$freq['label']?></option>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -248,10 +257,12 @@ if (!empty($id)) {
                 </tr>
 
             <?php endforeach; ?>
-            <input type="hidden" class="row_number_<?= $rowkey; ?>" value="<?= count($assignment->tapers); ?>">
+                <input type="hidden" class="row_number_<?= $rowkey; ?>" value="<?= count($assignment->tapers); ?>">
         <?php endif; ?>
 
-    <?php endforeach; ?>
+    <?php
+        $taperrowkey=0;
+    endforeach; ?>
     <script type="text/javascript">
         $(function () {
             $(document).on("click", ".js-delete-attribute", function (e) {
@@ -369,7 +380,12 @@ if (!empty($id)) {
         var medicationId = $(e.target).attr("data-medication-id");
         var rowKey = $(e.target).attr("data-row-key");
 
-        var $body = $("#medication_" + rowKey);
+        var $body = $(".medication_" + rowKey);
+        if ($body.length > 0) {
+            $body = $(".medication_" + rowKey).last();
+        } else {
+            $body = $("#medication_" + rowKey);
+        }
 
         var row_number = $(".row_number_" + rowKey).val();
         $(".row_number_" + rowKey).val(parseInt(row_number)+1);
