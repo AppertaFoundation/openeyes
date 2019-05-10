@@ -9,7 +9,7 @@ class m180808_083248_medication_set_taper extends OEMigration
             'medication_set_item_id' => 'int(11) NOT NULL',
             'dose' => 'FLOAT',
             'frequency_id' => 'INT(11) NOT NULL',
-            'duration_id' => 'INT(10) UNSIGNED NOT NULL'
+            'duration_id' => 'INT(11) NOT NULL'
         ), true);
 
 	    $this->addForeignKey('fk_rmst_med_id', 'medication_set_item_taper', 'medication_set_item_id', 'medication_set_item', 'id');
