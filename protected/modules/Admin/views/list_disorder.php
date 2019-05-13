@@ -85,7 +85,7 @@
                             'class' => 'button large',
                             'type' => 'button',
                             'name' => 'add',
-                            'data-uri' => 'add',
+                            'data-uri' => '/Admin/disorder/add',
                             'id' => 'et_add'
                         ]
                     ); ?>
