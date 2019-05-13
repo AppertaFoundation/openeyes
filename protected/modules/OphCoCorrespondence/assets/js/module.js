@@ -63,7 +63,7 @@ function updateCorrespondence(macro_id)
             }
         });
     }
-	$('.autosize').autosize();
+	autosize($('.autosize'));
 }
 
 function togglePrintDisabled (isSignedOff) {

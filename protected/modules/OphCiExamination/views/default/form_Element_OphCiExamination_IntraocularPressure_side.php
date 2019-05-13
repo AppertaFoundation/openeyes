@@ -199,7 +199,7 @@ foreach ($readings as $reading) {
       });
 
       // show / hide reading value column and scale value column
-      $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye').on('click', 'ul.add-options[data-id="instrument"] li', function() {
+      $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye').on('click', 'ul[data-id="instrument"] li', function() {
           if ($(this).hasClass("selected")) {
               if ($(this).data('scale')) {
                   AdderDialog.toggleColumnById(['reading_value'], false);
@@ -241,10 +241,10 @@ foreach ($readings as $reading) {
           let $first_instrument_li = null;
           if (default_instrument_id) {
               // select the default instrument
-              $first_instrument_li = side.find('ul.add-options[data-id="instrument"] li[data-id=' + default_instrument_id + ']').first();
+              $first_instrument_li = side.find('ul[data-id="instrument"] li[data-id=' + default_instrument_id + ']').first();
           } else {
               // select the first instrument by default
-              $first_instrument_li = side.find('ul.add-options[data-id="instrument"] li').first().click();
+              $first_instrument_li = side.find('ul[data-id="instrument"] li').first().click();
           }
           if (!$first_instrument_li.hasClass('selected')) {
               $first_instrument_li.click();
