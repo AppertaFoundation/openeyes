@@ -26,6 +26,6 @@
     "plotly.js-dist": "^1.41.3",
     "sortablejs": "^1.8.4",
     "tinymce": "^4.8.2",
-    "jquery-autosize": "^1.18.18"
+    "autosize": "^4.0.0"
   }
 }
