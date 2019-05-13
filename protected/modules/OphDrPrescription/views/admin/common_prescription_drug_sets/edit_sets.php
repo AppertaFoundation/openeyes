@@ -102,16 +102,16 @@ if (!empty($id)) {
         <td>
         </td>
         <td>
-            <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][default_frequency_id]">
-            <option>-- Select --</option>
+            <select class="js-taper-dropdown" name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][default_frequency_id]" required="required">
+            <option  value="">-- Select --</option>
             <?php foreach ($freqs as $freq) : ?>
             <option value="<?=$freq['id']?>"><?=$freq['label']?></option>
             <?php endforeach; ?>
             </select>
         </td>
         <td>
-            <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][default_duration_id]">
-            <option>-- Select --</option>
+            <select class="js-taper-dropdown" name="MedicationSet[medicationSetItems][medicationSetItemTapers][{{ key }}][{{ taperrowkey }}][default_duration_id]" required="required">
+            <option  value="">-- Select --</option>
             <?php foreach ($durations as $duration) : ?>
             <option value="<?=$duration['id']?>"><?=$duration['label']?></option>
             <?php endforeach; ?>
@@ -230,7 +230,7 @@ if (!empty($id)) {
                     <td>
                     </td>
                     <td>
-                        <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][<?= $rowkey ?>][<?=$taperrowkey?>][default_frequency_id]">
+                        <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][<?= $rowkey ?>][<?=$taperrowkey?>][default_frequency_id]" required="required">
                             <option value="<?=$taper->frequency_id?>"><?=$taper->frequency->term?></option>
                             <?php foreach ($freqs as $freq) : ?>
                                 <?php if($freq['id'] != $taper->frequency_id) : ?>
@@ -240,7 +240,7 @@ if (!empty($id)) {
                         </select>
                     </td>
                     <td>
-                        <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][<?= $rowkey ?>][<?=$taperrowkey?>][default_duration_id]">
+                        <select name="MedicationSet[medicationSetItems][medicationSetItemTapers][<?= $rowkey ?>][<?=$taperrowkey?>][default_duration_id]" required="required">
                             <option value="<?=$taper->duration_id?>"><?=$taper->duration->name?></option>
                             <?php foreach ($durations as $duration) : ?>
                                 <?php if($duration['id'] != $taper->duration_id) : ?>
@@ -407,6 +407,10 @@ if (!empty($id)) {
         });
         $body.after(rendered);
 
+    });
+
+    $(document).on("change", ".js-taper-dropdown", function(e) {
+        enableButtons('#et_save button, .button');
     });
 
 </script>

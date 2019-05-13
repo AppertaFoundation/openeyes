@@ -117,29 +117,17 @@ class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminControl
                         $medSetItemTaper->medication_set_item_id = $model->medicationSetItems[$index]->id;
                         $medSetItemTaper->frequency_id = $taper['default_frequency_id'];
                         $medSetItemTaper->duration_id = $taper['default_duration_id'];
-                        if(!$medSetItemTaper->validate() || !$medSetItemTaper->save(false)) {
-                            $invalidTapers[] = $medSetItemTaper;
-                            $validFalse = true;
-                        } else {
-                            $medSetItemTaper->save();
-                        }
+                        $medSetItemTaper->save();
                     } else {
                         $medSetItemTaper = MedicationSetItemTaper::model()->findByPk($taper['id']);
                         $medSetItemTaper->frequency_id = $taper['default_frequency_id'];
                         $medSetItemTaper->duration_id = $taper['default_duration_id'];
                         $medSetItemTaper->update();
-
                         $updated_taper_ids[] = $taper['id'];
                     }
                 }
             }
         }
-
-        /*
-        if ($validFalse) {
-
-        }
-        */
 
 
         $deleted_taper_ids = array_diff($existing_taper_ids, $updated_taper_ids);
