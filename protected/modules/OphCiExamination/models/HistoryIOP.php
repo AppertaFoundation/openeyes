@@ -35,7 +35,7 @@ namespace OEModule\OphCiExamination\models;
  * @property Eye $eye
  * @property User $lastModifiedUser
  */
-class HistoryIOP extends \BaseEventTypeElement
+class HistoryIOP extends \SplitEventTypeElement
 {
 
     protected $auto_update_relations = true;
@@ -108,13 +108,13 @@ class HistoryIOP extends \BaseEventTypeElement
                     if (!isset($date) || !$date) {
                         $this->addError($side_values . '_' . $index . '_examination_date', 'there must be a date set for the iop value');
                     } else {
-                        $dateTime = \DateTime::createFromFormat('Y-m-d', $date);
+                        $dateTime = \DateTime::createFromFormat('d-m-Y', $date);
                         $errorsDate = \DateTime::getLastErrors();
                         if (!$dateTime || !empty($errorsDate['warning_count'])) {
-                            $this->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: Y-m-d');
+                            $this->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: d-m-Y');
                         } else {
                             // don't accept event dates set in the future
-                            if (\DateTime::createFromFormat('Y-m-d', $date)->getTimestamp() > time()) {
+                            if (\DateTime::createFromFormat('d-m-Y', $date)->getTimestamp() > time()) {
                                 $this->addError($side_values . '_' . $index . '_examination_date', 'Event Date cannot be in the future.');
                             }
                         }

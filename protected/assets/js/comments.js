@@ -12,13 +12,18 @@ $(function () {
   });
 
     $(this).on('blur', '.js-comment-field', function () {
-    if ($(this).val().trim() === '') {
-      var $container = $(this).closest('.js-comment-container');
-      var $button = $($container.data('comment-button'));
-      $button.css('visibility', 'visible');
-      $container.hide();
-    }
-  });
+      if ($(this).val().trim() === '') {
+        var $container = $(this).closest('.js-comment-container');
+        var $button = $($container.data('comment-button'));
+        if ($(this).data('hide-method') === 'display') {
+          $button.show();
+          $container.hide();
+        } else {
+          $button.css('visibility', 'visible');
+          $container.hide();
+        }
+      }
+    });
 
   $(this).on('click', '.js-remove-add-comments', function () {
     var $container = $(this).closest('.js-comment-container');
