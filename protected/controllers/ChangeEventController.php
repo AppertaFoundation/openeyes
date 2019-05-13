@@ -222,11 +222,18 @@ class ChangeEventController extends BaseController
                     $selected_workflow_step_id =  \Yii::app()->request->getPost('selectedWorkflowStepId');
 
                     if($selected_workflow_step_id){
-                        $step = OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id));
-                        $step->step_id = $selected_workflow_step_id;
-                        $step->step_completed = 0;
+                        $assignment = OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id));
 
-                        if ($step->save()) {
+                        if (!$assignment) {
+                            // Create initial workflow assignment if event hasn't already got one
+                            $assignment = new OphCiExamination_Event_ElementSet_Assignment();
+                            $assignment->event_id = $event->id;
+                        }
+
+                        $assignment->step_id = $selected_workflow_step_id;
+                        $assignment->step_completed = 0;
+
+                        if ($assignment->save()) {
                             $data = 'Changed step to ' . OphCiExamination_ElementSet::model()->findByPk($selected_workflow_step_id)->name;
                             Audit::add('element set assignment', 'update', $data, null, $properties);
                         }                        
