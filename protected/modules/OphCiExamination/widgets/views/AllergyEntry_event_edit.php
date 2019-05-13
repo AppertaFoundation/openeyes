@@ -86,21 +86,24 @@ if (!isset($values)) {
   </td>
 	<td>
     <div class="cols-full">
-      <div class="comment-group js-comment-container flex-layout flex-left"
+      <div class="js-comment-container flex-layout flex-left"
   					id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
   					style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
   					data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
-                    <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], array(
-  										'class' => 'js-comment-field autosize cols-full',
-  										'autocomplete' => 'off',
-  									)) ?>
+                    <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
+                        'class' => 'js-comment-field autosize cols-full',
+                        'rows' => '1',
+                        'placeholder' => 'Comments',
+                        'autocomplete' => 'off',
+                    ]) ?>
   			<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
       </div>
   		<button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
   						class="button js-add-comments"
   						data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
   						type="button"
-  						style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
+              data-hide-method = "display"
+  						style="<?php if ($values['comments']): ?>display: none;<?php endif; ?>"
   		>
   			<i class="oe-i comments small-icon"></i>
   		</button>
