@@ -392,11 +392,14 @@ return array(
                   'uri' => '/Analytics/analyticsReports',
                   'position' => 11,
                 ),
-                'worklist' => array(
+                /*
+                 //TODO: not yet implemented
+                 'worklist' => array(
                   'title' => 'Worklists',
                   'uri' => '/worklist',
                   'position' => 3,
                 ),
+                */
         ),
         'admin_menu' => array(
         ),
