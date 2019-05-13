@@ -1868,7 +1868,7 @@ class PatientController extends BaseController
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
                 } else {
-                    $redirect = array('/patient/episodes/' . $patient->id);
+                    $redirect = array('/patient/summary/' . $patient->id);
                 }
                 $transaction->commit();
                 $this->redirect($redirect);

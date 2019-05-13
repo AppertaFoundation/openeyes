@@ -21,7 +21,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical')&& Yii::app()
 
 ?>
 
-<?php if($no_episodes) { ?>
+<?php if($no_episodes && $allow_clinical) { ?>
     <div class="oe-sem-no-events">
         <h3>No Events</h3>
         <div class="alert-box alert">
