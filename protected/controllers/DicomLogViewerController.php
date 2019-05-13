@@ -237,12 +237,12 @@ class DicomLogViewerController extends BaseController
         }
 
         if (isset($_REQUEST['date_type']) && $_REQUEST['date_type'] == 1) {
-            if (isset($_REQUEST['date_from']) && isset($_REQUEST['date_to'])) {
+            if (isset($_REQUEST['date_from']) && $_REQUEST['date_from'] && isset($_REQUEST['date_to']) && $_REQUEST['date_to']) {
                 $command->andWhere('dil.import_datetime > \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_from'])).'\' AND dil.import_datetime < \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_to'].' + 24 Hours')).'\'');
             }
         } else {
-            if (isset($_REQUEST['date_from']) && isset($_REQUEST['date_to'])) {
-                $command->andWhere('dil.study_datetime > \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_from'])).'\' AND dil.import_datetime < \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_to'].' + 24 Hours')).'\'');
+            if (isset($_REQUEST['date_from']) && $_REQUEST['date_from'] && isset($_REQUEST['date_to']) && $_REQUEST['date_to']) {
+                $command->andWhere('dil.study_datetime > \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_from'])).'\' AND dil.study_datetime < \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_to'].' + 24 Hours')).'\'');
             }
         }
         $data = $command->queryAll();

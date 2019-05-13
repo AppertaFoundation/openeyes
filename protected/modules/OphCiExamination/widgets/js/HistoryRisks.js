@@ -260,7 +260,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.updateNoRisksState();
 
         this.setPcrRisk();
-        $('.autosize').autosize();
+        autosize($('.autosize'));
     };
 
     /**
