@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -26,6 +26,7 @@ class Helper
     const NHS_DATE_FORMAT_JS = 'd M yy';
     const NHS_DATE_REGEX = '/^\d{1,2} \w{3} \d{4}$/';
     const NHS_DATE_EXAMPLE = '5 Dec 2011';
+    const SHORT_DATE_FORMAT = 'd/m/y';
 
     /**
      * Convert NHS dates to MySQL format.
@@ -103,6 +104,16 @@ class Helper
         $time = strtotime($value);
         if ($time !== false) {
             return date(self::NHS_DATE_FORMAT, $time);
+        } else {
+            return $empty_string;
+        }
+    }
+
+    public static function convertDate2Short($value, $empty_string = '-')
+    {
+        $time = strtotime($value);
+        if ($time !== false) {
+            return date(self::SHORT_DATE_FORMAT, $time);
         } else {
             return $empty_string;
         }
