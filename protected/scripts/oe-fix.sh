@@ -137,7 +137,7 @@ if [ "$composer" == "1" ]; then
     sudo -E npm update --no-save $npmextra
 
     # If we've switched from dev to live, remove dev dependencies
-    [ "$OE_MODE" == "LIVE" ] && npm prune --production
+    [ "$OE_MODE" == "LIVE" ] && sudo -E npm prune --production
 
     # List current modules (will show any issues if above commands have been blocked by firewall).
     npm list
