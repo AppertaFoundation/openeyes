@@ -76,7 +76,7 @@ if ($thisEnv == 'DEV') {
 
 	</code>
     <br />
-    <p class="js-copy-to-clipboard" style="cursor: pointer;">
+    <p class="js-copy-to-clipboard" data-copy-content-selector=".js-to-copy-to-clipboard" style="cursor: pointer;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19" class="oe-i-e" style="background: transparent;"><title>Copy to clipboard</title><style>*{fill:#fff;}</style><path d="M15,8.13V15H8.13V8.13H15m2-2H6.13V17H17V6.13Z"/><polygon points="4 10.87 4 4 10.87 4 10.87 5.13 12.87 5.13 12.87 2 2 2 2 12.87 5.13 12.87 5.13 10.87 4 10.87"/></svg>
     </p>
 </div>
