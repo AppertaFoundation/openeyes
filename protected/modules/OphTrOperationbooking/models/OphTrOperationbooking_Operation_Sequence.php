@@ -77,8 +77,8 @@ class OphTrOperationbooking_Operation_Sequence extends BaseActiveRecordVersioned
             array('end_date', 'checkDates'),
             array('end_time', 'checkTimes'),
             array('start_date', 'compareStartdateWithWeekday'),
-            array('max_procedures', 'numerical', 'integerOnly' => true, 'min' => 1, 'max' => 255),
-            array('max_complex_bookings', 'numerical', 'integerOnly' => true, 'min' => 0, 'max' => 255),
+            array('max_procedures', 'numerical', 'integerOnly' => true, 'min' => 1, 'max' => 127),
+            array('max_complex_bookings', 'numerical', 'integerOnly' => true, 'min' => 0, 'max' => 127),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, theatre_id, start_date, start_time, end_time, end_date, consultant, paediatric, anaesthetist, interval_id, weekday, week_selection, firm_id, site_id', 'safe', 'on' => 'search'),
