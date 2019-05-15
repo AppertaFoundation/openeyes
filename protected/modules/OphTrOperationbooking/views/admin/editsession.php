@@ -83,6 +83,10 @@
                 <td><?= $form->labelEx($session, 'max_procedures'); ?></td>
                 <td><?= $form->textField($session, 'max_procedures', ['nowrapper' => true]); ?></td>
             </tr>
+            <tr>
+                <td><?= $form->labelEx($session, 'max_complex_bookings'); ?></td>
+                <td><?= $form->textField($session, 'max_complex_bookings', ['nowrapper' => true]); ?></td>
+            </tr>
             <?php $current = $session->getBookedProcedureCount();
                 if($current) { ?>
                     <tr class = "<?= $session->max_procedures && $current > $session->max_procedures ? "alert-box alert" : "" ?>">
