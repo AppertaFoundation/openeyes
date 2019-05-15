@@ -467,7 +467,7 @@ class DefaultController extends BaseEventTypeController
      *
      * @return array
      */
-    public function getElements()
+    public function getElements($action = 'edit')
     {
         $elements = array();
         if (is_array($this->open_elements)) {
