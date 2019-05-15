@@ -30,9 +30,9 @@ class DisorderController extends BaseAdminController
                     $criteria->addCondition('id = :id');
                     $criteria->params[':id'] = $query;
                 } else {
-                    $criteria->addSearchCondition('fully_specified_name', strtolower($query), true, 'OR');
-                    $criteria->addSearchCondition('term', strtolower($query), true, 'OR');
-                    $criteria->addSearchCondition('aliases', strtolower($query) , true, 'OR');
+                    $criteria->addSearchCondition('lower(fully_specified_name)', strtolower($query), true, 'OR');
+                    $criteria->addSearchCondition('lower(term)', strtolower($query), true, 'OR');
+                    $criteria->addSearchCondition('lower(aliases)', strtolower($query) , true, 'OR');
                 }
         }
         $this->render('/list_disorder', array(
