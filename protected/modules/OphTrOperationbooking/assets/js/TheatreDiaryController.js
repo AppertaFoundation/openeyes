@@ -367,33 +367,45 @@ $(document).ready(function() {
 					checkedOrOne($('#anaesthetist_'+session_id)) ? $('#anaesthetist_icon_'+session_id).show() : $('#anaesthetist_icon_'+session_id).hide();
 					$('#anaesthetist_icon_'+session_id).html(checkedOrOne($('#general_anaesthetic_'+session_id)) ? 'Anaesthetist (GA)' : 'Anaesthetist');
 					checkedOrOne($('#paediatric_'+session_id)) ? $('#paediatric_icon_'+session_id).show() : $('#paediatric_icon_'+session_id).hide();
-					if ($('#max_procedures_'+session_id).val()) {
+
+					const $inputFieldForMaxProcedures = $('#max_procedures_'+session_id);
+					let maxProcedures = $inputFieldForMaxProcedures.val();
+					if(!maxProcedures) {
+						maxProcedures = $inputFieldForMaxProcedures.data('sequence-level-max-procedures');
+					}
+					const $procedureCount = $('#procedure_count_'+session_id);
+					const $maxProceduresIcon = $('#max_procedures_icon_'+session_id);
+					if (maxProcedures) {
 						var overbooked = 0;
-						var max = $('#max_procedures_'+session_id).val();
-						$('#max_procedures_icon_'+session_id).find('.max-procedures-val').html(max);
-						$('#max_procedures_icon_'+session_id).show();
-						var avail = max - $('#procedure_count_'+session_id).data('currproccount');
+						$maxProceduresIcon.find('.max-procedures-val').html(maxProcedures);
+						$maxProceduresIcon.show();
+						var avail = maxProcedures - $procedureCount.data('currproccount');
 						if (avail <= 0) {
 							overbooked = Math.abs(avail);
 							avail = 0;
 							markSessionUnavailable = true;
 						}
-						$('#procedure_count_'+session_id).find('.available-val').html(avail);
-						$('#procedure_count_'+session_id).show();
+						$procedureCount.find('.available-val').html(avail);
+						$procedureCount.show();
+						const $overbookedMessage = $('#procedure_count_'+session_id+' .overbooked');
 						if (overbooked > 0) {
-							$('#procedure_count_'+session_id+' .overbooked').find('.overbooked-proc-val').html(overbooked);
-							$('#procedure_count_'+session_id+' .overbooked').show();
+							$overbookedMessage.find('.overbooked-proc-val').html(overbooked);
+							$overbookedMessage.show();
 						}
 						else {
-							$('#procedure_count_'+session_id+' .overbooked').hide();
+							$overbookedMessage.hide();
 						}
 					}
 					else {
-						$('#max_procedures_icon_'+session_id).hide();
-						$('#procedure_count_'+session_id).hide();
+						$maxProceduresIcon.hide();
+						$procedureCount.hide();
 					}
 
-					const maxComplexBookings = $('#max_complex_bookings_'+session_id).val();
+					const $inputFieldForMaxComplexBookings = $('#max_complex_bookings_'+session_id);
+					let maxComplexBookings = $inputFieldForMaxComplexBookings.val();
+					if(!maxComplexBookings) {
+						maxComplexBookings = $inputFieldForMaxComplexBookings.data('sequence-level-max-complex-bookings');
+					}
 					const $complexBookingCount = $('#complex_booking_count_'+session_id);
 					const $maxComplexBookingsIcon = $('#max_complex_bookings_icon_'+session_id);
 					if (maxComplexBookings) {

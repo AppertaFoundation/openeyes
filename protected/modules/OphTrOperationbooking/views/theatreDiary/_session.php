@@ -316,6 +316,10 @@
                   <input style="display: inline-block;" type="text"
                          autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
                          class="limited-width" id="max_procedures_<?php echo $session->id ?>" maxlength="2"
+                         data-sequence-level-max-procedures="<?=
+                         !is_null($session->sequence) && !is_null($session->sequence->max_procedures) ?
+                             $session->sequence->max_procedures : ""
+                         ?>"
                          size="2" name="max_procedures_<?php echo $session->id ?>"
                          value="<?php echo $session->max_procedures; ?>"/>
                   <label style="display: inline-block;">
@@ -325,6 +329,10 @@
                     <input style="display: inline-block;" type="text"
                            autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
                            class="limited-width" id="max_complex_bookings_<?php echo $session->id ?>" maxlength="2"
+                           data-sequence-level-max-complex-bookings="<?=
+                                !is_null($session->sequence) && !is_null($session->sequence->max_complex_bookings) ?
+                                    $session->sequence->max_complex_bookings : ""
+                           ?>"
                            size="2" name="max_complex_bookings_<?php echo $session->id ?>"
                            value="<?php echo $session->max_complex_bookings; ?>"/>
                     <label style="display: inline-block;">
