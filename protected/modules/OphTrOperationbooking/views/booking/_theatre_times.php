@@ -84,7 +84,7 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                                     <div class="paediatric" title="Paediatric Session">Paediatric</div>
                                 <?php }
                                 if ($session->isProcedureCountLimited()) { ?>
-                                    <div class="max-procedures" title="Max procedures">Max <?= $session->max_procedures ?> Procedures</div>
+                                    <div class="max-procedures" title="Max procedures">Max <?= $session->getMaxProcedureCount() ?> Procedures</div>
                                 <?php }
                                 if ($session->isComplexBookingCountLimited()) { ?>
                                     <div class="max-complex-bookings" title="Max complex bookings">Max <?= $session->max_complex_bookings ?> Complex Bookings</div>

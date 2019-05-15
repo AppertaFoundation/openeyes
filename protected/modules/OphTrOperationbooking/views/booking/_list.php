@@ -24,7 +24,7 @@ if (!$reschedule) {
     <h3 class="element-title">Other operations in this session:
         (<?php echo abs($session->availableMinutes) . " min {$session->minuteStatus}";
         if ($session->isProcedureCountLimited()) {
-            echo ', ' . $session->getAvailableProcedureCount() . '/' . $session->max_procedures . ' procedures left';
+            echo ', ' . $session->getAvailableProcedureCount() . '/' . $session->getMaxProcedureCount() . ' procedures left';
         }
         if($session->isComplexBookingCountLimited()) {
             echo ', ' . $session->getAvailableComplexBookingCount() . '/' . $session->max_complex_bookings . ' complex bookings left';

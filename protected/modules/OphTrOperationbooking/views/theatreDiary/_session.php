@@ -257,8 +257,8 @@
               </div>
               <div<?php if (!$session->isProcedureCountLimited()) { ?> style="display: none;"<?php } ?>
                   id="max_procedures_icon_<?php echo $session->id ?>" class="max-procedures"
-                  title="Max <?php echo $session->max_procedures ?>">Max <span
-                    class="max-procedures-val"><?php echo $session->max_procedures ?></span>
+                  title="Max <?php echo $session->getMaxProcedureCount() ?>">Max <span
+                    class="max-procedures-val"><?php echo $session->getMaxProcedureCount() ?></span>
                 Procedures
               </div>
               <div <?= $session->isComplexBookingCountLimited() ? "" : "style='display: none;'" ?>

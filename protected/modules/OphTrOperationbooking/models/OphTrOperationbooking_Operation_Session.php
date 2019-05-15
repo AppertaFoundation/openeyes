@@ -320,6 +320,16 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     }
 
     /**
+     * Return the max procedure count allowed in this session
+     *
+     * @return int
+     */
+    public function getMaxProcedureCount()
+    {
+        return $this->max_procedures;
+    }
+
+    /**
      * Return the remaining number of procedures allowed in this session.
      *
      * @return int
@@ -330,7 +340,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             return;
         }
 
-        return $this->max_procedures - $this->getBookedProcedureCount();
+        return $this->getMaxProcedureCount() - $this->getBookedProcedureCount();
     }
 
     /**
@@ -385,7 +395,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         }
 
         if ($this->isProcedureCountLimited()) {
-            if ($this->getBookedProcedureCount() + $operation->getProcedureCount() > $this->max_procedures) {
+            if ($this->getBookedProcedureCount() + $operation->getProcedureCount() > $this->getMaxProcedureCount()) {
                 return false;
             }
         }
@@ -424,7 +434,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         }
 
         if ($this->isProcedureCountLimited()) {
-            if ($this->getBookedProcedureCount() + $operation->getProcedureCount() > $this->max_procedures) {
+            if ($this->getBookedProcedureCount() + $operation->getProcedureCount() > $this->getMaxProcedureCount()) {
                 return self::$TOO_MANY_PROCEDURES_REASON;
             }
         }
