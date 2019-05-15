@@ -23,7 +23,7 @@ if (!$reschedule) {
 <header class="element-header">
     <h3 class="element-title">Other operations in this session:
         (<?php echo abs($session->availableMinutes) . " min {$session->minuteStatus}";
-        if ($session->max_procedures) {
+        if ($session->isProcedureCountLimited()) {
             echo ', ' . $session->getAvailableProcedureCount() . '/' . $session->max_procedures . ' procedures left';
         }
         if($session->isComplexBookingCountLimited()) {

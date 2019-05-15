@@ -89,7 +89,7 @@
             </tr>
             <?php $current = $session->getBookedProcedureCount();
                 if($current) { ?>
-                    <tr class = "<?= $session->max_procedures && $current > $session->max_procedures ? "alert-box alert" : "" ?>">
+                    <tr class = "<?= $session->isProcedureCountLimited() && $current > $session->max_procedures ? "alert-box alert" : "" ?>">
                         <td>Current Booked Procedures</td>
                         <td>
                             <div class="field-value" id="current-proc-count"><?= $current ?></div>
