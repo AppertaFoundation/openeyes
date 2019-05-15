@@ -263,8 +263,8 @@
               </div>
               <div <?= $session->isComplexBookingCountLimited() ? "" : "style='display: none;'" ?>
                   id="max_complex_bookings_icon_<?php echo $session->id ?>" class="max-complex-bookings"
-                  title="Max Complex <?php echo $session->max_complex_bookings ?>">Max <span
-                    class="max-complex-bookings-value"><?php echo $session->max_complex_bookings ?></span>
+                  title="Max Complex <?php echo $session->getMaxComplexBookingCount() ?>">Max <span
+                    class="max-complex-bookings-value"><?php echo $session->getMaxComplexBookingCount() ?></span>
                 Complex Booking(s)
               </div>
             </div>

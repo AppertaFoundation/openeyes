@@ -354,13 +354,23 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     }
 
     /**
+     * Return the max complex booking count allowed in this session
+     *
+     * @return int
+     */
+    public function getMaxComplexBookingCount()
+    {
+        return $this->max_complex_bookings;
+    }
+
+    /**
      * Return the remaining number of complex bookings allowed in this session.
      *
      * @return int
      */
     public function getAvailableComplexBookingCount()
     {
-      return $this->max_complex_bookings - $this->getComplexBookingCount();
+      return $this->getMaxComplexBookingCount() - $this->getComplexBookingCount();
     }
 
 
@@ -373,7 +383,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function isTherePlaceForComplexBooking($operation) {
         if ($this->isComplexBookingCountLimited() &&
-          $this->getComplexBookingCount() >= $this->max_complex_bookings &&
+          $this->getComplexBookingCount() >= $this->getMaxComplexBookingCount() &&
           $operation->isComplex()) {
           return false;
         }
