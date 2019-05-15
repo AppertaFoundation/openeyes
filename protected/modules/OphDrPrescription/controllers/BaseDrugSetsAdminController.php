@@ -85,7 +85,12 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
 
     public function actionEdit($id = null)
     {
+        $admin = $this->_getAdmin($id);
+        $admin->editModel();
+    }
 
+    private function _getAdmin($id)
+    {
         $admin = new Admin(MedicationSet::model(), $this);
 
         if($id) {
@@ -104,7 +109,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
                     ),
                     'sets' => array(
                         'widget' => 'CustomView',
-                        'viewName' => 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_sets',
+                        'viewName' => !empty($this->editSetTemaplate) ? $this->editSetTemaplate : 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_sets',
                         'viewArguments' => array(
                             'id' => $id
                         )
@@ -138,7 +143,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
                 ),
                 'sets' => array(
                     'widget' => 'CustomView',
-                    'viewName' => 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_sets',
+                    'viewName' => !empty($this->editSetTemaplate) ? $this->editSetTemaplate : 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_sets',
                     'viewArguments' => array(
                         'id' => $id
                     )
@@ -152,7 +157,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
         $admin->setCustomSaveURL('/OphDrPrescription/'.Yii::app()->controller->id.'/save/'.$id);
         $admin->setCustomCancelURL('/OphDrPrescription/'.Yii::app()->controller->id.'/list');
 
-        $admin->editModel();
+        return $admin;
     }
 
     public function actionSave($id = null)
@@ -177,7 +182,14 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
         }
 
         $this->_setModelData($model, $data);
-        $model->save();
+
+        if(!$model->validate()) {
+            $response['errors'] = $model->errors;
+            echo json_encode($response);
+            exit;
+        } else {
+            $model->save();
+        }
 
 
         $existing_ids = array();
@@ -206,7 +218,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
                     'usage_code' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['usage_code'][$key],
                 ));
 
-                $medSetRule->save();
+                $medSetRule->save(false);
             }
         }
 

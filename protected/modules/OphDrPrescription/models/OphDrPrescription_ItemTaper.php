@@ -24,7 +24,7 @@
  * @property int $duration_id
  * @property int $item_id
  * @property string $dose
- * @property DrugDuration $duration
+ * @property MedicationDuration $duration
  * @property MedicationFrequency $frequency
  * @property OphDrPrescription_Item $item
  */
@@ -74,7 +74,7 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
                 'item' => array(self::BELONGS_TO, 'OphDrPrescription_Item', 'item_id'),
-                'duration' => array(self::BELONGS_TO, 'DrugDuration', 'duration_id'),
+                'duration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
                 'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
