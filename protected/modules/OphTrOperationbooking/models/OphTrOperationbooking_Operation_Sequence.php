@@ -28,6 +28,8 @@
  * @property string $end_time
  * @property string $end_date
  * @property string $default_admission_time
+ * @property tinyint $max_procedures
+ * @property tinyint $max_complex_bookings
  *
  * The followings are the available model relations:
  * @property Site $site
@@ -75,6 +77,8 @@ class OphTrOperationbooking_Operation_Sequence extends BaseActiveRecordVersioned
             array('end_date', 'checkDates'),
             array('end_time', 'checkTimes'),
             array('start_date', 'compareStartdateWithWeekday'),
+            array('max_procedures', 'numerical', 'integerOnly' => true, 'min' => 1, 'max' => 255),
+            array('max_complex_bookings', 'numerical', 'integerOnly' => true, 'min' => 0, 'max' => 255),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, theatre_id, start_date, start_time, end_time, end_date, consultant, paediatric, anaesthetist, interval_id, weekday, week_selection, firm_id, site_id', 'safe', 'on' => 'search'),
@@ -112,6 +116,8 @@ class OphTrOperationbooking_Operation_Sequence extends BaseActiveRecordVersioned
             'interval_id' => 'Interval',
             'general_anaesthetic' => 'General anaesthetic',
             'default_admission_time' => 'Default admission time',
+            'max_procedures' => 'Max procedures',
+            'max_complex_bookings' => 'Max complex bookings',
         );
     }
 
