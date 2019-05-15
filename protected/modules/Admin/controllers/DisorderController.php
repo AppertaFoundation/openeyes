@@ -15,31 +15,32 @@
  */
 class DisorderController extends BaseAdminController
 {
+    public $items_per_page = 60;
+
     public function actionList()
     {
         Audit::add('admin', 'list', null, false,
             array('module' => 'OphTrOperationnote',
                 'model' => 'Disorder'));
-        $search = \Yii::app()->request->getPost('search', ['query' => '']);
+        $query = \Yii::app()->request->getQuery('q');
         $criteria = new \CDbCriteria();
-        if (Yii::app()->request->isPostRequest) {
-            if ($search['query']) {
-                if (is_numeric($search['query'])) {
+        $criteria->order = 'fully_specified_name';
+        if ($query) {
+                if (is_numeric($query)) {
                     $criteria->addCondition('id = :id');
-                    $criteria->params[':id'] = $search['query'];
+                    $criteria->params[':id'] = $query;
                 } else {
-                    $criteria->addSearchCondition('fully_specified_name', $search['query'], true, 'OR');
-                    $criteria->addSearchCondition('term', $search['query'], true, 'OR');
-                    $criteria->addSearchCondition('aliases', $search['query'], true, 'OR');
+                    $criteria->addSearchCondition('lower(fully_specified_name)', strtolower($query), true, 'OR');
+                    $criteria->addSearchCondition('lower(term)', strtolower($query), true, 'OR');
+                    $criteria->addSearchCondition('lower(aliases)', strtolower($query) , true, 'OR');
                 }
-            }
         }
         $this->render('/list_disorder', array(
             'pagination' => $this->initPagination(Disorder::model(), $criteria),
             'model_list' => Disorder::model()->findAll($criteria),
             'title' => 'Manage Disorder',
             'model_class' => 'Disorder',
-            'search' => $search
+            'query' => $query
         ));
     }
 
