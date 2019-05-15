@@ -47,7 +47,13 @@ class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminControl
         }
 
         $this->_setModelData($model, $data);
-        $model->save();
+        if(!$model->validate()) {
+            $response['errors'] = $model->errors;
+            echo json_encode($response);
+            exit;
+        } else {
+            $model->save();
+        }
 
 
         $existing_ids = array();

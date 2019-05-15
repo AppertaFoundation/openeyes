@@ -413,4 +413,25 @@ if (!empty($id)) {
         enableButtons('#et_save button, .button');
     });
 
+    $(document).on("submit", "#generic-admin-form", function (e) {
+        e.preventDefault();
+        var form = $('#generic-admin-form');
+
+        $.ajax( {
+            type: "POST",
+            url: form.attr( 'action' ),
+            data: form.serialize(),
+            dataType: 'json',
+            success: function( response ) {
+                if (jQuery.isEmptyObject(response.errors)) {
+                    window.location.href = '/OphDrPrescription/<?=Yii::app()->controller->id?>/list';
+                } else {
+                    var alertBox = '<div class="alert-box alert with-icon"><p>Please fix the following input errors:</p><ul><li>'+response.errors.name[0]+'</li></ul></div>';
+                    $('.divider').after(alertBox);
+                    enableButtons('#et_save button, .button');
+                }
+            }
+        } );
+    } );
+
 </script>
