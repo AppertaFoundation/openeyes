@@ -182,7 +182,14 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
         }
 
         $this->_setModelData($model, $data);
-        $model->save();
+
+        if(!$model->validate()) {
+            $response['errors'] = $model->errors;
+            echo json_encode($response);
+            exit;
+        } else {
+            $model->save();
+        }
 
 
         $existing_ids = array();
@@ -211,7 +218,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
                     'usage_code' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['usage_code'][$key],
                 ));
 
-                $medSetRule->save();
+                $medSetRule->save(false);
             }
         }
 
