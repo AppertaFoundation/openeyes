@@ -1054,18 +1054,18 @@ class DefaultController extends BaseEventTypeController
 
         if ($create_standard_events) {
             // create 'post-op' prescription and 'post-op' letter
-            $this->createEventsByEpisodeStatus();
+            $this->createPrescriptionEvent();
         }
     }
 
-    private function createEventsByEpisodeStatus()
+    private function createPrescriptionEvent()
     {
-        $drug_set_name = \SettingMetadata::model()->getSetting('default_post_op_drug_set');
+        $drug_set_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_drug_set");
         $subspecialty_id = $this->firm->getSubspecialtyID();
-        $params = [':subspecialty_id' => $subspecialty_id, ':status_name' => $drug_set_name];
+        $params = [':subspecialty_id' => $subspecialty_id, ':name' => $drug_set_name];
 
         $set = DrugSet::model()->find([
-            'condition' => 'subspecialty_id = :subspecialty_id AND name = :status_name',
+            'condition' => 'subspecialty_id = :subspecialty_id AND name = :name',
             'params' => $params,
         ]);
 
@@ -1078,7 +1078,10 @@ class DefaultController extends BaseEventTypeController
         if ($prescription_creator->save()) {
             $prescription_creator->event->audit('event', 'create');
         } else {
-            \OELog::log(print_r($prescription_creator->getErrors(), true));
+            \OELog::log("PrescriptionCreator : " . print_r($prescription_creator->getErrors(), true));
+
+            // Unfortunately we need to throw an exception here to prevent the saving in the transaction
+            throw new \Exception(print_r($prescription_creator->getErrors(), true));
         }
     }
 

@@ -49,7 +49,7 @@
 <div>
     <hr />
     <label class="inline highlight">
-        <input value="generate_standard letters_and_prescription" name="generate_standard_events" type="checkbox"> Send standard letters and prescription
+        <input value="generate_standard_events" name="generate_standard_events" type="checkbox"> Send standard letters and prescription
     </label>
 </div>
 <?php $instru_list = $element->postop_instructions_list; ?>

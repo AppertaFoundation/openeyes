@@ -36,9 +36,20 @@ class PrescriptionCreator extends \EventCreator
                 $item_model->loadDefaults();
                 $attr = $item->getAttributes();
                 unset($attr['drug_set_id']);
+                unset($attr['id']);
                 $item_model->attributes = $attr;
 
-                $item_model->tapers = $item->tapers;
+                $tapers = [];
+                foreach ($item->tapers as $taper) {
+                    $taper_model = new OphDrPrescription_ItemTaper();
+                    $taper_attributes = $taper->getAttributes();
+                    unset($taper_attributes['id']);
+                    $taper_model->attributes = $taper_attributes;
+
+                    $tapers[] = $taper_model;
+                }
+
+                $item_model->tapers = $tapers;
 
                 if ($api) {
                     $eye = $api->getLastEye($this->patient, false);
@@ -56,22 +67,32 @@ class PrescriptionCreator extends \EventCreator
 
     protected function saveElements($event_id)
     {
-        $error = false;
         foreach ($this->elements as $element) {
             $element->event_id = $event_id;
 
             if (!$element->save()) {
-                $error = true;
                 $this->addErrors($element->getErrors());
+                \OELog::log(print_r("Element_OphDrPrescription_Details:" . $element->getErrors(), true));
             } else {
                 foreach ($element->items as $item) {
                     $item->prescription_id = $element->id;
-                    if (!$item->save()){
-                        $error = true;
+                    if (!$item->save()) {
+                        $this->addErrors($item->getErrors());
+                        \OELog::log(print_r("OphDrPrescription_Item: " . $item->getErrors(), true));
+                    } else {
+                        foreach ($item->tapers as $taper) {
+                            $taper->item_id = $item->id;
+                            if (!$taper->save()) {
+                                $this->addErrors($taper->getErrors());
+                                \OELog::log(print_r("OphDrPrescription_ItemTaper: " . $taper->getErrors(), true));
+                                break;
+                            }
+                        }
                     }
                 }
             }
         }
-        return !$error;
+
+        return (bool)!$this->getErrors();
     }
 }

@@ -47,7 +47,7 @@ class EventCreator extends \CModel
     protected function createDefaultEvent($event_type_id)
     {
         $event = new \Event();
-        $event->event_date = date('Y-m-d');
+        $event->event_date = date('Y-m-d H:i:s');
         $event->event_type_id = $event_type_id;
         $event->created_user_id = \Yii::app()->user->id;
         $event->last_modified_user_id = \Yii::app()->user->id;
@@ -65,7 +65,7 @@ class EventCreator extends \CModel
             return $this->saveElements($this->event->id);
         } else {
             $this->addErrors($this->event->getErrors());
-            \OELog::log(print_r($this->event->getErrors(), true));
+            \OELog::log("Event: " . print_r($this->event->getErrors(), true));
         }
 
         return false;

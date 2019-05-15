@@ -835,6 +835,7 @@ class BaseEventTypeController extends BaseModuleController
                         }
                     } else {
                         throw new Exception('could not save event');
+
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
