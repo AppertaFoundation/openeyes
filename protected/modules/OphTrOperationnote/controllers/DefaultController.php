@@ -1048,8 +1048,38 @@ class DefaultController extends BaseEventTypeController
 
     protected function afterCreateElements($event)
     {
+        $create_standard_events = \Yii::app()->request->getParam('generate_standard_events');
         parent::afterCreateElements($event);
         $this->persistPcrRisk();
+
+        if ($create_standard_events) {
+            // create 'post-op' prescription and 'post-op' letter
+            $this->createEventsByEpisodeStatus();
+        }
+    }
+
+    private function createEventsByEpisodeStatus()
+    {
+        $drug_set_name = \SettingMetadata::model()->getSetting('default_post_op_drug_set');
+        $subspecialty_id = $this->firm->getSubspecialtyID();
+        $params = [':subspecialty_id' => $subspecialty_id, ':status_name' => $drug_set_name];
+
+        $set = DrugSet::model()->find([
+            'condition' => 'subspecialty_id = :subspecialty_id AND name = :status_name',
+            'params' => $params,
+        ]);
+
+        //get default drug set
+        $prescription_creator = new PrescriptionCreator();
+        $prescription_creator->event->episode_id = $this->event->episode_id;
+        $prescription_creator->patient = $this->patient;
+        $prescription_creator->addDrugSet($set->id);
+
+        if ($prescription_creator->save()) {
+            $prescription_creator->event->audit('event', 'create');
+        } else {
+            \OELog::log(print_r($prescription_creator->getErrors(), true));
+        }
     }
 
     public function formatAconst($aconst)
