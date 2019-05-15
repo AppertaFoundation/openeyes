@@ -316,7 +316,9 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function isProcedureCountLimited()
     {
-        return !is_null($this->max_procedures);
+        return is_null($this->sequence) ?
+            !is_null($this->max_procedures) :
+            !is_null($this->max_procedures) || !is_null($this->sequence->max_procedures);
     }
 
     /**
@@ -326,7 +328,13 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function getMaxProcedureCount()
     {
-        return $this->max_procedures;
+        if(!is_null($this->max_procedures)) {
+            return $this->max_procedures;
+        }
+
+        if(!is_null($this->sequence) && !is_null($this->sequence->max_procedures)) {
+            return $this->sequence->max_procedures;
+        }
     }
 
     /**
@@ -336,10 +344,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function getAvailableProcedureCount()
     {
-        if (!$this->max_procedures) {
-            return;
-        }
-
         return $this->getMaxProcedureCount() - $this->getBookedProcedureCount();
     }
 
@@ -350,7 +354,9 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function isComplexBookingCountLimited()
     {
-      return !is_null($this->max_complex_bookings);
+        return is_null($this->sequence) ?
+            !is_null($this->max_complex_bookings) :
+            !is_null($this->max_complex_bookings) || !is_null($this->sequence->max_complex_bookings);
     }
 
     /**
@@ -360,7 +366,13 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function getMaxComplexBookingCount()
     {
-        return $this->max_complex_bookings;
+        if(!is_null($this->max_complex_bookings)) {
+            return $this->max_complex_bookings;
+        }
+
+        if(!is_null($this->sequence) && !is_null($this->sequence->max_complex_bookings)) {
+            return $this->sequence->max_complex_bookings;
+        }
     }
 
     /**
