@@ -107,6 +107,10 @@
                 </td>
             </tr>
             <tr>
+                <td><?= $form->labelEx($sequence, 'max_procedures'); ?></td>
+                <td><?= $form->textField($sequence, 'max_procedures', ['nowrapper' => true]); ?></td>
+            </tr>
+            <tr>
                 <td>
                   <?= $form->labelEx($sequence, 'interval_id'); ?>
                 </td>
