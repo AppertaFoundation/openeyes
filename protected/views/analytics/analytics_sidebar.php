@@ -492,6 +492,15 @@
               },
               text: getVATitle(),
             };
+          //Set VA unit tick labels
+          var va_mode = $('#js-chart-filter-plot');
+          if (va_mode.html().includes('change')) {
+            chart.layout['yaxis']['tickmode'] = 'auto';
+          } else {
+            chart.layout['yaxis']['tickmode'] = 'array';
+            chart.layout['yaxis']['tickvals'] = <?= CJavaScript::encode($va_final_ticks['tick_position']); ?>;
+            chart.layout['yaxis']['ticktext'] = <?= CJavaScript::encode($va_final_ticks['tick_labels']); ?>;
+          }
             chart.data[0]['x'] = custom_data[i][0]['x'];
             chart.data[0]['y'] = custom_data[i][0]['y'];
             chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
