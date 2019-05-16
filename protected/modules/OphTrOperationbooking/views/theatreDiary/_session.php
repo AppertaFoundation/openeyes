@@ -203,7 +203,7 @@
               <?php } else { ?>
                   <?php echo abs($session->availableMinutes) ?> minutes overbooked
               <?php } ?>
-            <span data-currproccount="<?php echo $session->getBookedProcedureCount() ?>"
+            <span data-current-procedure-count="<?php echo $session->getBookedProcedureCount() ?>"
                   class="procedure-count" id="procedure_count_<?php echo $session->id ?>"
                   <?php if (!$session->isProcedureCountLimited()) { ?>style="display: none;"<?php } ?>>
                     <br/>
@@ -257,14 +257,14 @@
               </div>
               <div<?php if (!$session->isProcedureCountLimited()) { ?> style="display: none;"<?php } ?>
                   id="max_procedures_icon_<?php echo $session->id ?>" class="max-procedures"
-                  title="Max <?php echo $session->getMaxProcedureCount() ?>">Max <span
-                    class="max-procedures-val"><?php echo $session->getMaxProcedureCount() ?></span>
+                  title="Max <?= $session->getMaxProcedureCount() ?>">Max <span
+                    class="max-procedures-val"><?= $session->getMaxProcedureCount() ?></span>
                 Procedures
               </div>
               <div <?= $session->isComplexBookingCountLimited() ? "" : "style='display: none;'" ?>
                   id="max_complex_bookings_icon_<?php echo $session->id ?>" class="max-complex-bookings"
-                  title="Max Complex <?php echo $session->getMaxComplexBookingCount() ?>">Max <span
-                    class="max-complex-bookings-value"><?php echo $session->getMaxComplexBookingCount() ?></span>
+                  title="Max Complex <?= $session->getMaxComplexBookingCount() ?>">Max <span
+                    class="max-complex-bookings-value"><?= $session->getMaxComplexBookingCount() ?></span>
                 Complex Booking(s)
               </div>
             </div>

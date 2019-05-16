@@ -376,16 +376,16 @@ $(document).ready(function() {
 					const $procedureCount = $('#procedure_count_'+session_id);
 					const $maxProceduresIcon = $('#max_procedures_icon_'+session_id);
 					if (maxProcedures) {
-						var overbooked = 0;
+						let overbooked = 0;
 						$maxProceduresIcon.find('.max-procedures-val').html(maxProcedures);
 						$maxProceduresIcon.show();
-						var avail = maxProcedures - $procedureCount.data('currproccount');
-						if (avail <= 0) {
-							overbooked = Math.abs(avail);
-							avail = 0;
+						let availableProcedureCount = maxProcedures - $procedureCount.data('current-procedure-count');
+						if (availableProcedureCount <= 0) {
+							overbooked = Math.abs(availableProcedureCount);
+							availableProcedureCount = 0;
 							markSessionUnavailable = true;
 						}
-						$procedureCount.find('.available-val').html(avail);
+						$procedureCount.find('.available-val').html(availableProcedureCount);
 						$procedureCount.show();
 						const $overbookedMessage = $('#procedure_count_'+session_id+' .overbooked');
 						if (overbooked > 0) {

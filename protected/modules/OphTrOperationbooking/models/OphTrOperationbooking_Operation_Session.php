@@ -310,7 +310,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     }
 
     /**
-     * Test whether the number of procedures is limited
+     * Return whether the number of procedures is limited
      *
      * @return bool
      */
@@ -348,7 +348,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     }
 
     /**
-     * Test whether the number of complex bookings is limited
+     * Return whether the number of complex bookings is limited
      *
      * @return bool
      */
