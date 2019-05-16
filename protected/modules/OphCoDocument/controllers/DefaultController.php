@@ -60,7 +60,11 @@ class DefaultController extends BaseEventTypeController
     public function return_bytes($val) {
         $val = (int)trim($val);
         $last = strtolower($val[strlen($val)-1]);
+
         switch($last) {
+            case '':
+                $val *= (1024 * 1024); //1048576
+                break;
             case 'g':
                 $val *= (1024 * 1024 * 1024); //1073741824
                 break;
@@ -155,6 +159,11 @@ class DefaultController extends BaseEventTypeController
      */
     private function uploadFile($tmp_name, $original_name)
     {
+        $imageType = getimagesize($tmp_name)['mime'];
+
+        if ($imageType == 'image/jpeg') {
+            $tmp_name = $this->rotate($tmp_name);
+        }
 
         $p_file = ProtectedFile::createFromFile($tmp_name);
         $p_file->name = $original_name;
@@ -166,6 +175,37 @@ class DefaultController extends BaseEventTypeController
             unlink($tmp_name);
             return false;
         }
+    }
+
+
+    public function rotate($tmp_name) {
+        $original = imagecreatefromjpeg($tmp_name);
+        $exif = exif_read_data($tmp_name);
+
+        if (!empty($exif['Orientation'])) {
+            switch ($exif['Orientation']) {
+                case 1:
+                    $angle = 0;
+                    break;
+                case 3:
+                    $angle = 180;
+                    break;
+                case 6:
+                    $angle = -90;
+                    break;
+                case 8:
+                    $angle = 90;
+                    break;
+            }
+
+            $rotated = imagerotate($original, $angle, 0);
+            imagejpeg($rotated, $tmp_name);
+            return $tmp_name;
+
+        } else {
+            return $tmp_name;
+        }
+
     }
 
     /**
