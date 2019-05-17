@@ -52,6 +52,14 @@
             </tr>
             </tbody>
         </table>
+        <div>
+            <label>Rotate Image:</label>
+            <input type="button" class="btnRotate" value="90" onClick="rotateImage(this.value);" />
+            <input type="button" class="btnRotate" value="-90" onClick="rotateImage(this.value);" />
+            <input type="button" class="btnRotate" value="180" onClick="rotateImage(this.value);" />
+            <input type="button" class="btnRotate" value="360" onClick="rotateImage(this.value);" />
+            <input type="hidden" value="" name="rotate" id="rotate">
+        </div>
         <div class="element-fields flex-layout flex-top col-gap">
             <div class="cols-11">
                 <div id="document-comments" data-comment-button="#document_comment_button"
@@ -210,6 +218,7 @@
         </div>
     </div>
 
+
     <script type="text/template" id="side-selector-popup">
         <table>
             <colgroup>
@@ -230,5 +239,20 @@
             </tr>
             </tbody>
         </table>
+    </script>
+
+    <script>
+        function rotateImage(degree) {
+            $('.ophco-image-container').animate({  transform: degree }, {
+                step: function(now,fx) {
+                    $(this).css({
+                        '-webkit-transform':'rotate('+now+'deg)',
+                        '-moz-transform':'rotate('+now+'deg)',
+                        'transform':'rotate('+now+'deg)'
+                    });
+                    $('#rotate').val(degree);
+                }
+            });
+        }
     </script>
 
