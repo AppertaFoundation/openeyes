@@ -22,7 +22,7 @@
     $document_output = null;
     $internalreferral_output = null;
     $print_output = null;
-    $is_new_record = (isset($target) && $target->isNewRecord) || !isset($target) ? true : false;
+    $is_new_record = !isset($target) || $target->isNewRecord ? true : false;
     if( isset($target->document_output)){
         foreach($target->document_output as $output_key => $doc_output){
             if($doc_output->output_type == 'Docman'){
