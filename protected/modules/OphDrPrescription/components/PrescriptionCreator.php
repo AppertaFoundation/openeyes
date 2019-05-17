@@ -16,10 +16,10 @@
 class PrescriptionCreator extends \EventCreator
 {
 
-    public function __construct()
+    public function __construct($episode)
     {
         $prescription_event_type = \EventType::model()->find('name = "Prescription"');
-        parent::__construct($prescription_event_type->id);
+        parent::__construct($episode, $prescription_event_type->id);
 
         $this->elements['Element_OphDrPrescription_Details'] = new \Element_OphDrPrescription_Details();
     }
@@ -69,23 +69,23 @@ class PrescriptionCreator extends \EventCreator
     {
         foreach ($this->elements as $element) {
             $element->event_id = $event_id;
+            $element->draft = 0;
 
             if (!$element->save()) {
                 $this->addErrors($element->getErrors());
-                \OELog::log(print_r("Element_OphDrPrescription_Details:" . $element->getErrors(), true));
+                \OELog::log("Element_OphDrPrescription_Details:" .  print_r($element->getErrors(), true));
             } else {
                 foreach ($element->items as $item) {
                     $item->prescription_id = $element->id;
                     if (!$item->save()) {
                         $this->addErrors($item->getErrors());
-                        \OELog::log(print_r("OphDrPrescription_Item: " . $item->getErrors(), true));
+                        \OELog::log("OphDrPrescription_Item: " .  print_r($item->getErrors(), true));
                     } else {
                         foreach ($item->tapers as $taper) {
                             $taper->item_id = $item->id;
                             if (!$taper->save()) {
                                 $this->addErrors($taper->getErrors());
-                                \OELog::log(print_r("OphDrPrescription_ItemTaper: " . $taper->getErrors(), true));
-                                break;
+                                \OELog::log("OphDrPrescription_ItemTaper: " . print_r($taper->getErrors(), true));
                             }
                         }
                     }
@@ -93,6 +93,6 @@ class PrescriptionCreator extends \EventCreator
             }
         }
 
-        return (bool)!$this->getErrors();
+        return !$this->hasErrors();
     }
 }

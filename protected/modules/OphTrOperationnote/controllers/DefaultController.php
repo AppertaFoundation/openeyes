@@ -253,7 +253,7 @@ class DefaultController extends BaseEventTypeController
         }
 
         if ($this->booking_operation || $this->unbooked) {
-            parent::actionCreate();
+            $this->createOpNote();
         } else {
             // set up form for selecting a booking for the Op note
             $bookings = array();
@@ -298,6 +298,119 @@ class DefaultController extends BaseEventTypeController
                 'theatre_diary_disabled' => $theatre_diary_disabled
             ));
         }
+    }
+
+    protected function createOpNote()
+    {
+        $this->event->firm_id = $this->selectedFirmId;
+        if (!empty($_POST)) {
+            // form has been submitted
+            if (isset($_POST['cancel'])) {
+                $this->redirectToPatientEpisodes();
+            }
+
+            // set and validate
+            $errors = $this->setAndValidateElementsFromData($_POST);
+
+            // creation
+            if (empty($errors)) {
+                $transaction = Yii::app()->db->beginTransaction();
+
+                try {
+                    $success = $this->saveEvent($_POST);
+
+                    if ($success) {
+                        //TODO: should this be in the save event as pass through?
+                        if ($this->eventIssueCreate) {
+                            $this->event->addIssue($this->eventIssueCreate);
+                        }
+
+                        //TODO: should not be passing event?
+                        $this->afterCreateElements($this->event);
+
+                        $this->logActivity('created event.');
+
+                        $this->event->audit('event', 'create');
+
+                        Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
+
+                        $transaction->commit();
+
+                        $create_standard_events = \Yii::app()->request->getParam('generate_standard_events');
+                        if ($create_standard_events) {
+
+                            $transaction = Yii::app()->db->beginTransaction();
+                            // create 'post-op' prescription and 'post-op' letter
+                            $result = $this->createPrescriptionEvent();
+                            if ($result['success'] === true) {
+                                $transaction->commit();
+                            } else {
+                                $transaction->rollback();
+
+                                $log = print_r($result['errors'], true);
+                                \Audit::add('event', 'create', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
+                                    'module' => 'OphDrPrescription',
+                                    'episode_id' => $this->event->episode->id,
+                                    'patient_id' => $this->patient->id,
+                                    'model' => 'Element_OphDrPrescription_Details'
+                                ]);
+                            }
+
+                            $transaction = Yii::app()->db->beginTransaction();
+                            // create 'post-op' prescription and 'post-op' letter
+                            $result = $this->createCorrespondenceEvent();
+                            if ($result['success'] === true) {
+                                $transaction->commit();
+                            } else {
+                                $transaction->rollback();
+                                $log = print_r($result['errors'], true);
+                                \Audit::add('event', 'create', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
+                                    'module' => 'OphCoCorrespondence',
+                                    'episode_id' => $this->event->episode->id,
+                                    'patient_id' => $this->patient->id,
+                                    'model' => 'ElementLetter'
+                                ]);
+                            }
+                        }
+
+                        if ($this->event->parent_id) {
+                            $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
+                        } else {
+                            $this->redirect(array($this->successUri . $this->event->id));
+                        }
+                    } else {
+                        throw new Exception('could not save event');
+
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollback();
+                    throw $e;
+                }
+            }
+        } else {
+            $this->setOpenElementsFromCurrentEvent('create');
+            $this->updateHotlistItem($this->patient);
+        }
+
+        $this->editable = false;
+        $this->event_tabs = array(
+            array(
+                'label' => 'Create',
+                'active' => true,
+            ),
+        );
+
+        $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
+        $this->event_actions = array(
+            EventAction::link('Cancel',
+                Yii::app()->createUrl($cancel_url),
+                array('level' => 'cancel')
+            ),
+        );
+
+        $this->render('create', array(
+            'errors' => @$errors,
+        ));
     }
 
     /**
@@ -1048,14 +1161,23 @@ class DefaultController extends BaseEventTypeController
 
     protected function afterCreateElements($event)
     {
-        $create_standard_events = \Yii::app()->request->getParam('generate_standard_events');
         parent::afterCreateElements($event);
         $this->persistPcrRisk();
+    }
 
-        if ($create_standard_events) {
-            // create 'post-op' prescription and 'post-op' letter
-            $this->createPrescriptionEvent();
-        }
+    private function createCorrespondenceEvent()
+    {
+        $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $macro = $correspondence_api->getDefaultMacroByEpisodeStatus($this->event->episode, $firm, Yii::app()->session['selected_site_id']);
+
+        $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
+        $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
+        $correspondence_creator->save();
+        return [
+            'success' => !$correspondence_creator->hasErrors(),
+            'errors' => $correspondence_creator->getErrors(),
+        ];
     }
 
     private function createPrescriptionEvent()
@@ -1069,20 +1191,15 @@ class DefaultController extends BaseEventTypeController
             'params' => $params,
         ]);
 
-        //get default drug set
-        $prescription_creator = new PrescriptionCreator();
-        $prescription_creator->event->episode_id = $this->event->episode_id;
+        $prescription_creator = new PrescriptionCreator($this->event->episode);
         $prescription_creator->patient = $this->patient;
         $prescription_creator->addDrugSet($set->id);
+        $prescription_creator->save();
 
-        if ($prescription_creator->save()) {
-            $prescription_creator->event->audit('event', 'create');
-        } else {
-            \OELog::log("PrescriptionCreator : " . print_r($prescription_creator->getErrors(), true));
-
-            // Unfortunately we need to throw an exception here to prevent the saving in the transaction
-            throw new \Exception(print_r($prescription_creator->getErrors(), true));
-        }
+        return [
+            'success' => !$prescription_creator->hasErrors(),
+            'errors' => $prescription_creator->getErrors()
+        ];
     }
 
     public function formatAconst($aconst)

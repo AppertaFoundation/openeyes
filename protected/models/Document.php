@@ -231,18 +231,11 @@ class Document //extends BaseActiveRecord
         }
     }
 
-    public function createNewDocSet()
+    public function createNewDocSet($data)
     {
-
-        $post_document_targets = Yii::app()->request->getPost('DocumentTarget', null);
-
-        if( !$post_document_targets ){
-            return;
-        }
-        
         $doc_set = null;
-        if (isset($_POST['DocumentSet']['id'])) {
-            $doc_set = DocumentSet::model()->findByPk($_POST['DocumentSet']['id']);
+        if (isset($data['DocumentSet']['id'])) {
+            $doc_set = DocumentSet::model()->findByPk($data['DocumentSet']['id']);
         }
         $doc_set = $doc_set ? $doc_set : new DocumentSet();
 
@@ -252,8 +245,8 @@ class Document //extends BaseActiveRecord
 
 
         $doc_instance = null;
-        if (isset($_POST['DocumentInstance']['id'])) {
-            $doc_instance = DocumentInstance::model()->findByPk($_POST['DocumentInstance']['id']);
+        if (isset($data['DocumentInstance']['id'])) {
+            $doc_instance = DocumentInstance::model()->findByPk($data['DocumentInstance']['id']);
         }
         $doc_instance = $doc_instance ? $doc_instance : new DocumentInstance();
 
@@ -261,26 +254,25 @@ class Document //extends BaseActiveRecord
         $doc_instance->correspondence_event_id = $this->event_id;
         $doc_instance->save();
 
-
         $doc_instance_version = null;
-        if (isset($_POST['DocumentInstanceData']['id'])) {
-            $doc_instance_version = DocumentInstanceData::model()->findByPk($_POST['DocumentInstanceData']['id']);
+        if (isset($data['DocumentInstanceData']['id'])) {
+            $doc_instance_version = DocumentInstanceData::model()->findByPk($data['DocumentInstanceData']['id']);
         }
         $doc_instance_version = $doc_instance_version ? $doc_instance_version : new DocumentInstanceData();
 
         $doc_instance_version->document_instance_id = $doc_instance->id;
-        $doc_instance_version->macro_id = $_POST['macro_id'];
+        $doc_instance_version->macro_id = $data['macro_id'];
 
         $doc_instance_version->save();
 
-        if (isset($post_document_targets)) {
+        if (isset($data['DocumentTarget'])) {
             
             // Before saving new Targets we check if there were any Recipients to remove
             if( Yii::app()->controller->action->id === 'update'){
-                $this->removeTargetAndOutput($doc_set->id, $post_document_targets);
+                $this->removeTargetAndOutput($doc_set->id, $data['DocumentTarget']);
             }
 
-            foreach ($post_document_targets as $key => $post_document_target) {
+            foreach ($data['DocumentTarget'] as $key => $post_document_target) {
                 $data = array(
                     'to_cc' => $post_document_target['attributes']['ToCc'],
                     'contact_type' => $post_document_target['attributes']['contact_type'],

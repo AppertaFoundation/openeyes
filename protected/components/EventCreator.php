@@ -16,6 +16,11 @@
 class EventCreator extends \CModel
 {
     /**
+     * @var \Episode
+     */
+    public $episode;
+
+    /**
      * @var \Event
      */
     public $event;
@@ -39,8 +44,9 @@ class EventCreator extends \CModel
         return [];
     }
 
-    public function __construct($event_type_id)
+    public function __construct($episode, $event_type_id)
     {
+        $this->episode = $episode;
         $this->event = $this->createDefaultEvent($event_type_id);
     }
 
@@ -49,6 +55,7 @@ class EventCreator extends \CModel
         $event = new \Event();
         $event->event_date = date('Y-m-d H:i:s');
         $event->event_type_id = $event_type_id;
+        $event->episode_id = $this->episode->id;
         $event->created_user_id = \Yii::app()->user->id;
         $event->last_modified_user_id = \Yii::app()->user->id;
         $event->last_modified_date = date('Y-m-d H:i:s');
