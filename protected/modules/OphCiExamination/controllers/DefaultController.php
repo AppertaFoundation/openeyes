@@ -1187,6 +1187,9 @@ class DefaultController extends \BaseEventTypeController
 
                     // create a reading record from the values the user has given
                     $reading = new models\OphCiExamination_IntraocularPressure_Value();
+                    // examination_date and comments are not actual fields in IOP so delete them to prevent warnings
+                    unset($values['examination_date']);
+                    unset($values["{$side}_comments"]);
                     $reading->attributes = $values;
                     $reading->element_id = $iop_element->id;
 
@@ -1196,8 +1199,6 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
         }
-
-        $element->attributes = $data;
     }
 
     /**
@@ -1211,19 +1212,22 @@ class DefaultController extends \BaseEventTypeController
         $et_name = models\HistoryIOP::model()->getElementTypeName();
         $historyIOP = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryIOP');
         $entries = $data['OEModule_OphCiExamination_models_HistoryIOP'];
-        foreach (['left_values', 'right_values'] as $side_values) {
-            if (isset($entries[$side_values])) {
+        foreach (['left', 'right'] as $side) {
+            if (isset($entries["{$side}_values"])) {
                 // set the examination dates in HistoryIOP model for custom validation
-                $historyIOP->examination_dates[$side_values] = array_column($entries[$side_values], 'examination_date');
+                $historyIOP->examination_dates["{$side}_values"] = array_column($entries["{$side}_values"], 'examination_date');
 
-                foreach ($entries[$side_values] as $index => $value) {
+                foreach ($entries["{$side}_values"] as $index => $value) {
                     $reading = new models\OphCiExamination_IntraocularPressure_Value();
+                    // examination_date and comments are not actual fields in IOP so delete them to prevent warnings
+                    unset($value['examination_date']);
+                    unset($value["{$side}_comments"]);
                     $reading->attributes = $value;
                     if (!$reading->validate()) {
                         $readingErrors = $reading->getErrors();
                         foreach ($readingErrors as $readingErrorAttributeName => $readingErrorMessages) {
                             foreach ($readingErrorMessages as $readingErrorMessage) {
-                                $historyIOP->addError($side_values . '_' . $index . '_' . $readingErrorAttributeName, $readingErrorMessage);
+                                $historyIOP->addError("{$side}_values" . '_' . $index . '_' . $readingErrorAttributeName, $readingErrorMessage);
                                 $errors[$et_name][] = $readingErrorMessage;
                             }
                         }
