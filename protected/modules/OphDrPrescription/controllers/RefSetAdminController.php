@@ -20,276 +20,129 @@ class RefSetAdminController extends BaseAdminController
 {
 	public $group = 'Drugs';
 
-    public function actionList()
-    {
-        $admin = new Admin(MedicationSet::model(), $this);
-        $admin->setListFields(array(
-            'id',
-            'name',
-            'rulesString',
-            'itemsCount',
-            'hiddenString',
-            'adminListAction'
-        ));
+	public function actionList()
+	{
+		$admin = new Admin(MedicationSet::model(), $this);
+		$admin->setListFields(array(
+			'id',
+			'name',
+			'rulesString',
+			'itemsCount',
+			'hiddenString',
+			'adminListAction'
+		));
 
-        $admin->getSearch()->addSearchItem('name');
-        $admin->getSearch()->setItemsPerPage(30);
-        $admin->getSearch()->getCriteria()->order = 'name ASC';
+		$admin->getSearch()->addSearchItem('name');
+		$admin->getSearch()->setItemsPerPage(30);
+		$admin->getSearch()->getCriteria()->order = 'name ASC';
 
-        $admin->setListFieldsAction('edit');
-
-
-        $admin->setModelDisplayName("Medication sets");
-        $admin->listModel();
-    }
-
-    public function actionToList($id)
-    {
-        $this->redirect('/OphDrPrescription/refMedicationAdmin/list?ref_set_id='.$id);
-    }
-
-    public function actionEdit($id = null, $usage_code = null)
-    {
-
-        $admin = new Admin(MedicationSet::model(), $this);
-
-        if($id) {
-            $medicationSet = MedicationSet::model()->findByAttributes(['id' => $id]);
-
-            if ($medicationSet->automatic != 1) {
-                $admin->setEditFields(array(
-                    'name' => 'Name',
-                    'rules' => array(
-                        'widget' => 'CustomView',
-                        'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
-                        'viewArguments' => array(
-                            'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
-                            'usage_code' => !empty($usage_code) ? $usage_code : ''
-                        )
-                    ),
-                    'sets' => array(
-                        'widget' => 'CustomView',
-                        'viewName' => 'application.modules.OphDrPrescription.views.admin.common_ophthalmic_drug_sets.edit_sets',
-                        'viewArguments' => array(
-                            'id' => $id
-                        )
-                    ),
-                ));
-            } else {
-                $admin->setEditFields(array(
-                    'name' => 'Name',
-                    'rules' => array(
-                        'widget' => 'CustomView',
-                        'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
-                        'viewArguments' => array(
-                            'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
-                            'usage_code' => !empty($usage_code) ? $usage_code : ''
-                        )
-                    ),
-                ));
-            }
-
-            $admin->setModelId($id);
-        } else {
-            $admin->setEditFields(array(
-                'name' => 'Name',
-                'rules' => array(
-                    'widget' => 'CustomView',
-                    'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
-                    'viewArguments' => array(
-                        'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
-                        'usage_code' => !empty($usage_code) ? $usage_code : ''
-                    )
-                ),
-                'sets' => array(
-                    'widget' => 'CustomView',
-                    'viewName' => 'application.modules.OphDrPrescription.views.admin.common_ophthalmic_drug_sets.edit_sets',
-                    'viewArguments' => array(
-                        'id' => $id
-                    )
-                ),
-            ));
+		$admin->setListFieldsAction('edit');
 
 
-        }
+		$admin->setModelDisplayName("Medication sets");
+		$admin->listModel();
+	}
 
-        $admin->setModelDisplayName("Medication set");
+	public function actionToList($id)
+	{
+		$this->redirect('/OphDrPrescription/refMedicationAdmin/list?ref_set_id='.$id);
+	}
 
-        if (!empty($usage_code)) {
-            $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id.'?usage_code='.$usage_code);
-        } else {
-            $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id);
-        }
+	public function actionEdit($id = null)
+	{
+		$admin = new Admin(MedicationSet::model(), $this);
 
-        if ($usage_code == 'COMMON_OPH') {
-            $admin->setCustomCancelURL('/OphDrPrescription/commonOphthalmicDrugSetsAdmin/list/');
-        } else if ($usage_code == 'COMMON_SYSTEMIC') {
-            $admin->setCustomCancelURL('/OphDrPrescription/commonSystemicDrugSetsAdmin/list/');
-        }
+		$admin->setEditFields(array(
+			'name'=>'Name',
+			'rules' => array(
+				'widget' => 'CustomView',
+				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
+				'viewArguments' => array(
+					'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet()
+				)
+			),
 
-        $admin->editModel();
-    }
+		));
+		$admin->setModelDisplayName("Medication set");
+		if($id) {
+			$admin->setModelId($id);
+		}
+		$admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id);
 
-    public function actionSave($id = null, $usage_code = null)
-    {
+		$admin->editModel();
+	}
 
-        if(is_null($id)) {
-            $model = new MedicationSet();
-        }
-        else {
-            if(!$model = MedicationSet::model()->findByPk($id)) {
-                throw new CHttpException(404, 'Page not found');
-            }
-        }
+	public function actionSave($id = null)
+	{
+		if(is_null($id)) {
+			$model = new MedicationSet();
+		}
+		else {
+			if(!$model = MedicationSet::model()->findByPk($id)) {
+				throw new CHttpException(404, 'Page not found');
+			}
+		}
 
-        /** @var MedicationSet $model */
+		/** @var MedicationSet $model */
 
-        $data = Yii::app()->request->getPost('MedicationSet');
+		$data = Yii::app()->request->getPost('MedicationSet');
+		$model->setAttributes($data);
 
-        $existing_item_ids = array();
-        foreach ($model->medicationSetItems as $item) {
-            $existing_item_ids[] = $item->id;
-        }
+		$model->save();
 
-        $this->_setModelData($model, $data);
-        $model->save();
+		$existing_ids = array();
+		$updated_ids = array();
+		foreach ($model->medicationSetRules as $rule) {
+			$existing_ids[] = $rule->id;
+		}
 
+		$ids = @Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['id'];
+		if(is_array($ids)) {
+			foreach ($ids as $key => $rid) {
+				if($rid == -1) {
+					$medSetRule = new MedicationSetRule();
+				}
+				else {
+					$medSetRule = MedicationSetRule::model()->findByPk($rid);
+					$updated_ids[] = $rid;
+				}
 
-        $existing_ids = array();
-        $updated_ids = array();
-        foreach ($model->medicationSetRules as $rule) {
-            $existing_ids[] = $rule->id;
-        }
+				$medSetRule->setAttributes(array(
+					'medication_set_id' => $model->id,
+					'site_id' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['site_id'][$key],
+					'subspecialty_id' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['subspecialty_id'][$key],
+					'usage_code' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['usage_code'][$key],
+				));
 
+				$medSetRule->save();
+			}
+		}
 
-        $ids = @Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['id'];
+		$deleted_ids = array_diff($existing_ids, $updated_ids);
+		if(!empty($deleted_ids)) {
+			MedicationSetRule::model()->deleteByPk($deleted_ids);
+		}
 
-        if(is_array($ids)) {
-            foreach ($ids as $key => $rid) {
-                if($rid == -1) {
-                    $medSetRule = new MedicationSetRule();
-                }
-                else {
-                    $medSetRule = MedicationSetRule::model()->findByPk($rid);
-                    $updated_ids[] = $rid;
-                }
+		$this->redirect('/OphDrPrescription/refSetAdmin/list');
+	}
 
-                $medSetRule->setAttributes(array(
-                    'medication_set_id' => $model->id,
-                    'site_id' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['site_id'][$key],
-                    'subspecialty_id' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['subspecialty_id'][$key],
-                    'usage_code' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['usage_code'][$key],
-                ));
+	public function actionDelete()
+	{
+		$ids_to_delete = Yii::app()->request->getPost('MedicationSet')['id'];
+		if(is_array($ids_to_delete)) {
+			foreach ($ids_to_delete as $id) {
+				$model = MedicationSet::model()->findByPk($id);
+				/** @var MedicationSet $model */
+				foreach ($model->medicationSetRules as $rule) {
+					$rule->delete();
+				}
+				foreach ($model->items as $i) {
+					$i->delete();
+				}
+				$model->delete();
+			}
+		}
 
-                $medSetRule->save();
-            }
-        }
-
-        $deleted_ids = array_diff($existing_ids, $updated_ids);
-        if(!empty($deleted_ids)) {
-            MedicationSetRule::model()->deleteByPk($deleted_ids);
-        }
-
-
-        $updated_item_ids = array();
-        foreach ($model->medicationSetItems as $item) {
-            $item->medication_set_id = $model->id;
-            $item->save();
-        }
-
-        $itemids = @Yii::app()->request->getPost('MedicationSet')['medicationSetItems']['id'];
-        if(is_array($itemids)) {
-            foreach ($itemids as $key => $rid) {
-
-                if($rid == -1) {
-                    $medSetItem = new MedicationSetItem();
-                }
-                else {
-                    $medSetItem = MedicationSetItem::model()->findByPk($rid);
-                    $updated_item_ids[] = $rid;
-                }
-            }
-        }
-
-        $deleted_item_ids = array_diff($existing_item_ids, $updated_item_ids);
-        if(!empty($deleted_item_ids)) {
-            MedicationSetItem::model()->deleteByPk($deleted_item_ids);
-        }
-
-
-        if (empty($usage_code)) {
-            $this->redirect('/OphDrPrescription/refSetAdmin/list');
-        } else {
-            if ($usage_code == 'COMMON_SYSTEMIC') {
-                $this->redirect('/OphDrPrescription/commonSystemicDrugSetsAdmin/list');
-            } else if ($usage_code == 'COMMON_OPH') {
-                $this->redirect('/OphDrPrescription/commonOphthalmicDrugSetsAdmin/list');
-            }
-
-        }
-
-    }
-
-    private function _setModelData(MedicationSet $model, $data)
-    {
-        $model->setAttributes($data);
-        $model->validate();
-
-        $medicationSetItems = array();
-        if(array_key_exists('medicationSetItems', $data)) {
-
-            foreach ($data['medicationSetItems']['id'] as $key => $medicationSetItem_id) {
-                $attributes = array();
-
-                foreach (MedicationSetItem::model()->attributeNames() as $attr_name) {
-                    if(array_key_exists($attr_name, $data['medicationSetItems'])) {
-                        $attributes[$attr_name] = array_key_exists($key, $data['medicationSetItems'][$attr_name]) ? $data['medicationSetItems'][$attr_name][$key] : null;
-                    }
-                }
-
-                if($medicationSetItem_id == -1) {
-                    $medicationSetItem = new MedicationSetItem();
-                }
-                else {
-                    $medicationSetItem = MedicationSetItem::model()->findByPk($medicationSetItem_id);
-                }
-
-                $medicationSetItem->setAttributes($attributes);
-                $medicationSetItem->medication_set_id = $model->id;
-
-                if(!$medicationSetItem->validate(array('medication_id', 'default_form_id', 'default_route_id', 'default_frequency_id', 'default_duration_id'))) {
-                    $model->addErrors($medicationSetItem->getErrors());
-                }
-
-                $medicationSetItems[] = $medicationSetItem;
-
-            }
-        }
-
-
-        $model->medicationSetItems = $medicationSetItems;
-    }
-
-    public function actionDelete()
-    {
-        $ids_to_delete = Yii::app()->request->getPost('MedicationSet')['id'];
-
-        if(is_array($ids_to_delete)) {
-            foreach ($ids_to_delete as $id) {
-                $model = MedicationSet::model()->findByPk($id);
-                /** @var MedicationSet $model */
-                foreach ($model->medicationSetRules as $rule) {
-                    $rule->delete();
-                }
-                foreach ($model->items as $i) {
-                    $i->delete();
-                }
-                $model->delete();
-            }
-        }
-
-        exit("1");
-    }
-
-
+		exit("1");
+	}
 }
