@@ -12,9 +12,6 @@ if ($unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
         return ['id' => $e->id, 'label' => $e->description];
     }, $unit_attr->medicationAttributeOptions);
 }
-$forms = array_map(function ($e) {
-    return ['id' => $e->id, 'label' => $e->term];
-}, MedicationForm::model()->findAllByAttributes(['deleted_date' => null]));
 $routes = array_map(function ($e) {
     return ['id' => $e->id, 'label' => $e->term];
 }, MedicationRoute::model()->findAllByAttributes(['deleted_date' => null]));
@@ -46,10 +43,6 @@ if (!empty($id)) {
         <td>
             <input type="hidden" name="MedicationSet[medicationSetItems][default_dose_unit_term][{{ key }}]" value="{{unit.id}}" />
             {{unit.label}}
-        </td>
-        <td>
-            <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][{{ key }}]" value="{{form.id}}" />
-            {{form.label}}
         </td>
         <td>
             <input type="hidden" name="MedicationSet[medicationSetItems][default_route_id][{{ key }}]" value="{{route.id}}" />
@@ -141,7 +134,6 @@ if (!empty($id)) {
         <th class="cols-3">Name</th>
         <th class="cols-1">Default dose</th>
         <th class="cols-1">Default dose unit</th>
-        <th class="cols-1">Default form</th>
         <th class="cols-2">Default route</th>
         <th class="cols-2">Default freq</th>
         <th class="cols-1">Default duration</th>
@@ -173,11 +165,6 @@ if (!empty($id)) {
                 <input type="hidden" name="MedicationSet[medicationSetItems][default_dose_unit_term][<?= $rowkey ?>]"
                        value="<?= $assignment->default_dose_unit_term ?>"/>
                 <?= $assignment->default_dose_unit_term ? CHtml::encode($assignment->default_dose_unit_term) : "" ?>
-            </td>
-            <td>
-                <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][<?= $rowkey ?>]"
-                       value="<?= $assignment->default_form_id ?>"/>
-                <?= $assignment->default_form_id ? CHtml::encode($assignment->defaultForm->term) : "" ?>
             </td>
             <td>
                 <input type="hidden" name="MedicationSet[medicationSetItems][default_route_id][<?= $rowkey ?>]"
@@ -275,7 +262,7 @@ if (!empty($id)) {
     </tbody>
     <tfoot class="pagination-container">
     <tr>
-        <td colspan="8">
+        <td colspan="7">
             <div class="flex-layout flex-right">
                 <button class="button hint green js-add-medication" type="button"><i class="oe-i plus pro-theme"></i>
                 </button>
@@ -287,11 +274,6 @@ if (!empty($id)) {
                                 'id': 'unit',
                                 'multiSelect': false,
                                 header: "Default unit"
-                            }),
-                            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($forms) ?>, {
-                                'id': 'form',
-                                'multiSelect': false,
-                                header: "Default form"
                             }),
                             new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($routes) ?>, {
                                 'id': 'route',
@@ -319,9 +301,6 @@ if (!empty($id)) {
                                 }
                                 if (e.itemSet.options.id == "unit") {
                                     row.unit = Object.assign({}, e);
-                                }
-                                else if (e.itemSet.options.id == "form") {
-                                    row.form = Object.assign({}, e);
                                 }
                                 else if (e.itemSet.options.id == "route") {
                                     row.route = Object.assign({}, e);
@@ -352,7 +331,6 @@ if (!empty($id)) {
                                 "medication": row.medication,
                                 "id": row.medication.id,
                                 "unit": row.unit,
-                                "form": row.form,
                                 "route": row.route,
                                 "frequency": row.frequency,
                                 "duration": row.duration
