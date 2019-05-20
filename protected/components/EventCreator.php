@@ -53,7 +53,6 @@ class EventCreator extends \CModel
     protected function createDefaultEvent($event_type_id)
     {
         $event = new \Event();
-        $event->event_date = date('Y-m-d H:i:s');
         $event->event_type_id = $event_type_id;
         $event->episode_id = $this->episode->id;
         $event->created_user_id = \Yii::app()->user->id;
