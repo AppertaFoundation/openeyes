@@ -241,8 +241,10 @@ class Document //extends BaseActiveRecord
 
         $doc_set->event_id = $this->event_id;
         // TODO: check errors here!
-        $doc_set->save();
-
+        $result = $doc_set->save();
+        if (!$result) {
+            \OELog::log(print_r($doc_set->getErrors(), true));
+        }
 
         $doc_instance = null;
         if (isset($data['DocumentInstance']['id'])) {
@@ -252,7 +254,11 @@ class Document //extends BaseActiveRecord
 
         $doc_instance->document_set_id = $doc_set->id;
         $doc_instance->correspondence_event_id = $this->event_id;
-        $doc_instance->save();
+        $result = $doc_instance->save();
+
+        if (!$result) {
+            \OELog::log(print_r($doc_instance->getErrors(), true));
+        }
 
         $doc_instance_version = null;
         if (isset($data['DocumentInstanceData']['id'])) {
@@ -263,7 +269,10 @@ class Document //extends BaseActiveRecord
         $doc_instance_version->document_instance_id = $doc_instance->id;
         $doc_instance_version->macro_id = $data['macro_id'];
 
-        $doc_instance_version->save();
+        $result = $doc_instance_version->save();
+        if (!$result) {
+            \OELog::log(print_r($doc_instance_version->getErrors(), true));
+        }
 
         if (isset($data['DocumentTarget'])) {
             
@@ -335,6 +344,10 @@ class Document //extends BaseActiveRecord
         $doc_target->address = $data['address'];
         $doc_target->save();
 
+        if (!$doc_target->save()) {
+            \OELog::log(print_r($doc_target->getErrors(), true));
+        }
+
         return $doc_target;
     }
     
@@ -356,7 +369,9 @@ class Document //extends BaseActiveRecord
             $doc_output->output_status = $data['output_status'];
         }
 
-        $doc_output->save();
+        if (!$doc_output->save()) {
+            \OELog::log(print_r($doc_output->getErrors(), true));
+        }
 
     }
     
@@ -424,10 +439,5 @@ class Document //extends BaseActiveRecord
         $criteria->addNotInCondition('id', $document_output_ids);
         
         DocumentOutput::model()->deleteAll($criteria);
-        
-        
-        
-        
     }
-
 }

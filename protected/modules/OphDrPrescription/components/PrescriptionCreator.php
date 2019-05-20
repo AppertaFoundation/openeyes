@@ -44,6 +44,11 @@ class PrescriptionCreator extends \EventCreator
                     $taper_model = new OphDrPrescription_ItemTaper();
                     $taper_attributes = $taper->getAttributes();
                     unset($taper_attributes['id']);
+
+                    unset($taper_attributes['last_modified_user_id']);
+                    unset($taper_attributes['last_modified_date']);
+                    unset($taper_attributes['created_date']);
+                    unset($taper_attributes['created_user_id']);
                     $taper_model->attributes = $taper_attributes;
 
                     $tapers[] = $taper_model;

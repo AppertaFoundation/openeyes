@@ -33,16 +33,16 @@ class CorrespondenceCreator extends \EventCreator
 
     public function __construct($episode, $macro = null, $letter_type_id = null)
     {
+        $event_type = \EventType::model()->find('name = "Correspondence"');
+        parent::__construct($episode, $event_type->id);
+
         $this->macro = $macro;
         $this->letter_type_id = $letter_type_id;
-        $event_type = \EventType::model()->find('name = "Correspondence"');
 
         if ($macro) {
             $this->macro = $macro;
             $this->populateDocumentData();
         }
-
-        parent::__construct($episode, $event_type->id);
 
         $this->elements['ElementLetter'] = new \ElementLetter();
     }
@@ -50,29 +50,48 @@ class CorrespondenceCreator extends \EventCreator
     protected function populateDocumentData()
     {
         $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
-        $macro_target_data = $api->getMacroTargets($this->episode, $this->macro->id);
+        $macro_target_data = $api->getMacroTargets($this->episode->patient->id, $this->macro->id);
 
-\OELog::log('<pre>' . print_r($macro_target_data, true) . '</pre>');
+        if (isset($macro_target_data['cc'])) {
+            foreach ($macro_target_data['cc'] as $cc) {
+                $cc_recipients[] = [
+                    'attributes' => [
+                        'ToCc' => 'Cc',
+                        'contact_type' => $cc['contact_type'],
+                        'contact_id' => isset($cc['contact_id']) ? $cc['contact_id'] : '',
+                        'contact_name' => isset($cc['contact_name']) ? $cc['contact_name'] : '',
+                        'address' => $cc['address']
+                    ],
 
-        $this->documents['DocumentTarget'][] = [
-             [ //foreach DocumentTargets as DocumentTarge
+                    'DocumentOutput' => [
+                        [
+                            'output_type' => 'Print'
+                        ],
+                    ],
+                ];
+            }
+        }
+
+        $this->documents['DocumentTarget'] = [
+             [
                 'attributes' => [
-                    'ToCc' => '',
-                    'contact_type' => '',
-                    'contact_id' => '', //isset
-                    'contact_name' => '', //isset
-                    'address' => ''
+                    'ToCc' => 'To',
+                    'contact_type' => $macro_target_data['to']['contact_type'],
+                    'contact_id' => isset($macro_target_data['to']['contact_id']) ? $macro_target_data['to']['contact_id'] : '',
+                    'contact_name' => isset($macro_target_data['to']['contact_name']) ? $macro_target_data['to']['contact_name'] : '',
+                    'address' => $macro_target_data['to']['address']
                 ],
 
                 'DocumentOutput' => [
-                    'attributes' => [
-                        'output_type' => '',
-                        ''
-                    ],
+                    [
+                        //this gp_label paramt thing is extrem;y dodgy, we will have problem here I guess later
+                        'output_type' => strtolower($macro_target_data['to']['contact_type']) == strtolower(Yii::app()->params['gp_label']) ? 'Docman' : 'Print',
+                    ]
                 ],
             ],
-            'macro_id' => $this->macro->id
         ];
+
+        $this->documents['macro_id'] = $macro_target_data['macro_id'];
     }
 
     protected function saveElements($event_id)
@@ -80,7 +99,7 @@ class CorrespondenceCreator extends \EventCreator
         $element = $this->elements['ElementLetter'];
         $element->event_id = $event_id;
         $element->date = date("Y-m-d");
-        $element->letter_type_id = date("Y-m-d");
+        $element->letter_type_id = $this->letter_type_id;
 
         //in $element->setDefaultOptions() there is a check for if action->id == create
         //at the moment it is fine but later we might need to extend
