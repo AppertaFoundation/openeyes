@@ -38,12 +38,17 @@ class UnbookedWorklist extends CComponent
     public function createWorklist(DateTime $date, $site_id, $subspecialty_id, $firm_id = null)
     {
         $tomorrow = clone $date;
-        $tomorrow = $tomorrow->modify('tomorrow');
+        $tomorrow->modify('tomorrow');
         $definition = $this->getDefinition($site_id, $subspecialty_id, $firm_id);
 
         if (!$definition) {
             $definition = $this->createWorklistDefinition($site_id, $subspecialty_id, $firm_id);
+        }
 
+        $worklist = $this->getWorklist($date, $definition->id);
+        if(!is_null($worklist)) {
+            return $worklist;
+        } else {
             //generate worklist by definition
             /**
              * Regarding to the worklist.end time, the generateAutomaticWorklists() function strips the seconds
@@ -58,12 +63,17 @@ class UnbookedWorklist extends CComponent
 
     public function getWorklist(DateTime $date, $definition_id)
     {
+        $today = clone $date;
+        $today->modify('today');  // The time is set to 00:00:00
+        $tomorrow = clone $today;
+        $tomorrow->modify('tomorrow');
+
         $criteria = new \CDbCriteria();
         $criteria->addCondition('worklist_definition_id = :worklist_definition_id');
         $criteria->addCondition('start >= :start');
         $criteria->addCondition('end < :end');
-        $criteria->params[':start'] = $date->modify('today')->format('Y-m-d H:i:s'); // The time is set to 00:00:00
-        $criteria->params[':end'] = $date->modify('tomorrow')->format('Y-m-d H:i:s'); // Midnight of tomorrow
+        $criteria->params[':start'] = $today->format('Y-m-d H:i:s');
+        $criteria->params[':end'] = $tomorrow->format('Y-m-d H:i:s'); // Midnight of tomorrow
         $criteria->params[':worklist_definition_id'] = $definition_id;
 
         return Worklist::model()->find($criteria);

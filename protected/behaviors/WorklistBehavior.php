@@ -84,30 +84,28 @@ class WorklistBehavior extends CBehavior
                     $worklist_patient = WorklistPatient::model()->find($criteria);
                 }
 
-
-                if (!$worklist_patient) {
-
-                    // UNBOOKED
-                    $unbooked_worklist_manager = new \UnbookedWorklist();
-                    $site_id = \Yii::app()->session->get('selected_site_id', null);
-                    $firm_id = \Yii::app()->session->get('selected_firm_id', null);
-                    $firm = \Firm::model()->findByPk($firm_id);
-                    $subspecialty_id = isset($firm->subspecialty->id) ? $firm->subspecialty->id : null;
-
-                    $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty_id);
-
-                    if ($unbooked_worklist) {
-                        $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
-                    } else {
-                        \OELog::log("Unbooked worklist cannot be found for patient_id: {$patient_id}");
-                    }
-                }
-
                 if ($worklist_patient) {
                     $this->owner->event->worklist_patient_id = $worklist_patient->id;
                 }
             }
         }
+    }
+
+    public function addToUnbookedWorklist($site_id, $firm_id) {
+        if($this->owner->event && !$this->owner->event->worklist_patient_id) {
+            $unbooked_worklist_manager = new \UnbookedWorklist();
+            $firm = \Firm::model()->findByPk($firm_id);
+            $subspecialty_id = isset($firm->subspecialty->id) ? $firm->subspecialty->id : null;
+            $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty_id);
+            if ($unbooked_worklist) {
+                $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
+                $this->owner->event->worklist_patient_id = $worklist_patient->id;
+                return true;
+            } else {
+                \OELog::log("Unbooked worklist cannot be found for patient_id: {$this->owner->patient->id}");
+            }
+        }
+        return false;
     }
 
     public function getPasApiAssignment($worklist_patient_id)
