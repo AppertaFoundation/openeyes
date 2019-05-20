@@ -76,7 +76,7 @@ class m180613_015714_merge_visual_function_element_into_pupils extends OEMigrati
         $vf_element_type_children = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('parent_element_type_id = :parent_element_type_id', array(':parent_element_type_id' => $vf_element_type['id']))->queryAll();
 
         // Remove element sets
-        $this->delete('ophciexamination_element_set_item', 'element_type_id = :element_id',
+        $this->delete('ophciexamination_element_set_item', 'element_type_id = :element_id OR element_type_id IN (SELECT id FROM element_type WHERE parent_element_type_id = :element_id)',
             array(':element_id' => $vf_element_type['id']));
 
         // Remove element type
