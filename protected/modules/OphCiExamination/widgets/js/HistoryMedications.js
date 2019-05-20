@@ -423,7 +423,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
 
     HistoryMedicationsController.prototype.getRowData = function($row, old_values)
-    { console.log("gettin rowdata");
+    {
         var rc = $row.attr("data-key");
         var obj = {};
         $.each(this.fields, function(i, field){
@@ -634,7 +634,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $row.appendTo($target);
         var data = this.getRowData($origin, old_values);
         data.usage_type = $target.attr("data-usage-type");
-        data.locked = 1;
+
+        /*
+        when a drug that comes from history is missing the values that are required for prescription
+        the row should be editable
+        currently required fields: 'dose, route_id, frequency_id, dose_unit_term'
+         */
+        if(data.dose != "" && data.route_id != "" && data.frequency_id != "" && data.dose_unit_term != "") {
+            data.locked = 1;
+        }
 
         this.boundController.setRowData($row, data);
         this.boundController.initialiseRow($row);
