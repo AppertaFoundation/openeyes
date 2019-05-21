@@ -52,14 +52,6 @@
             </tr>
             </tbody>
         </table>
-        <div>
-            <label>Rotate Image:</label>
-            <input type="button" class="btnRotate" value="90" onClick="rotateImage(this.value);" />
-            <input type="button" class="btnRotate" value="-90" onClick="rotateImage(this.value);" />
-            <input type="button" class="btnRotate" value="180" onClick="rotateImage(this.value);" />
-            <input type="button" class="btnRotate" value="360" onClick="rotateImage(this.value);" />
-            <input type="hidden" value="" name="rotate" id="rotate">
-        </div>
         <div class="element-fields flex-layout flex-top col-gap">
             <div class="cols-11">
                 <div id="document-comments" data-comment-button="#document_comment_button"
@@ -91,16 +83,19 @@
             </div>
 
         </div>
-
-
-
-
         <hr class="divider">
 
         <div id="single_document_uploader" class="data-group js-document-upload-wrapper"
             <?= (!$element->single_document_id &&
             ($element->right_document_id || $element->left_document_id) ? 'style="display:none"' : ''); ?>
         >
+            <div>
+                <label>Rotate Single Image:</label>
+                <input type="button" class="btnRotate" value="90" onClick="rotateImage(this.value, 'single');" />
+                <input type="button" class="btnRotate" value="-90" onClick="rotateImage(this.value, 'single');" />
+                <input type="button" class="btnRotate" value="180" onClick="rotateImage(this.value, 'single');" />
+                <input type="hidden" value="" name="single_document_rotate" id="single_document_rotate">
+            </div>
             <table class="last-left cols-full">
                 <colgroup>
                     <col class="cols-full">
@@ -143,7 +138,6 @@
 
         <div id="double_document_uploader" class="data-group js-document-upload-wrapper"
             <?= ($element->left_document_id || $element->right_document_id ? '' : 'style="display:none"'); ?> >
-
             <table class="last-left cols-full">
                 <colgroup>
                     <col class="cols-half" span="2">
@@ -157,6 +151,13 @@
                 <tbody>
                 <tr class="valign-top">
                     <td>
+                        <div>
+                            <label>Rotate Right Image:</label>
+                            <input type="button" class="btnRotate" value="90" onClick="rotateImage(this.value, 'right');" />
+                            <input type="button" class="btnRotate" value="-90" onClick="rotateImage(this.value, 'right');" />
+                            <input type="button" class="btnRotate" value="180" onClick="rotateImage(this.value, 'right');" />
+                            <input type="hidden" value="" name="right_document_rotate" id="right_document_rotate">
+                        </div>
                         <div class="upload-box"
                              id="right_document_id_row" <?= $element->right_document_id ? 'style="display:none"' : ''; ?>>
                             <label for="Document_right_document_row_id" id="upload_box_right_document"
@@ -182,6 +183,13 @@
                         <?= CHtml::activeHiddenField($element, 'right_document_id', ['class' => 'js-document-id']); ?>
                     </td>
                     <td>
+                        <div>
+                            <label>Rotate Left Image:</label>
+                            <input type="button" class="btnRotate" value="90" onClick="rotateImage(this.value, 'left');" />
+                            <input type="button" class="btnRotate" value="-90" onClick="rotateImage(this.value, 'left');" />
+                            <input type="button" class="btnRotate" value="180" onClick="rotateImage(this.value, 'left');" />
+                            <input type="hidden" value="" name="left_document_rotate" id="left_document_rotate">
+                        </div>
                         <div class="upload-box"
                              id="left_document_id_row" <?= $element->left_document_id ? 'style="display:none"' : ''; ?>>
                             <label for="Document_left_document_row_id" id="upload_box_left_document"
@@ -242,15 +250,22 @@
     </script>
 
     <script>
-        function rotateImage(degree) {
-            $('.ophco-image-container').animate({  transform: degree }, {
+        function rotateImage(degree, type) {
+            if (type == 'single') {
+                var imageId = $('#Element_OphCoDocument_Document_single_document_id').val();
+            } else if (type == 'left') {
+                var imageId = $('#Element_OphCoDocument_Document_left_document_id').val();
+            } else if (type == 'right') {
+                var imageId = $('#Element_OphCoDocument_Document_right_document_id').val();
+            }
+            $('#ophco-image-container-'+imageId).animate({  transform: degree }, {
                 step: function(now,fx) {
                     $(this).css({
                         '-webkit-transform':'rotate('+now+'deg)',
                         '-moz-transform':'rotate('+now+'deg)',
                         'transform':'rotate('+now+'deg)'
                     });
-                    $('#rotate').val(degree);
+                    $('#'+type+'_document_rotate').val(degree);
                 }
             });
         }

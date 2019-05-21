@@ -161,8 +161,9 @@ class DefaultController extends BaseEventTypeController
     {
         $imageType = getimagesize($tmp_name)['mime'];
 
+
         if ($imageType == 'image/jpeg') {
-            $tmp_name = $this->rotate($tmp_name);
+            $tmp_name = Element_OphCoDocument_Document::model()->rotate($tmp_name);
         }
 
         $p_file = ProtectedFile::createFromFile($tmp_name);
@@ -177,36 +178,6 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
-
-    public function rotate($tmp_name) {
-        $original = imagecreatefromjpeg($tmp_name);
-        $exif = exif_read_data($tmp_name);
-
-        if (!empty($exif['Orientation'])) {
-            switch ($exif['Orientation']) {
-                case 1:
-                    $angle = 0;
-                    break;
-                case 3:
-                    $angle = 180;
-                    break;
-                case 6:
-                    $angle = -90;
-                    break;
-                case 8:
-                    $angle = 90;
-                    break;
-            }
-
-            $rotated = imagerotate($original, $angle, 0);
-            imagejpeg($rotated, $tmp_name);
-            return $tmp_name;
-
-        } else {
-            return $tmp_name;
-        }
-
-    }
 
     /**
      * @return string
@@ -483,6 +454,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionCreateImage($id)
     {
+
         try {
             $this->initActionView();
             $this->removeEventImages();

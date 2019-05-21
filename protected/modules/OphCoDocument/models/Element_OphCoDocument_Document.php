@@ -67,4 +67,82 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         }
         return '';
     }
+
+    public function afterSave()
+    {
+
+        if (!empty($_POST['single_document_rotate']) || !empty($_POST['left_document_rotate']) || !empty($_POST['right_document_rotate'])) {
+
+            if (!empty($this->single_document)) {
+                $rotate = $_POST['single_document_rotate'];
+                $protected = ProtectedFile::model()->findByPk($this->single_document_id);
+                $tmp_name = $protected->getFilePath().'/'.$protected->uid;
+                $imageType = getimagesize($tmp_name)['mime'];
+
+                if ($imageType == 'image/jpeg') {
+                    $this->rotate($tmp_name, $rotate);
+                }
+            }
+            if (!empty($this->left_document)) {
+                $rotate = $_POST['left_document_rotate'];
+                $protected = ProtectedFile::model()->findByPk($this->left_document_id);
+                $tmp_name = $protected->getFilePath().'/'.$protected->uid;
+                $imageType = getimagesize($tmp_name)['mime'];
+
+                if ($imageType == 'image/jpeg') {
+                    $this->rotate($tmp_name, $rotate);
+                }
+            }
+            if (!empty($this->right_document)) {
+                $rotate = $_POST['right_document_rotate'];
+                $protected = ProtectedFile::model()->findByPk($this->right_document_id);
+                $tmp_name = $protected->getFilePath().'/'.$protected->uid;
+                $imageType = getimagesize($tmp_name)['mime'];
+
+                if ($imageType == 'image/jpeg') {
+                    $this->rotate($tmp_name, $rotate);
+                }
+            }
+
+        }
+
+
+        parent::afterSave();
+    }
+
+
+    public function rotate($tmp_name, $rotate = null) {
+        $original = imagecreatefromjpeg($tmp_name);
+
+        if (!empty($rotate)) {
+            $rotated = imagerotate($original, $rotate, 0);
+            imagejpeg($rotated, $tmp_name);
+
+            return $tmp_name;
+        }
+
+        $exif = exif_read_data($tmp_name);
+        if (!empty($exif['Orientation'])) {
+            switch ($exif['Orientation']) {
+                case 1:
+                    $rotate = 0;
+                    break;
+                case 3:
+                    $rotate = 180;
+                    break;
+                case 6:
+                    $rotate = -90;
+                    break;
+                case 8:
+                    $rotate = 90;
+                    break;
+            }
+
+            $rotated = imagerotate($original, $rotate, 0);
+            imagejpeg($rotated, $tmp_name);
+
+        }
+
+        return $tmp_name;
+    }
 }
