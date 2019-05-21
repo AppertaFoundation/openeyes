@@ -73,7 +73,8 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         foreach(array('single_document', 'left_document', 'right_document') as $document){
             $document_id = $document.'_id';
             $document_rotate = $document.'_rotate';
-            if($file_name = $this->getImageFileNameForRotation($this->$document_id)){
+            $file_name = $this->getImageFileNameForRotation($this->$document_id);
+            if($file_name){
                 $this->rotate($file_name, $_POST[$document_rotate]);
             }
         }
