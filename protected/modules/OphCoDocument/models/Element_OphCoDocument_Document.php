@@ -70,58 +70,45 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
 
     public function afterSave()
     {
-
-        if (!empty($_POST['single_document_rotate']) || !empty($_POST['left_document_rotate']) || !empty($_POST['right_document_rotate'])) {
-
-            if (!empty($this->single_document)) {
-                $rotate = $_POST['single_document_rotate'];
-                $protected = ProtectedFile::model()->findByPk($this->single_document_id);
-                $tmp_name = $protected->getFilePath().'/'.$protected->uid;
-                $imageType = getimagesize($tmp_name)['mime'];
-
-                if ($imageType == 'image/jpeg') {
-                    $this->rotate($tmp_name, $rotate);
-                }
+        foreach(array('single_document', 'left_document', 'right_document') as $document){
+            $document_id = $document.'_id';
+            $document_rotate = $document.'_rotate';
+            if($file_name = $this->getImageFileNameForRotation($this->$document_id)){
+                $this->rotate($file_name, $_POST[$document_rotate]);
             }
-            if (!empty($this->left_document)) {
-                $rotate = $_POST['left_document_rotate'];
-                $protected = ProtectedFile::model()->findByPk($this->left_document_id);
-                $tmp_name = $protected->getFilePath().'/'.$protected->uid;
-                $imageType = getimagesize($tmp_name)['mime'];
-
-                if ($imageType == 'image/jpeg') {
-                    $this->rotate($tmp_name, $rotate);
-                }
-            }
-            if (!empty($this->right_document)) {
-                $rotate = $_POST['right_document_rotate'];
-                $protected = ProtectedFile::model()->findByPk($this->right_document_id);
-                $tmp_name = $protected->getFilePath().'/'.$protected->uid;
-                $imageType = getimagesize($tmp_name)['mime'];
-
-                if ($imageType == 'image/jpeg') {
-                    $this->rotate($tmp_name, $rotate);
-                }
-            }
-
         }
-
 
         parent::afterSave();
     }
 
+    protected function getImageFileNameForRotation($image_id){
+        $protected = ProtectedFile::model()->findByPk($image_id);
+        if($protected){
+            $file_name = $protected->getFilePath().'/'.$protected->uid;
+            $imageType = getimagesize($file_name)['mime'];
+            if ($imageType == 'image/jpeg') {
+                return $file_name;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
 
-    public function rotate($tmp_name, $rotate = null) {
-        $original = imagecreatefromjpeg($tmp_name);
+
+    public function rotate($file_name, $rotate = null) {
+
+        $original = imagecreatefromjpeg($file_name);
 
         if (!empty($rotate)) {
             $rotated = imagerotate($original, $rotate, 0);
-            imagejpeg($rotated, $tmp_name);
+            imagejpeg($rotated, $file_name);
 
-            return $tmp_name;
+            return $file_name;
         }
 
-        $exif = exif_read_data($tmp_name);
+        $exif = exif_read_data($file_name);
         if (!empty($exif['Orientation'])) {
             switch ($exif['Orientation']) {
                 case 1:
@@ -139,10 +126,10 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
             }
 
             $rotated = imagerotate($original, $rotate, 0);
-            imagejpeg($rotated, $tmp_name);
+            imagejpeg($rotated, $file_name);
 
         }
 
-        return $tmp_name;
+        return $file_name;
     }
 }
