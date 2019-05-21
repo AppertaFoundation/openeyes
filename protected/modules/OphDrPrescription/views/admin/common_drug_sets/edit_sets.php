@@ -9,7 +9,6 @@
 		    return ['id' => $e->id, 'label' => $e->description];
         }, $unit_attr->medicationAttributeOptions);
 	}
-    $forms = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationForm::model()->findAllByAttributes(['deleted_date' => null]));
     $routes = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationRoute::model()->findAllByAttributes(['deleted_date' => null]));
     $freqs = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationFrequency::model()->findAllByAttributes(['deleted_date' => null]));
     $durations = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name];},MedicationDuration::model()->findAllByAttributes(['deleted_date' => null]));
@@ -33,10 +32,6 @@
         </td>
         <td>
             <?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose_unit_term][]', '{{unit.label}}'); ?>
-        </td>
-        <td>
-            <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][]" value="{{form.id}}" />
-            {{form.label}}
         </td>
         <td>
             <input type="hidden" name="MedicationSet[medicationSetItems][default_route_id][]" value="{{route.id}}" />
@@ -70,7 +65,6 @@
             <th width="17%">Name</th>
             <th width="13%">Default dose</th>
             <th width="13%">Default dose unit</th>
-            <th width="13%">Default form</th>
             <th width="13%">Default route</th>
             <th width="13%">Default freq</th>
             <th width="13%">Default duration</th>
@@ -99,10 +93,6 @@
 				<?php echo CHtml::textField('MedicationSet[medicationSetItems][default_dose_unit_term][]', $assignment->default_dose_unit_term); ?>
             </td>
             <td>
-                <input type="hidden" name="MedicationSet[medicationSetItems][default_form_id][]" value="<?=$assignment->default_form_id?>" />
-				<?=$assignment->default_form_id ? CHtml::encode($assignment->defaultForm->term) : ""?>
-            </td>
-            <td>
                 <input type="hidden" name="MedicationSet[medicationSetItems][default_route_id][]" value="<?=$assignment->default_route_id?>" />
 				<?=$assignment->default_route_id ? CHtml::encode($assignment->defaultRoute->term) : ""?>
             </td>
@@ -129,7 +119,7 @@
     </tbody>
     <tfoot class="pagination-container">
         <tr>
-            <td colspan="8">
+            <td colspan="7">
                 <div class="flex-layout flex-right">
                     <button class="button hint green js-add-medication" type="button"><i class="oe-i plus pro-theme"></i></button>
                     <script type="text/javascript">
@@ -137,7 +127,6 @@
                             openButton: $('.js-add-medication'),
                             itemSets: [
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($units) ?>, {'id': 'unit','multiSelect': false, header: "Default unit"}),
-                                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($forms) ?>, {'id': 'form','multiSelect': false, header: "Default form"}),
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($routes) ?>, {'id': 'route', 'multiSelect': false, header: "Default route"}),
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($freqs) ?>, {'id': 'frequency', 'multiSelect': false, header: "Default frequency"}),
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($durations) ?>, {'id': 'duration', 'multiSelect': false, header: "Default duration"})
@@ -152,9 +141,6 @@
                                     }
                                     if(e.itemSet.options.id == "unit") {
                                         row.unit = Object.assign({}, e);
-                                    }
-                                    else if(e.itemSet.options.id == "form") {
-                                        row.form = Object.assign({}, e);
                                     }
                                     else if(e.itemSet.options.id == "route") {
                                         row.route = Object.assign({}, e);
@@ -179,13 +165,11 @@
                                 var key = parseInt(lastkey) + 1;
                                 var template = $('#set_row_template').html();
                                 Mustache.parse(template);
-                                console.log(row);
                                 var rendered = Mustache.render(template, {
                                     "key": key,
                                     "medication": row.medication,
                                     "id" : row.medication.id,
                                     "unit" : row.unit,
-                                    "form" : row.form,
                                     "route" : row.route,
                                     "frequency" : row.frequency,
                                     "duration" : row.duration

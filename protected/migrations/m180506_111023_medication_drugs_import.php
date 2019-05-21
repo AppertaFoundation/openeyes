@@ -226,7 +226,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 /* Add medication to the 'Legacy' set */
                 Yii::app()->db->createCommand("
                     INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_route_id, default_frequency_id, default_dose_unit_term )
-                        values (".$ref_medication_id." , ".$formulary_id.", ".$drug_form_id.", ".$drug_route_id.", ".$drug_freq_id." , '".$default_dose_unit."' )
+                        values (".$ref_medication_id." , ".$formulary_id.", NULL, ".$drug_route_id.", ".$drug_freq_id." , '".$default_dose_unit."' )
                 ")->execute();
 
                 /* Add medication to their respective sets */
@@ -241,7 +241,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                             (SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code = 'Drug') 
                          ),
                          
-                         ".$drug_form_id.",
+                         NULL,
                          ".$drug_route_id.",
                          ".$drug_freq_id." ,
                          '".$default_dose_unit."',
