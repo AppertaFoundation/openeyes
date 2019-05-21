@@ -119,7 +119,7 @@ $(document).ready(function() {
 			}
 		}
 
-        $('textarea').autosize();
+        autosize($('textarea'));
 
 		select.trigger('MultiSelectFreeTextChanged');
 		return false;

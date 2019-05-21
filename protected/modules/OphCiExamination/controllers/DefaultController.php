@@ -95,7 +95,7 @@ class DefaultController extends \BaseEventTypeController
         } else {
             $elements = $this->event->getElements();
             if ($this->step) {
-                $elements = $this->mergeNextStep($elements, $this->step);
+                $elements = $this->mergeNextStep($elements);
             }
         }
 
@@ -435,10 +435,9 @@ class DefaultController extends \BaseEventTypeController
                 $assignment = new models\OphCiExamination_Event_ElementSet_Assignment();
                 $assignment->event_id = $event->id;
             }
-            if (!$next_step = $this->getNextStep($event)) {
-                throw new \CException('No next step available');
-            }
-            $assignment->step_id = $next_step->id;
+
+            $assignment->step_id = $this->step->id;
+            $assignment->step_completed = 1;
             if (!$assignment->save()) {
                 throw new \CException('Cannot save assignment');
             }
@@ -458,6 +457,7 @@ class DefaultController extends \BaseEventTypeController
             }
 
             $assignment->step_id = $this->step->id;
+            $assignment->step_completed = 1;
             if (!$assignment->save()) {
                 throw new \CException('Cannot save assignment');
             }
@@ -542,14 +542,14 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return array
      */
-    protected function mergeNextStep($elements, $next_step)
+    protected function mergeNextStep($elements)
     {
         if (!$event = $this->event) {
             throw new \CException('No event set for step merging');
         }
 
         //TODO: should we be passing episode here?
-        $extra_elements = $this->getElementsByWorkflow($next_step, $this->episode);
+        $extra_elements = $this->getElementsByWorkflow($this->step, $this->episode);
         $extra_by_etid = array();
 
         foreach ($extra_elements as $extra) {
@@ -1166,7 +1166,7 @@ class DefaultController extends \BaseEventTypeController
                     $examinationEvent = new \Event();
                     $examinationEvent->episode_id = $element->event->episode_id;
                     $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
-                    $examinationEvent->event_date = \DateTime::createFromFormat('Y-m-d', $values['examination_date'])->format('Y-m-d');
+                    $examinationEvent->event_date = \DateTime::createFromFormat('d-m-Y', $values['examination_date'])->format('Y-m-d');
                     $examinationEvent->event_type_id = $element->event->event_type_id;
 
                     if (!$examinationEvent->save()) {
@@ -1492,13 +1492,18 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setCurrentSet()
     {
+        $element_assignment = $this->getElementSetAssignment();
         if (!$this->set) {
             /*@TODO: probably the getNextStep() should be able to recognize if there were no steps completed before and return the first step
               Note: getCurrentStep() will return firstStep if there were no steps before */
-            $this->set = $this->getElementSetAssignment() && $this->action->id != 'update' ? $this->getNextStep() : $this->getCurrentStep();
+            $this->set = $element_assignment && $this->action->id != 'update' ? $this->getNextStep() : $this->getCurrentStep();
 
             //if $this->set is null than no workflow rule to apply
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
+        }
+
+        if ($this->action->id == 'update' && !$element_assignment->step_completed) {
+            $this->step = $this->getCurrentStep();
         }
     }
 

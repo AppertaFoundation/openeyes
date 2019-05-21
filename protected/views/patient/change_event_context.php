@@ -119,7 +119,7 @@
     $(document).ready(function () {
         var changeContextDialog;
 
-        $(document).on('click', '<?= $button_selector ?>', function () {
+        $(document).on('click', '<?= $button_selector ?>', function (event) {
             event.preventDefault();
             changeContextDialog = new OpenEyes.UI.Dialog.NewEvent({
                 mode: 'ChangeContext',
