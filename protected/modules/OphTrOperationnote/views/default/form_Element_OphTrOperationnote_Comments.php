@@ -46,12 +46,41 @@
     </button><!-- popup to add data to element -->
   </div>
 </div>
-<div>
-    <hr />
-    <label class="inline highlight">
-        <input value="generate_standard_events" name="generate_standard_events" type="checkbox"> Send standard letters and prescription
-    </label>
-</div>
+
+<?php if ($this->action->id == 'create') :?>
+    <div>
+        <hr />
+        <?php
+            $gp_letter_setting = \SettingMetadata::model()->getSetting('auto_generate_gp_letter_after_surgery');
+            // typecaset on/off to true/false
+            $gp_letter_setting = $gp_letter_setting ? ($gp_letter_setting == 'on' ? true : false) : false;
+            //if posted we use that otherwise we use the default
+            $gp_letter_setting = $this->request->getParam('auto_generate_gp_letter_after_surgery', $gp_letter_setting);
+
+            $prescription_setting = \SettingMetadata::model()->getSetting('auto_generate_prescription_after_surgery');
+            $prescription_setting = $prescription_setting ? ($prescription_setting == 'on' ? true : false) : false;
+            $prescription_setting = $this->request->getParam('auto_generate_prescription_after_surgery', $prescription_setting);
+
+            $optom_setting = $this->request->getParam('auto_generate_optopm_post_op_letter_after_surgery');
+        ?>
+
+        <label class="inline highlight">
+            <?=\CHtml::checkBox('auto_generate_prescription_after_surgery', $prescription_setting);?>Generate standard prescription
+        </label>
+
+        <label class="inline highlight">
+            <?=\CHtml::checkBox('auto_generate_gp_letter_after_surgery', $gp_letter_setting);?>Generate standard GP letter
+        </label>
+
+        <?php if (\SettingMetadata::model()->getSetting('default_optop_post_op_letter')) :?>
+            <label class="inline highlight">
+                <?=\CHtml::checkBox('auto_generate_optopm_post_op_letter_after_surgery', $optom_setting);?>Generate standard Optom letter
+            </label>
+        <?php endif; ?>
+
+    </div>
+<?php endif; ?>
+
 <?php $instru_list = $element->postop_instructions_list; ?>
 <script type="text/javascript">
   $(document).ready(function () {

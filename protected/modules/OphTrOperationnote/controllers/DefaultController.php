@@ -336,11 +336,10 @@ class DefaultController extends BaseEventTypeController
 
                         $transaction->commit();
 
-                        $create_standard_events = \Yii::app()->request->getParam('generate_standard_events');
-                        if ($create_standard_events) {
-
+                        $create_prescription = \Yii::app()->request->getParam('auto_generate_prescription_after_surgery');
+                        if ($create_prescription) {
                             $transaction = Yii::app()->db->beginTransaction();
-                            // create 'post-op' prescription and 'post-op' letter
+                            // create 'post-op' prescription
                             $result = $this->createPrescriptionEvent();
                             if ($result['success'] === true) {
                                 $transaction->commit();
@@ -355,9 +354,12 @@ class DefaultController extends BaseEventTypeController
                                     'model' => 'Element_OphDrPrescription_Details'
                                 ]);
                             }
+                        }
 
+                        $create_correspondence = \Yii::app()->request->getParam('auto_generate_gp_letter_after_surgery');
+                        if ($create_correspondence) {
                             $transaction = Yii::app()->db->beginTransaction();
-                            // create 'post-op' prescription and 'post-op' letter
+                            // create 'post-op' letter
                             $result = $this->createCorrespondenceEvent();
                             if ($result['success'] === true) {
                                 $transaction->commit();
@@ -370,6 +372,35 @@ class DefaultController extends BaseEventTypeController
                                     'patient_id' => $this->patient->id,
                                     'model' => 'ElementLetter'
                                 ]);
+                            }
+                        }
+
+                        $create_optopm_correspondence = \Yii::app()->request->getParam('auto_generate_gp_letter_after_surgery');
+                        $macro_name = \SettingMetadata::model()->getSetting('default_optop_post_op_letter');
+                        $macro = LetterMacro::model()->find('name = ?', [$macro_name]);
+
+                        if ($create_optopm_correspondence) {
+                            // create 'optopm-post-op' letter
+                            if ($macro) {
+                                $transaction = Yii::app()->db->beginTransaction();
+                                $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
+                                $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
+                                $correspondence_creator->save();
+
+                                if ($correspondence_creator->save()) {
+                                    $transaction->commit();
+                                } else {
+                                    $transaction->rollback();
+                                    $log = print_r($result['errors'], true);
+                                    \Audit::add('event', 'create', 'Event creation Failed <pre>' . $log . '</pre>', $log, [
+                                        'module' => 'OphCoCorrespondence',
+                                        'episode_id' => $this->event->episode->id,
+                                        'patient_id' => $this->patient->id,
+                                        'model' => 'ElementLetter'
+                                    ]);
+                                }
+                            } else {
+                                \OELog::log("No macro found: {$macro_name}, default setting (macro name) was : {$macro_name}");
                             }
                         }
 

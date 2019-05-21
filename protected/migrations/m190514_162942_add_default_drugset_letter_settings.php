@@ -41,6 +41,37 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
                 $this->addSetting($field_type_id, "default_{$status->key}_{$type}", "Default {$status->name}(Episode status) {$name} name", $status->name);
             }
         }
+        $this->addSetting($field_type_id, "default_optop_post_op_letter", "Default Optom Post-op Letter name", '');
+
+        $this->insert('setting_metadata', array(
+            'element_type_id' => null,
+            'display_order' => 2,
+            'field_type_id' => \SettingFieldType::model()->findByAttributes(['name' => 'Radio buttons'])->id,
+            'key' => 'auto_generate_prescription_after_surgery',
+            'name' => 'Auto generate default prescription after surgery',
+            'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
+            'default_value' => 'off'
+        ));
+
+        $this->insert('setting_installation', array(
+            'key' => 'auto_generate_prescription_after_surgery',
+            'value' => 'off'
+        ));
+
+        $this->insert('setting_metadata', array(
+            'element_type_id' => null,
+            'display_order' => 2,
+            'field_type_id' => \SettingFieldType::model()->findByAttributes(['name' => 'Radio buttons'])->id,
+            'key' => 'auto_generate_gp_letter_after_surgery',
+            'name' => 'Auto generate GP letter after surgery',
+            'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
+            'default_value' => 'off'
+        ));
+
+        $this->insert('setting_installation', array(
+            'key' => 'auto_generate_gp_letter_after_surgery',
+            'value' => 'off'
+        ));
 	}
 
 	public function safeDown()
