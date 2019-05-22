@@ -38,7 +38,11 @@ class DisorderController extends BaseAdminController
         }
 
         if ($specialty) {
-            $criteria->compare('specialty_id', $specialty);
+            if($specialty == "None") {
+                $criteria->addCondition('specialty_id IS NULL');
+            } else {
+                $criteria->compare('specialty_id', $specialty);
+            }
         }
 
         $this->render('/list_disorder', array(

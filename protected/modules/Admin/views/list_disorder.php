@@ -47,7 +47,7 @@
                                 ),
                                 'id',
                                 'name'
-                            ),
+                            ) + ['None' => 'None'],
                             ['empty' => 'All specialties']
                         ) ?>
                     </td>
