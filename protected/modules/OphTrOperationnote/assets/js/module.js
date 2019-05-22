@@ -20,6 +20,7 @@ $( document ).ready(function() {
     if(window.location.href.indexOf("update") == -1) {
         loadBiometryElementData();
     }
+    autosize($('textarea'));
 });
 
 async function callbackAddProcedure(procedure_id) {
@@ -64,6 +65,7 @@ async function callbackAddProcedure(procedure_id) {
                     loadBiometryElementData();
                 }
             }
+            autosize($('textarea'));
         }
     });
 }
