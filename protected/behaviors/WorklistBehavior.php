@@ -40,15 +40,22 @@ class WorklistBehavior extends CBehavior
         if ($action && ($action->id === 'create') && $this->owner->event) {
 
             $patient_id = isset($this->owner->patient->id) ? $this->owner->patient->id : null;
+            $worklist_patient_id = null;
 
             // if patientticketing is active (use session parameter),
             // set $worklist_patient_id to be the same as the event that created the patietnticket
             if (isset(\Yii::app()->session['patientticket_ticket_ids']) && \Yii::app()->session['patientticket_ticket_ids']) {
                 $patientticket_ticket_id = Yii::app()->session['patientticket_ticket_ids'];
-                $patientTicket = \OEModule\PatientTicketing\models\Ticket::model()->findByPk($patientticket_ticket_id);
-                $patientTicket_event = Event::model()->findByPk($patientTicket->event_id);
-                $worklist_patient_id = $patientTicket_event->worklist_patient_id;
-            } else {
+                $ticket = \OEModule\PatientTicketing\models\Ticket::model()->findByPk($patientticket_ticket_id);
+                if ($ticket) {
+                    $patientticket_event = Event::model()->findByPk($ticket->event_id);
+                    if ($patientticket_event) {
+                        $worklist_patient_id = $patientticket_event->worklist_patient_id;
+                    }
+                }
+            }
+            // worklist_patient_id was not set previously
+            if ($worklist_patient_id === null) {
                 $worklist_patient_id = $this->worklist_manager->getWorklistPatientId();
             }
             $worklist_patient = $worklist_patient_id ? WorklistPatient::model()->findByPk($worklist_patient_id) : null;
