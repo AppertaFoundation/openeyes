@@ -1004,13 +1004,4 @@ class AdminController extends \ModuleAdminController
 
         echo '1';
     }
-
-    public function actionDilationDrugs()
-    {
-        $this->genericAdmin(
-            'Manage Dilation Drops',
-            'OEModule\OphCiExamination\models\OphCiExamination_Dilation_Drugs',
-            ['div_wrapper_class' => 'cols-5']
-        );
-    }
 }
