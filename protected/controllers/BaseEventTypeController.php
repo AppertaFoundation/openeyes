@@ -2201,7 +2201,7 @@ class BaseEventTypeController extends BaseModuleController
             ),
         );
 
-        $this->render('request_delete', array(
+        $this->render('delete', array(
             'errors' => $errors,
         ));
     }
