@@ -11,11 +11,15 @@ $(function () {
     $container.find('.js-comment-field').focus();
   });
 
-    $(this).on('blur', '.js-comment-field', function () {
+  $(this).on('blur', '.js-comment-field', function () {
     if ($(this).val().trim() === '') {
       var $container = $(this).closest('.js-comment-container');
       var $button = $($container.data('comment-button'));
-      $button.css('visibility', 'visible');
+      if($button.data('hide-method') === 'display') {
+        $button.show();
+      } else {
+        $button.css('visibility', 'visible');
+      }
       $container.hide();
     }
   });

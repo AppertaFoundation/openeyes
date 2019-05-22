@@ -300,7 +300,7 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @return array
      */
-    public function getElements($action='edit')
+    public function getElements($action = 'edit')
     {
         $elements = array();
         if (is_array($this->open_elements)) {
@@ -2091,6 +2091,10 @@ class BaseEventTypeController extends BaseModuleController
     protected function afterCreateElements($event)
     {
         $this->updateUniqueCode($event);
+
+        $site_id = \Yii::app()->session->get('selected_site_id', null);
+        $firm_id = \Yii::app()->session->get('selected_firm_id', null);
+        $this->addToUnbookedWorklist($site_id, $firm_id);
     }
 
     /**

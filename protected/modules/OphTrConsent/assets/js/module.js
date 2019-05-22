@@ -143,7 +143,7 @@ $(document).ready(function() {
 		});
 	}
 
-	$('.Element_OphTrConsent_BenefitsAndRisks textarea').autosize();
+	autosize($('.Element_OphTrConsent_BenefitsAndRisks textarea'));
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

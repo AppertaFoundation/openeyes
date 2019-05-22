@@ -14,29 +14,47 @@
  */
 ?>
 
-<?php
-$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id' => 'adminform',
-    'enableAjaxValidation' => false,
-    'htmlOptions' => array(
-        'enctype' => 'multipart/form-data',
-    ),
-    'layoutColumns' => array(
-        'label' => 2,
-        'field' => 5,
-    ),
-)) ?>
+<?=\CHtml::errorSummary(
+  $model,
+  null,
+  null,
+  ["class" => "alert-box alert with-icon"]
+); ?>
 
-<?php echo $form->errorSummary($model) ?>
+<div class="cols-5">
+  <table class="standard cols-full">
+    <colgroup>
+      <col class="cols-3">
+      <col class="cols-5">
+    </colgroup>
+    <tbody>
+        <tr>
+            <td>Name</td>
+            <td class="cols-full">
+                <?=\CHtml::activeTelField(
+                  $model,
+                  'name',
+                  ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Active</td>
+            <td class="cols-full">
+              <?=\CHtml::activeCheckBox(
+                $model,
+                'active',
+                []
+              ); ?>
+            </td>
+        </tr>
+    </tbody>
+  </table>
 
-<?php
-$this->renderPartial('/admin/form_' . get_class($model), array(
-    'model' => $model,
-    'form' => $form,
-    'title' => $title,
-    'procedures' => isset($procedures) ? $procedures : null,
-)) ?>
+  <?= \OEHtml::submitButton() ?>
 
-<?php echo $form->formActions(array('cancel-uri' => isset($cancel_uri) ? $cancel_uri : "")) ?>
+  <?= \OEHtml::cancelButton("Cancel", [
+    'data-uri' => '/OphCiExamination/admin/ClinicOutcomeRoles/index/',
+  ]) ?>
 
-<?php $this->endWidget() ?>
+</div>

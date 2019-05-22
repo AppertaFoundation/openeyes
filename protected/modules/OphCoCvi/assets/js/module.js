@@ -223,7 +223,7 @@ $(document).ready(function() {
 
     });
 
-    $('.autosize').autosize();
+    autosize($('.autosize'));
 
     if($('#createdby_auto_complete').length > 0){
         OpenEyes.UI.AutoCompleteSearch.init({

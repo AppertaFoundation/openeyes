@@ -3,6 +3,10 @@
 /**
  * Created by Mike Smith <mike.smith@camc-ltd.co.uk>.
  */
+
+use OEModule\OphCiExamination\models\OphCiExamination_Event_ElementSet_Assignment;
+use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
+
 class ChangeEventController extends BaseController
 {
     /**
@@ -213,19 +217,27 @@ class ChangeEventController extends BaseController
                 }
 
                 if($episode->save()) {
-                    Audit::add('episode', $action, $data, $log_message = null, $properties);
+                    Audit::add('episode', $action, $data, null, $properties);
 
-                    /*$selected_workflow_step_id =  \Yii::app()->request->getPost('selectedWorkflowStepId');
+                    $selected_workflow_step_id =  \Yii::app()->request->getPost('selectedWorkflowStepId');
+
                     if($selected_workflow_step_id){
-                        $step = \OEModule\OphCiExamination\models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id));
-                        $step->step_id = $selected_workflow_step_id;
+                        $assignment = OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id));
 
-                        if($step->save()) {
-                            $data = 'Changed step to '.\OEModule\OphCiExamination\models\OphCiExamination_ElementSet::model()->findByPk($selected_workflow_step_id)->name;
-                            Yii::app()->session['redirectToStep'] = true;
-                            Audit::add('element set assignment', 'update', $data, $log_message = null, $properties);
+                        if (!$assignment) {
+                            // Create initial workflow assignment if event hasn't already got one
+                            $assignment = new OphCiExamination_Event_ElementSet_Assignment();
+                            $assignment->event_id = $event->id;
+                        }
+
+                        $assignment->step_id = $selected_workflow_step_id;
+                        $assignment->step_completed = 0;
+
+                        if ($assignment->save()) {
+                            $data = 'Changed step to ' . OphCiExamination_ElementSet::model()->findByPk($selected_workflow_step_id)->name;
+                            Audit::add('element set assignment', 'update', $data, null, $properties);
                         }                        
-                    }*/
+                    }
 
                     $event->episode_id = $episode->id;
                     $event->last_modified_user_id = Yii::app()->user->id;
