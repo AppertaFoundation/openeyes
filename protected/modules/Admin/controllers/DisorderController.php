@@ -23,6 +23,7 @@ class DisorderController extends BaseAdminController
             array('module' => 'OphTrOperationnote',
                 'model' => 'Disorder'));
         $query = \Yii::app()->request->getQuery('q');
+        $specialty = \Yii::app()->request->getQuery('specialty');
         $criteria = new \CDbCriteria();
         $criteria->order = 'fully_specified_name';
         if ($query) {
@@ -35,6 +36,11 @@ class DisorderController extends BaseAdminController
                     $criteria->addSearchCondition('lower(aliases)', strtolower($query) , true, 'OR');
                 }
         }
+
+        if ($specialty) {
+            $criteria->compare('specialty_id', $specialty);
+        }
+
         $this->render('/list_disorder', array(
             'pagination' => $this->initPagination(Disorder::model(), $criteria),
             'model_list' => Disorder::model()->findAll($criteria),
