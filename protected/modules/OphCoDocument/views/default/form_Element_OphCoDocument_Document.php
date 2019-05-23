@@ -91,9 +91,8 @@
         >
             <div>
                 <label>Rotate Single Image:</label>
-                <input type="button" class="btnRotate" value="90" onClick="rotateImage(this.value, 'single');" />
-                <input type="button" class="btnRotate" value="-90" onClick="rotateImage(this.value, 'single');" />
-                <input type="button" class="btnRotate" value="180" onClick="rotateImage(this.value, 'single');" />
+                <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(90, 'single');"></i>
+                <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(-90, 'single');" style="transform: scale(-1, 1);"></i>
                 <input type="hidden" value="" name="single_document_rotate" id="single_document_rotate">
             </div>
             <table class="last-left cols-full">
@@ -153,9 +152,8 @@
                     <td>
                         <div>
                             <label>Rotate Right Image:</label>
-                            <input type="button" class="btnRotate" value="90" onClick="rotateImage(this.value, 'right');" />
-                            <input type="button" class="btnRotate" value="-90" onClick="rotateImage(this.value, 'right');" />
-                            <input type="button" class="btnRotate" value="180" onClick="rotateImage(this.value, 'right');" />
+                            <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(90, 'right');"></i>
+                            <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(-90, 'right');" style="transform: scale(-1, 1);"></i>
                             <input type="hidden" value="" name="right_document_rotate" id="right_document_rotate">
                         </div>
                         <div class="upload-box"
@@ -185,9 +183,8 @@
                     <td>
                         <div>
                             <label>Rotate Left Image:</label>
-                            <input type="button" class="btnRotate" value="90" onClick="rotateImage(this.value, 'left');" />
-                            <input type="button" class="btnRotate" value="-90" onClick="rotateImage(this.value, 'left');" />
-                            <input type="button" class="btnRotate" value="180" onClick="rotateImage(this.value, 'left');" />
+                            <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(90, 'left');"></i>
+                            <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(-90, 'left');" style="transform: scale(-1, 1);"></i>
                             <input type="hidden" value="" name="left_document_rotate" id="left_document_rotate">
                         </div>
                         <div class="upload-box"
@@ -251,14 +248,11 @@
 
     <script>
         function rotateImage(degree, type) {
-            if (type == 'single') {
-                var imageId = $('#Element_OphCoDocument_Document_single_document_id').val();
-            } else if (type == 'left') {
-                var imageId = $('#Element_OphCoDocument_Document_left_document_id').val();
-            } else if (type == 'right') {
-                var imageId = $('#Element_OphCoDocument_Document_right_document_id').val();
-            }
-            $('#ophco-image-container-'+imageId).animate({  transform: degree }, {
+            var document_rotate = $('#'+type+'_document_rotate').val();
+            degree = Number(document_rotate)+Number(degree);
+            var imageId = $('#Element_OphCoDocument_Document_'+type+'_document_id').val();
+            var false_degree = -1*degree;
+            $('#ophco-image-container-'+imageId).animate({  transform: false_degree }, {
                 step: function(now,fx) {
                     $(this).css({
                         '-webkit-transform':'rotate('+now+'deg)',
