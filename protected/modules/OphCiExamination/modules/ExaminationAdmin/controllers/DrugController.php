@@ -20,9 +20,9 @@ class DrugController extends \ModuleAdminController
 	public function actionDilationDrugs()
 	{
 		$this->group = 'Examination';
-		$assetManager = Yii::app()->getAssetManager();
-		$assetManager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
-		$assetManager->registerScriptFile('/js/oeadmin/list.js');
+		$asset_manager = Yii::app()->getAssetManager();
+		$asset_manager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
+		$asset_manager->registerScriptFile('/js/oeadmin/list.js');
 
 		$this->render('/drug/index', [
 		  'model' => OphCiExamination_Dilation_Drugs::model(),
