@@ -31,7 +31,7 @@ return [
         'ophciexamination_visualacuity_correspondence_unit' => 'Snellen Metre',
 
         'reports' => [
-            'Ready for second eye (unbooked]' => '/OphCiExamination/report/readyForSecondEyeUnbooked',
+            'Ready for second eye (unbooked)' => '/OphCiExamination/report/readyForSecondEyeUnbooked',
         ],
     ],
 
