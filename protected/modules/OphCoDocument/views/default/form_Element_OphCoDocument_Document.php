@@ -250,14 +250,14 @@
         function rotateImage(degree, type) {
             var document_rotate = $('#'+type+'_document_rotate').val();
             degree = Number(document_rotate)+Number(degree);
-            var imageId = $('#Element_OphCoDocument_Document_'+type+'_document_id').val();
-            var false_degree = -1*degree;
-            $('#ophco-image-container-'+imageId).animate({  transform: false_degree }, {
-                step: function(now,fx) {
+            var image_id = $('#Element_OphCoDocument_Document_'+type+'_document_id').val();
+            var css_degree = -1*degree;
+            $('#ophco-image-container-'+image_id+' img').animate({  transform: css_degree }, {
+                step: function(deg,fx) {
                     $(this).css({
-                        '-webkit-transform':'rotate('+now+'deg)',
-                        '-moz-transform':'rotate('+now+'deg)',
-                        'transform':'rotate('+now+'deg)'
+                        '-webkit-transform':'rotate('+deg+'deg)',
+                        '-moz-transform':'rotate('+deg+'deg)',
+                        'transform':'rotate('+deg+'deg)'
                     });
                     $('#'+type+'_document_rotate').val(degree);
                 }
