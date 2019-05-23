@@ -51,10 +51,10 @@
 
       $(this.options.itemSets).each(function (index, itemSet) {
         let $td = $('<td />').appendTo(dialog.$tr);
-        let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
+        let $listContainer = $('<div />', {class: 'lists-layout'}).appendTo($td);
         let $list = dialog.generateItemList(itemSet);
         $list.addClass(itemSet.options.class);
-        let $listDiv = $('<div />').appendTo($listContainer);
+        let $listDiv = $('<div />', {class: 'list-wrap'}).appendTo($listContainer);
 
         // add the search field only to the common_drugs section
         if (itemSet.options.class !== null && itemSet.options.class === "js-drug-list") {
@@ -67,6 +67,7 @@
             $searchInput.on('keyup', function () {
                 dialog.runItemSearch($(this).val());
             });
+            $listDiv.addClass('has-filter');
         }
 
         $list.appendTo($listDiv);
@@ -76,15 +77,16 @@
 
   PrescriptionDialog.prototype.generateSearch = function () {
     let $td = $('<td />');
-    this.searchWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
+    this.searchWrapper = $('<div />', {class: 'lists-layout'}).appendTo($td);
     $td.prependTo(this.$tr);
 
-    let $filterDiv = $('<div />', {class: 'has-filter'}).appendTo(this.searchWrapper);
+    let $filterDiv = $('<div />', {class: 'list-wrap'}).appendTo(this.searchWrapper);
 
     this.noSearchResultsWrapper = $('<span />').text('No results found').hide();
     this.noSearchResultsWrapper.insertAfter(this.popup.find('.js-drug-list'));
 
     this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
+    this.searchResultList.hide();
     this.searchResultList.insertAfter(this.popup.find('.js-drug-list'));
 
     let $drugTypes = $('<ul >', {class: 'add-options js-drug-types'});
