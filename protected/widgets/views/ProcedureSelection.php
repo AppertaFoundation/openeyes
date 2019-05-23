@@ -48,18 +48,18 @@
                 <tr class="item">
                     <td class="procedure">
                         <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]',
-                            $procedure->id,
-                            ['class' => 'js-procedure']); ?>
+                                $procedure->id,
+                                ['class' => 'js-procedure']); ?>
                         </span>
-                        <span class="value"><?=$procedure->term; ?></span>
+                        <span class="value"><?= $procedure->term; ?></span>
                     </td>
 
                     <?php if ($durations) { ?>
-                    <td class="duration">
+                        <td class="duration">
                         <span data-default-duration="<?= $procedure->default_duration ?>">
                         <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
                         </span> mins
-                    </td>
+                        </td>
                     <?php } ?>
                     <td>
                         <span class="removeProcedure">
@@ -424,25 +424,23 @@
             },
             searchOptions: {
                 searchSource: '/procedure/autocomplete',
-                resultsFilter: function(results) {
+                resultsFilter: function (results) {
                     let items = [];
                     $(results).each(function (index, result) {
-                        let procedureFound = false;
-                        $('#procedureList_<?=$identifier ?: ''; ?>').find('span:contains(' + result + ')').filter(function () {
-                            if ($(this).text() === result) {
-                                procedureFound = true;
-                            }
+                        let procedureMatchArray = $('#procedureList_<?=$identifier ?: ''; ?>')
+                            .find('span:contains(' + result + ')').filter(function () {
+                                return $(this).text() === result;
+                            });
 
-                            if (!procedureFound) {
-                                items.push(result);
-                            }
-                        });
+                        if (procedureMatchArray.length === 0) {
+                            items.push(result);
+                        }
                     });
                     return items;
                 }
             }
-        });
 
+        });
         initialiseProcedureAdder();
     });
 </script>
