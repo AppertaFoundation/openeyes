@@ -23,7 +23,7 @@ INSERT INTO medication (source_type,source_subtype,preferred_term,preferred_code
 
     LEFT JOIN {prefix}vmp_drug_form dft ON dft.vpid = vmp.vpid
     LEFT JOIN {prefix}lookup_form fhit ON fhit.cd = dft.formcd
-    LEFT JOIN medication_form mf ON mf.term = fhit.desc AND mf.source_type = 'DM+D'
+    LEFT JOIN medication_form mf ON mf.term  COLLATE utf8_general_ci = fhit.desc AND mf.source_type = 'DM+D'
 
     LEFT JOIN {prefix}vmp_drug_route drt ON drt.vpid = vmp.vpid
     LEFT JOIN {prefix}lookup_route lr ON lr.cd = drt.routecd

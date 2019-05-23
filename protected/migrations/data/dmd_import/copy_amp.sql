@@ -22,5 +22,5 @@ FROM
 
     LEFT JOIN {prefix}vmp_drug_form dft ON dft.vpid = amp.vpid
     LEFT JOIN {prefix}lookup_form fhit ON fhit.cd = dft.formcd
-    LEFT JOIN medication_form mf ON mf.term = fhit.desc AND mf.source_type = 'DM+D'
+    LEFT JOIN medication_form mf ON mf.term COLLATE utf8_general_ci = fhit.desc AND mf.source_type = 'DM+D'
 ;
