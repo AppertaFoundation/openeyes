@@ -134,9 +134,6 @@ class PracticeController extends BaseController
     public function performPracticeSave(Contact $contact, Practice $practice, Address $address, $isAjax = false)
     {
         $action = $practice->isNewRecord ? 'add' : 'edit';
-        if (!$practice->code) {
-            $practice->code = 'CERA'; // This will be the same for ALL practices added through the frontend. But only change it if it isn't already set!
-        }
         $transaction = Yii::app()->db->beginTransaction();
         try {
             if ($contact->save()) {
