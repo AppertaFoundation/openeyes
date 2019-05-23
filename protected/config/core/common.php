@@ -336,7 +336,6 @@ return array(
                     'uri' => 'report',
                     'position' => 3,
                     'restricted' => array('Report'),
-                    'userrule' => 'isSurgeon',
                 ),
                 'nodexport' => array(
                     'title' => 'NOD Export',
