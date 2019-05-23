@@ -425,13 +425,20 @@
             searchOptions: {
                 searchSource: '/procedure/autocomplete',
                 resultsFilter: function(results) {
-                    let items = '';
+                    let items = [];
                     $(results).each(function (index, result) {
-                        if($('#procedureList_<?=$identifier ?: ''; ?>').find('span:contains('+result+')').length === 0){
-                            items += '<li data-label="'+result+'"><span class="auto-width">'+result+'</span></li>'
-                        }
+                        let procedureFound = false;
+                        $('#procedureList_<?=$identifier ?: ''; ?>').find('span:contains(' + result + ')').filter(function () {
+                            if ($(this).text() === result) {
+                                procedureFound = true;
+                            }
+
+                            if (!procedureFound) {
+                                items.push(result);
+                            }
+                        });
                     });
-                    return $('ul.js-search-results').append(items);
+                    return items;
                 }
             }
         });
