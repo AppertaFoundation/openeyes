@@ -15,7 +15,7 @@
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property DrugDuration $duration
+ * @property MedicationDuration $duration
  * @property MedicationFrequency $frequency
  * @property MedicationSetItem $medicationSetItem
  * @property User $createdUser
@@ -58,7 +58,7 @@ class MedicationSetItemTaper extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'duration' => array(self::BELONGS_TO, DrugDuration::class, 'duration_id'),
+			'duration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
 			'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
 			'medicationSetItem' => array(self::BELONGS_TO, MedicationSetItem::class, 'medication_set_item_id'),
 			'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),

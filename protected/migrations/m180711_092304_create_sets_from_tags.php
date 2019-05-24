@@ -31,7 +31,7 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
                 if($drugTags){
                     foreach($drugTags as $drugTag){
                         $ref_medication_id = Yii::app()->db
-                        ->createCommand("SELECT id FROM medication WHERE preferred_code = '".$drugTag['drug_id']."_drug' ")
+                        ->createCommand("SELECT id FROM medication WHERE source_old_id = '".$drugTag['drug_id']."' AND source_subtype = 'drug'")
                         ->queryRow();
 
                         if($ref_medication_id['id']){
@@ -49,7 +49,7 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
                 if($medicationDrugTags){
                     foreach($medicationDrugTags as $medicationDrugTag){
                         $ref_medication_id = Yii::app()->db
-                        ->createCommand("SELECT id FROM medication WHERE preferred_code = '".$medicationDrugTag['medication_drug_id']."_medication_drug' ")
+                        ->createCommand("SELECT id FROM medication WHERE source_old_id = '".$medicationDrugTag['medication_drug_id']."' AND source_subtype='medication_drug';")
                         ->queryRow();
                        
                         if($ref_medication_id['id']){

@@ -20,45 +20,48 @@
 
     Util.inherits(EventEmitter, AdderDialog);
 
-  /**
-   * The default AdderDialog options. Custom options will be merged with these.
-   * @name OpenEyes.UI.AdderDialog#_defaultOptions
-   * @property {OpenEyes.UI.AdderDialog.ItemSet[]} [itemSets=null] - The lists of items that the user can select from
-   * @property {object} [openButton=null] - The DOM handle for the button used to open the popup
-   * @property {Function} [onOpen=null] - A callback to be called when the popup is opened
-   * @property {Function} [onClose=null] - A callback to be called when the popup is closed
-   * @property {Function} [onSelect=null] - A callback to be called when an item is selected
-   * @property {Function} [onReturn=null] - A callback to be called when the add button is clicked
-   * @property {boolean} [deselectOnReturn=true] - Whether all items should be deselected when the popup is added
-   * @property {string} [id=null] - The ID of the popup div
-   * @property {string} [popupClass='oe-add-select-search auto-width'] - The classes to use for the popup
-   * @property {string} [liClass='auto-width'] - The class to use for the items
-   * @property {boolean} [createBlackoutDiv] - Whether a blackout div should be created, closing the popup if the user clicks anywhere else
-   * @private
-   */
-  AdderDialog._defaultOptions = {
-      itemSets: [],
-      openButton: null,
-      onOpen: null,
-      onClose: null,
-      onSelect: null,
-      onReturn: null,
-      returnOnSelect: false,
-      deselectOnReturn: true,
-      id: null,
-      popupClass: 'oe-add-select-search auto-width',
-      liClass: 'auto-width',
-      searchOptions: null,
-      width: null,
-      createBlackoutDiv: true,
-      enableCustomSearchEntries: false,
-      searchAsTypedPrefix: 'As typed: ',
-      searchAsTypedItemProperties: {},
+    /**
+     * The default AdderDialog options. Custom options will be merged with these.
+     * @name OpenEyes.UI.AdderDialog#_defaultOptions
+     * @property {OpenEyes.UI.AdderDialog.ItemSet[]} [itemSets=null] - The lists of items that the user can select from
+     * @property {object} [openButton=null] - The DOM handle for the button used to open the popup
+     * @property {Function} [onOpen=null] - A callback to be called when the popup is opened
+     * @property {Function} [onClose=null] - A callback to be called when the popup is closed
+     * @property {Function} [onSelect=null] - A callback to be called when an item is selected
+     * @property {Function} [onReturn=null] - A callback to be called when the add button is clicked
+     * @property {boolean} [deselectOnReturn=true] - Whether all items should be deselected when the popup is added
+     * @property {string} [id=null] - The ID of the popup div
+     * @property {string} [popupClass='oe-add-select-search auto-width'] - The classes to use for the popup
+     * @property {string} [liClass='auto-width'] - The class to use for the items
+     * @property {boolean} [createBlackoutDiv] - Whether a blackout div should be created, closing the popup if the user clicks anywhere else
+     * @private
+     */
+    AdderDialog._defaultOptions = {
+        itemSets: [],
+        openButton: null,
+        onOpen: null,
+        onClose: null,
+        onSelect: null,
+        onReturn: null,
+        returnOnSelect: false,
+        deselectOnReturn: true,
+        id: null,
+        popupClass: 'oe-add-select-search auto-width',
+        liClass: 'auto-width',
+        searchOptions: null,
+        width: null,
+        createBlackoutDiv: true,
+        enableCustomSearchEntries: false,
+        searchAsTypedPrefix: 'As typed: ',
+        searchAsTypedItemProperties: {},
 
-      searchFilterEnabled: false,
-      searchFilterLabel: 'Include Branded',
-      searchFilterURLparam: 'include_branded'
-  };
+        filter: false,
+        filterDataId: "",
+
+        booleanSearchFilterEnabled: false,
+        booleanSearchFilterLabel: '',
+        booleanSearchFilterURLparam: ''
+    };
 
     /**
      * Creates and stores the adder dialog container
@@ -172,25 +175,42 @@
             placeholder: 'search',
             type: 'text'
         });
+
+        this.searchingSpinnerWrapper = $('<div />', {
+            class: 'doing-search',
+            style: 'display:none'
+        });
+
+        $('<i />', {
+            class: 'spinner as-icon',
+        }).appendTo(this.searchingSpinnerWrapper);
+        this.searchingSpinnerWrapper.append(document.createTextNode("Searching ..."));
+
         let $filterDiv = $('<div />', {class: 'has-filter'}).appendTo(this.searchWrapper);
         $searchInput.appendTo($filterDiv);
+        this.searchingSpinnerWrapper.appendTo($filterDiv);
 
-        var timeout = null;
         $searchInput.on('keyup', function () {
-          var term = $(this).val();
-          if(timeout) {
-            clearTimeout(timeout);
-            timeout = null;
-          }
-          timeout = setTimeout(function(){dialog.runItemSearch(term);
-          }, 500);
+            dialog.runItemSearch($(this).val());
         });
+
+        if (dialog.options.filter) {
+            let filterContainer = dialog.popup.find('ul[data-id="' + this.options.filterDataId + '"]');
+            filterContainer.on('click', 'li', function () {
+                let filterValue = false;
+                if (!$(this).hasClass('selected')) {
+                    filterContainer.find('li.selected').not(this).removeClass('selected');
+                    filterValue = $(this).data('id');
+                }
+                dialog.runItemSearch(dialog.popup.find('input.search').val(), filterValue);
+            });
+        }
 
         this.noSearchResultsWrapper = $('<span />').text('No results found');
         this.noSearchResultsWrapper.appendTo($filterDiv);
 
-        if(this.options.searchFilterEnabled) {
-            var $searchFilter = $('<div><label class="inline"><input class="js-searchfilter-check" type="checkbox" /> '+this.options.searchFilterLabel+'</label> </div>');
+        if(dialog.options.booleanSearchFilterEnabled) {
+            var $searchFilter = $('<div><label class="inline"><input class="js-searchfilter-check" type="checkbox" /> '+this.options.booleanSearchFilterLabel+'</label> </div>');
             $searchFilter.appendTo($filterDiv);
             this.searchWrapper.find(".js-searchfilter-check").on("click", function(e){
                 var text = $searchInput.val();
@@ -459,24 +479,32 @@
      * Performs a search using the given text
      * @param {string} text The term to search with
      */
-    AdderDialog.prototype.runItemSearch = function (text) {
+    AdderDialog.prototype.runItemSearch = function (text, filterValue) {
         let dialog = this;
         if (this.searchRequest !== null) {
             this.searchRequest.abort();
         }
+        if (typeof filterValue == "undefined" && this.options.filter) {
+            let selectedFilter = this.popup.find('ul[data-id="' + this.options.filterDataId + '"]').find('li.selected');
+            filterValue = selectedFilter.data('id');
+        }
+
+        dialog.searchingSpinnerWrapper.show();
 
         var ajaxOptions = {
             term: text,
+            filter: filterValue,
             code: this.options.searchOptions.code,
             ajax: 'ajax'
         };
 
-        if(this.options.searchFilterEnabled) {
+        if(this.options.booleanSearchFilterEnabled) {
             var filter_on = this.searchWrapper.find(".js-searchfilter-check").prop("checked");
-            ajaxOptions[this.options.searchFilterURLparam] = filter_on ? 1 : 0;
+            ajaxOptions[this.options.booleanSearchFilterURLparam] = filter_on ? 1 : 0;
         }
 
-        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, ajaxOptions, function (results) {
+        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource,
+            ajaxOptions, function (results) {
             dialog.searchRequest = null;
             let no_data = !$(results).length;
 
@@ -503,6 +531,7 @@
             } else {
                 dialog.searchResultList.toggle(!no_data);
             }
+            dialog.searchingSpinnerWrapper.hide();
         });
     };
 

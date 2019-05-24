@@ -205,10 +205,18 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 			?>
         </td>
         <td>
-        <span class="icon-switch js-btn-prescribe <?php if(!$prescribe_access): ?>js-readonly<?php endif; ?>">
-            <i  class="oe-i drug-rx js-prescribe js-has-tooltip" data-tooltip-content="Prescribe<?php if(!$prescribe_access): ?> (not allowed)<?php endif; ?>" <?php if($entry->prescribe){ echo 'style="opacity: 1"'; } ?>></i>
-            <input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>" />
-        </span>
+            <?php if($prescribe_access): ?>
+                <label class="toggle-switch">
+                    <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if($entry->prescribe){ echo "checked"; } ?> />
+                    <span class="toggle-btn js-btn-prescribe"></span>
+                </label>
+            <?php else: ?>
+                <i class="oe-i no-permissions medium-icon js-has-tooltip" data-tooltip-content="You do not have permissions"></i>
+                <input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>" />
+            <?php endif; ?>
+        </td>
+        <td>
+
 			<?php if ($removable) { ?>
                 <i class="oe-i trash js-remove"></i>
 			<?php } ?>

@@ -21,6 +21,7 @@ class CommonSubspecialtyMedicationsAdminController extends BaseAdminController
 
     public function actionList()
     {
+
         $admin = new Admin(MedicationSet::model(), $this);
         $admin->setListFields(array(
             'name',

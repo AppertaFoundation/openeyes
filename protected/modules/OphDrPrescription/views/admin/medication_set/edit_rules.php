@@ -1,8 +1,8 @@
 <?php
-	/** @var MedicationSet $medication_set */
-	$rowkey = 0;
-	$sites = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name]; }, Site::model()->findAll());
-	$subspecialties = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name]; }, Subspecialty::model()->findAll());
+/** @var MedicationSet $medication_set */
+$rowkey = 0;
+$sites = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name]; }, Site::model()->findAll());
+$subspecialties = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name]; }, Subspecialty::model()->findAll());
 ?>
 <h3>Usage Rules</h3>
 <script id="rule_row_template" type="x-tmpl-mustache">
@@ -32,77 +32,77 @@
     });
 </script>
 <table class="standard" id="rule_tbl">
-	<thead>
-	<tr>
-		<th>Site</th>
-		<th>Subspecialty</th>
-		<th>Usage Code</th>
-		<th width="5%">Action</th>
-	</tr>
-	</thead>
-	<tbody>
-		<?php foreach ($medication_set->medicationSetRules as $rule): ?>
-		<tr data-key="<?=$rowkey++?>">
-			<td>
-				<input type="hidden" name="MedicationSet[medicationSetRules][id][]" value="<?=$rule->id?>" />
-				<input type="hidden" name="MedicationSet[medicationSetRules][site_id][]" value="<?=$rule->site_id?>" />
+    <thead>
+    <tr>
+        <th>Site</th>
+        <th>Subspecialty</th>
+        <th>Usage Code</th>
+        <th width="5%">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+	<?php foreach ($medication_set->medicationSetRules as $rule): ?>
+        <tr data-key="<?=$rowkey++?>">
+            <td>
+                <input type="hidden" name="MedicationSet[medicationSetRules][id][]" value="<?=$rule->id?>" />
+                <input type="hidden" name="MedicationSet[medicationSetRules][site_id][]" value="<?=$rule->site_id?>" />
 				<?=($rule->site_id ? CHtml::encode($rule->site->name) : "")?>
-			</td>
-			<td>
-				<input type="hidden" name="MedicationSet[medicationSetRules][subspecialty_id][]" value="<?=$rule->subspecialty_id?>" />
+            </td>
+            <td>
+                <input type="hidden" name="MedicationSet[medicationSetRules][subspecialty_id][]" value="<?=$rule->subspecialty_id?>" />
 				<?=($rule->subspecialty_id ? CHtml::encode($rule->subspecialty->name) : "")?>
-			</td>
-			<td>
+            </td>
+            <td>
 				<?php echo CHtml::textField('MedicationSet[medicationSetRules][usage_code][]', $rule->usage_code); ?>
-			</td>
+            </td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
             </td>
-		</tr>
-		<?php endforeach; ?>
-	</tbody>
-    <tfoot class="pagination-container">
-        <tr>
-            <td colspan="4">
-                <div class="flex-layout flex-right">
-                    <button class="button hint green js-add-set" type="button"><i class="oe-i plus pro-theme"></i></button>
-                    <script type="text/javascript">
-                        new OpenEyes.UI.AdderDialog({
-                            openButton: $('.js-add-set'),
-                            itemSets: [
-                                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($sites) ?>, {'id': 'site', 'multiSelect': false, header: "Site"}),
-                                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($subspecialties) ?>, {'id': 'subspecialty','multiSelect': false, header: "Subspecialty"}),
-                            ],
-                            onReturn: function (adderDialog, selectedItems) {
-
-                                var selObj = {};
-
-                                $.each(selectedItems, function(i,e){
-                                    selObj[e.itemSet.options.id] = {
-                                        id: e.id,
-                                        label: e.label
-                                    };
-                                });
-
-                                var lastkey = $("#rule_tbl > tbody > tr:last").attr("data-key");
-                                if(isNaN(lastkey)) {
-                                    lastkey = 0;
-                                }
-                                var key = parseInt(lastkey) + 1;
-                                var template = $('#rule_row_template').html();
-                                Mustache.parse(template);
-
-                                selObj.key = key;
-
-                                var rendered = Mustache.render(template, selObj);
-                                $("#rule_tbl > tbody").append(rendered);
-                                return true;
-                            },
-                            enableCustomSearchEntries: true,
-                        });
-                    </script>
-                </div>
-            </td>
         </tr>
+	<?php endforeach; ?>
+    </tbody>
+    <tfoot class="pagination-container">
+    <tr>
+        <td colspan="4">
+            <div class="flex-layout flex-right">
+                <button class="button hint green js-add-set" type="button"><i class="oe-i plus pro-theme"></i></button>
+                <script type="text/javascript">
+                    new OpenEyes.UI.AdderDialog({
+                        openButton: $('.js-add-set'),
+                        itemSets: [
+                            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($sites) ?>, {'id': 'site', 'multiSelect': false, header: "Site"}),
+                            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($subspecialties) ?>, {'id': 'subspecialty','multiSelect': false, header: "Subspecialty"}),
+                        ],
+                        onReturn: function (adderDialog, selectedItems) {
+
+                            var selObj = {};
+
+                            $.each(selectedItems, function(i,e){
+                                selObj[e.itemSet.options.id] = {
+                                    id: e.id,
+                                    label: e.label
+                                };
+                            });
+
+                            var lastkey = $("#rule_tbl > tbody > tr:last").attr("data-key");
+                            if(isNaN(lastkey)) {
+                                lastkey = 0;
+                            }
+                            var key = parseInt(lastkey) + 1;
+                            var template = $('#rule_row_template').html();
+                            Mustache.parse(template);
+
+                            selObj.key = key;
+
+                            var rendered = Mustache.render(template, selObj);
+                            $("#rule_tbl > tbody").append(rendered);
+                            return true;
+                        },
+                        enableCustomSearchEntries: true,
+                    });
+                </script>
+            </div>
+        </td>
+    </tr>
     </tfoot>
 </table>

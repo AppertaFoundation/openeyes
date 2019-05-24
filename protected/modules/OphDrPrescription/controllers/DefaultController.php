@@ -555,7 +555,7 @@ class DefaultController extends BaseEventTypeController
 
     public function checkEditAccess()
     {
-        return $this->checkAccess('OprnEditPrescription', $this->firm, $this->event);
+        return $this->checkAccess('OprnEditPrescription', $this->event);
     }
 
     /**

@@ -253,23 +253,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
       $row.on("click", ".js-btn-prescribe", function () {
-        var $btn = $(this);
-        if($btn.hasClass("js-readonly")) {
-            return false;
-        }
-        var $input = $btn.find("input");
-        var $icon = $btn.find("i");
-
-        if($input.val() == "1") {
-            $input.val(0);
-            $icon.css("opacity", "");
+        var $input = $(this).closest(".toggle-switch").find("input");
+        var checked = !$input.prop("checked");
+        if(!checked) {
             $row.find(".js-disppense-location option").empty();
             $row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
             $row.find(".js-add-taper").hide();
         }
         else {
-            $input.val(1);
-            $icon.css("opacity", 1);
             $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
         }
       });
@@ -432,7 +423,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
 
     HistoryMedicationsController.prototype.getRowData = function($row, old_values)
-    { console.log("gettin rowdata");
+    {
         var rc = $row.attr("data-key");
         var obj = {};
         $.each(this.fields, function(i, field){
@@ -643,7 +634,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $row.appendTo($target);
         var data = this.getRowData($origin, old_values);
         data.usage_type = $target.attr("data-usage-type");
-        data.locked = 1;
+
+        /*
+        when a drug that comes from history is missing the values that are required for prescription
+        the row should be editable
+        currently required fields: 'dose, route_id, frequency_id, dose_unit_term'
+         */
+        if(data.dose != "" && data.route_id != "" && data.frequency_id != "" && data.dose_unit_term != "") {
+            data.locked = 1;
+        }
 
         this.boundController.setRowData($row, data);
         this.boundController.initialiseRow($row);

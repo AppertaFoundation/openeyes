@@ -9,7 +9,7 @@ SELECT
     WHEN 'VMP' THEN @vmp_id
     WHEN 'VTM' THEN @vtm_id
   END AS setId,
-  mf.id AS formId,
+  NULL AS formId,
   mr.id AS RouteId
 INTO OUTFILE '/tmp/medication_set.csv'
 FROM medication rm
