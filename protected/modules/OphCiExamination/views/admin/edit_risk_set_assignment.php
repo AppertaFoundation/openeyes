@@ -3,7 +3,7 @@
     $active_sets = array_map(function ($e) { return $e->id; }, $model->medicationSets);
 ?>
 
-<h3>Related medication sets (check all that apply):</h3>
+<h3>Related medication sets</h3>
 <table id="medication-sets-list">
 	<tbody>
 	<?php foreach ($model->medicationSets as $set): ?>
