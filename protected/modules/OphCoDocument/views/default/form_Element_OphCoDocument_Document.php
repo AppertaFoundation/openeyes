@@ -262,6 +262,10 @@
                     $('#'+type+'_document_rotate').val(degree);
                 }
             });
+            $('#ophco-image-container-'+image_id).css('height', '400px');
+            $('#ophco-image-container-'+image_id).css('width', '400px');
+            $('#ophco-image-container-'+image_id+' img').css('height', '100%');
+            $('#ophco-image-container-'+image_id+' img').css('width', '100%');
         }
     </script>
 
