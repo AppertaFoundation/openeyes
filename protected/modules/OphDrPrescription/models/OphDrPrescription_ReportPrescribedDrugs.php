@@ -60,7 +60,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->from('episode')
             ->join('event', 'episode.id = event.episode_id AND event.deleted = 0')
             ->join('et_ophdrprescription_details d', 'event.id = d.event_id')
-            ->join('event_medication_uses emu', 'emu.event_id = d.event_id AND emu.usage_type = \'OphDrPrescription\'')
+            ->join('event_medication_use emu', 'emu.event_id = d.event_id AND emu.usage_type = \'OphDrPrescription\'')
             ->join('medication', 'emu.medication_id = medication.id')
             ->join('patient', 'episode.patient_id = patient.id')
             ->join('contact', 'patient.contact_id = contact.id')
