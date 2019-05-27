@@ -147,4 +147,32 @@ class RisksAdminController extends \ModuleAdminController
 		$model->active = $data['active'];
 		$model->validate();
 	}
+
+    public function actionSearch()
+    {
+        if (\Yii::app()->request->isAjaxRequest) {
+            $criteria = new \CDbCriteria();
+            if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
+                $criteria->addCondition(array('LOWER(name) LIKE :term'),
+                    'OR');
+                $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
+            }
+
+            $criteria->order = 'name';
+            $criteria->select = 'id, name';
+            $criteria->params = $params;
+
+            $medicationsets = \MedicationSet::model()->findAll($criteria);
+
+            $return = array();
+            foreach ($medicationsets as $medicationset) {
+                $return[] = array(
+                    'label' => $medicationset->name,
+                    'value' => $medicationset->name,
+                    'id' => $medicationset->id,
+                );
+            }
+            echo \CJSON::encode($return);
+        }
+    }
 }
