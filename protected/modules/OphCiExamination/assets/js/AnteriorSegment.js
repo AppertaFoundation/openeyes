@@ -343,13 +343,15 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         }
 
         if (deletedDoodleClass === 'CornealGraft') {
-            let individualSutures = this.primaryDrawing.allDoodlesOfClass("CornealSuture");
-            for (let i = 0; i < individualSutures.length; i++) {
-                let individualSuture = individualSutures[i];
-                if (individualSuture.cornealGraft && !this.primaryDrawing.doodleOfId(individualSutures[i].cornealGraft.id)) {
-                    individualSuture.cornealGraft = null;
-                    individualSuture.setParameterFromString('originX', '0', true);
-                    individualSuture.setParameterFromString('originY', '0', true);
+          let individualSutures = this.primaryDrawing.allDoodlesOfClass("CornealSuture");
+          let continuousSutures = this.primaryDrawing.allDoodlesOfClass("ContinuousCornealSuture");
+          let sutures = individualSutures.concat(continuousSutures);
+          for (let i = 0; i < sutures.length; i++) {
+                let suture = sutures[i];
+                if (suture.cornealGraft && !this.primaryDrawing.doodleOfId(suture.cornealGraft.id)) {
+                  suture.cornealGraft = null;
+                  suture.setParameterFromString('originX', '0', true);
+                  suture.setParameterFromString('originY', '0', true);
                 }
             }
         }
