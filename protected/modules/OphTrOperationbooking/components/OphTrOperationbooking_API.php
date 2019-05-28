@@ -181,7 +181,7 @@ class OphTrOperationbooking_API extends BaseAPI
 
             $operation->status_id = $status->id;
 
-            if($op_status['Completed'] == $status->id){
+            if($op_status['Completed'] === $status->id){
                 $operation->operation_completion_date = date('Y:m:d H:i:s');
             }
 
