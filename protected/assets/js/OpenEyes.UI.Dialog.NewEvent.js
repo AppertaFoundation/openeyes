@@ -506,12 +506,12 @@
                     eventId: OE_event_id,
                     patientId: self.options.patientId,
                     selectedContextId: selectedContextItem.data('context-id'),
-                    selectedSubspecialtyId: selectedSubspecialtyItem.data('service-id'),
+                    selected_firm_id: selectedSubspecialtyItem.data('service-id'),
                     selectedWorkflowStepId: selectedWorkflowStepItem.data('workflow-id')
                 };
                 
                 if(newSubspecialty.length !== 0){
-                    postData.selectedSubspecialtyId = newSubspecialty.data('service-id');
+                    postData.selected_firm_id = newSubspecialty.data('service-id');
                 }
                 $('nav.event-header').append($('<div>', {"class": 'spinner-loader'}).append($('<i>', {"class": "spinner"})));
 
