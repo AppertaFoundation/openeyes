@@ -436,6 +436,8 @@ class OphTrOperationbooking_API extends BaseAPI
                                  'general_anaesthetic',
                                  'theatre_id',
                                  'default_admission_time',
+                                 'max_procedures',
+                                 'max_complex_bookings',
                              ) as $attribute) {
                         $new_session->$attribute = $sequence->$attribute;
                     }

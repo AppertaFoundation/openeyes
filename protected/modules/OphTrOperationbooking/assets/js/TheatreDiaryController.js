@@ -369,10 +369,7 @@ $(document).ready(function() {
 					checkedOrOne($('#paediatric_'+session_id)) ? $('#paediatric_icon_'+session_id).show() : $('#paediatric_icon_'+session_id).hide();
 
 					const $inputFieldForMaxProcedures = $('#max_procedures_'+session_id);
-					let maxProcedures = $inputFieldForMaxProcedures.val();
-					if(!maxProcedures) {
-						maxProcedures = $inputFieldForMaxProcedures.data('sequence-level-max-procedures');
-					}
+					const maxProcedures = $inputFieldForMaxProcedures.val();
 					const $procedureCount = $('#procedure_count_'+session_id);
 					const $maxProceduresIcon = $('#max_procedures_icon_'+session_id);
 					if (maxProcedures) {
@@ -402,10 +399,7 @@ $(document).ready(function() {
 					}
 
 					const $inputFieldForMaxComplexBookings = $('#max_complex_bookings_'+session_id);
-					let maxComplexBookings = $inputFieldForMaxComplexBookings.val();
-					if(!maxComplexBookings) {
-						maxComplexBookings = $inputFieldForMaxComplexBookings.data('sequence-level-max-complex-bookings');
-					}
+					const maxComplexBookings = $inputFieldForMaxComplexBookings.val();
 					const $complexBookingCount = $('#complex_booking_count_'+session_id);
 					const $maxComplexBookingsIcon = $('#max_complex_bookings_icon_'+session_id);
 					if (maxComplexBookings) {
