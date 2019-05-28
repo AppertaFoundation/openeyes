@@ -63,7 +63,7 @@
 
             <span class="extra-info">
                 <span class="fade">by:</span>
-                <?= $this->event->usermodified->fullname . (isset($this->event->usermodified->code) ? ' ('.$this->event->usermodified->code.')' : '');?>
+                <?= $this->event->usermodified->fullname . (isset($this->event->usermodified->registration_code) ? ' ('.$this->event->usermodified->registration_code.')' : ''). (isset($this->event->episode->firm->cost_code) ? ' - ['.$this->event->episode->firm->cost_code.']' : '');?>
             </span>
 
             <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
