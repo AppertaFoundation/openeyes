@@ -91,8 +91,8 @@
         >
             <div>
                 <label>Rotate Single Image:</label>
-                <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(90, 'single');"></i>
-                <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(-90, 'single');" style="transform: scale(-1, 1);"></i>
+                <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, 'single');"></i>
+                <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, 'single');" style="transform: scale(-1, 1);"></i>
                 <input type="hidden" value="" name="single_document_rotate" id="single_document_rotate">
             </div>
             <table class="last-left cols-full">
