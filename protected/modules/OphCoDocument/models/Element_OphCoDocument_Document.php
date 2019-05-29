@@ -75,7 +75,11 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
             $document_rotate = $document.'_rotate';
             $file_name = $this->getImageFileNameForRotation($this->$document_id);
             if($file_name){
-                $this->rotate($file_name, $_POST[$document_rotate]);
+                $file = $this->rotate($file_name, $_POST[$document_rotate]);
+                $protected = ProtectedFile::model()->findByPk($this->$document_id);
+                $protected->size = filesize($file);
+                $protected->save();
+
             }
         }
 
@@ -128,7 +132,6 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
 
             $rotated = imagerotate($original, $rotate, 0);
             imagejpeg($rotated, $file_name);
-
         }
 
         return $file_name;

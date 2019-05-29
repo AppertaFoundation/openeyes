@@ -152,8 +152,8 @@
                     <td>
                         <div>
                             <label>Rotate Right Image:</label>
-                            <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(90, 'right');"></i>
-                            <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(-90, 'right');" style="transform: scale(-1, 1);"></i>
+                            <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, 'right');"></i>
+                            <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, 'right');" style="transform: scale(-1, 1);"></i>
                             <input type="hidden" value="" name="right_document_rotate" id="right_document_rotate">
                         </div>
                         <div class="upload-box"
@@ -183,8 +183,8 @@
                     <td>
                         <div>
                             <label>Rotate Left Image:</label>
-                            <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(90, 'left');"></i>
-                            <i class="oe-i history large pad-left js-has-tooltip js-change-rotate" onClick="rotateImage(-90, 'left');" style="transform: scale(-1, 1);"></i>
+                            <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, 'left');"></i>
+                            <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, 'left');" style="transform: scale(-1, 1);"></i>
                             <input type="hidden" value="" name="left_document_rotate" id="left_document_rotate">
                         </div>
                         <div class="upload-box"
