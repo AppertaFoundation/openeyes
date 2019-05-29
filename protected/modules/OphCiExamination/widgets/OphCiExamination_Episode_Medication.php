@@ -42,11 +42,11 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         continue;
                     }
 
-                    $drug_aliases = $entry->medication_id&&$entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
-                    $drug_name = $entry->medication_id ? $entry->drug->name.$drug_aliases : $entry->medication->name;
+                    $drug_aliases = $entry->medication_id&&$entry->medication->alternativeTerms()? ' ('.$entry->medication->alternativeTerms().')': '';
+                    $drug_name = $entry->medication_id ? $entry->medication->alternativeTerms().$drug_aliases : $entry->medication->preferred_term;
                     $start_date = Helper::mysqlDate2JsTimestamp($entry->start_date);
                     $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);
-                    $stop_reason = $entry->stop_reason ? $entry->stop_reason->name : null;
+                    $stop_reason = $entry->stopReason ? $entry->stopReason->name : null;
 
                     if ($start_date < $earlist_date) {
                         $earlist_date = $start_date;
@@ -55,7 +55,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                      // Construct data to store medication records for left and right eye based on drug name.
                      // Each medication may have one or multiple apply time.
                     foreach ([1 => 'left', 2 => 'right'] as $eye_flag => $eye_side) {
-                        if (!($entry->option_id & $eye_flag)) {
+                        if (!($entry->laterality & $eye_flag)) {
                             continue;
                         }
                         $new_medi_record = array(
