@@ -641,6 +641,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->event = new Event();
         $this->event->episode_id = $this->episode->id;
         $this->event->event_type_id = $this->event_type->id;
+        $this->event->last_modified_user_id = $this->event->created_user_id = Yii::app()->user->id;
     }
 
     /**
