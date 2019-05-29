@@ -160,6 +160,11 @@ class DefaultController extends \BaseModuleController
 
         $cat_id = Yii::app()->request->getParam('cat_id', null);
         $qs_id = Yii::app()->request->getParam('queueset_id', null);
+        $unset_patientticketing = Yii::app()->request->getParam('unset_patientticketing', null);
+
+        if ($unset_patientticketing === "true") {
+            unset(Yii::app()->session['patientticket_ticket_ids']);
+        }
 
         if (!$cat_id) {
             throw new \CHttpException(404, 'Category ID required');
