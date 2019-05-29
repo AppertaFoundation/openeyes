@@ -138,7 +138,7 @@ class PatientController extends BaseController
      */
     public function actionView($id)
     {
-        $this->redirect(array('episodes', 'id' => $id));
+        $this->redirect(array('summary', 'id' => $id));
     }
 
     public function actionSummary($id) {
