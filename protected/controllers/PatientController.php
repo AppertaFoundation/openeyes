@@ -453,7 +453,7 @@ class PatientController extends BaseController
         $this->event_tabs = array(
             array(
                 'label' => 'View',
-                'href' => Yii::app()->createUrl('/patient/episode/'.$this->episode->id),
+                'href' => Yii::app()->createUrl('/patient/summary/'.$this->episode->id),
             ),
             array(
                 'label' => 'Edit',
@@ -1632,7 +1632,7 @@ class PatientController extends BaseController
                 $episode = $patient->addEpisode($firm);
             }
 
-            $this->redirect(array('/patient/episode/'.$episode->id));
+            $this->redirect(array('/patient/summary/'.$episode->id));
         }
 
         return $this->renderPartial('//patient/add_new_episode', array(
@@ -1871,7 +1871,7 @@ class PatientController extends BaseController
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
                 } else {
-                    $redirect = array('/patient/episodes/' . $patient->id);
+                    $redirect = array('/patient/summary/' . $patient->id);
                 }
                 $transaction->commit();
                 $this->redirect($redirect);
