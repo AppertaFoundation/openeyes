@@ -288,7 +288,9 @@ class Medication extends BaseActiveRecordVersioned
     {
         $terms = [];
         foreach ($this->medicationSearchIndexes as $idx) {
-            $terms[] = $idx->alternative_term;
+            if ($idx->alternative_term != $this->preferred_term) {
+                $terms[] = $idx->alternative_term;
+            }
         }
 
         return implode(", ", $terms);

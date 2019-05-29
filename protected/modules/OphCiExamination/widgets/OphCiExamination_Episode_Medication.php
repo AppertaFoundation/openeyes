@@ -42,8 +42,8 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         continue;
                     }
 
-                    $drug_aliases = $entry->medication_id&&$entry->medication->alternativeTerms()? ' ('.$entry->medication->alternativeTerms().')': '';
-                    $drug_name = $entry->medication_id ? $entry->medication->alternativeTerms().$drug_aliases : $entry->medication->preferred_term;
+                    $drug_aliases = $entry->medication->alternativeTerms() ? ' ('.$entry->medication->alternativeTerms().')': '';
+                    $drug_name = $entry->medication->preferred_term.$drug_aliases;
                     $start_date = Helper::mysqlDate2JsTimestamp($entry->start_date);
                     $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);
                     $stop_reason = $entry->stopReason ? $entry->stopReason->name : null;
