@@ -22,23 +22,18 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                 ));
 
                 $untracked = $widget->getEntriesForUntrackedPrescriptionItems();
-                $meds_entries = array_merge($meds->orderedEntries, $untracked);
+                $meds_entries = array_merge($meds->entries, $untracked);
+
                 foreach ($meds_entries as $entry) {
 
-                    if (!$entry->drug_id && !$entry->medication_drug_id) {
+                    if (!$entry->medication_id) {
                         continue;
                     }
 
                     $meds_tag = array();
 
-                    if ($entry->drug_id){
-                      foreach ($entry->drug->tags as $item) {
-                            $meds_tag[] = $item->name;
-                        }
-                    }
-                    if ($entry->medication_drug_id){
-
-                        foreach ($entry->medication_drug->tags as $item) {
+                    if ($entry->medication_id){
+                        foreach($entry->medication->getTypes() as $item) {
                             $meds_tag[] = $item->name;
                         }
                     }
@@ -47,8 +42,8 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         continue;
                     }
 
-                    $drug_aliases = $entry->drug_id&&$entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
-                    $drug_name = $entry->drug_id ? $entry->drug->name.$drug_aliases : $entry->medication_drug->name;
+                    $drug_aliases = $entry->medication_id&&$entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
+                    $drug_name = $entry->medication_id ? $entry->drug->name.$drug_aliases : $entry->medication->name;
                     $start_date = Helper::mysqlDate2JsTimestamp($entry->start_date);
                     $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);
                     $stop_reason = $entry->stop_reason ? $entry->stop_reason->name : null;
