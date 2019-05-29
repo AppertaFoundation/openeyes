@@ -48,18 +48,18 @@
                 <tr class="item">
                     <td class="procedure">
                         <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]',
-                            $procedure->id,
-                            ['class' => 'js-procedure']); ?>
+                                $procedure->id,
+                                ['class' => 'js-procedure']); ?>
                         </span>
-                        <span class="value"><?=$procedure->term; ?></span>
+                        <span class="value"><?= $procedure->term; ?></span>
                     </td>
 
                     <?php if ($durations) { ?>
-                    <td class="duration">
+                        <td class="duration">
                         <span data-default-duration="<?= $procedure->default_duration ?>">
                         <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
                         </span> mins
-                    </td>
+                        </td>
                     <?php } ?>
                     <td>
                         <span class="removeProcedure">
@@ -424,18 +424,23 @@
             },
             searchOptions: {
                 searchSource: '/procedure/autocomplete',
-                resultsFilter: function(results) {
-                    let items = '';
+                resultsFilter: function (results) {
+                    let items = [];
                     $(results).each(function (index, result) {
-                        if($('#procedureList_<?=$identifier ?: ''; ?>').find('span:contains('+result+')').length === 0){
-                            items += '<li data-label="'+result+'"><span class="auto-width">'+result+'</span></li>'
+                        let procedureMatchArray = $('#procedureList_<?=$identifier ?: ''; ?>')
+                            .find('span:contains(' + result + ')').filter(function () {
+                                return $(this).text() === result;
+                            });
+
+                        if (procedureMatchArray.length === 0) {
+                            items.push(result);
                         }
                     });
-                    return $('ul.js-search-results').append(items);
+                    return items;
                 }
             }
-        });
 
+        });
         initialiseProcedureAdder();
     });
 </script>
