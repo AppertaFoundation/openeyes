@@ -61,13 +61,7 @@ class WorklistBehavior extends CBehavior
             $worklist_patient = $worklist_patient_id ? WorklistPatient::model()->findByPk($worklist_patient_id) : null;
 
             if ($worklist_patient && $worklist_patient->patient->id === $patient_id) {
-                $assignment = $this->getPasApiAssignment($worklist_patient->id);
-
-                //set pas_visit_id
-                if ($assignment) {
-                    $this->owner->event->worklist_patient_id = $worklist_patient->id;
-                }
-
+                $this->owner->event->worklist_patient_id = $worklist_patient->id;
             } else {
                 $this->owner->event->worklist_patient_id = null;
                 $worklist_patient = null;
