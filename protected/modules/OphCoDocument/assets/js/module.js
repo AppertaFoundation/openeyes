@@ -34,7 +34,9 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         "singleUploadSelector": "#single_document_uploader",
         "doubleUploadSelector": "#double_document_uploader",
         "dropAreaSelector": ".upload-label",
-        "uploadModeSelector": "input[name='upload_mode']"
+        "uploadModeSelector": "input[name='upload_mode']",
+        "uploadFormSelector":"#document-create",
+        "uploadFormButton":"#et_save",
     };
 
     DocumentUploadController.prototype.initialiseTriggers = function () {
@@ -53,6 +55,29 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 controller.documentUpload($(ev.target).closest(".upload-box").find("input[type=file]").prop("files", data));
             },
         });
+
+        $(controller.options.uploadFormButton).on('click',function (e) {
+            e.preventDefault();
+            let valid = true;
+            let mode = ($(controller.options.singleUploadSelector).is(':visible'))? controller.options.singleUploadSelector: controller.options.doubleUploadSelector;
+            $(mode + " " +controller.options.fileInputSelector).each(function () {
+                let input_selector  = $(this).attr('id');
+                let file = document.getElementById(input_selector).files[0];
+                if (file === undefined){
+                    valid = false;
+                    return false;
+                }
+            });
+
+            if(valid) {
+                $('#document-create').submit();
+            }else{
+                new OpenEyes.UI.Dialog.Alert({
+                    content: 'Select file(s) to upload first'
+                }).open();
+            }
+        });
+
 
         $(controller.options.uploadModeSelector).on('change', function () {
 
