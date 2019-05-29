@@ -122,7 +122,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
         >
     </div>
     <div id="correspondence_out"
-         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7 element"
+         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-12 element"
          style="background-color: white; color: black; display:none;">
             <header>
                 <?php
@@ -184,6 +184,9 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id , []);
+        let options = [];
+        // OE-8581 Disable lightning image loading due to speed issues
+        options['disableAjaxCall'] = true;
+        new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id , options);
     });
 </script>
