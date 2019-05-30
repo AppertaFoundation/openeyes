@@ -61,13 +61,7 @@ class WorklistBehavior extends CBehavior
             $worklist_patient = $worklist_patient_id ? WorklistPatient::model()->findByPk($worklist_patient_id) : null;
 
             if ($worklist_patient && $worklist_patient->patient->id === $patient_id) {
-                $assignment = $this->getPasApiAssignment($worklist_patient->id);
-
-                //set pas_visit_id
-                if ($assignment) {
-                    $this->owner->event->worklist_patient_id = $worklist_patient->id;
-                }
-
+                $this->owner->event->worklist_patient_id = $worklist_patient->id;
             } else {
                 $this->owner->event->worklist_patient_id = null;
                 $worklist_patient = null;
@@ -116,7 +110,13 @@ class WorklistBehavior extends CBehavior
             $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty_id);
             if ($unbooked_worklist) {
                 $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
-                $this->owner->event->worklist_patient_id = $worklist_patient->id;
+                if($worklist_patient) {
+                    $this->owner->event->worklist_patient_id = $worklist_patient->id;
+                } else {
+                    \OELog::log("Patient patient_id: {$this->owner->patient->id} cannot be added to " .
+                        "unbooked worklist {$unbooked_worklist->id} " .
+                        "Errors: " . implode(", ", $this->worklist_manager->getErrors()));
+                }
                 return true;
             } else {
                 \OELog::log("Unbooked worklist cannot be found for patient_id: {$this->owner->patient->id}");
