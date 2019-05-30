@@ -40,77 +40,6 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
                 </td>
             </tr>
             <?php } ?>
-            <tr>
-                <td class="data-label">
-                    From
-                </td>
-                <td>
-                    <?php
-                    echo $element->site->getLetterAddress(array(
-                        'include_name' => true,
-                        'delimiter' => '<br />',
-                        'include_telephone' => true,
-                        'include_fax' => true,
-                    ))?>
-                </td>
-            </tr>
-            <tr>
-                <td class="data-label">
-                    Direct Line
-                </td>
-                <td>
-                    <?php
-                    echo $element->direct_line
-                    ?>
-                </td>
-            </tr>
-            <tr>
-                <td class="data-label">
-                    Direct Fax
-                </td>
-                <td >
-                    <?php
-                    echo $element->fax
-                    ?>
-                </td>
-            </tr>
-            <tr>
-                <td class="data-label">
-                    Cc
-                </td>
-                <td>
-                    <?php
-                    $ccString = "";
-                    $toAddress = "";
-
-                    if($element->document_instance) {
-
-                        foreach ($element->document_instance as $instance) {
-                            foreach ($instance->document_target as $target) {
-                                if($target->ToCc == 'To'){
-                                    $toAddress = $target->contact_name . "\n" . $target->address;
-                                } else {
-                                    $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-
-                                    $ccString .= "" . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
-                                }
-                            }
-                        }
-                    }else
-                    {
-                        $toAddress = $element->address;
-                        foreach (explode("\n", trim($element->cc)) as $line) {
-                            if (trim($line)) {
-                                $ccString .= "" . str_replace(';', ',', $line)."<br/>";
-                            }
-                        }
-                    }
-                    ?>
-                    <?php
-                    echo $ccString
-                    ?>
-                </td>
-            </tr>
         </table>
     </div>
     <div class="spinner-overlay">
@@ -122,7 +51,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
         >
     </div>
     <div id="correspondence_out"
-         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7 element"
+         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-13 element"
          style="background-color: white; color: black; display:none;">
             <header>
                 <?php
@@ -184,6 +113,9 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id , []);
+        let options = [];
+        // OE-8581 Disable lightning image loading due to speed issues
+        options['disableAjaxCall'] = true;
+        new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id , options);
     });
 </script>
