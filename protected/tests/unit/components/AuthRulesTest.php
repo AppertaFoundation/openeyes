@@ -183,7 +183,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
         $event->expects($this->any())->method('moduleAllowsEditing')->will($this->returnValue(true));
-        $this->assertTrue($this->rules->canDeleteEvent($this->getUser(), $event));
+        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
     }
 
     public function testCanDeleteEvent_ModuleDisallows()
@@ -202,7 +202,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanDeleteEvent_NotTimeLocked()
     {
         $event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('yesterday'))));
-        $this->assertTrue($this->rules->canDeleteEvent($this->getUser(), $event));
+        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
     }
 
     public function testCanRequestEventDeletion_DeletePending()
