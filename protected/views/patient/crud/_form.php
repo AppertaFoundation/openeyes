@@ -353,7 +353,9 @@ foreach ($ethnic_list as $key=>$item){
                     </ul>
                     <?= CHtml::hiddenField('Patient[patient_referral_id]', $patient->patient_referral_id, array('class' => 'hidden_id')) ?>
                 </div>
+                <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
                 <a id="js-add-pr-btn" href="#">Add Referring Practitioner</a>
+                <?php } ?>
                 <div id="no_pr_result" style="display: none;">
                     <div>No result</div>
                 </div>
@@ -392,10 +394,12 @@ foreach ($ethnic_list as $key=>$item){
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
                 </div>
+                <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
                 <a id="js-add-gp-btn" href="#">
                   <?= Yii::app()->params['institution_code']=='CERA'?
                     "Add General Practitioner": "Add Referring Practitioner"; ?>
                 </a>
+                <?php } ?>
             </td>
         </tr>
         <tr>
