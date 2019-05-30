@@ -122,7 +122,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
         >
     </div>
     <div id="correspondence_out"
-         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-12 element"
+         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-13 element"
          style="background-color: white; color: black; display:none;">
             <header>
                 <?php
