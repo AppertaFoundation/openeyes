@@ -40,17 +40,28 @@ class WorklistBehavior extends CBehavior
         if ($action && ($action->id === 'create') && $this->owner->event) {
 
             $patient_id = isset($this->owner->patient->id) ? $this->owner->patient->id : null;
-            $worklist_patient_id = $this->worklist_manager->getWorklistPatientId();
+            $worklist_patient_id = null;
+
+            // if patientticketing is active (use session parameter),
+            // set $worklist_patient_id to be the same as the event that created the patietnticket
+            if (isset(\Yii::app()->session['patientticket_ticket_ids']) && \Yii::app()->session['patientticket_ticket_ids']) {
+                $patientticket_ticket_id = Yii::app()->session['patientticket_ticket_ids'];
+                $ticket = \OEModule\PatientTicketing\models\Ticket::model()->findByPk($patientticket_ticket_id);
+                if ($ticket) {
+                    $patientticket_event = Event::model()->findByPk($ticket->event_id);
+                    if ($patientticket_event) {
+                        $worklist_patient_id = $patientticket_event->worklist_patient_id;
+                    }
+                }
+            }
+            // worklist_patient_id was not set previously
+            if ($worklist_patient_id === null) {
+                $worklist_patient_id = $this->worklist_manager->getWorklistPatientId();
+            }
             $worklist_patient = $worklist_patient_id ? WorklistPatient::model()->findByPk($worklist_patient_id) : null;
 
             if ($worklist_patient && $worklist_patient->patient->id === $patient_id) {
-                $assignment = $this->getPasApiAssignment($worklist_patient->id);
-
-                //set pas_visit_id
-                if ($assignment) {
-                    $this->owner->event->worklist_patient_id = $worklist_patient->id;
-                }
-
+                $this->owner->event->worklist_patient_id = $worklist_patient->id;
             } else {
                 $this->owner->event->worklist_patient_id = null;
                 $worklist_patient = null;
@@ -99,7 +110,13 @@ class WorklistBehavior extends CBehavior
             $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty_id);
             if ($unbooked_worklist) {
                 $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
-                $this->owner->event->worklist_patient_id = $worklist_patient->id;
+                if($worklist_patient) {
+                    $this->owner->event->worklist_patient_id = $worklist_patient->id;
+                } else {
+                    \OELog::log("Patient patient_id: {$this->owner->patient->id} cannot be added to " .
+                        "unbooked worklist {$unbooked_worklist->id} " .
+                        "Errors: " . implode(", ", $this->worklist_manager->getErrors()));
+                }
                 return true;
             } else {
                 \OELog::log("Unbooked worklist cannot be found for patient_id: {$this->owner->patient->id}");
