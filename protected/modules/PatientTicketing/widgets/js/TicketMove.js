@@ -296,7 +296,7 @@
       delete(window.changedTickets[queueset_id]);
       if (Object.keys(window.changedTickets).length == 0) window.patientTicketChanged = false;
       //$(this).parents('.alert-box').find('.js-toggle').trigger('click');
-      window.location = "/PatientTicketing/default/?queueset_id=" + queueset_id + "&cat_id=" + category_id;
+      window.location = "/PatientTicketing/default/?queueset_id=" + queueset_id + "&cat_id=" + category_id+"&unset_patientticketing=true";
     });
 
     $(document).on('click', '.js-auto-save', function (e) {
