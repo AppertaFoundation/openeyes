@@ -1,9 +1,9 @@
 <li class="oe-nav-btn" id="js-nav-shortcuts">
-  <div class="nav-js-btn" id="js-nav-shortcuts-btn">
+  <a href="" class="nav-js-btn icon-btn" id="js-nav-shortcuts-btn" onclick="returnFalse()">
     <svg viewBox="0 0 80 40" class="icon shortcuts">
       <use xlink:href="<?= $navIconUrl . '#shortcuts-icon' ?>"></use>
     </svg>
-  </div>
+  </a>
   <div class="oe-nav-shortcuts" id="js-nav-shortcuts-subnav">
     <ul>
         <?php foreach ($menu as $key => $item) { ?>

@@ -33,6 +33,8 @@ else
     dbpassword=""
 fi
 
+
+
 if [ ! -z "$MYSQL_SUPER_USER" ] ; then
     username="$MYSQL_SUPER_USER"
 elif [ -f "/run/secrets/MYSQL_SUPER_USER" ] ; then
@@ -42,9 +44,10 @@ else
     username="root"
 fi
 
-
 port=${DATABASE_PORT:-"3306"}
 host=${DATABASE_HOST:-"localhost"}
+# If we're using docker secrets, override DATABASE_PASSWORD with the secret. Else the environment variable will use it's default value
+[ -f /run/secrets/DATABASE_PASSWORD ] && pass="$(</run/secrets/DATABASE_PASSWORD)" || pass=${DATABASE_PASSWORD:-"openeyes"}
 
 
 # Process commandline parameters
@@ -92,10 +95,10 @@ do
     		;;
         # TODO: fix genetics
     	# --genetics-enable)
-    	# 	sudo bash /vagrant/install/add-genetics.sh
+    	# 	bash /vagrant/install/add-genetics.sh
     	# ;;
     	# --genetics-disable)
-    	# 	sudo bash /vagrant/install/add-genetics.sh -r
+    	# 	bash /vagrant/install/add-genetics.sh -r
     	# ;;
     	-p) # set dbpassword and move on to next param
             dbpassword="$2"
@@ -133,7 +136,7 @@ done
 # If we are checking out new branch,then pass all unprocessed commands to checkout command
 # Else, throw error and list unknown commands
 if  [ ${#PARAMS[@]} -gt 0 ]; then
-    if [ branch == 1 ]; then
+    if [ "$branch" != "0" ]; then
         for i in "${PARAMS[@]}"
         do
             $checkoutparams="$checkoutparams $i"
@@ -189,8 +192,7 @@ if [ ! -z $dbpassword ]; then
 	dbpassword="-p$dbpassword"
 fi
 
-dbconnectionstring="sudo mysql -u $username $dbpassword --port=$port --host=$host"
-
+dbconnectionstring="mysql -u $username $dbpassword --port=$port --host=$host"
 
 if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null; then
 		dwservrunning=1
@@ -199,23 +201,26 @@ if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null; then
 fi
 
 if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
+
+	## If no branch is specified, use build branch or fallback to master
+	[ "$branch" = "0" ] && branch=${BUILD_BRANCH:-"master"} || :
+
 	## Checkout new sample database branch
 	echo "Downloading database for $branch"
 
     bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams
 fi
 
-echo "Clearing current database"
+echo "Clearing current database..."
 
-echo "
-drop database if exists openeyes;
-create database openeyes;
-grant all privileges on openeyes.* to 'openeyes'@'%' identified by 'openeyes';
-flush privileges;
-" > /tmp/openeyes-mysql-create.sql
+dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant all privileges on ${DATABASE_NAME:-openeyes}.* to '${DATABASE_USER:-openeyes}'@'%' identified by '$pass'; flush privileges;"
 
-eval $dbconnectionstring < /tmp/openeyes-mysql-create.sql
-rm /tmp/openeyes-mysql-create.sql
+echo ""
+# write-out command to console (helps with debugging)
+echo "$dbconnectionstring -e \"$dbresetsql\""
+# run the same command
+eval "$dbconnectionstring -e \"$dbresetsql\""
+echo ""
 
 if [ $nofiles = "0" ]; then
 	echo Deleting protected files
@@ -225,11 +230,12 @@ fi
 
 if [ $cleanbase = "0" ]; then
   # Extract or copy sample DB (since v3.2 db has been zipped)
+  rm -f /tmp/openeyes_sample_data.sql >/dev/null
   [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && cp $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp || :
   [ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
 
 	echo "Re-importing database"
-	eval $dbconnectionstring -D openeyes < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
+	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
 fi
 
 # Force default institution code to match common.php
@@ -244,7 +250,7 @@ if [ ! -z $icode ]; then
 
 	echo "UPDATE institution SET remote_id = '$icode' WHERE id = 1;" > /tmp/openeyes-mysql-institute.sql
 
-	eval $dbconnectionstring -D openeyes < /tmp/openeyes-mysql-institute.sql
+	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < /tmp/openeyes-mysql-institute.sql
 
 	rm /tmp/openeyes-mysql-institute.sql
 fi
@@ -259,10 +265,10 @@ if [ $demo = "1" ]; then
 	do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D openeyes < $MODULEROOT/sample/sql/demo/pre-migrate/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			sudo bash "$MODULEROOT/sample/sql/demo/pre-migrate/$f"
+			bash -l "$MODULEROOT/sample/sql/demo/pre-migrate/$f"
 		fi
 	done
 fi
@@ -285,10 +291,10 @@ if [ $demo = "1" ]; then
 	do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D openeyes < $MODULEROOT/sample/sql/demo/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			sudo bash "$MODULEROOT/sample/sql/demo/$f"
+			bash -l "$MODULEROOT/sample/sql/demo/$f"
 		fi
 	done
 fi
@@ -303,10 +309,10 @@ if grep -q "'Genetics'," $WROOT/protected/config/local/common.php && ! grep -q "
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D openeyes < $MODULEROOT/sample/sql/demo/genetics/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/genetics/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			sudo bash "$MODULEROOT/sample/sql/demo/genetics/$f"
+			bash -l "$MODULEROOT/sample/sql/demo/genetics/$f"
 		fi
     done
 
@@ -316,8 +322,8 @@ fi
 if [ ! $nobanner = "1" ]; then
 	echo "setting banner to: $bannertext"
 	echo "
-	use openeyes;
-	UPDATE openeyes.setting_installation s SET s.value='$bannertext' WHERE s.key='watermark';
+	use ${DATABASE_NAME:-'openeyes'};
+	UPDATE ${DATABASE_NAME:-"openeyes"}.setting_installation s SET s.value=\"$bannertext\" WHERE s.key=\"watermark\";
 	" | sudo tee /tmp/openeyes-mysql-setbanner.sql > /dev/null
 
 	eval $dbconnectionstring < /tmp/openeyes-mysql-setbanner.sql
@@ -334,10 +340,10 @@ if [ $demo = "1" ]; then
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D openeyes < $MODULEROOT/sample/sql/demo/local-post/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/local-post/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			sudo bash "$MODULEROOT/sample/sql/demo/local-post/$f"
+			bash -l "$MODULEROOT/sample/sql/demo/local-post/$f"
 		fi
     done
 fi

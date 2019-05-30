@@ -241,6 +241,10 @@
     color: #0a0a0a;
 }
 
+.oe-list-patient .oe-patient-popup table.risks.alert-box td
+{
+    color: #d7d7d7;
+}
 .oe-list-patient table.management-summaries tr {
     border-top-color: #0a0a0a;
 }

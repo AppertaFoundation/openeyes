@@ -44,7 +44,7 @@ $ethnic_groups = array();
 $ethnic_filters = Yii::app()->params['ethnic_group_filters'];
 foreach ($ethnic_list as $key=>$item){
 	if (!$ethnic_filters || !in_array($item, $ethnic_filters)){
-		$ethnic_groups[] = $item;
+		$ethnic_groups[$key] = $item;
 	}
 }
 ?>
@@ -78,7 +78,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($contact, 'title') ?>
         </td>
         <td>
-            <?= $form->textField($contact, 'title', array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Title')) ?>
+            <?= $form->textField($contact, 'title', array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Title', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       <tr>
@@ -113,7 +113,7 @@ foreach ($ethnic_list as $key=>$item){
         </td>
         <td>
             <?= $form->textField($contact, 'maiden_name',
-                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name')) ?>
+                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       <tr class="patient-duplicate-check">
@@ -125,6 +125,7 @@ foreach ($ethnic_list as $key=>$item){
         <td style="text-align: left;">
             <?php
             if ((bool)strtotime($patient->dob)) {
+                $patient->dob = str_replace('/', '-', $patient->dob);
                 $dob = new DateTime($patient->dob);
                 $patient->dob = $dob->format('d/m/Y');
             } else {
@@ -200,7 +201,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($contact, 'primary_phone') ?>
         </td>
         <td>
-            <?= $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20)) ?>
+            <?= $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20, 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       <tr>
@@ -210,7 +211,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($address, 'email') ?>
         </td>
         <td>
-            <?= $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255)) ?>
+            <?= $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255, 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       </tbody>
@@ -230,9 +231,9 @@ foreach ($ethnic_list as $key=>$item){
           <td>
             <?php if (in_array("admin", Yii::app()->user->getRole(Yii::app()->user->getId())))
             {
-                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num'), 'autocomplete' => Yii::app()->params['html_autocomplete']));
             } else{
-                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'readonly'=>true, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'readonly'=>true, 'placeholder' => $patient->getAttributeLabel('hos_num'), 'autocomplete' => Yii::app()->params['html_autocomplete']));
             }
             ?>
           </td>
@@ -248,6 +249,7 @@ foreach ($ethnic_list as $key=>$item){
                       'maxlength' => 40,
                       'data-child_row' => '.nhs-num-status',
                       'placeholder' => $patient->getAttributeLabel('nhs_num'),
+                      'autocomplete' => Yii::app()->params['html_autocomplete']
                   )); ?>
               <?= $form->error($patient, 'nhs_num') ?>
           </td>
@@ -331,7 +333,44 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->fileField($referral, 'uploadedFile'); ?>
           </td>
         </tr>
+        <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
         <tr>
+            <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
+                <?= $form->label($patient, 'patient_referral_id') ?>
+                <br/>
+                <?= $form->error($patient, 'patient_referral_id') ?>
+            </td>
+            <td>
+                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_pr_id']); ?>
+                <div id="selected_pr_wrapper" style="<?= !isset($patient->patient_referral_id) || ($patient->patient_referral_id === '') ? 'display: none;' : '' ?>">
+                    <ul class="oe-multi-select js-selected_pr">
+                        <li>
+                  <span class="js-name">
+                      <?= $patient->patient_referral_id ? Gp::model()->findByPk(array('id' => $patient->patient_referral_id))->getCorrespondenceName() : '' ?>
+                  </span>
+                            <i class="oe-i remove-circle small-icon pad-left js-remove-pr"></i>
+                        </li>
+                    </ul>
+                    <?= CHtml::hiddenField('Patient[patient_referral_id]', $patient->patient_referral_id, array('class' => 'hidden_id')) ?>
+                </div>
+                <a id="js-add-pr-btn" href="#">Add Referring Practitioner</a>
+                <div id="no_pr_result" style="display: none;">
+                    <div>No result</div>
+                </div>
+            </td>
+        </tr>
+        <?php $isPRSameASGP = false;
+        if ( isset($patient->patient_referral_id) && isset($patient->gp_id) && ($patient->patient_referral_id !== '') && ($patient->gp_id !== '') && ($patient->patient_referral_id === $patient->gp_id)) {
+            $isPRSameASGP = true;
+        } ?>
+        <tr>
+            <td>
+                <?= CHtml::checkBox('is_pr_gp', $isPRSameASGP, array('data-child_row' => '#js-patient-gp-row')) ?>
+                Is Referring Practitioner patient's GP?
+            </td>
+        </tr>
+        <?php endif; ?>
+        <tr id="js-patient-gp-row" style="<?= Yii::app()->params['institution_code']=='CERA' && $isPRSameASGP ? 'display: none': ''; ?>">
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                 <?= $form->label($patient, 'gp_id') ?>
                 <br/>
@@ -339,22 +378,24 @@ foreach ($ethnic_list as $key=>$item){
             </td>
             <td>
                 <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_gp_id']); ?>
-                <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : 'color: white;' ?>">
+                <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
                     <ul class="oe-multi-select js-selected_gp">
                         <li>
                   <span class="js-name">
-                      <?= $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?>
+                      <?= $patient->gp_id ? Gp::model()->findByPk(array('id' => $patient->gp_id))->getCorrespondenceName() : '' ?>
                   </span>
                             <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
                         </li>
                     </ul>
                     <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
                 </div>
-                <a id="js-add-practitioner-btn" href="#">Add Referring Practitioner</a>
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
                 </div>
-
+                <a id="js-add-gp-btn" href="#">
+                  <?= Yii::app()->params['institution_code']=='CERA'?
+                    "Add General Practitioner": "Add Referring Practitioner"; ?>
+                </a>
             </td>
         </tr>
         <tr>
@@ -369,7 +410,7 @@ foreach ($ethnic_list as $key=>$item){
               <ul class="oe-multi-select js-selected_practice">
                 <li>
                   <span class="js-name">
-                      <?= $patient->practice_id ? $patient->practice->getAddressLines() : '' ?>
+                      <?= $patient->practice_id ? Practice::model()->findByPk(array('id' => $patient->practice_id))->getAddressLines() : '' ?>
                   </span>
                   <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
                 </li>
@@ -414,10 +455,28 @@ foreach ($ethnic_list as $key=>$item){
             </div>
           </td>
         </tr>
+        <?php
+        if(Yii::app()->controller->action->id == 'update'){?>
+            <tr>
+                <td>
+                    <?= $form->label($patient, 'created_date') ?>
+                </td>
+                <td>
+                    <label for="patient_create_date"><?= date("d-M-Y", strtotime($patient->created_date))?></label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->label($patient, 'last_modified_date') ?>
+                </td>
+                <td>
+                    <label for="patient_create_date"><?= date("d-M-Y", strtotime($patient->last_modified_date))?></label>
+                </td>
+            </tr>
+        <?php } ?>
         </tbody>
       </table>
     </div>
-
     <div class="row flex-layout flex-right">
         <?= CHtml::submitButton($patient->isNewRecord ? 'Create new patient' : 'Save patient',
             array('class' => 'button green hint')); ?>
@@ -426,6 +485,20 @@ foreach ($ethnic_list as $key=>$item){
 </div>
 <?php $this->endWidget(); ?>
 <script>
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $('#autocomplete_pr_id'),
+        url: '/patient/gpList',
+        maxHeight: '200px',
+        onSelect: function(){
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            removeSelectedGP('pr');
+            addItemPatientForm('selected_pr_wrapper', {item: AutoCompleteResponse});
+            if ($('#is_pr_gp').is(':checked')){
+                removeSelectedGP();
+                addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse});
+            }
+        }
+    });
   OpenEyes.UI.AutoCompleteSearch.init({
     input: $('#autocomplete_gp_id'),
     url: '/patient/gpList',
@@ -469,20 +542,40 @@ $this->renderPartial('../practice/create_practice_form',
 ?>
 <?php
 $gpcontact = new Contact('manage_gp');
-$this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'context' => 'AJAX'), false);
+$patientReferralContact = new Contact('manage_gp');
+$this->renderPartial('../gp/create_gp_form',
+    array(
+            'model' => $gpcontact,
+        'context' => 'AJAX',
+        'id' => 'js-add-gp-event'
+    ),
+    false);
 ?>
 
 
+
+
 <script>
-    $('#js-cancel-add-practitioner').click(function(event){
+    $('.js-cancel-add-practitioner').click(function(event){
         event.preventDefault();
         $("#gp-form")[0].reset();
         $("#errors").text("");
         $(".alert-box").css("display","none");
-        $('#js-add-practitioner-event').css('display','none');
+        console.log($('.js-add-practitioner-event'));
+        $('.js-add-practitioner-event').css('display','none');
+
     });
-    $('#js-add-practitioner-btn').click(function(event){
-        $('#js-add-practitioner-event').css('display','');
+    $('#js-add-gp-btn').click(function(event){
+        $('#js-add-gp-event').css('display','');
+        $('#gp_adding_title').data('type','gp');
+        $('#gp_adding_title').html('Add General Practitioner')
+        return false;
+    });
+
+    $('#js-add-pr-btn').click(function(event){
+        $('#js-add-gp-event').css('display','');
+        $('#gp_adding_title').data('type','pr');
+        $('#gp_adding_title').html('Add Referring Practitioner')
         return false;
     });
 
@@ -518,8 +611,8 @@ $this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'conte
     });
 
 
-    function addGpItem(wrapper_id, ui){
-        var $wrapper = $('#' + wrapper_id);
+    function addGpItem(type, ui){
+        var $wrapper = $('#selected_'+type+'_wrapper');
         var JsonObj = JSON.parse(ui);
         $wrapper.find('.js-name').text(JsonObj.label);
         $wrapper.show();

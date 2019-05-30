@@ -6,14 +6,21 @@
 <nav class="oe-full-side-panel">
   <h3>Actions</h3>
   <ul>
+        <li>
+            <?=\CHtml::link('Go Back to Trial', Yii::app()-> baseURL.'/OETrial/trial') ?>
+        </li>
       <?php if ($trial->is_open && $permission->can_edit): ?>
         <li>
             <?php echo CHtml::link('Add Participants',
                 $this->createUrl('/OECaseSearch/caseSearch', array('trial_id' => $trial->id))); ?>
         </li>
+      <?php if (CsvController::uploadAccess()): ?>
         <li>
-          <a href="/csv/upload?context=trialPatients">Upload trial patients</a>
+          <a href = <?=  Yii::app()->createURL('csv/upload',
+              array('context' => 'trials', 'backuri' => '/OETrial/trial/view/'.$trial->id)
+          ) ?> >Upload trial patients</a>
         </li>
+      <?php endif; ?>
       <?php endif; ?>
     <li>
         <?php echo CHtml::link('Trial Permissions',

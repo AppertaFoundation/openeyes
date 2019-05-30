@@ -51,7 +51,19 @@ if (!$reschedule) {
             <tr>
                 <td><?php echo $counter ?>
                     . <?php echo $booking->operation->event->episode->patient->getDisplayName() ?></td>
-                <td><?php echo $booking->operation->getProceduresCommaSeparated() ?></td>
+
+                <td>
+                    <?php
+                    $procedures = [];
+                    foreach ($booking->operation->procedures as $procedure) {
+                        $icon = $booking->operation->complexity ? OEHtml::icon('circle-' . Element_OphTrOperationbooking_Operation::$complexity_colors[$booking->operation->complexity], ['class' => 'small pad']) : '';
+                        $eye = "[" . Eye::methodPostFix($booking->operation->eye_id) . "] ";
+                        $procedures[] = $icon . $eye . $procedure->term;
+                    }
+
+                    echo empty($procedures) ? 'No procedures' : implode('<br />', $procedures);
+                    ?>
+                </td>
                 <td><?php echo $booking->operation->getAnaestheticTypeDisplay() ?></td>
                 <td><?php echo "{$booking->operation->total_duration} minutes"; ?></td>
                 <td><?php echo $booking->admission_time ?></td>

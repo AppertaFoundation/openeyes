@@ -48,7 +48,7 @@ class Element_OphTrOperationbooking_ContactDetails extends BaseEventTypeElement
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, collector_name, collector_contact_number, patient_booking_contact_number, ', 'safe', 'on' => 'search'),
-            array('patient_booking_contact_number,collector_contact_number','numerical'),
+            array('patient_booking_contact_number,collector_contact_number','OEPhoneNumberValidator'),
         );
     }
 

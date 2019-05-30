@@ -17,7 +17,7 @@ $this->pageTitle = 'Case Search';
         ?>
     </div>
 </div>
-<div class="oe-grid oe-full-content pro-theme" style="height: 100%; width: 100%">
+<div class="oe-grid oe-full-content oe-worklists" style="height: 100%; width: 100%">
     <nav class="oe-full-side-panel">
         <h3>Actions</h3>
         <ul>
@@ -38,6 +38,7 @@ $this->pageTitle = 'Case Search';
                             <tbody>
                             <?php
                             if (isset($params)):
+                                ksort($params);
                                 foreach ($params as $id => $param):?>
                                     <?php $this->renderPartial('parameter_form', array(
                                         'model' => $param,
@@ -185,10 +186,20 @@ $this->pageTitle = 'Case Search';
         }
     }
 
+    function getMaxId(){
+      var id_max = -1;
+      $('.parameter').each(function () {
+        if ($(this)[0].id > id_max){
+          id_max = $(this)[0].id;
+        }
+      });
+      return id_max;
+    }
+
 
     $(document).ready(function () {
         //null coallese the id of the last parameter
-        var parameter_id_counter = $('.parameter').last().attr('id') || -1;
+        var parameter_id_counter = getMaxId();
         $('#js-add-param').on('change', function () {
             var dropDown = this;
             if (!dropDown.value) {

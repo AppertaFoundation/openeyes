@@ -15,6 +15,7 @@
  * @property int $created_user_id
  * @property string $created_date
  * @property string $comment
+ * @property string $status_update_date
  *
  * The followings are the available model relations:
  * @property Patient $patient
@@ -144,7 +145,7 @@ class TrialPatient extends BaseActiveRecordVersioned
                     ),
                 ),
             ),
-            array('last_modified_date, created_date, comment', 'safe'),
+            array('last_modified_date, created_date, status_update_date, comment', 'safe'),
         );
     }
 
@@ -176,6 +177,7 @@ class TrialPatient extends BaseActiveRecordVersioned
             'trial_id' => 'Trial',
             'patient_id' => 'Patient',
             'patient_status' => 'Patient Status',
+            'status_update_date' => 'Accepted/Rejected Date',
             'treatment_type_id' => 'Treatment Type',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',
@@ -212,6 +214,7 @@ class TrialPatient extends BaseActiveRecordVersioned
         }
 
         $this->status_id = $new_status->id;
+        $this->status_update_date = date('Y-m-d H:i:s');
         if (!$this->save()) {
             throw new CHttpException(500, 'An error occurred when saving the model: ' . print_r($this->getErrors(), true));
         }

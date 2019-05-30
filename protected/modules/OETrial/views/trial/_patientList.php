@@ -33,10 +33,11 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 'Age',
                 'Ethnicity',
                 'External Reference',
+                'Accepted/Rejected Date'
             );
 
 
-            $sortableColumns = array('Name', 'Gender', 'Age', 'Ethnicity', 'External Reference');
+            $sortableColumns = array('Name', 'Gender', 'Age', 'Ethnicity', 'External Reference', 'Accepted/Rejected Date');
 
             if ($trial->trialType->code === TrialType::INTERVENTION_CODE && !$trial->is_open && $renderTreatmentType) {
                 $columns[] = 'Treatment Type';

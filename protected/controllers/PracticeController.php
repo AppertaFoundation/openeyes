@@ -123,6 +123,7 @@ class PracticeController extends BaseController
 
                         } else {
                             $address->validate();
+                            $address->clearErrors('contact_id');
                             if ($isAjax) {
                                 throw new CHttpException(400, CHtml::errorSummary($address));
                             }
@@ -138,6 +139,8 @@ class PracticeController extends BaseController
                     }
                 } else {
                     $address->validate();
+                    $address->clearErrors('contact_id');
+                    $practice->clearErrors('contact_id');
                     if ($isAjax) {
                         throw new CHttpException(400,CHtml::errorSummary(array($practice,$address)) );
                     }
@@ -145,6 +148,7 @@ class PracticeController extends BaseController
                 }
             } else {
                 $address->validate();
+                $address->clearErrors('contact_id');
                 if ($isAjax) {
                     throw new CHttpException(400,CHtml::errorSummary(array($contact,$address)));
                 }
@@ -201,8 +205,8 @@ class PracticeController extends BaseController
     {
         $criteria = new CDbCriteria();
         $criteria->together = true;
-        $criteria->with = array('contact', 'contact.address');
-        $criteria->order = 'last_name';
+        $criteria->with = array('contact');
+        $criteria->order = 'first_name';
 
         if ($search_term !== null) {
             $search_term = strtolower($search_term);

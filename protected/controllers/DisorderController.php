@@ -25,11 +25,11 @@ class DisorderController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('index', 'view'),
-                'roles' => array('@'),
+                'actions' => array('index', 'view', 'autoComplete'),
+                'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
-                'actions'=>array('create','update','index','view', 'delete', 'autocomplete'),
+                'actions'=>array('create','update','index','view', 'delete'),
                 'users'=>array('TaskCreateDisorder', 'admin'),
             ),
             array('deny',  // deny all users
@@ -38,7 +38,7 @@ class DisorderController extends BaseController
         );
     }
 
-    protected function genericAdmin($title, $model, array $options = array(), $key = null)
+    protected function setOptionsForGenericAdmin($options, $model)
     {
         $options = array_merge(array(
             'label_field' => $model::SELECTION_LABEL_FIELD,
@@ -53,103 +53,115 @@ class DisorderController extends BaseController
         $columns = $model::model()->metadata->columns;
 
         $options = $this->addExtraFieldsToOptions($options, $columns);
+        $options['display_order'] = false;
+        return $options;
+    }
+
+    protected function renderPartialForGenericAdmin($key, $model, $options, $title, $errors)
+    {
+        $items = array($key => new $model());
+        $options['get_row'] = true;
+        if ($model::model()->hasAttribute('display_order')) {
+            $options['display_order'] = true;
+        }
+        $this->renderPartial('//admin/generic_admin', array(
+            'title' => $title,
+            'model' => $model,
+            'items' => $items,
+            'errors' => $errors,
+            'options' => $options,
+        ), false, true);
+    }
+
+    protected function setItemAttributesForGenericAdmin(&$item, $options, $i, $j, &$attributes, &$errors, $new, $model)
+    {
+        $item->{$options['label_field']} = $_POST[$options['label_field']][$i];
+        if ($item->hasAttribute('display_order')) {
+            $options['display_order'] = true;
+            $item->display_order = $j + 1;
+        }
+
+        if (array_key_exists('active', $attributes)) {
+            $item->active = (isset($_POST['active'][$i]) || $item->isNewRecord) ? 1 : 0;
+        }
+
+        foreach ($options['extra_fields'] as $field) {
+            $name = $field['field'];
+            if (!array_key_exists($name, $attributes)) {
+                // getAttributes doesn't return relations, so this sets this up
+                // to enable the change check below. This will give false positives for saves
+                // but is a simple solution for now.
+                $attributes[$name] = $item->$name;
+            }
+            $item->$name = @$_POST[$name][$i];
+        }
+
+        if ($item->hasAttribute('default')) {
+            $item->default = (isset($_POST['default']) && $_POST['default'] !== 'NONE' && $_POST['default'] == $j) ?  1: 0;
+        }
+
+        foreach ($options['filter_fields'] as $field) {
+            $item->{$field['field']} = $field['value'];
+        }
+
+        if ($new || $item->getAttributes() != $attributes) {
+            if (!$item->save()) {
+                $errors = $item->getErrors();
+                foreach ($errors as $error) {
+                    $errors[$i] = $error[0];
+                }
+            }
+            Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array(
+                'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                'model' => $model::getShortModelName(),
+            ));
+        }
+    }
+
+    protected function renderForGenericAdmin($title, $model, $items, $errors, $options)
+    {
+        $this->render('//admin/generic_admin', array(
+            'title' => $title,
+            'model' => $model,
+            'items' => $items,
+            'errors' => $errors,
+            'options' => $options,
+        ));
+    }
+
+    protected function postRequest($model, $options, &$errors){
+        $tx = Yii::app()->db->beginTransaction();
+        $j = 0;
+
+        foreach ((array) @$_POST['id'] as $i => $id) {
+            $item = ($id) ? $model::model()->findByPk($id) : new $model();
+            $new = ($id) ? false : true ;
+            $attributes = $item->getAttributes();
+            if (!empty($_POST[$options['label_field']][$i])) {
+                $this->setItemAttributesForGenericAdmin($item, $options, $i, $j, $attributes, $errors, $new, $model);
+                $items[] = $item;
+                ++$j;
+            }
+        }
+        $errors = $this->amendCommonOphthalmicDisorderGroups($model, $options, $errors, $items, $tx);
+    }
+
+    protected function genericAdmin($title, $model, array $options = array(), $key = null)
+    {
+        $options = $this->setOptionsForGenericAdmin($options, $model);
         $items = array();
         $errors = array();
-        $options['display_order'] = false;
-
         if ($key !== null) {
-            $items = array($key => new $model());
-            $options['get_row'] = true;
-            if ($model::model()->hasAttribute('display_order')) {
-                $options['display_order'] = true;
-            }
-            $this->renderPartial('//admin/generic_admin', array(
-                'title' => $title,
-                'model' => $model,
-                'items' => $items,
-                'errors' => $errors,
-                'options' => $options,
-            ), false, true);
+           $this->renderPartialForGenericAdmin($key, $model, $options, $title, $errors);
         } else {
             if ($options['filters_ready']) {
                 if (Yii::app()->request->isPostRequest) {
-                    $tx = Yii::app()->db->beginTransaction();
-                    $j = 0;
-
-                    foreach ((array) @$_POST['id'] as $i => $id) {
-                        if ($id) {
-                            $item = $model::model()->findByPk($id);
-                            $new = false;
-                        } else {
-                            $item = new $model();
-                            $new = true;
-                        }
-
-                        $attributes = $item->getAttributes();
-                        if (!empty($_POST[$options['label_field']][$i])) {
-                            $item->{$options['label_field']} = $_POST[$options['label_field']][$i];
-                            if ($item->hasAttribute('display_order')) {
-                                $options['display_order'] = true;
-                                $item->display_order = $j + 1;
-                            }
-
-                            if (array_key_exists('active', $attributes)) {
-                                $item->active = (isset($_POST['active'][$i]) || $item->isNewRecord) ? 1 : 0;
-                            }
-
-                            foreach ($options['extra_fields'] as $field) {
-                                $name = $field['field'];
-                                if (!array_key_exists($name, $attributes)) {
-                                    // getAttributes doesn't return relations, so this sets this up
-                                    // to enable the change check below. This will give false positives for saves
-                                    // but is a simple solution for now.
-                                    $attributes[$name] = $item->$name;
-                                }
-                                $item->$name = @$_POST[$name][$i];
-                            }
-
-                            if ($item->hasAttribute('default')) {
-                                if (isset($_POST['default']) && $_POST['default'] !== 'NONE' && $_POST['default'] == $j) {
-                                    $item->default = 1;
-                                } else {
-                                    $item->default = 0;
-                                }
-                            }
-
-                            foreach ($options['filter_fields'] as $field) {
-                                $item->{$field['field']} = $field['value'];
-                            }
-
-                            if ($new || $item->getAttributes() != $attributes) {
-                                if (!$item->save()) {
-                                    $errors = $item->getErrors();
-                                    foreach ($errors as $error) {
-                                        $errors[$i] = $error[0];
-                                    }
-                                }
-                                Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array(
-                                    'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                                    'model' => $model::getShortModelName(),
-                                ));
-                            }
-
-                            $items[] = $item;
-                            ++$j;
-                        }
-                    }
-                    $errors = $this->amendCommonOphthalmicDisorderGroups($model, $options, $errors, $items, $tx);
+                    $this->postRequest($model, $options, $errors);
                 } else {
                     list($options, $items) = $this->optionsFiltersNotAvailable($model, $options);
                 }
             }
-
-            $this->render('//admin/generic_admin', array(
-                'title' => $title,
-                'model' => $model,
-                'items' => $items,
-                'errors' => $errors,
-                'options' => $options,
-            ));
+        $this->renderForGenericAdmin($title, $model, $items, $errors, $options);
         }
     }
 
@@ -181,14 +193,13 @@ class DisorderController extends BaseController
     /**
      * Lists all disorders for a given search term.
      */
-    public function actionAutocomplete()
+    public function actionAutoComplete()
     {
-        Yii::log(CVarDumper::dumpAsString("asdkjfhkasjdfkljsaf"));
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
             $params = array();
             if (isset($_GET['term']) && $term = $_GET['term']) {
-                $criteria->addCondition('LOWER(term) LIKE :term COLLATE utf8_general_ci');
+                $criteria->addCondition(array('LOWER(term) LIKE :term', 'LOWER(aliases) LIKE :term'), 'OR');
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
             $criteria->order = 'term';

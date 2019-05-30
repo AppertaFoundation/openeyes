@@ -27,6 +27,8 @@ return array(
                     'PatientName',
                     'PatientNumber',
                     'PreviousProcedures',
+                    'PatientVision',
+                    'PatientIdentifier'
                 ),
             ),
             'fixedParameters' => array(

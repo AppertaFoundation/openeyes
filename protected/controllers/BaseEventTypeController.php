@@ -150,11 +150,10 @@ class BaseEventTypeController extends BaseModuleController
 
     public function behaviors()
     {
-        return array(
-            'CreateEventBehavior' => array(
-                'class' => 'application.behaviors.CreateEventControllerBehavior',
-            ),
-        );
+        return array_merge(parent::behaviors(),[
+            'WorklistBehavior' => ['class' => 'application.behaviors.WorklistBehavior',],
+            'CreateEventBehavior' => ['class' => 'application.behaviors.CreateEventControllerBehavior',]
+        ]);
     }
 
     public function getPageTitle()
@@ -854,7 +853,7 @@ class BaseEventTypeController extends BaseModuleController
             ),
         );
 
-        $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
+        $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
         $this->event_actions = array(
             EventAction::link('Cancel',
                 Yii::app()->createUrl($cancel_url),
@@ -896,6 +895,11 @@ class BaseEventTypeController extends BaseModuleController
             $this->event_tabs[] = array(
                 'label' => 'Edit',
                 'href' => Yii::app()->createUrl($this->event->eventType->class_name . '/default/update/' . $this->event->id),
+            );
+
+            $this->event_tabs[] = array(
+                'label' => 'Change Context',
+                'class' => 'js-change_context'
             );
         }
 
@@ -2375,7 +2379,9 @@ class BaseEventTypeController extends BaseModuleController
 
         $this->readInEventImageSettings();
         try {
+            Yii::app()->params['image_generation'] = true;      // Change the theme to dark for lightning viewer image
             $content = $this->getEventAsHtml();
+            Yii::app()->params['image_generation'] = false;     // Chane the theme back to normal
 
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
@@ -2426,7 +2432,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function getEventAsHtml()
     {
-        ProfileController::changeDisplayTheme(Yii::app()->user->id, 'dark');
         ob_start();
 
         $this->setOpenElementsFromCurrentEvent('view');

@@ -20,7 +20,7 @@
             $patient_identifier->code = $identifier_code;
         }
         ?>
-      <tr>
+      <tr class="patient-identifier-duplicate-check">
         <td class="<?= $patient_identifier->isRequired() ? 'required' : '' ?>">
             <?= $patient_identifier->getLabel() ?>
           <br/>
@@ -28,19 +28,33 @@
         </td>
         <td>
             <?php
-            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][id]', $patient_identifier->id);
-            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][code]', $patient_identifier->code);
-            echo CHtml::textField('PatientIdentifier[' . $index . '][value]',
-                $patient_identifier->value,
-                array(
+
+            echo $form->textField($patient_identifier,'value',array(
                     'placeholder' => $patient_identifier->getPlaceholder(),
                     'maxlength' => 255,
+                    'name' => 'PatientIdentifier['.$index.'][value]',
+                    'onblur' => "findDuplicatesByPatientIdentifier($patient->id);",
                     !$patient_identifier->isEditable() ? 'readonly' : '' => 'readonly',
-                )); ?>
+            ));
+            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][id]', $patient_identifier->id);
+            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][code]', $patient_identifier->code);
+            ?>
         </td>
       </tr>
-        <?php
-        $index++;
-    } ?>
 <?php } ?>
 
+<script>
+    function findDuplicatesByPatientIdentifier( id ) {
+        var identifier_value = $('#PatientIdentifier_<?= $index ?>_value').val();
+        $.ajax({
+            url: "<?php echo Yii::app()->controller->createUrl('patient/findDuplicatesByIdentifier');?>",
+            data: {identifier_code: '<?= $identifier_code ?>',identifier_value: identifier_value, id: id},
+            type: 'GET',
+            success: function (response) {
+                $('#conflicts').remove();
+                $('.patient-identifier-duplicate-check').after(response);
+            }
+        });
+    }
+</script>
+    <?php $index++; } ?>

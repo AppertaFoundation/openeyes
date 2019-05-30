@@ -3,11 +3,10 @@
 
   <h2 class="event-title">
       <?php echo $this->title ?>
-      <?php if ($this->event->is_automated) { ?>
-        <span id="automated-event">
-          <?php $this->renderPartial('//patient/event_automated'); ?>
-        </span>
-      <?php } ?>
+      <?php if ($this->event->is_automated) {
+          echo " - ";
+          $this->renderPartial('//patient/event_automated');
+      } ?>
       <?php if ($this->action->id === 'view') { ?>
         <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
       <?php } ?>
@@ -17,9 +16,22 @@
             <?= $extra_info ?>
         </div>
       <?php endif; ?>
+
   </h2>
+
     <?php if ($this->title != 'Please select booking') { ?>
         <div class="event-title-extra-info flex-layout">
+            <?php if (isset($this->event->firm)): ?>
+                <div>
+                    <b>Subspecialty: </b>
+                    <?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name ; ?>
+                </div>
+                <div>
+                    <b>&nbsp;Context: </b>
+                    <?= $this->event->firm->name; ?>
+                </div>
+            <?php endif; ?>
+
             <?php $errors = $this->event->getErrors();
             $error_class = isset($errors['event_date']) ? 'error' : '';
             ?>
@@ -50,22 +62,22 @@
                         $('.js-change-event-date').hide();
                     });
 
-                    $('.pickmeup.pmu-view-days').on('click', function () {
-                        if ($(this).hasClass('pmu-hidden')) {
-                            $date_input.hide();
-                            $('.js-event-date').html($date_input.val());
-                            $('.js-change-event-date').show();
-                            $('.js-event-date').show();
-                        }
-                    });
-                });
-            </script>
+                  $('.pickmeup.pmu-view-days').on('click', function () {
+                      if ($(this).hasClass('pmu-hidden')) {
+                          $date_input.hide();
+                          $('.js-event-date').html($date_input.val());
+                          $('.js-change-event-date').show();
+                          $('.js-event-date').show();
+                      }
+                  });
+              });
+          </script>
 
-            <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
-            <i class="oe-i history large pad-left js-has-tooltip js-change-event-date"
-               data-tooltip-content="Change Event date"
-               style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
-        </div>
+          <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
+          <i class="oe-i history large pad-left js-has-tooltip js-change-event-date"
+             data-tooltip-content="Change Event date"
+             style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
+      </div>
     <?php } ?>
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>

@@ -24,7 +24,8 @@
 <?php } ?>
 
 <?php $this->renderPartial('//oescape/oescape_header', array(
-    'subspecialty' => $subspecialty
+    'subspecialty' => $subspecialty,
+    'header_data' => $header_data
 )) ?>
 <?php $this->renderPartial('//oescape/oescape_content', array(
     'cssClass' => $cssClass,

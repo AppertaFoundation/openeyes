@@ -282,21 +282,23 @@ class WorklistManager extends CComponent
     /**
      * @return WorklistDefinition[]
      */
-    public function getWorklistDefinitions()
+    public function getWorklistDefinitions($exclude_unbooked = false)
     {
-        return $this->getModelForClass('WorklistDefinition')->findAll();
+        return $this->getModelForClass('WorklistDefinition' . ($exclude_unbooked ? ':withoutUnbooked' : '') )->findAll();
     }
 
     /**
      * @return DateTime
      */
-    public function getGenerationTimeLimitDate(WorklistDefinition $definition = null)
+    public function getGenerationTimeLimitDate(WorklistDefinition $definition = null, $date_limit = null)
     {
-        $limit = $this->getAppParam('worklist_default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
-        $interval = DateInterval::createFromDateString($limit);
+        if (is_null($date_limit)) {
+            $limit = $this->getAppParam('worklist_default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
+            $interval = DateInterval::createFromDateString($limit);
 
-        $date_limit = new DateTime();
-        $date_limit->add($interval);
+            $date_limit = new DateTime();
+            $date_limit->add($interval);
+        }
 
         if ($definition && $definition->active_until) {
             $active_until = new DateTime($definition->active_until);
@@ -304,6 +306,7 @@ class WorklistManager extends CComponent
                 $date_limit = $active_until;
             }
         }
+
         return $date_limit;
     }
 
@@ -624,9 +627,10 @@ class WorklistManager extends CComponent
         $site = $this->getCurrentSite();
         $firm = $this->getCurrentFirm();
 
-        $content = '';
         $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
         foreach ($days as $when) {
+
+
             foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist) {
                 $worklist_patients = $this->getPatientsForWorklist($worklist);
                 if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
@@ -1059,7 +1063,7 @@ class WorklistManager extends CComponent
                 'end' => $range_date->format('Y-m-d H:i:s'),
                 'scheduled' => true,
                 'description' => $definition->description,
-                'name' => $this->generateWorklistName($definition, $date),
+                'name' => $definition->worklist_name ? $definition->worklist_name : $this->generateWorklistName($definition, $date),
             );
 
             $instance->save();
@@ -1095,9 +1099,7 @@ class WorklistManager extends CComponent
      */
     public function generateAutomaticWorklists(WorklistDefinition $definition, $date_limit = null)
     {
-        if (is_null($date_limit)) {
-            $date_limit = $this->getGenerationTimeLimitDate($definition);
-        }
+        $date_limit = $this->getGenerationTimeLimitDate($definition, $date_limit);
 
         $rrule_str = $this->setDateLimitOnRrule($definition->rrule, $date_limit);
         $rrule = $this->getInstanceForClass('\RRule\RRule', array($rrule_str));
@@ -1137,22 +1139,18 @@ class WorklistManager extends CComponent
      * Returns false for errors, otherwise a total count of worklist instances that have been created.
      *
      * @param DateTime $date_limit
-     *
      * @return bool|int
+     * @throws CException
      */
-    public function generateAllAutomaticWorklists(DateTime $date_limit = null)
+    public function generateAllAutomaticWorklists(DateTime $date_limit)
     {
-        if (is_null($date_limit)) {
-            $date_limit = $this->getGenerationTimeLimitDate();
-        }
-
         $count = 0;
 
         $transaction = $this->startTransaction();
 
         try {
             $this->disableAudit();
-            $definitions = $this->getModelForClass('WorklistDefinition')->findAll();
+            $definitions = $this->getModelForClass('WorklistDefinition')->withoutUnbooked()->findAll();
             $definition_count = 0;
             foreach ($definitions as $definition) {
                 $result = $this->generateAutomaticWorklists($definition, $date_limit);
@@ -1539,8 +1537,5 @@ class WorklistManager extends CComponent
     {
         return \Yii::app()->user->getState("worklist_patient_id", null);
     }
-
-
-
-
 }
+

@@ -65,9 +65,9 @@
             <td></td>
             <td>
                 <div>
-                              <span class="js-name">
-                                <?php echo isset($model->label) ? $model->label->name : ''; ?>
-                              </span>
+                    <span class="js-name">
+                        <?php echo isset($model->label) ? $model->label->name : ''; ?>
+                    </span>
                     <?php echo CHtml::hiddenField('Contact[contact_label_id]'
                         , $model->contact_label_id, array('class' => 'hidden_id')); ?>
                 </div>

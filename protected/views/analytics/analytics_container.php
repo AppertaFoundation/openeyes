@@ -24,16 +24,22 @@
             }
             if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
                 if ($specialty === 'Cataract'){?>
-                    <div class="mdl-layout__container" style="width: 60%">
+                    <div class="mdl-layout__container">
                     <?php  $this->renderPartial('//analytics/analytics_cataract',
-                    array('event_list'=> $patient_list)); ?>
+                    array('event_list'=> $event_list)); ?>
                     </div>
-                <?php }elseif ($specialty === 'All'){
-                    $this->renderPartial('//analytics/analytics_clinical',
-                        array('clinical_data'=>$clinical_data));
-                }else{
-                    $this->renderPartial('//analytics/analytics_custom',
-                        array('custom_data'=> $custom_data));
+                <?php }else{?>
+                    <div id="js-hs-chart-analytics-clinical-main" style="display: none;">
+                     <?php
+                     $this->renderPartial('//analytics/analytics_clinical',
+                         array('clinical_data'=>$clinical_data)
+                     );
+                     if ($specialty !== "All"){
+                            $this->renderPartial('//analytics/analytics_custom', array('custom_data'=>$custom_data));
+                        }
+                     ?>
+                    </div>
+                <?php
                 }
             }
         ?>

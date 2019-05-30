@@ -17,6 +17,7 @@
                 <th>Study Coordinator</th>
                 <th>Treatment</th>
                 <th>Trial Status</th>
+                <th>Accepted/Rejected Date</th>
                 <th>Trial Type</th>
                 <th>Date Started</th>
                 <th>Date Ended</th>
@@ -28,9 +29,10 @@
               foreach ($this->patient->trials as $trialPatient): //
                   ?>
                 <tr>
-                  <td><?php if (Yii::app()->user->checkAccess('TaskViewTrial')) {
+                  <td>
+                      <?php if (!is_null($trialPatient->trial->getUserPermission(Yii::app()->user->id)) && (Yii::app()->user->checkAccess('TaskViewTrial'))) {
                           echo CHtml::link(CHtml::encode($trialPatient->trial->name),
-                              Yii::app()->controller->createUrl('/OETrial/trial/permissions',
+                              Yii::app()->controller->createUrl('/OETrial/trial/view',
                                   array('id' => $trialPatient->trial_id)));
                       } else {
                           echo CHtml::encode($trialPatient->trial->name);
@@ -50,6 +52,10 @@
                   </td>
                   <td><?= $trialPatient->treatmentType->name; ?></td>
                   <td><?= $trialPatient->status->name; ?></td>
+                  <td><?php
+                      if (isset($trialPatient->status_update_date)) {
+                          echo Helper::formatFuzzyDate($trialPatient->status_update_date);
+                      } ?></td>
                   <td><?= $trialPatient->trial->trialType->name; ?></td>
                   <td><?= $trialPatient->trial->getStartedDateForDisplay(); ?></td>
                   <td><?= $trialPatient->trial->getClosedDateForDisplay(); ?></td>

@@ -3,7 +3,7 @@
         <div class="title wordcaps">Upload</div>
     </div>
     <div class="oe-full-content  flex-top">
-        <button onclick="window.location.href=' <?= $backuri ?> '">
+        <button onclick="window.location.href='<?= $backuri = $backuri ?  : '/OETrial/trial/' ?>'">
                 Back to previous page
         </button>
 

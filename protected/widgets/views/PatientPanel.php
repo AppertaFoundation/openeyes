@@ -39,7 +39,7 @@ $deceased = $this->patient->isDeceased();
      data-patient-id="<?= $this->patient->id ?>"
 >
     <div class="patient-name">
-        <a href="<?= (new CoreAPI())->generateEpisodeLink($this->patient); ?>">
+        <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
             <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
             <span class="patient-firstname">
       <?php echo $this->patient->getFirst_name(); ?>
@@ -104,6 +104,9 @@ $deceased = $this->patient->isDeceased();
                     <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
                 </svg>
             </div>
+
+            <?php
+            if (Yii::app()->user->checkAccess('OprnViewClinical')){?>
             <div class="patient-management js-management-btn">
                 <svg viewBox="0 0 30 30" class="icon">
                     <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
@@ -114,16 +117,11 @@ $deceased = $this->patient->isDeceased();
                     <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
                 </svg>
             </div>
-            <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials) !== 0) {	?>
-                <div class="patient-trials js-trials-btn">
-                    <svg viewBox="0 0 30 30" class="icon">
-                        <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>
-                    </svg>
-                </div>
-            <?php } ?>
-            <?php if ($this->patient->isEditable()): ?>
+            <?php }?>
+
+          <?php if ($this->patient->isEditable()): ?>
                 <div class="patient-local-edit js-patient-local-edit-btn"
-                <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials))  echo 'style ="top: 35px; right: -52px"'?>
+                <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials))  echo 'style ="top: 35px; right: 0px"'?>
                 >
                     <a href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>" >
                         <svg viewBox="0 0 30 30" class="icon">
@@ -132,6 +130,13 @@ $deceased = $this->patient->isDeceased();
                     </a>
                 </div>
             <?php endif; ?>
+            <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
+                <div class="patient-trials js-trials-btn">
+                    <svg viewBox="0 0 30 30" class="icon">
+                        <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>
+                    </svg>
+                </div>
+            <?php } ?>
         </div>
     </div>
     <!-- Widgets (extra icons, links etc) -->

@@ -5,12 +5,11 @@ function addItemPatientForm(wrapper_id, ui) {
   $wrapper.show();
   $wrapper.find('.hidden_id').val(ui.item.value);
 }
-
-function removeSelectedGP() {
-  $('#no_gp_result').hide();
-  $('.js-selected_gp .js-name').text('');
-  $('#selected_gp_wrapper').hide();
-  $('#Patient_gp_id').val('');
+function removeSelectedGP(type = 'gp') {
+  $('#no_'+type+'_result').hide();
+  $('.js-selected_'+type+' .js-name').text('');
+  $('#selected_'+type+'_wrapper').hide();
+  $('#Patient_'+type+'_id').val('');
 }
 
 function removeSelectedPractice() {
@@ -71,6 +70,21 @@ $(function () {
     $(selector).toggle($(this).is(':checked'));
   });
 
+  $('#is_pr_gp').on('change', function () {
+    var selector = $(this).data('child_row');
+    var isChecked = $(this).is(':checked');
+    if (isChecked){
+      $(selector).hide();
+      $('#Patient_gp_id').val($('#Patient_patient_referral_id').val());
+    } else {
+      $(selector).show();
+    }
+  });
+
+  $('#selected_pr_wrapper').on('click', '.js-remove-pr', function () {
+    removeSelectedGP('pr');
+  });
+
   $('#selected_gp_wrapper').on('click', '.js-remove-gp', function () {
     removeSelectedGP();
   });
@@ -95,7 +109,8 @@ function addGpItem(wrapper_id, ui){
 
 $(document).ready(function ()
 {
-  highLightError("Patient_gp_id_em_","Practitioner cannot be blank",'#autocomplete_gp_id');
+  highLightError("Patient_gp_id_em_","GP cannot be blank",'#autocomplete_gp_id');
+  highLightError("Patient_patient_referral_id_em_","Referred By cannot be blank",'#autocomplete_pr_id');
   highLightError("Patient_practice_id_em_","Practice cannot be blank",'#autocomplete_practice_id');
 });
 
