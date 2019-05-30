@@ -52,7 +52,7 @@ $deceased = $this->patient->isDeceased();
         <div class="patient-details">
             <div class="hospital-number">
                 <span><?php echo Yii::app()->params['hos_num_label'] ?> </span>
-                <?php echo $this->patient->hos_num ?>
+                <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></div>
             </div>
             <div class="nhs-number">
                 <span><?php echo Yii::app()->params['nhs_num_label'] ?></span>
