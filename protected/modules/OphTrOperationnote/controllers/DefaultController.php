@@ -312,11 +312,7 @@ class DefaultController extends BaseEventTypeController
         $this->dont_redirect = true;
 
         if (parent::actionDelete($id)) {
-            if (Event::model()->count('episode_id=?', array($this->event->episode_id)) == 0) {
-                $this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
-            } else {
-                $this->redirect(array('/patient/episode/'.$this->event->episode_id));
-            }
+            $this->redirect((new CoreAPI())->generatePatientLandingPageLink($this->event->episode->patient));
         }
     }
 

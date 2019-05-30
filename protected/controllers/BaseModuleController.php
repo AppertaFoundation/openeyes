@@ -88,7 +88,7 @@ class BaseModuleController extends BaseController
     {
         if ($this->event_type && $this->event_type->disabled) {
             // disabled module
-            $this->redirectToPatientEpisodes();
+            $this->redirectToPatientLandingPage();
         }
 
         // Set the module CSS class name.
@@ -137,8 +137,8 @@ class BaseModuleController extends BaseController
     /**
      * Redirect to the patient episodes when the controller determines the action cannot be carried out.
      */
-    protected function redirectToPatientEpisodes()
+    protected function redirectToPatientLandingPage()
     {
-        $this->redirect(array('/patient/episodes/'.$this->patient->id));
+        $this->redirect((new CoreAPI())->generatePatientLandingPageLink($this->patient));
     }
 }
