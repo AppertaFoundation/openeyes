@@ -169,7 +169,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         Yii::app()->params['event_lock_disable'] = true;
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
-        $this->assertTrue($this->rules->canDeleteEvent($this->getUser(), $event));
+        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
     }
 
     public function testCanDeleteEvent_Admin()
