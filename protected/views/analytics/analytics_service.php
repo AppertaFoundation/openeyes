@@ -48,6 +48,13 @@
         };
         var waiting_max = Math.max(...waiting_data['y'])+5 > 20? Math.max(...waiting_data['y']) + 5: 20;
         var waiting_count = waiting_data['y'].reduce((a, b) => a + b, 0);
+      
+        for (const item of [overdue_data, coming_data, waiting_data]){
+          if (item['x'].length == 0) {
+            item['x'] = [null];
+            item['y'] = [null];
+          }
+        }
 
         var first_plot_data;
         if ($('#js-hs-app-follow-up-overdue').hasClass("selected")){
