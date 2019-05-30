@@ -200,18 +200,31 @@ class ChangeEventController extends BaseController
 
             if ($episode->patient_id === $patient_id) {
                 $action = 'update';
-                $selected_subspecialty_id = \Yii::app()->request->getPost('selectedSubspecialtyId');
+                $firm_id = \Yii::app()->request->getPost('selected_firm_id');
+
                 $data = 'Context changed, firm remains the same';
-                if ($selected_subspecialty_id) {
-                    if ($episode->firm_id !== $selected_subspecialty_id) {
+                if ($firm_id) {
+                    if ($episode->firm_id !== $firm_id) {
+
                         $current_firm = \Firm::model()->findByPk($episode->firm_id);
-                        $episode = new \Episode;
-                        $episode->patient_id = $patient_id;
-                        $episode->start_date = date('Y-m-d H:i:s');
+                        $new_firm = \Firm::model()->findByPk($firm_id);
+
+                        //try to find an existing firm for the patient
+                        $episode = \Episode::model()->find('patient_id = ? AND firm_id = ?', [$episode->patient_id, $firm_id]);
+
+                        if (!$episode) {
+                            $episode = new \Episode;
+                            $episode->patient_id = $patient_id;
+                            $episode->start_date = date('Y-m-d H:i:s');
+                            $episode->episode_status_id = \EpisodeStatus::model()->find('name = ?', ['New'])->id;
+                        }
+
+                        //set the new firm id
+                        $episode->firm_id = $new_firm->id;
+
                         $action = 'change-firm';
-                        $data = 'Changed from '.$current_firm->name.' to '.\Firm::model()->findByPk($selected_subspecialty_id)->name;
+                        $data = 'Changed from '.$current_firm->name.' to '.\Firm::model()->findByPk($firm_id)->name;
                     }
-                    $episode->firm_id = $selected_subspecialty_id;
                     $episode->last_modified_user_id = Yii::app()->user->id;
                     $episode->last_modified_date = date('Y-m-d H:i:s');                    
                 }

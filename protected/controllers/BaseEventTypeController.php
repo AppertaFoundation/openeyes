@@ -2091,6 +2091,10 @@ class BaseEventTypeController extends BaseModuleController
     protected function afterCreateElements($event)
     {
         $this->updateUniqueCode($event);
+
+        $site_id = \Yii::app()->session->get('selected_site_id', null);
+        $firm_id = \Yii::app()->session->get('selected_firm_id', null);
+        $this->addToUnbookedWorklist($site_id, $firm_id);
     }
 
     /**
