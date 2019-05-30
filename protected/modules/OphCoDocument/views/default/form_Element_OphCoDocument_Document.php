@@ -249,23 +249,21 @@
     <script>
         function rotateImage(degree, type) {
             var document_rotate = $('#'+type+'_document_rotate').val();
+            var image_src = $('.ophco-image-container img').attr('src');
+            var image_src = image_src.split('?');
+            var image_src = image_src[0];
+
             degree = Number(document_rotate)+Number(degree);
             var image_id = $('#Element_OphCoDocument_Document_'+type+'_document_id').val();
             var css_degree = -1*degree;
             $('#ophco-image-container-'+image_id+' img').animate({  transform: css_degree }, {
                 step: function(deg,fx) {
-                    $(this).css({
-                        '-webkit-transform':'rotate('+deg+'deg)',
-                        '-moz-transform':'rotate('+deg+'deg)',
-                        'transform':'rotate('+deg+'deg)'
+                    $(this).attr({
+                        'src':image_src+'?rotate='+degree
                     });
                     $('#'+type+'_document_rotate').val(degree);
                 }
             });
-            $('#ophco-image-container-'+image_id).css('height', '400px');
-            $('#ophco-image-container-'+image_id).css('width', '400px');
-            $('#ophco-image-container-'+image_id+' img').css('height', '100%');
-            $('#ophco-image-container-'+image_id+' img').css('width', '100%');
         }
     </script>
 
