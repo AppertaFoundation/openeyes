@@ -20,7 +20,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
 <div class="element-data full-width flex-layout flex-top col-gap">
-    <div class="cols-5 ">
+    <div class="cols-3">
         <table class="cols-full">
             <?php if($correspondeceApp === "on") { ?>
             <tr>
@@ -51,7 +51,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
         >
     </div>
     <div id="correspondence_out"
-         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-13 element"
+         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-full element"
          style="background-color: white; color: black; display:none;">
             <header>
                 <?php
