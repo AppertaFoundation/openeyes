@@ -1,7 +1,7 @@
 <?php
 use \OEModule\PASAPI\models\PasApiAssignment;
 
-class m190531_150548_unbooked_worklist_data_migration extends OEMigration
+class m190321_141548_unbooked_worklist_data_migration extends OEMigration
 {
 
 	// Use safeUp/safeDown to do migration with transaction
@@ -36,24 +36,13 @@ class m190531_150548_unbooked_worklist_data_migration extends OEMigration
 
         $this->insert('setting_metadata', array('element_type_id' => null,
                 'field_type_id' => 4,
-                'key' => 'worklist_future_search_days',
-                'name' => 'Search worklist future appointment within (days)',
+                'key' => 'worklist_search_appt_within',
+                'name' => 'Search worklist appointment within (days)',
                 'default_value' => '30',
                 'data' => ''
             )
         );
-
-        $this->insert('setting_metadata', array('element_type_id' => null,
-                'field_type_id' => 4,
-                'key' => 'worklist_past_search_days',
-                'name' => 'Search worklist past appointment within (days)',
-                'default_value' => '30',
-                'data' => ''
-            )
-        );
-
-        $this->insert('setting_installation', array('key' => '`worklist_future_search_days`', 'value' => '30'));
-        $this->insert('setting_installation', array('key' => 'worklist_past_search_days', 'value' => '30'));
+        $this->insert('setting_installation', array('key' => 'worklist_search_appt_within', 'value' => '30'));
 	}
 
 	private function getWorklistPatientId($event)
