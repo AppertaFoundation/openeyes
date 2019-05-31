@@ -52,6 +52,9 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
     </div>
     <div id="correspondence_out"
          class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-full element"
+         <?php 
+         // TODO: Remove this section once newblue is updated to include the correspondence-letterdraft style
+         if ($element->draft) {?> 
          style="background-color: white; color: black; display:none;
                  background-image: url(<?php echo Yii::app()->assetManager->createUrl('img/bg_draft.png', 'application.modules.OphCoCorrespondence.assets') ?>);
                  background-position-x: center;
@@ -59,6 +62,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
                  background-size: initial;
                  background-repeat-x: no-repeat;
                  background-repeat-y: no-repeat;">
+            <?php }?>
             <header>
                 <?php
             $ccString = "";
