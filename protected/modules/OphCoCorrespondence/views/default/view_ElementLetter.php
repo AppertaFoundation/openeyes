@@ -52,7 +52,13 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
     </div>
     <div id="correspondence_out"
          class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-13 element"
-         style="background-color: white; color: black; display:none;">
+         style="background-color: white; color: black; display:none;
+                 background-image: url(<?php echo Yii::app()->assetManager->createUrl('img/bg_draft.png', 'application.modules.OphCoCorrespondence.assets') ?>);
+                 background-position-x: center;
+                 background-position-y: top;
+                 background-size: initial;
+                 background-repeat-x: no-repeat;
+                 background-repeat-y: no-repeat;">
             <header>
                 <?php
             $ccString = "";
