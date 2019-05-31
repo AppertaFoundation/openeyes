@@ -110,4 +110,9 @@ class Element_OphCiExamination_Contacts extends \BaseEventTypeElement
     {
 
     }
+
+    public function getContainer_view_view()
+    {
+        return '//patient/element_container_no_view';
+    }
 }
