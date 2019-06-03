@@ -1440,12 +1440,14 @@ class AnalyticsController extends BaseController
      * Check user roles, user with "Service Manager" role can view all the data for all surgeons.
      * Otherwise, it can only view the data created by himself.
      */
-  protected function checkAuth()
-  {
-
-          $this->surgeon = Yii::app()->user->id;
-
-  }
+    protected function checkAuth()
+    {
+        if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
+            $this->surgeon = null;
+        } else {
+            $this->surgeon = Yii::app()->user->id;
+        }
+    }
 
     /**
      * @return array
