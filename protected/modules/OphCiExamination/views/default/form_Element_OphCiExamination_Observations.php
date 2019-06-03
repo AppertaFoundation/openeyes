@@ -181,23 +181,20 @@
 
         function getAndSetBMI(height, weight) {
             let $bmiContainer = $('#bmi-container');
-            bmi = 0;
+            let bmi = 0;
             let red = "0%";
             let green = "80%";
+            let result = 'N/A';
             if ((height > 0) && (weight > 0)) {
                 bmi = bmi_calculator(weight, height);
                 result = bmi.toFixed(2) || 'N/A';
                 let resultFloat = parseFloat(result);
-                console.log(typeof parseFloat(result));
                 if (resultFloat < 18.5 || resultFloat >= 30) {
                     red = "80%";
                     green = "0%";
                 }
-            } else {
-                result = 'N/A';
             }
             $bmiContainer.text(result);
-            // console.log($bmiContainer.closest("tr"));
             $bmiContainer.closest("tr").css("background-color", "rgb("+red+", "+green+", 0%)");
         }
     });
