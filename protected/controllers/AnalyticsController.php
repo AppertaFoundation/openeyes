@@ -1289,7 +1289,7 @@ class AnalyticsController extends BaseController
             if( ($start_date && $assignment_time < $start_date) ||
                 ($end_date && $assignment_time > $end_date))
                 continue;
-            if (isset($this->surgeon)){
+            if (isset($this->surgeon) && isset($current_event)){
                 if ($this->surgeon !== $current_event->created_user_id){
                     continue;
                 }
@@ -1440,14 +1440,14 @@ class AnalyticsController extends BaseController
      * Check user roles, user with "Service Manager" role can view all the data for all surgeons.
      * Otherwise, it can only view the data created by himself.
      */
-  protected function checkAuth()
-  {
-      if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
-          $this->surgeon = null;
-      } else {
-          $this->surgeon = Yii::app()->user->id;
-      }
-  }
+    protected function checkAuth()
+    {
+        if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
+            $this->surgeon = null;
+        } else {
+            $this->surgeon = Yii::app()->user->id;
+        }
+    }
 
     /**
      * @return array
