@@ -38,7 +38,7 @@ class Appointment extends BaseCWidget
         $criteria->order = 't.when asc';
 
         $criteria_past->addCondition('t.when < "' . $start_of_today . '"');
-        $criteria_past->order = 't.when asc';
+        $criteria_past->order = 't.when desc';
 
         $this->worklist_patients = WorklistPatient::model()->findAllByAttributes(
             ['patient_id' => $this->patient->id],
