@@ -18,7 +18,7 @@
 		<label for="LetterString_name">Body:</label>
 	</div>
 	<div class="cols-5 column end">
-		<?php echo  CHtml::activeTextArea($model, 'body' , ['class' => 'cols-full'])?>
+		<?php echo  CHtml::activeTextArea($model, 'body' , ['class' => 'cols-full autosize'])?>
 	</div>
 </div>
 	<div class="cols-8 large-offset-2 column">
