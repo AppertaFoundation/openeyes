@@ -34,7 +34,7 @@ foreach ($attributes as $attribute) {
 	$items = array();
 
 	foreach ($attribute->options as $option) {
-		$items[] = ['label' => (string)$option->value];
+		$items[] = ['label' => (string)$option->value.", "];
 	}
 
 	$itemSets[] = ['items' => $items ,
