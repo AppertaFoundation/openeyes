@@ -167,6 +167,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function getAllElementTypes()
     {
+        if ($this->action->id == 'update') {
+            return parent::getAllElementTypes();
+        }
+
         $remove = $this->getElementFilterList(false);
         return array_filter(
             parent::getAllElementTypes(),
@@ -1500,6 +1504,10 @@ class DefaultController extends \BaseEventTypeController
 
             //if $this->set is null than no workflow rule to apply
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
+        }
+
+        if (!$element_assignment && $this->event) {
+            \OELog::log("Assignment not found for event id: {$this->event->id}");
         }
 
         if ($this->action->id == 'update' && !$element_assignment->step_completed) {
