@@ -158,7 +158,7 @@
                 <ul id="patient-result-list" class="oe-multi-select inline">
                     <?php foreach($patients as $patient): ?>
                         <li data-patient_id="<?=$patient->id?>">
-                            <?="{$patient->first_name} {$patient->last_name}({$patient->hos_num})"?>
+                            <?="{$patient->first_name} {$patient->last_name} ({$patient->hos_num})"?>
                             <i class="oe-i remove-circle small-icon pad-left"></i>
                             <input type="hidden" id="<?="{$patient->id}";?>" value="<?="{$patient->id}";?>">
                         </li>
