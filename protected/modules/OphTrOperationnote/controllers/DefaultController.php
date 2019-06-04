@@ -75,15 +75,15 @@ class DefaultController extends BaseEventTypeController
                 // Splice the elements array to place the extra elements in the correct order
                 // As it is when operation note has no booked procedures
                 $procedure_list_element = new Element_OphTrOperationnote_ProcedureList();
-                $elementsBeforeProcedures = [];
-                $elementsAfterProcedures = [];
+                $elements_before_procedures = [];
+                $elements_after_procedures = [];
                 $procedure_list_element_found = false;
 
                 foreach ($elements as $element) {
                     if ($procedure_list_element_found) {
-                        $elementsAfterProcedures[] = $element;
+                        $elements_after_procedures[] = $element;
                     } else {
-                        $elementsBeforeProcedures[] = $element;
+                        $elements_before_procedures[] = $element;
                         if ($element instanceof $procedure_list_element) {
                             $procedure_list_element_found = true;
                         }
@@ -99,7 +99,7 @@ class DefaultController extends BaseEventTypeController
                         // only have one of any given procedure element
                         if (!in_array($kls, $extra_elements)) {
                             $extra_elements[] = $kls;
-                            $elementsBeforeProcedures[] = new $kls();
+                            $elements_before_procedures[] = new $kls();
                         }
                     }
 
@@ -107,11 +107,11 @@ class DefaultController extends BaseEventTypeController
                         // no specific element for procedure, use generic
                         $element = new Element_OphTrOperationnote_GenericProcedure();
                         $element->proc_id = $proc->id;
-                        $elementsBeforeProcedures[] = $element;
+                        $elements_before_procedures[] = $element;
                     }
                 }
 
-                return array_merge($elementsBeforeProcedures, $elementsAfterProcedures);
+                return array_merge($elements_before_procedures, $elements_after_procedures);
             }
 
             return $elements;
