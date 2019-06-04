@@ -53,7 +53,7 @@ class DefaultController extends BaseEventTypeController
 
     protected function beforeAction($action)
     {
-        Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/eyedraw.js');
+        Yii::app()->clientScript->registerScriptFile($this->assetPath . '/js/eyedraw.js');
         Yii::app()->clientScript->registerScriptFile($this->assetPath . '/js/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
 
         return parent::beforeAction($action);
@@ -72,6 +72,23 @@ class DefaultController extends BaseEventTypeController
         } else {
             $elements = $this->event_type->getDefaultElements();
             if ($procedures = $this->getBookingProcedures()) {
+                // Splice the elements array to place the extra elements in the correct order
+                // As it is when operation note has no booked procedures
+                $procedure_element = new Element_OphTrOperationnote_ProcedureList();
+                $elementsBeforeProcedures = [];
+                $elementsAfterProcedures = [];
+                $procedure_element_found = false;
+
+                foreach ($elements as $element) {
+                    if ($procedure_element_found) {
+                        $elementsAfterProcedures[] = $element;
+                    } else {
+                        $elementsBeforeProcedures[] = $element;
+                        if ($element instanceof $procedure_element) {
+                            $procedure_element_found = true;
+                        }
+                    }
+                }
                 // need to add procedure elements for the booking operation
                 $extra_elements = array();
 
@@ -82,7 +99,7 @@ class DefaultController extends BaseEventTypeController
                         // only have one of any given procedure element
                         if (!in_array($kls, $extra_elements)) {
                             $extra_elements[] = $kls;
-                            $elements[] = new $kls();
+                            $elementsBeforeProcedures[] = new $kls();
                         }
                     }
 
@@ -90,9 +107,11 @@ class DefaultController extends BaseEventTypeController
                         // no specific element for procedure, use generic
                         $element = new Element_OphTrOperationnote_GenericProcedure();
                         $element->proc_id = $proc->id;
-                        $elements[] = $element;
+                        $elementsBeforeProcedures[] = $element;
                     }
                 }
+
+                return array_merge($elementsBeforeProcedures, $elementsAfterProcedures);
             }
 
             return $elements;
@@ -121,7 +140,7 @@ class DefaultController extends BaseEventTypeController
      * For new notes for a specific operation, initialise procedure list with relevant procedures.
      *
      * @param Element_OphTrOperationnote_ProcedureList $element
-     * @param string                                   $action
+     * @param string $action
      */
     protected function setElementDefaultOptions_Element_OphTrOperationnote_ProcedureList($element, $action)
     {
@@ -138,7 +157,7 @@ class DefaultController extends BaseEventTypeController
      * Determine if the witness field is required, and set various defaults from the patient and related booking.
      *
      * @param Element_OphTrOperationnote_Anaesthetic $element
-     * @param string                                 $action
+     * @param string $action
      */
     protected function setElementDefaultOptions_Element_OphTrOperationnote_Anaesthetic($element, $action)
     {
@@ -162,7 +181,7 @@ class DefaultController extends BaseEventTypeController
      * Set the default drugs from site and subspecialty.
      *
      * @param Element_OphTrOperationnote_PostOpDrugs $element
-     * @param string                                 $action
+     * @param string $action
      */
     protected function setElementDefaultOptions_Element_OphTrOperationnote_PostOpDrugs($element, $action)
     {
@@ -183,6 +202,7 @@ class DefaultController extends BaseEventTypeController
             $element->operative_devices = $this->getOperativeDevicesBySiteAndSubspecialty(true);
         }
     }
+
     /**
      * Edit actions common initialisation.
      */
@@ -244,9 +264,9 @@ class DefaultController extends BaseEventTypeController
 
         if (!empty($_POST)) {
             if (preg_match('/^booking([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
-                $this->redirect(array('/OphTrOperationnote/Default/create?patient_id='.$this->patient->id.'&booking_event_id='.$m[1]));
+                $this->redirect(array('/OphTrOperationnote/Default/create?patient_id=' . $this->patient->id . '&booking_event_id=' . $m[1]));
             } elseif (@$_POST['SelectBooking'] == 'emergency') {
-                $this->redirect(array('/OphTrOperationnote/Default/create?patient_id='.$this->patient->id.'&unbooked=1'));
+                $this->redirect(array('/OphTrOperationnote/Default/create?patient_id=' . $this->patient->id . '&unbooked=1'));
             }
 
             $errors = array('Operation' => array('Please select a booked operation'));
@@ -263,18 +283,13 @@ class DefaultController extends BaseEventTypeController
             $theatre_diary_disabled = isset($element_enabled) && $element_enabled == 'on';
 
             /** @var OphTrOperationbooking_API $api */
-            if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking'))
-            {
-                if ($theatre_diary_disabled)
-                {
+            if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+                if ($theatre_diary_disabled) {
                     $operations = $api->getOpenOperations($this->patient);
-                }
-                else
-                {
+                } else {
                     $operations = $api->getScheduledOpenOperations($this->patient);
                 }
             }
-
 
 
             $this->title = 'Please select booking';
@@ -352,8 +367,8 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionLoadElementByProcedure()
     {
-        if (!$proc = Procedure::model()->findByPk((integer) @$_GET['procedure_id'])) {
-            throw new SystemException('Procedure not found: '.@$_GET['procedure_id']);
+        if (!$proc = Procedure::model()->findByPk((integer)@$_GET['procedure_id'])) {
+            throw new SystemException('Procedure not found: ' . @$_GET['procedure_id']);
         }
 
         if (!$patient_id = $this->getApp()->request->getParam('patientId')) {
@@ -401,8 +416,8 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetElementsToDelete()
     {
-        if (!$proc = Procedure::model()->findByPk((integer) @$_POST['procedure_id'])) {
-            throw new SystemException('Procedure not found: '.@$_POST['procedure_id']);
+        if (!$proc = Procedure::model()->findByPk((integer)@$_POST['procedure_id'])) {
+            throw new SystemException('Procedure not found: ' . @$_POST['procedure_id']);
         }
 
         $procedures = @$_POST['remaining_procedures'] ? explode(',', $_POST['remaining_procedures']) : array();
@@ -410,7 +425,7 @@ class DefaultController extends BaseEventTypeController
         $elements = array();
 
         foreach ($this->getProcedureSpecificElements($proc->id) as $element) {
-            if (empty($procedures) || !OphTrOperationnote_ProcedureListOperationElement::model()->find('procedure_id in ('.implode(',', $procedures).') and element_type_id = '.$element->element_type->id)) {
+            if (empty($procedures) || !OphTrOperationnote_ProcedureListOperationElement::model()->find('procedure_id in (' . implode(',', $procedures) . ') and element_type_id = ' . $element->element_type->id)) {
                 $elements[] = $element->element_type->class_name;
             }
         }
@@ -437,7 +452,7 @@ class DefaultController extends BaseEventTypeController
      *
      * @param $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
+     * @param array $data
      * @throws Exception
      */
     public function renderAllProcedureElements($action, $form = null, $data = null)
@@ -495,10 +510,10 @@ class DefaultController extends BaseEventTypeController
             $i = 0;
             $result = true;
             $procs = array();
-            while (isset($_GET['proc'.$i])) {
-                if ($this->procedure_requires_eye($_GET['proc'.$i])) {
+            while (isset($_GET['proc' . $i])) {
+                if ($this->procedure_requires_eye($_GET['proc' . $i])) {
                     $result = false;
-                    $procs[] = Procedure::model()->findByPk($_GET['proc'.$i])->term;
+                    $procs[] = Procedure::model()->findByPk($_GET['proc' . $i])->term;
                 }
                 ++$i;
             }
@@ -589,8 +604,8 @@ class DefaultController extends BaseEventTypeController
 
     /**
      * @param Element_OphTrOperationnote_ProcedureList $element
-     * @param array                                    $data
-     * @param int                                      $index
+     * @param array $data
+     * @param int $index
      */
     protected function saveComplexAttributes_Element_OphTrOperationnote_ProcedureList($element, $data, $index)
     {
@@ -629,8 +644,8 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        if (isset($data['Element_OphTrOperationnote_ProcedureList']['eye_id'])){
-            $element->setEye( \Eye::model()->findByPk($data['Element_OphTrOperationnote_ProcedureList']['eye_id']) );
+        if (isset($data['Element_OphTrOperationnote_ProcedureList']['eye_id'])) {
+            $element->setEye(\Eye::model()->findByPk($data['Element_OphTrOperationnote_ProcedureList']['eye_id']));
         }
 
         $element->complications = $complications;
@@ -752,10 +767,10 @@ class DefaultController extends BaseEventTypeController
         return AnaestheticAgent::model()
             ->active()
             ->with(array(
-                    $relation => array(
-                        'joinType' => 'JOIN',
-                    ),
-                ))
+                $relation => array(
+                    'joinType' => 'JOIN',
+                ),
+            ))
             ->findAll($criteria);
     }
 
@@ -814,10 +829,10 @@ class DefaultController extends BaseEventTypeController
         return OperativeDevice::model()
             ->activeOrPk($include_ids)
             ->with(array(
-                    'siteSubspecialtyAssignments' => array(
-                        'joinType' => 'JOIN',
-                    ),
-                ))
+                'siteSubspecialtyAssignments' => array(
+                    'joinType' => 'JOIN',
+                ),
+            ))
             ->findAll($criteria);
     }
 
@@ -863,10 +878,10 @@ class DefaultController extends BaseEventTypeController
 
         return OphTrOperationnote_PostopDrug::model()
             ->with(array(
-                    'siteSubspecialtyAssignments' => array(
-                        'joinType' => 'JOIN',
-                    ),
-                ))
+                'siteSubspecialtyAssignments' => array(
+                    'joinType' => 'JOIN',
+                ),
+            ))
             ->activeOrPk($include_ids)
             ->findAll($criteria);
     }
@@ -922,16 +937,16 @@ class DefaultController extends BaseEventTypeController
     {
         //AnaestheticType
         $type_assessments = array();
-        if(isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])){
+        if (isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])) {
 
             $type_assessments_by_id = array();
             foreach ($element->anaesthetic_type_assignments as $type_assignments) {
                 $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
             }
 
-            foreach($data['AnaestheticType'] as $anaesthetic_type_id){
+            foreach ($data['AnaestheticType'] as $anaesthetic_type_id) {
 
-                if( !array_key_exists($anaesthetic_type_id, $type_assessments_by_id) ){
+                if (!array_key_exists($anaesthetic_type_id, $type_assessments_by_id)) {
                     $anaesthetic_type_assesment = new OphTrOperationnote_OperationAnaestheticType();
                 } else {
                     $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type_id];
@@ -947,7 +962,7 @@ class DefaultController extends BaseEventTypeController
         $element->anaesthetic_type_assignments = $type_assessments;
 
         $anaesthetic_GA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'GA'))->queryScalar();
-        if( count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type_id == $anaesthetic_GA_id){
+        if (count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type_id == $anaesthetic_GA_id) {
             $data['AnaestheticDelivery'] = array(
                 Yii::app()->db->createCommand()->select('id')->from('anaesthetic_delivery')->where('name=:name', array(':name' => 'Other'))->queryScalar()
             );
@@ -956,23 +971,23 @@ class DefaultController extends BaseEventTypeController
         }
 
         $anaesthetic_NoA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'NoA'))->queryScalar();
-        if( count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type_id == $anaesthetic_NoA_id){
+        if (count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type_id == $anaesthetic_NoA_id) {
             $data['AnaestheticDelivery'] = array();
             $element->anaesthetist_id = null;
         }
 
         //AnaestheticDelivery
         $delivery_assessments = array();
-        if(isset($data['AnaestheticDelivery']) && is_array($data['AnaestheticDelivery'])){
+        if (isset($data['AnaestheticDelivery']) && is_array($data['AnaestheticDelivery'])) {
 
             $delivery_assessments_by_id = array();
             foreach ($element->anaesthetic_delivery_assignments as $delivery_assignments) {
                 $delivery_assessments_by_id[$delivery_assignments->anaesthetic_delivery_id] = $delivery_assignments;
             }
 
-            foreach($data['AnaestheticDelivery'] as $anaesthetic_delivery_id){
+            foreach ($data['AnaestheticDelivery'] as $anaesthetic_delivery_id) {
 
-                if( !array_key_exists($anaesthetic_delivery_id, $delivery_assessments_by_id) ){
+                if (!array_key_exists($anaesthetic_delivery_id, $delivery_assessments_by_id)) {
                     $anaesthetic_delivery_assesment = new OphTrOperationnote_OperationAnaestheticDelivery();
                 } else {
                     $anaesthetic_delivery_assesment = $delivery_assessments_by_id[$anaesthetic_delivery_id];
@@ -1015,11 +1030,11 @@ class DefaultController extends BaseEventTypeController
         $siteId = $this->request->getParam('siteId');
         if ($siteId > 0) {
             $optionValues = OphTrOperationbooking_Operation_Theatre::model()->findAll(array(
-                'condition' => 'active=1 and site_id='.$siteId,
+                'condition' => 'active=1 and site_id=' . $siteId,
                 'order' => 'name',
             ));
 
-            if(count($optionValues) == 1){
+            if (count($optionValues) == 1) {
                 echo CHtml::dropDownList(
                     'theatre_id',
                     false,
@@ -1030,7 +1045,7 @@ class DefaultController extends BaseEventTypeController
                     'theatre_id',
                     false,
                     CHtml::listData($optionValues, 'id', 'name'),
-                    array('empty' => 'Select', )
+                    array('empty' => 'Select',)
                 );
             }
         }
@@ -1066,8 +1081,8 @@ class DefaultController extends BaseEventTypeController
         * 118.120
 
         */
-        $formatted = (float) $aconst;
-        if ($formatted == (int) $formatted) {
+        $formatted = (float)$aconst;
+        if ($formatted == (int)$formatted) {
             $formatted .= '.0';
         }
 
@@ -1089,15 +1104,15 @@ class DefaultController extends BaseEventTypeController
             if (count($from_data) > 0) {
                 $elements = array_merge($elements, $from_data);
             } elseif ($element_type->required && (!method_exists($element_type->getInstance(), "isEnabled") || $element_type->getInstance()->isEnabled())) {
-                $errors[$this->event_type->name][] = $element_type->name.' is required';
+                $errors[$this->event_type->name][] = $element_type->name . ' is required';
                 $elements[] = $element_type->getInstance();
             }
         }
 
         // Filter disabled elements from validation
 
-        $elements = array_filter($elements, function($e){
-           return !method_exists($e, "isEnabled") || $e->isEnabled();
+        $elements = array_filter($elements, function ($e) {
+            return !method_exists($e, "isEnabled") || $e->isEnabled();
         });
 
         if (!count($elements)) {
@@ -1141,7 +1156,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function getExtraTitleInfo()
     {
-        if ($this->getAction()->id === 'view'){
+        if ($this->getAction()->id === 'view') {
             /* @var Element_OphTrOperationnote_SiteTheatre */
             $element = $this->event->getElementByClass('Element_OphTrOperationnote_SiteTheatre');
 
