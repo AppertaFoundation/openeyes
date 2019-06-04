@@ -40,7 +40,8 @@ $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
 <div class="oe-full-content oe-virtual-clinic">
     <?php
     if($queueset) {
-        if ($flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $queueset->getId())) {
+        $flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $queueset->getId());
+        if ($flash_message) {
             ?>
             <br />
             <div class="large-12 column">
