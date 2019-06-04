@@ -39,21 +39,29 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>
-                                <?php if ($element->present) { ?>
-                                    <span class="large-text"><?= implode('<br>', $element->getEntriesDisplay('present')) ?></span>
-                                <?php } ?>
-                            </td>
-                            <td>
-                                <?php if ($element->not_checked) { ?>
-                                    <span class="large-text"><?= implode('<br>', $element->getEntriesDisplay('not_checked')) ?></span>
-                                <?php } ?>
-                            </td>
-                            <td> 
-                                <?php if ($element->not_present) { ?>
-                                    <span class="large-text"><?= implode('<br>', $element->getEntriesDisplay('not_present')) ?></span>
-                                <?php } ?>
-                            </td>
+                            <?php $not_checked_required_risks = $this->getNotCheckedRequiredRisks($element);
+                            foreach (['present', 'not_checked', 'not_present'] as $attribute) { ?>
+                                <td>
+                                    <span class="large-text">
+                                        <?php if ($element->$attribute) { ?>
+                                                <?php foreach ($element->getEntriesDisplay($attribute) as $entry) { ?>
+                                                    <?= $entry['risk'] ?>
+                                                    <?php if ($entry['comments'] != '') { ?>
+                                                        (Comments: <?= $entry['comments'] ?> )
+                                                    <?php } ?>
+                                                    <br>
+                                                <?php } ?>
+                                        <?php } else if ($attribute === 'not_checked' && count($not_checked_required_risks) > 0) { ?>
+                                                <?php foreach ($not_checked_required_risks as $entry) { ?>
+                                                    <?= $entry ?>
+                                                    <br>
+                                                <?php } ?>
+                                        <?php } else { ?>
+                                            None
+                                        <?php } ?>
+                                    </span>
+                                </td>
+                            <?php } ?>
                         </tr>
                     </tbody>
                 </table>
