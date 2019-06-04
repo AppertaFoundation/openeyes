@@ -31,7 +31,7 @@ class AttributesAdminController extends BaseAdminController
 		));
 		$admin->searchAll();
 		$admin->setModelDisplayName('Operation note attributes');
-		$admin->div_wrapper_class = 'cols-8';
+		$admin->div_wrapper_class = 'cols-12';
 		//$admin->getSearch()->addActiveFilter();
 		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
 		$admin->listModel();
