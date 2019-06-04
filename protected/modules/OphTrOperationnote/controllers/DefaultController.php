@@ -74,18 +74,18 @@ class DefaultController extends BaseEventTypeController
             if ($procedures = $this->getBookingProcedures()) {
                 // Splice the elements array to place the extra elements in the correct order
                 // As it is when operation note has no booked procedures
-                $procedure_element = new Element_OphTrOperationnote_ProcedureList();
+                $procedure_list_element = new Element_OphTrOperationnote_ProcedureList();
                 $elementsBeforeProcedures = [];
                 $elementsAfterProcedures = [];
-                $procedure_element_found = false;
+                $procedure_list_element_found = false;
 
                 foreach ($elements as $element) {
-                    if ($procedure_element_found) {
+                    if ($procedure_list_element_found) {
                         $elementsAfterProcedures[] = $element;
                     } else {
                         $elementsBeforeProcedures[] = $element;
-                        if ($element instanceof $procedure_element) {
-                            $procedure_element_found = true;
+                        if ($element instanceof $procedure_list_element) {
+                            $procedure_list_element_found = true;
                         }
                     }
                 }
