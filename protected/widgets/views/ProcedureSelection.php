@@ -48,18 +48,18 @@
                 <tr class="item">
                     <td class="procedure">
                         <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]',
-                            $procedure->id,
-                            ['class' => 'js-procedure']); ?>
+                                $procedure->id,
+                                ['class' => 'js-procedure']); ?>
                         </span>
-                        <span class="value"><?=$procedure->term; ?></span>
+                        <span class="value"><?= $procedure->term; ?></span>
                     </td>
 
                     <?php if ($durations) { ?>
-                    <td class="duration">
+                        <td class="duration">
                         <span data-default-duration="<?= $procedure->default_duration ?>">
                         <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
                         </span> mins
-                    </td>
+                        </td>
                     <?php } ?>
                     <td>
                         <span class="removeProcedure">
@@ -221,8 +221,8 @@
             updateProcedureSelect(identifier);
         } else if (popped) {
             // No subsections, so we should be safe to just push it back into the list
-            $('#select_procedure_id_' + identifier).append('<option value="' + popped["id"] + '">' + popped["name"] + '</option>').removeAttr('disabled');
-            sort_selectbox($('#select_procedure_id_' + identifier));
+            $('ul.add-options.js-search-results').append('<option value="' + popped["id"] + '">' + popped["name"] + '</option>').removeAttr('disabled');
+            sort_selectbox($('ul.add-options.js-search-results'));
         }
 
         return false;
@@ -364,13 +364,13 @@
                 }
 
                 // clear out text field
-                $('#autocomplete_procedure_id_' + identifier).val('');
+                $('.js-search-autocomplete').val('');
 
                 // remove selection from the filter box
-                if ($('#select_procedure_id_' + identifier).children().length > 0) {
+                if ($('ul.add-options.js-search-results').children().length > 0) {
                     m = data.match(/<span class="value">(.*?)<\/span>/);
 
-                    $('#select_procedure_id_' + identifier).children().each(function () {
+                    $('ul.add-options.js-search-results').children().each(function () {
                         if ($(this).text() == m[1]) {
                             var id = $(this).val();
                             var name = $(this).text();
@@ -424,9 +424,23 @@
             },
             searchOptions: {
                 searchSource: '/procedure/autocomplete',
-            }
-        });
+                resultsFilter: function (results) {
+                    let items = [];
+                    $(results).each(function (index, result) {
+                        let procedureMatchArray = $('#procedureList_<?=$identifier ?: ''; ?>')
+                            .find('span:contains(' + result + ')').filter(function () {
+                                return $(this).text() === result;
+                            });
 
+                        if (procedureMatchArray.length === 0) {
+                            items.push(result);
+                        }
+                    });
+                    return items;
+                }
+            }
+
+        });
         initialiseProcedureAdder();
     });
 </script>

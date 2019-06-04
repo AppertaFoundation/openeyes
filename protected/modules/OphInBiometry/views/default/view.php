@@ -45,6 +45,12 @@ if ($this->checkEditAccess()){
 $this->beginContent('//patient/event_container', array('no_face'=>false));
 $this->moduleNameCssClass .= ' highlight-fields';
 
+if ($this->event->delete_pending) { ?>
+    <div class="alert-box alert with-icon">
+        This event is pending deletion and has been locked.
+    </div>
+<?php }
+
 if ($this->is_auto) {
     ?>
 <div id="surgeon">
@@ -61,9 +67,8 @@ if ($this->is_auto) {
         </div>
 	</div>
 </div>
-<?php
+<?php }
 
-}
 $this->renderOpenElements($this->action->id); ?>
 <?php $this->renderPartial('//default/delete');?>
 <?php $this->renderPartial('_va_view' , ['action' => 'view']);?>

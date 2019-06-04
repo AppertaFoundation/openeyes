@@ -25,7 +25,7 @@
             'comments',
             array(),
             false,
-            array('cols' => 30),
+            ['cols' => 30, 'class' => 'autosize'],
             array('label' => 2, 'field' => 10)
         ) ?>
     </div>
@@ -35,7 +35,7 @@
               'postop_instructions',
               array(),
               false,
-              array('cols' => 30),
+              ['cols' => 30, 'class' => 'autosize'],
               array('label' => 2, 'field' => 10)
           ) ?>
       </div>

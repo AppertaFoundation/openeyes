@@ -336,7 +336,6 @@ return array(
                     'uri' => 'report',
                     'position' => 3,
                     'restricted' => array('Report'),
-                    'userrule' => 'isSurgeon',
                 ),
                 'nodexport' => array(
                     'title' => 'NOD Export',
@@ -592,14 +591,14 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
-        'hos_num_label' => 'Hospital',
+        'hos_num_label' => 'ID',
         'nhs_num_label' => 'NHS',
       'ethnic_group_filters' => array(
         'Indigenous Australian',
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.3a',
+      'oe_version' => '3.2',
       'gp_label' => 'GP',
       // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
       'worklist_dashboard_future_days' => 0,
