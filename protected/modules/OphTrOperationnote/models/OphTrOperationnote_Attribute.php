@@ -19,7 +19,7 @@
  * @property Procedure $procedure
  * @property User $createdUser
  * @property User $lastModifiedUser
- * @property Ophtroperationnote_AttributeOption[] $ophtroperationnoteAttributeOptions
+ * @property OphTrOperationnote_AttributeOption[] $options
  */
 class OphTrOperationnote_Attribute extends BaseActiveRecordVersioned
 {
@@ -62,7 +62,7 @@ class OphTrOperationnote_Attribute extends BaseActiveRecordVersioned
 			'procedure' => array(self::BELONGS_TO, Procedure::class, 'proc_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'ophtroperationnoteAttributeOptions' => array(self::HAS_MANY, 'OphtroperationnoteAttributeOption', 'attribute_id'),
+			'options' => array(self::HAS_MANY, OphTrOperationnote_AttributeOption::class, 'attribute_id'),
 		);
 	}
 
@@ -143,6 +143,8 @@ class OphTrOperationnote_Attribute extends BaseActiveRecordVersioned
 			}
 		}
 
+		$this->is_multiselect = (int)$this->is_multiselect;
+
 		return parent::beforeValidate();
 	}
 
@@ -154,5 +156,14 @@ class OphTrOperationnote_Attribute extends BaseActiveRecordVersioned
 	public function getItemsAdminLink()
 	{
 		return '<a href="/OphTrOperationnote/attributeOptionsAdmin/index?attribute_id='.$this->id.'">Manage items</a>';
+	}
+
+	public function beforeDelete()
+	{
+		foreach ($this->options as $option) {
+			$option->delete();
+		}
+
+		return parent::beforeDelete();
 	}
 }

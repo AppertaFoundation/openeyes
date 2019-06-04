@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphCiExamination\models\OphCiExamination_Attribute;
+
 class AttributeOptionsAdminController extends BaseAdminController
 {
 	public $itemsPerPage = 100;
