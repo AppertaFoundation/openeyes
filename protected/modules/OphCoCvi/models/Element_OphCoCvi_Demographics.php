@@ -80,6 +80,9 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
                 'telephone, gp_telephone, la_telephone', 'length', 'max' => 20
             ),
             array(
+                'telephone, gp_telephone, la_telephone', 'OEPhoneNumberValidator'
+            ),
+            array(
                 'title_surname, other_names, date_of_birth, address, postcode, telephone, gender_id, ethnic_group_id, '
                 . 'nhs_number, gp_name, gp_address, gp_telephone, la_name, la_address, la_telephone',
                 'required',
@@ -87,7 +90,6 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             ),
             array('date_of_birth', 'OEDateValidatorNotFuture'),
             array('email','email'),
-            array( 'telephone, gp_telephone, la_telephone','numerical'),
         );
     }
 

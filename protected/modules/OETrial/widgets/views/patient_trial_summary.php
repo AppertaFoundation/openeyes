@@ -52,7 +52,10 @@
                   </td>
                   <td><?= $trialPatient->treatmentType->name; ?></td>
                   <td><?= $trialPatient->status->name; ?></td>
-                  <td><?= Helper::formatFuzzyDate($trialPatient->status_update_date); ?></td>
+                  <td><?php
+                      if (isset($trialPatient->status_update_date)) {
+                          echo Helper::formatFuzzyDate($trialPatient->status_update_date);
+                      } ?></td>
                   <td><?= $trialPatient->trial->trialType->name; ?></td>
                   <td><?= $trialPatient->trial->getStartedDateForDisplay(); ?></td>
                   <td><?= $trialPatient->trial->getClosedDateForDisplay(); ?></td>

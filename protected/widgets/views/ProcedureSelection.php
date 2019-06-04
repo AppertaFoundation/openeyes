@@ -42,28 +42,30 @@
         </thead>
         <tbody class="body">
         <?php
-        foreach ($selected_procedures as $procedure) : ?>
-            <?php $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
+        if (isset($selected_procedures)) {
+            foreach ($selected_procedures as $procedure) : ?>
+                <?php $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
 
-            <tr class="item">
-                <td class="procedure">
-                    <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]', $procedure->id); ?></span>
-                    <span class="value"><?=$procedure->term; ?></span>
-                </td>
+                <tr class="item">
+                    <td class="procedure">
+                        <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]', $procedure->id); ?></span>
+                        <span class="value"><?= $procedure->term; ?></span>
+                    </td>
 
-                <?php if ($durations) { ?>
-                <td class="duration">
+                    <?php if ($durations) { ?>
+                        <td class="duration">
                     <span data-default-duration="<?= $procedure->default_duration ?>">
                     <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
                     </span> mins
-                </td>
-                <?php } ?>
-                <td>
-                    <span class="removeProcedure"><i class="oe-i trash"></i></span>
-                </td>
-            </tr>
+                        </td>
+                    <?php } ?>
+                    <td>
+                        <span class="removeProcedure"><i class="oe-i trash"></i></span>
+                    </td>
+                </tr>
 
-        <?php endforeach; ?>
+            <?php endforeach;
+        } ?>
 
         <?php
         if (isset($_POST[$class]['total_duration_' . $identifier])) {

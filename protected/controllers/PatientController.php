@@ -1720,6 +1720,7 @@ class PatientController extends BaseController
         $patient_identifiers = $this->getPatientIdentifiers($patient);
 
         $gpcontact = new Contact();
+        $patient_referral_contact = new Contact();
         $practicecontact = new Contact();
         $practiceaddress = new Address();
         $practice = new Practice();
@@ -1791,6 +1792,7 @@ class PatientController extends BaseController
             'patientuserreferral' => isset($patient_user_referral) ? $patient_user_referral : new PatientUserReferral(),
             'patient_identifiers' => $patient_identifiers,
             'gpcontact' => $gpcontact,
+            'pr_contact' => $patient_referral_contact,
             'practicecontact' => $practicecontact,
             'practiceaddress' => $practiceaddress,
             'practice' => $practice
@@ -1973,6 +1975,9 @@ class PatientController extends BaseController
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
 
+            if (empty($post_info->code) || empty($post_info->value))
+                continue;
+
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
                 ':patient_id' => $patient->id,
                 ':code' => $post_info->code,
@@ -2012,6 +2017,7 @@ class PatientController extends BaseController
         $patient = $this->loadModel($id);
         $referral = isset($patient->referral) ? $patient->referral : new PatientReferral();
         $this->pageTitle = 'Update Patient - ' . $patient->last_name . ', ' . $patient->first_name;
+        $prcontact = isset($patient->patient_referral) ? $patient->patient_referral->contact: new Contact();
         $gpcontact = isset($patient->gp) ? $patient-> gp->contact : new Contact();
         $practice = isset($patient->practice) ? $patient->practice : new Practice();
         $practicecontact = isset($patient->practice) ? $patient-> practice->contact : new Contact();
@@ -2036,6 +2042,7 @@ class PatientController extends BaseController
             $this->redirect(array('view', 'id' => $patient->id));
         }
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
+            
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
@@ -2064,6 +2071,7 @@ class PatientController extends BaseController
         }
 
         switch ($patient->patient_source) {
+
             case Patient::PATIENT_SOURCE_OTHER:
                 $contact->setScenario('other_register');
                 $patient->setScenario('other_register');
@@ -2279,29 +2287,6 @@ class PatientController extends BaseController
     }
 
     /**
-     * Return bites based on the ini_get returns value e.g. 2M
-     * @param $val
-     * @return int|string
-     */
-    public function return_bytes($val) {
-        $val = trim($val);
-        $last = strtolower($val[strlen($val)-1]);
-        switch($last) {
-            case 'g':
-                $val *= (1024 * 1024 * 1024); //1073741824
-                break;
-            case 'm':
-                $val *= (1024 * 1024); //1048576
-                break;
-            case 'k':
-                $val *= 1024;
-                break;
-        }
-
-        return $val;
-    }
-
-    /**
      * Takes an uploaded file from $_FILES and saves it to a document event under the current context/firm
      *
      * @param Patient $patient To save the referral document to
@@ -2391,7 +2376,7 @@ class PatientController extends BaseController
         $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
 
         // To get maximum file size that can be uploaded from the model
-        $max_document_size = $this->return_bytes(ini_get('upload_max_filesize'));
+        $max_document_size = Helper::return_bytes(ini_get('upload_max_filesize'));
 
         foreach ($_FILES as $file) {
             $name = $file["name"]["uploadedFile"];

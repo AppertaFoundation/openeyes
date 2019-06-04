@@ -58,8 +58,8 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
               )
           ) ?>
         <div class="js-external-trial-identifier-actions" style="display: none;">
-          <a class="js-save-external-trial-identifier">Save</a>
-          <a class="js-cancel-external-trial-identifier">Cancel</a>
+          <a class="js-save-external-trial-identifier button">Save</a>
+          <a class="js-cancel-external-trial-identifier button">Cancel</a>
           <span class="js-spinner-as-icon" style="display: none;"><i class="spinner as-icon"></i></span>
         </div>
           <?php

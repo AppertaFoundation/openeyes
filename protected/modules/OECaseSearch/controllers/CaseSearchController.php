@@ -7,6 +7,8 @@ class CaseSearchController extends BaseModuleController
      */
     public $trialContext;
 
+    public $resultOrder;
+
     public function filters()
     {
         return array(
@@ -39,6 +41,9 @@ class CaseSearchController extends BaseModuleController
         $fixedParameters = $this->module->getFixedParams();
         $parameterList = array();
         $ids = array();
+        $pagination = array(
+            'pageSize' => 10,
+        );
         if (isset($_SESSION['last_search'])) {
             $ids = $_SESSION['last_search'];
         }
@@ -49,7 +54,7 @@ class CaseSearchController extends BaseModuleController
         }
 
         $criteria = new CDbCriteria();
-
+        $this->resultOrder = '';
         foreach ($this->module->getConfigParam('parameters') as $group) {
             foreach ($group as $parameter) {
                 $paramName = $parameter . 'Parameter';
@@ -109,21 +114,34 @@ class CaseSearchController extends BaseModuleController
                 $_SESSION['last_search'] = $ids;
             }
             $_SESSION['last_search_params'] = $parameters;
+            $pagination['currentPage'] = 0;
+        }
+
+        if (isset($_SESSION['last_search_params'])){
+            foreach ($_SESSION['last_search_params'] as $key => $param) {
+                if ($param->name == "patient_name"){
+                    if (!empty($this->resultOrder)){
+                        $this->resultOrder .= ',';
+                    }
+                    $this->resultOrder .= '(levenshtein_ratio(last_name, \''.$param->patient_name.'\')+levenshtein_ratio(first_name, \''.$param->patient_name.'\'))';
+                }
+            }
         }
 
         // If there are no IDs found, pass -1 as the value (as this will not match with anything).
         $criteria->compare('t.id', empty($ids) ? -1 : $ids);
         $criteria->with = 'contact';
-        $criteria->order = 'last_name, first_name';
+        if ($this->resultOrder == ''){
+            $this->resultOrder = 'last_name, first_name';
+        }
+        $criteria->order = $this->resultOrder.' DESC';
         $criteria->compare('t.deleted', 0);
 
         // A data provider is used here to allow faster search times. Results are iterated through using the data provider's pagination functionality and the CListView widget's pager.
         $patientData = new CActiveDataProvider('Patient', array(
             'criteria' => $criteria,
             'totalItemCount' => count($ids),
-            'pagination' => array(
-                'pageSize' => 10,
-            ),
+            'pagination' => $pagination,
         ));
 
 

@@ -1,8 +1,8 @@
 <main class="oe-home">
     <div class="oe-full-header flex-layout">
-        <div class="title wordcaps">Upload</div>
+        <div class="title wordcaps">Import Preview</div>
     </div>
-    <div class="oe-full-content  flex-top">
+    <div class="oe-full-content">
         <div class="errorSummary">
             <?php
             if (isset($errors) and $errors !== null) {
@@ -19,12 +19,14 @@
                 'id' => 'import-form',
                 'action' => Yii::app()->createURL('csv/import', array('context' => $context)),
                 'enableAjaxValidation' => false,
-                'htmlOptions' => array('enctype' => 'multipart/form-data'),
+                'htmlOptions' => array('enctype' => 'multipart/form-data',
+                'class' => 'oe-full-main',
+                 ),
             )
         );
         if (!empty($table)): ?>
             <div style="overflow: auto">
-                <table>
+                <table class="standard highlight-rows">
                     <tr>
                         <?php foreach (array_keys($table[0]) as $header): ?>
                             <th>
