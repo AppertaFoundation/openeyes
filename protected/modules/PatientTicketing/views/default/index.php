@@ -49,6 +49,7 @@ $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
         'queueset' => $queueset,
         'patient_list' => $patient_list,
         'cat_id' => $cat_id,
+        'patients' => $patients,
     ]); ?>
 
     <?php $this->renderPartial('ticketlist', [
