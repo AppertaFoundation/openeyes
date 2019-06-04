@@ -28,6 +28,12 @@ class HistoryRisks extends \BaseEventElementWidget
 {
     public static $moduleName = 'OphCiExamination';
     protected $print_view = 'HistoryRisks_event_print';
+
+    const NOT_CHECKED_REQUIRED_RISKS = [
+        'Anticoagulants',
+        'Alpha blockers',
+    ];
+
     /**
      * @return HistoryRisksElement
      */
@@ -132,26 +138,22 @@ class HistoryRisks extends \BaseEventElementWidget
         // Anticoagulants and alpha blockers being mandatory risk items to be displayed,
         // we check if $element contains these in either yes, or no and if it doesn't in either,
         // we display it as unchecked forcefully
-        $not_checked_required_risks = [];
-        $anticoagulants = false;
-        $alphablockers = false;
         $entries = array_merge($element->getEntriesDisplay('present'), $element->getEntriesDisplay('not_present'));
+        $recorded_risks = [];
 
         foreach ($entries as $entry) {
-            if (strpos($entry['risk'] . ' ', 'Anticoagulants') !== false) {
-                $anticoagulants = true;
-            }
-
-            if (strpos($entry['risk'], 'Alpha blockers') !== false) {
-                $alphablockers = true;
+            foreach(self::NOT_CHECKED_REQUIRED_RISKS as $risk) {
+                if(strpos($entry['risk'], $risk) !== false) {
+                    $recorded_risks[$risk] = true;
+                }
             }
         }
 
-        if ($anticoagulants == false) {
-            $not_checked_required_risks[] = 'Anticoagulants';
-        }
-        if ($alphablockers == false) {
-            $not_checked_required_risks[] = 'Alpha blockers';
+        $not_checked_required_risks = [];
+        foreach(self::NOT_CHECKED_REQUIRED_RISKS as $risk) {
+            if(!isset($recorded_risks[$risk]) || !$recorded_risks[$risk]) {
+                $not_checked_required_risks[] = $risk;
+            }
         }
 
         return $not_checked_required_risks;
