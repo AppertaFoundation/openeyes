@@ -127,4 +127,33 @@ class HistoryRisks extends \BaseEventElementWidget
             \CHtml::modelName($this->element) . ".entries.$row.has_risk", $_POST)
             == HistoryRisksEntry::$NOT_CHECKED;
     }
+
+    public function getNotCheckedRequiredRisks($element) {
+        // Anticoagulants and alpha blockers being mandatory risk items to be displayed,
+        // we check if $element contains these in either yes, or no and if it doesn't in either,
+        // we display it as unchecked forcefully
+        $not_checked_required_risks = [];
+        $anticoagulants = false;
+        $alphablockers = false;
+        $entries = array_merge($element->getEntriesDisplay('present'), $element->getEntriesDisplay('not_present'));
+
+        foreach ($entries as $entry) {
+            if (strpos($entry['risk'] . ' ', 'Anticoagulants') !== false) {
+                $anticoagulants = true;
+            }
+
+            if (strpos($entry['risk'], 'Alpha blockers') !== false) {
+                $alphablockers = true;
+            }
+        }
+
+        if ($anticoagulants == false) {
+            $not_checked_required_risks[] = 'Anticoagulants';
+        }
+        if ($alphablockers == false) {
+            $not_checked_required_risks[] = 'Alpha blockers';
+        }
+
+        return $not_checked_required_risks;
+    }
 }
