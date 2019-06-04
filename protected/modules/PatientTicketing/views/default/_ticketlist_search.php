@@ -111,10 +111,15 @@
         <tr class="col-gap">
             <td class="fade">Patients:</td>
             <td id="patient-search-wrapper">
-                <input id="patient-search" type="text" class="cols-11"
-                       placeholder="Hospital Number, NHS Number, Firstname Surname or Surname, Firstname">
+                <input id="patient-search" type="text" class="cols-11" placeholder="Hospital Number, NHS Number, Firstname Surname or Surname, Firstname">
+
                 <div style="display:inline-block">
                     <div class="js-spinner-as-icon loader" style="display: none;"><i class="spinner as-icon"></i></div>
+                </div>
+                <div style="display:none" class="cols-11 no-result-patients warning alert-box">
+                    <div class="cols-11 column text-center">
+                        No patients found.
+                    </div>
                 </div>
             </td>
             <td class="fade">Context</td>
