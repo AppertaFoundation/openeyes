@@ -60,15 +60,19 @@ class Contacts extends \BaseEventElementWidget
             $criteria = new \CDbCriteria();
             $gp = $this->patient->gp;
             $criteria->addCondition('t.patient_id = ' . $this->patient->id);
-            $criteria->addCondition('t.contact_id != ' . $gp->contact->id);
+            if(isset($gp)) {
+                $criteria->addCondition('t.contact_id != ' . $gp->contact->id);
+            }
             $this->contact_assignments = \PatientContactAssignment::model()->findAll($criteria);
         }
 
         $criteria = new \CDbCriteria();
         $gp = $this->patient->gp;
-        $criteria->addCondition('t.patient_id = ' . $this->patient->id);
-        $criteria->addCondition('t.contact_id = ' . $gp->contact->id);
-        $this->gp_contact_assignment = \PatientContactAssignment::model()->findAll($criteria);
+        if(isset($gp)) {
+            $criteria->addCondition('t.patient_id = ' . $this->patient->id);
+            $criteria->addCondition('t.contact_id = ' . $gp->contact->id);
+            $this->gp_contact_assignment = \PatientContactAssignment::model()->findAll($criteria);
+        }
     }
 
 }
