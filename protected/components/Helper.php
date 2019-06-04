@@ -502,6 +502,7 @@ class Helper
             $return_info .= $value.'<br>';
         }
         return $return_info;
+		}
 
     /**
      * Return bites based on the ini_get returns value e.g. 2M
