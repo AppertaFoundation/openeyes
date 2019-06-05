@@ -149,9 +149,8 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                         } ?>
 
                         <?php
-                        $examination_accessibleinfostandards = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards',$patient);
-                        //$examination_accessibleinfostandards->correspondence_in_large_letters
-                        if (!empty($examination_accessibleinfostandards)) :
+                        $examination_accessibleinfostandards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards',$patient);
+                        if (!empty($examination_accessibleinfostandards->correspondence_in_large_letters)) :
                         ?>
                             <tr>
                                 <td>

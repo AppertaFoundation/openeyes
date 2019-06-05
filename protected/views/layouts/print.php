@@ -17,16 +17,20 @@
  */
 ?>
 <?php
+
     $printHelperClass = '';
     switch(Yii::app()->controller->module->id){
         case 'OphCoCorrespondence':
-            $printHelperClass = 'OphCoCorrespondence large-font';
+            $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+            $examination_accessibleinfostandards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards',$this->patient);
+            $printHelperClass = 'OphCoCorrespondence '.(!empty($examination_accessibleinfostandards->correspondence_in_large_letters) ? 'large-font' : '');
             $printHelperStyles = 'margin: 0 80px';
             break;
         case 'OphTrConsent':
             $printHelperClass = 'OphTrConsent '.(isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
             break;
     }
+
 ?>
 <!doctype html>
 <html lang="en">
