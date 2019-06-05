@@ -192,14 +192,6 @@ class ElementLetter extends BaseEventTypeElement
         }
         return parent::beforeValidate();
     }
-
-    public function afterValidate()
-    {
-
-
-        parent::afterValidate();
-    }
-    
     
     public function requiredIfNotDraft($attribute, $params)
     {
@@ -381,7 +373,7 @@ class ElementLetter extends BaseEventTypeElement
             $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
             if(!$patient) {
-                // TODO: determine if there are any circumstances where this is necessary. Almost certainly very redundant
+                // determine if there are any circumstances where this is necessary. Almost certainly very redundant
                 if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
                     throw new Exception('Patient not found: '.@$_GET['patient_id']);
                 }
@@ -408,18 +400,22 @@ class ElementLetter extends BaseEventTypeElement
             $user = Yii::app()->session['user'];
             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
-            if ($contact = $user->contact) {
+            $contact = $user->contact;
+            if ($contact) {
                 $this->footer = $api->getFooterText();
                 $ssa = $firm->serviceSubspecialtyAssignment;
             }
 
             // Look for a macro based on the episode_status
-            if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-                if (!$this->macro = LetterMacro::model()->find('firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id))) {
+            $episode = $patient->getEpisodeForCurrentSubspecialty();
+            if ($episode) {
+
+                $this->macro = LetterMacro::model()->find('firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id));
+                if (!$this->macro) {
                     if ($firm->service_subspecialty_assignment_id) {
                         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-
-                        if (!$this->macro = LetterMacro::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id))) {
+                        $this->macro = LetterMacro::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id));
+                        if (!$this->macro) {
                             $this->macro = LetterMacro::model()->find('site_id=? and episode_status_id=?', array(Yii::app()->session['selected_site_id'], $episode->episode_status_id));
                         }
                     }
@@ -431,15 +427,18 @@ class ElementLetter extends BaseEventTypeElement
             }
 
             if (Yii::app()->params['populate_clinic_date_from_last_examination'] && Yii::app()->findModule('OphCiExamination')) {
-                if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-                    if ($event_type = EventType::model()->find('class_name=?', array('OphCiExamination'))) {
+                $episode = $patient->getEpisodeForCurrentSubspecialty();
+                if ($episode) {
+                    $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+                    if ($event_type) {
                         $criteria = new CDbCriteria();
                         $criteria->addCondition('event_type_id = '.$event_type->id);
                         $criteria->addCondition('episode_id = '.$episode->id);
                         $criteria->order = 'created_date desc';
                         $criteria->limit = 1;
 
-                        if ($event = Event::model()->find($criteria)) {
+                        $event = Event::model()->find($criteria);
+                        if ($event) {
                             $this->clinic_date = $event->created_date;
                         }
                     }

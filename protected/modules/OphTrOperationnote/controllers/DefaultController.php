@@ -334,12 +334,12 @@ class DefaultController extends BaseEventTypeController
                     $success = $this->saveEvent($_POST);
 
                     if ($success) {
-                        //TODO: should this be in the save event as pass through?
+                        // should this be in the save event as pass through?
                         if ($this->eventIssueCreate) {
                             $this->event->addIssue($this->eventIssueCreate);
                         }
 
-                        //TODO: should not be passing event?
+                        // should not be passing event?
                         $this->afterCreateElements($this->event);
 
                         $this->logActivity('created event.');

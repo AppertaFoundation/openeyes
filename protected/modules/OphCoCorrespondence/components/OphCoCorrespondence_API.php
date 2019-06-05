@@ -139,7 +139,8 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         $name = null;
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
-        if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)) {
+        $element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context);
+        if ($element) {
             $name = $element->iol_type ? $element->iol_type->display_name : null;
         }
         return $name;
@@ -155,7 +156,8 @@ class OphCoCorrespondence_API extends BaseAPI
     public function getLastIOLPower(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
-        if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)) {
+        $element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context);
+        if ($element) {
             return $element->iol_power;
         }
     }
@@ -221,7 +223,8 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     private function getPreOpValuesFromAPIMethod($patient, $use_context = false, $api, $method)
     {
-        if (!$note_api = $this->yii->moduleAPI->get('OphTrOperationnote')) {
+        $note_api = $this->yii->moduleAPI->get('OphTrOperationnote');
+        if (!$note_api) {
             return null;
         }
 
@@ -234,12 +237,14 @@ class OphCoCorrespondence_API extends BaseAPI
 
                 // take account of event date not containing time so we ensure we get the
                 // exam from BEFORE the op note, not on the same day but after.
+
                 if ($event->event_date == $op_event->event_date) {
                     if (Helper::combineMySQLDateAndDateTime($event->event_date, $event->created_date) > $op_event_combined_date) {
                         continue;
                     }
                 }
-                if ($result = $api->$method($event)) {
+                $result = $api->$method($event);
+                if ($result) {
                     return $result;
                 }
             }
