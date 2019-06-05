@@ -72,6 +72,10 @@
                     'element' => $definition,
                     'field' => 'rrule',
                     'name' => CHtml::modelName($definition).'[rrule]',
+                    'layoutColumns' => [
+                        'label' => 2,
+                        'field' => 12,
+                    ]
                 ));?>
                 </td>
             </tr>
@@ -83,7 +87,7 @@
                         'start_time',
                         [
                             'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'class' => 'cols-full',
+                            'class' => 'cols-1',
                             'field' => 1
                         ]
                     ); ?>
@@ -96,12 +100,12 @@
                         'end_time',
                         [
                             'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'class' => 'cols-full',
+                            'class' => 'cols-1',
                             'append-text' => '<i>Appointments will match on any time <b>before</b> the end time specified here.</i>',
                             'field' => 1,
                             'append-text' => 6,
                         ]
-                    ); ?>
+                    ); ?> &nbsp; Appointments will match on any time <strong>before</strong> the end time specified here.
                 </td>
             </tr>
             </tbody>
@@ -120,7 +124,7 @@
                     <?=\CHtml::submitButton(
                         'Cancel',
                         [
-                            'data-uri' => '/worklistAdmin/definitions',
+                            'data-uri' => '/Admin/worklist/definitions',
                             'class' => 'button large',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
