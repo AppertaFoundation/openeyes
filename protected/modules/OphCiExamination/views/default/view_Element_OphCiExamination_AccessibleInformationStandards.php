@@ -16,10 +16,18 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data">
-    <div class="data-value">
-    <span class="large-text">
-      <?= Yii::app()->format->Ntext($element->correspondence_in_large_letters) ?>
-    </span>
-    </div>
+<div class="element-data cols-6">
+    <table class="label-value last-left">
+        <tbody>
+        <tr>
+            <td>
+                <div class="data-label"><?= $element->getAttributeLabel('correspondence_in_large_letters') ?>
+                </div>
+            </td>
+            <td>
+                <div class="data-value"><span class="large-text">Yes</span></div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
