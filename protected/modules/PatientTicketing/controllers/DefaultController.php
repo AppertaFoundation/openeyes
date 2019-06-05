@@ -241,11 +241,6 @@ class DefaultController extends \BaseModuleController
                 $criteria->join = "JOIN patientticketing_ticket pt ON pt.patient_id = t.id";
                 $criteria->join .= " JOIN patientticketing_ticketqueue_assignment a ON a.ticket_id = pt.id";
                 $criteria->addCondition('queue_id', $queueset->getId());
-
-                $patients = \Patient::model()->findAll($criteria);
-                $patient_list = \CHtml::listData($patients, 'id', function ($patient) {
-                    return strtoupper($patient->last_name) . ', ' . $patient->first_name;
-                });
             }
         }
 
@@ -258,7 +253,6 @@ class DefaultController extends \BaseModuleController
                 'patient_filter' => $patient_filter,
                 'pagination' => $pagination,
                 'cat_id' => $cat_id,
-                'patient_list' => $patient_list,
                 'patients' => $patient_ids ? \Patient::model()->findAllByPk($patient_ids) : [],
             ));
     }
