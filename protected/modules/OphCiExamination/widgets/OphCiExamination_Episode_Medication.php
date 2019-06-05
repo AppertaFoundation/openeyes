@@ -50,7 +50,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                     $drug_aliases = $entry->drug_id&&$entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
                     $drug_name = $entry->drug_id ? $entry->drug->name.$drug_aliases : $entry->medication_drug->name;
 
-                    if($entry->start_date == null || $entry->start_date == 0) {
+                    if($entry->start_date === null || $entry->start_date === "0000-00-00" || $entry->start_date === "") {
                         continue;
                     }
 
