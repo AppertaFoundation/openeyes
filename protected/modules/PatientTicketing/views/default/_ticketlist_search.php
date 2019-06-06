@@ -117,7 +117,7 @@
                 </div>
                 <div style="display:none" class="cols-11 no-result-patients warning alert-box">
                     <div class="cols-11 column text-center">
-                        No patients found.
+                        No patients found in virtual clinic.
                     </div>
                 </div>
             </td>
@@ -176,11 +176,13 @@
     $(document).ready(function () {
         OpenEyes.UI.Search.init($('#patient-search'));
         OpenEyes.UI.Search.setLoader($('.js-spinner-as-icon'));
+        OpenEyes.UI.Search.setSourceURL('/PatientTicketing/default/patientSearch');
         OpenEyes.UI.Search.getElement().autocomplete('option', 'select', function (event, uid) {
             let $list = $('#patient-result-list');
             let $item = $('<li>', {'data-patient_id': uid.item.id}).html(uid.item.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
             let $hidden = $('<input>', {type: 'hidden', id: uid.item.id, value: uid.item.id, name: 'patient-ids[]'});
 
+            $list.html('');
             $list.append($item.append($hidden));
 
             // clear input field

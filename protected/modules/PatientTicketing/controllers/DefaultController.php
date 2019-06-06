@@ -18,9 +18,11 @@
 
 namespace OEModule\PatientTicketing\controllers;
 
+use CJavaScript;
 use OEModule\PatientTicketing\models;
 use OEModule\PatientTicketing\services;
 use OEModule\PatientTicketing\components\AutoSaveTicket;
+use Patient;
 use Yii;
 
 class DefaultController extends \BaseModuleController
@@ -69,7 +71,7 @@ class DefaultController extends \BaseModuleController
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
-                'actions' => array('index', 'getTicketTableRow', 'getTicketTableRowHistory'),
+                'actions' => array('index', 'getTicketTableRow', 'getTicketTableRowHistory', 'patientSearch'),
                 'roles' => array('OprnViewQueueSet'),
             ),
             array('allow',
@@ -150,6 +152,52 @@ class DefaultController extends \BaseModuleController
         return array($criteria, $patient_filter);
     }
 
+    public function actionPatientSearch($term)
+    {
+        $search = new \PatientSearch();
+        $search_terms = $search->parseTerm($term);
+
+        $patient = new Patient();
+        $patient->use_pas = false;
+
+        $patient->hos_num = $search_terms['hos_num'];
+        $patient->nhs_num = $search_terms['nhs_num'];
+
+        $data_provider = $patient->search($search_terms);
+        $criteria = $data_provider->getCriteria();
+
+        $criteria->join .= ' JOIN patientticketing_ticket ticket ON ticket.patient_id = t.id';
+        $criteria->join .= ' JOIN patientticketing_ticketqueue_assignment cqa ON cqa.ticket_id = ticket.id AND cqa.id = 
+                                                            (	SELECT id 
+                                                                FROM patientticketing_ticketqueue_assignment qa2
+                                                                WHERE qa2.ticket_id = ticket.id 
+                                                                ORDER BY qa2.created_date DESC LIMIT 1
+                                                            )';
+        $criteria->addCondition('t.is_deceased = 0');
+        $data_provider->setCriteria($criteria);
+
+        $result = [];
+        foreach ($data_provider->getData(true) as $patient) {
+            $result[] = array(
+                'id' => $patient->id,
+                'first_name' => $patient->first_name,
+                'last_name' => $patient->last_name,
+                'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
+                'gender' => $patient->getGenderString(),
+                'genderletter' => $patient->gender,
+                'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
+                'hos_num' => $patient->hos_num,
+                'nhsnum' => $patient->nhsnum,
+                'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
+                'is_deceased' => $patient->is_deceased,
+            );
+        }
+
+        echo CJavaScript::jsonEncode($result);
+        Yii::app()->end();
+
+    }
+
     /**
      * Generate a list of current tickets.
      */
@@ -181,7 +229,6 @@ class DefaultController extends \BaseModuleController
         $tickets = null;
         $pagination = null;
         $patient_filter = null;
-        $patient_list = [];
 
         $queuesets = $qsc_svc->getCategoryQueueSetsForUser($category, Yii::app()->user->id);
         if ($queuesets) {
@@ -236,11 +283,6 @@ class DefaultController extends \BaseModuleController
                 // get tickets that match criteria
                 $tickets = models\Ticket::model()->findAll($criteria);
                 \Audit::add('queueset', 'view', $queueset->getId());
-
-                $criteria = new \CDbCriteria();
-                $criteria->join = "JOIN patientticketing_ticket pt ON pt.patient_id = t.id";
-                $criteria->join .= " JOIN patientticketing_ticketqueue_assignment a ON a.ticket_id = pt.id";
-                $criteria->addCondition('queue_id', $queueset->getId());
             }
         }
 
