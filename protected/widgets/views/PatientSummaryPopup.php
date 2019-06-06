@@ -363,25 +363,29 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                     <span class="month"><?= $summary->date[1] ?></span>
                                     <span class="year"><?= $summary->date[2] ?></span>
                                 </span>
-                          </td>
-                          <td><?= $summary->comments ?></td>
-                          <td><i class="oe-i info small pro-theme js-has-tooltip"
-                                 data-tooltip-content="<?= $summary->user ?>"></i></td>
-                      </tr>
-                  <?php }
-              } ?>
-              </tbody>
-          </table>
-      </div><!-- .popup-overflow -->
-    </div><!-- left -->
-      <div class="cols-right">
-          <div class="popup-overflow">
-              <div class="subtitle">Appointments</div>
-              <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme']) ?>
-          </div><!-- .popup-overflow -->
-      </div>
-  </div><!-- flex -->
-</div>
+                                    </td>
+                                    <td><?= $summary->comments ?></td>
+                                    <td><i class="oe-i info small pro-theme js-has-tooltip"
+                                           data-tooltip-content="<?= $summary->user ?>"></i></td>
+                                </tr>
+                            <?php }
+                        } ?>
+                        </tbody>
+                    </table>
+                </div><!-- .popup-overflow -->
+                <div class="popup-overflow">
+                    <div class="subtitle">Appointments</div>
+                    <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme']) ?>
+                </div><!-- .popup-overflow -->
+            </div><!-- left -->
+            <div class="cols-right">
+                <div class="popup-overflow">
+                    <div class="subtitle">Problems &amp; Plans <div class="extra-actions" id="prev-states-plans-probs-btn"><i class="oe-i audit-trail small pro-theme"></i></div></div>
+                    <?php $this->widget('application.widgets.PlansProblemsWidget', []); ?>
+                </div><!-- .popup-overflow -->
+            </div>
+        </div><!-- flex -->
+    </div>
 
 <div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;">
   <div class="flex-layout flex-top">

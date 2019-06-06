@@ -43,7 +43,7 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList', 'getInternalReferralDocumentListUrl' ),
+                'actions' => array('DeactivatePlansProblems', 'UpdatePlansProblems', 'search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList', 'getInternalReferralDocumentListUrl' ),
                 'users' => array('@'),
             ),
             array('allow',
@@ -169,6 +169,62 @@ class PatientController extends BaseController
             'patient' => $this->patient,
             'no_episodes' => $no_episodes,
         ));
+    }
+
+    public function actionDeactivatePlansProblems($plan_id) {
+        $plan = PlansProblems::model()->findByPk($plan_id);
+        $plan->active = false;
+        $plan->save();
+    }
+
+    public function actionUpdatePlansProblems($plan_ids, $new_plans, $patient_id) {
+        $plan_ids = json_decode($plan_ids);
+        $new_plans = json_decode($new_plans);
+
+        $transaction = \Yii::app()->db->beginTransaction();
+        try {
+            foreach ($new_plans as $plan) {
+                $display_order = $plan[0];
+                $plan_name = $plan[1];
+                $plan = new PlansProblems();
+                $plan->name = $plan_name;
+                $plan->display_order = $display_order;
+                $plan->patient_id = $patient_id;
+                if (!$plan->validate()) {
+                    throw new Exception("Could not create a new plan: plan validation failed!");
+                }
+                $plan->save();
+            }
+
+            foreach ($plan_ids as $plan) {
+                $display_order = $plan[0];
+                $plan_id = $plan[1];
+                $plan = PlansProblems::model()->findByPk($plan_id);
+                $plan->display_order = $display_order;
+                if (!$plan->validate()) {
+                    throw new Exception("Could not save the plan: plan validation failed!");
+                }
+                $plan->save();
+            }
+
+            $transaction->commit();
+        } catch (Exception $exception) {
+            \Yii::log($exception);
+            $transaction->rollback();
+        }
+
+
+        $plans_problems = PlansProblems::model()->display_order()->findAll(["condition" => 'active=1']);
+        $plans = [];
+        foreach ($plans_problems as $plan_problem) {
+            $user_created = User::model()->findByPk($plan_problem->last_modified_user_id);
+
+            $attributes = $plan_problem->attributes;
+            $attributes['title'] = $user_created->title . " " . $user_created->last_name . " " . $user_created->first_name;
+            $plans[] = $attributes;
+        }
+
+        echo json_encode($plans);
     }
 
     public function actionSearch()
