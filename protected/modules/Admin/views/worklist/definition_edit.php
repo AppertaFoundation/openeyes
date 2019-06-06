@@ -101,7 +101,6 @@
                         [
                             'autocomplete' => Yii::app()->params['html_autocomplete'],
                             'class' => 'cols-1',
-                            'append-text' => '<i>Appointments will match on any time <b>before</b> the end time specified here.</i>',
                             'field' => 1,
                             'append-text' => 6,
                         ]
