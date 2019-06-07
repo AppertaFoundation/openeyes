@@ -1038,7 +1038,7 @@ $(document).ready(function() {
             new_principal = true;
         }
 
-        $('.js-diagnoses').find('input[type="hidden"]').map(function() {
+        $(this).closest('tr').find('input[type="hidden"]').map(function() {
             if ($(this).val() == disorder_id) {
                 $(this).remove();
             }
