@@ -25,7 +25,7 @@ class DisorderController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('index', 'view', 'autocomplete'),
+                'actions' => array('index', 'view', 'autocomplete','getcommonlyuseddiagnoses'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions

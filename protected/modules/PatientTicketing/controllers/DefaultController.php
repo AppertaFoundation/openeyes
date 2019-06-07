@@ -158,8 +158,14 @@ class DefaultController extends \BaseModuleController
         unset(Yii::app()->session['patientticket_ticket_in_review']);
         AutoSaveTicket::clear();
 
-        $cat_id = Yii::app()->request->getParam('cat_id', null);
-        $qs_id = Yii::app()->request->getParam('queueset_id', null);
+        $cat_id = Yii::app()->request->getParam('cat_id');
+        $qs_id = Yii::app()->request->getParam('queueset_id');
+        $unset_patientticketing = Yii::app()->request->getParam('unset_patientticketing');
+        $patient_ids = Yii::app()->request->getParam('patient-ids', []);
+
+        if ($unset_patientticketing === "true") {
+            unset(Yii::app()->session['patientticket_ticket_ids']);
+        }
 
         if (!$cat_id) {
             throw new \CHttpException(404, 'Category ID required');
@@ -235,11 +241,6 @@ class DefaultController extends \BaseModuleController
                 $criteria->join = "JOIN patientticketing_ticket pt ON pt.patient_id = t.id";
                 $criteria->join .= " JOIN patientticketing_ticketqueue_assignment a ON a.ticket_id = pt.id";
                 $criteria->addCondition('queue_id', $queueset->getId());
-
-                $patients = \Patient::model()->findAll($criteria);
-                $patient_list = \CHtml::listData($patients, 'id', function ($patient) {
-                    return strtoupper($patient->last_name) . ', ' . $patient->first_name;
-                });
             }
         }
 
@@ -252,7 +253,7 @@ class DefaultController extends \BaseModuleController
                 'patient_filter' => $patient_filter,
                 'pagination' => $pagination,
                 'cat_id' => $cat_id,
-                'patient_list' => $patient_list,
+                'patients' => $patient_ids ? \Patient::model()->findAllByPk($patient_ids) : [],
             ));
     }
 

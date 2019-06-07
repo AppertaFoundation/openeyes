@@ -166,9 +166,9 @@ class PcrRiskReport extends Report implements ReportInterface
             }
             if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
                 $surgeon_name = User::model()->findByPk($surgeon_id)->getFullName();
-                $surgeon_name = '<br><i>Surgon: </i>'.$surgeon_name;
+                $surgeon_name = '<br><i>Surgeon: </i>'.$surgeon_name;
             }else{
-                $surgeon_name = '<br><i>Surgon: </i>Surgon '.$surgeon_count;
+                $surgeon_name = '<br><i>Surgeon: </i>Surgeon '.$surgeon_count;
             }
             if ($surgeon_id['id'] == Yii::app()->user->id){
                 $color = "#1f77b4";

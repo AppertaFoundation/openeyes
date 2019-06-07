@@ -336,7 +336,6 @@ return array(
                     'uri' => 'report',
                     'position' => 3,
                     'restricted' => array('Report'),
-                    'userrule' => 'isSurgeon',
                 ),
                 'nodexport' => array(
                     'title' => 'NOD Export',
@@ -392,11 +391,14 @@ return array(
                   'uri' => '/Analytics/analyticsReports',
                   'position' => 11,
                 ),
-                'worklist' => array(
+                /*
+                 //TODO: not yet implemented
+                 'worklist' => array(
                   'title' => 'Worklists',
                   'uri' => '/worklist',
                   'position' => 3,
                 ),
+                */
         ),
         'admin_menu' => array(
         ),
@@ -589,7 +591,7 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
-        'hos_num_label' => 'Hospital',
+        'hos_num_label' => 'ID',
         'nhs_num_label' => 'NHS',
       'ethnic_group_filters' => array(
         'Indigenous Australian',

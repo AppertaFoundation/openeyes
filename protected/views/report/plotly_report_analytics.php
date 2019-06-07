@@ -63,7 +63,7 @@
   report.on('plotly_click',function(data){
           for(var i=0; i < data.points.length; i++){
               if (data.points[i].customdata){
-                  $('#<?=$report->graphId()?>_container').parent().parent().hide();
+                  $('.analytics-charts').hide();
                   $('.analytics-event-list').show();
                   $('.analytics-event-list-row').hide();
                   $('#js-back-to-chart').show();
