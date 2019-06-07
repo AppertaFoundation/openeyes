@@ -20,6 +20,7 @@ $( document ).ready(function() {
     if(window.location.href.indexOf("update") == -1) {
         loadBiometryElementData();
     }
+    autosize($('textarea'));
 });
 
 async function callbackAddProcedure(procedure_id) {
@@ -64,6 +65,7 @@ async function callbackAddProcedure(procedure_id) {
                     loadBiometryElementData();
                 }
             }
+            autosize($('textarea'));
         }
     });
 }
@@ -139,7 +141,7 @@ $(document).ready(function () {
         if (m = window.location.href.match(/\/update\/[0-9]+/)) {
             window.location.href = window.location.href.replace('/update/', '/view/');
         } else {
-            window.location.href = baseUrl + '/patient/episodes/' + OE_patient_id;
+            window.location.href = baseUrl + '/patient/summary/' + OE_patient_id;
         }
         e.preventDefault();
     });
