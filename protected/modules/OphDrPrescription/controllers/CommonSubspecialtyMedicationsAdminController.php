@@ -49,13 +49,13 @@ class CommonSubspecialtyMedicationsAdminController extends BaseAdminController
                     'filterid' => array(
                         'medicationSetRules.site_id' => $default_site_id,
                         'medicationSetRules.subspecialty_id' => $default_subspecialty_id,
-                        'medicationSetRules.usage_code' => 'Common subspecialty medications'
+                        'medicationSetRules.usage_code' => 'COMMON_OPH'
                     ),
                 )
             );
         }
 
-        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \'Common subspecialty medications\'');
+        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \'COMMON_OPH\'');
 
         $admin->setListFieldsAction('toList');
 
