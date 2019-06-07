@@ -294,7 +294,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
         $this->special_equipment = false;
-        $this->preassessment_booking_required = Yii::app()->params['pre_assessment_booking_default_value'];
+        $preassesment_booking_default_value = Yii::app()->params['pre_assessment_booking_default_value'];
+        $this->preassessment_booking_required = (isset($preassesment_booking_default_value) && $preassesment_booking_default_value === 2) ?
+            null :
+            $preassesment_booking_default_value;
         $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
 
         $this->organising_admission_user_id = Yii::app()->user->id;
