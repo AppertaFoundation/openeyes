@@ -98,58 +98,52 @@ class DefaultController extends \BaseModuleController
         $criteria = new \CDbCriteria();
         $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
 
-        if (@$_GET['patient_id']) {
-            // this is a simple way of handling this for the sake of demo-ing functionality
-            $criteria->addColumnCondition(array('patient_id' => $_GET['patient_id']));
-            $patient_filter = \Patient::model()->findByPk($_GET['patient_id']);
+        // TODO: we probably don't want to have such a gnarly approach to this, we might want to denormalise so that we are able to do eager loading
+        // That being said, we might get away with setting together false on the with to do this filtering (multiple query eager loading).
+        $criteria->join = 'JOIN '.models\TicketQueueAssignment::model()->tableName().' cqa ON cqa.ticket_id = t.id and cqa.id = (SELECT id from '.models\TicketQueueAssignment::model()->tableName().' qa2 WHERE qa2.ticket_id = t.id order by qa2.created_date desc limit 1)';
+
+        // build queue id list
+        $queue_ids = array();
+        if (@$filter_options['queue-ids']) {
+            $queue_ids = $filter_options['queue-ids'];
+            if (@$filter_options['closed-tickets']) {
+                // get all closed tickets regardless of whether queue is active or not
+                foreach (models\Queue::model()->closing()->findAll() as $closed_queue) {
+                    $queue_ids[] = $closed_queue->id;
+                }
+            }
         } else {
-            // TODO: we probably don't want to have such a gnarly approach to this, we might want to denormalise so that we are able to do eager loading
-            // That being said, we might get away with setting together false on the with to do this filtering (multiple query eager loading).
-            $criteria->join = 'JOIN '.models\TicketQueueAssignment::model()->tableName().' cqa ON cqa.ticket_id = t.id and cqa.id = (SELECT id from '.models\TicketQueueAssignment::model()->tableName().' qa2 WHERE qa2.ticket_id = t.id order by qa2.created_date desc limit 1)';
-
-            // build queue id list
-            $queue_ids = array();
-            if (@$filter_options['queue-ids']) {
-                $queue_ids = $filter_options['queue-ids'];
-                if (@$filter_options['closed-tickets']) {
-                    // get all closed tickets regardless of whether queue is active or not
-                    foreach (models\Queue::model()->closing()->findAll() as $closed_queue) {
-                        $queue_ids[] = $closed_queue->id;
-                    }
-                }
-            } else {
-                if ($qs_svc->isQueueSetPermissionedForUser($queueset, Yii::app()->user->id)) {
-                    foreach ($qs_svc->getQueueSetQueues(
-                                $queueset,
-                                @$filter_options['closed-tickets'] ? true : false) as $queue) {
-                        $queue_ids[] = $queue->id;
-                    }
+            if ($qs_svc->isQueueSetPermissionedForUser($queueset, Yii::app()->user->id)) {
+                foreach ($qs_svc->getQueueSetQueues(
+                            $queueset,
+                            @$filter_options['closed-tickets'] ? true : false) as $queue) {
+                    $queue_ids[] = $queue->id;
                 }
             }
+        }
 
-            if (@$filter_options['my-tickets']) {
-                $criteria->addColumnCondition(array('assignee_user_id' => Yii::app()->user->id));
-            }
-            if (@$filter_options['priority-ids']) {
-                $criteria->addInCondition('priority_id', $filter_options['priority-ids']);
-            }
-            if (count($queue_ids)) {
-                $criteria->addInCondition('cqa.queue_id', $queue_ids);
-            }
-            if (@$filter_options['firm-id']) {
-                $criteria->addColumnCondition(array('cqa.assignment_firm_id' => $filter_options['firm-id']));
-            } elseif (@$filter_options['subspecialty-id']) {
-                $criteria->join .= 'JOIN '.\Firm::model()->tableName().' f ON f.id = cqa.assignment_firm_id JOIN '.\ServiceSubspecialtyAssignment::model()->tableName().' ssa ON ssa.id = f.service_subspecialty_assignment_id';
-                $criteria->addColumnCondition(array('ssa.subspecialty_id' => $filter_options['subspecialty-id']));
-            }
-            if (isset($filter_options['patient-ids'])) {
-                $criteria->addInCondition('patient_id', $filter_options['patient-ids']);
-            }
+        if (@$filter_options['my-tickets']) {
+            $criteria->addColumnCondition(array('assignee_user_id' => Yii::app()->user->id));
+        }
+        if (@$filter_options['priority-ids']) {
+            $criteria->addInCondition('priority_id', $filter_options['priority-ids']);
+        }
+        if (count($queue_ids)) {
+            $criteria->addInCondition('cqa.queue_id', $queue_ids);
+        }
+        if (@$filter_options['firm-id']) {
+            $criteria->addColumnCondition(array('cqa.assignment_firm_id' => $filter_options['firm-id']));
+        } elseif (@$filter_options['subspecialty-id']) {
+            $criteria->join .= 'JOIN '.\Firm::model()->tableName().' f ON f.id = cqa.assignment_firm_id JOIN '.\ServiceSubspecialtyAssignment::model()->tableName().' ssa ON ssa.id = f.service_subspecialty_assignment_id';
+            $criteria->addColumnCondition(array('ssa.subspecialty_id' => $filter_options['subspecialty-id']));
+        }
+        if (isset($filter_options['patient-ids'])) {
+            $criteria->addInCondition('patient_id', $filter_options['patient-ids']);
         }
 
         $criteria->order = 't.created_date asc';
 
-        return array($criteria, $patient_filter);
+        return $criteria;
     }
 
     public function actionPatientSearch($term)
@@ -273,7 +267,7 @@ class DefaultController extends \BaseModuleController
 
                 Yii::app()->session['patientticket_filter'] = $filter_options;
 
-                list($criteria, $patient_filter) = $this->buildTicketFilterCriteria($filter_options, $queueset);
+                $criteria = $this->buildTicketFilterCriteria($filter_options, $queueset);
 
                 $count = models\Ticket::model()->count($criteria);
                 $pagination = new \CPagination($count);
