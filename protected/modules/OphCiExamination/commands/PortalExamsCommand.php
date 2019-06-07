@@ -80,7 +80,7 @@ class PortalExamsCommand extends CConsoleCommand
             $duplicateRecord = UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode);
 
             $auto_optom_saving_disabled = Yii::app()->params['disable_auto_import_optoms_from_portal'];
-            if(isset($auto_optom_saving_disabled) && $auto_optom_saving_disabled == 'off') {
+            if(isset($auto_optom_saving_disabled) && $auto_optom_saving_disabled === 'off') {
                 $this->saveOptometristAsPatientContact(
                     $examination['op_tom']['name'],
                     $examination['op_tom']['address'],

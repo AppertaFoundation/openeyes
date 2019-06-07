@@ -655,7 +655,7 @@ class OphCoCorrespondence_API extends BaseAPI
             }
         } else if($m[1] == 'Optometrist') {
             $contact = Contact::model()->findByPk($m[2]);
-        } else if($m[1] == 'GP') {
+        } else if($m[1] === 'GP') {
             $contact = Gp::model()->findByPk($m[2]);
         } else {
             if (!$contact = $m[1]::model()->findByPk($m[2])) {
