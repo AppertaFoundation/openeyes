@@ -16,7 +16,7 @@
  */
 use \OEModule\PASAPI\models\PasApiAssignment;
 use \OEModule\PASAPI\resources\PatientAppointment;
-
+use \OEModule\PatientTicketing\models\Ticket;
 class WorklistBehavior extends CBehavior
 {
     protected $worklist_manager;
@@ -46,7 +46,7 @@ class WorklistBehavior extends CBehavior
             // set $worklist_patient_id to be the same as the event that created the patietnticket
             if (isset(\Yii::app()->session['patientticket_ticket_ids']) && \Yii::app()->session['patientticket_ticket_ids']) {
                 $patientticket_ticket_id = Yii::app()->session['patientticket_ticket_ids'];
-                $ticket = \OEModule\PatientTicketing\models\Ticket::model()->findByPk($patientticket_ticket_id);
+                $ticket = Ticket::model()->findByPk($patientticket_ticket_id);
                 if ($ticket) {
                     $patientticket_event = Event::model()->findByPk($ticket->event_id);
                     if ($patientticket_event) {
@@ -100,11 +100,15 @@ class WorklistBehavior extends CBehavior
     }
 
     public function addToUnbookedWorklist($site_id, $firm_id) {
-        if($this->owner->event && !$this->owner->event->worklist_patient_id) {
+
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty = $firm->subspecialty ? $firm->subspecialty : null;
+
+        //for Eye Casualty events, the only time the patient wont be added to todays Eye Casualty unbooked worklist is if they already have a "booked" eye casualty appointment for today
+        if($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE')) {
+
             $unbooked_worklist_manager = new \UnbookedWorklist();
-            $firm = \Firm::model()->findByPk($firm_id);
-            $subspecialty_id = isset($firm->subspecialty->id) ? $firm->subspecialty->id : null;
-            $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty_id);
+            $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
             if ($unbooked_worklist) {
                 $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
                 if($worklist_patient) {
