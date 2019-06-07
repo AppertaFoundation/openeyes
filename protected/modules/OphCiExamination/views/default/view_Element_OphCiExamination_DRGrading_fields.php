@@ -18,6 +18,7 @@
 ?>
 <table>
   <tbody>
+  <?php if(!is_null($element->{$side . '_clinicalret'})) { ?>
   <tr>
     <td>
         <?php echo $element->getAttributeLabel($side . '_clinicalret_id') ?>:
@@ -26,6 +27,7 @@
         <?php echo $element->{$side . '_clinicalret'}->name ?>
     </td>
   </tr>
+  <?php } ?>
   <tr>
     <td>
         <?php echo $element->getAttributeLabel($side . '_nscretinopathy_id') ?>:

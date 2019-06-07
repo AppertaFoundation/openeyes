@@ -123,6 +123,7 @@ class AnalyticsController extends BaseController
               'service_data'=> array(),
               'custom_data' => array(),
               'event_list' => $event_list,
+              'patient_list' => $this->patient_list,
               'user_list' => $user_list,
               'current_user'=>$current_user,
           )
@@ -162,7 +163,19 @@ class AnalyticsController extends BaseController
   }
 
   private function getPatientList(){
-      $paitent_list_command = Yii::app()->db->createCommand()->select('DISTINCT p.hos_num as hos_num, p.id AS id, CONCAT(c.first_name, \' \', c.last_name) AS name, p.dob as dob, IF(p.date_of_death IS NOT NULL, YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0), YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age, p.gender as gender, patient_diagnoses.diagnoses AS diagnoses,patient_procedures.procedures AS procedures')->from('patient p')->leftJoin('contact c','p.contact_id = c.id')->leftJoin('(SELECT patient_id AS patient_id, GROUP_CONCAT(diagnoses) AS diagnoses
+      $paitent_list_command = Yii::app()->db->createCommand()->select('DISTINCT p.hos_num as hos_num,
+      p.nhs_num as nhs_num,
+      p.id AS id,
+      CONCAT(c.first_name, \' \', c.last_name) AS name,
+      p.dob as dob,
+      IF(p.date_of_death IS NOT NULL,
+         YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
+         YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age,
+      p.gender as gender,
+      patient_diagnoses.diagnoses AS diagnoses,
+      patient_procedures.procedures AS procedures')
+          ->from('patient p')->leftJoin('contact c','p.contact_id = c.id')
+          ->leftJoin('(SELECT patient_id AS patient_id, GROUP_CONCAT(diagnoses) AS diagnoses
                   FROM (
                          SELECT ep.patient_id AS patient_id, GROUP_CONCAT(d.term) AS diagnoses
                          FROM episode ep
@@ -663,7 +676,12 @@ class AnalyticsController extends BaseController
     public function queryCataractEventList(){
         $return_data = array();
         $command = Yii::app()->db->createCommand()
-            ->select('eoc.event_id as event_id, CONCAT(c.title," ",c.first_name, " ", c.last_name) as patient_name, proc.term as event_procedure')
+            ->select('eoc.event_id as event_id,
+            e.event_date as event_date,
+            eye.name as eye_side,
+            CONCAT(c.title," ",c.first_name, " ", c.last_name) as patient_name,
+            p.id as patient_id,
+            proc.term as event_procedure')
             ->from('et_ophtroperationnote_cataract eoc')
             ->join('event e', 'e.id = eoc.event_id')
             ->join('episode ep', 'ep.id = e.episode_id')
@@ -671,7 +689,8 @@ class AnalyticsController extends BaseController
             ->join('contact c', 'c.id = p.contact_id')
             ->join('et_ophtroperationnote_procedurelist eop','eop.event_id = eoc.event_id')
             ->leftJoin('ophtroperationnote_procedurelist_procedure_assignment oppa', 'oppa.procedurelist_id = eop.id')
-            ->leftJoin('proc','proc.id = oppa.proc_id');
+            ->leftJoin('proc','proc.id = oppa.proc_id')
+            ->leftJoin('eye', 'eye.id = eop.eye_id');
         $raw_data = $command->queryAll();
         foreach ($raw_data as $row){
             if (array_key_exists($row['event_id'],$return_data)){
@@ -679,6 +698,9 @@ class AnalyticsController extends BaseController
             }else{
                 $return_data[$row['event_id']] = array(
                     'event_id' => $row['event_id'],
+                    'event_date' => $row['event_date'],
+                    'eye_side' => $row['eye_side'],
+                    'patient_id' => $row['patient_id'],
                     'patient_name'=>$row['patient_name'],
                     'procedures'=>$row['event_procedure'],
                 );
@@ -715,8 +737,7 @@ class AnalyticsController extends BaseController
             array_push($this->custom_csv_data[$current_patient->id]['left'][$type],$left_reading);
         }
     }
-
-
+    
 
   public function getCommonDisorders($subspecialty_id = null, $only_name = false){
       $criteria = new CDbCriteria();
@@ -1268,7 +1289,7 @@ class AnalyticsController extends BaseController
             if( ($start_date && $assignment_time < $start_date) ||
                 ($end_date && $assignment_time > $end_date))
                 continue;
-            if (isset($this->surgeon)){
+            if (isset($this->surgeon) && isset($current_event)){
                 if ($this->surgeon !== $current_event->created_user_id){
                     continue;
                 }
@@ -1419,14 +1440,14 @@ class AnalyticsController extends BaseController
      * Check user roles, user with "Service Manager" role can view all the data for all surgeons.
      * Otherwise, it can only view the data created by himself.
      */
-  protected function checkAuth()
-  {
-      if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
-          $this->surgeon = null;
-      } else {
-          $this->surgeon = Yii::app()->user->id;
-      }
-  }
+    protected function checkAuth()
+    {
+        if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
+            $this->surgeon = null;
+        } else {
+            $this->surgeon = Yii::app()->user->id;
+        }
+    }
 
     /**
      * @return array
@@ -1496,7 +1517,14 @@ class AnalyticsController extends BaseController
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1
-                    )
+                    ),
+                    'hoverinfo' => 'text',
+                    'hovertext' => array_map(
+                        function ($item) {
+                            return "Average: " . $item['average'] . "<br> SD: " . $item['SD'] ."<br> Patient No: ".count($item['patients']);
+                        },
+                        array_values(${$side . '_va_list'})
+                    ),
                 ),
                 array(
                     'name' => $speciality_name === 'Glaucoma' ? 'IOP' : 'CRT',
@@ -1521,7 +1549,14 @@ class AnalyticsController extends BaseController
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1
-                    )
+                    ),
+                    'hoverinfo' => 'text',
+                    'hovertext' => array_map(
+                        function ($item) {
+                            return "Average: " . $item['average'] . "<br> SD: " . $item['SD'] ."<br> Patient No: ".count($item['patients']);
+                        },
+                        array_values(${$side . $second_list_name})
+                    ),
                 )
             );
         }

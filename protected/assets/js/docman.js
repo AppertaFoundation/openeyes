@@ -149,31 +149,31 @@ var docman = (function() {
                         //electronic_sending_method_label is coming from config
                         electronic_sending_method_label = electronic_sending_method_label ? electronic_sending_method_label : 'Electronic';
                             
-                        delivery_methods = '<div><label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + electronic_sending_method_label;
+                        delivery_methods = '<div><label class="inline highlight"><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + electronic_sending_method_label;
                         delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){
-                            delivery_methods += '<div><label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>';
+                            delivery_methods += '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>';
                         }
 
                     }
                     else if(contact_type == 'INTERNALREFERRAL'){
                         internal_referral_method_label = internal_referral_method_label ? internal_referral_method_label : 'Electronic (Internal Referral)';
 
-                        delivery_methods = '<div><label><input value="Internalreferral" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + internal_referral_method_label;
+                        delivery_methods = '<div><label class="inline highlight"><input value="Internalreferral" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + internal_referral_method_label;
                         delivery_methods += '<input type="hidden" value="Internalreferral" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){
-                            delivery_methods += '<div><label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>>';
+                            delivery_methods += '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>>';
                         }
                     }
                     else
                     {
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){
-                            delivery_methods = '<div><label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked> Print</label></div>';
+                            delivery_methods = '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked> Print</label></div>';
                         }
                     }
                     $(this).find('.docman_delivery_method').html(delivery_methods);
@@ -363,7 +363,7 @@ var docman = (function() {
                     }
                     $('#docman_recipient_' + rowindex).val('');
                     $('#dm_table .docman_loader').hide();
-                    $('.autosize').autosize();
+                    autosize.update($('.autosize'));
                 }
             });
         },
@@ -409,7 +409,7 @@ var docman = (function() {
                     this.addDocmanMethodMandatory();
                     $('tr.rowindex-' + (++last_row_index) + ' .docman_recipient').trigger('change');
                     $('#dm_table .docman_loader').hide();
-                    $('#dm_table textarea').autosize();
+                    autosize($('#dm_table textarea'));
                 }
             });
         },
