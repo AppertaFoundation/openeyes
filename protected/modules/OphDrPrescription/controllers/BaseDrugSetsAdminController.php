@@ -33,13 +33,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
 
         $admin->getSearch()->setItemsPerPage(30);
 
-        $default_site_id = Yii::app()->session['selected_site_id'];
         $default_subspecialty_id = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
-
-
-        /*
-         * array('' => 'All') = add All option in search field (Name)
-         * */
 
         $admin->getSearch()->addSearchItem('name');
         $admin->getSearch()->addSearchItem('medicationSetRules.site_id', array(
@@ -59,7 +53,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
         if ($this->request->getParam('search') == '') {
             $admin->getSearch()->initSearch(array(
                     'filterid' => array(
-                        'medicationSetRules.site_id' => $default_site_id,
+                        'medicationSetRules.site_id' => null,
                         'medicationSetRules.subspecialty_id' => $default_subspecialty_id,
                         'medicationSetRules.usage_code' => $this->usage_code
                     ),

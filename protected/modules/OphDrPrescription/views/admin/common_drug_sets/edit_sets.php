@@ -181,6 +181,9 @@
                                 searchSource: '/medicationManagement/findRefMedications',
                             },
                             enableCustomSearchEntries: true,
+                            booleanSearchFilterEnabled: true,
+                            booleanSearchFilterLabel: 'Include branded',
+                            booleanSearchFilterURLparam: 'include_branded'
                         });
 
                         $(document).on("submit", "#generic-admin-form", function (e) {
