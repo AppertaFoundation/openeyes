@@ -63,6 +63,6 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         setTimeout(function(){
             $('#<?= $side ?>_gonioscopy_mode option').filter('[data-value="<?= $mode ?>"]').attr('selected','selected');
             $('#<?= $side ?>_gonioscopy_mode').trigger('change');
-        },150);
+        },500);
     });
 </script>

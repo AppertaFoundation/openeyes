@@ -32,7 +32,8 @@
 
   PrescriptionDialog.prototype.getSelectedItems = function () {
     return this.popup.find('li.selected').filter(function () {
-      return $(this).closest('.js-drug-types').length === 0;
+      return $(this).closest('.js-drug-types').length === 0 &&
+          $(this).closest('.js-no-preservative').length === 0;
     }).map(function () {
       return $(this).data();
     }).get();

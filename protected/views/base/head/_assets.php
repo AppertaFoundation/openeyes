@@ -22,7 +22,7 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('eventemitter2/lib/eventemitter2.js', 'application.assets.components')?>
 <?php $assetManager->registerScriptFile('js/jquery.printElement.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.hoverIntent.min.js')?>
-<?php $assetManager->registerScriptFile('../../node_modules/jquery-autosize/jquery.autosize.min.js')?>
+<?php $assetManager->registerScriptFile('../../node_modules/autosize/dist/autosize.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.cookie.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.getUrlParam.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.query-object.min.js')?>

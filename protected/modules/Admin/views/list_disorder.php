@@ -23,30 +23,41 @@
 
 <div class="cols-12">
     <div class="row divider">
-        <form id="disorder-search-form" action="#" method="post">
+        <form id="disorder-search-form" action="/Admin/disorder/list" method="get">
             <table class="standard">
                 <colgroup>
-                    <col class="cols-4">
+                    <col class="cols-5">
                     <col class="cols-1">
                     <col class="cols-7">
 
                 </colgroup>
                 <tr>
-                    <td><?= CHtml::textField('search[query]', $search['query'], [
+                    <td><?= CHtml::textField('q', $query, [
                             'placeholder' => 'Search Term , Fully Specified Name , Aliases - (all are case sensitive)',
                             'class' => 'cols-full',
                         ]); ?>
                     </td>
                     <td>
-                        <input type="hidden" name="YII_CSRF_TOKEN"
-                               value="<?= Yii::app()->request->csrfToken ?>"/>
-                        <button class="blue hint" id="search-button" formmethod="post" type="submit">Search</button>
+                        <?=\CHtml::dropDownList(
+                            'specialty',
+                            isset($_GET['specialty']) ? $_GET['specialty'] :'',
+                            CHtml::listData(
+                                Specialty::model()->findAll(
+                                    ['order' => 'name']
+                                ),
+                                'id',
+                                'name'
+                            ) + ['None' => 'None'],
+                            ['empty' => 'All specialties']
+                        ) ?>
+                    </td>
+                    <td>
+                        <button class="blue hint" id="search-button" name="search" type="submit">Search</button>
                     </td>
                 </tr>
             </table>
         </form>
     </div>
-    <form id="admin_list_disorders">
         <table class="standard cols-full">
             <colgroup>
                 <col>
@@ -88,7 +99,7 @@
                             'class' => 'button large',
                             'type' => 'button',
                             'name' => 'add',
-                            'data-uri' => 'add',
+                            'data-uri' => '/Admin/disorder/add',
                             'id' => 'et_add'
                         ]
                     ); ?>
@@ -108,5 +119,4 @@
             </tr>
             </tfoot>
         </table>
-    </form>
 </div>

@@ -1022,7 +1022,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                 continue;
             }
 
-            if ($session->max_procedures > 0 && $this->getProcedureCount() > $session->getAvailableProcedureCount()) {
+            if ($session->isProcedureCountLimited() && $this->getProcedureCount() > $session->getAvailableProcedureCount()) {
                 continue;
             }
 

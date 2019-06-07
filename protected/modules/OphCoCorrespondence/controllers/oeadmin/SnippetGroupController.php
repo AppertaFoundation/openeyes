@@ -30,7 +30,7 @@ class SnippetGroupController extends ModuleAdminController
     {
         $this->admin = new Admin(LetterStringGroup::model(), $this);
         $this->admin->setModelDisplayName('Letter Snippet Group');
-        $this->admin->div_wrapper_class = 'cols-3';
+        $this->admin->div_wrapper_class = 'cols-full';
 
         return parent::beforeAction($action);
     }
@@ -42,6 +42,7 @@ class SnippetGroupController extends ModuleAdminController
      */
     public function actionList()
     {
+        $this->admin->div_wrapper_class = 'cols-6';
         $this->admin->setListFields(array(
             'display_order',
             'id',
