@@ -382,7 +382,7 @@ class DefaultController extends BaseEventTypeController
 
         if ($m[1] == 'Contact') {
             $contact = Person::model()->find('contact_id=?', array($m[2]));
-        } else if ($m[1] == 'GP') {
+        } else if ($m[1] === 'GP') {
             $contact = Gp::model()->findByPk($m[2]);
         } else {
             if (!$contact = $m[1]::model()->findByPk($m[2])) {
