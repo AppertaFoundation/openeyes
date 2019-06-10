@@ -995,6 +995,20 @@ class ElementLetter extends BaseEventTypeElement
         }
     }
 
+    public function getToAddressContactType() {
+        if($this->document_instance && $this->document_instance[0]->document_target) {
+            foreach ($this->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    if($target->ToCc === 'To'){
+                        return $target->contact_type;
+                    }
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @return string
      */
