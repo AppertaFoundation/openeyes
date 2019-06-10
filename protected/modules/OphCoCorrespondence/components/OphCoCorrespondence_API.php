@@ -708,7 +708,7 @@ class OphCoCorrespondence_API extends BaseAPI
             $contact_type = 'Optometrist';
         }
         
-        if( !in_array($contact_type, array('Gp','Patient','DRSS', 'Optometrist')) ){
+        if( !in_array($contact_type, array('Gp','Patient','DRSS', 'Optometrist' , 'GP')) ){
             $contact_type = 'Other';
         }
 
