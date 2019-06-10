@@ -16,7 +16,6 @@
 /**
  * @var int $cat_id
  * @var \OEModule\PatientTicketing\services\PatientTicketing_QueueSet $queueset
- * @var string[] $patient_list
  */
 ?>
 
