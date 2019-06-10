@@ -58,6 +58,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                     ]
                 ],
             ],
+            'displayOrder' => ['order' => 'display_order ASC']
         ];
     }
 
@@ -74,7 +75,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             array('name, rrule', 'required'),
             array('name', 'length', 'max' => 100),
             array('description', 'length', 'max' => 1000),
-            array('start_time, end_time', 'type', 'type'=>'time', 'timeFormat'=>'hh:mm:ss'),
+            array('start_time, end_time', 'type', 'type'=>'time', 'timeFormat'=>'hh:mm:ss', 'except' => 'sortDisplayOrder'),
             array('active_from, active_until', 'OEDateValidator'),
             array(
                 'active_from',
