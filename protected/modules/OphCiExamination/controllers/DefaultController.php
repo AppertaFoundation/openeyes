@@ -1284,6 +1284,53 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidatePatientTicketingFromData($data, $errors, $api);
         }
 
+        if(isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])){
+            $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
+        }
+
+        return $errors;
+    }
+
+    protected function setAndValidateOphthalmicDiagnosesFromData($data, $errors)
+    {
+        $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
+        $diagnoses = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses');
+        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'];
+
+        $concat_array = [];
+        foreach ($entries as $entry) {
+            if (isset($entry['right_eye']) && isset($entry['left_eye'])) {
+                $eye_id =  \Eye::BOTH;
+            } else if (isset($entry['right_eye'])) {
+                $eye_id =  \Eye::RIGHT;
+            } else if (isset($entry['left_eye'])) {
+                $eye_id =  \Eye::LEFT;
+            }
+
+            $disorder_id = $entry['disorder_id'];
+            $date = $entry['date'];
+
+            $concat_data = $eye_id.$disorder_id.$date;
+
+            if (isset($entry['id']) && strlen($entry['id']) > 0) {
+                $concat_array[] = $concat_data;
+                continue;
+            }
+
+            $not_already_exists = true;
+            if (isset($diagnoses->id)) {
+                $criteria = new \CDbCriteria();
+                $criteria->addCondition('element_diagnoses_id='.$diagnoses->id.' and eye_id='.$eye_id.' and disorder_id='.$disorder_id.' and date="'.$date.'"');
+                $res = models\OphCiExamination_Diagnosis::model()->findAll($criteria);
+                $not_already_exists = sizeof($res) == 0;
+            }
+
+            if ($not_already_exists && !in_array($concat_data, $concat_array)) {
+                $concat_array[] = $concat_data;
+            } else {
+                $errors[$et_name][] = "The pair of diagnosis, eye side and date must be unique.";
+            }
+        }
         return $errors;
     }
 

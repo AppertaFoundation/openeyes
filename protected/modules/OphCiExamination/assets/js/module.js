@@ -1038,12 +1038,6 @@ $(document).ready(function() {
             new_principal = true;
         }
 
-        $('.js-diagnoses').find('input[type="hidden"]').map(function() {
-            if ($(this).val() == disorder_id) {
-                $(this).remove();
-            }
-        });
-
         $(this).parent().parent().remove();
 
         if (new_principal) {
