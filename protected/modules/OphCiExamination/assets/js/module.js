@@ -1038,7 +1038,7 @@ $(document).ready(function() {
             new_principal = true;
         }
 
-        $(this).parent().parent().remove();
+        $(this).closest('tr').remove();
 
         if (new_principal) {
             $('input[name="principal_diagnosis"]:first').attr('checked','checked');

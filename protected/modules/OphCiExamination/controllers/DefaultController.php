@@ -1312,7 +1312,7 @@ class DefaultController extends \BaseEventTypeController
 
             $concat_data = $eye_id.$disorder_id.$date;
 
-            if (isset($entry['id']) && strlen($entry['id']) > 0) {
+            if (isset($entry['id']) && $entry['id']) {
                 $concat_array[] = $concat_data;
                 continue;
             }
