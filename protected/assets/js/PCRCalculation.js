@@ -104,14 +104,9 @@ function setGlaucomaDisorder(ev, pcrEl) {
 
                 if(glaucoma_present[eye]){
                     pcrrisk_section.find(pcrEl).val('Y');
-                } else {
-                    pcrrisk_section.find(pcrEl).val('N');
                 }
             });
         }
-
-    } else {
-        $(pcrEl).val('N');
     }
 
     $(pcrEl).trigger('change');
