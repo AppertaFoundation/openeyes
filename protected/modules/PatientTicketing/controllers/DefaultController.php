@@ -117,7 +117,7 @@ class DefaultController extends \BaseModuleController
                 foreach ($qs_svc->getQueueSetQueues(
                             $queueset,
                             @$filter_options['closed-tickets'] ? true : false) as $queue) {
-                    $queue_ids[] = $queue->id;
+                            $queue_ids[] = $queue->id;
                 }
             }
         }
@@ -160,6 +160,8 @@ class DefaultController extends \BaseModuleController
         $data_provider = $patient->search($search_terms);
         $criteria = $data_provider->getCriteria();
 
+        $criteria->distinct = true;
+
         $criteria->join .= ' JOIN patientticketing_ticket ticket ON ticket.patient_id = t.id';
         $criteria->join .= ' JOIN patientticketing_ticketqueue_assignment cqa ON cqa.ticket_id = ticket.id AND cqa.id = 
                                                             (	SELECT id 
@@ -189,7 +191,6 @@ class DefaultController extends \BaseModuleController
 
         echo CJavaScript::jsonEncode($result);
         Yii::app()->end();
-
     }
 
     /**
