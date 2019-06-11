@@ -244,9 +244,8 @@ if (!empty($id)) {
                 </tr>
 
             <?php endforeach; ?>
-                <input type="hidden" class="row_number_<?= $rowkey; ?>" value="<?= count($assignment->tapers); ?>">
         <?php endif; ?>
-
+        <input type="hidden" class="row_number_<?= $rowkey; ?>" value="<?= count($assignment->tapers); ?>">
     <?php
         $taperrowkey=0;
     endforeach; ?>
@@ -342,6 +341,9 @@ if (!empty($id)) {
                             searchSource: '/medicationManagement/findRefMedications',
                         },
                         enableCustomSearchEntries: true,
+                        booleanSearchFilterEnabled: true,
+                        booleanSearchFilterLabel: 'Include branded',
+                        booleanSearchFilterURLparam: 'include_branded'
                     });
 
                 </script>
@@ -368,12 +370,6 @@ if (!empty($id)) {
         var row_number = $(".row_number_" + rowKey).val();
         $(".row_number_" + rowKey).val(parseInt(row_number)+1);
         var row_number = $(".row_number_" + rowKey).val();
-
-        var lastkey = $("#medication_set_assignment_tbl > tbody").find(".taper_row:last").attr("data-key");
-        if (isNaN(lastkey)) {
-            lastkey = 0;
-        }
-        var taperrowkey = parseInt(lastkey) + 1;
 
         var template = $('#set_row_taper_template').html();
         Mustache.parse(template);
