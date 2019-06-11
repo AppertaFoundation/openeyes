@@ -23,8 +23,7 @@
  */
 
 if (!@$no_header) {?>
-	<header class="print-header" style="margin-bottom: 70px;">
-	<?php 
+	<?php
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
         
@@ -35,7 +34,6 @@ if (!@$no_header) {?>
             'clinicDate' => $element->clinic_date,
             'element' => $element,
         ))?>
-	</header>
 
 <?php $this->renderPartial('reply_address', array(
         'site' => $element->site,
