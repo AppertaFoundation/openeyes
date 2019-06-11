@@ -647,6 +647,7 @@ class DefaultController extends OphTrOperationbookingEventController
                 $this->operation->on_hold_comment = $on_hold_comments;
             }
             $this->operation->status_id = OphTrOperationbooking_Operation_Status::model()->find('name = "On-Hold"')->id;
+            $this->operation->event->deleteIssue('Operation requires scheduling');
             $this->operation->save();
         }
         return $this->redirect(array('default/view/' . $this->event->id));
