@@ -1296,8 +1296,9 @@ class DefaultController extends \BaseEventTypeController
         $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
         $diagnoses = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses');
         $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'];
+        $duplicateExists = false;
 
-        $concat_array = [];
+        $concat_occurrences = [];
         foreach ($entries as $entry) {
             if (isset($entry['right_eye']) && isset($entry['left_eye'])) {
                 $eye_id =  \Eye::BOTH;
@@ -1307,30 +1308,49 @@ class DefaultController extends \BaseEventTypeController
                 $eye_id =  \Eye::LEFT;
             }
 
-            $disorder_id = $entry['disorder_id'];
-            $date = $entry['date'];
+            // create a string with concatenation of  the columns that must be unique
+            $concat_data = $eye_id.$entry['disorder_id'].$entry['date'];
 
-            $concat_data = $eye_id.$disorder_id.$date;
-
+            // do not take into consideration rows that have an id associated as they are already in the database
             if (isset($entry['id']) && $entry['id']) {
-                $concat_array[] = $concat_data;
+                $concat_occurrences[] = $concat_data;
                 continue;
             }
 
+            // search if the input is already present in the database
             $not_already_exists = true;
             if (isset($diagnoses->id)) {
                 $criteria = new \CDbCriteria();
-                $criteria->addCondition('element_diagnoses_id='.$diagnoses->id.' and eye_id='.$eye_id.' and disorder_id='.$disorder_id.' and date="'.$date.'"');
+                $criteria->addCondition('element_diagnoses_id=:element_diagnoses_id');
+                $criteria->addCondition('eye_id=:eye_id');
+                $criteria->addCondition('disorder_id=:disorder_id');
+                $criteria->addCondition('date=:date');
+
+                $criteria->params[":element_diagnoses_id"] = $diagnoses->id;
+                $criteria->params[":eye_id"] = $eye_id;
+                $criteria->params[":disorder_id"] = $entry['disorder_id'];
+                $criteria->params[":date"] = $entry['date'];
+
                 $res = models\OphCiExamination_Diagnosis::model()->findAll($criteria);
-                $not_already_exists = sizeof($res) == 0;
+
+                // allow no more than one appearance in the database
+                $not_already_exists = sizeof($res) <= 1;
             }
 
-            if ($not_already_exists && !in_array($concat_data, $concat_array)) {
-                $concat_array[] = $concat_data;
+            // if the concatenated info is not already present (neither on the screen nor in the database)
+            if ($not_already_exists && !in_array($concat_data, $concat_occurrences)) {
+                // add it to the known array
+                $concat_occurrences[] = $concat_data;
             } else {
-                $errors[$et_name][] = "The pair of diagnosis, eye side and date must be unique.";
+                $duplicateExists = true;
             }
         }
+
+        // if there is any duplicate, add error message
+        if ($duplicateExists) {
+            $errors[$et_name][] = "The pair of diagnosis, eye side and date must be unique.";
+        }
+
         return $errors;
     }
 
