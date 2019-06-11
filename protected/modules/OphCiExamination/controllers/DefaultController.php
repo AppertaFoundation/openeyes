@@ -1296,7 +1296,7 @@ class DefaultController extends \BaseEventTypeController
         $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
         $diagnoses = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses');
         $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'];
-        $duplicateExists = false;
+        $duplicate_exists = false;
 
         $concat_occurrences = [];
         foreach ($entries as $entry) {
@@ -1331,10 +1331,10 @@ class DefaultController extends \BaseEventTypeController
                 $criteria->params[":disorder_id"] = $entry['disorder_id'];
                 $criteria->params[":date"] = $entry['date'];
 
-                $res = models\OphCiExamination_Diagnosis::model()->findAll($criteria);
+                $count_saved_diagnosis = models\OphCiExamination_Diagnosis::model()->count($criteria);
 
                 // allow no more than one appearance in the database
-                $not_already_exists = sizeof($res) <= 1;
+                $not_already_exists = $count_saved_diagnosis <= 1;
             }
 
             // if the concatenated info is not already present (neither on the screen nor in the database)
@@ -1342,12 +1342,12 @@ class DefaultController extends \BaseEventTypeController
                 // add it to the known array
                 $concat_occurrences[] = $concat_data;
             } else {
-                $duplicateExists = true;
+                $duplicate_exists = true;
             }
         }
 
         // if there is any duplicate, add error message
-        if ($duplicateExists) {
+        if ($duplicate_exists) {
             $errors[$et_name][] = "The pair of diagnosis, eye side and date must be unique.";
         }
 
