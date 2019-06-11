@@ -501,12 +501,15 @@ function AngleMarksController(_drawing) {
         data;
 
     // Register controller for notifications
-    _drawing.registerForNotifications(this, 'notificationHandler', ['ready']);
+    _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'afterReset']);
 
     // Method called for notification
     this.notificationHandler = function (_messageArray) {
 
         switch (_messageArray['eventName']) {
+            case 'afterReset':
+                this.initAntSegAngleMarks();
+                break;
             // Ready notification
             case 'ready':
                 this.initAntSegAngleMarks();
