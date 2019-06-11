@@ -18,8 +18,42 @@
 
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \CClientScript::POS_HEAD);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
+// Yii::app()->clientScript->registerCssFile(Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'))."/css/style_oe3.0_print.css", \CClientScript::POS_HEAD);
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
 <div class="element-data full-width flex-layout flex-top col-gap">
+        <div class="cols-3">
+        <table class="cols-full">
+            <?php if($correspondeceApp === "on") { ?>
+            <tr>
+                <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
+                <td>
+                    <div class="data-value" style="text-align: right">
+                        <?php
+                        if($element->is_signed_off == NULL){
+                            echo 'N/A';
+                        } else if((int)$element->is_signed_off == 1){
+                            echo 'Yes';
+                        } else {
+                            echo 'No';
+                        }
+                        ?>
+                    </div>
+                </td>
+            </tr>
+            <?php } ?>
+        </table>
+    </div>
+    <div class="spinner-overlay">
+        <i class="spinner"></i>
+        <img src="#"
+             width="<?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>"
+             height="<?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>"
+             style="background-color: white;"
+        >
+    </div>
+    <iframe src="http://openeyes.vm/OphCoCorrespondence/default/PDFprint/4686480?html=1" style="width: 800px; height: 800px; border: 0;"></iframe>
+</div>
+<!-- <div class="element-data full-width flex-layout flex-top col-gap">
     <div class="cols-3">
         <table class="cols-full">
             <?php if($correspondeceApp === "on") { ?>
@@ -120,7 +154,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
 <div class="js-correspondence-image-overlay">
 </div>
 
-</div>
+</div> -->
 <script type="text/javascript">
     $(document).ready(function () {
         let options = [];
