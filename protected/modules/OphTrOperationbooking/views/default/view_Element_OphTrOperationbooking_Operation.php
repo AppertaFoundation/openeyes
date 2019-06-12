@@ -18,7 +18,7 @@
 ?>
     <section class="element view full priority view-procedures">
         <header class="element-header">
-            <h3 class="element-title">Procedure<?php if (count($element->procedures) != 1) echo 's' ?> & OPCS codes</h3>
+            <h3 class="element-title">Procedure<?php if (count($element->procedures) !== 1) echo 's' ?> & OPCS codes</h3>
         </header>
         <div class="element-data full-width">
             <div class="cols-10">
@@ -443,7 +443,7 @@ if ($element->isEditable()) {
 
     $status = strtolower($element->status->name);
 
-    if($status == "on-hold"){
+    if($status === "on-hold"){
         $this->event_actions[] = EventAction::link(
             'Take off hold',
             Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/default/putOffHold/' . $element->event_id),
@@ -459,7 +459,7 @@ if ($element->isEditable()) {
         );
     }
 
-    if ((!$td_disabled && empty($element->booking)) || ($td_disabled && $status != 'scheduled')) {
+    if ((!$td_disabled && empty($element->booking)) || ($td_disabled && $status !== 'scheduled')) {
         if ($element->letterType && $this->checkPrintAccess()) {
             $print_letter_options = null;
             if (!$element->has_gp || !$element->has_address) {

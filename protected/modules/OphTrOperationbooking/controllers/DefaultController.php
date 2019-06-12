@@ -633,15 +633,15 @@ class DefaultController extends OphTrOperationbookingEventController
 
         $on_hold_reason = isset($_POST['on_hold_reason']) ? $_POST['on_hold_reason'] : null;
         $on_hold_comments = isset($_POST['on_hold_comments']) && trim($_POST['on_hold_comments']) ? $_POST['on_hold_comments'] : null;
-        $on_hold_other_reason = isset($_POST['other_reason']) && trim($_POST['other_reason']) != "" ? $_POST['other_reason'] : null;
+        $on_hold_other_reason = isset($_POST['other_reason']) && trim($_POST['other_reason']) ? $_POST['other_reason'] : null;
 
-        if ($on_hold_reason != null || $on_hold_reason == 'Other' && $on_hold_other_reason != null) {
-            if ($on_hold_reason == 'Other') {
+        if ($on_hold_reason !== null || $on_hold_reason === 'Other' && $on_hold_other_reason !== null) {
+            if ($on_hold_reason === 'Other') {
                 $this->operation->on_hold_reason = $on_hold_other_reason;
             } else {
                 $this->operation->on_hold_reason = $on_hold_reason;
             }
-            if (trim($on_hold_comments) == "") {
+            if (trim($on_hold_comments) === "") {
                 $this->operation->on_hold_comment = null;
             } else {
                 $this->operation->on_hold_comment = $on_hold_comments;
