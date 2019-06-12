@@ -678,11 +678,19 @@ function sidePortController(_drawing) {
                 $('#Element_OphTrOperationnote_Cataract_meridian').val(meridian);
                 break;
             case 'afterReset':
+                // Get reference to the phakoIncision
+                phakoIncision = _drawing.firstDoodleOfClass('PhakoIncision');
                 if(this.resetDoodleSet === false || // resetDoodleSet === false when the eyedraw is new
                     // but new eyedraws are loaded in the same way as editing, so might still be a new
                     // eyedraw that is being reset.
                     $(_drawing.canvas).parents('.eyedraw-row.cataract').data('isNew')) {
                     this.addSidePorts();
+                }
+                // Else cancel sync for an updated drawing
+                else {
+                    if (typeof(phakoIncision) != 'undefined') {
+                        phakoIncision.willSync = false;
+                    }
                 }
                 break;
             // Parameter change notification
