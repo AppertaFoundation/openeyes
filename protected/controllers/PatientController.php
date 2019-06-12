@@ -43,7 +43,11 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('DeactivatePlansProblems', 'UpdatePlansProblems', 'search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList', 'getInternalReferralDocumentListUrl' ),
+                'actions' => array('deactivatePlansProblems', 'updatePlansProblems'),
+                'roles' => array('Edit'),
+            ),
+            array('allow',
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList', 'getInternalReferralDocumentListUrl' ),
                 'users' => array('@'),
             ),
             array('allow',
