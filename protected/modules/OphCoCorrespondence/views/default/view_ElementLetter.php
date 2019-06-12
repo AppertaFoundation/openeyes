@@ -108,7 +108,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
                             $toAddress = $target->contact_name . "\n" . $target->address;
                         } else {
                             $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                             $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                             $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
                         }
                     }
                 }

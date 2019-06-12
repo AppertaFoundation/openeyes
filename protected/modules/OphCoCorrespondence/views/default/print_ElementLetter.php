@@ -22,6 +22,8 @@
  * @var $no_header bool
  */
 
+$toAddressContactType = $element->getToAddressContactType();
+
 if (!@$no_header) {?>
 	<header class="print-header" style="margin-bottom: 70px;">
 	<?php 
@@ -66,7 +68,7 @@ if (!@$no_header) {?>
 <div class="spacer"></div>
     <h5>
         <?php
-        echo($toAddress ? ('To: ' . $element->renderSourceAddress($toAddress) . '<br/>') : '');
+        echo($toAddress ? ('To: ' . (isset($toAddressContactType) ? $toAddressContactType . ' : ' : '') . $element->renderSourceAddress($toAddress) . '<br/>') : '');
         echo($ccString ? $ccString : ''); ?>
     </h5>
 <p nobr="true">
