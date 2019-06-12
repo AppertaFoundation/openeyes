@@ -667,8 +667,13 @@ function sidePortController(_drawing) {
 
                 break;
 
-            case 'beforeReset':
-                iol_position = $('#Element_OphTrOperationnote_Cataract_iol_position_id').val();
+            case 'beforeReset': {
+                    iol_position = $('#Element_OphTrOperationnote_Cataract_iol_position_id').val();
+                    let surgeonDrawing = ED.getInstance('ed_drawing_edit_Position');
+                    if(surgeonDrawing) {
+                        surgeonDrawing.resetEyedraw();
+                    }
+                }
                 break;
             case 'resetEdit':
                 $('#Element_OphTrOperationnote_Cataract_iol_position_id').val(iol_position);
