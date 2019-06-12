@@ -64,7 +64,7 @@
 
         $('#et_put_on_hold').click(function (event) {
             let reason = $('#on_hold_reason option:selected');
-            if (reason.val() === "" || reason.val() === "Other" && $('#js-on_hold-other-reason-area').val() === "") {
+            if (reason.val() === "" || reason.val() === "Other" && $('#js-on_hold-other-reason-area').val().trim() === "") {
                 $('.js-error-on-hold-errors-box').show();
                 $('#on_hold_errors').text("Please enter the reason for putting the booking on hold");
                 event.preventDefault();
