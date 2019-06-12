@@ -508,9 +508,6 @@ function AngleMarksController(_drawing) {
 
         switch (_messageArray['eventName']) {
             case 'afterReset':
-                this.initAntSegAngleMarks();
-                break;
-            // Ready notification
             case 'ready':
                 this.initAntSegAngleMarks();
                 break;
