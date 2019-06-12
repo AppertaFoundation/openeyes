@@ -19,7 +19,7 @@
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \CClientScript::POS_HEAD);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
 // Yii::app()->clientScript->registerCssFile(Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'))."/css/style_oe3.0_print.css", \CClientScript::POS_HEAD);
-$correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
+$correspondeceApp = Yii::app()->params['ask_correspondence_approval'];?>
 <div class="element-data full-width flex-layout flex-top col-gap">
         <div class="cols-3">
         <table class="cols-full">
@@ -51,7 +51,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
              style="background-color: white;"
         >
     </div>
-    <iframe src="http://openeyes.vm/OphCoCorrespondence/default/PDFprint/4686480?html=1" style="width: 800px; height: 800px; border: 0;"></iframe>
+    <iframe src="http://openeyes.vm/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?html=1" style="width: 800px; height: 800px; border: 0;"></iframe>
 </div>
 <!-- <div class="element-data full-width flex-layout flex-top col-gap">
     <div class="cols-3">
