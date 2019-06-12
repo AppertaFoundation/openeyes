@@ -493,6 +493,17 @@ class Helper
         return $eye_id;
     }
 
+    public static function array_dump_html(array $data){
+        $return_info = "";
+        foreach ($data as $key => $value){
+            if (is_array($value)){
+                $value = Helper::array_dump_html($value);
+            }
+            $return_info .= $value.'<br>';
+        }
+        return $return_info;
+		}
+
     /**
      * Return bites based on the ini_get returns value e.g. 2M
      * @param $val
@@ -514,5 +525,6 @@ class Helper
         }
 
         return $val;
+
     }
 }

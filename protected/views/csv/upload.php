@@ -3,16 +3,16 @@
         <div class="title wordcaps">Upload</div>
     </div>
     <div class="oe-full-content  flex-top">
-        <button onclick="window.location.href='<?= $backuri = $backuri ?  : '/OETrial/trial/' ?>'">
+        <button onclick="window.location.href='<?= isset($backuri) ? $backuri : '/OETrial/trial/' ?>'">
                 Back to previous page
         </button>
 
         <div class="errorSummary">
             <?php
             if (isset($errors) and $errors !== null) {
-                echo '<pre>';
-                echo ArrayHelper::array_dump_html($errors);
-                echo '</pre>';
+                echo '<div class="alert-box warning">';
+                echo Helper::array_dump_html($errors);
+                echo '</div>';
             }
             ?>
         </div>
