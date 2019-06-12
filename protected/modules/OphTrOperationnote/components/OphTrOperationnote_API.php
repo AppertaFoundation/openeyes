@@ -345,7 +345,10 @@ class OphTrOperationnote_API extends BaseAPI
                 'operation' => implode(', ',
                     array_map(
                         function($proc) {
-                            return $proc->short_format;
+                            if (isset($proc->short_format) && $proc->short_format)
+                                return $proc->short_format;
+                            // if there is no short_format for this procedure, fallback to the long term
+                            return $proc->term;
                         },
                         $element->procedures
                     )
