@@ -628,7 +628,7 @@ function sidePortController(_drawing) {
     var meridian;
 
     // Register controller for notifications
-    _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'beforeReset', 'reset', 'resetEdit', 'parameterChanged', 'doodleAdded', 'doodleDeleted', 'doodlesLoaded']);
+    _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'beforeReset', 'afterReset', 'resetEdit', 'parameterChanged', 'doodleAdded', 'doodleDeleted', 'doodlesLoaded']);
 
     this.addSidePorts = function() {
         var has_sideport = _drawing.hasDoodleOfClass('SidePort');
@@ -670,23 +670,21 @@ function sidePortController(_drawing) {
             case 'beforeReset':
                 iol_position = $('#Element_OphTrOperationnote_Cataract_iol_position_id').val();
                 break;
-
-            case 'reset':
-                this.addSidePorts();
-                break;
             case 'resetEdit':
-                if ($(_drawing.canvas).parents('.eyedraw-row.cataract').data('isNew')) {
-                    // new eyedraws are loaded in the same way as editing, so might still be a new
-                    // eyedraw that is being reset.
-                    this.addSidePorts();
-                }
                 $('#Element_OphTrOperationnote_Cataract_iol_position_id').val(iol_position);
                 $('#Element_OphTrOperationnote_Cataract_incision_site_id').val(site_id);
                 $('#Element_OphTrOperationnote_Cataract_incision_type_id').val(type_id);
                 $('#Element_OphTrOperationnote_Cataract_length').val(length);
                 $('#Element_OphTrOperationnote_Cataract_meridian').val(meridian);
                 break;
-
+            case 'afterReset':
+                if(this.resetDoodleSet === false || // resetDoodleSet === false when the eyedraw is new
+                    // but new eyedraws are loaded in the same way as editing, so might still be a new
+                    // eyedraw that is being reset.
+                    $(_drawing.canvas).parents('.eyedraw-row.cataract').data('isNew')) {
+                    this.addSidePorts();
+                }
+                break;
             // Parameter change notification
             case 'parameterChanged':
                 // Get rotation value of surgeon doodle
