@@ -27,14 +27,14 @@ class m180815_071733_add_set_common_subspecialty_medications extends CDbMigratio
                                 $ref_set_id,
                                 {$ssd['subspecialty_id']},
                                 {$ssd['site_id']},
-                                'Common subspecialty medications'
+                                'COMMON_OPH'
                                 )");
         }
 	}
 
 	public function down()
 	{
-		$this->execute("DELETE FROM medication_set_rule WHERE usage_code = 'Common subspecialty medications'");
+		$this->execute("DELETE FROM medication_set_rule WHERE usage_code = 'COMMON_OPH'");
 		$this->execute("DELETE FROM medication_set_item WHERE medication_set_id IN (SELECT id FROM medication_set WHERE `name` = 'Common subspecialty medications')");
 		$this->execute("DELETE FROM medication_set WHERE `name` = 'Common subspecialty medications'");
 	}

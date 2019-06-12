@@ -29,7 +29,7 @@ class CommonSystemicMedicationsAdminController extends BaseAdminController
 
         $admin->getSearch()->setItemsPerPage(30);
         $admin->getSearch()->getCriteria()->join = "INNER JOIN medication_set_rule AS medSetRules ON medSetRules.medication_set_id = t.id";
-        $admin->getSearch()->getCriteria()->addCondition('medSetRules.usage_code = \'Common systemic medications\'');
+        $admin->getSearch()->getCriteria()->addCondition('medSetRules.usage_code = \'COMMON_SYSTEMIC\'');
 
         $admin->setListFieldsAction('toList');
 

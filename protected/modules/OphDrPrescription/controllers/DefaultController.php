@@ -570,7 +570,7 @@ class DefaultController extends BaseEventTypeController
 		$rule = MedicationSetRule::model()->findByAttributes(array(
 			'subspecialty_id' => $subspecialty_id,
 			'site_id' => $site_id,
-			'usage_code' => 'Common subspecialty medications'
+			'usage_code' => 'COMMON_OPH'
 		));
 		if($rule) {
 			return $rule->medicationSet;

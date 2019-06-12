@@ -201,10 +201,8 @@ class Medication extends BaseActiveRecordVersioned
 
     public function getToBeCopiedIntoMedicationManagement()
     {
-        $med_sets = array_map(function($e){ return $e->id; }, MedicationSet::model()->with('medicationSetRules')->findAll("medicationSetRules.usage_code = 'Management'"));
-
         foreach ($this->medicationSets as $medSet) {
-            if(in_array($medSet->id, $med_sets)) {
+            if($medSet->name == "medication_management") {
                 return true;
             }
         }
@@ -222,7 +220,7 @@ class Medication extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
         $criteria->condition = "id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN 
-                                        (SELECT medication_set_id FROM medication_set_rule WHERE usage_code = 'Common subspecialty medications' 
+                                        (SELECT medication_set_id FROM medication_set_rule WHERE usage_code = 'COMMON_OPH' 
                                             AND site_id=:site_id AND subspecialty_id=:subspecialty_id))";
         $criteria->params = array(":site_id" => $site_id, "subspecialty_id" => $subspecialty_id);
         $criteria->order = 'preferred_term';
@@ -349,12 +347,12 @@ class Medication extends BaseActiveRecordVersioned
 
     public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false, $site_id = null)
     {
-        return $this->listByUsageCode("Common subspecialty medications", $subspecialty_id, $raw, $site_id);
+        return $this->listByUsageCode("COMMON_OPH", $subspecialty_id, $raw, $site_id);
     }
 
     public function listCommonSystemicMedications($raw = false)
     {
-        return $this->listByUsageCode("Common systemic medications", null, $raw);
+        return $this->listByUsageCode("COMMON_SYSTEMIC", null, $raw);
     }
 
     public function getMedicationSetsForCurrentSubspecialty()
