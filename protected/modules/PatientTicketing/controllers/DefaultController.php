@@ -108,8 +108,16 @@ class DefaultController extends \BaseModuleController
             $queue_ids = $filter_options['queue-ids'];
             if (@$filter_options['closed-tickets']) {
                 // get all closed tickets regardless of whether queue is active or not
-                foreach (models\Queue::model()->closing()->findAll() as $closed_queue) {
-                    $queue_ids[] = $closed_queue->id;
+                $rows = Yii::app()->db->createCommand()
+                    ->select('patientticketing_queue.id, COUNT(oc.id) oc_ct')
+                    ->from('patientticketing_queue')
+                    ->leftJoin('patientticketing_queueoutcome oc', 'patientticketing_queue.id = oc.queue_id')
+                    ->group('patientticketing_queue.id')
+                    ->having('oc_ct = 0')
+                    ->queryAll();
+
+                foreach ($rows as $row) {
+                    $queue_ids[] = $row['id'];
                 }
             }
         } else {
@@ -148,6 +156,23 @@ class DefaultController extends \BaseModuleController
 
     public function actionPatientSearch($term)
     {
+        $closed_tickets = \Yii::app()->request->getParam('closedTickets', '0');
+
+        $queue_ids = [];
+        if ($closed_tickets === '0') {
+            $rows = Yii::app()->db->createCommand()
+                ->select('patientticketing_queue.id, COUNT(oc.id) oc_ct')
+                ->from('patientticketing_queue')
+                ->leftJoin('patientticketing_queueoutcome oc', 'patientticketing_queue.id = oc.queue_id')
+                ->group('patientticketing_queue.id')
+                ->having('oc_ct = 0')
+                ->queryAll();
+
+            foreach ($rows as $row) {
+                $queue_ids[] = $row['id'];
+            }
+        }
+
         $search = new \PatientSearch();
         $search_terms = $search->parseTerm($term);
 
@@ -169,6 +194,11 @@ class DefaultController extends \BaseModuleController
                                                                 WHERE qa2.ticket_id = ticket.id 
                                                                 ORDER BY qa2.created_date DESC LIMIT 1
                                                             )';
+
+        if (count($queue_ids)) {
+            $criteria->addNotInCondition('cqa.queue_id', $queue_ids);
+        }
+
         $criteria->addCondition('t.is_deceased = 0');
         $data_provider->setCriteria($criteria);
 

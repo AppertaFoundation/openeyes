@@ -176,7 +176,6 @@
     $(document).ready(function () {
         OpenEyes.UI.Search.init($('#patient-search'));
         OpenEyes.UI.Search.setLoader($('.js-spinner-as-icon'));
-        OpenEyes.UI.Search.setSourceURL('/PatientTicketing/default/patientSearch');
         OpenEyes.UI.Search.getElement().autocomplete('option', 'select', function (event, uid) {
             let $list = $('#patient-result-list');
             let $item = $('<li>', {'data-patient_id': uid.item.id}).html(uid.item.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
@@ -190,6 +189,16 @@
             return false;
 
         });
+
+        OpenEyes.UI.Search.getElement().autocomplete('option', 'source', function (request, response) {
+                $.getJSON('/PatientTicketing/default/patientSearch', {
+                    term: request.term,
+                    ajax: 'ajax',
+                    closedTickets: +$('#closed-tickets').is(':checked')
+                }, response);
+        });
+
+
 
         $('#patient-result-wrapper').on('click', '.remove-circle', function () {
             let id = $(this).data('patient_id');
