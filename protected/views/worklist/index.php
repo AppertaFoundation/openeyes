@@ -59,13 +59,19 @@
                 .set('date_from', $('#worklist-date-from').val())
                 .set('date_to', $('#worklist-date-to').val());
         });
+
+        const worklist_selected = getCookie("worklist_selected");
+        if(worklist_selected){
+            updateWorkLists(worklist_selected);
+            $('.js-worklist-filter').filter('[data-worklist="'+worklist_selected+'"]').addClass('selected');
+        }
     });
 
     $('.js-clear-dates').on('click', () => {
         $('#worklist-date-from').val(null);
         $('#worklist-date-to').val(null);
 
-        window.location.href = window.location.href.substring(0, window.location.href.indexOf('?'));
+        window.location.href = '/worklist/cleardates';
     });
 
     $('.js-worklist-filter').click(function (e) {
@@ -73,6 +79,7 @@
         resetFilters();
         $(this).addClass('selected');
         updateWorkLists($(this).data('worklist'));
+        document.cookie = "worklist_selected="+$(this).data('worklist');
     });
 
     function resetFilters() {
@@ -86,5 +93,23 @@
             $('.worklist-group').hide();
             $('#' + listID + '-wrapper').show();
         }
+    }
+
+    function getCookie(cname) {
+        const name = cname + "=";
+        const decoded_cookie = decodeURIComponent(document.cookie).split(';');
+
+        for(let i = 0; i < decoded_cookie.length; i++) {
+            let cookie_entry = decoded_cookie[i];
+
+            while (cookie_entry.charAt(0) == ' ') {
+                cookie_entry = cookie_entry.substring(1);
+            }
+            
+             if (cookie_entry.indexOf(name) == 0) {
+                return cookie_entry.substring(name.length, cookie_entry.length);
+            }
+        }
+        return false;
     }
 </script>
