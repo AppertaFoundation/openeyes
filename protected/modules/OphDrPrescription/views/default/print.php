@@ -18,6 +18,9 @@
  $logoHelper = new LogoHelper();
 
 ?>
+    <?php if(isset($copy) && $copy === "patient") { ?>
+        <div class="break"></div>
+    <?php } ?>
 	<?php if (@$copy) {?>
 		<div class="watermark">
 			<img src="<?= $this->assetPath.'/img/copy_for_'.$copy.'.png' ?>"/>
