@@ -1302,14 +1302,33 @@ class AnalyticsController extends BaseController
                 }
             }
             $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
-            $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
-            $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
+            $latest_examination = $current_patient->getLatestExaminationEvent();
+            if(isset($latest_examination)) {
+                $latest_examination_date = Helper::mysqlDate2JsTimestamp($latest_examination->event_date) / 1000;
+            } else {
+                $latest_examination_date = null;
+            }
+
+            $latest_time = null;
+
+            if(isset($latest_worklist_time)) {
+                if(isset($latest_examination_date)) {
+                    $latest_time = max($latest_examination_date, $latest_worklist_time);
+                } else {
+                    $latest_time = $latest_worklist_time;
+                }
+            } else {
+                if(isset($latest_examination_date)) {
+                    $latest_time = $latest_examination_date;
+                }
+            }
+
             $quantity = $ticket_followup['followup_quantity'];
             if ($quantity > 0) {
                 $period_date = $quantity * $this->getPeriodDate($ticket_followup['followup_period']);
                 $due_time = $assignment_time + $period_date * self::DAYTIME_ONE;
                 if ($due_time < $current_time) {
-                    if ($latest_time > $assignment_time)
+                    if (!isset($latest_time) || $latest_time > $assignment_time)
                         continue;
                     //Follow up is overdue
                     $over_weeks = intval(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
