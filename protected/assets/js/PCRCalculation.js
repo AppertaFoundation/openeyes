@@ -66,8 +66,10 @@ function setDiabeticDisorder(ev, pcrEl) {
  *
  * @param ev
  * @param pcrEl
+ * @param glaucomaDiagnosisRemoved
+ * @param glaucomaDiagnosisEyesSelected
  */
-function setGlaucomaDisorder(ev, pcrEl) {
+function setGlaucomaDisorder(ev, pcrEl, glaucomaDiagnosisRemoved , glaucomaDiagnosisEyesSelected) {
     if (!pcrEl) {
         pcrEl = ev.data;
     }
@@ -104,9 +106,13 @@ function setGlaucomaDisorder(ev, pcrEl) {
 
                 if(glaucoma_present[eye]){
                     pcrrisk_section.find(pcrEl).val('Y');
+                } else if(glaucomaDiagnosisRemoved  && glaucomaDiagnosisEyesSelected[eye]) {
+                    pcrrisk_section.find(pcrEl).val('NK');
                 }
             });
         }
+    } else if(glaucomaDiagnosisRemoved) {
+        $(pcrEl).val('NK');
     }
 
     $(pcrEl).trigger('change');
