@@ -17,6 +17,7 @@
 use \OEModule\PASAPI\models\PasApiAssignment;
 use \OEModule\PASAPI\resources\PatientAppointment;
 use \OEModule\PatientTicketing\models\Ticket;
+
 class WorklistBehavior extends CBehavior
 {
     protected $worklist_manager;
@@ -99,12 +100,36 @@ class WorklistBehavior extends CBehavior
         }
     }
 
-    public function addToUnbookedWorklist($site_id, $firm_id) {
-
+    public function addToUnbookedWorklist($site_id, $firm_id)
+    {
         $firm = \Firm::model()->findByPk($firm_id);
         $subspecialty = $firm->subspecialty ? $firm->subspecialty : null;
+        $patient_id = isset($this->owner->patient->id) ? $this->owner->patient->id : null;
 
-        //for Eye Casualty events, the only time the patient wont be added to todays Eye Casualty unbooked worklist is if they already have a "booked" eye casualty appointment for today
+        /**
+         * Excluded VC items from generating a new unbooked item where the original event had no worklist entry
+         */
+
+        if (isset(\Yii::app()->session['patientticket_ticket_ids']) && \Yii::app()->session['patientticket_ticket_ids']) {
+
+            $patientticket_ticket_id = Yii::app()->session['patientticket_ticket_ids'];
+            $ticket = Ticket::model()->findByPk($patientticket_ticket_id);
+            $ticket_patient_id = null;
+
+            if ($ticket) {
+                // disableDefaultScope() to find deleted events as well, we just want to get the patient, nothing else
+                $patientticket_event = Event::model()->disableDefaultScope()->findByPk($ticket->event_id);
+                $ticket_patient_id = $patientticket_event->episode->patient_id;
+            }
+
+            // creating event for the patient who has ticket set in session['patientticket_ticket_ids']
+            // plus ticket's worklist_patient_id is empty, we do not create unbooked entry
+            if ($ticket_patient_id === $patient_id && !$patientticket_event->worklist_patient_id) {
+                return false;
+            }
+        }
+
+        // for Eye Casualty events, the only time the patient wont be added to todays Eye Casualty unbooked worklist is if they already have a "booked" eye casualty appointment for today
         if($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE')) {
 
             $unbooked_worklist_manager = new \UnbookedWorklist();
@@ -136,4 +161,3 @@ class WorklistBehavior extends CBehavior
             'internal_type' => '\WorklistPatient']);
     }
 }
-
