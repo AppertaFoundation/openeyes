@@ -70,17 +70,6 @@ $(function () {
     $(selector).toggle($(this).is(':checked'));
   });
 
-  $('#is_pr_gp').on('change', function () {
-    var selector = $(this).data('child_row');
-    var isChecked = $(this).is(':checked');
-    if (isChecked){
-      $(selector).hide();
-      $('#Patient_gp_id').val($('#Patient_patient_referral_id').val());
-    } else {
-      $(selector).show();
-    }
-  });
-
   $('#selected_pr_wrapper').on('click', '.js-remove-pr', function () {
     removeSelectedGP('pr');
   });

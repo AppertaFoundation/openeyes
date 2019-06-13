@@ -333,46 +333,8 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->fileField($referral, 'uploadedFile'); ?>
           </td>
         </tr>
-        <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
-        <tr>
-            <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
-                <?= $form->label($patient, 'patient_referral_id') ?>
-                <br/>
-                <?= $form->error($patient, 'patient_referral_id') ?>
-            </td>
-            <td>
-                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_pr_id']); ?>
-                <div id="selected_pr_wrapper" style="<?= !isset($patient->patient_referral_id) || ($patient->patient_referral_id === '') ? 'display: none;' : '' ?>">
-                    <ul class="oe-multi-select js-selected_pr">
-                        <li>
-                  <span class="js-name">
-                      <?= $patient->patient_referral_id ? Gp::model()->findByPk(array('id' => $patient->patient_referral_id))->getCorrespondenceName() : '' ?>
-                  </span>
-                            <i class="oe-i remove-circle small-icon pad-left js-remove-pr"></i>
-                        </li>
-                    </ul>
-                    <?= CHtml::hiddenField('Patient[patient_referral_id]', $patient->patient_referral_id, array('class' => 'hidden_id')) ?>
-                </div>
-                <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
-                <a id="js-add-pr-btn" href="#">Add Referring Practitioner</a>
-                <?php } ?>
-                <div id="no_pr_result" style="display: none;">
-                    <div>No result</div>
-                </div>
-            </td>
-        </tr>
-        <?php $isPRSameASGP = false;
-        if ( isset($patient->patient_referral_id) && isset($patient->gp_id) && ($patient->patient_referral_id !== '') && ($patient->gp_id !== '') && ($patient->patient_referral_id === $patient->gp_id)) {
-            $isPRSameASGP = true;
-        } ?>
-        <tr>
-            <td>
-                <?= CHtml::checkBox('is_pr_gp', $isPRSameASGP, array('data-child_row' => '#js-patient-gp-row')) ?>
-                Is Referring Practitioner patient's GP?
-            </td>
-        </tr>
-        <?php endif; ?>
-        <tr id="js-patient-gp-row" style="<?= Yii::app()->params['institution_code']=='CERA' && $isPRSameASGP ? 'display: none': ''; ?>">
+
+        <tr id="js-patient-gp-row">
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                 <?= $form->label($patient, 'gp_id') ?>
                 <br/>
@@ -430,6 +392,37 @@ foreach ($ethnic_list as $key=>$item){
                 <?php } ?>
             </td>
         </tr>
+
+        <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
+          <tr>
+            <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
+                <?= $form->label($patient, '') ?>
+              <br/>
+                <?= $form->error($patient, '') ?>
+            </td>
+            <td>
+                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_pr_id']); ?>
+              <div id="selected_pr_wrapper">
+                <ul class="oe-multi-select js-selected_pr">
+                  <li>
+                  <span class="js-name">
+<!--                      --><?//= $patient->patient_referral_id ? Gp::model()->findByPk(array('id' => $patient->patient_referral_id))->getCorrespondenceName() : '' ?>
+                  </span>
+                    <i class="oe-i remove-circle small-icon pad-left js-remove-pr"></i>
+                  </li>
+                </ul>
+<!--                  --><?//= CHtml::hiddenField('Patient[patient_referral_id]', $patient->patient_referral_id, array('class' => 'hidden_id')) ?>
+              </div>
+                <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
+                  <a id="js-add-pr-btn" href="#">Add New Contact</a>
+                <?php } ?>
+              <div id="no_pr_result" style="display: none;">
+                <div>No result</div>
+              </div>
+            </td>
+          </tr>
+        <?php endif; ?>
+
         <tr>
           <td>
             <?= $form->label($patientuserreferral, 'Referred to') ?>
@@ -565,7 +558,6 @@ $this->renderPartial('../gp/create_gp_form',
         $("#gp-form")[0].reset();
         $("#errors").text("");
         $(".alert-box").css("display","none");
-        console.log($('.js-add-practitioner-event'));
         $('.js-add-practitioner-event').css('display','none');
 
     });

@@ -33,7 +33,6 @@
  * @property string $nhs_num
  * @property string $primary_phone
  * @property int $gp_id
- * @property int $patient_referral_id
  * @property int $practice_id
  * @property string $created_date
  * @property string $last_modified_date
@@ -133,7 +132,7 @@ class Patient extends BaseActiveRecordVersioned
             array('dob, patient_source', 'required'),
             array('hos_num', 'required', 'on' => 'pas'),
             array('gender', 'required', 'on' => array('self_register')),
-            array('patient_referral_id, gp_id, practice_id', 'required', 'on' => 'referral'),
+            array('gp_id, practice_id', 'required', 'on' => 'referral'),
 
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
@@ -141,7 +140,7 @@ class Patient extends BaseActiveRecordVersioned
 
             array('nhs_num', 'numerical'),
 
-            array('dob, is_deceased, date_of_death, ethnic_group_id, patient_referral_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
+            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
             array('deleted', 'safe'),
             array('dob', 'dateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('dob','dateOfBirthRangeValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
@@ -169,7 +168,6 @@ class Patient extends BaseActiveRecordVersioned
             ),
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
             'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
-            'patient_referral' => array(self::BELONGS_TO, 'Gp', 'patient_referral_id'),
             'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
             'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
             'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)',
@@ -326,7 +324,6 @@ class Patient extends BaseActiveRecordVersioned
             'deleted' => 'Is Deleted',
             'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Status',
             'gp_id' => Yii::app()->params['general_practitioner_label'],
-            'patient_referral_id' => 'Referred By',
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient?',
             'patient_source' => 'Patient Source'

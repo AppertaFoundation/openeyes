@@ -1724,7 +1724,6 @@ class PatientController extends BaseController
         $patient_identifiers = $this->getPatientIdentifiers($patient);
 
         $gpcontact = new Contact();
-        $patient_referral_contact = new Contact();
         $practicecontact = new Contact();
         $practiceaddress = new Address();
         $practice = new Practice();
@@ -1796,7 +1795,6 @@ class PatientController extends BaseController
             'patientuserreferral' => isset($patient_user_referral) ? $patient_user_referral : new PatientUserReferral(),
             'patient_identifiers' => $patient_identifiers,
             'gpcontact' => $gpcontact,
-            'pr_contact' => $patient_referral_contact,
             'practicecontact' => $practicecontact,
             'practiceaddress' => $practiceaddress,
             'practice' => $practice
@@ -2021,7 +2019,6 @@ class PatientController extends BaseController
         $patient = $this->loadModel($id);
         $referral = isset($patient->referral) ? $patient->referral : new PatientReferral();
         $this->pageTitle = 'Update Patient - ' . $patient->last_name . ', ' . $patient->first_name;
-        $prcontact = isset($patient->patient_referral) ? $patient->patient_referral->contact: new Contact();
         $gpcontact = isset($patient->gp) ? $patient-> gp->contact : new Contact();
         $practice = isset($patient->practice) ? $patient->practice : new Practice();
         $practicecontact = isset($patient->practice) ? $patient-> practice->contact : new Contact();
