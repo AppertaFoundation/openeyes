@@ -84,6 +84,10 @@ $(document).ready(function() {
         let $ul =  $('.problems-plans').find('ul');
         let $input = $(this).closest('.problems-plans').find('.create-problem-plan');
 
+        if (!$input.val().length) {
+            return;
+        }
+
         let $li = '<li>' +
             '<span class="drag-handle"><i class="oe-i menu medium pro-theme"></i></span>' + $input.val() +
             '<div class="remove"><i class="oe-i remove-circle small pro-theme pad"></i></div>' +
