@@ -381,7 +381,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <div class="cols-right">
                 <div class="popup-overflow">
                     <div class="subtitle">Problems &amp; Plans <div class="extra-actions" id="prev-states-plans-probs-btn"><i class="oe-i audit-trail small pro-theme"></i></div></div>
-                    <?php $this->widget('application.widgets.PlansProblemsWidget', []); ?>
+                    <?php $this->widget('application.widgets.PlansProblemsWidget', ['patient_id' => $this->patient->id]); ?>
                 </div><!-- .popup-overflow -->
             </div>
         </div><!-- flex -->

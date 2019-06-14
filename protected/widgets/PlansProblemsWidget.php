@@ -19,4 +19,18 @@
 class PlansProblemsWidget extends BaseCWidget
 {
     public $allow_save = true;
+    public $patient_id;
+    public $plans_problems;
+
+    public function init()
+    {
+        parent::init();
+
+        $criteria = new CDbCriteria();
+        $criteria->addCondition("active=1");
+        $criteria->addCondition("patient_id=:patient_id");
+        $criteria->params[":patient_id"] = $this->patient_id;
+
+        $this->plans_problems = PlansProblems::model()->display_order()->findAll($criteria);
+    }
 }

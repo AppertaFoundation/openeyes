@@ -6,7 +6,6 @@
  * Time: 16:38
  */
 
-$plans_problems = PlansProblems::model()->display_order()->findAll(["condition"=>"active=1"]);
 ?>
 
 <div class="problems-plans">
@@ -30,7 +29,5 @@ $plans_problems = PlansProblems::model()->display_order()->findAll(["condition"=
             <input class="create-problem-plan" type="text" placeholder="Add Problem or Plan">
             <button class="button hint green js-add-pp-btn"><i class="oe-i plus pro-theme"></i></button>
         </div>
-
-        <button class="button hint green js-save-btn">Save</button>
     <?php endif; ?>
 </div>

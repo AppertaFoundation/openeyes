@@ -175,12 +175,28 @@ class PatientController extends BaseController
         ));
     }
 
-    public function actionDeactivatePlansProblems($plan_id) {
+    /**
+     * Inactivate plan for given patient
+     *
+     * @param $plan_id
+     * @param $patient_id
+     * @throws Exception
+     */
+    public function actionDeactivatePlansProblems($plan_id, $patient_id) {
         $plan = PlansProblems::model()->findByPk($plan_id);
         $plan->active = false;
         $plan->save();
+
+        echo $this->actionGetPlansProblems($patient_id);
     }
 
+    /**
+     * Save the new plans and update old ones
+     *
+     * @param $plan_ids
+     * @param $new_plans
+     * @param $patient_id
+     */
     public function actionUpdatePlansProblems($plan_ids, $new_plans, $patient_id) {
         $plan_ids = json_decode($plan_ids);
         $new_plans = json_decode($new_plans);
@@ -218,7 +234,22 @@ class PatientController extends BaseController
         }
 
 
-        $plans_problems = PlansProblems::model()->display_order()->findAll(["condition" => 'active=1']);
+        echo $this->actionGetPlansProblems($patient_id);
+    }
+
+    /**
+     * Get a list of plans and problems for given patient
+     *
+     * @param $patient_id
+     * @return false|string
+     */
+    public function actionGetPlansProblems($patient_id) {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition("active=1");
+        $criteria->addCondition("patient_id=:patient_id");
+        $criteria->params[":patient_id"] = $patient_id;
+
+        $plans_problems = PlansProblems::model()->display_order()->findAll($criteria);
         $plans = [];
         foreach ($plans_problems as $plan_problem) {
             $user_created = User::model()->findByPk($plan_problem->last_modified_user_id);
@@ -228,7 +259,7 @@ class PatientController extends BaseController
             $plans[] = $attributes;
         }
 
-        echo json_encode($plans);
+        return json_encode($plans);
     }
 
     public function actionSearch()
