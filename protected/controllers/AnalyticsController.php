@@ -1242,7 +1242,8 @@ class AnalyticsController extends BaseController
                 ($end_date && $event_time > $end_date))
                 continue;
             $current_patient = Patient::model()->findByPk($followup_item['patient_id']);
-            $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
+            $patient_worklist = $this->checkPatientWorklist($current_patient->id);
+            $latest_worklist_time = isset($patient_worklist) ? $patient_worklist/1000 : null;
             $latest_time = isset($latest_worklist_time)? max($event_time, $latest_worklist_time):$event_time;
             $due_time = Helper::mysqlDate2JsTimestamp($followup_item['due_date'])/1000;
             if( $followup_item['weeks'] <= 0){
