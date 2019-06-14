@@ -18,4 +18,5 @@
 
 class PlansProblemsWidget extends BaseCWidget
 {
+    public $allow_save = true;
 }

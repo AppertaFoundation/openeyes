@@ -24,10 +24,13 @@ $plans_problems = PlansProblems::model()->display_order()->findAll(["condition"=
             </li>
         <?php } ?>
     </ul>
-    <div class="create-new-problem-plan flex-layout">
-        <input class="create-problem-plan" type="text" placeholder="Add Problem or Plan">
-        <button class="button hint green js-add-pp-btn"><i class="oe-i plus pro-theme"></i></button>
-    </div>
 
-    <button class="button hint green js-save-btn">Save</button>
+    <?php if ($allow_save) : ?>
+        <div class="create-new-problem-plan flex-layout">
+            <input class="create-problem-plan" type="text" placeholder="Add Problem or Plan">
+            <button class="button hint green js-add-pp-btn"><i class="oe-i plus pro-theme"></i></button>
+        </div>
+
+        <button class="button hint green js-save-btn">Save</button>
+    <?php endif; ?>
 </div>
