@@ -29,7 +29,7 @@ class PracticeController extends BaseController
             array(
                 'allow',
                 // allow users with either the TaskCreatePractice or TaskAddPatient roles to perform 'create' actions
-                'actions' => array('create'),
+                'actions' => array('create','createAssociate'),
                 'roles' => array('TaskCreatePractice', 'TaskAddPatient'),
             ),
             array(
@@ -91,6 +91,37 @@ class PracticeController extends BaseController
             ));
         }
     }
+
+
+    public function actionCreateAssociate(){
+        $contact = new Contact('manage_practice');
+        $address = new Address('manage_practice');
+        $practice = new Practice('manage_practice');
+        $this->performAjaxValidation(array($practice, $contact, $address));
+
+
+        if (isset($_POST['Contact'])) {
+            $contact->attributes = $_POST['Contact'];
+            $address->attributes = $_POST['Address'];
+            $practice->attributes = $_POST['Practice'];
+            list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address,
+                true);
+        }
+
+
+        if (isset($practice->contact)){
+            $practice_contact_associate = new ContactPracticeAssociate();
+            $practice_contact_associate->gp_id = $_POST['PracticeAssociate']['gp_id'];
+            $practice_contact_associate->practice_id = $practice->id;
+            if ($practice_contact_associate->save()){
+                echo CJSON::encode(array(
+                    'gp_id' => $practice_contact_associate->gp->getPrimaryKey(),
+                ));
+            }
+        }
+
+    }
+
 
     /**
      * @param Contact $contact

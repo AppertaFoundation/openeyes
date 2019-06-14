@@ -194,6 +194,7 @@ class Patient extends BaseActiveRecordVersioned
             'trials' => array(self::HAS_MANY, 'TrialPatient', 'patient_id'),
             'patientuserreferral' => array(self::HAS_MANY, 'PatientUserReferral', 'patient_id','alias' => 'patient_user_referral','order' => 'patient_user_referral.created_date DESC' ),
             'identifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id'),
+            'patientContactAssociates'=>array(self::HAS_MANY,'PatientContactAssociate','patient_id'),
         );
     }
 

@@ -101,6 +101,7 @@ class Gp extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+            'contactPracticeAssociate'=>array(self::HAS_ONE,'ContactPracticeAssociate','gp_id'),
         );
     }
 
@@ -216,5 +217,17 @@ class Gp extends BaseActiveRecordVersioned
         $query = $this->getDbConnection()->createCommand($sql);
 
         return $query->queryAll();
+    }
+
+    public function getAssociatePractice(){
+        $return_value = null;
+
+        $practice_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$this->id));
+
+        if (isset($practice_associate)){
+            $return_value = $practice_associate->practice;
+        }
+
+        return $return_value;
     }
 }

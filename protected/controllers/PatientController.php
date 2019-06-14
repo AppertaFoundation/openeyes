@@ -1740,6 +1740,19 @@ class PatientController extends BaseController
                 $referral->attributes = $_POST['PatientReferral'];
             }
 
+            if (isset($_POST['ExtraContact'])){
+                $gp_ids = $_POST['ExtraContact']['gp_id'];
+                $pca_models = array();
+                foreach ($gp_ids as $gp_id){
+                    $pca_model = new PatientContactAssociate();
+                    $pca_model->gp_id = $gp_id;
+                    $pca_models[] = $pca_model;
+                }
+                if (!empty($pca_models)){
+                    $patient->patientContactAssociates = $pca_models;
+                }
+            }
+
             if (isset($_POST['PatientUserReferral'])) {
                 $patient_user_referral = new PatientUserReferral();
                 if ($_POST['PatientUserReferral']['user_id'] != -1) {
@@ -1953,6 +1966,21 @@ class PatientController extends BaseController
         }
 
 
+        if (isset($patient->gp) && isset($patient->practice)){
+            $existing_cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id));
+            if (isset($existing_cpa)){
+                $existing_cpa->practice_id = $patient->practice_id;
+                $existing_cpa->save();
+            }else{
+                $new_cpa = new ContactPracticeAssociate();
+                $new_cpa->gp_id = $patient->gp_id;
+                $new_cpa->practice_id = $patient->practice_id;
+                $new_cpa->save();
+            }
+        }
+
+        $this->performPatientContactAssociatesSave($patient);
+
         $action = $patient->isNewRecord ? 'add' : 'edit';
         Audit::add(
             'Patient',
@@ -1961,6 +1989,22 @@ class PatientController extends BaseController
         );
         return true;
     }
+
+    private function performPatientContactAssociatesSave($patient){
+        $existing_gp = PatientContactAssociate::model()->getGPsByPatientId($patient->id);
+        if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)){
+            foreach ($patient->patientContactAssociates as $patientContactAssociate){
+                if (!isset($patientContactAssociate->patient_id)){
+                    $patientContactAssociate->patient_id = $patient->id;
+                }
+
+                if (empty($existing_gp) || !in_array($patientContactAssociate->gp_id,$existing_gp)){
+                    $patientContactAssociate->save();
+                }
+            }
+        }
+    }
+
 
     /**
      * Saves the input $Patient_identiiers according to the config params
@@ -2051,6 +2095,43 @@ class PatientController extends BaseController
 
             if (isset($_POST['PatientReferral'])) {
                 $referral->attributes = $_POST['PatientReferral'];
+            }
+
+
+            if (isset($_POST['ExtraContact'])){
+                $gp_ids = $_POST['ExtraContact']['gp_id'];
+                $pca_models = array();
+                $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+                if (isset($existing_pca_models)){
+                    foreach ($existing_pca_models as $existing_pca_model){
+                        if (!in_array($existing_pca_model->id, $gp_ids)){
+                            $existing_pca_model->delete();
+                        }else{
+                            array_push($pca_models,$existing_pca_model);
+                            if (($key = array_search($existing_pca_model->id, $gp_ids)) !== false) {
+                                unset($gp_ids[$key]);
+                            }
+                        }
+                    }
+                }
+
+                foreach ($gp_ids as $gp_id){
+                    $pca_model = new PatientContactAssociate();
+                    $pca_model->gp_id = $gp_id;
+                    $pca_model->patient_id = $patient->id;
+                    array_push($pca_models,$pca_model);
+                }
+
+                if (!empty($pca_models)){
+                    $patient->patientContactAssociates = $pca_models;
+                }
+            }else{
+                $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+                if (isset($existing_pca_models)){
+                    foreach ($existing_pca_models as $existing_pca_model){
+                        $existing_pca_model->delete();
+                    }
+                }
             }
 
             // not to be sync with PAS

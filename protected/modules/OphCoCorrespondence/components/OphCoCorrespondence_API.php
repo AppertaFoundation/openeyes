@@ -648,7 +648,11 @@ class OphCoCorrespondence_API extends BaseAPI
             'include_label' => true,
             'delimiter' => "\n",
         ));
-        
+
+
+        if ($m[1] == 'ContactPracticeAssociate'){
+            $contact = $contact->gp;
+        }
 
         if (!$address) {
             $address = '';

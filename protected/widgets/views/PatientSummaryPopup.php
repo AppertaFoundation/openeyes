@@ -127,6 +127,44 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                   <td><?php echo $this->referredTo->getFullNameAndTitle();?></td>
               </tr>
           <?php }?>
+          <?php
+          if (isset($this->patient->patientContactAssociates) && Yii::app()->params['institution_code'] == 'CERA') {
+              $index = 1;
+              foreach ($this->patient->patientContactAssociates as $pca) {
+                  if ($index > 3) {
+                      break;
+                  }
+                  if (isset($pca->gp)) {
+                      $gp = $pca->gp; ?>
+                      <tr>
+                          <td>
+                              Contact <?= $index; ?>
+                          </td>
+                          <td>
+                              <div>
+                                  <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
+                              </div>
+                              <?php
+                              if (isset($gp->contactPracticeAssociate)) {
+                                  $practice = $gp->contactPracticeAssociate->practice;
+                                  if (isset($practice)) {
+                                      $address = $practice->contact->address;
+                                      ?>
+                                      <div>
+                                          <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
+                                      </div>
+                                      <?php
+                                  }
+                              } ?>
+                          </td>
+                      </tr>
+                      <?php
+                      $index += 1;
+
+                  }
+              }
+          }
+          ?>
           <tr>
               <td>
                   Created Date:

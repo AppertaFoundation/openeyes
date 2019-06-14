@@ -40,7 +40,8 @@ class ContactPracticeAssociate extends BaseActiveRecordVersioned
 		);
 	}
 
-	/**
+
+    /**
 	 * @return array relational rules.
 	 */
 	public function relations()
@@ -103,4 +104,13 @@ class ContactPracticeAssociate extends BaseActiveRecordVersioned
 	{
 		return parent::model($className);
 	}
+
+	public function getLetterAddress(){
+
+	    $contact = $this->practice->contact;
+
+	    $address = $contact->address;
+
+        return $address->getLetterArray();
+    }
 }

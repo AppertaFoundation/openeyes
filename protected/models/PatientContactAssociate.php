@@ -32,7 +32,7 @@ class PatientContactAssociate extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('patient_id, gp_id', 'required'),
+			array('gp_id', 'required'),
 			array('patient_id, gp_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
@@ -103,4 +103,14 @@ class PatientContactAssociate extends BaseActiveRecordVersioned
 	{
 		return parent::model($className);
 	}
+
+	public function getGpsByPatientId($patient_id){
+	    $return_array = array();
+	    $command = Yii::app()->db->createCommand()->select('gp_id')->from('patient_contact_associate')->where('patient_id = '.$patient_id);
+	    $records = $command->query();
+	    foreach ($records as $record ){
+	        $return_array[] = $record['gp_id'];
+        }
+	    return $return_array;
+    }
 }

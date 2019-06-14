@@ -201,7 +201,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($contact, 'primary_phone') ?>
         </td>
         <td>
-            <?= $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20, 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+            <?= $form->telField($contact, 'primary_phone', array('size' => 15,'placeholder'=>'Phone number', 'maxlength' => 20, 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       <tr>
@@ -211,7 +211,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($address, 'email') ?>
         </td>
         <td>
-            <?= $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255, 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+            <?= $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255, 'placeholder'=>'Email','autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       </tbody>
@@ -395,28 +395,29 @@ foreach ($ethnic_list as $key=>$item){
 
         <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
           <tr>
-            <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
-                <?= $form->label($patient, '') ?>
-              <br/>
-                <?= $form->error($patient, '') ?>
+            <td>
+                <label for="contact">Contacts</label>
             </td>
             <td>
-                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_pr_id']); ?>
-              <div id="selected_pr_wrapper">
-                <ul class="oe-multi-select js-selected_pr">
-                  <li>
-                  <span class="js-name">
-<!--                      --><?//= $patient->patient_referral_id ? Gp::model()->findByPk(array('id' => $patient->patient_referral_id))->getCorrespondenceName() : '' ?>
-                  </span>
-                    <i class="oe-i remove-circle small-icon pad-left js-remove-pr"></i>
-                  </li>
+                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_extra_gps_id']); ?>
+              <div id="selected_extra_gps_wrapper">
+                <ul class="oe-multi-select js-selected_extra_gps">
+                    <?php
+                        if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)){
+                            foreach ($patient->patientContactAssociates as $patientContactAssociate){
+                                $gp = $patientContactAssociate->gp;
+                                $practice  = $gp->getAssociatePractice();
+                                ?>
+                                <li><span class="js-name"><?=$gp->getCorrespondenceName();?><?=(isset($practice)? ' - '.$practice->getAddressLines():'');?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
+                            <?php }
+                        }
+                    ?>
                 </ul>
-<!--                  --><?//= CHtml::hiddenField('Patient[patient_referral_id]', $patient->patient_referral_id, array('class' => 'hidden_id')) ?>
               </div>
                 <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
-                  <a id="js-add-pr-btn" href="#">Add New Contact</a>
+                  <a id="js-add-contact-btn" href="#">Add New Contact</a>
                 <?php } ?>
-              <div id="no_pr_result" style="display: none;">
+              <div id="no_extra_gps_result" style="display: none;">
                 <div>No result</div>
               </div>
             </td>
@@ -483,16 +484,20 @@ foreach ($ethnic_list as $key=>$item){
 <?php $this->endWidget(); ?>
 <script>
     OpenEyes.UI.AutoCompleteSearch.init({
-        input: $('#autocomplete_pr_id'),
+        input: $('#autocomplete_extra_gps_id'),
         url: '/patient/gpList',
         maxHeight: '200px',
         onSelect: function(){
             let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-            removeSelectedGP('pr');
-            addItemPatientForm('selected_pr_wrapper', {item: AutoCompleteResponse});
-            if ($('#is_pr_gp').is(':checked')){
-                removeSelectedGP();
-                addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse});
+            let addGp = true;
+            $.each($('.js-extra-gps'),function () {
+                if ($(this)[0].value == AutoCompleteResponse.value){
+                    addGp = false;
+                    return addGp;
+                }
+            });
+            if(addGp){
+                addExtraGp(AutoCompleteResponse.value);
             }
         }
     });
@@ -550,6 +555,26 @@ $this->renderPartial('../gp/create_gp_form',
 ?>
 
 
+<?php
+$extra_gp_contact = new Contact('manage_gp');
+$extra_practice = new Practice('manage_practice');
+$extra_practice_address = new Address('manage_practice');
+$extra_practice_contact = new Contact('manage_practice');
+$extra_practice_associate = new ContactPracticeAssociate();
+$this->renderPartial('../patient/crud/create_contact_form',
+    array(
+        'extra_gp_contact' => $extra_gp_contact,
+        'extra_practice'=>$extra_practice,
+        'extra_practice_address'=>$extra_practice_address,
+        'extra_practice_contact'=>$extra_practice_contact,
+        'extra_practice_associate' => $extra_practice_associate,
+        'context' => 'AJAX',
+    ),
+    false);
+?>
+
+
+
 
 
 <script>
@@ -568,13 +593,28 @@ $this->renderPartial('../gp/create_gp_form',
         return false;
     });
 
-    $('#js-add-pr-btn').click(function(event){
-        $('#js-add-gp-event').css('display','');
-        $('#gp_adding_title').data('type','pr');
-        $('#gp_adding_title').html('Add Referring Practitioner')
+    $('#js-add-contact-btn').click(function(event){
+        $('#extra_gp_adding_form').css('display','');
         return false;
     });
 
+
+    $('.js-cancel-add-contact').click(function(event){
+        event.preventDefault();
+        extraContactFormCleaning();
+        $(".js-extra-practice-gp-id").val("");
+    });
+
+    $('#js-add-extra-practice-btn').click(function(event){
+        event.preventDefault();
+        extraContactFormCleaning();
+        $('#extra_practice_adding_new_form').css('display','');
+    });
+
+    $('.js-remove-extra-gps').click(function(event){
+        event.preventDefault();
+        $(this).parent('li').remove();
+    });
 
   function findDuplicates(id) {
     var first_name = $('#Contact_first_name').val();
@@ -613,6 +653,44 @@ $this->renderPartial('../gp/create_gp_form',
         $wrapper.find('.js-name').text(JsonObj.label);
         $wrapper.show();
         $wrapper.find('.hidden_id').val(JsonObj.id);
+    }
+
+    function addExtraGp(gpId){
+        $.ajax({
+            url: "<?php echo Yii::app()->controller->createUrl('practiceAssociate/getGpWithPractice'); ?>",
+            data: {gp_id : gpId},
+            type: 'GET',
+            success: function (response) {
+                response = JSON.parse(response);
+                $('.js-selected_extra_gps').append(response.content);
+                $('#js-remove-extra-gp-'+response.gp_id).click(function(){
+                    $(this).parent('li').remove();
+                });
+            }
+        }
+        )
+    }
+
+    function extraContactFormCleaning(){
+        $("#extra-gp-form")[0].reset();
+        $("#extra_gp_errors").text("");
+        $("#extra_gp_practitioner-alert-box").css("display","none");
+        $('#extra_gp_adding_form').css('display','none');
+        $('#extra_gp_selected_contact_label_wrapper').css('display','none');
+        $('#extra_gp_selected_contact_label_wrapper').find('.js-name').html("");
+
+        $("#extra-adding-existing-practice-form")[0].reset();
+        $("#extra-existing-practice-errors").text("");
+        $("#extra-existing-practice-alert-box").css("display","none");
+        $('#extra_practice_adding_existing_form').css('display','none');
+        $('.js-selected-practice-associate').find('li').remove();
+
+
+        $("#extra-adding-practice-form")[0].reset();
+        $("#extra-practice-errors").text("");
+        $("#extra-practice-practice-alert-box").css("display","none");
+        $('#extra_practice_adding_new_form').css('display','none');
+        $("#extra_practice_adding_existing_form")
     }
 
 </script>
