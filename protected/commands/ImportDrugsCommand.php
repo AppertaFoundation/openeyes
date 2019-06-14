@@ -75,7 +75,7 @@ class ImportDrugsCommand extends CConsoleCommand
     private $createTableTemplate = 'CREATE TABLE IF NOT EXISTS `%s` (%s) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
     private $truncateTableTemplate = 'TRUNCATE TABLE `%s`;';
     private $dropTableTemplate = 'DROP TABLE IF EXISTS `%s`;';
-    private $insertTemplate = "INSERT INTO `%s` (%s) VALUES (%s);";
+    private $insertMultipleTemplate = "INSERT INTO `%s` (%s) VALUES %s;";
 
     private $columnTypeMap = [
         'integer' => 'varchar(200)',
@@ -348,14 +348,16 @@ EOD;
                     $subsubnode = $rows[$k[0]];
                 }
 
-                foreach($subsubnode as $oneRow){
+                $multipleValues = '';
+                $multipleValuesMaxCount = 10;
+                $multipleValuesCurrentCount = 0;
+                $rowCount = sizeof($subsubnode);
+                foreach($subsubnode as $rowIndex => $oneRow){
                     if( $limit<=$i++ && $limit != 0 ){ break; }
                     $values = '';
                     foreach($tablesData[$fullTableName] as $key => $filedType){
-
                         if(isset($oneRow[strtoupper($key)])){
                             $value = $oneRow[strtoupper($key)];
-
                         } else {
                             if($filedType=='date'){
                                 $value = '0000-00-00';
@@ -363,18 +365,22 @@ EOD;
                                 $value = '';
                             }
                         }
-
                         if(getType($value)=='array' && empty($value)){
                             $value = '';
                         }
-
                         $value = str_replace('"',"'",$value);
-
                         $values .= '"'.$value.'",';
                     }
-
-                    $values = trim($values,',');
-                    $sqlCommands[] = sprintf($this->insertTemplate,$fullTableName,$fields,$values);
+                    $values = "(" . trim($values,',') . ")";
+                    $multipleValues = empty($multipleValues) ? $values : $multipleValues . "," . $values;
+                    $multipleValuesCurrentCount++;
+                    if($rowIndex === ($rowCount - 1) || $multipleValuesCurrentCount === $multipleValuesMaxCount) {
+                        $insertMultipleCommand = sprintf($this->insertMultipleTemplate,
+                            $fullTableName, $fields, $multipleValues);
+                        $sqlCommands[] = $insertMultipleCommand;
+                        $multipleValues = '';
+                        $multipleValuesCurrentCount = 0;
+                    }
                 }
 
             } else {
