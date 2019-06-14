@@ -1,3 +1,5 @@
+ALTER TABLE medication_form ADD INDEX source_type_idx (`source_type`);
+
 INSERT INTO medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code,amp_term,amp_code, default_form_id)
 SELECT
 	'DM+D' AS source_type,
@@ -22,5 +24,5 @@ FROM
 
     LEFT JOIN {prefix}vmp_drug_form dft ON dft.vpid = amp.vpid
     LEFT JOIN {prefix}lookup_form fhit ON fhit.cd = dft.formcd
-    LEFT JOIN medication_form mf ON mf.term COLLATE utf8_general_ci = fhit.desc AND mf.source_type = 'DM+D'
+    LEFT JOIN (SELECT id, source_type FROM medication_form WHERE medication_form.source_type = 'DM+D') mf ON mf.term COLLATE utf8_general_ci = fhit.desc
 ;
