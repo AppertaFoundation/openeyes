@@ -23,10 +23,10 @@ INSERT INTO medication (source_type,source_subtype,preferred_term,preferred_code
 
     LEFT JOIN {prefix}vmp_drug_form dft ON dft.vpid = vmp.vpid
     LEFT JOIN {prefix}lookup_form fhit ON fhit.cd = dft.formcd
-    LEFT JOIN (SELECT id, term FROM medication_form WHERE medication_form.source_type = 'DM+D') mf ON mf.term  COLLATE utf8_general_ci = fhit.desc
+    LEFT JOIN medication_form mf ON mf.term  COLLATE utf8_general_ci = fhit.desc AND mf.source_type = 'DM+D'
 
     LEFT JOIN {prefix}vmp_drug_route drt ON drt.vpid = vmp.vpid
     LEFT JOIN {prefix}lookup_route lr ON lr.cd = drt.routecd
-    LEFT JOIN (SELECT id, term FROM medication_route WHERE medication_route.source_type = 'DM+D') mr ON mr.term COLLATE utf8_general_ci = lr.desc
+    LEFT JOIN medication_route mr ON mr.term COLLATE utf8_general_ci = lr.desc AND mr.source_type = 'DM+D'
 
     LEFT JOIN {prefix}lookup_unit_o{prefix}measure uom ON uom.cd = vmp.udfs_uomcd
