@@ -1,23 +1,3 @@
-ALTER TABLE {prefix}lookup_unit_o{prefix}measure ADD INDEX lookup_unit_o_idx (`cd`);
-
-ALTER TABLE {prefix}vmp_vmps ADD INDEX cmp_vmps_idx (`vtmid`);
-ALTER TABLE {prefix}vmp_vmps ADD INDEX vpid_idx (`vpid`);
-ALTER TABLE {prefix}vmp_vmps ADD INDEX udfs_uomcd_idx (`udfs_uomcd`);
-
-ALTER TABLE {prefix}lookup_route ADD INDEX lookup_route_idx (`cd`);
-ALTER TABLE {prefix}lookup_route ADD INDEX udfs_uomcd_idx (`desc`);
-
-ALTER TABLE {prefix}vmp_drug_route ADD INDEX vpid_idx (`vpid`);
-ALTER TABLE {prefix}vmp_drug_route ADD INDEX vpid_idx (`routecd`);
-
-ALTER TABLE {prefix}vmp_drug_form ADD INDEX vpid_idx (`formcd`);
-ALTER TABLE {prefix}vmp_drug_form ADD INDEX vpid_id (`vpid`);
-
-ALTER TABLE {prefix}vtm_vtm ADD INDEX vpid_id (`vtmid`);
-
-ALTER TABLE {prefix}lookup_form ADD INDEX vpid_id (`cd`);
-ALTER TABLE {prefix}lookup_form ADD INDEX vpid_id (`desc`);
-
 INSERT INTO medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code, default_form_id, default_route_id, default_dose_unit_term)
   SELECT
     'DM+D' AS source_type,

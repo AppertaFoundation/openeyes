@@ -427,12 +427,25 @@ EOD;
 		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_vmps ADD INDEX idx_vmp_vpid (vpid)";
 		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_vmps ADD INDEX idx_vmp_vtmid (vtmid)";
 		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_vmps ADD INDEX idx_vmp_pres_f (pres_f)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_vmps ADD INDEX idx_udfs_uomcd_f (udfs_uomcd)";
+
 		$sql[] = "ALTER TABLE {$this->tablePrefix}amp_amps ADD INDEX idx_amp_apid (apid)";
 		$sql[] = "ALTER TABLE {$this->tablePrefix}amp_amps ADD INDEX idx_amp_vpid (vpid)";
+
 		$sql[] = "ALTER TABLE {$this->tablePrefix}vtm_vtm ADD INDEX idx_vtm_vtmid (vtmid)";
 		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_unit_of_measure ADD INDEX idx_uom_cd (cd)";
+
+		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_drug_form ADD INDEX idx_vmp_drug_form_formcd (formcd)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_drug_form ADD INDEX idx_vmp_drug_form_vpid (vpid)";
+
+		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_drug_route ADD INDEX vpid_idx (vpid)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_drug_route ADD INDEX idx_vmp_drug_route_routecd (routecd)";
+
 		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_form ADD INDEX idx_lfrm_cd (cd)";
-		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_route ADD INDEX idx_lrt_cd (cd)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_form ADD INDEX idx_lfrm_desc (`desc`)";
+
+		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_route ADD INDEX idx_lrt_cd (`cd`)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_route ADD INDEX idx_desc (`desc`)";
 
 		$cmdcount = count($sql);
 		$i=1;
