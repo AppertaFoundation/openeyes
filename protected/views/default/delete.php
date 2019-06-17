@@ -15,14 +15,18 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+    $delete_access = $this->checkDeleteAccess();
+    $request_delete_access = $this->checkRequestDeleteAccess();
 ?>
 
+<?php if($delete_access || $request_delete_access) : ?>
 <div class="oe-popup-wrap" id="js-delete-event" style="display: none; z-index:100">
     <div class="oe-popup">
-        <?=\CHtml::form(array('Default/delete/' . $this->event->id), 'post', array('id' => 'deleteForm')) ?>
+        <?=\CHtml::form(['Default/' . ($delete_access ? 'delete' : 'requestDeletion') . '/' . $this->event->id], 'post', ['id' => 'deleteForm']) ?>
         <div class="title">
             <i class="oe-i trash large selected pro-theme"></i>
-            Delete Event
+            <?=(!$delete_access ? 'Request event deletion' : 'Delete Event');?>
         </div>
         <div class="oe-popup-content delete-event">
 
@@ -51,7 +55,7 @@
                 <?php
                 echo CHtml::hiddenField('event_id', $this->event->id); ?>
                 <button type="submit" class="large red hint" id="et_deleteevent" name="et_deleteevent">
-                    Delete event
+                    <?=(!$delete_access ? 'Request event deletion' : 'Delete Event');?>
                 </button>
                 <button type="submit" class="large blue hint cancel-icon-btn" id="et_canceldelete" name="et_canceldelete">
                     Cancel
@@ -89,4 +93,5 @@
         $('#et_canceldelete').attr('disabled', 'disabled');
     });
 </script>
+<?php endif; ?>
 
