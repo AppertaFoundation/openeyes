@@ -319,6 +319,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 $(document).ready(function () {
     "use strict";
 
+    autosize($('.autosize'));
+
     var uploader = new OpenEyes.OphCoDocument.DocumentUploadController();
     $('.js-document-upload-wrapper').data('controller', uploader);
 });
