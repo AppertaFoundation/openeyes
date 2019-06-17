@@ -20,8 +20,8 @@ namespace OEModule\OphCiExamination\components;
  */
 
 use OEModule\OphCiExamination\models;
-use OEModule\OphCiExamination\widgets\HistoryRisks;
 use OEModule\OphCiExamination\widgets\HistoryMedications;
+use OEModule\OphCiExamination\widgets\HistoryRisks;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -745,7 +745,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityLeft($patient, $use_context = false)
     {
-        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
     }
 
     public function getLetterVisualAcuityDate($patient, $side, $use_context = false)
@@ -774,7 +774,7 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getLetterVisualAcuityRight($patient, $use_context = false)
     {
-        return ($best = $this->getBestVisualAcuity($patient, 'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient, 'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
     }
 
     public function getLetterVAMethodName($patient, $side, $use_context = false)
