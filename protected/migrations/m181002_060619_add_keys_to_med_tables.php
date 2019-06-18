@@ -5,6 +5,7 @@ class m181002_060619_add_keys_to_med_tables extends CDbMigration
 	public function up()
 	{
 	    $this->execute("ALTER TABLE `medication_form` ADD KEY (`term`);
+	                ALTER TABLE `medication_form` ADD INDEX (`source_type`);
                     ALTER TABLE `medication` ADD KEY (`vmp_code`);
                     ALTER TABLE `medication` ADD KEY (`vtm_code`);
                     ALTER TABLE `medication` ADD KEY (`amp_code`);

@@ -349,7 +349,7 @@ EOD;
                 }
 
                 $multipleValues = '';
-                $multipleValuesMaxCount = 10;
+                $multipleValuesMaxCount = 100;
                 $multipleValuesCurrentCount = 0;
                 $rowCount = sizeof($subsubnode);
                 foreach($subsubnode as $rowIndex => $oneRow){

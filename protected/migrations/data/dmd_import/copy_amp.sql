@@ -1,5 +1,3 @@
-ALTER TABLE medication_form ADD INDEX source_type_idx (`source_type`);
-
 INSERT INTO medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code,amp_term,amp_code, default_form_id)
 SELECT
 	'DM+D' AS source_type,
