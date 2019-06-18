@@ -650,21 +650,21 @@ EOD;
 			$rows = Yii::app()->db->createCommand($cmd)->queryAll();
 			$total = count($rows);
 			$progress = 1;
-			foreach ($rows as $row) {
+
+            $values = [];
+            $attribIndex = 0;
+
+			foreach ($rows as $key => $row) {
                 $queryForMedicationId = "SELECT id FROM medication
                         WHERE {$table_properties["medication_FK_column"]} = '{$row[$table_properties["id_column"]]}'";
                 $medicationId = Yii::app()->db->createCommand($queryForMedicationId)->queryScalar();
-                $values = [];
-                $valuesMaxCount = 10;
-                $valuesCurrentCount = 0;
-                $attribsCount = sizeof($this->attribs);
-                $attribIndex = 0;
-				foreach ($this->attribs as $attr_key => $attrib) {
-					$attr_name_parts = explode(".", $attrib);
-					$attr_name = $attr_name_parts[0];
-					$attr_key = strtolower($attr_key);
-					if(array_key_exists($attr_key, $row) && !empty($row[$attr_key])) {
-						$attr_value = $row[$attr_key];
+
+                foreach ($this->attribs as $attr_key => $attrib) {
+                    $attr_name_parts = explode(".", $attrib);
+                    $attr_name = $attr_name_parts[0];
+                    $attr_key = strtolower($attr_key);
+                    if(array_key_exists($attr_key, $row) && !empty($row[$attr_key])) {
+                        $attr_value = $row[$attr_key];
                         $values[] = "(
 								{$medicationId},
 								(   SELECT mao.id 
@@ -673,18 +673,19 @@ EOD;
 									WHERE mao.`value`='{$attr_value}' AND ma.name = '{$attr_name}'
 								)
 								)";
-                        $valuesCurrentCount++;
+
+                        $attribIndex++;
                     }
-                    if (($valuesCurrentCount >= $valuesMaxCount || $attribIndex === ($attribsCount - 1)) && $values) {
-                        $cmd = "INSERT INTO medication_attribute_assignment " .
-                            "(medication_id, medication_attribute_option_id) VALUES " .
-                            implode(',', $values) . ";";
-						Yii::app()->db->createCommand($cmd)->execute();
-                        $values = [];
-                        $valuesCurrentCount = 0;
-					}
-                    $attribIndex++;
-				}
+                }
+
+                if ( ($attribIndex >= 500 || $key === count($rows)-1) && $values) {
+                    $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) VALUES" .
+                        implode(',', $values) . ";";
+                    Yii::app()->db->createCommand($cmd)->execute();
+                    $values = [];
+                    $attribIndex = 0;
+                }
+
 				$progress++;
 				echo str_repeat("\x08", 14) . str_pad("$progress/$total", 14, " ", STR_PAD_LEFT);
 			}
