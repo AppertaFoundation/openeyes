@@ -21,9 +21,7 @@ $( document ).ready(function() {
         loadBiometryElementData();
     }
 
-    $(document).on('eyedrawAfterReset', function() {
-        loadBiometryElementData();
-    });
+    $(document).on('eyedrawAfterReset', loadBiometryElementData);
     autosize($('textarea'));
 });
 
