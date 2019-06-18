@@ -51,7 +51,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];?>
              style="background-color: white;"
         >
     </div>
-    <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?html=1" style="width: 800px; height: 800px; border: 0;"></iframe>
+    <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?html=1&auto_print=0" style="width: 800px; height: 800px; border: 0;"></iframe>
 </div>
 <!-- <div class="element-data full-width flex-layout flex-top col-gap">
     <div class="cols-3">
