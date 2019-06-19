@@ -7,17 +7,17 @@ class CsvController extends BaseController
         'trials' => array(
             'successAction' => 'OETrial/trial',
             'createAction' => 'createNewTrial',
-            'errorMsg' => 'Errors with trial on line ',
+            'errorMsg' => 'Errors with creating trial on line ',
         ),
         'patients' => array(
             'successAction' => 'site/index',
             'createAction' => 'createNewPatient',
-            'errorMsg' => 'Errors with patient on line ',
+            'errorMsg' => 'Errors with creating patient on line ',
         ),
         'trialPatients' => array(
             'successAction' => 'OETrial/trial',
             'createAction' => 'createNewTrialPatient',
-            'errorMsg' => 'Errors with trial patient on line ',
+            'errorMsg' => 'Errors with trial patient upload on line ',
         ),
     );
 

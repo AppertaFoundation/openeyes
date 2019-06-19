@@ -373,7 +373,7 @@ return array(
                     'title' => 'Practices',
                     'uri' => 'practice/index',
                     'position' => 11,
-                    'restricted' => array('TaskViewPractice', 'TaskCreatePractice'),
+                    'restricted' => array('TaskViewPractice'),
                 ),
                 'forum' => array(
                     'title' => 'FORUM',
@@ -391,7 +391,7 @@ return array(
                     'title' => 'Practitioners',
                     'uri' => 'gp/index',
                     'position' => 10,
-                    'restricted' => array('TaskViewGp', 'TaskCreateGp'),
+                    'restricted' => array('TaskViewGp'),
                 ),
                 'analytics' => array(
                   'title' => 'Analytics',
