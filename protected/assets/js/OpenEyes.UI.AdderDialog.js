@@ -494,7 +494,8 @@
             if (this.options.deselectOnReturn) {
                 let itemSets = this.popup.find('ul');
                 itemSets.each(function () {
-                    if ($(this).data('deselectonreturn')) {
+                    let deselect = $(this).data('deselectonreturn');
+                    if (typeof deselect === "undefined" || deselect) {
                         $(this).find('li').removeClass('selected');
                     }
                 });
