@@ -40,9 +40,9 @@ class CsvController extends BaseController
         );
     }
 
-    public function actionUpload($context, $backuri)
+    public function actionUpload($context)
     {
-        $this->render('upload', array('context' => $context, 'backuri' => $backuri));
+        $this->render('upload', array('context' => $context));
     }
 
     public function actionPreview($context)
@@ -376,7 +376,7 @@ class CsvController extends BaseController
                 return $errors;
             }
         }
-        
+
         //diagnoses
         if(!empty($patient['LE_diagnosis']) || !empty($patient['RE_diagnosis'])){
             $context = Firm::model()->findByAttributes(array(

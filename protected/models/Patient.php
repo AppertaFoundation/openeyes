@@ -2297,4 +2297,18 @@ class Patient extends BaseActiveRecordVersioned
 //            function($item) { return $item['description'];},
 //            $summary);
 //    }
+
+    /**
+     * Gets the next CERA number
+     * @return int The next number
+     */
+    public static function getNextCeraNumber()
+    {
+        $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
+        $command = Yii::app()->db->createCommand($query);
+        $command->prepare();
+        $result = $command->queryColumn();
+        $new_hos_num = ($result[0] + 1);
+        return $new_hos_num;
+    }
 }
