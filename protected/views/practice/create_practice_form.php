@@ -75,7 +75,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                                      $("#practice-alert-box").css("display","");
                                     }else{
                                removeSelectedPractice();
-                               addGpItem("selected_practice_wrapper",event);
+                               addGpItem("practice",event);
                                $("#practice-form")[0].reset();
                                 $("#js-add-practice-event").css("display","none");
                                 $("#practice-alert-box").css("display","none");
