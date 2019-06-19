@@ -2459,4 +2459,5 @@ class PatientController extends BaseController
         return ($command->queryScalar() == 0);
     }
 
+
 }

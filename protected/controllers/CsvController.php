@@ -253,7 +253,7 @@ class CsvController extends BaseController
             if(!empty($patient['optom_first_name']) && !empty($patient['optom_last_name'])) {
                 $optom_label = ContactLabel::model()->findByAttributes(array('name' => 'Optometrist'));
                 $optom_contact = Contact::model()->findByAttributes(array(
-                    'contact_label_id' => $optom_label->id,
+                    'id' => $optom_label->id,
                     'first_name' => $patient['optom_first_name'],
                     'last_name' => $patient['optom_last_name'],
                 ));
@@ -294,9 +294,10 @@ class CsvController extends BaseController
         //opthal
         if(!empty($patient['opthal_first_name']) || !empty($patient['opthal_last_name'])){
             if(!empty($patient['opthal_first_name']) && !empty($patient['opthal_last_name'])) {
-                $opthal_label = ContactLabel::model()->findByAttributes(array('name' => 'Ophthalmologist'));
+                $opthal_label = ContactLabel::model()->findByAttributes(array('name' => 'Consultant Ophthalmologist'));
+                Yii::log(CVarDumper::dumpAsString($opthal_label));
                 $opthal_contact = Contact::model()->findByAttributes(array(
-                    'contact_label_id' => $opthal_label->id,
+                    'id' => $opthal_label->id,
                     'first_name' => $patient['opthal_first_name'],
                     'last_name' => $patient['opthal_last_name'],
                 ));
@@ -339,7 +340,7 @@ class CsvController extends BaseController
             if(!empty($patient['gp_first_name']) && !empty($patient['gp_last_name'])) {
                 $gp_label = ContactLabel::model()->findByAttributes(array('name' => 'General Practitioner'));
                 $gp_contact = Contact::model()->findByAttributes(array(
-                    'contact_label_id' => $gp_label->id,
+                    'id' => $gp_label->id,
                     'first_name' => $patient['gp_first_name'],
                     'last_name' => $patient['gp_last_name'],
                 ));
