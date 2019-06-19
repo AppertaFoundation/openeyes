@@ -256,7 +256,8 @@
         let $list = $('<ul />', {
             class: 'add-options cols-full' + additionalClasses,
             'data-multiselect': itemSet.options.multiSelect,
-            'data-id': itemSet.options.id
+            'data-id': itemSet.options.id,
+            'data-deselectOnReturn': itemSet.options.deselectOnReturn,
         });
 
         itemSet.items.forEach(function (item) {
@@ -491,7 +492,12 @@
 
         if (shouldClose) {
             if (this.options.deselectOnReturn) {
-                this.popup.find('li').removeClass('selected');
+                let itemSets = this.popup.find('ul');
+                itemSets.each(function () {
+                    if ($(this).data('deselectonreturn')) {
+                        $(this).find('li').removeClass('selected');
+                    }
+                });
             }
             this.close();
         }

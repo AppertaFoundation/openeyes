@@ -158,7 +158,7 @@ foreach ($this->patient->episodes as $ep) {
                     'filter-value' => $disorderGroup->id,
                     'is_filter' => true,
                 ];
-            }, $commonOphthalmicDisorderGroups)) ?>, {'header': 'Disorder Group', 'id': 'disorder-group-filter'}),
+            }, $commonOphthalmicDisorderGroups)) ?>, {'header': 'Disorder Group', 'id': 'disorder-group-filter', 'deselectOnReturn': false}),
             new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($disorder_item) {
                 return [
