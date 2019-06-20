@@ -31,6 +31,7 @@ if (is_subclass_of($element, 'SplitEventTypeElement')) {
 }
 
 $element_Type = $element->getElementType();
+$set_id = isset($this->set) ? $this->set->id : null;
 ?>
 
 <?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
@@ -39,7 +40,7 @@ $element_Type = $element->getElementType();
             data-element-type-id="<?php echo $element->elementType->id ?>"
             data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
             data-element-type-name="<?php echo $element->elementType->name ?>"
-            data-element-display-order="<?= $element->elementType->display_order ?>"
+            data-element-display-order="<?= $element->elementType->getDisplayOrder($set_id) ?>"
   >
         <?php
         if (isset($_POST['element_dirty'][$model_name])) {
