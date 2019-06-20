@@ -33,6 +33,7 @@
           <th>Element type</th>
           <th>Hidden</th>
           <th>Mandatory</th>
+          <th>Display Order</th>
           <th>Actions</th>
         </tr>
         </thead>
@@ -42,6 +43,7 @@
             <td><?php echo $item->element_type->name?></td>
             <td><?=\CHtml::activeCheckBox($item, 'is_hidden', array('class' => 'workflow-item-attr'))?></td>
             <td><?=\CHtml::activeCheckBox($item, 'is_mandatory', array('class' => 'workflow-item-attr'))?></td>
+              <td><?= \CHtml::activeNumberField($item, 'display_order', array('class' => 'workflow-item-attr'))?></td>
             <td><a href="#" class="removeElementType" rel="<?php echo $item->id?>" data-element-type-id="<?php echo $item->element_type_id?>">Remove</a></td>
           </tr>
             <?php } ?>
