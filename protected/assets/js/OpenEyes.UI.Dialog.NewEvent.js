@@ -477,6 +477,7 @@
         var self = this;
 
         // disable click on other events
+        self.content.find('#event-type-list').append('<i class="spinner" title="Loading..."></i>');
         self.content.find('#event-type-list').css('pointer-events', 'none');
 
         // build params for the new event request
