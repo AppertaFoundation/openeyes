@@ -121,4 +121,16 @@ class ElementType extends BaseActiveRecordVersioned
     {
         return new $this->class_name();
     }
+
+    public function getDisplayOrder($set_id = null)
+    {
+        if (isset($set_id)) {
+            $set_item = \OEModule\OphCiExamination\models\OphCiExamination_ElementSetItem::model()->find('set_id = :set_id AND element_type_id = :element_type_id',
+                [':set_id' => $set_id, ':element_type_id' => $this->id]);
+            if (isset($set_item->display_order)) {
+                return -1 * $set_item->display_order;
+            }
+        }
+        return $this->display_order;
+    }
 }
