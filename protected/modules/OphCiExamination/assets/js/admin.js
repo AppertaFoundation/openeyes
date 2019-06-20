@@ -167,7 +167,15 @@ $(document).ready(function() {
         }
 
         $itemTd.append('<img src="'+baseUrl+OE_core_asset_path+'/img/ajax-loader.gif" class="loader" />');
-		itemObj[this.name] = this.checked ? 1 : 0;
+        if(this.type === "number") {
+        	if(this.value === "0" || this.value.trim() === "") {
+        		itemObj[this.name] = null;
+			} else {
+				itemObj[this.name] = this.value;
+			}
+		} else {
+			itemObj[this.name] = this.checked ? 1 : 0;
+		}
 		itemObj['YII_CSRF_TOKEN'] = YII_CSRF_TOKEN;
 
 		$.ajax({
