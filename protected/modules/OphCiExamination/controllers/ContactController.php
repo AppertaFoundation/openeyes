@@ -32,7 +32,6 @@ class ContactController extends \BaseController
                 $criteria->addSearchCondition('ad.postcode', $term, true, 'OR');
                 $criteria->addSearchCondition('last_name', $term, true, 'OR');
                 $criteria->addCondition(array('cl.is_private = 0'));
-                $criteria->addCondition(array('t.active = 1'));
             }
             if (isset($_GET['filter'])) {
                 $contact_label_id = $_GET['filter'];
@@ -44,6 +43,7 @@ class ContactController extends \BaseController
                     );
                 }
             }
+            $criteria->addCondition(array('t.active = 1'));
             $criteria->order = 'cl.name';
 
             // Limit results
