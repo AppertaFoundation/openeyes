@@ -184,7 +184,10 @@
     <p>
         Where second opinion sought, s/he should sign below to confirm agreement:
     </p>
-    <?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
+    <?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'),
+        'consultant' => $elements['Element_OphTrConsent_Other']->consultant,
+        'mask_consultant' => true)
+    ) ?>
     <div class="break"></div>
     <p>
         <strong>Guidance to health professionals</strong> (to be read in conjunction with consent policy)
