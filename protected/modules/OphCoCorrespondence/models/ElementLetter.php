@@ -111,7 +111,7 @@ class ElementLetter extends BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
-            'use_nickname' => 'Nickname',
+            'use_nickname' => 'Use Nickname',
             'date' => 'Date',
             'introduction' => 'Salutation',
             're' => 'Re',

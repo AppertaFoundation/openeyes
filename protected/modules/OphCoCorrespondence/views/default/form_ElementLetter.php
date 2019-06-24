@@ -362,36 +362,31 @@ $creating = isset($creating) ? $creating : false;
     <div class="cols-9">
         <table class="cols-full">
             <colgroup>
+                <col class="cols-9">
                 <col>
-                <col class="cols-8">
             </colgroup>
             <tbody>
             <tr>
                 <!--                        Introduction/ Salutation-->
-                <td colspan="2" class="cols-full">
+                <td>
                     <?php echo $form->textArea($element, 'introduction',
                         array('rows' => 1, 'label' => false, 'nowrapper' => true), false, array('class' => 'address correspondence-letter-text')) ?>
                 </td>
-            </tr>
-            <tr>
                 <!--Nickname-->
-                <td style="text-align: left;">
+                <td>
                     <?php echo $form->checkBox($element, 'use_nickname', array('nowrapper' => true)) ?>
                 </td>
             </tr>
             <tr>
                 <!--                        Subject-->
-                <td colspan="2">
-                    <div
-                            class="cols-<?php echo $layoutColumns['field']; ?> column large-offset-<?php echo $layoutColumns['label']; ?> end">
+                <td>
                         <?php echo $form->textArea(
                             $element,
                             're',
-                            array('rows' => 2, 'label' => false, 'nowrapper' => true),
+                            array('rows' => 1, 'label' => false, 'nowrapper' => true),
                             empty($_POST) ? strlen($element->re) == 0 : strlen(@$_POST['ElementLetter']['re']) == 0,
-                            array('class' => 'address')
+                            array('class' => 'autosize')
                         ) ?>
-                    </div>
                 </td>
             </tr>
             <tr>
