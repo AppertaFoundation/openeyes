@@ -36,12 +36,17 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
 
         $field_type_id = \SettingFieldType::model()->findByAttributes(['name' => 'Text Field'])->id;
 
-        foreach (\EpisodeStatus::model()->findAll() as $status) {
+        foreach (\EpisodeStatus::model()->findAll('name = :name' , [':name' => 'Post-op']) as $status) {
             foreach (['drug_set' => 'Drug Set', 'letter' => 'Letter'] as $type => $name) {
                 $this->addSetting($field_type_id, "default_{$status->key}_{$type}", "Default {$status->name}(Episode status) {$name} name", $status->name);
             }
         }
-        $this->addSetting($field_type_id, "default_optop_post_op_letter", "Default Optom Post-op Letter name", '');
+        $this->addSetting(
+            $field_type_id,
+            "default_optop_post_op_letter",
+            "Default Optom Post-op Letter name",
+            'Community Optom'
+        );
 
         $this->insert('setting_metadata', array(
             'element_type_id' => null,
@@ -70,6 +75,21 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
 
         $this->insert('setting_installation', array(
             'key' => 'auto_generate_gp_letter_after_surgery',
+            'value' => 'on'
+        ));
+
+        $this->insert('setting_metadata', array(
+            'element_type_id' => null,
+            'display_order' => 2,
+            'field_type_id' => \SettingFieldType::model()->findByAttributes(['name' => 'Radio buttons'])->id,
+            'key' => 'auto_generate_optopm_post_op_letter_after_surgery',
+            'name' => 'Auto generate Optom letter after surgery',
+            'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
+            'default_value' => 'on'
+        ));
+
+        $this->insert('setting_installation', array(
+            'key' => 'auto_generate_optopm_post_op_letter_after_surgery',
             'value' => 'on'
         ));
 	}
