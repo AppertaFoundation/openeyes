@@ -149,7 +149,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('total_duration', 'validateDuration'),
             array('referral_id', 'validateReferral'),
             array('decision_date', 'OEDateValidatorNotFuture'),
-            array('eye_id, consultant_required, overnight_stay_required_id', 'required'),
+            array('eye_id, consultant_required, overnight_stay_required_id, preassessment_booking_required', 'required'),
             array('anaesthetic_choice_id, stop_medication, complexity', 'required', 'on' => 'insert'),
             array('stop_medication_details', 'RequiredIfFieldValidator', 'field' => 'stop_medication', 'value' => true),
             array('site_id, priority_id, decision_date', 'required'),
@@ -299,7 +299,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
         $this->special_equipment = false;
-        $this->preassessment_booking_required = Yii::app()->params['pre_assessment_booking_default_value'];
+        $preassesment_booking_default_value = Yii::app()->params['pre_assessment_booking_default_value'];
+        $this->preassessment_booking_required = (isset($preassesment_booking_default_value) && $preassesment_booking_default_value === 2) ?
+            null :
+            $preassesment_booking_default_value;
         $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
 
         $this->organising_admission_user_id = Yii::app()->user->id;
