@@ -61,7 +61,9 @@
             $prescription_setting = $prescription_setting ? ($prescription_setting == 'on' ? true : false) : false;
             $prescription_setting = $this->request->getParam('auto_generate_prescription_after_surgery', $prescription_setting);
 
-            $optom_setting = $this->request->getParam('auto_generate_optopm_post_op_letter_after_surgery');
+            $optom_setting = \SettingMetadata::model()->getSetting('auto_generate_optopm_post_op_letter_after_surgery');
+            $optom_setting = $prescription_setting ? ($optom_setting == 'on' ? true : false) : false;
+            $optom_setting = $this->request->getParam('auto_generate_optopm_post_op_letter_after_surgery', $optom_setting);
         ?>
 
         <label class="inline highlight">
