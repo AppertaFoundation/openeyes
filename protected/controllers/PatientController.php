@@ -259,7 +259,6 @@ class PatientController extends BaseController
                     'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
                     'hos_num' => $patient->hos_num,
                     'nhsnum' => $patient->nhsnum,
-                    // in script.js we override the behaviour for showing search results and its require the label key to be present
                     'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
                     'is_deceased' => $patient->is_deceased,
                 );

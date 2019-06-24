@@ -665,6 +665,8 @@ class OphCoCorrespondence_API extends BaseAPI
             }
         } else if ($m[1] == 'Optometrist') {
             $contact = Contact::model()->findByPk($m[2]);
+        } else if($m[1] === 'GP') {
+            $contact = Gp::model()->findByPk($m[2]);
         } else {
             if (!$contact = $m[1]::model()->findByPk($m[2])) {
                 throw new Exception("{$m[1]} not found: {$m[2]}");
@@ -715,8 +717,8 @@ class OphCoCorrespondence_API extends BaseAPI
         } else if ($m[1] == 'Optometrist') {
             $contact_type = 'Optometrist';
         }
-
-        if (!in_array($contact_type, array('Gp', 'Patient', 'DRSS', 'Optometrist'))) {
+        
+        if( !in_array($contact_type, array('Gp','Patient','DRSS', 'Optometrist' , 'GP')) ){
             $contact_type = 'Other';
         }
 

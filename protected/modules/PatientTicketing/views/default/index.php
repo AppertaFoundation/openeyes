@@ -20,7 +20,6 @@
  * @var \OEModule\PatientTicketing\services\PatientTicketing_QueueSetService $qs_svc
  * @var \OEModule\PatientTicketing\services\PatientTicketing_QueueSet $queueset
  * @var \OEModule\PatientTicketing\services\PatientTicketing_QueueSetCategory $category
- * @var string[] $patient_list
  * @var int $cat_id
  */
 ?>
@@ -64,7 +63,6 @@ $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
     <?php $this->renderPartial('_ticketlist_search', [
         'qs_svc' => $qs_svc,
         'queueset' => $queueset,
-        'patient_list' => $patient_list,
         'cat_id' => $cat_id,
         'patients' => $patients,
     ]); ?>
