@@ -50,12 +50,12 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
             'key' => 'auto_generate_prescription_after_surgery',
             'name' => 'Auto generate default prescription after surgery',
             'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
-            'default_value' => 'off'
+            'default_value' => 'on'
         ));
 
         $this->insert('setting_installation', array(
             'key' => 'auto_generate_prescription_after_surgery',
-            'value' => 'off'
+            'value' => 'on'
         ));
 
         $this->insert('setting_metadata', array(
@@ -65,12 +65,12 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
             'key' => 'auto_generate_gp_letter_after_surgery',
             'name' => 'Auto generate GP letter after surgery',
             'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
-            'default_value' => 'off'
+            'default_value' => 'on'
         ));
 
         $this->insert('setting_installation', array(
             'key' => 'auto_generate_gp_letter_after_surgery',
-            'value' => 'off'
+            'value' => 'on'
         ));
 	}
 
