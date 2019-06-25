@@ -22,10 +22,7 @@ $(document).ready(function () {
     if (rowCount === 1) {
       new OpenEyes.UI.Dialog.Alert({
         content: "Items cannot be blank.",
-        closeCallback: function() {
-          // re-enable buttons when closing the popup
-          enableButtons();
-        }
+        closeCallback: enableButtons // re-enable buttons when closing the popup
       }).open();
 
       return false;
