@@ -104,4 +104,20 @@ class OphTrConsent_API extends BaseAPI
 
         return $return;
     }
+
+    /**
+     * get laterality of event by looking at the procedure element eye side
+     *
+     * @param $event_id
+     * @return mixed
+     * @throws Exception
+     */
+    public function getLaterality($event_id)
+    {
+        if (!$procedure = Element_OphTrConsent_Procedure::model()->find('event_id = :event_id' , [':event_id' => $event_id])) {
+            throw new Exception("Procedure element not found, possibly not a consent event: $event_id");
+        }
+
+        return $procedure->eye;
+    }
 }
