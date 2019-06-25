@@ -354,7 +354,7 @@ foreach ($ethnic_list as $key=>$item){
                     <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
                 </div>
                 <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
-                    <a id="js-add-contact-btn" href="#">Add Referring Practitioner</a>
+                    <a id="js-add-contact-btn1" href="#">Add Referring Practitioner</a>
                 <?php } ?>
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
@@ -396,7 +396,7 @@ foreach ($ethnic_list as $key=>$item){
                 </ul>
               </div>
                 <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
-                  <a id="js-add-contact-btn" href="#">Add New Contact</a>
+                  <a id="js-add-contact-btn2" href="#">Add New Contact</a>
                 <?php } ?>
               <div id="no_extra_gps_result" style="display: none;">
                 <div>No result</div>
@@ -574,7 +574,12 @@ $this->renderPartial('../patient/crud/create_contact_form',
         return false;
     });
 
-    $('#js-add-contact-btn').click(function(event){
+    $('#js-add-contact-btn1').click(function(event){
+        $('#extra_gp_adding_form').css('display','');
+        return false;
+    });
+
+    $('#js-add-contact-btn2').click(function(event){
         $('#extra_gp_adding_form').css('display','');
         return false;
     });

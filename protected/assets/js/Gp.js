@@ -5,7 +5,6 @@ function removeSelectedContactLabel() {
     $('#Contact_contact_label_id').val('-1');
 }
 function addItem(wrapper_id, ui){
-    console.log("3");
     var $wrapper = $('#' + wrapper_id);
     $wrapper.find('.js-name').text(ui.item.label);
     $wrapper.show();
