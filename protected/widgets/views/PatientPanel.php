@@ -39,7 +39,7 @@ $deceased = $this->patient->isDeceased();
      data-patient-id="<?= $this->patient->id ?>"
 >
     <div class="patient-name">
-        <a href="<?= (new CoreAPI())->generateEpisodeLink($this->patient); ?>">
+        <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
             <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
             <span class="patient-firstname">
       <?php echo $this->patient->getFirst_name(); ?>
@@ -51,14 +51,14 @@ $deceased = $this->patient->isDeceased();
     <div class="flex-layout">
         <div class="patient-details">
             <div class="hospital-number">
-                <span>No. </span>
-                <?php echo $this->patient->hos_num ?>
+                <span><?php echo Yii::app()->params['hos_num_label'] ?> </span>
+                <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></div>
             </div>
             <div class="nhs-number">
                 <span><?php echo Yii::app()->params['nhs_num_label'] ?></span>
                 <?php echo $this->patient->nhsnum ?>
                 <?php if ($this->patient->nhsNumberStatus) : ?>
-                    <i class="oe-i <?= $this->patient->nhsNumberStatus->icon->class_name ?: 'exclamation' ?> small"></i>
+                    <i class="oe-i <?= isset($this->patient->nhsNumberStatus->icon->class_name) ? $this->patient->nhsNumberStatus->icon->class_name : 'exclamation' ?> small"></i>
                 <?php endif; ?>
             </div>
 
@@ -66,16 +66,16 @@ $deceased = $this->patient->isDeceased();
                 <em>Gender</em>
                 <?php echo $this->patient->getGenderString() ?>
             </div>
-            <?php if ($trialContext) {
-                echo $trialContext->renderPatientTrialStatus();
-                echo $trialContext->renderAddToTrial();
-            } ?>
             <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
                 <?php if ($deceased): ?>
                     <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death); ?>
                 <?php endif; ?>
                 <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $this->patient->getAge(); ?>
             </div>
+            <?php if ($trialContext) {
+                echo $trialContext->renderPatientTrialStatus();
+                echo $trialContext->renderAddToTrial();
+            } ?>
         </div>
         <div class="flex-layout flex-right">
             <?php if (!$deceased) { ?>
@@ -104,6 +104,9 @@ $deceased = $this->patient->isDeceased();
                     <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
                 </svg>
             </div>
+
+            <?php
+            if (Yii::app()->user->checkAccess('OprnViewClinical')){?>
             <div class="patient-management js-management-btn">
                 <svg viewBox="0 0 30 30" class="icon">
                     <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
@@ -114,16 +117,20 @@ $deceased = $this->patient->isDeceased();
                     <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
                 </svg>
             </div>
-            <?php if ($this->patient->isEditable()): ?>
-                <div class="patient-local-edit js-patient-local-edit-btn">
-                    <a href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>">
+            <?php }?>
+
+          <?php if ($this->patient->isEditable()): ?>
+                <div class="patient-local-edit js-patient-local-edit-btn"
+                <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials))  echo 'style ="top: 35px; right: 0px"'?>
+                >
+                    <a href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>" >
                         <svg viewBox="0 0 30 30" class="icon">
                             <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
                         </svg>
                     </a>
                 </div>
             <?php endif; ?>
-            <?php if (Yii::app()->moduleAPI->get('OETrial')) { ?>
+            <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
                 <div class="patient-trials js-trials-btn">
                     <svg viewBox="0 0 30 30" class="icon">
                         <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>
@@ -150,11 +157,9 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.j
         PatientPanel.patientPopups.init($('[id=oe-patient-details][data-patient-id=<?= $this->patient->id?>]'));
         // PatientPanel.patientPopups.init();
 
-        $('.js-patient-expand-btn').each(function () {
-            $(this).click(function () {
-                $(this).toggleClass('collapse expand');
-                $(this).parents('table').find('tbody').toggle();
-            });
+        $('body').on('click', '.js-patient-expand-btn', function () {
+            $(this).toggleClass('collapse expand');
+            $(this).parents('table').find('tbody').toggle();
         });
     });
 </script>

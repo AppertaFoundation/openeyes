@@ -18,12 +18,30 @@
 ?>
 
 <?php
-$is_hidden = function () use ($element) {
-    if (count($element->anaesthetic_type_assignments) == 1 && ($element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA')) {
-        return true;
+$la_hidden = false;
+$sed_hidden = false;
+if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignments)) {
+    if (count($element->anaesthetic_type) == 0) {
+        $la_hidden = true;
+        $sed_hidden = true;
+    } else if (count($element->anaesthetic_type) == 1 && ($element->anaesthetic_type[0]->code == 'GA' || $element->anaesthetic_type[0]->code == 'NoA')) {
+        $la_hidden = true;
+        $sed_hidden = true;
+    } else if (count($element->anaesthetic_type) == 1 && $element->anaesthetic_type[0]->code === 'Sed') {
+        $la_hidden = true;
     }
-    return false;
-}; ?>
+} else {
+    if (count($element->anaesthetic_type_assignments) == 0) {
+        $la_hidden = true;
+        $sed_hidden = true;
+    } else if (count($element->anaesthetic_type_assignments) == 1 && ($element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA')) {
+        $la_hidden = true;
+        $sed_hidden = true;
+    } else if (count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type->code === 'Sed') {
+        $la_hidden = true;
+    }
+}
+?>
 
 <div class="element-fields full-width flex-layout flex-top" id="OphTrOperationnote_Anaesthetic">
   <div class="cols-11 flex-layout flex-top col-gap">
@@ -43,7 +61,7 @@ $is_hidden = function () use ($element) {
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container"
-            style="<?php if ($is_hidden()): ?>display: none;<?php endif; ?>">
+            style="<?php if ($la_hidden): ?>display: none;<?php endif; ?>">
           <td>LA Delivery Methods</td>
           <td>
                 <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', null,
@@ -52,7 +70,7 @@ $is_hidden = function () use ($element) {
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container"
-            style="<?php if ($is_hidden()): ?>display: none;<?php endif; ?>"
+            style="<?php if ($sed_hidden): ?>display: none;<?php endif; ?>"
         >
           <td>
             Given by:
@@ -153,7 +171,7 @@ $is_hidden = function () use ($element) {
                   array(
                       'rows' => 4,
                       'cols' => 40,
-                      'class' => 'js-comment-field',
+                      'class' => 'js-comment-field autosize',
                   )) ?>
           </td>
         </tr>

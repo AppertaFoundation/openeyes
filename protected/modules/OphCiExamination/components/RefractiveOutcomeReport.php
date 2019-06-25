@@ -59,6 +59,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
       'yaxis' => array(
         'title' => 'Number of eyes',
         'showline' => true,
+        'showgrid' => true,
         'ticks' => 'outside',
       ),
     );
@@ -69,7 +70,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     public function __construct($app)
     {
         $this->months = $app->getRequest()->getQuery('months', 0);
-        $this->procedures = $app->getRequest()->getQuery('procedures', array());
+        $this->procedures = $app->getRequest()->getQuery('procedures', array('null'));
 
         //if they selected all set to empty array to ignore procedure check in query
         if (in_array('all', $this->procedures)) {
@@ -94,7 +95,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
 
         $this->command->select('post_examination.episode_id, note_event.episode_id, note_event.event_date as op_date, note_event.id, op_procedure.eye_id,
         post_examination.event_date as post_exam_date, post_examination.event_date as post_exam_date, post_examination.id as post_id, patient.id as patient_id,
-        left_sphere, right_sphere, left_cylinder, right_cylinder, predicted_refraction')
+        left_sphere, right_sphere, left_cylinder, right_cylinder, predicted_refraction, note_event.id as event_id')
             ->from('et_ophtroperationnote_surgeon')
             ->join('event note_event', 'note_event.id = et_ophtroperationnote_surgeon.event_id')
             ->join('et_ophtroperationnote_procedurelist op_procedure', 'op_procedure.event_id = note_event.id #And the operation notes procedures')
@@ -110,9 +111,12 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             )
             ->join('et_ophciexamination_refraction', 'post_examination.id = et_ophciexamination_refraction.event_id')
             ->join('et_ophtroperationnote_cataract', 'note_event.id = et_ophtroperationnote_cataract.event_id')
-            ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
-            ->andWhere('post_examination.deleted <> 1 and note_event.deleted <> 1')
+            ->where('post_examination.deleted <> 1 and note_event.deleted <> 1')
             ->order('post_exam_date desc');
+
+        if ($surgeon !== 'all'){
+            $this->command->andWhere('surgeon_id = :surgeon', array('surgeon' => $surgeon));
+        }
 
         if ($dateFrom) {
             $this->command->andWhere('note_event.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
@@ -133,9 +137,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         if ($procedures) {
             $this->command
                 ->join('ophtroperationnote_procedurelist_procedure_assignment proc_ass', 'proc_ass.procedurelist_id = op_procedure.id')
-                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = proc_ass.proc_id and proc_ass.proc_id in (:procedures)', array('procedures' => implode(',', $procedures)));
+                ->join('ophtroperationnote_procedure_element opnote', 'opnote.procedure_id = proc_ass.proc_id ')
+                ->andWhere('proc_ass.proc_id in ('.implode(',',$procedures).')');
         }
-
         return $this->command->queryAll();
     }
 
@@ -144,14 +148,19 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      */
 
     public function dataset(){
-      $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->procedures);
-      $count = array();
 
+      if ($this->allSurgeons){
+          $surgeon = 'all';
+      }  else{
+          $surgeon = $this->surgeon;
+      }
+      $data = $this->queryData($surgeon, $this->from, $this->to, $this->months, $this->procedures);
+      $count = array();
       $this->padPlotlyCategories();
 
       // fill up the array with 0, have to send 0 to highcharts if there is no data
       for ($i = -10; $i <= 10; $i += 0.5) {
-        $count[] = 0;
+        $count[] = array(0,array());
       }
       $bestvalues = array();
       foreach ($data as $row) {
@@ -166,25 +175,29 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
 
             if ($diff_index >= 0 && $diff_index <= (count($this->plotlyConfig['xaxis']['tickvals']) - 1)) {
                 if (!array_key_exists($row['patient_id'].$side, $bestvalues)) {
-                    $bestvalues[$row['patient_id'].$side] = $diff_index;
-                } elseif (abs($this->plotlyConfig['xaxis']['tickvals'][$diff_index]) < abs($this->plotlyConfig['xaxis']['tickvals'][$bestvalues[$row['patient_id'].$side]])) {
-                    $bestvalues[$row['patient_id'].$side] = $diff_index;
+                    $bestvalues[$row['patient_id'].$side] = array($diff_index,$row['event_id']);
+//                    $bestvalues[$row['patient_id'].$side] = $diff_index;
+                } elseif (abs($this->plotlyConfig['xaxis']['tickvals'][$diff_index]) < abs($this->plotlyConfig['xaxis']['tickvals'][$bestvalues[$row['patient_id'].$side][0]])) {
+//                    $bestvalues[$row['patient_id'].$side] = $diff_index;
+                    $bestvalues[$row['patient_id'].$side] = array($diff_index,$row['event_id']);
+
                 }
             }
       }
 
         foreach ($bestvalues as $key => $diff) {
-            if (!array_key_exists("$diff", $count)) {
-                $count["$diff"] = 0;
+            if (!array_key_exists("$diff[0]", $count)) {
+                $count["$diff[0]"] = array(0,array());
             }
-            ++$count["$diff"];
+            ++$count["$diff[0]"][0];
+            array_push($count["$diff[0]"][1],$diff[1]);
         }
 
         ksort($count, SORT_NUMERIC);
 
         $dataSet = array();
         foreach ($count as $category => $total) {
-            $rowTotal = array((float) $category, $total);
+            $rowTotal = array((float) $category, $total[0],$total[1]);
             $dataSet[$category] = $rowTotal;
         }
 
@@ -236,6 +249,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
           'y'=> array_map(function($item){
             return $item[1];
           }, $dataset),
+            'customdata' => array_map(function($item){
+                return $item[2];
+            }, $dataset),
           'hovertext' => array_map(function($item){
             return '<b>Refractive Outcome</b><br><i>Diff Post</i>: '
               .$this->plotlyConfig['xaxis']['ticktext'][$item[0]]
@@ -313,8 +329,11 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     /**
      * @return mixed|string
      */
-    public function renderSearch()
+    public function renderSearch($analytics = false)
     {
+        if ($analytics){
+            $this->searchTemplate = 'application.modules.OphCiExamination.views.reports.refractive_outcome_search_analytics';
+        }
         return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'procedures' => $this->cataractProcedures()));
     }
 }

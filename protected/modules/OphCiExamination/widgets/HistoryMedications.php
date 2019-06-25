@@ -226,7 +226,7 @@ class HistoryMedications extends \BaseEventElementWidget
             $stopped = array();
             $current = array();
             foreach ($this->element->entries as $entry) {
-                if ($entry->end_date && $entry->end_date < date("Y-m-d")) {
+                if ($entry->end_date && $entry->end_date <= date("Y-m-d")) {
                     $stopped[] = $entry;
                 } else {
                     $current[] = $entry;
@@ -297,7 +297,7 @@ class HistoryMedications extends \BaseEventElementWidget
      */
     public  function getViewData()
     {
-        if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE)) ) {
+        if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE)) ) {
             return array_merge(parent::getViewData(), $this->getMergedEntries());
         }
         return parent::getViewData();

@@ -52,23 +52,42 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                         } elseif ($session->operationBookable($operation)) {
                             echo ' bookable';
                         } ?>" id="bookingSession<?php echo $session->id ?>">
-                            <div class="session_timeleft time-left available">
-                                <?php echo abs($session->availableMinutes) ?> min
-                                <?php echo $session->minuteStatus ?>
+                            <div class="session_timeleft">
+                                <div class="time-left available">
+                                  <?= abs($session->availableMinutes) ?> min
+                                  <?= $session->minuteStatus ?>
+                                </div>
+                                <div class="time" >
+                                  <?= $session->start_time ?>
+                                    -
+                                  <?= $session->end_time ?>
+                                </div>
+                              <?php if ($session->isProcedureCountLimited()) { ?>
+                                  <div class="available-procedures" title="Available procedures"><?= $session->getAvailableProcedureCount() ?> Procedure(s) available</div>
+                              <?php }
+                              if ($session->isComplexBookingCountLimited()) { ?>
+                                  <div class="available-complex-bookings" title="Available complex bookings"><?= $session->getAvailableComplexBookingCount() ?> Complex Booking(s) available</div>
+                              <?php } ?>
                             </div>
                             <div class="specialists">
                                 <?php if ($session->consultant) { ?>
                                     <div class="consultant" title="Consultant Present">Consultant</div>
-                                <?php } ?>
-                                <?php if ($session->anaesthetist) { ?>
+                                <?php }
+                                if ($session->anaesthetist) { ?>
                                     <div class="anaesthetist" title="Anaesthetist Present">Anaesthetist
                                         <?php if ($session->general_anaesthetic) { ?>
                                             (GA)
                                         <?php } ?>
                                     </div>
-                                <?php } ?>
-                                <?php if ($session->paediatric) { ?>
+                                <?php }
+                                if ($session->paediatric) { ?>
                                     <div class="paediatric" title="Paediatric Session">Paediatric</div>
+                                <?php }
+                                if ($session->isProcedureCountLimited()) { ?>
+                                    <div class="max-procedures" title="Max procedures">Max <?= $session->getMaxProcedureCount() ?> Procedures</div>
+                                <?php }
+                                if ($session->isComplexBookingCountLimited()) { ?>
+                                    <div class="max-complex-bookings" title="Max complex bookings">Max <?= $session->getMaxComplexBookingCount() ?> Complex Bookings</div>
                                 <?php } ?>
                             </div>
                         </td>
@@ -88,16 +107,22 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                             </td>
                         <?php } ?>
                     </tr>
-                    <?php if (isset($selectedSession) && !$selectedSession->operationBookable($operation)) { ?>
-                        <tr>
-                            <td style="float:left">
-                                <span class="session-unavailable">
-                                    <?=\CHtml::encode($selectedSession->unbookableReason($operation)) ?>
-                                </span>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                <?php } ?>
+                    <?php if (isset($selectedSession)) {
+                        $operationBookable = $selectedSession->operationBookable($operation);
+                        $thereIsPlaceForComplexBooking = $selectedSession->isTherePlaceForComplexBooking($operation);
+                        if(!$operationBookable || !$thereIsPlaceForComplexBooking) { ?>
+                            <tr>
+                                <td style="float:left">
+                                    <span class="session-unavailable alert-box warning">
+                                        <?=$operationBookable ?
+                                            "The allowed number of complex bookings has been reached for this session" :
+                                            \CHtml::encode($selectedSession->unbookableReason($operation)) ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php }
+                    }
+                } ?>
                 <?php ++$i;
             } ?>
             </tfoot>

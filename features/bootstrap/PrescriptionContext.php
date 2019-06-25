@@ -385,5 +385,46 @@ class PrescriptionContext extends PageObjectContext {
 		}
 
 	}
+	/**
+     * @Then/^I add drug "([^"]*)"$/
+     */
+	public function iAddDrug($drug){
+	    /**
+         * @var Prescription $prescription
+         */
+	    $prescription = $this->getPage('Prescription');
+	    $prescription->addDrugs($drug);
+    }
+    /**
+     * @Then/^I confirm drug added$/
+     */
+    public function iConfirmDrugAdded(){
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription = $this->getPage('Prescription');
+        $prescription->confirmDrugAdded();
+    }
+
+    /**
+     * @Given/^I select dispense condition "([^"]*)"$/
+     */
+    public function iSelectDispenseCondition($condition){
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription = $this->getPage('Prescription');
+        $prescription->selectDispenseCondition($condition);
+    }
+    /**
+     * @Then/^I select despense location "([^"]*)"$/
+     */
+    public function iSelectDespenseLocation($location){
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription = $this->getPage('Prescription');
+        $prescription->selectDespenseLocation($location);
+    }
 
 }

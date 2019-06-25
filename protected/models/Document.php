@@ -37,6 +37,7 @@ class Document //extends BaseActiveRecord
                 'GP' => \Yii::app()->params['gp_label'],
                 'PATIENT' => 'Patient',
                 'DRSS' => 'DRSS',
+                'OPTOMETRIST' => 'Optometrist',
                 'OTHER' => 'Other',
             ];
     }

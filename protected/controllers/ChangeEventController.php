@@ -3,6 +3,10 @@
 /**
  * Created by Mike Smith <mike.smith@camc-ltd.co.uk>.
  */
+
+use OEModule\OphCiExamination\models\OphCiExamination_Event_ElementSet_Assignment;
+use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
+
 class ChangeEventController extends BaseController
 {
     /**
@@ -182,5 +186,85 @@ class ChangeEventController extends BaseController
         $this->validateAndCreateEvent();
 
         $this->redirect('/patient/view/'.$this->patient->id);
+    }
+
+    function actionUpdateEpisode(){
+        $outcome = 'false';
+        $event_id = \Yii::app()->request->getPost('eventId');
+        $patient_id = \Yii::app()->request->getPost('patientId');
+
+        if($event_id && $patient_id){
+            $event = \Event::model()->findByPk($event_id);
+            $episode = \Episode::model()->findByPk($event->episode_id);
+            $properties = array('patient_id' => $patient_id, 'episode_id' => $episode->id, 'event_id' => $event->id, 'event_type_id' => $event->event_type_id);
+
+            if ($episode->patient_id === $patient_id) {
+                $action = 'update';
+                $firm_id = \Yii::app()->request->getPost('selected_firm_id');
+
+                $data = 'Context changed, firm remains the same';
+                if ($firm_id) {
+                    if ($episode->firm_id !== $firm_id) {
+
+                        $current_firm = \Firm::model()->findByPk($episode->firm_id);
+                        $new_firm = \Firm::model()->findByPk($firm_id);
+
+                        //try to find an existing firm for the patient
+                        $episode = \Episode::model()->find('patient_id = ? AND firm_id = ?', [$episode->patient_id, $firm_id]);
+
+                        if (!$episode) {
+                            $episode = new \Episode;
+                            $episode->patient_id = $patient_id;
+                            $episode->start_date = date('Y-m-d H:i:s');
+                            $episode->episode_status_id = \EpisodeStatus::model()->find('name = ?', ['New'])->id;
+                        }
+
+                        //set the new firm id
+                        $episode->firm_id = $new_firm->id;
+
+                        $action = 'change-firm';
+                        $data = 'Changed from '.$current_firm->name.' to '.\Firm::model()->findByPk($firm_id)->name;
+                    }
+                    $episode->last_modified_user_id = Yii::app()->user->id;
+                    $episode->last_modified_date = date('Y-m-d H:i:s');                    
+                }
+
+                if($episode->save()) {
+                    Audit::add('episode', $action, $data, null, $properties);
+
+                    $selected_workflow_step_id =  \Yii::app()->request->getPost('selectedWorkflowStepId');
+
+                    if($selected_workflow_step_id){
+                        $assignment = OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id));
+
+                        if (!$assignment) {
+                            // Create initial workflow assignment if event hasn't already got one
+                            $assignment = new OphCiExamination_Event_ElementSet_Assignment();
+                            $assignment->event_id = $event->id;
+                        }
+
+                        $assignment->step_id = $selected_workflow_step_id;
+                        $assignment->step_completed = 0;
+
+                        if ($assignment->save()) {
+                            $data = 'Changed step to ' . OphCiExamination_ElementSet::model()->findByPk($selected_workflow_step_id)->name;
+                            Audit::add('element set assignment', 'update', $data, null, $properties);
+                        }                        
+                    }
+
+                    $event->episode_id = $episode->id;
+                    $event->last_modified_user_id = Yii::app()->user->id;
+                    $event->last_modified_date = date('Y-m-d H:i:s');
+                    $event->firm_id = \Yii::app()->request->getPost('selectedContextId');
+
+                    if($event->save()) {
+                        Audit::add('event', 'update', $data = null, $log_message = null, $properties);
+                        $outcome = 'true';
+                    }
+                }
+            }            
+        }
+
+        echo $outcome;
     }
 }

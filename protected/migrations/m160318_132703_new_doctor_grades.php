@@ -6,7 +6,7 @@ class m160318_132703_new_doctor_grades extends CDbMigration
     {
         // we are looking for the current dataset and decide if we need to run the import again
 
-        $rowNum = Yii::app()->db->createCommand()->select('count(*) as rownum')->from('doctor_grade')->queryRow();
+        $rowNum = $this->dbConnection->createCommand()->select('count(*) as rownum')->from('doctor_grade')->queryRow();
 
         // the old dataset had 7 rows
         if ($rowNum['rownum'] < 8) {

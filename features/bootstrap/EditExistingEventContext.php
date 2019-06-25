@@ -76,4 +76,17 @@ class EditExistingEventContext extends PageObjectContext
         $editExistingEvent = $this->getPage('Biometry');
         $editExistingEvent->clickExistingEvent($event);
     }
+
+    /**
+     * @Then /^I edit the existing event$/
+     */
+    public function iEditTheExistingEvent()
+    {
+        /**
+         *
+         * @var EditExistingEvent $editExistingEvent
+         */
+        $editExistingEvent = $this->getPage('EditExistingEvent');
+        $editExistingEvent->selectEdit();
+    }
 }

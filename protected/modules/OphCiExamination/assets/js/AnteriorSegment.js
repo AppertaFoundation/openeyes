@@ -31,7 +31,10 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
       ACIOL: 'ACIOLCrossSection',
       CornealOpacity: 'CornealOpacityCrossSection',
       Hypopyon: 'HypopyonCrossSection',
-      Hyphaema: 'HyphaemaCrossSection'
+      CornealGraft: 'CornealGraftCrossSection',
+      Hyphaema: 'HyphaemaCrossSection',
+      EndothelialKeratoplasty: 'EndothelialKeratoplastyCrossSection',
+      CornealThinning: 'CornealThinningCrossSection',
     }
   };
 
@@ -43,7 +46,16 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
   AnteriorSegmentController.prototype.setPrimary = function (drawing) {
     if (!this.primaryDrawing) {
       this.primaryDrawing = drawing;
-      this.primaryDrawing.registerForNotifications(this, 'primaryDrawingNotification', ['ready', 'doodlesLoaded', 'beforeReset', 'doodleSelected', 'doodleAdded', 'doodleDeleted', 'parameterChanged']);
+      this.primaryDrawing.registerForNotifications(this, 'primaryDrawingNotification', [
+          'afterReset',
+          'ready',
+          'doodlesLoaded',
+          'beforeReset',
+          'doodleSelected',
+          'doodleAdded',
+          'doodleDeleted',
+          'parameterChanged',
+      ]);
     }
   };
 
@@ -55,6 +67,20 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
   AnteriorSegmentController.prototype.setSecondary = function (drawing) {
     this.secondaryDrawing = drawing;
     this.secondaryDrawing.registerForNotifications(this, 'secondaryDrawingNotification', ['ready', 'parameterChanged', 'doodlesLoaded', 'doodleSelected']);
+  };
+
+  /**
+   * Assign the gonioscopy canvas to the controller
+   *
+   * @param drawing
+   */
+  AnteriorSegmentController.prototype.setGonioscopyDrawing = function (drawing) {
+    this.gonioscopyDrawing = drawing;
+    this.gonioscopyDrawing.registerForNotifications(this, 'gonioscopyNotification', [
+        'afterReset',
+        'ready',
+        'parameterChanged',
+    ]);
   };
 
   /**
@@ -203,6 +229,26 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
   };
 
   /**
+   * Synchronise iris colour from Gonioscopy if Gonioscopy section exists
+   *
+   */
+  AnteriorSegmentController.prototype.SyncIrisColourWithGonioscopy = function() {
+    if(this.gonioscopyDrawing && $(".OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy")[0]) {
+      let angleGradeNorthDoodle = this.gonioscopyDrawing.firstDoodleOfClass('AngleGradeNorth');
+      let anteriorSegmentDoodle = this.primaryDrawing.firstDoodleOfClass('AntSeg');
+      if(angleGradeNorthDoodle && anteriorSegmentDoodle) {
+        const defaultIrisColour = (typeof default_iris_colour) !== 'undefined' ? default_iris_colour : 'Blue';
+        // if angleGradeNorthDoodle.colour is default and anteriorSegmentDoodle.colour is not,
+        // we can assume that anteriorSegmentDoodle has been changed and the other hasn't
+        const anteriorSegmentDoodleIsTheSource = angleGradeNorthDoodle.colour === defaultIrisColour && anteriorSegmentDoodle.colour !== defaultIrisColour;
+        const sourceDoodle      = anteriorSegmentDoodleIsTheSource ? anteriorSegmentDoodle : angleGradeNorthDoodle;
+        const destinationDoodle = anteriorSegmentDoodleIsTheSource ? angleGradeNorthDoodle : anteriorSegmentDoodle;
+        this.setDoodleParameter(sourceDoodle, 'colour', destinationDoodle, 'colour', true);
+      }
+    }
+  };
+
+  /**
    * Handler of notifications from the primary Eyedraw canvas
    * All changes require the report to be updated, but additional behaviours also arise
    * depending on the notification type.
@@ -211,7 +257,10 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
    */
   AnteriorSegmentController.prototype.primaryDrawingNotification = function (msgArray) {
     switch (msgArray['eventName']) {
-        case 'ready':
+      case 'afterReset':
+        this.SyncIrisColourWithGonioscopy();
+        break;
+      case 'ready':
         if (this.secondaryDrawingReady()) {
           this.loadSecondaryDoodles();
         }
@@ -220,6 +269,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         if(typeof pcr_init === 'function'){
             pcr_init();
         }
+        this.SyncIrisColourWithGonioscopy();
         break;
       case 'doodlesLoaded':
         if (this.resetting) {
@@ -292,6 +342,20 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
           }
         }
 
+        if (deletedDoodleClass === 'CornealGraft') {
+          let individualSutures = this.primaryDrawing.allDoodlesOfClass("CornealSuture");
+          let continuousSutures = this.primaryDrawing.allDoodlesOfClass("ContinuousCornealSuture");
+          let sutures = individualSutures.concat(continuousSutures);
+          for (let i = 0; i < sutures.length; i++) {
+                let suture = sutures[i];
+                if (suture.cornealGraft && !this.primaryDrawing.doodleOfId(suture.cornealGraft.id)) {
+                  suture.cornealGraft = null;
+                  suture.setParameterFromString('originX', '0', true);
+                  suture.setParameterFromString('originY', '0', true);
+                }
+            }
+        }
+
         if (deletedDoodleClass === 'Lens') {
           // reset to the null value as this removes any cataract value
           this.storeToHiddenField(this.$nuclearCataract, '');
@@ -330,7 +394,48 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
             this.storeToHiddenField(this.$corticalCataract, change.value);
           }
         }
+
+        if (change.doodle.className === 'AntSeg' && change.parameter === 'colour' && this.gonioscopyDrawing) {
+          if($(".OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy")[0]) { // whether Goinoscopy section exists
+            let angleGradeNorthDoodle = this.gonioscopyDrawing.firstDoodleOfClass("AngleGradeNorth");
+            let anteriorSegmentDoodle = change.doodle;
+            this.setDoodleParameter(anteriorSegmentDoodle, 'colour', angleGradeNorthDoodle, 'colour', true);
+          }
+        }
         break;
+    }
+  };
+
+
+  /**
+   * Handler of notifications from the Gonioscopy canvas for synchronise iris colour
+   *
+   * @param msgArray
+   */
+  AnteriorSegmentController.prototype.gonioscopyNotification = function (msgArray) {
+    let anteriorSegmentDoodle = this.primaryDrawing.firstDoodleOfClass('AntSeg');
+    if ($(".OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment")[0] && anteriorSegmentDoodle) {
+      // if Anterior Segment section does not exist, then sync is not needed
+      switch (msgArray['eventName']) {
+        case 'afterReset': {
+            let angleGradeNorthDoodle = this.gonioscopyDrawing.firstDoodleOfClass("AngleGradeNorth");
+            if (angleGradeNorthDoodle && anteriorSegmentDoodle.colour) {
+              this.setDoodleParameter(anteriorSegmentDoodle, 'colour', angleGradeNorthDoodle, 'colour', true);
+            }
+          }
+          break;
+        case 'ready':
+          this.SyncIrisColourWithGonioscopy();
+          break;
+        case 'parameterChanged': {
+          let change = msgArray['object'];
+          if (change.doodle.className === 'AngleGradeNorth' && change.parameter === 'colour') {
+            let angleGradeNorthDoodle = change.doodle;
+            this.setDoodleParameter(angleGradeNorthDoodle, 'colour', anteriorSegmentDoodle, 'colour', true);
+          }
+          break;
+        }
+      }
     }
   };
 
@@ -422,5 +527,13 @@ function anteriorSegmentListener(_drawing) {
     controller.setSecondary(_drawing);
   } else {
     controller.setPrimary(_drawing);
+
+    const gonioscopyCanvas = $(".OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy").
+      find("[data-side='" + (_drawing.eye === 1 ? "left" : "right") + "']").
+      find('canvas');
+    const gonioscopyDrawing = ED.getInstance(gonioscopyCanvas.data('drawing-name'));
+    if(gonioscopyDrawing) {
+      controller.setGonioscopyDrawing(gonioscopyDrawing);
+    }
   }
 }

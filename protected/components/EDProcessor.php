@@ -125,8 +125,9 @@ class EDProcessor
                 continue;
             }
 
-            if (!($ed_json = json_decode($element->$attr))) {
-                throw new Exception("Could not parse {$attr} as json" . $element->$attr);
+            $ed_json = json_decode($element->$attr);
+            if (!is_array($ed_json)) {
+                throw new Exception("Could not parse {$attr} as json array {$element->$attr} on canvas {$canvas_mnemonic}");
             }
 
             foreach ($ed_json as $ed_doodle) {

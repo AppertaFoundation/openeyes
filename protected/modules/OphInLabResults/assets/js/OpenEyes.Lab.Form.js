@@ -26,13 +26,10 @@ OpenEyes.Lab = OpenEyes.Lab || {};
      */
     function removeResultElement(event) {
         let section = $(event.target).closest('section');
-        if (section.length && section.find('[name$="[element_dirty]"]').val() === '1') {
+        if (section.length && section.find('[name^="[element_dirty]"]').val() === '1') {
             $(document).one("element_removed", function () {
                 $resultTypeSelect.val('');
             });
-        } else {
-            $resultTypeSelect.val('');
-            $('#result-output').parents('.element').remove();
         }
     }
 
@@ -62,7 +59,7 @@ OpenEyes.Lab = OpenEyes.Lab || {};
                 $dataElement.find('.js-remove-element').on('click', removeResultElement);
                 $('.lab-results-type').parent().after($dataElement);
                 enableButtons();
-                $('textarea').autosize();
+                autosize($('textarea'));
             }
         });
     }

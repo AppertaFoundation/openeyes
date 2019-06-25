@@ -42,7 +42,9 @@
         }
 
         id = report.replace(new RegExp('[\W/:?=\\\\]', 'g'), '_');
-        Dash.$container.append($(Dash.itemWrapper.replace('{$id}', id).replace('{$size}', size)));
+        if (id.includes('&')){
+            id = id.substring(0, id.indexOf('&'));
+        }        Dash.$container.append($(Dash.itemWrapper.replace('{$id}', id).replace('{$size}', size)));
         container = '#' + id;
         return container;
     }
@@ -110,12 +112,21 @@
             var chart,
                 $searchForm = $(this),
                 chartId = $searchForm.parents('.report-container').find('.chart-container').attr('id');
+            if($('#js-analytics-spinner').length){
+                $("#"+chartId).hide();
+                $('#js-analytics-spinner').show();
+            }
 
             $.ajax({
                 url: $(this).attr('action'),
                 data: $searchForm.serialize() + '&' + $('#search-form').serialize(),
                 dataType: 'json',
                 success: function (data, textStatus, jqXHR) {
+
+                    if($('#js-analytics-spinner').length){
+                        $('#js-analytics-spinner').hide();
+                        $("#"+chartId).show();
+                    }
 
                     if(typeof Dash.postUpdate[chartId] === 'function'){
                         Dash.postUpdate[chartId](data);
@@ -204,20 +215,34 @@
           }else if($('#pcr-risk-mode').val() == 2){
             newTitle = 'PCR Rate (risk adjusted & unadjusted)';
           }
-
             var chart = $('#PcrRiskReport')[0];
-
-            chart.data[0]['x'] = data.map(function (item) {
-              return item['x'];
+            var surgon_data = [[],[]];
+            var totaleyes = 0;
+            for (var i =0; i<(chart.data[0]['x']).length; i++){
+                totaleyes += chart.data[0]['x'][i];
+            }
+            data.forEach(function (item) {
+                if (item['color'] == 'red'){
+                    surgon_data[1].push(item);
+                }else{
+                    surgon_data[0].push(item);
+                }
             });
-            chart.data[0]['y'] = data.map(function (item) {
-              return item['y'];
-            });
-            chart.data[0]['hovertext'] = data.map(function (item){
-              return '<b>'+newTitle+'</b><br><i>Operations:</i>' + item['x'] + '<br><i>PCR Avg:</i>' + item['y'].toFixed(2);
-            });
-
-            chart.layout['title'] = newTitle + '<br><sub>Total Operations: '+data[0]['x']+'</sub>';
+            for (var i = 0; i < surgon_data.length; i++) {
+                chart.data[i]['x'] = surgon_data[i].map(function (item) {
+                    return item['x'];
+                });
+                chart.data[i]['y'] = surgon_data[i].map(function (item) {
+                    return item['y'];
+                });
+                chart.data[i]['hovertext'] = surgon_data[i].map(function (item){
+                    return '<b>'+newTitle+'</b><br><i>Operations:</i>' + item['x'] + '<br><i>PCR Avg:</i>' + item['y'].toFixed(2) + item['surgeon'] ;
+                });
+                chart.data[i]['marker']['color'] = surgon_data[i].map(function (item) {
+                    return item['color'];
+                });
+            }
+            chart.layout['title'] = newTitle + '<br><sub>Total Operations: '+totaleyes+'</sub>';
 
             Plotly.redraw(chart);
         },
@@ -254,6 +279,10 @@
             chart.data[0]['y'] = data.map(function (item) {
               return item[1];
             });
+            chart.data[0]['customdata'] = data.map(function (item) {
+                return item[2];
+            });
+            chart.layout['yaxis']['range']=Math.max(...chart.data[0]['y']);
             chart.data[0]['hovertext'] = data.map(function (item) {
               return '<b>Refractive Outcome</b><br><i>Diff Post</i>: ' +
                 chart.layout['xaxis']['ticktext'][item[0]] +
@@ -271,6 +300,9 @@
             }
           });
 
+          chart.data[0]['customdata'] = data.map(function (item) {
+              return item['event_list']? item['event_list']:0;
+          });
           chart.data[0]['hovertext'] = data.map((item, index) => {
             if (item['total']){
               return '<b>Cataract Complications</b><br><i>Complication</i>: ' +
@@ -282,7 +314,19 @@
             }
           });
 
-            $.ajax({
+          var max_complications = 0;
+          for (var i =0; i<chart.data[0]['x'].length;i++){
+              var current_complication =  parseInt(chart.data[0]['x'][i]);
+              if (current_complication > max_complications){
+                  max_complications = current_complication;
+              }
+          }
+
+          chart.layout['xaxis']['range'] = max_complications;
+
+
+
+          $.ajax({
                 data: $('#search-form').serialize(),
                 url: "/OphTrOperationnote/report/cataractComplicationTotal",
                 success: function (data, textStatus, jqXHR) {
@@ -322,8 +366,55 @@
             chart.data[1]['text'] = data.map(function (item){
               return item[2];
             });
+            chart.data[1]['customdata'] = data.map(function (item){
+                return item[3];
+            });
             chart.data[1]['hovertext'] = data.map(function (item){
               return '<b>Visual Outcome</b><br>Number of eyes: ' + item[2];
+            });
+            chart.data[1]['marker']['size']=data.map(function (item){
+                return item[2];
+            });
+
+            Plotly.redraw(chart);
+        },
+        'NodAuditReport': function(data){
+            var chart = $('#NodAuditReport')[0];
+            var completedData = [
+                data['VA']['pre-complete'],
+                data['VA']['post-complete'],
+                data['RF']['pre-complete'],
+                data['RF']['post-complete'],
+                data['BM']['pre-complete'],
+                data['PRE-EXAM']['pre-complete'],
+                data['PCR_RISK']['known'],
+                data['COMPLICATION']['post-complete'],
+                data['INDICATION_FOR_SURGERY']['complete'],
+                data['E/I']['eligible'],
+            ];
+            var incompletedData = [
+                data['VA']['pre-incomplete'],
+                data['VA']['post-incomplete'],
+                data['RF']['pre-incomplete'],
+                data['RF']['post-incomplete'],
+                data['BM']['pre-incomplete'],
+                data['PRE-EXAM']['pre-incomplete'],
+                data['PCR_RISK']['not_known'],
+                data['COMPLICATION']['post-incomplete'],
+                data['INDICATION_FOR_SURGERY']['incomplete'],
+                data['E/I']['ineligible'],
+            ];
+            chart.data[0]['y'] = completedData.map(function (item) {
+                return item.length/data['total'];
+            });
+            chart.data[1]['y'] = incompletedData.map(function (item) {
+                return item.length/data['total'];
+            });
+            chart.data[0]['customdata'] = completedData.map(function (item) {
+                return item;
+            });
+            chart.data[1]['customdata'] = incompletedData.map(function (item) {
+                return item;
             });
             Plotly.redraw(chart);
         }

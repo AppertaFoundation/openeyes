@@ -16,63 +16,106 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
+<div class="box admin cols-5">
 	<h2><?php echo $session->id ? 'Edit' : 'Add'?> session</h2>
 	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'adminform',
-        'enableAjaxValidation' => false,
-        'focus' => '#username',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ))?>
+    $form = $this->beginWidget('BaseEventTypeCActiveForm',
+        [
+            'id' => 'adminform',
+            'enableAjaxValidation' => false,
+            'focus' => '#username',
+        ]
+    )?>
 	<?php echo $form->errorSummary($session); ?>
-	<?php if ($session->sequence_id) {?>
-		<?php echo $form->textField($session, 'sequence_id', array('readonly' => true), array(), array('field' => 2))?>
-	<?php }?>
-	<?php echo $form->dropDownList($session, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => '- Emergency -'))?>
-	<?php echo $form->dropDownList($session, 'theatre_id', 'OphTrOperationbooking_Operation_Theatre', array('empty' => '- None -'))?>
-	<?php if ($session->id) {?>
-		<div id="div_OphTrOperationbooking_Operation_Session_date" class="data-group">
-			<div class="cols-2 column">
-				<div class="field-label">Date:</div>
-			</div>
-			<div class="cols-5 column end">
-				<div class="field-value"><?php echo $session->NHSDate('date')?></div>
-			</div>
-		</div>
-	<?php } else {?>
-		<?php echo $form->datePicker($session, 'date', array(), array(), array('field' => 2))?>
-	<?php }?>
-	<?php echo $form->textField($session, 'start_time', array('class' => 'time-picker'), array(), array('field' => 2))?>
-	<?php echo $form->textField($session, 'end_time', array('class' => 'time-picker'), array(), array('field' => 2))?>
-	<?php echo $form->textField($session, 'default_admission_time', array('class' => 'time-picker'), array(), array('field' => 2))?>
-	<?php echo $form->textField($session, 'max_procedures', array(), array(), array('field' => 2)); ?>
-	<?php if ($current = $session->getBookedProcedureCount()) { ?>
-		<fieldset id="procedure_count_wrapper" class="data-group <?php if ($session->max_procedures && $current > $session->max_procedures) { echo ' warn'; }?>">
-			<div class="cols-2 column">
-				<div class="field-label">Current Booked Procedures:</div>
-			</div>
-			<div class="cols-5 column end">
-				<div class="field-value" id="current-proc-count"><?php echo $current ?></div>
-			</div>
-		</fieldset>
-	<?php } ?>
-	<?php echo $form->radioBoolean($session, 'consultant')?>
-	<?php echo $form->radioBoolean($session, 'paediatric')?>
-	<?php echo $form->radioBoolean($session, 'anaesthetist')?>
-	<?php echo $form->radioBoolean($session, 'general_anaesthetic')?>
-	<?php echo $form->radioBoolean($session, 'available')?>
-	<fieldset id="unavailablereason_id_wrapper" class="data-group"<?php if ($session->available) {?> style="display: none;"<?php } ?>>
-		<div class="cols-2 column">
-			<label for="OphTrOperationbooking_Operation_Session_unavailablereason_id"><?php echo $session->getAttributeLabel('unavailablereason_id'); ?>:</label>
-		</div>
-		<div class="cols-5 column end">
-			<?php echo $form->dropDownList($session, 'unavailablereason_id', CHtml::listData($session->getUnavailableReasonList(), 'id', 'name'), array('empty' => 'Select', 'nowrapper' => true))?>
-		</div>
-	</fieldset>
+
+    <table class="standard cols-full">
+        <tbody>
+            <?php if ($session->sequence_id) {?>
+                <tr>
+                    <td>
+                        <?= $form->labelEx($session, 'sequence_id'); ?>
+                    </td>
+                    <td>
+                        <?= $form->textField($session, 'sequence_id', ['readonly' => true, 'nowrapper' => true])?>
+                    </td>
+                </tr>
+            <?php }?>
+            <tr>
+                <td>
+                    <?= $form->labelEx($session, 'firm_id'); ?>
+                </td>
+                <td>
+                    <?= $form->dropDownList($session, 'firm_id', Firm::model()->getListWithSpecialties(), ['empty' => '- Emergency -', 'nowrapper' => true, 'class' => 'cols-12'])?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->labelEx($session, 'theatre_id'); ?>
+                </td>
+                <td>
+                    <?= $form->dropDownList($session, 'theatre_id', 'OphTrOperationbooking_Operation_Theatre', ['empty' => '- None -', 'nowrapper' => true])?>
+                </td>
+            </tr>
+            <tr>
+                <?php if ($session->id) {?>
+                    <td>Date</td>
+                    <td><?= $session->NHSDate('date')?></td>
+                <?php } else {?>
+                    <td><?= $form->labelEx($session, 'date'); ?></td>
+                    <td><?= $form->datePicker($session, 'date', [], ['nowrapper' => true])?></td>
+                <?php }?>
+            </tr>
+            <tr>
+                <td><?= $form->labelEx($session, 'start_time'); ?></td>
+                <td>
+                    <?= $form->textField($session, 'start_time', ['nowrapper' => true])?>
+                </td>
+            </tr>
+            <tr>
+                <td><?= $form->labelEx($session, 'end_time'); ?></td>
+                <td><?= $form->textField($session, 'end_time', ['nowrapper' => true])?></td>
+            </tr>
+            <tr>
+                <td><?= $form->labelEx($session, 'default_admission_time'); ?></td>
+                <td><?= $form->textField($session, 'default_admission_time', ['nowrapper' => true])?></td>
+            </tr>
+            <tr>
+                <td><?= $form->labelEx($session, 'max_procedures'); ?></td>
+                <td><?= $form->textField($session, 'max_procedures', ['nowrapper' => true]); ?></td>
+            </tr>
+            <tr>
+                <td><?= $form->labelEx($session, 'max_complex_bookings'); ?></td>
+                <td><?= $form->textField($session, 'max_complex_bookings', ['nowrapper' => true]); ?></td>
+            </tr>
+            <?php $current = $session->getBookedProcedureCount();
+                if($current) { ?>
+                    <tr class = "<?= $session->isProcedureCountLimited() && $current > $session->getMaxProcedureCount() ? "alert-box alert" : "" ?>">
+                        <td>Current Booked Procedures</td>
+                        <td>
+                            <div class="field-value" id="current-proc-count"><?= $current ?></div>
+                        </td>
+                    </tr>
+                <?php }
+            ?>
+
+            <?php $boolean_fields = ['consultant', 'paediatric', 'anaesthetist', 'general_anaesthetic', 'available'];
+            foreach ($boolean_fields as $field) : ?>
+                <tr>
+                    <td><?= $form->labelEx($session, $field); ?></td>
+                    <td><?= $form->radioBoolean($session, $field, ['nowrapper' => true])?></td>
+                </tr>
+            <?php endforeach; ?>
+
+            <tr id="unavailablereason_id_wrapper" <?php if ($session->available) {?> style="display: none;"<?php } ?> >
+                <td>
+                    <label for="OphTrOperationbooking_Operation_Session_unavailablereason_id"><?= $session->getAttributeLabel('unavailablereason_id'); ?>:</label>
+                </td>
+                <td>
+                    <?= $form->dropDownList($session, 'unavailablereason_id', CHtml::listData($session->getUnavailableReasonList(), 'id', 'name'), array('empty' => 'Select', 'nowrapper' => true))?>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 	<?php echo $form->errorSummary($session); ?>
 	<?php echo $form->formActions(array(
         'delete' => $session->id ? 'Delete' : false,
@@ -187,5 +230,4 @@
 		e.preventDefault();
 		$('#confirm_delete_session').dialog('close');
 	});
-	$('.time-picker').timepicker({ 'timeFormat': 'H:i:s', 'step' : 5 });
 </script>

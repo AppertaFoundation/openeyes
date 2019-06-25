@@ -111,7 +111,7 @@ $(document).ready(function() {
     if (m = window.location.href.match(/\/update\/[0-9]+/)) {
       window.location.href = window.location.href.replace('/update/', '/view/');
     } else {
-      window.location.href = baseUrl + '/patient/episodes/' + OE_patient_id;
+      window.location.href = baseUrl + '/patient/summary/' + OE_patient_id;
     }
     e.preventDefault();
   });
@@ -182,7 +182,18 @@ $(document).ready(function() {
 	});
 
 	$('#bookingForm button#confirm_slot').on('click',function(e) {
-		$('#bookingForm').submit();
+		if($(this).data('there-is-place-for-complex-booking') === true) {
+			$('#bookingForm').submit();
+		} else {
+			e.preventDefault();
+			let dialog = new OpenEyes.UI.Dialog.Confirm({
+				content: "The allowed number of complex bookings has been already been reached for this session. Are you sure you want to add another complex booking?"
+			});
+			dialog.on('ok', function () {
+				$('#bookingForm').submit();
+			});
+			dialog.open();
+		}
 	});
 
 	$(this).undelegate('#Element_OphTrOperationbooking_Operation_referral_id', 'change').delegate('#Element_OphTrOperationbooking_Operation_referral_id', 'change', function() {
@@ -262,7 +273,7 @@ function datepicker_start(element){
  * @param element: the datepicker element
  */
 function datepicker_end(element) {
-  element.addEventListener('pickmeup-fill', function (e) {
+  element.addEventListener('pickmeup-change', function (e) {
     var start = $(element).closest('tr').find('.unavailable-start-date')[0];
     if ($(start).val()===''||pickmeup(element).get_date() < new Date($(start).val())){
       $(start).val($(element).val());

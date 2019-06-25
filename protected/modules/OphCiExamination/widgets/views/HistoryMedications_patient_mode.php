@@ -71,7 +71,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <tr>
               <th>Stopped</th>
               <th></th>
-              <th>
+              <th colspan="2">
                 <i class="oe-i small pro-theme js-patient-expand-btn pad expand"></i>
               </th>
             </tr>
@@ -108,7 +108,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
           <div class="nil-recorded">Nil recorded.</div>
         <?php else: ?>
             <?php if ($current_eye_meds): ?>
-            <table id="<?= $model_name ?>_entry_table">
+                <table id="<?= $model_name ?>_entry_table">
               <tbody>
               <?php foreach ($current_eye_meds as $entry): ?>
                 <tr>
@@ -138,7 +138,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               <tr>
                 <th>Stopped</th>
                 <th></th>
-                <th>
+                <th colspan="2">
                   <i class="oe-i small pad pro-theme js-patient-expand-btn expand"></i>
                 </th>
               </tr>

@@ -62,10 +62,8 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
       ),
       'xaxis' => array(
         'title' => 'Visual acuity at surgery (LogMAR)',
-        'titlefont' => array(
-          'size' => 11,
-        ),
         'showline' => true,
+        'showgrid' => true,
         'range' => [-1,6],
         'ticks' => 'outside',
         'tickvals' => array(0, 1, 2, 3, 4, 5,6),
@@ -75,6 +73,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
       'yaxis' => array(
         'title' => 'Visual acuity 4 months after surgery (LogMAR)',
         'showline' => true,
+        'showgrid' => true,
         'range' => [-1,6],
         'ticks' => 'outside',
         'tickvals' => array(0, 1, 2, 3, 4, 5, 6),
@@ -116,7 +115,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
 
         $this->command->select('pre_examination.episode_id, note_event.episode_id, note_event.event_date as op_date, note_event.id, op_procedure.eye_id, pre_reading.method_id,
         pre_examination.event_date as pre_exam_date, post_examination.event_date as post_exam_date, pre_examination.id as pre_id, post_examination.id as post_id,
-        pre_reading.value as pre_value, post_reading.value as post_value')
+        pre_reading.value as pre_value, post_reading.value as post_value, note_event.id as event_id')
             ->from('et_ophtroperationnote_surgeon')
             ->join('event note_event', 'note_event.id = et_ophtroperationnote_surgeon.event_id')
             ->join('et_ophtroperationnote_procedurelist op_procedure', 'op_procedure.event_id = note_event.id #And the operation notes procedures')
@@ -151,9 +150,12 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             )->join($table.' post_reading', 'post_acuity.id = post_reading.element_id
                AND post_reading.side = pre_reading.side
                AND post_reading.method_id = pre_reading.method_id')
-            ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
-            ->andWhere('pre_examination.deleted <> 1 and post_examination.deleted <> 1 and note_event.deleted <> 1')
+            ->where('pre_examination.deleted <> 1 and post_examination.deleted <> 1 and note_event.deleted <> 1')
             ->order('pre_exam_date asc, post_exam_date desc');
+
+        if ($surgeon !== 'all'){
+            $this->command->andWhere('surgeon_id = :surgeon', array('surgeon' => $surgeon));
+        }
 
         if ($dateFrom) {
             $this->command->andWhere('note_event.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
@@ -183,7 +185,13 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      */
     public function dataSet()
     {
-        $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->method, $this->type);
+        if ($this->allSurgeons){
+            $surgeon = 'all';
+        }else{
+            $surgeon = $this->surgeon;
+        }
+
+        $data = $this->queryData($surgeon, $this->from, $this->to, $this->months, $this->method, $this->type);
 
         $dataCheck = array();
         $dataSet = array();
@@ -206,12 +214,14 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                         $bestValues[$row['id'].'_'.$row['eye_id']] = array(
                             $this->convertVisualAcuity($row['pre_value']),
                             $this->convertVisualAcuity($row['post_value']),
+                            $row['event_id'],
                         );
                     } elseif ($diffForEye > $eyeDiffs[$row['id'].'_'.$row['eye_id']]) {
                         $eyeDiffs[$row['id'].'_'.$row['eye_id']] = $diffForEye;
                         $bestValues[$row['id'].'_'.$row['eye_id']] = array(
                             $this->convertVisualAcuity($row['pre_value']),
                             $this->convertVisualAcuity($row['post_value']),
+                            $row['event_id'],
                         );
                     }
                 } else {
@@ -221,6 +231,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                     $dataSet[] = array(
                         $this->convertVisualAcuity($row['pre_value']),
                         $this->convertVisualAcuity($row['post_value']),
+                        $row['event_id'],
                     );
                 }
             }
@@ -230,9 +241,9 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         $dataSet = array_merge($dataSet, array_values($bestValues));
         foreach ($dataSet as $data) {
             if (!array_key_exists($data[0].'_'.$data[1], $counts)) {
-                $counts[$data[0].'_'.$data[1]] = 0;
+                $counts[$data[0].'_'.$data[1]] = array();
             }
-            ++$counts[$data[0].'_'.$data[1]];
+            array_push($counts[$data[0].'_'.$data[1]],$data[2]);
         }
 
         $matrix = array();
@@ -297,7 +308,9 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             }
 
             if (isset($matrix[$xAxsis][$yAxsis])) {
-                $matrix[$xAxsis][$yAxsis] += $count;
+                foreach($count as $row){
+                    array_push($matrix[$xAxsis][$yAxsis],$row);
+                }
             } else {
                 $matrix[$xAxsis][$yAxsis] = $count;
             }
@@ -306,14 +319,16 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         $returnData = array();
 
         foreach ($matrix as $xCoord => $bubbleX) {
-            foreach ($bubbleX as $yCoord => $value) {
+            foreach ($bubbleX as $yCoord => $array) {
+                $value = count($array);
                 $returnData[] = array(
                     $xCoord,
                     $yCoord,
                     $value,
+                    $array,
                 );
 
-                $this->totalEyes += $value;
+                $this->totalEyes += (int)count($array);
             }
         }
 
@@ -353,6 +368,9 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             'color' => '#000',
           ),
         ),
+          'customdata' => array_map(function ($item){
+              return $item[3];
+          }, $data),
         'marker' => array(
           'color' => '#7cb5ec',
           'size' => array_map(function ($item){
@@ -369,13 +387,13 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'y' => array(-1, 6),
         'line' => array(
           'dash' => 'dash',
-          'color' => 'rgb(0,0,0)',
+          'color' => 'rgb(192,192,192)',
           'width' => 1,
         ),
         'hoverinfo' => 'none',
       );
 
-      $traces = array($trace2, $trace1);
+      $traces = array($trace2,$trace1);
       return json_encode($traces);
     }
     /**
@@ -403,10 +421,12 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     /**
      * @return mixed|string
      */
-    public function renderSearch()
+    public function renderSearch($analytics = false)
     {
         $visualAcuityMethods = OphCiExamination_VisualAcuity_Method::model()->findAll();
-
+        if ($analytics){
+            $this->searchTemplate = 'application.modules.OphCiExamination.views.reports.visual_acuity_search_analytics';
+        }
         return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'methods' => $visualAcuityMethods));
     }
 }

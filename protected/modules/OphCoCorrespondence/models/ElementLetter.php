@@ -315,6 +315,10 @@ class ElementLetter extends BaseEventTypeElement
             }
         }
 
+        $patientOptometrist = $patient->getPatientOptometrist();
+        if($patientOptometrist){
+            $options['Optometrist'.$patientOptometrist->id] = $patientOptometrist->fullname.' (Optometrist)';
+        }
         // get the ids of the commissioning body types that should be shown as potential recipients to filter against
         $cbt_ids = array();
         foreach (OphCoCorrespondence_CommissioningBodyType_Recipient::model()->getCommissioningBodyTypes() as $cbt) {
@@ -359,17 +363,19 @@ class ElementLetter extends BaseEventTypeElement
                     ),
                 ),
             ),
-        ))->findAll('patient_id=?', array($patient->id)) as $pca) {
+        ))->findAll('patient_id=? AND contact.active = ?', array($patient->id, 1)) as $pca) {
             if ($pca->location) {
                 $options['ContactLocation'.$pca->location_id] = $pca->location->contact->fullName.' ('.$pca->location->contact->label->name . ')';
             } else {
                 // Note that this index will always be the basis for a Person model search - if PCA has a wider use case than this,
                 // this will need to be revisited
-                $options['Contact'.$pca->contact_id] = $pca->contact->fullName.' ('.$pca->contact->label->name;
-                if ($pca->contact->address) {
-                    $options['Contact'.$pca->contact_id] .= ', '.$pca->contact->address->address1.')';
-                } else {
-                    $options['Contact'.$pca->contact_id] .= ') - NO ADDRESS';
+                if(!isset($pca->contact->label) || $pca->contact->label->name != 'Optometrist') {
+                    $options['Contact' . $pca->contact_id] = $pca->contact->fullName . ' (' . (isset($pca->contact->label) ? $pca->contact->label->name : "");
+                    if ($pca->contact->address) {
+                        $options['Contact' . $pca->contact_id] .= ', ' . $pca->contact->address->address1 . ')';
+                    } else {
+                        $options['Contact' . $pca->contact_id] .= ') - NO ADDRESS';
+                    }
                 }
             }
         }
@@ -989,6 +995,20 @@ class ElementLetter extends BaseEventTypeElement
         }
     }
 
+    public function getToAddressContactType() {
+        if($this->document_instance && $this->document_instance[0]->document_target) {
+            foreach ($this->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    if($target->ToCc === 'To'){
+                        return $target->contact_type;
+                    }
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @return string
      */
@@ -1002,7 +1022,7 @@ class ElementLetter extends BaseEventTypeElement
                 foreach ($instance->document_target as $target) {
                     if($target->ToCc != 'To'){
                         $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                        $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
+                        $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
                     }
                 }
             }
