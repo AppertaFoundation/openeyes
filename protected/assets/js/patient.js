@@ -2,7 +2,8 @@
 function addItemPatientForm(wrapper_id, ui) {
   var $wrapper = $('#' + wrapper_id);
   $wrapper.find('.js-name').text(ui.item.label);
-    $('#Patient_practice_id').text(ui.item.practiceId);
+    $('#Patient_practice_id').val(ui.item.practiceId);
+    $('#prac_id').val(ui.item.practiceId);
   $wrapper.show();
   $wrapper.find('.hidden_id').val(ui.item.value);
 }

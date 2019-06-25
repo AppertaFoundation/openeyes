@@ -360,6 +360,13 @@ foreach ($ethnic_list as $key=>$item){
                     <div>No result</div>
                 </div>
 
+                <ul class="oe-multi-select js-selected_practice" style="display: none;">
+                    <li>
+                  <span id="prac_id" class="js-name">
+                      <?= $patient->practice_id ? Practice::model()->findByPk(array('id' => $patient->practice_id))->getAddressLines() : '' ?>
+                  </span>
+                    </li>
+                </ul>
                 <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
                     array('class' => 'hidden_id')); ?>
 
