@@ -2236,14 +2236,16 @@ class PatientController extends BaseController
 
         $output = array();
         foreach($gps as $gp){
+            $role = $gp->getGPROle();
+            $practiceDetails = $gp->getAssociatedPractice($gp->id);
+            $practiceId = $practiceDetails['id'];
             $output[] = array(
-                'label' => $gp->correspondenceName,
-                'value' => $gp->id
+                'label' => $gp->correspondenceName.' - '.$role.' - '.$practiceDetails['first_name'],
+                'value' => $gp->id,
+                'practiceId' => $practiceId
             );
         }
-
         echo CJSON::encode($output);
-
         Yii::app()->end();
     }
 

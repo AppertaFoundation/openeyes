@@ -230,4 +230,23 @@ class Gp extends BaseActiveRecordVersioned
 
         return $return_value;
     }
+
+    public function getGPROle(){
+        return $this->contact->label->name;
+    }
+
+    public function getAssociatedPractice($id){
+        $query = "SELECT first_name, P.id FROM contact_practice_associate CPA
+                        JOIN practice P ON CPA.practice_id = P.id
+                        JOIN contact C ON P.contact_id = C.id
+                        JOIN address A ON C.id = A.contact_id
+                        WHERE gp_id=$id";
+        $command = $this->getDbConnection()->createCommand($query);
+        $practiceDetails = $command->queryAll();
+        if (isset ($practiceDetails)) {
+            return $practiceDetails[0];
+        }
+        return '';
+    }
+
 }

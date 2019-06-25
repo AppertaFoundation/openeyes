@@ -336,13 +336,13 @@ foreach ($ethnic_list as $key=>$item){
 
         <tr id="js-patient-gp-row">
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
-                <?= $form->label($patient, 'gp_id') ?>
+                <p> Referring Practitioner</p>
                 <br/>
                 <?= $form->error($patient, 'gp_id') ?>
             </td>
             <td>
                 <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_gp_id']); ?>
-                <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
+                <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : 'color: white;' ?>">
                     <ul class="oe-multi-select js-selected_gp">
                         <li>
                   <span class="js-name">
@@ -353,45 +353,19 @@ foreach ($ethnic_list as $key=>$item){
                     </ul>
                     <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
                 </div>
+                <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
+                    <a id="js-add-contact-btn" href="#">Add Referring Practitioner</a>
+                <?php } ?>
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
                 </div>
-                <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
-                <a id="js-add-gp-btn" href="#">
-                  <?= Yii::app()->params['institution_code']=='CERA'?
-                    "Add General Practitioner": "Add Referring Practitioner"; ?>
-                </a>
-                <?php } ?>
+
+                <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
+                    array('class' => 'hidden_id')); ?>
+
             </td>
         </tr>
-        <tr>
-          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
-              <?= $form->label($patient, 'practice_id') ?>
-            <br/>
-              <?= $form->error($patient, 'practice_id') ?>
-          </td>
-          <td>
-              <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_practice_id']); ?>
-            <div id="selected_practice_wrapper" style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
-              <ul class="oe-multi-select js-selected_practice">
-                <li>
-                  <span class="js-name">
-                      <?= $patient->practice_id ? Practice::model()->findByPk(array('id' => $patient->practice_id))->getAddressLines() : '' ?>
-                  </span>
-                  <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
-                </li>
-              </ul>
-                    <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
-                        array('class' => 'hidden_id')); ?>
-                </div>
-                <div id="no_practice_result" style="display: none;">
-                    <div>No result</div>
-                </div>
-                <?php if (Yii::app()->user->checkAccess('Create Practice')) { ?>
-                <a id="js-add-practice-btn" href="#">Add Practice</a>
-                <?php } ?>
-            </td>
-        </tr>
+
 
         <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
           <tr>

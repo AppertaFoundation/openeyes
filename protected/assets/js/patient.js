@@ -2,6 +2,7 @@
 function addItemPatientForm(wrapper_id, ui) {
   var $wrapper = $('#' + wrapper_id);
   $wrapper.find('.js-name').text(ui.item.label);
+    $('#Patient_practice_id').text(ui.item.practiceId);
   $wrapper.show();
   $wrapper.find('.hidden_id').val(ui.item.value);
 }
@@ -99,7 +100,7 @@ function addGpItem(wrapper_id, ui){
 $(document).ready(function ()
 {
   highLightError("Patient_gp_id_em_","GP cannot be blank",'#autocomplete_gp_id');
-  highLightError("Patient_practice_id_em_","Practice cannot be blank",'#autocomplete_practice_id');
+  // highLightError("Patient_practice_id_em_","Practice cannot be blank",'#autocomplete_practice_id');
 });
 
 function highLightError(elementId, containText,highLightFiled){
