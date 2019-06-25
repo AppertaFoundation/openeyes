@@ -141,7 +141,7 @@ class WaitingListController extends BaseModuleController
             $whereParams[':site_id'] = $site_id;
         }
 
-        if($include_on_hold === 1){
+        if($include_on_hold === "1"){
             $on_hold_status_id =  OphTrOperationbooking_Operation_Status::model()->find('name = "On-Hold"')->id;
             $on_hold_status_condition = ", " . $on_hold_status_id;
         } else {
