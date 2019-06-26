@@ -336,7 +336,7 @@ foreach ($ethnic_list as $key=>$item){
 
         <tr id="js-patient-gp-row">
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
-                <p> Referring Practitioner</p>
+                Referring Practitioner
                 <br/>
                 <?= $form->error($patient, 'gp_id') ?>
             </td>
