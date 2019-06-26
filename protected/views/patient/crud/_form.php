@@ -346,7 +346,17 @@ foreach ($ethnic_list as $key=>$item){
                     <ul class="oe-multi-select js-selected_gp">
                         <li>
                   <span class="js-name">
-                      <?= $patient->gp_id ? Gp::model()->findByPk(array('id' => $patient->gp_id))->getCorrespondenceName() : '' ?>
+                      <?php
+                          if (isset($patient->gp_id)){
+                            $gp = Gp::model()->findByPk(array('id' => $patient->gp_id));
+                            $practice  = $gp->getAssociatePractice();
+                            $practiceDetails = $gp->getAssociatedPractice($gp->id);
+                            $role = $gp->getGPROle();
+                      ?>
+                        <?=$gp->getCorrespondenceName();?><?=(isset($role)? ' - '.$role:'')?><?=(isset($practice)?' - '.$practiceDetails['first_name']:'');?>
+                        <?php
+                            }
+                        ?>
                   </span>
                             <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
                         </li>
