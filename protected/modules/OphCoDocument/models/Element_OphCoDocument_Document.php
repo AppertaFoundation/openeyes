@@ -113,7 +113,7 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
             return $file_name;
         }
 
-        $exif = exif_read_data($file_name);
+        $exif = @exif_read_data($file_name);
         if (!empty($exif['Orientation'])) {
             switch ($exif['Orientation']) {
                 case 1:
