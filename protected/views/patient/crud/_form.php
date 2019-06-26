@@ -398,8 +398,10 @@ foreach ($ethnic_list as $key=>$item){
                             foreach ($patient->patientContactAssociates as $patientContactAssociate){
                                 $gp = $patientContactAssociate->gp;
                                 $practice  = $gp->getAssociatePractice();
+                                $practiceDetails = $gp->getAssociatedPractice($gp->id);
+                                $role = $gp->getGPROle();
                                 ?>
-                                <li><span class="js-name"><?=$gp->getCorrespondenceName();?><?=(isset($practice)? ' - '.$practice->getAddressLines():'');?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
+                                <li><span class="js-name"><?=$gp->getCorrespondenceName();?><?=(isset($role)? ' - '.$role:'')?><?=(isset($practice)?' - '.$practiceDetails['first_name']:'');?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
                             <?php }
                         }
                     ?>
