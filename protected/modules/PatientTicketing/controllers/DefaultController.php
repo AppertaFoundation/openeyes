@@ -19,9 +19,9 @@
 namespace OEModule\PatientTicketing\controllers;
 
 use CJavaScript;
+use OEModule\PatientTicketing\components\AutoSaveTicket;
 use OEModule\PatientTicketing\models;
 use OEModule\PatientTicketing\services;
-use OEModule\PatientTicketing\components\AutoSaveTicket;
 use Patient;
 use Yii;
 
@@ -280,21 +280,12 @@ class DefaultController extends \BaseModuleController
                 $filter_keys = array('queue-ids', 'priority-ids', 'subspecialty-id', 'firm-id', 'my-tickets', 'closed-tickets', 'patient-ids');
                 $filter_options = array();
 
-                if (empty($_POST)) {
-                    if (($filter_options = Yii::app()->session['patientticket_filter'])
-                            && @$filter_options['category-id'] == $category->getID()) {
-                        foreach ($filter_options as $k => $v) {
-                            $_POST[$k] = $v;
-                        }
-                    }
-                } else {
                     foreach ($filter_keys as $k) {
                         if (isset($_POST[$k])) {
                             $filter_options[$k] = $_POST[$k];
                         }
                     }
                     $filter_options['category-id'] = $category->getID();
-                }
 
                 Yii::app()->session['patientticket_filter'] = $filter_options;
 
