@@ -347,13 +347,18 @@ foreach ($ethnic_list as $key=>$item){
                         <li>
                   <span class="js-name">
                       <?php
-                          if (isset($patient->gp_id)){
+                          if (($patient->gp_id)){
                             $gp = Gp::model()->findByPk(array('id' => $patient->gp_id));
                             $practice  = $gp->getAssociatePractice();
                             $practiceDetails = $gp->getAssociatedPractice($gp->id);
                             $role = $gp->getGPROle();
                       ?>
                         <?=$gp->getCorrespondenceName();?><?=(isset($role)? ' - '.$role:'')?><?=(isset($practice)?' - '.$practiceDetails['first_name']:'');?>
+                        <?php
+                            }
+                            else{
+                              ?>
+                                <?=''?>
                         <?php
                             }
                         ?>
