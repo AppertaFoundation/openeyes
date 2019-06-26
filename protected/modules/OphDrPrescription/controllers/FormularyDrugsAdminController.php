@@ -39,6 +39,8 @@ class FormularyDrugsAdminController extends BaseAdminController
 
     public function actionToList($id)
     {
-        $this->redirect('/OphDrPrescription/refMedicationSetAdmin/list?ref_set_id='.$id);
+        echo '<pre>' . print_r("depricated", true) . '</pre>';
+        die(__FILE__ . ' :: ' . __LINE__);
+        //$this->redirect('/OphDrPrescription/refMedicationSetAdmin/list?ref_set_id='.$id);
     }
 }

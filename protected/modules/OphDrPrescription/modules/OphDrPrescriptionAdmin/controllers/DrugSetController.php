@@ -21,7 +21,7 @@ class DrugSetController extends BaseAdminController
     /**
      * @var int
      */
-    public $itemsPerPage = 100;
+    public $itemsPerPage = 50;
 
     public $group = 'Drugs';
 
@@ -68,29 +68,91 @@ class DrugSetController extends BaseAdminController
         return $admin;
     }
 
-    /**
-     * Render the basic drug set admin page.
-     */
-    public function actionList()
+    public function actionIndex()
     {
-        $admin = new Admin(MedicationSetRule::model(), $this);
-        $admin->setListFields(array(
-            'id',
-            'medicationSet.name',
-            'subspecialty.name',
-        ));
+        $model = new MedicationSet();
+        $model->unsetAttributes();
+        if (isset($_GET['MedicationSet'])) {
+            $model->attributes = $_GET['MedicationSet'];
+        }
 
-        $admin->setModelDisplayName('Drug Sets');
+        $search = [
+            'query' => '',
+            'subspecialty_id' => null,
+            'site_id' => null,
+        ];
 
-        $criteria = new CDbCriteria();
-        $criteria->condition = 'usage_code=:usage_code AND subspecialty_id IS NOT NULL';
-        $criteria->params = array(
-            ':usage_code' => 'Drug',
-        );
-        $admin->searchAll();
-        $admin->getSearch()->setCriteria($criteria);
-        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel();
+        $criteria = $this->getSearchCriteria();
+
+        $dataProvider = new CActiveDataProvider('MedicationSet', [
+            'criteria'=>$criteria,
+        ]);
+
+        $pagination = new CPagination($dataProvider->totalItemCount);
+        $pagination->pageSize = $this->itemsPerPage;
+        $pagination->applyLimit($criteria);
+
+        $dataProvider->pagination = $pagination;
+
+        $this->render('/drugset/index', [/form_Element_OphDrPrescription_Details.php
+            'dataProvider' => $dataProvider,
+            'search' => $search
+        ]);
+    }
+
+    private function getSearchCriteria()
+    {
+        $filters = \Yii::app()->request->getParam('search', []);
+        $criteria = new \CDbCriteria();
+
+        $criteria->with = ['medicationSetRules'];
+        $criteria->together = true;
+
+        if (isset($filters['usage_codes']) && $filters['usage_codes'] ) {
+            $criteria->addInCondition('usage_code', $filters['usage_codes']);
+        }
+
+        return $criteria;
+    }
+
+    public function actionSearch()
+    {
+        $criteria = $this->getSearchCriteria();
+        $data['sets'] = [];
+
+        $data_provider = new CActiveDataProvider('MedicationSet', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = $this->itemsPerPage;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        foreach ($data_provider->getData() as $set) {
+            $set_attributes = $set->attributes;
+
+            $rules = MedicationSetRule::model()->findAllByAttributes(['medication_set_id' => $set->id]);
+            $ret_val = [];
+            foreach ($rules as $rule) {
+                $ret_val[]= "Site: ".(!$rule->site ? "-" : $rule->site->name).
+                    ", SS: ".(!$rule->subspecialty ? "-" : $rule->subspecialty->name).
+                    ", Usage code: ".$rule->usage_code;
+            }
+
+            $set_attributes['rules'] = implode(" // ", $ret_val);
+            $data['sets'][] = $set_attributes;
+        }
+
+        ob_start();
+        $this->widget('LinkPager', ['pages' => $pagination]);
+        $pagination = ob_get_contents();
+        ob_clean();
+        $data['pagination'] = $pagination;
+
+        echo CJSON::encode($data);
+        \Yii::app()->end();
     }
 
     /**

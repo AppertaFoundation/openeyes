@@ -426,9 +426,9 @@ class Medication extends BaseActiveRecordVersioned
 
     public function getAttrs($attr_name = null)
     {
-        $ret = array();
+        $ret = [];
         foreach ($this->medicationAttributeAssignments as $attr_assignment) {
-            $aname = $attr_assignment->medicationAttributeOption->medicationAttribute->name;
+            $aname = isset($attr_assignment->medicationAttributeOption->medicationAttribute) ? $attr_assignment->medicationAttributeOption->medicationAttribute->name : null;
             if(is_null($attr_name) || $aname == $attr_name) {
                 $ret[] = array(
                     'attr_name' => $aname,

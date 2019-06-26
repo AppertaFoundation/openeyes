@@ -125,7 +125,6 @@ class MedicationSet extends BaseActiveRecordVersioned
             'itemsCount' => 'Items count',
             'rulesString' => 'Rules',
 			'hidden' => 'Hidden/system',
-			'hiddenString' => 'Hidden/system',
 			'automatic' => 'Automatic'
 		);
 	}
@@ -216,33 +215,17 @@ class MedicationSet extends BaseActiveRecordVersioned
         return self::model()->findAll($criteria);
     }
 
-    public function adminListAction()
-    {
-        return '<a href="/OphDrPrescription/refMedicationSetAdmin/list?ref_set_id='.$this->id.'">List medications</a>';
-    }
-
-	public function getAdminListAction()
-	{
-		return $this->adminListAction();
-    }
-
     public function itemsCount()
     {
-        $result = Yii::app()->db->createCommand("SELECT COUNT(id) AS cnt FROM medication_set_item WHERE medication_set_id = ".$this->id)->queryScalar();
-        return $result;
+        return \MedicationSetItem::model()->count();
     }
-
-    public function getItemsCount()
-	{
-		return $this->itemsCount();
-	}
 
     public function rulesString()
     {
         $ret_val = [];
         foreach ($this->medicationSetRules as $rule) {
-            $ret_val[]= "Site: ".(is_null($rule->site_id) ? "-" : $rule->site->name).
-                ", SS: ".(is_null($rule->subspecialty_id) ? "-" : $rule->subspecialty->name).
+            $ret_val[]= "Site: ".(!$rule->site ? "-" : $rule->site->name).
+                ", SS: ".(!$rule->subspecialty ? "-" : $rule->subspecialty->name).
                 ", Usage code: ".$rule->usage_code;
         }
 
@@ -254,11 +237,6 @@ class MedicationSet extends BaseActiveRecordVersioned
         return array(
             'byName' =>  array('order' => 'name ASC'),
         );
-    }
-
-	public function hiddenString()
-	{
-		return $this->hidden ? "Yes" : "No";
     }
 
 	public function beforeValidate()
@@ -309,7 +287,10 @@ class MedicationSet extends BaseActiveRecordVersioned
 		}
 		$ids_to_delete = array_diff($existing_ids, $updated_ids);
 		if(!empty($ids_to_delete)) {
-			Yii::app()->db->createCommand("DELETE FROM ".MedicationSetAutoRuleAttribute::model()->tableName()." WHERE id IN (".implode(",", $ids_to_delete).");")->execute();
+
+            $criteria = new \CDbCriteria();
+            $criteria->addInCondition('id', $ids_to_delete);
+			MedicationSetAutoRuleAttribute::model()->deleteAll($criteria);
 		}
 	}
 
@@ -337,7 +318,9 @@ class MedicationSet extends BaseActiveRecordVersioned
 		}
 		$ids_to_delete = array_diff($existing_ids, $updated_ids);
 		if(!empty($ids_to_delete)) {
-			Yii::app()->db->createCommand("DELETE FROM ".MedicationSetAutoRuleSetMembership::model()->tableName()." WHERE id IN (".implode(",", $ids_to_delete).");")->execute();
+            $criteria = new \CDbCriteria();
+            $criteria->addInCondition('id', $ids_to_delete);
+            MedicationSetAutoRuleSetMembership::model()->deleteAll($criteria);
 		}
 	}
 
@@ -367,7 +350,10 @@ class MedicationSet extends BaseActiveRecordVersioned
 		}
 		$ids_to_delete = array_diff($existing_ids, $updated_ids);
 		if(!empty($ids_to_delete)) {
-			Yii::app()->db->createCommand("DELETE FROM ".MedicationSetAutoRuleMedication::model()->tableName()." WHERE id IN (".implode(",", $ids_to_delete).");")->execute();
+
+            $criteria = new \CDbCriteria();
+            $criteria->addInCondition('id', $ids_to_delete);
+            MedicationSetAutoRuleMedication::model()->deleteAll($criteria);
 		}
 	}
 
