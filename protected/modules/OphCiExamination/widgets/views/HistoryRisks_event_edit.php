@@ -139,7 +139,7 @@ $required_risk_ids = array_map(function ($r) {
     itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
         array_map(function ($risk) {
             return ['label' => $risk->name, 'id' => $risk->id];
-        }, $risks_options)) ?>, {multiSelect: true}),
+        }, $risks_options)) ?>, {multiSelect: true, id: "risk_dialog_list"}),
     ],
     onOpen: function (adderDialog) {
       adderDialog.popup.find('li').each(function() {
