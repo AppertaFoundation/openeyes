@@ -2265,7 +2265,7 @@ class PatientController extends BaseController
         $output = array();
         foreach($practices as $practice){
             $output[] = array(
-                'label' => $practice->getAddressLines(),
+                'label' => $practice->getPracticeNames(),
                 'value' => $practice->id
             );
         }
