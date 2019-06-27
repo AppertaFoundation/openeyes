@@ -4,7 +4,7 @@
 
 ?>
 
-<div id="patientMergeWrapper" class="container content">
+<div id="patientMergeWrapper" class="container content main-event">
 
   <div class="cols-4 column large-centered text-right large-offset-8">
     <section class="box dashboard">
