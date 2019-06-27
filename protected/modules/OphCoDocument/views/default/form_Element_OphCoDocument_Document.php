@@ -15,6 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+
 ?>
 <div class="element-fields full-width flex-layout">
     <div class="cols-11">
@@ -84,7 +86,6 @@
 
         </div>
         <hr class="divider">
-
         <div id="single_document_uploader" class="data-group js-document-upload-wrapper"
             <?= (!$element->single_document_id &&
             ($element->right_document_id || $element->left_document_id) ? 'style="display:none"' : ''); ?>
@@ -93,7 +94,7 @@
                 <label>Rotate Single Image:</label>
                 <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, 'single');"></i>
                 <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, 'single');" style="transform: scale(-1, 1);"></i>
-                <input type="hidden" value="" name="single_document_rotate" id="single_document_rotate">
+                <input type="hidden" value="<?=!empty($element->single_document->rotate) ? $element->single_document->rotate : ''?>" name="single_document_rotate" id="single_document_rotate">
             </div>
             <table class="last-left cols-full">
                 <colgroup>
@@ -154,7 +155,7 @@
                             <label>Rotate Right Image:</label>
                             <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, 'right');"></i>
                             <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, 'right');" style="transform: scale(-1, 1);"></i>
-                            <input type="hidden" value="" name="right_document_rotate" id="right_document_rotate">
+                            <input type="hidden" value="<?=!empty($element->right_document->rotate) ? $element->right_document->rotate : ''?>" name="right_document_rotate" id="right_document_rotate">
                         </div>
                         <div class="upload-box"
                              id="right_document_id_row" <?= $element->right_document_id ? 'style="display:none"' : ''; ?>>
@@ -185,7 +186,7 @@
                             <label>Rotate Left Image:</label>
                             <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, 'left');"></i>
                             <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, 'left');" style="transform: scale(-1, 1);"></i>
-                            <input type="hidden" value="" name="left_document_rotate" id="left_document_rotate">
+                            <input type="hidden" value="<?=!empty($element->left_document->rotate) ? $element->left_document->rotate : ''?>" name="left_document_rotate" id="left_document_rotate">
                         </div>
                         <div class="upload-box"
                              id="left_document_id_row" <?= $element->left_document_id ? 'style="display:none"' : ''; ?>>
@@ -249,21 +250,23 @@
     <script>
         function rotateImage(degree, type) {
             var document_rotate = $('#'+type+'_document_rotate').val();
-            var image_src = $('.ophco-image-container img').attr('src');
-            var image_src = image_src.split('?');
-            var image_src = image_src[0];
-
             degree = Number(document_rotate)+Number(degree);
             var image_id = $('#Element_OphCoDocument_Document_'+type+'_document_id').val();
-            var css_degree = -1*degree;
-            $('#ophco-image-container-'+image_id+' img').animate({  transform: css_degree }, {
+            $('#ophco-image-container-'+image_id+' img').animate({  transform: degree }, {
                 step: function(deg,fx) {
-                    $(this).attr({
-                        'src':image_src+'?rotate='+degree
+                    $(this).css({
+                        '-webkit-transform':'rotate('+deg+'deg)',
+                        '-moz-transform':'rotate('+deg+'deg)',
+                        '-webkit-transform-origin':'rotate('+deg+'deg)',
+                        'transform':'rotate('+deg+'deg)',
                     });
                     $('#'+type+'_document_rotate').val(degree);
                 }
             });
+            $('#ophco-image-container-'+image_id).css('height', '400px');
+            $('#ophco-image-container-'+image_id).css('width', '400px');
+            $('#ophco-image-container-'+image_id+' img').css('height', '100%');
+            $('#ophco-image-container-'+image_id+' img').css('width', '100%');
         }
     </script>
 

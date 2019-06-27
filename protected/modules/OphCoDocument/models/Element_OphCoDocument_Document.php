@@ -72,14 +72,11 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
     {
         foreach(array('single_document', 'left_document', 'right_document') as $document){
             $document_id = $document.'_id';
-            $document_rotate = $document.'_rotate';
-            $file_name = $this->getImageFileNameForRotation($this->$document_id);
-            if($file_name){
-                $file = $this->rotate($file_name, $_POST[$document_rotate]);
-                $protected = ProtectedFile::model()->findByPk($this->$document_id);
-                $protected->size = filesize($file);
+            $rotate = $document.'_rotate';
+            $protected = ProtectedFile::model()->findByPk($this->$document_id);
+            if (!empty($protected)) {
+                $protected->rotate = $_POST[$rotate];
                 $protected->save();
-
             }
         }
 

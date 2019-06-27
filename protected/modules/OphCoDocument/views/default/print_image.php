@@ -1,1 +1,1 @@
-<?=\CHtml::image('file://'.$element->{$index}->getPath(), '', ['border'=>0]); ?>
+<?=\CHtml::image('file://'.$element->{$index}->getPath(), '', ['border'=>0, 'style' => !empty($element->{$index}->rotate) ? 'transform: rotate('.$element->{$index}->rotate.'deg)' : '']); ?>
