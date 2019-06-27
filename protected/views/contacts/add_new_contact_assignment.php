@@ -264,7 +264,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         row = Mustache.render(templateText, data);
 
                         $('#contact-assignment-table').append(row);
-                        $('.autosize').autosize();
+                        autosize($('.autosize'));
                         $('.oe-popup-wrap').remove();
                     }
                 }

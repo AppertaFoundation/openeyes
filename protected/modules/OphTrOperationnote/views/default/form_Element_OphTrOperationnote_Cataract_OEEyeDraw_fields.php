@@ -264,8 +264,9 @@
 <?php echo $form->hiddenInput($element, 'pcr_risk') ?>
 <script>
     $(document).ready(function () {
-        $('#Element_OphTrOperationnote_Cataract_comments').autosize();
-        $('#Element_OphTrOperationnote_Cataract_complication_notes').autosize();
+
+        autosize($('#Element_OphTrOperationnote_Cataract_comments'));
+        autosize($('#Element_OphTrOperationnote_Cataract_complication_notes'));
 
         $("#Element_OphTrOperationnote_Cataract_iol_type_id option").each(function() {
             if($(this).text() === '-') {

@@ -85,7 +85,7 @@ class DrugSetController extends BaseAdminController
         $criteria = $this->getSearchCriteria();
 
         $dataProvider = new CActiveDataProvider('MedicationSet', [
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ]);
 
         $pagination = new CPagination($dataProvider->totalItemCount);
@@ -94,7 +94,7 @@ class DrugSetController extends BaseAdminController
 
         $dataProvider->pagination = $pagination;
 
-        $this->render('/drugset/index', [/form_Element_OphDrPrescription_Details.php
+        $this->render('/drugset/index', [
             'dataProvider' => $dataProvider,
             'search' => $search
         ]);
@@ -110,6 +110,10 @@ class DrugSetController extends BaseAdminController
 
         if (isset($filters['usage_codes']) && $filters['usage_codes'] ) {
             $criteria->addInCondition('usage_code', $filters['usage_codes']);
+        }
+
+        if (isset($filters['query']) && $filters['query']) {
+            $criteria->addSearchCondition('name', "%{$filters['query']}%");
         }
 
         return $criteria;

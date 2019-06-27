@@ -569,7 +569,7 @@ $(document).ready(function() {
                 // must've changed their mind, restore the value
                 $(this).val($(this).data('stored-value'));
             }
-            $(this).autosize();
+            autosize($(this));
 
         });
     }
@@ -2034,7 +2034,7 @@ function removeAllergyFromSelect( allergy_id, allergy_name ){
 var eyedraw_added_diagnoses = [];
 
 $(document).ready(function() {
-    $('textarea').autosize();
+    autosize($('textarea'));
 });
 
 /*

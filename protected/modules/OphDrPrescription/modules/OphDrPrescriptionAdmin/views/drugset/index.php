@@ -74,7 +74,7 @@
                         ) ?>
                     </td>
                     <td>
-                        <button class="blue hint" type="submit" id="et_search">Search</button>
+                        <button class="blue hint" type="button" id="et_search">Search</button>
                     </td>
                 </tr>
                 </tbody>
@@ -193,6 +193,10 @@
 
                 controller.refreshResult(search_params.get('page'));
             });
+
+            $('#et_search').on('click', function() {
+                controller.refreshResult();
+            });
         };
 
         DrugSetController.prototype.refreshResult = function (page = 1) {
@@ -201,12 +205,17 @@
                 let usage_code = $(button).data('usage_code');
                 return usage_code ? usage_code : null;
             }).get();
+            const search_term = $('#search_query').val().trim();
 
             data.page = page;
 
             data.search = {};
             if (usage_codes.length) {
                 data.search.usage_codes = usage_codes
+            }
+
+            if (search_term) {
+                data.search.query = search_term;
             }
 
             $.ajax({

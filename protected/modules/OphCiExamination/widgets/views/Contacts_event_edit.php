@@ -215,7 +215,8 @@ $element_errors = $element->getErrors();
                 }
                 if (newRows.length > 0) {
                     $('#contact-assignment-table').append(newRows);
-                    $('.autosize').autosize();
+
+                    autosize($('.autosize'));
                 }
             },
             searchOptions: {

@@ -53,7 +53,7 @@ return array(
             ),
             'Drugs' => array(
                 'DEPRICATED All Sets' => '/OphDrPrescription/refSetAdmin/list',
-                'All Sets' => '/OphDrPrescription/admin/DrugSets/index',
+                'All Sets' => '/OphDrPrescription/admin/DrugSet/index',
                 'All Medications' => '/OphDrPrescription/refMedicationAdmin/list',
                 'Common Ophthalmic Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonOphthalmicDrugSetsAdmin/list'),
                 'Common Systemic Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonSystemicDrugSetsAdmin/list'),

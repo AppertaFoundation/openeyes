@@ -14,7 +14,7 @@
 
     HotList.prototype.create = function () {
         var hotlist = this;
-        $('.activity-list').find('textarea').autosize();
+        autosize($('.activity-list'));
 
         // activity datepicker using pickmeup.
         // CSS controls it's positioning
@@ -161,7 +161,7 @@
             success: function (response) {
                 $('table.activity-list.closed').find('tbody').html(response);
                 hotlist.updateListCounters();
-                $('.activity-list').find('textarea').autosize();
+                autosize($('.activity-list').find('textarea'));
             }
         });
     };
@@ -175,7 +175,7 @@
             success: function (response) {
                 $('table.activity-list.open').find('tbody').html(response);
                 hotlist.updateListCounters();
-                $('.activity-list').find('textarea').autosize();
+                autosize($('.activity-list').find('textarea'));
             }
         });
     };

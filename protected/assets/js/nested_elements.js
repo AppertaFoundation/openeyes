@@ -64,7 +64,7 @@ function addElement(element, animate, previous_id, params, callback) {
       }
     }
 
-    $('#event-content textarea.autosize:visible').autosize();
+    autosize($('#event-content textarea.autosize:visible'));
 
         // now init any children
         $(".element." + elClass).find('.active_child_elements').find('.element').each(function () {
@@ -81,7 +81,8 @@ function addElement(element, animate, previous_id, params, callback) {
         });
 
         var $inserted = container.children('section[data-element-type-id="' + element_type_id + '"]').first();
-        $inserted.find('textarea').autosize();
+        autosize($inserted.find('textarea'));
+
         if (animate) {
             // note this flag is a bit of a misnomer now, as we've removed the animation in favour of moving straight to the
             // relevant element. This is an intentional change intended to reduce eyestrain for heavy OE users.
@@ -182,7 +183,7 @@ $(document).ready(function () {
     /**
      * Autoadjust height of textareas
      */
-    $('#event-content textarea.autosize:visible').autosize();
+    autosize($('#event-content textarea.autosize:visible'));
 
     /**
      * Add all optional elements
