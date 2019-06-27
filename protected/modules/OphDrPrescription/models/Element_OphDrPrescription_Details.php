@@ -121,13 +121,13 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         $return = '';
         foreach ($this->items as $item) {
             if ($return) {
-                $return .= "\n";
+                $return .= "<br>";
             }
             $return .= $item->getDescription();
 
             if ($item->tapers) {
                 foreach ($item->tapers as $taper) {
-                    $return .= "\n   ".$taper->getDescription();
+                    $return .= "<br>  ".$taper->getDescription();
                 }
             }
         }
