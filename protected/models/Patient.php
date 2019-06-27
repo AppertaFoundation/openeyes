@@ -2128,6 +2128,20 @@ class Patient extends BaseActiveRecordVersioned
             }
         }
 
+        // Filter out disorders with the same disorder id and laterality and check for
+        // the latest modified one
+        $uniqueOphthalmicDiagnoses = [];
+        foreach ($this->ophthalmicDiagnoses as $ophthalmicDiagnosis) {
+            $key = $ophthalmicDiagnosis->disorder_id . $ophthalmicDiagnosis->eye->adjective;
+            if (isset($uniqueOphthalmicDiagnoses[$key])) {
+                if ($uniqueOphthalmicDiagnoses[$key]->last_modified_date < $ophthalmicDiagnosis->last_modified_date) {
+                    $uniqueOphthalmicDiagnoses[$key] = $ophthalmicDiagnosis;
+                }
+            } else {
+                $uniqueOphthalmicDiagnoses[$key] = $ophthalmicDiagnosis;
+            }
+        }
+
         // filter down to unique description to avoid duplicate diagnoses
         // Note this will not combine L/R into bilateral, or filter a L||R
         // clashing with bilateral
@@ -2136,7 +2150,7 @@ class Patient extends BaseActiveRecordVersioned
                 $principals,
                 array_map(function($diagnosis) {
                     return $diagnosis->ophthalmicDescription;
-                }, $this->ophthalmicDiagnoses)
+                }, $uniqueOphthalmicDiagnoses)
             )
         );
     }
