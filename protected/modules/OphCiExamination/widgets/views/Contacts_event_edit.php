@@ -21,12 +21,13 @@
 $model_name = CHtml::modelName($element);
 $element_errors = $element->getErrors();
 ?>
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('Contacts.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group cols-full">
         <h1>PAS Contacts</h1>
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <div class="cols-full">
-            <table id="<?= $model_name ?>_entry_table"
+            <table id="<?= $model_name ?>_pas_table"
                    class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
                 <colgroup>
                     <col class="cols-2">
@@ -45,16 +46,18 @@ $element_errors = $element->getErrors();
                 </tr>
                 </thead>
                 <tbody>
-                <?= $this->render(
-                    'ContactsEntry_event_edit',
-                    array(
-                        'contact' => $this->patient->gp->contact,
-                        'show_comments' => false,
-                        'row_count' => 0,
-                        'model_name' => $model_name,
-                        'field_prefix' => $model_name,
-                        'removable' => false,
-                        'is_template' => true,)); ?>
+                <?php if (isset($this->patient->gp)) {
+                    echo $this->render(
+                        'ContactsEntry_event_edit',
+                        array(
+                            'contact' => $this->patient->gp->contact,
+                            'show_comments' => false,
+                            'row_count' => 0,
+                            'model_name' => $model_name,
+                            'field_prefix' => $model_name,
+                            'removable' => false,
+                            'is_template' => true,));
+                } ?>
                 </tbody>
             </table>
         </div>
@@ -83,7 +86,7 @@ $element_errors = $element->getErrors();
                     <th></th>
                 </tr>
                 </thead>
-                <tbody id="contact-assignment-table">
+                <tbody>
                 <?php
                 $row_count = 0;
                 foreach ($this->contact_assignments as $contact_assignment) { ?>
@@ -117,7 +120,7 @@ $element_errors = $element->getErrors();
     </div>
 </div>
 
-<script type="text/template" class="entry-template hidden" id="contact-entry-template">
+<script type="text/template" class="entry-template hidden" id="<?= CHtml::modelName($element) . '_entry_template' ?>">
     <?php
 
     $empty_entry = new PatientContactAssignment();
@@ -147,77 +150,33 @@ $element_errors = $element->getErrors();
 
 <script type="text/javascript">
     $(document).ready(function () {
+        let contactController;
+        contactController = new OpenEyes.OphCiExamination.ContactsController({
+            modelName: '<?=$model_name?>',
+            contactFilterId: 'contact-type-filter'
+        });
+
 
         <?php $contact_labels = ContactLabel::model()->findAll(
         [
-            'condition' => 'is_private = 0',
-            'select' => 't.name,t.id',
+            'select' => 't.name,t.id, t.max_number_per_patient',
             'group' => 't.name',
             'distinct' => true,
         ]
-    );
-        ?>
-
-        // removal button for table entries
-        $('#contact-assignment-table').on('click', 'i.trash', function (e) {
-            e.preventDefault();
-            $(e.target).parents('tr').remove();
-        });
-        // Default dialog options.
-        var options = {
-            id: 'site-and-firm-dialog',
-            title: 'Add a new contact'
-        };
+    );?>
 
         new OpenEyes.UI.AdderDialog({
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                 array_map(function ($contact_label) {
-                    return ['label' => $contact_label->name, 'id' => $contact_label->id];
+                    return [
+                        'label' => $contact_label->name,
+                        'id' => $contact_label->id,
+                        'patient_limit' => $contact_label->max_number_per_patient
+                    ];
                 }, $contact_labels)) ?>, {'header': 'Contact Type', 'id': 'contact-type-filter'})],
             openButton: $('#add-contacts-btn'),
             onReturn: function (adderDialog, selectedItems) {
-                let selectedFilter;
-                let createContactPageDialog = false;
-                let templateText = $('#contact-entry-template').text();
-                let newRows = [];
-                let tableSelector = '#<?=$model_name?>_entry_table';
-                for (let index = 0; index < selectedItems.length; ++index) {
-
-                    if (selectedItems[index].itemSet) {
-                        selectedFilter = selectedItems[index].id;
-                    }
-                    if (selectedItems[index].type === "custom") {
-                        createContactPageDialog = true;
-                    } else if (!selectedItems[index].itemSet) {
-                        data = {};
-                        data.id = selectedItems[index].id;
-                        data.label = selectedItems[index].contact_label;
-                        data.full_name = selectedItems[index].name;
-                        data.email = selectedItems[index].email;
-                        data.phone = selectedItems[index].phone;
-                        data.address = selectedItems[index].address;
-                        data.row_count = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key') + newRows.length;
-                        row = Mustache.render(templateText, data);
-                        newRows.push(row);
-                    }
-                }
-
-                if (createContactPageDialog) {
-                    new OpenEyes.UI.Dialog($.extend({}, options, {
-                        url: baseUrl + '/OphCiExamination/contact/ContactPage',
-                        width: 500,
-                        data: {
-                            returnUrl: "",
-                            selected_contact_type: selectedFilter,
-                            patient_id: window.OE_patient_id || null
-                        }
-                    })).open();
-                }
-                if (newRows.length > 0) {
-                    $('#contact-assignment-table').append(newRows);
-
-                    autosize($('.autosize'));
-                }
+                contactController.addEntry(selectedItems);
             },
             searchOptions: {
                 searchSource: "/OphCiExamination/contact/autocomplete"

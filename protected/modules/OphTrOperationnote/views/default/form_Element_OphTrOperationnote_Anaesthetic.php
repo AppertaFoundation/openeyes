@@ -20,14 +20,26 @@
 <?php
 $la_hidden = false;
 $sed_hidden = false;
-if (count($element->anaesthetic_type_assignments) == 0) {
-  $la_hidden = true;
-  $sed_hidden = true;
-} else if (count($element->anaesthetic_type_assignments) == 1 && ($element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA')) {
-  $la_hidden = true;
-  $sed_hidden = true;
-} else if(count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type->code === 'Sed'){
-  $la_hidden = true;
+if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignments)) {
+    if (count($element->anaesthetic_type) == 0) {
+        $la_hidden = true;
+        $sed_hidden = true;
+    } else if (count($element->anaesthetic_type) == 1 && ($element->anaesthetic_type[0]->code == 'GA' || $element->anaesthetic_type[0]->code == 'NoA')) {
+        $la_hidden = true;
+        $sed_hidden = true;
+    } else if (count($element->anaesthetic_type) == 1 && $element->anaesthetic_type[0]->code === 'Sed') {
+        $la_hidden = true;
+    }
+} else {
+    if (count($element->anaesthetic_type_assignments) == 0) {
+        $la_hidden = true;
+        $sed_hidden = true;
+    } else if (count($element->anaesthetic_type_assignments) == 1 && ($element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA')) {
+        $la_hidden = true;
+        $sed_hidden = true;
+    } else if (count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type->code === 'Sed') {
+        $la_hidden = true;
+    }
 }
 ?>
 
@@ -159,7 +171,7 @@ if (count($element->anaesthetic_type_assignments) == 0) {
                   array(
                       'rows' => 4,
                       'cols' => 40,
-                      'class' => 'js-comment-field',
+                      'class' => 'js-comment-field autosize',
                   )) ?>
           </td>
         </tr>

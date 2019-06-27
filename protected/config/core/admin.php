@@ -50,6 +50,7 @@ return array(
                 'Benefits' => '/oeadmin/benefit/list',
                 'Complications' => '/oeadmin/complication/list',
                 'OPCS Codes' => '/oeadmin/opcsCode/list',
+                'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit'
             ),
             'Drugs' => array(
                 'DEPRICATED All Sets' => '/OphDrPrescription/refSetAdmin/list',

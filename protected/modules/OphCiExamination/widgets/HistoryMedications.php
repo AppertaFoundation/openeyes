@@ -195,6 +195,7 @@ class HistoryMedications extends BaseMedicationWidget
     {
         $this->setElementFromDefaults();
 
+
         $this->element->assortEntries();
         $result['current'] = $this->element->current_entries;
         $result['stopped'] = $this->element->closed_entries;

@@ -25,10 +25,11 @@
 class SaveDisplayOrderAction extends \CAction
 {
     public $model;
+    public $modelName;
 
     public function run() {
         $model = $this->model;
-        $modelName = get_class($model);
+        $modelName = is_null($this->modelName) ? get_class($model) : $this->modelName;
 
         if (!$model->hasAttribute('display_order')) {
             throw new CHttpException(400, 'This object cannot be ordered');

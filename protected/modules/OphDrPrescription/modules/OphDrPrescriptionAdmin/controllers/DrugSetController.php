@@ -113,7 +113,7 @@ class DrugSetController extends BaseAdminController
         }
 
         if (isset($filters['query']) && $filters['query']) {
-            $criteria->addSearchCondition('name', "%{$filters['query']}%");
+            $criteria->addSearchCondition('name', "%{$filters['queryprotected/views/contacts/add_new_contact_assignment.php']}%");
         }
 
         return $criteria;

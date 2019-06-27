@@ -264,7 +264,6 @@
 <?php echo $form->hiddenInput($element, 'pcr_risk') ?>
 <script>
     $(document).ready(function () {
-
         autosize($('#Element_OphTrOperationnote_Cataract_comments'));
         autosize($('#Element_OphTrOperationnote_Cataract_complication_notes'));
 

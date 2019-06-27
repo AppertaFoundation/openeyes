@@ -183,7 +183,6 @@ $form = $this->beginWidget('CActiveForm', array(
             Contact Type
         </td>
         <td>
-            <?php ?>
             <?= \CHtml::dropDownList(
                 'contact_label_id',
                 '',
@@ -216,7 +215,6 @@ $form = $this->beginWidget('CActiveForm', array(
 </table>
 
 <?php $this->endWidget(); ?>
-
 <script>
     $(document).ready(function () {
         $('.js-add-new-contact').on('click', function (event) {
@@ -271,5 +269,7 @@ $form = $this->beginWidget('CActiveForm', array(
             });
         });
     });
+
+$('#contact_label_id').trigger('change');
 </script>
 
