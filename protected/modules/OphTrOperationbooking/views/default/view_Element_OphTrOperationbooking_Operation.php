@@ -57,6 +57,14 @@
                     <tbody>
                     <tr>
                         <td>
+                            <div class="data-label">Complexity</div>
+                        </td>
+                        <td>
+                            <div class="data-value"><?= $element->complexityCaption?></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             <div class="data-label">Consultant required?</div>
                         </td>
                         <td>
