@@ -176,16 +176,16 @@ class DefaultController extends OphTrOperationbookingEventController
      *
      */
     public function actionCreate(){
-        $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
+        $cancel_url = \Yii::app()->createURL("/patient/summary/", array("id" => $this->patient->id));
         $create_examination_url = Yii::app()->getBaseUrl(true).'/OphCiExamination/Default/create?patient_id=' . $this->patient->id;
-        
+
         $this->jsVars['examination_events_count'] = $this->getExaminationEventCount();
         $this->jsVars['cancel_url'] = $cancel_url;
         $this->jsVars['create_examination_url'] = $create_examination_url;
-        
+
         $require_exam_before_booking = SettingMetadata::model()->findByAttributes(array('key' => 'require_exam_before_booking'))->getSettingName();
         $this->jsVars['require_exam_before_booking'] = strtolower($require_exam_before_booking) == 'on';
-        
+
         parent::actionCreate();
     }
 
@@ -200,6 +200,10 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         parent::initActionCreate();
         $this->initActionEdit();
+
+        if (isset($_POST['schedule_now']) && $_POST['schedule_now']) {
+            $this->successUri = 'booking/schedule/';
+        }
     }
 
     /**

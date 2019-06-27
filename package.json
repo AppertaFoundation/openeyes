@@ -7,7 +7,7 @@
     "chai": "^3.5.0",
     "compass": "^0.1.1",
     "grunt": "^1.0.1",
-    "grunt-cli": "",
+    "grunt-cli": "1.x",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-compass": "^1.1.1",
     "grunt-contrib-connect": "^1.0.2",
@@ -26,6 +26,6 @@
     "plotly.js-dist": "^1.41.3",
     "sortablejs": "^1.8.4",
     "tinymce": "^4.8.2",
-    "jquery-autosize": "^1.18.18"
+    "autosize": "^4.0.0"
   }
 }

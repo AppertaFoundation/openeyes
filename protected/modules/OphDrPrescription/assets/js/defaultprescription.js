@@ -442,7 +442,7 @@ $('#prescription_items').on('click', '.js-add-comments', function () {
   var $row = $(this).closest('tr');
   var key = $row.attr('data-key');
   $('#comments-' + key).show();
-  $('.js-input-comments').autosize();
+  autosize($('.js-input-comments'));
   $row.find('.js-add-comments').hide();
   return false;
 });

@@ -78,12 +78,17 @@ class PortalExamsCommand extends CConsoleCommand
                 continue;
             }
             $duplicateRecord = UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode);
-            $this->saveOptometristAsPatientContact(
-                $examination['op_tom']['name'],
-                $examination['op_tom']['address'],
-                $examination['op_tom']['goc_number'],
-                $opNoteEvent->episode->patient_id
-            );
+
+            $auto_optom_saving_disabled = Yii::app()->params['disable_auto_import_optoms_from_portal'];
+            if(isset($auto_optom_saving_disabled) && $auto_optom_saving_disabled === 'off') {
+                $this->saveOptometristAsPatientContact(
+                    $examination['op_tom']['name'],
+                    $examination['op_tom']['address'],
+                    $examination['op_tom']['goc_number'],
+                    $opNoteEvent->episode->patient_id
+                );
+            }
+
             if (($duplicateRecord['count'] < 1)) {
                 $transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
                 try {
@@ -235,9 +240,10 @@ class PortalExamsCommand extends CConsoleCommand
         $criteria->params[':patient_id'] = $patient_id;
         $criteria->params[':contact_id'] = $optometrist_contact->id;
 
+        $patient = Patient::model()->findByPk($patient_id);
         $patient_contact_assignment = PatientContactAssignment::model()->find($criteria);
 
-        if ($patient_contact_assignment == null) {
+        if ($patient_contact_assignment == null && $patient->getPatientOptometrist() == null) {
             $patient_contact_assignment = new PatientContactAssignment();
             $patient_contact_assignment->contact_id = $optometrist_contact->id;
             $patient_contact_assignment->patient_id = $patient_id;

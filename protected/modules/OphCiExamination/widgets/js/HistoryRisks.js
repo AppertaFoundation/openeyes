@@ -261,6 +261,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.updateNoRisksState();
 
         this.setPcrRisk();
+        autosize($('.autosize'));
     };
 
     /**
@@ -331,7 +332,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var self = this;
         var row = self.findTableRowForRisk(risk_id);
         if (row === undefined) {
-            self.addEntry(null, risk_name);
+
+            let $risk_to_add =  $('ul[data-id="risk_dialog_list"]').find('li[data-id=' + risk_id + ']');
+            self.addEntry(null, $risk_to_add.data('label'));
+
             row = self.$table.find('tbody tr:last');
             row.find(self.riskSelector).val(risk_id);
         }

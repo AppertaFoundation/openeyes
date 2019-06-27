@@ -20,7 +20,7 @@ if (!isset($values)) {
 ?>
 
 <tr data-key="<?= $row_count; ?>">
-    <td><?= $values['label'] ?></td>
+    <td class="js-contact-label"><?= $values['label'] ?></td>
     <td><?= $values['full_name'] ?></td>
     <td><?= $values['email'] ?></td>
     <td><?= $values['phone'] ?></td>

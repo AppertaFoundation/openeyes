@@ -191,7 +191,7 @@
       <tr>
           <?php
           $minutes_status = ($session->availableMinutes > 0);
-          $proc_status = (!$session->max_procedures || $session->getAvailableProcedureCount() > 0);
+          $proc_status = (!$session->isProcedureCountLimited() || $session->getAvailableProcedureCount() > 0);
           $there_is_place_for_complex_booking = (!$session->isComplexBookingCountLimited() || $session->getAvailableComplexBookingCount() > 0);
           $status = ($minutes_status && $proc_status && $session->available);
           ?>
@@ -203,9 +203,9 @@
               <?php } else { ?>
                   <?php echo abs($session->availableMinutes) ?> minutes overbooked
               <?php } ?>
-            <span data-currproccount="<?php echo $session->getBookedProcedureCount() ?>"
+            <span data-current-procedure-count="<?php echo $session->getBookedProcedureCount() ?>"
                   class="procedure-count" id="procedure_count_<?php echo $session->id ?>"
-                  <?php if (!$session->max_procedures) { ?>style="display: none;"<?php } ?>>
+                  <?php if (!$session->isProcedureCountLimited()) { ?>style="display: none;"<?php } ?>>
                     <br/>
                     <span class="available-val">
                         <?= $proc_status ? $session->getAvailableProcedureCount() : '0' ?>
@@ -239,7 +239,7 @@
           </div>
           <div class="specialists">
             <div class="diaryViewMode"
-                <?php if (!$session->consultant && !$session->anaesthetist && !$session->paediatric && !$session->max_procedures): ?>
+                <?php if (!$session->consultant && !$session->anaesthetist && !$session->paediatric && !$session->isProcedureCountLimited()): ?>
                   style="display: none"
                 <?php endif; ?>>
               <div <?php if (!$session->consultant): ?>style="display: none;"<?php endif; ?>
@@ -255,16 +255,16 @@
                   id="paediatric_icon_<?php echo $session->id ?>" class="paediatric"
                   title="Paediatric Session">Paediatric
               </div>
-              <div<?php if (!$session->max_procedures) { ?> style="display: none;"<?php } ?>
+              <div<?php if (!$session->isProcedureCountLimited()) { ?> style="display: none;"<?php } ?>
                   id="max_procedures_icon_<?php echo $session->id ?>" class="max-procedures"
-                  title="Max <?php echo $session->max_procedures ?>">Max <span
-                    class="max-procedures-val"><?php echo $session->max_procedures ?></span>
+                  title="Max <?= $session->getMaxProcedureCount() ?>">Max <span
+                    class="max-procedures-val"><?= $session->getMaxProcedureCount() ?></span>
                 Procedures
               </div>
               <div <?= $session->isComplexBookingCountLimited() ? "" : "style='display: none;'" ?>
                   id="max_complex_bookings_icon_<?php echo $session->id ?>" class="max-complex-bookings"
-                  title="Max Complex <?php echo $session->max_complex_bookings ?>">Max <span
-                    class="max-complex-bookings-value"><?php echo $session->max_complex_bookings ?></span>
+                  title="Max Complex <?= $session->getMaxComplexBookingCount() ?>">Max <span
+                    class="max-complex-bookings-value"><?= $session->getMaxComplexBookingCount() ?></span>
                 Complex Booking(s)
               </div>
             </div>

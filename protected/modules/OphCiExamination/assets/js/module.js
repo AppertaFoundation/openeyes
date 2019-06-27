@@ -569,7 +569,7 @@ $(document).ready(function() {
                 // must've changed their mind, restore the value
                 $(this).val($(this).data('stored-value'));
             }
-            $(this).autosize();
+            autosize($(this));
 
         });
     }
@@ -1038,7 +1038,7 @@ $(document).ready(function() {
             new_principal = true;
         }
 
-        $('.js-diagnoses').find('input[type="hidden"]').map(function() {
+        $(this).closest('tr').find('input[type="hidden"]').map(function() {
             if ($(this).val() == disorder_id) {
                 $(this).remove();
             }
@@ -1847,6 +1847,14 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
             case 'doodlesLoaded':
                 OphCiExamination_Gonioscopy_switch_mode(drawing.canvas, drawing.firstDoodleOfClass('Gonioscopy').getParameter('mode'));
                 break;
+            case 'doodleAdded': {
+                    let angleGradeNorthDoodle = drawing.firstDoodleOfClass('AngleGradeNorth');
+                    let newDoodle = message.object;
+                    if(angleGradeNorthDoodle && newDoodle.className === 'AntSynech') {
+                        newDoodle.setParameterFromString('colour', angleGradeNorthDoodle.colour, true);
+                    }
+                }
+                break;
             case 'parameterChanged': {
                 if (message.object.doodle.className == 'Gonioscopy' && message.object.parameter == 'mode') {
                     OphCiExamination_Gonioscopy_switch_mode(drawing.canvas, message.object.value);
@@ -1857,28 +1865,28 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
                     "AngleGradeEast",
                     "AngleGradeSouth",
                     "AngleGradeWest",
+                    "AntSynech",
                 ];
 
                 let doodleChanged = message.object.doodle;
-                let doodleChangedIsAngleGradeDoodle = false;
+                let doodleChangedContainsIris = false;
                 for(let i = 0; i < doodlesToSyncInGonioscopy.length; ++i) {
                     if (doodleChanged.className === doodlesToSyncInGonioscopy[i]) {
-                        doodleChangedIsAngleGradeDoodle = true;
+                        doodleChangedContainsIris = true;
                         break;
                     }
                 }
 
-                if (doodleChangedIsAngleGradeDoodle && message.object.parameter === 'colour' ) {
-                    let doodleFromUpdate = drawing.firstDoodleOfClass(doodleChanged.className);
+                if (doodleChangedContainsIris && message.object.parameter === 'colour' ) {
                     doodlesToSyncInGonioscopy.forEach(function(doodleName) {
-                        if(doodleName != doodleChanged.className) {
-                            let doodleToUpdate = drawing.firstDoodleOfClass(doodleName);
-                            if(doodleToUpdate && doodleToUpdate.colour != doodleFromUpdate.colour) {
-                                doodleToUpdate.setParameterFromString('colour', doodleFromUpdate.colour, true);
-                                doodleToUpdate.drawing.repaint();
+                        let doodlesToUpdate = drawing.allDoodlesOfClass(doodleName);
+                        doodlesToUpdate.forEach(function(doodleToUpdate) {
+                            if(doodleToUpdate.colour != doodleChanged.colour) {
+                                doodleToUpdate.setParameterFromString('colour', doodleChanged.colour, true);
                             }
-                        }
+                        });
                     });
+                    drawing.repaint();
                 }
                 break;
             }
@@ -2034,7 +2042,7 @@ function removeAllergyFromSelect( allergy_id, allergy_name ){
 var eyedraw_added_diagnoses = [];
 
 $(document).ready(function() {
-    $('textarea').autosize();
+    autosize($('textarea'));
 });
 
 /*

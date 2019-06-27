@@ -11,7 +11,7 @@
     var sides = ['left', 'right'];
     var layout_meds = JSON.parse(JSON.stringify(layout_plotly));
     const oneday_time = 86400000;
-
+    var max_med = Math.max(Object.keys(meds_data['left']).length, Object.keys(meds_data['right']).length);
     //plotly
     for (var side of sides){
       var data = [];
@@ -26,15 +26,18 @@
           color:'#ffffff',
         },
       };
-
+      
       for (key in meds_data[side]){
         text_trace['x'].push(new Date(meds_data[side][key][0]['low']));
         text_trace['y'].push(key);
         text_trace['text'].push(key);
+
         for (i in meds_data[side][key]){
           var x_range = meds_data[side][key][i]['high'] - meds_data[side][key][i]['low'];
           var start_time = meds_data[side][key][i]['low'];
           var end_time = meds_data[side][key][i]['high'];
+          var start_date = new Date(start_time);
+          var end_date = new Date(end_time);
           var x_values = [];
           var y_values = [];
           for (var d = start_time; d < end_time; d= d+14*oneday_time){
@@ -47,7 +50,7 @@
             mode: "lines",
             x: x_values,
             y: y_values,
-            hovertext: key+"<br>"+x_values[0].toLocaleDateString()+"-"+x_values[1].toLocaleDateString(),
+            hovertext: key+"<br>"+dateToDMY(start_date)+"-"+dateToDMY(end_date),
             hoverinfo: 'text',
             hoverlabel: trace_hoverlabel,
             line: {
@@ -62,12 +65,20 @@
       layout_meds['margin']['b'] = 0;
       layout_meds['title'] = "Medications, IOP, VA & MD";
       layout_meds['yaxis'] = meds_yaxis;
-      layout_meds['height'] = 25*Object.keys(meds_data[side]).length+50;
+      layout_meds['height'] = 25*max_med+50;
       layout_meds['showlegend'] = false;
       layout_meds['xaxis'] = meds_xaxis;
-      layout_meds['yaxis']['range'] = [Object.keys(meds_data[side]).length-0.5, -1];
+      layout_meds['yaxis']['range'] = [max_med-0.5, -1];
 
       Plotly.newPlot('plotly-Meds-'+side, data, layout_meds, options_plotly);
     }
   });
+
+  function dateToDMY(date) {
+    var strArray=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var d = date.getDate();
+    var m = strArray[date.getMonth()];
+    var y = date.getFullYear();
+    return '' + (d <= 9 ? '0' + d : d) + '/' + m + '/' + y;
+  }
 </script>
