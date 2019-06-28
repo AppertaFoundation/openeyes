@@ -175,7 +175,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $('.flex-item-bottom').find('.selected').removeClass('selected');
         this.dedupeAllergySelectors();
         this.updateNoAllergiesState();
-        this.showEditableIfOther(true);
+        this.showEditableIfOther();
         autosize($('.autosize'));
     };
 
