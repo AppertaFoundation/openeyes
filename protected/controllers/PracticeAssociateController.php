@@ -53,6 +53,8 @@ class PracticeAssociateController extends BaseController
             $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
 
             $return_array['content'] =  '<li><span class="js-name">'.$gp->getCorrespondenceName().$role.$practiceDetails.'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'"></li>';
+            $return_array['label'] = $gp->getCorrespondenceName().$role.$practiceDetails;
+            $return_array['practice_id'] = $practice->id;
         }else{
             $gp = Gp::model()->findByPk($gp_id);
             $return_array['content'] = '<li><span class="js-name">'.$gp->getCorrespondenceName().'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i><input type="hidden" class="js-extra-gps" name="ExtraContact[gp_id][]" value="'.$gp_id.'"></li>';

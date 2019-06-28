@@ -232,7 +232,7 @@ class Gp extends BaseActiveRecordVersioned
     }
 
     public function getGPROle(){
-        return $this->contact->label->name;
+        return ($this->contact->label->name?$this->contact->label->name:'');
     }
 
     public function getAssociatedPractice($id){

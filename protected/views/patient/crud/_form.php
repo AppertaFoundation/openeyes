@@ -495,7 +495,7 @@ foreach ($ethnic_list as $key=>$item){
                 }
             });
             if(addGp){
-                addExtraGp(AutoCompleteResponse.value);
+                addExtraContact(AutoCompleteResponse.value);
             }
         }
     });
@@ -664,13 +664,35 @@ $this->renderPartial('../patient/crud/create_contact_form',
             data: {gp_id : gpId},
             type: 'GET',
             success: function (response) {
+                $('.js-selected_gp').html(response);
                 response = JSON.parse(response);
-                $('.js-selected_extra_gps').append(response.content);
+                $('.js-selected_gp').html(response.content);
                 $('#js-remove-extra-gp-'+response.gp_id).click(function(){
                     $(this).parent('li').remove();
                 });
+                 var wrapper = $('#selected_gp_wrapper');
+                wrapper.find('.js-name').text(response.label);
+                wrapper.find('.hidden_id').val(response.gp_id);
+                $('#Patient_practice_id').val(response.practiceId);
+                $('#prac_id').val(response.practiceId);
+                wrapper.show();
             }
         }
+        )
+    }
+    function addExtraContact(gpId){
+        $.ajax({
+                url: "<?php echo Yii::app()->controller->createUrl('practiceAssociate/getGpWithPractice'); ?>",
+                data: {gp_id : gpId},
+                type: 'GET',
+                success: function (response) {
+                    response = JSON.parse(response);
+                    $('.js-selected_extra_gps').append(response.content);
+                    $('#js-remove-extra-gp-'+response.gp_id).click(function(){
+                        $(this).parent('li').remove();
+                    });
+                }
+            }
         )
     }
 
