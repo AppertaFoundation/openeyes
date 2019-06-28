@@ -175,7 +175,12 @@
                                         $("#extra-existing-practice-alert-box").css("display","");
                                   }else{
                                       let gp = JSON.parse(event);
-                                      addExtraGp(gp.gp_id);
+                                      if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
+                                        addExtraGp("js-selected_gp", gp.gp_id);
+                                      } else {
+                                       addExtraGp("js-selected_extra_gps", gp.gp_id);
+                                      }
+
                                       extraContactFormCleaning();
                                       $(".js-extra-practice-gp-id").val("");
                                 }
@@ -263,7 +268,11 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                                         $("#extra-practice-practice-alert-box").css("display","");
                                   }else{
                                       let gp = JSON.parse(event);
-                                      addExtraGp(gp.gp_id);
+                                      if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
+                                        addExtraGp("js-selected_gp", gp.gp_id);
+                                      } else {
+                                       addExtraGp("js-selected_extra_gps", gp.gp_id);
+                                      }
                                       extraContactFormCleaning();
                                       $(".js-extra-practice-gp-id").val("");
                                 }

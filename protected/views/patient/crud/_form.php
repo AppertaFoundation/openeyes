@@ -405,6 +405,7 @@ foreach ($ethnic_list as $key=>$item){
                                 $practice  = $gp->getAssociatePractice();
                                 $practiceDetails = $gp->getAssociatedPractice($gp->id);
                                 $role = $gp->getGPROle();
+                                //The line below is to ensure a newly added referring practitioner does not show up in the list of contacts also
                                 if($gp->id != $patient->gp_id){
                                 ?>
                                 <li><span class="js-name"><?=$gp->getCorrespondenceName();?><?=(isset($role)? ' - '.$role:'')?><?=(isset($practice)?' - '.$practiceDetails['first_name']:'');?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
@@ -497,7 +498,7 @@ foreach ($ethnic_list as $key=>$item){
                 }
             });
             if(addGp){
-                addExtraContact(AutoCompleteResponse.value);
+                addExtraGp('js-selected_extra_gps',AutoCompleteResponse.value);
             }
         }
     });
@@ -594,11 +595,13 @@ $this->renderPartial('../patient/crud/create_contact_form',
     });
 
     $('#js-add-contact-btn1').click(function(event){
+        $('#extra_gp_adding_title').text("Add Referring Practitioner");
         $('#extra_gp_adding_form').css('display','');
         return false;
     });
 
     $('#js-add-contact-btn2').click(function(event){
+        $('#extra_gp_adding_title').text("Add New Contact");
         $('#extra_gp_adding_form').css('display','');
         return false;
     });
@@ -660,44 +663,34 @@ $this->renderPartial('../patient/crud/create_contact_form',
         $wrapper.find('.hidden_id').val(JsonObj.id);
     }
 
-    function addExtraGp(gpId){
+    function addExtraGp(id, gpId){
         $.ajax({
             url: "<?php echo Yii::app()->controller->createUrl('practiceAssociate/getGpWithPractice'); ?>",
             data: {gp_id : gpId},
             type: 'GET',
             success: function (response) {
-                $('.js-selected_gp').html(response);
                 response = JSON.parse(response);
-                $('.js-selected_gp').html(response.content);
+                if(id == 'js-selected_gp'){
+                    $('.'+id).html(response.content);
+                }else if(id == 'js-selected_extra_gps'){
+                    $('.'+id).append(response.content);
+                }
                 $('#js-remove-extra-gp-'+response.gp_id).click(function(){
                     $(this).parent('li').remove();
                 });
-                 var wrapper = $('#selected_gp_wrapper');
-                wrapper.find('.js-name').text(response.label);
-                wrapper.find('.hidden_id').val(response.gp_id);
-                $('#Patient_practice_id').val(response.practiceId);
-                $('#prac_id').val(response.practiceId);
-                wrapper.show();
+                if(id == 'js-selected_gp'){
+                    var wrapper = $('#selected_gp_wrapper');
+                    wrapper.find('.js-name').text(response.label);
+                    wrapper.find('.hidden_id').val(response.gp_id);
+                    $('#Patient_practice_id').val(response.practiceId);
+                    $('#prac_id').val(response.practiceId);
+                    wrapper.show();
+                }
             }
         }
         )
     }
-    function addExtraContact(gpId){
-        $.ajax({
-                url: "<?php echo Yii::app()->controller->createUrl('practiceAssociate/getGpWithPractice'); ?>",
-                data: {gp_id : gpId},
-                type: 'GET',
-                success: function (response) {
-                    response = JSON.parse(response);
-                    $('.js-selected_extra_gps').append(response.content);
-                    $('#js-remove-extra-gp-'+response.gp_id).click(function(){
-                        $(this).parent('li').remove();
-                    });
-                }
-            }
-        )
-    }
-
+    
     function extraContactFormCleaning(){
         $("#extra-gp-form")[0].reset();
         $("#extra_gp_errors").text("");
