@@ -1,19 +1,18 @@
 <?php
 
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2015
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2015, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class DrugSetController extends BaseAdminController
@@ -26,47 +25,6 @@ class DrugSetController extends BaseAdminController
     public $group = 'Drugs';
 
     public $assetPath;
-
-    /**
-     * Init the edit admin page, because we have a custom save URL, so we need to use
-     * Admin in more then 1 function.
-     *
-     * @param bool $id
-     *
-     * @return Admin
-     */
-    protected function initAdmin($id = false)
-    {
-        $admin = new Admin(MedicationSetRule::model(), $this);
-        if ($id) {
-            $admin->setModelId($id);
-        }
-        $element = Element_OphDrPrescription_Details::model();
-        $admin->setCustomSaveURL('/OphDrPrescription/admin/drugSet/SaveDrugSet');
-        $admin->setCustomCancelURL('/OphDrPrescription/admin/drugSet/list');
-
-        $admin->setEditFields(
-            array(
-                'medicationSet.name' => 'text',
-                'subspecialty' => array(
-                    'widget' => 'DropDownList',
-                    'options' => CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
-                    'htmlOptions' => null,
-                    'hidden' => false,
-                    'layoutColumns' => null,
-                ),
-                'setItems' => array(
-                    'widget' => 'CustomView',
-                    'viewName' => 'application.modules.OphDrPrescription.views.default.form_Element_OphDrPrescription_Details',
-                    'viewArguments' => array('element' => $element),
-                ),
-            )
-        );
-
-        $this->assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('OphDrPrescription.assets'));
-
-        return $admin;
-    }
 
     public function actionIndex()
     {
@@ -113,7 +71,14 @@ class DrugSetController extends BaseAdminController
         }
 
         if (isset($filters['query']) && $filters['query']) {
-            $criteria->addSearchCondition('name', "%{$filters['queryprotected/views/contacts/add_new_contact_assignment.php']}%");
+            $criteria->addSearchCondition('name', $filters['query']);
+        }
+
+        foreach (['site_id', 'subspecialty_id'] as $search_key) {
+            if (isset($filters[$search_key]) && $filters[$search_key]) {
+                $criteria->addCondition("medicationSetRules.{$search_key} = :$search_key");
+                $criteria->params[":$search_key"] = $filters[$search_key];
+            }
         }
 
         return $criteria;
@@ -168,14 +133,46 @@ class DrugSetController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
-        $assetManager = \Yii::app()->getAssetManager();
-        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
-        $assetManager->publish($baseAssetsPath);
-        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/events_and_episodes.js');
+        $set = new MedicationSet;
+        $data = \Yii::app()->request->getParam('MedicationSet');
 
-        $admin = $this->initAdmin($id);
+        if ($id) {
+            $set = MedicationSet::model()->findByPk($id);
+        }
 
-        $admin->editModel();
+        if (\Yii::app()->request->isPostRequest) {
+
+            if ($set) {
+                $set->name = $data['name'];
+
+                // set relation
+                $relation = [];
+                $rules = \Yii::app()->request->getParam('MedicationSetRule', []);
+
+                foreach ($rules as $rule) {
+                    if (isset($rule['id']) && $rule['id']) {
+                        $rule_model = MedicationSetRule::model()->findByPk($rule['id']);
+                        if ($rule_model) {
+                            $rule_model->attributes = $rule;
+                        }
+                    } else {
+                        $rule_model = new MedicationSetRule;
+                        $rule_model->attributes = $rule;
+                    }
+
+                    if ($rule_model) {
+                        $relation[] = $rule_model;
+                    }
+                }
+
+                $set->medicationSetRules = $relation;
+                if ($set->autoValidateAndSaveRelation(true)->validate() && $set->save()) {
+                    $this->redirect("/OphDrPrescription/admin/drugset/edit/{$id}");
+                }
+            }
+        }
+
+        $this->render('/drugset/edit', ['medication_set' => $set]);
     }
 
     /**

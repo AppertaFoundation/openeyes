@@ -137,14 +137,14 @@
 
 <script type="text/html" id="medication_set_template" style="display:none">
     <tr>
-        <td><input checked="checked" type="checkbox" value="{{set_id}}" name="delete-ids[]" /></td>
+        <td><input type="checkbox" value="{{set_id}}" name="delete-ids[]" /></td>
         <td>{{set_id}}</td>
         <td>{{set_name}}</td>
         <td>{{set_rule}}</td>
         <td>{{set_item_count}}</td>
         <td>{{set_hidden_string}}</td>
         <td>
-            <a href="/OphDrPrescription/refSetAdmin/edit/{{set_id}}" class="button">Edit</a>
+            <a href="/OphDrPrescription/admin/drugset/edit/{{set_id}}" class="button">Edit</a>
             <a href="/OphDrPrescription/refMedicationSetAdmin/list?ref_set_id={{set_id}}" class="button">List
                 medications</a>
         </td>
@@ -168,6 +168,19 @@
 
         DrugSetController.prototype.initFilters = function () {
             var controller = this;
+
+            $(document).on("keydown", "form", function(event) {
+
+                if (event.key !== "Enter") {
+                    return true;
+                } else {
+                    controller.refreshResult();
+                    return false;
+                }
+
+                return event.key !== "Enter";
+            });
+
             $('#set-filters').on('click', 'button', function () {
                 $(this).toggleClass('selected green hint').blur();
 
@@ -184,7 +197,7 @@
                 controller.refreshResult();
             });
 
-            $('#drugset-list').on('click', 'a:not(.selected)', function (e) {
+            $('#drugset-list').on('click', '.pagination a:not(.selected)', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -206,16 +219,26 @@
                 return usage_code ? usage_code : null;
             }).get();
             const search_term = $('#search_query').val().trim();
+            const subspecialty_id = $('#search_subspecialty_id').val();
+            const site_id = $('#search_site_id').val();
 
             data.page = page;
 
             data.search = {};
             if (usage_codes.length) {
-                data.search.usage_codes = usage_codes
+                data.search.usage_codes = usage_codes;
             }
 
             if (search_term) {
                 data.search.query = search_term;
+            }
+
+            if (subspecialty_id) {
+                data.search.subspecialty_id = subspecialty_id;
+            }
+
+            if (site_id) {
+                data.search.site_id = site_id;
             }
 
             $.ajax({
@@ -228,7 +251,6 @@
                     let $overlay = $('<div>', {class: 'oe-popup-wrap'});
                     let $spinner = $('<div>', {class: 'spinner'});
                     $overlay.append($spinner);
-                 //   $overlay.click(function(){ $(this).remove(); });
                     $('body').prepend($overlay);
                 },
                 success: function(data) {
