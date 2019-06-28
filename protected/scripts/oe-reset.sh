@@ -93,13 +93,12 @@ do
     		;;
     	--no-files) nofiles=1
     		;;
-        # TODO: fix genetics
-    	# --genetics-enable)
-    	# 	bash /vagrant/install/add-genetics.sh
-    	# ;;
-    	# --genetics-disable)
-    	# 	bash /vagrant/install/add-genetics.sh -r
-    	# ;;
+    	--genetics-enable)
+    		bash $SCRIPTDIR/add-genetics.sh
+    	;;
+    	--genetics-disable)
+    		bash $SCRIPTDIR/add-genetics.sh -r
+    	;;
     	-p) # set dbpassword and move on to next param
             dbpassword="$2"
             shift
