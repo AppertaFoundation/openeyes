@@ -405,9 +405,11 @@ foreach ($ethnic_list as $key=>$item){
                                 $practice  = $gp->getAssociatePractice();
                                 $practiceDetails = $gp->getAssociatedPractice($gp->id);
                                 $role = $gp->getGPROle();
+                                if($gp->id != $patient->gp_id){
                                 ?>
                                 <li><span class="js-name"><?=$gp->getCorrespondenceName();?><?=(isset($role)? ' - '.$role:'')?><?=(isset($practice)?' - '.$practiceDetails['first_name']:'');?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
                             <?php }
+                            }
                         }
                     ?>
                 </ul>
