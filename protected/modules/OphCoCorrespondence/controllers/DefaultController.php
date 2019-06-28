@@ -90,7 +90,6 @@ class DefaultController extends BaseEventTypeController
         if (in_array($action, array('create', 'update'))) {
             $this->jsVars['OE_gp_id'] = $this->patient->gp_id;
             $this->jsVars['OE_practice_id'] = $this->patient->practice_id;
-            $this->jsVars['OE_site_id'] = Yii::app()->session['selected_site_id'];
 
             $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(
                 array('site_id' => Yii::app()->session['selected_site_id'],
@@ -383,6 +382,8 @@ class DefaultController extends BaseEventTypeController
 
         if ($m[1] == 'Contact') {
             $contact = Person::model()->find('contact_id=?', array($m[2]));
+        } else if ($m[1] === 'GP') {
+            $contact = Gp::model()->findByPk($m[2]);
         } else {
             if (!$contact = $m[1]::model()->findByPk($m[2])) {
                 throw new Exception("{$m[1]} not found: {$m[2]}");

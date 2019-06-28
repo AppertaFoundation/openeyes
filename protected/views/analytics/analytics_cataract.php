@@ -5,30 +5,6 @@
     <div id="refractive-outcome-grid" class="analytics-cataract"></div>
     <div id="nod-audit-grid" class="analytics-cataract"></div>
 </div>
-<div class="analytics-event-list analytics-patient-list" style="display:none;">
-    <div class="flex-layout">
-        <h3 id="js-list-title">Event List</h3>
-        <button id="js-back-to-chart" class="selected">Back to chart</button>
-    </div>
-    <table>
-        <thead>
-        <tr>
-            <th class="text-left" style="vertical-align: center;">Event No</th>
-            <th class="text-left" style="vertical-align: center;">Patient Name</th>
-            <th class="text-left" style="vertical-align: center;">Procedure</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($event_list as $event) { ?>
-            <tr class="analytics-event-list-row clickable" id="<?=$event['event_id']?>" style="display: none;">
-                <td class="text-left" style="vertical-align: center;"><?= $event['event_id']; ?></td>
-                <td class="text-left" style="vertical-align: center;"><?= $event['patient_name']; ?></td>
-                <td class="text-left" style="vertical-align: center;"><?= $event['procedures']; ?></td>
-            </tr>
-        <?php } ?>
-        </tbody>
-    </table>
-</div>
 
 <script type="text/javascript">
     $('.clickable').click(function () {
@@ -39,6 +15,7 @@
         $('.analytics-event-list-row').hide();
         $('.analytics-event-list').hide();
         $(this).hide();
+        $('.analytics-charts').show();
         if ($('#cataract-complication-grid').html()){
             $('#cataract-complication-grid').html("");
             $('#cataract-complication-grid').show();

@@ -69,8 +69,13 @@ class SiteAndFirmWidget extends CWidget
                     );
                 }
 
-                // Redirect browser to clear POST
-                $this->controller->redirect($this->returnUrl);
+                if (!\Yii::app()->request->isAjaxRequest) {
+                    // Redirect browser to clear POST
+                    $this->controller->redirect($this->returnUrl);
+                } else {
+                    echo 1;
+                }
+
                 Yii::app()->end();
             }
         } else {

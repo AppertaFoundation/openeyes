@@ -122,10 +122,15 @@ class ContactController extends \BaseController
 
                 if (!$contact->save()) {
                     $errors = $contact->getErrors();
+                } else {
+                    $address->contact_id = $contact->id;
+                    if (!$address->save()) {
+                        $errors = array_merge($errors, $address->getErrors());
+                    }
                 }
-                $address->contact_id = $contact->id;
-                if (!$address->save()) {
-                    $errors = array_merge($errors, $address->getErrors());
+
+                if($data->contact_label_error){
+                    $errors['contact_label_limit'] = $data->contact_label_error;
                 }
 
                 if($data->contact_label_id == ""){

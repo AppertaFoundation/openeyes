@@ -143,8 +143,8 @@
 
             $(this.options.itemSets).each(function (index, itemSet) {
                 let header = (itemSet.options.header) ? itemSet.options.header : '';
-                $('<th />').text(header).appendTo(headers);
-                let $td = $('<td />').appendTo(dialog.$tr);
+                $('<th style="'+ itemSet.options.style + '" data-id="'+itemSet.options.id + '"/>').text(header).appendTo(headers);
+                let $td = $('<td />', {style: itemSet.options.style}).appendTo(dialog.$tr);
                 let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
                 if (itemSet.options.supportSigns) {
                     dialog.generateSigns(itemSet).appendTo($listContainer);
@@ -152,6 +152,9 @@
                 var $list = dialog.generateItemList(itemSet);
                 let $listDiv = $('<div />').appendTo($listContainer);
                 $list.appendTo($listDiv);
+                if (itemSet.options.splitIntegerNumberColumns) {
+                    dialog.generateIntegerColumns(itemSet).appendTo($list);
+                }
                 if (itemSet.options.supportDecimalValues) {
                     dialog.generateDecimalValues(itemSet).appendTo($listContainer);
                 }
@@ -314,6 +317,26 @@
     };
 
     /**
+     * Generate an integer with itemSet.options.splitIntegerNumberColumns digits
+     * @param itemSet
+     * @returns {jQuery|HTMLElement}
+     */
+    AdderDialog.prototype.generateIntegerColumns = function (itemSet) {
+        let $integerColumnsContainer = $('<div class="lists-layout"/>');
+        for (let i = 0; i < itemSet.options.splitIntegerNumberColumns.length; i++) {
+            let $divList = $('<div />', {class: "list-wrap"}).appendTo($integerColumnsContainer);
+            let $list = $('<ul />', {class: 'number'}).appendTo($divList);
+            for (let digit = itemSet.options.splitIntegerNumberColumns[i].min; digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
+                let $listItem = $('<li data-'+itemSet.options.id+'="'+digit+'"/>');
+                $listItem.append(digit);
+                $listItem.appendTo($list);
+            }
+        }
+
+        return $integerColumnsContainer;
+    };
+
+    /**
      * Positions the popup relative to the given anchor
      * @param {jQuery, HTMLElement} $anchorElement The element to anchor the popup to
      */
@@ -473,6 +496,21 @@
             }
             this.close();
         }
+    };
+
+    AdderDialog.prototype.toggleColumnById = function(ids, show) {
+        let popup = this.popup;
+        ids.forEach(function (id) {
+            popup.find('th[data-id="'+id+'"]').toggle(show);
+            popup.find('[data-id="'+id+'"]').closest('td').toggle(show);
+        });
+    };
+
+    AdderDialog.prototype.removeSelectedColumnById = function(ids) {
+        let popup = this.popup;
+        ids.forEach(function (id) {
+            popup.find('[data-id="'+id+'"] .selected').removeClass('selected');
+        });
     };
 
     /**

@@ -76,12 +76,12 @@ class CommonPrescriptionDrugSetsAdminController extends BaseDrugSetsAdminControl
 
                 $medSetRule->setAttributes(array(
                     'medication_set_id' => $model->id,
-                    'site_id' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['site_id'][$key],
-                    'subspecialty_id' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['subspecialty_id'][$key],
+                    'site_id' => !empty(Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['site_id'][$key]) ? Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['site_id'][$key] : null,
+                    'subspecialty_id' => !empty(Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['subspecialty_id'][$key]) ? Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['subspecialty_id'][$key] : null,
                     'usage_code' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['usage_code'][$key],
                 ));
 
-                $medSetRule->save();
+                $medSetRule->save(false);
             }
         }
 

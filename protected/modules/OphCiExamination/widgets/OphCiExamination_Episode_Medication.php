@@ -4,7 +4,7 @@ use OEModule\OphCiExamination\models;
 
 class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 {
-    public function run_oescape()
+    public function run_oescape($widgets_no = 1)
     {
         $this->render('OphCiExamination_OEscape_Medication');
     }
@@ -44,6 +44,13 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 
                     $drug_aliases = $entry->medication->alternativeTerms() ? ' ('.$entry->medication->alternativeTerms().')': '';
                     $drug_name = $entry->medication->preferred_term.$drug_aliases;
+                    /*$drug_aliases = $entry->drug_id&&$entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
+                    $drug_name = $entry->drug_id ? $entry->drug->name.$drug_aliases : $entry->medication_drug->name;*/
+
+                    if($entry->start_date === null || $entry->start_date === "0000-00-00" || $entry->start_date === "") {
+                        continue;
+                    }
+
                     $start_date = Helper::mysqlDate2JsTimestamp($entry->start_date);
                     $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);
                     $stop_reason = $entry->stopReason ? $entry->stopReason->name : null;

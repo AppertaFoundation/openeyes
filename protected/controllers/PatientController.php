@@ -138,7 +138,7 @@ class PatientController extends BaseController
      */
     public function actionView($id)
     {
-        $this->redirect(array('episodes', 'id' => $id));
+        $this->redirect(array('summary', 'id' => $id));
     }
 
     public function actionSummary($id) {
@@ -259,7 +259,6 @@ class PatientController extends BaseController
                     'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
                     'hos_num' => $patient->hos_num,
                     'nhsnum' => $patient->nhsnum,
-                    // in script.js we override the behaviour for showing search results and its require the label key to be present
                     'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
                     'is_deceased' => $patient->is_deceased,
                 );
@@ -453,7 +452,7 @@ class PatientController extends BaseController
         $this->event_tabs = array(
             array(
                 'label' => 'View',
-                'href' => Yii::app()->createUrl('/patient/episode/'.$this->episode->id),
+                'href' => Yii::app()->createUrl('/patient/summary/'.$this->episode->id),
             ),
             array(
                 'label' => 'Edit',
@@ -1632,7 +1631,7 @@ class PatientController extends BaseController
                 $episode = $patient->addEpisode($firm);
             }
 
-            $this->redirect(array('/patient/episode/'.$episode->id));
+            $this->redirect(array('/patient/summary/'.$episode->id));
         }
 
         return $this->renderPartial('//patient/add_new_episode', array(
@@ -1871,7 +1870,7 @@ class PatientController extends BaseController
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
                 } else {
-                    $redirect = array('/patient/episodes/' . $patient->id);
+                    $redirect = array('/patient/summary/' . $patient->id);
                 }
                 $transaction->commit();
                 $this->redirect($redirect);

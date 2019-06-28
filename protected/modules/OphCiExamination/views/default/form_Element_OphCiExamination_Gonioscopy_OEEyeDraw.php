@@ -17,6 +17,12 @@
  */
 ?>
 <?php
+$mode = 'Basic';
+$settings = new SettingMetadata();
+$expert = $settings->getSetting('expert',$element->elementType);
+if($expert){
+    $mode = 'Expert';
+}
 $doodleToolBarArray = array('AngleNV', 'AntSynech', 'AngleRecession');
 $bindingArray = array(
     'Gonioscopy' => array(
@@ -24,7 +30,7 @@ $bindingArray = array(
     ),
 );
 $onReadyCommandArray = array(
-    array('addDoodle', array('Gonioscopy', array('mode' => 'Basic'))),
+    array('addDoodle', array('Gonioscopy', array('mode' => $mode))),
 );
 foreach (array('AngleGradeNorth' => 'sup', 'AngleGradeEast' => 'nas', 'AngleGradeSouth' => 'inf', 'AngleGradeWest' => 'tem') as $doodleClass => $position) {
     $bindingArray[$doodleClass]['grade'] = array('id' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_'.$side.'_gonio_'.$position.'_id', 'attribute' => 'data-value');
@@ -52,3 +58,11 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'element' => $element,
     ), true),
 ))?>
+<script>
+    $(document).ready(function(){
+        setTimeout(function(){
+            $('#<?= $side ?>_gonioscopy_mode option').filter('[data-value="<?= $mode ?>"]').attr('selected','selected');
+            $('#<?= $side ?>_gonioscopy_mode').trigger('change');
+        },500);
+    });
+</script>
