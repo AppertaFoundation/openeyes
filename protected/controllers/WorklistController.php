@@ -31,18 +31,26 @@ class WorklistController extends BaseController
     protected function beforeAction($action)
     {
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
+        if($action->getId() == "print") {
+			$newblue_path = 'application.assets.newblue';
+			Yii::app()->assetManager->registerCssFile('css/style_oe3.0_print.css', $newblue_path, null);
+		}
 
         $this->manager = new WorklistManager();
 
         return parent::beforeAction($action);
     }
 
+    private function getWorkLists($date_from = null, $date_to = null)
+	{
+		return $this->manager->getCurrentAutomaticWorklistsForUser(null,
+			$date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
+	}
+
     public function actionView($date_from = null, $date_to = null)
     {
         $this->layout = 'main';
-        $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null,
-            $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
-        $this->render('index', array('worklists' => $worklists));
+        $this->render('index', array('worklists' => $this->getWorkLists($date_from, $date_to)));
     }
 
     /**
@@ -100,5 +108,15 @@ class WorklistController extends BaseController
         }
 
         $this->redirect('/worklist/manual');
+    }
+
+	public function actionPrint($date_from = null, $date_to = null, $list_id = null)
+	{
+		$this->layout = '//layouts/print';
+		$worklists = $this->getWorkLists();
+		if(!is_null($list_id)) {
+			$worklists = array_filter($worklists, function($e) use($list_id){ return $e->id == $list_id; });
+		}
+		$this->render('//worklist/print', array('worklists' => $worklists));
     }
 }

@@ -25,6 +25,7 @@ $core_api = new CoreAPI();
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.TableController.js'), ClientScript::POS_END);
 
+$is_printing = isset($is_printing) && ($is_printing == true);
 ?>
 
 <div class="worklist-group js-filter-group" id="js-worklist-<?=$worklist->id?>-wrapper">
@@ -38,7 +39,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
         </div>
     <?php else: ?>
 
-    <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows last-right js-table-controller">
+    <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows last-right js-table-controller <?=$is_printing?"allow-page-break":""?>">
         <colgroup>
             <col class="cols-1"><!--Time-->
             <col class="cols-1"><!--Hos Num-->
@@ -99,7 +100,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
                 </tr>
             <?php endforeach;?>
         </tbody>
-        <tfoot>
+        <tfoot <?=$is_printing?"class=\"hidden\"":""?>>
         <tr>
             <td colspan="8">
                 <?php $this->widget('LinkPager', [ 'pages' => $data_provider->getPagination() ]); ?>

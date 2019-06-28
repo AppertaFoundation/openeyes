@@ -4,8 +4,13 @@
  */
 ?>
 
+<input type="hidden" id="wl_print_selected_worklist" value="" />
+
 <div class="oe-full-header flex-layout">
     <div class="title wordcaps">Worklists</div>
+    <div class="buttons-right">
+        <button class="button header-tab icon" onclick="goPrint();" name="print" type="button" id="et_print"><i class="oe-i print"></i></button>
+    </div>
 </div>
 
 <div class="oe-full-content subgrid oe-worklists">
@@ -82,9 +87,16 @@
     function updateWorkLists(listID) {
         if (listID == 'all') {
             $('.worklist-group').show();
+            $("#wl_print_selected_worklist").val("");
         } else {
             $('.worklist-group').hide();
             $('#' + listID + '-wrapper').show();
+            $("#wl_print_selected_worklist").val(listID);
         }
+    }
+
+    function goPrint() {
+        window.open("/worklist/print?date_from=<?= @$_GET['date_from'] ?>&date_to=<?= @$_GET['date_to'] ?>&list_id=" +
+            + $("#wl_print_selected_worklist").val().replace("js-worklist-",""), "_blank");
     }
 </script>
