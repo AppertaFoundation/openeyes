@@ -590,8 +590,8 @@ EOD;
 						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid COLLATE utf8_general_ci = med.preferred_code COLLATE utf8_general_ci
 						LEFT JOIN {$this->tablePrefix}vmp_drug_form AS df ON df.vpid = vmp.vpid
 						LEFT JOIN medication_attribute_option AS mao ON mao.`value` COLLATE utf8_general_ci = df.formcd COLLATE utf8_general_ci
-						LEFT JOIN (SELECT id FROM medication_attribute WHERE medication_attribute.name = 'FORM') attr ON mao.medication_attribute_id = attr.id
-						WHERE med.source_type = 'DM+D' AND med.source_subtype = 'VMP'
+						LEFT JOIN medication_attribute AS attr ON mao.medication_attribute_id = attr.id
+						WHERE med.source_type = 'DM+D' AND med.source_subtype = 'VMP' AND attr.`name` = 'FORM'
 					";
 
 		Yii::app()->db->createCommand($cmd)->execute();
@@ -607,8 +607,8 @@ EOD;
 						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid COLLATE utf8_general_ci = med.vmp_code COLLATE utf8_general_ci
 						LEFT JOIN {$this->tablePrefix}vmp_drug_route AS dr ON dr.vpid = vmp.vpid
 						LEFT JOIN medication_attribute_option AS mao ON mao.`value` COLLATE utf8_general_ci = dr.routecd COLLATE utf8_general_ci
-						LEFT JOIN (SELECT id FROM medication_attribute WHERE medication_attribute.name = 'ROUTE') AS attr ON mao.medication_attribute_id = attr.id
-						WHERE med.source_subtype = 'VMP'
+						LEFT JOIN medication_attribute AS attr ON mao.medication_attribute_id = attr.id
+						WHERE med.source_subtype = 'VMP' AND attr.`name` = 'ROUTE'
 					";
 
 		Yii::app()->db->createCommand($cmd)->execute();
