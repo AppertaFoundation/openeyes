@@ -36,13 +36,15 @@ class m190701_012231_add_fp10_dispense_condition extends OEMigration
             ->from('ophdrprescription_dispense_condition')
             ->where("name='".$this->condition."'")->queryScalar();
 
-	    $this->delete('ophdrprescription_dispense_condition', 'name=?', array($this->condition));
-
         if ($condition_id) {
             $this->delete('ophdrprescription_dispense_condition_assignment',
                 'dispense_condition_id=?',
                 array($condition_id)
             );
         }
+
+	    $this->delete('ophdrprescription_dispense_condition', 'name=?', array($this->condition));
+
+
 	}
 }
