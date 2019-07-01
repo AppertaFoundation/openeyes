@@ -2099,8 +2099,8 @@ class BaseEventTypeController extends BaseModuleController
     {
         $this->updateUniqueCode($event);
 
-        $site_id = \Yii::app()->session->get('selected_site_id', null);
-        $firm_id = \Yii::app()->session->get('selected_firm_id', null);
+        $site_id = \Yii::app()->session->get('selected_site_id');
+        $firm_id = \Yii::app()->session->get('selected_firm_id');
         $this->addToUnbookedWorklist($site_id, $firm_id);
     }
 
@@ -2122,7 +2122,6 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
     }
-
 
     /**
      * set base js vars for use in the standard scripts for the controller.
