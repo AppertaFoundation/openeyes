@@ -188,7 +188,7 @@ foreach ($readings as $reading) {
                 let value_qualitative_reading_id = selectedItems[0].scale ? selectedItems[1]['id'] : null;
                 let value_qualitative_reading_name = selectedItems[0].scale ? selectedItems[1]['label'] : null;
 
-                let time = "<?=date('H:i') ?>";
+                let time = "00:00";
                 if (selectedItems[selectedItems.length - 1].time != null) {
                     let H = selectedItems[selectedItems.length - 1].time;
                     let M = selectedAdditions[0].addition;

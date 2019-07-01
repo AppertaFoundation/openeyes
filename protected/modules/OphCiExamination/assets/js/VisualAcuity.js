@@ -108,9 +108,9 @@ $(document).ready(function () {
 
         if ($('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_unable_to_assess')[0].checked ||
           $('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_eye_missing')[0].checked){
-          $('#'+side+'-add-'+element+'-reading').hide();
+          $('#'+ 'add-' + element + '-reading-btn-'+side).hide();
         } else {
-          $('#'+side+'-add-'+element+'-reading').show();
+            $('#'+ 'add-' + element + '-reading-btn-'+side).show();
         }
       });
     }
