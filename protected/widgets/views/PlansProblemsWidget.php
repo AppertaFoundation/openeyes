@@ -17,7 +17,7 @@
                 <?= $plan_problem->name ?>
                 <div class="metadata">
                     <i class="oe-i info small pro-theme js-has-tooltip"
-                       data-tooltip-content="<?= $user_created->title ?> <?= $user_created->last_name ?> <?= $user_created->first_name ?>"></i>
+                       data-tooltip-content="<?= $user_created->title ?> <?= $user_created->first_name ?> <?= $user_created->last_name ?>"></i>
                 </div>
                 <div class="remove"><i class="oe-i remove-circle small pro-theme pad" data-plan-id="<?= $plan_problem->id ?>"></i></div>
             </li>
