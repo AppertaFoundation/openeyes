@@ -90,6 +90,7 @@
                             </td>
                         <?php endif; ?>
                     </tr>
+                    <?php if(isset($element->any_grade_of_doctor)) { ?>
                     <tr>
                         <td>
                             <div class="data-label">
@@ -102,6 +103,7 @@
                             </div>
                         </td>
                     </tr>
+                    <?php } ?>
                     <tr>
                         <td>
                             <div class="data-label">Anaesthetic</div>
