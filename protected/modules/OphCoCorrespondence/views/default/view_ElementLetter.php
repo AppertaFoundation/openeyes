@@ -20,7 +20,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
 <div class="element-data full-width flex-layout flex-top col-gap">
-    <div class="cols-5 ">
+    <div class="cols-3">
         <table class="cols-full">
             <?php if($correspondeceApp === "on") { ?>
             <tr>
@@ -51,8 +51,18 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
         >
     </div>
     <div id="correspondence_out"
-         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-13 element"
-         style="background-color: white; color: black; display:none;">
+         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-full element"
+         <?php 
+         // TODO: Remove this section once newblue is updated to include the correspondence-letterdraft style
+         if ($element->draft) {?> 
+         style="background-color: white; color: black; display:none;
+                 background-image: url(<?php echo Yii::app()->assetManager->createUrl('img/bg_draft.png', 'application.modules.OphCoCorrespondence.assets') ?>);
+                 background-position-x: center;
+                 background-position-y: top;
+                 background-size: initial;
+                 background-repeat-x: no-repeat;
+                 background-repeat-y: no-repeat;">
+            <?php }?>
             <header>
                 <?php
             $ccString = "";
@@ -64,7 +74,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
                             $toAddress = $target->contact_name . "\n" . $target->address;
                         } else {
                             $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                             $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                             $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
                         }
                     }
                 }

@@ -59,13 +59,19 @@
                 .set('date_from', $('#worklist-date-from').val())
                 .set('date_to', $('#worklist-date-to').val());
         });
+
+        const worklist_selected = $.cookie("worklist_selected");
+        if(worklist_selected){
+            updateWorkLists(worklist_selected);
+            $('.js-worklist-filter').filter('[data-worklist="'+worklist_selected+'"]').addClass('selected');
+        }
     });
 
     $('.js-clear-dates').on('click', () => {
         $('#worklist-date-from').val(null);
         $('#worklist-date-to').val(null);
 
-        window.location.href = window.location.href.substring(0, window.location.href.indexOf('?'));
+        window.location.href = '/worklist/cleardates';
     });
 
     $('.js-worklist-filter').click(function (e) {
@@ -73,6 +79,7 @@
         resetFilters();
         $(this).addClass('selected');
         updateWorkLists($(this).data('worklist'));
+        $.cookie('worklist_selected', $(this).data('worklist'));
     });
 
     function resetFilters() {

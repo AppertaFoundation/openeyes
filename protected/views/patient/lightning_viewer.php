@@ -15,6 +15,7 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
 <?php $this->renderPartial('//patient/episodes_sidebar'); ?>
 
 <main class="oe-lightning-viewer">
+  <?php $this->renderPartial('//patient/_patient_alerts') ?>
   <div class="lightning-timeline">
     <div class="timeline-options js-lightning-options">
 
