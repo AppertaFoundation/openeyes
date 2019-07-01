@@ -118,10 +118,27 @@ if ($cvi_api) {
                       array('text-align' => 'right', 'nowrapper' => true)) ?>
               </div>
             </div>
+              <div id="visualacuity-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
+                   style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#visualacuity-<?= $eye_side ?>-comment-button">
+                  <?=\CHtml::activeTextArea($element, $eye_side . '_notes',
+                      array(
+                          'rows' => 1,
+                          'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
+                          'class' => 'cols-full js-comment-field',
+                          'style' => 'overflow-wrap: break-word; height: 24px;',
+                      )) ?>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+              </div>
           </div>
-          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-VisualAcuity-reading"
-               style="<?= !$element->eyeAssesable($eye_side)? 'display: none;': '' ?>">
-            <button class="button hint green addReading" id="add-reading-btn-<?= $eye_side?>" type="button">
+          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-VisualAcuity-reading">
+              <button id="visualacuity-<?= $eye_side ?>-comment-button"
+                      class="button js-add-comments" data-comment-container="#visualacuity-<?= $eye_side ?>-comments"
+                      type="button" style="<?= $element->{$eye_side . '_notes'} ? 'visibility: hidden;' : '' ?>">
+                  <i class="oe-i comments small-icon"></i>
+              </button>
+            <button class="button hint green addReading" id="add-VisualAcuity-reading-btn-<?= $eye_side?>"
+                    style="<?= !$element->eyeAssesable($eye_side)? 'display: none;': '' ?>"
+                    type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
             <!-- oe-add-select-search -->
@@ -140,7 +157,7 @@ if ($cvi_api) {
   <script type="text/javascript">
     $(function () {
       new OpenEyes.UI.AdderDialog({
-        openButton:$('#add-reading-btn-<?= $eye_side?>'),
+        openButton:$("#add-VisualAcuity-reading-btn-<?= $eye_side?>"),
         itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) use ($default_display_value) {
                 return $key==$default_display_value? ['label' => $value, 'id' => $key, 'set-default' => true]: ['label' => $value, 'id' => $key];

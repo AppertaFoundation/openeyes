@@ -86,8 +86,8 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array(' right_readings, left_readings, eye_id, unit_id, left_unable_to_assess,
-					right_unable_to_assess, left_eye_missing, right_eye_missing, cvi_alert_dismissed', 'safe'),
+            array(' right_readings, left_readings, eye_id, unit_id, left_unable_to_assess,right_unable_to_assess,
+             left_eye_missing, right_eye_missing, cvi_alert_dismissed, left_notes, right_notes', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, , eye_id', 'safe', 'on' => 'search'),
@@ -132,6 +132,8 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
             'left_eye_missing' => 'Eye missing',
             'right_eye_missing' => 'Eye missing',
             'cvi_alert_dismissed' => 'Is CVI alert dismissed',
+            'right_notes' => 'Comments',
+            'left_notes' => 'Comments'
         );
     }
 
