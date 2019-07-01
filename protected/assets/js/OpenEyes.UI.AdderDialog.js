@@ -55,6 +55,9 @@
         searchAsTypedPrefix: 'As typed: ',
         filter: false,
         filterDataId: "",
+        listFilter:false,
+        filterListId: "",
+        listForFilterId: ""
     };
 
     /**
@@ -115,6 +118,19 @@
                     if ($(this).data('itemSet') && !($(this).data('itemSet') && $(this).data('itemSet').options.mandatory)
                         || $(this).closest('ul').find('li.selected').length > 1) {
                         $(this).removeClass('selected');
+                    }
+                }
+
+                if(dialog.options.listFilter) {
+                    if ($(this).closest('ul').data('id') === dialog.options.filterListId) {
+                        let filterValue = $(this).data('filter-value');
+                        let listToFilter = dialog.popup.find('ul[data-id="' + dialog.options.listForFilterId + '"]');
+                        if (!$(this).hasClass('selected')) {
+                            listToFilter.find('li').show();
+                        } else {
+                            listToFilter.find('li').hide();
+                            listToFilter.find('li[data-filter_value="' + filterValue +'"]').show();
+                        }
                     }
                 }
             });
@@ -240,7 +256,8 @@
         let $list = $('<ul />', {
             class: 'add-options cols-full' + additionalClasses,
             'data-multiselect': itemSet.options.multiSelect,
-            'data-id': itemSet.options.id
+            'data-id': itemSet.options.id,
+            'data-deselectOnReturn': itemSet.options.deselectOnReturn,
         });
 
         itemSet.items.forEach(function (item) {
@@ -475,7 +492,13 @@
 
         if (shouldClose) {
             if (this.options.deselectOnReturn) {
-                this.popup.find('li').removeClass('selected');
+                let itemSets = this.popup.find('ul');
+                itemSets.each(function () {
+                    let deselect = $(this).data('deselectonreturn');
+                    if (typeof deselect === "undefined" || deselect) {
+                        $(this).find('li').removeClass('selected');
+                    }
+                });
             }
             this.close();
         }

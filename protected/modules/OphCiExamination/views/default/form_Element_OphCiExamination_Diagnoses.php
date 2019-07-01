@@ -146,22 +146,33 @@ foreach ($this->patient->episodes as $ep) {
         $firm = \Firm::model()->findByPk($firm_id);
 
         $disorder_list = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
+        $commonOphthalmicDisorderGroups = CommonOphthalmicDisorderGroup::model()->findAll();
         ?>
 
       new OpenEyes.UI.AdderDialog({
         openButton: $('#add-ophthalmic-diagnoses'),
-        itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+        itemSets: [ new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($disorderGroup) {
+                return [
+                    'label' => $disorderGroup->name,
+                    'filter-value' => $disorderGroup->id,
+                    'is_filter' => true,
+                ];
+            }, $commonOphthalmicDisorderGroups)) ?>, {'header': 'Disorder Group', 'id': 'disorder-group-filter', 'deselectOnReturn': false}),
+            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($disorder_item) {
                 return [
                         'type' => $disorder_item['type'],
                         'label' => $disorder_item['label'],
                     'id' => $disorder_item['id'] ,
+                    'filter_value' => $disorder_item['group_id'],
                     'is_glaucoma' => $disorder_item['is_glaucoma'],
                     'secondary' => json_encode($disorder_item['secondary']),
                     'alternate' => json_encode($disorder_item['alternate']),
                 ];
             }, $disorder_list)
-        ) ?>, {'multiSelect': true})],
+        ) ?>, {'multiSelect': true, 'id': 'disorder-list'}),
+           ],
         searchOptions: {
           searchSource: diagnosesController.options.searchSource,
           code: diagnosesController.options.code,
@@ -170,12 +181,14 @@ foreach ($this->patient->episodes as $ep) {
             var diag = [];
             for (let i in selectedItems) {
                 let item = selectedItems[i];
-                // If common item is a 'finding', we add it to the findings element instead
-                // Otherwise treat it as a diagnosis
-                if (item.type === 'finding') {
-                    OphCiExamination_AddFinding(item.id, item.label);
-                } else {
-                    diag.push(item);
+                if(!item.is_filter) {
+                    // If common item is a 'finding', we add it to the findings element instead
+                    // Otherwise treat it as a diagnosis
+                    if (item.type === 'finding') {
+                        OphCiExamination_AddFinding(item.id, item.label);
+                    } else {
+                        diag.push(item);
+                    }
                 }
             }
             diagnosesController.addEntry(diag);
@@ -183,7 +196,10 @@ foreach ($this->patient->episodes as $ep) {
               diagnosesController.addEntry(selectedAdditions);
             }
           return true;
-        }
+        },
+          listFilter:true,
+          filterListId: "disorder-group-filter",
+          listForFilterId: "disorder-list"
       });
     })
 </script>
