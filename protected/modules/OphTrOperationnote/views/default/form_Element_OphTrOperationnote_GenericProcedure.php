@@ -63,7 +63,7 @@ $numHash = crc32($element->getElementTypeName());
         <td>
             <?=\CHtml::textArea(get_class($element) . '[' . $element->proc_id . '][comments]',
                 $element->comments,
-                array('rows' => 4, 'class' => 'cols-full', 'id' => get_class($element) . '_comments_' . $numHash)) ?>
+                array('rows' => 4, 'class' => 'cols-full autosize', 'id' => get_class($element) . '_comments_' . $numHash)) ?>
         </td>
       </tr>
       </tbody>

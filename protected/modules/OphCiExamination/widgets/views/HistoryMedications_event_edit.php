@@ -29,7 +29,7 @@ $element_errors = $element->getErrors();
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
   <div class="data-group flex-layout cols-10">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <table id="<?= $model_name ?>_entry_table" class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
+    <table id="<?= $model_name ?>_entries" class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
       <colgroup>
         <col class="cols-2">
         <col class="cols-4">

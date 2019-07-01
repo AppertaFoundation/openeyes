@@ -268,7 +268,7 @@
             array_map(function ($item) use ($element) {
                 return ['label' => $item, 'id' => $item,
                     'selected' => isset($element->alcohol_intake) && $element->alcohol_intake == $item];
-            }, range(0, 20))
+            }, array_merge(range(0, 15, 5),range(20, 100, 10),[150],range(200, 400, 100)))
         ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake', 'mandatory': true})
       ],
       onReturn: function (adderDialog, selectedItems) {

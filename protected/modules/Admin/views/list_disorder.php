@@ -26,7 +26,7 @@
         <form id="disorder-search-form" action="/Admin/disorder/list" method="get">
             <table class="standard">
                 <colgroup>
-                    <col class="cols-4">
+                    <col class="cols-5">
                     <col class="cols-1">
                     <col class="cols-7">
 
@@ -36,6 +36,20 @@
                             'placeholder' => 'Search Term , Fully Specified Name , Aliases - (all are case sensitive)',
                             'class' => 'cols-full',
                         ]); ?>
+                    </td>
+                    <td>
+                        <?=\CHtml::dropDownList(
+                            'specialty',
+                            isset($_GET['specialty']) ? $_GET['specialty'] :'',
+                            CHtml::listData(
+                                Specialty::model()->findAll(
+                                    ['order' => 'name']
+                                ),
+                                'id',
+                                'name'
+                            ) + ['None' => 'None'],
+                            ['empty' => 'All specialties']
+                        ) ?>
                     </td>
                     <td>
                         <button class="blue hint" id="search-button" name="search" type="submit">Search</button>

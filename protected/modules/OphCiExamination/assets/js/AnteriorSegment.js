@@ -342,6 +342,20 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
           }
         }
 
+        if (deletedDoodleClass === 'CornealGraft') {
+          let individualSutures = this.primaryDrawing.allDoodlesOfClass("CornealSuture");
+          let continuousSutures = this.primaryDrawing.allDoodlesOfClass("ContinuousCornealSuture");
+          let sutures = individualSutures.concat(continuousSutures);
+          for (let i = 0; i < sutures.length; i++) {
+                let suture = sutures[i];
+                if (suture.cornealGraft && !this.primaryDrawing.doodleOfId(suture.cornealGraft.id)) {
+                  suture.cornealGraft = null;
+                  suture.setParameterFromString('originX', '0', true);
+                  suture.setParameterFromString('originY', '0', true);
+                }
+            }
+        }
+
         if (deletedDoodleClass === 'Lens') {
           // reset to the null value as this removes any cataract value
           this.storeToHiddenField(this.$nuclearCataract, '');
