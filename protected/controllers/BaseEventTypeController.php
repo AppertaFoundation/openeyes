@@ -419,6 +419,12 @@ class BaseEventTypeController extends BaseModuleController
                     'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
                 Yii::app()->assetManager->registerScriptFile('js/nested_elements.js');
                 Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js");
+                // disable buttons when clicking on save/save_draft/save_print
+                Yii::app()->assetManager->getClientScript()->registerScript('disableSaveAfterClick', '
+                      $(document).on("click", "#et_save, #et_save_draft, #et_save_print", function () {
+                          disableButtons();
+                      });
+                ', CClientScript::POS_HEAD);
             }
         }
 
@@ -641,6 +647,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->event = new Event();
         $this->event->episode_id = $this->episode->id;
         $this->event->event_type_id = $this->event_type->id;
+        $this->event->last_modified_user_id = $this->event->created_user_id = Yii::app()->user->id;
     }
 
     /**

@@ -117,7 +117,7 @@
                 </div>
                 <div style="display:none" class="cols-11 no-result-patients warning alert-box">
                     <div class="cols-11 column text-center">
-                        No patients found.
+                        No patients found in virtual clinic.
                     </div>
                 </div>
             </td>
@@ -159,7 +159,7 @@
                         <li data-patient_id="<?=$patient->id?>">
                             <?="{$patient->first_name} {$patient->last_name} ({$patient->hos_num})"?>
                             <i class="oe-i remove-circle small-icon pad-left"></i>
-                            <input type="hidden" id="<?="{$patient->id}";?>" value="<?="{$patient->id}";?>">
+                            <input name="patient-ids[]" type="hidden" id="<?="{$patient->id}";?>" value="<?="{$patient->id}";?>">
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -181,6 +181,7 @@
             let $item = $('<li>', {'data-patient_id': uid.item.id}).html(uid.item.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
             let $hidden = $('<input>', {type: 'hidden', id: uid.item.id, value: uid.item.id, name: 'patient-ids[]'});
 
+            $list.html('');
             $list.append($item.append($hidden));
 
             // clear input field
@@ -188,6 +189,16 @@
             return false;
 
         });
+
+        OpenEyes.UI.Search.getElement().autocomplete('option', 'source', function (request, response) {
+                $.getJSON('/PatientTicketing/default/patientSearch', {
+                    term: request.term,
+                    ajax: 'ajax',
+                    closedTickets: +$('#closed-tickets').is(':checked')
+                }, response);
+        });
+
+
 
         $('#patient-result-wrapper').on('click', '.remove-circle', function () {
             let id = $(this).data('patient_id');
