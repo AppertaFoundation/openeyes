@@ -28,6 +28,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 $this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'primary'), array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id));
 $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id));
 $this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id));
+$this->event_actions[] = EventAction::button('Save and print FP10', 'saveprintfp10', array('level' => 'secondary'), array('id' => 'et_save_print_fp10', 'class' => 'button small', 'style' => 'display: none;', 'form' => $form_id));
 
 $this->displayErrors($errors) ?>
 

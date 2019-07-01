@@ -147,6 +147,10 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
     var patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
     <?php } ?>
 
+    $('#prescription_items tbody').on('change', '.dispenseCondition', function() {
+        fpTenPrintOption();
+    });
+
 </script>
 
 <?php

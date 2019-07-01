@@ -23,11 +23,21 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
 
     <?php
         // Event actions
-    if ($this->checkPrintAccess()) {
-        if (!$Element->draft || $this->checkEditAccess()) {
-            $this->event_actions[] = EventAction::printButton();
+        if ($this->checkPrintAccess()) {
+            if(!$Element->draft || $this->checkEditAccess()){
+                foreach ($Element->items as $item) {
+                    // If at least one prescription item has 'Print to FP10' selected as the dispense condition, display the Print FP10 button.
+                    if ($item->dispense_condition->name == 'Print to FP10') {
+                        $this->event_actions[] = EventAction::button('Print FP10', "et_print_fp10");
+                        break;
+                    }
+                }
+
+            }
+        	if(!$Element->draft || $this->checkEditAccess()){
+        		$this->event_actions[] = EventAction::printButton();
+        	}
         }
-    }
     ?>
 
     <?php $this->renderPartial('//base/_messages'); ?>
