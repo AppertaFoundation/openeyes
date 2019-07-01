@@ -38,7 +38,7 @@ $core_api = new CoreAPI();
 				<?php echo $log->event->eventType->name?>
 			</a>
 		<?php } else {?>
-			-
+			<?=($log->event_type ? $log->event_type->class_name : '-');?>
 		<?php }?>
 	</td>
 	<td>

@@ -11,7 +11,7 @@
     var sides = ['left', 'right'];
     var layout_meds = JSON.parse(JSON.stringify(layout_plotly));
     const oneday_time = 86400000;
-
+    var max_med = Math.max(Object.keys(meds_data['left']).length, Object.keys(meds_data['right']).length);
     //plotly
     for (var side of sides){
       var data = [];
@@ -65,10 +65,10 @@
       layout_meds['margin']['b'] = 0;
       layout_meds['title'] = "Medications, IOP, VA & MD";
       layout_meds['yaxis'] = meds_yaxis;
-      layout_meds['height'] = 25*Object.keys(meds_data[side]).length+50;
+      layout_meds['height'] = 25*max_med+50;
       layout_meds['showlegend'] = false;
       layout_meds['xaxis'] = meds_xaxis;
-      layout_meds['yaxis']['range'] = [Object.keys(meds_data[side]).length-0.5, -1];
+      layout_meds['yaxis']['range'] = [max_med-0.5, -1];
 
       Plotly.newPlot('plotly-Meds-'+side, data, layout_meds, options_plotly);
     }
