@@ -96,7 +96,9 @@
     }
 
     function goPrint() {
-        window.open("/worklist/print?date_from=<?= @$_GET['date_from'] ?>&date_to=<?= @$_GET['date_to'] ?>&list_id=" +
-            + $("#wl_print_selected_worklist").val().replace("js-worklist-",""), "_blank");
+        var v = $("#wl_print_selected_worklist").val().replace("js-worklist-","");
+        var df = $("#worklist-date-from").val() == "" ? "" : "&date_from="+$("#worklist-date-from").val();
+        var dt = $("#worklist-date-to").val() == "" ? "" : "&date_to="+$("#worklist-date-to").val();
+        window.open("/worklist/print?list_id=" + v + df + dt, "_blank");
     }
 </script>

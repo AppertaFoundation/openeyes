@@ -113,8 +113,8 @@ class WorklistController extends BaseController
 	public function actionPrint($date_from = null, $date_to = null, $list_id = null)
 	{
 		$this->layout = '//layouts/print';
-		$worklists = $this->getWorkLists();
-		if(!is_null($list_id)) {
+		$worklists = $this->getWorkLists($date_from, $date_to);
+		if($list_id) {
 			$worklists = array_filter($worklists, function($e) use($list_id){ return $e->id == $list_id; });
 		}
 		$this->render('//worklist/print', array('worklists' => $worklists));
