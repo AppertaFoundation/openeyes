@@ -147,9 +147,15 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
     var patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
     <?php } ?>
 
+    // This case handles displaying the button correctly whenever changing the dispense condition.
     $('#prescription_items tbody').on('change', '.dispenseCondition', function() {
         fpTenPrintOption();
     });
+
+    // This case handles displaying the button correctly when first accessing the edit screen.
+    $(document).ready(function() {
+        fpTenPrintOption();
+    })
 
 </script>
 
