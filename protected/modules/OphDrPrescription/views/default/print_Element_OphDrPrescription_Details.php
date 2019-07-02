@@ -154,24 +154,6 @@ foreach ($items_data as $group => $items) { ?>
 <?php } ?>
     <div class="spacer"></div>
 
-    <table class="borders prescription_items">
-        <colgroup>
-            <col width="25%">
-            <col width="75%">
-        </colgroup>
-        <tbody>
-        <tr>
-            <td>Other medications patient is taking</td>
-            <td>
-                <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', [
-                    'patient' => $this->patient,
-                    'mode' => OEModule\OphCiExamination\widgets\HistoryMedications::$PRESCRIPTION_PRINT_VIEW,
-                ]); ?>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
     <h2>Comments</h2>
     <table class="borders">
         <tr>

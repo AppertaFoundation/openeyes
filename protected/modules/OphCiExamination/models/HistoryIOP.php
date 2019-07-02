@@ -169,4 +169,9 @@ class HistoryIOP extends \SplitEventTypeElement
             'criteria'=>$criteria,
         ]);
     }
+
+    public function getContainer_print_view()
+    {
+        return '//patient/element_container_no_view';
+    }
 }
