@@ -40,6 +40,11 @@
                       <?php endif; ?>
                   <?php endif; ?>
               </div>
+          <div>
+              <?php if ($element->{$eye_side . '_notes'}): ?>
+                  <?= $element->textWithLineBreaks($eye_side . '_notes') ?>
+              <?php endif; ?>
+          </div>
           <?php else: ?>
             <div class="data-value not-recorded">
               Not recorded
