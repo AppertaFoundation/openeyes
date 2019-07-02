@@ -148,7 +148,7 @@ foreach ($this->patient->episodes as $ep) {
         $disorder_list = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
         $commonNotEmptyOphthalmicDisorderGroups = [];
         foreach ($disorder_list as $disorder) {
-            if ($disorder['group'] != "" && isset($disorder['group'])) {
+            if (isset($disorder['group']) && $disorder['group'] != "") {
                 $commonNotEmptyOphthalmicDisorderGroups[] = $disorder['group_id'];
             }
         }
