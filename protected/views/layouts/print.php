@@ -42,7 +42,9 @@
 
 			// function for printing
 			printFn = function() {
+				<?php if(Yii::app()->request->getParam('auto_print', true)){?>
 				window.print();
+				<?php } ?>
 			};
 
 			// check to see if the eyedraw libraries are loaded (which implies that we have eyedraws
