@@ -743,15 +743,15 @@ class Admin
         if (strpos($attribute, '.')) {
             $splitAttribute = explode('.', $attribute);
             $relationTable = $splitAttribute[0];
-            if (isset($row->$relationTable->$splitAttribute[1])) {
-                return $row->$relationTable->$splitAttribute[1];
+            if (isset($row->$relationTable->{$splitAttribute[1]})) {
+                return $row->$relationTable->{$splitAttribute[1]};
             }
 
             if (is_array($row->$relationTable)) {
                 $manyResult = array();
                 foreach ($row->$relationTable as $relationResult) {
-                    if (isset($relationResult->$splitAttribute[1])) {
-                        $manyResult[] = $relationResult->$splitAttribute[1];
+                    if (isset($relationResult->{$splitAttribute[1]})) {
+                        $manyResult[] = $relationResult->{$splitAttribute[1]};
                     }
                 }
 
