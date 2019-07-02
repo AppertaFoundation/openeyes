@@ -160,28 +160,25 @@ foreach ($this->patient->episodes as $ep) {
             if (in_array($disorderGroup->id, $commonNotEmptyOphthalmicDisorderGroups)) {
                 $filteredOphthalmicDisorderGroups[] = $disorderGroup;
             }
-        }
-
-        $disorder_group_style = "";
-        if(empty($filteredOphthalmicDisorderGroups)) {
-            $disorder_group_style = "display: none;";
         }?>
 
         new OpenEyes.UI.AdderDialog({
             openButton: $('#add-ophthalmic-diagnoses'),
-            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                array_map(function ($disorderGroup) {
-                    return [
-                        'label' => $disorderGroup->name,
-                        'filter-value' => $disorderGroup->id,
-                        'is_filter' => true,
-                    ];
-                }, $filteredOphthalmicDisorderGroups)) ?>, {
-                'header': 'Disorder Group',
-                'id': 'disorder-group-filter',
-                'deselectOnReturn': false,
-                'style': "<?=$disorder_group_style?>",
-            }),
+            itemSets: [
+                <?php if(!empty($filteredOphthalmicDisorderGroups)) { ?>
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    array_map(function ($disorderGroup) {
+                        return [
+                            'label' => $disorderGroup->name,
+                            'filter-value' => $disorderGroup->id,
+                            'is_filter' => true,
+                        ];
+                    }, $filteredOphthalmicDisorderGroups)) ?>, {
+                    'header': 'Disorder Group',
+                    'id': 'disorder-group-filter',
+                    'deselectOnReturn': false,
+                }),
+                <?php }?>
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                     array_map(function ($disorder_item) {
                         return [
