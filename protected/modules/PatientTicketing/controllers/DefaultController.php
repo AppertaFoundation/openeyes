@@ -281,8 +281,8 @@ class DefaultController extends \BaseModuleController
                 $filter_options = array();
 
                     foreach ($filter_keys as $k) {
-                        if (isset($_POST[$k])) {
-                            $filter_options[$k] = $_POST[$k];
+                        if (!is_null($param = \Yii::app()->request->getParam($k, null))) {
+                            $filter_options[$k] = $param;
                         }
                     }
                     $filter_options['category-id'] = $category->getID();
