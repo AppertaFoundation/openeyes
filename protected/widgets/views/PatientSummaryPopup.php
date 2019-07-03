@@ -105,17 +105,6 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 
         <table class="patient-demographics" style="position: relative; right: 0; cursor: default;">
           <tbody>
-          <?php
-          if (Yii::app()->params['institution_code'] == 'CERA') { ?>
-              <tr>
-                  <td><?php echo Yii::app()->params['CERA_general_practitioner_label'] ?></td>
-                  <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
-              </tr>
-              <tr>
-                  <td><?php echo Yii::app()->params['CERA_general_practitioner_label'].' Role' ?></td>
-                  <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
-              </tr>
-          <?php } else{ ?>
               <tr>
                   <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
                   <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
@@ -123,7 +112,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
               <tr>
                   <td><?php echo Yii::app()->params['general_practitioner_label'].' Role' ?></td>
                   <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
-              </tr> <?php } ?>
+              </tr>
           <?php
           if (Yii::app()->params['institution_code'] == 'CERA'){?>
               <?php if (($this->patient->gp_id)) {
@@ -131,11 +120,11 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                   $practice = $gp->getAssociatePractice();
               }?>
               <tr>
-                  <td><?php echo Yii::app()->params['CERA_gp_label']?> Address</td>
+                  <td><?php echo Yii::app()->params['gp_label']?> Address</td>
                   <td> <?= $practice -> id ? $practice->getAddresslines() : 'Unknown' ?></td>
               </tr>
               <tr>
-                  <td><?php echo Yii::app()->params['CERA_gp_label']?> Telephone</td>
+                  <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
                   <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
               </tr>
           <?php } else {?>
