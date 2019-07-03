@@ -1,6 +1,6 @@
 <?php
 
-class m190703_132933_adjust_vaf_shortcode_description_to_mach_functionality extends CDbMigration
+class m190703_132933_adjust_vaf_shortcode_description_to_match_functionality extends CDbMigration
 {
 	public function up()
 	{
