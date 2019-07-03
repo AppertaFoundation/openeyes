@@ -419,6 +419,12 @@ class BaseEventTypeController extends BaseModuleController
                     'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
                 Yii::app()->assetManager->registerScriptFile('js/nested_elements.js');
                 Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js");
+                // disable buttons when clicking on save/save_draft/save_print
+                Yii::app()->assetManager->getClientScript()->registerScript('disableSaveAfterClick', '
+                      $(document).on("click", "#et_save, #et_save_draft, #et_save_print", function () {
+                          disableButtons();
+                      });
+                ', CClientScript::POS_HEAD);
             }
         }
 
@@ -836,6 +842,7 @@ class BaseEventTypeController extends BaseModuleController
                         }
                     } else {
                         throw new Exception('could not save event');
+
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
@@ -2093,8 +2100,8 @@ class BaseEventTypeController extends BaseModuleController
     {
         $this->updateUniqueCode($event);
 
-        $site_id = \Yii::app()->session->get('selected_site_id', null);
-        $firm_id = \Yii::app()->session->get('selected_firm_id', null);
+        $site_id = \Yii::app()->session->get('selected_site_id');
+        $firm_id = \Yii::app()->session->get('selected_firm_id');
         $this->addToUnbookedWorklist($site_id, $firm_id);
     }
 
@@ -2116,7 +2123,6 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
     }
-
 
     /**
      * set base js vars for use in the standard scripts for the controller.
