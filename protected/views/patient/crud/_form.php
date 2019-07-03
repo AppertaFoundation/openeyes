@@ -345,24 +345,25 @@ foreach ($ethnic_list as $key=>$item){
                 <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : 'color: white;' ?>">
                     <ul class="oe-multi-select js-selected_gp">
                         <li>
-                  <span class="js-name">
-                      <?php
-                          if (($patient->gp_id)){
-                            $gp = Gp::model()->findByPk(array('id' => $patient->gp_id));
-                            $practice  = $gp->getAssociatePractice();
-                            $practiceDetails = $gp->getAssociatedPractice($gp->id);
-                            $role = $gp->getGPROle();
-                      ?>
-                        <?=$gp->getCorrespondenceName();?><?=(isset($role)? ' - '.$role:'')?><?=(isset($practice)?' - '.$practiceDetails['first_name']:'');?>
-                        <?php
-                            }
-                            else{
+                            <span class="js-name" style="text-align:justify">
+                              <?php
+                                  if (($patient->gp_id)){
+                                    $gp = Gp::model()->findByPk(array('id' => $patient->gp_id));
+                                    $practice  = $gp->getAssociatePractice();
+                                    $practiceDetails = $gp->getAssociatedPractice($gp->id);
+                                    $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
+                                    $practiceNameAddress = $practice->getPracticeNames()? ' - '.$practice->getPracticeNames():'';
                               ?>
-                                <?=''?>
-                        <?php
-                            }
-                        ?>
-                  </span>
+                                <?=$gp->getCorrespondenceName().$role.$practiceNameAddress?>
+                                <?php
+                                    }
+                                    else{
+                                      ?>
+                                        <?=''?>
+                                <?php
+                                    }
+                                ?>
+                            </span>
                             <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
                         </li>
                     </ul>
@@ -404,11 +405,12 @@ foreach ($ethnic_list as $key=>$item){
                                 $gp = $patientContactAssociate->gp;
                                 $practice  = $gp->getAssociatePractice();
                                 $practiceDetails = $gp->getAssociatedPractice($gp->id);
-                                $role = $gp->getGPROle();
+                                $practiceNameAddress = $practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():'';
+                                $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
                                 //The line below is to ensure a newly added referring practitioner does not show up in the list of contacts also
                                 if($gp->id != $patient->gp_id){
                                 ?>
-                                <li><span class="js-name"><?=$gp->getCorrespondenceName();?><?=(isset($role)? ' - '.$role:'')?><?=(isset($practice)?' - '.$practiceDetails['first_name']:'');?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
+                                <li><span class="js-name" style="text-align:justify"><?=$gp->getCorrespondenceName().$role.$practiceNameAddress?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
                             <?php }
                             }
                         }

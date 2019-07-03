@@ -49,15 +49,15 @@ class PracticeAssociateController extends BaseController
         if (isset($practice_contact_associate)){
             $gp = $practice_contact_associate->gp;
             $practice = $practice_contact_associate->practice;
-            $practiceDetails = $practice?' - '.$gp->getAssociatedPractice($gp->id)['first_name']:'';
             $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
+            $practiceNameAddress = $practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():'';
 
-            $return_array['content'] =  '<li><span class="js-name">'.$gp->getCorrespondenceName().$role.$practiceDetails.'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'"></li>';
-            $return_array['label'] = $gp->getCorrespondenceName().$role.$practiceDetails;
+            $return_array['content'] =  '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().$role.$practiceNameAddress.'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'"></li>';
+            $return_array['label'] = $gp->getCorrespondenceName().$role.$practiceNameAddress;
             $return_array['practice_id'] = $practice->id;
         }else{
             $gp = Gp::model()->findByPk($gp_id);
-            $return_array['content'] = '<li><span class="js-name">'.$gp->getCorrespondenceName().'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i><input type="hidden" class="js-extra-gps" name="ExtraContact[gp_id][]" value="'.$gp_id.'"></li>';
+            $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i><input type="hidden" class="js-extra-gps" name="ExtraContact[gp_id][]" value="'.$gp_id.'"></li>';
         }
         echo CJSON::encode($return_array);
     }

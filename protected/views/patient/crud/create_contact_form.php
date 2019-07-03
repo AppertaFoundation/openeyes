@@ -310,7 +310,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
         onSelect: function(){
             let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
             $('.js-selected-practice-associate').find('li').remove();
-            $('.js-selected-practice-associate').append('<li><span class="js-name">'+AutoCompleteResponse.label+'</span><i id="js-remove-extra-practice-'+AutoCompleteResponse.value+'" class="oe-i remove-circle small-icon pad-left"></i></li>');
+            $('.js-selected-practice-associate').append('<li><span class="js-name" style="text-align:justify">'+AutoCompleteResponse.label+'</span><i id="js-remove-extra-practice-'+AutoCompleteResponse.value+'" class="oe-i remove-circle small-icon pad-left"></i></li>');
             $('#PracticeAssociate_practice_id').val(AutoCompleteResponse.value);
             $('#js-remove-extra-practice-'+AutoCompleteResponse.value).click(function () {
                 $(this).parent('li').remove();

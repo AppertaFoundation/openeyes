@@ -2236,11 +2236,16 @@ class PatientController extends BaseController
 
         $output = array();
         foreach($gps as $gp){
-            $role = $gp->getGPROle();
+            $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
+            if (isset($practice_contact_associate)){
+                $practice = $practice_contact_associate->practice;
+                $practiceNameAddress = $practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():'';
+            }
+            $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
             $practiceDetails = $gp->getAssociatedPractice($gp->id);
             $practiceId = $practiceDetails['id'];
             $output[] = array(
-                'label' => $gp->correspondenceName.' - '.$role.' - '.$practiceDetails['first_name'],
+                'label' => $gp->correspondenceName.$role.$practiceNameAddress,
                 'value' => $gp->id,
                 'practiceId' => $practiceId
             );

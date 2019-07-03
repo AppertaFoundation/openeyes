@@ -199,7 +199,8 @@ class Practice extends BaseActiveRecordVersioned
         $city = $this->contact->address->city ? $this->contact->address->city . ", " : '';
         $county = $this->contact->address->county ? $this->contact->address->county . ", " : '';
         $postcode = $this->contact->address->postcode ? $this->contact->address->postcode . ", " : '';
-        return $name . $address1 . $address2 . $city . $county . $postcode;
+        $country = $this->contact->address->country->name ? $this->contact->address->country->name : '';
+        return $name . $address1 . $address2 . $city . $county . $postcode . $country . '.';
     }
 
     /**
