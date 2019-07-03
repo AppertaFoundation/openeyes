@@ -710,11 +710,13 @@ EOD;
 		foreach ($this->route_mapping as $old_code => $new_code) {
 			$old_route = MedicationRoute::model()->findByAttributes(['code' => $old_code]);
 			$new_route = MedicationRoute::model()->findByAttributes(['code' => $new_code]);
+            $old_route_id = $old_route->getAttribute('id');
+            $new_route_id = $new_route->getAttribute('id');
 			$this->printMsg($old_route->term." to ".$new_route->term. ".. ", false);
 			foreach ($cmd as $c) {
 				Yii::app()->db->createCommand($c)
-					->bindParam(':old_route_id', $old_route->getAttribute('id'))
-					->bindParam(':new_route_id', $new_route->getAttribute('id'))
+					->bindParam(':old_route_id', $old_route_id)
+					->bindParam(':new_route_id', $new_route_id)
 					->execute();
 			}
 			echo " OK".PHP_EOL;

@@ -12,7 +12,7 @@ class m180828_063658_add_ref_set_common_systemic_medications extends CDbMigratio
 	        $this->execute("INSERT INTO medication_set_item (medication_set_id, medication_id)
                                 VALUES (
                                   $ref_set_id, 
-                                  (SELECT id FROM medicaiton WHERE source_old_id = ".$med->medication_id.")
+                                  (SELECT id FROM medication WHERE source_old_id = ".$med->medication_id." AND source_subtype = 'medication_drug')
                                 )");
         }
 	}
