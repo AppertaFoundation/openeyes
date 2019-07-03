@@ -226,24 +226,31 @@ class Patient extends BaseActiveRecordVersioned
 
 
     public function nhsNumValidator($attribute, $params){
-        $medicareNo = preg_replace("/[^\d]/", "", $this->nhs_num);
+        // Validation only triggers for CERA
+        if (Yii::app()->params['institution_code'] == 'CERA') {
+            $medicareNo = preg_replace("/[^\d]/", "", $this->nhs_num);
 
-        // Check for 11 digits
-        $length = strlen($medicareNo);
-        if ($length==11) {
-            // Test leading digit and checksum
-            if (preg_match("/^([2-6]\d{7})(\d)/", $medicareNo, $matches)) {
-                $base = $matches[1];
-                $checkDigit = $matches[2];
-                $sum = 0;
-                $weights = array(1,3,7,9,1,3,7,9);
-                foreach ($weights as $position=>$weight) {
-                    $sum += $base[$position] * $weight;
+            // Check for 11 digits
+            $length = strlen($medicareNo);
+            if ($length==11) {
+                // Test leading digit and checksum
+                if (preg_match("/^([2-6]\d{7})(\d)/", $medicareNo, $matches)) {
+                    $base = $matches[1];
+                    $checkDigit = $matches[2];
+                    $sum = 0;
+                    $weights = array(1, 3, 7, 9, 1, 3, 7, 9);
+                    foreach ($weights as $position => $weight) {
+                        $sum += $base[$position] * $weight;
+                    }
+                    return ($sum % 10) == intval($checkDigit);
                 }
-                return ($sum % 10) == intval($checkDigit);
+                else {
+                        $this->addError($attribute, 'Not a valid Medicare Number');
+                    }
+
+            } else {
+                $this->addError($attribute, 'Not a valid Medicare Number');
             }
-        } else {
-            $this->addError($attribute, 'Not a valid Medicare Number');
         }
     }
 
