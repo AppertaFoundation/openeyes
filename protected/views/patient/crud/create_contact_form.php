@@ -231,7 +231,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                         <?php echo $extra_practice_form->labelEx($extra_practice_contact, 'first_name'); ?>
                     </td>
                     <td>
-                        <?php echo $extra_practice_form->textArea($extra_practice_contact, 'first_name', array('size' => 50, 'maxlength' => 300)); ?>
+                        <?php echo $extra_practice_form->textArea($extra_practice_contact, 'first_name', array('maxlength' => 300, 'cols' => 40)); ?>
                         <?php echo $extra_practice_form->error($extra_practice_contact, 'first_name'); ?>
                     </td>
                 </tr>
