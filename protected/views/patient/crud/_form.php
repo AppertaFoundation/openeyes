@@ -323,17 +323,6 @@ foreach ($ethnic_list as $key=>$item){
         <div class="row divider">
             <table class="standard highlight-rows">
                 <tbody>
-        <tr>
-          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
-            <?= $form->label($referral, 'uploadedFile'); ?>
-            <br/>
-              <?= $form->error($referral, 'uploadedFile')?>
-          </td>
-          <td>
-            <?= $form->fileField($referral, 'uploadedFile'); ?>
-          </td>
-        </tr>
-
         <tr id="js-patient-gp-row">
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                 Referring Practitioner
@@ -427,6 +416,17 @@ foreach ($ethnic_list as $key=>$item){
           </tr>
         <?php endif; ?>
 
+        <tr>
+            <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
+                <?= $form->label($referral, 'uploadedFile'); ?>
+                <br/>
+                <?= $form->error($referral, 'uploadedFile')?>
+            </td>
+            <td>
+                <?= $form->fileField($referral, 'uploadedFile'); ?>
+            </td>
+        </tr>
+        
         <tr>
           <td>
             <?= $form->label($patientuserreferral, 'Referred to') ?>
