@@ -139,6 +139,9 @@
                 'error': function(resp){
                     alert('Remove medication from set FAILED. Please try again.');
                     console.error(resp);
+                },
+                'complete': function(){
+                    drugSetController.refreshResult();
                 }
             });
         });

@@ -18,29 +18,42 @@
 <div class="row divider">
     <h2>Drug Sets</h2>
 </div>
+<?php $isSelected = function($usage_code) use ($search) {
+    if (isset($search['usage_codes']) && in_array($usage_code, $search['usage_codes'])) {
+        return 'selected';
+    }
 
+    return '';
+} ?>
 
 <div class="row divider">
-
     <form id="drug_set_search" method="post">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
 
         <div id="set-filters" class="flex-layout row">
-            <button data-usage_code="" type="button" class="large js-set-select js-all-sets selected green hint">All
-                Sets
-            </button>
-            <button data-usage_code="COMMON_OPH" type="button" class="large js-set-select">Common Ophthalmic Drug Sets
-            </button>
-            <button data-usage_code="COMMON_SYSTEMIC" type="button" class="large js-set-select">Common Systemic Drug
-                Sets
-            </button>
-            <button data-usage_code="PRESCRIPTION_SET" type="button" class="large js-set-select">Prescription Drug
-                Sets
-            </button>
-            <button data-usage_code="Drug" type="button" class="large js-set-select">Drug</button>
-            <button data-usage_code="DrugTag" type="button" class="large js-set-select">Drug Tags</button>
-            <button data-usage_code="Formulary" type="button" class="large js-set-select">Formulary Drugs</button>
-            <button data-usage_code="MedicationDrug" type="button" class="large js-set-select">MedicationDrug</button>
+            <button
+                    data-usage_code=""
+                    type="button"
+                    class="large js-set-select js-all-sets<?= !isset($search['usage_codes']) || empty($search['usage_codes']) ? ' green hint' : '' ?>"
+            >All Sets</button>
+
+            <?php $codes = [
+                    'COMMON_OPH' => 'Common Ophthalmic Drug Sets',
+                    'COMMON_SYSTEMIC' => 'Common Systemic Drug  Sets',
+                    'PRESCRIPTION_SET' => 'Prescription Drug Sets',
+                    'Drug' => 'Drug',
+                    'DrugTag' => 'Drug Tags',
+                    'Formulary' => 'Formulary Drugs',
+                    'MedicationDrug' => 'Medication Drug',
+            ]; ?>
+            <?php foreach ($codes as $usage_code => $desc) :?>
+                <button
+                        data-usage_code="<?=$usage_code;?>"
+                        type="button"
+                        class="large js-set-select <?=$isSelected($usage_code);?>"
+                ><?=$desc;?>
+                </button>
+            <?php endforeach; ?>
         </div>
 
         <hr class="">

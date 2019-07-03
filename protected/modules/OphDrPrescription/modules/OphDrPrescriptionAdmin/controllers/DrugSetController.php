@@ -26,6 +26,38 @@ class DrugSetController extends BaseAdminController
 
     public $assetPath;
 
+    public function getFilters()
+    {
+        $default = [
+            'query' => null,
+            'subspecialty_id' => null,
+            'site_id' => null,
+            'usage_codes' => [],
+        ];
+
+        $filters = \Yii::app()->request->getParam('search');
+
+        if (!$filters) {
+            $filters = \Yii::app()->session->get('sets_filters');
+            $filters = $filters ? $filters : $default;
+        } else {
+            \Yii::app()->session['sets_filters'] = $filters;
+        }
+
+        // make sure all the required keys are set
+        foreach (['query', 'subspecialty_id', 'site_id'] as $item) {
+            if (!isset($filters[$item])) {
+                $filters[$item] = null;
+            }
+        }
+
+        if (!isset($filters['usage_codes']) || !is_array($filters['usage_codes'])) {
+            $filters['usage_codes'] = [];
+        }
+
+        return $filters;
+    }
+
     public function actionIndex()
     {
         $assetManager = \Yii::app()->getAssetManager();
@@ -40,13 +72,8 @@ class DrugSetController extends BaseAdminController
             $model->attributes = $_GET['MedicationSet'];
         }
 
-        $search = [
-            'query' => '',
-            'subspecialty_id' => null,
-            'site_id' => null,
-        ];
-
-        $criteria = $this->getSearchCriteria();
+        $filters = $this->getFilters();
+        $criteria = $this->getSearchCriteria($filters);
 
         $data_provider = new CActiveDataProvider('MedicationSet', [
             'criteria' => $criteria,
@@ -60,13 +87,12 @@ class DrugSetController extends BaseAdminController
 
         $this->render('/drugset/index', [
             'data_provider' => $data_provider,
-            'search' => $search
+            'search' => $filters
         ]);
     }
 
-    private function getSearchCriteria()
+    private function getSearchCriteria($filters = [])
     {
-        $filters = \Yii::app()->request->getParam('search', []);
         $criteria = new \CDbCriteria();
 
         $criteria->with = ['medicationSetRules'];
@@ -86,16 +112,31 @@ class DrugSetController extends BaseAdminController
                 $criteria->params[":$search_key"] = $filters[$search_key];
             }
         }
+        if (!isset($filters['usage_codes']) || !is_array($filters['usage_codes'])) {
+            $filters['usage_codes'] = [];
+        }
 
         return $criteria;
     }
 
     public function actionSearch()
     {
-        $criteria = $this->getSearchCriteria();
+        $filters = $this->getFilters();
+
+        $criteria = $this->getSearchCriteria($filters);
         $data['items'] = [];
 
+        //OphDrPrescription/admin/DrugSet/index?MedicationSet_sort=name.asc
+        $sort = new \CSort();
+        $sort->attributes = array(
+            'name' => [
+                'asc' => 'name asc',
+                'desc' => 'name desc',
+            ],
+        );
+
         $data_provider = new CActiveDataProvider('MedicationSet', [
+            'sort' => $sort,
             'criteria' => $criteria,
         ]);
 
@@ -106,11 +147,13 @@ class DrugSetController extends BaseAdminController
         $data_provider->pagination = $pagination;
 
         foreach ($data_provider->getData() as $set) {
+
             $set_attributes = $set->attributes;
             $set_attributes['count'] = $set->itemsCount();
             $set_attributes['hidden'] = $set->attributes['hidden'] ? 'Yes' : 'No';
             $rules = MedicationSetRule::model()->findAllByAttributes(['medication_set_id' => $set->id]);
             $ret_val = [];
+
             foreach ($rules as $rule) {
                 $ret_val[]= "Site: ".(!$rule->site ? "-" : $rule->site->name).
                     ", SS: ".(!$rule->subspecialty ? "-" : $rule->subspecialty->name).

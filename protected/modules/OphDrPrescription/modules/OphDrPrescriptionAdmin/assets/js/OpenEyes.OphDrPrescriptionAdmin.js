@@ -81,6 +81,8 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         data.search = {};
         if (usage_codes.length) {
             data.search.usage_codes = usage_codes;
+        } else {
+            data.search.usage_codes = '';
         }
 
         if (search_term) {
