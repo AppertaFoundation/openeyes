@@ -28,6 +28,12 @@ class DrugSetController extends BaseAdminController
 
     public function actionIndex()
     {
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $assetManager->publish($baseAssetsPath);
+
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+
         $model = new MedicationSet();
         $model->unsetAttributes();
         if (isset($_GET['MedicationSet'])) {
@@ -42,18 +48,18 @@ class DrugSetController extends BaseAdminController
 
         $criteria = $this->getSearchCriteria();
 
-        $dataProvider = new CActiveDataProvider('MedicationSet', [
+        $data_provider = new CActiveDataProvider('MedicationSet', [
             'criteria' => $criteria,
         ]);
 
-        $pagination = new CPagination($dataProvider->totalItemCount);
+        $pagination = new CPagination($data_provider->totalItemCount);
         $pagination->pageSize = $this->itemsPerPage;
         $pagination->applyLimit($criteria);
 
-        $dataProvider->pagination = $pagination;
+        $data_provider->pagination = $pagination;
 
         $this->render('/drugset/index', [
-            'dataProvider' => $dataProvider,
+            'data_provider' => $data_provider,
             'search' => $search
         ]);
     }
@@ -87,7 +93,7 @@ class DrugSetController extends BaseAdminController
     public function actionSearch()
     {
         $criteria = $this->getSearchCriteria();
-        $data['sets'] = [];
+        $data['items'] = [];
 
         $data_provider = new CActiveDataProvider('MedicationSet', [
             'criteria' => $criteria,
@@ -101,7 +107,8 @@ class DrugSetController extends BaseAdminController
 
         foreach ($data_provider->getData() as $set) {
             $set_attributes = $set->attributes;
-
+            $set_attributes['count'] = $set->itemsCount();
+            $set_attributes['hidden'] = $set->attributes['hidden'] ? 'Yes' : 'No';
             $rules = MedicationSetRule::model()->findAllByAttributes(['medication_set_id' => $set->id]);
             $ret_val = [];
             foreach ($rules as $rule) {
@@ -111,7 +118,7 @@ class DrugSetController extends BaseAdminController
             }
 
             $set_attributes['rules'] = implode(" // ", $ret_val);
-            $data['sets'][] = $set_attributes;
+            $data['items'][] = $set_attributes;
         }
 
         ob_start();
@@ -127,18 +134,26 @@ class DrugSetController extends BaseAdminController
     /**
      * Edits or adds drug sets.
      *
-     * @param bool|int $id
-     *
-     * @throws CHttpException
+     * @param bool $id
+     * @throws Exception
      */
     public function actionEdit($id = false)
     {
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $assetManager->publish($baseAssetsPath);
+
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+
         $set = new MedicationSet;
         $data = \Yii::app()->request->getParam('MedicationSet');
+        $filters = \Yii::app()->request->getParam('search', []);
 
         if ($id) {
             $set = MedicationSet::model()->findByPk($id);
         }
+
+        $is_new_record = $set->isNewRecord;
 
         if (\Yii::app()->request->isPostRequest) {
 
@@ -165,99 +180,103 @@ class DrugSetController extends BaseAdminController
                     }
                 }
 
-                $set->medicationSetRules = $relation;
-                if ($set->autoValidateAndSaveRelation(true)->validate() && $set->save()) {
-                    $this->redirect("/OphDrPrescription/admin/drugset/edit/{$id}");
+                // nice, before we could save all the relations we need to save the set itself because the relations validation will fail
+                // for missing a FK key
+                if($set->save()) {
+                    $set->medicationSetRules = $relation;
+                    if ($set->autoValidateAndSaveRelation(true)->validate() && $set->save()) {
+                        $this->redirect($is_new_record ? "/OphDrPrescription/admin/drugset/edit/{$set->id}" : "/OphDrPrescription/admin/drugset/index");
+                    }
                 }
             }
         }
 
-        $this->render('/drugset/edit', ['medication_set' => $set]);
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['medicationSetItems', 'medicationSetItems.medicationSet'];
+        $criteria->together = true;
+        $criteria->addCondition('medicationSet.id = :set_id');
+        $criteria->params[':set_id'] = $set->id;
+
+        if (isset($filters['query']) && $filters['query']) {
+            $criteria->addSearchCondition('preferred_term', $filters['query']);
+        }
+
+        $data_provider = new CActiveDataProvider('Medication', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = 20;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        $this->render('/drugset/edit', ['medication_set' => $set, 'medication_data_provider' => $data_provider]);
     }
 
-    /**
-     * Deletes rows for the model.
-     */
     public function actionDelete()
     {
-        // instead of delete we just set the active field to false
-        if (Yii::app()->request->isPostRequest) {
-            $ids = Yii::app()->request->getPost('DrugSet');
-            foreach ($ids as $id) {
-                $model = DrugSet::model()->findByPk($id);
-                if ($model) {
-                    $model->active = 0;
-                    $model->save();
+        $ids = \Yii::app()->request->getParam('delete-ids', []);
+        $response['message'] = '';
+
+        foreach ($ids as $id) {
+            $set = \MedicationSet::model()->findByPk($id);
+            $count = $set->itemsCount();
+            if (!$count) {
+                if (\MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $id])) {
+                    $set->delete();
                 }
+            } else {
+                $response['message'] .= "Set '{$set->name}' is not empty. ";
             }
         }
-        echo 1;
+
+        // This is because of handleButton.js handles the deletion - yes should be refactored...
+        // protected/assets/js/handleButtons.js
+        if ($response['message']) {
+            echo \CJSON::encode($response);
+        } else {
+            echo "1";
+        }
+
+        \Yii::app()->end();
+
     }
 
-    /**
-     * Save drug set data from the admin interface.
-     */
-    public function actionSaveDrugSet()
+    public function actionAddMedicationToSet()
     {
-        // we need to decide if it's a new set or modification
-        $drugSet = Yii::app()->request->getParam('DrugSet');
-        $prescriptionItem = Yii::app()->request->getParam('prescription_item');
+        $result['success'] = false;
+        if (\Yii::app()->request->isPostRequest) {
+            $set_id = \Yii::app()->request->getParam('set_id');
+            $set = \MedicationSet::model()->findByPk($set_id);
+            $medication_id = \Yii::app()->request->getParam('medication_id');
 
-        if (isset($drugSet['id'])) {
-            $drugSetId = $drugSet['id'];
-        }
-        if ($drugSetId > 0) {
-            $drugset = DrugSet::model()->findByPk($drugSetId);
-        } else {
-            $drugset = new DrugSet();
-        }
-        $drugset->name = $drugSet['name'];
-        $drugset->subspecialty_id = $drugSet['subspecialty'];
-        $drugset->active = $drugSet['active'];
-
-        if ($drugset->save()) {
-
-            // we delete previous tapers and items, and insert the new ones
-
-            $currentDrugRows = DrugSetItem::model()->findAll(new CDbCriteria(array('condition' => "drug_set_id = '".$drugset->id."'")));
-            foreach ($currentDrugRows as $currentDrugRow) {
-                DrugSetItemTaper::model()->deleteAll(new CDbCriteria(array('condition' => "item_id = '".$currentDrugRow->id."'")));
-                $currentDrugRow->delete();
+            if($set && $medication_id) {
+                $result['success'] = $set->addMedication($medication_id);
             }
+        }
 
-            if (isset($prescriptionItem) && is_array($prescriptionItem)) {
-                foreach ($prescriptionItem as $item) {
-                    $item_model = new DrugSetItem();
-                    $item_model->drug_set_id = $drugset->id;
-                    $item_model->attributes = $item;
-                    $item_model->save(); // we need an id to save tapers
-                    if (isset($item['taper'])) {
-                        $tapers = array();
-                        foreach ($item['taper'] as $taper) {
-                            $taper_model = new DrugSetItemTaper();
-                            $taper_model->attributes = $taper;
-                            $taper_model->item_id = $item_model->id;
-                            $taper_model->save();
-                            $tapers[] = $taper_model;
-                        }
-                        //$item_model->tapers = $tapers;
-                    }
-                    //$items[] = $item_model;
-                    //$item_model->save();
-                }
-                Yii::app()->user->setFlash('info.save_message', 'Save successful.');
+        echo \CJSON::encode($result);
+        \Yii::app()->end();
+    }
+
+    public function actionRemoveMedicationFromSet()
+    {
+        $result['success'] = false;
+        if (\Yii::app()->request->isPostRequest) {
+            $set_id = \Yii::app()->request->getParam('set_id');
+            $medication_id = \Yii::app()->request->getParam('medication_id');
+
+            if($set_id && $medication_id) {
+                $affected_rows = \MedicationSetItem::model()->deleteAllByAttributes(['medication_id' => $medication_id, 'medication_set_id' => $set_id]);
+                $result['success'] = (bool)$affected_rows;
             } else {
-                Yii::app()->user->setFlash('info.save_message',
-                    'Unable to save drugs, please add at least one drug to the set. Set name and subspecialty saved.');
+                $result['success'] = false;
+                $result['error'] = "Missing parameter.";
             }
-            $this->redirect('/OphDrPrescription/admin/drugSet/list');
-        } else {
-            if ($drugSetId > 0) {
-                $admin = $this->initAdmin($drugSetId);
-            } else {
-                $admin = $this->initAdmin(false);
-            }
-            $this->render('//admin/generic/edit', array('admin' => $admin, 'errors' => $drugset->getErrors()));
         }
+
+        echo \CJSON::encode($result);
+        \Yii::app()->end();
     }
 }

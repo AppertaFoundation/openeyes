@@ -522,7 +522,7 @@
         if (this.searchRequest !== null) {
             this.searchRequest.abort();
         }
-        if (typeof filterValue == "undefined" && this.options.filter) {
+        if (typeof filterValue === "undefined" && this.options.filter) {
             let selectedFilter = this.popup.find('ul[data-id="' + this.options.filterDataId + '"]').find('li.selected');
             filterValue = selectedFilter.data('id');
         }

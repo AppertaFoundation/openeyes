@@ -218,7 +218,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 
     public function itemsCount()
     {
-        return \MedicationSetItem::model()->count();
+        return count($this->medicationSetItems);
     }
 
     public function rulesString()
@@ -518,4 +518,15 @@ class MedicationSet extends BaseActiveRecordVersioned
 
 		return true;
 	}
+
+	public function addMedication($medication_id)
+    {
+        if (!$this->isNewRecord) {
+            $assignment = new \MedicationSetItem();
+            $assignment->medication_id = $medication_id;
+            $assignment->medication_set_id = $this->id;
+            return $assignment->save();
+        }
+        return false;
+    }
 }

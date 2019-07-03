@@ -12,8 +12,8 @@ $subspecialties = array_map(function ($e) {
 <div class="row divider"></div>
 
 <form id="drugset-admin-form" action="/OphDrPrescription/admin/drugset/edit/<?=$medication_set->id;?>" method="post">
-    <div class="row divider flex-layout flex-top col-gap">
-        <div class="cols-5">
+    <div class="row flex-layout flex-top col-gap">
+        <div class="cols-6">
             <table class="large">
                 <tbody>
                 <tr>
@@ -27,8 +27,12 @@ $subspecialties = array_map(function ($e) {
                 </tbody>
             </table>
         </div>
-        <div class="cols-7" style="text-align: center">
-            <small>Usage Rules</small>
+
+    </div>
+
+    <div class="row">
+        <div class="cols-12">
+            <h3>Usage Rules</h3>
             <table class="standard" id="rule_tbl">
                 <thead>
                 <tr>
@@ -74,7 +78,6 @@ $subspecialties = array_map(function ($e) {
         </div>
     </div>
 
-
 <?=\CHtml::submitButton(
     'Save',
     [
@@ -93,9 +96,18 @@ $subspecialties = array_map(function ($e) {
     ]
 ); ?>
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken?>" />
+    <input type="hidden" class="js-search-data" data-name="set_id" value="<?=$medication_set->id;?>" />
+
+    <?php if (!$medication_set->isNewRecord) :?>
+    <div class="row divider"></div>
+
+    <?php $this->renderPartial('_meds_in_set', ['medication_set' => $medication_set, 'medication_data_provider' => $medication_data_provider]); ?>
+
+    <?php endif; ?>
+
 </form>
 
-<script id="rule_row_template" type="x-tmpl-mustache">
+<script type="x-tmpl-mustache" id="rule_row_template" style="display:none">
 <tr data-key="{{key}}">
     <td>
         <input type="hidden" name="MedicationSetRule[{{key}}][id]" />
@@ -114,8 +126,19 @@ $subspecialties = array_map(function ($e) {
     </td>
 </tr>
 </script>
+<script type="x-tmpl-mustache" id="medication_template" style="display:none">
+    <tr>
+        <td>{{preferred_term}}</td>
+        <td style="text-align:center"><a data-med_id="{{id}}" class="js-delete-set-medication"><i class="oe-i trash"></i></a></td>
+    </tr>
+</script>
+<script>
+    var drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
+        tableSelector: '#meds-list',
+        searchUrl: '/OphDrPrescription/admin/Medication/search',
+        templateSelector: '#medication_template'
+    });
 
-<script type="text/javascript">
     $(function () {
         $(document).on("click", ".js-delete-rule", function (e) {
             $(e.target).closest("tr").remove();
