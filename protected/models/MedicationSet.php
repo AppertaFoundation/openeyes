@@ -225,9 +225,9 @@ class MedicationSet extends BaseActiveRecordVersioned
     {
         $ret_val = [];
         foreach ($this->medicationSetRules as $rule) {
-            $ret_val[]= "Site: ".(!$rule->site ? "-" : $rule->site->name).
-                ", SS: ".(!$rule->subspecialty ? "-" : $rule->subspecialty->name).
-                ", Usage code: ".$rule->usage_code;
+            $ret_val[]= "Site: " . ($rule->site ? $rule->site->name : '-') .
+                ", SS: " . ($rule->subspecialty ? $rule->subspecialty->name : "-") .
+                ", Usage code: " . $rule->usage_code;
         }
 
         return implode(" // ", $ret_val);

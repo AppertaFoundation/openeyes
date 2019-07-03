@@ -36,11 +36,4 @@ class FormularyDrugsAdminController extends BaseAdminController
         $admin->setModelDisplayName("Formulary drugs");
         $admin->listModel(false);
     }
-
-    public function actionToList($id)
-    {
-        echo '<pre>' . print_r("depricated", true) . '</pre>';
-        die(__FILE__ . ' :: ' . __LINE__);
-        //$this->redirect('/OphDrPrescription/refMedicationSetAdmin/list?ref_set_id='.$id);
-    }
 }

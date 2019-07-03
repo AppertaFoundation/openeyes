@@ -65,8 +65,7 @@ class MedicationController extends BaseAdminController
 
         ob_start();
         $this->widget('LinkPager', ['pages' => $pagination]);
-        $pagination = ob_get_contents();
-        ob_clean();
+        $pagination = ob_get_clean();
         $data['pagination'] = $pagination;
 
         echo CJSON::encode($data);

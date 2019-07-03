@@ -32,8 +32,6 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
                 controller.refreshResult();
                 return false;
             }
-
-            return event.key !== "Enter";
         });
 
         $('#set-filters').on('click', 'button', function () {

@@ -14,7 +14,7 @@
 
     HotList.prototype.create = function () {
         var hotlist = this;
-        autosize($('.activity-list'));
+        autosize($('.activity-list').find('textarea'));
 
         // activity datepicker using pickmeup.
         // CSS controls it's positioning
