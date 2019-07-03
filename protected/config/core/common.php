@@ -604,9 +604,6 @@ return array(
         ),
         'oe_version' => '3.2a',
         'gp_label' => 'GP',
-        'CERA_gp_label' =>'Referring Practitioner',
-        'general_practitioner_label' => "GP",
-        'CERA_general_practitioner_label' => "Referring Practitioner",
         // number of days in the future to retrieve worklists for the automatic dashboard render
         'worklist_dashboard_future_days' => 0
     ),
