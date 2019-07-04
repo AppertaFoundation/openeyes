@@ -30,10 +30,6 @@
         <small class="empty-set" <?= $medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>>Empty set</small>
 
         <div class="alert-box success" style="display:none"><b>Success!</b> Medication added to the set.</div>
-
-        <div class="alert-box loading" style="display:none">
-            Saving... <span class="js-spinner-as-icon"><i class="spinner as-icon"></i></span>
-        </div>
     </div>
 
     <div class="cols-6">
@@ -75,29 +71,43 @@
             const $table = $(drugSetController.options.tableSelector + ' tbody');
 
             selectedItems.forEach(item => {
-                const $tr = Mustache.render($('#medication_template').html(), {
-                    id: item.id,
-                    preferred_term: item.preferred_term,
-                });
-                $table.append($tr);
+                $.ajax({
+                    'type': 'POST',
+                    'data': {
+                        set_id: $('#MedicationSet_id').val(),
+                        medication_id: item.id,
+                        YII_CSRF_TOKEN: YII_CSRF_TOKEN
+                    },
+                    'url': '/OphDrPrescription/admin/drugset/addMedicationToSet',
+                    'dataType': 'json',
+                    'beforeSend': function() {
 
-                $('.alert-box.loading').slideDown();
-                $.post('/OphDrPrescription/admin/drugset/addMedicationToSet', {
-                    set_id: $('#MedicationSet_id').val(),
-                    medication_id: item.id,
-                    YII_CSRF_TOKEN: YII_CSRF_TOKEN
-                }, function(result) {
-                    $('.alert-box.loading').hide();
-                    $('.alert-box.success').show();
+                        if (!$('.oe-popup-wrap').length) {
+                            // load spinner
+                            let $overlay = $('<div>', {class: 'oe-popup-wrap'});
+                            let $spinner = $('<div>', {class: 'spinner'});
+                            $overlay.append($spinner);
+                            $('body').prepend($overlay);
+                        }
 
-                    $table.find('tr.no-result').remove();
-                    $('.empty-set').remove();
-                    $(drugSetController.options.tableSelector).show();
-                    result = JSON.parse(result);
-                    if (result.success === true) {
-                        setTimeout(function(){
-                            $('.alert-box.success').fadeOut(1500);
-                        }, 2000);
+                    },
+                    'success': function (resp) {
+                    },
+                    'error': function(resp) {
+                        alert('Add medication to set FAILED. Please try again.');
+                        console.error(resp);
+                    },
+                    'complete': function(resp) {
+                        const result = JSON.parse(resp.responseText);
+                        let callback;
+                        if (result.success && result.success === true) {
+                            callback = function() {
+                                $('.alert-box.success').show();
+                                $('.alert-box.success').fadeOut(3000);
+                            }
+                        }
+                        $('.oe-popup-wrap').remove();
+                        drugSetController.refreshResult(1, callback);
                     }
                 });
             });
@@ -128,6 +138,9 @@
                 'url': '/OphDrPrescription/admin/drugset/removeMedicationFromSet',
                 'dataType': 'json',
                 'beforeSend': function() {
+                    $('.js-delete-set-medication').find('i').addClass('disabled');
+                    $('.js-delete-set-medication').removeClass('js-delete-set-medication');
+
                     $trash.toggleClass('oe-i trash spinner as-icon');
                 },
                 'success': function (resp) {

@@ -65,7 +65,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         });
     };
 
-    DrugSetController.prototype.refreshResult = function (page = 1) {
+    DrugSetController.prototype.refreshResult = function (page = 1, callback) {
         let controller = this;
         let data = {};
         let usage_codes = $('#set-filters button.selected').map(function (m, button) {
@@ -109,11 +109,13 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             data: data,
             beforeSend: function() {
 
-                // demo load spinner
-                let $overlay = $('<div>', {class: 'oe-popup-wrap'});
-                let $spinner = $('<div>', {class: 'spinner'});
-                $overlay.append($spinner);
-                $('body').prepend($overlay);
+                if (!$('.oe-popup-wrap').length) {
+                    // load spinner
+                    let $overlay = $('<div>', {class: 'oe-popup-wrap'});
+                    let $spinner = $('<div>', {class: 'spinner'});
+                    $overlay.append($spinner);
+                    $('body').prepend($overlay);
+                }
             },
             success: function(data) {
                 let rows = [];
@@ -138,6 +140,10 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             },
             complete: function() {
                 $('.oe-popup-wrap').remove();
+
+                if (typeof callback === 'function') {
+                    callback();
+                }
             }
         });
     };
