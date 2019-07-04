@@ -35,22 +35,22 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         });
 
         $('#set-filters').on('click', 'button', function () {
-            $(this).toggleClass('selected green hint').blur();
+            $(this).toggleClass('green hint').blur();
 
             if ($(this).hasClass('js-all-sets')) {
-                $('#set-filters button:not(.js-all-sets)').removeClass('selected green hint').blur();
+                $('#set-filters button:not(.js-all-sets)').removeClass('green hint').blur();
             } else {
-                $('#set-filters button.js-all-sets').removeClass('selected green hint').blur();
+                $('#set-filters button.js-all-sets').removeClass('green hint').blur();
             }
 
-            if (!$('#set-filters button.selected').length) {
-                $('#set-filters button.js-all-sets').addClass('selected green hint').blur();
+            if (!$('#set-filters button.green.hint').length) {
+                $('#set-filters button.js-all-sets').addClass('green hint').blur();
             }
 
             controller.refreshResult();
         });
 
-        $(controller.options.tableSelector).on('click', '.pagination a:not(.selected)', function (e) {
+        $(controller.options.tableSelector).on('click', '.pagination a:not(.green.hint)', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -68,7 +68,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
     DrugSetController.prototype.refreshResult = function (page = 1, callback) {
         let controller = this;
         let data = {};
-        let usage_codes = $('#set-filters button.selected').map(function (m, button) {
+        let usage_codes = $('#set-filters button.green.hint').map(function (m, button) {
             let usage_code = $(button).data('usage_code');
             return usage_code ? usage_code : null;
         }).get();

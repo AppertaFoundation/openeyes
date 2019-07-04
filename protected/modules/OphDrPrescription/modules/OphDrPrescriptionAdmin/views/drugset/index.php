@@ -20,7 +20,7 @@
 </div>
 <?php $isSelected = function($usage_code) use ($search) {
     if (isset($search['usage_codes']) && in_array($usage_code, $search['usage_codes'])) {
-        return 'selected';
+        return 'green hint';
     }
 
     return '';
@@ -113,7 +113,7 @@
                 <th>Name</th>
                 <th>Rule</th>
                 <th>Count</th>
-                <th>Active</th>
+                <th>Hidden/system</th>
                 <th>Actions</th>
             </tr>
             </thead>
