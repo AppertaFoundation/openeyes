@@ -16,105 +16,150 @@
  */
 ?>
 <div class="row divider">
-    <h2>Drug Set</h2>
+    <h2>Drug Sets</h2>
 </div>
+<?php $isSelected = function($usage_code) use ($search) {
+    if (isset($search['usage_codes']) && in_array($usage_code, $search['usage_codes'])) {
+        return 'green hint';
+    }
 
+    return '';
+} ?>
 
 <div class="row divider">
     <form id="drug_set_search" method="post">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
-        <table class="cols-8">
-            <colgroup>
-                <col class="cols-6">
-                <col class="cols-2">
-                <col class="cols-2">
-                <col class="cols-2">
-            </colgroup>
 
-            <tbody>
-            <tr class="col-gap">
-                <td>
-                    <?= \CHtml::textField(
-                        'search[query]',
-                        $search['query'],
-                        ['class' => 'cols-full', 'placeholder' => "Id, Name"]
-                    ); ?>
-                </td>
-                <td><?=\CHtml::dropDownList('search[subspecialty_id]', $search['subspecialty_id'],
-                        \CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
+        <div id="set-filters" class="flex-layout row">
+            <button
+                    data-usage_code=""
+                    type="button"
+                    class="large js-set-select js-all-sets<?= !isset($search['usage_codes']) || empty($search['usage_codes']) ? ' green hint' : '' ?>"
+            >All Sets</button>
+
+            <?php $codes = [
+                    'COMMON_OPH' => 'Common Ophthalmic Drug Sets',
+                    'COMMON_SYSTEMIC' => 'Common Systemic Drug  Sets',
+                    'PRESCRIPTION_SET' => 'Prescription Drug Sets',
+                    'Drug' => 'Drug',
+                    'DrugTag' => 'Drug Tags',
+                    'Formulary' => 'Formulary Drugs',
+                    'MedicationDrug' => 'Medication Drug',
+            ]; ?>
+            <?php foreach ($codes as $usage_code => $desc) :?>
+                <button
+                        data-usage_code="<?=$usage_code;?>"
+                        type="button"
+                        class="large js-set-select <?=$isSelected($usage_code);?>"
+                ><?=$desc;?>
+                </button>
+            <?php endforeach; ?>
+        </div>
+
+        <hr class="">
+
+            <table class="cols-8">
+                <colgroup>
+                    <col class="cols-6">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                </colgroup>
+
+                <tbody>
+                <tr class="col-gap">
+                    <td>
+                        <?= \CHtml::textField(
+                            'search[query]',
+                            $search['query'],
+                            ['class' => 'cols-full', 'placeholder' => "Name"]
+                        ); ?>
+                    </td>
+
+                    <td><?= \CHtml::dropDownList('search[subspecialty_id]', $search['subspecialty_id'],
+                            \CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
                             ['empty' => '- Subspecialty -']
-                        )?>
-                </td>
-                <td>
-                    <?= \CHtml::dropDownList(
-                        'search[active]',
-                        $search['active'],
-                        [
-                            1 => 'Only Active',
-                            0 => 'Exclude Active',
-                        ],
-                        ['empty' => 'All']
-                    ); ?>
-                </td>
-                <td>
-                    <button class="blue hint" type="submit" id="et_search">Search</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                        ) ?>
+                    </td>
+                    <td><?= \CHtml::dropDownList('search[site_id]', $search['site_id'],
+                            \CHtml::listData(Site::model()->findAll(), 'id', 'name'),
+                            ['empty' => '- Site -']
+                        ) ?>
+                    </td>
+                    <td>
+                        <button class="blue hint" type="button" id="et_search">Search</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
     </form>
 </div>
 
-<div class="cols-5">
+<div class="cols-12">
     <form id="admin_DrugSets">
-    <table class="standard">
-        <colgroup>
-            <col class="cols-1">
-            <col class="cols-1">
-            <col class="cols-3">
-            <col class="cols-2">
-            <col class="cols-1">
-        </colgroup>
-        <thead>
-        <tr>
-            <th><?= \CHtml::checkBox('selectall'); ?></th>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Subspecialty</th>
-            <th>Active</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($drug_sets as $set) : ?>
-            <tr class="clickable js-clickable" data-id="<?php echo $set->id ?>"
-                data-uri="OphDrPrescription/admin/DrugSet/edit/<?= $set->id ?>">
-                <td>
-                    <input type="checkbox" name="DrugSet[id][]" value="<?= $set->id ?>"/>
-                </td>
-                <td><?= $set->id; ?></td>
-                <td><?= $set->name; ?></td>
-                <td><?= $set->subspecialty->name; ?></td>
-                <td><i class="oe-i <?=($set->active ? 'tick' : 'remove');?> small"></i></td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-        <tfoot class="pagination-container">
+        <table id="drugset-list" class="standard">
+            <colgroup>
+                <col class="cols-1" style="width:3.33333%">
+                <col class="cols-1" style="width:3.33333%">
+                <col class="cols-2">
+                <col class="cols-4">
+                <col class="cols-1">
+                <col class="cols-1">
+            </colgroup>
+            <thead>
             <tr>
-                <td colspan="5">
-                    <?=\CHtml::submitButton('Add', [
-                            'id' => 'et_add',
-                            'data-uri' => "/OphDrPrescription/admin/drugSet/edit",
-                            'class' => 'button large'
-                    ]);?>
-                    <?=\CHtml::submitButton('Delete', [
+                <th><?= \CHtml::checkBox('selectall'); ?></th>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Rule</th>
+                <th>Count</th>
+                <th>Hidden/system</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+                <?php
+                    foreach ($data_provider->getData() as $set) {
+                        $this->renderPartial('_row', ['set' => $set]);
+                    }
+                ?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="4">
+                    <?= \CHtml::submitButton('Add', [
+                        'id' => 'et_add',
+                        'data-uri' => "/OphDrPrescription/admin/drugSet/edit",
+                        'class' => 'button large'
+                    ]); ?>
+                    <?= \CHtml::submitButton('Delete', [
                         'id' => 'et_delete',
                         'data-uri' => '/OphDrPrescription/admin/drugSet/delete',
                         'class' => 'button large',
                         'data-object' => 'DrugSet'
-                    ]);?>
+                    ]); ?>
+                </td>
+                <td colspan="4">
+                    <?php $this->widget('LinkPager', ['pages' => $data_provider->pagination]); ?>
                 </td>
             </tr>
-        </tfoot>
-    </table>
+            </tfoot>
+        </table>
     </form>
 </div>
+
+<script type="text/html" id="medication_set_template" style="display:none">
+    <tr>
+        <td><input type="checkbox" value="{{id}}" name="delete-ids[]" /></td>
+        <td>{{id}}</td>
+        <td>{{name}}</td>
+        <td>{{rules}}</td>
+        <td>{{count}}</td>
+        <td>{{hidden}}</td>
+        <td><a href="/OphDrPrescription/admin/drugset/edit/{{id}}" class="button">Edit</a></td>
+    </tr>
+</script>
+
+<script>
+    var drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController();
+</script>

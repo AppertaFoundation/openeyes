@@ -82,6 +82,14 @@ class BaseActiveRecord extends CActiveRecord
         return $this;
     }
 
+    public function autoValidateAndSaveRelation($save = false)
+    {
+        $this->auto_validate_relations = $save;
+        $this->auto_update_relations = $save;
+
+        return $this;
+    }
+
     public function canAutocomplete()
     {
         return false;
@@ -794,9 +802,10 @@ class BaseActiveRecord extends CActiveRecord
     /**
      * @param $rel_name
      */
-    private function validateRelation($rel_name)
+    private function validateRelation($rel_name, $fk)
     {
         foreach ($this->$rel_name as $i => $rel_obj) {
+            $rel_obj->$fk = $this->id;
             if (!$rel_obj->validate()) {
                 foreach ($rel_obj->getErrors() as $fld => $err) {
                     $this->addError($rel_name, ($i + 1) . ' - '.implode(', ', $err));
@@ -816,7 +825,7 @@ class BaseActiveRecord extends CActiveRecord
             foreach ($record_relations as $rel_name => $rel) {
                 $rel_type = get_class($rel);
                 if ($rel_type == self::HAS_MANY) {
-                    $this->validateRelation($rel_name);
+                    $this->validateRelation($rel_name, $rel->foreignKey);
                 }
             }
         }
