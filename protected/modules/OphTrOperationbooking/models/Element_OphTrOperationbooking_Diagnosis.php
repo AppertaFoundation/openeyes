@@ -130,21 +130,28 @@ class Element_OphTrOperationbooking_Diagnosis extends BaseEventTypeElement
      */
     protected function afterSave()
     {
+        $patient_has_disorder = true;
+        if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id in (' . $this->eye_id . ',3)', array($this->event->episode->patient_id, $this->disorder_id))) {
+            if (!Episode::model()->find('patient_id=? and disorder_id=? and eye_id in (' . $this->eye_id . ',3)', array($this->event->episode->patient_id, $this->disorder_id))) {
+                $patient_has_disorder = false;
+            }
+        }
+
         if (!$this->event->episode->eye && !$this->event->episode->disorder_id) {
-            $this->event->episode->setPrincipalDiagnosis($this->disorder_id, $this->eye_id , (isset($this->date) ? $this->date : false));
+            if (!$patient_has_disorder) {
+                $this->event->episode->setPrincipalDiagnosis($this->disorder_id, $this->eye_id, (isset($this->date) ? $this->date : false));
 
-            if ($sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id = ?', array($this->event->episode->patient_id, $this->disorder_id, 3))) {
-                $this->event->episode->patient->removeDiagnosis($sd->id);
+                if ($sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id = ?', array($this->event->episode->patient_id, $this->disorder_id, 3))) {
+                    $this->event->episode->patient->removeDiagnosis($sd->id);
 
-                if (in_array($this->eye_id, array(1, 2))) {
-                    $this->event->episode->patient->addDiagnosis($this->disorder_id, $this->eye_id == 1 ? 2 : 1);
+                    if (in_array($this->eye_id, array(1, 2))) {
+                        $this->event->episode->patient->addDiagnosis($this->disorder_id, $this->eye_id == 1 ? 2 : 1);
+                    }
                 }
             }
         } else {
-            if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id in ('.$this->eye_id.',3)', array($this->event->episode->patient_id, $this->disorder_id))) {
-                if (!Episode::model()->find('patient_id=? and disorder_id=? and eye_id in ('.$this->eye_id.',3)', array($this->event->episode->patient_id, $this->disorder_id))) {
-                    $this->event->episode->patient->addDiagnosis($this->disorder_id, $this->eye_id);
-                }
+            if (!$patient_has_disorder) {
+                $this->event->episode->patient->addDiagnosis($this->disorder_id, $this->eye_id);
             }
         }
 
