@@ -78,7 +78,7 @@
                         medication_id: item.id,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
-                    'url': '/OphDrPrescription/admin/drugset/addMedicationToSet',
+                    'url': '/OphDrPrescription/admin/DrugSet/addMedicationToSet',
                     'dataType': 'json',
                     'beforeSend': function() {
 
@@ -135,7 +135,7 @@
                     medication_id: $a.data('med_id'),
                     YII_CSRF_TOKEN: YII_CSRF_TOKEN
                 },
-                'url': '/OphDrPrescription/admin/drugset/removeMedicationFromSet',
+                'url': '/OphDrPrescription/admin/DrugSet/removeMedicationFromSet',
                 'dataType': 'json',
                 'beforeSend': function() {
                     $('.js-delete-set-medication').find('i').addClass('disabled');

@@ -85,7 +85,7 @@ class DrugSetController extends BaseAdminController
 
         $data_provider->pagination = $pagination;
 
-        $this->render('/drugset/index', [
+        $this->render('/DrugSet/index', [
             'data_provider' => $data_provider,
             'search' => $filters
         ]);
@@ -228,7 +228,7 @@ class DrugSetController extends BaseAdminController
                 if($set->save()) {
                     $set->medicationSetRules = $relation;
                     if ($set->autoValidateAndSaveRelation(true)->validate() && $set->save()) {
-                        $this->redirect($is_new_record ? "/OphDrPrescription/admin/drugset/edit/{$set->id}" : "/OphDrPrescription/admin/drugset/index");
+                        $this->redirect($is_new_record ? "/OphDrPrescription/admin/DrugSet/edit/{$set->id}" : "/OphDrPrescription/admin/DrugSet/index");
                     }
                 }
             }
@@ -254,7 +254,7 @@ class DrugSetController extends BaseAdminController
 
         $data_provider->pagination = $pagination;
 
-        $this->render('/drugset/edit', ['medication_set' => $set, 'medication_data_provider' => $data_provider]);
+        $this->render('/DrugSet/edit', ['medication_set' => $set, 'medication_data_provider' => $data_provider]);
     }
 
     public function actionDelete()

@@ -11,7 +11,7 @@ $subspecialties = array_map(function ($e) {
 <h2>Edit Medication set</h2>
 <div class="row divider"></div>
 
-<form id="drugset-admin-form" action="/OphDrPrescription/admin/drugset/edit/<?=$medication_set->id;?>" method="post">
+<form id="drugset-admin-form" action="/OphDrPrescription/admin/DrugSet/edit/<?=$medication_set->id;?>" method="post">
     <div class="row flex-layout flex-top col-gap">
         <div class="cols-6">
             <table class="large">
@@ -101,7 +101,7 @@ $subspecialties = array_map(function ($e) {
     <?php if (!$medication_set->isNewRecord) :?>
     <div class="row divider"></div>
 
-    <?php $this->renderPartial('_meds_in_set', ['medication_set' => $medication_set, 'medication_data_provider' => $medication_data_provider]); ?>
+    <?php $this->renderPartial('/DrugSet/_meds_in_set', ['medication_set' => $medication_set, 'medication_data_provider' => $medication_data_provider]); ?>
 
     <?php endif; ?>
 

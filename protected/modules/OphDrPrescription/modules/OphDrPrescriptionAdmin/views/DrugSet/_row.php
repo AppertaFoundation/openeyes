@@ -5,5 +5,5 @@
     <td><?=$set->rulesString()?></td>
     <td><?=$set->itemsCount()?></td>
     <td><?=$set->hidden ? "Yes" : "No";?></td>
-    <td><a href="/OphDrPrescription/admin/drugset/edit/<?=$set->id?>" class="button">Edit</a></td>
+    <td><a href="/OphDrPrescription/admin/DrugSet/edit/<?=$set->id?>" class="button">Edit</a></td>
 </tr>

@@ -120,7 +120,7 @@
             <tbody>
                 <?php
                     foreach ($data_provider->getData() as $set) {
-                        $this->renderPartial('_row', ['set' => $set]);
+                        $this->renderPartial('/DrugSet/_row', ['set' => $set]);
                     }
                 ?>
             </tbody>
@@ -156,7 +156,7 @@
         <td>{{rules}}</td>
         <td>{{count}}</td>
         <td>{{hidden}}</td>
-        <td><a href="/OphDrPrescription/admin/drugset/edit/{{id}}" class="button">Edit</a></td>
+        <td><a href="/OphDrPrescription/admin/DrugSet/edit/{{id}}" class="button">Edit</a></td>
     </tr>
 </script>
 
