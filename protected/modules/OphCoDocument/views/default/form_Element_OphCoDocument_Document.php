@@ -252,14 +252,14 @@
             var document_rotate = $('#'+type+'_document_rotate').val();
             degree = Number(document_rotate)+Number(degree);
             var image_id = $('#Element_OphCoDocument_Document_'+type+'_document_id').val();
+            var image_src = $('#ophco-image-container-'+image_id+' img').attr('src');
+            var image_src = image_src.split('?');
+            var image_src = image_src[0];
+
             $('#ophco-image-container-'+image_id+' img').animate({  transform: degree }, {
                 step: function(deg,fx) {
-                    $(this).css({
-                        '-webkit-transform':'rotate('+deg+'deg)',
-                        '-moz-transform':'rotate('+deg+'deg)',
-                        '-webkit-transform-origin':'rotate('+deg+'deg)',
-                        'transform':'rotate('+deg+'deg)',
-                        'height':'50%',
+                    $(this).attr({
+                        'src':image_src+'?rotate='+degree
                     });
                     $('#'+type+'_document_rotate').val(degree);
                 }
