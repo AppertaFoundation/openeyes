@@ -1163,12 +1163,10 @@ class DefaultController extends \BaseEventTypeController
             if (array_key_exists("{$side}_values", $data) && $data["{$side}_values"]) {
                 foreach ($data["{$side}_values"] as $index => $values) {
                     // create a new event and set the event_date as selected iop date
-                    $examination_date = explode("-", $values['examination_date']);
-                    $year_format = (strlen($examination_date[2]) === 2 ? 'y' : 'Y');
                     $examinationEvent = new \Event();
                     $examinationEvent->episode_id = $element->event->episode_id;
                     $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
-                    $examinationEvent->event_date = \DateTime::createFromFormat('d-m-'.$year_format, $values['examination_date'])->format('Y-m-d');
+                    $examinationEvent->event_date = \DateTime::createFromFormat('d-m-Y', $values['examination_date'])->format('Y-m-d');
                     $examinationEvent->event_type_id = $element->event->event_type_id;
 
                     if (!$examinationEvent->save()) {
