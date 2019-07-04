@@ -20,7 +20,7 @@ class DrugSetController extends BaseAdminController
     /**
      * @var int
      */
-    public $itemsPerPage = 50;
+    public $itemsPerPage = 100;
 
     public $group = 'Drugs';
 

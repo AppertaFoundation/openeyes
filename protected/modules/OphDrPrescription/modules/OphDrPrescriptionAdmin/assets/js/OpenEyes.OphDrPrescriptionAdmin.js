@@ -130,6 +130,8 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
                         return Mustache.render($(controller.options.templateSelector).html(), data);
                     });
                     $(controller.options.tableSelector + ' tbody').html(rows.join(''));
+                    $('.empty-set').hide();
+                    $(controller.options.tableSelector + ', #search_query').show();
                 } else {
                     const text = search_term ? `for: <b>${search_term}</b>` : '';
                     $(controller.options.tableSelector + ' tbody').html("<tr class='no-result'><td colspan='3'><small>No result found " +  text + "</small>");
