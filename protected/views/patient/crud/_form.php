@@ -363,7 +363,7 @@ foreach ($ethnic_list as $key=>$item){
 
         <tr id="js-patient-gp-row">
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
-                Referring Practitioner
+                <?php echo Yii::app()->params['gp_label']; ?>
                 <br/>
                 <?= $form->error($patient, 'gp_id') ?>
             </td>

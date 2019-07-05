@@ -113,29 +113,18 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                   <td><?php echo Yii::app()->params['general_practitioner_label'].' Role' ?></td>
                   <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
               </tr>
-          <?php
-          if (Yii::app()->params['institution_code'] == 'CERA'){?>
               <?php if (($this->patient->gp_id)) {
                   $gp = Gp::model()->findByPk(array('id' => $this->patient->gp_id));
                   $practice = $gp->getAssociatePractice();
               }?>
               <tr>
                   <td><?php echo Yii::app()->params['gp_label']?> Address</td>
-                  <td> <?= $practice -> id ? $practice->getAddresslines() : 'Unknown' ?></td>
+                  <td> <?= $practice ? $practice->getAddresslines() : 'Unknown' ?></td>
               </tr>
               <tr>
                   <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
                   <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
               </tr>
-          <?php } else {?>
-              <td><?php echo Yii::app()->params['gp_label']?> Address</td>
-              <td><?= ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></td>
-              </tr>
-              <tr>
-                  <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
-                  <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
-              </tr>
-          <?php } ?>
           <?php if (isset($this->referredTo)){ ?>
               <tr>
                   <td><?php echo 'Referred to '?></td>
