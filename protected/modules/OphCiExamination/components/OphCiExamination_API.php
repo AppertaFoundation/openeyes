@@ -2376,10 +2376,8 @@ class OphCiExamination_API extends \BaseAPI
         if ($element) {
             $str = $element->status->name;
             if ($element->status->followup) {
-                $str .= " in {$element->followup_quantity} {$element->followup_period} by {$element->role->name}";
-                if ($element->role_comments != '') {
-                    $str .= " ({$element->role_comments})";
-                }
+                $str .= " in {$element->followup_quantity} {$element->followup_period}";
+                
             }
         }
         return $str;
