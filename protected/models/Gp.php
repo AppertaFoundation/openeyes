@@ -232,7 +232,7 @@ class Gp extends BaseActiveRecordVersioned
     }
 
     public function getGPROle(){
-        return ($this->contact->label->name?$this->contact->label->name:'');
+        return ($this->contact->label != null?$this->contact->label->name:'');
     }
 
     public function getAssociatedPractice($id){
@@ -242,9 +242,9 @@ class Gp extends BaseActiveRecordVersioned
                         JOIN address A ON C.id = A.contact_id
                         WHERE gp_id=$id";
         $command = $this->getDbConnection()->createCommand($query);
-        $practiceDetails = $command->queryAll();
-        if (isset ($practiceDetails)) {
-            return $practiceDetails[0];
+        $practiceDetails = $command->queryRow(false);
+        if ($practiceDetails != null) {
+            return $practiceDetails;
         }
         return '';
     }
