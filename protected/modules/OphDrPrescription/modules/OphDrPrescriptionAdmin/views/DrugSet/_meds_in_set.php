@@ -40,23 +40,72 @@
 </div>
 <div class="row flex-layout flex-stretch flex-right">
     <div class="cols-12">
-        <table id="meds-list" class="standard" id="rule_tbl" <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>>
+        <table id="meds-list" class="standard js-inline-edit" <!--id="rule_tbl"--> <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>
+            <colgroup>
+                <col class="cols-3">
+                <col class="cols-1">
+                <col class="cols-3">
+                <col class="cols-3" style="width:20%">
+            </colgroup>
             <thead>
                 <tr>
                     <th>Preferred Term</th>
+                    <th>Default dose</th>
+                    <th>Default route</th>
+                    <th>Default frequency</th>
+                    <th>Default duration</th>
                     <th style="text-align:center">Action</th>
                 </tr>
             </thead>
             <tbody>
+            <?php
+                $route_options = \Chtml::listData(\MedicationRoute::model()->findAll(), 'id', 'term');
+                $frequency_options = \Chtml::listData(\MedicationFrequency::model()->findAll(), 'id', 'term');
+                $duration_options = \Chtml::listData(\MedicationDuration::model()->findAll(), 'id', 'name');
+            ?>
             <?php foreach ($medication_data_provider->getData() as $k => $med) : ?>
-                <tr>
-                    <td><?= $med->preferred_term; ?></td>
-                    <td style="text-align:center"><a data-med_id="<?=$med->id;?>" class="js-delete-set-medication"><i class="oe-i trash"></i></a></td>
+                <?php $link = \MedicationSetItem::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $medication_set->id]);?>
+                <tr data-med_id="<?=$med->id?>">
+                    <td>
+                        <?= $med->preferred_term; ?>
+                        <?= \CHtml::activeHiddenField($link, 'id', ['class' => 'js-input']); ?>
+                        <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input']); ?>
+                    </td>
+                    <td>
+                        <span data-type="default_dose" data-fk="<?= $link->default_dose ? $link->default_dose : ''; ?>" class="js-text"><?= $link->default_dose ? $link->default_dose : '-'; ?></span>
+                        <?= \CHtml::activeTextField($link, 'default_dose', ['class' => 'js-input cols-full', 'style' => 'display:none']); ?>
+                    </td>
+                    <td>
+                        <span data-type="default_route" data-fk="<?= $link->defaultRoute ? $link->default_route_id : ''; ?>" class="js-text"><?= $link->defaultRoute ? $link->defaultRoute->term : '-'; ?></span>
+                        <?= \CHtml::activeDropDownList($link, 'default_route_id',
+                            $route_options,
+                            ['class' => 'js-input cols-full', 'style' => 'display:none']); ?>
+                    </td>
+                    <td>
+                        <span data-type="default_frequency" data-fk="<?= $link->defaultFrequency ? $link->default_frequency_id : ''; ?>" class="js-text"><?= $link->defaultFrequency ? $link->defaultFrequency->term : '-'; ?></span>
+                        <?= \CHtml::activeDropDownList($link, 'default_frequency_id',
+                            $frequency_options,
+                            ['class' => 'js-input cols-full', 'style' => 'display:none']); ?>
+                    </td>
+                    <td>
+                        <span data-type="default_duration" data-fk="<?= $link->defaultDuration ? $link->default_duration_id : ''; ?>" class="js-text"><?= $link->defaultDuration ? $link->defaultDuration->name : '-'; ?></span>
+                        <?= \CHtml::activeDropDownList($link, 'default_duration_id',
+                            $duration_options,
+                            ['class' => 'js-input', 'style' => 'display:none']); ?>
+                    </td>
+
+                    <td class="actions" style="text-align:center">
+                        <a data-action_type="edit" class="js-edit-set-medication"><i class="oe-i pencil"></i></a>
+                        <a data-action_type="delete" class="js-delete-set-medication"><i class="oe-i trash"></i></a>
+
+                        <a data-action_type="save" class="js-tick-set-medication" style="display:none"><i class="oe-i tick-green"></i></a>
+                        <a data-action_type="cancel" class="js-cross-set-medication" style="display:none"><i class="oe-i cross-red"></i></a>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
             <tfoot class="pagination-container">
-            <td colspan="5">
+            <td colspan="7">
                 <?php $this->widget('LinkPager', ['pages' => $medication_data_provider->pagination]); ?>
             </td>
             </tfoot>

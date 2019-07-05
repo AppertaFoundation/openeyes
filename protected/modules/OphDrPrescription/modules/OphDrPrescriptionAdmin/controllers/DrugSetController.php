@@ -187,6 +187,7 @@ class DrugSetController extends BaseAdminController
         $assetManager->publish($baseAssetsPath);
 
         Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.TableInlieEdit.js', \CClientScript::POS_HEAD);
 
         $set = new MedicationSet;
         $data = \Yii::app()->request->getParam('MedicationSet');
@@ -284,6 +285,33 @@ class DrugSetController extends BaseAdminController
 
         \Yii::app()->end();
 
+    }
+
+    public function actionUpdateMedicationDefaults()
+    {
+        $result['success'] = false;
+        if (\Yii::app()->request->isPostRequest) {
+            $set_id = \Yii::app()->request->getParam('set_id');
+            $data = \Yii::app()->request->getParam('MedicationSetItem', []);
+            $medication_data = \Yii::app()->request->getParam('Medication', []);
+
+            if ($set_id && isset($medication_data['id']) && $medication_data['id'] && isset($data['id'])) {
+
+                $item = \MedicationSetItem::model()->findByPk($data['id']);
+
+                if($item) {
+                    $item->default_dose = isset($data['default_dose']) ? $data['default_dose'] : $item->default_dose;
+                    $item->default_route_id = isset($data['default_route_id']) ? $data['default_route_id'] : $item->default_route_id;
+                    $item->default_frequency_id = isset($data['default_frequency_id']) ? $data['default_frequency_id'] : $item->default_frequency_id;
+                    $item->default_duration_id = isset($data['default_duration_id']) ? $data['default_duration_id'] : $item->default_duration_id;
+
+                    $result['success'] = $item->update();
+                }
+            }
+        }
+
+        echo \CJSON::encode($result);
+        \Yii::app()->end();
     }
 
     public function actionAddMedicationToSet()

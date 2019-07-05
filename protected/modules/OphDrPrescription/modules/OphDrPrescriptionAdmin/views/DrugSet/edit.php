@@ -96,7 +96,7 @@ $subspecialties = array_map(function ($e) {
     ]
 ); ?>
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken?>" />
-    <input type="hidden" class="js-search-data" data-name="set_id" value="<?=$medication_set->id;?>" />
+    <input type="hidden" class="js-search-data js-update-row-data" data-name="set_id" value="<?=$medication_set->id;?>" />
 
     <?php if (!$medication_set->isNewRecord) :?>
     <div class="row divider"></div>
@@ -129,11 +129,20 @@ $subspecialties = array_map(function ($e) {
 <script type="x-tmpl-mustache" id="medication_template" style="display:none">
     <tr>
         <td>{{preferred_term}}</td>
-        <td style="text-align:center"><a data-med_id="{{id}}" class="js-delete-set-medication"><i class="oe-i trash"></i></a></td>
+        <td style="text-align:center">
+            <a data-med_id="{{id}}" class="js-edit-set-medication"><i class="oe-i edit"></i></a>
+            <a data-med_id="{{id}}" class="js-delete-set-medication"><i class="oe-i trash"></i></a>
+        </td>
     </tr>
 </script>
 <script>
     var drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
+        tableSelector: '#meds-list',
+        searchUrl: '/OphDrPrescription/admin/Medication/search',
+        templateSelector: '#medication_template'
+    });
+
+    var tableInlineEditController = new OpenEyes.TableInlineEdit({
         tableSelector: '#meds-list',
         searchUrl: '/OphDrPrescription/admin/Medication/search',
         templateSelector: '#medication_template'
