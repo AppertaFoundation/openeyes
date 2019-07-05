@@ -133,6 +133,7 @@ class UserHotlistItem extends BaseActiveRecordVersioned
 
         $criteria->order = 't.last_modified_date DESC';
 
-        return $this->with('patient')->findAll($criteria);
+        // Eager loading of the patient data and the patient's contact data will boost performance when rendering each hotlist items.
+        return $this->with('patient', 'patient.contact')->findAll($criteria);
     }
 }
