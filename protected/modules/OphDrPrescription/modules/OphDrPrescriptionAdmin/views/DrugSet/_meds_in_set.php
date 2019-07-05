@@ -170,42 +170,4 @@
         booleanSearchFilterLabel: 'Include branded',
         booleanSearchFilterURLparam: 'include_branded'
     });
-
-    $(document).ready(function(){
-        $(drugSetController.options.tableSelector).on('click', '.js-delete-set-medication', function() {
-            const $tr = $(this).closest('tr');
-            const $a = $(this);
-            const $trash = $a.find('.oe-i.trash');
-
-            $.ajax({
-                'type': 'POST',
-                'data': {
-                    set_id: $('#MedicationSet_id').val(),
-                    medication_id: $a.data('med_id'),
-                    YII_CSRF_TOKEN: YII_CSRF_TOKEN
-                },
-                'url': '/OphDrPrescription/admin/DrugSet/removeMedicationFromSet',
-                'dataType': 'json',
-                'beforeSend': function() {
-                    $('.js-delete-set-medication').find('i').addClass('disabled');
-                    $('.js-delete-set-medication').removeClass('js-delete-set-medication');
-
-                    $trash.toggleClass('oe-i trash spinner as-icon');
-                },
-                'success': function (resp) {
-                    if (resp.success === true) {
-                        $a.replaceWith("<small style='color:red'>Removed</small>");
-                        $tr.fadeOut(1000, function(){ $(this).remove(); });
-                    }
-                },
-                'error': function(resp){
-                    alert('Remove medication from set FAILED. Please try again.');
-                    console.error(resp);
-                },
-                'complete': function(){
-                    drugSetController.refreshResult();
-                }
-            });
-        });
-    });
 </script>

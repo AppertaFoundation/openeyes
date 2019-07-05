@@ -11,7 +11,9 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     TableInlineEdit._defaultOptions = {
         tableSelector: '.js-inline-edit',
-        updateUrl: '/OphDrPrescription/admin/DrugSet/updateMedicationDefaults'
+        updateUrl: '/OphDrPrescription/admin/DrugSet/updateMedicationDefaults',
+        deleteUrl: '/OphDrPrescription/admin/DrugSet/removeMedicationFromSet',
+        onAjaxError: function() {}
     };
 
     TableInlineEdit.prototype.initTriggers = function () {
@@ -19,8 +21,6 @@ OpenEyes.UI = OpenEyes.UI || {};
         $(this.options.tableSelector + ' td.actions').on('click', 'a', function() {
             const $tr = $(this).closest('tr');
             const action = $(this).data('action_type');
-
-console.log(action);
 
             if (action === 'edit') {
                 controller.showEditControls($tr);
@@ -36,6 +36,11 @@ console.log(action);
         $(this.options.tableSelector + ' td.actions').on('click', 'a[data-action_type="save"]', function(){
             const $tr = $(this).closest('tr');
             controller.saveRow($tr);
+        });
+
+        $(this.options.tableSelector + ' td.actions').on('click', 'a[data-action_type="delete"]', function(){
+            const $tr = $(this).closest('tr');
+            controller.deleteRow($tr);
         });
     };
 
@@ -62,9 +67,6 @@ console.log(action);
         $tr.find('td.actions').find('a[data-action_type="edit"], a[data-action_type="delete"]').show();
     };
 
-
-
-
     TableInlineEdit.prototype.saveRow = function($tr)
     {
         let controller = this;
@@ -73,8 +75,6 @@ console.log(action);
         $.each( $tr.find('.js-input'), function(i, input) {
             const $input = $(input);
             data[$input.attr('name')] = $input.val();
-
-            console.log($input.attr('name'), $input.val());
         });
 
         data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
@@ -106,8 +106,11 @@ console.log(action);
                 }
             },
             'error': function(resp){
-                alert('Remove medication from set FAILED. Please try again.');
+                alert('Saving medication defaults FAILED. Please try again.');
                 console.error(resp);
+                if (typeof onAjaxError === 'function') {
+                    onAjaxError();
+                }
             },
             'complete': function(){
                 $actionsTd.find('.js-spinner-as-icon').remove();
@@ -115,6 +118,49 @@ console.log(action);
         });
     };
 
+    TableInlineEdit.prototype.deleteRow = function($tr)
+    {
+        const $actionsTd = $tr.find('td.actions');
+        const controller = this;
+        let data = {};
+
+        data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
+
+        $.each( $tr.find('.js-input'), function(i, input) {
+            const $input = $(input);
+            data[$input.attr('name')] = $input.val();
+        });
+
+        $.ajax({
+            'type': 'POST',
+            'data': data,
+            'url': controller.options.deleteUrl,
+            'dataType': 'json',
+            'beforeSend': function() {
+                controller.hideEditControls($tr);
+                controller.hideGeneralControls($tr);
+
+                const $spinner = '<div class="js-spinner-as-icon"><i class="spinner as-icon"></i></div>';
+                $actionsTd.append($spinner);
+            },
+            'success': function (resp) {
+                if (resp.success === true) {
+                    $actionsTd.append("<small style='color:red'>Deleted.</small>");
+                    $tr.fadeOut(1000, function(){ $(this).remove(); });
+                }
+            },
+            'error': function(resp){
+                alert('Remove medication from set FAILED. Please try again.');
+                console.error(resp);
+                if (typeof onAjaxError === 'function') {
+                    onAjaxError();
+                }
+            },
+            'complete': function(){
+                $actionsTd.find('.js-spinner-as-icon').remove();
+            }
+        });
+    };
     exports.TableInlineEdit = TableInlineEdit;
 
 }(OpenEyes));

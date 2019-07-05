@@ -145,7 +145,10 @@ $subspecialties = array_map(function ($e) {
     var tableInlineEditController = new OpenEyes.TableInlineEdit({
         tableSelector: '#meds-list',
         searchUrl: '/OphDrPrescription/admin/Medication/search',
-        templateSelector: '#medication_template'
+        templateSelector: '#medication_template',
+        onAjaxError: function() {
+            drugSetController.refreshResult();
+        }
     });
 
     $(function () {

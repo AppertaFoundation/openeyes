@@ -335,15 +335,14 @@ class DrugSetController extends BaseAdminController
     {
         $result['success'] = false;
         if (\Yii::app()->request->isPostRequest) {
-            $set_id = \Yii::app()->request->getParam('set_id');
-            $medication_id = \Yii::app()->request->getParam('medication_id');
+            $item = \Yii::app()->request->getParam('MedicationSetItem');
 
-            if($set_id && $medication_id) {
-                $affected_rows = \MedicationSetItem::model()->deleteAllByAttributes(['medication_id' => $medication_id, 'medication_set_id' => $set_id]);
+            if(isset($item['id'])) {
+                $affected_rows = \MedicationSetItem::model()->deleteByPk($item['id']);
                 $result['success'] = (bool)$affected_rows;
             } else {
                 $result['success'] = false;
-                $result['error'] = "Missing parameter.";
+                $result['error'] = "Missing ID.";
             }
         }
 
