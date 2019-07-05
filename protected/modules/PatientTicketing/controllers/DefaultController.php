@@ -285,6 +285,13 @@ class DefaultController extends \BaseModuleController
                             $filter_options[$k] = $param;
                         }
                     }
+
+                    if(empty($filter_options) && !empty(Yii::app()->session['patientticket_filter'])) {
+                    	$filter_options = Yii::app()->session['patientticket_filter'];
+                    	$redir = array_merge(['/PatientTicketing/default'], $filter_options, ['cat_id' => $category->getID()]);
+                    	$this->redirect($redir);
+					}
+
                     $filter_options['category-id'] = $category->getID();
 
                 Yii::app()->session['patientticket_filter'] = $filter_options;
