@@ -233,6 +233,12 @@ class DefaultController extends \BaseModuleController
 
         $cat_id = Yii::app()->request->getParam('cat_id');
         $qs_id = Yii::app()->request->getParam('queueset_id');
+		$reset_filters = Yii::app()->request->getParam('reset_filters', false);
+		if($reset_filters) {
+			Yii::app()->session['patientticket_filter'] = [];
+			unset($_GET['reset_filters']);
+		}
+
         $unset_patientticketing = Yii::app()->request->getParam('unset_patientticketing');
         $patient_ids = Yii::app()->request->getParam('patient-ids', []);
 
@@ -286,15 +292,15 @@ class DefaultController extends \BaseModuleController
                         }
                     }
 
-                    if(empty($filter_options) && !empty(Yii::app()->session['patientticket_filter'])) {
+                    if(empty($filter_options) && !empty(Yii::app()->session['patientticket_filter']) && !$reset_filters) {
                     	$filter_options = Yii::app()->session['patientticket_filter'];
                     	$redir = array_merge(['/PatientTicketing/default'], $filter_options, ['cat_id' => $category->getID()]);
                     	$this->redirect($redir);
 					}
 
-                    $filter_options['category-id'] = $category->getID();
+				Yii::app()->session['patientticket_filter'] = $filter_options;
 
-                Yii::app()->session['patientticket_filter'] = $filter_options;
+				$filter_options['category-id'] = $category->getID();
 
                 $criteria = $this->buildTicketFilterCriteria($filter_options, $queueset);
 
