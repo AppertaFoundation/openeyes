@@ -24,6 +24,7 @@
  * @property int $id
  * @property int $proc_id
  * @property int $subspecialty_id
+ * @property int $display_order
  *
  * The followings are the available model relations:
  * @property Subspecialty $subspecialty
@@ -58,6 +59,16 @@ class ProcedureSubspecialtyAssignment extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('proc_id, subspecialty_id', 'required'),
+            array('proc_id', 'exist',
+              'attributeName' => 'id',
+              'className' => 'Procedure',
+              'message' => 'The specified procedure does not exist.',
+              ),
+            array('subspecialty_id', 'exist',
+              'attributeName' => 'id',
+              'className' => 'Subspecialty',
+              'message' => 'The specified subspecialty does not exist.',
+              ),
             array('proc_id, subspecialty_id', 'length', 'max' => 10),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
