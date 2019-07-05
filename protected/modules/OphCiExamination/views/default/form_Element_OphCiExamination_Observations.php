@@ -30,7 +30,7 @@
                 <tr>
                     <td>
                         <label for="<?= CHtml::modelName($element) . '_blood_pressure_systolic'; ?>">
-                            <?= $element->getAttributeLabel('blood_pressure') ?>:
+                            <?= $element->getAttributeLabel('blood_pressure') ?> (mmHg/mmHg)
                         </label>
                     </td>
                     <td colspan="2">
@@ -42,35 +42,32 @@
                             ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
                             'style' => 'display:inline-block;', 'tabindex' => '2']); ?>
                     </td>
-                    <td>mmHg/mmHg</td>
                 </tr>
                 <tr>
-                    <td colspan="2">
+                    <td>
                         <label for="<?= CHtml::modelName($element) . '_blood_glucose'; ?>">
-                            <?= $element->getAttributeLabel('blood_glucose') ?>:
+                            <?= $element->getAttributeLabel('blood_glucose') ?> (mmol/l)
                         </label>
                     </td>
-                    <td>
+                    <td colspan="2">
                         <?= CHtml::activeTextField($element, 'blood_glucose',
-                            ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
                             'tabindex' => '5']); ?>
                     </td>
-                    <td>mmol/l</td>
                 </tr>
                 <tr>
-                    <td colspan="2">
+                    <td>
                         <label for="<?= CHtml::modelName($element) . '_weight'; ?>">
-                            <?= $element->getAttributeLabel('weight') ?>:
+                            <?= $element->getAttributeLabel('weight') ?> (kg)
                         </label>
                     </td>
-                    <td>
+                    <td colspan="2">
                         <div class="bmi-keyup-event">
                             <?= CHtml::activeTextField($element, 'weight',
-                                ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
                                 'tabindex' => '7']); ?>
                         </div>
                     </td>
-                    <td>kg</td>
 
                 </tr>
                 </tbody>
@@ -87,29 +84,27 @@
                 <tr>
                     <td>
                         <label for="<?= CHtml::modelName($element) . '_o2_sat'; ?>">
-                            O<sub>2</sub> Sat (air):
+                            O<sub>2</sub> Sat (air)
                         </label>
                     </td>
                     <td>
                         <?= CHtml::activeTextField($element, 'o2_sat', ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'], 'tabindex' => '3']); ?>
                     </td>
-                    <td>%</td>
                 </tr>
                 <tr>
                     <td>
                         <label for="<?= CHtml::modelName($element) . '_hba1c'; ?>">
-                            <?= $element->getAttributeLabel('hba1c') ?>:
+                            <?= $element->getAttributeLabel('hba1c') ?>
                         </label>
                     </td>
                     <td>
                         <?= CHtml::activeTextField($element, 'hba1c', ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'], 'tabindex' => '6']); ?>
                     </td>
-                    <td>mmol/mol</td>
                 </tr>
                 <tr>
                     <td>
                         <label for="<?= CHtml::modelName($element) . '_height'; ?>">
-                            <?= $element->getAttributeLabel('height') ?>:
+                            <?= $element->getAttributeLabel('height') ?> (cm)
                         </label>
                     </td>
                     <td>
@@ -119,7 +114,6 @@
                                 'tabindex' => '8']); ?>
                         </div>
                     </td>
-                    <td>cm</td>
                 </tr>
 
                 </tbody>
@@ -133,9 +127,9 @@
                     <col class="cols-2">                </colgroup>
                 <tbody>
                 <tr>
-                    <td>
+                    <td colspan="2">
                         <label for="<?= CHtml::modelName($element) . '_pulse'; ?>">
-                            <?= $element->getAttributeLabel('pulse') ?>:
+                            <?= $element->getAttributeLabel('pulse') ?> (bpm)
                         </label>
                     </td>
                     <td>
@@ -143,19 +137,17 @@
                         ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
                         'tabindex' => '4']); ?>
                     </td>
-                    <td>BPM</td>
                 </tr>
                 <tr>
                     <td colspan="2">
                         <label>
-                            BMI:
+                            BMI
                         </label>
                     </td>
                     <td>
-                        <div class="large-3 column" id="bmi-container">
-
+                        <div  id="bmi-container" style="text-align: center">
+                            <label class="large-3 column">&nbsp;</label>
                         </div>
-                        <label class="large-3 column">&nbsp;</label>
                     </td>
                 </tr>
                 </tbody>
@@ -195,7 +187,7 @@
                 }
             }
             $bmiContainer.text(result);
-            $bmiContainer.closest("tr").css("background-color", "rgb("+red+", "+green+", 0%)");
+            $bmiContainer.css("background-color", "rgb("+red+", "+green+", 0%)");
         }
     });
 </script>
