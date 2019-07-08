@@ -65,6 +65,8 @@ EOH;
             $dmd_name = $worksheet->getCell("C".$row);
             $this->updateDrug($name, $snomed, $dmd_name);
         }
+        // run medication_merge!
+        MedicationMerge::model()->mergeAll();
     }
 
     /**
@@ -80,11 +82,23 @@ EOH;
             // set values for the drug
             $current_drug->national_code=$national_code;
 
+            // check for medication ID
+            $current_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LEGACY' AND source_subtype='drug'", array(":old_id"=>$current_drug->id));
+            $target_medication = Medication::model()->find("preferred_code = :national_code AND source_type='DM+D'", array(":national_code"=>$national_code));
+
             $new_merge = new MedicationMerge();
             $new_merge->source_drug_id = $current_drug->id;
+            if($current_medication)
+            {
+                $new_merge->source_medication_id = $current_medication->id;
+            }
             $new_merge->source_name = $current_drug->name;
             $new_merge->target_code = $national_code;
             $new_merge->target_name = $dmd_name;
+            if($target_medication)
+            {
+                $new_merge->target_id = $target_medication->id;
+            }
 
             $trans = Yii::app()->db->beginTransaction();
 

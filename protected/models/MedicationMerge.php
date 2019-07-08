@@ -97,7 +97,54 @@ class MedicationMerge extends BaseActiveRecord
             // several cases need to be handled here:
             // 1. source_drug_id set / target_medication_id not set -> search by target_code
             // 2. source_medication_id set / target_medication_id set
+            if(!$merge_row->source_medication_id || $merge_row->source_medication_id == '')
+            {   
+                if($merge_row->source_drug_id > 0)
+                {
+                    $source_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LEGACY' AND source_subtype='drug'", array(":old_id"=>$merge_row->source_drug_id));
+                    $merge_row->source_medication_id = $source_medication->id;
+                }else
+                {
+                    continue;
+                }
+            }else
+            {
+                $source_medication = Medication::model()->findByPk($merge_row->source_medication_id);
+            }
             
+            if(!$merge_row->target_id || $merge_row->target_id == '')
+            {
+                $target_medication = Medication::model()->find("preferred_code = :national_code AND source_type='DM+D'", array(":national_code"=>$merge_row->target_code));
+                if($target_medication){
+                    $merge_row->target_id = $target_medication->id;
+                }else
+                {
+                    // we cannot merge without ID!
+                    continue;
+                }
+            }
+
+            $all_event_uses = EventMedicationUse::model()->findAllByAttributes(array("medication_id"=>$merge_row->source_medication_id));
+
+            foreach($all_event_uses as $event_use)
+            {
+                $event_use->medication_id = $merge_row->target_id;
+                if(!$event_use->save(false))
+                {
+                    echo "Cannot save event use: ".$event_use->id." for medication: ".$merge_row->target_code."\n";
+                }
+            }
+            $source_medication->deleted_date = date("Y-m-d");
+            if(!$source_medication->save(false))
+            {
+                echo "Cannot deactivate medication: ".$source_medication->id."\n";
+            }
+            $merge_row->merge_date = date("Y-m-d H:i:s");
+            $merge_row->status = 0;
+            if(!$merge_row->save(false))
+            {
+                echo "Cannot close merge ".$merge_row->id."\n";
+            }
         }
     }
 }
