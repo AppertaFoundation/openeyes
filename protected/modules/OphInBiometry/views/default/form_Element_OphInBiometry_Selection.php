@@ -61,3 +61,22 @@
         <?php } ?>
     <?php endforeach; ?>
 </div>
+
+<script type="text/javascript">
+    $('.js-manually-override-lens-selection').on('click', function () {
+        let checked = $(this).is(':checked');
+        let $form = $(this).closest('.active-form');
+        let $manual_override_container = $form.find('.js-manual-override');
+        let $auto_values_container = $form.find('.js-auto-values');
+
+        $manual_override_container.toggle(checked);
+        $manual_override_container.find('input,select').prop("disabled", !checked);
+        $auto_values_container.find('input,select').prop("disabled", checked);
+        $auto_values_container.toggle(!checked);
+    });
+
+    $(document).ready(function () {
+        $('.js-disable-data-group').find('input').prop("disabled", true);
+    });
+
+</script>
