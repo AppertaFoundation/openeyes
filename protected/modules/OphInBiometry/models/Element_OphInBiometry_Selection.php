@@ -211,4 +211,16 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
     {
         return true;
     }
+
+    public function beforeSave()
+    {
+        // We want to delete the formula if the side is manually overridden as you cannot set formula id
+        // When it's in manual override
+        foreach (['left', 'right'] as $eye_side) {
+            if ($this->{"manually_overriden_" . $eye_side}) {
+                $this->{"formula_id_" . $eye_side} = null;
+            }
+        }
+        return parent::beforeSave();
+    }
 }
