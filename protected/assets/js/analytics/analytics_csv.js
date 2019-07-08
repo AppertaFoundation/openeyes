@@ -57,11 +57,12 @@ function current_custom_data_to_csv(additional_type,anonymized=false){
     data.forEach(function (item) {
         let item_patient = $('#'+item['patient_id']);
         let patient_name = item_patient.find('.js-csv-name').html();
+        let diagnoses = item_patient.find('.js-csv-diagnoses').html();
         patient_name = patient_name.split(' ');
         item = {
             'left':item['left'],
             'right':item['right'],
-            'diagnoses':item_patient.find('.js-csv-diagnoses').html().replace(/,/g,'|'),
+            diagnoses == undefined ? "" : diagnoses.replace(/,/g,'|'),
             'hos_num':item_patient.find('.js-csv-hos_num').html(),
             'age':item_patient.find('.js-csv-age').html(),
             'dob':item_patient.find('.js-csv-dob').html(),
