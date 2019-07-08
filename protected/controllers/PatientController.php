@@ -2237,29 +2237,25 @@ class PatientController extends BaseController
         $output = array();
         foreach($gps as $gp){
             $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
+            $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
+            $practiceDetails = $gp->getAssociatedPractice($gp->id);
+            $practiceId = $practiceDetails['id'];
             if (isset($practice_contact_associate->practice)){
                 $practice = $practice_contact_associate->practice;
-                $practiceNameAddress = $practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():'';
-                $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
-                $practiceDetails = $gp->getAssociatedPractice($gp->id);
-                $practiceId = $practiceDetails;
+                $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
                 $output[] = array(
                     'label' => $gp->correspondenceName.$role.$practiceNameAddress,
                     'value' => $gp->id,
                     'practiceId' => $practiceId
                 );
             }
-            else{
-                $practiceDetails = $gp->getAssociatedPractice($gp->id);
-                $practiceId = $practiceDetails;
-                $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
+            else {
                 $output[] = array(
                     'label' => $gp->correspondenceName.$role,
                     'value' => $gp->id,
                     'practiceId' => $practiceId
                 );
             }
-
         }
         echo CJSON::encode($output);
         Yii::app()->end();

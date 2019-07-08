@@ -242,7 +242,7 @@ class Gp extends BaseActiveRecordVersioned
                         JOIN address A ON C.id = A.contact_id
                         WHERE gp_id=$id";
         $command = $this->getDbConnection()->createCommand($query);
-        $practiceDetails = $command->queryRow(false);
+        $practiceDetails = $command->queryRow();
         if ($practiceDetails != null) {
             return $practiceDetails;
         }
