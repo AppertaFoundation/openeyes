@@ -119,7 +119,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
               }?>
               <tr>
                   <td><?php echo Yii::app()->params['gp_label']?> Address</td>
-                  <td> <?= $practice ? $practice->getAddresslines() : 'Unknown' ?></td>
+                  <td> <?= isset($practice) ? $practice->getAddresslines() : 'Unknown' ?></td>
               </tr>
               <tr>
                   <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
