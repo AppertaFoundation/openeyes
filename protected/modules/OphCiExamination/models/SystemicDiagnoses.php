@@ -331,7 +331,8 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 		$event = \Event::model()->findByPk($this->event_id);
 		/** @var \Patient $patient */
 		$patient = $event->getPatient();
-		if($et = $api->getLatestElement(SystemicDiagnoses::class, $patient)) {
+		$et = $api->getLatestElement(SystemicDiagnoses::class, $patient);
+		if($et) {
 			// There is an earlier element: revert diagnoses
 			/** @var SystemicDiagnoses $et */
 			$et->updatePatientLevelSystemicDiagnoses();
