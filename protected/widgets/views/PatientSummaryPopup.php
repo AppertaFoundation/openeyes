@@ -138,7 +138,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                   if ($index > 3) {
                       break;
                   }
-                  if (isset($pca->gp)) {
+                  if (isset($pca->gp) && ($this->patient->gp->contact->id !== $pca->gp->contact->id)) {
                       $gp = $pca->gp; ?>
                       <tr>
                           <td>
