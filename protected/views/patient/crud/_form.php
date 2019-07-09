@@ -323,6 +323,44 @@ foreach ($ethnic_list as $key=>$item){
         <div class="row divider">
             <table class="standard highlight-rows">
                 <tbody>
+
+								<?php if (Yii::app()->params['institution_code']=='CERA'): ?>
+									<tr>
+										<td>
+											<label for="contact">Contacts</label>
+										</td>
+										<td>
+											<?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_extra_gps_id']); ?>
+											<div id="selected_extra_gps_wrapper">
+												<ul class="oe-multi-select js-selected_extra_gps">
+													<?php
+													if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)){
+														foreach ($patient->patientContactAssociates as $patientContactAssociate){
+															$gp = $patientContactAssociate->gp;
+															$practice  = $gp->getAssociatePractice();
+															$practiceDetails = $gp->getAssociatedPractice($gp->id);
+															$practiceNameAddress = $practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():'';
+															$role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
+															//The line below is to ensure a newly added referring practitioner does not show up in the list of contacts also
+															if($gp->id != $patient->gp_id){
+																?>
+																<li><span class="js-name" style="text-align:justify"><?=$gp->getCorrespondenceName().$role.$practiceNameAddress?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
+															<?php }
+														}
+													}
+													?>
+												</ul>
+											</div>
+											<?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
+												<a id="js-add-contact-btn2" href="#">Add New Contact</a>
+											<?php } ?>
+											<div id="no_extra_gps_result" style="display: none;">
+												<div>No result</div>
+											</div>
+										</td>
+									</tr>
+								<?php endif; ?>
+
         <tr id="js-patient-gp-row">
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                 Referring Practitioner
@@ -377,44 +415,6 @@ foreach ($ethnic_list as $key=>$item){
 
             </td>
         </tr>
-
-
-        <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
-          <tr>
-            <td>
-                <label for="contact">Contacts</label>
-            </td>
-            <td>
-                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_extra_gps_id']); ?>
-              <div id="selected_extra_gps_wrapper">
-                <ul class="oe-multi-select js-selected_extra_gps">
-                    <?php
-                        if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)){
-                            foreach ($patient->patientContactAssociates as $patientContactAssociate){
-                                $gp = $patientContactAssociate->gp;
-                                $practice  = $gp->getAssociatePractice();
-                                $practiceDetails = $gp->getAssociatedPractice($gp->id);
-                                $practiceNameAddress = $practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():'';
-                                $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
-                                //The line below is to ensure a newly added referring practitioner does not show up in the list of contacts also
-                                if($gp->id != $patient->gp_id){
-                                ?>
-                                <li><span class="js-name" style="text-align:justify"><?=$gp->getCorrespondenceName().$role.$practiceNameAddress?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
-                            <?php }
-                            }
-                        }
-                    ?>
-                </ul>
-              </div>
-                <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
-                  <a id="js-add-contact-btn2" href="#">Add New Contact</a>
-                <?php } ?>
-              <div id="no_extra_gps_result" style="display: none;">
-                <div>No result</div>
-              </div>
-            </td>
-          </tr>
-        <?php endif; ?>
 
         <tr>
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
