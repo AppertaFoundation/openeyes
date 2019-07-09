@@ -1102,8 +1102,19 @@ class AnalyticsController extends BaseController
                           'visible' => true,
                           'color' => '#aaa',
                           'thickness' => 1
-                      )
-                  ),
+														),
+													'hoverinfo' => 'text',
+													'hovertext' => array_map(
+															function ($item) {
+																$cVal = (float)$item['average'];
+																if (isset($this->filters['plot_va_change_initial_va_value'])){
+																	$cVal -= (float)$this->filters['plot_va_change_initial_va_value'];
+																}
+																	return "Average: " . $cVal . "<br> SD: " . $item['SD'] ."<br> Patient No: ".count($item['patients']);
+															},
+															array_values(${$side . '_va_list'})
+														),
+									),
                   array(
                       'yaxis' => 'y2',
                       'x' => array_keys(${$side.'_second_list'}),
@@ -1126,9 +1137,15 @@ class AnalyticsController extends BaseController
                           'visible' => true,
                           'color' => '#aaa',
                           'thickness' => 1
-                      )
-                  )
-              );
+														),
+													'hoverinfo' => 'text',
+													'hovertext' => array_map(
+														function ($item) {
+																return "Average: " . $item['average'] . "<br> SD: " . $item['SD'] . "<br> Patient No: " . count($item['patients']);
+														},array_values(${$side . '_second_list'})
+													),
+												)
+										);
           }
           $custom_data['csv_data']=$this->custom_csv_data;
       }
