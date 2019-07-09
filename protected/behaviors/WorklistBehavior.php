@@ -102,6 +102,8 @@ class WorklistBehavior extends CBehavior
 
     public function addToUnbookedWorklist($site_id, $firm_id)
     {
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty = $firm->subspecialty ? $firm->subspecialty : null;
         $patient_id = isset($this->owner->patient->id) ? $this->owner->patient->id : null;
 
         /**
@@ -127,12 +129,11 @@ class WorklistBehavior extends CBehavior
             }
         }
 
-        if($this->owner->event && !$this->owner->event->worklist_patient_id) {
+        // for Eye Casualty events, the only time the patient wont be added to todays Eye Casualty unbooked worklist is if they already have a "booked" eye casualty appointment for today
+        if($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE')) {
 
             $unbooked_worklist_manager = new \UnbookedWorklist();
-            $firm = \Firm::model()->findByPk($firm_id);
-            $subspecialty_id = isset($firm->subspecialty->id) ? $firm->subspecialty->id : null;
-            $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty_id);
+            $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
             if ($unbooked_worklist) {
                 $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
                 if($worklist_patient) {
@@ -160,4 +161,3 @@ class WorklistBehavior extends CBehavior
             'internal_type' => '\WorklistPatient']);
     }
 }
-
