@@ -48,6 +48,8 @@ class MedicationController extends BaseAdminController
 
     public function actionSearch()
     {
+        $search = \Yii::app()->request->getParam('search');
+        $set_id = isset($search['set_id']) ? $search['set_id'] : null;
         $criteria = $this->getSearchCriteria();
         $data['items'] = [];
 
@@ -61,14 +63,33 @@ class MedicationController extends BaseAdminController
 
         $data_provider->pagination = $pagination;
 
-        $data['items'] = $data_provider->getData();
+        foreach ($data_provider->getData() as $med) {
+
+            $item = $med->attributes;
+            $link = \MedicationSetItem::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $set_id]);
+            if ($link) {
+                foreach (['default_dose', 'default_route_id', 'default_frequency_id', 'default_duration_id', 'default_dose_unit_term'] as $key) {
+                    $item[$key] = $link->{$key};
+                }
+
+                $item['default_route'] = $link->defaultRoute ? $link->defaultRoute->term : null;
+                $item['default_duration'] = $link->defaultDuration ? $link->defaultDuration->name : null;
+                $item['default_frequency'] = $link->defaultFrequency ? $link->defaultFrequency->term : null;
+                $item['set_item_id'] = $link->id;
+                $data['items'][] = $item;
+                $item = null;
+            }
+        }
 
         ob_start();
         $this->widget('LinkPager', ['pages' => $pagination]);
         $pagination = ob_get_clean();
         $data['pagination'] = $pagination;
 
+        header('Content-type: application/json');
         echo CJSON::encode($data);
         \Yii::app()->end();
     }
+
+
 }

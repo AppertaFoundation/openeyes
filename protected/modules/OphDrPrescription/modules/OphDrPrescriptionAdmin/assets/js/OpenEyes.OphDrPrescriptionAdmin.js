@@ -17,12 +17,12 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
     };
 
     DrugSetController.prototype.initTable = function () {
-        $(this.options.tableSelector + ' tbody tr').on('mouseenter', function(){ $(this).css({'background-color':'lightblue'}); });
-        $(this.options.tableSelector + ' tbody tr').on('mouseleave', function(){ $(this).css({'background-color':'unset'}); });
+        $(this.options.tableSelector).on('mouseenter', 'tbody tr', function(){ $(this).css({'background-color':'lightblue'}); });
+        $(this.options.tableSelector).on('mouseleave', 'tbody tr', function(){ $(this).css({'background-color':'unset'}); });
     };
 
     DrugSetController.prototype.initFilters = function () {
-        var controller = this;
+        let controller = this;
 
         $(document).on("keydown", "form", function(event) {
 
@@ -65,7 +65,13 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         });
     };
 
-    DrugSetController.prototype.refreshResult = function (page = 1, callback) {
+
+    DrugSetController.prototype.addRow = function(data)
+    {
+        return Mustache.render($(this.options.templateSelector).html(), data);
+    };
+
+    DrugSetController.prototype.refreshResult = function (page = 1, callback = null) {
         let controller = this;
         let data = {};
         let usage_codes = $('#set-filters button.green.hint').map(function (m, button) {
@@ -120,7 +126,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             success: function(data) {
                 let rows = [];
 
-                if (data.items && data.items.length){
+                if (data.items && data.items.length) {
                     rows = $.map(data.items, function(item) {
                         let data = {};
                         Object.keys(item).forEach(function(key) {

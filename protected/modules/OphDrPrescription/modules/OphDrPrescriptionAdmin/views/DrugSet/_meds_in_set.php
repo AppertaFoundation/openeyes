@@ -40,7 +40,7 @@
 </div>
 <div class="row flex-layout flex-stretch flex-right">
     <div class="cols-12">
-        <table id="meds-list" class="standard js-inline-edit" <!--id="rule_tbl"--> <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>
+        <table id="meds-list" class="standard js-inline-edit" <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>
             <colgroup>
                 <col class="cols-3">
                 <col class="cols-1">
@@ -59,9 +59,9 @@
             </thead>
             <tbody>
             <?php
-                $route_options = \Chtml::listData(\MedicationRoute::model()->findAll(), 'id', 'term');
-                $frequency_options = \Chtml::listData(\MedicationFrequency::model()->findAll(), 'id', 'term');
-                $duration_options = \Chtml::listData(\MedicationDuration::model()->findAll(), 'id', 'name');
+                $route_options = \CHtml::listData(\MedicationRoute::model()->findAll(), 'id', 'term');
+                $frequency_options = \CHtml::listData(\MedicationFrequency::model()->findAll(), 'id', 'term');
+                $duration_options = \CHtml::listData(\MedicationDuration::model()->findAll(), 'id', 'name');
             ?>
             <?php foreach ($medication_data_provider->getData() as $k => $med) : ?>
                 <?php $link = \MedicationSetItem::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $medication_set->id]);?>
@@ -72,26 +72,26 @@
                         <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input']); ?>
                     </td>
                     <td>
-                        <span data-type="default_dose" data-fk="<?= $link->default_dose ? $link->default_dose : ''; ?>" class="js-text"><?= $link->default_dose ? $link->default_dose : '-'; ?></span>
+                        <span data-type="default_dose" data-id="<?= $link->default_dose ? $link->default_dose : ''; ?>" class="js-text"><?= $link->default_dose ? $link->default_dose : '-'; ?></span>
                         <?= \CHtml::activeTextField($link, 'default_dose', ['class' => 'js-input cols-full', 'style' => 'display:none']); ?>
                     </td>
                     <td>
-                        <span data-type="default_route" data-fk="<?= $link->defaultRoute ? $link->default_route_id : ''; ?>" class="js-text"><?= $link->defaultRoute ? $link->defaultRoute->term : '-'; ?></span>
+                        <span data-type="default_route" data-id="<?= $link->defaultRoute ? $link->default_route_id : ''; ?>" class="js-text"><?= $link->defaultRoute ? $link->defaultRoute->term : '-'; ?></span>
                         <?= \CHtml::activeDropDownList($link, 'default_route_id',
                             $route_options,
-                            ['class' => 'js-input cols-full', 'style' => 'display:none']); ?>
+                            ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --']); ?>
                     </td>
                     <td>
-                        <span data-type="default_frequency" data-fk="<?= $link->defaultFrequency ? $link->default_frequency_id : ''; ?>" class="js-text"><?= $link->defaultFrequency ? $link->defaultFrequency->term : '-'; ?></span>
+                        <span data-type="default_frequency" data-id="<?= $link->defaultFrequency ? $link->default_frequency_id : ''; ?>" class="js-text"><?= $link->defaultFrequency ? $link->defaultFrequency->term : '-'; ?></span>
                         <?= \CHtml::activeDropDownList($link, 'default_frequency_id',
                             $frequency_options,
-                            ['class' => 'js-input cols-full', 'style' => 'display:none']); ?>
+                            ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --']); ?>
                     </td>
                     <td>
-                        <span data-type="default_duration" data-fk="<?= $link->defaultDuration ? $link->default_duration_id : ''; ?>" class="js-text"><?= $link->defaultDuration ? $link->defaultDuration->name : '-'; ?></span>
+                        <span data-type="default_duration" data-id="<?= $link->defaultDuration ? $link->default_duration_id : ''; ?>" class="js-text"><?= $link->defaultDuration ? $link->defaultDuration->name : '-'; ?></span>
                         <?= \CHtml::activeDropDownList($link, 'default_duration_id',
                             $duration_options,
-                            ['class' => 'js-input', 'style' => 'display:none']); ?>
+                            ['class' => 'js-input', 'style' => 'display:none', 'empty' => '-- select --']); ?>
                     </td>
 
                     <td class="actions" style="text-align:center">
@@ -112,6 +112,40 @@
         </table>
     </div>
 </div>
+<script type="x-tmpl-mustache" id="medication_template" style="display:none">
+    <tr data-med_id="{{id}}">
+        <td>
+            {{preferred_term}}
+            <input class="js-input" name="MedicationSetItem[id]" type="hidden" value="{{set_item_id}}">
+            <input class="js-input" name="Medication[id]" type="hidden" value="{{id}}">
+        </td>
+        <td>
+            <span data-type="default_dose" class="js-text" style="display: inline;">{{^default_dose}}-{{/default_dose}}{{#default_dose}}{{default_dose}}{{/default_dose}}</span>
+            <input class="js-input cols-full" style="display: none;" name="MedicationSetItem[default_dose]" id="MedicationSetItem_default_dose" type="text" value="{{default_dose}}">
+        </td>
+        <td>
+            <span data-id="{{#default_route_id}}{{default_route_id}}{{/default_route_id}}" data-type="default_route" class="js-text" style="display: inline;">{{^default_route}}-{{/default_route}}{{#default_route}}{{default_route}}{{/default_route}}</span>
+            <?=\CHtml::dropDownList('MedicationSetItem[default_route_id]', null, $route_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input', 'empty' => '-- select --']);?>
+        </td>
+        <td>
+            <span data-id="{{#default_frequency_id}}{{default_frequency_id}}{{/default_frequency_id}}" name="MedicationSetItem[default_frequency_id]" data-type="default_frequency" class="js-text" style="display: inline;">{{^default_frequency}}-{{/default_frequency}}{{#default_frequency}}{{default_frequency}}{{/default_frequency}}</span>
+            <?=\CHtml::dropDownList('MedicationSetItem[default_frequency_id]', null, $frequency_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input', 'empty' => '-- select --']);?>
+        </td>
+        <td>
+            <span data-id="{{#default_duration_id}}{{default_duration_id}}{{/default_duration_id}}" name="MedicationSetItem[default_duration_id]" data-type="default_duration" class="js-text" style="display: inline;">{{^default_duration}}-{{/default_duration}}{{#default_duration}}{{default_duration}}{{/default_duration}}</span>
+            <?=\CHtml::dropDownList('MedicationSetItem[default_duration_id]', null, $duration_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input', 'empty' => '-- select --']);?>
+        </td>
+        <td class="actions" style="text-align:center">
+            <a data-action_type="edit" class="js-edit-set-medication"><i class="oe-i pencil"></i></a>
+            <a data-action_type="delete" class="js-delete-set-medication"><i class="oe-i trash"></i></a>
+
+            <a data-action_type="save" class="js-tick-set-medication" style="display:none"><i class="oe-i tick-green"></i></a>
+            <a data-action_type="cancel" class="js-cross-set-medication" style="display:none"><i class="oe-i cross-red"></i></a>
+        </td>
+    </tr>
+</script>
+
+
 
 <script>
     new OpenEyes.UI.AdderDialog({
@@ -148,15 +182,21 @@
                     },
                     'complete': function(resp) {
                         const result = JSON.parse(resp.responseText);
-                        let callback;
+
                         if (result.success && result.success === true) {
-                            callback = function() {
-                                $('.alert-box.success').show();
-                                $('.alert-box.success').fadeOut(3000);
-                            }
+
+                            item.set_id = $('#MedicationSet_id').val();
+                            item.set_item_id = result.id;
+                            const $tr_html = Mustache.render($('#medication_template').html(), item);
+                            $(drugSetController.options.tableSelector + ' tbody').prepend($tr_html);
+                            const $tr = $table.find('tr:first-child');
+                            $tr.css({'background-color': '#3ba93b'});
+                            setTimeout(() => {
+                                $tr.find('.js-edit-set-medication').trigger('click');
+                                $tr.animate({'background-color': 'transparent'}, 2000);
+                            },500);
                         }
                         $('.oe-popup-wrap').remove();
-                        drugSetController.refreshResult(1, callback);
                     }
                 });
             });

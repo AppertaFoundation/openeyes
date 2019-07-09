@@ -292,20 +292,21 @@ class DrugSetController extends BaseAdminController
         $result['success'] = false;
         if (\Yii::app()->request->isPostRequest) {
             $set_id = \Yii::app()->request->getParam('set_id');
-            $data = \Yii::app()->request->getParam('MedicationSetItem', []);
+            $item_data = \Yii::app()->request->getParam('MedicationSetItem', []);
             $medication_data = \Yii::app()->request->getParam('Medication', []);
 
-            if ($set_id && isset($medication_data['id']) && $medication_data['id'] && isset($data['id'])) {
+            if ($set_id && isset($medication_data['id']) && $medication_data['id'] && isset($item_data['id'])) {
 
-                $item = \MedicationSetItem::model()->findByPk($data['id']);
+                $item = \MedicationSetItem::model()->findByPk($item_data['id']);
 
                 if($item) {
-                    $item->default_dose = isset($data['default_dose']) ? $data['default_dose'] : $item->default_dose;
-                    $item->default_route_id = isset($data['default_route_id']) ? $data['default_route_id'] : $item->default_route_id;
-                    $item->default_frequency_id = isset($data['default_frequency_id']) ? $data['default_frequency_id'] : $item->default_frequency_id;
-                    $item->default_duration_id = isset($data['default_duration_id']) ? $data['default_duration_id'] : $item->default_duration_id;
+                    $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
+                    $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
+                    $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
+                    $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
 
-                    $result['success'] = $item->update();
+                    $result['success'] = $item->save();
+                    $result['errors'] = $item->getErrors();
                 }
             }
         }
@@ -323,7 +324,9 @@ class DrugSetController extends BaseAdminController
             $medication_id = \Yii::app()->request->getParam('medication_id');
 
             if($set && $medication_id) {
-                $result['success'] = $set->addMedication($medication_id);
+                $id = $set->addMedication($medication_id);
+                $result['success'] = (bool)$id;
+                $result['id'] = $id;
             }
         }
 

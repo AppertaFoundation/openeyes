@@ -104,7 +104,6 @@ $subspecialties = array_map(function ($e) {
     <?php $this->renderPartial('/DrugSet/_meds_in_set', ['medication_set' => $medication_set, 'medication_data_provider' => $medication_data_provider]); ?>
 
     <?php endif; ?>
-
 </form>
 
 <script type="x-tmpl-mustache" id="rule_row_template" style="display:none">
@@ -126,15 +125,6 @@ $subspecialties = array_map(function ($e) {
     </td>
 </tr>
 </script>
-<script type="x-tmpl-mustache" id="medication_template" style="display:none">
-    <tr>
-        <td>{{preferred_term}}</td>
-        <td style="text-align:center">
-            <a data-med_id="{{id}}" class="js-edit-set-medication"><i class="oe-i edit"></i></a>
-            <a data-med_id="{{id}}" class="js-delete-set-medication"><i class="oe-i trash"></i></a>
-        </td>
-    </tr>
-</script>
 <script>
     var drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
         tableSelector: '#meds-list',
@@ -148,6 +138,9 @@ $subspecialties = array_map(function ($e) {
         templateSelector: '#medication_template',
         onAjaxError: function() {
             drugSetController.refreshResult();
+        },
+        onAjaxComplete: function() {
+            //drugSetController.refreshResult();
         }
     });
 

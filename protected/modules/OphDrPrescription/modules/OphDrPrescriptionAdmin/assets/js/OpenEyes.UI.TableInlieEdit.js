@@ -13,34 +13,95 @@ OpenEyes.UI = OpenEyes.UI || {};
         tableSelector: '.js-inline-edit',
         updateUrl: '/OphDrPrescription/admin/DrugSet/updateMedicationDefaults',
         deleteUrl: '/OphDrPrescription/admin/DrugSet/removeMedicationFromSet',
-        onAjaxError: function() {}
+        onAjaxError: function() {},
+        onAjaxComplete: function() {}
     };
 
     TableInlineEdit.prototype.initTriggers = function () {
         const controller = this;
-        $(this.options.tableSelector + ' td.actions').on('click', 'a', function() {
+        $(this.options.tableSelector).on('click', 'td.actions a', function() {
             const $tr = $(this).closest('tr');
             const action = $(this).data('action_type');
 
             if (action === 'edit') {
                 controller.showEditControls($tr);
                 controller.hideGeneralControls($tr);
-                $tr.find('.js-text, .js-input').toggle();
+                $tr.find('.js-text').hide();
+                controller.showEditFields($tr);
             } else if (action === 'cancel') {
                 controller.hideEditControls($tr);
                 controller.showGeneralControls($tr);
-                $tr.find('.js-text, .js-input').toggle();
+                $tr.find('.js-text').show();
+                $tr.find('.js-input').hide();
             }
         });
 
-        $(this.options.tableSelector + ' td.actions').on('click', 'a[data-action_type="save"]', function(){
+        $(this.options.tableSelector).on('click', 'td.actions a[data-action_type="save"]', function() {
             const $tr = $(this).closest('tr');
             controller.saveRow($tr);
         });
 
-        $(this.options.tableSelector + ' td.actions').on('click', 'a[data-action_type="delete"]', function(){
+        $(this.options.tableSelector).on('click', 'td.actions a[data-action_type="delete"]', function() {
             const $tr = $(this).closest('tr');
+            const text = '<button class="red hint js-delete-row" data-row_med_id="' + $tr.data('med_id') + '">Delete</button> <button class="green js-delete-row-cancel">Cancel</button>';
+            let leftPos, toolCSS;
+
+            // get icon DOM position
+            let iconPos = $(this)[ 0 ].getBoundingClientRect();
+            let iconCenter = iconPos.width / 2;
+
+            // check for the available space for tooltip:
+            if ( ( $( window ).width() - iconPos.left) < 100 ){
+                leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
+                toolCSS = "oe-tooltip offset-left oe-tooltip-confirm";
+            } else {
+                leftPos = (iconPos.left - 100) + iconCenter - 0.5; 	// tooltip is 200px (center on the icon)
+                toolCSS = "oe-tooltip oe-tooltip-confirm";
+            }
+
+            // add, calculate height then show (remove 'hidden')
+            var tip = $( "<div></div>", {
+                "class": toolCSS,
+                "style":"left:"+leftPos+"px; top:0;"
+            });
+            // add the tip (HTML as <br> could be in the string)
+            tip.html(text);
+
+            $('body').append(tip);
+            // calc height:
+            var h = $(".oe-tooltip").height();
+            // update position and show
+            var top = iconPos.y - h - 25;
+
+            $(".oe-tooltip").css({"top":top+"px", width:'unset'});
+
+           // const $tr = $(this).closest('tr');
+            //controller.deleteRow($tr);
+        });
+
+        $('body').on('click', '.oe-tooltip .js-delete-row', function() {
+            const id = $(this).data('row_med_id');
+
+            const $tr = $(controller.options.tableSelector).find('tr[data-med_id="' + id + '"]');
             controller.deleteRow($tr);
+            $('.oe-tooltip-confirm').remove();
+        });
+
+        $('body').on('click', '.oe-tooltip .js-delete-row-cancel', function() {
+            $('.oe-tooltip-confirm').remove();
+        });
+    };
+
+    TableInlineEdit.prototype.showEditFields = function($tr) {
+        $tr.find('.js-input').show();
+
+        $.each($tr.find('.js-text'), function(i, element) {
+            const $text = $(element);
+            const $td = $text.closest('td');
+            const $input = $td.find('.js-input');
+            if ($input.length && $input.prop('tagName') === 'SELECT') {
+                $input.val($text.data('id'));
+            }
         });
     };
 
@@ -52,8 +113,6 @@ OpenEyes.UI = OpenEyes.UI || {};
     TableInlineEdit.prototype.hideEditControls = function($tr)
     {
         const $actionTd = $tr.find('td.actions');
-
-       // $actionTd.find('a[data-action_type="edit"], a[data-action_type="delete"]').show();
         $actionTd.find('a[data-action_type="save"], a[data-action_type="cancel"]').hide();
     };
 
@@ -99,22 +158,50 @@ OpenEyes.UI = OpenEyes.UI || {};
             'success': function (resp) {
                 if (resp.success === true) {
                     $actionsTd.append("<small style='color:red'>Saved.</small>");
-                    setTimeout(() => {
-                        $actionsTd.find('small').remove();
-                        controller.showGeneralControls($tr);
-                    }, 2000);
+                    controller.updateRowValuesAfterSave($tr);
+                } else {
+                    console.error(resp);
                 }
+                setTimeout(() => {
+                    $actionsTd.find('small').remove();
+                    controller.showGeneralControls($tr);
+                }, 2000);
             },
             'error': function(resp){
                 alert('Saving medication defaults FAILED. Please try again.');
                 console.error(resp);
-                if (typeof onAjaxError === 'function') {
-                    onAjaxError();
+                controller.showGeneralControls($tr);
+                if (typeof controller.options.onAjaxError === 'function') {
+                    controller.options.onAjaxError();
                 }
             },
-            'complete': function(){
+            'complete': function() {
                 $actionsTd.find('.js-spinner-as-icon').remove();
+                $tr.find('.js-text').show();
+                $tr.find('.js-input').hide();
+                if (typeof controller.options.onAjaxComplete === 'function') {
+                    controller.options.onAjaxComplete();
+                }
             }
+        });
+    };
+
+    TableInlineEdit.prototype.updateRowValuesAfterSave = function($tr) {
+        $.each($tr.find('.js-input'), function(i, input){
+            const $text = $(input).parent().find('.js-text');
+            const $input = $(input);
+            let selectedText = '-';
+
+            if ($input.val()) {
+                if ($input.prop('tagName') === 'SELECT') {
+                    selectedText = $input.find('option:selected').text();
+                } else {
+                    selectedText = $(this).val();
+                }
+            }
+
+            $text.text(selectedText);
+            $text.data('id', $input.val());
         });
     };
 
@@ -152,15 +239,19 @@ OpenEyes.UI = OpenEyes.UI || {};
             'error': function(resp){
                 alert('Remove medication from set FAILED. Please try again.');
                 console.error(resp);
-                if (typeof onAjaxError === 'function') {
-                    onAjaxError();
+                if (typeof controller.onAjaxError === 'function') {
+                    controller.onAjaxError();
                 }
             },
             'complete': function(){
                 $actionsTd.find('.js-spinner-as-icon').remove();
+                if (typeof controller.onAjaxComplete === 'function') {
+                    controller.onAjaxComplete();
+                }
             }
         });
     };
+
     exports.TableInlineEdit = TableInlineEdit;
 
 }(OpenEyes));

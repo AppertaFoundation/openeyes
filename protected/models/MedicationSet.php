@@ -525,7 +525,10 @@ class MedicationSet extends BaseActiveRecordVersioned
             $assignment = new \MedicationSetItem();
             $assignment->medication_id = $medication_id;
             $assignment->medication_set_id = $this->id;
-            return $assignment->save();
+
+            if ($assignment->save()){
+                return $assignment->id;
+            }
         }
         return false;
     }
