@@ -116,8 +116,8 @@
     <tr data-med_id="{{id}}">
         <td>
             {{preferred_term}}
-            <input class="js-input" name="MedicationSetItem[id]" type="hidden" value="{{set_item_id}}">
-            <input class="js-input" name="Medication[id]" type="hidden" value="{{id}}">
+            <input class="js-input" name="MedicationSetItem[id]" type="hidden" value="{{id}}">
+            <input class="js-input" name="Medication[id]" type="hidden" value="{{medication_id}}">
         </td>
         <td>
             <span data-type="default_dose" class="js-text" style="display: inline;">{{^default_dose}}-{{/default_dose}}{{#default_dose}}{{default_dose}}{{/default_dose}}</span>
@@ -154,6 +154,7 @@
             const $table = $(drugSetController.options.tableSelector + ' tbody');
 
             selectedItems.forEach(item => {
+
                 $.ajax({
                     'type': 'POST',
                     'data': {
@@ -185,9 +186,14 @@
 
                         if (result.success && result.success === true) {
 
-                            item.set_id = $('#MedicationSet_id').val();
-                            item.set_item_id = result.id;
-                            const $tr_html = Mustache.render($('#medication_template').html(), item);
+                            const medication_id = item.id;
+                            const set_item_id = result.id;
+                            let data = item;
+
+                            data.id = set_item_id;
+                            data.medication_id = medication_id;
+
+                            const $tr_html = Mustache.render($('#medication_template').html(), data);
                             $(drugSetController.options.tableSelector + ' tbody').prepend($tr_html);
                             const $tr = $table.find('tr:first-child');
                             $tr.css({'background-color': '#3ba93b'});

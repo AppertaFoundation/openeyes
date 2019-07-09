@@ -174,6 +174,59 @@ class DrugSetController extends BaseAdminController
         \Yii::app()->end();
     }
 
+    public function actionSearchMedication()
+    {
+        $search = \Yii::app()->request->getParam('search');
+        $set_id = isset($search['set_id']) ? $search['set_id'] : null;
+        $data['items'] = [];
+
+        $filters = \Yii::app()->request->getParam('search', []);
+        $criteria = new \CDbCriteria();
+
+        if (isset($filters['set_id']) && $filters['set_id']) {
+            $criteria->together = true;
+            $criteria->with = ['medication', 'medicationSet'];
+
+            $criteria->addCondition('medication_set_id = :set_id');
+            $criteria->params[':set_id'] = $filters['set_id'];
+        }
+
+        if (isset($filters['query']) && $filters['query']) {
+            $criteria->addSearchCondition('preferred_term', trim($filters['query']));
+        }
+
+        $data_provider = new CActiveDataProvider('MedicationSetItem', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new \CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = 20;
+        //$pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        foreach ($data_provider->getData() as $set_item) {
+
+            $item = $set_item->attributes;
+            $item['default_route'] = $set_item->defaultRoute ? $set_item->defaultRoute->term : null;
+            $item['default_duration'] = $set_item->defaultDuration ? $set_item->defaultDuration->name : null;
+            $item['default_frequency'] = $set_item->defaultFrequency ? $set_item->defaultFrequency->term : null;
+            $item['preferred_term'] = $set_item->medication ? $set_item->medication->preferred_term : null;
+            $item['medication_id'] = $set_item->medication ? $set_item->medication->id : null;
+
+            $data['items'][] = $item;
+        }
+
+        ob_start();
+        $this->widget('LinkPager', ['pages' => $pagination]);
+        $pagination = ob_get_clean();
+        $data['pagination'] = $pagination;
+
+        header('Content-type: application/json');
+        echo CJSON::encode($data);
+        \Yii::app()->end();
+    }
+
     /**
      * Edits or adds drug sets.
      *

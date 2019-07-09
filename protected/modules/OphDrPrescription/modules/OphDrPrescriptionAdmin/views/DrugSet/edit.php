@@ -128,13 +128,12 @@ $subspecialties = array_map(function ($e) {
 <script>
     var drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
         tableSelector: '#meds-list',
-        searchUrl: '/OphDrPrescription/admin/Medication/search',
+        searchUrl: '/OphDrPrescription/admin/DrugSet/searchmedication',
         templateSelector: '#medication_template'
     });
 
     var tableInlineEditController = new OpenEyes.TableInlineEdit({
         tableSelector: '#meds-list',
-        searchUrl: '/OphDrPrescription/admin/Medication/search',
         templateSelector: '#medication_template',
         onAjaxError: function() {
             drugSetController.refreshResult();

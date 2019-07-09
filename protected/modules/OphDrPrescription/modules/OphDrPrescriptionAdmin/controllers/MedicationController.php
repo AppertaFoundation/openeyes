@@ -33,14 +33,14 @@ class MedicationController extends BaseAdminController
 
         if (isset($filters['set_id']) && $filters['set_id']) {
             $criteria->together = true;
-            $criteria->with = ['medicationSetItems', 'medicationSetItems.medicationSet'];
+            $criteria->with = ['medicationSetItems.medicationSet'];
 
             $criteria->addCondition('medicationSet.id = :set_id');
             $criteria->params[':set_id'] = $filters['set_id'];
         }
 
         if (isset($filters['query']) && $filters['query']) {
-            $criteria->addSearchCondition('preferred_term', $filters['query']);
+            $criteria->addSearchCondition('preferred_term', trim($filters['query']));
         }
 
         return $criteria;
@@ -59,7 +59,7 @@ class MedicationController extends BaseAdminController
 
         $pagination = new \CPagination($data_provider->totalItemCount);
         $pagination->pageSize = 20;
-        $pagination->applyLimit($criteria);
+        //$pagination->applyLimit($criteria);
 
         $data_provider->pagination = $pagination;
 
