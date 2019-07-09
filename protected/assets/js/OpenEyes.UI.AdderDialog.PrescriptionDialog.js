@@ -121,6 +121,7 @@
             ajax: 'ajax'
         });
 
+        dialog.popup.find('.js-drug-list li.selected').not(this).removeClass('selected');
         this.searchRequest = $.getJSON(this.options.searchOptions.searchSource + '?' + params, function (results) {
         dialog.searchRequest = null;
         var no_data = !$(results).length;
