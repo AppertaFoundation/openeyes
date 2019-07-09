@@ -41,7 +41,7 @@ class OphTrOperationnote_AttributeOption extends BaseActiveRecordVersioned
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
+			// Please remove those attributes that should not be searched.
 			array('id, value, attribute_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
@@ -90,7 +90,7 @@ class OphTrOperationnote_AttributeOption extends BaseActiveRecordVersioned
 	 */
 	public function search()
 	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
+		// Please modify the following code to remove any attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
 
