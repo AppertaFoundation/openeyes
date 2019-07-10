@@ -62,7 +62,7 @@ function current_custom_data_to_csv(additional_type,anonymized=false){
         item = {
             'left':item['left'],
             'right':item['right'],
-            diagnoses == undefined ? "" : diagnoses.replace(/,/g,'|'),
+            'diagnoses':diagnoses == undefined ? "" : diagnoses.replace(/,/g,'|'),
             'hos_num':item_patient.find('.js-csv-hos_num').html(),
             'age':item_patient.find('.js-csv-age').html(),
             'dob':item_patient.find('.js-csv-dob').html(),
