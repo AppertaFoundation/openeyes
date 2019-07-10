@@ -26,10 +26,10 @@ before_script:
 
   # Copy the sample config files into place.
   - cp config/local.sample/common.sample.php config/local/common.php
-  - sudo chmod a+x protected/scripts/oe-reset.sh # Make the shell script to populate the databases executable.
-  - sudo chmod a+x ./mysql-ci.sh # Make the shell script to populate the databases executable.
-  - ./mysql-ci.sh
-  - ./protected/scripts/oe-reset.sh # Configure the test database
+  - sudo chmod a+x scripts/oe-reset.sh # Make the shell script to populate the databases executable.
+  - sudo chmod a+x ../mysql-ci.sh # Make the shell script to populate the databases executable.
+  - ../mysql-ci.sh
+  - ./scripts/oe-reset.sh # Configure the test database
 script:
 
   # Run migrations
