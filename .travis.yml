@@ -41,7 +41,7 @@ script:
 
   # Run unit tests.
   - cd tests
-  - php ../../vendor/phpunit/phpunit/phpunit.php ./unit/
+  - php ../../vendor/phpunit/phpunit/phpunit.php
 notifications:
   slack:
     on_pull_requests: false
