@@ -51,31 +51,34 @@
     <div>
         <hr />
         <?php
-            $gp_letter_setting = \SettingMetadata::model()->getSetting('auto_generate_gp_letter_after_surgery');
-            // typecaset on/off to true/false
-            $gp_letter_setting = $gp_letter_setting ? ($gp_letter_setting == 'on' ? true : false) : false;
-            //if posted we use that otherwise we use the default
-            $gp_letter_setting = $this->request->getParam('auto_generate_gp_letter_after_surgery', $gp_letter_setting);
-
             $prescription_setting = \SettingMetadata::model()->getSetting('auto_generate_prescription_after_surgery');
-            $prescription_setting = $prescription_setting ? ($prescription_setting == 'on' ? true : false) : false;
+            // typecaset on/off to true/false
+            $prescription_setting = $prescription_setting ? ($prescription_setting === 'on' ? true : false) : false;
+            //if posted we use that otherwise we use the default
             $prescription_setting = $this->request->getParam('auto_generate_prescription_after_surgery', $prescription_setting);
 
+            $gp_letter_setting = \SettingMetadata::model()->getSetting('auto_generate_gp_letter_after_surgery');
+            $gp_letter_setting = $gp_letter_setting ? ($gp_letter_setting === 'on' ? true : false) : false;
+            $gp_letter_setting = $this->request->getParam('auto_generate_gp_letter_after_surgery', $gp_letter_setting);
+
             $optom_setting = \SettingMetadata::model()->getSetting('auto_generate_optopm_post_op_letter_after_surgery');
-            $optom_setting = $prescription_setting ? ($optom_setting == 'on' ? true : false) : false;
+            $optom_setting = $optom_setting ? ($optom_setting === 'on' ? true : false) : false;
             $optom_setting = $this->request->getParam('auto_generate_optopm_post_op_letter_after_surgery', $optom_setting);
         ?>
 
         <label class="inline highlight">
+            <?=\CHtml::hiddenField('auto_generate_prescription_after_surgery', 0);?>
             <?=\CHtml::checkBox('auto_generate_prescription_after_surgery', $prescription_setting);?>Generate standard prescription
         </label>
 
         <label class="inline highlight">
+            <?=\CHtml::hiddenField('auto_generate_gp_letter_after_surgery', 0);?>
             <?=\CHtml::checkBox('auto_generate_gp_letter_after_surgery', $gp_letter_setting);?>Generate standard GP letter
         </label>
 
         <?php if (\SettingMetadata::model()->getSetting('default_optop_post_op_letter')) :?>
             <label class="inline highlight">
+                <?=\CHtml::hiddenField('auto_generate_optopm_post_op_letter_after_surgery', 0);?>
                 <?=\CHtml::checkBox('auto_generate_optopm_post_op_letter_after_surgery', $optom_setting);?>Generate standard Optom letter
             </label>
         <?php endif; ?>
