@@ -357,7 +357,6 @@ class PatientMerge
                         }
 
                         $is_same_subspecialty = true;
-                        break;
                     }
                 }
 
