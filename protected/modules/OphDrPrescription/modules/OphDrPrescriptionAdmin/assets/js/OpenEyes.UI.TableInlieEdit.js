@@ -159,13 +159,14 @@ OpenEyes.UI = OpenEyes.UI || {};
                 if (resp.success === true) {
                     $actionsTd.append("<small style='color:red'>Saved.</small>");
                     controller.updateRowValuesAfterSave($tr);
+                    setTimeout(() => {
+                        $actionsTd.find('small').remove();
+                        controller.showGeneralControls($tr);
+                    }, 2000);
                 } else {
                     console.error(resp);
                 }
-                setTimeout(() => {
-                    $actionsTd.find('small').remove();
-                    controller.showGeneralControls($tr);
-                }, 2000);
+
             },
             'error': function(resp){
                 alert('Saving medication defaults FAILED. Please try again.');
@@ -175,12 +176,36 @@ OpenEyes.UI = OpenEyes.UI || {};
                     controller.options.onAjaxError();
                 }
             },
-            'complete': function() {
+            'complete': function(resp) {
+
+                const result = JSON.parse(resp.responseText);
+
                 $actionsTd.find('.js-spinner-as-icon').remove();
-                $tr.find('.js-text').show();
-                $tr.find('.js-input').hide();
-                if (typeof controller.options.onAjaxComplete === 'function') {
-                    controller.options.onAjaxComplete();
+
+                if (result.success && result.success === true) {
+                    $tr.find('.js-text').show();
+                    $tr.find('.js-input').hide();
+                    if (typeof controller.options.onAjaxComplete === 'function') {
+                        controller.options.onAjaxComplete();
+                    }
+                } else if(result.errors) {
+                    $tr.find('.js-text').hide();
+                    $tr.find('.js-input').show();
+                    controller.showEditControls($tr);
+                    let content = '';
+                    Object.keys(result.errors).forEach(function(key) {
+                        $input = $tr.find('input[name*="' + key + '"]').addClass('error');
+                        if (content.length) {
+                            content += '<br>';
+                        }
+
+                        content +=  `${result.errors[key]}`;
+                    });
+
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: content
+                    }).open();
+
                 }
             }
         });
