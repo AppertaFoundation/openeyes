@@ -1649,7 +1649,13 @@ class Patient extends BaseActiveRecordVersioned
     {
         $nhs_num = preg_replace('/[^0-9]/', '', $this->nhs_num);
 
-        return $nhs_num ? substr($nhs_num, 0, 3).' '.substr($nhs_num, 3, 3).' '.substr($nhs_num, 6, 4) : 'not known';
+        if (Yii::app()->params['default_country'] === 'Australia') {
+            $nhs_num = $nhs_num ? substr($nhs_num, 0, 4).' '.substr($nhs_num, 4, 5).' '.substr($nhs_num, 9, 1).' '.substr($nhs_num, 10, 1) : 'not known';
+        } else {
+            $nhs_num = $nhs_num ? substr($nhs_num, 0, 3).' '.substr($nhs_num, 3, 3).' '.substr($nhs_num, 6, 4) : 'not known';
+        }
+
+        return $nhs_num;
     }
 
     public function hasLegacyLetters()
