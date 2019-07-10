@@ -43,7 +43,6 @@ class OphTrOperationnote_AttributeTest extends CDbTestCase
 		$record->proc_id = 1;
 		$record->name = "Test Attribute";
 		$record->label = "test_attr";
-		$record->display_order = 0;
 		return $record;
 	}
 
@@ -86,13 +85,13 @@ class OphTrOperationnote_AttributeTest extends CDbTestCase
 	{
 		$trans = Yii::app()->db->beginTransaction();
 
-		$record = $this->getTestRecord();
-		$record->save();
+		$record1 = $this->getTestRecord();
+		$record1->save();
 
 		$record2 = $this->getSecondTestRecord();
 		$record2->save(true);
 
-		$this->assertEquals(1, $record2->display_order);
+		$this->assertEquals($record2->display_order, $record1->display_order + 1);
 		$this->assertInternalType("int", $record2->is_multiselect);
 
 		$trans->rollback();
