@@ -23,7 +23,6 @@ class TrialTest extends CDbTestCase
     {
         $trial = new Trial();
         $trial->name = null;
-        $trial->principle_investigator_user_id = $this->user('user1')->id;
         $this->assertFalse($trial->save(), 'A Trial cannot be saved with a null name');
     }
 
