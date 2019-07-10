@@ -111,7 +111,7 @@ class ElementLetter extends BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
-            'use_nickname' => 'Nickname',
+            'use_nickname' => 'Use Nickname',
             'date' => 'Date',
             'introduction' => 'Salutation',
             're' => 'Re',
@@ -192,49 +192,6 @@ class ElementLetter extends BaseEventTypeElement
         }
         return parent::beforeValidate();
     }
-
-    public function afterValidate()
-    {
-
-        $gp_found = false;
-        $patient_found = false;
-
-        $document_target = Yii::app()->request->getPost('DocumentTarget');
-
-        if(!isset($document_target[0]['attributes']['ToCc']) && Yii::app()->getController()->getAction()->id == 'create'){
-            $this->addError('toAddress', 'Please add at least one recipient!');
-        }
-
-        if(isset($document_target)){
-            foreach($document_target as $target){
-                if( !isset($target['attributes']['address']) || empty($target['attributes']['address']) ){
-                    $this->addError('toAddress', 'Address cannot be empty!');
-                }
-
-                if($target['attributes']['contact_type'] === 'PATIENT'){
-                    $patient_found = true;
-                }
-                if($target['attributes']['contact_type'] === Yii::app()->params['gp_label']){
-                    $gp_found = true;
-                }
-            }
-
-            //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
-            $internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
-
-            //this throws an error if GP or Patient not found in Internal referral
-            // awaiting for requirements... ...
-            /*if($this->letter_type_id == $internalreferral_letter_type->id ){
-                if( !$gp_found || !$patient_found ){
-                    $this->addError('letter_type_id', 'GP and Patient must copied into when letter type is Internal Referral!');
-                }
-            }*/
-
-        }
-
-        parent::afterValidate();
-    }
-    
     
     public function requiredIfNotDraft($attribute, $params)
     {
@@ -415,11 +372,12 @@ class ElementLetter extends BaseEventTypeElement
             $this->site_id = Yii::app()->session['selected_site_id'];
             $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
-            // TODO: determine if there are any circumstances where this is necessary. Almost certainly very redundant
-            if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
-                throw new Exception('Patient not found: '.@$_GET['patient_id']);
+            if(!$patient) {
+                // determine if there are any circumstances where this is necessary. Almost certainly very redundant
+                if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
+                    throw new Exception('Patient not found: '.@$_GET['patient_id']);
+                }
             }
-            
             // default to GP
             if( isset($patient->gp) ){
                 $this->introduction = $patient->gp->getLetterIntroduction();
@@ -442,18 +400,22 @@ class ElementLetter extends BaseEventTypeElement
             $user = Yii::app()->session['user'];
             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
-            if ($contact = $user->contact) {
+            $contact = $user->contact;
+            if ($contact) {
                 $this->footer = $api->getFooterText();
                 $ssa = $firm->serviceSubspecialtyAssignment;
             }
 
             // Look for a macro based on the episode_status
-            if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-                if (!$this->macro = LetterMacro::model()->find('firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id))) {
+            $episode = $patient->getEpisodeForCurrentSubspecialty();
+            if ($episode) {
+
+                $this->macro = LetterMacro::model()->find('firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id));
+                if (!$this->macro) {
                     if ($firm->service_subspecialty_assignment_id) {
                         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-
-                        if (!$this->macro = LetterMacro::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id))) {
+                        $this->macro = LetterMacro::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id));
+                        if (!$this->macro) {
                             $this->macro = LetterMacro::model()->find('site_id=? and episode_status_id=?', array(Yii::app()->session['selected_site_id'], $episode->episode_status_id));
                         }
                     }
@@ -465,15 +427,18 @@ class ElementLetter extends BaseEventTypeElement
             }
 
             if (Yii::app()->params['populate_clinic_date_from_last_examination'] && Yii::app()->findModule('OphCiExamination')) {
-                if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-                    if ($event_type = EventType::model()->find('class_name=?', array('OphCiExamination'))) {
+                $episode = $patient->getEpisodeForCurrentSubspecialty();
+                if ($episode) {
+                    $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+                    if ($event_type) {
                         $criteria = new CDbCriteria();
                         $criteria->addCondition('event_type_id = '.$event_type->id);
                         $criteria->addCondition('episode_id = '.$episode->id);
                         $criteria->order = 'created_date desc';
                         $criteria->limit = 1;
 
-                        if ($event = Event::model()->find($criteria)) {
+                        $event = Event::model()->find($criteria);
+                        if ($event) {
                             $this->clinic_date = $event->created_date;
                         }
                     }
@@ -635,12 +600,6 @@ class ElementLetter extends BaseEventTypeElement
                     }
                 }
             }
-        }
-        if(Yii::app()->getController()->getAction()->id == 'create' || Yii::app()->getController()->getAction()->id == 'update'){
-            $document = new Document();
-            $document->event_id = $this->event_id;
-            $document->is_draft = $this->draft;
-            $document->createNewDocSet();
         }
         
         if( $this->draft ){
@@ -995,6 +954,20 @@ class ElementLetter extends BaseEventTypeElement
         }
     }
 
+    public function getToAddressContactType() {
+        if($this->document_instance && $this->document_instance[0]->document_target) {
+            foreach ($this->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    if($target->ToCc === 'To'){
+                        return $target->contact_type;
+                    }
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @return string
      */
@@ -1008,7 +981,7 @@ class ElementLetter extends BaseEventTypeElement
                 foreach ($instance->document_target as $target) {
                     if($target->ToCc != 'To'){
                         $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                        $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
+                        $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
                     }
                 }
             }

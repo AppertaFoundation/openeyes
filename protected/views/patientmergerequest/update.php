@@ -17,7 +17,7 @@
  */
 ?>
 
-    <div id="patientMergeWrapper" class="container content">
+    <div id="patientMergeWrapper" class="container content main-event">
         
         <div class="data-group">
             <div class="large-3 column large-centered text-right large-offset-9">

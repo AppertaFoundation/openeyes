@@ -95,7 +95,7 @@ class DefaultController extends \BaseEventTypeController
         } else {
             $elements = $this->event->getElements();
             if ($this->step) {
-                $elements = $this->mergeNextStep($elements, $this->step);
+                $elements = $this->mergeNextStep($elements);
             }
         }
 
@@ -435,10 +435,9 @@ class DefaultController extends \BaseEventTypeController
                 $assignment = new models\OphCiExamination_Event_ElementSet_Assignment();
                 $assignment->event_id = $event->id;
             }
-            if (!$next_step = $this->getNextStep($event)) {
-                throw new \CException('No next step available');
-            }
-            $assignment->step_id = $next_step->id;
+
+            $assignment->step_id = $this->step->id;
+            $assignment->step_completed = 1;
             if (!$assignment->save()) {
                 throw new \CException('Cannot save assignment');
             }
@@ -458,6 +457,7 @@ class DefaultController extends \BaseEventTypeController
             }
 
             $assignment->step_id = $this->step->id;
+            $assignment->step_completed = 1;
             if (!$assignment->save()) {
                 throw new \CException('Cannot save assignment');
             }
@@ -542,14 +542,14 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return array
      */
-    protected function mergeNextStep($elements, $next_step)
+    protected function mergeNextStep($elements)
     {
         if (!$event = $this->event) {
             throw new \CException('No event set for step merging');
         }
 
         //TODO: should we be passing episode here?
-        $extra_elements = $this->getElementsByWorkflow($next_step, $this->episode);
+        $extra_elements = $this->getElementsByWorkflow($this->step, $this->episode);
         $extra_by_etid = array();
 
         foreach ($extra_elements as $extra) {
@@ -1187,6 +1187,9 @@ class DefaultController extends \BaseEventTypeController
 
                     // create a reading record from the values the user has given
                     $reading = new models\OphCiExamination_IntraocularPressure_Value();
+                    // examination_date and comments are not actual fields in IOP so delete them to prevent warnings
+                    unset($values['examination_date']);
+                    unset($values["{$side}_comments"]);
                     $reading->attributes = $values;
                     $reading->element_id = $iop_element->id;
 
@@ -1196,8 +1199,6 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
         }
-
-        $element->attributes = $data;
     }
 
     /**
@@ -1211,19 +1212,22 @@ class DefaultController extends \BaseEventTypeController
         $et_name = models\HistoryIOP::model()->getElementTypeName();
         $historyIOP = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryIOP');
         $entries = $data['OEModule_OphCiExamination_models_HistoryIOP'];
-        foreach (['left_values', 'right_values'] as $side_values) {
-            if (isset($entries[$side_values])) {
+        foreach (['left', 'right'] as $side) {
+            if (isset($entries["{$side}_values"])) {
                 // set the examination dates in HistoryIOP model for custom validation
-                $historyIOP->examination_dates[$side_values] = array_column($entries[$side_values], 'examination_date');
+                $historyIOP->examination_dates["{$side}_values"] = array_column($entries["{$side}_values"], 'examination_date');
 
-                foreach ($entries[$side_values] as $index => $value) {
+                foreach ($entries["{$side}_values"] as $index => $value) {
                     $reading = new models\OphCiExamination_IntraocularPressure_Value();
+                    // examination_date and comments are not actual fields in IOP so delete them to prevent warnings
+                    unset($value['examination_date']);
+                    unset($value["{$side}_comments"]);
                     $reading->attributes = $value;
                     if (!$reading->validate()) {
                         $readingErrors = $reading->getErrors();
                         foreach ($readingErrors as $readingErrorAttributeName => $readingErrorMessages) {
                             foreach ($readingErrorMessages as $readingErrorMessage) {
-                                $historyIOP->addError($side_values . '_' . $index . '_' . $readingErrorAttributeName, $readingErrorMessage);
+                                $historyIOP->addError("{$side}_values" . '_' . $index . '_' . $readingErrorAttributeName, $readingErrorMessage);
                                 $errors[$et_name][] = $readingErrorMessage;
                             }
                         }
@@ -1488,13 +1492,18 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setCurrentSet()
     {
+        $element_assignment = $this->getElementSetAssignment();
         if (!$this->set) {
             /*@TODO: probably the getNextStep() should be able to recognize if there were no steps completed before and return the first step
               Note: getCurrentStep() will return firstStep if there were no steps before */
-            $this->set = $this->getElementSetAssignment() && $this->action->id != 'update' ? $this->getNextStep() : $this->getCurrentStep();
+            $this->set = $element_assignment && $this->action->id != 'update' ? $this->getNextStep() : $this->getCurrentStep();
 
             //if $this->set is null than no workflow rule to apply
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
+        }
+
+        if ($this->action->id == 'update' && !$element_assignment->step_completed) {
+            $this->step = $this->getCurrentStep();
         }
     }
 

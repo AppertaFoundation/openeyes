@@ -419,6 +419,12 @@ class BaseEventTypeController extends BaseModuleController
                     'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
                 Yii::app()->assetManager->registerScriptFile('js/nested_elements.js');
                 Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js");
+                // disable buttons when clicking on save/save_draft/save_print
+                Yii::app()->assetManager->getClientScript()->registerScript('disableSaveAfterClick', '
+                      $(document).on("click", "#et_save, #et_save_draft, #et_save_print", function () {
+                          disableButtons();
+                      });
+                ', CClientScript::POS_HEAD);
             }
         }
 
@@ -439,9 +445,9 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Redirect to the patient episodes when the controller determines the action cannot be carried out.
      */
-    protected function redirectToPatientEpisodes()
+    protected function redirectToPatientLandingPage()
     {
-        $this->redirect(array('/patient/episodes/' . $this->patient->id));
+        $this->redirect((new CoreAPI())->generatePatientLandingPageLink($this->patient));
     }
 
     /**
@@ -633,7 +639,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->setPatient($_REQUEST['patient_id']);
 
         if (!$this->episode = $this->getEpisode()) {
-            $this->redirectToPatientEpisodes();
+            $this->redirectToPatientLandingPage();
         }
 
         // we instantiate an event object for use with validation rules that are dependent
@@ -641,6 +647,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->event = new Event();
         $this->event->episode_id = $this->episode->id;
         $this->event->event_type_id = $this->event_type->id;
+        $this->event->last_modified_user_id = $this->event->created_user_id = Yii::app()->user->id;
     }
 
     /**
@@ -713,7 +720,7 @@ class BaseEventTypeController extends BaseModuleController
             switch ($actionType) {
                 case self::ACTION_TYPE_CREATE:
                 case self::ACTION_TYPE_EDIT:
-                    $this->redirectToPatientEpisodes();
+                    $this->redirectToPatientLandingPage();
                     break;
                 default:
                     throw new CHttpException(403);
@@ -799,7 +806,7 @@ class BaseEventTypeController extends BaseModuleController
         if (!empty($_POST)) {
             // form has been submitted
             if (isset($_POST['cancel'])) {
-                $this->redirectToPatientEpisodes();
+                $this->redirectToPatientLandingPage();
             }
 
             // set and validate
@@ -835,6 +842,7 @@ class BaseEventTypeController extends BaseModuleController
                         }
                     } else {
                         throw new Exception('could not save event');
+
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
@@ -2027,7 +2035,7 @@ class BaseEventTypeController extends BaseModuleController
                         $transaction->commit();
 
                         if (!$this->dont_redirect) {
-                            $this->redirect(array('/patient/episodes/' . $this->event->episode->patient->id));
+                            $this->redirect((new CoreAPI())->generatePatientLandingPageLink($this->event->episode->patient));
                         } else {
                             return true;
                         }
@@ -2038,7 +2046,7 @@ class BaseEventTypeController extends BaseModuleController
                     $transaction->commit();
 
                     if (!$this->dont_redirect) {
-                        $this->redirect(array('/patient/episode/' . $this->event->episode_id));
+                        $this->redirect((new CoreAPI())->generatePatientLandingPageLink($this->event->episode->patient));
                     }
 
                     return true;
@@ -2093,6 +2101,10 @@ class BaseEventTypeController extends BaseModuleController
     protected function afterCreateElements($event)
     {
         $this->updateUniqueCode($event);
+
+        $site_id = \Yii::app()->session->get('selected_site_id');
+        $firm_id = \Yii::app()->session->get('selected_firm_id');
+        $this->addToUnbookedWorklist($site_id, $firm_id);
     }
 
     /**
@@ -2113,7 +2125,6 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
     }
-
 
     /**
      * set base js vars for use in the standard scripts for the controller.
@@ -2203,7 +2214,7 @@ class BaseEventTypeController extends BaseModuleController
             ),
         );
 
-        $this->render('request_delete', array(
+        $this->render('delete', array(
             'errors' => $errors,
         ));
     }

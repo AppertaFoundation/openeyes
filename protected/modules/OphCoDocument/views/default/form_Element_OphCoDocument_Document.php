@@ -57,15 +57,15 @@
         <div class="element-fields flex-layout flex-top col-gap">
             <div class="cols-11">
                 <div id="document-comments" data-comment-button="#document_comment_button"
-                     class="cols-full js-comment-container"
+                     class="cols-full js-comment-container "
                      style="<?php if ($element->comment == null) echo 'display:none' ?>">
                     <div class="comment-group flex-layout flex-left " style="padding-top:5px">
                         <?php
                         echo $form->textArea($element,
                             'comment',
-                            array('rows' => '1', 'class' => 'autosize cols-full column', 'nowrapper' => true),
+                            array('rows' => '1','nowrapper' => true),
                             false,
-                            ['placeholder' => 'Comments']);
+                            ['placeholder' => 'Comments' , 'class' => 'autosize ']);
                         ?>
                         <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
                     </div>

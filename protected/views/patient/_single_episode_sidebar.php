@@ -33,22 +33,23 @@ if (count($legacyepisodes)) {
         $ordered_episodes[0]['episodes'][] = $le;
     }
 }
-?>
+
+use OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule; ?>
 
 <?php
 $subspecialty_labels = array();
 $current_subspecialty = null;
 $episodes_list = array();
 $operation_status_to_css_class = [
-  'Requires scheduling' => 'alert',
-  'Scheduled' => 'scheduled',
-  'Requires rescheduling' => 'alert',
-  'Rescheduled' => 'scheduled ',
-  'Cancelled' => 'cancelled',
-  'Completed' => 'done',
-  // extend this list with new statuses, e.g.:
-  // 'On hold ... ' => 'pause', for OE-8439
-  // 'Reserved ... ' => 'flag', for OE-7194
+    'Requires scheduling' => 'alert',
+    'Scheduled' => 'scheduled',
+    'Requires rescheduling' => 'alert',
+    'Rescheduled' => 'scheduled ',
+    'Cancelled' => 'cancelled',
+    'Completed' => 'done',
+    'On-Hold' => 'pause'
+    // extend this list with new statuses, e.g.:
+    // 'Reserved ... ' => 'flag', for OE-7194
 ]; ?>
 <div class="sidebar-eventlist">
     <?php if (is_array($ordered_episodes)) { ?>
@@ -178,7 +179,7 @@ if($this->editable){
       'episodes' => $active_episodes,
       'context_firm' => $this->firm,
       'patient_id' => $this->patient->id,
-      'workflowSteps' => OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps(),
+      'workflowSteps' => OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps($this->event->episode->status->id),
       'currentStep' => (isset($this->event->eventType->class_name) && $this->event->eventType->class_name == 'OphCiExamination' ? $this->getCurrentStep() : '' ),
       'currentFirm' => (isset($this->event->firm_id) ? $this->event->firm_id : '""'), // for some strange reason '' doesn't reslove to an empty str 
       'event_types' => $this->event->eventType->name
