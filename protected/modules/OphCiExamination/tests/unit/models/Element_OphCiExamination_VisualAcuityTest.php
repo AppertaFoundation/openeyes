@@ -42,7 +42,7 @@ class Element_OphCiExamination_VisualAcuityTest extends PHPUnit_Framework_TestCa
     /**
      * @dataProvider letter_stringProvider
      */
-    public function testgetLetter_String($right_eye, $left_eye, $res)
+    /*public function testgetLetter_String($right_eye, $left_eye, $res)
     {
         $test = $this->getMockBuilder('\OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
                 ->disableOriginalConstructor()
@@ -96,7 +96,7 @@ class Element_OphCiExamination_VisualAcuityTest extends PHPUnit_Framework_TestCa
             }
         }
         $this->assertEquals($res, $test->getLetter_string());
-    }
+    }*/
 
     public function getTextForSide_Provider()
     {
