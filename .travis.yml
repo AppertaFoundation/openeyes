@@ -18,8 +18,10 @@ install:
   - npm install
 before_script:
 #  - echo 'date.timezone = "Australia/Melbourne"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini # Set the PHP timezone to UTC +10:00:00
-  - sudo chmod a+x mysql-ci.sh # Make the shell script to populate the databases executable.
-  - ./mysql-ci.sh # Configure the test database
+  - sudo chmod a+x protected/scripts/oe-reset.sh # Make the shell script to populate the databases executable.
+  - sudo chmod a+x ./mysql-ci.sh # Make the shell script to populate the databases executable.
+  - ./mysql-ci.sh
+  - ./protected/scripts/oe-reset.sh # Configure the test database
 script:
   # Create the runtime folders.
   - mkdir assets
