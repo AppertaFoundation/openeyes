@@ -364,12 +364,12 @@ class HistoryMedicationsEntry extends \BaseElement
 
     public function getStartDateDisplay()
     {
-        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
+        return '<div class="oe-date"><i class="oe-i start small pad"></i>' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
     }
 
     public function getStopDateDisplay()
     {
-        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
+        return '<div class="oe-date"><i class="oe-i start small pad"></i>' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
     }
 
     public function getStopReasonDisplay(){
