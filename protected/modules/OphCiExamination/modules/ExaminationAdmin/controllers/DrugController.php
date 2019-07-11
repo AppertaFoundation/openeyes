@@ -24,7 +24,7 @@ class DrugController extends \ModuleAdminController
 		$asset_manager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
 		$asset_manager->registerScriptFile('/js/oeadmin/list.js');
 
-		$this->render('/drug/index', [
+		$this->render('/Drug/index', [
 		  'model' => OphCiExamination_Dilation_Drugs::model(),
 		  'model_list' => OphCiExamination_Dilation_Drugs::model()->findAll(['order' => 'display_order']),
 		]);
@@ -95,7 +95,7 @@ class DrugController extends \ModuleAdminController
 		    $errors = $model->getErrors();
 		  }
 		}
-		$this->render('/drug/edit', [
+		$this->render('/Drug/edit', [
 		  'model' => $model,
 		  'errors' => isset($errors) ? $errors : null,
 		]);
