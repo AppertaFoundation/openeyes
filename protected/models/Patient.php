@@ -137,7 +137,6 @@ class Patient extends BaseActiveRecordVersioned
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
             array('nhs_num', 'nhsNumValidator'), // 'on' => 'manual'
-            array('nhs_num', 'numerical'),
             array('gender,is_local', 'length', 'max' => 1),
 
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
@@ -229,6 +228,12 @@ class Patient extends BaseActiveRecordVersioned
     public function nhsNumValidator($attribute, $params){
         // Validation only triggers for CERA
         if (Yii::app()->params['institution_code'] == 'CERA') {
+
+            // Throw validation warning message if user has entered non-numeric character
+            if(!ctype_digit($this->nhs_num) && strlen($this->nhs_num)>0) {
+                $this->addError($attribute, 'Please enter only numbers.');
+            }
+
             $medicareNo = preg_replace("/[^\d]/", "", $this->nhs_num);
 
             // Check for 11 digits
@@ -249,7 +254,6 @@ class Patient extends BaseActiveRecordVersioned
                     else {
                         $this->addError($attribute, 'Not a valid Medicare Number');
                     }
-
                 } else {
                     $this->addError($attribute, 'Not a valid Medicare Number');
                 }
