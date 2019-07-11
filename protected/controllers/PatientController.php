@@ -2239,8 +2239,8 @@ class PatientController extends BaseController
             $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
             $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
             $practiceDetails = $gp->getAssociatedPractice($gp->id);
-            $practiceId = $practiceDetails['id'];
             if (isset($practice_contact_associate->practice)){
+                $practiceId = $practiceDetails['id'];
                 $practice = $practice_contact_associate->practice;
                 $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
                 $output[] = array(
@@ -2253,7 +2253,7 @@ class PatientController extends BaseController
                 $output[] = array(
                     'label' => $gp->correspondenceName.$role,
                     'value' => $gp->id,
-                    'practiceId' => $practiceId
+                    'practiceId' => ''
                 );
             }
         }
