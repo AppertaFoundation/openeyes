@@ -1,12 +1,10 @@
 language: php
 sudo: required
-dist: xenial
+dist: trusty
 php:
   - '5.6'
 git:
   submodules: false
-services:
-  - mysql
 
 before_install:
   - ssh-add ~/.ssh/id_rsa
