@@ -813,19 +813,25 @@ class AnalyticsController extends BaseController
     public function queryDiagnosis($subspecialty_id = null, $surgeon_id = null, $start_date = null, $end_date = null)
     {
         $command_principal = Yii::app()->db->createCommand()
-            ->select('e.patient_id as patient_id, e.disorder_id as disorder_id', 'DISTINCT')
+            ->select('e.patient_id as patient_id, c.first_name, c.last_name, p.hos_num, p.dob, p.date_of_death, e.disorder_id as disorder_id, d.term, d.fully_specified_name','DISTINCT')
             ->from('episode e')
-            ->leftJoin('firm f', 'e.firm_id = f.id')
-            ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
+            ->leftJoin('disorder d', 'd.id = e.disorder_id')
+            ->join('patient p', 'p.id = e.patient_id')
+            ->join('contact c', 'c.id = p.contact_id')
+            ->leftJoin('firm f','e.firm_id = f.id')
+            ->leftJoin('service_subspecialty_assignment ssa','ssa.id = f.service_subspecialty_assignment_id')
             ->where('e.disorder_id IS NOT NULL')
             ->andWhere('e.deleted = 0');
 
         $command_secondary = Yii::app()->db->createCommand()
-            ->select('sd.patient_id as patient_id, sd.disorder_id as disorder_id', 'DISTINCT')
+            ->select('sd.patient_id as patient_id, c.first_name, c.last_name, p.hos_num, p.dob, p.date_of_death, sd.disorder_id as disorder_id, d.term, d.fully_specified_name','DISTINCT')
             ->from('secondary_diagnosis sd')
-            ->leftJoin('episode e', 'e.patient_id = sd.patient_id')
-            ->leftJoin('firm f', 'e.firm_id = f.id')
-            ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
+            ->leftJoin('disorder d', 'd.id = sd.disorder_id')
+            ->join('patient p', 'p.id = sd.patient_id')
+            ->join('contact c', 'c.id = p.contact_id')
+            ->leftJoin('episode e','e.patient_id = sd.patient_id')
+            ->leftJoin('firm f','e.firm_id = f.id')
+            ->leftJoin('service_subspecialty_assignment ssa','ssa.id = f.service_subspecialty_assignment_id')
             ->where('sd.disorder_id IS NOT NULL');
         if (isset($subspecialty_id)) {
             $command_principal->andWhere('ssa.subspecialty_id = :subspecialty_id', array(':subspecialty_id'=>$subspecialty_id));
@@ -901,52 +907,52 @@ class AnalyticsController extends BaseController
                       'full_name' => $disorder->disorder->fully_specified_name,
                       'short_name' => $disorder->disorder->term,
                       'patient_list' => array(),
-                    );
-                }
-            }
-        }
-        // this is secondary_common_ophthalmic_disorders regarding to the latest comment by toby
-  //      $secondary_common_ophthalmic_disorders = SecondaryToCommonOphthalmicDisorder::model()->findAll();
-  //      foreach ($secondary_common_ophthalmic_disorders as $disorder){
-  //          if(isset($disorder->disorder->id)){
-  //              if ($disorder->parent->subspecialty_id !== $subspecialty_id)
-  //                  continue;
-  //              if (!array_key_exists($disorder->disorder->id, $disorder_patient_list)){
-  //                  $disorder_patient_list[$disorder->disorder->id]= array(
-  //                      'full_name' => $disorder->disorder->fully_specified_name,
-  //                      'short_name' => $disorder->disorder->term,
-  //                      'patient_list' => array(),
-  //                  );
-  //              }
-  //          }
-  //      }
-        $diagnoses = $this->queryDiagnosis($subspecialty_id, $surgeon_id, $start_date, $end_date);
-        foreach ($diagnoses as $current_diagnosis) {
-            $current_patient = Patient::model()->findByPk($current_diagnosis['patient_id']);
+                  );
+              }
+          }
+      }
+      // this is secondary_common_ophthalmic_disorders regarding to the latest comment by toby
+//      $secondary_common_ophthalmic_disorders = SecondaryToCommonOphthalmicDisorder::model()->findAll();
+//      foreach ($secondary_common_ophthalmic_disorders as $disorder){
+//          if(isset($disorder->disorder->id)){
+//              if ($disorder->parent->subspecialty_id !== $subspecialty_id)
+//                  continue;
+//              if (!array_key_exists($disorder->disorder->id, $disorder_patient_list)){
+//                  $disorder_patient_list[$disorder->disorder->id]= array(
+//                      'full_name' => $disorder->disorder->fully_specified_name,
+//                      'short_name' => $disorder->disorder->term,
+//                      'patient_list' => array(),
+//                  );
+//              }
+//          }
+//      }
+      $diagnoses = $this->queryDiagnosis($subspecialty_id,$surgeon_id,$start_date,$end_date);
+      foreach ($diagnoses as $current_diagnosis){
+          //$current_patient = Patient::model()->findByPk($current_diagnosis['patient_id']);
 
-            $disorder_id = $current_diagnosis['disorder_id'];
-            $diagnosis_item = Disorder::model()->findByPk($disorder_id);
-            $disorder_list_csv[$diagnosis_item->term.$current_patient->id] = array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$diagnosis_item->term);
-            if (array_key_exists($disorder_id, $disorder_patient_list)) {
-                if (!in_array($current_patient->id, $disorder_patient_list[$disorder_id]['patient_list'])) {
-                    array_push($disorder_patient_list[$disorder_id]['patient_list'], $current_patient->id);
-                }
-            } else {
-                if (!array_key_exists($disorder_id, $other_disorder_list)) {
-                    $other_disorder_list[$disorder_id]= array(
-                      'full_name' => $diagnosis_item->fully_specified_name,
-                      'short_name' => $diagnosis_item->term,
+          $disorder_id = $current_diagnosis['disorder_id'];
+          //$diagnosis_item = Disorder::model()->findByPk($disorder_id);
+          $disorder_list_csv[$current_diagnosis['term'].$current_diagnosis['patient_id']] = array($current_diagnosis['first_name'],$current_diagnosis['last_name'],$current_diagnosis['hos_num'],$current_diagnosis['dob'],Helper::getAge($current_diagnosis['dob'], $current_diagnosis['date_of_death']),$current_diagnosis['term']);
+          if (array_key_exists($disorder_id, $disorder_patient_list)){
+              if(!in_array($current_diagnosis['patient_id'], $disorder_patient_list[$disorder_id]['patient_list'])){
+                  $disorder_patient_list[$disorder_id]['patient_list'][] = $current_diagnosis['patient_id'];
+              }
+          } else {
+              if (!array_key_exists($disorder_id, $other_disorder_list)){
+                  $other_disorder_list[$disorder_id]= array(
+                      'full_name' => $current_diagnosis['fully_specified_name'],
+                      'short_name' => $current_diagnosis['term'],
                       'patient_list' => array(),
-                    );
-                }
-                if (!in_array($current_patient->id, $other_disorder_list[$disorder_id]['patient_list'])) {
-                    array_push($other_disorder_list[$disorder_id]['patient_list'], $current_patient->id);
-                }
-                if (!in_array($current_patient->id, $other_patient_list)) {
-                    array_push($other_patient_list, $current_patient->id);
-                }
-            }
-        }
+                  );
+              }
+              if (!in_array($current_diagnosis['patient_id'], $other_disorder_list[$disorder_id]['patient_list'])){
+                  $other_disorder_list[$disorder_id]['patient_list'][] = $current_diagnosis['patient_id'];
+              }
+              if(!in_array($current_diagnosis['patient_id'], $other_patient_list)){
+                  $other_patient_list[] = $current_diagnosis['patient_id'];
+              }
+          }
+      }
 
         $i=0;
         foreach ($disorder_patient_list as $key => $value) {
