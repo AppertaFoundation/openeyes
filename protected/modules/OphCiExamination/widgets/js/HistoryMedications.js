@@ -647,6 +647,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.boundController.setRowData($row, data);
         this.boundController.initialiseRow($row);
+        if(data.end_date !== "") {
+            this.boundController.showStopControls($row);
+        }
 
         $row.find(".js-prepended_markup:visible").load("/medicationManagement/getInfoBox?medication_id="+data.medication_id);
 
