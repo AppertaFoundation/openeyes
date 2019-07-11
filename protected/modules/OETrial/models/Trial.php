@@ -270,7 +270,7 @@ class Trial extends BaseActiveRecordVersioned
         $sortBySql = 'p.gender';
         break;
       case 'Age':
-        $sortBySql = 'NOW() - p.dob';
+        $sortBySql = 'IFNULL(p.date_of_death, NOW()) - p.dob';
         break;
       case 'Ethnicity':
         $sortBySql = 'IFNULL(e.name, "Unknown")';

@@ -123,7 +123,7 @@ class TrialTest extends CDbTestCase
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
-        $this->assertLessThan($data[1]->patient->getAge(), $data[0]->patient->getAge(),
+        $this->assertGreaterThan($data[1]->patient->getAge(), $data[0]->patient->getAge(),
             'The list of patients should be sorted by age ascending');
     }
 
@@ -135,7 +135,7 @@ class TrialTest extends CDbTestCase
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
-        $this->assertGreaterThan($data[1]->patient->getAge(), $data[0]->patient->getAge(),
+        $this->assertLessThan($data[1]->patient->getAge(), $data[0]->patient->getAge(),
             'The list of patients should be sorted by age descending');
     }
 
