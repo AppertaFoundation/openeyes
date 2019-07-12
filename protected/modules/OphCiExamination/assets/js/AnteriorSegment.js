@@ -369,7 +369,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
           if (this.options.pairArray[change.doodle.className] !== undefined) {
             // get the corresponding secondary doodle and it's sync parameter definitions
             var secondaryDoodle = this.secondaryDrawing.doodleOfId(change.doodle.id);
-            f (secondaryDoodle && selectedDoodle && change.doodle.id === selectedDoodle.id) {
+            if (secondaryDoodle && selectedDoodle && change.doodle.id === selectedDoodle.id) {
               // if we're resetting or anything along those lines, the secondaryDoodle might not be present.
               var syncParameters = secondaryDoodle.getLinkedParameters(change.doodle.className);
               if (typeof(syncParameters) !== "undefined") {
