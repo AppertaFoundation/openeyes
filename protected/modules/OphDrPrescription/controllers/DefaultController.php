@@ -274,7 +274,9 @@ class DefaultController extends BaseEventTypeController
                 $criteria->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id = :type_id)");
                 $params[':type_id'] = $type_id;
             }
-            if (isset($_GET['preservative_free']) && $preservative_free = $_GET['preservative_free']) {
+
+            $preservative_free = \Yii::app()->request->getParam('preservative_free');
+            if ($preservative_free) {
                 $criteria->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE 
                                                 medication_set_id = (SELECT id FROM medication_set WHERE name = 'Preservative free'))");
             }

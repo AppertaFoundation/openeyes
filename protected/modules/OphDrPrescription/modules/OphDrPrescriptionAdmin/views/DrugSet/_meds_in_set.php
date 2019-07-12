@@ -64,35 +64,35 @@
                 $duration_options = \CHtml::listData(\MedicationDuration::model()->findAll(), 'id', 'name');
             ?>
             <?php foreach ($medication_data_provider->getData() as $k => $med) : ?>
-                <?php $link = \MedicationSetItem::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $medication_set->id]);?>
+                <?php $set_item = \MedicationSetItem::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $medication_set->id]);?>
                 <tr data-med_id="<?=$med->id?>">
                     <td>
                         <?= $med->preferred_term; ?>
-                        <?= \CHtml::activeHiddenField($link, 'id', ['class' => 'js-input']); ?>
+                        <?= \CHtml::activeHiddenField($set_item, 'id', ['class' => 'js-input']); ?>
                         <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input']); ?>
                     </td>
                     <td>
-                        <span data-type="default_dose" data-id="<?= $link->default_dose ? $link->default_dose : ''; ?>" class="js-text"><?= $link->default_dose ? $link->default_dose : '-'; ?></span>
-                        <?= \CHtml::activeTextField($link, 'default_dose', ['class' => 'js-input cols-full', 'style' => 'display:none', 'id' => null]); ?>
+                        <span data-type="default_dose" data-id="<?= $set_item->default_dose ? $set_item->default_dose : ''; ?>" class="js-text"><?= $set_item->default_dose ? $set_item->default_dose : '-'; ?></span>
+                        <?= \CHtml::activeTextField($set_item, 'default_dose', ['class' => 'js-input cols-full', 'style' => 'display:none', 'id' => null]); ?>
                     </td>
                     <td>
-                        <span data-type="default_dose" data-id="<?= $link->default_dose_unit_term ? $link->default_dose_unit_term : ''; ?>"><?= $link->default_dose_unit_term ? $link->default_dose_unit_term : '-'; ?></span>
+                        <span data-type="default_dose" data-id="<?= $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : ''; ?>"><?= $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : '-'; ?></span>
                     </td>
                     <td>
-                        <span data-type="default_route" data-id="<?= $link->defaultRoute ? $link->default_route_id : ''; ?>" class="js-text"><?= $link->defaultRoute ? $link->defaultRoute->term : '-'; ?></span>
-                        <?= \CHtml::activeDropDownList($link, 'default_route_id',
+                        <span data-type="default_route" data-id="<?= $set_item->defaultRoute ? $set_item->default_route_id : ''; ?>" class="js-text"><?= $set_item->defaultRoute ? $set_item->defaultRoute->term : '-'; ?></span>
+                        <?= \CHtml::activeDropDownList($set_item, 'default_route_id',
                             $route_options,
                             ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
                     </td>
                     <td>
-                        <span data-type="default_frequency" data-id="<?= $link->defaultFrequency ? $link->default_frequency_id : ''; ?>" class="js-text"><?= $link->defaultFrequency ? $link->defaultFrequency->term : '-'; ?></span>
-                        <?= \CHtml::activeDropDownList($link, 'default_frequency_id',
+                        <span data-type="default_frequency" data-id="<?= $set_item->defaultFrequency ? $set_item->default_frequency_id : ''; ?>" class="js-text"><?= $set_item->defaultFrequency ? $set_item->defaultFrequency->term : '-'; ?></span>
+                        <?= \CHtml::activeDropDownList($set_item, 'default_frequency_id',
                             $frequency_options,
                             ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
                     </td>
                     <td>
-                        <span data-type="default_duration" data-id="<?= $link->defaultDuration ? $link->default_duration_id : ''; ?>" class="js-text"><?= $link->defaultDuration ? $link->defaultDuration->name : '-'; ?></span>
-                        <?= \CHtml::activeDropDownList($link, 'default_duration_id',
+                        <span data-type="default_duration" data-id="<?= $set_item->defaultDuration ? $set_item->default_duration_id : ''; ?>" class="js-text"><?= $set_item->defaultDuration ? $set_item->defaultDuration->name : '-'; ?></span>
+                        <?= \CHtml::activeDropDownList($set_item, 'default_duration_id',
                             $duration_options,
                             ['class' => 'js-input', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
                     </td>

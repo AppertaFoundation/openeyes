@@ -150,7 +150,8 @@ class DrugSetController extends BaseAdminController
 
             $set_attributes = $set->attributes;
             $set_attributes['count'] = $set->itemsCount();
-            $set_attributes['hidden'] = $set->attributes['hidden'] ? 'Yes' : 'No';
+            $set_attributes['hidden'] = $set->attributes['hidden'] ? $set->attributes['hidden'] : null;
+            $set_attributes['automatic'] = $set->attributes['automatic'] ? $set->attributes['automatic'] : null;
             $rules = MedicationSetRule::model()->findAllByAttributes(['medication_set_id' => $set->id]);
             $ret_val = [];
 

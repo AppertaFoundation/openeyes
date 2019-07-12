@@ -99,10 +99,11 @@
     <form id="admin_DrugSets">
         <table id="drugset-list" class="standard">
             <colgroup>
+                <col class="cols-1" style="width:3.33333%;">
                 <col class="cols-1" style="width:3.33333%">
-                <col class="cols-1" style="width:3.33333%">
-                <col class="cols-2">
+                <col class="cols-3">
                 <col class="cols-4">
+                <col class="cols-1">
                 <col class="cols-1">
                 <col class="cols-1">
             </colgroup>
@@ -114,6 +115,7 @@
                 <th>Rule</th>
                 <th>Count</th>
                 <th>Hidden/system</th>
+                <th>Automatic</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -155,8 +157,20 @@
         <td>{{name}}</td>
         <td>{{rules}}</td>
         <td>{{count}}</td>
-        <td>{{hidden}}</td>
-        <td><a href="/OphDrPrescription/admin/DrugSet/edit/{{id}}" class="button">Edit</a></td>
+        <td>
+            {{#hidden}}<i class="oe-i tick medium"></i>{{/hidden}}
+            {{^hidden}}<i class="oe-i remove medium"></i>{{/hidden}}
+        </td>
+        <td>
+            {{#automatic}}<i class="oe-i tick medium"></i>{{/automatic}}
+            {{^automatic}}<i class="oe-i remove medium"></i>{{/automatic}}
+        </td>
+            <td>
+                {{^automatic}}<a href="/OphDrPrescription/admin/DrugSet/edit/{{id}}" class="button">Edit</a>{{/automatic}}
+                {{#automatic}}<i class="oe-i info pad-left small js-has-tooltip"
+                                 data-tooltip-content="Automatic set cannot be edited here."></i>{{/automatic}}
+            </td>
+
     </tr>
 </script>
 

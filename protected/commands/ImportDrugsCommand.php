@@ -610,48 +610,63 @@ EOD;
 		echo " OK".PHP_EOL;
 
         $tables = [
-        	$this->tablePrefix."amp_amps" => "apid",
-			$this->tablePrefix."vmp_vmps" => "vpid",
-			$this->tablePrefix."vtm_vtm"  => "vtmid",
-		];
+            $this->tablePrefix."amp_amps" => [
+                "id_column" => "apid",
+                "medication_FK_column" => "amp_code",
+            ],
+            $this->tablePrefix."vmp_vmps" => [
+                "id_column" => "vpid",
+                "medication_FK_column" => "vmp_code",
+            ],
+            $this->tablePrefix."vtm_vtm"  => [
+                "id_column" => "vtmid",
+                "medication_FK_column" => "vtm_code",
+            ],
+        ];
 
-        foreach ($tables as $table => $id_col)
-		{
-			// AMPs
-			$this->printMsg( "Importing attributes for $table ..".str_repeat(" ", 14), false);
-			$cmd = "SELECT * FROM $table";
-			$amps = Yii::app()->db->createCommand($cmd)->queryAll();
-			$total = count($amps);
-			$progress = 1;
-			foreach ($amps as $amp) {
-				foreach ($this->attribs as $attr_key => $attrib) {
+        foreach ($tables as $table => $table_properties)  {
+            $this->printMsg( "Importing attributes for $table ..".str_repeat(" ", 14), false);
+            $cmd = "SELECT * FROM $table";
+            $rows = Yii::app()->db->createCommand($cmd)->queryAll();
+            $total = count($rows);
+            $progress = 1;
+            $values = [];
+            $attribIndex = 0;
+            foreach ($rows as $key => $row) {
+                $queryForMedicationId = "SELECT id FROM medication
+                        WHERE {$table_properties["medication_FK_column"]} = '{$row[$table_properties["id_column"]]}'";
+                $medicationId = Yii::app()->db->createCommand($queryForMedicationId)->queryScalar();
 
-					$attr_name_parts = explode(".", $attrib);
-					$attr_name = $attr_name_parts[0];
-					$attr_key = strtolower($attr_key);
+                foreach ($this->attribs as $attr_key => $attrib) {
+                    $attr_name_parts = explode(".", $attrib);
+                    $attr_name = $attr_name_parts[0];
+                    $attr_key = strtolower($attr_key);
 
-					if(array_key_exists($attr_key, $amp) && !empty($amp[$attr_key])) {
-						$attr_value = $amp[$attr_key];
-
-						$cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id)
-								VALUES ( 
-								(SELECT id FROM medication WHERE amp_code = '{$amp[$id_col]}'),
-								(SELECT mao.id 
+                    if(array_key_exists($attr_key, $row) && !empty($row[$attr_key])) {
+                        $attr_value = $row[$attr_key];
+                        $values[] = "(
+								{$medicationId},
+								(   SELECT mao.id 
 									FROM medication_attribute_option mao
 									LEFT JOIN medication_attribute ma ON ma.id = mao.medication_attribute_id 
 									WHERE mao.`value`='{$attr_value}' AND ma.name = '{$attr_name}'
 								)
 								)";
-
-						Yii::app()->db->createCommand($cmd)->execute();
-					}
-				}
-				$progress++;
-				echo str_repeat("\x08", 14) . str_pad("$progress/$total", 14, " ", STR_PAD_LEFT);
-			}
-
-			echo PHP_EOL;
-		}
+                        $attribIndex++;
+                    }
+                }
+                if ( ($attribIndex >= 500 || $key === count($rows)-1) && $values) {
+                    $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) VALUES" .
+                        implode(',', $values) . ";";
+                    Yii::app()->db->createCommand($cmd)->execute();
+                    $values = [];
+                    $attribIndex = 0;
+                }
+                $progress++;
+                echo str_repeat("\x08", 14) . str_pad("$progress/$total", 14, " ", STR_PAD_LEFT);
+            }
+            echo PHP_EOL;
+        }
 
 		$this->printMsg("Applying VTM attributes to VMPs", false);
 
