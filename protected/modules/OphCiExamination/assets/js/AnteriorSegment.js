@@ -307,7 +307,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
           for (var primaryClass in this.options.pairArray) {
             if (newDoodle.className == primaryClass) {
               var secondaryClass = this.options.pairArray[primaryClass];
-              if (!this.secondaryDrawing.hasDoodleOfClass(secondaryClass)) {
+              if (!this.secondaryDrawing.hasDoodleOfClass(secondaryClass) || !newDoodle.isUnique) {
                 this.secondaryDrawing.addDoodle(secondaryClass);
                 this.secondaryDrawing.deselectDoodles();
               }
@@ -364,11 +364,12 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         break;
       case 'parameterChanged':
         var change = msgArray['object'];
+        const selectedDoodle = msgArray['selectedDoodle'];
         if (this.secondaryDoodlesLoaded) {
           if (this.options.pairArray[change.doodle.className] !== undefined) {
             // get the corresponding secondary doodle and it's sync parameter definitions
-            var secondaryDoodle = this.secondaryDrawing.firstDoodleOfClass(this.options.pairArray[change.doodle.className]);
-            if (secondaryDoodle) {
+            var secondaryDoodle = this.secondaryDrawing.doodleOfId(change.doodle.id);
+            f (secondaryDoodle && selectedDoodle && change.doodle.id === selectedDoodle.id) {
               // if we're resetting or anything along those lines, the secondaryDoodle might not be present.
               var syncParameters = secondaryDoodle.getLinkedParameters(change.doodle.className);
               if (typeof(syncParameters) !== "undefined") {
@@ -480,7 +481,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
           // the primary canvas.
           var change = msgArray['object'];
           if (this.options.reversePairArray[change.doodle.className] !== undefined) {
-            var primaryDoodle = this.primaryDrawing.firstDoodleOfClass(this.options.reversePairArray[change.doodle.className]);
+            var primaryDoodle = this.primaryDrawing.doodleOfId(change.doodle.id);
             var syncParameters = change.doodle.getLinkedParameters(this.options.reversePairArray[change.doodle.className]);
             if (typeof(syncParameters) !== "undefined") {
               var synced = false;
