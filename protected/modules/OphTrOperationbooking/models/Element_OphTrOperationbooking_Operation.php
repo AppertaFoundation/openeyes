@@ -32,6 +32,8 @@
  * @property string $decision_date
  * @property string $comments
  * @property string $comments_rtt
+ * @property string $on_hold_reason
+ * @property string $on_hold_comment
  * @property int $referral_id
  * @property int $rtt_id
  * @property int $preassessment_booking_required
@@ -139,6 +141,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('site_id, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
             array('status_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
             array('priority_id, eye_id, organising_admission_user_id, preassessment_booking_required, overnight_booking_required_id, complexity, is_golden_patient',    'safe'),
+            array('on_hold_reason, on_hold_comment', 'safe'),
 
             array('named_consultant_id', 'RequiredIfFieldValidator', 'field' => 'consultant_required', 'value' => true, 'on' => 'insert'),
             array('cancellation_comment', 'length', 'max' => 200),
@@ -146,7 +149,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('total_duration', 'validateDuration'),
             array('referral_id', 'validateReferral'),
             array('decision_date', 'OEDateValidatorNotFuture'),
-            array('eye_id, consultant_required, overnight_stay_required_id', 'required'),
+            array('eye_id, consultant_required, overnight_stay_required_id, preassessment_booking_required', 'required'),
             array('anaesthetic_choice_id, stop_medication, complexity', 'required', 'on' => 'insert'),
             array('stop_medication_details', 'RequiredIfFieldValidator', 'field' => 'stop_medication', 'value' => true),
             array('site_id, priority_id, decision_date', 'required'),
@@ -155,7 +158,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('organising_admission_user_id', 'required', 'on' => 'insert'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, eye_id, consultant_required, site_id, priority_id, decision_date, comments, comments_rtt', 'safe', 'on' => 'search'),
+            array('id, event_id, eye_id, consultant_required, site_id, priority_id, decision_date, comments, comments_rtt, on_hold_reason, on_hold_comment', 'safe', 'on' => 'search'),
         );
     }
 
@@ -233,6 +236,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'complexity' => 'Complexity',
             'is_golden_patient' => 'Suitable as golden patient',
             'cancellation_reason_id' => ($this->reschedule ? 'Reschedule Reason' : 'Cancellation Reason'),
+            'on_hold_comment' => 'On Hold Comment',
+            'on_hold_reason' => 'On Hold Reason',
         );
     }
 
@@ -294,7 +299,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
         $this->special_equipment = false;
-        $this->preassessment_booking_required = Yii::app()->params['pre_assessment_booking_default_value'];
+        $preassesment_booking_default_value = Yii::app()->params['pre_assessment_booking_default_value'];
+        $this->preassessment_booking_required = (isset($preassesment_booking_default_value) && $preassesment_booking_default_value === 2) ?
+            null :
+            $preassesment_booking_default_value;
         $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
 
         $this->organising_admission_user_id = Yii::app()->user->id;

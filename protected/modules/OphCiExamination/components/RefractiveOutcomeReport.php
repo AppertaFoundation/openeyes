@@ -49,7 +49,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
       ),
       'xaxis' => array(
-        'title' => 'PPOR - POR (Dioptres)',
+        'title' => 'POR - PPOR (Dioptres)',
         'range' => [0,40],
         'ticks' => 'outside',
         'tickvals' => [],
@@ -168,7 +168,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         if ($row['eye_id'] === '1') {
           $side = 'left';
         }
-        $diff = (float) $row['predicted_refraction'] - ((float) $row[$side.'_sphere'] + ((float) $row[$side.'_cylinder'] / 2));
+        $diff = ((float) $row[$side.'_sphere'] + ((float) $row[$side.'_cylinder'] / 2)) - (float) $row['predicted_refraction'];
 
         $diff = round($diff * 2) / 2;
         $diff_index = array_search($diff, $this->plotlyConfig['xaxis']['ticktext']);
