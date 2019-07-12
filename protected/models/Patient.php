@@ -2261,7 +2261,7 @@ class Patient extends BaseActiveRecordVersioned
                         $episode->disorder_date = null;
                     } else {
                         if($episode->eye_id === Eye::BOTH) {
-                            $episode->eye_id = $eye->id == 1 ? 2 : 1;
+                            $episode->eye_id = $eye->id === 1 ? 2 : 1;
                         } else {
                             $episode->eye_id = null;
                             $episode->disorder_id = null;
@@ -2276,7 +2276,7 @@ class Patient extends BaseActiveRecordVersioned
         foreach($this->secondarydiagnoses as $diagnosis) {
             if(in_array($diagnosis->disorder_id, $biological_lens_disorders)){
                 if($diagnosis->eye_id === $eye->id || $diagnosis->eye_id === Eye::BOTH){
-                    if($eye->id == Eye::BOTH) {
+                    if($eye->id === Eye::BOTH) {
                         $diagnosis->delete();
                     } else {
                         if($diagnosis->eye_id == Eye::BOTH) {
