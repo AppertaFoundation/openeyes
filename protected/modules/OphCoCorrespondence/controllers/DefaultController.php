@@ -83,8 +83,6 @@ class DefaultController extends BaseEventTypeController
                     foreach($gp_targets as $gp_target){
                         $api->updateDocumentTargetAddressFromContact($gp_target->id, 'Gp', $letter->id);
                     }
-                }elseif (!$letter->draft){
-                    Yii::app()->user->setFlash('Print', "1");
                 }
             }
         }
