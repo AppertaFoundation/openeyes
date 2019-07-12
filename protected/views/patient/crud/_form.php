@@ -339,7 +339,7 @@ foreach ($ethnic_list as $key=>$item){
 															$gp = $patientContactAssociate->gp;
 															$practice  = $gp->getAssociatePractice();
 															$practiceDetails = $gp->getAssociatedPractice($gp->id);
-															$practiceNameAddress = $practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():'';
+															$practiceNameAddress = $practice ? ($practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():''): '';
 															$role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
 															//The line below is to ensure a newly added referring practitioner does not show up in the list of contacts also
 															if($gp->id != $patient->gp_id){
@@ -379,7 +379,7 @@ foreach ($ethnic_list as $key=>$item){
                                     $practice  = $gp->getAssociatePractice();
                                     $practiceDetails = $gp->getAssociatedPractice($gp->id);
                                     $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
-                                    $practiceNameAddress = $practice->getPracticeNames()? ' - '.$practice->getPracticeNames():'';
+                                    $practiceNameAddress = $practice ? ($practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():''): '';
                               ?>
                                 <?=$gp->getCorrespondenceName().$role.$practiceNameAddress?>
                                 <?php
@@ -511,7 +511,7 @@ foreach ($ethnic_list as $key=>$item){
       onSelect: function(){
       let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
       removeSelectedGP();
-      addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse});
+      addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse}, true);
     }
   });
   OpenEyes.UI.AutoCompleteSearch.init({
@@ -684,8 +684,8 @@ $this->renderPartial('../patient/crud/create_contact_form',
                     var wrapper = $('#selected_gp_wrapper');
                     wrapper.find('.js-name').text(response.label);
                     wrapper.find('.hidden_id').val(response.gp_id);
-                    $('#Patient_practice_id').val(response.practiceId);
-                    $('#prac_id').val(response.practiceId);
+                    $('#Patient_practice_id').val(response.practice_id);
+                    $('#prac_id').val(response.practice_id);
                     wrapper.show();
                 }
             }

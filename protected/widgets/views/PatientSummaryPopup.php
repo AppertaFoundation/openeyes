@@ -138,33 +138,34 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                   if ($index > 3) {
                       break;
                   }
-                  if (isset($pca->gp) && ($this->patient->gp->contact->id !== $pca->gp->contact->id)) {
-                      $gp = $pca->gp; ?>
-                      <tr>
-                          <td>
-                              Contact <?= $index; ?>
-                          </td>
-                          <td>
-                              <div>
-                                  <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
-                              </div>
-                              <?php
-                              if (isset($gp->contactPracticeAssociate)) {
-                                  $practice = $gp->contactPracticeAssociate->practice;
-                                  if (isset($practice)) {
-                                      $address = $practice->contact->address;
-                                      ?>
-                                      <div>
-                                          <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
-                                      </div>
-                                      <?php
-                                  }
-                              } ?>
-                          </td>
-                      </tr>
-                      <?php
-                      $index += 1;
-
+                  if (isset($pca->gp) && isset($this->patient->gp)) {
+                      if ($this->patient->gp->contact->id !== $pca->gp->contact->id) {
+                          $gp = $pca->gp; ?>
+                          <tr>
+                              <td>
+                                  Contact <?= $index; ?>
+                              </td>
+                              <td>
+                                  <div>
+                                      <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
+                                  </div>
+                                  <?php
+                                  if (isset($gp->contactPracticeAssociate)) {
+                                      $practice = $gp->contactPracticeAssociate->practice;
+                                      if (isset($practice)) {
+                                          $address = $practice->contact->address;
+                                          ?>
+                                          <div>
+                                              <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
+                                          </div>
+                                          <?php
+                                      }
+                                  } ?>
+                              </td>
+                          </tr>
+                          <?php
+                          $index += 1;
+                      }
                   }
               }
           }
