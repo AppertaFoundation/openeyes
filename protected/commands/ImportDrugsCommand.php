@@ -75,7 +75,7 @@ class ImportDrugsCommand extends CConsoleCommand
     private $createTableTemplate = 'CREATE TABLE IF NOT EXISTS `%s` (%s) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
     private $truncateTableTemplate = 'TRUNCATE TABLE `%s`;';
     private $dropTableTemplate = 'DROP TABLE IF EXISTS `%s`;';
-    private $insertTemplate = "INSERT INTO `%s` (%s) VALUES (%s);";
+    private $insertMultipleTemplate = "INSERT INTO `%s` (%s) VALUES %s;";
 
     private $columnTypeMap = [
         'integer' => 'varchar(200)',
@@ -348,14 +348,16 @@ EOD;
                     $subsubnode = $rows[$k[0]];
                 }
 
-                foreach($subsubnode as $oneRow){
+                $multipleValues = '';
+                $multipleValuesMaxCount = 100;
+                $multipleValuesCurrentCount = 0;
+                $rowCount = sizeof($subsubnode);
+                foreach($subsubnode as $rowIndex => $oneRow){
                     if( $limit<=$i++ && $limit != 0 ){ break; }
                     $values = '';
                     foreach($tablesData[$fullTableName] as $key => $filedType){
-
                         if(isset($oneRow[strtoupper($key)])){
                             $value = $oneRow[strtoupper($key)];
-
                         } else {
                             if($filedType=='date'){
                                 $value = '0000-00-00';
@@ -363,18 +365,22 @@ EOD;
                                 $value = '';
                             }
                         }
-
                         if(getType($value)=='array' && empty($value)){
                             $value = '';
                         }
-
                         $value = str_replace('"',"'",$value);
-
                         $values .= '"'.$value.'",';
                     }
-
-                    $values = trim($values,',');
-                    $sqlCommands[] = sprintf($this->insertTemplate,$fullTableName,$fields,$values);
+                    $values = "(" . trim($values,',') . ")";
+                    $multipleValues = empty($multipleValues) ? $values : $multipleValues . "," . $values;
+                    $multipleValuesCurrentCount++;
+                    if($rowIndex === ($rowCount - 1) || $multipleValuesCurrentCount === $multipleValuesMaxCount) {
+                        $insertMultipleCommand = sprintf($this->insertMultipleTemplate,
+                            $fullTableName, $fields, $multipleValues);
+                        $sqlCommands[] = $insertMultipleCommand;
+                        $multipleValues = '';
+                        $multipleValuesCurrentCount = 0;
+                    }
                 }
 
             } else {
@@ -421,12 +427,25 @@ EOD;
 		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_vmps ADD INDEX idx_vmp_vpid (vpid)";
 		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_vmps ADD INDEX idx_vmp_vtmid (vtmid)";
 		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_vmps ADD INDEX idx_vmp_pres_f (pres_f)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_vmps ADD INDEX idx_udfs_uomcd_f (udfs_uomcd)";
+
 		$sql[] = "ALTER TABLE {$this->tablePrefix}amp_amps ADD INDEX idx_amp_apid (apid)";
 		$sql[] = "ALTER TABLE {$this->tablePrefix}amp_amps ADD INDEX idx_amp_vpid (vpid)";
+
 		$sql[] = "ALTER TABLE {$this->tablePrefix}vtm_vtm ADD INDEX idx_vtm_vtmid (vtmid)";
 		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_unit_of_measure ADD INDEX idx_uom_cd (cd)";
+
+		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_drug_form ADD INDEX idx_vmp_drug_form_formcd (formcd)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_drug_form ADD INDEX idx_vmp_drug_form_vpid (vpid)";
+
+		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_drug_route ADD INDEX idx_vmp_drug_route_vpid (vpid)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}vmp_drug_route ADD INDEX idx_vmp_drug_route_routecd (routecd)";
+
 		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_form ADD INDEX idx_lfrm_cd (cd)";
-		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_route ADD INDEX idx_lrt_cd (cd)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_form ADD INDEX idx_lfrm_desc (`desc`)";
+
+		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_route ADD INDEX idx_lrt_cd (`cd`)";
+		$sql[] = "ALTER TABLE {$this->tablePrefix}lookup_route ADD INDEX idx_desc (`desc`)";
 
 		$cmdcount = count($sql);
 		$i=1;
@@ -610,29 +629,32 @@ EOD;
 		echo " OK".PHP_EOL;
 
         $tables = [
-            $this->tablePrefix."amp_amps" => [
-                "id_column" => "apid",
+        	$this->tablePrefix."amp_amps" => [
+        	    "id_column" => "apid",
                 "medication_FK_column" => "amp_code",
-            ],
-            $this->tablePrefix."vmp_vmps" => [
+                ],
+			$this->tablePrefix."vmp_vmps" => [
                 "id_column" => "vpid",
                 "medication_FK_column" => "vmp_code",
-            ],
-            $this->tablePrefix."vtm_vtm"  => [
+                ],
+			$this->tablePrefix."vtm_vtm"  => [
                 "id_column" => "vtmid",
                 "medication_FK_column" => "vtm_code",
-            ],
-        ];
+                ],
+		];
 
-        foreach ($tables as $table => $table_properties)  {
-            $this->printMsg( "Importing attributes for $table ..".str_repeat(" ", 14), false);
-            $cmd = "SELECT * FROM $table";
-            $rows = Yii::app()->db->createCommand($cmd)->queryAll();
-            $total = count($rows);
-            $progress = 1;
+        foreach ($tables as $table => $table_properties)
+		{
+			$this->printMsg( "Importing attributes for $table ..".str_repeat(" ", 14), false);
+			$cmd = "SELECT * FROM $table";
+			$rows = Yii::app()->db->createCommand($cmd)->queryAll();
+			$total = count($rows);
+			$progress = 1;
+
             $values = [];
             $attribIndex = 0;
-            foreach ($rows as $key => $row) {
+
+			foreach ($rows as $key => $row) {
                 $queryForMedicationId = "SELECT id FROM medication
                         WHERE {$table_properties["medication_FK_column"]} = '{$row[$table_properties["id_column"]]}'";
                 $medicationId = Yii::app()->db->createCommand($queryForMedicationId)->queryScalar();
@@ -641,7 +663,6 @@ EOD;
                     $attr_name_parts = explode(".", $attrib);
                     $attr_name = $attr_name_parts[0];
                     $attr_key = strtolower($attr_key);
-
                     if(array_key_exists($attr_key, $row) && !empty($row[$attr_key])) {
                         $attr_value = $row[$attr_key];
                         $values[] = "(
@@ -652,9 +673,11 @@ EOD;
 									WHERE mao.`value`='{$attr_value}' AND ma.name = '{$attr_name}'
 								)
 								)";
+
                         $attribIndex++;
                     }
                 }
+
                 if ( ($attribIndex >= 500 || $key === count($rows)-1) && $values) {
                     $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) VALUES" .
                         implode(',', $values) . ";";
@@ -662,11 +685,13 @@ EOD;
                     $values = [];
                     $attribIndex = 0;
                 }
-                $progress++;
-                echo str_repeat("\x08", 14) . str_pad("$progress/$total", 14, " ", STR_PAD_LEFT);
-            }
-            echo PHP_EOL;
-        }
+
+				$progress++;
+				echo str_repeat("\x08", 14) . str_pad("$progress/$total", 14, " ", STR_PAD_LEFT);
+			}
+
+			echo PHP_EOL;
+		}
 
 		$this->printMsg("Applying VTM attributes to VMPs", false);
 

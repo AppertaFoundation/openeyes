@@ -27,6 +27,8 @@ class m180504_085420_medication_management_tables extends OEMigration
 		), true, "new_medication");
 
 	    $this->createIndex("idx_med_code", "medication", "preferred_code");
+	    $this->createIndex("idx_source_type", "medication", "source_type");
+	    $this->createIndex("idx_source_sub_type", "medication", "source_subtype");
 
 		$this->createOETable('medication_search_index', array(
             'id'                => 'pk',
