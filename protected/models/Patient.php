@@ -2254,14 +2254,14 @@ class Patient extends BaseActiveRecordVersioned
 
         foreach ($this->episodes as $episode) {
             if(in_array($episode->disorder_id, $biological_lens_disorders)){
-                if($episode->eye_id === $eye->id || $episode->eye_id === Eye::BOTH){
-                    if($eye->id === Eye::BOTH) {
+                if($episode->eye_id === $eye->id || intval($episode->eye_id) === Eye::BOTH){
+                    if(intval($eye->id) === Eye::BOTH) {
                         $episode->eye_id = null;
                         $episode->disorder_id = null;
                         $episode->disorder_date = null;
                     } else {
-                        if($episode->eye_id === Eye::BOTH) {
-                            $episode->eye_id = $eye->id === 1 ? 2 : 1;
+                        if(intval($episode->eye_id) === Eye::BOTH) {
+                            $episode->eye_id = intval($eye->id) == 1 ? 2 : 1;
                         } else {
                             $episode->eye_id = null;
                             $episode->disorder_id = null;
@@ -2275,12 +2275,13 @@ class Patient extends BaseActiveRecordVersioned
 
         foreach($this->secondarydiagnoses as $diagnosis) {
             if(in_array($diagnosis->disorder_id, $biological_lens_disorders)){
-                if($diagnosis->eye_id === $eye->id || $diagnosis->eye_id === Eye::BOTH){
-                    if($eye->id === Eye::BOTH) {
+
+                if($diagnosis->eye_id === $eye->id || intval($diagnosis->eye_id) === Eye::BOTH){
+                    if(intval($eye->id) === Eye::BOTH) {
                         $diagnosis->delete();
                     } else {
-                        if($diagnosis->eye_id == Eye::BOTH) {
-                            $diagnosis->eye_id = $eye->id === 1 ? 2 : 1;
+                        if(intval($diagnosis->eye_id) === Eye::BOTH) {
+                            $diagnosis->eye_id = intval($eye->id) === 1 ? 2 : 1;
                             $diagnosis->save();
                         } else {
                             $diagnosis->delete();
