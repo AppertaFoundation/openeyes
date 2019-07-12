@@ -813,6 +813,9 @@ class DefaultController extends BaseEventTypeController
     {
         $element->updateComplications(isset($data['OphTrOperationnote_CataractComplications']) ? $data['OphTrOperationnote_CataractComplications'] : array());
         $element->updateOperativeDevices(isset($data['OphTrOperationnote_CataractOperativeDevices']) ? $data['OphTrOperationnote_CataractOperativeDevices'] : array());
+        $procedureList  = Element_OphTrOperationnote_ProcedureList::model()->find('event_id = ?' , [$element->event_id]);
+        $eye = $procedureList->eye;
+        $this->patient->removeBiologicalLensDiagnoses($eye);
     }
 
     /**
