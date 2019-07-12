@@ -2249,6 +2249,48 @@ class Patient extends BaseActiveRecordVersioned
         return Contact::model()->find($criteria);
     }
 
+    public function removeBiologicalLensDiagnoses($eye) {
+        $biological_lens_disorders = [53889007, 193576003, 315353005, 12195004, 253224008, 253225009, 116669003];
+
+        foreach ($this->episodes as $episode) {
+            if(in_array($episode->disorder_id, $biological_lens_disorders)){
+                if($episode->eye_id === $eye->id || $episode->eye_id === Eye::BOTH){
+                    if($eye->id === Eye::BOTH) {
+                        $episode->eye_id = null;
+                        $episode->disorder_id = null;
+                        $episode->disorder_date = null;
+                    } else {
+                        if($episode->eye_id === Eye::BOTH) {
+                            $episode->eye_id = $eye->id == 1 ? 2 : 1;
+                        } else {
+                            $episode->eye_id = null;
+                            $episode->disorder_id = null;
+                            $episode->disorder_date = null;
+                        }
+                    }
+                }
+                $episode->save();
+            }
+        }
+
+        foreach($this->secondarydiagnoses as $diagnosis) {
+            if(in_array($diagnosis->disorder_id, $biological_lens_disorders)){
+                if($diagnosis->eye_id === $eye->id || $diagnosis->eye_id === Eye::BOTH){
+                    if($eye->id == Eye::BOTH) {
+                        $diagnosis->delete();
+                    } else {
+                        if($diagnosis->eye_id == Eye::BOTH) {
+                            $diagnosis->eye_id = $eye->id === 1 ? 2 : 1;
+                            $diagnosis->save();
+                        } else {
+                            $diagnosis->delete();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Builds a sorted list of operations carried out on the patient either historically or across relevant events.
      *
