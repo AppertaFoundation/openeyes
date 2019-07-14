@@ -23,7 +23,15 @@ function refractive_outcome_to_csv(){
     var file_name = data.name;
     csv_export_cataract(file_name,data);
 }
+
+function NOD_Audit_to_csv(){
+    var data = $('#NodAuditReport')[0].data[0];
+    var file_name = 'NODAuditReportCompletion';
+    csv_export_cataract(file_name,data);
+}
+
 function csv_export_cataract(filename,data){
+    file_name += '.csv';
     var processData = function (x,y) {
         var finalVal = x+','+y+'\n';
         return finalVal;
@@ -64,6 +72,9 @@ $('#js-download-csv').click(function () {
             break;
         case 'RO':
             refractive_outcome_to_csv();
+            break;
+        case 'NOD':
+            NOD_Audit_to_csv();
             break;
     }
 });
