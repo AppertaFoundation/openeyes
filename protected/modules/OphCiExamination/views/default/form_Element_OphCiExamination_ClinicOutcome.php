@@ -42,7 +42,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
           'rows' => 1,
           'placeholder' => 'Please select an option from the right',
           'disabled' => true,
-          'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;',
+          'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px; background: transparent;',
       )) ?>
 
     <div id="outcomes-comments" class="flex-layout flex-left comment-group js-comment-container"
