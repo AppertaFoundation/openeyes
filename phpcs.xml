@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<ruleset name="OpenEyes Coding Standards">
+
+    <!--
+       The name attribute of the ruleset tag is displayed
+       when running PHP_CodeSniffer with the -v command line
+       argument. The description tag below is not displayed anywhere
+       except in this file, so it can contain information for
+       developers who may change this file in the future.
+    -->
+    <description>The OpenEyes Coding Standards</description>
+
+    <!--
+    If no files or directories are specified on the command line
+    your custom standard can specify what files should be checked
+    instead.
+
+    Note that specifying any file or directory path
+    on the command line will ignore all file tags.
+    -->
+    <file>./</file>
+
+    <!--
+       You can hard-code ignore patterns directly into your
+       custom standard so you don't have to specify the
+       patterns on the command line.
+
+    -->
+    <exclude-pattern>/protected/data/*</exclude-pattern>
+    <exclude-pattern>/protected/components</exclude-pattern>
+    <exclude-pattern>/assets/*</exclude-pattern>
+    <exclude-pattern>*/*.js</exclude-pattern>
+    <exclude-pattern>*/*.css</exclude-pattern>
+    <exclude-pattern>*/*.xml</exclude-pattern>
+    <exclude-pattern>*/*.yml</exclude-pattern>
+    <exclude-pattern>*/*.csv</exclude-pattern>
+    <exclude-pattern>*/*.lock</exclude-pattern>
+    <exclude-pattern>*/*.json</exclude-pattern>
+    <exclude-pattern>*/*.phar</exclude-pattern>
+    <exclude-pattern>*/docs/*</exclude-pattern>
+    <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/build/*</exclude-pattern>
+    <exclude-pattern>/Vagrantfile</exclude-pattern>
+    <exclude-pattern>/.editorconfig</exclude-pattern>
+    <exclude-pattern>/bower.json</exclude-pattern>
+    <exclude-pattern>/.bowerrc</exclude-pattern>
+    <exclude-pattern>/features/*</exclude-pattern>
+    <exclude-pattern>/grunt/*</exclude-pattern>
+    <exclude-pattern>/.htaccess.sample</exclude-pattern>
+    <exclude-pattern>.jshintrc</exclude-pattern>
+    <exclude-pattern>/junit_behat_reports/*</exclude-pattern>
+    <exclude-pattern>/pdf/*</exclude-pattern>
+    <exclude-pattern>/puppet/*</exclude-pattern>
+    <exclude-pattern>/node_modules/*</exclude-pattern>
+    <exclude-pattern>/.git</exclude-pattern>
+    <exclude-pattern>/exclude.txt</exclude-pattern>
+
+    <!--
+       You can hard-code command line values into your custom standard.
+       Note that this does not work for the command line values:
+       -v[v][v], -l, -d, -sniffs and -standard
+
+       The following tags are equivalent to the command line arguments:
+       -p
+    -->
+    <arg name="report" value="summary"/>
+    <arg name="colors"/>
+    <arg value="p"/>
+
+    <!--
+       You can hard-code custom php.ini settings into your custom standard.
+       The following tag sets the memory limit to 64M.
+    
+    <ini name="memory_limit" value="128M"/>
+    -->
+
+    <!--
+       Include all sniffs in the PEAR standard. Note that the
+       path to the standard does not have to be specified as the
+       PEAR standard exists inside the PHP_CodeSniffer install
+       directory.
+    -->
+    <rule ref="PSR2"/>
+
+</ruleset>
