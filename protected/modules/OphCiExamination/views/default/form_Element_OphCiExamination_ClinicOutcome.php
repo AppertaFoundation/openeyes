@@ -37,13 +37,9 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
     <?php echo $form->hiddenField($element, 'role_comments'); ?>
 
   <div class="cols-7">
-      <?=\CHtml::textField('follow-up-dummy-input', '', array(
-          'class' => 'cols-full',
-          'rows' => 1,
-          'placeholder' => 'Please select an option from the right',
-          'disabled' => true,
-          'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px; background: transparent;',
-      )) ?>
+      <div class="cols-full" id="follow-up-dummy-input">
+          Please select an option from the right
+      </div>
 
     <div id="outcomes-comments" class="flex-layout flex-left comment-group js-comment-container"
          style="<?= $element->description ? '' : 'display: none;' ?>" data-comment-button="#outcomes-comment-button">
