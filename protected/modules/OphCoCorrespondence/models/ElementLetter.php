@@ -1044,4 +1044,14 @@ class ElementLetter extends BaseEventTypeElement
 
         return true;
     }
+
+    /**
+     * @return string
+     */
+    public function checkPrint(){
+        if((strpos(Yii::app()->request->urlReferrer, 'update') || strpos(Yii::app()->request->urlReferrer, 'create')) && !$this->draft){
+            return "1";
+        }
+        return "0";
+    }
 }
