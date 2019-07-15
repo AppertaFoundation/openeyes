@@ -146,7 +146,7 @@
                     </td>
                     <td>
                         <div  id="bmi-container" style="text-align: center">
-                            <label class="large-3 column">&nbsp;</label>
+                            <label>&nbsp;</label>
                         </div>
                     </td>
                 </tr>
