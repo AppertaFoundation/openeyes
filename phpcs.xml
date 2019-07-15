@@ -54,6 +54,7 @@
     <exclude-pattern>/node_modules/*</exclude-pattern>
     <exclude-pattern>/.git</exclude-pattern>
     <exclude-pattern>/exclude.txt</exclude-pattern>
+    <exclude-pattern>/protected/files/*</exclude-pattern>
 
     <!--
        You can hard-code command line values into your custom standard.
@@ -92,5 +93,8 @@
 
     <rule ref="Generic.CodeAnalysis.AssignmentInCondition">
     </rule>
+
+    <rule ref="Generic.Commenting.Fixme" />
+    <rule ref="Generic.CodeAnalysis.EmptyStatement">
 
 </ruleset>
