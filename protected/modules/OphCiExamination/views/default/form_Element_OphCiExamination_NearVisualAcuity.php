@@ -84,10 +84,27 @@ $key = 0;
                 <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
             </div>
           </div>
+            <div id="nearvisualacuity-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
+                 style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#nearvisualacuity-<?= $eye_side ?>-comment-button">
+                <?=\CHtml::activeTextArea($element, $eye_side . '_notes',
+                    array(
+                        'rows' => 1,
+                        'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
+                        'class' => 'cols-full js-comment-field',
+                        'style' => 'overflow-wrap: break-word; height: 24px;',
+                    )) ?>
+                <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+            </div>
         </div>
-        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-NearVisualAcuity-reading"
-             style=" <?= !$element->eyeAssesable($eye_side) ? 'display: none; ': '' ?> ">
-          <button class="button hint green addReading" id="<?= $eye_side ?>-add-near-va-btn" type="button">
+        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-NearVisualAcuity-reading">
+            <button id="nearvisualacuity-<?= $eye_side ?>-comment-button"
+                    class="button js-add-comments" data-comment-container="#nearvisualacuity-<?= $eye_side ?>-comments"
+                    type="button" style="<?= $element->{$eye_side . '_notes'} ? 'visibility: hidden;' : '' ?>">
+                <i class="oe-i comments small-icon"></i>
+            </button>
+          <button class="button hint green addReading" id="add-NearVisualAcuity-reading-btn-<?= $eye_side?>"
+                  style=" <?= !$element->eyeAssesable($eye_side) ? 'display: none; ': '' ?>"
+                  type="button">
             <i class="oe-i plus pro-theme"></i>
           </button>
         </div>
@@ -103,7 +120,7 @@ $key = 0;
     </div>
     <script type="text/javascript">
       new OpenEyes.UI.AdderDialog({
-        openButton: $('#<?= $eye_side ?>-add-near-va-btn'),
+        openButton: $("#add-NearVisualAcuity-reading-btn-<?= $eye_side?>"),
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
               return ['label' => $value, 'id' => $key];

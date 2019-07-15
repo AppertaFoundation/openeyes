@@ -90,6 +90,7 @@ class WaitingListController extends BaseModuleController
             $patient_search = new PatientSearch();
             $hos_num = $patient_search->getHospitalNumber($_POST['hos_num']);
             $site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
+            $include_on_hold  = !empty($_POST['include_on_hold']) ? $_POST['include_on_hold'] : 0;
 
             YiiSession::set('waitinglist_searchoptions', array(
                     'subspecialty-id' => $subspecialty_id,
@@ -97,9 +98,10 @@ class WaitingListController extends BaseModuleController
                     'status' => $status,
                     'hos_num' => $hos_num,
                     'site_id' => $site_id,
+                    'include_on_hold' => $include_on_hold
             ));
 
-            $operations = $this->getWaitingList($firm_id, $subspecialty_id, $status, $hos_num, $site_id);
+            $operations = $this->getWaitingList($firm_id, $subspecialty_id, $status, $hos_num, $site_id, $include_on_hold);
         }
 
         $this->renderPartial('_list', array('operations' => $operations, 'assetPath' => $this->assetPath), false, true);
@@ -116,7 +118,7 @@ class WaitingListController extends BaseModuleController
      *
      * @return Element_OphTrOperationbooking_Operation[]
      */
-    public function getWaitingList($firm_id, $subspecialty_id, $status, $hos_num = false, $site_id = false)
+    public function getWaitingList($firm_id, $subspecialty_id, $status, $hos_num = false, $site_id = false, $include_on_hold = 0)
     {
         $whereSql = '';
         $whereParams = array();
@@ -137,6 +139,13 @@ class WaitingListController extends BaseModuleController
         if ($site_id && ctype_digit($site_id)) {
             $whereSql .= ' AND t.site_id = :site_id';
             $whereParams[':site_id'] = $site_id;
+        }
+
+        if($include_on_hold === "1"){
+            $on_hold_status_id =  OphTrOperationbooking_Operation_Status::model()->find('name = "On-Hold"')->id;
+            $on_hold_status_condition = ", " . $on_hold_status_id;
+        } else {
+            $on_hold_status_condition = "";
         }
 
         Yii::app()->event->dispatch('start_batch_mode');
@@ -160,7 +169,8 @@ class WaitingListController extends BaseModuleController
                     'procedures',
                 )
             )->findAll(array(
-                    'condition' => 'event.id IS NOT NULL AND episode.end_date IS NULL AND t.status_id IN (1,3) '.$whereSql,
+                    'condition' => 'event.id IS NOT NULL AND episode.end_date IS NULL 
+                    AND t.status_id IN (1,3 ' . $on_hold_status_condition . ')'.$whereSql,
                     'params' => $whereParams,
                     'order' => 'decision_date asc',
                 )

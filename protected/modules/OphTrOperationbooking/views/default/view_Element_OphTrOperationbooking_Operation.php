@@ -18,7 +18,7 @@
 ?>
     <section class="element view full priority view-procedures">
         <header class="element-header">
-            <h3 class="element-title">Procedure<?php if (count($element->procedures) != 1) echo 's' ?>  & OPCS codes</h3>
+            <h3 class="element-title">Procedure<?php if (count($element->procedures) !== 1) echo 's' ?> & OPCS codes</h3>
         </header>
         <div class="element-data full-width">
             <div class="cols-10">
@@ -31,11 +31,11 @@
                                     <?php echo $element->eye->adjective ?>
                                     <?php echo $procedure->term ?>
                                 </span>
-                             </td>
+                            </td>
                             <td>
                                 <span class="priority-text">
                                     <?= implode(array_map(function ($x) {
-                                    return $x->name;
+                                        return $x->name;
                                     }, $procedure->opcsCodes), ', '); ?>
                                 </span>
                             </td>
@@ -55,6 +55,14 @@
             <div class="cols-6">
                 <table class="label-value last-left">
                     <tbody>
+                    <tr>
+                        <td>
+                            <div class="data-label">Complexity</div>
+                        </td>
+                        <td>
+                            <div class="data-value"><?= $element->complexityCaption?></div>
+                        </td>
+                    </tr>
                     <tr>
                         <td>
                             <div class="data-label">Consultant required?</div>
@@ -82,6 +90,7 @@
                             </td>
                         <?php endif; ?>
                     </tr>
+                    <?php if(isset($element->any_grade_of_doctor)) { ?>
                     <tr>
                         <td>
                             <div class="data-label">
@@ -94,6 +103,7 @@
                             </div>
                         </td>
                     </tr>
+                    <?php } ?>
                     <tr>
                         <td>
                             <div class="data-label">Anaesthetic</div>
@@ -149,7 +159,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('site_id')) ?></div>
+                            <div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('site_id')) ?></div>
                         </td>
                         <td>
                             <div class="data-value"><?php echo $element->site->name ?></div>
@@ -191,7 +201,7 @@
                         </td>
                         <td>
                             <div class="data-value">
-                                <?=\CHtml::encode($element->total_duration) ?>
+                                <?= \CHtml::encode($element->total_duration) ?>
                             </div>
                         </td>
                     </tr>
@@ -212,12 +222,14 @@
                     <?php endif ?>
 
                     <?php if (!is_null($element->preassessment_booking_required)): ?>
-                    <tr>
-                        <td><div class="data-label"><?= CHtml::encode($element->getAttributeLabel('preassessment_booking_required')) ?></div></td>
-                        <td>
-                            <div class="data-value"><?= $element->preassessment_booking_required ? 'Yes' : 'No' ?></div>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('preassessment_booking_required')) ?></div>
+                            </td>
+                            <td>
+                                <div class="data-value"><?= $element->preassessment_booking_required ? 'Yes' : 'No' ?></div>
+                            </td>
+                        </tr>
                     <?php endif; ?>
                     </tbody>
                 </table>
@@ -273,7 +285,7 @@
             <?php if ($element->organising_admission_user): ?>
                 <tr>
                     <td>
-                            <?= CHtml::encode($element->getAttributeLabel('organising_admission_user_id')) ?>
+                        <?= CHtml::encode($element->getAttributeLabel('organising_admission_user_id')) ?>
                     </td>
                     <td>
                         <div class="data-value">
@@ -351,11 +363,11 @@
         <section class="element">
             <h3 class="element-title highlight">Earliest reasonable offer date</h3>
             <div class="element-data">
-              <div class="cols-12 column">
-                        <div class="data-value">
-                            <?php echo $element->booking->erod->getDescription() ?>
-                        </div>
-              </div>
+                <div class="cols-12 column">
+                    <div class="data-value">
+                        <?php echo $element->booking->erod->getDescription() ?>
+                    </div>
+                </div>
             </div>
         </section>
     <?php } ?>
@@ -396,7 +408,7 @@
                     <li>
                         Cancelled on <?php echo $booking->NHSDate('booking_cancellation_date'); ?>
                         by <strong><?php echo $booking->usercancelled->FullName; ?></strong>
-                        due to <?=\CHtml::encode($booking->cancellationReasonWithComment) ?>
+                        due to <?= \CHtml::encode($booking->cancellationReasonWithComment) ?>
                         <?php if ($booking->erod) { ?>
                             <br/><span class="erod">EROD was <?= $booking->erod->getDescription() ?></span>
                         <?php } ?>
@@ -423,7 +435,7 @@
         <section class="element element-data flex-layout">
             <h3 class="data-title cols-2">Cancellation comments</h3>
             <div class="data-value panel comments cols-10">
-                <?=\CHtml::encode($element->cancellation_comment) ?>
+                <?= \CHtml::encode($element->cancellation_comment) ?>
             </div>
         </section>
     <?php } ?>
@@ -437,12 +449,27 @@ $this->event_actions[] = EventAction::link(
     array('class' => 'small button', 'target' => '_blank')
 );
 if ($element->isEditable()) {
-
     $td_disabled = $this->module->isTheatreDiaryDisabled();
 
     $status = strtolower($element->status->name);
 
-    if ((!$td_disabled && empty($element->booking)) || ($td_disabled && $status != 'scheduled')) {
+    if($status === "on-hold"){
+        $this->event_actions[] = EventAction::link(
+            'Take off hold',
+            Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/default/putOffHold/' . $element->event_id),
+            null,
+            array('class' => 'small button', 'id' => 'js-put-off-hold')
+        );
+    } else {
+        $this->event_actions[] = EventAction::link(
+            'Place on hold',
+            Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/default/putOnHold/' . $element->event_id),
+            null,
+            array('class' => 'small button', 'id' => 'js-put-on-hold')
+        );
+    }
+
+    if ((!$td_disabled && empty($element->booking)) || ($td_disabled && $status !== 'scheduled')) {
         if ($element->letterType && $this->checkPrintAccess()) {
             $print_letter_options = null;
             if (!$element->has_gp || !$element->has_address) {
