@@ -116,34 +116,34 @@ class DefaultController extends BaseEventTypeController
         $message = NULL;
 
         switch ($files['Document']['error'][$index]) {
-			case UPLOAD_ERR_OK:
-			break;
-			case UPLOAD_ERR_NO_FILE:
-				$message = 'No file was uploaded!';
+            case UPLOAD_ERR_OK:
+            break;
+            case UPLOAD_ERR_NO_FILE:
+                $message = 'No file was uploaded!';
                 return $message;
-			break;
-			case UPLOAD_ERR_INI_SIZE:
+            break;
+            case UPLOAD_ERR_INI_SIZE:
                 $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . $this->getMaxDocumentSize() ." MB ";
                 return $message;
             break;
-			case UPLOAD_ERR_FORM_SIZE:
-				$message = 'The document\'s size is too large!';
+            case UPLOAD_ERR_FORM_SIZE:
+                $message = 'The document\'s size is too large!';
                 return $message;
-			break;
-			default:
-				$message = 'Unknow error! Please try again!';
+            break;
+            default:
+                $message = 'Unknow error! Please try again!';
                 return $message;
-		}
+        }
 
-		$finfo = new finfo(FILEINFO_MIME_TYPE);
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
 
         $file_mime = strtolower($finfo->file($files['Document']['tmp_name'][$index]));
         $extension = pathinfo($files['Document']['name'][$index], PATHINFO_EXTENSION);
 
-		if (false === array_search($file_mime, $this->allowed_file_types, true)) {
+        if (false === array_search($file_mime, $this->allowed_file_types, true)) {
             $message = 'Only the following file types can be uploaded: ' . ( implode(', ', $this->getAllowedFileTypes()) ) . '.';
             $message .= "\n\nFor reference, the type of the file you tried to upload is: <i>$extension</i>, which is mime type: <i>$file_mime</i>";
-		}
+        }
 
         return $message;
     }

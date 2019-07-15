@@ -121,7 +121,7 @@ class Document //extends BaseActiveRecord
         $data['document_set_id'] = $document_set_id;
         $array['data']['document_set_id'] = $document_set_id;
 
-//		$contacts[0] = array('type'=>'PATIENT')
+//      $contacts[0] = array('type'=>'PATIENT')
         if ($jsonOutput) {
             $json = json_encode($array);
 

@@ -21,7 +21,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>false , 'form_
 $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
     ?>
 
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => $form_id,
         'enableAjaxValidation' => false,
         'layoutColumns' => array(
@@ -30,10 +30,10 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 's
         ),
     ));
     ?>
-		<?php $this->displayErrors($errors)?>
-		<?php $this->renderOpenElements($this->action->id, $form)?>
-		<?php $this->renderOptionalElements($this->action->id, $form)?>
-		<?php $this->displayErrors($errors, true)?>
+        <?php $this->displayErrors($errors)?>
+        <?php $this->renderOpenElements($this->action->id, $form)?>
+        <?php $this->renderOptionalElements($this->action->id, $form)?>
+        <?php $this->displayErrors($errors, true)?>
 
-	<?php $this->endWidget()?>
+    <?php $this->endWidget()?>
 <?php $this->endContent();?>

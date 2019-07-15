@@ -26,8 +26,8 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
 </header>
 <div class="element-actions">
     <span class="js-remove-element">
-	    <i class="oe-i remove-circle"></i>
-	</span>
+        <i class="oe-i remove-circle"></i>
+    </span>
 </div>
 
 <div class="element-fields full-width">

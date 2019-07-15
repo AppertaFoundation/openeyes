@@ -34,13 +34,13 @@
   <table id="<?= $model_name ?>_entry_table"
          style="display:  <?= !count($element->entries) ? 'none' :''?>"
          class="cols-10">
-		<colgroup>
-			<col>
-			<col>
-			<col>
-			<col class="cols-4">
-			<col class="cols-1">
-		</colgroup>
+        <colgroup>
+            <col>
+            <col>
+            <col>
+            <col class="cols-4">
+            <col class="cols-1">
+        </colgroup>
       <thead>
       <tr>
           <th>Relative</th>

@@ -7,8 +7,8 @@ class m170307_141131_add_loc_shortcode extends CDbMigration
 
     );
 
-	public function up()
-	{
+    public function up()
+    {
         $eventTypeId = $this->dbConnection->createCommand()
             ->select('id')
             ->from('event_type')
@@ -23,23 +23,23 @@ class m170307_141131_add_loc_shortcode extends CDbMigration
                 'description' => $short_code['description'],
             ));
         }
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         foreach ($this->shortPeriOperativeComp as $short_code) {
             $this->delete('patient_shortcode', 'default_code = :code', array(':code' => $short_code['code']));
         }
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

@@ -40,14 +40,14 @@ class m180529_132013_create_correspondence_letter_settings_table extends OEMigra
         $this->dropOETable('ophcocorrespondence_letter_setting_value', $versioned = true);
     }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

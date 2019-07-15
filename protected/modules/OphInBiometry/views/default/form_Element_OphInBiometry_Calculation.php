@@ -70,7 +70,7 @@
 </div>
 
 <div id="comments" style="background-color: inherit">
-	<span class="field-info large-12" style="display: <?=$this->action->id === "create" ? "none" : "" ?>">
+    <span class="field-info large-12" style="display: <?=$this->action->id === "create" ? "none" : "" ?>">
         <?php
         if ($this->is_auto) {
             if (!$this->getAutoBiometryEventData($this->event->id)[0]->is700() || $element->{'comments'}) {
@@ -84,5 +84,5 @@
             echo $form->textField($element, 'comments', array('style' => 'width:1027px;', 'nowrapper' => true), null);
         }
         ?>
-	</span>
+    </span>
 </div>

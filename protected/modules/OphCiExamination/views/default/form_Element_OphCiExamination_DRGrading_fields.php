@@ -171,26 +171,26 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
           ?>
       </div>
       <!-- REMOVED UNTIL WE ARE PROVIDED WITH APPROPRIATE TEXT FOR THE DESCRIPTIONS
-		TODO: code to auto detect when there are no descriptions, so that this works dynamically based on the data.
-		<span class="grade-info-icon" data-info-type="clinical"><img src="<?php echo $this->getAssetPathForElement($element) ?>/img/icon_info.png" style="height:20px" /></span>
-		<div class="quicklook grade-info" style="display: none;">
-			<?php foreach ($clinical_maculopathys as $clinical) {
+        TODO: code to auto detect when there are no descriptions, so that this works dynamically based on the data.
+        <span class="grade-info-icon" data-info-type="clinical"><img src="<?php echo $this->getAssetPathForElement($element) ?>/img/icon_info.png" style="height:20px" /></span>
+        <div class="quicklook grade-info" style="display: none;">
+            <?php foreach ($clinical_maculopathys as $clinical) {
           echo '<div style="display: none;" class="' . CHtml::modelName($element) . '_' . $side . '_clinicalmac_desc" id="' . CHtml::modelName($element) . '_' . $side . '_clinicalmac_desc_' . $clinical->code . '">' . $clinical->description . '</div>';
       }
       ?>
-		</div>
+        </div>
 
-		<div id="<?=\CHtml::modelName($element) . '_' . $side . '_all_clinicalmac_desc'; ?>" class="grade-info-all" data-select-id="<?=\CHtml::modelName($element) . '_' . $side . '_clinicalmac_id'; ?>">
-			<dl>
-				<?php foreach ($clinical_maculopathys as $clinical) {
+        <div id="<?=\CHtml::modelName($element) . '_' . $side . '_all_clinicalmac_desc'; ?>" class="grade-info-all" data-select-id="<?=\CHtml::modelName($element) . '_' . $side . '_clinicalmac_id'; ?>">
+            <dl>
+                <?php foreach ($clinical_maculopathys as $clinical) {
           ?>
-					<dt class="<?php echo $clinical->class ?>"><a href="#" data-id="<?php echo $clinical->id ?>"><?php echo $clinical->name ?></a></dt>
-					<dd class="<?php echo $clinical->class ?>"><?php echo nl2br($clinical->description) ?></dd>
-				<?php
+                    <dt class="<?php echo $clinical->class ?>"><a href="#" data-id="<?php echo $clinical->id ?>"><?php echo $clinical->name ?></a></dt>
+                    <dd class="<?php echo $clinical->class ?>"><?php echo nl2br($clinical->description) ?></dd>
+                <?php
       } ?>
-			</dl>
-		</div>
-		-->
+            </dl>
+        </div>
+        -->
     </td>
   </tr>
   <?php $nsc_maculopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGrading_NSCMaculopathy::model()->activeOrPk($element->{$side . '_nscmaculopathy_id'})->findAll(); ?>

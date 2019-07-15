@@ -2,10 +2,10 @@
 
 class m170803_144416_anaesthetic_types_multiselect extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
-	    $this->createOETable('ophtroperationbooking_anaesthetic_anaesthetic_type',array(
+        $this->createOETable('ophtroperationbooking_anaesthetic_anaesthetic_type',array(
             'id' => 'pk',
             'et_ophtroperationbooking_operation_id' => 'int(10) unsigned NOT NULL',
             'anaesthetic_type_id' => 'int(10) unsigned NOT NULL',
@@ -158,13 +158,13 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
             \OELog::log($e->getMessage());
             throw $e;
         }
-	}
+    }
 
-	public function down()
-	{
-		echo "m170803_144416_anaesthetic_types_multiselect does not support migration down.\n";
-		return false;
-	}
+    public function down()
+    {
+        echo "m170803_144416_anaesthetic_types_multiselect does not support migration down.\n";
+        return false;
+    }
 
     private function createOrUpdate($model_name, $attributes)
     {

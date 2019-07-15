@@ -46,9 +46,9 @@ $key = 0;
 </div>
 
 <div class="element-fields element-eyes">
-	<input type="hidden" name="nearvisualacuity_readings_valid" value="1" />
-	<?php echo $form->hiddenInput($element, 'unit_id', false); ?>
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+    <input type="hidden" name="nearvisualacuity_readings_valid" value="1" />
+    <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
     <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
@@ -160,7 +160,7 @@ $key = 0;
     <?php endforeach; ?>
 </div>
 <script id="nearvisualacuity_reading_template" type="text/html">
-	<?php
+    <?php
     $this->renderPartial('form_Element_OphCiExamination_NearVisualAcuity_Reading', array(
             'name_stub' => CHtml::modelName($element).'[{{side}}_readings]',
             'key' => '{{key}}',
@@ -187,9 +187,9 @@ $assetManager->publish($baseAssetsPath.'/components/chosen/');
 Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath.'/components/chosen/').'/chosen.jquery.min.js');
 ?>
 <script type="text/javascript">
-	$(document).ready(function() {
+    $(document).ready(function() {
 
-		OphCiExamination_VisualAcuity_method_ids = [ <?php
+        OphCiExamination_VisualAcuity_method_ids = [ <?php
         $first = true;
         foreach ($methods as $index => $method) {
             if (!$first) {
@@ -198,5 +198,5 @@ Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($bas
             $first = false;
             echo $index;
         } ?> ];
-	});
+    });
 </script>

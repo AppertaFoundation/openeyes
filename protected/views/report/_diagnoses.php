@@ -17,23 +17,23 @@
  */
 ?>
 <table class="standard">
-	<thead>
-		<tr>
-			<th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
-			<th><?php echo Patient::model()->getAttributeLabel('dob')?></th>
-			<th><?php echo Patient::model()->getAttributeLabel('first_name')?></th>
-			<th><?php echo Patient::model()->getAttributeLabel('last_name')?></th>
-			<th>Date</th>
-			<th>Diagnoses</th>
-		</tr>
-	<tbody>
-		<?php if (empty($report->diagnoses)) {?>
-			<tr>
-				<td colspan="6">
-					No patients were found with the selected search criteria.
-				</td>
-			</tr>
-		<?php }else{?>
+    <thead>
+        <tr>
+            <th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
+            <th><?php echo Patient::model()->getAttributeLabel('dob')?></th>
+            <th><?php echo Patient::model()->getAttributeLabel('first_name')?></th>
+            <th><?php echo Patient::model()->getAttributeLabel('last_name')?></th>
+            <th>Date</th>
+            <th>Diagnoses</th>
+        </tr>
+    <tbody>
+        <?php if (empty($report->diagnoses)) {?>
+            <tr>
+                <td colspan="6">
+                    No patients were found with the selected search criteria.
+                </td>
+            </tr>
+        <?php }else{?>
             <?php foreach ($report->diagnoses as $ts => $diagnosis) {
                 foreach ($diagnosis['diagnoses'] as $_diagnosis) { ?>
                     <tr>

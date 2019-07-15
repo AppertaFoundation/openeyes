@@ -18,7 +18,7 @@
 ?>
 
 <div class="cols-5">
-	<?php
+    <?php
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'OphCiExamination_adminform',
             'enableAjaxValidation' => false,

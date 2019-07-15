@@ -43,28 +43,28 @@ function getLevelColour($risk_level){
 
 <?php $this->beginClip('element-title-additional');?>
 <div class="info">
-	<?php if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets').'/img/drgrading.jpg')) {
+    <?php if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets').'/img/drgrading.jpg')) {
     ?>
-			<a href="#" class="drgrading_images_link"><img src="<?php echo $this->assetPath ?>/img/photo_sm.png" /></a>
-			<div class="drgrading_images_dialog" title="DR Grading Images">
-				<img src="<?php echo $this->assetPath ?>/img/drgrading.jpg">
-			</div>
-	<?php 
+            <a href="#" class="drgrading_images_link"><img src="<?php echo $this->assetPath ?>/img/photo_sm.png" /></a>
+            <div class="drgrading_images_dialog" title="DR Grading Images">
+                <img src="<?php echo $this->assetPath ?>/img/drgrading.jpg">
+            </div>
+    <?php 
 } ?>
 </div>
 <?php $this->endClip('element-title-additional');?>
 
 <div class="element-fields flex-layout full-width ">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-	<fieldset class="data-group">
-				<?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id')?>:
-			<?php
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
+    <fieldset class="data-group">
+                <?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id')?>:
+            <?php
       if ($diabetes = $this->patient->getDiabetesType()) {
         echo '<span class="data-value">'.$diabetes->term.'</span>';
         } else {
         $form->radioButtons($element, 'secondarydiagnosis_disorder_id', $element->getDiabetesTypes(), null, false, false, false, false, array('nowrapper' => true));
         } ?>
-	</fieldset>
+    </fieldset>
 </div>
 <div class="element-fields element-eyes">
   <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>

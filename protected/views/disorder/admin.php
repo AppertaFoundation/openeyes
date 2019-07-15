@@ -3,13 +3,13 @@
 /* @var $model Disorder */
 
 $this->breadcrumbs=array(
-	'Disorders'=>array('index'),
-	'Manage',
+    'Disorders'=>array('index'),
+    'Manage',
 );
 
 $this->menu=array(
-	array('label'=>'List Disorder', 'url'=>array('index')),
-	array('label'=>'Create Disorder', 'url'=>array('create')),
+    array('label'=>'List Disorder', 'url'=>array('index')),
+    array('label'=>'Create Disorder', 'url'=>array('create')),
 );
 
 ?>
@@ -19,18 +19,18 @@ $this->menu=array(
     or <b>=</b>) at the beginning of each of your search values to specify how the comparison should be done.
 </div>
 <?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'disorder-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-		'id',
-		'fully_specified_name',
-		'term',
-		array('name'=>'specialty_id',
-		      'value'=>array($this, 'getSpecialtyNameFromId'),
-		      'header'=>'Specialty'),
-		array(
-			'class'=>'CButtonColumn',
+    'id'=>'disorder-grid',
+    'dataProvider'=>$model->search(),
+    'filter'=>$model,
+    'columns'=>array(
+        'id',
+        'fully_specified_name',
+        'term',
+        array('name'=>'specialty_id',
+              'value'=>array($this, 'getSpecialtyNameFromId'),
+              'header'=>'Specialty'),
+        array(
+            'class'=>'CButtonColumn',
             'deleteButtonOptions'=>array('class' => 'oe-i trash small hint'),
             'deleteButtonImageUrl'=> '',
             'deleteButtonLabel'=>'',
@@ -40,8 +40,8 @@ $this->menu=array(
             'viewButtonOptions'=>array('class' => 'oe-i info small'),
             'viewButtonImageUrl'=> '',
             'viewButtonLabel'=> '',
-		),
-	),
+        ),
+    ),
     'pager'=>array('class'=>'LinkPager'),
     'pagerCssClass'=>'pagination',
     'itemsCssClass'=>'standard highlight-rows',

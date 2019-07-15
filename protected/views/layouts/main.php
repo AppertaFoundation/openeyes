@@ -19,16 +19,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_assets'); ?>
-	<?php $this->renderPartial('//base/head/_tracking'); ?>
+    <?php $this->renderPartial('//base/head/_meta'); ?>
+    <?php $this->renderPartial('//base/head/_assets'); ?>
+    <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes oe-grid">
 <!-- Minimum screed width warning -->
 <div id="oe-minimum-width-warning">Device width not supported</div>
 
-<!--	--><?php //$this->renderPartial('//base/_banner_watermark'); ?>
-	<?php $this->renderPartial('//base/_debug'); ?>
+<!--    --><?php //$this->renderPartial('//base/_banner_watermark'); ?>
+    <?php $this->renderPartial('//base/_debug'); ?>
 
   <!-- Branding (logo) -->
   <div class="openeyes-brand">
@@ -39,8 +39,8 @@
 </div>
   <?php $this->renderPartial('//base/_header'); ?>
 
-			<?php echo $content; ?>
+            <?php echo $content; ?>
 
-		<?php $this->renderPartial('//base/_footer'); ?>
+        <?php $this->renderPartial('//base/_footer'); ?>
 </body>
 </html>

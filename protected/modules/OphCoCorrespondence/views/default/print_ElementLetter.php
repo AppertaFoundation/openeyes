@@ -25,8 +25,8 @@
 $toAddressContactType = $element->getToAddressContactType();
 
 if (!@$no_header) {?>
-	<header class="print-header" style="margin-bottom: 70px;">
-	<?php 
+    <header class="print-header" style="margin-bottom: 70px;">
+    <?php 
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
         
@@ -37,7 +37,7 @@ if (!@$no_header) {?>
             'clinicDate' => $element->clinic_date,
             'element' => $element,
         ))?>
-	</header>
+    </header>
 
 <?php $this->renderPartial('reply_address', array(
         'site' => $element->site,
@@ -46,7 +46,7 @@ if (!@$no_header) {?>
 
 <?php }?>
 <p class="accessible">
-	<?php echo $element->renderIntroduction()?>
+    <?php echo $element->renderIntroduction()?>
 </p>
 <p class="accessible"><strong><?php if ($element->re) {?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re))?>
 <?php } else {
@@ -62,7 +62,7 @@ if (!@$no_header) {?>
 </p>
 <br/>
 <p class="accessible" nobr="true">
-	<?php echo $element->renderFooter() ?>
+    <?php echo $element->renderFooter() ?>
 </p>
 
 <div class="spacer"></div>
@@ -75,8 +75,8 @@ if (!@$no_header) {?>
 <?php if ($element->enclosures) {?>
 <?php
     foreach ($element->enclosures as $enclosure) {?>
-		<br/>Enc: <?php echo $enclosure->content?>
-	<?php }?>
+        <br/>Enc: <?php echo $enclosure->content?>
+    <?php }?>
 
 <?php }?>
 

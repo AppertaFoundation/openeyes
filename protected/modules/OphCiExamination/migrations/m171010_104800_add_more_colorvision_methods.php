@@ -8,12 +8,12 @@ class m171010_104800_add_more_colorvision_methods extends OEMigration
 
         # Check that these values do not already exist
         $is13 = $this->dbConnection->createCommand()->select('id')->from('ophciexamination_colourvision_method')->where('name = :name', array(':name' => 'Ishihara /13'))->queryRow();
-		    $is17 = $this->dbConnection->createCommand()->select('id')->from('ophciexamination_colourvision_method')->where('name = :name', array(':name' => 'Ishihara /17'))->queryRow();
+            $is17 = $this->dbConnection->createCommand()->select('id')->from('ophciexamination_colourvision_method')->where('name = :name', array(':name' => 'Ishihara /17'))->queryRow();
         $is24 = $this->dbConnection->createCommand()->select('id')->from('ophciexamination_colourvision_method')->where('name = :name', array(':name' => 'Ishihara /24'))->queryRow();
 
         # Insert values if they don't already exist
-		if ($is13['id'] == '') {
-  			$this->insert('ophciexamination_colourvision_method', array(
+        if ($is13['id'] == '') {
+            $this->insert('ophciexamination_colourvision_method', array(
                           'name' => 'Ishihara /13',
                           'active' => '1',
                           'display_order' => '1',
@@ -30,10 +30,10 @@ class m171010_104800_add_more_colorvision_methods extends OEMigration
                             'method_id' => $method_id,
                     ));
         }
-		}
+        }
 
     if ($is17['id'] == '') {
-  			$this->insert('ophciexamination_colourvision_method', array(
+            $this->insert('ophciexamination_colourvision_method', array(
                           'name' => 'Ishihara /17',
                           'active' => '1',
                           'display_order' => '3',
@@ -51,10 +51,10 @@ class m171010_104800_add_more_colorvision_methods extends OEMigration
                     ));
         }
 
-		}
+        }
 
     if ($is24['id'] == '') {
-  			$this->insert('ophciexamination_colourvision_method', array(
+            $this->insert('ophciexamination_colourvision_method', array(
                           'name' => 'Ishihara /24',
                           'active' => '1',
                           'display_order' => '5',
@@ -71,7 +71,7 @@ class m171010_104800_add_more_colorvision_methods extends OEMigration
                             'method_id' => $method_id,
                     ));
         }
-		}
+        }
 
     # update display order
     $this->update('ophciexamination_colourvision_method', array('display_order' => '2'), "`name` = 'Ishihara /15'");

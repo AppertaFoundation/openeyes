@@ -17,7 +17,7 @@
  */
 ?>
 <fieldset class="element-fields">
-	<?php
+    <?php
     $form->activeWidget('DropDownList', $element, 'type_id',
         array(
             'data' => CHtml::listData(OphInDnasample_Sample_Type::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),

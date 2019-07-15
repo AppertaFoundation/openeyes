@@ -2,8 +2,8 @@
 
 class m161216_153049_dna_rbac_operation extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->update('event_type', array('rbac_operation_suffix' => 'DnaSample'), "rbac_operation_suffix = 'BloodSample'");
         
         $this->delete('authitemchild', "parent = 'Genetics User' AND child = 'TaskCreateBloodSample'");
@@ -16,9 +16,9 @@ class m161216_153049_dna_rbac_operation extends CDbMigration
         $this->insert('authitemchild', array('parent' => 'TaskCreateDnaSample','child' => 'OprnCreateDnaSample')); 
     }
 
-	public function down()
-	{
-		$this->update('event_type', array('rbac_operation_suffix' => 'BloodSample'), "rbac_operation_suffix = 'DnaSample'");
+    public function down()
+    {
+        $this->update('event_type', array('rbac_operation_suffix' => 'BloodSample'), "rbac_operation_suffix = 'DnaSample'");
         
         $this->delete('authitemchild', "parent = 'Genetics User' AND child = 'TaskCreateDnaSample'");
         $this->delete('authitemchild', "parent = 'TaskCreateDnaSample' AND child = 'OprnCreateDnaSample'");
@@ -28,16 +28,16 @@ class m161216_153049_dna_rbac_operation extends CDbMigration
         
         $this->insert('authitemchild', array('parent' => 'Genetics User' ,'child' => 'TaskCreateBloodSample'));
         $this->insert('authitemchild', array('parent' => 'TaskCreateBloodSample','child' => 'OprnCreateBloodSample')); 
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

@@ -17,31 +17,31 @@
  */
 ?>
 <tr class="colourvisionReading" data-key="<?php echo $key ?>">
-	<td>
-		<?php if (isset($reading) && $reading->id) {
+    <td>
+        <?php if (isset($reading) && $reading->id) {
     ?>
-			<input type="hidden" name="<?= $name_stub ?>[<?php echo $key ?>][id]" value="<?php echo $reading->id?>" />
-		<?php 
+            <input type="hidden" name="<?= $name_stub ?>[<?php echo $key ?>][id]" value="<?php echo $reading->id?>" />
+        <?php 
 }?>
-		<span class="methodName"><?php echo $method_name ?></span>
-		<input type="hidden" name="<?= $name_stub ?>[<?php echo $key ?>][method_id]" class="methodId" value="<?php echo @$method_id ?>" />
-	</td>
-	<td>
-		<select name="<?= $name_stub ?>[<?php echo $key ?>][value_id]">
-			<?php if (isset($reading)) {
+        <span class="methodName"><?php echo $method_name ?></span>
+        <input type="hidden" name="<?= $name_stub ?>[<?php echo $key ?>][method_id]" class="methodId" value="<?php echo @$method_id ?>" />
+    </td>
+    <td>
+        <select name="<?= $name_stub ?>[<?php echo $key ?>][value_id]">
+            <?php if (isset($reading)) {
     foreach ($reading->method->values as $v) {
         ?>
-					<option value="<?php echo $v->id?>"<?php if ($v->id == @$reading->value_id) {
+                    <option value="<?php echo $v->id?>"<?php if ($v->id == @$reading->value_id) {
     ?> selected="selected"<?php 
 }
         ?>><?php echo $v->name?></option>
-				<?php 
+                <?php 
     }
 } else {
     echo $method_values;
 }?>
-		</select>
-	</td>
+        </select>
+    </td>
   <td class="cols-2 readingActions">
     <i class="oe-i trash removeCVReading"></i>
   </td>

@@ -22,7 +22,7 @@
         <?php echo $form->multiSelectList($element, CHtml::modelName($element) . '[' . $side . '_vitreous]', $side . '_vitreous', 'id',
             CHtml::listData(OEModule\OphCiExamination\models\Vitreous::model()->findAll(array('order' => 'display_order asc')), 'id', 'name')
             , array(), array('empty' => '- Select -', 'label' => $element->getAttributeLabel('vitreous')), false,
-    		false, null, false, false, array('label' => 10, 'field' => 12)) ?>
+            false, null, false, false, array('label' => 10, 'field' => 12)) ?>
     </div>
 
     <?=\CHtml::activeHiddenField($element, $side . '_ed_report'); ?>

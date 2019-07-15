@@ -18,7 +18,7 @@
 ?>
 
 <div class="box admin">
-	<h2>Sample Search</h2>
+    <h2>Sample Search</h2>
 
     <div class="search-form">
         <?php $form=$this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -122,50 +122,50 @@
             </div>
         </div>
 
-	<h2>DNA samples</h2>
+    <h2>DNA samples</h2>
 
-	<form id="sample_result">
-		<input type="hidden" id="select_all" value="0" />
+    <form id="sample_result">
+        <input type="hidden" id="select_all" value="0" />
 
-		<?php if (count($results) <1) {?>
-			<div class="alert-box no_results">
-				<span class="column_no_results">
-					<?php if (@$_GET['search']) {?>
-						No results found for current criteria.
-					<?php }else{?>
-						Please enter criteria to search for samples.
-					<?php }?>
-				</span>
-			</div>
-		<?php }?>
+        <?php if (count($results) <1) {?>
+            <div class="alert-box no_results">
+                <span class="column_no_results">
+                    <?php if (@$_GET['search']) {?>
+                        No results found for current criteria.
+                    <?php }else{?>
+                        Please enter criteria to search for samples.
+                    <?php }?>
+                </span>
+            </div>
+        <?php }?>
 
-		<?php if (!empty($results)) {?>
-			<table class="standard">
-				<thead>
-					<tr>
+        <?php if (!empty($results)) {?>
+            <table class="standard">
+                <thead>
+                    <tr>
                         <th><?=\CHtml::link('Sample Id', $this->getUri(array('sortby' => 'sample_id')))?></th>
                         <th><?=\CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics_patient_id')))?></th>
                         <th><?=\CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics_pedigree_id')))?></th>
-						<th><?=\CHtml::link('Hospital No', $this->getUri(array('sortby' => 'hos_num')))?></th>
-						<th><?=\CHtml::link('Patient Name', $this->getUri(array('sortby' => 'patient_name')))?></th>
-						<th><?=\CHtml::link('Maiden Name', $this->getUri(array('sortby' => 'maiden_name')))?></th>
-						<th><?=\CHtml::link('Date Taken', $this->getUri(array('sortby' => 'date_taken')))?></th>
-						<th><?=\CHtml::link('Sample Type', $this->getUri(array('sortby' => 'sample_type')))?></th>
-						<th><?=\CHtml::link('Volume', $this->getUri(array('sortby' => 'volume')))?></th>
-						<th><?=\CHtml::link('Comment', $this->getUri(array('sortby' => 'comment')))?></th>
-						<th><?=\CHtml::link('Diagnosis', $this->getUri(array('sortby' => 'diagnosis')))?></th>
+                        <th><?=\CHtml::link('Hospital No', $this->getUri(array('sortby' => 'hos_num')))?></th>
+                        <th><?=\CHtml::link('Patient Name', $this->getUri(array('sortby' => 'patient_name')))?></th>
+                        <th><?=\CHtml::link('Maiden Name', $this->getUri(array('sortby' => 'maiden_name')))?></th>
+                        <th><?=\CHtml::link('Date Taken', $this->getUri(array('sortby' => 'date_taken')))?></th>
+                        <th><?=\CHtml::link('Sample Type', $this->getUri(array('sortby' => 'sample_type')))?></th>
+                        <th><?=\CHtml::link('Volume', $this->getUri(array('sortby' => 'volume')))?></th>
+                        <th><?=\CHtml::link('Comment', $this->getUri(array('sortby' => 'comment')))?></th>
+                        <th><?=\CHtml::link('Diagnosis', $this->getUri(array('sortby' => 'diagnosis')))?></th>
 
-					</tr>
-				</thead>
-				<tbody>
-					<?php
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
 
-					foreach ($results as $result) {?>
+                    foreach ($results as $result) {?>
 
                         <?php
                             $genetics_pateint = GeneticsPatient::model()->findByPk($result['genetics_patient_id']);
                         ?>
-						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInDnasample/default/view/'.$result['id'])?>">
+                        <tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInDnasample/default/view/'.$result['id'])?>">
                             <td><?php echo $result['sample_id']?></td>
                             <td><?=\CHtml::link($result['genetics_patient_id'], '/Genetics/subject/view/id/' . $result['genetics_patient_id']); ?></td>
 
@@ -182,21 +182,21 @@
                             </td>
 
                             <td><?php echo $result['hos_num']?></td>
-							<td><?php echo strtoupper($result['last_name'])?>, <?php echo $result['first_name']?></td>
-							<td><?php echo strtoupper($result['maiden_name'])?></td>
-							<td>
+                            <td><?php echo strtoupper($result['last_name'])?>, <?php echo $result['first_name']?></td>
+                            <td><?php echo strtoupper($result['maiden_name'])?></td>
+                            <td>
                                 <?php
                                     $date = new DateTime($result['event_date']);
                                     echo $date->format('d M Y');
                                 ?>
                             </td>
-							<td><?php echo $result['name']?></td>
-							<td><?php echo $result['volume']?></td>
-							<td><?php echo $result['comments']?></td>
-							<td><?php echo $result['diagnosis']?></td>
-						</tr>
-					<?php }?>
-				</tbody>
+                            <td><?php echo $result['name']?></td>
+                            <td><?php echo $result['volume']?></td>
+                            <td><?php echo $result['comments']?></td>
+                            <td><?php echo $result['diagnosis']?></td>
+                        </tr>
+                    <?php }?>
+                </tbody>
                 <tfoot class="pagination-container">
                 <tr>
                     <td colspan="3">
@@ -218,7 +218,7 @@
                     </td>
                 </tr>
                 </tfoot>
-			</table>
-		<?php }?>
-	</form>
+            </table>
+        <?php }?>
+    </form>
 </div>
