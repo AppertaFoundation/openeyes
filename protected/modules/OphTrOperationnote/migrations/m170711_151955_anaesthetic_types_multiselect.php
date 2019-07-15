@@ -2,8 +2,8 @@
 
 class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
         $this->createOETable('ophtroperationnote_anaesthetic_anaesthetic_type',array(
             'id' => 'pk',
@@ -334,9 +334,9 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 //        $this->delete("anaesthetic_type", "name = 'LAC'");
 //        $this->delete("anaesthetic_type", "name = 'LAS'");
 
-	}
+    }
 
-	private function createOrUpdate($model_name, $attributes)
+    private function createOrUpdate($model_name, $attributes)
     {
         if(!$model = $model_name::model()->findByAttributes($attributes)){
             $model = new $model_name;
@@ -351,11 +351,11 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
         }
     }
 
-	public function down()
-	{
-	      /** We will NOT support the migration down() here  */
+    public function down()
+    {
+          /** We will NOT support the migration down() here  */
 
         echo "m170711_151955_anaesthetic_types_multiselect does not support migration down.\n";
         return false;
-	}
+    }
 }

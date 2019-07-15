@@ -29,9 +29,9 @@ if ($this->editable && $next_step = $this->getNextStep()) {
 ?>
 
 <?php if ($this->event->delete_pending) { ?>
-	<div class="alert-box alert with-icon">
-		This event is pending deletion and has been locked.
-	</div>
+    <div class="alert-box alert with-icon">
+        This event is pending deletion and has been locked.
+    </div>
 <?php } ?>
 
 <?php $this->renderOpenElements($this->action->id)?>

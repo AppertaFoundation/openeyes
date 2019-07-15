@@ -2,8 +2,8 @@
 
 class m180321_132657_systemic_diagnoses_set extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->createOETable('ophciexamination_systemic_diagnoses_set',
             array(
                 'id' => 'pk',
@@ -42,7 +42,7 @@ class m180321_132657_systemic_diagnoses_set extends OEMigration
     }
 
 
-	public function down()
-	{
-	}
+    public function down()
+    {
+    }
 }

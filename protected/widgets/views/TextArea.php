@@ -17,7 +17,7 @@
  */
 ?>
 <?php if (!$nowrapper) :?>
-	<div id="div_<?= CHtml::modelName($element)?>_<?= $field?>"
+    <div id="div_<?= CHtml::modelName($element)?>_<?= $field?>"
        class="data-group flex-layout"
        style="<?=($hidden) ? 'display: none':''?>" >
       <?php if (!$no_label): ?>
@@ -27,7 +27,7 @@
           </label>
         </div>
       <?php endif; ?>
-		<div class="cols-<?php echo $layoutColumns['field']?> column">
+        <div class="cols-<?php echo $layoutColumns['field']?> column">
 <?php endif;
 $attr = array(
     'id' => CHtml::modelName($element).'_'.$field,
@@ -46,13 +46,13 @@ if ($cols) {
 ><?=\CHtml::encode($value)?>
 </textarea>
 <?php if (!$nowrapper) :
-		  if ($button):?>
-				<button type="submit" class="<?=$button['colour']?> <?=$button['size']?>"
+          if ($button):?>
+                <button type="submit" class="<?=$button['colour']?> <?=$button['size']?>"
                 id="<?= CHtml::modelName($element)?>_<?= $button['id']?>"
                 name="<?= CHtml::modelName($element)?>_<?= $button['id']?>">
-					<?= $button['label']?>
-				</button>
+                    <?= $button['label']?>
+                </button>
       <?php endif;?>
-		</div>
-	</div>
+        </div>
+    </div>
 <?php endif;?>

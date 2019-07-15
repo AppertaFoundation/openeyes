@@ -17,19 +17,19 @@
  */
 ?>
 <div class="data-group diagnosis-selection<?php echo !$nowrapper ? ' flex-layout flex-left' : '';?> ">
-	<?php if (!$nowrapper && $label) {?>
-		<div class="cols-<?php echo $layoutColumns['label'];?> column">
-			<label for="<?php echo "{$class}_{$field}";?>">
-				<?php echo $element->getAttributeLabel($field)?>:
-			</label>
-		</div>
-	<?php }?>
-	<div class="cols-<?php if ($label) { echo $layoutColumns['field']; }else{?>12<?php }?> column end">
-		<div class="data-group collapse in flex-layout flex-top">
-			<div class="cols-10 column">
-				<div class="dropdown-row">
-					<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => 'Select') : $dropdownOptions) : ''?>
-				</div>
+    <?php if (!$nowrapper && $label) {?>
+        <div class="cols-<?php echo $layoutColumns['label'];?> column">
+            <label for="<?php echo "{$class}_{$field}";?>">
+                <?php echo $element->getAttributeLabel($field)?>:
+            </label>
+        </div>
+    <?php }?>
+    <div class="cols-<?php if ($label) { echo $layoutColumns['field']; }else{?>12<?php }?> column end">
+        <div class="data-group collapse in flex-layout flex-top">
+            <div class="cols-10 column">
+                <div class="dropdown-row">
+                    <?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => 'Select') : $dropdownOptions) : ''?>
+                </div>
         <div class="autocomplete-row" style="display: none">
             <?php
             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -83,27 +83,27 @@
             ));
             ?>
         </div>
-			</div>
-			<div class="cols-2 column">
-				<div class="postfix">
-					<button class="oe-i search" id="<?php echo $class.'_'.$field.'_search'?>" style="height: 28px; width: 28px;" type="button">
-						<span class="icon-button-small-search" ></span>
-						<span style="display: none">Search</span>
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+            </div>
+            <div class="cols-2 column">
+                <div class="postfix">
+                    <button class="oe-i search" id="<?php echo $class.'_'.$field.'_search'?>" style="height: 28px; width: 28px;" type="button">
+                        <span class="icon-button-small-search" ></span>
+                        <span style="display: none">Search</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
-	$(document).ready(function() {
+    $(document).ready(function() {
 
-		var searchButton = $('#<?php echo $class.'_'.$field.'_search'?>');
-		var searchBox = $('#<?php echo $class.'_'.$field.'_searchbox'?>');
-		searchButton.on('click', function(e) {
-			e.preventDefault();
-			searchBox.parent().toggle();
-			searchBox.focus();
-		});
-	});
+        var searchButton = $('#<?php echo $class.'_'.$field.'_search'?>');
+        var searchBox = $('#<?php echo $class.'_'.$field.'_searchbox'?>');
+        searchButton.on('click', function(e) {
+            e.preventDefault();
+            searchBox.parent().toggle();
+            searchBox.focus();
+        });
+    });
 </script>

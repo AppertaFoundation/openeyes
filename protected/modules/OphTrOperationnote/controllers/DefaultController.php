@@ -1340,20 +1340,20 @@ class DefaultController extends BaseEventTypeController
         return null;
     }
 
-	/**
-	 * @param $proc_id
-	 * @return OphTrOperationnote_Attribute[]
-	 *
-	 * Returns attributes that belong
-	 * to the given procedure
-	 */
+    /**
+     * @param $proc_id
+     * @return OphTrOperationnote_Attribute[]
+     *
+     * Returns attributes that belong
+     * to the given procedure
+     */
 
     protected function getAttributesForProcedure($proc_id)
-	{
-		$crit = new CDbCriteria();
-		$crit->compare('proc_id', $proc_id);
-		$crit->order = "display_order";
+    {
+        $crit = new CDbCriteria();
+        $crit->compare('proc_id', $proc_id);
+        $crit->order = "display_order";
 
-		return OphTrOperationnote_Attribute::model()->findAll($crit);
-	}
+        return OphTrOperationnote_Attribute::model()->findAll($crit);
+    }
 }

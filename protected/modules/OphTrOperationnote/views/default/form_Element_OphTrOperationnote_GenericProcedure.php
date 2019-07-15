@@ -31,16 +31,16 @@ $numHash = crc32($element->getElementTypeName());
 $attributes = $this->getAttributesForProcedure($element->proc_id);
 $itemSets = [];
 foreach ($attributes as $attribute) {
-	$items = array();
+    $items = array();
 
-	foreach ($attribute->options as $option) {
-		$items[] = ['label' => (string)$option->value.", "];
-	}
+    foreach ($attribute->options as $option) {
+        $items[] = ['label' => (string)$option->value.", "];
+    }
 
-	$itemSets[] = ['items' => $items ,
-		'header' => $attribute->label ,
-		'multiSelect' => $attribute->is_multiselect
-	];
+    $itemSets[] = ['items' => $items ,
+        'header' => $attribute->label ,
+        'multiSelect' => $attribute->is_multiselect
+    ];
 }
 ?>
 

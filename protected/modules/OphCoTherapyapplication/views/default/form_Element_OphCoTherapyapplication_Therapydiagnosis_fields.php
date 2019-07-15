@@ -65,13 +65,13 @@ foreach ($l1_opts as $id => $data) {
 $layoutColumns = array('label' => 4, 'field' => 8);
 ?>
 <div class="data-group">
-	<div class="cols-<?php echo $layoutColumns['label']?> column">
-		<label for="<?php echo get_class($element).'_'.$side.'_diagnosis1_id';?>">
-			<?php echo $element->getAttributeLabel($side.'_diagnosis1_id'); ?>:
-		</label>
-	</div>
-	<div class="cols-<?php echo $layoutColumns['field']?> column end">
-		<?php $form->widget('application.widgets.DiagnosisSelection', array(
+    <div class="cols-<?php echo $layoutColumns['label']?> column">
+        <label for="<?php echo get_class($element).'_'.$side.'_diagnosis1_id';?>">
+            <?php echo $element->getAttributeLabel($side.'_diagnosis1_id'); ?>:
+        </label>
+    </div>
+    <div class="cols-<?php echo $layoutColumns['field']?> column end">
+        <?php $form->widget('application.widgets.DiagnosisSelection', array(
                 'field' => $side.'_diagnosis1_id',
                 'element' => $element,
                 'options' => CHtml::listData($l1_disorders, 'id', 'term'),
@@ -83,16 +83,16 @@ $layoutColumns = array('label' => 4, 'field' => 8);
                     'options' => $l1_opts,
                 ),
         ));?>
-	</div>
+    </div>
 </div>
 <div class="row<?php if (!array_key_exists($element->{$side.'_diagnosis1_id'}, $l2_disorders)) { echo ' hidden'; }?>" id="<?php echo $side ?>_diagnosis2_wrapper">
-	<div class="cols-<?php echo $layoutColumns['label']?> column">
-		<label for="<?php echo get_class($element).'_'.$side.'_diagnosis2_id';?>">
-			<?php echo $element->getAttributeLabel($side.'_diagnosis2_id'); ?>:
-		</label>
-	</div>
-	<div class="cols-<?php echo $layoutColumns['field']?> column">
-		<?php
+    <div class="cols-<?php echo $layoutColumns['label']?> column">
+        <label for="<?php echo get_class($element).'_'.$side.'_diagnosis2_id';?>">
+            <?php echo $element->getAttributeLabel($side.'_diagnosis2_id'); ?>:
+        </label>
+    </div>
+    <div class="cols-<?php echo $layoutColumns['field']?> column">
+        <?php
         $l2_attrs = array('empty' => 'Select');
         $l2_opts = array();
         if (array_key_exists($element->{$side.'_diagnosis1_id'}, $l2_disorders)) {
@@ -110,5 +110,5 @@ $layoutColumns = array('label' => 4, 'field' => 8);
             'nowrapper' => true,
             'dropdownOptions' => $l2_attrs,
         ));?>
-	</div>
+    </div>
 </div>

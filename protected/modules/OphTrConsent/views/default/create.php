@@ -28,11 +28,11 @@ $this->beginContent('//patient/event_container', array('no_face'=>true , 'form_i
         $this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id));
         ?>
 
-		<?php  $this->displayErrors($errors)?>
-		<?php  $this->renderOpenElements($this->action->id, $form); ?>
-		<?php  $this->renderOptionalElements($this->action->id, $form); ?>
-		<?php  $this->displayErrors($errors, true)?>
+        <?php  $this->displayErrors($errors)?>
+        <?php  $this->renderOpenElements($this->action->id, $form); ?>
+        <?php  $this->renderOptionalElements($this->action->id, $form); ?>
+        <?php  $this->displayErrors($errors, true)?>
 
-	<?php  $this->endWidget(); ?>
+    <?php  $this->endWidget(); ?>
 
 <?php $this->endContent();?>

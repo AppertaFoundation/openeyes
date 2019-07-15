@@ -38,7 +38,7 @@
     <?php if ($contact_type == Yii::app()->params['gp_label']): ?>
         <?php if($can_send_electronically): ?>
             <div>
-							<label class="inline highlight electronic-label docman">
+                            <label class="inline highlight electronic-label docman">
                 <?php
                     $is_checked = $is_draft == 1 ? 'checked disabled' : '';
 
@@ -49,8 +49,8 @@
                 <input type="checkbox" value="Docman" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type"
                     <?php echo $is_checked; ?>> <?php echo (isset(Yii::app()->params['electronic_sending_method_label']) ? Yii::app()->params['electronic_sending_method_label'] : 'Electronic'); ?>
                 <input type="hidden" value="Docman" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
-            	</label>
-						</div>
+                </label>
+                        </div>
 
             <?php if($document_output):?>
                 <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $document_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
@@ -63,7 +63,7 @@
     <?php if($contact_type == 'INTERNALREFERRAL'): ?>
         <?php $label = ElementLetter::model()->getInternalReferralSettings('internal_referral_method_label', 'Electronic'); ?>
         <div>
-					<label class="inline highlight electronic-label internal-referral">
+                    <label class="inline highlight electronic-label internal-referral">
             <?php
 
             //now, WinDip cannot be unchecked
@@ -73,8 +73,8 @@
             <input type="checkbox" value="Internalreferral" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type"
                 <?php echo $is_checked; ?>> <?php echo $label; ?>
             <input type="hidden" value="Internalreferral" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
-        	</label>
-				</div>
+            </label>
+                </div>
         <?php if($internalreferral_output):?>
             <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $internalreferral_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
         <?php endif; ?>
@@ -82,7 +82,7 @@
     <?php endif; ?>
 
    <div>
-		 <label class="inline highlight">
+         <label class="inline highlight">
         <?php
             $is_checked = $print_output || $is_new_record ? 'checked' : '';
 
@@ -99,7 +99,7 @@
                name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" <?php echo $is_checked?>>  Print
         <?php endif; ?>
     </label>
-	 </div>
+     </div>
     <?php if($print_output): ?>
         <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $print_output->id); ?>
     <?php endif; ?>

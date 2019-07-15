@@ -136,9 +136,9 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     /**
      * Update the diagnoses for this element using a hash structure of
      * [{
-     * 		'disorder_id' => integer,
-     * 		'eye_id' => \Eye::LEFT|\Eye::RIGHT|\Eye::BOTH,
-     * 		'principal' => boolean
+     *      'disorder_id' => integer,
+     *      'eye_id' => \Eye::LEFT|\Eye::RIGHT|\Eye::BOTH,
+     *      'principal' => boolean
      * }, ... ].
      *
      * @param $update_disorders

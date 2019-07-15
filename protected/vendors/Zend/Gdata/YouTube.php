@@ -847,7 +847,7 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
      * @param Zend_Gdata_YouTube_CommentEntry $commentEntry The comment entry
      *         to reply to
      * @param string                          $commentText  The text of the
-		 *         comment to post
+         *         comment to post
      * @return Zend_Gdata_YouTube_CommentEntry the posted comment
      */
     public function replyToCommentEntry($commentEntry, $commentText)

@@ -17,7 +17,7 @@
 class DrugTest extends CDbTestCase
 {
     /**
-     *	@var Drug
+     *  @var Drug
      */
     protected $model;
     public $fixtures = array(
@@ -43,9 +43,9 @@ class DrugTest extends CDbTestCase
     }
 
     /**
-     *	@covers	Drug::model
+     *  @covers Drug::model
      *
-     *	@todo Implement testModel().
+     *  @todo Implement testModel().
      */
     public function testModel()
     {
@@ -53,9 +53,9 @@ class DrugTest extends CDbTestCase
     }
 
     /**
-     *	@covers	DrugForm::tableName
+     *  @covers DrugForm::tableName
      *
-     *	@todo Implement testTableName().
+     *  @todo Implement testTableName().
      */
     public function testTableName()
     {
@@ -63,9 +63,9 @@ class DrugTest extends CDbTestCase
     }
 
     /**
-     *	@covers	DrugForm::rules
+     *  @covers DrugForm::rules
      *
-     *	@todo Implement testRules().
+     *  @todo Implement testRules().
      */
     public function testRules()
     {
@@ -74,7 +74,7 @@ class DrugTest extends CDbTestCase
     }
 
     /**
-     *	@covers	Drug::attributeLabels
+     *  @covers Drug::attributeLabels
      */
     public function testAttributeLabels()
     {
@@ -127,7 +127,7 @@ class DrugTest extends CDbTestCase
     /**
      * @covers Drug::listBySubspecialty
      *
-     * @todo	Implement testListBySubspecialty().
+     * @todo    Implement testListBySubspecialty().
      */
     public function testListBySubspecialty()
     {

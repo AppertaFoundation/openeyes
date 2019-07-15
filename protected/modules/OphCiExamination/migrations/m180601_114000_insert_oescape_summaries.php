@@ -3,7 +3,7 @@
 class m180601_114000_insert_oescape_summaries extends CDbMigration
 {
     public function safeUp()
-	{
+    {
         $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = ?', array('OphCiExamination'))->queryScalar();
 
         $this->insert('oescape_summary_item', array('event_type_id' => $event_type_id, 'name' => 'Visual Acuity History'));
@@ -28,8 +28,8 @@ class m180601_114000_insert_oescape_summaries extends CDbMigration
 
     }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
 
         $VA_id = $this->getDbConnection()->createCommand('select id from oescape_summary_item where name ="Visual Acuity History"')->queryRow();
         $Med_id = $this->getDbConnection()->createCommand('select id from oescape_summary_item where name ="Medication"')->queryRow();

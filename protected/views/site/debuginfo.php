@@ -61,20 +61,20 @@ if ($thisEnv == 'DEV') {
 }
 ?>
 <div id="debug-info-modal">
-	<p><strong>This information is provided to assist the helpdesk in diagnosing any problems</strong></p>
-	<code class="js-to-copy-to-clipboard">
-		Served by: <?php echo $hostname?><br />
-		Docroot: <?php echo (isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '')?><br />
-		Base dir: <?php echo Yii::app()->basePath?><br />
-		Date: <?php echo date('d.m.Y H:i:s')?><br />
-		Commit: <?php echo $commit?><br />
-		Branch: <?php echo $branch?><br/>
-		User agent: <?php echo wordwrap((isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''), 80, "<br />\n");?>
-		Client IP: <?php echo (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '')?><br />
-		Username: <?php echo $username?><br />
-		Firm: <?php echo $firm?><br />
+    <p><strong>This information is provided to assist the helpdesk in diagnosing any problems</strong></p>
+    <code class="js-to-copy-to-clipboard">
+        Served by: <?php echo $hostname?><br />
+        Docroot: <?php echo (isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '')?><br />
+        Base dir: <?php echo Yii::app()->basePath?><br />
+        Date: <?php echo date('d.m.Y H:i:s')?><br />
+        Commit: <?php echo $commit?><br />
+        Branch: <?php echo $branch?><br/>
+        User agent: <?php echo wordwrap((isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''), 80, "<br />\n");?>
+        Client IP: <?php echo (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '')?><br />
+        Username: <?php echo $username?><br />
+        Firm: <?php echo $firm?><br />
 
-	</code>
+    </code>
     <br />
     <p class="js-copy-to-clipboard" data-copy-content-selector=".js-to-copy-to-clipboard" style="cursor: pointer;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19" class="oe-i-e" style="background: transparent;"><title>Copy to clipboard</title><style>*{fill:#fff;}</style><path d="M15,8.13V15H8.13V8.13H15m2-2H6.13V17H17V6.13Z"/><polygon points="4 10.87 4 4 10.87 4 10.87 5.13 12.87 5.13 12.87 2 2 2 2 12.87 5.13 12.87 5.13 10.87 4 10.87"/></svg>
