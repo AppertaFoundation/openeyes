@@ -54,6 +54,12 @@ if ($warnings) { ?>
 		</div>
 	<?php }?>
 
+    <?php if($operation->status->name === "On-Hold"){ ?>
+        <div class="alert-box issue with-icon">
+            This event is On-hold: <?= $operation->on_hold_reason . (isset($operation->on_hold_comment) ? ' - ' . $operation->on_hold_comment : "");?>
+        </div>
+    <?php } ?>
+
 	<?php if ($this->event->delete_pending) {?>
 		<div class="alert-box alert with-icon">
 			This event is pending deletion and has been locked.
@@ -66,6 +72,7 @@ if ($warnings) { ?>
     ?>
 <?php
 $this->renderPartial('//default/delete');
+$this->renderPartial('on_hold');
 // Event actions
 if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::printButton();
