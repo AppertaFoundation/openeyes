@@ -14,7 +14,7 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 
-testtorun="$WROOT/protected/tests/unit"
+testtorun=""
 phpunitconfigxml="$WROOT/protected/tests/phpunit.xml"
 phpunitpath="$WROOT/vendor/phpunit/phpunit/phpunit.php"
 
@@ -27,8 +27,12 @@ do
         testtorun="$2"
         shift
 	      ;;
-      --configuration)
+      --configuration|-config)
         phpunitconfigxml="$2"
+        shift
+        ;;
+      --suite|--testsuite|-suite)
+        testtorun="--testsuite $2"
         shift
         ;;
 	    *)  [ ! -z $p ] && echo "Unknown command line: $p" || :

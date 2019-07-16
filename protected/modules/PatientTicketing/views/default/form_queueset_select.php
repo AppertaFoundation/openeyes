@@ -32,7 +32,7 @@ $form = $this->beginWidget('CActiveForm', array(
     'id' => 'ticket-filter',
     'enableAjaxValidation' => false,
     'method' => 'get',
-    'action' => ["/{$this->module->id}/default/"],
+    'action' => ["/{$this->module->id}/default/", "reset_filters" => 1],
 ));
 ?>
 
