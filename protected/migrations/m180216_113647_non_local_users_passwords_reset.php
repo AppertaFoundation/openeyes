@@ -2,8 +2,8 @@
 
 class m180216_113647_non_local_users_passwords_reset extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
         $dataProvider = new CActiveDataProvider('User');
         $user_iterator = new CDataProviderIterator($dataProvider);
@@ -23,11 +23,11 @@ class m180216_113647_non_local_users_passwords_reset extends CDbMigration
                 }
             }
         }
-	}
+    }
 
-	public function down()
-	{
-		echo "m180216_113647_non_local_users_passwords_reset does not support migration down.\n";
-		return false;
-	}
+    public function down()
+    {
+        echo "m180216_113647_non_local_users_passwords_reset does not support migration down.\n";
+        return false;
+    }
 }

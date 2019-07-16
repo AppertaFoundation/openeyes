@@ -17,15 +17,15 @@
  */
 ?>
 <div class="box admin">
-	<div class="data-group">
-		<div class="column cols-2">
-			<?=\CHtml::textField('step_name', $step->name, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		</div>
-		<div class="column cols-2 end">
-			<?php echo EventAction::button('Save', 'save_step_name', null, array('class' => 'small'))->toHtml()?>
-		</div>
-	</div>
-	<form id="admin_workflow_steps">
+    <div class="data-group">
+        <div class="column cols-2">
+            <?=\CHtml::textField('step_name', $step->name, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+        </div>
+        <div class="column cols-2 end">
+            <?php echo EventAction::button('Save', 'save_step_name', null, array('class' => 'small'))->toHtml()?>
+        </div>
+    </div>
+    <form id="admin_workflow_steps">
     <div class="data-group">
       <table class="standard">
         <thead>
@@ -64,5 +64,5 @@
         </tfoot>
       </table>
     </div>
-	</form>
+    </form>
 </div>

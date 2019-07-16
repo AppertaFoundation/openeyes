@@ -408,7 +408,7 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-		$active_check = "";
+        $active_check = "";
 
         $view_data = array_merge(array(
             'active_check' => $active_check,

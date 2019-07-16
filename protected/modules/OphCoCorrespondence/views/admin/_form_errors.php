@@ -1,22 +1,22 @@
 <?php if (isset($errors) && !empty($errors)) {
     ?>
-	<div class="alert-box alert with-icon">
-		<p>Please fix the following input errors:</p>
-		<ul>
-			<?php foreach ($errors as $field => $errs) {
+    <div class="alert-box alert with-icon">
+        <p>Please fix the following input errors:</p>
+        <ul>
+            <?php foreach ($errors as $field => $errs) {
     ?>
-				<?php foreach ($errs as $err) {
+                <?php foreach ($errs as $err) {
     ?>
-					<li>
-						<?php echo $err?>
-					</li>
-				<?php 
+                    <li>
+                        <?php echo $err?>
+                    </li>
+                <?php 
 }
     ?>
-			<?php 
+            <?php 
 }
     ?>
-		</ul>
-	</div>
+        </ul>
+    </div>
 <?php 
 }?>

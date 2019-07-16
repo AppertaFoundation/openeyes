@@ -19,13 +19,13 @@
 
         <form id="generic-admin-list">
             <table class="standard">
-		<?php
+        <?php
         if (is_array($admin->getFilterFields())) {
             foreach ($admin->getFilterFields() as $field => $params) { ?>
                 <tr>
                     <td><?php echo $params['label']; ?></td>
                     <td>
-					<?php
+                    <?php
                     $searchParams = $this->request->getParam('search');
                 if (isset($searchParams['filterid'][$params['dropDownName']]['value']) && $searchParams['filterid'][$params['dropDownName']]['value'] != '') {
                     $selectedValue[$params['dropDownName']] = $searchParams['filterid'][$params['dropDownName']]['value'];
@@ -69,7 +69,7 @@
                 ?>
                 </td>
                 </tr>
-			<?php
+            <?php
             }
         }
         ?>

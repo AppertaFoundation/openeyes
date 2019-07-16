@@ -2,8 +2,8 @@
 
 class m180315_152657_drop_fife_specific_tables extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
         $el_personnel_id = $this->dbConnection->createCommand()->select('id')
             ->from('element_type')->where('class_name = "Element_OphTrOperationnote_Personnel"')->queryScalar();
@@ -24,15 +24,15 @@ class m180315_152657_drop_fife_specific_tables extends OEMigration
         $this->dropOETable('et_ophtroperationnote_preparation', true);
         $this->dropOETable('et_ophtroperationnote_personnel', true);
 
-	    $this->dropOETable('ophtroperationnote_preparation_intraocular_solution', true);
-	    $this->dropOETable('ophtroperationnote_preparation_skin_preparation', true);
+        $this->dropOETable('ophtroperationnote_preparation_intraocular_solution', true);
+        $this->dropOETable('ophtroperationnote_preparation_skin_preparation', true);
 
-	    $this->delete('element_type', 'class_name = :cn', array(':cn' => 'Element_OphTrOperationnote_Personnel'));
-	    $this->delete('element_type', 'class_name = :cn', array(':cn' => 'Element_OphTrOperationnote_Preparation'));
-	}
+        $this->delete('element_type', 'class_name = :cn', array(':cn' => 'Element_OphTrOperationnote_Personnel'));
+        $this->delete('element_type', 'class_name = :cn', array(':cn' => 'Element_OphTrOperationnote_Preparation'));
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->execute("CREATE TABLE `ophtroperationnote_preparation_intraocular_solution` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `name` varchar(128)  DEFAULT NULL,
@@ -147,5 +147,5 @@ class m180315_152657_drop_fife_specific_tables extends OEMigration
         ]);
 
 
-	}
+    }
 }

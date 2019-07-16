@@ -2,8 +2,8 @@
 
 class m171114_112518_drug_set_item_default_values extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
         $transaction = $this->getDbConnection()->beginTransaction();
         try {
@@ -35,11 +35,11 @@ class m171114_112518_drug_set_item_default_values extends CDbMigration
             \OELog::log($e->getMessage());
             throw $e;
         }
-	}
+    }
 
-	public function down()
-	{
-		echo "m171114_112518_drug_set_item_default_values does not support migration down.\n";
-		return false;
-	}
+    public function down()
+    {
+        echo "m171114_112518_drug_set_item_default_values does not support migration down.\n";
+        return false;
+    }
 }

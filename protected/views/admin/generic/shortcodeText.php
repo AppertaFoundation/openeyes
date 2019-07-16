@@ -14,23 +14,23 @@
  */
 ?>
 <div id="div_LetterString_name" class="data-group">
-	<div class="cols-2 column">
-		<label for="LetterString_name">Body:</label>
-	</div>
-	<div class="cols-5 column end">
-		<?php echo  CHtml::activeTextArea($model, 'body' , ['class' => 'cols-full autosize'])?>
-	</div>
+    <div class="cols-2 column">
+        <label for="LetterString_name">Body:</label>
+    </div>
+    <div class="cols-5 column end">
+        <?php echo  CHtml::activeTextArea($model, 'body' , ['class' => 'cols-full autosize'])?>
+    </div>
 </div>
-	<div class="cols-8 large-offset-2 column">
-		<div class="data-group">
-			<div class="cols-3 column">
-				<label for="shortcode">
-					Add shortcode:
-				</label>
-			</div>
-			<div class="cols-6 column end">
-				<?=\CHtml::dropDownList('shortcode', '', CHtml::listData(PatientShortcode::model()->findAll(array('order' => 'description asc')), 'code', 'description'), array('empty' => '- Select -'))?>
-			</div>
-		</div>
-	</div>
+    <div class="cols-8 large-offset-2 column">
+        <div class="data-group">
+            <div class="cols-3 column">
+                <label for="shortcode">
+                    Add shortcode:
+                </label>
+            </div>
+            <div class="cols-6 column end">
+                <?=\CHtml::dropDownList('shortcode', '', CHtml::listData(PatientShortcode::model()->findAll(array('order' => 'description asc')), 'code', 'description'), array('empty' => '- Select -'))?>
+            </div>
+        </div>
+    </div>
 

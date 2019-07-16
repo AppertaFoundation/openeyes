@@ -2,8 +2,8 @@
 
 class m180405_101352_observations_table extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->createOETable('et_ophciexamination_observations', array(
             'id' => 'pk',
             'event_id' => 'INT(10) UNSIGNED NOT NULL DEFAULT 0',
@@ -22,11 +22,11 @@ class m180405_101352_observations_table extends OEMigration
            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Observations',
            'display_order' => 12
         ));
-	}
+    }
 
-	public function down()
-	{
-		$this->dropOETable('et_ophciexamination_observations', true);
-	}
+    public function down()
+    {
+        $this->dropOETable('et_ophciexamination_observations', true);
+    }
 
 }

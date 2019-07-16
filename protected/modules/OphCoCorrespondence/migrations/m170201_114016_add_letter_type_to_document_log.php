@@ -2,8 +2,8 @@
 
 class m170201_114016_add_letter_type_to_document_log extends OEMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
             $this->createOETable('ophcocorrespondence_letter_type', array(
                 'id' => 'pk',
                 'name' => 'varchar(40)'
@@ -36,10 +36,10 @@ class m170201_114016_add_letter_type_to_document_log extends OEMigration
                     
             $this->addForeignKey('et_ophcocorrespondence_letter_ibfk_1', 'et_ophcocorrespondence_letter', 'letter_type_id', 'ophcocorrespondence_letter_type', 'id');
             $this->addForeignKey('ophcocorrespondence_letter_macro_ibfk_1', 'ophcocorrespondence_letter_macro', 'letter_type_id', 'ophcocorrespondence_letter_type', 'id');
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
             $this->dropForeignKey('et_ophcocorrespondence_letter_ibfk_1', 'et_ophcocorrespondence_letter');
             $this->dropForeignKey('ophcocorrespondence_letter_macro_ibfk_1', 'ophcocorrespondence_letter_macro');
             
@@ -62,5 +62,5 @@ class m170201_114016_add_letter_type_to_document_log extends OEMigration
             $this->renameColumn('ophcocorrespondence_letter_macro', 'letter_type_id', 'letter_type');
             $this->renameColumn('ophcocorrespondence_letter_macro_version', 'letter_type_id', 'letter_type');
             
-	}
+    }
 }

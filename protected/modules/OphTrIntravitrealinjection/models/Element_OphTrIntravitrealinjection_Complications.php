@@ -196,8 +196,8 @@ class Element_OphTrIntravitrealinjection_Complications extends SplitEventTypeEle
                     // don't want to delete later
                     unset($current_complications[$comp_id]);
                 }
-          	}
-      	}
+            }
+        }
         // save what needs saving
         foreach ($save_complications as $save) {
             $save->save();

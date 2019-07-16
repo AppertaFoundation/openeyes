@@ -22,7 +22,7 @@ $this->event_actions[] = EventAction::printButton('Print', 'print', array(), arr
 $this->moduleNameCssClass .= ' highlight-fields';
 
 if ($this->event->delete_pending) { ?>
-	<div class="alert-box alert with-icon">
+    <div class="alert-box alert with-icon">
     This event is pending deletion and has been locked.
 </div>
 <?php } 

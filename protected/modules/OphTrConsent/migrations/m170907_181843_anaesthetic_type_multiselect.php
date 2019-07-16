@@ -2,8 +2,8 @@
 
 class m170907_181843_anaesthetic_type_multiselect extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
         $this->createOETable('ophtrconsent_procedure_anaesthetic_type',array(
             'id' => 'pk',
@@ -122,7 +122,7 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
             throw $e;
         }
 
-	}
+    }
 
     private function createOrUpdate($model_name, $attributes)
     {
@@ -139,9 +139,9 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
         }
     }
 
-	public function down()
-	{
-		echo "m170907_181843_anaesthetic_type_multiselect does not support migration down.\n";
-		return false;
-	}
+    public function down()
+    {
+        echo "m170907_181843_anaesthetic_type_multiselect does not support migration down.\n";
+        return false;
+    }
 }

@@ -2,8 +2,8 @@
 
 class m161026_135722_remove_patient_merge_unique_audit_action extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
             /* check if the action is already in the DB */
             $audit_action_id = $this->dbConnection->createCommand('SELECT id FROM audit_action WHERE name = "Patient Merge Request successfully done."')->queryScalar();
             
@@ -34,9 +34,9 @@ class m161026_135722_remove_patient_merge_unique_audit_action extends CDbMigrati
             $this->update('audit', array('action_id' => $audit_action_id), 'action_id IN (' . (implode(',',$action_ids)) . ')');
             $this->delete('audit_action', 'id IN (' . (implode(',',$action_ids)) . ')');
 
-	}
+    }
 
-	public function down()
-	{
-	}
+    public function down()
+    {
+    }
 }

@@ -2,8 +2,8 @@
 
 class m190502_125723_create_operation_booking_on_hold_reasons extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->insert('ophtroperationbooking_operation_status', ['name' => 'On-Hold']);
         $this->createOETable('ophtroperationbooking_operation_on_hold_reason',[
             'id' => 'pk',
@@ -29,16 +29,16 @@ class m190502_125723_create_operation_booking_on_hold_reasons extends OEMigratio
         $this->addColumn('et_ophtroperationbooking_operation_version', 'on_hold_reason', 'varchar(100) NULL');
         $this->addColumn('et_ophtroperationbooking_operation', 'on_hold_comment', 'varchar(200) NULL');
         $this->addColumn('et_ophtroperationbooking_operation_version', 'on_hold_comment', 'varchar(200) NULL');
-	}
+    }
 
-	public function down()
-	{
-	    $this->dropColumn('et_ophtroperationbooking_operation', 'on_hold_comment');
-	    $this->dropColumn('et_ophtroperationbooking_operation_version', 'on_hold_comment');
-	    $this->dropColumn('et_ophtroperationbooking_operation', 'on_hold_reason');
-	    $this->dropColumn('et_ophtroperationbooking_operation_version', 'on_hold_reason');
+    public function down()
+    {
+        $this->dropColumn('et_ophtroperationbooking_operation', 'on_hold_comment');
+        $this->dropColumn('et_ophtroperationbooking_operation_version', 'on_hold_comment');
+        $this->dropColumn('et_ophtroperationbooking_operation', 'on_hold_reason');
+        $this->dropColumn('et_ophtroperationbooking_operation_version', 'on_hold_reason');
         $this->delete('ophtroperationbooking_operation_status', 'name = "On-Hold"');
 
-	    $this->dropOETable('ophtroperationbooking_operation_on_hold_reason', true);
-	}
+        $this->dropOETable('ophtroperationbooking_operation_on_hold_reason', true);
+    }
 }

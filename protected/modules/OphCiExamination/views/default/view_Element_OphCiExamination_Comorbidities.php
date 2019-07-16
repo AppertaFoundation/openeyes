@@ -20,7 +20,7 @@
   <div class="data-value">
       <?php echo $element->summary?>
       <?php if ($element->comments) { ?>
-				<br/>
+                <br/>
           <?php echo Yii::app()->format->Ntext($element->comments); }?>
-		</div>
+        </div>
 </div>

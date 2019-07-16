@@ -2,8 +2,8 @@
 
 class m180206_140110_remove_none_numeric_chars_from_drugsets extends CDbMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         $dataProvider = new CActiveDataProvider('DrugSetItem');
         $iterator = new CDataProviderIterator($dataProvider);
 
@@ -50,11 +50,11 @@ class m180206_140110_remove_none_numeric_chars_from_drugsets extends CDbMigratio
         \Audit::add('admin', 'update', ("<pre>" . print_r($data,true) . "</pre>"), '',['model' => 'DrugSetItemTaper']);
 
         return true;
-	}
+    }
 
-	public function safeDown()
-	{
-		echo "m180206_140110_remove_none_numeric_chars_from_drugsets does not support migration down.\n";
-		return false;
-	}
+    public function safeDown()
+    {
+        echo "m180206_140110_remove_none_numeric_chars_from_drugsets does not support migration down.\n";
+        return false;
+    }
 }

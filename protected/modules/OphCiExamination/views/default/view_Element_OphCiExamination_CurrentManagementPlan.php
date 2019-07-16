@@ -21,9 +21,9 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $targetIOP = $exam_api->getTargetIOP($this->patient);
 ?>
 <div class="element-data element-eyes flex-layout">
-	<script type="text/javascript">
-		var previous_iop = <?php echo json_encode($iop);?>;
-	</script>
+    <script type="text/javascript">
+        var previous_iop = <?php echo json_encode($iop);?>;
+    </script>
   <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
     $hasEyeFunc = "has".ucfirst($eye);
   ?>

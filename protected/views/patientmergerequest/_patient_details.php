@@ -18,11 +18,11 @@
 ?>
 
 <section class="<?php echo $type; ?> box patient-info js-toggle-container element">
-	<h3 class="box-title">Personal Details:</h3>
-	
+    <h3 class="box-title">Personal Details:</h3>
+    
         <?=\CHtml::activeHiddenField($model, "{$type}_id", array('class' => 'id-input')); ?>
         
-	<div class="js-toggle-body">
+    <div class="js-toggle-body">
         <table class="cols-12">
             <tbody class="cols-12">
             <tr class="cols-full">
@@ -108,7 +108,7 @@
         </table>
             
 
-	</div>
+    </div>
 </section>
 
 <?php if (!$model->isNewRecord): ?>

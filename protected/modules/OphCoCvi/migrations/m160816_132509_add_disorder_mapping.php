@@ -14,8 +14,8 @@ class m160816_132509_add_disorder_mapping extends CDbMigration
         parent::insert($table, $params);
     }
 
-	public function up()
-	{
+    public function up()
+    {
         $this->addColumn('ophcocvi_clinicinfo_disorder', 'disorder_id','BIGINT unsigned');
         $this->addForeignKey('ophcocvi_clinicinfo_disorder_disorder_fk',
             'ophcocvi_clinicinfo_disorder','disorder_id',
@@ -70,10 +70,10 @@ class m160816_132509_add_disorder_mapping extends CDbMigration
             'code' => 'C69', 'section_id' => 9, 'active' => 1,'display_order' => 21, 'disorder_id' => 371486001));
         $this->insert('ophcocvi_clinicinfo_disorder',array('name' => 'brain & CNS',
             'code' => 'C71-72', 'section_id' => 9, 'active' => 1,'display_order' => 22, 'disorder_id' => 126952004));
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->truncateTable('ophcocvi_clinicinfo_disorder');
 
         $this->dropForeignKey('ophcocvi_clinicinfo_disorder_section_fk',
@@ -82,7 +82,7 @@ class m160816_132509_add_disorder_mapping extends CDbMigration
         $this->dropForeignKey('ophcocvi_clinicinfo_disorder_disorder_fk',
             'ophcocvi_clinicinfo_disorder');
         $this->dropColumn('ophcocvi_clinicinfo_disorder', 'disorder_id');
-		$this->dropColumn('ophcocvi_clinicinfo_disorder_version', 'disorder_id');
-	}
+        $this->dropColumn('ophcocvi_clinicinfo_disorder_version', 'disorder_id');
+    }
 
 }

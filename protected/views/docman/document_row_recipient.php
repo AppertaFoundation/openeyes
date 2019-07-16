@@ -13,30 +13,30 @@
     </td>
     <td>
         <?php $this->renderPartial('//docman/table/contact_name_type', array(
-						'address_targets' => $element->address_targets,
-						'contact_id' => $contact_id,
-						'contact_name' => $contact_name,
-						'contact_type' => isset($selected_contact_type) ? $selected_contact_type : null,
+                        'address_targets' => $element->address_targets,
+                        'contact_id' => $contact_id,
+                        'contact_name' => $contact_name,
+                        'contact_type' => isset($selected_contact_type) ? $selected_contact_type : null,
                         'contact_nickname' => $contact_nickname,
-						'row_index' => $row_index,
-						//contact_type is not editable as per requested, former validation left until the req finalized
-						'is_editable' => false, //!$element->isInternalReferral(),
-				));
+                        'row_index' => $row_index,
+                        //contact_type is not editable as per requested, former validation left until the req finalized
+                        'is_editable' => false, //!$element->isInternalReferral(),
+                ));
         ?>
     </td>
-		<td>
-			<?php
-			$contact_type = ( isset($selected_contact_type) ? $selected_contact_type : null );
-			$this->renderPartial('//docman/table/contact_address', array(
-				'contact_id' => $contact_id,
-				'is_editable_address' => $contact_type != Yii::app()->params['gp_label'],
-				'contact_type' => $contact_type,
-				'row_index' => $row_index,
-				'address' => $address,
-			));
-			echo CHtml::hiddenField("DocumentTarget[$row_index][attributes][contact_id]", $contact_id);
-			?>
-		</td>
+        <td>
+            <?php
+            $contact_type = ( isset($selected_contact_type) ? $selected_contact_type : null );
+            $this->renderPartial('//docman/table/contact_address', array(
+                'contact_id' => $contact_id,
+                'is_editable_address' => $contact_type != Yii::app()->params['gp_label'],
+                'contact_type' => $contact_type,
+                'row_index' => $row_index,
+                'address' => $address,
+            ));
+            echo CHtml::hiddenField("DocumentTarget[$row_index][attributes][contact_id]", $contact_id);
+            ?>
+        </td>
     <td class="docman_delivery_method align-left">
         <?php $this->renderPartial('//docman/table/delivery_methods', array(
                     'is_draft' => $element->draft,

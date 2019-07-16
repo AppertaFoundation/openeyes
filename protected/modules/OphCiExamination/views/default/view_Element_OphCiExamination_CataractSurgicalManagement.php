@@ -17,13 +17,13 @@
  */
 ?>
 <div class="sub-element-data">
-	<div class="data-group">
-		<table class="element-table">
-			<tbody>
-				<tr>
-					<td scope="row"><?php echo $element->getAttributeLabel('eye_id')?>:</td>
-					<td><?php echo $element->eye ? $element->eye->name : 'Not specified'?></td>
-				</tr>
+    <div class="data-group">
+        <table class="element-table">
+            <tbody>
+                <tr>
+                    <td scope="row"><?php echo $element->getAttributeLabel('eye_id')?>:</td>
+                    <td><?php echo $element->eye ? $element->eye->name : 'Not specified'?></td>
+                </tr>
         <?php if (isset($active_check) && ($active_check === 'on')):?>
           <tr>
             <td scope="row"><?php echo $element->getAttributeLabel('city_road')?>:</td>
@@ -34,48 +34,48 @@
             <td><?php echo $element->satellite ? 'Yes' : 'No'?></td>
           </tr>
         <?php endif ?>
-				<tr>
-					<td scope="row"><?php echo $element->getAttributeLabel('fast_track')?>:</td>
-					<td><?php echo $element->fast_track ? 'Yes' : 'No'?></td>
-				</tr>
-				<tr>
-					<td scope="row"><?php echo $element->getAttributeLabel('target_postop_refraction')?>:</td>
-					<td><?php echo $element->target_postop_refraction?></td>
-				</tr>
-				<tr>
-					<td scope="row"><?php echo $element->getAttributeLabel('correction_discussed')?>:</td>
-					<td><?php echo $element->correction_discussed ? 'Yes' : 'No'?></td>
-				</tr>
-				<tr>
-					<td scope="row"><?php echo $element->getAttributeLabel('suitable_for_surgeon_id')?>:</td>
-					<td><?php echo $element->suitable_for_surgeon->name?></td>
-				</tr>
-				<tr>
-					<td scope="row"><?php echo $element->getAttributeLabel('supervised')?>:</td>
-					<td><?php echo $element->supervised ? 'Yes' : 'No'?></td>
-				</tr>
-				<tr>
-					<td scope="row"><?php echo $element->getAttributeLabel('previous_refractive_surgery')?>:</td>
-					<td><?php echo $element->previous_refractive_surgery ? 'Yes' : 'No'?></td>
-				</tr>
-				<tr>
-					<td scope="row"><?php echo $element->getAttributeLabel('vitrectomised_eye')?>:</td>
-					<td><?php echo $element->vitrectomised_eye ? 'Yes' : 'No'?></td>
-				</tr>
-				<tr>
-					<td scope="row" class="flex-layout flex-top">
-						<?php echo $element->getAttributeLabel('reasonForSurgery')?>:
-					</td>
-					<td>
-						<?php
+                <tr>
+                    <td scope="row"><?php echo $element->getAttributeLabel('fast_track')?>:</td>
+                    <td><?php echo $element->fast_track ? 'Yes' : 'No'?></td>
+                </tr>
+                <tr>
+                    <td scope="row"><?php echo $element->getAttributeLabel('target_postop_refraction')?>:</td>
+                    <td><?php echo $element->target_postop_refraction?></td>
+                </tr>
+                <tr>
+                    <td scope="row"><?php echo $element->getAttributeLabel('correction_discussed')?>:</td>
+                    <td><?php echo $element->correction_discussed ? 'Yes' : 'No'?></td>
+                </tr>
+                <tr>
+                    <td scope="row"><?php echo $element->getAttributeLabel('suitable_for_surgeon_id')?>:</td>
+                    <td><?php echo $element->suitable_for_surgeon->name?></td>
+                </tr>
+                <tr>
+                    <td scope="row"><?php echo $element->getAttributeLabel('supervised')?>:</td>
+                    <td><?php echo $element->supervised ? 'Yes' : 'No'?></td>
+                </tr>
+                <tr>
+                    <td scope="row"><?php echo $element->getAttributeLabel('previous_refractive_surgery')?>:</td>
+                    <td><?php echo $element->previous_refractive_surgery ? 'Yes' : 'No'?></td>
+                </tr>
+                <tr>
+                    <td scope="row"><?php echo $element->getAttributeLabel('vitrectomised_eye')?>:</td>
+                    <td><?php echo $element->vitrectomised_eye ? 'Yes' : 'No'?></td>
+                </tr>
+                <tr>
+                    <td scope="row" class="flex-layout flex-top">
+                        <?php echo $element->getAttributeLabel('reasonForSurgery')?>:
+                    </td>
+                    <td>
+                        <?php
             if ($element->reasonForSurgery) {
                 foreach ($element->reasonForSurgery as $reason) {
                     echo $reason->name.'<br />';
                 }
             }?>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

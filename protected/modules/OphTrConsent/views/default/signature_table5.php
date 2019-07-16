@@ -17,41 +17,41 @@
  */
  ?>
 <?php if (@$vi) {?>
-	<table>
-		<tr>
-			<td>Signature:
+    <table>
+        <tr>
+            <td>Signature:
                 <div class="dotted-write"></div>
             </td>
-			<td>Date:
+            <td>Date:
                 <div class="dotted-write"></div>
             </td>
-		</tr>
-		<tr>
-			<td>Name (PRINT):
+        </tr>
+        <tr>
+            <td>Name (PRINT):
                 <div class="dotted-write"></div>
             </td>
-			<td>Relationship to child:
+            <td>Relationship to child:
                 <div class="dotted-write"></div>
             </td>
-		</tr>
-	</table>
+        </tr>
+    </table>
 <?php } else {?>
-	<table>
-		<tr>
-			<td>Signature:
+    <table>
+        <tr>
+            <td>Signature:
                 <div class="dotted-write"></div>
             </td>
-			<td>Date:
+            <td>Date:
                 <div class="dotted-write"></div>
             </td>
-		</tr>
-		<tr>
-			<td>Name (PRINT):
+        </tr>
+        <tr>
+            <td>Name (PRINT):
                 <div class="dotted-write"></div>
             </td>
-			<td>Relationship to child:
+            <td>Relationship to child:
                 <div class="dotted-write"></div>
             </td>
-		</tr>
-	</table>
+        </tr>
+    </table>
 <?php }?>

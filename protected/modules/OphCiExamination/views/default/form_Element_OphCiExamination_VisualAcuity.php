@@ -24,19 +24,19 @@ $unit_id = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::m
 $default_display_value = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id'=>$unit_id, 'value'=>'6/6'))->base_value;
 
 $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
-	'id', 'name');
+    'id', 'name');
 $key = 0;
 
 if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
     ?>
     <script type="text/javascript">
-			var valOptions = <?= CJSON::encode($val_options)?>;
-			var OE_patient_firstname = "<?php echo $this->patient->first_name; ?>";
-			var OE_patient_lastname = "<?php echo $this->patient->last_name; ?>";
-			var OE_patient_dob = "<?php echo str_replace("-","",$this->patient->dob); ?>";
-			var OE_patient_address = "<?php echo $this->patient->getSummaryAddress("^"); ?>";
-			var OE_patient_gender = "<?php echo $this->patient->gender; ?>";
-			var OE_COMPLog_port = <?php echo Yii::app()->params['COMPLog_port']; ?>;
+            var valOptions = <?= CJSON::encode($val_options)?>;
+            var OE_patient_firstname = "<?php echo $this->patient->first_name; ?>";
+            var OE_patient_lastname = "<?php echo $this->patient->last_name; ?>";
+            var OE_patient_dob = "<?php echo str_replace("-","",$this->patient->dob); ?>";
+            var OE_patient_address = "<?php echo $this->patient->getSummaryAddress("^"); ?>";
+            var OE_patient_gender = "<?php echo $this->patient->gender; ?>";
+            var OE_COMPLog_port = <?php echo Yii::app()->params['COMPLog_port']; ?>;
     </script>
 <?php
     Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CompLog.js", CClientScript::POS_END);

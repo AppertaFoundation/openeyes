@@ -37,7 +37,7 @@ if (!isset($values)) {
                              name="<?= $model_name ?>[comments][]"
                              class="cols-9 autosize js-comment-field"
                              style="overflow: hidden; overflow-wrap: break-word;"><?= CHtml::encode($comment) ?></textarea>
-			<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+            <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
         </span>
             <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
                     class="button js-add-comments"
