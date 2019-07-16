@@ -70,5 +70,5 @@ Address: <?php echo ($patient->practice && $address = $patient->practice->getLet
 if ($link_to_attachments) {
 ?>
 The application files can be found on openeyes. Please enter the following text into the search box to reach download links:
-	E:<?php echo $suitability->event_id ?>
+    E:<?php echo $suitability->event_id ?>
 <?php }

@@ -49,78 +49,78 @@
   <p>Note: you can also set the <?php echo strtolower(Firm::contextLabel())?>s you work at, <?=\CHtml::link('click here', Yii::app()->createUrl('/profile/firms'))?> to do so.</p>
 
 <script type="text/javascript">
-	$('#profile_site_id').change(function(e) {
-		var site_id = $(this).val();
+    $('#profile_site_id').change(function(e) {
+        var site_id = $(this).val();
 
-		if (site_id != '') {
-			$.ajax({
-				'type': 'POST',
-				'url': baseUrl+'/profile/addsite',
-				'data': 'site_id='+site_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-				'success': function(html) {
-					if (html == "1") {
-						window.location.reload();
-					} else {
-						new OpenEyes.UI.Dialog.Alert({
-							content: "Something went wrong trying to add the site.  Please try again or contact support for assistance."
-						}).open();
-					}
-				}
-			});
-		}
+        if (site_id != '') {
+            $.ajax({
+                'type': 'POST',
+                'url': baseUrl+'/profile/addsite',
+                'data': 'site_id='+site_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+                'success': function(html) {
+                    if (html == "1") {
+                        window.location.reload();
+                    } else {
+                        new OpenEyes.UI.Dialog.Alert({
+                            content: "Something went wrong trying to add the site.  Please try again or contact support for assistance."
+                        }).open();
+                    }
+                }
+            });
+        }
 
-		$(this).val('');
-	});
+        $(this).val('');
+    });
 
-	$('#checkall').click(function() {
-		$('input[name="sites[]"]').attr('checked',$(this).is(':checked') ? 'checked' : false);
-	});
+    $('#checkall').click(function() {
+        $('input[name="sites[]"]').attr('checked',$(this).is(':checked') ? 'checked' : false);
+    });
 
-	/*
-	* Site deletion from user profile
-	* */
+    /*
+    * Site deletion from user profile
+    * */
 
-	$('#et_delete').click(function(e) {
-		e.preventDefault();
-		if ($('input[type="checkbox"][name="sites[]"]:checked').length <1) {
-			alert("Please select the sites you wish to delete.");
-			return;
-		}
-		$.ajax({
-			'type': 'POST',
-			'url': baseUrl+'/profile/deleteSites',
-			'data': $('#profile_sites').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'success': function(html) {
-				if (html === "success") {
-					window.location.reload();
-				} else {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "There was an unexpected error deleting the sites, please try again or contact support for assistance."
-					}).open();
-				}
-			},
-			'error': function() {
-				new OpenEyes.UI.Dialog.Alert({
-					content: "Sorry, There was an unexpected error deleting the sites, please try again or contact support for assistance."
-				}).open();
-			}
-		});
-	});
+    $('#et_delete').click(function(e) {
+        e.preventDefault();
+        if ($('input[type="checkbox"][name="sites[]"]:checked').length <1) {
+            alert("Please select the sites you wish to delete.");
+            return;
+        }
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl+'/profile/deleteSites',
+            'data': $('#profile_sites').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+            'success': function(html) {
+                if (html === "success") {
+                    window.location.reload();
+                } else {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "There was an unexpected error deleting the sites, please try again or contact support for assistance."
+                    }).open();
+                }
+            },
+            'error': function() {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Sorry, There was an unexpected error deleting the sites, please try again or contact support for assistance."
+                }).open();
+            }
+        });
+    });
 
-	$('#add_all').click(function() {
-		$.ajax({
-			'type': 'POST',
-			'url': baseUrl+'/profile/addsite',
-			'data': 'site_id=all&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
-			'success': function(html) {
-				if (html == "1") {
-					window.location.reload();
-				} else {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "Something went wrong trying to add the sites.  Please try again or contact support for assistance."
-					}).open();
-				}
-			}
-		});
-	});
+    $('#add_all').click(function() {
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl+'/profile/addsite',
+            'data': 'site_id=all&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
+            'success': function(html) {
+                if (html == "1") {
+                    window.location.reload();
+                } else {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "Something went wrong trying to add the sites.  Please try again or contact support for assistance."
+                    }).open();
+                }
+            }
+        });
+    });
 </script>

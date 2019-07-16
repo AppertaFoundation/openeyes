@@ -2,8 +2,8 @@
 
 class m170228_103424_add_6days_drug_duration extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 //      Does 6 days already exist in db?
         $sixdays_id = $this->dbConnection->createCommand('SELECT id FROM drug_duration WHERE name = "6 days"')->queryScalar();
 
@@ -35,10 +35,10 @@ class m170228_103424_add_6days_drug_duration extends CDbMigration
             $this->insert('drug_duration', array('name' => '6 days', 'display_order' => $sixdays_display));
 
         }
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
 //      Get display_order for '6 days'
         $sixdays_display = $this->dbConnection->createCommand('SELECT display_order FROM drug_duration WHERE name = "6 days"')->queryScalar();
         echo "6 days is " . $sixdays_display;
@@ -56,16 +56,16 @@ class m170228_103424_add_6days_drug_duration extends CDbMigration
 
 
         return false;
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

@@ -17,45 +17,45 @@
  */
 ?>
 <script type="text/javascript">
-	var remap_<?=\CHtml::modelName($element)?>_<?php echo $field?> = {};
-	<?php if (is_array($remap_values) && !empty($remap_values)) {
+    var remap_<?=\CHtml::modelName($element)?>_<?php echo $field?> = {};
+    <?php if (is_array($remap_values) && !empty($remap_values)) {
         foreach ($remap_values as $remap_value => $remap) {?>
-			remap_<?=\CHtml::modelName($element)?>_<?php echo $field?>['<?php echo $remap_value?>'] = '<?php echo $remap?>';
-		<?php }
+            remap_<?=\CHtml::modelName($element)?>_<?php echo $field?>['<?php echo $remap_value?>'] = '<?php echo $remap?>';
+        <?php }
 }?>
-	var widgetSlider_<?=\CHtml::modelName($element)?>_<?php echo $field?> = new WidgetSlider({
-		'prefix_positive': '<?php echo $prefix_positive?>',
-		'range_id': '<?=\CHtml::modelName($element)?>_<?php echo $field?>',
-		'force_dp': '<?php echo $force_dp?>',
-		'remap': remap_<?=\CHtml::modelName($element)?>_<?php echo $field?>,
-		'null': '<?php echo $null?>',
-		'append': '<?php echo $append?>',
-	});
+    var widgetSlider_<?=\CHtml::modelName($element)?>_<?php echo $field?> = new WidgetSlider({
+        'prefix_positive': '<?php echo $prefix_positive?>',
+        'range_id': '<?=\CHtml::modelName($element)?>_<?php echo $field?>',
+        'force_dp': '<?php echo $force_dp?>',
+        'remap': remap_<?=\CHtml::modelName($element)?>_<?php echo $field?>,
+        'null': '<?php echo $null?>',
+        'append': '<?php echo $append?>',
+    });
 </script>
 
 <div class="data-group slider">
-	<div class="cols-<?php echo $layoutColumns['label']?> column">
-		<label for="<?=\CHtml::modelName($element)."_$field"?>"><?=\CHtml::encode($element->getAttributeLabel($field))?>:</label>
-	</div>
-	<div class="cols-<?php echo $layoutColumns['field']?> column end">
-		<div class="data-group">
-			<span class="widgetSliderValue slider-value" id="<?=\CHtml::modelName($element)?>_<?php echo $field?>_value_span"><?php echo $value_display?><?php echo $append?></span>
-			<input
-				class="widgetSlider slider-input<?php if (@$htmlOptions['class']) {?> <?php echo $htmlOptions['class']?><?php }?>"
-				type="range"
-				id="<?=\CHtml::modelName($element)?>_<?php echo $field?>"
-				name="<?=\CHtml::modelName($element)?>[<?php echo $field?>]"
-				min="<?php echo $min?>"
-				max="<?php echo $max?>"
-				value="<?php echo $value?>"
-				step="<?php echo $step?>"
-				style="<?php if ($width) {?>width:<?php echo $width;?><?php }?>"
-				/>
-		</div>
-		<?php if ($painScale) {?>
-			<div class="data-group">
-				<img class="field_key" id="pain_key" src="<?php echo $painScale?>" />
-			</div>
-		<?php }?>
-	</div>
+    <div class="cols-<?php echo $layoutColumns['label']?> column">
+        <label for="<?=\CHtml::modelName($element)."_$field"?>"><?=\CHtml::encode($element->getAttributeLabel($field))?>:</label>
+    </div>
+    <div class="cols-<?php echo $layoutColumns['field']?> column end">
+        <div class="data-group">
+            <span class="widgetSliderValue slider-value" id="<?=\CHtml::modelName($element)?>_<?php echo $field?>_value_span"><?php echo $value_display?><?php echo $append?></span>
+            <input
+                class="widgetSlider slider-input<?php if (@$htmlOptions['class']) {?> <?php echo $htmlOptions['class']?><?php }?>"
+                type="range"
+                id="<?=\CHtml::modelName($element)?>_<?php echo $field?>"
+                name="<?=\CHtml::modelName($element)?>[<?php echo $field?>]"
+                min="<?php echo $min?>"
+                max="<?php echo $max?>"
+                value="<?php echo $value?>"
+                step="<?php echo $step?>"
+                style="<?php if ($width) {?>width:<?php echo $width;?><?php }?>"
+                />
+        </div>
+        <?php if ($painScale) {?>
+            <div class="data-group">
+                <img class="field_key" id="pain_key" src="<?php echo $painScale?>" />
+            </div>
+        <?php }?>
+    </div>
 </div>

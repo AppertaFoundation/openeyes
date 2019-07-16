@@ -510,7 +510,7 @@ class Episode extends BaseActiveRecordVersioned
      */
     public static function getEpisodeLabel()
     {
-				return 'Specialty';
+                return 'Specialty';
     }
 
     /**

@@ -1,14 +1,14 @@
-	<header class="element-header"><h3 class="element-title">Attachments</h3></header>
-	<div class="element-fields full-width flex-layout">
+    <header class="element-header"><h3 class="element-title">Attachments</h3></header>
+    <div class="element-fields full-width flex-layout">
         <table id="correspondence_attachments_table" class="cols-10">
-			<thead>
-			<tr>
-				<th>Attachment type</th>
-				<th>Title</th>
-				<th>Event Date</th>
-				<th></th>
-			</tr>
-			</thead>
+            <thead>
+            <tr>
+                <th>Attachment type</th>
+                <th>Title</th>
+                <th>Event Date</th>
+                <th></th>
+            </tr>
+            </thead>
             <tbody>
             <?php
             if (empty($patient)) {
@@ -104,9 +104,9 @@
                                value="<?= $ac->short_code ?>"/>
                         <?= $event_date ?>
                     </td>
-									<td>
-										<i class="oe-i trash"></i>
-									</td>
+                                    <td>
+                                        <i class="oe-i trash"></i>
+                                    </td>
                 </tr>
                 <?php $row_index++;
             }

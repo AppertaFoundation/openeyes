@@ -2,8 +2,8 @@
 
 class m170404_084439_optometrist_fields extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->addColumn('automatic_examination_event_log', 'optometrist','varchar(255)');
         $this->addColumn('automatic_examination_event_log', 'goc_number','varchar(255)');
         $this->addColumn('automatic_examination_event_log', 'optometrist_address','text');
@@ -11,10 +11,10 @@ class m170404_084439_optometrist_fields extends CDbMigration
         $this->addColumn('automatic_examination_event_log_version', 'optometrist','varchar(255)');
         $this->addColumn('automatic_examination_event_log_version', 'goc_number','varchar(255)');
         $this->addColumn('automatic_examination_event_log_version', 'optometrist_address','text');
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropColumn('automatic_examination_event_log_version', 'optometrist_address');
         $this->dropColumn('automatic_examination_event_log_version', 'goc_number');
         $this->dropColumn('automatic_examination_event_log_version', 'optometrist');
@@ -22,16 +22,16 @@ class m170404_084439_optometrist_fields extends CDbMigration
         $this->dropColumn('automatic_examination_event_log', 'optometrist_address');
         $this->dropColumn('automatic_examination_event_log', 'goc_number');
         $this->dropColumn('automatic_examination_event_log', 'optometrist');
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

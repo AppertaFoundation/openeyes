@@ -17,43 +17,43 @@
  */
 ?>
 <div id="printable">
-	<table>
-		<thead>
-			<tr>
-				<th>Hospital number</th>
-				<th>Patient</th>
-				<th>TCI date</th>
-				<th>Admission time</th>
-				<th>Site</th>
-				<th>Ward</th>
-				<th>Method</th>
-				<th>Firm</th>
-				<th>Subspecialty</th>
-				<th>DTA</th>
-				<th>Priority</th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php foreach ($operations as $operation) {?>
-				<tr>
-					<td style="width: 53px;"><?php echo $operation->event->episode->patient->hos_num?></td>
-					<td>
-						<?php echo '<strong>'.trim(strtoupper($operation->event->episode->patient->last_name)).'</strong>, '.trim($operation->event->episode->patient->first_name)?>
-					</td>
-					<td style="width: 83px;"><?php echo date('j-M-Y', strtotime($operation->latestBooking->session_date))?></td>
-					<td style="width: 73px;"><?php echo $operation->latestBooking->session_start_time?></td>
-					<td style="width: 95px;"><?php echo $operation->latestBooking->theatre->site->shortName?></td>
-					<td style="width: 170px;"><?php echo $operation->latestBooking->ward->name?></td>
-					<td style="width: 53px;"><?php echo $operation->transportStatus?></td>
-					<td style="width: 43px;"><?php echo $operation->event->episode->firm->pas_code?></td>
-					<td style="width: 53px;"><?php echo $operation->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec?></td>
-					<td style="width: 80px;"><?php echo $operation->NHSDate('decision_date')?></td>
-					<td><?php echo $operation->priority->name?></td>
-				</tr>
-			<?php }?>
-		</tbody>
-	</table>
+    <table>
+        <thead>
+            <tr>
+                <th>Hospital number</th>
+                <th>Patient</th>
+                <th>TCI date</th>
+                <th>Admission time</th>
+                <th>Site</th>
+                <th>Ward</th>
+                <th>Method</th>
+                <th>Firm</th>
+                <th>Subspecialty</th>
+                <th>DTA</th>
+                <th>Priority</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($operations as $operation) {?>
+                <tr>
+                    <td style="width: 53px;"><?php echo $operation->event->episode->patient->hos_num?></td>
+                    <td>
+                        <?php echo '<strong>'.trim(strtoupper($operation->event->episode->patient->last_name)).'</strong>, '.trim($operation->event->episode->patient->first_name)?>
+                    </td>
+                    <td style="width: 83px;"><?php echo date('j-M-Y', strtotime($operation->latestBooking->session_date))?></td>
+                    <td style="width: 73px;"><?php echo $operation->latestBooking->session_start_time?></td>
+                    <td style="width: 95px;"><?php echo $operation->latestBooking->theatre->site->shortName?></td>
+                    <td style="width: 170px;"><?php echo $operation->latestBooking->ward->name?></td>
+                    <td style="width: 53px;"><?php echo $operation->transportStatus?></td>
+                    <td style="width: 43px;"><?php echo $operation->event->episode->firm->pas_code?></td>
+                    <td style="width: 53px;"><?php echo $operation->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec?></td>
+                    <td style="width: 80px;"><?php echo $operation->NHSDate('decision_date')?></td>
+                    <td><?php echo $operation->priority->name?></td>
+                </tr>
+            <?php }?>
+        </tbody>
+    </table>
 </div>
 <script>
-	window.print();
+    window.print();
 </script>

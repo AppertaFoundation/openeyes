@@ -2,8 +2,8 @@
 
 class m170201_150412_remove_unused_fields extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->addColumn('et_ophindnaextraction_dnaextraction', 'storage_id', 'int(10) unsigned not null');
         $this->addColumn('et_ophindnaextraction_dnaextraction_version', 'storage_id', 'int(10) unsigned not null');
         
@@ -23,30 +23,30 @@ class m170201_150412_remove_unused_fields extends CDbMigration
         $this->dropColumn('et_ophindnaextraction_dnaextraction_version', 'box_id'); 
         $this->dropColumn('et_ophindnaextraction_dnaextraction_version', 'letter_id'); 
         $this->dropColumn('et_ophindnaextraction_dnaextraction_version', 'number_id'); 
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropColumn('et_ophindnaextraction_dnaextraction', 'storage_id'); 
         $this->dropColumn('et_ophindnaextraction_dnaextraction_version', 'storage_id'); 
         
-		$this->addColumn('et_ophindnaextraction_dnaextraction', 'box_id', 'int(10) unsigned not null');
-		$this->addColumn('et_ophindnaextraction_dnaextraction', 'letter_id', 'int(10) unsigned not null');
-		$this->addColumn('et_ophindnaextraction_dnaextraction', 'number_id', 'int(10) unsigned not null');
+        $this->addColumn('et_ophindnaextraction_dnaextraction', 'box_id', 'int(10) unsigned not null');
+        $this->addColumn('et_ophindnaextraction_dnaextraction', 'letter_id', 'int(10) unsigned not null');
+        $this->addColumn('et_ophindnaextraction_dnaextraction', 'number_id', 'int(10) unsigned not null');
         
         $this->addColumn('et_ophindnaextraction_dnaextraction_version', 'box_id', 'int(10) unsigned not null');
         $this->addColumn('et_ophindnaextraction_dnaextraction_version', 'letter_id', 'int(10) unsigned not null');
         $this->addColumn('et_ophindnaextraction_dnaextraction_version', 'number_id', 'int(10) unsigned not null');
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

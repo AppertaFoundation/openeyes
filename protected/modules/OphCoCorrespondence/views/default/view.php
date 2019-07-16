@@ -18,7 +18,7 @@
 ?>
 <?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
-	<?php
+    <?php
         // Event actions
         if ($this->checkPrintAccess()) {
             // TODO: need to check if the event is draft!
@@ -42,14 +42,14 @@
         }
     ?>
 
-	<?php if ($this->event->delete_pending) {?>
-		<div class="alert-box alert with-icon">
-			This event is pending deletion and has been locked.
-		</div>
-	<?php }?>
+    <?php if ($this->event->delete_pending) {?>
+        <div class="alert-box alert with-icon">
+            This event is pending deletion and has been locked.
+        </div>
+    <?php }?>
 
-	<input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>css" />
+    <input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>css" />
 
-	<?php $this->renderOpenElements($this->action->id); ?>
+    <?php $this->renderOpenElements($this->action->id); ?>
 <?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>

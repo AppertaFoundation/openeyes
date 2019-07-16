@@ -6,7 +6,7 @@ class m170223_155003_create_genetics_clinical_role extends OEMigration
     // Use safeUp/safeDown to do migration with transaction
     public function safeUp()
     {
-		$this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskEditGeneticTest'");
+        $this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskEditGeneticTest'");
         $this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskViewGeneticTest'");
         $this->delete('authitemchild', "parent = 'Genetics User' AND child = 'TaskViewGeneticTest'");
 
@@ -77,5 +77,5 @@ class m170223_155003_create_genetics_clinical_role extends OEMigration
     public function safeDown()
     {
     }
-	
+    
 }

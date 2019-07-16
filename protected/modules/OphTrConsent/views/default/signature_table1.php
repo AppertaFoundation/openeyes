@@ -17,42 +17,10 @@
  */
  ?>
 <?php if (@$vi) {?>
-	<table>
+    <table>
         <colgroup>
             <col class="cols-half" span="2">
         </colgroup>
-		<tr>
-			<td>Signed:
-                <div class="dotted-write"></div>
-            </td>
-			<td>Date:
-                <div class="dotted-write"></div>
-            </td>
-		</tr>
-		<tr>
-			<td>Name (PRINT): <?php if (!@$mask_consultant) { echo $consultant->fullNameAndTitle; } ?></td>
-			<td>Job title: <?php if (!@$mask_consultant) { echo $consultant->role; } ?></td>
-		</tr>
-	</table>
-	<?php if (@$lastmodified && $consultant->id != $lastmodified->id) {?>
-		<div class="spacer"></div>
-		<table>
-            <tr>
-                <td>Signed:
-                    <div class="dotted-write"></div>
-                </td>
-                <td>Date:
-                    <div class="dotted-write"></div>
-                </td>
-            </tr>
-			<tr>
-				<td>Name (PRINT): <?php echo $lastmodified->fullNameAndTitle?></td>
-				<td>Job title: <?php echo $lastmodified->role?></td>
-			</tr>
-		</table>
-	<?php }?>
-<?php } else {?>
-	<table>
         <tr>
             <td>Signed:
                 <div class="dotted-write"></div>
@@ -61,14 +29,14 @@
                 <div class="dotted-write"></div>
             </td>
         </tr>
-		<tr>
-			<td>Name (PRINT): <?php if (!@$mask_consultant) { echo $consultant->fullNameAndTitle; } ?></td>
-			<td>Job title: <?php if (!@$mask_consultant) { echo $consultant->role; } ?></td>
-		</tr>
-	</table>
-	<?php if (@$lastmodified && $consultant->id != $lastmodified->id) {?>
-		<div class="spacer"></div>
-		<table>
+        <tr>
+            <td>Name (PRINT): <?php if (!@$mask_consultant) { echo $consultant->fullNameAndTitle; } ?></td>
+            <td>Job title: <?php if (!@$mask_consultant) { echo $consultant->role; } ?></td>
+        </tr>
+    </table>
+    <?php if (@$lastmodified && $consultant->id != $lastmodified->id) {?>
+        <div class="spacer"></div>
+        <table>
             <tr>
                 <td>Signed:
                     <div class="dotted-write"></div>
@@ -77,10 +45,42 @@
                     <div class="dotted-write"></div>
                 </td>
             </tr>
-			<tr>
-				<td>Name (PRINT): <?php echo $lastmodified->fullNameAndTitle?></td>
-				<td>Job title: <?php echo $lastmodified->role?></td>
-			</tr>
-		</table>
-	<?php }?>
+            <tr>
+                <td>Name (PRINT): <?php echo $lastmodified->fullNameAndTitle?></td>
+                <td>Job title: <?php echo $lastmodified->role?></td>
+            </tr>
+        </table>
+    <?php }?>
+<?php } else {?>
+    <table>
+        <tr>
+            <td>Signed:
+                <div class="dotted-write"></div>
+            </td>
+            <td>Date:
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
+        <tr>
+            <td>Name (PRINT): <?php if (!@$mask_consultant) { echo $consultant->fullNameAndTitle; } ?></td>
+            <td>Job title: <?php if (!@$mask_consultant) { echo $consultant->role; } ?></td>
+        </tr>
+    </table>
+    <?php if (@$lastmodified && $consultant->id != $lastmodified->id) {?>
+        <div class="spacer"></div>
+        <table>
+            <tr>
+                <td>Signed:
+                    <div class="dotted-write"></div>
+                </td>
+                <td>Date:
+                    <div class="dotted-write"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>Name (PRINT): <?php echo $lastmodified->fullNameAndTitle?></td>
+                <td>Job title: <?php echo $lastmodified->role?></td>
+            </tr>
+        </table>
+    <?php }?>
 <?php }?>

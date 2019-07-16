@@ -108,16 +108,23 @@ class HistoryIOP extends \SplitEventTypeElement
                     if (!isset($date) || !$date) {
                         $this->addError($side_values . '_' . $index . '_examination_date', 'there must be a date set for the iop value');
                     } else {
+                      $error_eye_side = $side_values . '_' . $index . '_examination_date';
+                      $error_message = 'Date is wrongly formated: format accepted: dd-mm-yyyy';
+                      if(preg_match('/^(\d{2}-\d{2}-\d{4})$/', $date)){
                         $dateTime = \DateTime::createFromFormat('d-m-Y', $date);
                         $errorsDate = \DateTime::getLastErrors();
+
                         if (!$dateTime || !empty($errorsDate['warning_count'])) {
-                            $this->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: d-m-Y');
+                            $this->addError($error_eye_side, $error_message);
                         } else {
                             // don't accept event dates set in the future
                             if (\DateTime::createFromFormat('d-m-Y', $date)->getTimestamp() > time()) {
-                                $this->addError($side_values . '_' . $index . '_examination_date', 'Event Date cannot be in the future.');
+                                $this->addError($error_eye_side, 'Event Date cannot be in the future.');
                             }
                         }
+                      } else {
+                        $this->addError($error_eye_side, $error_message);
+                      }
                     }
                   }
                 }

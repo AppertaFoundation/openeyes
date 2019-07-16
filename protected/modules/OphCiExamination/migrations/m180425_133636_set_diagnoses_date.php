@@ -2,8 +2,8 @@
 
 class m180425_133636_set_diagnoses_date extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $dataProvider = new CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExamination_Diagnosis');
         $iterator = new CDataProviderIterator($dataProvider);
 
@@ -31,11 +31,11 @@ class m180425_133636_set_diagnoses_date extends CDbMigration
                 }
             }
         }
-	}
+    }
 
-	public function down()
-	{
-		echo "m180425_133636_set_diagnoses_date does not support migration down.\n";
-		return false;
-	}
+    public function down()
+    {
+        echo "m180425_133636_set_diagnoses_date does not support migration down.\n";
+        return false;
+    }
 }

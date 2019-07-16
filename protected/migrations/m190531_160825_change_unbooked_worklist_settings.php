@@ -2,8 +2,8 @@
 
 class m190531_160825_change_unbooked_worklist_settings extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->delete('setting_metadata', "`key` = 'worklist_search_appt_within'");
         $this->delete('setting_installation', "`key` = 'worklist_search_appt_within'");
 
@@ -27,12 +27,12 @@ class m190531_160825_change_unbooked_worklist_settings extends CDbMigration
 
         $this->insert('setting_installation', ['key' => 'worklist_past_search_days', 'value' => '30']);
         $this->insert('setting_installation', ['key' => 'worklist_future_search_days', 'value' => '30']);
-	}
+    }
 
-	public function down()
-	{
-		$this->delete('setting_metadata', '`key` = ?', ["worklist_future_search_days"]);
-		$this->delete('setting_metadata', '`key` = ?', ["worklist_past_search_days"]);
+    public function down()
+    {
+        $this->delete('setting_metadata', '`key` = ?', ["worklist_future_search_days"]);
+        $this->delete('setting_metadata', '`key` = ?', ["worklist_past_search_days"]);
 
         $this->delete('setting_installation', '`key` = ?', ["worklist_future_search_days"]);
         $this->delete('setting_installation', '`key` = ?', ["worklist_past_search_days"]);
@@ -48,5 +48,5 @@ class m190531_160825_change_unbooked_worklist_settings extends CDbMigration
             ]
         );
 
-	}
+    }
 }

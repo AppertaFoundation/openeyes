@@ -55,7 +55,7 @@
           <td>
               <?php $principal_investigators = $trial->getTrialPrincipalInvestigators();
               foreach ($principal_investigators as $item){
-              	echo $item->user->getFullName().'<br>';
+                echo $item->user->getFullName().'<br>';
               }
              ?>
           </td>

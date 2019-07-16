@@ -30,45 +30,45 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     ),
 ));
 ?>
-	<?php
+    <?php
     $form = $this->beginWidget('CActiveForm', array(
         'id' => 'add-new-episode-form',
     ));
     ?>
-		<?=\CHtml::hiddenField('firm_id', $firm->id)?>
-		<?=\CHtml::hiddenField('patient_id', $patient->id)?>
-		<div class="details">
-			<p><span>Firm:</span> <strong><?php echo $firm->name?></strong></p>
-			<p><span>Subspecialty:</span> <strong><?php echo $firm->getSubspecialtyText()?></strong></p>
-		</div>
-		<div class="buttons">
-			<button class="secondary small confirm" type="button">Create new <?= strtolower(Episode::getEpisodeLabel()) ?></button>
-			<button class="warning small cancel" type="button">Cancel</button>
-		</div>
-	<?php $this->endWidget()?>
+        <?=\CHtml::hiddenField('firm_id', $firm->id)?>
+        <?=\CHtml::hiddenField('patient_id', $patient->id)?>
+        <div class="details">
+            <p><span>Firm:</span> <strong><?php echo $firm->name?></strong></p>
+            <p><span>Subspecialty:</span> <strong><?php echo $firm->getSubspecialtyText()?></strong></p>
+        </div>
+        <div class="buttons">
+            <button class="secondary small confirm" type="button">Create new <?= strtolower(Episode::getEpisodeLabel()) ?></button>
+            <button class="warning small cancel" type="button">Cancel</button>
+        </div>
+    <?php $this->endWidget()?>
 <?php $this->endWidget()?>
 <script type="text/javascript">
-	$('#add-new-episode-dialog button.confirm').click(function(e) {
-		disableButtons();
-		$('#add-new-episode-form').submit();
-		e.preventDefault();
-	});
-	$('#add-new-episode-dialog button.cancel').click(function(e) {
+    $('#add-new-episode-dialog button.confirm').click(function(e) {
+        disableButtons();
+        $('#add-new-episode-form').submit();
+        e.preventDefault();
+    });
+    $('#add-new-episode-dialog button.cancel').click(function(e) {
 
-		$('#add-new-episode-dialog').dialog('close');
-		$('#add-new-episode-dialog').hide();
-		$('.details').hide();
-		$('.buttons').hide();
+        $('#add-new-episode-dialog').dialog('close');
+        $('#add-new-episode-dialog').hide();
+        $('.details').hide();
+        $('.buttons').hide();
 
-		e.preventDefault();
-	});
+        e.preventDefault();
+    });
 
-	$('.ui-dialog-titlebar-close').click(function(e) {
-		$('#add-new-episode-dialog').dialog('close');
-		$('#add-new-episode-dialog').hide();
-		$('.details').hide();
-		$('.buttons').hide();
-		e.preventDefault();
-	});
+    $('.ui-dialog-titlebar-close').click(function(e) {
+        $('#add-new-episode-dialog').dialog('close');
+        $('#add-new-episode-dialog').hide();
+        $('.details').hide();
+        $('.buttons').hide();
+        e.preventDefault();
+    });
 
 </script>

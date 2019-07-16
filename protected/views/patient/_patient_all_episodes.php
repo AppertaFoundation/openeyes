@@ -18,15 +18,15 @@
 ?>
 
 <section class="element view full patient-info episodes">
-	<header class="element-header">
-		<h3 class="element-title">All <?= Episode::getEpisodeLabelPlural() ?></h3>
-	</header>
+    <header class="element-header">
+        <h3 class="element-title">All <?= Episode::getEpisodeLabelPlural() ?></h3>
+    </header>
     <div class="box-info" style="position: relative; float: right; ">
         <strong>open <?= $episodes_open?> &nbsp;|&nbsp;closed <?= $episodes_closed?></strong>
     </div>
-	<?php if (empty($episodes)) {?>
-		<div class="summary">No events</div>
-	<?php } else {?>
+    <?php if (empty($episodes)) {?>
+        <div class="summary">No events</div>
+    <?php } else {?>
         <div class="element-data full-width">
             <table class="patient-episodes standard">
                 <thead>

@@ -18,8 +18,8 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
         $this->insert('setting_installation', ['key' => $key, 'value' => $default_value]);
     }
 
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         $this->addColumn('episode_status', 'key', 'VARCHAR(25) DEFAULT NULL AFTER name');
         $this->addColumn('episode_status_version', 'key', 'VARCHAR(25) DEFAULT NULL AFTER name');
 
@@ -92,18 +92,18 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
             'key' => 'auto_generate_optopm_post_op_letter_after_surgery',
             'value' => 'on'
         ));
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         foreach (['new', 'under_investigation', 'list_booked', 'post_op', 'follow_up', 'discharged'] as $status) {
             foreach (['drug_set', 'letter'] as $type) {
                 $this->delete('setting_metadata', ['key' => "default_{$status}_$type"]);
                 $this->delete('setting_installation', ['key' => "default_{$status}_$type"]);
             }
-	    }
+        }
 
         $this->dropColumn('episode_status', 'key');
         $this->dropColumn('episode_status_version', 'key');
-	}
+    }
 }

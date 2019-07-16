@@ -17,7 +17,7 @@
  */
  ?>
 <?php if (@$vi) {?>
-	<table>
+    <table>
         <colgroup>
             <col class="cols-half" span="2">
         </colgroup>
@@ -29,12 +29,12 @@
                 <div class="dotted-write"></div>
             </td>
         </tr>
-		<tr>
-			<td colspan="2">Name: <?php echo $name?></td>
-		</tr>
-	</table>
+        <tr>
+            <td colspan="2">Name: <?php echo $name?></td>
+        </tr>
+    </table>
 <?php } else {?>
-	<table>
+    <table>
         <tr>
             <td>Signed:
                 <div class="dotted-write"></div>
@@ -43,8 +43,8 @@
                 <div class="dotted-write"></div>
             </td>
         </tr>
-		<tr>
-			<td colspan="2">Name: <?php echo $name?></td>
-		</tr>
-	</table>
+        <tr>
+            <td colspan="2">Name: <?php echo $name?></td>
+        </tr>
+    </table>
 <?php }?>
