@@ -59,15 +59,13 @@ class ProtectedFileController extends BaseController
         if (!file_exists($file->getPath())) {
             throw new CException('File not found on filesystem: '.$file->getPath());
         }
-
-
         header('Content-Type: '.$file->mimetype);
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
 
-        $imageType = getimagesize($filepath)['mime'];
-        if ($imageType == 'image/jpeg') {
-            if (!empty($rotate) AND $rotate != 0) {
+        $image_type = getimagesize($filepath)['mime'];
+        if (!empty($image_type) && $image_type == 'image/jpeg') {
+            if (!empty($rotate) && $rotate != 0) {
                 $original = imagecreatefromjpeg($filepath);
                 $rotated = imagerotate($original, $rotate, imageColorAllocateAlpha($original, 255, 255, 255, 127));
                 ob_start();

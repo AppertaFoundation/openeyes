@@ -74,7 +74,7 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
             $document_id = $document.'_id';
             $rotate = $document.'_rotate';
             $protected = ProtectedFile::model()->findByPk($this->$document_id);
-            if (!empty($protected)) {
+            if ($protected) {
                 $protected->rotate = $_POST[$rotate];
                 $protected->save();
             }
@@ -87,49 +87,37 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         $protected = ProtectedFile::model()->findByPk($image_id);
         if($protected){
             $file_name = $protected->getFilePath().'/'.$protected->uid;
-            $imageType = getimagesize($file_name)['mime'];
-            if ($imageType == 'image/jpeg') {
+            $image_type = getimagesize($file_name)['mime'];
+            if ($image_type == 'image/jpeg') {
                 return $file_name;
-            }else{
-                return false;
             }
-        }else{
-            return false;
         }
     }
 
-
     public function rotate($file_name, $rotate = null) {
-
         $original = imagecreatefromjpeg($file_name);
 
-        if (!empty($rotate)) {
-            $rotated = imagerotate($original, $rotate, 0);
-            imagejpeg($rotated, $file_name);
-
-            return $file_name;
-        }
-
-        $exif = @exif_read_data($file_name);
-        if (!empty($exif['Orientation'])) {
-            switch ($exif['Orientation']) {
-                case 1:
-                    $rotate = 0;
-                    break;
-                case 3:
-                    $rotate = 180;
-                    break;
-                case 6:
-                    $rotate = -90;
-                    break;
-                case 8:
-                    $rotate = 90;
-                    break;
+        if (empty($rotate)) {
+            $exif = @exif_read_data($file_name);
+            if (isset($exif['Orientation'])) {
+                switch ($exif['Orientation']) {
+                    case 1:
+                        $rotate = 0;
+                        break;
+                    case 3:
+                        $rotate = 180;
+                        break;
+                    case 6:
+                        $rotate = -90;
+                        break;
+                    case 8:
+                        $rotate = 90;
+                        break;
+                }
             }
-
-            $rotated = imagerotate($original, $rotate, 0);
-            imagejpeg($rotated, $file_name);
         }
+        $rotated = imagerotate($original, $rotate, 0);
+        imagejpeg($rotated, $file_name);
 
         return $file_name;
     }

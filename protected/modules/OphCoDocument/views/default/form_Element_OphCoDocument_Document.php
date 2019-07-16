@@ -15,8 +15,6 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
-
 ?>
 <div class="element-fields full-width flex-layout">
     <div class="cols-11">
@@ -150,16 +148,21 @@
                 </thead>
                 <tbody>
                 <tr class="valign-top">
+                    <?php
+                    foreach (['right', 'left'] as $side) :
+                        $document = $side.'_document';
+                        $document_id = $side.'_document_id';
+                    ?>
                     <td>
                         <div>
-                            <label>Rotate Right Image:</label>
-                            <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, 'right');"></i>
-                            <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, 'right');" style="transform: scale(-1, 1);"></i>
-                            <input type="hidden" value="<?=!empty($element->right_document->rotate) ? $element->right_document->rotate : ''?>" name="right_document_rotate" id="right_document_rotate">
+                            <label>Rotate <?=$side?> Image:</label>
+                            <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, '<?=$side?>');"></i>
+                            <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, '<?=$side?>');" style="transform: scale(-1, 1);"></i>
+                            <input type="hidden" value="<?=!empty($element->{$side."_document"}->rotate) ? $element->{$side."_document"}->rotate : ''?>" name="<?=$side?>_document_rotate" id="<?=$side?>_document_rotate">
                         </div>
                         <div class="upload-box"
-                             id="right_document_id_row" <?= $element->right_document_id ? 'style="display:none"' : ''; ?>>
-                            <label for="Document_right_document_row_id" id="upload_box_right_document"
+                             id="<?=$side?>_document_id_row" <?= $element->{$side."_document_id"} ? 'style="display:none"' : ''; ?>>
+                            <label for="Document_<?=$side?>_document_row_id" id="upload_box_<?=$side?>_document"
                                    class="upload-label">
                                 <i class="oe-i download no-click large"></i>
                                 <br>
@@ -167,51 +170,21 @@
                             </label>
                             <input autocomplete="off"
                                    type="file"
-                                   name="Document[right_document_id]"
-                                   id="Document_right_document_row_id"
+                                   name="Document[<?=$side?>_document_id]"
+                                   id="Document_<?=$side?>_document_row_id"
                                    style="display:none;"
                                    class="js-document-file-input"
                             >
                         </div>
-                        <?php $this->generateFileField($element, 'right_document'); ?>
+                        <?php $this->generateFileField($element, $side.'_document'); ?>
 
-                        <div class="flex-layout flex-right js-remove-document-wrapper"
-                            <?= ($element->right_document_id ? '' : 'style="display:none"'); ?> >
-                            <button class="hint red" data-side="right">remove uploaded file</button>
+                        <div class="flex-layout flex-<?=$side?> js-remove-document-wrapper"
+                            <?= ($element->{$side."_document_id"} ? '' : 'style="display:none"'); ?> >
+                            <button class="hint red" data-side="<?=$side?>">remove uploaded file</button>
                         </div>
-                        <?= CHtml::activeHiddenField($element, 'right_document_id', ['class' => 'js-document-id']); ?>
+                        <?= CHtml::activeHiddenField($element, $side.'_document_id', ['class' => 'js-document-id']); ?>
                     </td>
-                    <td>
-                        <div>
-                            <label>Rotate Left Image:</label>
-                            <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, 'left');"></i>
-                            <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, 'left');" style="transform: scale(-1, 1);"></i>
-                            <input type="hidden" value="<?=!empty($element->left_document->rotate) ? $element->left_document->rotate : ''?>" name="left_document_rotate" id="left_document_rotate">
-                        </div>
-                        <div class="upload-box"
-                             id="left_document_id_row" <?= $element->left_document_id ? 'style="display:none"' : ''; ?>>
-                            <label for="Document_left_document_row_id" id="upload_box_left_document"
-                                   class="upload-label">
-                                <i class="oe-i download no-click large"></i>
-                                <br>
-                                <span class="js-upload-box-text">Click to select file or DROP here</span>
-                            </label>
-                            <input autocomplete="off"
-                                   type="file"
-                                   name="Document[left_document_id]"
-                                   id="Document_left_document_row_id"
-                                   style="display:none;"
-                                   class="js-document-file-input"
-                            >
-                        </div>
-                        <?php $this->generateFileField($element, 'left_document'); ?>
-
-                        <div class="flex-layout flex-right js-remove-document-wrapper"
-                            <?= ($element->left_document_id ? '' : 'style="display:none"'); ?> >
-                            <button class="hint red" data-side="left">remove uploaded file</button>
-                        </div>
-                        <?= CHtml::activeHiddenField($element, 'left_document_id', ['class' => 'js-document-id']); ?>
-                    </td>
+                    <?php endforeach; ?>
                 </tr>
                 </tbody>
             </table>
@@ -249,17 +222,17 @@
 
     <script>
         function rotateImage(degree, type) {
-            var document_rotate = $('#'+type+'_document_rotate').val();
+            let document_rotate = $('#'+type+'_document_rotate').val();
             degree = Number(document_rotate)+Number(degree);
-            var image_id = $('#Element_OphCoDocument_Document_'+type+'_document_id').val();
-            var image_src = $('#ophco-image-container-'+image_id+' img').attr('src');
-            var image_src = image_src.split('?');
-            var image_src = image_src[0];
+            let image_id = $('#Element_OphCoDocument_Document_'+type+'_document_id').val();
+            let image_src = $('#ophco-image-container-'+image_id+' img').attr('src');
+            image_src = image_src.split('?');
+            image_src = image_src[0];
 
             $('#ophco-image-container-'+image_id+' img').animate({  transform: degree }, {
-                step: function(deg,fx) {
+                step: function() {
                     $(this).attr({
-                        'src':image_src+'?rotate='+degree
+                        'src': image_src + '?rotate=' + degree
                     });
                     $('#'+type+'_document_rotate').val(degree);
                 }

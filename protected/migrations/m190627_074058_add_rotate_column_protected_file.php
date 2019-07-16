@@ -4,7 +4,7 @@ class m190627_074058_add_rotate_column_protected_file extends CDbMigration
 {
 	public function up()
 	{
-        $this->addColumn('protected_file', 'rotate', 'int(11) NULL');
+        $this->addColumn('protected_file', 'rotate', 'int(3) NULL');
         $this->addColumn('protected_file_version', 'rotate', 'int(11) NULL');
 	}
 

@@ -158,10 +158,8 @@ class DefaultController extends BaseEventTypeController
      */
     private function uploadFile($tmp_name, $original_name)
     {
-        $imageType = getimagesize($tmp_name)['mime'];
-
-
-        if ($imageType == 'image/jpeg') {
+        $image_type = getimagesize($tmp_name)['mime'];
+        if ($image_type == 'image/jpeg') {
             $tmp_name = Element_OphCoDocument_Document::model()->rotate($tmp_name);
         }
 
@@ -176,7 +174,6 @@ class DefaultController extends BaseEventTypeController
             return false;
         }
     }
-
 
     /**
      * @return string
