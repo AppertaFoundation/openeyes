@@ -1128,6 +1128,7 @@ class AnalyticsController extends BaseController
                           'thickness' => 1
                       )
                   )
+                  
               );
           }
           $custom_data['csv_data']=$this->custom_csv_data;
