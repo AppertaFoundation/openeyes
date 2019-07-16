@@ -575,14 +575,14 @@ EOD;
 		$pres_free_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute WHERE `name` = 'PRESERVATIVE_FREE'")->queryScalar();
 
 		// get VIRTUAL_PRODUCT_PRES_STATUS attribute is
-        $virtual_product_pres_staus_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute WHERE `name` = 'VIRTUAL_PRODUCT_PRES_STATUS'")->queryScalar();
+        $virtual_product_pres_status_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute WHERE `name` = 'VIRTUAL_PRODUCT_PRES_STATUS'")->queryScalar();
 
 		$cmd = "INSERT INTO medication_attribute_option (medication_attribute_id, `value`, `description`) VALUES ($pres_free_id, '0001', 'Preservative-free')";
 		Yii::app()->db->createCommand($cmd)->execute();
 
 		$pres_free_opt_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute_option WHERE `medication_attribute_id` = '$pres_free_id' AND `value` = '0001'")->queryScalar();
         // validity as a prescribable product
-        $validity_opt_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute_option WHERE `medication_attribute_id` = '$virtual_product_pres_staus_id' AND `value` = '0001'")->queryScalar();
+        $validity_opt_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute_option WHERE `medication_attribute_id` = '$virtual_product_pres_status_id' AND `value` = '0001'")->queryScalar();
 
 		echo " OK".PHP_EOL;
         $this->printMsg("Importing VMP form information", false);
@@ -647,12 +647,12 @@ EOD;
         Yii::app()->db->createCommand($cmd)->execute();
         echo " OK".PHP_EOL;
 
-        $this->printMsg( "Updating medication table is_prescrible column", false);
+        $this->printMsg( "Updating medication table is_prescribable column", false);
 
         $cmd = "UPDATE medication SET is_prescribable = 1 WHERE id IN (
                     SELECT
                        med.id
-                       FROM (SELECT * FROM medication m JOIN f_vmp_vmps AS vmp ON vmp.vpid = m.vmp_code WHERE vmp.pres_statcd = '0001') AS med
+                       FROM (SELECT m.id FROM medication m JOIN f_vmp_vmps AS vmp ON vmp.vpid = m.vmp_code WHERE vmp.pres_statcd = '0001') AS med
                 )";
 
         Yii::app()->db->createCommand($cmd)->execute();
