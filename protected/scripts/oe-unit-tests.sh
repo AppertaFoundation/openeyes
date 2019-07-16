@@ -23,19 +23,13 @@ do
     p="$1"
 
     case $p in
-	    --test-file)
-        testtorun="$2"
-        shift
-	      ;;
       --configuration|-config)
         phpunitconfigxml="$2"
         shift
         ;;
-      --suite|--testsuite|-suite)
-        testtorun="--testsuite $2"
-        shift
-        ;;
-	    *)  [ ! -z $p ] && echo "Unknown command line: $p" || :
+	    *)  
+        testtorun="$testtorun $p"
+        # pass all remaining commands to phpunit
         ;;
     esac
 
