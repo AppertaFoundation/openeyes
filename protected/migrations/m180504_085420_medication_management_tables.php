@@ -24,6 +24,7 @@ class m180504_085420_medication_management_tables extends OEMigration
 			'default_route_id'      => 'INT NULL',
 			'default_dose_unit_term'    => 'VARCHAR(255) NULL',
 			'default_form_id'           => 'INT NULL',
+            'is_prescribable'           => 'TINYINT(1) UNSIGNED NULL',
 		), true, "new_medication");
 
 	    $this->createIndex("idx_med_code", "medication", "preferred_code");

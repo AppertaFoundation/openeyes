@@ -72,7 +72,7 @@ class ImportDrugsCommand extends CConsoleCommand
     private $tableData = [];
 
     /* SQL TEMPLATES */
-    private $createTableTemplate = 'CREATE TABLE IF NOT EXISTS `%s` (%s) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+    private $createTableTemplate = 'CREATE TABLE IF NOT EXISTS `%s` (%s) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;';
     private $truncateTableTemplate = 'TRUNCATE TABLE `%s`;';
     private $dropTableTemplate = 'DROP TABLE IF EXISTS `%s`;';
     private $insertMultipleTemplate = "INSERT INTO `%s` (%s) VALUES %s;";
@@ -574,10 +574,15 @@ EOD;
 
 		$pres_free_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute WHERE `name` = 'PRESERVATIVE_FREE'")->queryScalar();
 
+		// get VIRTUAL_PRODUCT_PRES_STATUS attribute is
+        $virtual_product_pres_staus_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute WHERE `name` = 'VIRTUAL_PRODUCT_PRES_STATUS'")->queryScalar();
+
 		$cmd = "INSERT INTO medication_attribute_option (medication_attribute_id, `value`, `description`) VALUES ($pres_free_id, '0001', 'Preservative-free')";
 		Yii::app()->db->createCommand($cmd)->execute();
 
 		$pres_free_opt_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute_option WHERE `medication_attribute_id` = '$pres_free_id' AND `value` = '0001'")->queryScalar();
+        // validity as a prescribable product
+        $validity_opt_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute_option WHERE `medication_attribute_id` = '$virtual_product_pres_staus_id' AND `value` = '0001'")->queryScalar();
 
 		echo " OK".PHP_EOL;
         $this->printMsg("Importing VMP form information", false);
@@ -587,9 +592,9 @@ EOD;
 						med.id,
 						mao.id
 						FROM medication AS med
-						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid COLLATE utf8_general_ci = med.preferred_code COLLATE utf8_general_ci
+						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid = med.preferred_code
 						LEFT JOIN {$this->tablePrefix}vmp_drug_form AS df ON df.vpid = vmp.vpid
-						LEFT JOIN medication_attribute_option AS mao ON mao.`value` COLLATE utf8_general_ci = df.formcd COLLATE utf8_general_ci
+						LEFT JOIN medication_attribute_option AS mao ON mao.`value` = df.formcd
 						LEFT JOIN medication_attribute AS attr ON mao.medication_attribute_id = attr.id
 						WHERE med.source_type = 'DM+D' AND med.source_subtype = 'VMP' AND attr.`name` = 'FORM'
 					";
@@ -604,9 +609,9 @@ EOD;
 						med.id,
 						mao.id
 						FROM medication AS med
-						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid COLLATE utf8_general_ci = med.vmp_code COLLATE utf8_general_ci
+						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid = med.vmp_code
 						LEFT JOIN {$this->tablePrefix}vmp_drug_route AS dr ON dr.vpid = vmp.vpid
-						LEFT JOIN medication_attribute_option AS mao ON mao.`value` COLLATE utf8_general_ci = dr.routecd COLLATE utf8_general_ci
+						LEFT JOIN medication_attribute_option AS mao ON mao.`value` = dr.routecd
 						LEFT JOIN medication_attribute AS attr ON mao.medication_attribute_id = attr.id
 						WHERE med.source_subtype = 'VMP' AND attr.`name` = 'ROUTE'
 					";
@@ -621,12 +626,38 @@ EOD;
 						med.id,
 						{$pres_free_opt_id}
 						FROM medication AS med						
-						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid COLLATE utf8_general_ci = med.vmp_code COLLATE utf8_general_ci
+						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid = med.vmp_code
 						WHERE vmp.pres_f = '0001'
 						";
 
 		Yii::app()->db->createCommand($cmd)->execute();
 		echo " OK".PHP_EOL;
+
+        $this->printMsg( "Importing VMP prescribable product information", false);
+
+        $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id)
+                SELECT
+                       med.id,
+                       {$validity_opt_id}
+                       FROM medication AS med
+                       LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid = med.vmp_code
+                       WHERE vmp.pres_statcd = '0001'
+                       ";
+
+        Yii::app()->db->createCommand($cmd)->execute();
+        echo " OK".PHP_EOL;
+
+        $this->printMsg( "Updating medication table is_prescrible column", false);
+
+        $cmd = "UPDATE medication SET is_prescribable = 1 WHERE id IN (
+                    SELECT
+                       med.id
+                       FROM (SELECT * FROM medication m JOIN f_vmp_vmps AS vmp ON vmp.vpid = m.vmp_code WHERE vmp.pres_statcd = '0001') AS med
+                )";
+
+        Yii::app()->db->createCommand($cmd)->execute();
+        echo " OK".PHP_EOL;
+
 
         $tables = [
         	$this->tablePrefix."amp_amps" => [
