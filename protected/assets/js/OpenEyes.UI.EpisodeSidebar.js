@@ -255,6 +255,9 @@
                                     data: {'event_id': event_id},
                                 }).success(function(response){
                                     setEventImageSrc(event_id, response);
+                                    setEventImageSrcFromData(
+                                        self.element.find('.events').find("li[data-event-id="+event_id+"]")
+                                    );
                                 });
                             }
                         }
