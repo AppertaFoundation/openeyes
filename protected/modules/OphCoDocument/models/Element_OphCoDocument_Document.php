@@ -68,27 +68,14 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         return '';
     }
 
-    public function afterSave()
-    {
-        foreach(array('single_document', 'left_document', 'right_document') as $document){
-            $document_id = $document.'_id';
-            $rotate = $document.'_rotate';
-            $protected = ProtectedFile::model()->findByPk($this->$document_id);
-            if ($protected) {
-                $protected->rotate = $_POST[$rotate];
-                $protected->save();
-            }
-        }
-
-        parent::afterSave();
-    }
 
     protected function getImageFileNameForRotation($image_id){
         $protected = ProtectedFile::model()->findByPk($image_id);
         if($protected){
             $file_name = $protected->getFilePath().'/'.$protected->uid;
-            $image_type = getimagesize($file_name)['mime'];
-            if ($image_type == 'image/jpeg') {
+            $image_size = getimagesize($file_name);
+            $mime = isset($image_size['mime']) ? $image_size['mime'] : null;
+            if ($mime && $mime == 'image/jpeg') {
                 return $file_name;
             }
         }

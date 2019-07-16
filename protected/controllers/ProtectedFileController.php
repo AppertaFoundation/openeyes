@@ -63,8 +63,9 @@ class ProtectedFileController extends BaseController
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
 
-        $image_type = getimagesize($filepath)['mime'];
-        if (!empty($image_type) && $image_type == 'image/jpeg') {
+        $image_size = getimagesize($filepath);
+        $mime = isset($image_size['mime']) ? $image_size['mime'] : null;
+        if ($mime && $mime == 'image/jpeg') {
             if (!empty($rotate) && $rotate != 0) {
                 $original = imagecreatefromjpeg($filepath);
                 $rotated = imagerotate($original, $rotate, imageColorAllocateAlpha($original, 255, 255, 255, 127));

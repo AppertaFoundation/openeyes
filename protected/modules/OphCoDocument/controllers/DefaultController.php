@@ -158,8 +158,9 @@ class DefaultController extends BaseEventTypeController
      */
     private function uploadFile($tmp_name, $original_name)
     {
-        $image_type = getimagesize($tmp_name)['mime'];
-        if ($image_type == 'image/jpeg') {
+        $image_size = getimagesize($tmp_name);
+        $mime = isset($image_size['mime']) ? $image_size['mime'] : null;
+        if ($mime && $mime == 'image/jpeg') {
             $tmp_name = Element_OphCoDocument_Document::model()->rotate($tmp_name);
         }
 
@@ -536,6 +537,20 @@ class DefaultController extends BaseEventTypeController
         } catch (Exception $ex) {
             $this->saveEventImage('FAILED', ['message' => (string)$ex]);
             throw $ex;
+        }
+    }
+
+    protected function saveComplexAttributes_Element_OphCoDocument_Document($element, $data, $index)
+    {
+        foreach (['single_document', 'left_document', 'right_document'] as $document) {
+            $document_id = $document.'_id';
+            $rotate = $document.'_rotate';
+            $protected = ProtectedFile::model()->findByPk($element->{$document_id});
+            $rotate_value = \Yii::app()->request->getParam($rotate);
+            if ($protected && !is_null($rotate_value)) {
+                $protected->rotate = $rotate_value;
+                $protected->save();
+            }
         }
     }
 }
