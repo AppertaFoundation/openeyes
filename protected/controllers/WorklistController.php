@@ -31,7 +31,7 @@ class WorklistController extends BaseController
     protected function beforeAction($action)
     {
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
-        if($action->getId() == "print") {
+        if($action->getId() === "print") {
 			$newblue_path = 'application.assets.newblue';
 			Yii::app()->assetManager->registerCssFile('css/style_oe3.0_print.css', $newblue_path, null);
 		}
