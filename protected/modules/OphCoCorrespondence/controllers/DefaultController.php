@@ -993,6 +993,49 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    protected function setAndValidateElementsFromData($data)
+    {
+        $errors = parent::setAndValidateElementsFromData($data);
+
+        //$gp_found = false;
+        //$patient_found = false;
+
+        $document_target = $data['DocumentTarget'];
+        if(!isset($document_target[0]['attributes']['ToCc']) && Yii::app()->getController()->getAction()->id == 'create') {
+            $errors['Letter'][] = 'To Address: Please add at least one recipient!';
+        }
+
+        if (isset($document_target)) {
+            foreach ($document_target as $target) {
+                if (!isset($target['attributes']['address']) || empty($target['attributes']['address']) ) {
+                    $errors['Letter'][] = 'To Address: Address cannot be empty!';
+                }
+
+                /*if($target['attributes']['contact_type'] === 'PATIENT'){
+                    $patient_found = true;
+                }
+                if($target['attributes']['contact_type'] === Yii::app()->params['gp_label']){
+                    $gp_found = true;
+                }*/
+            }
+
+            //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
+            //$internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
+
+            //this throws an error if GP or Patient not found in Internal referral
+
+            /**
+             * awaiting for requirements... ...
+             */
+
+            /*if($this->letter_type_id == $internalreferral_letter_type->id ){
+                if( !$gp_found || !$patient_found ){
+                    $this->addError('letter_type_id', 'GP and Patient must copied into when letter type is Internal Referral!');
+                }
+            }*/
+        }
+    }
+
     /**
      * After the event was soft deleted, we need to set the output_status' to DELETED
      * @param $yii_event
@@ -1003,5 +1046,51 @@ class DefaultController extends BaseEventTypeController
     {
         $letter = ElementLetter::model()->findByAttributes(['event_id' => $this->event->id]);
         return $letter->markDocumentRelationTreeDeleted();
+    }
+
+    public function afterUpdateElements($event)
+    {
+        parent::afterUpdateElements($event);
+
+        $letter = null;
+        foreach ($this->open_elements as $element) {
+            if (get_class($element) == 'ElementLetter') {
+                $letter = $element;
+            }
+        }
+
+        $document = new Document();
+        $document->event_id = $event->id;
+        $document->is_draft = $letter ? $letter->draft : null;
+
+        foreach (['DocumentTarget', 'DocumentSet', 'DocumentInstance', 'DocumentInstanceData', 'macro_id'] as $name) {
+            $data[$name] = \Yii::app()->request->getPost($name);
+
+        }
+
+        $document->createNewDocSet($data);
+    }
+
+    public function afterCreateElements($event)
+    {
+        parent::afterCreateElements($event);
+
+        $letter = null;
+        foreach ($this->open_elements as $element) {
+            if (get_class($element) == 'ElementLetter') {
+                $letter = $element;
+            }
+        }
+
+        $document = new Document();
+        $document->event_id = $this->event->id;
+        $document->is_draft = $letter ? $letter->draft : null;
+
+        foreach (['DocumentTarget', 'DocumentSet', 'DocumentInstance', 'DocumentInstanceData', 'macro_id'] as $name) {
+            $data[$name] = \Yii::app()->request->getPost($name);
+
+        }
+
+        $document->createNewDocSet($data);
     }
 }

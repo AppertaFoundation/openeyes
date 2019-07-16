@@ -276,6 +276,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
                     $disorder['label'] = ($cod->disorderOrFinding) ? $cod->disorderOrFinding->term : 'None';
                     $disorder['is_glaucoma'] = isset($cod->disorder->term)? (strpos(strtolower($cod->disorder->term), 'glaucoma')) !== false : false;
                     $disorder['group'] = $group;
+                    $disorder['group_id'] = isset($cod->group) ? $cod->group->id : null;
                     $disorder['alternate'] = $cod->alternate_disorder_id ?
                         array(
                             'id' => $cod->alternate_disorder_id,

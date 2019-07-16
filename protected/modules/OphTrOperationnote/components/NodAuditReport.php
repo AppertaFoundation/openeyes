@@ -49,6 +49,8 @@ class NodAuditReport extends Report implements ReportInterface
             'dtick'=>0.1,
             'tickformat'=>',.0%',
             'showgrid' => true,
+            'automargin' => true,
+            'range' => [0,1],
         ),
         'legend' => array(
             'x' => 0.9,

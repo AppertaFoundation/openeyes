@@ -160,10 +160,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $(this.allergySelector).each(function () {
             let $tr = $(this).closest('tr');
             let row_other_allergy = $tr.find('.js-other-allergy');
-            let show_other_input = (parseInt(this.value) === controller.options.allergyOtherValue && row_other_allergy.find('input').val() === '');
+            let other_allergy_value = row_other_allergy.find('input').val();
 
-            $tr.find('.js-not-other-allergy').toggle(!show_other_input);
-            row_other_allergy.toggle(show_other_input);
+            if (other_allergy_value === '') {
+                let show_other_input = (parseInt(this.value) === controller.options.allergyOtherValue);
+                $tr.find('.js-not-other-allergy').toggle(!show_other_input);
+                row_other_allergy.toggle(show_other_input);
+            }
         });
     };
 
