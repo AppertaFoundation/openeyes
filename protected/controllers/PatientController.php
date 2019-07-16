@@ -1797,7 +1797,8 @@ class PatientController extends BaseController
                 $patient->beforeSave();
             }
         }
-        if($patient->getIsNewRecord()){
+        // Only auto increment hos no. when the set_auto_increment is on
+        if($patient->getIsNewRecord() && Yii::app()->params['set_auto_increment'] == 'on'){
             $patient->hos_num = $patient->autoCompleteHosNum();
         }
         $this->render('crud/create', array(

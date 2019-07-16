@@ -223,7 +223,7 @@ foreach ($ethnic_list as $key=>$item){
       <table class="standard highlight-rows">
         <tbody>
         <tr>
-          <td>
+          <td class=<?= Yii::app()->params['institution_code'] === 'CERA' ? 'required':'' ?>>
               <?= $form->label($patient, 'hos_num') ?>
             <br/>
               <?= $form->error($patient, 'hos_num') ?>
@@ -337,12 +337,12 @@ foreach ($ethnic_list as $key=>$item){
 													if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)){
 														foreach ($patient->patientContactAssociates as $patientContactAssociate){
 															$gp = $patientContactAssociate->gp;
-															$practice  = $gp->getAssociatePractice();
-															$practiceDetails = $gp->getAssociatedPractice($gp->id);
+															$practice  = $gp ? $gp->getAssociatePractice() : '';
+															$practiceDetails = $gp ? $gp->getAssociatedPractice($gp->id) : '';
 															$practiceNameAddress = $practice ? ($practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():''): '';
-															$role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
+															$role = $gp ? $gp->getGPROle()?' - '.$gp->getGPROle() :'' : '' ;
 															//The line below is to ensure a newly added referring practitioner does not show up in the list of contacts also
-															if($gp->id != $patient->gp_id){
+															if($gp && $gp->id != $patient->gp_id){
 																?>
 																<li><span class="js-name" style="text-align:justify"><?=$gp->getCorrespondenceName().$role.$practiceNameAddress?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
 															<?php }

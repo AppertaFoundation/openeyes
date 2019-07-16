@@ -130,7 +130,7 @@ class Patient extends BaseActiveRecordVersioned
         return array(
             array('pas_key', 'length', 'max' => 10),
             array('dob, patient_source', 'required'),
-            array('hos_num', 'required', 'on' => 'pas'),
+            array('hos_num', 'required', 'on' => Yii::app()->params['institution_code'] !== 'CERA' ? 'pas' : '' ),
             array('gender', 'required', 'on' => array('self_register')),
             array('gp_id, practice_id', 'required', 'on' => 'referral'),
 
@@ -208,6 +208,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function hosNumValidator($attribute, $params)
     {
+        // This condition does not work for CERA but leaving the code here as the functionality might break for UK. NEEDS TESTING before removal
         if ($this->scenario === 'manual') {
             // Use the PatientSearch to sanitise and validate the hospital number
             $hos_num = (new PatientSearch())->getHospitalNumber($this->hos_num);
@@ -220,6 +221,19 @@ class Patient extends BaseActiveRecordVersioned
                 }
             } elseif (!empty($this->hos_num)) {
                 $this->addError($attribute, 'Not a valid Hospital Number');
+            }
+        }
+
+        if(Yii::app()->params['institution_code'] === 'CERA') {
+            $cera_id = $this->hos_num;
+            if(strlen($cera_id)>0) {
+                // removing the leading 0's
+                $cera_id = ltrim($cera_id, '0');
+                $item_count = Patient::model()->count('hos_num = ? AND id != ?',
+                    array($cera_id,$this->id? $this->id : -1));
+                if ($item_count) {
+                    $this->addError($attribute, 'A patient already exists with this CERA ID. The next unique number is '.$this->autoCompleteHosNum());
+                }
             }
         }
     }
@@ -263,7 +277,6 @@ class Patient extends BaseActiveRecordVersioned
 
 //    Generates an auto incremented Hospital Number
     public function autoCompleteHosNum(){
-        if(Yii::app()->params['set_auto_increment'] == 'on'){
             $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
             $command = Yii::app()->db->createCommand($query);
             $command->prepare();
@@ -276,7 +289,6 @@ class Patient extends BaseActiveRecordVersioned
             } else {
                 return ($default_hos_num[0] + 1);
             }
-        }
     }
 
     /**
