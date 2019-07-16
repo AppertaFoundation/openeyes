@@ -66,7 +66,7 @@ class ProtectedFileController extends BaseController
         $image_size = getimagesize($filepath);
         $mime = isset($image_size['mime']) ? $image_size['mime'] : null;
         if ($mime && $mime == 'image/jpeg') {
-            if (!empty($rotate) && $rotate != 0) {
+            if ($rotate) {
                 $original = imagecreatefromjpeg($filepath);
                 $rotated = imagerotate($original, $rotate, imageColorAllocateAlpha($original, 255, 255, 255, 127));
                 ob_start();
