@@ -130,6 +130,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         let $td = $("#Document_" + side + "_document_row_id").closest('td');
 
         $td.find('.ophco-image-container').remove();
+        $('#'+side+'_document_rotate').val(0);
         $td.find(".upload-box").show().find('.js-upload-box-text').text("Click to select file or DROP here");
         $td.find('.js-remove-document-wrapper').hide();
         $(controller.options.uploadModeSelector).attr('disabled', false);

@@ -1354,6 +1354,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function saveEvent($data)
     {
+
         if (!$this->event->isNewRecord) {
             // this is an edit, so need to work out what we are deleting
             $oe_ids = array();
@@ -1377,6 +1378,7 @@ class BaseEventTypeController extends BaseModuleController
                 }
             }
         } else {
+
             if (!$this->event->save()) {
                 OELog::log("Failed to create new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
                 throw new Exception('Unable to save event.');
