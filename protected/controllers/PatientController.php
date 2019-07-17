@@ -1709,6 +1709,12 @@ class PatientController extends BaseController
     public function actionCreate()
     {
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
+
+        // Executing the js function (without passing the id param as it will be null on create patient screen)
+        // to find duplicate patients on entering create patient screen each time so that the warning message
+        // does not disappear after refreshing.
+        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates();', CClientScript::POS_READY);
+
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
         $this->fixedHotlist = true;
@@ -1801,8 +1807,6 @@ class PatientController extends BaseController
         if($patient->getIsNewRecord() && Yii::app()->params['set_auto_increment'] == 'on'){
             $patient->hos_num = $patient->autoCompleteHosNum();
         }
-
-        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates('.$patient->id.');', CClientScript::POS_READY);
 
         $this->render('crud/create', array(
             'patient' => $patient,
@@ -2059,7 +2063,11 @@ class PatientController extends BaseController
     public function actionUpdate($id)
     {
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
+
+        // Executing the js function to find duplicate patients on entering update patient screen each time to
+        // retain the warning message on screen after refreshing.
         Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates('.$id.');', CClientScript::POS_READY);
+
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
         $this->fixedHotlist = true;
