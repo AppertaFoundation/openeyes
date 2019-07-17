@@ -31,7 +31,7 @@ function NOD_Audit_to_csv(){
 }
 
 function csv_export_cataract(filename,data){
-    file_name += '.csv';
+    filename += '.csv';
     var processData = function (x,y) {
         var finalVal = x+','+y+'\n';
         return finalVal;
