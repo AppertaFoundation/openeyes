@@ -44,9 +44,10 @@ $consultantName = $firm->consultant ? ($firm->consultant->getFullName() . $cost_
 $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 ?>
 
-<?php if ($header_text !== null) : ?>
-    <div class="clearfix"><?= $header_text ?></div>
-<?php endif; ?>
+<?php if (!$data['fpten']): ?>
+  <?php if ($header_text !== null): ?>
+      <div class="clearfix"><?= $header_text ?></div>
+  <?php endif; ?>
 
     <table class="borders prescription_header">
         <tr>
@@ -192,6 +193,6 @@ foreach ($items_data as $group => $items) { ?>
         </tr>
     </table>
 
-<?php if ($footer_text !== null) : ?>
+<?php if ($footer_text !== null): ?>
     <div><?= $footer_text ?></div>
 <?php endif; ?>

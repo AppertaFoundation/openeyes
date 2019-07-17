@@ -27,8 +27,8 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
             if(!$Element->draft || $this->checkEditAccess()){
                 foreach ($Element->items as $item) {
                     // If at least one prescription item has 'Print to FP10' selected as the dispense condition, display the Print FP10 button.
-                    if ($item->dispense_condition->name == 'Print to FP10') {
-                        $this->event_actions[] = EventAction::button('Print FP10', "et_print_fp10");
+                    if ($item->dispense_condition->name === 'Print to FP10') {
+                        $this->event_actions[] = EventAction::button('Print FP10', "print_fp10");
                         break;
                     }
                 }
@@ -63,7 +63,15 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
         $(document).ready(function() {
             do_print_prescription();
         });
-        <?php } ?>
+        <?php }
+        else if (isset(Yii::app()->session['print_prescription_fp10'])) {
+          unset(Yii::app()->session['print_prescription_fp10']);
+          ?>
+        $(document).ready(function() {
+            do_print_fpTen();
+        });
+        <?php }?>
+
     </script>
 <?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>

@@ -40,6 +40,13 @@ $(document).ready(function () {
     }
   });
 
+  $(document).on('click', '#et_save_print_fp10', function (e) {
+    $('#Element_OphDrPrescription_Details_draft').val(0);
+    if (!checkPrescriptionLength()) {
+      e.preventDefault();
+    }
+  });
+
   $(document).on('click', '#et_save', function (e) {
     $('#Element_OphDrPrescription_Details_draft').val(0);
     if (!checkPrescriptionLength()) {
@@ -75,6 +82,27 @@ $(document).ready(function () {
     }
   });
 
+  $(document).on('click', '#et_print_fp10', function (e) {
+    if ($('#et_ophdrprescription_draft').val() == 1) {
+      $.ajax({
+        'type': 'GET',
+        'url': baseUrl + '/OphDrPrescription/default/doPrint/' + OE_event_id,
+        'success': function (html) {
+          if (html == "1") {
+            window.location.reload();
+          } else {
+            new OpenEyes.UI.Dialog.Alert({
+              content: "There was an unexpected error printing the prescription, please try again or contact support for assistance."
+            }).open();
+          }
+        }
+      });
+    } else {
+      do_print_fpTen();
+      e.preventDefault();
+    }
+  });
+
   if ($('#et_ophdrprescription_print').val() == 1) {
     setTimeout("do_print_prescription();", 1000);
   }
@@ -87,6 +115,24 @@ function do_print_prescription() {
     'success': function (html) {
       if (html == "1") {
         printIFrameUrl(OE_print_url, null);
+      } else {
+        new OpenEyes.UI.Dialog.Alert({
+          content: "There was an error printing the prescription, please try again or contact support for assistance."
+        }).open();
+      }
+      enableButtons();
+    }
+  });
+}
+
+function do_print_fpTen() {
+  $.ajax({
+    'type': 'GET',
+    'url': baseUrl + '/OphDrPrescription/default/markPrinted?event_id=' + OE_event_id,
+    'success': function (html) {
+      if (html == "1") {
+        console.log(OE_print_url);
+        printIFrameUrl(OE_print_url + '?fpten=true', null);
       } else {
         new OpenEyes.UI.Dialog.Alert({
           content: "There was an error printing the prescription, please try again or contact support for assistance."

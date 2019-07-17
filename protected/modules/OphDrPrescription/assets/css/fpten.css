@@ -1,0 +1,84 @@
+/*
+ * Layout CSS classes for FP10/WP10 form.
+ */
+
+/*
+* Wrapping container for the entire FP10 form.
+* This has the initial margin from the top of the page, plus any requisite margins for the surrounds of the form.
+* It also contains the default font specifications.
+*/
+.fpten-container {
+    margin-top: 8mm;
+    font-family: arial, sans-serif;
+    font-weight: bold;
+    font-size: 7.5pt;
+    border: 2px solid;
+}
+
+.fpten-trust-code {
+    font-size: 12pt;
+}
+
+/*Site box appears at the bottom toward the center.*/
+.fpten-site {
+    text-align: left;
+    border: 2px solid;
+}
+
+.fpten-site-code {
+    text-align: left;
+    margin-right: 5mm;
+    border: 2px solid;
+}
+
+/*Age box appears at the top toward the center.*/
+.fpten-age {
+    padding-top: 4mm;
+    text-align: center;
+    border: 2px solid;
+}
+
+/*DOB box appears directly below the Age box.*/
+.fpten-dob {
+    padding-top: 4mm;
+    text-align: center;
+    border: 2px solid;
+}
+
+/*Patient details box appears at the top right corner beside age and DOB.*/
+.fpten-patient-details {
+    text-align: left;
+    border: 2px solid;
+}
+
+/*Postcode is right-aligned to the edge of the parent box.*/
+.fpten-postcode-nhs {
+    text-align: left;
+    padding-right: 5mm;
+    border: 2px solid;
+}
+
+/*Prescriber initiative appears at top of main box in the center*/
+.fpten-prescriber {
+    font-size: 7pt;
+    border: 2px solid;
+}
+
+.fpten-prescriber-code {
+    font-size: 10pt;
+    border: 2px solid;
+    margin-right: 5mm;
+}
+
+/*Appears beneath the prescriber.*/
+.fpten-prescription-list {
+    padding-right: 5mm;
+    border: 2px solid;
+}
+
+/*Appears directly above the Trust code in the site box.*/
+.fpten-date {
+    text-align: center;
+    vertical-align: center;
+    border: 2px solid;
+}

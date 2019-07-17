@@ -84,7 +84,7 @@ class DefaultController extends BaseEventTypeController
 
     public function printActions()
     {
-        return array('print', 'markPrinted', 'doPrint');
+        return array('print', 'printFpTen', 'markPrinted', 'doPrint');
     }
 
     /**
@@ -411,12 +411,18 @@ class DefaultController extends BaseEventTypeController
     {
         Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
         Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
+        Yii::app()->params['wkhtmltopdf_page_size'] = 'A5';
 
         $this->printInit($id);
         $this->layout = '//layouts/print';
 
         $pdf_documents = (int)Yii::app()->request->getParam('pdf_documents');
-        if ( $pdf_documents == 1 ) {
+        $fpten = Yii::app()->request->getParam('fpten');
+
+        if ($fpten === 'true') {
+            $this->render('print_fpten', array(
+            ));
+        } else if( $pdf_documents == 1 ){
             $this->render('print');
         } else {
             $this->render('print');

@@ -33,6 +33,7 @@ class WKHtmlToPDF extends WKHtmlToX
     public $bottom_margin;
     public $left_margin;
     public $right_margin;
+    public $page_size;
 
     public function __construct()
     {
@@ -49,6 +50,7 @@ class WKHtmlToPDF extends WKHtmlToX
         $this->bottom_margin = Yii::app()->params['wkhtmltopdf_bottom_margin'];
         $this->left_margin = Yii::app()->params['wkhtmltopdf_left_margin'];
         $this->right_margin = Yii::app()->params['wkhtmltopdf_right_margin'];
+        $this->page_size = Yii::app()->params['wkhtmltopdf_page_size'];
     }
 
     public function formatFooter($footer, $left, $middle, $right)
@@ -221,9 +223,10 @@ class WKHtmlToPDF extends WKHtmlToX
         $left_margin = $this->left_margin ? '-L ' . $this->left_margin : '';
         $right_margin = $this->right_margin ? '-R ' . $this->right_margin : '';
 
+        $page_size = $this->page_size ?: 'A4';
 
         $nice = Yii::app()->params['wkhtmltopdf_nice_level'] ? 'nice -n' . Yii::app()->params['wkhtmltopdf_nice_level'] . ' ' : '';
-        $res = $this->execute($nice . escapeshellarg($this->application_path) . ' --footer-html ' . escapeshellarg($footer_file) . " --print-media-type $top_margin $bottom_margin $left_margin $right_margin " . escapeshellarg($html_file) . ' ' . escapeshellarg($pdf_file) . ' 2>&1');
+        $res = $this->execute($nice . escapeshellarg($this->application_path) . ' --footer-html ' . escapeshellarg($footer_file) . " --print-media-type $top_margin $bottom_margin $left_margin $right_margin --page-size $page_size " . escapeshellarg($html_file) . ' ' . escapeshellarg($pdf_file) . ' 2>&1');
 
         if (!$this->fileExists($pdf_file) || $this->fileSize($pdf_file) == 0) {
             if ($this->fileSize($pdf_file) == 0) {
