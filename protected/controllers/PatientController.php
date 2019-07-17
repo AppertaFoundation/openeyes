@@ -1801,6 +1801,9 @@ class PatientController extends BaseController
         if($patient->getIsNewRecord() && Yii::app()->params['set_auto_increment'] == 'on'){
             $patient->hos_num = $patient->autoCompleteHosNum();
         }
+
+        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates('.$patient->id.');', CClientScript::POS_READY);
+
         $this->render('crud/create', array(
             'patient' => $patient,
             'contact' => $contact,
@@ -2056,7 +2059,7 @@ class PatientController extends BaseController
     public function actionUpdate($id)
     {
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
-
+        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates('.$id.');', CClientScript::POS_READY);
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
         $this->fixedHotlist = true;
