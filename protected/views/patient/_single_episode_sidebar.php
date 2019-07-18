@@ -146,7 +146,7 @@ $operation_status_to_css_class = [
                                     $this->widget('EyeLateralityWidget', ['eye' => $api->getLaterality($event->id), 'pad' => '']);
                                 } ?>
                             </span>
-                            <span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
+                            <span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' backdated' : '' ?>">
                             <?php echo $event->event_date
                                 ? $event->NHSDateAsHTML('event_date')
                                 : $event->NHSDateAsHTML('created_date');
