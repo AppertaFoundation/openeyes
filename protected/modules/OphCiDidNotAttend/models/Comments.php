@@ -84,7 +84,7 @@ class Comments extends \BaseEventTypeElement
     {
         $criteria=new CDbCriteria;
 
-		$criteria->compare('comment',$this->comment,true);
+        $criteria->compare('comment',$this->comment,true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria'=>$criteria,

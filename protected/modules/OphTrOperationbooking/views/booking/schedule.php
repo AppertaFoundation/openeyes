@@ -198,8 +198,8 @@
         </header>
         <div class="element-actions">
         <span class="js-remove-element">
-		    <i class="oe-i remove-circle"></i>
-		</span>
+            <i class="oe-i remove-circle"></i>
+        </span>
         </div>
 
         <?php if (Yii::app()->user->hasFlash('info')) { ?>

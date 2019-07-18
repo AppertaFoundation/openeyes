@@ -17,43 +17,43 @@
  */
 ?>
 <div class="admin box">
-	<h2>Lens types</h2>
-	<form id="admin_lens_types">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="standard">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Position</th>
-					<th>Description</th>
-					<th>A constant</th>
-					<th>SF/pACD</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
+    <h2>Lens types</h2>
+    <form id="admin_lens_types">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+        <table class="standard">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="selectall" id="selectall" /></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Description</th>
+                    <th>A constant</th>
+                    <th>SF/pACD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
                 foreach ($lens_types as $i => $lens_type) {?>
-					<tr class="clickable" data-id="<?php echo $lens_type->id?>" data-uri="OphInBiometry/admin/editLensType/<?php echo $lens_type->id?>">
-						<td><input type="checkbox" name="lens_types[]" value="<?php echo $lens_type->id?>" /></td>
-						<td><?php echo $lens_type->id?></td>
-						<td><?php echo $lens_type->name?></td>
-						<td><?php echo $lens_type->position->name?></td>
-						<td><?php echo $lens_type->description?></td>
-						<td><?php echo $lens_type->acon?></td>
-						<td><?php echo $lens_type->sf ? $lens_type->sf : $lens_type->pACD?></td>
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="9">
-						<?php echo EventAction::button('Add', 'add_lens_type', null, array('class' => 'small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete_lens_type', null, array('class' => 'small'))->toHtml()?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+                    <tr class="clickable" data-id="<?php echo $lens_type->id?>" data-uri="OphInBiometry/admin/editLensType/<?php echo $lens_type->id?>">
+                        <td><input type="checkbox" name="lens_types[]" value="<?php echo $lens_type->id?>" /></td>
+                        <td><?php echo $lens_type->id?></td>
+                        <td><?php echo $lens_type->name?></td>
+                        <td><?php echo $lens_type->position->name?></td>
+                        <td><?php echo $lens_type->description?></td>
+                        <td><?php echo $lens_type->acon?></td>
+                        <td><?php echo $lens_type->sf ? $lens_type->sf : $lens_type->pACD?></td>
+                    </tr>
+                <?php }?>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="9">
+                        <?php echo EventAction::button('Add', 'add_lens_type', null, array('class' => 'small'))->toHtml()?>
+                        <?php echo EventAction::button('Delete', 'delete_lens_type', null, array('class' => 'small'))->toHtml()?>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

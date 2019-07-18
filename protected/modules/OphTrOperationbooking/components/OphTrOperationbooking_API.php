@@ -385,14 +385,14 @@ class OphTrOperationbooking_API extends BaseAPI
             } else {
                 // WEEKLY REPEAT (every x weeks)
                 // There is a repeat interval, e.g. once every two weeks. In the instance of two weeks, the
-                //	function below returns 60 * 60 * 24 * 14, i.e. two weeks
+                //  function below returns 60 * 60 * 24 * 14, i.e. two weeks
                 $interval = $sequence->interval->getInteger($endDate);
 
                 // The number of days in the interval - 14 in the case of two week interval
                 $days = $interval / 24 / 60 / 60;
 
                 // IF there's no session use the sequence start date. If there is use the most recent
-                //	session date plus the interval (e.g. two weeks)
+                //  session date plus the interval (e.g. two weeks)
                 if (empty($session)) {
                     $nextStartDate = $startDate;
                 } else {
@@ -408,7 +408,7 @@ class OphTrOperationbooking_API extends BaseAPI
                 // get the next occurrence of the sequence on/after the start date
 
                 // Check to see if the day of the week for the time is the same day of the week as the sequence start date
-                //	Process loop if it isn't
+                //  Process loop if it isn't
                 while (date('N', $time) != date('N', strtotime($sequence->start_date))) {
                     // Set the date to $time + 1 day
                     $date = date('Y-m-d', mktime(0, 0, 0, date('m', $time), date('d', $time) + 1, date('Y', $time)));

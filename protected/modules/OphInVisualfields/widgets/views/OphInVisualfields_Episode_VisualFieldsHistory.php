@@ -14,99 +14,99 @@
  */
 ?>
 <?php if ($elements): ?>
-	<div id="vf-slider-container">
-	<?php foreach ($elements as $element): ?>
-		<div id="OphInVisualfields_Episode_VisualFieldsHistory_element_<?= $element->id ?>" class="OphInVisualfields_Episode_VisualFieldsHistory_element element-fields element-eyes hidden">
-			<?php
+    <div id="vf-slider-container">
+    <?php foreach ($elements as $element): ?>
+        <div id="OphInVisualfields_Episode_VisualFieldsHistory_element_<?= $element->id ?>" class="OphInVisualfields_Episode_VisualFieldsHistory_element element-fields element-eyes hidden">
+            <?php
                 $this->render(get_class($this).'_side', array('element' => $element, 'side' => 'right'));
                 $this->render(get_class($this).'_side', array('element' => $element, 'side' => 'left'));
             ?>
-		</div>
-	<?php endforeach ?>
-	</div>
-	<div id="OphInVisualfields_Episode_VisualFieldsHistory_slider"></div>
-	<script>
-		$(document).ready(function () {
+        </div>
+    <?php endforeach ?>
+    </div>
+    <div id="OphInVisualfields_Episode_VisualFieldsHistory_slider"></div>
+    <script>
+        $(document).ready(function () {
 
-			var elementIds = window.OphInVisualfields_Episode_VisualFieldsHistory_element_ids;
-			var sliderContainer = $('#vf-slider-container');
-			var slider = $('#OphInVisualfields_Episode_VisualFieldsHistory_slider');
-			var elements = $('.OphInVisualfields_Episode_VisualFieldsHistory_element');
-			var max = elementIds.length - 1;
-			var throttle = false;
-			var timer = 0;
-			var diff = -1;
+            var elementIds = window.OphInVisualfields_Episode_VisualFieldsHistory_element_ids;
+            var sliderContainer = $('#vf-slider-container');
+            var slider = $('#OphInVisualfields_Episode_VisualFieldsHistory_slider');
+            var elements = $('.OphInVisualfields_Episode_VisualFieldsHistory_element');
+            var max = elementIds.length - 1;
+            var throttle = false;
+            var timer = 0;
+            var diff = -1;
 
-			function showElement(elementId) {
-				$('#OphInVisualfields_Episode_VisualFieldsHistory_element_' + elementId).show();
-			}
+            function showElement(elementId) {
+                $('#OphInVisualfields_Episode_VisualFieldsHistory_element_' + elementId).show();
+            }
 
-			function updateElements(val) {
-					elements.hide();
-					showElement(elementIds[val]);
-			}
+            function updateElements(val) {
+                    elements.hide();
+                    showElement(elementIds[val]);
+            }
 
-			// This is a POC, written in haste.
-			// We throttle the execution of this handler because trackpads (and possibly
-			// other touch devices) will emit the mousewheel event continuesly while scrolling.
-			function onMouseWheel(e, delta) {
+            // This is a POC, written in haste.
+            // We throttle the execution of this handler because trackpads (and possibly
+            // other touch devices) will emit the mousewheel event continuesly while scrolling.
+            function onMouseWheel(e, delta) {
 
-				e.preventDefault();
+                e.preventDefault();
 
-				if (throttle) return;
+                if (throttle) return;
 
-				// This helps to prevent the slider from jittering from a sudden change of
-				// direction.
-				if (delta > 0) {
-					if (diff < 0) {
-						diff = delta;
-						return;
-					}
-				}
-				if (delta < 0) {
-					if (diff > 0) {
-						diff = delta;
-						return;
-					}
-				}
+                // This helps to prevent the slider from jittering from a sudden change of
+                // direction.
+                if (delta > 0) {
+                    if (diff < 0) {
+                        diff = delta;
+                        return;
+                    }
+                }
+                if (delta < 0) {
+                    if (diff > 0) {
+                        diff = delta;
+                        return;
+                    }
+                }
 
-				diff = delta;
+                diff = delta;
 
-				var sliderVal = slider.slider('value');
+                var sliderVal = slider.slider('value');
 
-				// Left or right scrolling?
-				if (delta >= 0 && sliderVal > 0) {
-					sliderVal--;
-				} else if (delta < 0 && sliderVal <= max) {
-					sliderVal++;
-				}
+                // Left or right scrolling?
+                if (delta >= 0 && sliderVal > 0) {
+                    sliderVal--;
+                } else if (delta < 0 && sliderVal <= max) {
+                    sliderVal++;
+                }
 
-				slider.slider('value', sliderVal);
+                slider.slider('value', sliderVal);
 
-				throttle = true;
-				clearTimeout(timer);
+                throttle = true;
+                clearTimeout(timer);
 
-				timer = setTimeout(function() {
-					throttle = false;
-				}, 160);
-			}
+                timer = setTimeout(function() {
+                    throttle = false;
+                }, 160);
+            }
 
-			slider.slider({
-				'min': 0,
-				'max': max,
-				'value': max,
-				'change': function (e, ui) {
-					updateElements(ui.value);
-				},
-				'slide': function(e, ui) {
-					updateElements(ui.value);
-				}
-			});
+            slider.slider({
+                'min': 0,
+                'max': max,
+                'value': max,
+                'change': function (e, ui) {
+                    updateElements(ui.value);
+                },
+                'slide': function(e, ui) {
+                    updateElements(ui.value);
+                }
+            });
 
-			sliderContainer.on('mousewheel', onMouseWheel);
-			showElement(elementIds[elementIds.length - 1]);
-		});
-	</script>
+            sliderContainer.on('mousewheel', onMouseWheel);
+            showElement(elementIds[elementIds.length - 1]);
+        });
+    </script>
 <?php else: ?>
-	<div class="data-value">No visual field images recorded for this patient.</div>
+    <div class="data-value">No visual field images recorded for this patient.</div>
 <?php endif ?>

@@ -2,9 +2,9 @@
 
 class m180704_095046_migrate_van_herick_data extends CDbMigration
 {
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
         $dataProvider = new CActiveDataProvider('OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy',[
             'criteria' => [
                 'condition'=>'left_van_herick_id IS NOT NULL OR right_van_herick_id IS NOT NULL'
@@ -40,11 +40,11 @@ class m180704_095046_migrate_van_herick_data extends CDbMigration
                 return false;
             }
         }
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         echo "m180704_095046_migrate_van_herick_data does not support migration down.\n";
         return false;
-	}
+    }
 }

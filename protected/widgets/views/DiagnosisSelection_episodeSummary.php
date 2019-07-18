@@ -17,16 +17,16 @@
  */
 ?>
 <div class="diagnosis-selection">
-	<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText"<?php if (!$label) {?> style="display: none;" <?php }?>>
-		<h4>
-			<?php echo $label?>
-		</h4>
-	</div>
-	<div class="dropdown-row">
-		<?=\CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
-	</div>
-	<div class="autocomplete-row">
-		<?php
+    <div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText"<?php if (!$label) {?> style="display: none;" <?php }?>>
+        <h4>
+            <?php echo $label?>
+        </h4>
+    </div>
+    <div class="dropdown-row">
+        <?=\CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
+    </div>
+    <div class="autocomplete-row">
+        <?php
         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
             'name' => "{$class}[$field]",
             'id' => "{$class}_{$field}_0",
@@ -59,14 +59,14 @@
             ),
     ));
         ?>
-	</div>
+    </div>
 </div>
 <input type="hidden" name="<?php echo $class?>[<?php echo $field?>]"
-	id="<?php echo $class?>_<?php echo $field?>_savedDiagnosis" value="<?php echo $value?>" />
+    id="<?php echo $class?>_<?php echo $field?>_savedDiagnosis" value="<?php echo $value?>" />
 <script type="text/javascript">
-	$('#<?php echo $class?>_<?php echo $field?>').change(function() {
-		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText h4').html($('option:selected', this).text());
-		$('#<?php echo $class?>_<?php echo $field?>_savedDiagnosis').val($(this).val());
-		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').show();
-	});
+    $('#<?php echo $class?>_<?php echo $field?>').change(function() {
+        $('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText h4').html($('option:selected', this).text());
+        $('#<?php echo $class?>_<?php echo $field?>_savedDiagnosis').val($(this).val());
+        $('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').show();
+    });
 </script>

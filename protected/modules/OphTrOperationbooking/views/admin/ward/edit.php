@@ -21,7 +21,7 @@
     <h2><?php echo $ward->id ? 'Edit' : 'Add'?> ward</h2>
 </div>
 
-	<?php
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'adminform',
             'enableAjaxValidation' => false,

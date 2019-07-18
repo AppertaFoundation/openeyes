@@ -341,7 +341,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                       ]); ?>
               </div>
           </div>
-      </div><!-- 	.oe-popup-overflow -->
+      </div><!--    .oe-popup-overflow -->
   </div><!-- .flex-layout -->
 </div>
 

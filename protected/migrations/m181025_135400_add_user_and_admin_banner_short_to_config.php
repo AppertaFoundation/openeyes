@@ -2,8 +2,8 @@
 
 class m181025_135400_add_user_and_admin_banner_short_to_config extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $settings = array(
             array(
                 'key' => 'watermark_short',
@@ -29,5 +29,5 @@ class m181025_135400_add_user_and_admin_banner_short_to_config extends CDbMigrat
         }
         $this->insert('setting_installation', array('key' => 'watermark_short', 'value' => ''));
         $this->insert('setting_installation', array('key' => 'watermark_admin_short', 'value' => ''));
-	}
+    }
 }

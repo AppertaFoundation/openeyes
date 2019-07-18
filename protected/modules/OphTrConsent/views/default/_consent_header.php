@@ -19,6 +19,6 @@
 
 ?>
 <header class="print-header">
-		<?= $logoHelper->render('letter_head') ?>
-	
+        <?= $logoHelper->render('letter_head') ?>
+    
 </header>

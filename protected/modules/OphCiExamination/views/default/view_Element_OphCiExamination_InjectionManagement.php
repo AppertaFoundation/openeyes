@@ -17,32 +17,32 @@
  */
 ?>
 <div class="sub-element-data">
-	<div class="data-group">
-		<div class="cols-4 column">
-			<div class="data-label">
-				<?php echo $element->getAttributeLabel('injection_status_id')?>:
-			</div>
-		</div>
-		<div class="cols-8 column">
-			<div class="data-value">
-				<?php echo $element->injection_status?>
-			</div>
-		</div>
-	</div>
-	<?php if ($element->injection_status && $element->injection_status->deferred) {
+    <div class="data-group">
+        <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo $element->getAttributeLabel('injection_status_id')?>:
+            </div>
+        </div>
+        <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo $element->injection_status?>
+            </div>
+        </div>
+    </div>
+    <?php if ($element->injection_status && $element->injection_status->deferred) {
     ?>
-		<div class="data-group">
-			<div class="cols-4 column">
-				<div class="data-label">
-					<?php echo $element->getAttributeLabel('injection_deferralreason_id')?>:
-				</div>
-			</div>
-			<div class="cols-8 column end">
-				<div class="data-value">
-					<?= Yii::app()->format->Ntext($element->getInjectionDeferralReason()) ?>
-				</div>
-			</div>
-		</div>
-	<?php 
+        <div class="data-group">
+            <div class="cols-4 column">
+                <div class="data-label">
+                    <?php echo $element->getAttributeLabel('injection_deferralreason_id')?>:
+                </div>
+            </div>
+            <div class="cols-8 column end">
+                <div class="data-value">
+                    <?= Yii::app()->format->Ntext($element->getInjectionDeferralReason()) ?>
+                </div>
+            </div>
+        </div>
+    <?php 
 }?>
 </div>

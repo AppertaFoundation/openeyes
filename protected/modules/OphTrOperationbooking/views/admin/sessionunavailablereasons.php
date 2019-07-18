@@ -17,72 +17,72 @@
  */
 ?>
 <div class="box admin">
-	<h2>Patient Unavailable Reasons</h2>
-	<form id="admin_sessionunavailablereasons">
-		<table class="standard">
-			<thead>
-			<tr>
-				<th>Enabled</th>
-				<th>Name</th>
-			</tr>
-			</thead>
-			<tbody class="sortable" data-sort-uri="/OphTrOperationbooking/admin/sortsessionunavailablereasons">
-			<?php
+    <h2>Patient Unavailable Reasons</h2>
+    <form id="admin_sessionunavailablereasons">
+        <table class="standard">
+            <thead>
+            <tr>
+                <th>Enabled</th>
+                <th>Name</th>
+            </tr>
+            </thead>
+            <tbody class="sortable" data-sort-uri="/OphTrOperationbooking/admin/sortsessionunavailablereasons">
+            <?php
             $criteria = new CDbCriteria();
             $criteria->order = 'display_order asc';
             foreach (OphTrOperationbooking_Operation_Session_UnavailableReason::model()->findAll() as $i => $sessionunavailablereason) {?>
-				<tr class="clickable" data-attr-id="<?php echo $sessionunavailablereason->id?>" data-uri="OphTrOperationbooking/admin/editsessionunavailablereason/<?php echo $sessionunavailablereason->id?>">
-					<td>
-						<input type="checkbox" name="sessionunavailablereason[]" value="<?php echo $sessionunavailablereason->id?>" 
-							   class="sessionunavailablereasons-enabled" 
-							    <?php if ($sessionunavailablereason->enabled) { echo 'checked'; } ?> />
-					</td>
-					<td><?php echo $sessionunavailablereason->name?></td>
-				</tr>
-			<?php }?>
-			</tbody>
-			<tfoot>
-			<tr>
-				<td colspan="2">
-					<?php echo EventAction::button('Add', 'add', null, array('class' => 'button small', 'data-uri' => '/OphTrOperationbooking/admin/Addsessionunavailablereason'))->toHtml()?>
-				</td>
-			</tr>
-			</tfoot>
-		</table>
-	</form>
+                <tr class="clickable" data-attr-id="<?php echo $sessionunavailablereason->id?>" data-uri="OphTrOperationbooking/admin/editsessionunavailablereason/<?php echo $sessionunavailablereason->id?>">
+                    <td>
+                        <input type="checkbox" name="sessionunavailablereason[]" value="<?php echo $sessionunavailablereason->id?>" 
+                               class="sessionunavailablereasons-enabled" 
+                                <?php if ($sessionunavailablereason->enabled) { echo 'checked'; } ?> />
+                    </td>
+                    <td><?php echo $sessionunavailablereason->name?></td>
+                </tr>
+            <?php }?>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="2">
+                    <?php echo EventAction::button('Add', 'add', null, array('class' => 'button small', 'data-uri' => '/OphTrOperationbooking/admin/Addsessionunavailablereason'))->toHtml()?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('.sessionunavailablereasons-enabled').on('change', function() {
-			var checkbox = $(this);
-			var id = $(this).val();
-			var action = 'disabled';
-			if ($(this).is(':checked')) {
-				action = 'enabled';
-			}
-			$.ajax({
-				'type': 'POST',
-				'url': baseUrl+'/OphTrOperationbooking/admin/SwitchEnabledSessionUnavailableReason',
-				'data': {id: id, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
-				'success': function(resp) {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "Reason " + action
-					}).open();
-				},
-				'error': function(resp) {
-					if (checkbox.is(':checked')) {
-						checkbox.prop('checked', false);
-					}
-					else {
-						checkbox.prop('checked', true);
-					}
-					new OpenEyes.UI.Dialog.Alert({
-						content: "Unexpected error"
-					}).open();
-				}
-			});
-		});
-	});
+    $(document).ready(function() {
+        $('.sessionunavailablereasons-enabled').on('change', function() {
+            var checkbox = $(this);
+            var id = $(this).val();
+            var action = 'disabled';
+            if ($(this).is(':checked')) {
+                action = 'enabled';
+            }
+            $.ajax({
+                'type': 'POST',
+                'url': baseUrl+'/OphTrOperationbooking/admin/SwitchEnabledSessionUnavailableReason',
+                'data': {id: id, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
+                'success': function(resp) {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "Reason " + action
+                    }).open();
+                },
+                'error': function(resp) {
+                    if (checkbox.is(':checked')) {
+                        checkbox.prop('checked', false);
+                    }
+                    else {
+                        checkbox.prop('checked', true);
+                    }
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "Unexpected error"
+                    }).open();
+                }
+            });
+        });
+    });
 
 </script>

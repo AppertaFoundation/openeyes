@@ -43,9 +43,9 @@ $ethnic_list =  CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 $ethnic_groups = array();
 $ethnic_filters = Yii::app()->params['ethnic_group_filters'];
 foreach ($ethnic_list as $key=>$item){
-	if (!$ethnic_filters || !in_array($item, $ethnic_filters)){
-		$ethnic_groups[] = $item;
-	}
+    if (!$ethnic_filters || !in_array($item, $ethnic_filters)){
+        $ethnic_groups[] = $item;
+    }
 }
 ?>
 
