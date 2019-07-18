@@ -9,7 +9,7 @@
         <tr>
           <th> <?php echo Patient::model()->getAttributeLabel('hos_num'); ?></th>
           <th>Name</th>
-          <th></th>
+          <th>Born</th>
         </tr>
         </thead>
         <tbody>
@@ -22,7 +22,10 @@
                 <?php echo CHtml::link($patient->getFullName(),
                   Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?>
               </td>
-              <td></td>
+              <td>
+                  <?php echo CHtml::link(date('d/m/Y', strtotime($patient->getDOB())),
+                      Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?>
+              </td>
             </tr>
           <?php endforeach; ?>
         </tr>

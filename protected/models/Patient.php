@@ -621,6 +621,16 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
+     * Get the patient's dob.
+     *
+     * @return string
+     */
+    public function getDOB()
+    {
+        return $this->dob;
+    }
+
+    /**
      * Get the patient's age.
      *
      * @return string
