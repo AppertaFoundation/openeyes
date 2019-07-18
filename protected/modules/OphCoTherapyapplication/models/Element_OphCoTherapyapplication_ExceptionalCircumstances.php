@@ -399,7 +399,7 @@ class Element_OphCoTherapyapplication_ExceptionalCircumstances extends SplitEven
     public function getDeviationReasonsForSide($side)
     {
         $in_use_reason_ids = array();
-        if( is_array($this->{$side.'_deviationreasons'}) ){
+        if ( is_array($this->{$side.'_deviationreasons'}) ) {
             foreach ($this->{$side.'_deviationreasons'} as $curr) {
                 $in_use_reason_ids[] = $curr->id;
             }
@@ -502,7 +502,7 @@ class Element_OphCoTherapyapplication_ExceptionalCircumstances extends SplitEven
     {
         $file_collection_values = array();
 
-        if( is_array($this->{$side.'_filecollections'}) ){
+        if ( is_array($this->{$side.'_filecollections'}) ) {
             foreach ($this->{$side.'_filecollections'} as $file_collection) {
                 $file_collection_values[] = $file_collection->id;
             }

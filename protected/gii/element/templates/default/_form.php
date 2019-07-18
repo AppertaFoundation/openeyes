@@ -43,7 +43,6 @@ foreach ($this->tableSchema->columns as $column) {
     <?php echo "<?php echo \$form->error(\$model,'{$column->name}'); ?>\n";
     ?>
 </div>
-<?php
-
+    <?php
 }
 ?>

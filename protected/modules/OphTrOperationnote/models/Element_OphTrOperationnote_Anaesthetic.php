@@ -162,7 +162,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         $ga = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'GA'))->queryScalar();
         $no_anaesthetic = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'NoA'))->queryScalar();
 
-        if( count($this->anaesthetic_type) == 1 && ( $this->anaesthetic_type[0]->id == $ga->id || $this->anaesthetic_type[0]->id == $no_anaesthetic->id ) ) {
+        if ( count($this->anaesthetic_type) == 1 && ( $this->anaesthetic_type[0]->id == $ga->id || $this->anaesthetic_type[0]->id == $no_anaesthetic->id ) ) {
             return true;
         }
 
@@ -276,7 +276,6 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
 
         if (!empty($delivery_ids)) {
             foreach ($delivery_ids as $delivery_id) {
-
                 if (!isset($curr_by_id[$delivery_id])) {
                     $delivery = new OphTrOperationnote_OperationAnaestheticDelivery();
                     $delivery->et_ophtroperationnote_anaesthetic_id = $this->id;
@@ -373,12 +372,12 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
     {
         $type = AnaestheticType::model()->findByAttributes(array('name' => $type_name));
 
-        if(!$type){
+        if (!$type) {
             return null;
         }
 
-        foreach($this->anaesthetic_type as $anaesthetic_type){
-            if($anaesthetic_type->id == $type->id){
+        foreach ($this->anaesthetic_type as $anaesthetic_type) {
+            if ($anaesthetic_type->id == $type->id) {
                 return true;
             }
         }
@@ -392,11 +391,11 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
     public function getAnaestheticTypeDisplay()
         {
             return implode(', ', $this->anaesthetic_type);
-        }
+    }
 
     public function afterValidate()
     {
-        if( !count($this->anaesthetic_type_assignments)){
+        if ( !count($this->anaesthetic_type_assignments)) {
             $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 
@@ -410,17 +409,16 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         // GA is selected,
         // delivery method should be other (all other delivery options un-checked)
         // given by should be Anaesthetist
-        if( ($assignments_count == 1) && ($this->anaesthetic_type_assignments[0]->anaesthetic_type_id == $type_ga->id) ){
-
+        if ( ($assignments_count == 1) && ($this->anaesthetic_type_assignments[0]->anaesthetic_type_id == $type_ga->id) ) {
             $anaesthetist_delivery_other = AnaestheticDelivery::model()->findByAttributes(array('name' => 'Other'));
 
-            if($delivery_method_count != 1 || $this->anaesthetic_delivery_assignments[0]->anaesthetic_delivery_id != $anaesthetist_delivery_other->id){
+            if ($delivery_method_count != 1 || $this->anaesthetic_delivery_assignments[0]->anaesthetic_delivery_id != $anaesthetist_delivery_other->id) {
                 $this->addError('anaesthetic_delivery', 'If anaesthetic Type is "GA" than LA Delivery Methods must only be "Other"');
             }
 
             $anaesthetist_type_anaesthetist = Anaesthetist::model()->findByAttributes(array('name' => 'Anaesthetist'));
 
-            if($this->anaesthetist_id != $anaesthetist_type_anaesthetist->id){
+            if ($this->anaesthetist_id != $anaesthetist_type_anaesthetist->id) {
                 $this->addError('Anaesthetist', 'If anaesthetic Type is "GA" than Given by must be "Anaesthetist"');
             }
         }
@@ -428,23 +426,23 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         //No Anaesthetic selected
         //delivery option should be empty
         //anaesthetist_id should be null
-        if( ($assignments_count == 1) && ($this->anaesthetic_type_assignments[0]->anaesthetic_type_id == $type_noA->id) ){
-            if($delivery_method_count != 0){
+        if ( ($assignments_count == 1) && ($this->anaesthetic_type_assignments[0]->anaesthetic_type_id == $type_noA->id) ) {
+            if ($delivery_method_count != 0) {
                 $this->addError('anaesthetic_delivery', 'If anaesthetic Type is "No Anaesthetic" than no LA Delivery Methods should be selected');
             }
 
-            if($this->anaesthetist_id != null){
+            if ($this->anaesthetist_id != null) {
                 $this->addError('Anaesthetist', 'If anaesthetic Type is "No Anaesthetic" than no "Given by" should be selected.');
             }
         }
 
         //Anything else seleted than GA(alone) or No Anaesthetic
-        if( $assignments_count > 1 || ( $assignments_count == 1 && !in_array($this->anaesthetic_type_assignments[0]->anaesthetic_type_id, array($type_ga->id, $type_noA->id))) ){
-            if($this->anaesthetic_type_assignments[0]->anaesthetic_type_id === $type_la->id && !count($this->anaesthetic_delivery_assignments)){
+        if ( $assignments_count > 1 || ( $assignments_count == 1 && !in_array($this->anaesthetic_type_assignments[0]->anaesthetic_type_id, array($type_ga->id, $type_noA->id))) ) {
+            if ($this->anaesthetic_type_assignments[0]->anaesthetic_type_id === $type_la->id && !count($this->anaesthetic_delivery_assignments)) {
                 $this->addError('anaesthetic_delivery', 'LA Delivery Methods cannot be empty.');
             }
 
-            if($this->anaesthetist_id == null){
+            if ($this->anaesthetist_id == null) {
                 $this->addError('Anaesthetist', 'Given by cannot be empty.');
             }
         }

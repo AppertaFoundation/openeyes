@@ -25,16 +25,18 @@
     var widgetSliderTable_<?=\CHtml::modelName($element)?>_<?php echo $field?> = new WidgetSliderTable({
         'range_id': '<?=\CHtml::modelName($element)?>_<?php echo $field?>',
         'data': {
-            <?php foreach ($data as $i => $val) { 
+            <?php foreach ($data as $i => $val) {
                 if ($i > 1) {
                     echo ',';
                 }
-                echo "'$i': '$val'"; 
+                echo "'$i': '$val'";
             }?>
         }
     });
 </script>
-<div id="div_<?=\CHtml::modelName($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$hidden) {?> style="display: none;"<?php }?>>
+<div id="div_<?=\CHtml::modelName($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$hidden) {
+    ?> style="display: none;"<?php
+             }?>>
     <div class="label"><?php echo $element->getAttributeLabel($field)?>:</div>
     <div class="data">
         <span class="widgetSliderValue" id="<?=\CHtml::modelName($element)?>_<?php echo $field?>_value_span"><?php echo $data[$value]?></span>

@@ -19,7 +19,7 @@ $right_emails = $service->getRightSentEmails();
 $left_emails = $service->getLeftSentEmails();
 
 if ($right_emails || $left_emails) {
-?>
+    ?>
 <section class="element">
     <header class="element-header">
         <h3 class="element-title">Application</h3>
@@ -34,6 +34,5 @@ if ($right_emails || $left_emails) {
         </div>
     </div>
 </section>
-<?php
-
+    <?php
 }

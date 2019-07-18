@@ -24,8 +24,7 @@ class m190603_084711_add_ophtr_operationnote_attribute extends OEMigration
             ), true);
 
             $this->addForeignKey('fk_ophtroperationnote_ao_attr_id', 'ophtroperationnote_attribute_option', 'attribute_id', 'ophtroperationnote_attribute', 'id');
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $trans->rollback();
             return false;
         }

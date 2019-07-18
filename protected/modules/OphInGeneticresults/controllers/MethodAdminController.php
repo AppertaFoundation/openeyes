@@ -57,11 +57,11 @@ class MethodAdminController extends BaseAdminController
             'name' => 'text',
         ));
         
-        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
 
         $valid = $admin->editModel(false);
 
-        if (Yii::app()->request->isPostRequest) {        
+        if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Genetic Results Method Saved");
                 $this->redirect('/OphInGeneticresults/methodAdmin/list');

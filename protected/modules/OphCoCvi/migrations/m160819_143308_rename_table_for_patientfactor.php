@@ -12,7 +12,7 @@ class m160819_143308_rename_table_for_patientfactor extends CDbMigration
         $this->renameColumn('ophcocvi_clericinfo_patient_factor_answer', 'ophcocvi_clinicinfo_patient_factor_id', 'patient_factor_id');
         $this->renameColumn('ophcocvi_clericinfo_patient_factor_answer_version', 'ophcocvi_clinicinfo_patient_factor_id', 'patient_factor_id');
 
-        $this->addForeignKey('et_ophcocvi_clericinfo_patient_factor_answer_lku_fk','ophcocvi_clericinfo_patient_factor_answer','patient_factor_id', 'ophcocvi_clericinfo_patient_factor', 'id');
+        $this->addForeignKey('et_ophcocvi_clericinfo_patient_factor_answer_lku_fk', 'ophcocvi_clericinfo_patient_factor_answer', 'patient_factor_id', 'ophcocvi_clericinfo_patient_factor', 'id');
     }
 
     public function down()
@@ -24,8 +24,8 @@ class m160819_143308_rename_table_for_patientfactor extends CDbMigration
         $this->renameTable('ophcocvi_clericinfo_patient_factor', 'ophcocvi_clinicinfo_patient_factor');
         $this->renameTable('ophcocvi_clericinfo_patient_factor_version', 'ophcocvi_clinicinfo_patient_factor_version');
 
-        $this->addForeignKey('et_ophcocvi_clericinfo_patient_factor_answer_lku_fk','ophcocvi_clericinfo_patient_factor_answer','ophcocvi_clinicinfo_patient_factor_id', 'ophcocvi_clinicinfo_patient_factor', 'id');
-        $this->addForeignKey('acv_et_ophcocvi_clericinfo_patient_factor_answer_lku_fk','ophcocvi_clericinfo_patient_factor_answer_version','ophcocvi_clinicinfo_patient_factor_id', 'ophcocvi_clinicinfo_patient_factor', 'id');
+        $this->addForeignKey('et_ophcocvi_clericinfo_patient_factor_answer_lku_fk', 'ophcocvi_clericinfo_patient_factor_answer', 'ophcocvi_clinicinfo_patient_factor_id', 'ophcocvi_clinicinfo_patient_factor', 'id');
+        $this->addForeignKey('acv_et_ophcocvi_clericinfo_patient_factor_answer_lku_fk', 'ophcocvi_clericinfo_patient_factor_answer_version', 'ophcocvi_clinicinfo_patient_factor_id', 'ophcocvi_clinicinfo_patient_factor', 'id');
 
     }
 

@@ -63,7 +63,7 @@
         </div>
     </div>
   <div class="cols-12 column">
-      <?php echo $form->textField($element, 'acd_'.$side, array('append-text' => 'mm'), null, array('label' => 3, 'field' => 3))?>
+        <?php echo $form->textField($element, 'acd_'.$side, array('append-text' => 'mm'), null, array('label' => 3, 'field' => 3))?>
             <?php echo $form->textField($element, 'scleral_thickness_'.$side, array('append-text' => 'mm'), null, array('label' => 3, 'field' => 3))?>
   </div>
 </div>

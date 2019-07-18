@@ -152,7 +152,7 @@
                     foreach (['right', 'left'] as $side) :
                         $document = $side.'_document';
                         $document_id = $side.'_document_id';
-                    ?>
+                        ?>
                     <td>
                         <div>
                             <label>Rotate <?=$side?> Image:</label>

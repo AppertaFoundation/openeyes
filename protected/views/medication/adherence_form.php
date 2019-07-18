@@ -51,7 +51,7 @@ if ($adherence === null) {
                 CHtml::listData(MedicationAdherenceLevel::model()->
                     findAll(array('order' => 'display_order')), 'id', 'name')
             )
-            ?></div>
+                    ?></div>
     </div>
     <div class="data-group">
         <div class="<?= $form->columns('label') ?>"><label for="adherence">Comments:</label></div>

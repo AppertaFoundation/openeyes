@@ -18,7 +18,7 @@
 ?>
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :?>
         <div class="js-element-eye <?=$eye_side?>-eye column <?=$page_side?>"
              data-side="<?=$eye_side?>" >
             <div class="active-form flex-layout"
@@ -41,20 +41,20 @@
                 </div>
             </div>
         </div>
-    <?php
-    $items = array();
-    $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-    $itemSets = array();
-    foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
-        foreach ($attribute->getAttributeOptions() as $option) {
-            $items[] = ['label' => (string)$option->slug];
-        }
+        <?php
+        $items = array();
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $itemSets = array();
+        foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+            foreach ($attribute->getAttributeOptions() as $option) {
+                $items[] = ['label' => (string)$option->slug];
+            }
 
-        $itemSets[] = ['items' => $items ,
+            $itemSets[] = ['items' => $items ,
             'header' => $attribute->label ,
             'multiSelect' => $attribute->is_multiselect === '1' ? true : false
-        ];
-    } ?>
+            ];
+        } ?>
 
       <script type="text/javascript">
         $(function () {

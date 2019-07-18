@@ -19,7 +19,7 @@
   <form action="#OphCiExamination_Episode_VisualAcuityHistory">
     <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
     <input name="patient_id" value=<?= $this->patient->id ?> type="hidden">
-      <?= CHtml::dropDownList(
+        <?= CHtml::dropDownList(
         'va_history_unit_id',
         $va_unit->id,
         CHtml::listData(

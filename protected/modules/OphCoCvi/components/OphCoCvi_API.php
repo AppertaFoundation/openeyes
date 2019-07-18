@@ -113,8 +113,7 @@ class OphCoCvi_API extends \BaseAPI
             $mgr = $this->getManager();
             return $mgr->getDisplayStatusForEvent($latest) .
                 ' (' . \Helper::convertMySQL2NHS($mgr->getDisplayStatusDateForEvent($latest)) . ')';
-        }
-        else {
+        } else {
             return $patient->getOphInfo()->cvi_status->name .
                 ' (' . \Helper::formatFuzzyDate($patient->getOphInfo()->cvi_status_date) . ')';
         }
@@ -250,8 +249,7 @@ class OphCoCvi_API extends \BaseAPI
     {
         $show_alert = false;
         $base_values = array();
-        if($element) {
-
+        if ($element) {
             $show_alert = !$element->cvi_alert_dismissed && !$this->hasCVI($patient);
             foreach (array_merge($element->right_readings, $element->left_readings) as $reading) {
                 $base_values[] = $reading->value;
@@ -294,13 +292,12 @@ class OphCoCvi_API extends \BaseAPI
      * @return string
      */
     public function getCviSummaryDate($patient){
-            if ($events = $this->getEvents($patient)) {
-                $latest = array_pop($events);
-                $mgr = $this->getManager();
-                return $mgr->getDisplayStatusDateForEvent($latest);
-            }
-            else {
-                return $patient->getOphInfo()->cvi_status_date;
+        if ($events = $this->getEvents($patient)) {
+            $latest = array_pop($events);
+            $mgr = $this->getManager();
+            return $mgr->getDisplayStatusDateForEvent($latest);
+        } else {
+            return $patient->getOphInfo()->cvi_status_date;
         }
     }
 

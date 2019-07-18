@@ -16,7 +16,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 foreach ($legacyepisodes as $i => $episode) {?>
-
     <section class="panel episode open legacy">
 
         <!-- Episode date -->
@@ -26,7 +25,11 @@ foreach ($legacyepisodes as $i => $episode) {?>
         </div>
         -->
         <!-- Show/hide toggle icon -->
-        <a href="#" class="toggle-trigger toggle-<?php if ((!$this->event || $this->event->episode_id != $episode->id) && !@Yii::app()->session['episode_hide_status']['legacy']) { ?>show<?php } else { ?>hide<?php } ?>">
+        <a href="#" class="toggle-trigger toggle-<?php if ((!$this->event || $this->event->episode_id != $episode->id) && !@Yii::app()->session['episode_hide_status']['legacy']) {
+            ?>show<?php
+                                                 } else {
+                                                        ?>hide<?php
+                                                 } ?>">
             <span class="icon-showhide">
                 Show/hide events for this episode
             </span>
@@ -37,7 +40,11 @@ foreach ($legacyepisodes as $i => $episode) {?>
             Legacy events
         </h4>
 
-        <div class="events-container <?php if ((!$this->event || $this->event->episode_id != $episode->id) && !@Yii::app()->session['episode_hide_status']['legacy']) { ?>hide<?php } else {?>show<?php }?>">
+        <div class="events-container <?php if ((!$this->event || $this->event->episode_id != $episode->id) && !@Yii::app()->session['episode_hide_status']['legacy']) {
+            ?>hide<?php
+                                     } else {
+                                            ?>show<?php
+                                     }?>">
             <ol class="events">
                 <?php
                 foreach ($episode->events as $event) {
@@ -49,7 +56,9 @@ foreach ($legacyepisodes as $i => $episode) {?>
 
                     $event_path = Yii::app()->createUrl($event->eventType->class_name.'/Default/view').'/';
                     ?>
-                    <li id="eventLi<?php echo $event->id ?>"<?php if ($highlight) { ?> class="selected"<?php }?>>
+                    <li id="eventLi<?php echo $event->id ?>"<?php if ($highlight) {
+                        ?> class="selected"<?php
+                                   }?>>
 
                         <!-- Quicklook tooltip -->
                         <div class="quicklook" style="display: none; ">
@@ -61,7 +70,9 @@ foreach ($legacyepisodes as $i => $episode) {?>
                         </div>
 
                         <a href="<?php echo $event_path.$event->id ?>" data-id="<?php echo $event->id ?>">
-                            <span class="event-type<?php if ($event->hasIssue()) { ?> alert<?php } ?>">
+                            <span class="event-type<?php if ($event->hasIssue()) {
+                                ?> alert<?php
+                                                   } ?>">
                                 <?php $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.assets')).'/'; ?>
                                 <img src="<?php echo Yii::app()->createUrl($assetpath.'img/small.png') ?>" alt="op" width="19" height="19" />
                             </span>

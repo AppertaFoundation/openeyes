@@ -134,9 +134,9 @@
     <p>
         <?php if ($css_class == 'impaired') { ?>
         <div class="dotted-write"></div>
-    <?php } else { ?>
+        <?php } else { ?>
         <div class="dotted-write"></div>
-    <?php } ?>
+        <?php } ?>
     </p>
     <p>
         (Where incapacity is likely to be temporary, for example if patient unconscious, or where patient has fluctuating capacity)
@@ -168,9 +168,9 @@
         If a person close to the patient was not available in person, has this matter been discussed in any other way (eg over the telephone?)  Yes&nbsp;&nbsp;&nbsp;No<br/><br/>
         <?php if ($css_class == 'impaired') { ?>
             Details:<div class="dotted-write"></div>
-    <?php } else { ?>
+        <?php } else { ?>
         Details:<div class="dotted-write"></div>
-    <?php } ?>
+        <?php } ?>
     </p>
     <p>
         <strong>Signature of health professional proposing treatment</strong>

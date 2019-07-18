@@ -18,15 +18,15 @@
 ?>
 <?php
     $printHelperClass = '';
-    switch(Yii::app()->controller->module->id){
-        case 'OphCoCorrespondence':
-            $printHelperClass = 'OphCoCorrespondence large-font';
-            $printHelperStyles = 'margin: 0 80px';
-            break;
-        case 'OphTrConsent':
-            $printHelperClass = 'OphTrConsent '.(isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
-            break;
-    }
+switch (Yii::app()->controller->module->id) {
+    case 'OphCoCorrespondence':
+        $printHelperClass = 'OphCoCorrespondence large-font';
+        $printHelperStyles = 'margin: 0 80px';
+        break;
+    case 'OphTrConsent':
+        $printHelperClass = 'OphTrConsent '.(isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
+        break;
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -42,7 +42,7 @@
 
             // function for printing
             printFn = function() {
-                <?php if(Yii::app()->request->getParam('auto_print', true)){?>
+                <?php if (Yii::app()->request->getParam('auto_print', true)) {?>
                 window.print();
                 <?php } ?>
             };

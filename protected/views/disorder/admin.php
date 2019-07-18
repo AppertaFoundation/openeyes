@@ -46,4 +46,4 @@ $this->menu=array(
     'pagerCssClass'=>'pagination',
     'itemsCssClass'=>'standard highlight-rows',
 )); ?>
-<?= CHtml::link('Add New Disorder', Yii::app()->createURL('disorder/create'),array('class' => 'button large')) ?>
+<?= CHtml::link('Add New Disorder', Yii::app()->createURL('disorder/create'), array('class' => 'button large')) ?>

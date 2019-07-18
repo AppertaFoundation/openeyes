@@ -48,7 +48,7 @@
                     No patients were found with the selected search criteria.
                 </td>
             </tr>
-        <?php }else{?>
+        <?php } else {?>
             <?php foreach ($report->injections as $ts => $injection) {?>
                 <tr>
                     <td><?php echo $injection['patient_hosnum']?></td>

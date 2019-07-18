@@ -24,7 +24,7 @@ class m180405_095159_add_contact_details_element extends OEMigration
 
     public function down()
     {
-        $this->dropForeignKey('et_ophtroperationbooking_contact_details_event_fk','et_ophtroperationbooking_contact_details');
+        $this->dropForeignKey('et_ophtroperationbooking_contact_details_event_fk', 'et_ophtroperationbooking_contact_details');
         $this->dropTable('et_ophtroperationbooking_contact_details');
     }
 

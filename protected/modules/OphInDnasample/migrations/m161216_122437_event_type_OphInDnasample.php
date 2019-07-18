@@ -7,7 +7,7 @@ class m161216_122437_event_type_OphInDnasample extends CDbMigration
         if ($this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name' => 'OphInBloodsample'))->queryRow()) {
             $group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name', array(':name' => 'Investigation events'))->queryRow();
             $rowID = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name' => 'OphInBloodsample'))->queryRow();
-            $this->update('event_type', array('class_name' => 'OphInDnasample', 'name' => 'DNA sample') , 'id = '.$rowID['id'].' AND event_group_id = '.$group['id']);
+            $this->update('event_type', array('class_name' => 'OphInDnasample', 'name' => 'DNA sample'), 'id = '.$rowID['id'].' AND event_group_id = '.$group['id']);
         }
         
         $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name' => 'OphInDnasample'))->queryRow();
@@ -24,7 +24,7 @@ class m161216_122437_event_type_OphInDnasample extends CDbMigration
         if ($this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name' => 'OphInDnasample'))->queryRow()) {
             $group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name', array(':name' => 'Investigation events'))->queryRow();
             $rowID = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name' => 'OphInDnasample'))->queryRow();
-            $this->update('event_type', array('class_name' => 'OphInBloodsample', 'name' => 'DNA sample') , 'id = '.$rowID['id'].' AND event_group_id = '.$group['id']);
+            $this->update('event_type', array('class_name' => 'OphInBloodsample', 'name' => 'DNA sample'), 'id = '.$rowID['id'].' AND event_group_id = '.$group['id']);
         }
         
         $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name' => 'OphInBloodsample'))->queryRow();

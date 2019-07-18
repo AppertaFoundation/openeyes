@@ -21,7 +21,7 @@
   <div class="data-group">
     <div class="cols-6 column end">
       <label for="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'; ?>">
-          <?= $element->getAttributeLabel($side . '_ed_report') ?>:
+            <?= $element->getAttributeLabel($side . '_ed_report') ?>:
       </label>
     </div>
     <div class="cols-10 column end autoreport-display">

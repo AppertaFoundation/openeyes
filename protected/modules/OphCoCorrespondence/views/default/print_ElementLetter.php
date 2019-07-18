@@ -26,7 +26,7 @@ $toAddressContactType = $element->getToAddressContactType();
 
 if (!@$no_header) {?>
     <header class="print-header" style="margin-bottom: 70px;">
-    <?php 
+    <?php
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
         
@@ -39,23 +39,24 @@ if (!@$no_header) {?>
         ))?>
     </header>
 
-<?php $this->renderPartial('reply_address', array(
+    <?php $this->renderPartial('reply_address', array(
         'site' => $element->site,
         'is_internal_referral' => $element->isInternalReferral(),
-))?>
+    ))?>
 
 <?php }?>
 <p class="accessible">
     <?php echo $element->renderIntroduction()?>
 </p>
-<p class="accessible"><strong><?php if ($element->re) {?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re))?>
-<?php } else {
-                if (Yii::app()->params['nhs_num_private'] == true) {
-                    ?>Hosp No: <?php echo $element->event->episode->patient->hos_num?><?php
-                    } else {
-                        ?>Hosp No: <?php echo $element->event->episode->patient->hos_num?>, <?php echo Yii::app()->params['nhs_num_label']?> No: <?php echo $element->event->episode->patient->nhsnum?> <?php
-                            }
-                }?></strong></p>
+<p class="accessible"><strong><?php if ($element->re) {
+    ?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re))?>
+                                <?php } else {
+                                  if (Yii::app()->params['nhs_num_private'] == true) {
+                                        ?>Hosp No: <?php echo $element->event->episode->patient->hos_num?><?php
+                                  } else {
+                                        ?>Hosp No: <?php echo $element->event->episode->patient->hos_num?>, <?php echo Yii::app()->params['nhs_num_label']?> No: <?php echo $element->event->episode->patient->nhsnum?> <?php
+                                  }
+                                }?></strong></p>
 
 <p class="accessible">
 <?php echo $element->renderBody() ?>
@@ -73,7 +74,7 @@ if (!@$no_header) {?>
     </h5>
 <p nobr="true">
 <?php if ($element->enclosures) {?>
-<?php
+    <?php
     foreach ($element->enclosures as $enclosure) {?>
         <br/>Enc: <?php echo $enclosure->content?>
     <?php }?>
@@ -88,22 +89,21 @@ if (!@$no_header) {?>
         array('order' => 't.display_order asc')
     );
 
-    if($associated_content){?>
+    if ($associated_content) {?>
         <br>
         Attachments:
         <?php
         $attachments = array();
-        foreach($associated_content as $ac){
-            if($ac->display_title){
+        foreach ($associated_content as $ac) {
+            if ($ac->display_title) {
                 $attachments[] = $ac->display_title;
             } else {
                 $associated_event = Event::model()->findByPk($ac->associated_event_id);
 
                 $attachments[] = $associated_event->eventType->name.' ('.Helper::convertDate2NHS($associated_event->event_date).')';
             }
-
         }
         echo implode(", ", $attachments);
     }
-?>
+    ?>
 </p>

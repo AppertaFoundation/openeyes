@@ -165,7 +165,7 @@ foreach ($this->patient->episodes as $ep) {
         new OpenEyes.UI.AdderDialog({
             openButton: $('#add-ophthalmic-diagnoses'),
             itemSets: [
-                <?php if(!empty($filteredOphthalmicDisorderGroups)) { ?>
+                <?php if (!empty($filteredOphthalmicDisorderGroups)) { ?>
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                     array_map(function ($disorderGroup) {
                         return [

@@ -69,7 +69,6 @@
                     <?php
 
                     if (isset($_POST['attachments_event_id'])) { ?>
-
                         <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $row_index ?>]"
                                value="<?= $_POST['attachments_event_id'][$row_index] ?>"/>
                     <?php } else if (isset($value->associated_protected_file_id)) { ?>
@@ -93,7 +92,7 @@
                                name="attachments_display_title[<?= $row_index ?>]" value="<?= $display_title ?>"/></td>
                     <td>
                         <input type="hidden" name="attachments_event_id[<?= $row_index ?>]" value="<?= $event_id ?>"/>
-                        <?php if ($is_macroinit): ?>
+                        <?php if ($is_macroinit) : ?>
                             <input type="hidden" name="attachments_id[<?= $row_index ?>]" value="<?= $ac->id ?>"/>
                         <?php endif; ?>
                         <input type="hidden" name="attachments_system_hidden[<?= $row_index ?>]"
@@ -112,10 +111,8 @@
             }
 
             if (isset($_POST['attachments_event_id'])) {
-
                 $posted_data = array_diff_assoc($_POST['attachments_event_id'], $event_id_compare);
                 if (!empty($posted_data)) {
-
                     foreach ($posted_data as $pdk => $pdv) {
                         $event = Event::model()->findByPk($pdv);
                         $row_index++;

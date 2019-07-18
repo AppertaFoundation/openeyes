@@ -13,9 +13,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if ($elements): ?>
+<?php if ($elements) : ?>
     <div id="vf-slider-container">
-    <?php foreach ($elements as $element): ?>
+    <?php foreach ($elements as $element) : ?>
         <div id="OphInVisualfields_Episode_VisualFieldsHistory_element_<?= $element->id ?>" class="OphInVisualfields_Episode_VisualFieldsHistory_element element-fields element-eyes hidden">
             <?php
                 $this->render(get_class($this).'_side', array('element' => $element, 'side' => 'right'));
@@ -107,6 +107,6 @@
             showElement(elementIds[elementIds.length - 1]);
         });
     </script>
-<?php else: ?>
+<?php else : ?>
     <div class="data-value">No visual field images recorded for this patient.</div>
 <?php endif ?>

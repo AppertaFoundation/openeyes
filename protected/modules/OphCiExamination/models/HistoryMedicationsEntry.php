@@ -109,8 +109,7 @@ class HistoryMedicationsEntry extends \BaseElement
     protected function updateStateProperties()
     {
         if ($this->end_date !== null
-            && $this->end_date <= date('Y-m-d' , strtotime($this->element->event->event_date)))
-        {
+            && $this->end_date <= date('Y-m-d', strtotime($this->element->event->event_date))) {
             $this->originallyStopped = true;
         }
         if ($this->prescription_item_id) {
@@ -154,12 +153,12 @@ class HistoryMedicationsEntry extends \BaseElement
         $this->dose = $item->dose;
         $this->frequency_id = $item->frequency_id;
         $this->frequency = $item->frequency;
-        $this->start_date = date('Y-m-d',strtotime($item->prescription->event->event_date));
+        $this->start_date = date('Y-m-d', strtotime($item->prescription->event->event_date));
         if (!$this->end_date) {
             $end_date = $item->stopDateFromDuration();
 
             if ($end_date !== null) {
-                if(strtotime($end_date->format('Y-m-d')) < time()){
+                if (strtotime($end_date->format('Y-m-d')) < time()) {
                     $this->originallyStopped = true;
                 }
                 $this->end_date = $end_date->format('Y-m-d');
@@ -403,15 +402,15 @@ class HistoryMedicationsEntry extends \BaseElement
     public function getDoseAndFrequency(){
         $result = [];
 
-        if($this->dose){
-            if($this->units) {
+        if ($this->dose) {
+            if ($this->units) {
                 $result[] = $this->dose . ' ' . $this->units;
             } else {
                 $result[] = $this->dose;
             }
         }
 
-        if($this->frequency){
+        if ($this->frequency) {
             $result[] = $this->frequency;
         }
 
