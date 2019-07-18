@@ -32,27 +32,27 @@ function getRiskLevelColour($risk_level){
 }
 ?>
 <div class="element-fields flex-layout full-width ">
-	<div class="data-group collapse">
-		<div class="cols-2 column">
-			<div class="field-highlight<?php if ($element->risk) {
+    <div class="data-group collapse">
+        <div class="cols-2 column">
+            <div class="field-highlight<?php if ($element->risk) {
     ?> <?php echo $element->risk->class?><?php }?> risk">
-				<?php $html_options = array('nowrapper' => true, 'empty' => 'Select');
-				$risks = OEModule\OphCiExamination\models\OphCiExamination_GlaucomaRisk_Risk::model()->findAll();
-				foreach ($risks as $option) {
-				  $html_options['options'][(string) $option->id] = array(
-				      'data-clinicoutcome-template-id' => $option->clinicoutcome_template_id,
+                <?php $html_options = array('nowrapper' => true, 'empty' => 'Select');
+                $risks = OEModule\OphCiExamination\models\OphCiExamination_GlaucomaRisk_Risk::model()->findAll();
+                foreach ($risks as $option) {
+                  $html_options['options'][(string) $option->id] = array(
+                      'data-clinicoutcome-template-id' => $option->clinicoutcome_template_id,
               'class' => $option->class,
               );
-				}
-				echo $form->dropdownList($element, 'risk_id', CHtml::listData($risks, 'id', 'name'), $html_options);
-				?>
-			</div>
-		</div>
+                }
+                echo $form->dropdownList($element, 'risk_id', CHtml::listData($risks, 'id', 'name'), $html_options);
+                ?>
+            </div>
+        </div>
     <a href="#" class="field-info descriptions_link">definitions</a>
-	</div>
-	<div class="glaucoma-risk-descriptions" id="<?= CHtml::modelName($element) ?>_descriptions" style="display: none;">
-			<?php foreach ($risks as $option) { ?>
-				<div class="status-box <?= getRiskLevelColour($option->class)?>">
+    </div>
+    <div class="glaucoma-risk-descriptions" id="<?= CHtml::modelName($element) ?>_descriptions" style="display: none;">
+            <?php foreach ($risks as $option) { ?>
+                <div class="status-box <?= getRiskLevelColour($option->class)?>">
           <b>
             <a href="#" data-risk-id="<?php echo $option->id ?>">
                 <?php echo $option->name ?>
@@ -61,6 +61,6 @@ function getRiskLevelColour($risk_level){
           <br>
             <?php echo nl2br($option->description) ?>
         </div>
-			<?php } ?>
-	</div>
+            <?php } ?>
+    </div>
 </div>

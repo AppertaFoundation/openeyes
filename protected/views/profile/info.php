@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-	<h2>Basic information</h2>
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    <h2>Basic information</h2>
+    <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'profile-form',
         'enableAjaxValidation' => false,
         'layoutColumns' => array(
@@ -26,14 +26,14 @@
         ),
     ))?>
 
-		<?php if (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu']) {?>
-			<div class="alert-box alert">
-				User editing of basic information is administratively disabled.
-			</div>
-		<?php }?>
+        <?php if (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu']) {?>
+            <div class="alert-box alert">
+                User editing of basic information is administratively disabled.
+            </div>
+        <?php }?>
 
-		<?php $this->renderPartial('//base/_messages')?>
-		<?php $this->renderPartial('//elements/form_errors', array('errors' => $errors))?>
+        <?php $this->renderPartial('//base/_messages')?>
+        <?php $this->renderPartial('//elements/form_errors', array('errors' => $errors))?>
 
 <table class="standard">
   <tbody>
@@ -113,8 +113,8 @@
           <?php echo EventAction::button('Update', 'save',null, array('class'=>'button large hint green'))->toHtml()?>
         <i class="spinner" title="Loading..." style="display: none;"></i>
       </div>
-		<?php }?>
+        <?php }?>
 
-	<?php $this->endWidget()?>
+    <?php $this->endWidget()?>
 
 

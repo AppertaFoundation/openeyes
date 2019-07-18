@@ -3,9 +3,9 @@
 class m180205_140223_replace_IOL_to_fulltext extends CDbMigration
 {
 
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
         //not using criteria here because this fix comes with yii 1.1.16: 3379 iterator bugfix #3453
         $dataProvider = new CActiveDataProvider('Procedure');
         $iterator = new CDataProviderIterator($dataProvider);
@@ -37,12 +37,12 @@ class m180205_140223_replace_IOL_to_fulltext extends CDbMigration
                 }
             }
         }
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         echo "m180205_140223_replace_IOL_to_fulltext does not support migration down.\n";
         return false;
-	}
+    }
 
 }

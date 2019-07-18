@@ -2,28 +2,28 @@
 
 class m160915_093448_add_document_management_tables extends OEMigration
 {
-	public function up()
-	{
-		$this->createOETable('document_set', array(
-			'id' => 'pk',
-  			'event_id' => 'int(10) unsigned NOT NULL',
-			'allowMultipleDocs' => 'tinyint(4) NOT NULL DEFAULT 1',
-  			'allowChangeTemplates' => 'tinyint(4) NOT NULL DEFAULT 1',
-  			'allowChangeRecipients' => 'tinyint(4) NOT NULL DEFAULT 1',
-  			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-  			'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
-		),true);
+    public function up()
+    {
+        $this->createOETable('document_set', array(
+            'id' => 'pk',
+            'event_id' => 'int(10) unsigned NOT NULL',
+            'allowMultipleDocs' => 'tinyint(4) NOT NULL DEFAULT 1',
+            'allowChangeTemplates' => 'tinyint(4) NOT NULL DEFAULT 1',
+            'allowChangeRecipients' => 'tinyint(4) NOT NULL DEFAULT 1',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
 
-		$this->createOETable('document_instance', array(
-			'id' => 'pk',
-  			'document_set_id' => 'int(11) NOT NULL',
-  			'correspondence_event_id' => 'int(10) unsigned NOT NULL',
-  			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-			'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
-		),true);
+        $this->createOETable('document_instance', array(
+            'id' => 'pk',
+            'document_set_id' => 'int(11) NOT NULL',
+            'correspondence_event_id' => 'int(10) unsigned NOT NULL',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
 
-		$this->createOETable('document_instance_data', array(
-			'id' => 'pk',
+        $this->createOETable('document_instance_data', array(
+            'id' => 'pk',
             'document_instance_id' => 'int(11) NOT NULL',
             'macro_id' => 'int(10) unsigned',
             'start_datetime' => 'datetime NOT NULL',
@@ -44,7 +44,7 @@ class m160915_093448_add_document_management_tables extends OEMigration
             'version_number' => 'tinyint(3) NOT NULL DEFAULT 0',
             'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1'
-		), true);
+        ), true);
 
         $this->createOETable('document_output', array(
             'id' => 'pk',
@@ -93,9 +93,9 @@ class m160915_093448_add_document_management_tables extends OEMigration
 
     }
 
-	public function down()
-	{
-		$this->dropForeignKey('fk_document_target_created_user_id', 'document_target');
+    public function down()
+    {
+        $this->dropForeignKey('fk_document_target_created_user_id', 'document_target');
         $this->dropForeignKey('fk_document_target_document_instance_id', 'document_target');
 
         $this->dropForeignKey('fk_document_output_created_user_id', 'document_output');
@@ -125,14 +125,14 @@ class m160915_093448_add_document_management_tables extends OEMigration
         $this->dropTable('document_set_version');
     }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

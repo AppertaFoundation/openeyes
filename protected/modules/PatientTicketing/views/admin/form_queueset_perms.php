@@ -31,22 +31,22 @@ $roles = $qs_svc->getQueueSetRoles();
 ?>
 
 <div class="data-group">
-	<?php
+    <?php
         if (count($roles) > 1) {
             ?>
-			<div class="alert-box issue">Support for multiple Patient Ticketing roles not yet implemented.</div>
-		<?php
+            <div class="alert-box issue">Support for multiple Patient Ticketing roles not yet implemented.</div>
+        <?php
 
         } elseif (count($roles == 1)) {
             ?>
-		<div class="alert-box info">User(s) will be given the "<?=$roles[0]?>" role if not already setup.</div>
-		<input type="hidden" name="user_role" value="<?=$roles[0]?>" />
-	<?php
+        <div class="alert-box info">User(s) will be given the "<?=$roles[0]?>" role if not already setup.</div>
+        <input type="hidden" name="user_role" value="<?=$roles[0]?>" />
+    <?php
 
         } else {
             ?>
-			<div>Error: At least one role must be configured for Patient Ticketing!</div>
-	<?php
+            <div>Error: At least one role must be configured for Patient Ticketing!</div>
+    <?php
 
         }
     ?>
@@ -54,10 +54,10 @@ $roles = $qs_svc->getQueueSetRoles();
 
 
 <div class="data-group">
-	<div id="current-users-col" class="column large-6">
-		<h3>Current Users</h3>
-		<ul id="current-users-list">
-			<?php
+    <div id="current-users-col" class="column large-6">
+        <h3>Current Users</h3>
+        <ul id="current-users-list">
+            <?php
             foreach ($queueset->permissioned_users as $user) {
                 $this->renderPartial('form_queueset_perms_user', array(
                             'fullname' => $user->getFullName(),
@@ -66,12 +66,12 @@ $roles = $qs_svc->getQueueSetRoles();
                         ));
             }
             ?>
-		</ul>
-	</div>
-	<div id="new-user-col" class="column large-6 end">
-		<h3>Add User(s)</h3>
-		<div class="autocomplete-row">
-			<?php
+        </ul>
+    </div>
+    <div id="new-user-col" class="column large-6 end">
+        <h3>Add User(s)</h3>
+        <div class="autocomplete-row">
+            <?php
             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                             'name' => 'new_user',
                             'id' => 'new-user',
@@ -102,17 +102,17 @@ $roles = $qs_svc->getQueueSetRoles();
                             ),
                     ));
             ?>
-		</div>
-	</div>
-	<script id="user-template" type="x-tmpl-mustache">
-		<?php
+        </div>
+    </div>
+    <script id="user-template" type="x-tmpl-mustache">
+        <?php
             $this->renderPartial('form_queueset_perms_user', array(
                 'fullname' => '{{fullname}}',
                 'username' => '{{username}}',
                 'id' => '{{id}}',
             ));
         ?>
-	</script>
+    </script>
 </div>
 
 <?php

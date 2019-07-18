@@ -22,14 +22,14 @@
         <div class="text-center internal-referral-heading">Internal Referral Letter</div>
     <?php endif; ?>
     <br>
-	<?php if ($site && $site->replyTo) {?>
-		<strong>Please reply to:</strong>
-		<br/>
-		<?php
+    <?php if ($site && $site->replyTo) {?>
+        <strong>Please reply to:</strong>
+        <br/>
+        <?php
         echo $site->getLetterAddress(array(
             'contact' => 'replyTo',
             'include_name' => true,
             'delimiter' => ', ',
         ))?>
-	<?php }?>
+    <?php }?>
 </div>

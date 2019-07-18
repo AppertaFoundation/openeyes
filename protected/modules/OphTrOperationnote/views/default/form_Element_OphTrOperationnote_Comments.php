@@ -99,7 +99,7 @@
           },array_keys($instru_list), $instru_list)) ?>, {'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {
-				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
+                inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
         inputText.trigger('oninput');
         return true;
       }

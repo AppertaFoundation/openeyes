@@ -87,10 +87,10 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         return parent::afterValidate();
     }
 
-	public function run()
-	{
-		$where_clauses = array();
-		$where_params = array();
+    public function run()
+    {
+        $where_clauses = array();
+        $where_params = array();
         $where_operator = ' '.($this->condition_type == 'and' ? 'and' : 'or').' ';
 
         $select = array(
@@ -255,19 +255,19 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $where_params[':dateTo'] = date('Y-m-d', strtotime($this->end_date)).' 23:59:59';
     }
 
-	public function description()
-	{
-		if ($this->match_correspondence) {
-			$description = 'Correspondence';
-		}
+    public function description()
+    {
+        if ($this->match_correspondence) {
+            $description = 'Correspondence';
+        }
 
-		if ($this->match_legacy_letters) {
-			if (@$description) {
-				$description .= ' and legacy letters';
-			} else {
-				$description = 'Legacy letters';
-			}
-		}
+        if ($this->match_legacy_letters) {
+            if (@$description) {
+                $description .= ' and legacy letters';
+            } else {
+                $description = 'Legacy letters';
+            }
+        }
 
         if ($this->phrases) {
             $description .= ' containing '.($this->condition_type == 'and' ? 'all' : 'any')." of these phrases:\n";

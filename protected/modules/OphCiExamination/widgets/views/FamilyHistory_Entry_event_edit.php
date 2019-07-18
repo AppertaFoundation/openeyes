@@ -57,28 +57,28 @@ if (!isset($values)) {
             ( $values['other_condition'] ? $values['other_condition']: ''), array('class'=>'other_condition_text', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
     </div>
   </td>
-	<td>
-		<?php if (!$editable): ?>
-			<?= $values['comments'] ?>
-		<?php else: ?>
-			<span class="comment-group js-comment-container"
-						id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-						style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
-						data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
+    <td>
+        <?php if (!$editable): ?>
+            <?= $values['comments'] ?>
+        <?php else: ?>
+            <span class="comment-group js-comment-container"
+                        id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+                        style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
+                        data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
             <?=\CHtml::textField($field_prefix . '[comments]', $values['comments'],
-							array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-				<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
-				</span>
-			<button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
-							class="button js-add-comments"
-							data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-							type="button"
-							style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
-			>
-				<i class="oe-i comments small-icon"></i>
-			</button>
-		<?php endif; ?>
-	</td>
+                            array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+                </span>
+            <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
+                            class="button js-add-comments"
+                            data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+                            type="button"
+                            style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
+            >
+                <i class="oe-i comments small-icon"></i>
+            </button>
+        <?php endif; ?>
+    </td>
 
     <?php if ($editable) : ?>
       <td>

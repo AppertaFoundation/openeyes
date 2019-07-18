@@ -98,8 +98,8 @@ class m190426_090359_correct_the_values_of_ophciexamination_drgrading_nscretinop
     }
   }
 
-	public function safeUp()
-	{
+    public function safeUp()
+    {
     foreach (self::name_changes as $old_name => $new_name) {
       $this->updateName($old_name, $new_name);
     }
@@ -113,10 +113,10 @@ class m190426_090359_correct_the_values_of_ophciexamination_drgrading_nscretinop
 
     $this->updateDisplayOrders(self::new_display_orders);
     $this->updateDescription(self::name_changes['R2'], self::R2_new_description);
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
     $this->updateDescription(self::name_changes['R2'], self::R2_old_description);
     $this->delete(self::NSCRETINOPATHY_TABLE, 'id = :id',
       [':id' => $this->getIdFromName(self::name_of_new_option)]);
@@ -126,5 +126,5 @@ class m190426_090359_correct_the_values_of_ophciexamination_drgrading_nscretinop
     }
 
     $this->updateDisplayOrders(self::old_display_orders);
-	}
+    }
 }

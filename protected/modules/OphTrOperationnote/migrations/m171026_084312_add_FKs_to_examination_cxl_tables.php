@@ -2,9 +2,9 @@
 
 class m171026_084312_add_FKs_to_examination_cxl_tables extends OEMigration
 {
-	public function up()
-	{
-	    // et_ophciexamination_cxl_history
+    public function up()
+    {
+        // et_ophciexamination_cxl_history
         $this->addForeignKey('et_ophciexamination_cxl_history_event', 'et_ophciexamination_cxl_history', 'event_id', 'event', 'id');
         $this->alterColumn('et_ophciexamination_cxl_history', 'eye_id', 'int(10) UNSIGNED DEFAULT 3');
         $this->alterColumn('et_ophciexamination_cxl_history_version', 'eye_id', 'int(10) UNSIGNED DEFAULT 3');
@@ -94,16 +94,16 @@ class m171026_084312_add_FKs_to_examination_cxl_tables extends OEMigration
         $this->alterColumn('et_ophtroperationnote_cxl', 'epithelial_status_id', 'int(11)');
         $this->alterColumn('et_ophtroperationnote_cxl_version', 'epithelial_status_id', 'int(11)');
         $this->addForeignKey('et_ophtroperationnote_cxl_epith', 'et_ophtroperationnote_cxl', 'epithelial_status_id', 'ophtroperationnote_cxl_epithelial_status', 'id');
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         // et_ophciexamination_cxl_history
-		$this->dropForeignKey('et_ophciexamination_cxl_history_event', 'et_ophciexamination_cxl_history');
-		$this->dropForeignKey('et_ophciexamination_cxl_history_eye', 'et_ophciexamination_cxl_history');
+        $this->dropForeignKey('et_ophciexamination_cxl_history_event', 'et_ophciexamination_cxl_history');
+        $this->dropForeignKey('et_ophciexamination_cxl_history_eye', 'et_ophciexamination_cxl_history');
         $this->alterColumn('et_ophciexamination_cxl_history', 'eye_id', 'int(11) SIGNED DEFAULT 3');
         $this->alterColumn('et_ophciexamination_cxl_history_version', 'eye_id', 'int(11) SIGNED DEFAULT 3');
-		$this->dropForeignKey('et_ophciexamination_cxl_history_ocular_surface_disease', 'et_ophciexamination_cxl_history');
+        $this->dropForeignKey('et_ophciexamination_cxl_history_ocular_surface_disease', 'et_ophciexamination_cxl_history');
 
         //et_ophciexamination_cxl_outcome
         $this->dropForeignKey('et_ophciexamination_cxl_outcome_event', 'et_ophciexamination_cxl_outcome');
@@ -188,5 +188,5 @@ class m171026_084312_add_FKs_to_examination_cxl_tables extends OEMigration
         $this->dropForeignKey('et_ophtroperationnote_cxl_epith', 'et_ophtroperationnote_cxl');
         $this->alterColumn('et_ophtroperationnote_cxl', 'epithelial_status_id', 'int(10)');
         $this->alterColumn('et_ophtroperationnote_cxl_version', 'epithelial_status_id', 'int(10)');
-	}
+    }
 }

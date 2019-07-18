@@ -17,87 +17,87 @@ use \OEModule\OphCiExamination\models\OphCiExamination_Dilation_Drugs;
 
 class DrugController extends \ModuleAdminController
 {
-	public function actionDilationDrugs()
-	{
-		$this->group = 'Examination';
-		$asset_manager = Yii::app()->getAssetManager();
-		$asset_manager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
-		$asset_manager->registerScriptFile('/js/oeadmin/list.js');
+    public function actionDilationDrugs()
+    {
+        $this->group = 'Examination';
+        $asset_manager = Yii::app()->getAssetManager();
+        $asset_manager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
+        $asset_manager->registerScriptFile('/js/oeadmin/list.js');
 
-		$this->render('/Drug/index', [
-		  'model' => OphCiExamination_Dilation_Drugs::model(),
-		  'model_list' => OphCiExamination_Dilation_Drugs::model()->findAll(['order' => 'display_order']),
-		]);
-	}
+        $this->render('/Drug/index', [
+          'model' => OphCiExamination_Dilation_Drugs::model(),
+          'model_list' => OphCiExamination_Dilation_Drugs::model()->findAll(['order' => 'display_order']),
+        ]);
+    }
 
-	public function actions() {
-		return [
-		  'sortDrug' => [
-		    'class' => 'SaveDisplayOrderAction',
-		    'model' => OphCiExamination_Dilation_Drugs::model(),
-		    'modelName' => 'OphCiExamination_Dilation_Drugs',
-		  ],
-		];
-	}
+    public function actions() {
+        return [
+          'sortDrug' => [
+            'class' => 'SaveDisplayOrderAction',
+            'model' => OphCiExamination_Dilation_Drugs::model(),
+            'modelName' => 'OphCiExamination_Dilation_Drugs',
+          ],
+        ];
+    }
 
-	/**
-	* Deletes the selected models
-	*/
-	public function actionDelete()
-	{
+    /**
+    * Deletes the selected models
+    */
+    public function actionDelete()
+    {
 
-		$delete_ids = Yii::app()->request->getPost('select',[]);
-		$transaction = Yii::app()->db->beginTransaction();
-		$success = true;
-		try {
-		  foreach ($delete_ids as $drug_id) {
-		    $drug = OphCiExamination_Dilation_Drugs::model()->findByPk($drug_id);
-		    if ($drug) {
-		      if (!$drug->delete()) {
-		        $success = false;
-		        break;
-		      } else {
-		        Audit::add('admin-dilation-drugs', 'delete', serialize($drug));
-		      }
-		    }
-		  }
-		} catch (Exception $e) {
-		  \OELog::log($e->getMessage());
-		  $success = false;
-		}
+        $delete_ids = Yii::app()->request->getPost('select',[]);
+        $transaction = Yii::app()->db->beginTransaction();
+        $success = true;
+        try {
+          foreach ($delete_ids as $drug_id) {
+            $drug = OphCiExamination_Dilation_Drugs::model()->findByPk($drug_id);
+            if ($drug) {
+              if (!$drug->delete()) {
+                $success = false;
+                break;
+              } else {
+                Audit::add('admin-dilation-drugs', 'delete', serialize($drug));
+              }
+            }
+          }
+        } catch (Exception $e) {
+          \OELog::log($e->getMessage());
+          $success = false;
+        }
 
-		if($success) {
-		  $transaction->commit();
-		  echo '1';
-		} else {
-		  $transaction->rollback();
-		  echo '0';
-		}
-	}
+        if($success) {
+          $transaction->commit();
+          echo '1';
+        } else {
+          $transaction->rollback();
+          echo '0';
+        }
+    }
 
-	/**
-	* Creates a new model.
-	* If creation is successful, the browser will be redirected to the 'view' page.
-	*/
-	public function actionCreate()
-	{
-		$model = new OphCiExamination_Dilation_Drugs();
-		$request = Yii::app()->getRequest();
-		if ($request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs')) {
-		  $model->attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
+    /**
+    * Creates a new model.
+    * If creation is successful, the browser will be redirected to the 'view' page.
+    */
+    public function actionCreate()
+    {
+        $model = new OphCiExamination_Dilation_Drugs();
+        $request = Yii::app()->getRequest();
+        if ($request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs')) {
+          $model->attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
 
-		  if ($model->save()) {
-		    Audit::add('admin', 'create', serialize($model->attributes), false,
-		      ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']);
-		    Yii::app()->user->setFlash('success', 'Dilation drops created');
-		    $this->redirect(['dilationDrugs']);
-		  } else {
-		    $errors = $model->getErrors();
-		  }
-		}
-		$this->render('/Drug/edit', [
-		  'model' => $model,
-		  'errors' => isset($errors) ? $errors : null,
-		]);
-	}
+          if ($model->save()) {
+            Audit::add('admin', 'create', serialize($model->attributes), false,
+              ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']);
+            Yii::app()->user->setFlash('success', 'Dilation drops created');
+            $this->redirect(['dilationDrugs']);
+          } else {
+            $errors = $model->getErrors();
+          }
+        }
+        $this->render('/Drug/edit', [
+          'model' => $model,
+          'errors' => isset($errors) ? $errors : null,
+        ]);
+    }
 }

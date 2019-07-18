@@ -2,8 +2,8 @@
 
 class m170305_160630_add_keratoconus_data extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->insert('ophtroperationnote_cxl_iontophoresis', array(
             'name' => 'Yes',
             'display_order' => 1,
@@ -849,19 +849,19 @@ class m170305_160630_add_keratoconus_data extends OEMigration
 
 
     public function down()
-	{
-		echo "m170305_160630_add_keratoconus_data does not support migration down.\n";
-		return false;
-	}
+    {
+        echo "m170305_160630_add_keratoconus_data does not support migration down.\n";
+        return false;
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

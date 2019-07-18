@@ -18,7 +18,7 @@
 ?>
 
 <div class="element-fields element-eyes data-group">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
   <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
   <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>" data-side="<?= $eye_side ?>">
     <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
@@ -33,7 +33,7 @@
 </div>
 
 <script id="previntervention_template" type="text/html">
-	<?php
+    <?php
     $pastintervention = new OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention();
     $pastintervention->setDefaultOptions();
 
@@ -48,7 +48,7 @@
     ?>
 </script>
 <script id="relevantintervention_template" type="text/html">
-	<?php
+    <?php
     $pastintervention = new OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention();
     $pastintervention->setDefaultOptions();
     $pastintervention->is_relevant = true;

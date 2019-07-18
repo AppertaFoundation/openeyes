@@ -20,11 +20,11 @@
 <?php
 $form_id = 'examination-update';
 $this->beginContent('//patient/event_container',array('no_face'=>false , 'form_id' => $form_id)); ?>
-	<?php
+    <?php
         $this->breadcrumbs = array($this->module->id);
         $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
     ?>
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => $form_id,
         'enableAjaxValidation' => false,
         'layoutColumns' => array(
@@ -37,16 +37,16 @@ $this->beginContent('//patient/event_container',array('no_face'=>false , 'form_i
         if (!empty($errors)) {
             ;
         }  ?>
-		<script type='text/javascript'>
-			$(document).ready( function(){
-				window.formHasChanged = true;
-			});
-		</script>
-		<?php $this->displayErrors($errors)?>
-		<?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
-		<?php $this->displayErrors($errors, true)?>
+        <script type='text/javascript'>
+            $(document).ready( function(){
+                window.formHasChanged = true;
+            });
+        </script>
+        <?php $this->displayErrors($errors)?>
+        <?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
+        <?php $this->displayErrors($errors, true)?>
 
-	<?php $this->endWidget()?>
+    <?php $this->endWidget()?>
 <?php $this->endContent();?>
 
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/VisualAcuity.js", CClientScript::POS_HEAD); ?>
