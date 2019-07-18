@@ -142,7 +142,9 @@
     
     // allow one click every two seconds
     // to avoid multi-click on this button
-    $('#js-download-pdf').bind('click', _.throttle(reportPlotToPDF, 2000));
+    $('#js-download-pdf').on('click', _.throttle(reportPlotToPDF, 2000, {'trailing': false}));
+
+    // the callback for download pdf click event
     function reportPlotToPDF(){
         // prevent click during downloading
         if($(this).text() === 'Downloading...'){
@@ -151,8 +153,7 @@
 
         // for better user experience to let them know it is downloading
         var originalText = $(this).text();
-        $(this).text('Downloading...')
-
+        $(this).text('Downloading...');
         var dict = {
             '/report/ajaxReport?report=PcrRisk&template=analytics': [
                 'PcrRiskReport', 
@@ -180,7 +181,23 @@
                 'NOD',
             ]
 
-        }
+        };
+
+        // plot config
+        var config = {
+            paper_bgcolor: 'white',
+            plot_bgcolor: 'white',
+            font: {
+                color: 'black',
+            },
+            yaxis: {
+                linecolor: 'black',
+            },
+            xaxis: {
+                linecolor: 'black',
+            }
+        };
+
         // instantiate jsPDF
         var doc = new jsPDF('l', 'pt', 'A4'); 
         // get page size
@@ -208,35 +225,26 @@
 
         // get current selected cataract report type
         var selected = $('.js-cataract-report-type.selected').data('report'); 
-        // store related search form for the report
-        var search_sec = $('#search-form-report-search-section').html();
 
         for(var key in dict){
             // whichever plot is initialized will be put into pdf first
             if(dict[key][2] === selected){
                 // get the plot and set required color
                 var currentPlot = document.getElementById(dict[key][0]);
-                currentPlot.layout.paper_bgcolor = 'white';
-                currentPlot.layout.plot_bgcolor = 'white';
-                currentPlot.layout.font.color = 'black';
-                currentPlot.layout.yaxis.linecolor = 'black';
-                currentPlot.layout.xaxis.linecolor = 'black';
+                // set plot color in pdf
+                configPlotPDF(currentPlot, config);
                 Plotly.toImage(currentPlot)
-                .then((dataURL)=>{
-                    doc.addImage(dataURL, 'PNG', marginT, marginL, plotWidth, plotHeight);
-                    counter++;
-                });
-                // put the color back for update chart function
-                currentPlot.layout.paper_bgcolor = analytics_layout.paper_bgcolor;
-                currentPlot.layout.plot_bgcolor = analytics_layout.plot_bgcolor;
-                currentPlot.layout.font.color = '#fff';
-                currentPlot.layout.yaxis.linecolor = analytics_layout.yaxis.linecolor;
-                currentPlot.layout.xaxis.linecolor = analytics_layout.xaxis.linecolor;
-                continue;
+                    .then((dataURL)=>{
+                        doc.addImage(dataURL, 'PNG', marginT, marginL, plotWidth, plotHeight);
+                        counter++;
+                    });
+                    // put the color back for update chart function
+                    // analytics_layout is from analytics_plotly.js
+                    configPlotPDF(currentPlot, analytics_layout);
+                    continue;
             }
-
             // hide all the none current plots to avoid page shake
-            $(dict[key][1]).hide()
+            $(dict[key][1]).hide();
             // initialize all the none current plots
             OpenEyes.Dash.init(dict[key][1]);
             OpenEyes.Dash.addBespokeReport(key, null, 10);
@@ -248,15 +256,10 @@
             var saved = false;
             // only the events triggered by js-download-pdf will be captured
             if(event.target.activeElement.id && event.target.activeElement.id === 'js-download-pdf') {
-                
                 // get plot
                 var plot = document.getElementById(dict[settings.url][0]);
-                // configure the plot
-                plot.layout.paper_bgcolor = 'white';
-                plot.layout.plot_bgcolor = 'white';
-                plot.layout.font.color = 'black';
-                plot.layout.yaxis.linecolor = 'black';
-                plot.layout.xaxis.linecolor = 'black';
+                // set plot color
+                configPlotPDF(plot, config);
 
                 // convert the plot into image
                 Plotly.toImage(plot)
@@ -269,7 +272,7 @@
                         doc.addImage(dataURL, 'PNG', offsetW, offsetH, plotWidth, plotHeight);
                         
                         if(counter >= total){
-                            doc.save('test.pdf');
+                            doc.save('Cataract_Plots.pdf');
                             saved = true;
                             return saved;
                         } else {
@@ -288,20 +291,31 @@
 
                         // the search form will be affected by initializing all the plots
                         // bring it back at this stage
-                        if($('#search-form-report-search-section').html() == '') {
-                            $('#search-form-report-search-section').html(search_sec)
-                        }
                         if(flag){
                             // clear the dictionary
                             delete dict;
-
+                            // to reset the search form
+                            $('.js-cataract-report-type.selected').click();
                             // without doing so, previous requests will be captured
                             $(document).off('ajaxSuccess');
-                            $('#js-download-pdf').text(originalText)
+                            $('#js-download-pdf').text(originalText);
                         }
-                    })
+                    });
             }
-        })
-        return true
+        });
+        return true;
+    }
+    // to config the colors for the plots
+    // config: the config object from the beginning of reportPlotToPDF function
+    // or the analytics_layout from analytics_plotly.js
+    function configPlotPDF(plot, config){
+        // in case the plot is not passed in
+        if(plot){
+            plot.layout.paper_bgcolor = config.paper_bgcolor;
+            plot.layout.plot_bgcolor = config.plot_bgcolor;
+            plot.layout.font.color = config.font === undefined ? 'white' : config.font.color;
+            plot.layout.yaxis.linecolor = config.yaxis.linecolor;
+            plot.layout.xaxis.linecolor = config.xaxis.linecolor;
+        }
     }
 </script>
