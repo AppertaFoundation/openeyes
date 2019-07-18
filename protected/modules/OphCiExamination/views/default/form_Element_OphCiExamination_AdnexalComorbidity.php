@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-fields element-eyes">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
         <div class="js-element-eye <?=$eye_side?>-eye column <?=$page_side?>"
              data-side="<?=$eye_side?>" >
@@ -67,7 +67,7 @@
                 return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {'header': $itemSet.header,'multiSelect': $itemSet.multiSelect });
             }),
             onReturn: function (adderDialog, selectedItems) {
-							inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
+                            inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
               inputText.trigger('oninput');
               return true;
             }

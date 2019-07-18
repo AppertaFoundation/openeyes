@@ -25,11 +25,11 @@
 <?php $is_mandatory = false; ?>
 
     <table class= "cols-full" id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
-			<colgroup>
-				<col>
-				<col class="cols-3">
-				<col class="cols-4">
-			</colgroup>
+            <colgroup>
+                <col>
+                <col class="cols-3">
+                <col class="cols-4">
+            </colgroup>
         <thead>
             <tr id="dm_0">
                 <th colspan="4"></th>
@@ -62,34 +62,41 @@
                         <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][id]", $target->id); ?>
                         <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", $target->ToCc); ?>
                     </td>
-									<td>
-										<?php if($element->draft): ?>
-											<?php
-											$contact_type = strtoupper($target->contact_type);
-											$contact_type = $contact_type == 'PRACTICE' ? Yii::app()->params['gp_label'] : $contact_type;
-                                            $contact_nick_name = $contact_type === 'GP' ? $element['event']['episode']['patient']['gp']['contact']->nick_name : $element['event']['episode']['patient']['contact']->nick_name;
+                                    <td>
+                                        <?php if($element->draft): ?>
+                                            <?php
+                                            $contact_type = strtoupper($target->contact_type);
+                                            $contact_type = $contact_type == 'PRACTICE' ? Yii::app()->params['gp_label'] : $contact_type;
+                                            $contact_nick_name = null;
+                                                if($contact_type === 'GP') {
+                                                    if(isset($element['event']['episode']['patient']['gp']['contact'])){
+                                                        $contact_nick_name = $element['event']['episode']['patient']['gp']['contact']->nick_name;
+                                                    }
+                                                } else {
+                                                    $contact_nick_name = $element['event']['episode']['patient']['contact']->nick_name;
+                                                }
 
-											$this->renderPartial('//docman/table/contact_name_type', array(
-												'address_targets' => $element->address_targets,
-												'contact_id' => $target->contact_id,
-												'contact_name' => $target->contact_name,
+                                            $this->renderPartial('//docman/table/contact_name_type', array(
+                                                'address_targets' => $element->address_targets,
+                                                'contact_id' => $target->contact_id,
+                                                'contact_name' => $target->contact_name,
                                                 'contact_nickname' =>$contact_nick_name ,
-												'contact_type' => $contact_type,
-												// Internal referral will always be the first row - indexed 0
-												'contact_types' => Document::getContactTypes() + (($element->isInternalReferral() && $row_index == 0) ? Document::getInternalReferralContactType() : []),
+                                                'contact_type' => $contact_type,
+                                                // Internal referral will always be the first row - indexed 0
+                                                'contact_types' => Document::getContactTypes() + (($element->isInternalReferral() && $row_index == 0) ? Document::getInternalReferralContactType() : []),
 
-												//contact_type is not editable as per requested, former validation left until the req finalized
-												'is_editable' => false, //$target->contact_type != 'INTERNALREFERRAL',
-												'is_editable_contact_name' => ($target->contact_type != 'INTERNALREFERRAL'),
-												'is_editable_contact_targets' => $target->contact_type != 'INTERNALREFERRAL',
-												'row_index' => $row_index));
-											?>
-										<?php else: ?>
-											<?php echo $target->contact_type != Yii::app()->params['gp_label'] ? (ucfirst(strtolower($target->contact_type))) : $target->contact_type; ?>
-											<?php if($target->contact_modified){ echo "<br>(Modified)";}?>
-											<?php echo  CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $target->contact_type, array('data-rowindex' => $row_index)); ?>
-										<?php endif; ?>
-									</td>
+                                                //contact_type is not editable as per requested, former validation left until the req finalized
+                                                'is_editable' => false, //$target->contact_type != 'INTERNALREFERRAL',
+                                                'is_editable_contact_name' => ($target->contact_type != 'INTERNALREFERRAL'),
+                                                'is_editable_contact_targets' => $target->contact_type != 'INTERNALREFERRAL',
+                                                'row_index' => $row_index));
+                                            ?>
+                                        <?php else: ?>
+                                            <?php echo $target->contact_type != Yii::app()->params['gp_label'] ? (ucfirst(strtolower($target->contact_type))) : $target->contact_type; ?>
+                                            <?php if($target->contact_modified){ echo "<br>(Modified)";}?>
+                                            <?php echo  CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $target->contact_type, array('data-rowindex' => $row_index)); ?>
+                                        <?php endif; ?>
+                                    </td>
                     <td>
                         <?php $this->renderPartial('//docman/table/contact_address', array(
                                     'contact_id' => $target->contact_id,

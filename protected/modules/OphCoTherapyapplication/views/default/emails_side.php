@@ -14,29 +14,29 @@
  */
 ?>
 <?php if ($emails): ?>
-	<?php foreach ($emails as $email): ?>
-		<?php if (($files = $email->attachments)): ?>
-			<div class="data-group">
-				<div class="cols-4 column">
-					<div class="data-label">Application files:</div>
-				</div>
-				<div class="cols-8 column">
-					<div class="data-value">
-						<ul class="application-files">
-							<?php foreach ($files as $file): ?>
-								<li><a href="<?= $file->getDownloadURL() ?>"><?php echo $file->name; ?></a></li>
-							<?php endforeach ?>
-						</ul>
-					</div>
-				</div>
-			</div>
-		<?php endif ?>
-		<div class="metadata">
-			<span class="info">
-				Application sent by <span class="user"><?= $email->user->fullname ?></span> on <?= Helper::convertMySQL2NHS($email->created_date) ?> at <?= date('H:i', strtotime($email->created_date)) ?>
-			</span>
-		</div>
-	<?php endforeach ?>
+    <?php foreach ($emails as $email): ?>
+        <?php if (($files = $email->attachments)): ?>
+            <div class="data-group">
+                <div class="cols-4 column">
+                    <div class="data-label">Application files:</div>
+                </div>
+                <div class="cols-8 column">
+                    <div class="data-value">
+                        <ul class="application-files">
+                            <?php foreach ($files as $file): ?>
+                                <li><a href="<?= $file->getDownloadURL() ?>"><?php echo $file->name; ?></a></li>
+                            <?php endforeach ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        <?php endif ?>
+        <div class="metadata">
+            <span class="info">
+                Application sent by <span class="user"><?= $email->user->fullname ?></span> on <?= Helper::convertMySQL2NHS($email->created_date) ?> at <?= date('H:i', strtotime($email->created_date)) ?>
+            </span>
+        </div>
+    <?php endforeach ?>
 <?php else: ?>
-	<div class="data-value">N/A</div>
+    <div class="data-value">N/A</div>
 <?php endif ?>

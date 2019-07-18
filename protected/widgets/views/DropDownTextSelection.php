@@ -35,15 +35,15 @@
 ?>
 <?php if (!$no_wrapper) { ?>
 <div id="div_<?=\CHtml::modelName($element) ?>_<?php echo $field ?>_TextSelection" class="data-group">
-	<div class="cols-<?php echo $layoutColumns['label'];?> column">
-		<label for="<?php echo $htmlOptions['id'];?>">
-			<?=\CHtml::encode($element->getAttributeLabel($field)) ?>:
-		</label>
-	</div>
-	<div class="cols-<?php echo $layoutColumns['field'];?> column end">
-		<?php }?>
-		<?=\CHtml::dropDownList('', null, $options, $htmlOptions); ?>
-		<?php if (!$no_wrapper) { ?>
-	</div>
+    <div class="cols-<?php echo $layoutColumns['label'];?> column">
+        <label for="<?php echo $htmlOptions['id'];?>">
+            <?=\CHtml::encode($element->getAttributeLabel($field)) ?>:
+        </label>
+    </div>
+    <div class="cols-<?php echo $layoutColumns['field'];?> column end">
+        <?php }?>
+        <?=\CHtml::dropDownList('', null, $options, $htmlOptions); ?>
+        <?php if (!$no_wrapper) { ?>
+    </div>
 </div>
 <?php } ?>

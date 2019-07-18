@@ -2,9 +2,9 @@
 
 class m161220_141625_add_et_ophindnasample_sample_version_table extends CDbMigration
 {
-	public function up()
-	{
-	    $this->createTable('et_ophindnasample_sample_version', array(
+    public function up()
+    {
+        $this->createTable('et_ophindnasample_sample_version', array(
           '`id` int(10) unsigned NOT NULL',
           '`event_id` int(10) unsigned NOT NULL',
           '`old_dna_no` int(10) unsigned DEFAULT NULL',
@@ -28,23 +28,23 @@ class m161220_141625_add_et_ophindnasample_sample_version_table extends CDbMigra
           'KEY `et_ophinbloodsample_sample_version_ev_fk` (`event_id`)',
           'KEY `et_ophindnasample_sample_version_vi_fk` (`version_id`)',
           
-	       
-	    ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin' );  
-	}
+           
+        ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin' );  
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropTable('et_ophindnasample_sample_version');
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

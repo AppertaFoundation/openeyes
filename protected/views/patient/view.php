@@ -53,29 +53,29 @@ $warnings = $this->patient->getWarnings($clinical);
 
         <?php $this->renderPartial('//patient/_patient_alerts')?>
         </div>
-	<div class="patient-content flex-layout flex-top col-gap-small">
+    <div class="patient-content flex-layout flex-top col-gap-small">
     <div class="cols-half">
-			<?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])): ?>
-				<section class="element patient-info">
-					<div class="data-group">
-						<?php $last_updated = strtotime($this->patient->last_modified_date) ?>
-						<div class="cols-4 column data-label">Last updated:</div>
-						<div class="cols-5 column data-value"><?= date(Helper::NHS_DATE_FORMAT.' H:i', $last_updated) ?></div>
-						<div class="cols-3 column">
-							<?= CHtml::beginForm($refresh_url) ?>
-								<input type="hidden" name="patient_id" value="<?= $this->patient->id ?>">
-								<button class="small <?php if ($last_updated > (time() - 300)) echo ' disabled' ?>">Refresh</button>
-							<?= CHtml::endForm() ?>
-						</div>
-					</div>
-				</section>
-			<?php endif ?>
-			<?php $this->renderPartial('_patient_details')?>
-			<?php $this->renderPartial('_patient_contact_details')?>
-			<?php $this->renderPartial('_patient_gp')?>
-			<?php $this->renderPartial('_patient_commissioningbodies')?>
-			<?php $this->renderPartial('_patient_contacts')?>
-			<?php $this->renderModulePartials('patient_summary_column1')?>
+            <?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])): ?>
+                <section class="element patient-info">
+                    <div class="data-group">
+                        <?php $last_updated = strtotime($this->patient->last_modified_date) ?>
+                        <div class="cols-4 column data-label">Last updated:</div>
+                        <div class="cols-5 column data-value"><?= date(Helper::NHS_DATE_FORMAT.' H:i', $last_updated) ?></div>
+                        <div class="cols-3 column">
+                            <?= CHtml::beginForm($refresh_url) ?>
+                                <input type="hidden" name="patient_id" value="<?= $this->patient->id ?>">
+                                <button class="small <?php if ($last_updated > (time() - 300)) echo ' disabled' ?>">Refresh</button>
+                            <?= CHtml::endForm() ?>
+                        </div>
+                    </div>
+                </section>
+            <?php endif ?>
+            <?php $this->renderPartial('_patient_details')?>
+            <?php $this->renderPartial('_patient_contact_details')?>
+            <?php $this->renderPartial('_patient_gp')?>
+            <?php $this->renderPartial('_patient_commissioningbodies')?>
+            <?php $this->renderPartial('_patient_contacts')?>
+            <?php $this->renderModulePartials('patient_summary_column1')?>
     </div>
     <div class="cols-half" id="patient-summary-form-container">
         <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>

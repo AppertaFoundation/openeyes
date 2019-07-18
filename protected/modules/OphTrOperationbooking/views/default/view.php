@@ -27,32 +27,32 @@ $this->moduleNameCssClass .= ' highlight-fields';
 $this->title .= ' ('.Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id))->status->name.')';
 
 if ($warnings) { ?>
-		<div class="cols-12">
-			<div class="alert-box patient with-icon">
-				<?php foreach ($warnings as $warn) {?>
-					<strong><?php echo $warn['long_msg']; ?></strong>
-					- <?php echo $warn['details'];
-				}?>
-			</div>
-		</div>
+        <div class="cols-12">
+            <div class="alert-box patient with-icon">
+                <?php foreach ($warnings as $warn) {?>
+                    <strong><?php echo $warn['long_msg']; ?></strong>
+                    - <?php echo $warn['details'];
+                }?>
+            </div>
+        </div>
 <?php }?>
 
-	<?php if (!$operation->has_gp) {?>
-		<div class="alert-box alert with-icon">
-			Patient has no <?php echo \Yii::app()->params['gp_label'] ?> practice address, please correct in PAS before printing <?php echo \Yii::app()->params['gp_label'] ?> letter.
-		</div>
-	<?php } ?>
-	<?php if (!$operation->has_address) { ?>
-		<div class="alert-box alert with-icon">
-			Patient has no address, please correct in PAS before printing letter.
-		</div>
-	<?php } ?>
+    <?php if (!$operation->has_gp) {?>
+        <div class="alert-box alert with-icon">
+            Patient has no <?php echo \Yii::app()->params['gp_label'] ?> practice address, please correct in PAS before printing <?php echo \Yii::app()->params['gp_label'] ?> letter.
+        </div>
+    <?php } ?>
+    <?php if (!$operation->has_address) { ?>
+        <div class="alert-box alert with-icon">
+            Patient has no address, please correct in PAS before printing letter.
+        </div>
+    <?php } ?>
 
-	<?php if ($operation->event->hasIssue()) {?>
-		<div class="alert-box issue with-icon">
-			<?=\CHtml::encode($operation->event->getIssueText())?>
-		</div>
-	<?php }?>
+    <?php if ($operation->event->hasIssue()) {?>
+        <div class="alert-box issue with-icon">
+            <?=\CHtml::encode($operation->event->getIssueText())?>
+        </div>
+    <?php }?>
 
     <?php if($operation->status->name === "On-Hold"){ ?>
         <div class="alert-box issue with-icon">
@@ -60,13 +60,13 @@ if ($warnings) { ?>
         </div>
     <?php } ?>
 
-	<?php if ($this->event->delete_pending) {?>
-		<div class="alert-box alert with-icon">
-			This event is pending deletion and has been locked.
-		</div>
-	<?php }?>
+    <?php if ($this->event->delete_pending) {?>
+        <div class="alert-box alert with-icon">
+            This event is pending deletion and has been locked.
+        </div>
+    <?php }?>
 
-	<?php
+    <?php
     $this->renderOpenElements($this->action->id);
     $this->renderOptionalElements($this->action->id);
     ?>

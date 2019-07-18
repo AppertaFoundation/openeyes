@@ -36,17 +36,17 @@ if (!isset($values)) {
 
 <tr class="row-<?= $row_count; ?><?php echo !$removable ? " read-only" : ''; ?>" data-key="<?= $row_count; ?>">
     <td id="<?= $model_name ?>_entries_<?= $row_count ?>_allergy_has_allergy">
-			<input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
-			<input type="hidden" name="<?= $field_prefix ?>[other]" value="<?= $values['other'] ?>"/>
-			<span class="js-other-allergy" style="display: none;">
+            <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?= $values['other'] ?>"/>
+            <span class="js-other-allergy" style="display: none;">
             <?= CHtml::textField($field_prefix . '[other]', $values['other'], array('autocomplete' => 'off'));?>
         </span>
-			<span class="js-not-other-allergy">
+            <span class="js-not-other-allergy">
             <?= $values['allergy_display'];?>
         </span>
-			<input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
-			</td>
-	<td>
+            <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
+            </td>
+    <td>
         <?php if ($removable) {
             if ($values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
@@ -84,31 +84,31 @@ if (!isset($values)) {
         </label>
       <?php } ?>
   </td>
-	<td>
+    <td>
     <div class="cols-full">
       <div class="js-comment-container flex-layout flex-left"
-  					id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-  					style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
-  					data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
+                    id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+                    style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
+                    data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
                     <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
                         'class' => 'js-comment-field autosize cols-full',
                         'rows' => '1',
                         'placeholder' => 'Comments',
                         'autocomplete' => 'off',
                     ]) ?>
-  			<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+            <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
       </div>
-  		<button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
-  						class="button js-add-comments"
-  						data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-  						type="button"
+        <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
+                        class="button js-add-comments"
+                        data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+                        type="button"
               data-hide-method = "display"
-  						style="<?php if ($values['comments']): ?>display: none;<?php endif; ?>"
-  		>
-  			<i class="oe-i comments small-icon"></i>
-  		</button>
+                        style="<?php if ($values['comments']): ?>display: none;<?php endif; ?>"
+        >
+            <i class="oe-i comments small-icon"></i>
+        </button>
     </div>
-	</td>
+    </td>
 
 
     <?php if ($removable) : ?>

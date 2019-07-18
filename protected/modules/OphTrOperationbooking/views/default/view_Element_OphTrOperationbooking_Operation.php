@@ -57,6 +57,14 @@
                     <tbody>
                     <tr>
                         <td>
+                            <div class="data-label">Complexity</div>
+                        </td>
+                        <td>
+                            <div class="data-value"><?= $element->complexityCaption?></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             <div class="data-label">Consultant required?</div>
                         </td>
                         <td>
@@ -82,6 +90,7 @@
                             </td>
                         <?php endif; ?>
                     </tr>
+                    <?php if(isset($element->any_grade_of_doctor)) { ?>
                     <tr>
                         <td>
                             <div class="data-label">
@@ -94,6 +103,7 @@
                             </div>
                         </td>
                     </tr>
+                    <?php } ?>
                     <tr>
                         <td>
                             <div class="data-label">Anaesthetic</div>
@@ -366,18 +376,18 @@
     <div class="data-group">
         <div class="cols-12 column">
             <div class="metadata">
-				<span class="info">
-					Operation scheduling created by
-					<span class="user"><?php echo $element->booking->user->fullname ?></span>
-					on <?php echo $element->booking->NHSDate('created_date') ?>
-                    at <?php echo date('H:i', strtotime($element->booking->created_date)) ?>
-				</span>
                 <span class="info">
-					Operation scheduling last modified by
+                    Operation scheduling created by
+                    <span class="user"><?php echo $element->booking->user->fullname ?></span>
+                    on <?php echo $element->booking->NHSDate('created_date') ?>
+                    at <?php echo date('H:i', strtotime($element->booking->created_date)) ?>
+                </span>
+                <span class="info">
+                    Operation scheduling last modified by
                            <span class="user"><?php echo $element->booking->usermodified->fullname ?></span>
-					on <?php echo $element->booking->NHSDate('last_modified_date') ?>
+                    on <?php echo $element->booking->NHSDate('last_modified_date') ?>
                     at <?php echo date('H:i', strtotime($element->booking->last_modified_date)) ?>
-				</span>
+                </span>
             </div>
         </div>
     </div>

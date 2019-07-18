@@ -68,7 +68,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     const LETTER_REMOVAL = 4;
 
     // these reflect an actual status, relating to actions required rather than letters sent
-    const STATUS_WHITE = 0; // no action required.	the default status.
+    const STATUS_WHITE = 0; // no action required.  the default status.
     const STATUS_PURPLE = 1; // no invitation letter has been sent
     const STATUS_GREEN1 = 2; // it's two weeks since an invitation letter was sent with no further letters going out
     const STATUS_GREEN2 = 3; // it's two weeks since 1st reminder was sent with no further letters going out
@@ -602,7 +602,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      * Returns the letter status for an operation.
      *
      * Checks to see if it's an operation to be scheduled or an operation to be rescheduled. If it's the former it bases its calculation
-     *	 on the operation creation date. If it's the latter it bases it on the most recent cancelled_booking creation date.
+     *   on the operation creation date. If it's the latter it bases it on the most recent cancelled_booking creation date.
      *
      * return int
      */

@@ -111,7 +111,7 @@ class ElementLetter extends BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
-            'use_nickname' => 'Nickname',
+            'use_nickname' => 'Use Nickname',
             'date' => 'Date',
             'introduction' => 'Salutation',
             're' => 'Re',
@@ -1043,5 +1043,15 @@ class ElementLetter extends BaseEventTypeElement
         }
 
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function checkPrint(){
+        if((strpos(Yii::app()->request->urlReferrer, 'update') || strpos(Yii::app()->request->urlReferrer, 'create')) && !$this->draft){
+            return "1";
+        }
+        return "0";
     }
 }

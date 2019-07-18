@@ -93,7 +93,7 @@ class Zend_Gdata_Spreadsheets_CellEntry extends Zend_Gdata_Entry
     /**
      * Sets the Cell element of this Cell Entry.
      * @param Zend_Gdata_Spreadsheets_Extension_Cell $cell
-		 * @return Zend_Gdata_Spreadsheets_CellEntry
+         * @return Zend_Gdata_Spreadsheets_CellEntry
      */
     public function setCell($cell)
     {
