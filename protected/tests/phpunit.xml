@@ -1,10 +1,11 @@
 <phpunit bootstrap="bootstrap.php"
          colors="true"
          convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
+         convertNoticesToExceptions="false"
          convertWarningsToExceptions="true"
          stopOnFailure="false"
-         verbose="true">
+         verbose="true"
+         >
     <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
     <testsuites>
         <testsuite name="all">
