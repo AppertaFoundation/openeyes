@@ -1783,11 +1783,12 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param $id
      * @param $inject_autoprint_js
+     * @param $print_footer
      * @return null
      * @throws CHttpException
      * @throws Exception
      */
-    public function setPDFprintData($id, $inject_autoprint_js)
+    public function setPDFprintData($id, $inject_autoprint_js, $print_footer = true)
     {
         if (!isset($id)) {
             throw new CHttpException(400, 'No ID provided');
@@ -1810,7 +1811,7 @@ class BaseEventTypeController extends BaseModuleController
                 $this->pdf_print_html = ob_get_contents();
                 ob_end_clean();
             }
-            $this->renderAndSavePDFFromHtml($this->pdf_print_html, $inject_autoprint_js);
+            $this->renderAndSavePDFFromHtml($this->pdf_print_html, $inject_autoprint_js, $print_footer);
         }
 
         $this->event->unlock();
@@ -1823,9 +1824,10 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param $html
      * @param $inject_autoprint_js
+     * @param $print_footer
      * @return null
      */
-    public function renderAndSavePDFFromHtml($html, $inject_autoprint_js)
+    public function renderAndSavePDFFromHtml($html, $inject_autoprint_js, $print_footer = true)
     {
         $this->getPDFPrintSuffix();
 
@@ -1858,7 +1860,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $wk->generatePDF($this->event->imageDirectory, 'event', $this->pdf_print_suffix, $html, (boolean)@$_GET['html'],
-            $inject_autoprint_js);
+            $inject_autoprint_js, $print_footer);
 
         return $this->pdf_print_suffix;
     }
@@ -1873,9 +1875,10 @@ class BaseEventTypeController extends BaseModuleController
     {
 
         $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $print_footer = Yii::app()->request->getParam('print_footer', 'true') === 'true';
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-        $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js);
+        $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js, $print_footer);
         $pf = ProtectedFile::createFromFile($this->event->imageDirectory . '/event_' . $pdf_route . '.pdf');
         if ($pf->save()) {
             $result = array(
@@ -1907,9 +1910,11 @@ class BaseEventTypeController extends BaseModuleController
     public function actionPDFPrint($id)
     {
         $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $print_footer = Yii::app()->request->getParam('print_footer', 'true') === 'true';
+
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-        $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js);
+        $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js, $print_footer);
         if (@$_GET['html']) {
             return Yii::app()->end();
         }

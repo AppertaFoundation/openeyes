@@ -132,7 +132,7 @@ function do_print_fpTen() {
     'success': function (html) {
       if (html == "1") {
         console.log(OE_print_url);
-        printIFrameUrl(OE_print_url + '?fpten=true', null);
+        printIFrameUrl(OE_print_url + '?fpten=true&print_footer=false', null);
       } else {
         new OpenEyes.UI.Dialog.Alert({
           content: "There was an error printing the prescription, please try again or contact support for assistance."

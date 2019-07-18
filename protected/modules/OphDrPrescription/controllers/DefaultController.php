@@ -409,22 +409,31 @@ class DefaultController extends BaseEventTypeController
 
     public function actionPrint($id)
     {
-        Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
-        Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
-        Yii::app()->params['wkhtmltopdf_page_size'] = 'A5';
+        $fpten = Yii::app()->request->getParam('fpten', 'false');
+
+        $user = User::model()->findByPk(Yii::app()->user->id);
 
         $this->printInit($id);
         $this->layout = '//layouts/print';
 
         $pdf_documents = (int)Yii::app()->request->getParam('pdf_documents');
-        $fpten = Yii::app()->request->getParam('fpten');
 
         if ($fpten === 'true') {
+            Yii::app()->params['wkhtmltopdf_left_margin'] = '0mm';
+            Yii::app()->params['wkhtmltopdf_right_margin'] = '0mm';
+            Yii::app()->params['wkhtmltopdf_top_margin'] = '0mm';
+            Yii::app()->params['wkhtmltopdf_bottom_margin'] = '0mm';
+            //Yii::app()->params['wkhtmltopdf_orientation'] = 'Landscape';
             $this->render('print_fpten', array(
+                'user' => $user
             ));
         } else if( $pdf_documents == 1 ){
+            Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
+            Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
             $this->render('print');
         } else {
+            Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
+            Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
             $this->render('print');
             if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
                 $this->render('print', array('copy' => 'notes'));
