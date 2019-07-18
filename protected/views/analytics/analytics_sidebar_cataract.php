@@ -1,3 +1,4 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
 <div class="analytics-options">
 
     <?php $this->renderPartial('analytics_sidebar_header',array('specialty'=>$specialty));?>
@@ -55,6 +56,9 @@
         </div>
         <div class="extra-actions">
             <button id="js-download-csv" class="pro-theme cols-full">Download (CSV)</button>
+        </div>
+        <div class="extra-actions">
+            <button id="js-download-pdf" class="pro-theme cols-full">Download All Plots as PDF</button>
         </div>
 
     </div><!-- .specialty-options -->
@@ -135,4 +139,169 @@
                 break;
         }
     });
+    
+    // allow one click every two seconds
+    // to avoid multi-click on this button
+    $('#js-download-pdf').bind('click', _.throttle(reportPlotToPDF, 2000));
+    function reportPlotToPDF(){
+        // prevent click during downloading
+        if($(this).text() === 'Downloading...'){
+            return false;
+        }
+
+        // for better user experience to let them know it is downloading
+        var originalText = $(this).text();
+        $(this).text('Downloading...')
+
+        var dict = {
+            '/report/ajaxReport?report=PcrRisk&template=analytics': [
+                'PcrRiskReport', 
+                '#pcr-risk-grid',
+                'PCR',
+            ],
+            '/report/ajaxReport?report=CataractComplications&template=analytics': [
+                'CataractComplicationsReport', 
+                '#cataract-complication-grid',
+                'CP',
+            ],
+            '/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome&template=analytics': [
+                'OEModule_OphCiExamination_components_VisualOutcomeReport', 
+                '#visual-acuity-grid',
+                'VA',
+            ],
+            '/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics&procedures[]=all': [
+                'OEModule_OphCiExamination_components_RefractiveOutcomeReport', 
+                '#refractive-outcome-grid',
+                'RO',
+            ],
+            '/report/ajaxReport?report=NodAudit&template=analytics': [
+                'NodAuditReport', 
+                '#nod-audit-grid',
+                'NOD',
+            ]
+
+        }
+        // instantiate jsPDF
+        var doc = new jsPDF('l', 'pt', 'A4'); 
+        // get page size
+        var pageW = doc.internal.pageSize.width;
+        var pageH = doc.internal.pageSize.height;
+
+        // store total number of reports
+        var total = Object.keys(dict).length;
+
+        // initialize the counter for controlling the logic, 
+        // because when the page load, there is always one plot is initialized
+        var counter = 1;
+
+        // margin top
+        var marginT = 10;
+        // margin left
+        var marginL = 10;
+
+        // fix plot width
+        // marginL * 3 means: left, middle, right
+        var plotWidth = (pageW - marginL * 3) / 2;
+        // fix plot width
+        // marginL * 3 means: top, middle, bottom
+        var plotHeight = (pageH - marginT * 3) / 2;
+
+        // get current selected cataract report type
+        var selected = $('.js-cataract-report-type.selected').data('report'); 
+        // store related search form for the report
+        var search_sec = $('#search-form-report-search-section').html();
+
+        for(var key in dict){
+            // whichever plot is initialized will be put into pdf first
+            if(dict[key][2] === selected){
+                // get the plot and set required color
+                var currentPlot = document.getElementById(dict[key][0]);
+                currentPlot.layout.paper_bgcolor = 'white';
+                currentPlot.layout.plot_bgcolor = 'white';
+                currentPlot.layout.font.color = 'black';
+                currentPlot.layout.yaxis.linecolor = 'black';
+                currentPlot.layout.xaxis.linecolor = 'black';
+                Plotly.toImage(currentPlot)
+                .then((dataURL)=>{
+                    doc.addImage(dataURL, 'PNG', marginT, marginL, plotWidth, plotHeight);
+                    counter++;
+                });
+                // put the color back for update chart function
+                currentPlot.layout.paper_bgcolor = analytics_layout.paper_bgcolor;
+                currentPlot.layout.plot_bgcolor = analytics_layout.plot_bgcolor;
+                currentPlot.layout.font.color = '#fff';
+                currentPlot.layout.yaxis.linecolor = analytics_layout.yaxis.linecolor;
+                currentPlot.layout.xaxis.linecolor = analytics_layout.xaxis.linecolor;
+                continue;
+            }
+
+            // hide all the none current plots to avoid page shake
+            $(dict[key][1]).hide()
+            // initialize all the none current plots
+            OpenEyes.Dash.init(dict[key][1]);
+            OpenEyes.Dash.addBespokeReport(key, null, 10);
+        }
+        // within this ajaxSuccess, the ajax request tirggered by download pdf button will be caught
+        // and add generated plot into pdf after the requestcomplete
+        $(document).ajaxSuccess(function(event, request, settings){
+            // flag for if the pdf is saved
+            var saved = false;
+            // only the events triggered by js-download-pdf will be captured
+            if(event.target.activeElement.id && event.target.activeElement.id === 'js-download-pdf') {
+                
+                // get plot
+                var plot = document.getElementById(dict[settings.url][0]);
+                // configure the plot
+                plot.layout.paper_bgcolor = 'white';
+                plot.layout.plot_bgcolor = 'white';
+                plot.layout.font.color = 'black';
+                plot.layout.yaxis.linecolor = 'black';
+                plot.layout.xaxis.linecolor = 'black';
+
+                // convert the plot into image
+                Plotly.toImage(plot)
+                    .then((dataURL)=>{
+                        // calculate offset of the plot in pdf
+                        var offsetW = (counter % 2 === 0) ? (marginL * 2 + plotWidth) : marginL;
+                        var offsetH = ((((counter - 1) % 4) + 1)* plotWidth + marginL * 2 > pageW) ? (marginT * 2 + plotHeight) : marginT;
+
+                        // put the image into pdf
+                        doc.addImage(dataURL, 'PNG', offsetW, offsetH, plotWidth, plotHeight);
+                        
+                        if(counter >= total){
+                            doc.save('test.pdf');
+                            saved = true;
+                            return saved;
+                        } else {
+                            counter++;
+                            // every four plots add new page
+                            if(counter % 4 === 1){
+                                doc.addPage();
+                            }
+                        }
+                    }).then(function(flag){
+                        // once the plot is added into pdf, it will be cleared out
+                        // and show it (it is hidden before) to avoid crashing other
+                        // functions
+                        $(dict[settings.url][1]).html("");
+                        $(dict[settings.url][1]).show();
+
+                        // the search form will be affected by initializing all the plots
+                        // bring it back at this stage
+                        if($('#search-form-report-search-section').html() == '') {
+                            $('#search-form-report-search-section').html(search_sec)
+                        }
+                        if(flag){
+                            // clear the dictionary
+                            delete dict;
+
+                            // without doing so, previous requests will be captured
+                            $(document).off('ajaxSuccess');
+                            $('#js-download-pdf').text(originalText)
+                        }
+                    })
+            }
+        })
+        return true
+    }
 </script>
