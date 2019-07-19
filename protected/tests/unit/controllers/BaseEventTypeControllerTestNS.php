@@ -16,22 +16,22 @@
 
 namespace BaseEventTypeControllerTestNS {
 
-class TestNSController extends \BaseEventTypeController
-{
-    public function setElementDefaultOptions_TestNamespacedElement($element, $action)
+    class TestNSController extends \BaseEventTypeController
     {
+        public function setElementDefaultOptions_TestNamespacedElement($element, $action)
+        {
+        }
     }
-}
 
 }
 
 namespace BaseEventTypeControllerTestNS\models {
 
-class NamespacedElement extends \BaseEventTypeElement
-{
-    public function __construct()
+    class NamespacedElement extends \BaseEventTypeElement
     {
+        public function __construct()
+        {
+        }
     }
-}
 
 }

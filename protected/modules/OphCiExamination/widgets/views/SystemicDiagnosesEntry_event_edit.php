@@ -33,9 +33,9 @@ if (!isset($values)) {
     );
 }
 
-    if (!isset($values['date']) || !strtotime($values['date'])) {
-        $values['date'] = null; // default to the year displayed in the select dropdowns
-    }
+if (!isset($values['date']) || !strtotime($values['date'])) {
+    $values['date'] = null; // default to the year displayed in the select dropdowns
+}
 
     $is_new_record = isset($diagnosis) && $diagnosis->isNewRecord ? true : false;
 
@@ -52,55 +52,55 @@ if (!isset($values)) {
 
         <td id="<?="{$model_name}_{$row_count}_checked_status"?>">
             <?php
-                if ($removable) {
-                    if ($values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$NOT_PRESENT) { ?>
+            if ($removable) {
+                if ($values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$NOT_PRESENT) { ?>
                         <label class="inline highlight">
                             <?php echo \CHtml::radioButton(
-                                $field_prefix . '[has_disorder]',
-                                $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$PRESENT,
-                                array('value' => SystemicDiagnoses_Diagnosis::$PRESENT)
+                            $field_prefix . '[has_disorder]',
+                            $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$PRESENT,
+                            array('value' => SystemicDiagnoses_Diagnosis::$PRESENT)
                             ); ?>
                             yes
                         </label>
                         <label class="inline highlight">
                             <?php echo \CHtml::radioButton(
-                                $field_prefix . '[has_disorder]',
-                                $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$NOT_PRESENT,
-                                array('value' => SystemicDiagnoses_Diagnosis::$NOT_PRESENT)
+                            $field_prefix . '[has_disorder]',
+                            $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$NOT_PRESENT,
+                            array('value' => SystemicDiagnoses_Diagnosis::$NOT_PRESENT)
                             ); ?>
                             no
                         </label>
-                    <?php } else {
+                <?php } else {
                         echo CHtml::hiddenField($field_prefix . '[has_disorder]', (string)SystemicDiagnoses_Diagnosis::$PRESENT);
-                    }
-                } else {
-                    ?>
+                }
+            } else {
+                ?>
                     <label class="inline highlight">
-                        <?php echo \CHtml::radioButton(
-                            $field_prefix . '[has_disorder]',
-                            $posted_not_checked,
-                            array('value' => SystemicDiagnoses_Diagnosis::$NOT_CHECKED)
+                    <?php echo \CHtml::radioButton(
+                        $field_prefix . '[has_disorder]',
+                        $posted_not_checked,
+                        array('value' => SystemicDiagnoses_Diagnosis::$NOT_CHECKED)
                         ); ?>
                         Not checked
                     </label>
                     <label class="inline highlight">
                         <?php echo \CHtml::radioButton(
-                            $field_prefix . '[has_disorder]',
-                            $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$PRESENT,
-                            array('value' => SystemicDiagnoses_Diagnosis::$PRESENT)
+                        $field_prefix . '[has_disorder]',
+                        $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$PRESENT,
+                        array('value' => SystemicDiagnoses_Diagnosis::$PRESENT)
                         ); ?>
                         yes
                     </label>
                     <label class="inline highlight">
                         <?php echo \CHtml::radioButton(
-                            $field_prefix . '[has_disorder]',
-                            $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$NOT_PRESENT,
-                            array('value' => SystemicDiagnoses_Diagnosis::$NOT_PRESENT)
+                        $field_prefix . '[has_disorder]',
+                        $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$NOT_PRESENT,
+                        array('value' => SystemicDiagnoses_Diagnosis::$NOT_PRESENT)
                         ); ?>
                         no
                     </label>
                     <?php
-                }
+            }
             ?>
         </td>
 
@@ -124,7 +124,7 @@ if (!isset($values)) {
             <td>
                 <i class="oe-i trash"></i>
             </td>
-        <?php else: ?>
+        <?php else : ?>
             <td>read only</td>
         <?php endif; ?>
     </tr>

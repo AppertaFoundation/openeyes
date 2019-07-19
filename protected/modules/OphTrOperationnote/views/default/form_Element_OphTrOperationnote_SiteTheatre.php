@@ -28,8 +28,8 @@
     <tbody>
     <tr class="col-gap">
       <td>
-          <?php
-          echo $form->dropDownList(
+            <?php
+            echo $form->dropDownList(
               $element,
               'site_id',
               CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id), 'id',
@@ -37,41 +37,41 @@
               array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
               false,
               array('label' => 2, 'field' => 8)
-          );
-          ?>
+            );
+            ?>
       </td>
       <td>
-          <?php
-          if (array_key_exists('OphTrOperationbooking',
+            <?php
+            if (array_key_exists('OphTrOperationbooking',
                   Yii::app()->modules) && in_array('ophtroperationbooking_operation_theatre',
                   Yii::app()->db->getSchema()->getTableNames())) {
-              $siteId = ($element->site_id) ? $element->site_id : Yii::app()->session['selected_site_id'];
-              $getTheatreData = OphTrOperationbooking_Operation_Theatre::model()->findAll(array(
+                $siteId = ($element->site_id) ? $element->site_id : Yii::app()->session['selected_site_id'];
+                $getTheatreData = OphTrOperationbooking_Operation_Theatre::model()->findAll(array(
                   'condition' => 'active=1 and site_id=' . $siteId,
                   'order' => 'name',
-              ));
+                ));
 
-              if (count($getTheatreData) == 1) {
-                  echo $form->dropDownList(
+                if (count($getTheatreData) == 1) {
+                    echo $form->dropDownList(
                       $element,
                       'theatre_id',
                       CHtml::listData($getTheatreData, 'id', 'name'),
                       array('nowrapper' => false, 'class' => 'cols-full'),
                       false,
                       array('label' => 2, 'field' => 8)
-                  );
-              } else {
-                  echo $form->dropDownList(
+                    );
+                } else {
+                    echo $form->dropDownList(
                       $element,
                       'theatre_id',
                       CHtml::listData($getTheatreData, 'id', 'name'),
                       array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
                       false,
                       array('label' => 2, 'field' => 8)
-                  );
-              }
-          }
-          ?>
+                    );
+                }
+            }
+            ?>
       </td>
     </tr>
     </tbody>

@@ -17,18 +17,18 @@
  */
 ?>
 <section class="element view full patient-info associated-data js-toggle-container">
-	<header class="element-header">
-		<h3 class="element-title">
-			<span class="icon-patient-clinician-hd_flag"></span>
-			Previous ophthalmic history
-		</h3>
-	</header>
+    <header class="element-header">
+        <h3 class="element-title">
+            <span class="icon-patient-clinician-hd_flag"></span>
+            Previous ophthalmic history
+        </h3>
+    </header>
 
-	<div class="element-data full-width js-toggle-body">
+    <div class="element-data full-width js-toggle-body">
         <?php $this->widget('OEModule\OphCiExamination\widgets\PastSurgery', array(
             'patient' => $this->patient,
             'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
         )); ?>
-	</div>
+    </div>
 </section>
 

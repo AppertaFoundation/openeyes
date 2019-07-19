@@ -16,26 +16,28 @@
  */
 ?>
 <div class="element-data element-eyes flex-layout">
-    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side){ ?>
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) { ?>
     <table class="label-item cols-6 <?= $eye_side ?>-eye">
-        <?php if ($element->hasEye($eye_side)){ 
-                if ($element->getCombined($eye_side)){ ?>
+        <?php if ($element->hasEye($eye_side)) {
+            if ($element->getCombined($eye_side)) { ?>
                     <tr>
                         <td class="priority-text"><?= $element->getCombined($eye_side) ?></td>
                     </tr>
-                <?php } else { ?>
+            <?php } else { ?>
                     <tr>
                         <td>
                             Not recorded
-                            <?php if ($element->{$eye_side . '_unable_to_assess'}){ ?>
-                                (Unable to assess <?php if ($element->{$eye_side . '_eye_missing'}) { ?>, eye missing<?php } ?>)
+                            <?php if ($element->{$eye_side . '_unable_to_assess'}) { ?>
+                                (Unable to assess <?php if ($element->{$eye_side . '_eye_missing'}) {
+                                    ?>, eye missing<?php
+                                                  } ?>)
                             <?php } elseif ($element->{$eye_side . '_eye_missing'}) { ?>
                                 (Eye missing)
                             <?php } ?>
                         </td>
                     </tr>
-                <?php } ?>
-            <?php } else  {  ?>
+            <?php } ?>
+        <?php } else {  ?>
                 <tr>
                     <td>Not recorded</td>
                 </tr>

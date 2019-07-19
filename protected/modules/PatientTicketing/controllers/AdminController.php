@@ -32,7 +32,6 @@ class AdminController extends \ModuleAdminController
     protected function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-
             Yii::app()->clientScript->registerScriptFile(
                 Yii::app()->createUrl($this->assetPath . '/js/jquery.jOrgChart.js')
             );

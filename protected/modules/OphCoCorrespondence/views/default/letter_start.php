@@ -60,6 +60,11 @@ $logoHelper = new LogoHelper();
                     <?php } ?>
                 </h5>
             <?php } ?>
+            <div class="date">
+                <br/><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) {
+                    ?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate)) ?>)<?php
+                     } ?>
+            </div>
         </div>
     </div>
     <br/><br/>

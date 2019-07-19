@@ -17,7 +17,7 @@
 ?>
 <p>Comments</p>
 <div class="view">
-	<b><?=\CHtml::encode($data->getAttributeLabel('comment')); ?>:</b>
-	<?=\CHtml::encode($data->comment); ?>
-	<br />
+    <b><?=\CHtml::encode($data->getAttributeLabel('comment')); ?>:</b>
+    <?=\CHtml::encode($data->comment); ?>
+    <br />
 </div>

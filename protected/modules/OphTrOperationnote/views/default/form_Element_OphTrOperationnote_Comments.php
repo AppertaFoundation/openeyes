@@ -30,7 +30,7 @@
         ) ?>
     </div>
       <div>
-          <?php echo $form->textArea(
+            <?php echo $form->textArea(
               $element,
               'postop_instructions',
               array(),
@@ -96,10 +96,10 @@
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $item) {
               return ['label' => $item, 'id' => $key,];
-          },array_keys($instru_list), $instru_list)) ?>, {'multiSelect': true})
+          }, array_keys($instru_list), $instru_list)) ?>, {'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {
-				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
+                inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
         inputText.trigger('oninput');
         return true;
       }

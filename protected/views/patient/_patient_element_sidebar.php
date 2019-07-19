@@ -1,6 +1,6 @@
 <!-- event-header -->
 <!-- examination event has a search facility for Left and Right Eye in edit mode -->
-<?php $this->widget('application.widgets.IndexSearch',array('event_type' => $event_name)); ?>
+<?php $this->widget('application.widgets.IndexSearch', array('event_type' => $event_name)); ?>
 
 
 <nav class="sidebar " id="episodes-and-events">
@@ -16,7 +16,8 @@
         event_sidebar = new OpenEyes.UI.PatientSidebar($('#episodes-and-events'), {
             patient_sidebar_json: '<?php echo $this->getElementTree() ?>',
             tree_id: 'patient-sidebar-elements'
-            <?php if ($this->event->id) {?>,
+            <?php if ($this->event->id) {
+                ?>,
             event_id: <?= $this->event->id ?>
             <?php } ?>
         });

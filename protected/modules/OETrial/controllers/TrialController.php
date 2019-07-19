@@ -447,7 +447,6 @@ class TrialController extends BaseModuleController
 
         /* @var User $user */
         foreach (User::model()->findAll($criteria) as $user) {
-
             $res[] = array(
                 'id' => $user->id,
                 'label' => $user->getFullNameAndTitle(),
@@ -467,25 +466,25 @@ class TrialController extends BaseModuleController
 
     public function actionChangeTrialUserPosition(){
 
-      $user_id = $_POST['user_id'];
-      $trial_id = $_POST['id'];
-      $isTrue = $_POST['isTrue'];
-      $column_name = $_POST['column_name'];
+        $user_id = $_POST['user_id'];
+        $trial_id = $_POST['id'];
+        $isTrue = $_POST['isTrue'];
+        $column_name = $_POST['column_name'];
 
-      $existing = UserTrialAssignment::model()->findAll('trial_id=? and '.$column_name.'=1', array($trial_id));;
-      if ($column_name==='is_principal_investigator'&&sizeof($existing)===1&&$existing[0]->user_id===$user_id){
-        $res = array(
-          'Error' => 'At least one principal investigator should be selected.'
-        );
-        echo CJSON::encode($res);
-        Yii::app()->end();
-      }
-      $userPermission = UserTrialAssignment::model()->find('user_id=? and trial_id=?', array($user_id, $trial_id));
-      $userPermission->$column_name = $isTrue;
+        $existing = UserTrialAssignment::model()->findAll('trial_id=? and '.$column_name.'=1', array($trial_id));;
+        if ($column_name==='is_principal_investigator'&&sizeof($existing)===1&&$existing[0]->user_id===$user_id) {
+            $res = array(
+            'Error' => 'At least one principal investigator should be selected.'
+            );
+            echo CJSON::encode($res);
+            Yii::app()->end();
+        }
+        $userPermission = UserTrialAssignment::model()->find('user_id=? and trial_id=?', array($user_id, $trial_id));
+        $userPermission->$column_name = $isTrue;
 
 
-      if (!$userPermission->save()) {
-        throw new Exception('Unable to save principal investigator: '.print_r($userPermission->getErrors(), true));
-      }
+        if (!$userPermission->save()) {
+            throw new Exception('Unable to save principal investigator: '.print_r($userPermission->getErrors(), true));
+        }
     }
 }

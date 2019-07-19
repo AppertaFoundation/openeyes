@@ -14,9 +14,9 @@
  */
 ?>
 <?php $currentValue = $metadata->getSettingName();
-      if (!isset($currentValue) || $currentValue == null) {
-          // we need this to prevent HTML value without =
-            $currentValue = '';
-      }
+if (!isset($currentValue) || $currentValue == null) {
+    // we need this to prevent HTML value without =
+      $currentValue = '';
+}
       echo CHtml::textField($metadata->key, $currentValue);
       echo CHtml::hiddenField('hidden_'.$metadata->key, 1);  ?>

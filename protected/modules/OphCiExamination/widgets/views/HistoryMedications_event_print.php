@@ -18,7 +18,7 @@
 <h4>Current:</h4>
 <table class="borders">
     <tbody>
-        <?php foreach ($element->currentOrderedEntries as $entry){ ?>
+        <?php foreach ($element->currentOrderedEntries as $entry) { ?>
         <tr>
             <td><?= $entry->getMedicationDisplay() ?></td>
             <th><?= $entry->getAdministrationDisplay() ? $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></th>
@@ -30,7 +30,7 @@
 <h4>Stopped:</h4>
 <table class="borders">
     <tbody>
-        <?php foreach ($element->stoppedOrderedEntries as $entry){ ?>
+        <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
         <tr>
             <td><?= $entry->getMedicationDisplay() ?></td>
             <th><?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></th>
