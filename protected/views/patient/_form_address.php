@@ -23,79 +23,79 @@
 ?>
 <tr>
   <td>
-      <?= $form->label($address, 'address_type_id') ?>
+        <?= $form->label($address, 'address_type_id') ?>
     <br/>
-      <?= $form->error($address, 'address_type_id') ?>
+        <?= $form->error($address, 'address_type_id') ?>
   </td>
   <td>
-      <?php echo $form->dropDownList($address, 'address_type_id', $address_type_ids,
+        <?php echo $form->dropDownList($address, 'address_type_id', $address_type_ids,
           array('empty' => '-- select --')); ?>
   </td>
 <tr>
 <tr>
   <td>
-      <?= $form->labelEx($address, 'address1') ?>
+        <?= $form->labelEx($address, 'address1') ?>
     <br/>
-      <?= $form->error($address, 'address1') ?>
+        <?= $form->error($address, 'address1') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1')) ?>
+        <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1')) ?>
   </td>
 </tr>
 
 <tr>
   <td>
-      <?= $form->labelEx($address, 'address2') ?>
+        <?= $form->labelEx($address, 'address2') ?>
     <br/>
-      <?= $form->error($address, 'address2') ?>
+        <?= $form->error($address, 'address2') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2')) ?>
+        <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2')) ?>
 
   </td>
 </tr>
 <tr>
   <td>
-      <?= $form->labelEx($address, 'city') ?>
+        <?= $form->labelEx($address, 'city') ?>
     <br/>
-      <?= $form->error($address, 'city') ?>
+        <?= $form->error($address, 'city') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City')) ?>
+        <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City')) ?>
   </td>
 </tr>
 
 <tr>
   <td>
-      <?= $form->labelEx($address, 'postcode') ?>
+        <?= $form->labelEx($address, 'postcode') ?>
     <br/>
-      <?= $form->error($address, 'postcode') ?>
+        <?= $form->error($address, 'postcode') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode')) ?>
+        <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode')) ?>
   </td>
 </tr>
 
 <tr>
   <td>
-      <?= $form->labelEx($address, Yii::app()->params['county_label']) ?>
+        <?= $form->labelEx($address, Yii::app()->params['county_label']) ?>
     <br/>
-      <?= $form->error($address, Yii::app()->params['county_label']) ?>
+        <?= $form->error($address, Yii::app()->params['county_label']) ?>
   </td>
   <td>
-      <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'))) ?>
+        <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'))) ?>
 
   </td>
 </tr>
 
 <tr>
   <td class="required">
-      <?= $form->labelEx($address, 'country_id') ?>
+        <?= $form->labelEx($address, 'country_id') ?>
     <br/>
-      <?= $form->error($address, 'country_id') ?>
+        <?= $form->error($address, 'country_id') ?>
   </td>
   <td>
-      <?= $form->dropDownList($address, 'country_id', $countries, array('empty' => '-- select --', 'placeholder' => 'Country')) ?>
+        <?= $form->dropDownList($address, 'country_id', $countries, array('empty' => '-- select --', 'placeholder' => 'Country')) ?>
   </td>
 </tr>
 

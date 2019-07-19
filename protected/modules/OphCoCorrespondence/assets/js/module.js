@@ -279,7 +279,6 @@ $(document).ready(function() {
 
         var event_button = $(this);
         var event_form = event_button.attr('form');
-        $('#'+event_form ).append('<input type="hidden" name="saveprint" value="1" /> ');
 
         if(attachment_check == 1){
             disableButtons();

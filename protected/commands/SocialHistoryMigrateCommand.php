@@ -87,8 +87,7 @@ class SocialHistoryMigrateCommand extends PatientLevelMigration
             $element->save();
 
             $transaction->commit();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $transaction->rollback();
             throw $e;
         }

@@ -25,8 +25,8 @@
 
     <div class="eyedraw flex-layout">
       <div class="eyedraw-canvas">
-          <?php
-          $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+            <?php
+            $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
               'idSuffix' => 'Trabeculectomy',
               'side' => $element->eye->getShortName(),
               'mode' => 'view',
@@ -36,8 +36,8 @@
               'model' => $element,
               'attribute' => 'eyedraw',
               'idSuffix' => 'Trabeculectomy',
-          ));
-          ?>
+            ));
+            ?>
       </div>
       <div class="eyedraw-data">
         <table class="label-value no-lines last-left">
@@ -48,7 +48,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('conjunctival_flap_type_id')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('conjunctival_flap_type_id')) ?>
               </div>
             </td>
             <td>
@@ -85,12 +85,12 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('sclerostomy_type_id')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('sclerostomy_type_id')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?php echo $element->sclerostomy_type ? $element->sclerostomy_type->name : 'None' ?>
+                    <?php echo $element->sclerostomy_type ? $element->sclerostomy_type->name : 'None' ?>
               </div>
             </td>
           </tr>
@@ -98,12 +98,12 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('viscoelastic_type_id')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('viscoelastic_type_id')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?php echo $element->viscoelastic_type ? $element->viscoelastic_type->name : 'None' ?>
+                    <?php echo $element->viscoelastic_type ? $element->viscoelastic_type->name : 'None' ?>
               </div>
             </td>
           </tr>
@@ -111,7 +111,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('viscoelastic_removed')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('viscoelastic_removed')) ?>
               </div>
             </td>
             <td>
@@ -122,12 +122,12 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('viscoelastic_flow_id')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('viscoelastic_flow_id')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?php echo $element->viscoelastic_flow ? $element->viscoelastic_flow->name : 'None' ?>
+                    <?php echo $element->viscoelastic_flow ? $element->viscoelastic_flow->name : 'None' ?>
               </div>
             </td>
           </tr>
@@ -138,9 +138,9 @@
             </td>
             <td>
               <div class="data-value">
-                  <?php foreach (explode(chr(10), CHtml::encode($element->report)) as $line) { ?>
-                      <?php echo $line ?>
-                  <?php } ?>
+                    <?php foreach (explode(chr(10), CHtml::encode($element->report)) as $line) { ?>
+                        <?php echo $line ?>
+                    <?php } ?>
               </div>
             </td>
           </tr>
@@ -151,17 +151,17 @@
             </td>
             <td>
               <div class="data-value">
-                  <?php if (!$element->difficulties) { ?>
+                    <?php if (!$element->difficulties) { ?>
                     None
-                  <?php } else { ?>
-                      <?php foreach ($element->difficulties as $difficulty) { ?>
-                          <?php if ($difficulty->name == 'Other') {?>
-                              <?php echo preg_replace("/[\n]/", ', ', $element->difficulty_other) ?>
-                          <?php } else { ?>
-                              <?php echo $difficulty->name?>,
-                          <?php } ?>
-                      <?php } ?>
-                  <?php } ?>
+                    <?php } else { ?>
+                        <?php foreach ($element->difficulties as $difficulty) { ?>
+                            <?php if ($difficulty->name == 'Other') {?>
+                                <?php echo preg_replace("/[\n]/", ', ', $element->difficulty_other) ?>
+                            <?php } else { ?>
+                                <?php echo $difficulty->name?>,
+                            <?php } ?>
+                        <?php } ?>
+                    <?php } ?>
               </div>
             </td>
           </tr>
@@ -172,17 +172,17 @@
             </td>
             <td>
               <div class="data-value">
-                  <?php if (!$element->complications) { ?>
+                    <?php if (!$element->complications) { ?>
                     None
-                  <?php } else { ?>
-                      <?php foreach ($element->complications as $complication) { ?>
-                          <?php if ($complication->name == 'Other') { ?>
-                              <?php echo preg_replace("/[\n]/", ', ', $element->complication_other) ?>
-                          <?php } else { ?>
-                              <?php echo $complication->name ?>,
-                          <?php } ?>
-                      <?php } ?>
-                  <?php } ?>
+                    <?php } else { ?>
+                        <?php foreach ($element->complications as $complication) { ?>
+                            <?php if ($complication->name == 'Other') { ?>
+                                <?php echo preg_replace("/[\n]/", ', ', $element->complication_other) ?>
+                            <?php } else { ?>
+                                <?php echo $complication->name ?>,
+                            <?php } ?>
+                        <?php } ?>
+                    <?php } ?>
               </div>
             </td>
           </tr>

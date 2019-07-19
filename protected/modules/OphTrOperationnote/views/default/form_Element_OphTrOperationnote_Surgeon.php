@@ -33,7 +33,7 @@
     <tbody>
     <tr class="col-gap">
       <td>
-          <?php echo $form->dropDownList(
+            <?php echo $form->dropDownList(
               $element,
               'surgeon_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
@@ -43,7 +43,7 @@
           ); ?>
       </td>
       <td>
-          <?php echo $form->dropDownList(
+            <?php echo $form->dropDownList(
               $element,
               'assistant_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
@@ -53,7 +53,7 @@
           ); ?>
       </td>
       <td>
-          <?php echo $form->dropDownList(
+            <?php echo $form->dropDownList(
               $element,
               'supervising_surgeon_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),

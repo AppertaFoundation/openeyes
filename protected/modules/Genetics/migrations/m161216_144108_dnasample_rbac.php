@@ -2,8 +2,8 @@
 
 class m161216_144108_dnasample_rbac extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskEditBloodSample'");
         $this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskViewBloodSample'");
         $this->delete('authitemchild', "parent = 'Genetics User' AND child = 'TaskViewBloodSample'");
@@ -25,11 +25,11 @@ class m161216_144108_dnasample_rbac extends CDbMigration
         
         $this->insert('authitemchild', array('parent' => 'TaskEditDnaSample', 'child' => 'OprnEditDnaSample'));
         $this->insert('authitemchild', array('parent' => 'TaskViewDnaSample', 'child' => 'OprnViewDnaSample'));
-	}
+    }
 
-	public function down()
-	{
-		$this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskEditDnaSample'");
+    public function down()
+    {
+        $this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskEditDnaSample'");
         $this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskViewDnaSample'");
         $this->delete('authitemchild', "parent = 'Genetics User' AND child = 'TaskViewDnaSample'");
         
@@ -49,16 +49,16 @@ class m161216_144108_dnasample_rbac extends CDbMigration
         
         $this->insert('authitemchild', array('parent' => 'TaskEditBloodSample', 'child' => 'OprnEditBloodSample'));
         $this->insert('authitemchild', array('parent' => 'TaskViewBloodSample', 'child' => 'OprnViewBloodSample'));
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

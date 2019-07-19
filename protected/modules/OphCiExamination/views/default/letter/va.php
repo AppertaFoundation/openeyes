@@ -59,7 +59,7 @@ if (empty($LR_readings)) {
   </tr>
   </thead>
   <tbody>
-  <?php foreach ($LR_readings as $method => $readings): ?>
+    <?php foreach ($LR_readings as $method => $readings) : ?>
     <tr>
       <td>
           <?= $method ?>
@@ -71,6 +71,6 @@ if (empty($LR_readings)) {
           <?= array_key_exists('left', $readings) ? $readings['left'] : ' - ' ?>
       </td>
     </tr>
-  <?php endforeach; ?>
+    <?php endforeach; ?>
   </tbody>
 </table>

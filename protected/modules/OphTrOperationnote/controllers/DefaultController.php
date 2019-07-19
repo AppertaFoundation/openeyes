@@ -272,7 +272,7 @@ class DefaultController extends BaseEventTypeController
         }
 
         if ($this->booking_operation || $this->unbooked) {
-            parent::actionCreate();
+            $this->createOpNote();
         } else {
             // set up form for selecting a booking for the Op note
             $bookings = array();
@@ -312,6 +312,149 @@ class DefaultController extends BaseEventTypeController
                 'theatre_diary_disabled' => $theatre_diary_disabled
             ));
         }
+    }
+
+    protected function createOpNote()
+    {
+        $this->event->firm_id = $this->selectedFirmId;
+        if (!empty($_POST)) {
+            // form has been submitted
+            if (isset($_POST['cancel'])) {
+                $this->redirectToPatientEpisodes();
+            }
+
+            // set and validate
+            $errors = $this->setAndValidateElementsFromData($_POST);
+
+            // creation
+            if (empty($errors)) {
+                $transaction = Yii::app()->db->beginTransaction();
+
+                try {
+                    $success = $this->saveEvent($_POST);
+
+                    if ($success) {
+                        // should this be in the save event as pass through?
+                        if ($this->eventIssueCreate) {
+                            $this->event->addIssue($this->eventIssueCreate);
+                        }
+
+                        // should not be passing event?
+                        $this->afterCreateElements($this->event);
+
+                        $this->logActivity('created event.');
+
+                        $this->event->audit('event', 'create');
+
+                        Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
+
+                        $transaction->commit();
+
+                        $create_prescription = \Yii::app()->request->getParam('auto_generate_prescription_after_surgery');
+                        if ($create_prescription) {
+                            $transaction = Yii::app()->db->beginTransaction();
+                            // create 'post-op' prescription
+                            $result = $this->createPrescriptionEvent();
+                            if ($result['success'] === true) {
+                                $transaction->commit();
+                            } else {
+                                $transaction->rollback();
+
+                                $log = print_r($result['errors'], true);
+                                \Audit::add('event', 'create', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
+                                    'module' => 'OphDrPrescription',
+                                    'episode_id' => $this->event->episode->id,
+                                    'patient_id' => $this->patient->id,
+                                    'model' => 'Element_OphDrPrescription_Details'
+                                ]);
+                            }
+                        }
+
+                        $create_correspondence = \Yii::app()->request->getParam('auto_generate_gp_letter_after_surgery');
+                        if ($create_correspondence) {
+                            $transaction = Yii::app()->db->beginTransaction();
+                            // create 'post-op' letter
+                            $result = $this->createCorrespondenceEvent();
+                            if ($result['success'] === true) {
+                                $transaction->commit();
+                            } else {
+                                $transaction->rollback();
+                                $log = print_r($result['errors'], true);
+                                \Audit::add('event', 'create', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
+                                    'module' => 'OphCoCorrespondence',
+                                    'episode_id' => $this->event->episode->id,
+                                    'patient_id' => $this->patient->id,
+                                    'model' => 'ElementLetter'
+                                ]);
+                            }
+                        }
+
+                        $create_optopm_correspondence = \Yii::app()->request->getParam('auto_generate_optopm_post_op_letter_after_surgery');
+                        $macro_name = \SettingMetadata::model()->getSetting('default_optop_post_op_letter');
+                        $macro = LetterMacro::model()->find('name = ?', [$macro_name]);
+
+                        if ($create_optopm_correspondence) {
+                            // create 'optopm-post-op' letter
+                            if ($macro) {
+                                $transaction = Yii::app()->db->beginTransaction();
+                                $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
+                                $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
+                                $correspondence_creator->save();
+
+                                if ($correspondence_creator->save()) {
+                                    $transaction->commit();
+                                } else {
+                                    $transaction->rollback();
+                                    $log = print_r($result['errors'], true);
+                                    \Audit::add('event', 'create', 'Event creation Failed <pre>' . $log . '</pre>', $log, [
+                                        'module' => 'OphCoCorrespondence',
+                                        'episode_id' => $this->event->episode->id,
+                                        'patient_id' => $this->patient->id,
+                                        'model' => 'ElementLetter'
+                                    ]);
+                                }
+                            } else {
+                                \OELog::log("No macro found: {$macro_name}, default setting (macro name) was : {$macro_name}");
+                            }
+                        }
+
+                        if ($this->event->parent_id) {
+                            $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
+                        } else {
+                            $this->redirect(array($this->successUri . $this->event->id));
+                        }
+                    } else {
+                        throw new Exception('could not save event');
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollback();
+                    throw $e;
+                }
+            }
+        } else {
+            $this->setOpenElementsFromCurrentEvent('create');
+            $this->updateHotlistItem($this->patient);
+        }
+
+        $this->editable = false;
+        $this->event_tabs = array(
+            array(
+                'label' => 'Create',
+                'active' => true,
+            ),
+        );
+
+        $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
+        $this->event_actions = array(
+            EventAction::link('Cancel',
+                Yii::app()->createUrl($cancel_url),
+                array('level' => 'cancel')
+            ),
+        );
+
+        $this->render('create', array(
+            'errors' => @$errors,
+        ));
     }
 
     /**
@@ -937,14 +1080,12 @@ class DefaultController extends BaseEventTypeController
         //AnaestheticType
         $type_assessments = array();
         if (isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])) {
-
             $type_assessments_by_id = array();
             foreach ($element->anaesthetic_type_assignments as $type_assignments) {
                 $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
             }
 
             foreach ($data['AnaestheticType'] as $anaesthetic_type_id) {
-
                 if (!array_key_exists($anaesthetic_type_id, $type_assessments_by_id)) {
                     $anaesthetic_type_assesment = new OphTrOperationnote_OperationAnaestheticType();
                 } else {
@@ -978,14 +1119,12 @@ class DefaultController extends BaseEventTypeController
         //AnaestheticDelivery
         $delivery_assessments = array();
         if (isset($data['AnaestheticDelivery']) && is_array($data['AnaestheticDelivery'])) {
-
             $delivery_assessments_by_id = array();
             foreach ($element->anaesthetic_delivery_assignments as $delivery_assignments) {
                 $delivery_assessments_by_id[$delivery_assignments->anaesthetic_delivery_id] = $delivery_assignments;
             }
 
             foreach ($data['AnaestheticDelivery'] as $anaesthetic_delivery_id) {
-
                 if (!array_key_exists($anaesthetic_delivery_id, $delivery_assessments_by_id)) {
                     $anaesthetic_delivery_assesment = new OphTrOperationnote_OperationAnaestheticDelivery();
                 } else {
@@ -1062,6 +1201,43 @@ class DefaultController extends BaseEventTypeController
         $this->persistPcrRisk();
     }
 
+    private function createCorrespondenceEvent()
+    {
+        $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $macro = $correspondence_api->getDefaultMacroByEpisodeStatus($this->event->episode, $firm, Yii::app()->session['selected_site_id']);
+
+        $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
+        $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
+        $correspondence_creator->save();
+        return [
+            'success' => !$correspondence_creator->hasErrors(),
+            'errors' => $correspondence_creator->getErrors(),
+        ];
+    }
+
+    private function createPrescriptionEvent()
+    {
+        $drug_set_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_drug_set");
+        $subspecialty_id = $this->firm->getSubspecialtyID();
+        $params = [':subspecialty_id' => $subspecialty_id, ':name' => $drug_set_name];
+
+        $set = DrugSet::model()->find([
+            'condition' => 'subspecialty_id = :subspecialty_id AND name = :name',
+            'params' => $params,
+        ]);
+
+        $prescription_creator = new PrescriptionCreator($this->event->episode);
+        $prescription_creator->patient = $this->patient;
+        $prescription_creator->addDrugSet($set->id);
+        $prescription_creator->save();
+
+        return [
+            'success' => !$prescription_creator->hasErrors(),
+            'errors' => $prescription_creator->getErrors()
+        ];
+    }
+
     public function formatAconst($aconst)
     {
         /* based on the requirements:
@@ -1134,19 +1310,6 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        //event date
-        if (isset($data['Event']['event_date'])) {
-            $event = $this->event;
-            $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
-            if (!$event->validate()) {
-                foreach ($event->getErrors() as $errormsgs) {
-                    foreach ($errormsgs as $error) {
-                        $errors[$this->event_type->name][] = $error;
-                    }
-                }
-            }
-        }
-
         return $errors;
     }
 
@@ -1170,5 +1333,22 @@ class DefaultController extends BaseEventTypeController
                 '<span class="extra-info">' . Helper::convertDate2NHS($this->event->event_date) . '</span>';
         }
         return null;
+    }
+
+    /**
+     * @param $proc_id
+     * @return OphTrOperationnote_Attribute[]
+     *
+     * Returns attributes that belong
+     * to the given procedure
+     */
+
+    protected function getAttributesForProcedure($proc_id)
+    {
+        $crit = new CDbCriteria();
+        $crit->compare('proc_id', $proc_id);
+        $crit->order = "display_order";
+
+        return OphTrOperationnote_Attribute::model()->findAll($crit);
     }
 }

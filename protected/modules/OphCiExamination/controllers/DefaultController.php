@@ -110,10 +110,8 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function checkElementsForData($elements)
     {
-        foreach($elements as $element)
-        {
-            if($element->id > 0)
-            {
+        foreach ($elements as $element) {
+            if ($element->id > 0) {
                 return true;
             }
         }
@@ -125,7 +123,7 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return array
      */
-    protected function getElementFilterList($include_hidden=true)
+    protected function getElementFilterList($include_hidden = true)
     {
         $remove = components\ExaminationHelper::elementFilterList();
 
@@ -150,10 +148,10 @@ class DefaultController extends \BaseEventTypeController
         $final = array();
         foreach ($elements as $el) {
             if (in_array(get_class($el), $remove)) {
-                if($el->id > null || $this->checkElementsForData($this->getElements($el->getElementType()))) {
+                if ($el->id > null || $this->checkElementsForData($this->getElements($el->getElementType()))) {
                     $final[] = $el;
                 }
-            }else{
+            } else {
                 $final[] = $el;
             }
         }
@@ -260,7 +258,6 @@ class DefaultController extends \BaseEventTypeController
                 $d->eye_id = $this->episode->eye_id;
 
                 $diagnoses[] = $d;
-
             }
 
             foreach ($this->patient->getOphthalmicDiagnoses() as $sd) {
@@ -408,7 +405,7 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-		$active_check = "";
+        $active_check = "";
 
         $view_data = array_merge(array(
             'active_check' => $active_check,
@@ -1260,7 +1257,7 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidateElementsFromData($data)
     {
         $errors = parent::setAndValidateElementsFromData($data);
-        if(isset($data['OEModule_OphCiExamination_models_HistoryIOP'])) {
+        if (isset($data['OEModule_OphCiExamination_models_HistoryIOP'])) {
             $errors = $this->setAndValidateHistoryIopFromData($data, $errors);
         }
 
@@ -1270,12 +1267,13 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $posted_risk = [];
-        if(isset($data['OEModule_OphCiExamination_models_HistoryRisks']['entries'])){
-            $posted_risk = array_map(function($r){ return $r['risk_id'];}, $data['OEModule_OphCiExamination_models_HistoryRisks']['entries']);
+        if (isset($data['OEModule_OphCiExamination_models_HistoryRisks']['entries'])) {
+            $posted_risk = array_map(function($r){ return $r['risk_id'];
+            }, $data['OEModule_OphCiExamination_models_HistoryRisks']['entries']);
         }
 
         // Element was open, we check the required risks
-        if(isset($data['OEModule_OphCiExamination_models_HistoryRisks'])){
+        if (isset($data['OEModule_OphCiExamination_models_HistoryRisks'])) {
             $errors = $this->setAndValidateHistoryRisksFromData($errors, $posted_risk);
         }
 
@@ -1317,7 +1315,7 @@ class DefaultController extends \BaseEventTypeController
 
         $missing_risks = [];
         foreach ($exam_api->getRequiredRisks($this->patient) as $required_risk) {
-            if( !in_array($required_risk->id, $posted_risk) ){
+            if ( !in_array($required_risk->id, $posted_risk) ) {
                 $missing_risks[] = $required_risk;
             }
         }
@@ -1361,7 +1359,7 @@ class DefaultController extends \BaseEventTypeController
 
             if (count($err)) {
                 $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-                if(isset($errors[$et_name])) {
+                if (isset($errors[$et_name])) {
                     if ($errors[$et_name]) {
                         $errors[$et_name] = array_merge($errors[$et_name], $err);
                     } else {
@@ -1436,7 +1434,6 @@ class DefaultController extends \BaseEventTypeController
 
 
         foreach ($contact_ids as $key => $contact_id) {
-
             $foundExistingAssignment = false;
             foreach ($patientContactAssignments as $patientContactAssignment) {
                 if ($patientContactAssignment->contact_id == $contact_id) {
@@ -1598,7 +1595,7 @@ class DefaultController extends \BaseEventTypeController
             $element = models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element_id);
             $element->cvi_alert_dismissed = 1;
 
-            if($element->save()) {
+            if ($element->save()) {
                 echo \CJSON::encode(array('success' => 'true'));
             }
         }

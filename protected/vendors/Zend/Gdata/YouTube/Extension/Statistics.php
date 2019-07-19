@@ -156,23 +156,23 @@ class Zend_Gdata_YouTube_Extension_Statistics extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'videoWatchCount':
-            $this->_videoWatchCount = $attribute->nodeValue;
+            case 'videoWatchCount':
+                $this->_videoWatchCount = $attribute->nodeValue;
             break;
-        case 'viewCount':
-            $this->_viewCount = $attribute->nodeValue;
+            case 'viewCount':
+                $this->_viewCount = $attribute->nodeValue;
             break;
-        case 'subscriberCount':
-            $this->_subscriberCount = $attribute->nodeValue;
+            case 'subscriberCount':
+                $this->_subscriberCount = $attribute->nodeValue;
             break;
-        case 'lastWebAccess':
-            $this->_lastWebAccess = $attribute->nodeValue;
+            case 'lastWebAccess':
+                $this->_lastWebAccess = $attribute->nodeValue;
             break;
-        case 'favoriteCount':
-            $this->_favoriteCount = $attribute->nodeValue;
+            case 'favoriteCount':
+                $this->_favoriteCount = $attribute->nodeValue;
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 

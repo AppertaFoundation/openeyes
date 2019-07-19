@@ -309,7 +309,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
             'Element_OphTrIntravitrealinjection_PostInjectionExamination',
             $patient,
             $use_context)
-        ){
+        ) {
             $drops = array();
             if ($el->hasRight()) {
                 $drops[] = $el->right_drops->name . ' to the right eye';

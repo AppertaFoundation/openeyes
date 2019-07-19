@@ -43,10 +43,10 @@ Yii::app()->getAssetManager()->registerScriptFile('js/AdminSidebar.js', 'applica
 </div>
 <div class="oe-full-content subgrid oe-reports">
   <nav class="oe-full-side-panel reports-panels">
-      <?php $this->renderPartial('//report/sidebar'); ?>
+        <?php $this->renderPartial('//report/sidebar'); ?>
   </nav>
   <main class="oe-full-main reports-main">
-      <?php echo $content; ?>
+        <?php echo $content; ?>
   </main>
 </div>
 

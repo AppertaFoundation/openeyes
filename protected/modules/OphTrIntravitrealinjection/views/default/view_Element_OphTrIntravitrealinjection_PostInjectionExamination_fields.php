@@ -20,7 +20,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_finger_count') ?>:
+            <?php echo $element->getAttributeLabel($side . '_finger_count') ?>:
       </div>
     </td>
     <td>
@@ -49,7 +49,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_drops_id') ?>:
+            <?php echo $element->getAttributeLabel($side . '_drops_id') ?>:
       </div>
     </td>
     <td>

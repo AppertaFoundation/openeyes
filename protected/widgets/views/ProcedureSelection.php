@@ -111,12 +111,12 @@
 </div>
 
 <script type="text/javascript">
-    const low_complexity = "0";
-    const high_complexity = "10";
-    const high_percentage = typeof op_booking_inc_time_high_complexity !== "undefined" ? parseInt(window.op_booking_inc_time_high_complexity) : 20;
-    const low_percentage = typeof op_booking_decrease_time_low_complexity !== "undefined" ? parseInt(window.op_booking_decrease_time_low_complexity) : 10;
-    const identifier = "<?= $identifier ?>";
-    const $projected_duration = $('#projected_duration_' + identifier + ' span');
+    let low_complexity = "0";
+    let high_complexity = "10";
+    let high_percentage = typeof op_booking_inc_time_high_complexity !== "undefined" ? parseInt(window.op_booking_inc_time_high_complexity) : 20;
+    let low_percentage = typeof op_booking_decrease_time_low_complexity !== "undefined" ? parseInt(window.op_booking_decrease_time_low_complexity) : 10;
+    let identifier = "<?= $identifier ?>";
+    let $projected_duration = $('#projected_duration_' + identifier + ' span');
 
     // Note: Removed_stack is probably not the best name for this. Selected procedures is more accurate.
     // It is used to suppress procedures from the add a procedure inputs
@@ -335,7 +335,7 @@
         return false;
     });
 
-    <?php if ($durations): ?>
+    <?php if ($durations) : ?>
     $(document).ready(function () {
         if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
             $('#projected_duration_<?php echo $identifier?> span').html(parseInt($('#projected_duration_<?php echo $identifier?> span').html()));

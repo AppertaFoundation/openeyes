@@ -4,9 +4,9 @@ use \OEModule\PASAPI\models\PasApiAssignment;
 class m190321_141548_unbooked_worklist_data_migration extends OEMigration
 {
 
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
         $this->addColumn('event', 'worklist_patient_id', 'INT(11) DEFAULT NULL');
         $this->addColumn('event_version', 'worklist_patient_id', 'INT(11) DEFAULT NULL');
 
@@ -32,7 +32,7 @@ class m190321_141548_unbooked_worklist_data_migration extends OEMigration
         Yii::app()->db->schema->getTable('event', true);
         Yii::app()->db->schema->getTable('event_version', true);
 
-        $this->addForeignKey('event_ibfk_worklist_patient', 'event', 'worklist_patient_id', 'worklist_patient','id');
+        $this->addForeignKey('event_ibfk_worklist_patient', 'event', 'worklist_patient_id', 'worklist_patient', 'id');
 
         $this->insert('setting_metadata', array('element_type_id' => null,
                 'field_type_id' => 4,
@@ -43,9 +43,9 @@ class m190321_141548_unbooked_worklist_data_migration extends OEMigration
             )
         );
         $this->insert('setting_installation', array('key' => 'worklist_search_appt_within', 'value' => '30'));
-	}
+    }
 
-	private function getWorklistPatientId($event)
+    private function getWorklistPatientId($event)
     {
         $assignment = PasApiAssignment::model()->findByAttributes(['resource_id' => $event->pas_visit_id]);
 
@@ -59,9 +59,9 @@ class m190321_141548_unbooked_worklist_data_migration extends OEMigration
         return null;
     }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         echo "m190321_141548_unbooked_worklist does not support migration down.\n";
         return false;
-	}
+    }
 }

@@ -4,7 +4,7 @@ class m180306_112130_whiteboard_settings extends OEMigration
 {
     public function up()
     {
-        $this->createOETable('ophtroperationbooking_whiteboard_settings',array(
+        $this->createOETable('ophtroperationbooking_whiteboard_settings', array(
             'id' => 'pk',
             'display_order' => "tinyint(3) unsigned DEFAULT '0'",
             'field_type_id' => 'int(10) unsigned NOT NULL',
@@ -25,7 +25,7 @@ class m180306_112130_whiteboard_settings extends OEMigration
             'value' => 'varchar(255) COLLATE utf8_bin NULL',
         ), $versioned = true);
 
-        $this->insert('ophtroperationbooking_whiteboard_settings',array(
+        $this->insert('ophtroperationbooking_whiteboard_settings', array(
             'field_type_id' => 4,
             'key' => 'refresh_after_opbooking_completed',
             'name' => 'Allow whiteboard to refresh after Booking is completed (hours)'

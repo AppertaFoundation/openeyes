@@ -52,7 +52,9 @@ $logoHelper = new LogoHelper();
                 <br/><?php echo $element->getAttributeLabel('fax') ?>: <?php echo $element->fax ?>
             <?php } ?>
             <div class="date">
-                <br/><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) { ?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate)) ?>)<?php } ?>
+                <br/><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) {
+                    ?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate)) ?>)<?php
+                     } ?>
             </div>
         </div>
     <?php } ?>
