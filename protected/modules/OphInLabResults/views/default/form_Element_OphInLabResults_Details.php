@@ -32,7 +32,7 @@
                                 data-element-id="<?= $type->result_element_id ?>"
                                 data-type-id="<?= $type->id ?>"
                                 data-field-type-name="<?= $type->fieldType->name ?>"
-                            <?php if ($type->fieldType->name == "Numeric Field") { ?>
+                            <?php if ($type->fieldType->name === "Numeric Field") { ?>
                                 data-normal-min="<?= $type->normal_min ?>"
                                 data-normal-max="<?= $type->normal_max ?>"
                                 data-custom-message="<?= $type->custom_warning_message ?>"

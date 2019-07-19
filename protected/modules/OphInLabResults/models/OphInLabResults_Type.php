@@ -21,7 +21,7 @@ class OphInLabResults_Type extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphInLabResults_Type static model class
+     * @return OEModule\OphInLabResults\models static model class
      */
     public static function model($className = __CLASS__)
     {
