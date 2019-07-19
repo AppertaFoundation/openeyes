@@ -7,149 +7,117 @@
 * This has the initial margin from the top of the page, plus any requisite margins for the surrounds of the form.
 * It also contains the default font specifications.
 */
-.fpten-container {
-    margin-top: 6mm; /* White-space at top is generally 6mm with a tolerance of +/-2mm (so allowing 8mm). There is also ~2mm before the first section of the form. */
-    width: 85mm;
-    height: 133.5mm;
+#fpten-container {
     font-family: arial, sans-serif;
     font-weight: bold;
     font-size: 7.5pt;
-    padding: 2mm 2mm 10mm 3mm;
-    border: 1px solid;
+    padding: 3mm 2mm 9mm 3mm;
+    width: 101mm;
+    height: 160mm;
+}
+
+.fpten-form-row {
+    display: block;
+    width: 100%;
+    height: auto;
     position: relative;
 }
 
-.fpten-trust-code {
+.fpten-form-column {
+    display: inline;
+    float: left;
+    position: relative;
+}
+
+#fpten-trust-code {
     font-size: 12pt;
 }
 
 /*Site box appears at the bottom toward the center.*/
-.fpten-site {
+#fpten-site {
     text-align: left;
-    border: 1px solid;
-    height: 24mm;
-    width: 37mm;
-    position: absolute;
-    margin-top: 109mm;
-    margin-left: 11mm;
+    height: 26.5mm;
+    width: 30mm;
+    margin-left: 13.5mm;
     padding-top: 3mm;
     padding-left: 2mm;
 }
 
-.fpten-site-code {
+#fpten-site-code {
+    padding-top: 3mm;
     text-align: left;
-    margin-left: 48mm;
-    border: 1px solid;
-    height: 24mm;
-    width: 23mm;
-    position: absolute;
-    margin-top: 109mm;
+    height: 26.5mm;
+    width: 30mm;
 }
 
 /*Age box appears at the top toward the center.*/
-.fpten-age {
+#fpten-age {
     padding-top: 3mm;
-    margin-left: 24mm;
+    margin-left: 28mm;
     text-align: center;
-    border: 1px solid;
-    height: 6mm;
-    width: 12mm;
-    position: absolute;
+    height: 17mm;
+    width: 13mm;
+    line-height: 17mm;
 }
 
 /*DOB box appears directly below the Age box.*/
-.fpten-dob {
-    height: 18mm;
-    width: 12mm;
-    margin-left: 24mm;
-    margin-top: 8mm;
+#fpten-dob {
+    height: 17mm;
+    width: 13mm;
+    margin-left: 28mm;
     padding-top: 3mm;
     text-align: center;
-    border: 1px solid;
-    position: absolute;
-    vertical-align: center;
+    line-height: 17mm;
 }
 
 /*Patient details box appears at the top right corner beside age and DOB.*/
-.fpten-patient-details {
+#fpten-patient-details {
     text-align: left;
-    border: 1px solid;
-    margin-left: 37mm;
-    margin-top: 0;
     padding-top: 3mm;
     padding-left: 2mm;
-    height: 26.5mm;
-    width: 28mm;
-    position: absolute;
+    height: 34mm;
+    width: 32.7mm;
 }
 
 /*Postcode is right-aligned to the edge of the parent box.*/
-.fpten-postcode-nhs {
+#fpten-postcode-nhs {
     text-align: left;
-    height: 28.5mm;
-    width: 13.5mm;
+    height: 34mm;
+    width: 16.3mm;
     padding-left: 1mm;
-    margin-left: 67mm;
-    border: 1px solid;
-    position: absolute;
 }
 
 /*Prescriber initiative appears at top of main box in the center*/
-.fpten-prescriber {
+#fpten-prescriber {
     font-size: 7pt;
-    border: 1px solid;
     height: 10mm;
-    width: 55mm;
-    position: absolute;
+    width: 59.5mm;
     margin-left: 16mm;
-    margin-top: 31mm;
     text-align: center;
+    line-height: 10mm;
 }
 
 .fpten-prescriber-code {
     font-size: 10pt;
-    border: 1px solid;
-    height: 5mm;
-    width: 14mm;
-    position: absolute;
-    margin-top: 28.5mm;
-    margin-left: 71mm;
-    padding-top: 1mm;
+    height: 10mm;
+    width: 12mm;
+    line-height: 10mm;
     text-align: center;
 }
 
 /*Appears beneath the prescriber.*/
-.fpten-prescription-list {
+#fpten-prescription-list {
     padding-right: 5mm;
-    border: 1px solid;
-    height: 60mm;
-    width: 55mm;
-    position: absolute;
+    height: 72.5mm;
+    width: 71.5mm;
     margin-left: 16mm;
-    margin-top: 40mm;
 }
 
 /*Appears directly above the Trust code in the site box.*/
-.fpten-date {
-    width: 38mm;
-    height: 11mm;
+#fpten-date {
+    width: 34.7mm;
+    height: 11.5mm;
     text-align: left;
-    vertical-align: center;
-    border: 1px solid;
-    position: absolute;
-    margin-left: 44mm;
-    margin-top: 101mm;
-    padding-top: 3mm;
-}
-
-.fpten-site-prescriber-code {
-    font-size: 10pt;
-    border: 1px solid;
-    height: 5mm;
-    width: 14mm;
-    position: absolute;
-    margin-top: 111.5mm;
-    margin-left: 71mm;
-    padding-top: 1mm;
-    text-align: center;
+    margin-left: 48mm;
+    line-height: 11.5mm;
 }
