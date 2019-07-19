@@ -532,4 +532,13 @@ class MedicationSet extends BaseActiveRecordVersioned
         }
         return false;
     }
+
+    public function removeUsageCode($usage_code)
+    {
+        if (!$this->id) {
+            return false;
+        }
+
+        return \MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $this->id, $usage_code]);
+    }
 }

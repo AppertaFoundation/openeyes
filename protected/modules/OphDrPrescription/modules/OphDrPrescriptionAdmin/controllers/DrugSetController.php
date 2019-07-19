@@ -32,10 +32,12 @@ class DrugSetController extends BaseAdminController
             'query' => null,
             'subspecialty_id' => null,
             'site_id' => null,
-            'usage_codes' => [],
+            'usage_codes' => ['COMMON_OPH'],
         ];
 
         $filters = \Yii::app()->request->getParam('search');
+
+        \Yii::app()->session['sets_filters'] = [];
 
         if (!$filters) {
             $filters = \Yii::app()->session->get('sets_filters');
@@ -315,17 +317,28 @@ class DrugSetController extends BaseAdminController
     public function actionDelete()
     {
         $ids = \Yii::app()->request->getParam('delete-ids', []);
+        $usage_code = \Yii::app()->request->getParam('usage-code');
         $response['message'] = '';
 
         foreach ($ids as $id) {
             $set = \MedicationSet::model()->findByPk($id);
-            $count = $set->itemsCount();
-            if (!$count) {
-                if (\MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $id])) {
-                    $set->delete();
+
+            if ($set && $usage_code) {
+
+                // if the set is automatic we just remove the usage code
+                if ($set->automatic) {
+                    $deleted_rows = $set->removeUsageCode($usage_code);
+
+                } else {
+                    $count = $set->itemsCount();
+                    if (!$count) {
+                        if (\MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $id])) {
+                            $set->delete();
+                        }
+                    } else {
+                        $response['message'] .= "Set '{$set->name}' is not empty. Please delete the medications first.<br>";
+                    }
                 }
-            } else {
-                $response['message'] .= "Set '{$set->name}' is not empty. ";
             }
         }
 

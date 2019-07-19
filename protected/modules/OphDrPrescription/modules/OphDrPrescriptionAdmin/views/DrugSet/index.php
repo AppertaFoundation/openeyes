@@ -31,12 +31,6 @@
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
 
         <div id="set-filters" class="flex-layout row">
-            <button
-                    data-usage_code=""
-                    type="button"
-                    class="large js-set-select js-all-sets<?= !isset($search['usage_codes']) || empty($search['usage_codes']) ? ' green hint' : '' ?>"
-            >All Sets</button>
-
             <?php $codes = [
                     'COMMON_OPH' => 'Common Ophthalmic Drug Sets',
                     'COMMON_SYSTEMIC' => 'Common Systemic Drug  Sets',
@@ -134,11 +128,9 @@
                         'data-uri' => "/OphDrPrescription/admin/drugSet/edit",
                         'class' => 'button large'
                     ]); ?>
-                    <?= \CHtml::submitButton('Delete', [
-                        'id' => 'et_delete',
-                        'data-uri' => '/OphDrPrescription/admin/drugSet/delete',
+                    <?= \CHtml::button('Delete', [
+                        'id' => 'delete_sets',
                         'class' => 'button large',
-                        'data-object' => 'DrugSet'
                     ]); ?>
                 </td>
                 <td colspan="4">

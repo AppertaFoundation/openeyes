@@ -56,31 +56,14 @@ class Medication extends BaseActiveRecordVersioned
 		return 'medication';
 	}
 
-    /**
-     * This scope is to get prescribable medications.
-     * However, AMPs are only prescribable when its parent VMP is prescribable and this scope is not checks parent
-     *
-     * I leave it commented out until we can find out if AMP has this VIRTUAL_PRODUCT_PRES_STATUS
-     * If only VMP has VIRTUAL_PRODUCT_PRES_STATUS attribute than this scope isn't really useful as it would only return VMPs
-     */
-
-   /* public function scopes()
+    public function scopes()
     {
         return [
             'prescribable' => [
-                'with' => [
-                    'medicationAttributeOptions' => [
-                        'with' => [
-                            'medicationAttribute' => [
-                                'condition' => 'medicationAttribute.name = "VIRTUAL_PRODUCT_PRES_STATUS"'
-                            ],
-                        ],
-                        'condition' => 'medicationAttributeOptions.value = "0001"'
-                    ]
-                ],
+                'condition' => 't.is_prescribable = 1'
             ],
         ];
-    }*/
+    }
 
 	/**
 	 * @return array validation rules for model attributes.
@@ -89,17 +72,17 @@ class Medication extends BaseActiveRecordVersioned
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
-		return array(
-			array('source_type, preferred_term', 'required'),
-			array('source_type, last_modified_user_id, created_user_id', 'length', 'max'=>10),
-			array('source_subtype', 'length', 'max' => 45),
-			array('preferred_term, short_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code', 'length', 'max'=>255),
-			array('deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems, default_route_id, default_form_id, default_dose_unit_term', 'safe'),
+		return [
+			['source_type, preferred_term', 'required'],
+			['source_type, last_modified_user_id, created_user_id', 'length', 'max'=>10],
+			['source_subtype', 'length', 'max' => 45],
+			['preferred_term, short_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code', 'length', 'max'=>255],
+			['deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems, default_route_id, default_form_id, default_dose_unit_term', 'safe'],
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code, 
-					deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
-		);
+			['id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code, 
+					deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'],
+		];
 	}
 
 	/**
@@ -109,25 +92,25 @@ class Medication extends BaseActiveRecordVersioned
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-		return array(
-			'eventMedicationUses' => array(self::HAS_MANY, EventMedicationUse::class, 'medication_id'),
-			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+		return [
+			'eventMedicationUses' => [self::HAS_MANY, EventMedicationUse::class, 'medication_id'],
+			'lastModifiedUser' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
+			'createdUser' => [self::BELONGS_TO, 'User', 'created_user_id'],
 
             'medicationSets' => array(self::MANY_MANY, MedicationSet::class, 'medication_set_item(medication_id, medication_set_id)'),
 
-            'medicationSetItems' => array(self::HAS_MANY, MedicationSetItem::class, 'medication_id'),
+            'medicationSetItems' => [self::HAS_MANY, MedicationSetItem::class, 'medication_id'],
             // We need to set up a duplicate relation to be used with allergies, otherwise BaseActiveRecord::afterSave wont auto-save the medicationSetItems
-            'medicationSetItems2' => array(self::HAS_MANY, MedicationSetItem::class, 'medication_id'),
-			'medicationSearchIndexes' => array(self::HAS_MANY, MedicationSearchIndex::class, 'medication_id'),
-            'medicationAttributeAssignments' => array(self::HAS_MANY, MedicationAttributeAssignment::class, 'medication_id'),
+            'medicationSetItems2' => [self::HAS_MANY, MedicationSetItem::class, 'medication_id'],
+			'medicationSearchIndexes' => [self::HAS_MANY, MedicationSearchIndex::class, 'medication_id'],
+            'medicationAttributeAssignments' => [self::HAS_MANY, MedicationAttributeAssignment::class, 'medication_id'],
 
             'medicationAttributeOptions' => array(self::MANY_MANY, MedicationAttributeOption::class, 'medication_attribute_assignment(medication_id,medication_attribute_option_id)'),
 
-			'allergies' => array(self::HAS_MANY, \OEModule\OphCiExamination\models\OphCiExaminationAllergy::class, array('medication_set_id' => "medication_set_id"), "through" => "medicationSetItems2"),
-			"defaultForm" => array(self::BELONGS_TO, MedicationForm::class, 'default_form_id'),
-			"defaultRoute" => array(self::BELONGS_TO, MedicationRoute::class, 'default_route_id'),
-		);
+			'allergies' => [self::HAS_MANY, \OEModule\OphCiExamination\models\OphCiExaminationAllergy::class, ['medication_set_id' => "medication_set_id"], "through" => "medicationSetItems2"],
+			"defaultForm" => [self::BELONGS_TO, MedicationForm::class, 'default_form_id'],
+			"defaultRoute" => [self::BELONGS_TO, MedicationRoute::class, 'default_route_id'],
+		];
 	}
 
 	/**
@@ -135,7 +118,7 @@ class Medication extends BaseActiveRecordVersioned
 	 */
 	public function attributeLabels()
 	{
-		return array(
+		return [
 			'id' => 'ID',
 			'source_type' => 'Source Type',
 			'source_subtype' => 'Source Subtype',
@@ -156,7 +139,7 @@ class Medication extends BaseActiveRecordVersioned
 			'default_form_id' => 'Default form',
 			'default_route_id' => 'Default route',
 			'default_dose_unit_term' => 'Default dose unit'
-		);
+		];
 	}
 
 
@@ -225,9 +208,9 @@ class Medication extends BaseActiveRecordVersioned
 		$criteria->compare('created_user_id',$this->created_user_id,true);
 		$criteria->compare('created_date',$this->created_date,true);
 
-		return new CActiveDataProvider($this, array(
+		return new CActiveDataProvider($this, [
 			'criteria'=>$criteria,
-		));
+		]);
 	}
 
 	/**
@@ -268,7 +251,7 @@ class Medication extends BaseActiveRecordVersioned
         $criteria->condition = "id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN 
                                         (SELECT medication_set_id FROM medication_set_rule WHERE usage_code = 'COMMON_OPH' 
                                             AND site_id=:site_id AND subspecialty_id=:subspecialty_id))";
-        $criteria->params = array(":site_id" => $site_id, "subspecialty_id" => $subspecialty_id);
+        $criteria->params = [":site_id" => $site_id, "subspecialty_id" => $subspecialty_id];
         $criteria->order = 'preferred_term';
         return $this->findAll($criteria);
     }
@@ -282,7 +265,7 @@ class Medication extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->condition = "id IN (SELECT medication_set_id FROM medication_set_item WHERE medication_id = :medication_id 
                                             AND medication_set_id IN (SELECT medication_set_id FROM medication_set_rule WHERE usage_code = 'DrugTag'))";
-        $criteria->params = array(":medication_id" => $this->id);
+        $criteria->params = [":medication_id" => $this->id];
         $criteria->order = 'name';
         return MedicationSet::model()->findAll($criteria);
     }
@@ -362,7 +345,7 @@ class Medication extends BaseActiveRecordVersioned
                 if(in_array($item->medication->id, $ids)) {
                     continue;
                 }
-                $return[] = array(
+                $return[] = [
                     'label' => $item->medication->preferred_term,
                     'value' => $item->medication->preferred_term,
                     'name' => $item->medication->preferred_term,
@@ -379,7 +362,7 @@ class Medication extends BaseActiveRecordVersioned
 					'allergy_ids' => array_map(function ($e) {
 						return $e->id;
 					}, $item->medication->allergies),
-                );
+                ];
                 $ids[] = $item->medication->id;
             }
         }
@@ -408,7 +391,7 @@ class Medication extends BaseActiveRecordVersioned
         /** @var Firm $firm */
         $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
         if($firm) {
-            $sets = array();
+            $sets = [];
             foreach($this->medicationSets as $set) {
                 $relevant = false;
                 foreach ($set->medicationSetRules as $rule) {
@@ -476,11 +459,11 @@ class Medication extends BaseActiveRecordVersioned
         foreach ($this->medicationAttributeAssignments as $attr_assignment) {
             $aname = isset($attr_assignment->medicationAttributeOption->medicationAttribute) ? $attr_assignment->medicationAttributeOption->medicationAttribute->name : null;
             if(is_null($attr_name) || $aname == $attr_name) {
-                $ret[] = array(
+                $ret[] = [
                     'attr_name' => $aname,
                     'value' => $attr_assignment->medicationAttributeOption->value,
                     'description' => $attr_assignment->medicationAttributeOption->description,
-                );
+                ];
             }
         }
 

@@ -13,12 +13,20 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
     DrugSetController._defaultOptions = {
         tableSelector: '#drugset-list',
         searchUrl: '/OphDrPrescription/admin/DrugSet/search',
-        templateSelector: '#medication_set_template'
+        deleteUrl: '/OphDrPrescription/admin/drugSet/delete',
+        templateSelector: '#medication_set_template',
+        deleteButtonSelector: '#delete_sets'
     };
 
     DrugSetController.prototype.initTable = function () {
+        let controller = this;
         $(this.options.tableSelector).on('mouseenter', 'tbody tr', function(){ $(this).css({'background-color':'lightblue'}); });
         $(this.options.tableSelector).on('mouseleave', 'tbody tr', function(){ $(this).css({'background-color':'unset'}); });
+
+        $(this.options.deleteButtonSelector).on('click', function(event) {
+            event.preventDefault();
+            controller.deleteSets();
+        });
     };
 
     DrugSetController.prototype.initFilters = function () {
@@ -34,19 +42,9 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             }
         });
 
-        $('#set-filters').on('click', 'button', function () {
-            $(this).toggleClass('green hint').blur();
-
-            if ($(this).hasClass('js-all-sets')) {
-                $('#set-filters button:not(.js-all-sets)').removeClass('green hint').blur();
-            } else {
-                $('#set-filters button.js-all-sets').removeClass('green hint').blur();
-            }
-
-            if (!$('#set-filters button.green.hint').length) {
-                $('#set-filters button.js-all-sets').addClass('green hint').blur();
-            }
-
+        $('#set-filters').on('click', 'button:not(.green.hint)', function () {
+            $(this).parent().find('button').removeClass('green hint');
+            $(this).addClass('green hint').blur();
             controller.refreshResult();
         });
 
@@ -63,6 +61,12 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         $('#et_search').on('click', function() {
             controller.refreshResult();
         });
+
+        if (!$('#set-filters button.green.hint').length) {
+            // if nothing is selected for some reason than we selects the first one
+            // this should not happen but just in case
+            $('#set-filters button:first-child').trigger('click');
+        }
     };
 
 
@@ -113,16 +117,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             url: controller.options.searchUrl,
             dataType: "json",
             data: data,
-            beforeSend: function() {
-
-                if (!$('.oe-popup-wrap').length) {
-                    // load spinner
-                    let $overlay = $('<div>', {class: 'oe-popup-wrap'});
-                    let $spinner = $('<div>', {class: 'spinner'});
-                    $overlay.append($spinner);
-                    $('body').prepend($overlay);
-                }
-            },
+            beforeSend: controller.showOverlay,
             success: function(data) {
                 let rows = [];
 
@@ -154,6 +149,51 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
                 }
             }
         });
+    };
+
+    DrugSetController.prototype.deleteSets = function () {
+        let controller = this;
+        let data = {};
+        data['delete-ids'] = $.map($(controller.options.tableSelector + ' tbody tr'), function(tr, key) {
+            return $(tr).find('input[type=checkbox]:checked').val();
+        });
+
+        data['usage-code'] = $('#set-filters button.green.hint').data('usage_code');
+
+        $.ajax({
+            url: controller.options.deleteUrl,
+            dataType: "json",
+            data: data,
+            beforeSend: controller.showOverlay,
+            success: function(data) {
+
+                if (data.message && data.message.length) {
+
+                    // because $('.oe-popup-wrap').remove(); will remove alert as well
+                    setTimeout(() => {
+                        new OpenEyes.UI.Dialog.Alert({
+                            content: data.message
+                        }).open();
+                    }, 500);
+
+                }
+            },
+            complete: function() {
+                //$('.oe-popup-wrap').remove();
+                controller.refreshResult();
+            }
+        });
+
+    };
+
+    DrugSetController.prototype.showOverlay = function () {
+        if (!$('.oe-popup-wrap').length) {
+            // load spinner
+            let $overlay = $('<div>', {class: 'oe-popup-wrap'});
+            let $spinner = $('<div>', {class: 'spinner'});
+            $overlay.append($spinner);
+            $('body').prepend($overlay);
+        }
     };
 
     exports.DrugSetController = DrugSetController;

@@ -1,5 +1,5 @@
 <tr>
-    <td><?= \CHtml::checkBox('delete-ids[]', false, ['value' => $set->id]); ?></td>
+    <td><?= \CHtml::checkBox("delete-ids[{$set->id}]", false, ['value' => $set->id]); ?></td>
     <td><?=$set->id?></td>
     <td><?=$set->name?></td>
     <td><?=$set->rulesString()?></td>
