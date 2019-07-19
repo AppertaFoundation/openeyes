@@ -129,7 +129,7 @@ if [ "$composer" == "1" ]; then
     echo "DEPENDENCIES BEING EVALUATED..."
 
     echo "Installing/updating composer dependencies"
-    sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist --optimize-autoloader $composerexta
+    sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist $composerexta
 
     echo "Installing/updating npm dependencies"
     cd $WROOT
