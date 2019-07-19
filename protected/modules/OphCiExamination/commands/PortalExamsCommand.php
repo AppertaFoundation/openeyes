@@ -78,12 +78,17 @@ class PortalExamsCommand extends CConsoleCommand
                 continue;
             }
             $duplicateRecord = UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode);
-            $this->saveOptometristAsPatientContact(
-                $examination['op_tom']['name'],
-                $examination['op_tom']['address'],
-                $examination['op_tom']['goc_number'],
-                $opNoteEvent->episode->patient_id
-            );
+
+            $auto_optom_saving_disabled = Yii::app()->params['disable_auto_import_optoms_from_portal'];
+            if (isset($auto_optom_saving_disabled) && $auto_optom_saving_disabled === 'off') {
+                $this->saveOptometristAsPatientContact(
+                    $examination['op_tom']['name'],
+                    $examination['op_tom']['address'],
+                    $examination['op_tom']['goc_number'],
+                    $opNoteEvent->episode->patient_id
+                );
+            }
+
             if (($duplicateRecord['count'] < 1)) {
                 $transaction = $opNoteEvent->getDbConnection()->beginInternalTransaction();
                 try {
@@ -211,7 +216,7 @@ class PortalExamsCommand extends CConsoleCommand
      */
     private function saveOptometristAddress($address, $optometrist_contact)
     {
-        if(!isset($optometrist_contact->correspondAddress) || $optometrist_contact->correspondAddress->address1 != $address) {
+        if (!isset($optometrist_contact->correspondAddress) || $optometrist_contact->correspondAddress->address1 != $address) {
             $optometrist_address = new Address();
             $optometrist_address->address1 = $address;
             $optometrist_address->country_id = Address::model()->getDefaultCountryId();

@@ -19,9 +19,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_assets'); ?>
-	<?php $this->renderPartial('//base/head/_tracking'); ?>
+    <?php $this->renderPartial('//base/head/_meta'); ?>
+    <?php $this->renderPartial('//base/head/_assets'); ?>
+    <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes oe-grid">
 <!-- Minimum screed width warning -->
@@ -42,12 +42,12 @@
     </b>
   </div>
 </div>
-	<div class="oe-full-content oe-user-profile flex-layout flex-top">
+    <div class="oe-full-content oe-user-profile flex-layout flex-top">
       <nav class="oe-full-side-panel">
-          <?php $this->renderPartial('//profile/sidebar'); ?>
+            <?php $this->renderPartial('//profile/sidebar'); ?>
       </nav>
       <main class="oe-full-main">
-          <?php echo $content; ?>
+            <?php echo $content; ?>
       </main>
   </div><!-- /.content -->
 </body>

@@ -154,7 +154,6 @@ class PatientIdentifier extends BaseActiveRecordVersioned
     protected function beforeValidate()
     {
         if (!$this->hasValue() && $this->hasAutoIncrement()) {
-
             $last_identifier = self::model()->find(array(
                     'condition' => 'code = :code',
                     'order' => 'CONVERT(value, INTEGER) DESC',

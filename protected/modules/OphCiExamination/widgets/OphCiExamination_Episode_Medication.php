@@ -24,20 +24,18 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                 $untracked = $widget->getEntriesForUntrackedPrescriptionItems();
                 $meds_entries = array_merge($meds->orderedEntries, $untracked);
                 foreach ($meds_entries as $entry) {
-
                     if (!$entry->drug_id && !$entry->medication_drug_id) {
                         continue;
                     }
 
                     $meds_tag = array();
 
-                    if ($entry->drug_id){
-                      foreach ($entry->drug->tags as $item) {
+                    if ($entry->drug_id) {
+                        foreach ($entry->drug->tags as $item) {
                             $meds_tag[] = $item->name;
                         }
                     }
-                    if ($entry->medication_drug_id){
-
+                    if ($entry->medication_drug_id) {
                         foreach ($entry->medication_drug->tags as $item) {
                             $meds_tag[] = $item->name;
                         }
@@ -49,6 +47,11 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 
                     $drug_aliases = $entry->drug_id&&$entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
                     $drug_name = $entry->drug_id ? $entry->drug->name.$drug_aliases : $entry->medication_drug->name;
+
+                    if ($entry->start_date === null || $entry->start_date === "0000-00-00" || $entry->start_date === "") {
+                        continue;
+                    }
+
                     $start_date = Helper::mysqlDate2JsTimestamp($entry->start_date);
                     $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);
                     $stop_reason = $entry->stop_reason ? $entry->stop_reason->name : null;
@@ -68,10 +71,10 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                             'high' => $end_date?:$latest_date,
                             'stop_reason' => $stop_reason
                         );
-                        if (!in_array($drug_name, array_keys($medication_list[$eye_side]))){
+                        if (!in_array($drug_name, array_keys($medication_list[$eye_side]))) {
                             $medication_list[$eye_side][$drug_name] = [];
                         }
-                        if (!in_array($new_medi_record, $medication_list[$eye_side][$drug_name]) ){
+                        if (!in_array($new_medi_record, $medication_list[$eye_side][$drug_name]) ) {
                             $medication_list[$eye_side][$drug_name][] = $new_medi_record;
                         }
                     }
@@ -81,9 +84,8 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 
 
         foreach (['left', 'right'] as $side) {
-
             foreach ($medication_list[$side] as $key => &$med) {
-                if (sizeof($med)>1){
+                if (sizeof($med)>1) {
                     $med = $this->purifyMedicationSeries($med);    //sort and merge each medication's time series
                 }
             }
@@ -114,12 +116,12 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
         // From the earliest open time, merge overlopped time series into single one,
         // keep the earliest start time and latest stop time and stop reason
         // add to result array.
-        while($i<sizeof($medication_series)){
+        while ($i<sizeof($medication_series)) {
             $begin = $medication_series[$i]['low'];
             $end = $medication_series[$i]['high'];
             $stop_reason = $medication_series[$i]['stop_reason'];
-            while($i<sizeof($medication_series)-1 && $medication_series[$i+1]['low']<$end){
-                if ($medication_series[$i+1]['high']>$end){
+            while ($i<sizeof($medication_series)-1 && $medication_series[$i+1]['low']<$end) {
+                if ($medication_series[$i+1]['high']>$end) {
                     $end = $medication_series[$i+1]['high'];
                     $stop_reason = $medication_series[$i+1]['stop_reason'];
                 }

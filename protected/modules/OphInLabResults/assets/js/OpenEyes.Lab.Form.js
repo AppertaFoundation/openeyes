@@ -78,8 +78,8 @@ OpenEyes.Lab = OpenEyes.Lab || {};
                     });
                 }
                 enableButtons();
+                autosize($('textarea'));
                 $('#Element_OphInLabResults_Details_result_type_id').attr("disabled", true);
-                $('textarea').autosize();
             }
         });
     }

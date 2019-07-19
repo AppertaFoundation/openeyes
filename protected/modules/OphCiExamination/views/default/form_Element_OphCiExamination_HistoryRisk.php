@@ -41,7 +41,7 @@
                     'label' => 4,
                     'field' => 8,
                 ));
-            ?>
+?>
         </div>
         <div class="cols-4 column end">
             <?php $form->textField(
@@ -79,7 +79,7 @@
                     'label' => 4,
                     'field' => 8,
                 ));
-            ?>
+?>
         </div>
         <div class="cols-4 column end">
             <?php $form->textField(

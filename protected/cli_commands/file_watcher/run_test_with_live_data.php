@@ -30,7 +30,7 @@ function processDir($dirResource, $root)
                 processDir($dirToProcess, $root.'/'.$entry);
             } elseif (is_file($root.'/'.$entry)) {
                 $filedata = stat($root.'/'.$entry);
-                if (!fileEntryExists($root.'/'.$entry,  $filedata, $mysqli)) {
+                if (!fileEntryExists($root.'/'.$entry, $filedata, $mysqli)) {
                     createFileEntry($root.'/'.$entry, $filedata, $mysqli);
                     $mysqli->query("INSERT INTO dicom_file_queue (filename, detected_date, last_modified_date, status_id) VALUES ('".$root.'/'.$entry."', now(), now(), (SELECT id FROM dicom_process_status WHERE name = 'new'))");
                 }
@@ -43,14 +43,14 @@ function fileEntryExists($fullfilename, $filedata, $mysqli)
 {
     //var_dump($filedata);
     /*
-    
+
     $checkQuery = $mysqli->query("SELECT id FROM dicom_files WHERE filename='".$fullfilename."' AND filesize ='".$filedata["size"]."' AND filedate='".date("Y-m-d H:i:s",$filedata["mtime"])."'");
     if($isFileEntryExists = $checkQuery->fetch_row()){
         return $isFileEntryExists[0];
     }else{
         return false;
     }
-    
+
     */
 
     global $allfiles;

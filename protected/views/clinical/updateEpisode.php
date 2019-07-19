@@ -17,7 +17,7 @@
  */
 
 // Event actions
-$this->event_actions[] = EventAction::link('Cancel', Yii::app()->createUrl('/patient/episode/' . $episode->id),
+$this->event_actions[] = EventAction::link('Cancel', Yii::app()->createUrl('/patient/summary/' . $episode->id),
     array('level' => 'cancel'));
 $this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'episode_save', 'level' => 'save'));
 
@@ -57,14 +57,14 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     </header>
     <div class="element-fields flex-layout full-width">
       <div class="element-data">
-          <?php
-          $form->widget('application.widgets.DiagnosisSelection', array(
+            <?php
+            $form->widget('application.widgets.DiagnosisSelection', array(
               'field' => 'disorder_id',
               'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
               'code' => 130,
               'layout' => 'episodeSummary',
-          ));
-          ?>
+            ));
+            ?>
       </div>
     </div>
   </section>

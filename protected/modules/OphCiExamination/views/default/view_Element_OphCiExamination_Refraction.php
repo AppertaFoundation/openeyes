@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data element-eyes">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <div class="js-element-eye <?= $eye_side ?>-eye column">
             <table class="large">
                 <colgroup>
@@ -26,7 +26,7 @@
                 </colgroup>
                 <tbody>
 
-                <?php if ($element->hasEye($eye_side)): ?>
+                <?php if ($element->hasEye($eye_side)) : ?>
                     <tr>
                         <td><?= Yii::app()->format->text($element->getCombined($eye_side)) ?></td>
                         <?php $SE = $element->{$eye_side . '_sphere'} + 0.5 * $element->{$eye_side . '_cylinder'};?>
@@ -34,11 +34,11 @@
                         <td><?= Yii::app()->format->text($element->getType($eye_side)) ?></td>
                     </tr>
                     <tr>
-                        <?php if ($element->{$eye_side . '_notes'}): ?>
+                        <?php if ($element->{$eye_side . '_notes'}) : ?>
                             <td colspan="3"><?php echo $element->textWithLineBreaks($eye_side . '_notes') ?></td>
                         <?php endif; ?>
                     </tr>
-                <?php else: ?>
+                <?php else : ?>
                     <tr>
                         <td colspan="3">
                             <div class="data-value not-recorded">Not recorded</div>

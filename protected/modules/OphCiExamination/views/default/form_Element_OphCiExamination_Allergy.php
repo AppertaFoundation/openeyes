@@ -41,8 +41,8 @@
               </div>
               <div class="<?php echo $form->columns('field'); ?>">
                   <?php
-                  $allAllergies = \Allergy::model()->findAll(array('order' => 'display_order', 'condition' => 'active=1'));
-                  echo CHtml::dropDownList('allergy_id',
+                    $allAllergies = \Allergy::model()->findAll(array('order' => 'display_order', 'condition' => 'active=1'));
+                    echo CHtml::dropDownList('allergy_id',
                       null,
                       CHtml::listData($allAllergies, 'id', 'name'), array('empty' => '-- Select --')); ?>
               </div>
@@ -95,14 +95,14 @@
                     Remove
                   </a>
                 </td>
-                  <?php if (!isset($aa->id)) { ?>
+                    <?php if (!isset($aa->id)) { ?>
                   <input type="hidden" value="<?php echo $aa->allergy->id;
-                  ?>" name="selected_allergies[]">
+                    ?>" name="selected_allergies[]">
                   <input type="hidden" value="<?php echo $aa->comments;
-                  ?>" name="allergy_comments[]">
+                    ?>" name="allergy_comments[]">
                   <input type="hidden" value="<?php echo $aa->other;
-                  ?>" name="other_names[]">
-                  <?php }
+                    ?>" name="other_names[]">
+                    <?php }
               } ?>
           </tr>
             <?php

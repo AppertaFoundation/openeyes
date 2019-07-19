@@ -21,6 +21,8 @@ class DefaultController extends OphTrOperationbookingEventController
         'admissionLetter' => self::ACTION_TYPE_PRINT,
         'admissionForm' => self::ACTION_TYPE_PRINT,
         'verifyProcedures' => self::ACTION_TYPE_CREATE,
+        'putOnHold' => self::ACTION_TYPE_EDIT,
+        'putOffHold' => self::ACTION_TYPE_EDIT
     );
 
     public $eventIssueCreate = 'Operation requires scheduling';
@@ -50,7 +52,7 @@ class DefaultController extends OphTrOperationbookingEventController
             Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
             Yii::app()->clientScript->registerScript(
                 'AnaestheticController',
-                'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});',CClientScript::POS_END);
+                'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});', CClientScript::POS_END);
 
             $this->jsVars['nhs_date_format'] = Helper::NHS_DATE_FORMAT_JS;
             $this->jsVars['op_booking_inc_time_high_complexity'] = SettingMetadata::model()->getSetting('op_booking_inc_time_high_complexity');
@@ -176,16 +178,16 @@ class DefaultController extends OphTrOperationbookingEventController
      *
      */
     public function actionCreate(){
-        $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
+        $cancel_url = \Yii::app()->createURL("/patient/summary/", array("id" => $this->patient->id));
         $create_examination_url = Yii::app()->getBaseUrl(true).'/OphCiExamination/Default/create?patient_id=' . $this->patient->id;
-        
+
         $this->jsVars['examination_events_count'] = $this->getExaminationEventCount();
         $this->jsVars['cancel_url'] = $cancel_url;
         $this->jsVars['create_examination_url'] = $create_examination_url;
-        
+
         $require_exam_before_booking = SettingMetadata::model()->findByAttributes(array('key' => 'require_exam_before_booking'))->getSettingName();
         $this->jsVars['require_exam_before_booking'] = strtolower($require_exam_before_booking) == 'on';
-        
+
         parent::actionCreate();
     }
 
@@ -200,6 +202,10 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         parent::initActionCreate();
         $this->initActionEdit();
+
+        if (isset($_POST['schedule_now']) && $_POST['schedule_now']) {
+            $this->successUri = 'booking/schedule/';
+        }
     }
 
     /**
@@ -249,16 +255,14 @@ class DefaultController extends OphTrOperationbookingEventController
 
         //AnaestheticType
         $type_assessments = array();
-        if(isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])){
-
+        if (isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])) {
             $type_assessments_by_id = array();
             foreach ($element->anaesthetic_type_assignments as $type_assignments) {
                 $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
             }
 
-            foreach($data['AnaestheticType'] as $anaesthetic_type_id){
-
-                if( !array_key_exists($anaesthetic_type_id, $type_assessments_by_id) ){
+            foreach ($data['AnaestheticType'] as $anaesthetic_type_id) {
+                if ( !array_key_exists($anaesthetic_type_id, $type_assessments_by_id) ) {
                     $anaesthetic_type_assesment = new \OphTrOperationbooking_AnaestheticAnaestheticType();
                 } else {
                     $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type_id];
@@ -347,24 +351,24 @@ class DefaultController extends OphTrOperationbookingEventController
 
         $operation_element = null;
         foreach ($this->open_elements as $element) {
-          if (get_class($element) == 'Element_OphTrOperationbooking_Operation') {
-            $operation_element = $element;
-            break;
-          }
-        }
-        if($operation_element && $operation_element->booking) {
-          $anaesthetic_type_ids = isset($data['AnaestheticType']) ? $data['AnaestheticType'] : [];
-          foreach($anaesthetic_type_ids as $anaesthetic_type_id){
-            $anaesthetic = AnaestheticType::model()->findByPk($anaesthetic_type_id);
-            if ($anaesthetic) {
-              if (in_array($anaesthetic->id, $operation_element->anaesthetist_required_ids) && !$operation_element->booking->session->anaesthetist) {
-                $errors['Operation']['Anaesthetist'] = 'The booked session does not have an anaesthetist present, you must change the session or cancel the booking before making this change';
-              }
-              if ($anaesthetic->code == 'GA' && !$operation_element->booking->session->general_anaesthetic) {
-                $errors['Operation']['GeneralAnaesthetist'] = 'General anaesthetic is not available for the booked session, you must change the session or cancel the booking before making this change';
-              }
+            if (get_class($element) == 'Element_OphTrOperationbooking_Operation') {
+                $operation_element = $element;
+                break;
             }
-          }
+        }
+        if ($operation_element && $operation_element->booking) {
+            $anaesthetic_type_ids = isset($data['AnaestheticType']) ? $data['AnaestheticType'] : [];
+            foreach ($anaesthetic_type_ids as $anaesthetic_type_id) {
+                $anaesthetic = AnaestheticType::model()->findByPk($anaesthetic_type_id);
+                if ($anaesthetic) {
+                    if (in_array($anaesthetic->id, $operation_element->anaesthetist_required_ids) && !$operation_element->booking->session->anaesthetist) {
+                        $errors['Operation']['Anaesthetist'] = 'The booked session does not have an anaesthetist present, you must change the session or cancel the booking before making this change';
+                    }
+                    if ($anaesthetic->code == 'GA' && !$operation_element->booking->session->general_anaesthetic) {
+                        $errors['Operation']['GeneralAnaesthetist'] = 'General anaesthetic is not available for the booked session, you must change the session or cancel the booking before making this change';
+                    }
+                }
+            }
         }
         return $errors;
     }
@@ -612,5 +616,57 @@ class DefaultController extends OphTrOperationbookingEventController
         );
 
         return $this->actionPDFPrint($this->operation->event->id);
+    }
+
+    /**
+     * initialise the controller with the event id.
+     */
+    protected function initActionPutOnHold()
+    {
+        $event_id = isset($_GET['id']) ? $_GET['id'] : null;
+        $this->initWithEventId($event_id);
+    }
+
+    public function actionPutOnHold()
+    {
+        if (isset($_POST['et_cancel_put_on_hold'])) {
+            return $this->redirect(array('/' . $this->event_type->class_name . '/default/view/' . $this->event->id));
+        }
+
+        $on_hold_reason = isset($_POST['on_hold_reason']) ? $_POST['on_hold_reason'] : null;
+        $on_hold_comments = isset($_POST['on_hold_comments']) && trim($_POST['on_hold_comments']) ? $_POST['on_hold_comments'] : null;
+        $on_hold_other_reason = isset($_POST['other_reason']) && trim($_POST['other_reason']) ? $_POST['other_reason'] : null;
+
+        if ($on_hold_reason !== null || $on_hold_reason === 'Other' && $on_hold_other_reason !== null) {
+            if ($on_hold_reason === 'Other') {
+                $this->operation->on_hold_reason = $on_hold_other_reason;
+            } else {
+                $this->operation->on_hold_reason = $on_hold_reason;
+            }
+            if (trim($on_hold_comments) === "") {
+                $this->operation->on_hold_comment = null;
+            } else {
+                $this->operation->on_hold_comment = $on_hold_comments;
+            }
+            $this->operation->status_id = OphTrOperationbooking_Operation_Status::model()->find('name = "On-Hold"')->id;
+            $this->operation->event->deleteIssue('Operation requires scheduling');
+            $this->operation->save();
+        }
+        return $this->redirect(array('default/view/' . $this->event->id));
+    }
+
+    protected function initActionPutOffHold()
+    {
+        $event_id = isset($_GET['id']) ? $_GET['id'] : null;
+        $this->initWithEventId($event_id);
+    }
+
+    public function actionPutOffHold()
+    {
+        $this->operation->status_id = OphTrOperationbooking_Operation_Status::model()->find('name = "Requires rescheduling"')->id;
+        $this->operation->on_hold_reason = null;
+        $this->operation->on_hold_comment = null;
+        $this->operation->save();
+        return $this->redirect(array('default/view/' . $this->event->id));
     }
 }

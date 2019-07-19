@@ -32,7 +32,7 @@ class DefaultController extends BaseEventTypeController
     public function checkPrintAccess()
     {
         return $this->checkAccess('OprnEditDnaSample') || $this->checkAccess('OprnViewDnaSample');
-    }   
+    }
 
     private function _registerDnaTestFormJs()
     {

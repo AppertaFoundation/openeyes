@@ -13,7 +13,7 @@ class Element_OphInLabResults_Entry extends Element_OphInLabResults_ResultTimedN
     public function __toString()
     {
         $string = '';
-        if($this->event) {
+        if ($this->event) {
             if ($this->result) {
                 $string = $this->result . ' (at ' . $this->time . ', ' . date_create_from_format('Y-m-d H:i:s', $this->event->event_date)->format('d/m/Y') . ')';
             }

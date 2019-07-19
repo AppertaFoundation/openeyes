@@ -24,7 +24,7 @@
             <div class="mdl-selectfield">
                 <h3>Months Post Op</h3>
                 <select name="months" id="refractive-outcome-months" style="font-size: 1em; width: inherit">
-                    <?php foreach (range(0, 300) as $month): ?>
+                    <?php foreach (range(0, 300) as $month) : ?>
                         <option value="<?=$month?>"><?=($month) ? $month : 'All'?></option>
                     <?php endforeach ?>
                 </select>
@@ -36,7 +36,7 @@
                     <span >All</span>
                 </label>
                 <?php
-                foreach ($procedures as $id => $procedure):?>
+                foreach ($procedures as $id => $procedure) :?>
                     <label  class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="refractive-outcome-proc-<?= $id?>">
                         <input type="checkbox" id="refractive-outcome-proc-<?= $id?>" class="mdl-checkbox__input refractive_outcome_specific_procedure" name="procedures[]" value="<?= $id?>">
                         <span><?= $procedure?></span>

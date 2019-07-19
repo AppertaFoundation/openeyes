@@ -95,7 +95,7 @@ class DefaultController extends \BaseEventTypeController
         } else {
             $elements = $this->event->getElements();
             if ($this->step) {
-                $elements = $this->mergeNextStep($elements, $this->step);
+                $elements = $this->mergeNextStep($elements);
             }
         }
 
@@ -110,10 +110,8 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function checkElementsForData($elements)
     {
-        foreach($elements as $element)
-        {
-            if($element->id > 0)
-            {
+        foreach ($elements as $element) {
+            if ($element->id > 0) {
                 return true;
             }
         }
@@ -125,7 +123,7 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return array
      */
-    protected function getElementFilterList($include_hidden=true)
+    protected function getElementFilterList($include_hidden = true)
     {
         $remove = components\ExaminationHelper::elementFilterList();
 
@@ -150,10 +148,10 @@ class DefaultController extends \BaseEventTypeController
         $final = array();
         foreach ($elements as $el) {
             if (in_array(get_class($el), $remove)) {
-                if($el->id > null || $this->checkElementsForData($this->getElements($el->getElementType()))) {
+                if ($el->id > null || $this->checkElementsForData($this->getElements($el->getElementType()))) {
                     $final[] = $el;
                 }
-            }else{
+            } else {
                 $final[] = $el;
             }
         }
@@ -260,7 +258,6 @@ class DefaultController extends \BaseEventTypeController
                 $d->eye_id = $this->episode->eye_id;
 
                 $diagnoses[] = $d;
-
             }
 
             foreach ($this->patient->getOphthalmicDiagnoses() as $sd) {
@@ -408,7 +405,7 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-		$active_check = "";
+        $active_check = "";
 
         $view_data = array_merge(array(
             'active_check' => $active_check,
@@ -435,10 +432,9 @@ class DefaultController extends \BaseEventTypeController
                 $assignment = new models\OphCiExamination_Event_ElementSet_Assignment();
                 $assignment->event_id = $event->id;
             }
-            if (!$next_step = $this->getNextStep($event)) {
-                throw new \CException('No next step available');
-            }
-            $assignment->step_id = $next_step->id;
+
+            $assignment->step_id = $this->step->id;
+            $assignment->step_completed = 1;
             if (!$assignment->save()) {
                 throw new \CException('Cannot save assignment');
             }
@@ -458,6 +454,7 @@ class DefaultController extends \BaseEventTypeController
             }
 
             $assignment->step_id = $this->step->id;
+            $assignment->step_completed = 1;
             if (!$assignment->save()) {
                 throw new \CException('Cannot save assignment');
             }
@@ -542,14 +539,14 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return array
      */
-    protected function mergeNextStep($elements, $next_step)
+    protected function mergeNextStep($elements)
     {
         if (!$event = $this->event) {
             throw new \CException('No event set for step merging');
         }
 
         //TODO: should we be passing episode here?
-        $extra_elements = $this->getElementsByWorkflow($next_step, $this->episode);
+        $extra_elements = $this->getElementsByWorkflow($this->step, $this->episode);
         $extra_by_etid = array();
 
         foreach ($extra_elements as $extra) {
@@ -1166,7 +1163,7 @@ class DefaultController extends \BaseEventTypeController
                     $examinationEvent = new \Event();
                     $examinationEvent->episode_id = $element->event->episode_id;
                     $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
-                    $examinationEvent->event_date = \DateTime::createFromFormat('Y-m-d', $values['examination_date'])->format('Y-m-d');
+                    $examinationEvent->event_date = \DateTime::createFromFormat('d-m-Y', $values['examination_date'])->format('Y-m-d');
                     $examinationEvent->event_type_id = $element->event->event_type_id;
 
                     if (!$examinationEvent->save()) {
@@ -1187,6 +1184,9 @@ class DefaultController extends \BaseEventTypeController
 
                     // create a reading record from the values the user has given
                     $reading = new models\OphCiExamination_IntraocularPressure_Value();
+                    // examination_date and comments are not actual fields in IOP so delete them to prevent warnings
+                    unset($values['examination_date']);
+                    unset($values["{$side}_comments"]);
                     $reading->attributes = $values;
                     $reading->element_id = $iop_element->id;
 
@@ -1196,8 +1196,6 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
         }
-
-        $element->attributes = $data;
     }
 
     /**
@@ -1211,19 +1209,22 @@ class DefaultController extends \BaseEventTypeController
         $et_name = models\HistoryIOP::model()->getElementTypeName();
         $historyIOP = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryIOP');
         $entries = $data['OEModule_OphCiExamination_models_HistoryIOP'];
-        foreach (['left_values', 'right_values'] as $side_values) {
-            if (isset($entries[$side_values])) {
+        foreach (['left', 'right'] as $side) {
+            if (isset($entries["{$side}_values"])) {
                 // set the examination dates in HistoryIOP model for custom validation
-                $historyIOP->examination_dates[$side_values] = array_column($entries[$side_values], 'examination_date');
+                $historyIOP->examination_dates["{$side}_values"] = array_column($entries["{$side}_values"], 'examination_date');
 
-                foreach ($entries[$side_values] as $index => $value) {
+                foreach ($entries["{$side}_values"] as $index => $value) {
                     $reading = new models\OphCiExamination_IntraocularPressure_Value();
+                    // examination_date and comments are not actual fields in IOP so delete them to prevent warnings
+                    unset($value['examination_date']);
+                    unset($value["{$side}_comments"]);
                     $reading->attributes = $value;
                     if (!$reading->validate()) {
                         $readingErrors = $reading->getErrors();
                         foreach ($readingErrors as $readingErrorAttributeName => $readingErrorMessages) {
                             foreach ($readingErrorMessages as $readingErrorMessage) {
-                                $historyIOP->addError($side_values . '_' . $index . '_' . $readingErrorAttributeName, $readingErrorMessage);
+                                $historyIOP->addError("{$side}_values" . '_' . $index . '_' . $readingErrorAttributeName, $readingErrorMessage);
                                 $errors[$et_name][] = $readingErrorMessage;
                             }
                         }
@@ -1256,7 +1257,7 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidateElementsFromData($data)
     {
         $errors = parent::setAndValidateElementsFromData($data);
-        if(isset($data['OEModule_OphCiExamination_models_HistoryIOP'])) {
+        if (isset($data['OEModule_OphCiExamination_models_HistoryIOP'])) {
             $errors = $this->setAndValidateHistoryIopFromData($data, $errors);
         }
 
@@ -1266,12 +1267,13 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $posted_risk = [];
-        if(isset($data['OEModule_OphCiExamination_models_HistoryRisks']['entries'])){
-            $posted_risk = array_map(function($r){ return $r['risk_id'];}, $data['OEModule_OphCiExamination_models_HistoryRisks']['entries']);
+        if (isset($data['OEModule_OphCiExamination_models_HistoryRisks']['entries'])) {
+            $posted_risk = array_map(function($r){ return $r['risk_id'];
+            }, $data['OEModule_OphCiExamination_models_HistoryRisks']['entries']);
         }
 
         // Element was open, we check the required risks
-        if(isset($data['OEModule_OphCiExamination_models_HistoryRisks'])){
+        if (isset($data['OEModule_OphCiExamination_models_HistoryRisks'])) {
             $errors = $this->setAndValidateHistoryRisksFromData($errors, $posted_risk);
         }
 
@@ -1313,7 +1315,7 @@ class DefaultController extends \BaseEventTypeController
 
         $missing_risks = [];
         foreach ($exam_api->getRequiredRisks($this->patient) as $required_risk) {
-            if( !in_array($required_risk->id, $posted_risk) ){
+            if ( !in_array($required_risk->id, $posted_risk) ) {
                 $missing_risks[] = $required_risk;
             }
         }
@@ -1357,7 +1359,7 @@ class DefaultController extends \BaseEventTypeController
 
             if (count($err)) {
                 $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-                if(isset($errors[$et_name])) {
+                if (isset($errors[$et_name])) {
                     if ($errors[$et_name]) {
                         $errors[$et_name] = array_merge($errors[$et_name], $err);
                     } else {
@@ -1432,7 +1434,6 @@ class DefaultController extends \BaseEventTypeController
 
 
         foreach ($contact_ids as $key => $contact_id) {
-
             $foundExistingAssignment = false;
             foreach ($patientContactAssignments as $patientContactAssignment) {
                 if ($patientContactAssignment->contact_id == $contact_id) {
@@ -1488,13 +1489,18 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setCurrentSet()
     {
+        $element_assignment = $this->getElementSetAssignment();
         if (!$this->set) {
             /*@TODO: probably the getNextStep() should be able to recognize if there were no steps completed before and return the first step
               Note: getCurrentStep() will return firstStep if there were no steps before */
-            $this->set = $this->getElementSetAssignment() && $this->action->id != 'update' ? $this->getNextStep() : $this->getCurrentStep();
+            $this->set = $element_assignment && $this->action->id != 'update' ? $this->getNextStep() : $this->getCurrentStep();
 
             //if $this->set is null than no workflow rule to apply
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
+        }
+
+        if ($this->action->id == 'update' && !$element_assignment->step_completed) {
+            $this->step = $this->getCurrentStep();
         }
     }
 
@@ -1589,7 +1595,7 @@ class DefaultController extends \BaseEventTypeController
             $element = models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element_id);
             $element->cvi_alert_dismissed = 1;
 
-            if($element->save()) {
+            if ($element->save()) {
                 echo \CJSON::encode(array('success' => 'true'));
             }
         }

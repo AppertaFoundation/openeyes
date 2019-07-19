@@ -2,9 +2,9 @@
 
     $empty_pedigree_save = false;
     // user removed all pedigrees then clicked on the Save button
-    if( isset($_POST['GeneticsPatient']['pedigrees']) && empty($_POST['GeneticsPatient']['pedigrees']) ){
-        $empty_pedigree_save = true;
-    }
+if ( isset($_POST['GeneticsPatient']['pedigrees']) && empty($_POST['GeneticsPatient']['pedigrees']) ) {
+    $empty_pedigree_save = true;
+}
 
 ?>
 <div class="data-group <?php echo (!$genetics_patient || !$genetics_patient->pedigrees || $empty_pedigree_save) ? '' : ' hidden'; ?> ">

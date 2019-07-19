@@ -54,6 +54,7 @@ foreach ($readings as $reading) {
                         'value_qualitative_reading_id' => isset($value['qualitative_reading_id']) ? $value['qualitative_reading_id'] : null,
                         'value_qualitative_reading_name' => isset($value['qualitative_reading_id']) ? $scale_values[$value['qualitative_reading_id']] : null,
                         'examinationDate' => $value['examination_date'],
+                        'comment' => $value["{$side}_comments"],
                     ]
                 );
             }
@@ -123,6 +124,7 @@ foreach ($readings as $reading) {
             'value_reading_name' => '{{value_reading_name}}',
             'value_qualitative_reading_id' => '{{value_qualitative_reading_id}}',
             'value_qualitative_reading_name' => '{{value_qualitative_reading_name}}',
+            'comment' => null,
         ]
     );
     ?>
@@ -132,7 +134,7 @@ foreach ($readings as $reading) {
 <script type="text/javascript">
     $(function () {
         let side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
-        let readings = JSON.parse('<?= print_r(json_encode($reading_values),1) ?>');
+        let readings = JSON.parse('<?= print_r(json_encode($reading_values), 1) ?>');
         let previouslySelectedColumn = null;
         let readingsValueNumberColumns = 2;
 
@@ -143,7 +145,7 @@ foreach ($readings as $reading) {
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                     array_map(function ($instrument) {
                         return ['label' => $instrument->name, 'id' => $instrument->id, 'scale' => isset($instrument->scale->values) ? true : false];
-                    },OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
+                    }, OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
                 ) ?>, {'id': 'instrument', 'header': 'Instrument'}),
                 new OpenEyes.UI.AdderDialog.ItemSet([], {'id': 'reading_value', 'header': 'mm Hg',
                     'splitIntegerNumberColumns': [{'min': 0, 'max': 9},{'min': 0, 'max': 9}],
@@ -186,7 +188,7 @@ foreach ($readings as $reading) {
                 let value_qualitative_reading_id = selectedItems[0].scale ? selectedItems[1]['id'] : null;
                 let value_qualitative_reading_name = selectedItems[0].scale ? selectedItems[1]['label'] : null;
 
-                let time = "<?=date('H:i') ?>";
+                let time = "00:00";
                 if (selectedItems[selectedItems.length - 1].time != null) {
                     let H = selectedItems[selectedItems.length - 1].time;
                     let M = selectedAdditions[0].addition;
@@ -221,7 +223,7 @@ foreach ($readings as $reading) {
          addDatePicker($("#OEModule_OphCiExamination_models_HistoryIOP_readings_" + "<?=$side?>" + ' input[id*="OEModule_OphCiExamination_models_HistoryIOP_"].iop-date'));
 
         // show / hide reading value column and scale value column
-        side.on('click', 'ul.add-options[data-id="instrument"] li', function() {
+        side.on('click', 'ul[data-id="instrument"] li', function() {
             if ($(this).hasClass("selected")) {
                 if ($(this).data('scale')) {
                     AdderDialog.toggleColumnById(['reading_value'], false);
@@ -260,15 +262,22 @@ foreach ($readings as $reading) {
             let $first_instrument_li = null;
             if (default_instrument_id) {
                 // select the default instrument
-                $first_instrument_li = side.find('ul.add-options[data-id="instrument"] li[data-id=' + default_instrument_id + ']').first();
+                $first_instrument_li = side.find('ul[data-id="instrument"] li[data-id=' + default_instrument_id + ']').first();
             } else {
                 // select the first instrument by default
-                $first_instrument_li = side.find('ul.add-options[data-id="instrument"] li').first().click();
+                $first_instrument_li = side.find('ul[data-id="instrument"] li').first().click();
             }
             if (!$first_instrument_li.hasClass('selected')) {
                 $first_instrument_li.click();
             }
         });
+
+        // scroll the numbers list so 9 is at top
+        side.find('.js-add-select-search').on('click', function () {
+            let $selected = side.find('ul.add-options.cols-full.single[data-id="time"] ul.number li[data-time="9"]');
+            side.find('ul.add-options.cols-full.single[data-id="time"]').scrollTop($selected.offset().top - $selected.parent().offset().top);
+        });
+
     });
 
     function HistoryIOP_addReading(side, instrumentId, instrumentName, time,
@@ -289,6 +298,7 @@ foreach ($readings as $reading) {
                 value_reading_name: value_reading_name,
                 value_qualitative_reading_id: value_qualitative_reading_id,
                 value_qualitative_reading_name: value_qualitative_reading_name,
+                comment: null,
             }
         );
 

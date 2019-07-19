@@ -18,90 +18,92 @@
 
 $core_api = new CoreAPI();
 ?>
-<tr class="<?php 
+<tr class="<?php
     echo (($i % 2 == 0) ? 'even' : 'edd');
     echo ' '.strtolower($log->colour);?>" 
-	id="audit<?php echo $log->id?>" <?php if (@$hidden) {?> style="display: none;"<?php }?>>
-	<td>
-		<a href="#" id="auditItem<?php echo $log->id?>" class="auditItem">
-			<?php echo $log->NHSDate('created_date').' '.substr($log->created_date, 11, 8)?>
-		</a>
-	</td>
-	<td><?php echo $log->site ? ($log->site->short_name ? $log->site->short_name : $log->site->name) : '-'?></td>
-	<td><?php echo $log->firm ? $log->firm->name : '-'?></td>
-	<td><?php echo $log->user ? $log->user->first_name.' '.$log->user->last_name : '-'?></td>
-	<td><?php echo $log->action->name?></td>
-	<td><?php echo $log->target_type ? $log->target_type->name : ''?></td>
-	<td>
-		<?php if ($log->event) { ?>
-			<a href="/<?php echo $log->event->eventType->class_name?>/default/view/<?php echo $log->event_id?>">
-				<?php echo $log->event->eventType->name?>
-			</a>
-		<?php } else {?>
-			-
-		<?php }?>
-	</td>
-	<td>
-		<?php if ($log->patient) {?>
-			<?=\CHtml::link($log->patient->displayName, array($core_api->generatePatientLandingPageLink($log->patient)))?>
-		<?php } else {?>
-			-
-		<?php }?>
-	</td>
-	<td>
-		<?php if ($log->episode) {?>
-			<?=\CHtml::link('view', array('patient/episode/'.$log->episode_id))?>
-		<?php } else {?>
-			-
-		<?php }?>
-	</td>
+    id="audit<?php echo $log->id?>" <?php if (@$hidden) {
+        ?> style="display: none;"<?php
+             }?>>
+    <td>
+        <a href="#" id="auditItem<?php echo $log->id?>" class="auditItem">
+            <?php echo $log->NHSDate('created_date').' '.substr($log->created_date, 11, 8)?>
+        </a>
+    </td>
+    <td><?php echo $log->site ? ($log->site->short_name ? $log->site->short_name : $log->site->name) : '-'?></td>
+    <td><?php echo $log->firm ? $log->firm->name : '-'?></td>
+    <td><?php echo $log->user ? $log->user->first_name.' '.$log->user->last_name : '-'?></td>
+    <td><?php echo $log->action->name?></td>
+    <td><?php echo $log->target_type ? $log->target_type->name : ''?></td>
+    <td>
+        <?php if ($log->event) { ?>
+            <a href="/<?php echo $log->event->eventType->class_name?>/default/view/<?php echo $log->event_id?>">
+                <?php echo $log->event->eventType->name?>
+            </a>
+        <?php } else {?>
+            <?=($log->event_type ? $log->event_type->class_name : '-');?>
+        <?php }?>
+    </td>
+    <td>
+        <?php if ($log->patient) {?>
+            <?=\CHtml::link($log->patient->displayName, array($core_api->generatePatientLandingPageLink($log->patient)))?>
+        <?php } else {?>
+            -
+        <?php }?>
+    </td>
+    <td>
+        <?php if ($log->episode) {?>
+            <?=\CHtml::link('view', array('patient/episode/'.$log->episode_id))?>
+        <?php } else {?>
+            -
+        <?php }?>
+    </td>
 </tr>
 <tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd'; echo ' '.strtolower($log->colour);?> auditextra<?php echo $log->id?>" style="display: none;">
-	<td colspan="9">
-		<div class="panel logs">
-			<table class="blank plain log-details">
+    <td colspan="9">
+        <div class="panel logs">
+            <table class="blank plain log-details">
                 <tbody>
-				<tr>
-					<th scope="col">IP address:</th>
-					<td><?php echo $log->ip_addr ? $log->ip_addr->name : '-'?></td>
-				</tr>
-				<tr>
-					<th scope="col">Server name:</th>
-					<td><?php echo $log->server ? $log->server->name : '-' ?></td>
-				</tr>
-				<tr>
-					<th scope="col">Request URI:</th>
-					<td><?php echo $log->request_uri?></td>
-				</tr>
-				<tr>
-					<th scope="col">User agent:</th>
-					<td><?php echo $log->user_agent ? $log->user_agent->name : '-' ?></td>
-				</tr>
-				<tr>
-					<th scope="col">Data:</th>
-					<td>
-						<?php
+                <tr>
+                    <th scope="col">IP address:</th>
+                    <td><?php echo $log->ip_addr ? $log->ip_addr->name : '-'?></td>
+                </tr>
+                <tr>
+                    <th scope="col">Server name:</th>
+                    <td><?php echo $log->server ? $log->server->name : '-' ?></td>
+                </tr>
+                <tr>
+                    <th scope="col">Request URI:</th>
+                    <td><?php echo $log->request_uri?></td>
+                </tr>
+                <tr>
+                    <th scope="col">User agent:</th>
+                    <td><?php echo $log->user_agent ? $log->user_agent->name : '-' ?></td>
+                </tr>
+                <tr>
+                    <th scope="col">Data:</th>
+                    <td>
+                        <?php
                         $data = @unserialize($log->data);
                         if ($data) {?>
-							<div class="data" id="dataspan<?php echo $log->id?>">
+                            <div class="data" id="dataspan<?php echo $log->id?>">
                                 <?php
 
-                                    if( is_array($data) ){
-                                        echo "<pre>" . print_r($data, true) . "</pre>";
-                                    } else {
-                                        echo $data;
-                                    }
+                                if ( is_array($data) ) {
+                                    echo "<pre>" . print_r($data, true) . "</pre>";
+                                } else {
+                                    echo $data;
+                                }
                                 ?>
                             </div>
-						<?php } else {?>
-							<div class="data">
-								<?php echo $log->data ? $log->data : 'None';?>
-							</div>
-						<?php }?>
-					</td>
-				</tr>
+                        <?php } else {?>
+                            <div class="data">
+                                <?php echo $log->data ? $log->data : 'None';?>
+                            </div>
+                        <?php }?>
+                    </td>
+                </tr>
                 </tbody>
-			</table>
-		</div>
-	</td>
+            </table>
+        </div>
+    </td>
 </tr>

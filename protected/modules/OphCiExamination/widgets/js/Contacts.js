@@ -114,7 +114,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
             if (newRows.length > 0) {
                 controller.$table.find('tbody').append(newRows);
-                $('.autosize').autosize();
+                autosize($('.autosize'));
             }
         }
     };
@@ -174,7 +174,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             dialog.on('ok', function () {
                 controller.deleteByContactLabel(selectedFilterName);
                 controller.$table.find('tbody').append(newRows);
-                $('.autosize').autosize();
+                autosize($('.autosize'));
             }.bind(this));
             dialog.open();
         }
@@ -271,7 +271,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     $('.js-contact-error-box').hide();
                     row = controller.createRows(response);
                     controller.$table.append(row);
-                    $('.autosize').autosize();
+                    autosize($('.autosize'));
                     $('.oe-popup-wrap').remove();
                 }
             }

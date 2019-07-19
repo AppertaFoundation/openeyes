@@ -2,8 +2,8 @@
 
 class m180312_125830_iop_shortcodes_to_6weeks extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->update('patient_shortcode',
             array(
                 'method' => 'getLetterIOPReadingBothLast6weeks',
@@ -113,10 +113,10 @@ class m180312_125830_iop_shortcodes_to_6weeks extends CDbMigration
             $condition = 'code = :code',
             $params = array(':code' => 'rvd')
         );
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->update('patient_shortcode',
             array(
                 'method' => 'getLetterIOPReadingBothLast3weeks',
@@ -226,5 +226,5 @@ class m180312_125830_iop_shortcodes_to_6weeks extends CDbMigration
             $condition = 'code = :code',
             $params = array(':code' => 'rvd')
         );
-	}
+    }
 }

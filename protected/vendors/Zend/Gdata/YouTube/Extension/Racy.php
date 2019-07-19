@@ -82,11 +82,11 @@ class Zend_Gdata_YouTube_Extension_Racy extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'state':
-            $this->_state = $attribute->nodeValue;
+            case 'state':
+                $this->_state = $attribute->nodeValue;
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 

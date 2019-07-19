@@ -33,8 +33,8 @@
 
     <?php $iris = $element->{$side . '_iris'};
     if ($iris) { ?>
-      <div class="data-label"><?= $element->getAttributeLabel($side . '_iris_id') ?>:</div>
-      <div class="data-value"><?= Yii::app()->format->Ntext($iris->name) ?></div>
+      <div class="data-label inline"><?= $element->getAttributeLabel($side . '_iris_id') ?>:</div>
+      <div class="data-value inline"><?= Yii::app()->format->Ntext($iris->name) ?></div>
     <?php } ?>
 
     <?php if ($element->{$side . '_description'}) { ?>
@@ -47,22 +47,22 @@
     <div class="gonio-cross">
       <div class="gonio-sup">
         <span class="data-value">
-          <?php echo $element->{$side . '_gonio_sup'}->name; ?>
+            <?php echo $element->{$side . '_gonio_sup'}->name; ?>
         </span>
       </div>
       <div class="gonio-tem">
         <span class="data-value">
-          <?php echo $element->{$side . '_gonio_tem'}->name; ?>
+            <?php echo $element->{$side . '_gonio_tem'}->name; ?>
         </span>
       </div>
       <div class="gonio-nas">
         <span class="data-value">
-          <?php echo $element->{$side . '_gonio_nas'}->name; ?>
+            <?php echo $element->{$side . '_gonio_nas'}->name; ?>
         </span>
       </div>
       <div class="gonio-inf">
         <span class="data-value">
-          <?php echo $element->{$side . '_gonio_inf'}->name; ?>
+            <?php echo $element->{$side . '_gonio_inf'}->name; ?>
         </span>
       </div>
     </div>
