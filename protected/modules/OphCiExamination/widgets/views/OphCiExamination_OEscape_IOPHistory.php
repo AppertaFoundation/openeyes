@@ -33,7 +33,7 @@
 
       //BEGIN SAMPLE DATA
 
-			var sample_data = [[1, 2, 3], [4], [12, 34, 5], [15, 26, 37, 48], [2], [9, 8, 7, 6, 5, 4, 3, 2, 1], [45], [78, 56], [10, 2, 3, 4, 5]];
+			var sample_data = [[1, 2, 3], [4], [12, 34, 5], [15, 26, 37, 48], [2], [9, 8, 7, 6, 5, 4, 3, 2, 1], [45], [78, 56], [10, 2, 3, 4, 5], [1, 2, 3], [4], [12, 34, 5], [15, 26, 37, 48], [2], [9, 8, 7, 6, 5, 4, 3, 2, 1], [45], [78, 56], [10, 2, 3, 4, 5]];
 			var sample_minimums = [];
       var sample_maximums = [];
       var sample_averages = [];
@@ -63,12 +63,11 @@
 
       var data =[{
         name: 'IOP('+((side=='right')?'R':'L')+')',
-//        x: x_data,
-//        y: sample_averages,
+        x: x_data,
+        y: sample_averages,
 
-
-				x: x_data,
-				y: iop_plotly_data[side]['y'],
+//				x: x_data,
+//				y: iop_plotly_data[side]['y'],
 
 
 				line: {
