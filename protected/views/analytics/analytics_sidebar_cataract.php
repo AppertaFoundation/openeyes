@@ -170,15 +170,15 @@
                 '#visual-acuity-grid',
                 'VA',
             ],
-            '/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics&procedures[]=all': [
-                'OEModule_OphCiExamination_components_RefractiveOutcomeReport', 
-                '#refractive-outcome-grid',
-                'RO',
-            ],
             '/report/ajaxReport?report=NodAudit&template=analytics': [
                 'NodAuditReport', 
                 '#nod-audit-grid',
                 'NOD',
+            ],
+            '/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics&procedures[]=all': [
+                'OEModule_OphCiExamination_components_RefractiveOutcomeReport', 
+                '#refractive-outcome-grid',
+                'RO',
             ]
 
         };
