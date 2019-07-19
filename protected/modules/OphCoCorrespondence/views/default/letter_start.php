@@ -26,8 +26,10 @@ $logoHelper = new LogoHelper();
 <main class="print-main">
     <div class="flex-layout">
         <div>
-            Date of visit
-            <b><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) { ?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate)) ?>)<?php } ?></b>
+            
+            <p class="nowrap">Date of visit
+            <b><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) { ?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate)) ?>)<?php } ?></b></p>
+            
             <div class="spacer"></div>
             <div class="spacer"></div>
             To:
