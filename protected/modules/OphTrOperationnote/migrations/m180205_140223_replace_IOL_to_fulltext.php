@@ -10,9 +10,8 @@ class m180205_140223_replace_IOL_to_fulltext extends CDbMigration
         $dataProvider = new CActiveDataProvider('Procedure');
         $iterator = new CDataProviderIterator($dataProvider);
 
-        if($iterator->getTotalItemCount()){
+        if ($iterator->getTotalItemCount()) {
             foreach ($iterator as $i => $procedure) {
-
                 $save = false;
                 $data = [
                     'table' => 'proc',
@@ -22,7 +21,7 @@ class m180205_140223_replace_IOL_to_fulltext extends CDbMigration
 
                 $words = explode(" ", $procedure->term);
                 foreach ($words as $k => $word) {
-                    if($word === 'IOL'){
+                    if ($word === 'IOL') {
                         $words[$k] = 'Intraocular lens';
 
                         $procedure->term = implode(" ", $words);
@@ -32,8 +31,8 @@ class m180205_140223_replace_IOL_to_fulltext extends CDbMigration
                     }
                 }
 
-                if($save && $procedure->save()){
-                    \Audit::add('Admin', 'update', "<pre>" . (print_r($data, true)) . "</pre>", '',['model' => 'Procedure']);
+                if ($save && $procedure->save()) {
+                    \Audit::add('Admin', 'update', "<pre>" . (print_r($data, true)) . "</pre>", '', ['model' => 'Procedure']);
                 }
             }
         }

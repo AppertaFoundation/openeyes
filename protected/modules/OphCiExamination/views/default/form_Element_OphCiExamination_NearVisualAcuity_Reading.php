@@ -29,12 +29,11 @@ if (!isset($selected_data) && isset($reading) && isset($reading->value) && isset
 
 ?>
 <?php if (isset($selected_data['reading_display'])) { ?>
-
 <tr class="nearvisualAcuityReading near-visual-acuity-reading js-reading-record" data-key="<?php echo $key?>">
     <td class="cols-3">
         <?php if (isset($reading) && $reading->id) { ?>
-        <?=\CHtml::hiddenField( $name_stub .'['. $key.'][id]', @$reading->id)?>
-    <?php } ?>
+            <?=\CHtml::hiddenField( $name_stub .'['. $key.'][id]', @$reading->id)?>
+        <?php } ?>
       <?=\CHtml::hiddenField( $name_stub .'['. $key.'][value]', @$selected_data['reading_value'], array('class' => 'va-selector'))?>
       <?= @$selected_data['reading_display']?>
     </td>

@@ -34,7 +34,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                         CHtml::listData(Eye::model()->findAll(array(
                         'condition' => 'name != "Both"',
                         'order' => 'display_order asc',
-                    )), 'id', 'name'),
+                        )), 'id', 'name'),
                         $element->eye_id, '', '', '', '',
                         array(
                             'nowrapper' => true,
@@ -279,10 +279,10 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                                 null,
                                 false, false, false, false, array('nowrapper' => true)
                             );
-                            ?>
+?>
                         </td>
                     </tr>
-                    <?php if (!$this->module->isTheatreDiaryDisabled() && !$this->module->isGoldenPatientDisabled()): ?>
+                    <?php if (!$this->module->isTheatreDiaryDisabled() && !$this->module->isGoldenPatientDisabled()) : ?>
                         <tr>
                             <td><?= $element->getAttributeLabel('is_golden_patient'); ?> </td>
                             <td>

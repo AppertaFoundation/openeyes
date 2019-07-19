@@ -21,7 +21,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 
 This email was generated from an OpenEyes Therapy Application event
 
-<?php 
+<?php
 if ($site = $service_info->site) {
     echo 'Intended Site: '.$site->name;
 }
@@ -68,7 +68,7 @@ Address: <?php echo ($patient->practice && $address = $patient->practice->getLet
 
 <?php
 if ($link_to_attachments) {
-?>
+    ?>
 The application files can be found on openeyes. Please enter the following text into the search box to reach download links:
     E:<?php echo $suitability->event_id ?>
 <?php }

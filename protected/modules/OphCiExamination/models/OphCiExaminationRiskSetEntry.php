@@ -104,15 +104,15 @@ class OphCiExaminationRiskSetEntry extends \BaseActiveRecordVersioned
 
     public function beforeSave()
     {
-        if(!$this->age_min || $this->age_min === 0){
+        if (!$this->age_min || $this->age_min === 0) {
             $this->age_min = null;
         }
 
-        if(!$this->age_max || $this->age_max === 0){
+        if (!$this->age_max || $this->age_max === 0) {
             $this->age_max = null;
         }
 
-        if(!$this->gender){
+        if (!$this->gender) {
             $this->gender = null;
         }
 
@@ -137,15 +137,15 @@ class OphCiExaminationRiskSetEntry extends \BaseActiveRecordVersioned
 
         $criteria=new \CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('ophciexamination_risk_id',$this->ophciexamination_risk_id);
-        $criteria->compare('gender',$this->gender,true);
-        $criteria->compare('age_min',$this->age_min,true);
-        $criteria->compare('age_max',$this->age_max,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('ophciexamination_risk_id', $this->ophciexamination_risk_id);
+        $criteria->compare('gender', $this->gender, true);
+        $criteria->compare('age_min', $this->age_min, true);
+        $criteria->compare('age_max', $this->age_max, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
         return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -158,7 +158,7 @@ class OphCiExaminationRiskSetEntry extends \BaseActiveRecordVersioned
      * @param string $className active record class name.
      * @return OphCiExaminationRiskSetEntry the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

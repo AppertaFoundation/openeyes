@@ -31,7 +31,7 @@ $warnings = $this->patient->getWarnings($clinical);
 
     $this->event_actions[] = EventAction::button('Save', '#', null, array('name' => 'scheduleLater', 'id' => 'et_save', 'class' => 'button small', 'form' => $form_id, 'style' => $this->checkScheduleAccess() ? 'display: none;' : ''));
     $this->event_actions[] = EventAction::button('Save and Schedule later', '#', null, array('name' => 'scheduleLater', 'id' => 'et_save_and_schedule_later', 'class' => 'button small', 'form' => $form_id, 'style' => $this->checkScheduleAccess() ? '' : 'display: none;'));
-    $this->event_actions[] = EventAction::button('Save and Schedule now', '#', array('level' => 'secondary'),  array('name' => 'scheduleNow', 'id' => 'et_save_and_schedule', 'class' => 'button small', 'form' => $form_id, 'style' => $this->checkScheduleAccess() ? '' : 'display: none;'));
+    $this->event_actions[] = EventAction::button('Save and Schedule now', '#', array('level' => 'secondary'), array('name' => 'scheduleNow', 'id' => 'et_save_and_schedule', 'class' => 'button small', 'form' => $form_id, 'style' => $this->checkScheduleAccess() ? '' : 'display: none;'));
     ?>
     <input type="hidden" name="schedule_now" id="schedule_now" value="0" />
 <?php if ($warnings) { ?>

@@ -20,7 +20,7 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
     public function up()
     {
         if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphCoCvi'))->queryRow()) {
-            $group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name',array(':name'=>'Communication events'))->queryRow();
+            $group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name', array(':name'=>'Communication events'))->queryRow();
             $this->insert('event_type', array('class_name' => 'OphCoCvi', 'name' => 'CVI','event_group_id' => $group['id']));
         }
         $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphCoCvi'))->queryRow();
@@ -125,9 +125,9 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
             'CONSTRAINT `ophcocvi_clinicinfo_low_vision_status_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clinicinfo_low_vision_status` (`id`)',
         ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-        $this->insert('ophcocvi_clinicinfo_low_vision_status',array('name'=>'Has been assessed','display_order'=>1));
-        $this->insert('ophcocvi_clinicinfo_low_vision_status',array('name'=>'To be referred / assessed','display_order'=>2));
-        $this->insert('ophcocvi_clinicinfo_low_vision_status',array('name'=>'Not relevant or the patient does not want an assessment','display_order'=>3));
+        $this->insert('ophcocvi_clinicinfo_low_vision_status', array('name'=>'Has been assessed','display_order'=>1));
+        $this->insert('ophcocvi_clinicinfo_low_vision_status', array('name'=>'To be referred / assessed','display_order'=>2));
+        $this->insert('ophcocvi_clinicinfo_low_vision_status', array('name'=>'Not relevant or the patient does not want an assessment','display_order'=>3));
 
         $this->createTable('ophcocvi_clinicinfo_field_of_vision', array(
             'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -165,10 +165,10 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
             'CONSTRAINT `ophcocvi_clinicinfo_field_of_vision_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clinicinfo_field_of_vision` (`id`)',
         ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-        $this->insert('ophcocvi_clinicinfo_field_of_vision',array('name'=>'Total loss of visual field','display_order'=>1));
-        $this->insert('ophcocvi_clinicinfo_field_of_vision',array('name'=>'Extensive loss of visual field (including hemianopia)','display_order'=>2));
-        $this->insert('ophcocvi_clinicinfo_field_of_vision',array('name'=>'Primary loss of peripheral field','display_order'=>3));
-        $this->insert('ophcocvi_clinicinfo_field_of_vision',array('name'=>'Primary loss of central field','display_order'=>4));
+        $this->insert('ophcocvi_clinicinfo_field_of_vision', array('name'=>'Total loss of visual field','display_order'=>1));
+        $this->insert('ophcocvi_clinicinfo_field_of_vision', array('name'=>'Extensive loss of visual field (including hemianopia)','display_order'=>2));
+        $this->insert('ophcocvi_clinicinfo_field_of_vision', array('name'=>'Primary loss of peripheral field','display_order'=>3));
+        $this->insert('ophcocvi_clinicinfo_field_of_vision', array('name'=>'Primary loss of central field','display_order'=>4));
 
         $this->createTable('ophcocvi_clinicinfo_disorder', array(
             'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -426,11 +426,11 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
             'CONSTRAINT `ophcocvi_clericinfo_employment_status_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clericinfo_employment_status` (`id`)',
         ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-        $this->insert('ophcocvi_clericinfo_employment_status',array('name'=>'Retired','display_order'=>1));
-        $this->insert('ophcocvi_clericinfo_employment_status',array('name'=>'Employed','display_order'=>2));
-        $this->insert('ophcocvi_clericinfo_employment_status',array('name'=>'Unemployed','display_order'=>3));
-        $this->insert('ophcocvi_clericinfo_employment_status',array('name'=>'Child','display_order'=>4));
-        $this->insert('ophcocvi_clericinfo_employment_status',array('name'=>'Student','display_order'=>5));
+        $this->insert('ophcocvi_clericinfo_employment_status', array('name'=>'Retired','display_order'=>1));
+        $this->insert('ophcocvi_clericinfo_employment_status', array('name'=>'Employed','display_order'=>2));
+        $this->insert('ophcocvi_clericinfo_employment_status', array('name'=>'Unemployed','display_order'=>3));
+        $this->insert('ophcocvi_clericinfo_employment_status', array('name'=>'Child','display_order'=>4));
+        $this->insert('ophcocvi_clericinfo_employment_status', array('name'=>'Student','display_order'=>5));
 
         $this->createTable('ophcocvi_clericinfo_preferred_info_fmt', array(
             'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -468,10 +468,10 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
             'CONSTRAINT `ophcocvi_clericinfo_preferred_info_fmt_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clericinfo_preferred_info_fmt` (`id`)',
         ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-        $this->insert('ophcocvi_clericinfo_preferred_info_fmt',array('name'=>'In large print','display_order'=>1));
-        $this->insert('ophcocvi_clericinfo_preferred_info_fmt',array('name'=>'On CD','display_order'=>2));
-        $this->insert('ophcocvi_clericinfo_preferred_info_fmt',array('name'=>'In braille','display_order'=>3));
-        $this->insert('ophcocvi_clericinfo_preferred_info_fmt',array('name'=>'By email','display_order'=>4));
+        $this->insert('ophcocvi_clericinfo_preferred_info_fmt', array('name'=>'In large print','display_order'=>1));
+        $this->insert('ophcocvi_clericinfo_preferred_info_fmt', array('name'=>'On CD','display_order'=>2));
+        $this->insert('ophcocvi_clericinfo_preferred_info_fmt', array('name'=>'In braille','display_order'=>3));
+        $this->insert('ophcocvi_clericinfo_preferred_info_fmt', array('name'=>'By email','display_order'=>4));
 
         $this->createTable('ophcocvi_clericinfo_contact_urgency', array(
             'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -509,9 +509,9 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
             'CONSTRAINT `ophcocvi_clericinfo_contact_urgency_aid_fk` FOREIGN KEY (`id`) REFERENCES `ophcocvi_clericinfo_contact_urgency` (`id`)',
         ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-        $this->insert('ophcocvi_clericinfo_contact_urgency',array('name'=>'Immediately (i.e. potential risk factors present)','display_order'=>1));
-        $this->insert('ophcocvi_clericinfo_contact_urgency',array('name'=>'Within the next 2 weeks (in line with Association of Directors of Social Services\' national standards)','display_order'=>2));
-        $this->insert('ophcocvi_clericinfo_contact_urgency',array('name'=>'As soon as possible','display_order'=>3));
+        $this->insert('ophcocvi_clericinfo_contact_urgency', array('name'=>'Immediately (i.e. potential risk factors present)','display_order'=>1));
+        $this->insert('ophcocvi_clericinfo_contact_urgency', array('name'=>'Within the next 2 weeks (in line with Association of Directors of Social Services\' national standards)','display_order'=>2));
+        $this->insert('ophcocvi_clericinfo_contact_urgency', array('name'=>'As soon as possible','display_order'=>3));
 
 
 

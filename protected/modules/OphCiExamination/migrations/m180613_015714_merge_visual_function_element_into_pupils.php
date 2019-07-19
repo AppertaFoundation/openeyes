@@ -80,7 +80,7 @@ class m180613_015714_merge_visual_function_element_into_pupils extends OEMigrati
             array(':element_id' => $vf_element_type['id']));
 
         // Remove element type
-        $this->delete('setting_metadata', 'element_type_id in ('.implode(",", array_column($vf_element_type_children,'id')).')');
+        $this->delete('setting_metadata', 'element_type_id in ('.implode(",", array_column($vf_element_type_children, 'id')).')');
         $this->delete('ophciexamination_element_set_item', 'element_type_id IN (SELECT id FROM element_type WHERE id = :id OR parent_element_type_id = :id)', array(':id' => $vf_element_type['id']));
         $this->delete('element_type', 'parent_element_type_id = :id', array(':id' => $vf_element_type['id']));
         $this->delete('element_type', 'id = :id', array(':id' => $vf_element_type['id']));

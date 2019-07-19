@@ -90,9 +90,11 @@ if (!isset($values)) {
     <div class="cols-full">
       <div class="js-comment-container flex-layout flex-left"
                         id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
-                        style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
+                        style="<?php if (!$values['comments']) :
+                            ?>display: none;<?php
+                               endif; ?>"
                         data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
-      <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
+        <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
         'class' => 'js-comment-field autosize cols-full',
         'rows' => '1',
         'placeholder' => 'Comments',
@@ -106,7 +108,9 @@ if (!isset($values)) {
             type="button"
             class="button js-add-comments"
         data-hide-method = "display"
-            style="<?php if ($values['comments']): ?>display: none;<?php endif; ?>"
+            style="<?php if ($values['comments']) :
+                ?>display: none;<?php
+                   endif; ?>"
             data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
             <i class="oe-i comments small-icon"></i>
         </button>
@@ -116,7 +120,7 @@ if (!isset($values)) {
         <td>
             <i class="oe-i trash"></i>
         </td>
-    <?php else: ?>
+    <?php else : ?>
         <td>read only</td>
     <?php endif; ?>
 </tr>

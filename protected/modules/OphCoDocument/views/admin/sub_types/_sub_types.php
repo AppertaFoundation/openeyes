@@ -32,4 +32,4 @@ if (!empty($sub_types)) {
             <td><i class="oe-i <?=($sub_type->is_active ? 'tick' : 'remove');?> small"></i></td>
         </tr>
     <?php }
-} 
+}

@@ -33,22 +33,21 @@ $logoHelper = new LogoHelper();
 
     <table nobr="true" class="urgency" cellpadding="5">
     <?php
-        foreach (OphCoTherapyapplication_ExceptionalCircumstances_StartPeriod::model()->active()->findAll() as $period) {
-            ?>
+    foreach (OphCoTherapyapplication_ExceptionalCircumstances_StartPeriod::model()->active()->findAll() as $period) {
+        ?>
         <tr>
             <td class="label">&nbsp;<?php echo $period->application_description ?></td>
             <td class="selector">
-                <?php if ($exceptional->{$side.'_start_period_id'} == $period->id) { 
-                    echo 'X'; 
-                } else {
-                    echo '&nbsp;';
-                }?>
+            <?php if ($exceptional->{$side.'_start_period_id'} == $period->id) {
+                    echo 'X';
+            } else {
+                echo '&nbsp;';
+            }?>
             </td>
         </tr>
 
-    <?php
-
-        }
+        <?php
+    }
     ?>
 
     </table>
@@ -59,9 +58,9 @@ $logoHelper = new LogoHelper();
         <tr>
             <td>
                 <?php
-                    if ($exceptional->{$side.'_urgency_reason'}) {
-                        echo Yii::app()->format->Ntext($exceptional->{$side.'_urgency_reason'});
-                    }
+                if ($exceptional->{$side.'_urgency_reason'}) {
+                    echo Yii::app()->format->Ntext($exceptional->{$side.'_urgency_reason'});
+                }
                 ?>
                 &nbsp;
             </td>
@@ -166,9 +165,9 @@ $logoHelper = new LogoHelper();
                                 <th>Registered <?php echo \Yii::app()->params['gp_label'] ?> Address</th>
                                 <td><?php echo ($patient->practice &&
                                         $address = $patient->practice->getLetterAddress(array('delimiter' => ', '))) ?
-                                        $address :
-                                        'Unknown';
-                                ?></td>
+                                               $address :
+                                               'Unknown';
+                                                ?></td>
                             </tr>
                             <tr>
                                 <td>Patient consents to share data:</td>
@@ -242,9 +241,9 @@ $logoHelper = new LogoHelper();
                         <span class="form-text">&nbsp;OCT Thickness:</span>
                         <?php
                             $oct_str = 'Not measured';
-                            if ($exam_api && $oct = $exam_api->getOCTForSide($patient, $side)) {
-                                $oct_str = 'Maximum CRT: '.$oct[0].'&micro;m, Central SFT: '.$oct[1].'&micro;m';
-                            }
+                        if ($exam_api && $oct = $exam_api->getOCTForSide($patient, $side)) {
+                            $oct_str = 'Maximum CRT: '.$oct[0].'&micro;m, Central SFT: '.$oct[1].'&micro;m';
+                        }
                             echo $oct_str;
                         ?>
                         </td>
@@ -289,12 +288,12 @@ $logoHelper = new LogoHelper();
             <tr nobr="true">
                 <td class="row-title">Are there any patient factors (clinical or personal) that need to be considered?</td>
                 <td class="row-data"><?php
-                    if ($exceptional->{$side.'_patient_factors'}) {
-                        echo 'Yes <br /><br />'.Yii::app()->format->Ntext($exceptional->{$side.'_patient_factor_details'});
-                    } else {
-                        echo 'No';
-                    }
-                    ?></td>
+                if ($exceptional->{$side.'_patient_factors'}) {
+                    echo 'Yes <br /><br />'.Yii::app()->format->Ntext($exceptional->{$side.'_patient_factor_details'});
+                } else {
+                    echo 'No';
+                }
+                ?></td>
             </tr>
 
             <tr nobr="true">
@@ -340,10 +339,14 @@ $logoHelper = new LogoHelper();
                 <td class="row-data">
                     <?php if ($exceptional->{$side.'_standard_intervention_exists'}) {?>
                         The standard intervention is <?php echo $exceptional->{$side.'_standard_intervention'}->name;?>.<br /><br />
-                        This intervention has <?php if (!$exceptional->{$side.'_standard_previous'}) { echo 'not'; }?> been applied previously.<br /><br />
+                        This intervention has <?php if (!$exceptional->{$side.'_standard_previous'}) {
+                            echo 'not';
+                                              }?> been applied previously.<br /><br />
                     <?php } else {?>
                         There is no standard intervention<br /><br />
-                        This is <?php if (!$exceptional->{$side.'_condition_rare'}) { echo 'not'; }?> a rare condition.<br />
+                        This is <?php if (!$exceptional->{$side.'_condition_rare'}) {
+                            echo 'not';
+                                }?> a rare condition.<br />
                         The incidence of it is: <?php echo Yii::app()->format->Ntext($exceptional->{$side.'_incidence'}); ?>
                     <?php }?></td>
             </tr>
@@ -355,7 +358,7 @@ $logoHelper = new LogoHelper();
                         <br /><br />
                         <?php
                             echo $exceptional->{$side.'_description'};
-                            if ($exceptional->needDeviationReasonForSide($side)) {?>
+                        if ($exceptional->needDeviationReasonForSide($side)) {?>
                                 <br /><br />The standard intervention cannot be used because of
                                 <?php
                                 $reason_count = count($exceptional->{$side.'_deviationreasons'});
@@ -369,12 +372,11 @@ $logoHelper = new LogoHelper();
                                         echo ', ';
                                     }
                                 }
-                            }
                         }
-                        else {
-                            echo 'N/A';
-                        }
-                    ?>
+                                     } else {
+                                         echo 'N/A';
+                                     }
+                                        ?>
                 </td>
             </tr>
 
@@ -420,20 +422,18 @@ $logoHelper = new LogoHelper();
                                     <td><?php
                                         echo 'Start VA: '.$previntervention->start_va.'<br />';
                                         echo 'End VA: '.$previntervention->end_va.'<br />';
-                                        if ($previntervention->comments) {
-                                            echo Yii::app()->format->Ntext($previntervention->comments);
-                                        }
-                                        ?>
+                                    if ($previntervention->comments) {
+                                        echo Yii::app()->format->Ntext($previntervention->comments);
+                                    }
+                                    ?>
                                     </td>
                                 </tr>
-                            <?php
-
+                                <?php
                             }
-                        ?>
+                            ?>
                             </tbody>
                         </table>
-                    <?php
-
+                        <?php
                     } else {
                         echo '';
                     }
@@ -469,20 +469,18 @@ $logoHelper = new LogoHelper();
                                     <td><?php
                                         echo 'Start VA: '.$relevantintervention->start_va.'<br />';
                                         echo 'End VA: '.$relevantintervention->end_va.'<br />';
-                                        if ($relevantintervention->comments) {
-                                            echo Yii::app()->format->Ntext($relevantintervention->comments);
-                                        }
-                                        ?>
+                                    if ($relevantintervention->comments) {
+                                        echo Yii::app()->format->Ntext($relevantintervention->comments);
+                                    }
+                                    ?>
                                     </td>
                                 </tr>
-                            <?php
-
+                                <?php
                             }
-                        ?>
+                            ?>
                             </tbody>
                         </table>
-                    <?php
-
+                        <?php
                     } else {
                         echo '';
                     }

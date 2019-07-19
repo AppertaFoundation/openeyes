@@ -23,13 +23,13 @@
       <table class="cols-11">
         <tbody>
           <tr>
-              <?php echo $form->textField($element, 'time', $element->getHtmlOptionsForInput('time'), array());?>
+                <?php echo $form->textField($element, 'time', $element->getHtmlOptionsForInput('time'), array());?>
           </tr>
           <tr>
-              <?php echo $form->textField($element, 'result', $element->getHtmlOptionsForInput('result'), array());?>
+                <?php echo $form->textField($element, 'result', $element->getHtmlOptionsForInput('result'), array());?>
           </tr>
           <tr>
-              <?php echo $form->textArea($element, 'comment', $element->getHtmlOptionsForInput('comment'), array(), ['maxlength'=>'250']);?>
+                <?php echo $form->textArea($element, 'comment', $element->getHtmlOptionsForInput('comment'), array(), ['maxlength'=>'250']);?>
           </tr>
         </tbody>
       </table>

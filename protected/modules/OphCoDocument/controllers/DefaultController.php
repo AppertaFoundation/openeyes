@@ -60,7 +60,7 @@ class DefaultController extends BaseEventTypeController
     public function return_bytes($val) {
         $last = strtolower($val[strlen($val)-1]);
         $val = (int)trim($val);
-        switch($last) {
+        switch ($last) {
             case '':
                 $val *= (1024 * 1024); //1048576
                 break;
@@ -167,10 +167,10 @@ class DefaultController extends BaseEventTypeController
         $p_file = ProtectedFile::createFromFile($tmp_name);
         $p_file->name = $original_name;
 
-        if($p_file->save()) {
+        if ($p_file->save()) {
             unlink($tmp_name);
             return $p_file->id;
-        }else{
+        } else {
             unlink($tmp_name);
             return false;
         }
@@ -194,13 +194,12 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionFileUpload()
     {
-        foreach($_FILES as $file)
-        {
+        foreach ($_FILES as $file) {
             $return_data = array();
             foreach (array('single_document_id', 'left_document_id', 'right_document_id') as $file_key) {
-                if(isset($file["name"][$file_key]) && strlen($file["name"][$file_key])>0){
+                if (isset($file["name"][$file_key]) && strlen($file["name"][$file_key])>0) {
                     $handler = $this->documentErrorHandler($_FILES, $file_key);
-                    if( $handler == NULL) {
+                    if ( $handler == NULL) {
                         $return_data[$file_key] = $this->uploadFile( $file["tmp_name"][$file_key], $file["name"][$file_key]);
                     } else {
                         $return_data = array(
@@ -210,7 +209,6 @@ class DefaultController extends BaseEventTypeController
                         );
                     }
                 }
-
             }
 
             echo json_encode($return_data);
@@ -238,7 +236,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function generateFileField($element, $index)
     {
-        if($element->{$index."_id"} > 0){
+        if ($element->{$index."_id"} > 0) {
             $this->renderPartial('form_'.$this->getTemplateForMimeType($element->{$index}->mimetype), array('element'=>$element, 'index'=>$index));
         }
     }
@@ -252,11 +250,11 @@ class DefaultController extends BaseEventTypeController
         $this->initWithEventId($id);
 
         $imgdir = $this->event->getImageDirectory();
-        if(!file_exists($imgdir)) {
+        if (!file_exists($imgdir)) {
             mkdir($imgdir, 0775, true);
         }
 
-        if($this->eventContainsImagesOnly()) {
+        if ($this->eventContainsImagesOnly()) {
             return parent::actionSavePDFprint($id);
         }
 
@@ -271,14 +269,13 @@ class DefaultController extends BaseEventTypeController
                 'file_id'   => $pf->id,
             );
 
-            if( !isset( $_GET['ajax'])){
+            if ( !isset( $_GET['ajax'])) {
                 $result['name'] = $pf->name;
                 $result['mime'] = $pf->mimetype;
                 $result['path'] = $pf->getPath();
 
                 return $result;
             }
-
         } else {
             $result = array(
                 'success'   => 0,
@@ -313,16 +310,13 @@ class DefaultController extends BaseEventTypeController
 
         foreach ($this->event->getElements() as $element) {
             foreach (array("single_document", "left_document", "right_document") as $property) {
-                if(isset($element->$property)) {
-
+                if (isset($element->$property)) {
                     $mimetype = $element->$property->mimetype;
-                    if(strpos($mimetype, "image/") === 0) {
+                    if (strpos($mimetype, "image/") === 0) {
                         $document_types[]='image';
-                    }
-                    elseif($mimetype = 'application/pdf') {
+                    } elseif ($mimetype = 'application/pdf') {
                         $document_types[]='pdf';
-                    }
-                    else {
+                    } else {
                         $document_types[]='other';
                     }
                 }
@@ -340,13 +334,13 @@ class DefaultController extends BaseEventTypeController
     {
         $this->initWithEventId($id);
 
-        if(in_array('other', $this->getDocumentTypes())) {
+        if (in_array('other', $this->getDocumentTypes())) {
             // Other documents cannot be printed
             throw new Exception("Only images or PDF documents can be printed");
         }
 
         // Image(s) only
-        if($this->eventContainsImagesOnly()) {
+        if ($this->eventContainsImagesOnly()) {
             return parent::actionPDFPrint($id);
         }
 
@@ -356,36 +350,34 @@ class DefaultController extends BaseEventTypeController
             foreach ($this->event->getElements() as $element) {
                 foreach (array("single_document", "left_document", "right_document") as $property) {
                     if (isset($element->$property)) {
-                        if(strpos($element->$property->mimetype, "image/") === 0) {
+                        if (strpos($element->$property->mimetype, "image/") === 0) {
                             $auto_print = Yii::app()->request->getParam('auto_print', true);
                             $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-                            $pdf_route = $this->setPDFprintData( $id , $inject_autoprint_js );
+                            $pdf_route = $this->setPDFprintData( $id, $inject_autoprint_js );
 
                             $pdf = $this->event->getPDF($pdf_route);
                             $this->addPDFToOutput($pdf);
-                        }
-                        else {
+                        } else {
                             $this->addPDFToOutput($element->$property->getPath());
                         }
                     }
                 }
             }
 
-            if($inject_autoprint_js) {
+            if ($inject_autoprint_js) {
                 $script = 'print(true);';
                 $this->pdf_output->IncludeJS($script);
-
             }
 
             $imgdir = $this->event->imageDirectory;
             $pdf_path = $imgdir.'/event_print.pdf';
-            if(!file_exists($imgdir)) {
+            if (!file_exists($imgdir)) {
                 mkdir($imgdir, 0775, true);
             }
-            $this->pdf_output->Output("F",   $pdf_path);
+            $this->pdf_output->Output("F", $pdf_path);
 
-            if($return_pdf_path) {
+            if ($return_pdf_path) {
                 return $pdf_path;
             }
 
@@ -405,7 +397,7 @@ class DefaultController extends BaseEventTypeController
 
     private function addPDFToOutput($pdf_path)
     {
-        if((float)$this->getPDFVersion($pdf_path) > 1.4) {
+        if ((float)$this->getPDFVersion($pdf_path) > 1.4) {
             $pdf_path = $this->convertPDF($pdf_path);
         }
 

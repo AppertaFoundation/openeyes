@@ -146,7 +146,7 @@ class OETrial_ReportTrialCohort extends BaseReport
             $medicationsWidget->init();
             $medicationData = $medicationsWidget->getViewData();
             $medications = array();
-            foreach($medicationData['current'] as $medication) {
+            foreach ($medicationData['current'] as $medication) {
                 $medications[] = $medication->getMedicationDisplay();
             }
             $cols[] = implode($medications, '; ');

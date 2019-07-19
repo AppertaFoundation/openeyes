@@ -1,13 +1,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
 <div class="analytics-options">
 
-    <?php $this->renderPartial('analytics_sidebar_header',array('specialty'=>$specialty));?>
+    <?php $this->renderPartial('analytics_sidebar_header', array('specialty'=>$specialty));?>
 
     <div class="specialty"><?= $specialty ?></div>
     <div class="specialty-options">
         <div class="view-mode flex-layout">
             <?php $clinical_button_disable = true;
-            if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
+            if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
                 $clinical_button_disable = false;
             }?>
             <button class="analytics-section pro-theme cols-12 selected <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
@@ -66,11 +66,11 @@
 <script type="text/javascript">
     <?php
     $side_bar_user_list = array();
-    if (isset($user_list)){
-        foreach ($user_list as $user){
+    if (isset($user_list)) {
+        foreach ($user_list as $user) {
             $side_bar_user_list[$user->getFullName()] = $user->id;
         }
-    }else{
+    } else {
         $side_bar_user_list = null;
     }
     ?>

@@ -33,12 +33,12 @@ $event_type = $event->eventType->name;
             <?php echo $event_type ?> last modified by <span class="user"><?php echo $event->usermodified->fullname ?></span>
             on <?php echo $event->NHSDate('last_modified_date') ?>
             at <?php echo date('H:i', strtotime($event->last_modified_date)) ?>.
-            <?php if(!is_null($Element->edit_reason_id)): ?>
-                <?php if($Element->edit_reason_id > 1): ?>
+            <?php if (!is_null($Element->edit_reason_id)) : ?>
+                <?php if ($Element->edit_reason_id > 1) : ?>
                         Reason: <?php echo $Element->edit_reason->caption; ?>
-                    <?php else: ?>
+                <?php else : ?>
                         Reason: <?php echo $Element->edit_reason_other; ?>
-                    <?php endif; ?>
+                <?php endif; ?>
             <?php endif; ?>
 
         </span>

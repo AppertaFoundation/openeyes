@@ -84,7 +84,7 @@
                 ))?>
             </div>
             <div>
-                <?=\CHtml::textField('comment', @$_GET['comment'],array('placeholder' => 'Comments'))?>
+                <?=\CHtml::textField('comment', @$_GET['comment'], array('placeholder' => 'Comments'))?>
             </div>
             <div style="font-size:12px;">
                 Sample Type:
@@ -132,7 +132,7 @@
                 <span class="column_no_results">
                     <?php if (@$_GET['search']) {?>
                         No results found for current criteria.
-                    <?php }else{?>
+                    <?php } else {?>
                         Please enter criteria to search for samples.
                     <?php }?>
                 </span>
@@ -161,7 +161,6 @@
                     <?php
 
                     foreach ($results as $result) {?>
-
                         <?php
                             $genetics_pateint = GeneticsPatient::model()->findByPk($result['genetics_patient_id']);
                         ?>
@@ -172,10 +171,10 @@
                             <td>
                                 <?php
                                     $pedigree_html = '';
-                                    foreach($genetics_pateint->pedigrees as $pedigree) {
-                                        $pedigree_html .= empty($pedigree_html) ? '' : ', ';
-                                        $pedigree_html .= CHtml::link($pedigree->id, '/Genetics/pedigree/view/' . $pedigree->id);
-                                    }
+                                foreach ($genetics_pateint->pedigrees as $pedigree) {
+                                    $pedigree_html .= empty($pedigree_html) ? '' : ', ';
+                                    $pedigree_html .= CHtml::link($pedigree->id, '/Genetics/pedigree/view/' . $pedigree->id);
+                                }
 
                                     echo $pedigree_html;
                                 ?>

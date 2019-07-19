@@ -78,7 +78,7 @@ class Zend_Http_Client_Adapter_Proxy extends Zend_Http_Client_Adapter_Socket
     
     /**
      * Stores the last CONNECT handshake request
-     * 
+     *
      * @var string
      */
     protected $connectHandshakeRequest;
@@ -185,7 +185,7 @@ class Zend_Http_Client_Adapter_Proxy extends Zend_Http_Client_Adapter_Socket
             $request .= "$v\r\n";
         }
 
-        if(is_resource($body)) {
+        if (is_resource($body)) {
             $request .= "\r\n";
         } else {
             // Add the request body
@@ -198,8 +198,8 @@ class Zend_Http_Client_Adapter_Proxy extends Zend_Http_Client_Adapter_Socket
             throw new Zend_Http_Client_Adapter_Exception("Error writing request to proxy server");
         }
 
-        if(is_resource($body)) {
-            if(stream_copy_to_stream($body, $this->socket) == 0) {
+        if (is_resource($body)) {
+            if (stream_copy_to_stream($body, $this->socket) == 0) {
                 require_once 'Zend/Http/Client/Adapter/Exception.php';
                 throw new Zend_Http_Client_Adapter_Exception('Error writing request to server');
             }
@@ -223,7 +223,7 @@ class Zend_Http_Client_Adapter_Proxy extends Zend_Http_Client_Adapter_Socket
 
         // Process provided headers, including important ones to CONNECT request
         foreach ( $headers as $k=>$v ) {
-            switch ( strtolower(substr($v,0,strpos($v,':'))) ) {
+            switch ( strtolower(substr($v, 0, strpos($v, ':'))) ) {
                 case 'proxy-authorization':
                     // break intentionally omitted
                 case 'user-agent':
@@ -271,7 +271,7 @@ class Zend_Http_Client_Adapter_Proxy extends Zend_Http_Client_Adapter_Socket
         );
 
         $success = false;
-        foreach($modes as $mode) {
+        foreach ($modes as $mode) {
             $success = stream_socket_enable_crypto($this->socket, true, $mode);
             if ($success) break;
         }

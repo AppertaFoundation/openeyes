@@ -19,7 +19,7 @@
 <?php $methods = CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_CCT_Method::model()->activeOrPk(array($element->right_method_id, $element->left_method_id))->findAll(array('order' => 'display_order')), 'id', 'name') ?>
 <div class="element-eyes sub-element-fields">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-  <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?=$eye_side?>-eye column <?=$page_side?>" data-side="<?=$eye_side?>">
       <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : ""?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
@@ -47,4 +47,4 @@
         </div>
       </div>
     </div>
-  <?php endforeach;?>
+    <?php endforeach;?>

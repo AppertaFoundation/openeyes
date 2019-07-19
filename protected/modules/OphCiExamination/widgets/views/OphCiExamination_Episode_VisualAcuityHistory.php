@@ -13,8 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-  <?php if ($chart->hasData()): ?>
-
+    <?php if ($chart->hasData()) : ?>
   <div class="data-group">
     <div class="data-label column cols-9"></div>
     <div class="data-value column cols-3">
@@ -27,14 +26,14 @@
     <div class="column cols-12">
       <div id="va-history-chart" class="chart" style="width: 100%; height: 500px"></div>
     </div>
-    <?= $chart->run(); ?>
+        <?= $chart->run(); ?>
   <script type="text/javascript">
     $(document).ready(function () {
       $('#va_history_unit_id').change(function () { this.form.submit(); });
     });
   </script>
-<?php else: ?>
+    <?php else : ?>
   <div class="cols-12 column">
     <div class="data-value">(no data)</div>
   </div>
-<?php endif; ?>
+    <?php endif; ?>

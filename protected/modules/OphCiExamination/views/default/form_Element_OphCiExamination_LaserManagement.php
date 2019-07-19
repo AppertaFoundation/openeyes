@@ -42,7 +42,7 @@ foreach ($lasertypes as $lt) {
     class="element-eyes sub-element-fields jsTreatmentFields"
 >
     <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-  <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :?>
       <div
           class="js-element-eye <?= $eye ?>-eye column <?= $side ?> <?= (!$element->{'has' . ucfirst($eye)}()) ? 'inactive' : '' ?>"
           data-side="<?= $eye ?>"
@@ -68,5 +68,5 @@ foreach ($lasertypes as $lt) {
             </div>
         </div>
     </div>
-  <?php endforeach;?>
+    <?php endforeach;?>
 </div>

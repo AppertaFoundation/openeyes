@@ -36,7 +36,7 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
 
         $field_type_id = \SettingFieldType::model()->findByAttributes(['name' => 'Text Field'])->id;
 
-        foreach (\EpisodeStatus::model()->findAll('name = :name' , [':name' => 'Post-op']) as $status) {
+        foreach (\EpisodeStatus::model()->findAll('name = :name', [':name' => 'Post-op']) as $status) {
             foreach (['drug_set' => 'Drug Set', 'letter' => 'Letter'] as $type => $name) {
                 $this->addSetting($field_type_id, "default_{$status->key}_{$type}", "Default {$status->name}(Episode status) {$name} name", $status->name);
             }

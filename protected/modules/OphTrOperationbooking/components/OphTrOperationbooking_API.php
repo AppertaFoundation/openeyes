@@ -30,12 +30,12 @@ class OphTrOperationbooking_API extends BaseAPI
             'Element_OphTrOperationbooking_Operation',
             $patient,
             $use_context)
-        ){
+        ) {
             $completed = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Completed'));
             $completed_date = NULL;
 
-            foreach ($operations as $operation){
-                if($operation->status_id == $completed->id){
+            foreach ($operations as $operation) {
+                if ($operation->status_id == $completed->id) {
                     $completed_date = $operation->event->event_date;
                     break;
                 }
@@ -45,10 +45,9 @@ class OphTrOperationbooking_API extends BaseAPI
                 $patient,
                 $use_context,
                 $completed_date)
-            ){
+            ) {
                 return $diagnosis->disorder->term;
             }
-
         }
         // revert to using the primary patient diagnosis
         $core = new CoreAPI();
@@ -74,14 +73,14 @@ class OphTrOperationbooking_API extends BaseAPI
     }
 
 
-    public function getOperationsForEpisode($patient , $use_context = false)
+    public function getOperationsForEpisode($patient, $use_context = false)
     {
         if ($operations = $this->getElements(
             'Element_OphTrOperationbooking_Operation',
             $patient,
             $use_context)
-        ){
-            foreach($operations as $key => $operation){
+        ) {
+            foreach ($operations as $key => $operation) {
                 $operations[$key]['booking'] = $operation->booking;
             }
             return $operations;
@@ -121,7 +120,7 @@ class OphTrOperationbooking_API extends BaseAPI
      * @param $use_context
      * @return Element_OphTrOperationbooking_Operation[]
      */
-    public function getOpenOperations(Patient $patient, $use_context=false)
+    public function getOpenOperations(Patient $patient, $use_context = false)
     {
         $criteria = new CDbCriteria();
         $criteria->addNotInCondition('status_id', array(
@@ -168,20 +167,19 @@ class OphTrOperationbooking_API extends BaseAPI
         }
 
         if ($operation->status_id != $status->id) {
-
             $operation_statuses = Yii::app()->db->createCommand()
                 ->select('id, name')
                 ->from('ophtroperationbooking_operation_status')
                 ->where(['in','name', ['Completed','Scheduled','Rescheduled']])
                 ->queryAll();
 
-                foreach ($operation_statuses as $operation_status) {
-                    $op_status[$operation_status['name']] = $operation_status['id'];
-                }
+            foreach ($operation_statuses as $operation_status) {
+                $op_status[$operation_status['name']] = $operation_status['id'];
+            }
 
             $operation->status_id = $status->id;
 
-            if($op_status['Completed'] === $status->id){
+            if ($op_status['Completed'] === $status->id) {
                 $operation->operation_completion_date = date('Y:m:d H:i:s');
             }
 
@@ -190,10 +188,9 @@ class OphTrOperationbooking_API extends BaseAPI
             }
 
             //When a booking has a status of completed, scheduled or rescheduled, it should no longer show notices that it requires scheduling.
-            if(in_array($operation->status_id, $op_status)){
+            if (in_array($operation->status_id, $op_status)) {
                 $operation->event->deleteIssue('Operation requires scheduling');
             }
-
         }
     }
 
@@ -232,7 +229,6 @@ class OphTrOperationbooking_API extends BaseAPI
             $patient,
             $use_context
         ) as $operation_element) {
-
             if ($operation_element->booking) {
                 return $operation_element->booking;
             }
@@ -276,7 +272,7 @@ class OphTrOperationbooking_API extends BaseAPI
             'Element_OphTrOperationbooking_Operation',
             $patient,
             $use_context)
-        ){
+        ) {
             foreach ($operation->procedures as $i => $procedure) {
                 if ($i) {
                     $return .= ', ';
@@ -295,13 +291,13 @@ class OphTrOperationbooking_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLetterProceduresSameDay( $patient, $use_context = false )
+    public function getLetterProceduresSameDay($patient, $use_context = false)
     {
         if ($operations = $this->getElements(
             'Element_OphTrOperationbooking_Operation',
             $patient,
             $use_context)
-        ){
+        ) {
             $result = '';
             $latest = $this->getElementFromLatestEvent('Element_OphTrOperationbooking_Operation', $patient, $use_context);
             foreach ($operations as $i => $detail) {
@@ -311,7 +307,6 @@ class OphTrOperationbooking_API extends BaseAPI
                     foreach ($detail->procedures as $procedure) {
                         $result .= ($result === '' ? '' : ', ') . $detail->eye->adjective . ' ' . $procedure->term;
                     }
-
                 }
             }
             return strtolower($result);
@@ -560,22 +555,21 @@ class OphTrOperationbooking_API extends BaseAPI
         $op_status_scheduled = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Scheduled'));
         $ep_status_listed = EpisodeStatus::model()->find('name=?', array('Listed/booked'));
 
-        foreach($operations as $operation){
+        foreach ($operations as $operation) {
             // get the first bookable session regardless of the firm
             $session = $this->getFirstBookableSession($operation);
 
             //we need to pass to schedule the op
             $schedule_options = Element_OphTrOperationbooking_ScheduleOperation::model()->find('event_id = ?', array($operation->event->id));
             
-            if($session){
+            if ($session) {
                 $transaction = Yii::app()->db->beginTransaction();
                 
                 try {
-                    
                     $ward = OphTrOperationbooking_Operation_Ward::model()->find('site_id = ?', array($operation->site->id));
-                    if(!$ward){
-                        //as this feature is used when the client/hospital doesn't use the 
-                        //scheduling, most likely it will have a dummy ward set up for only one site 
+                    if (!$ward) {
+                        //as this feature is used when the client/hospital doesn't use the
+                        //scheduling, most likely it will have a dummy ward set up for only one site
                         $ward = OphTrOperationbooking_Operation_Ward::model()->find();
                     }
                     $booking = new OphTrOperationbooking_Operation_Booking('insert');
@@ -605,7 +599,6 @@ class OphTrOperationbooking_API extends BaseAPI
 
                         $transaction->commit();
                     }
-
                 } catch (RaceConditionException $e) {
                     $errors[$operation->id] = $e->getMessage();
                     $transaction->rollback();
@@ -613,12 +606,11 @@ class OphTrOperationbooking_API extends BaseAPI
                     $errors[$operation->id] = $e->getMessage();
                     $transaction->rollback();
                 }
-
             } else {
                 $errors[$operation->id] = 'Operation notes cannot be created for un-scheduled Operations. Please add free sessions.';
             }
 
-            if( isset($errors[$operation->id]) ){
+            if ( isset($errors[$operation->id]) ) {
                 $evevnt_date = new DateTime($operation->event->event_date);
                 $errors[$operation->id] .= ' (' . $evevnt_date->format("d M Y") .': '. $operation->getProceduresCommaSeparated() . ')';
             }
@@ -643,7 +635,7 @@ class OphTrOperationbooking_API extends BaseAPI
         
         $session_iterator = new CDataProviderIterator($dataProvider);
 
-        foreach ($session_iterator as $session){
+        foreach ($session_iterator as $session) {
             $is_bookable = $session->operationBookable($operation);
 
             if ($is_bookable && ($session->availableMinutes >= $operation->total_duration)) {

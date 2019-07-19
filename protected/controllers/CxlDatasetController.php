@@ -35,11 +35,11 @@ class CxlDatasetController extends BaseController
     private $startDate = '';
     private $endDate = '';
     
-    // Refactoring : 
+    // Refactoring :
     /**
      * This number will be appended after the tmp tables so the
      * two or more extract running at the same time can use different tmp tables
-     * @var int 
+     * @var int
      */
     private $extractIdentifier;
     
@@ -75,27 +75,27 @@ class CxlDatasetController extends BaseController
         $startDateTime = null;
         $endDateTime = null;
         
-        if($startDate){
+        if ($startDate) {
             $startDateTime = new DateTime($startDate);
         }
         
-        if($endDate){
+        if ($endDate) {
             $endDateTime = new DateTime($endDate);
         }
 
         // if start date is greater than end date we exchange the two dates
-        if(($startDateTime instanceof DateTime && $endDateTime instanceof DateTime) && $endDateTime < $startDateTime){
+        if (($startDateTime instanceof DateTime && $endDateTime instanceof DateTime) && $endDateTime < $startDateTime) {
             $tempDate = $endDateTime;
             $endDateTime = $startDateTime;
             $startDateTime = $tempDate;
             $tempDate = null;
         }
         
-        if($startDate){
+        if ($startDate) {
             $this->startDate = $startDateTime->format('Y-m-d');
         }
         
-        if($endDate){
+        if ($endDate) {
             $this->endDate = $endDateTime->format('Y-m-d');
         }
         
@@ -116,7 +116,7 @@ class CxlDatasetController extends BaseController
     
     
      /**
-     * Generates CSV and zip files then sends to the browser 
+     * Generates CSV and zip files then sends to the browser
      */
     public function actionGenerate()
     {
@@ -141,7 +141,7 @@ class CxlDatasetController extends BaseController
         $query = $this->createAllTempTables();
         $query .= $this->populateAllTempTables();
 
-        // Execute all statements to create and populate working tables 
+        // Execute all statements to create and populate working tables
         Yii::app()->db->createCommand($query)->execute();
 
         // Extract results from tables into csv files
@@ -177,12 +177,11 @@ class CxlDatasetController extends BaseController
 
             $data = $dataCmd->queryAll();
 
-            if($offset == 0){
+            if ($offset == 0) {
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', ((implode(',', $dataQuery['header'])) . "\n"), FILE_APPEND);
             }
 
-            if(count($data) > 0)
-            {
+            if (count($data) > 0) {
                 $csv = $this->array2Csv($data, null, $dataFormatter);
 
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
@@ -441,7 +440,7 @@ EOL;
                 ;
 EOL;
         return $query;
-    }       
+    }
     
     private function getHistory()
     {
@@ -501,17 +500,17 @@ JOIN firm f ON f.id = ep.firm_id
 WHERE ev.deleted = 0
 EOL;
 
-        if( $this->startDate ){
+        if ( $this->startDate ) {
             $query .= " AND DATE(ev.event_date) >= STR_TO_DATE('{$this->startDate}', '%Y-%m-%d') ";
         }
 
-        if( $this->endDate ){
+        if ( $this->endDate ) {
             $query .= " AND DATE(ev.event_date) <= STR_TO_DATE('{$this->endDate}', '%Y-%m-%d') ";
         }
 
         $query .= ';';
 
-$query .= <<<EOL
+        $query .= <<<EOL
 
 INSERT INTO tmp_cxl_main_event_episodes_{$this->extractIdentifier} (
   event_id
@@ -533,11 +532,11 @@ JOIN firm f ON f.id = ep.firm_id
 WHERE ev.deleted = 0
 EOL;
 
-        if( $this->startDate ){
+        if ( $this->startDate ) {
             $query .= " AND DATE(ev.event_date) >= STR_TO_DATE('{$this->startDate}', '%Y-%m-%d') ";
         }
 
-        if( $this->endDate ){
+        if ( $this->endDate ) {
             $query .= " AND DATE(ev.event_date) <= STR_TO_DATE('{$this->endDate}', '%Y-%m-%d') ";
         }
 

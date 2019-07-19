@@ -33,11 +33,11 @@
             <div class="cols-9 column">
                 <div class="data-value">
             <?php
-            if(isset($element->storage->box->value)){
-              echo CHtml::encode($element->storage->box->value.' - '.$element->storage->letter.' - '.$element->storage->number);
-              } else {
-              echo 'Not set';
-              } ?>
+            if (isset($element->storage->box->value)) {
+                echo CHtml::encode($element->storage->box->value.' - '.$element->storage->letter.' - '.$element->storage->number);
+            } else {
+                echo 'Not set';
+            } ?>
         </div>
             </div>
         </div>
@@ -59,10 +59,10 @@
             </div>
             <div class="cols-9 column">
                 <div class="data-value">
-            <?php if(isset($element->extracted_by->username)){
-              echo CHtml::encode($element->extracted_by->first_name . ' ' . $element->extracted_by->last_name);
-              } else {
-              echo 'Not set';
+            <?php if (isset($element->extracted_by->username)) {
+                echo CHtml::encode($element->extracted_by->first_name . ' ' . $element->extracted_by->last_name);
+            } else {
+                echo 'Not set';
             } ?>
         </div>
             </div>

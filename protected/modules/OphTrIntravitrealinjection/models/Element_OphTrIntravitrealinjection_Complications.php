@@ -151,7 +151,7 @@ class Element_OphTrIntravitrealinjection_Complications extends SplitEventTypeEle
     {
         $other_comp = null;
         $complications = $this->{$params['side'].'_complications'};
-        if( is_array($complications) ){
+        if ( is_array($complications) ) {
             foreach ($complications as $comp) {
                 if ($comp->description_required) {
                     $other_comp = $comp;
@@ -186,7 +186,7 @@ class Element_OphTrIntravitrealinjection_Complications extends SplitEventTypeEle
         // create assignment and store for saving
         // if there is, remove from the current complications array
         // anything left in current complications at the end is ripe for deleting
-        if( is_array($complication_ids) ){
+        if ( is_array($complication_ids) ) {
             foreach ($complication_ids as $comp_id) {
                 if (!array_key_exists($comp_id, $current_complications)) {
                     $s = new OphTrIntravitrealinjection_ComplicationAssignment();

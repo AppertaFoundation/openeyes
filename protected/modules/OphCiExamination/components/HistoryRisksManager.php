@@ -56,7 +56,8 @@ class HistoryRisksManager
     protected function getRisksFromTagged($tagged_list) {
         $by_id = array();
         foreach ($tagged_list as $tagged) {
-            $tag_ids = array_map(function($t) { return $t->id; }, $tagged->tags);
+            $tag_ids = array_map(function($t) { return $t->id;
+            }, $tagged->tags);
             $risks = OphCiExaminationRisk::findForTagIds($tag_ids);
             foreach ($risks as $risk) {
                 if (!array_key_exists($risk->id, $by_id)) {

@@ -25,9 +25,9 @@ class m180604_091411_insert_oescape_pc_items extends CDbMigration
 
         $PC_id =  $this->getDbConnection()->createCommand('select id from subspecialty where name ="General Ophthalmology"')->queryRow();
 
-        $this->delete('oescape_summary','`item_id` ='.$Med_id['id'].' and `subspecialty_id`='.$PC_id['id']);
-        $this->delete('oescape_summary','`item_id` ='.$VA_id['id'].' and `subspecialty_id`='.$PC_id['id']);
-        $this->delete('oescape_summary','`item_id` ='.$IOP_id['id'].' and `subspecialty_id`='.$PC_id['id']);
+        $this->delete('oescape_summary', '`item_id` ='.$Med_id['id'].' and `subspecialty_id`='.$PC_id['id']);
+        $this->delete('oescape_summary', '`item_id` ='.$VA_id['id'].' and `subspecialty_id`='.$PC_id['id']);
+        $this->delete('oescape_summary', '`item_id` ='.$IOP_id['id'].' and `subspecialty_id`='.$PC_id['id']);
     }
 
 }
