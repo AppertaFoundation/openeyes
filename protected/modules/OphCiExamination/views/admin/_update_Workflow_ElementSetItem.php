@@ -27,23 +27,26 @@
 	</div>
 	<form id="admin_workflow_steps">
     <div class="data-group">
-      <table class="standard">
+      <table class="standard"  id="et_sort" data-uri = "/OphCiExamination/admin/sortWorkflowElementSetItem">
         <thead>
         <tr>
+          <th>Display Order</th>
           <th>Element type</th>
           <th>Hidden</th>
           <th>Mandatory</th>
-          <th>Display Order</th>
           <th>Actions</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="sortable ui-sortable">
         <?php foreach ($step->items as $i => $item) { ?>
           <tr class="clickable" data-id="<?php echo $item->id?>">
+              <td class="reorder">
+                  <span>&uarr;&darr;</span>
+                  <input type="hidden" name="OphCiExamination_ElementSetItem[display_order][]" value="<?= $item->id ?>">
+              </td>
             <td><?php echo $item->element_type->name?></td>
             <td><?=\CHtml::activeCheckBox($item, 'is_hidden', array('class' => 'workflow-item-attr'))?></td>
             <td><?=\CHtml::activeCheckBox($item, 'is_mandatory', array('class' => 'workflow-item-attr'))?></td>
-              <td><?= \CHtml::activeNumberField($item, 'display_order', array('class' => 'workflow-item-attr'))?></td>
             <td><a href="#" class="removeElementType" rel="<?php echo $item->id?>" data-element-type-id="<?php echo $item->element_type_id?>">Remove</a></td>
           </tr>
             <?php } ?>
@@ -68,3 +71,23 @@
     </div>
 	</form>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#step_element_types tbody').sortable({
+            stop:  function(event, ui){
+                let $form = ui.item.closest('form');
+                $.ajax({
+                    'type': 'POST',
+                    'url': $('#et_sort').data('uri'),
+                    'data': $form.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                    'success': function(){
+                    },
+                    'error': function (jqXHR, status) {
+                        alert(jqXHR.responseText);
+                    }
+                });
+        }
+    })
+    });
+</script>
