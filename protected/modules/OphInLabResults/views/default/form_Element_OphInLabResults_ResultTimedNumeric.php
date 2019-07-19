@@ -24,7 +24,7 @@
         <tbody>
           <tr>
                 <?= $form->hiddenInput($element, 'type');?>
-              <?php echo $form->textField($element, 'time', $element->getHtmlOptionsForInput('time'), array());?>
+                <?php echo $form->textField($element, 'time', $element->getHtmlOptionsForInput('time'), array());?>
           </tr>
           <tr>
                 <?php echo $form->textField($element, 'result', $element->getHtmlOptionsForInput('result'), array());?>
