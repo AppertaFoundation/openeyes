@@ -67,7 +67,7 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
                 'workflow' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Workflow', 'workflow_id'),
                 'items' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ElementSetItem', 'set_id',
                         'with' => 'element_type',
-                        'order' => 'element_type.name',
+                        'order' => 'items.display_order, element_type.display_order',
                 ),
                 'visibleItems' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ElementSetItem', 'set_id',
                     'with' => 'element_type',
