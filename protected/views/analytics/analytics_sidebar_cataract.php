@@ -1,4 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+<?PHP Yii::app()->getAssetManager()->registerScriptFile('../../../node_modules/jspdf/dist/jspdf.min.js') ?>
 <div class="analytics-options">
 
     <?php $this->renderPartial('analytics_sidebar_header', array('specialty'=>$specialty));?>
