@@ -37,7 +37,7 @@ class SaveDisplayOrderAction extends \CAction
 
         if (Yii::app()->request->isPostRequest) {
             $post = Yii::app()->request->getPost($modelName);
-            $page = Yii::app()->request->getPost('page');
+            $page = Yii::app()->request->getPost('page', 1);
             if (!array_key_exists('display_order', $post) || !is_array($post['display_order'])) {
                 throw new CHttpException(400, 'No objects to order were provided');
             }
