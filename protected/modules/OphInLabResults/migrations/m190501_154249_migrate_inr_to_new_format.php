@@ -14,7 +14,6 @@ class m190501_154249_migrate_inr_to_new_format extends CDbMigration
 
 	public function down()
 	{
-		echo "m190501_154249_migrate_inr_to_new_format does not support migration down.\n";
-		return false;
+		echo "Columns will be destroyed in the other migrations therefore the row will be in the state as before the migration";
 	}
 }
