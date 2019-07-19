@@ -2,7 +2,7 @@
 
 class m190419_132252_ophinlabresults_migrate_results_type_to_new_structure extends OEMigration
 {
-	public function up()
+	public function safeUp()
 	{
 	    $this->createOETable('ophinlabresults_field_type',
             [
@@ -40,7 +40,7 @@ class m190419_132252_ophinlabresults_migrate_results_type_to_new_structure exten
         $this->dropForeignKey('labresults_type_result_element', 'ophinlabresults_type');
 	}
 
-	public function down()
+	public function safeDown()
 	{
         $this->addForeignKey('labresults_type_result_element', 'ophinlabresults_type', 'result_element_id', 'element_type', 'id');
         $this->dropColumn('ophinlabresults_type', 'show_on_whiteboard');
