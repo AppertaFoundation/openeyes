@@ -18,17 +18,27 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
-use OEModule\OphCiExamination\components\ExaminationHelper;
-use Yii;
 use Audit;
 use CDbCriteria;
+use OEModule\OphCiExamination\components\ExaminationHelper;
 use OEModule\OphCiExamination\models;
+use Yii;
 
 class AdminController extends \ModuleAdminController
 {
     public $group = 'Examination';
 
     public $defaultAction = 'ViewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason';
+
+    public function actions() {
+        return [
+            'sortWorkflowElementSetItem' => [
+                'class' => 'SaveDisplayOrderAction',
+                'model' => models\OphCiExamination_ElementSetItem::model(),
+                'modelName' => 'OphCiExamination_ElementSetItem'
+            ],
+        ];
+    }
 
     public function actionEditIOPInstruments()
     {
