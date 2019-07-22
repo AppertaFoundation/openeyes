@@ -42,35 +42,37 @@
         </thead>
         <tbody class="body">
         <?php
-        foreach ($selected_procedures as $procedure) : ?>
-            <?php $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $this->element->complexity); ?>
+        if (!empty($selected_procedures)) {
+            foreach ($selected_procedures as $procedure) {
+                $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
+                <tr class="item">
+                    <td class="procedure">
+                        <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]',
+                                $procedure->id,
+                                ['class' => 'js-procedure']); ?>
+                        </span>
+                        <span class="value"><?= $procedure->term; ?></span>
+                    </td>
 
-            <tr class="item">
-                <td class="procedure">
-                    <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]', $procedure->id); ?></span>
-                    <span class="value"><?=$procedure->term; ?></span>
-                </td>
+                    <?php if ($durations) { ?>
+                        <td class="duration">
+                        <span data-default-duration="<?= $procedure->default_duration ?>">
+                        <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
+                        </span> mins
+                        </td>
+                    <?php } ?>
+                    <td>
+                        <span class="removeProcedure">
+                            <i class="oe-i trash"></i>
+                        </span>
+                    </td>
+                </tr>
 
-                <?php if ($durations) { ?>
-                <td class="duration">
-                    <span data-default-duration="<?= $procedure->default_duration ?>">
-                    <?= $this->adjustTimeByComplexity($procedure->default_duration, $this->element->complexity); ?>
-                    </span> mins
-                </td>
-                <?php } ?>
-                <td>
-                    <span class="removeProcedure"><i class="oe-i trash"></i></span>
-                </td>
-            </tr>
-
-
-        <?php endforeach; ?>
-
-        <?php
-        if (isset($_POST[$class]['total_duration_' . $identifier])) {
-            $adjusted_total_duration = $_POST[$class]['total_duration_' . $identifier];
-        }
-        ?>
+            <?php }
+            if (isset($_POST[$class]['total_duration_' . $identifier])) {
+                $adjusted_total_duration = $_POST[$class]['total_duration_' . $identifier];
+            }
+        } ?>
         </tbody>
 
         <?php if ($durations) { ?>
@@ -109,12 +111,12 @@
 </div>
 
 <script type="text/javascript">
-    const low_complexity = "0";
-    const high_complexity = "10";
-    const high_percentage = typeof op_booking_inc_time_high_complexity !== "undefined" ? parseInt(window.op_booking_inc_time_high_complexity) : 20;
-    const low_percentage = typeof op_booking_decrease_time_low_complexity !== "undefined" ? parseInt(window.op_booking_decrease_time_low_complexity) : 10;
-    const identifier = "<?= $identifier ?>";
-    const $projected_duration = $('#projected_duration_' + identifier + ' span');
+    let low_complexity = "0";
+    let high_complexity = "10";
+    let high_percentage = typeof op_booking_inc_time_high_complexity !== "undefined" ? parseInt(window.op_booking_inc_time_high_complexity) : 20;
+    let low_percentage = typeof op_booking_decrease_time_low_complexity !== "undefined" ? parseInt(window.op_booking_decrease_time_low_complexity) : 10;
+    let identifier = "<?= $identifier ?>";
+    let $projected_duration = $('#projected_duration_' + identifier + ' span');
 
     // Note: Removed_stack is probably not the best name for this. Selected procedures is more accurate.
     // It is used to suppress procedures from the add a procedure inputs
@@ -219,8 +221,8 @@
             updateProcedureSelect(identifier);
         } else if (popped) {
             // No subsections, so we should be safe to just push it back into the list
-            $('#select_procedure_id_' + identifier).append('<option value="' + popped["id"] + '">' + popped["name"] + '</option>').removeAttr('disabled');
-            sort_selectbox($('#select_procedure_id_' + identifier));
+            $('ul.add-options.js-search-results').append('<option value="' + popped["id"] + '">' + popped["name"] + '</option>').removeAttr('disabled');
+            sort_selectbox($('ul.add-options.js-search-results'));
         }
 
         return false;
@@ -333,7 +335,7 @@
         return false;
     });
 
-    <?php if ($durations): ?>
+    <?php if ($durations) : ?>
     $(document).ready(function () {
         if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
             $('#projected_duration_<?php echo $identifier?> span').html(parseInt($('#projected_duration_<?php echo $identifier?> span').html()));
@@ -362,13 +364,13 @@
                 }
 
                 // clear out text field
-                $('#autocomplete_procedure_id_' + identifier).val('');
+                $('.js-search-autocomplete').val('');
 
                 // remove selection from the filter box
-                if ($('#select_procedure_id_' + identifier).children().length > 0) {
+                if ($('ul.add-options.js-search-results').children().length > 0) {
                     m = data.match(/<span class="value">(.*?)<\/span>/);
 
-                    $('#select_procedure_id_' + identifier).children().each(function () {
+                    $('ul.add-options.js-search-results').children().each(function () {
                         if ($(this).text() == m[1]) {
                             var id = $(this).val();
                             var name = $(this).text();
@@ -380,9 +382,9 @@
                     });
                 }
 
-                if (callback && typeof (window.callbackAddProcedure) == 'function') {
-                    m = data.match(/<input type=\"hidden\" value=\"([0-9]+)\"/);
-                    var procedure_id = m[1];
+                if (callback && typeof (window.callbackAddProcedure) === 'function') {
+                    let m = data.match(/<input class="js-procedure" type=\"hidden\" value=\"([0-9]+)\"/);
+                    let procedure_id = m[1];
                     callbackAddProcedure(procedure_id);
                 }
             }
@@ -412,11 +414,33 @@
                 }
                 return true;
             },
+            onOpen: function () {
+                $('#procedure_popup_<?=$identifier ?: ''; ?>').find('li').each(function () {
+                    let procedureId = $(this).data('id');
+                    let alreadyUsed = $('#procedureList_<?=$identifier ?: ''; ?>')
+                        .find('.js-procedure[value="' + procedureId + '"]').length > 0;
+                    $(this).toggle(!alreadyUsed);
+                });
+            },
             searchOptions: {
                 searchSource: '/procedure/autocomplete',
-            }
-        });
+                resultsFilter: function (results) {
+                    let items = [];
+                    $(results).each(function (index, result) {
+                        let procedureMatchArray = $('#procedureList_<?=$identifier ?: ''; ?>')
+                            .find('span:contains(' + result + ')').filter(function () {
+                                return $(this).text() === result;
+                            });
 
+                        if (procedureMatchArray.length === 0) {
+                            items.push(result);
+                        }
+                    });
+                    return items;
+                }
+            }
+
+        });
         initialiseProcedureAdder();
     });
 </script>

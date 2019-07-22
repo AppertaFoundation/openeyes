@@ -42,8 +42,8 @@ if (!isset($values)) {
         echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id']);
         echo CHtml::hiddenField($field_prefix . '[other]', $values['other']); ?>
         <label class="risk-display js-not-other-risk" data-id="<?= $values['risk_id'] ?>"
-               data-label="<?= $values['risk_display'] ?>"><?= $values['risk_display']; ?></label>
-        <span class="<?= $model_name ?>_other_wrapper js-other-risk" style="display:none">
+               data-label="<?= $values['risk_display'] ?>"><?= ( $values['risk_display'] !== 'Other'? $values['risk_display'] : $values['other']); ?></label>
+        <span class="<?= $model_name ?>_other_wrapper js-other-risk" style="display: <?= $values['risk_display'] !== 'Other' || !empty($values['other']) ?'none':'' ?>">
         <?=\CHtml::textField($field_prefix . '[other]', $values['other'],
             array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
     </span>
@@ -86,29 +86,41 @@ if (!isset($values)) {
             </label>
         <?php } ?>
     </td>
-	<td>
-        <span class="comment-group js-comment-container"
-							id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
-							style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
-							data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
-      <input type="text" class="js-comment-field" name="<?= $field_prefix ?>[comments]"
-						 value="<?= $values['comments'] ?>" id="<?= strtr($field_prefix, '[]', '__') ?>_comments"/>
-      <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
-    </span>
-		<button
-			id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
-			type="button"
-			class="button js-add-comments"
-			style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
-			data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
-			<i class="oe-i comments small-icon"></i>
-		</button>
-	</td>
+    <td>
+    <div class="cols-full">
+      <div class="js-comment-container flex-layout flex-left"
+                        id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
+                        style="<?php if (!$values['comments']) :
+                            ?>display: none;<?php
+                               endif; ?>"
+                        data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
+        <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
+        'class' => 'js-comment-field autosize cols-full',
+        'rows' => '1',
+        'placeholder' => 'Comments',
+        'autocomplete' => 'off',
+        'id' => strtr($field_prefix, '[]', '__').'_comments'
+      ]) ?>
+        <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+      </div>
+        <button
+            id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
+            type="button"
+            class="button js-add-comments"
+        data-hide-method = "display"
+            style="<?php if ($values['comments']) :
+                ?>display: none;<?php
+                   endif; ?>"
+            data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
+            <i class="oe-i comments small-icon"></i>
+        </button>
+    </div>
+    </td>
     <?php if ($removable) : ?>
         <td>
             <i class="oe-i trash"></i>
         </td>
-    <?php else: ?>
+    <?php else : ?>
         <td>read only</td>
     <?php endif; ?>
 </tr>

@@ -187,7 +187,7 @@ class Procedure extends BaseActiveRecordVersioned
 
     protected function addOpNoteElementRelation()
     {
-        if (isset(Yii::app()->modules['OphTrOperationnote'])) {
+        if (isset(Yii::app()->modules['OphTrOperationnote']) && Yii::app()->db->schema->getTable('ophtroperationnote_procedure_element')) {
             $this->metaData->addRelation(
                 'operationNotes',
                 array(
@@ -237,14 +237,13 @@ class Procedure extends BaseActiveRecordVersioned
 
         $count = count($this->$attribute);
         if ($count > 1) {
-
             //At this moment, only Cataract and Biometry can be saved together
-            foreach($this->$attribute as $attr){
+            foreach ($this->$attribute as $attr) {
                 $is_cataract =  $attr->class_name == 'Element_OphTrOperationnote_Cataract' ? true : $is_cataract;
                 $is_biometry =  $attr->class_name == 'Element_OphTrOperationnote_Biometry' ? true : $is_biometry;
             }
 
-            if($count != 2 || !$is_cataract || !$is_biometry){
+            if ($count != 2 || !$is_cataract || !$is_biometry) {
                 $this->addError($attribute, 'Only one Operation Note element (or Cataract and Biometry) per Procedure');
             }
         }

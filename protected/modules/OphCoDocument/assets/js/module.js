@@ -51,6 +51,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
                 let data = ev.originalEvent.dataTransfer.files;
                 $(ev.target).closest(".upload-box").find("input[type=file]").prop("files", data);
+                $(controller.options.fileInputSelector).trigger('change');
             },
         });
 
@@ -87,6 +88,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                                     let side = $(this).data("side");
 
                                     controller.paste(side, files);
+                                    $(controller.options.fileInputSelector).trigger('change');
                                     dialog.close();
                                 });
                             },
@@ -99,21 +101,20 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                         $(window).on('keypress', function (event) {
 
                             if (event.key === 'l' || event.key === 'L') {
-                                controller.paste("left", dialog.data("files"), function(){
-                                    dialog.dialog("close");
-                                });
+                                controller.paste("left", files);
+                                dialog.close();
                                 $(this).unbind(event);
                             }
                             if (event.key === 'r' || event.key === 'R') {
-                                controller.paste("right", dialog.data("files"), function(){
-                                    dialog.dialog("close");
-                                });
+                                controller.paste("right", files);
+                                dialog.close();
                                 $(this).unbind(event);
                             }
-
+                            $(controller.options.fileInputSelector).trigger('change');
                         });
                     } else if ($("input[name='upload_mode']:checked").val() === 'single') {
                         controller.paste("single", files);
+                        $(controller.options.fileInputSelector).trigger('change');
                     }
 
             } else {
@@ -129,11 +130,12 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         let $td = $("#Document_" + side + "_document_row_id").closest('td');
 
         $td.find('.ophco-image-container').remove();
+        $('#'+side+'_document_rotate').val(0);
         $td.find(".upload-box").show().find('.js-upload-box-text').text("Click to select file or DROP here");
         $td.find('.js-remove-document-wrapper').hide();
         $(controller.options.uploadModeSelector).attr('disabled', false);
 
-        $td.find(controller.options.fileInputSelector).val("");
+        $(controller.options.fileInputSelector).val("");
         //$td.find(controller.options.fileInputSelector).prop('files', null);
         //$file_input.replaceWith($file_input.val("").clone(true));
 
@@ -274,6 +276,9 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
             var input_selector = $input.attr('id');
             var file = document.getElementById(input_selector).files[0];
+            if(!file){
+                return false;
+            }
             var size = file.size;
 
             if ($input.val()) {
@@ -314,6 +319,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
 $(document).ready(function () {
     "use strict";
+
+    autosize($('.autosize'));
 
     var uploader = new OpenEyes.OphCoDocument.DocumentUploadController();
     $('.js-document-upload-wrapper').data('controller', uploader);

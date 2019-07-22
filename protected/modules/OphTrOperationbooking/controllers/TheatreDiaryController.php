@@ -103,7 +103,7 @@ class TheatreDiaryController extends BaseModuleController
 
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
 
-        $used_firms =  CHtml::listData(OphTrOperationbooking_Operation_Session::model()->getFirmsBeenUsed(@$_POST['subspecialty-id']),"id" , "name");
+        $used_firms =  CHtml::listData(OphTrOperationbooking_Operation_Session::model()->getFirmsBeenUsed(@$_POST['subspecialty-id']), "id", "name");
         $this->render('index', array('wards' => $wards, 'theatres' => $theatres , 'used_firms' => $used_firms));
     }
 
@@ -476,19 +476,20 @@ class TheatreDiaryController extends BaseModuleController
             }
 
             if ($this->checkAccess('OprnEditTheatreSessionDetails')) {
-                $session->consultant = $_POST['consultant_'.$session->id];
-                $session->paediatric = $_POST['paediatric_'.$session->id];
-                $session->anaesthetist = $_POST['anaesthetist_'.$session->id];
-                $session->general_anaesthetic = $_POST['general_anaesthetic_'.$session->id];
-                $session->available = $_POST['available_'.$session->id];
-                $session->unavailablereason_id = $_POST['unavailablereason_id_'.$session->id];
-                $session->max_procedures = $_POST['max_procedures_'.$session->id];
+                $session->consultant = isset($_POST['consultant_'.$session->id]) ? $_POST['consultant_'.$session->id] : null ;
+                $session->paediatric = isset($_POST['paediatric_'.$session->id]) ? $_POST['paediatric_'.$session->id] : null ;
+                $session->anaesthetist = isset($_POST['anaesthetist_'.$session->id]) ? $_POST['anaesthetist_'.$session->id] : null ;
+                $session->general_anaesthetic = isset($_POST['general_anaesthetic_'.$session->id]) ? $_POST['general_anaesthetic_'.$session->id] : null ;
+                $session->available = isset($_POST['available_'.$session->id]) ? $_POST['available_'.$session->id] : null ;
+                $session->unavailablereason_id = isset($_POST['unavailablereason_id_'.$session->id]) ? $_POST['unavailablereason_id_'.$session->id] : null ;
+                $session->max_procedures = isset($_POST['max_procedures_'.$session->id]) ? $_POST['max_procedures_'.$session->id] : null ;
+                $session->max_complex_bookings = isset($_POST['max_complex_bookings_'.$session->id]) ? $_POST['max_complex_bookings_'.$session->id] : null ;
             }
 
 
             $old_comments = $session->comments;
             $session->comments = $_POST['comments_'.$session->id];
-            if($session->comments!=$old_comments){
+            if ($session->comments!=$old_comments) {
                 $comments_is_changed = true;
             }
 
@@ -518,7 +519,6 @@ class TheatreDiaryController extends BaseModuleController
             $previous_booking_display_order = -1;
             $previous_booking_booking_id = 0;
             foreach ($bookings as $new_position => $booking_data) {
-
                 // Check if relative position of booking has changed or if the display_order or booking id are lower
                 // than the previous booking. If so update display order. This is necessary for cases where there are duplicate
                 // display_orders and booking_id is used as a tie breaker
@@ -541,24 +541,23 @@ class TheatreDiaryController extends BaseModuleController
                         throw new Exception('Unable to save booking');
                     }
                 }
-
             }
             if (empty($errors)) {
                 $transaction->commit();
 
                 $booking_data_id = null;
-                if( isset($booking_data) ){
+                if ( isset($booking_data) ) {
                     $booking_data_id = $booking_data['booking_id'];
                 }
 
-                if($order_is_changed) {
-                    Audit::add('diary', 'change-of-order', $booking_data_id,null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
+                if ($order_is_changed) {
+                    Audit::add('diary', 'change-of-order', $booking_data_id, null, array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
                 }
 
-                if($comments_is_changed){
-                    if( isset($booking_data) )
+                if ($comments_is_changed) {
+                    if ( isset($booking_data) )
 
-                    Audit::add('diary', 'change-of-comment', $booking_data_id,null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
+                    Audit::add('diary', 'change-of-comment', $booking_data_id, null, array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
                 }
             } else {
                 $transaction->rollback();

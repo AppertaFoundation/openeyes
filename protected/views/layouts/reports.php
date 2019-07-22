@@ -26,7 +26,7 @@ Yii::app()->getAssetManager()->registerScriptFile('js/AdminSidebar.js', 'applica
 </head>
 <body class="open-eyes oe-grid">
 <!-- Minimum screed width warning -->
-<div id="oe-minimum-width-warning">Please increase your browser window</div>
+<div id="oe-minimum-width-warning">Device width not supported</div>
 <?php $this->renderPartial('//base/_debug'); ?>
 
 <!-- Branding (logo) -->
@@ -43,10 +43,10 @@ Yii::app()->getAssetManager()->registerScriptFile('js/AdminSidebar.js', 'applica
 </div>
 <div class="oe-full-content subgrid oe-reports">
   <nav class="oe-full-side-panel reports-panels">
-      <?php $this->renderPartial('//report/sidebar'); ?>
+        <?php $this->renderPartial('//report/sidebar'); ?>
   </nav>
   <main class="oe-full-main reports-main">
-      <?php echo $content; ?>
+        <?php echo $content; ?>
   </main>
 </div>
 

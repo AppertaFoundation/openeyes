@@ -52,7 +52,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var controller = this;
 
         $(document).ready(function(){
-            if (controller.$noAllergiesFld.prop('checked')){
+            if (controller.$noAllergiesFld.prop('checked') && controller.$noAllergiesWrapper.prop('style').display !== "none"){
                 controller.$table.find('tr:not(:first-child)').hide();
                 controller.$popupSelector.hide();
             }
@@ -122,9 +122,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param allergies
      * @returns {*}
      */
-    AllergiesController.prototype.createRows = function (allergies) {
-        if (allergies === undefined)
-            allergies = {};
+    AllergiesController.prototype.createRows = function (allergies = {}) {
         var newRows = [];
         var template = this.templateText;
         var tableSelector = this.tableSelector;
@@ -143,9 +141,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.showEditableIfOther = function () {
         var controller = this;
         $(this.allergySelector).each(function () {
-            var isOther = (this.value == controller.options.allergyOtherValue);
-            $(this.closest('tr')).find('.js-not-other-allergy').toggle(!isOther);
-            $(this.closest('tr')).find('.js-other-allergy').toggle(isOther);
+            let $tr = $(this).closest('tr');
+            let row_other_allergy = $tr.find('.js-other-allergy');
+            let other_allergy_value = row_other_allergy.find('input').val();
+
+            if (other_allergy_value === '') {
+                let show_other_input = (parseInt(this.value) === controller.options.allergyOtherValue);
+                $tr.find('.js-not-other-allergy').toggle(!show_other_input);
+                row_other_allergy.toggle(show_other_input);
+            }
         });
     };
 
@@ -172,6 +176,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.dedupeAllergySelectors();
         this.updateNoAllergiesState();
         this.showEditableIfOther();
+        autosize($('.autosize'));
     };
 
     /**

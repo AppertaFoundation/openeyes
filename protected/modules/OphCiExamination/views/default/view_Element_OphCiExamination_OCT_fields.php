@@ -62,16 +62,18 @@
         <?php echo $element->{'get' . ucfirst($side) . 'FluidString'}(); ?>
     </td>
   </tr>
-  <?php if ($element->{$side . '_comments'}) { ?>
+    <?php if ($element->{$side . '_comments'}) { ?>
     <tr>
       <td>
           <?php echo $element->getAttributeLabel($side . '_comments') ?>:
       </td>
       <td>
-          <?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?>
+          <div class="comment-block" style="word-break:break-all;">
+            <?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?>
+          </div>
       </td>
     </tr>
-  <?php } ?>
+    <?php } ?>
   </tbody>
 </table>
 

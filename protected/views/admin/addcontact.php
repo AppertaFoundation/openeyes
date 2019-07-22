@@ -13,10 +13,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Add contact</h2>
-	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
-	<?php
+<div class="cols-9">
+
+    <div class="row divider">
+        <h2>Add contact</h2>
+    </div>
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
         'enableAjaxValidation' => false,
@@ -26,27 +29,64 @@
             'field' => 5,
         ),
     ))?>
-		<?php echo $form->textField($contact, 'title', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
-		<?php echo $form->textField($contact, 'first_name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($contact, 'last_name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($contact, 'nick_name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($contact, 'primary_phone', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($contact, 'qualifications', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->dropDownList($contact, 'contact_label_id', CHtml::listData(ContactLabel::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -'))?>
 
-		<?php /* TODO */ ?>
-		<div class="hide">
-			<div class="cols-5 large-offset-2 column">
-				<?php echo EventAction::button('Add label', 'add_label', array(), array('class' => 'small'))->toHtml()?>
-			</div>
-		</div>
-		<?php /* TODO */ ?>
+    <table class="standard">
+        <colgroup>
+            <col class="cols-2">
+            <col class="cols-4">
+        </colgroup>
+        <tbody>
+        <?php foreach (['title', 'first_name', 'last_name',
+                           'nick_name', 'primary_phone', 'fax', 'qualifications' , 'national_code'] as $field) : ?>
+            <tr>
+                <td><?= $contact->getAttributeLabel($field); ?></td>
+                <td>
+                    <?= CHtml::activeTextField($contact, $field, [
+                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'class' => 'cols-full'
+                    ]); ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        <tr>
+            <td><?= $contact->getAttributeLabel('contact_label_id'); ?></td>
+            <td>
+                <?= CHtml::activeDropDownList(
+                    $contact,
+                    'contact_label_id',
+                    CHtml::listData(ContactLabel::model()->active()->findAll(['order' => 'name']), 'id', 'name'),
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td><?= $contact->getAttributeLabel('active'); ?></td>
+            <td>
+                <?= CHtml::activeCheckBox(
+                    $contact,
+                    'active'
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr class="pagination-container">
+            <td colspan="3">
+                <?= CHtml::submitButton('Save', [
+                    'class' => 'button large',
+                ]) ?>
+                <?= CHtml::link('Cancel', '/admin/contacts', [
+                    'class' => 'button large',
+                ]) ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
 
-		<?php echo $form->formActions(array('cancel-uri' => '/admin/contacts'))?>
-		<?php $this->endWidget()?>
+        <?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('#Contact_title').focus();
-	});
+    $(document).ready(function() {
+        $('#Contact_title').focus();
+    });
 </script>

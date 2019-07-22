@@ -35,34 +35,56 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             ),
         ));
         // Event actions
-        $this->event_actions[] = EventAction::button('Save', 'save',
-            array(
-                'id' => 'et_save',
-                'level' => 'save',
-            ),
-            array(
-                'form' => $form_id,
-            )
-        );
-        ?>
-		<?php if (Yii::app()->params['OphTrOperationbooking_duplicate_proc_warn']) {?>
-			<input type="hidden" name="event_id" value="<?= $this->event->id ?>" />
-		<?php } ?>
+if (isset($_GET["waiting-list"]) && $_GET["waiting-list"]) {
+    $this->event_actions = array(
+        EventAction::link('Cancel',
+            Yii::app()->createUrl('/OphTrOperationbooking/waitingList/index'),
+            array('level' => 'cancel')
+        ),
+    );
+    $this->event_actions[] = EventAction::button('Confirm', 'confirm',
+        array(
+            'id' => 'et_confirm',
+            'level' => 'confirm',
+        ),
+        array(
+            'form' => $form_id,
+        )
+    );
+} else {
+    $this->event_actions[] = EventAction::button('Save', 'save',
+        array(
+            'id' => 'et_save',
+            'level' => 'save',
+        ),
+        array(
+            'form' => $form_id,
+        )
+    );
+}
+
+?>
+        <?php if (isset($_GET["waiting-list"]) && $_GET["waiting-list"]) { ?>
+            <input type="hidden" name="schedule_now" id="schedule_now" value="1">
+        <?php } ?>
+        <?php if (Yii::app()->params['OphTrOperationbooking_duplicate_proc_warn']) {?>
+            <input type="hidden" name="event_id" value="<?= $this->event->id ?>" />
+        <?php } ?>
 <?php if ($warnings) { ?>
-		<div class="cols-12 column">
-			<div class="alert-box patient with-icon">
-				<?php foreach ($warnings as $warn) {?>
-					<strong><?php echo $warn['long_msg']; ?></strong>
-					- <?php echo $warn['details'];
-				}?>
-			</div>
-		</div>
+        <div class="cols-12 column">
+            <div class="alert-box patient with-icon">
+                <?php foreach ($warnings as $warn) {?>
+                    <strong><?php echo $warn['long_msg']; ?></strong>
+                    - <?php echo $warn['details'];
+                }?>
+            </div>
+        </div>
 <?php }?>
 
-		<?php  $this->displayErrors($errors)?>
-		<?php  $this->renderOpenElements($this->action->id, $form); ?>
-		<?php  $this->renderOptionalElements($this->action->id, $form); ?>
-		<?php  $this->displayErrors($errors, true)?>
-	<?php $this->endWidget(); ?>
+        <?php  $this->displayErrors($errors)?>
+        <?php  $this->renderOpenElements($this->action->id, $form); ?>
+        <?php  $this->renderOptionalElements($this->action->id, $form); ?>
+        <?php  $this->displayErrors($errors, true)?>
+    <?php $this->endWidget(); ?>
 
 <?php  $this->endContent(); ?>

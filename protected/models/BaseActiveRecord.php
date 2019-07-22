@@ -70,7 +70,7 @@ class BaseActiveRecord extends CActiveRecord
 
     /**
      * Set the flag to indicate that model should only save to the db if the model is dirty.
-     * 
+     *
      * @param bool $enable
      *
      * @return \BaseActiveRecord
@@ -113,7 +113,7 @@ class BaseActiveRecord extends CActiveRecord
 
     /**
      * Default to the lower case of the class to match naming convention for model tables.
-     * 
+     *
      * @return string
      */
     public function tableName()
@@ -422,7 +422,7 @@ class BaseActiveRecord extends CActiveRecord
     {
         $saved_ids = array();
         if ($new_objs) {
-            $reverse_relation = $this->getReverseRelation($new_objs[0],$rel);
+            $reverse_relation = $this->getReverseRelation($new_objs[0], $rel);
 
             foreach ($new_objs as $i => $new) {
                 $new->{$rel->foreignKey} = $this->getPrimaryKey();
@@ -601,24 +601,24 @@ class BaseActiveRecord extends CActiveRecord
 
         /**
          * Check if the model dirty.
-         * 
+         *
          * @return bool true if the model dirty
          */
-        public function isModelDirty()
+    public function isModelDirty()
         {
-            $exclude = array(
-                'last_modified_user_id',
-                'last_modified_date',
-            );
+        $exclude = array(
+            'last_modified_user_id',
+            'last_modified_date',
+        );
 
-            foreach ($this->getAttributes() as $attrName => $attribute) {
-                if (!in_array($attrName, $exclude) && $this->isAttributeDirty($attrName)) {
-                    return true;
-                }
+        foreach ($this->getAttributes() as $attrName => $attribute) {
+            if (!in_array($attrName, $exclude) && $this->isAttributeDirty($attrName)) {
+                return true;
             }
-
-            return false;
         }
+
+        return false;
+    }
 
     /**
      * Gets the clean version of an attribute, returns empty string if there was no clean version.
@@ -651,6 +651,13 @@ class BaseActiveRecord extends CActiveRecord
         }
     }
 
+    public function shortDate($attribute, $empty_string = '-')
+    {
+        if ($value = $this->getAttribute($attribute)) {
+            return Helper::convertDate2Short($value, $empty_string);
+        }
+    }
+
     /**
      * @param $attribute
      * @param string $empty_string
@@ -659,7 +666,8 @@ class BaseActiveRecord extends CActiveRecord
      */
     public function NHSDateAsHTML($attribute, $empty_string = '-')
     {
-        if ($value = $this->getAttribute($attribute)) {
+        $value = $this->getAttribute($attribute);
+        if ($value) {
             return Helper::convertMySQL2HTML($value, $empty_string);
         }
     }

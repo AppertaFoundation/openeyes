@@ -34,6 +34,7 @@ $config = [
             'Drops Options' => '/OphCiExamination/admin/manageDrops',
             'Surgery Management Options' => '/OphCiExamination/admin/manageManagementSurgery',
             'Follow-up Statuses' => '/OphCiExamination/admin/manageClinicOutcomesStatus',
+            'Follow-up Roles' =>  '/OphCiExamination/admin/ClinicOutcomeRoles/index',
             'Cataract surgery reasons' => '/OphCiExamination/admin/primaryReasonForSurgery',
             'Common Post-Op Complications' => '/OphCiExamination/admin/postOpComplications',
             'Medication Stop Reasons' => '/OphCiExamination/admin/HistoryMedicationsStopReason',
@@ -44,6 +45,7 @@ $config = [
             'Inject. Mgmt - No Treatment Reasons' => '/OphCiExamination/admin/viewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason',
             'Inject. Mgmt - Diagnosis Questions' => '/OphCiExamination/admin/viewOphCiExamination_InjectionManagementComplex_Question',
             'Optom Invoice Statuses' => '/OphCiExamination/admin/InvoiceStatusList',
+            'Manage Dilation Drops' => '/OphCiExamination/admin/Drug/dilationDrugs',
         ],
         'menu_bar_items' => [
             'ofm' => [

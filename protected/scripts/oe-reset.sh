@@ -93,13 +93,12 @@ do
     		;;
     	--no-files) nofiles=1
     		;;
-        # TODO: fix genetics
-    	# --genetics-enable)
-    	# 	bash /vagrant/install/add-genetics.sh
-    	# ;;
-    	# --genetics-disable)
-    	# 	bash /vagrant/install/add-genetics.sh -r
-    	# ;;
+    	--genetics-enable)
+    		bash $SCRIPTDIR/add-genetics.sh
+    	;;
+    	--genetics-disable)
+    		bash $SCRIPTDIR/add-genetics.sh -r
+    	;;
     	-p) # set dbpassword and move on to next param
             dbpassword="$2"
             shift
@@ -159,30 +158,33 @@ if [ $showhelp = 1 ]; then
     echo "usage: $0 [--branch | b branchname] [--help] [--no-migrate | -nm ] [--banner \"banner text\"] [--develop | -d] [ --no-banner | -nb ] [-p dbpassword] [--genetics-enable] [--genetics-disable]"
     echo ""
     echo "COMMAND OPTIONS:"
-    echo "  --help         : Display this help text"
-    echo "  --no-migrate "
+    echo "	--help         : Display this help text"
+    echo "	--no-migrate "
     echo "          | -nm   : Prevent database migrations running automatically after"
     echo "                   checkout"
-	echo "  --branch       : Download sample database on the specified branch"
+	echo "	--branch       : Download sample database on the specified branch"
 	echo "          | -b      before resetting"
-    echo "  --develop    "
+    echo "	--develop    "
     echo "          |-d    : If specified branch is not found, fallback to develop branch"
     echo "                   - default would fallback to master"
-    echo "  --no-banner  "
+    echo "	--no-banner  "
 	echo "          |-nb   : Remove the user banner text after resetting"
-	echo "  --no-files     : Do not clear protected/files during reset"
-    echo "  --banner>      : Set the user banner to the specified text after reset"
+	echo "	--no-files     : Do not clear protected/files during reset"
+    echo "	--banner>      : Set the user banner to the specified text after reset"
     echo "                   - default is 'Database reset at <time>'"
 	echo "	-p			   : specify root dbpassword for mysql (default is \"dbpassword\")"
-    echo "  -u             : specify username for connecting to database (default is 'root')"
-	echo "  --demo         : Install additional scripts to set up openeyes for demo"
-	echo "  --genetics-enable"
+    echo "	-u             : specify username for connecting to database (default is 'root')"
+	echo "	--demo         : Install additional scripts to set up openeyes for demo"
+	echo "	--genetics-enable"
 	echo "                  : enable genetics modules (if currently diabled)"
-	echo "  --genetics-disable"
+	echo "	--genetics-disable"
 	echo "                  : disable genetics modules (if currently enabled)"
 	echo "	--clean-base	: Do not import sample data - migrate from clean db instead"
 	echo "	--ignore-warnings	: Ignore warnings during migration"
 	echo "	--no-fix		: do not run oe-fix routines after reset"
+	echo "	--custom-file"
+	echo "			| -f:	: Use a custom .sql file to restore instead of default. e.g; "
+	echo "					  'oe-reset -f <filename>.sql' "
 	echo ""
     exit 1
 fi
@@ -216,9 +218,9 @@ echo "Clearing current database..."
 dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant all privileges on ${DATABASE_NAME:-openeyes}.* to '${DATABASE_USER:-openeyes}'@'%' identified by '$pass'; flush privileges;"
 
 echo ""
-# write-out command to console (helps with debugging)
-echo "$dbconnectionstring -e \"$dbresetsql\""
-# run the same command
+## write-out command to console (helps with debugging)
+#echo "$dbconnectionstring -e \"$dbresetsql\""
+## run the same command
 eval "$dbconnectionstring -e \"$dbresetsql\""
 echo ""
 
@@ -238,8 +240,9 @@ if [ $cleanbase = "0" ]; then
 	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
 fi
 
-# Force default institution code to match common.php
-icode=$(grep -oP '(?<=institution_code. => .).*?(?=.,)' $WROOT/protected/config/local/common.php)
+# Force default institution code to match common.php (note that white-space is important in the common.php file)
+# First checks OE_INSTITUTION_CODE environment variable. Otherwise uses value from common.php
+[ ! -z $OE_INSTITUTION_CODE ] && icode=$OE_INSTITUTION_CODE || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" $WROOT/protected/config/local/common.php)
 if [ ! -z $icode ]; then
 
 	echo "

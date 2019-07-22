@@ -17,15 +17,17 @@
 <div class="cols-7">
 
     <div class="row divider">
-        <h2>Edit Formulary Drugs</h2>
+        <h2><?php echo $model->id ? 'Edit' : 'Add'?> Formulary Drugs</h2>
     </div>
 
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
+        'enableAjaxValidation' => false,
         'focus' => '#contactname',
     )) ?>
 
+    <?php echo $form->errorSummary($model); ?>
     <table class="standard">
         <tbody>
         <?php
@@ -37,7 +39,7 @@
                 $model,
                 $field,
                 ['class' => 'cols-full']
-            ); ?> </td>
+                ); ?> </td>
             </tr>
         <?php } ?>
         <tr>

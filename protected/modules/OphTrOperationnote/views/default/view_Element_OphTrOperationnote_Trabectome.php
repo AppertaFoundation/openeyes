@@ -24,8 +24,8 @@
   <section class="element-fields full-width">
     <div class="eyedraw flex-layout flex-top">
       <div class="eyedraw-canvas">
-          <?php
-          $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+            <?php
+            $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
               'mode' => 'view',
               'width' => 200,
               'height' => 200,
@@ -33,8 +33,8 @@
               'attribute' => 'eyedraw',
               'scale' => 0.72,
               'idSuffix' => 'Trabectome',
-          ));
-          ?>
+            ));
+            ?>
       </div>
       <div class="eyedraw-data cols-9">
         <table class="label-value no-lines last-left">
@@ -45,37 +45,24 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('power_id')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('power_id')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?php echo $element->power->name ?>
+                    <?php echo $element->power->name ?>
               </div>
             </td>
           </tr>
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('blood_reflux')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('blood_reflux')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?php echo $element->blood_reflux ? 'Yes' : 'No'; ?>
-              </div>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('hpmc')) ?>
-              </div>
-            </td>
-            <td>
-              <div class="data-value">
-                  <?php echo $element->hpmc ? 'Yes' : 'No'; ?>
+                    <?php echo $element->blood_reflux ? 'Yes' : 'No'; ?>
               </div>
             </td>
           </tr>
@@ -83,12 +70,12 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('description')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('hpmc')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?php echo Yii::app()->format->Ntext($element->description) ?>
+                    <?php echo $element->hpmc ? 'Yes' : 'No'; ?>
               </div>
             </td>
           </tr>
@@ -96,12 +83,25 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('complications')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('description')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?= $element->getComplicationsString(); ?>
+                    <?php echo Yii::app()->format->Ntext($element->description) ?>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="data-label">
+                    <?=\CHtml::encode($element->getAttributeLabel('complications')) ?>
+              </div>
+            </td>
+            <td>
+              <div class="data-value">
+                    <?= $element->getComplicationsString(); ?>
               </div>
             </td>
           </tr>

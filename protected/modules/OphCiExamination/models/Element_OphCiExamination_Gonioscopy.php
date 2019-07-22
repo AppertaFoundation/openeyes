@@ -40,9 +40,13 @@ namespace OEModule\OphCiExamination\models;
  * @property string $right_eyedraw
  * @property string $left_ed_report
  * @property string $right_ed_report
+ * @property int $right_iris_id
+ * @property int $left_iris_id
  *
  * The followings are the available model relations:
  * @property Event $event
+ * @property OphCiExamination_Gonioscopy_Iris $right_iris
+ * @property OphCiExamination_Gonioscopy_Iris $left_iris
  */
 class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
 {
@@ -91,7 +95,7 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
                 array('eye_id, left_gonio_sup_id, left_gonio_tem_id, left_gonio_nas_id, left_gonio_inf_id,
 						right_gonio_sup_id, right_gonio_tem_id, right_gonio_nas_id, right_gonio_inf_id,
 						left_description, right_description, left_eyedraw, right_eyedraw,
-						left_ed_report, right_ed_report', 'safe'),
+						left_ed_report, right_ed_report, right_iris_id, left_iris_id', 'safe'),
                 array('left_eyedraw, left_ed_report', 'requiredIfSide', 'side' => 'left'),
                 array('right_eyedraw, right_ed_report', 'requiredIfSide', 'side' => 'right'),
                 // The following rule is used by search().
@@ -131,6 +135,8 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
                 'right_gonio_tem' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Description', 'right_gonio_tem_id'),
                 'right_gonio_nas' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Description', 'right_gonio_nas_id'),
                 'right_gonio_inf' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Description', 'right_gonio_inf_id'),
+                'left_iris' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Iris', 'left_iris_id'),
+                'right_iris' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Iris', 'right_iris_id'),
                 'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
         );
     }
@@ -156,7 +162,9 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
             'left_eyedraw' => 'EyeDraw',
             'right_eyedraw' => 'EyeDraw',
             'left_ed_report' => 'Report',
-            'right_ed_report' => 'Report'
+            'right_ed_report' => 'Report',
+            'left_iris_id' => 'Iris',
+            'right_iris_id' => 'Iris',
         );
     }
 
@@ -188,6 +196,8 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
         $criteria->compare('right_eyedraw', $this->right_eyedraw, true);
         $criteria->compare('left_ed_report', $this->left_ed_report, true);
         $criteria->compare('right_ed_report', $this->right_ed_report, true);
+        $criteria->compare('left_iris', $this->left_iris, true);
+        $criteria->compare('right_iris', $this->right_iris, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
@@ -201,6 +211,59 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
     {
         return \CHtml::listData(OphCiExamination_Gonioscopy_Description::model()
                 ->findAll(array('order' => 'display_order')), 'id', 'name');
+    }
+
+    /**
+     * Load in the correction values for the eyedraw fields
+     *
+     * @param Patient|null $patient
+     * @throws \CException
+     */
+    public function setDefaultOptions(\Patient $patient = null)
+    {
+        parent::setDefaultOptions($patient);
+
+        if ($patient === null) {
+            throw new \CException('patient object required for setting ' . get_class($this) . ' default options');
+        }
+        $processor = new \EDProcessor();
+        $processor->loadElementEyedrawDoodles($patient, $this, \Eye::LEFT, 'left_eyedraw');
+        $processor->loadElementEyedrawDoodles($patient, $this, \Eye::RIGHT, 'right_eyedraw');
+    }
+
+    /**
+     * Ensure we remove any doodles shredded out of this element for object persistence
+     *
+     * @return bool
+     * @inheritdoc
+     */
+    public function beforeDelete()
+    {
+        $processor = new \EDProcessor();
+        $processor->removeElementEyedraws($this);
+        return parent::beforeDelete();
+    }
+
+    /**
+     * Performs the shredding of Eyedraw data for the patient record
+     *
+     */
+    public function afterSave()
+    {
+        $processor = new \EDProcessor();
+        $processor->shredElementEyedraws($this, [
+        'left_eyedraw' => \Eye::LEFT,
+        'right_eyedraw' => \Eye::RIGHT,
+        ]);
+        parent::afterSave();
+    }
+
+    /**
+     * @return array
+     */
+    public function getIrisOptions()
+    {
+        return OphCiExamination_Gonioscopy_Iris::model()->findAll(['order' => 'display_order']);
     }
 
     /**

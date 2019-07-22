@@ -62,9 +62,6 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
       ),
       'xaxis' => array(
         'title' => 'Visual acuity at surgery (LogMAR)',
-        'titlefont' => array(
-          'size' => 11,
-        ),
         'showline' => true,
         'showgrid' => true,
         'range' => [-1,6],
@@ -156,7 +153,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             ->where('pre_examination.deleted <> 1 and post_examination.deleted <> 1 and note_event.deleted <> 1')
             ->order('pre_exam_date asc, post_exam_date desc');
 
-        if ($surgeon !== 'all'){
+        if ($surgeon !== 'all') {
             $this->command->andWhere('surgeon_id = :surgeon', array('surgeon' => $surgeon));
         }
 
@@ -188,9 +185,9 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      */
     public function dataSet()
     {
-        if ($this->allSurgeons){
+        if ($this->allSurgeons) {
             $surgeon = 'all';
-        }else{
+        } else {
             $surgeon = $this->surgeon;
         }
 
@@ -228,7 +225,6 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                         );
                     }
                 } else {
-
                     //get the pre/post values now. Only the first time, order in SQL query means the first one we come
                     //across is the one closest to the op pre and post.
                     $dataSet[] = array(
@@ -246,7 +242,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             if (!array_key_exists($data[0].'_'.$data[1], $counts)) {
                 $counts[$data[0].'_'.$data[1]] = array();
             }
-            array_push($counts[$data[0].'_'.$data[1]],$data[2]);
+            array_push($counts[$data[0].'_'.$data[1]], $data[2]);
         }
 
         $matrix = array();
@@ -311,8 +307,8 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
             }
 
             if (isset($matrix[$xAxsis][$yAxsis])) {
-                foreach($count as $row){
-                    array_push($matrix[$xAxsis][$yAxsis],$row);
+                foreach ($count as $row) {
+                    array_push($matrix[$xAxsis][$yAxsis], $row);
                 }
             } else {
                 $matrix[$xAxsis][$yAxsis] = $count;
@@ -343,8 +339,8 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      */
 
     public function tracesJson(){
-      $data = $this->dataSet();
-      $trace1 = array(
+        $data = $this->dataSet();
+        $trace1 = array(
         'name' => 'Visual Outcome',
         'mode' => 'markers+text',
         'font' =>  array(
@@ -352,16 +348,16 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
           'size' => 14,
         ),
         'x' => array_map(function ($item){
-          return $item[0];
+            return $item[0];
         }, $data),
         'y' => array_map(function ($item){
-          return $item[1];
+            return $item[1];
         }, $data),
         'text' => array_map(function ($item){
-          return '<b>' . $item[2] . '</b>';
+            return '<b>' . $item[2] . '</b>';
         }, $data),
         'hovertext' => array_map(function ($item){
-          return '<b>Visual Outcome</b><br>Number of eyes: ' . $item[2];
+            return '<b>Visual Outcome</b><br>Number of eyes: ' . $item[2];
         }, $data),
         'hoverinfo' => 'text',
         'hoverlabel' => array(
@@ -382,9 +378,9 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
           'sizeref' => 0.02,
           'sizemode' => 'area',
         ),
-      );
+        );
 
-      $trace2 = array(
+        $trace2 = array(
         'type' => 'line',
         'x' => array(-1, 6),
         'y' => array(-1, 6),
@@ -394,18 +390,18 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
           'width' => 1,
         ),
         'hoverinfo' => 'none',
-      );
+        );
 
-      $traces = array($trace2,$trace1);
-      return json_encode($traces);
+        $traces = array($trace2,$trace1);
+        return json_encode($traces);
     }
     /**
      * @return string
      */
 
     public function plotlyConfig(){
-      $this->plotlyConfig['title'] = 'Visual Acuity (Distance)<br><sub>Total Eyes: '.$this->totalEyes.'</sub>';
-      return json_encode($this->plotlyConfig);
+        $this->plotlyConfig['title'] = 'Visual Acuity (Distance)<br><sub>Total Eyes: '.$this->totalEyes.'</sub>';
+        return json_encode($this->plotlyConfig);
     }
 
     /**
@@ -427,7 +423,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     public function renderSearch($analytics = false)
     {
         $visualAcuityMethods = OphCiExamination_VisualAcuity_Method::model()->findAll();
-        if ($analytics){
+        if ($analytics) {
             $this->searchTemplate = 'application.modules.OphCiExamination.views.reports.visual_acuity_search_analytics';
         }
         return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'methods' => $visualAcuityMethods));

@@ -18,7 +18,7 @@
 ?>
 <div class="element-fields flex-layout full-width ">
   <div class="cols-7">
-      <?php echo $form->textArea(
+        <?php echo $form->textArea(
           $element,
           'comments',
           array('class' => 'cols-full', 'nowrapper' => true),
@@ -37,8 +37,9 @@
   </div>
 </div>
 <?php
-$itemSets = array();
-foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+$itemSets = [];
+foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
     $items = array_map(function ($attr) {
         return ['label' => $attr['slug']];
     }, $attribute->getAttributeOptions());

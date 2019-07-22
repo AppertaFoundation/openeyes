@@ -20,10 +20,10 @@
 <?php
 $layoutColumns = $form->layoutColumns;
 $form->layoutColumns = array('label' => 3, 'field' => 9);
-if ($element->patientId > 0) {
+if ($this->patient->id > 0) {
     $latestData = $element->findBySql('
 						SELECT eob.* FROM et_ophtroperationnote_biometry eob
-										WHERE eob.patient_id=' . $element->patientId . '
+										WHERE eob.patient_id=' . $this->patient->id . '
 										ORDER BY eob.last_modified_date
 										DESC LIMIT 1; ');
 } else {
@@ -41,7 +41,7 @@ if ($element->patientId > 0) {
                 'element' => $latestData,
                 'form' => $form,
                 'is_new_opnote' => $element->isNewRecord,
-            ));
+                ));
         }
         ?>
 </div>

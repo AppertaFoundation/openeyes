@@ -17,50 +17,53 @@
  */
 ?>
 <div class="element-fields flex-layout full-width ">
-  <div class="cols-7">
-      <?php echo $form->textArea($element, 'description', array('class' => 'cols-full', 'nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'description', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;'))?>
-  </div>
-  <div class="add-data-actions flex-item-bottom">
-    <button class="button hint green js-add-select-search"
-            id="add-investigation-btn" type="button">
-      <i class="oe-i plus pro-theme"></i>
-    </button>
-  </div>
+    <div class="cols-7">
+        <?php echo $form->textArea($element, 'description', array('class' => 'cols-full autosize', 'nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'description', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;')) ?>
+    </div>
+    <div class="add-data-actions flex-item-bottom">
+        <button class="button hint green js-add-select-search"
+                id="add-investigation-btn" type="button">
+            <i class="oe-i plus pro-theme"></i>
+        </button>
+    </div>
 </div>
 <?php
+$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 $itemSets = array();
-foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
     $items = array_map(function ($attr) {
         return ['label' => $attr['slug']];
     }, $attribute->getAttributeOptions());
-    $itemSets[] = ['items' => $items ,
-        'header' => $attribute->label ,
+    $itemSets[] = ['items' => $items,
+        'header' => $attribute->label,
         'multiSelect' => $attribute->is_multiselect === '1' ? true : false
     ];
 }
 ?>
 <script type="text/javascript">
-  $(function () {
-    var investigationDiv =
-      $('section[data-element-type-class=\'OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation\']');
+    $(function () {
+        autosize($('.autosize'));
+        var investigationDiv =
+            $('section[data-element-type-class=\'OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation\']');
 
-    new OpenEyes.UI.AdderDialog({
-      openButton: $('#add-investigation-btn'),
-      itemSets:$.map(<?= CJSON::encode($itemSets) ?>, function ($itemSet) {
-              return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {
-                  'header': $itemSet.header,
-                  'multiSelect': $itemSet.multiSelect
-              })
-          }),
-      liClass: 'restrict-width',
-      onReturn: function (adderDialog, selectedItems) {
-        var inputText = investigationDiv.find(
-          '#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description'
-        );
-				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
-        inputText.trigger('oninput');
-        return true;
-      }
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#add-investigation-btn'),
+            itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($itemSet) {
+                return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {
+                    'header': $itemSet.header,
+                    'multiSelect': $itemSet.multiSelect
+                })
+            }),
+            liClass: 'restrict-width',
+            onReturn: function (adderDialog, selectedItems) {
+                var inputText = investigationDiv.find(
+                    '#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description'
+                );
+                inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
+                autosize.update(inputText);
+                inputText.trigger('oninput');
+                return true;
+            }
+        });
     });
-  });
 </script>

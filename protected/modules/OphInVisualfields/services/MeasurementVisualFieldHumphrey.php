@@ -58,7 +58,7 @@ class MeasurementVisualFieldHumphrey extends \services\Resource
 
         $cropped_file = \ProtectedFile::createForWriting($title);
     // all content is base64 encoded, so decode it:
-    file_put_contents($cropped_file->getPath(), base64_decode($report->image_scan_crop_data));
+        file_put_contents($cropped_file->getPath(), base64_decode($report->image_scan_crop_data));
         $cropped_file->mimetype = 'image/gif';
         $cropped_file->name = $title;
         $cropped_file->save();

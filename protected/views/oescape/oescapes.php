@@ -17,7 +17,7 @@
  */
 ?>
   <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape.js')?>"></script>
-	<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
 
 <?php
 extract($this->getEpisodes());
@@ -27,12 +27,13 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
 <?php
     $this->beginContent('//oescape/oescapes_container', array(
         'cssClass' => isset($cssClass) ? $cssClass : '',
-        'subspecialty' => $subspecialty
+        'subspecialty' => $subspecialty,
+        'header_data' => $header_data
     ));
 
       $this->renderPartial('/oescape/oescapeSummary',
           array('subspecialty' => $subspecialty)
       );
 
-    $this->endContent();
-?>
+      $this->endContent();
+        ?>

@@ -175,8 +175,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
         foreach ($config as $k => $v) {
             if (is_array($v)) {
                 $struct[$k] = $this->mapFileConfig($v, $output);
-            }
-            else {
+            } else {
                 switch ((string) $k) {
                     case 'url':
                         if (preg_match('~href="(.*?/' . $v . '\.zip)"~', $output, $match) ) {
@@ -278,7 +277,7 @@ EOH;
     /**
      * imports a specific file based on the given type and interval
      * eg.: ProcessHscicData import --type=Gp --interval=monthly.
-     * 
+     *
      * @param string $type     gp|Practice|Ccg|CcgAssignment
      * @param string $interval full|monthly|quarterly
      */
@@ -328,7 +327,7 @@ EOH;
     /**
      * Checks if the newly downloaded file is already processed or not
      * by comparing to the previously downloaded one.
-     * 
+     *
      * @param type $tempFile      freshly downloaded in the /tmp directory
      * @param type $permanentFile already processed one {$permanentFile}/{$permanentFile}.zip
      *
@@ -356,7 +355,7 @@ EOH;
 
     /**
      * Opens the zip file and gets the CSV file pointer and returns it.
-     * 
+     *
      * @param string $file path and filename
      *
      * @return resource a file pointer (resource)
@@ -383,7 +382,7 @@ EOH;
 
     /**
      * Gets the line count of the CSV file in the zip.
-     * 
+     *
      * @param string $file file pathe and name
      *
      * @return int line count
@@ -433,7 +432,7 @@ EOH;
 
     /**
      * Processing the given file.
-     * 
+     *
      * @param string $type     like 'Gp'
      * @param string $interval full|monthly|quarterly
      * @param array  $file     (based on self::files['full']['Gp'])
@@ -461,7 +460,7 @@ EOH;
 
     /**
      * Gets the zip file, extracts the CSV file (from the zip) and processes it.
-     * 
+     *
      * @param string $type     like 'Gp'
      * @param string $interval full|monthly|quarterly
      * @param array  $fields
@@ -518,7 +517,7 @@ EOH;
 
     /**
      * Imports the 'Gp' CSV file.
-     * 
+     *
      * @param array $data
      */
     private function importGp(array $data)
@@ -547,7 +546,7 @@ EOH;
         /*
          * Regexp
          * the first part match a word (any number of char, no whithespace)
-         * than (after the first word) can follow any number of whitepace 
+         * than (after the first word) can follow any number of whitepace
          * and for the last part the string must end 1 to 4 characters[A-Z]
          *
          * The goal is to extract the name initials from the field and use as a first name with the doctor title.
@@ -601,7 +600,8 @@ EOH;
      */
     private function importPractice($data)
     {
-        if (!($practice = Practice::model()->findByAttributes(array('code' => $data['code'])))) {
+        $practice = Practice::model()->findByAttributes(array('code' => $data['code']));
+        if (!$practice) {
             $practice = new Practice();
             $practice->code = $data['code'];
         }
@@ -695,7 +695,7 @@ EOH;
 
     /**
      * Imports the 'CcgAssignment' file.
-     * 
+     *
      * @param array $data
      *
      * @throws Exception If Failed to save commissioning body assignment
@@ -738,7 +738,7 @@ EOH;
 
     /**
      * Imports the Address.
-     * 
+     *
      * @param Address $address
      * @param array   $lines
      */
@@ -763,7 +763,7 @@ EOH;
 
     /**
      * Transform the address line to uppercase all the words.
-     * 
+     *
      * @param string $string
      *
      * @return string
@@ -785,7 +785,7 @@ EOH;
 
     /**
      * Checking if a database row no longer exists in the file, and if it's the case, we set the status inactive.
-     * 
+     *
      * @param type $type
      */
     public function actionCheckRemovedFromFile($type = 'gp')
@@ -814,7 +814,7 @@ EOH;
 
     /**
      * Creating temporary table for CheckRemovedFromFile() method.
-     * 
+     *
      * @param type $dbTable
      */
     private function createTempTable($dbTable)
@@ -838,7 +838,7 @@ EOH;
 
     /**
      * Returns the database table name based on the give type.
-     * 
+     *
      * @param string $type gp|practice|ccg
      *
      * @return string database table name
@@ -846,22 +846,22 @@ EOH;
     private function getTableNameByType($type)
     {
         switch ($type) {
-           case 'gp':
-           case 'practice':
-               $dbTable = $type;
+            case 'gp':
+            case 'practice':
+                $dbTable = $type;
                break;
-           case 'ccg':
-               $dbTable = 'commissioning_body';
-           default:
-               $this->usageError("Invalid type: $type");
-       }
+            case 'ccg':
+                $dbTable = 'commissioning_body';
+            default:
+                $this->usageError("Invalid type: $type");
+        }
 
         return $dbTable;
     }
 
     /**
      * Fill temp table for CheckRemovedFromFile() method.
-     * 
+     *
      * @param string $type GP
      * @param type   $file
      */
@@ -948,7 +948,7 @@ EOH;
 
     /**
      * Allows to download a specified file based on the type and interval.
-     * 
+     *
      * @param string $type     like 'Gp'
      * @param string $interval like 'monthly'
      */

@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,10 +9,11 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 Yii::import('application.controllers.*');
+use OEModule\OphCiExamination\models;
 
 /**
  * Class PatientController
@@ -140,7 +138,7 @@ class PatientController extends BaseController
      */
     public function actionView($id)
     {
-        $this->redirect(array('episodes', 'id' => $id));
+        $this->redirect(array('summary', 'id' => $id));
     }
 
     public function actionSummary($id) {
@@ -214,9 +212,15 @@ class PatientController extends BaseController
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
-            $item = $dataProvider->getData()[0];
+            $patient = $dataProvider->getData()[0];
             $api = new CoreAPI();
-            $this->redirect(array($api->generatePatientLandingPageLink($item)));
+
+            //in case the PASAPI returns 1 new patient we perform a new search
+            if ($patient->isNewRecord && $patient->hos_num) {
+                $this->redirect(['/patient/search', 'term' => $patient->hos_num]);
+            }
+
+            $this->redirect(array($api->generatePatientLandingPageLink($patient)));
         } else {
             $this->renderPatientPanel = false;
             $this->pageTitle = $term . ' - Search';
@@ -254,7 +258,6 @@ class PatientController extends BaseController
                     'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
                     'hos_num' => $patient->hos_num,
                     'nhsnum' => $patient->nhsnum,
-                    // in script.js we override the behaviour for showing search results and its require the label key to be present
                     'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
                     'is_deceased' => $patient->is_deceased,
                 );
@@ -282,7 +285,7 @@ class PatientController extends BaseController
      */
     public function redirectIfMerged($redirect_link = null)
     {
-        if( $this->patient && ($merged = $this->patient->isMergedInto()) ){
+        if ( $this->patient && ($merged = $this->patient->isMergedInto()) ) {
             $primary_patient = $this->loadModel($merged->primary_id);
 
             //display the flash message
@@ -376,7 +379,7 @@ class PatientController extends BaseController
             ),
         );
 
-        if ($this->checkAccess('OprnEditEpisode', $this->firm, $this->episode) && $this->episode->firm) {
+        if ($this->checkAccess('OprnEditEpisode', $this->episode) && $this->episode->firm) {
             $this->event_tabs[] = array(
                 'label' => 'Edit',
                 'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
@@ -401,7 +404,7 @@ class PatientController extends BaseController
             throw new SystemException('Episode not found: '.$id);
         }
 
-        if (!$this->checkAccess('OprnEditEpisode', $this->firm, $this->episode) || isset($_POST['episode_cancel'])) {
+        if (!$this->checkAccess('OprnEditEpisode', $this->episode) || isset($_POST['episode_cancel'])) {
             $this->redirect(array('patient/episode/'.$this->episode->id));
 
             return;
@@ -416,7 +419,7 @@ class PatientController extends BaseController
                 if (@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
                     if ($_POST['eye_id'] != $this->episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $this->episode->disorder_id) {
                         $diagnosisDate = isset($_POST['DiagnosisSelection']['date']) ? $_POST['DiagnosisSelection']['date'] : false;
-                        $this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'], $_POST['eye_id'] , $diagnosisDate);
+                        $this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'], $_POST['eye_id'], $diagnosisDate);
                     }
                 }
 
@@ -448,7 +451,7 @@ class PatientController extends BaseController
         $this->event_tabs = array(
             array(
                 'label' => 'View',
-                'href' => Yii::app()->createUrl('/patient/episode/'.$this->episode->id),
+                'href' => Yii::app()->createUrl('/patient/summary/'.$this->episode->id),
             ),
             array(
                 'label' => 'Edit',
@@ -476,7 +479,8 @@ class PatientController extends BaseController
         ));
     }
 
-    public function actionOEscape($subspecialty_id, $patient_id){
+    public function actionOEscape($subspecialty_id, $patient_id)
+    {
 
         $subspecialty = Subspecialty::model()->findByPk($subspecialty_id);
         $patient = Patient::model()->findByPk($patient_id);
@@ -491,18 +495,57 @@ class PatientController extends BaseController
 
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
-        $this->event_tabs = array(
-            array(
+        $this->event_tabs = [
+            [
                 'label' => 'View',
                 'active' => true,
-            ),
-        );
+            ],
+        ];
+
+        $header_data = [];
+        if ($subspecialty->ref_spec == 'GL') {
+            $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+            $cct_element = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+                $this->patient,
+                false //use context
+            );
+
+            $criteria = new \CDbCriteria();
+            $criteria->with = ['event.episode'];
+            $criteria->addCondition('episode.patient_id = :patient_id');
+            $criteria->params[':patient_id'] = $this->patient->id;
+            $criteria->order = "event.event_date ASC";
+            $iop = models\Element_OphCiExamination_IntraocularPressure::model()->find($criteria);
+
+            if ($cct_element) {
+                if ($cct_element->hasLeft()) {
+                    $header_data['CCT']['left'] = $cct_element->left_value;
+                }
+                if ($cct_element->hasRight()) {
+                    $header_data['CCT']['right'] = $cct_element->right_value;
+                }
+                $header_data['CCT']['date'] = \Helper::convertMySQL2NHS($cct_element->event->event_date);
+            }
+
+            if ($iop) {
+                $header_data['IOP']['right'] = $iop->getReading('right');
+                $header_data['IOP']['left'] = $iop->getReading('left');
+                $header_data['IOP']['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
+            }
+
+            $max_iop = $exam_api->getMaxIOPValues($patient);
+            if ($max_iop) {
+                $header_data['IOP_MAX']['right'] = $max_iop['right'];
+                $header_data['IOP_MAX']['left'] = $max_iop['left'];
+            }
+        }
 
         $this->render('/oescape/oescapes', array(
             'title' => '' ,
             'subspecialty' => $subspecialty,
             'site' => $site,
             'noEpisodes' => false,
+            'header_data' => $header_data
         ));
     }
 
@@ -536,7 +579,6 @@ class PatientController extends BaseController
         // For every document sub type...
         /* @var OphCoDocument_Sub_Types $documentTyoe */
         foreach (OphCoDocument_Sub_Types::model()->findAll() as $documentType) {
-
             // Find the document events for that subtype ...
             $documentEvents = array_filter($eventTypeMap['Document'], function($documentEvent) use ($documentType) {
                 $documentElement = $documentEvent->getElementByClass(Element_OphCoDocument_Document::class);
@@ -1587,7 +1629,7 @@ class PatientController extends BaseController
                 $episode = $patient->addEpisode($firm);
             }
 
-            $this->redirect(array('/patient/episode/'.$episode->id));
+            $this->redirect(array('/patient/summary/'.$episode->id));
         }
 
         return $this->renderPartial('//patient/add_new_episode', array(
@@ -1744,7 +1786,7 @@ class PatientController extends BaseController
                 $patient->beforeSave();
             }
         }
-        if($patient->getIsNewRecord()){
+        if ($patient->getIsNewRecord()) {
             $patient->hos_num = $patient->autoCompleteHosNum();
         }
         $this->render('crud/create', array(
@@ -1774,7 +1816,7 @@ class PatientController extends BaseController
         }
 
         $patient_identifiers = [];
-        foreach($_POST['PatientIdentifier'] as $post_info) {
+        foreach ($_POST['PatientIdentifier'] as $post_info) {
             $patient_identifier = new PatientIdentifier();
             $patient_identifier->patient_id = $patient->id;
             $patient_identifier->code = $post_info['code'];
@@ -1809,7 +1851,6 @@ class PatientController extends BaseController
         $patientScenario = $patient->getScenario();
         $transaction = Yii::app()->db->beginTransaction();
         try {
-
             $success =
                 $this->patientSaveInner(
                     $contact,
@@ -1826,7 +1867,7 @@ class PatientController extends BaseController
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
                 } else {
-                    $redirect = array('/patient/episodes/' . $patient->id);
+                    $redirect = array('/patient/summary/' . $patient->id);
                 }
                 $transaction->commit();
                 $this->redirect($redirect);
@@ -1838,8 +1879,7 @@ class PatientController extends BaseController
                              'address',
                              'patient_user_referral',
                              'patient_identifiers'
-                         ] as $model)
-                {
+                         ] as $model) {
                     if (isset(${$model})) {
                         if (is_array(${$model})) {
                             foreach (${$model} as $item) {
@@ -2085,7 +2125,7 @@ class PatientController extends BaseController
         $patient->save();
 
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-        if(!isset($_GET['ajax'])){
+        if (!isset($_GET['ajax'])) {
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('site'));
         }
     }
@@ -2104,7 +2144,7 @@ class PatientController extends BaseController
         $gps = Gp::model()->with('contact')->findAll($criteria);
 
         $output = array();
-        foreach($gps as $gp){
+        foreach ($gps as $gp) {
             $output[] = array(
                 'label' => $gp->correspondenceName,
                 'value' => $gp->id
@@ -2130,7 +2170,7 @@ class PatientController extends BaseController
         $practices = Practice::model()->findAll($criteria);
 
         $output = array();
-        foreach($practices as $practice){
+        foreach ($practices as $practice) {
             $output[] = array(
                 'label' => $practice->getAddressLines(),
                 'value' => $practice->id
@@ -2162,16 +2202,13 @@ class PatientController extends BaseController
             $this->renderPartial('crud/_conflicts_error', array(
                 'errors' => $patients['error'],
             ));
-
-        }
-        else {
+        } else {
             if (count($patients) !== 0) {
                 $this->renderPartial('crud/_conflicts', array(
                     'patients' => $patients,
                     'name' => $firstName . ' ' . $last_name
                 ));
-            }
-            else {
+            } else {
                 $this->renderPartial('crud/_conflicts', array(
                     'name' => $firstName . ' ' . $last_name
                 ));
@@ -2261,7 +2298,7 @@ class PatientController extends BaseController
             $p_file = ProtectedFile::createFromFile($tmp_name);
             $p_file->name = $file["name"]["uploadedFile"];
 
-            if(!in_array($p_file->mimetype,$allowed_file_types) ) {
+            if (!in_array($p_file->mimetype, $allowed_file_types) ) {
                 $message = 'Only the following file types can be uploaded: ' . ( implode(', ', $allowed_file_types) ) . '.';
                 $referral->addError('uploadedFile', $message);
             }
@@ -2287,7 +2324,7 @@ class PatientController extends BaseController
 
         if (!$document_saved) {
             $patient_source = $_POST['Patient']['patient_source'];
-            if($patient_source == Patient::PATIENT_SOURCE_REFERRAL){
+            if ($patient_source == Patient::PATIENT_SOURCE_REFERRAL) {
                 //If there is no existing referral letter document, add an error
                 $command = Yii::app()->db->createCommand()->setText("
                     select count(*) 'referral letters'
@@ -2298,7 +2335,7 @@ class PatientController extends BaseController
                       and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
                     where p.id = $patient->id;"
                 );
-                if ($command->queryScalar() == 0){
+                if ($command->queryScalar() == 0) {
                     $referral->addError('uploadedFile', 'Referral requires a letter file');
                 }
             }
@@ -2321,14 +2358,14 @@ class PatientController extends BaseController
     private function getOrCreateEpisode($patient, $firm_id){
         $episode = Episode::model()->findByAttributes(array('firm_id' => $firm_id, 'patient_id' => $patient->id));
         $episode_is_new = false;
-        if (!$episode){
+        if (!$episode) {
             $episode_is_new = true;
             $episode = new Episode();
             $episode->patient_id = $patient->id;
             $episode->firm_id = $firm_id;
             $episode->support_services = false;
             $episode->start_date = date('Y-m-d H:i:s');
-            if (!$episode->save()){
+            if (!$episode->save()) {
                 throw new Exception('Could not get episode');
             }
         }

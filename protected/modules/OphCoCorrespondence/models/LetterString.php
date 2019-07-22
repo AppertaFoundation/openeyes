@@ -72,6 +72,8 @@ class LetterString extends LetterStringBase
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'letter_string_group' => array(self::BELONGS_TO, 'LetterStringGroup', 'letter_string_group_id'),
+            'elementType' => array(self::HAS_ONE, 'ElementType', ['class_name' => 'element_type']),
+            'eventType' => array(self::HAS_ONE, 'EventType', ['class_name' => 'event_type'])
         );
     }
 
@@ -83,6 +85,8 @@ class LetterString extends LetterStringBase
         return array(
             'site_id' => 'Site',
             'letter_string_group_id' => 'Letter String Group',
+            'elementType.name' => 'Element Type',
+            'eventType.name' => 'Event Type'
         );
     }
 

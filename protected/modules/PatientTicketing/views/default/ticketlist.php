@@ -33,10 +33,10 @@
       <col>
       <col class="cols-2"> <!-- patient -->
       <col>
+      <col class="cols-1"><!-- date -->
       <col class="cols-1">
-      <col class="cols-1">
-      <col class="cols-2"><!-- clinical info -->
-      <col class="cols-4"><!-- referral notes -->
+      <col class="cols-3"><!-- clinical info -->
+      <col class="cols-3"><!-- notes -->
       <col>
     </colgroup>
     <thead>
@@ -53,9 +53,21 @@
     </tr>
     </thead>
     <tbody id="ticket-list">
-    <?php foreach ($tickets as $i => $t) {
+    <?php
+    foreach ($tickets as $i => $t) {
         $this->renderPartial('_ticketlist_row', array('i' => $i, 'ticket' => $t, 'can_process' => $can_process));
-    } ?>
+    }
+    if (!count($tickets)) {
+        echo "<tr><td colspan=8><div class='alert-box issue'>
+                No patients found.
+            </div></td><td></td></tr>";
+    }
+    ?>
     </tbody>
+    <tfoot class="pagination-container">
+        <td colspan="9">
+            <?php $this->widget('LinkPager', ['pages' => $pagination]); ?>
+        </td>
+    </tfoot>
   </table>
 </main>

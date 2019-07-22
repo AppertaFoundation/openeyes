@@ -32,13 +32,7 @@
         foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) { ?>
             <tr class="clickable" data-uri="admin/editSetting?key=<?=$metadata->key;?>">
                 <td><?php echo $metadata->name ?></td>
-                <td>
-                    <?php
-                    if ($metadata->getSettingName()) {
-                        echo $metadata->getSettingName();
-                    }
-                    ?>
-                </td>
+                <td><?=(string)$metadata->getSettingName();?></td>
             </tr>
         <?php } ?>
         </tbody>

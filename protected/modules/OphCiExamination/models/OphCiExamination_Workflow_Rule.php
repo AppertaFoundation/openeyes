@@ -84,24 +84,29 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
     public function findWorkflow($firm_id, $status_id)
     {
         $subspecialty_id = null;
+        $firm = \Firm::model()->findByPk($firm_id);
 
-        if ($firm = \Firm::model()->findByPk($firm_id)) {
+        if ($firm) {
             $subspecialty_id = ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
         }
-
-        if ($rule = self::model()->find('subspecialty_id=? and firm_id=? and episode_status_id=?', array($subspecialty_id, $firm_id, $status_id))) {
+        
+        $rule = self::model()->find('subspecialty_id=? and firm_id=? and episode_status_id=?', array($subspecialty_id, $firm_id, $status_id));
+        if ($rule) {
             return $rule->workflow;
         }
-
-        if ($rule = self::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $status_id))) {
+        
+        $rule = self::model()->find('subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $status_id));
+        if ($rule) {
             return $rule->workflow;
         }
-
-        if ($rule = self::model()->find('subspecialty_id=?', array($subspecialty_id))) {
+        
+        $rule = self::model()->find('subspecialty_id=?', array($subspecialty_id));
+        if ($rule) {
             return $rule->workflow;
         }
-
-        if ($rule = self::model()->find('subspecialty_id is null and episode_status_id is null')) {
+        
+        $rule = self::model()->find('subspecialty_id is null and episode_status_id is null');
+        if ($rule) {
             return $rule->workflow;
         }
 
@@ -118,8 +123,8 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
      */
     public function findWorkflowCascading($firm_id, $status_id)
     {
-      $firm = \Firm::model()->findByPk($firm_id);
-      $subspecialty_id = ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 
         $criteria = new \CDbCriteria();
         $criteria->addCondition('firm_id = ? OR firm_id IS NULL');
@@ -221,5 +226,18 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
         }
 
         return parent::beforeValidate();
+    }
+
+    public function findWorkflowSteps($episode_status_id)
+    {
+        $firms = \Firm::model()->findAll();
+        $workflowSteps = [];
+
+        foreach ($firms as $firm) {
+            $workflow = self::model()->findWorkflowCascading($firm->id, $episode_status_id);
+            $workflowSteps[$firm->id] = $workflow ? $workflow->active_steps : null;
+        }
+
+        return $workflowSteps;
     }
 }

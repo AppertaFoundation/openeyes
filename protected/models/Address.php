@@ -69,7 +69,7 @@ class Address extends BaseActiveRecordVersioned
             array('email', 'length', 'max' => 255),
             array('email','email'),
             array('country_id, address_type_id, date_start, date_end', 'safe'),
-            array('country_id, contact_id', 'required'),
+            array('contact_id, country_id', 'required'),
             array('email', 'required', 'on'=>array('self_register')),
             array('id, address1, address2, city, postcode, county, email, country_id, address_type_id, date_start, date_end', 'safe', 'on' => 'search'),
         );
@@ -82,6 +82,7 @@ class Address extends BaseActiveRecordVersioned
     {
         return array(
             'country' => array(self::BELONGS_TO, 'Country', 'country_id'),
+            'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
             'type' => array(self::BELONGS_TO, 'AddressType', 'address_type_id'),
         );
     }
@@ -218,4 +219,24 @@ class Address extends BaseActiveRecordVersioned
 
         return false;
     }
+
+    public function getDefaultCountryId(){
+        $default_country_setting = SettingMetadata::model()->getSetting('default_country');
+        return Country::model()->find('name = ?', [$default_country_setting])->id;
+    }
+
+    public function beforeValidate()
+    {
+        if ($this->date_start == "") {
+            $this->date_start = null;
+        }
+
+        if ($this->date_end == "") {
+            $this->date_end = null;
+        }
+        $this->date_start = Helper::convertNHS2MySQL($this->date_start);
+        $this->date_end = Helper::convertNHS2MySQL($this->date_end);
+        return parent::beforeValidate();
+    }
+
 }

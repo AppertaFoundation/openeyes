@@ -21,14 +21,14 @@
     <header class="element-header"><h3 class="element-title">General Comments</h3></header>
     <div class="element-data eye-divider">
         <div class="element-both-eyes">
-            <div class="data-value">
+            <div class="data-value" style="word-break: break-word;">
                 <?php
                 echo '<b>Device Comments</b>:&nbsp;' . $element->{'comments'};
                 ?>
             </div>
         </div>
         <div class="element-eyes">
-            <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+            <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
                 <div class="<?= $eye_side ?>-eye">
                     <?php if ($element->hasEye($eye_side)) {
                         $this->renderPartial('view_Element_OphInBiometry_Calculation_fields',

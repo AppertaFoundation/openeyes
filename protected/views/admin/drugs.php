@@ -14,75 +14,75 @@
  */
 ?>
 <div class="box admin">
-	<div class="data-group">
-		<div class="cols-8 column">
-			<h2>Drugs</h2>
-		</div>
-		<div class="cols-4 column">
-			<?php
+    <div class="data-group">
+        <div class="cols-8 column">
+            <h2>Drugs</h2>
+        </div>
+        <div class="cols-4 column">
+            <?php
             $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                     'id' => 'searchform',
                     'enableAjaxValidation' => false,
                     'focus' => '#search',
                     'action' => Yii::app()->createUrl('/admin/drugs'),
                 ))?>
-				<div class="cols-12 column">
-					<input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
-				</div>
-			<?php $this->endWidget()?>
-		</div>
-	</div>
-	<form id="admin_users">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="standard">
-			<thead>
-			<tr>
-				<th><input type="checkbox" name="selectall" id="selectall" /></th>
-				<th>ID</th>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Default Dose</th>
-				<th>Unit</th>
-				<th>Route</th>
-				<th>Frequency</th>
-				<th>Duration</th>
-			</tr>
-			</thead>
-			<tbody>
-			<?php foreach ($drugs as $i => $drug) {?>
-				<tr class="clickable" data-id="<?php echo $drug->id?>" data-uri="admin/editdrug/<?php echo $drug->id?>">
-					<td><input type="checkbox" name="drugs[]" value="<?php echo $drug->id?>" /></td>
-					<td><?php echo $drug->id?></td>
-					<td><?php echo $drug->name?></td>
-					<td><?php echo $drug->type->name?></td>
-					<td><?php echo $drug->default_dose?></td>
-					<td><?php echo $drug->dose_unit?></td>
-					<td><?php if(isset($drug->default_route)){
-							echo $drug->default_route->name;
+                <div class="cols-12 column">
+                    <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
+                </div>
+            <?php $this->endWidget()?>
+        </div>
+    </div>
+    <form id="admin_users">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+        <table class="standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" name="selectall" id="selectall" /></th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Default Dose</th>
+                <th>Unit</th>
+                <th>Route</th>
+                <th>Frequency</th>
+                <th>Duration</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($drugs as $i => $drug) {?>
+                <tr class="clickable" data-id="<?php echo $drug->id?>" data-uri="admin/editdrug/<?php echo $drug->id?>">
+                    <td><input type="checkbox" name="drugs[]" value="<?php echo $drug->id?>" /></td>
+                    <td><?php echo $drug->id?></td>
+                    <td><?php echo $drug->name?></td>
+                    <td><?php echo $drug->type->name?></td>
+                    <td><?php echo $drug->default_dose?></td>
+                    <td><?php echo $drug->dose_unit?></td>
+                    <td><?php if (isset($drug->default_route)) {
+                            echo $drug->default_route->name;
                         }?>
-					</td>
-					<td><?php if(isset($drug->default_frequency)) {
-							echo $drug->default_frequency->name;
+                    </td>
+                    <td><?php if (isset($drug->default_frequency)) {
+                            echo $drug->default_frequency->name;
                         }?>
-					</td>
-					<td><?php if(isset($drug->default_duration)) {
-							echo $drug->default_duration->name;
+                    </td>
+                    <td><?php if (isset($drug->default_duration)) {
+                            echo $drug->default_duration->name;
                         }?>
-					</td>
-				</tr>
-			<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-			<tr>
-				<td colspan="9">
-					<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
-					<?php // echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
-					<?php echo $this->renderPartial('_pagination', array(
+                    </td>
+                </tr>
+            <?php }?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="9">
+                    <?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
+                    <?php // echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
+                    <?php echo $this->renderPartial('_pagination', array(
                             'pagination' => $pagination,
                         ))?>
-				</td>
-			</tr>
-			</tfoot>
-		</table>
-	</form>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

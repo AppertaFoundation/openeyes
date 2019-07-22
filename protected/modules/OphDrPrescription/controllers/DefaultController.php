@@ -56,7 +56,8 @@ class DefaultController extends BaseEventTypeController
         $this->jsVars['common_drug_metadata'] = array();
         foreach (Element_OphDrPrescription_Details::model()->commonDrugs() as $drug) {
             $this->jsVars['common_drug_metadata'][$drug->id] = array(
-                    'type_id' => array_map(function($e){ return $e->id; }, $drug->type),
+                    'type_id' => array_map(function($e){ return $e->id;
+                    }, $drug->type),
                     'preservative_free' => (int)$drug->isPreservativeFree(),
             );
         }
@@ -237,11 +238,11 @@ class DefaultController extends BaseEventTypeController
      * @param $reason_id
      * @param $reason_text
      */
-    protected function showReasonForEdit( $reason_id, $reason_text )
+    protected function showReasonForEdit($reason_id, $reason_text)
     {
         $edit_reason = OphDrPrescriptionEditReasons::model()->findByPk($reason_id);
-        if($edit_reason != null){
-            if($reason_id > 1){
+        if ($edit_reason != null) {
+            if ($reason_id > 1) {
                 Yii::app()->user->setFlash('alert.edit_reason', 'Edit reason: '.$edit_reason->caption);
             } else {
                 Yii::app()->user->setFlash('alert.edit_reason', 'Edit reason: '.$reason_text);
@@ -264,7 +265,6 @@ class DefaultController extends BaseEventTypeController
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
             if (isset($_GET['type_id']) && $type_id = $_GET['type_id']) {
-
                 $criteria->addCondition('id IN (SELECT drug_id FROM drug_drug_type WHERE drug_type_id = :type_id)');
                 $params[':type_id'] = $type_id;
             }
@@ -273,7 +273,7 @@ class DefaultController extends BaseEventTypeController
                 $criteria->addCondition("id IN (SELECT drug_id FROM drug_tag WHERE tag_id = $tag_id)");
             }
 
-            if(!empty($criteria->condition)){
+            if (!empty($criteria->condition)) {
                 $criteria->order = 'name';
                 // we don't need 'select *' here
                 $criteria->select = 'id, tallman';
@@ -372,7 +372,6 @@ class DefaultController extends BaseEventTypeController
     protected function setElementComplexAttributesFromData($element, $data, $index = null)
     {
         if (get_class($element) == 'Element_OphDrPrescription_Details' && @$data['prescription_item']) {
-
             // Form has been posted, so we should return the submitted values instead
             $items = array();
             foreach ($data['prescription_item'] as $item) {
@@ -417,14 +416,14 @@ class DefaultController extends BaseEventTypeController
         $this->layout = '//layouts/print';
 
         $pdf_documents = (int)Yii::app()->request->getParam('pdf_documents');
-        if( $pdf_documents == 1 ){
+        if ( $pdf_documents == 1 ) {
             $this->render('print');
         } else {
             $this->render('print');
-            if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
+            if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
                 $this->render('print', array('copy' => 'notes'));
             }
-            if(Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
+            if (Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
                 $this->render('print', array('copy' => 'patient'));
             }
         }
@@ -445,11 +444,11 @@ class DefaultController extends BaseEventTypeController
         $this->pdf_print_suffix = Site::model()->findByPk(Yii::app()->session['selected_site_id'])->id;
 
         $document_count = 1;
-        if(Yii::app()->params['disable_print_notes_copy'] == 'off'){
+        if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
             $document_count++;
         }
 
-        if(Yii::app()->params['disable_prescription_patient_copy'] == 'off'){
+        if (Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
             $document_count++;
         }
 
@@ -503,7 +502,7 @@ class DefaultController extends BaseEventTypeController
     public function actionMarkPrinted()
     {
         $event_id = Yii::app()->request->getParam('event_id');
-        if(!$event_id){
+        if (!$event_id) {
             throw new Exception('Prescription id not provided');
         }
 
@@ -537,7 +536,7 @@ class DefaultController extends BaseEventTypeController
 
     public function checkEditAccess()
     {
-        return $this->checkAccess('OprnEditPrescription', $this->firm, $this->event);
+        return $this->checkAccess('OprnEditPrescription', $this->event);
     }
 
     /**
@@ -552,7 +551,6 @@ class DefaultController extends BaseEventTypeController
     {
         $item = new OphDrPrescription_Item();
         if (is_a($source, 'OphDrPrescription_Item')) {
-
             // Source is a prescription item, so we should clone it
             foreach (array(
                          'drug_id',
@@ -579,7 +577,6 @@ class DefaultController extends BaseEventTypeController
             }
         } else {
             if (is_a($source, 'DrugSetItem')) {
-
                 // Source is an drug set item which contains frequency and duration data
                 $item->drug_id = $source->drug_id;
                 foreach (array('duration_id', 'frequency_id', 'dose', 'route_id', 'dispense_condition_id', 'dispense_location_id') as $field) {
@@ -602,7 +599,6 @@ class DefaultController extends BaseEventTypeController
                     $item->tapers = $tapers;
                 }
             } elseif (is_int($source) || (int) $source) {
-
                 // Source is an integer, so we use it as a drug_id
                 $item->drug_id = $source;
                 $item->loadDefaults();
@@ -643,28 +639,22 @@ class DefaultController extends BaseEventTypeController
 
         $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
 
-        if(is_null($reason) && !$model->draft)
-        {
+        if (is_null($reason) && !$model->draft) {
             $this->render('ask_reason', array(
                 'id'        =>  $id,
                 'draft'     => $model->draft,
                 'printed'   => $model->printed
             ));
-        }
-        else
-        {
-            if(isset($_GET['do_not_save']) && $_GET['do_not_save']=='1')
-            {
+        } else {
+            if (isset($_GET['do_not_save']) && $_GET['do_not_save']=='1') {
                 $reason_id = isset($_GET['reason']) ? $_GET['reason'] : 0;
                 $reason_other_text = isset($_GET['reason_other']) ? $_GET['reason_other'] : '';
                // $_POST=null;
-            }
-            else
-            {
+            } else {
                 $reason_id = $model->edit_reason_id;
                 $reason_other_text = $model->edit_reason_other;
             }
-            $this->showReasonForEdit($reason_id,$reason_other_text);
+            $this->showReasonForEdit($reason_id, $reason_other_text);
             parent::actionUpdate($id);
         }
     }
@@ -678,8 +668,7 @@ class DefaultController extends BaseEventTypeController
     public function groupItems($items)
     {
         $item_group = array();
-        foreach($items as $item)
-        {
+        foreach ($items as $item) {
             $item_group[$item->dispense_condition_id][] = $item;
         }
         return $item_group;
@@ -688,9 +677,8 @@ class DefaultController extends BaseEventTypeController
 
     public function getSiteAndTheatreForLatestEvent()
     {
-        if($api = Yii::app()->moduleAPI->get('OphTrOperationnote')){
-            if($site_theatre = $api->getElementFromLatestEvent('Element_OphTrOperationnote_SiteTheatre', $this->patient, true))
-            {
+        if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+            if ($site_theatre = $api->getElementFromLatestEvent('Element_OphTrOperationnote_SiteTheatre', $this->patient, true)) {
                 return $site_theatre;
             }
         }

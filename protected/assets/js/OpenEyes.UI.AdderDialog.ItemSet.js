@@ -14,9 +14,12 @@
         'header': null,
         'id': null,
         'supportSigns': false,
+        'style': "",
         'signs':{'minus' : '-' , 'plus' : '+'},
         'supportDecimalValues' : false,
-        'decimalValues' : ['.00' , '.25' , '.50' , '.75']
+        'decimalValues' : ['.00' , '.25' , '.50' , '.75'],
+        'splitIntegerNumberColumns': [], // array with min&max interval allowed for each column
+        'deselectOnReturn' : true,
     };
 
   ItemSet.prototype.create = function () {

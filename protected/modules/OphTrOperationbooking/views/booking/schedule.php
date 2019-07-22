@@ -29,7 +29,9 @@
         $this->title = ($operation->booking ? 'Re-schedule' : 'Schedule') . ' Operation'; ?>
 
 
-        <?php if (isset($errors) && !empty($errors)) { $this->displayErrors($errors);} ?>
+        <?php if (isset($errors) && !empty($errors)) {
+            $this->displayErrors($errors);
+        } ?>
 
         <?php if ($warnings) { ?>
             <div class="alert-box warning">
@@ -141,7 +143,7 @@
                                     ?>
                                     <span id="rtt-info" class="rtt-info" style="display: none">Clock start - <span
                                                 id="rtt-clock-start"></span> Breach - <span id="rtt-breach"></span></span>
-                                <? } else { ?>
+                                <?php } else { ?>
                                     <?php
                                     if ($operation->referral) {
                                         echo $operation->referral->getDescription();
@@ -198,8 +200,8 @@
         </header>
         <div class="element-actions">
         <span class="js-remove-element">
-		    <i class="oe-i remove-circle"></i>
-		</span>
+            <i class="oe-i remove-circle"></i>
+        </span>
         </div>
 
         <?php if (Yii::app()->user->hasFlash('info')) { ?>
@@ -245,6 +247,7 @@
                     'bookings' => $bookings,
                     'reschedule' => $operation->booking,
                     'bookable' => $bookable,
+                    'there_is_place_for_complex_booking' => $there_is_place_for_complex_booking,
                     'errors' => $errors,
                 ), false, false) ?>
             <?php } ?>

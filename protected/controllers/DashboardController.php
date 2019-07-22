@@ -25,11 +25,11 @@ class DashboardController extends BaseDashboardController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'cataract', 'printSvg'),
+                'actions' => array('index', 'printSvg'),
                 'expression' => 'Yii::app()->user->isSurgeon()',
             ),
             array('allow',
-                'actions' => array('index', 'cataract'),
+                'actions' => array('index'),
                 'roles' => array('admin'),
             ),
             array('allow',
@@ -42,18 +42,6 @@ class DashboardController extends BaseDashboardController
     public function actionIndex()
     {
         $this->render('//dashboard/index');
-    }
-
-    public function actionCataract()
-    {
-        $assetManager = Yii::app()->getAssetManager();
-        $assetManager->registerScriptFile('../../node_modules/plotly.js-dist/plotly.js');
-        $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
-        $assetManager->registerScriptFile('js/dashboard/initCataract.js', null, null, AssetManager::OUTPUT_ALL, false);
-
-        $this->headerTemplate = '//dashboard/header_cataract';
-
-        $this->render('//dashboard/dash');
     }
 
     public function actionPrintSvg()
@@ -120,7 +108,6 @@ class DashboardController extends BaseDashboardController
         $outfile = "$highchartsDir/$tempName.$ext";
 
         if (isset($typeString)) {
-
             // size
             $width = '';
             if ($_POST['width']) {

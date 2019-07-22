@@ -96,6 +96,8 @@ class Worklist extends BaseActiveRecordVersioned
                 'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC', ),
             'worklist_patients' => array(self::HAS_MANY, 'WorklistPatient', 'worklist_id'),
             'worklist_definition' => array(self::BELONGS_TO, 'WorklistDefinition', 'worklist_definition_id'),
+            // according to the new coding standards we define relation with camelCase
+            'displayContext' =>  array(self::HAS_MANY, 'WorklistDisplayContext', 'worklist_id'),
         );
     }
 
@@ -174,6 +176,16 @@ class Worklist extends BaseActiveRecordVersioned
             return "{$start} - {$end}";
         }
 
+        return $start;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayShortDate()
+    {
+        $start = $this->shortDate('start');
+        // Short date only uses start date (as it is for situations where string length is an issue)
         return $start;
     }
 

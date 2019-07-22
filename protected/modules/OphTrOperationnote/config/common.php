@@ -28,6 +28,8 @@ return array(
             'Default Incision Length' => '/OphTrOperationnote/admin/viewIncisionLengthDefaults',
             'Operative Devices' => '/OphTrOperationnote/OperativeDevice/list',
             'Operative Devices Mapping' => '/OphTrOperationnote/OperativeDeviceMapping/list',
+            'Generic Operation Default Comments' => '/OphTrOperationnote/GenericProcedureData/list',
+            'Element Attributes' => '/OphTrOperationnote/AttributesAdmin/list',
         ),
         'reports' => array(
             'Operations' => '/OphTrOperationnote/report/operation',

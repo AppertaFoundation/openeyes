@@ -121,6 +121,7 @@ class BookingController extends OphTrOperationbookingEventController
                     foreach ($theatre->sessions as $_session) {
                         if ($session->id == $_session->id) {
                             $bookable = $_session->operationBookable($operation);
+                            $there_is_place_for_complex_booking = $_session->isTherePlaceForComplexBooking($operation);
                         }
                     }
                 }
@@ -162,7 +163,6 @@ class BookingController extends OphTrOperationbookingEventController
                             foreach ($result as $attribute => $message) {
                                 $errors[$operation->getAttributeLabel($attribute)] = $message;
                             }
-
                         } else {
                             $transaction->commit();
                             $this->redirect(array('default/view/'.$operation->event_id));
@@ -205,13 +205,15 @@ class BookingController extends OphTrOperationbookingEventController
             'firm' => $firm,
             'firm_list' => $booked_firm_list,
             'date' => $date,
-            'selectedDate' => @$selectedDate,
+            'selectedDate' => isset($selectedDate) ? $selectedDate : null,
             'sessions' => $operation->getFirmCalendarForMonth($firm, $date, $schedule_options),
-            'theatres' => @$theatres,
-            'session' => @$session,
-            'bookings' => @$bookings,
-            'bookable' => @$bookable,
-            'errors' => @$errors,
+            'theatres' => isset($theatres) ? $theatres : null,
+            'session' => isset($session) ? $session : null,
+            'bookings' => isset($bookings) ? $bookings : null,
+            'bookable' => isset($bookable) ? $bookable : null,
+            'there_is_place_for_complex_booking' => isset($there_is_place_for_complex_booking) ?
+                $there_is_place_for_complex_booking : null,
+            'errors' => isset($errors) ? $errors : null,
         ));
     }
 
@@ -255,12 +257,11 @@ class BookingController extends OphTrOperationbookingEventController
             if (!$reason = OphTrOperationbooking_Operation_Cancellation_Reason::model()->findByPk($_POST['cancellation_reason'])) {
                 $errors[] = 'Please select a rescheduling reason';
             } else {
-
                 $comment = isset($_POST['cancellation_comment']) ? $_POST['cancellation_comment'] : null;
 
                 $is_cancelled = $operation->cancel($_POST['cancellation_reason'], $comment)['result'];
 
-                if($is_cancelled){
+                if ($is_cancelled) {
                     $operation->setStatus('Requires rescheduling');
 
                     if (!$operation->event->hasIssue('Operation requires scheduling')) {

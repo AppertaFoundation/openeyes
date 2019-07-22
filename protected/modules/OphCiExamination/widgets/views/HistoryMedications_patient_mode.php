@@ -39,30 +39,30 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 <div class="group">
   <div class="label">Systemic Medications</div>
   <div class="data">
-      <?php if (!$current_systemic_meds && !$stopped_systemic_meds): ?>
+        <?php if (!$current_systemic_meds && !$stopped_systemic_meds) : ?>
         <div class="nil-recorded">Nil recorded.</div>
-      <?php else: ?>
-          <?php if ($current_systemic_meds): ?>
+        <?php else : ?>
+            <?php if ($current_systemic_meds) : ?>
           <table id="<?= $model_name ?>_entry_table">
             <tbody>
-            <?php foreach ($current_systemic_meds as $entry): ?>
+                <?php foreach ($current_systemic_meds as $entry) : ?>
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
                   <td>
-                      <?php if($entry->getDoseAndFrequency()) {?>
+                      <?php if ($entry->getDoseAndFrequency()) {?>
                           <i class="oe-i info small pro-theme js-has-tooltip"
                              data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                           </i>
-                      <?php } ?>
+                        <?php } ?>
                   </td>
                 <td><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
               </tr>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
             </tbody>
           </table>
-          <?php endif; ?>
+            <?php endif; ?>
 
-          <?php if ($stopped_systemic_meds): ?>
+            <?php if ($stopped_systemic_meds) : ?>
           <table>
             <colgroup>
               <col class="cols-7">
@@ -77,23 +77,23 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             </tr>
             </thead>
             <tbody style="display: none;">
-            <?php foreach ($stopped_systemic_meds as $entry): ?>
+                <?php foreach ($stopped_systemic_meds as $entry) : ?>
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
                 <td><span class="oe-date"><?= $entry->getEndDateDisplay() ?></span></td>
                 <td>
-                    <?php if ($entry->prescription_item): ?>
+                    <?php if ($entry->prescription_item) : ?>
                       <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
                             class="js-has-tooltip fa oe-i eye small pro-theme"
                             data-tooltip-content="View prescription"></span></a>
                     <?php endif; ?>
                 </td>
               </tr>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
             </tbody>
           </table>
-          <?php endif; ?>
-      <?php endif; ?>
+            <?php endif; ?>
+        <?php endif; ?>
   </div>
 </div>
 </div><!-- popup-overflow -->
@@ -104,22 +104,22 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
   <div class="group">
     <div class="label">Eye Medications</div>
     <div class="data">
-        <?php if (!$current_eye_meds && !$stopped_eye_meds): ?>
+        <?php if (!$current_eye_meds && !$stopped_eye_meds) : ?>
           <div class="nil-recorded">Nil recorded.</div>
-        <?php else: ?>
-            <?php if ($current_eye_meds): ?>
-            <table id="<?= $model_name ?>_entry_table">
+        <?php else : ?>
+            <?php if ($current_eye_meds) : ?>
+                <table id="<?= $model_name ?>_entry_table">
               <tbody>
-              <?php foreach ($current_eye_meds as $entry): ?>
+                <?php foreach ($current_eye_meds as $entry) : ?>
                 <tr>
                   <td><?= $entry->getMedicationDisplay() ?></td>
                   <td>
                       <?php $laterality = $entry->getLateralityDisplay();
-                      $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                      ?>
+                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                        ?>
                   </td>
                     <td>
-                        <?php if($entry->getDoseAndFrequency()) {?>
+                        <?php if ($entry->getDoseAndFrequency()) {?>
                     <i class="oe-i info small pro-theme js-has-tooltip"
                        data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                     </i>
@@ -127,12 +127,12 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     </td>
                   <td><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
                 </tr>
-              <?php endforeach; ?>
+                <?php endforeach; ?>
               </tbody>
             </table>
             <?php endif; ?>
 
-            <?php if ($stopped_eye_meds): ?>
+            <?php if ($stopped_eye_meds) : ?>
             <table>
               <thead>
               <tr>
@@ -144,7 +144,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               </tr>
               </thead>
               <tbody style="display: none;">
-              <?php foreach ($stopped_eye_meds as $entry): ?>
+                <?php foreach ($stopped_eye_meds as $entry) : ?>
                 <tr>
                   <td><?= $entry->getMedicationDisplay() ?></td>
                     <td>
@@ -154,15 +154,15 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     </td>
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getEndDateDisplay()) ?></span></td>
                   <td>
-                      <?php if ($entry->prescription_item): ?>
+                      <?php if ($entry->prescription_item) : ?>
                         <a href="<?= $this->getPrescriptionLink($entry) ?>">
                           <span class="js-has-tooltip fa oe-i eye small pro-theme"
                                 data-tooltip-content="View prescription"></span>
                         </a>
-                      <?php endif; ?>
+                        <?php endif; ?>
                   </td>
                 </tr>
-              <?php endforeach; ?>
+                <?php endforeach; ?>
               </tbody>
             </table>
             <?php endif; ?>

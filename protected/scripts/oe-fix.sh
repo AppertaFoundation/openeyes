@@ -123,20 +123,26 @@ fi;
 if [ "$composer" == "1" ]; then
 
 
-    [[ "$OE_MODE" == "LIVE" ]] && { composerexta="--no-dev"; npmextra="--only=production"; echo "************************** LIVE MODE ******************************"; }
+    [[ "$OE_MODE" == "LIVE" ]] && { composerexta="--no-dev --optimize-autoloader"; npmextra="--only=production"; echo "************************** LIVE MODE ******************************"; }
     [[ "$OE_MODE" == "HOST" ]] && { composerexta="--ignore-platform-reqs"; echo "-----= HOST MODE =----"; }
 
     echo "DEPENDENCIES BEING EVALUATED..."
 
-	echo "Installing/updating composer dependencies"
-	sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
+    echo "Installing/updating composer dependencies"
+    sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist $composerexta
 
-	echo "Installing/updating npm dependencies"
-	rm $WROOT/package-lock.json &> /dev/null
-	sudo -E npm update --no-save --prefix $WROOT $npmextra
+    echo "Installing/updating npm dependencies"
+    cd $WROOT
+    rm package-lock.json >/dev/null 2>&1
+    sudo -E npm update --no-save $npmextra
 
-	# If we've switched from dev to live, remove dev dependencies
-	[ "$OE_MODE" == "LIVE" ] && npm prune --prefix $WROOT --production
+    # If we've switched from dev to live, remove dev dependencies
+    [ "$OE_MODE" == "LIVE" ] && sudo -E npm prune --production
+
+    # List current modules (will show any issues if above commands have been blocked by firewall).
+    npm list
+
+    cd - >/dev/null 2>&1
 
     # Refresh git submodules
     git -C $WROOT submodule update --init

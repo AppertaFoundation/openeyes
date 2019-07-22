@@ -34,6 +34,7 @@
  * @property int $theatre_id
  * @property int $unavailablereason_id
  * @property int $max_procedures
+ * @property tinyint $max_complex_bookings
  *
  * The followings are the available model relations:
  * @property OphTrOperationbooking_Operation_Sequence $sequence
@@ -81,7 +82,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             array('date, start_time, end_time, theatre_id', 'required'),
             array('sequence_id, theatre_id', 'length', 'max' => 10),
             array('unavailablereason_id', 'validateRequiredIfAttrMatches', 'match_attr' => 'available', 'match_val' => false, 'message' => 'unavailable reason required if session unavailable.'),
-            array('max_procedures', 'numerical', 'integerOnly' => true, 'min' => 1),
+            array('max_procedures', 'numerical', 'integerOnly' => true, 'min' => 1, 'max' => 127),
+            array('max_complex_bookings', 'numerical', 'integerOnly' => true, 'min' => 0, 'max' => 127),
             array('sequence_id, comments, available, unavailablereason_id, consultant, paediatric, anaesthetist, general_anaesthetic, firm_id, theatre_id, start_time, end_time, deleted, default_admission_time', 'safe'),
             array('date', 'CDateValidator', 'format' => array('yyyy-mm-dd', 'd MMM yyyy')),
             array('start_time, end_time, default_admission_time', 'CDateValidator', 'format' => array('h:m:s', 'h:m')),
@@ -182,6 +184,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             'default_admission_time' => 'Default admission time',
             'unavailablereason_id' => 'Reason unavailable',
             'max_procedures' => 'Max procedures',
+            'max_complex_bookings' => 'Max complex bookings',
         );
     }
 
@@ -290,18 +293,99 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     }
 
     /**
+     * Get the number of complex bookings booked into this session
+     *
+     * @return int
+     */
+    public function getComplexBookingCount()
+    {
+        $total = 0;
+
+        foreach ($this->activeBookings as $booking) {
+            if ($booking->isComplex()) {
+                $total++;
+            }
+        }
+        return $total;
+    }
+
+    /**
+     * Return whether the number of procedures is limited
+     *
+     * @return bool
+     */
+    public function isProcedureCountLimited()
+    {
+        return !is_null($this->max_procedures);
+    }
+
+    /**
+     * Return the max procedure count allowed in this session
+     *
+     * @return int
+     */
+    public function getMaxProcedureCount()
+    {
+        return $this->max_procedures;
+    }
+
+    /**
      * Return the remaining number of procedures allowed in this session.
      *
      * @return int
      */
     public function getAvailableProcedureCount()
     {
-        if (!$this->max_procedures) {
-            return;
-        }
-
-        return $this->max_procedures - $this->getBookedProcedureCount();
+        return $this->getMaxProcedureCount() - $this->getBookedProcedureCount();
     }
+
+    /**
+     * Return whether the number of complex bookings is limited
+     *
+     * @return bool
+     */
+    public function isComplexBookingCountLimited()
+    {
+        return !is_null($this->max_complex_bookings);
+    }
+
+    /**
+     * Return the max complex booking count allowed in this session
+     *
+     * @return int
+     */
+    public function getMaxComplexBookingCount()
+    {
+        return $this->max_complex_bookings;
+    }
+
+    /**
+     * Return the remaining number of complex bookings allowed in this session.
+     *
+     * @return int
+     */
+    public function getAvailableComplexBookingCount()
+    {
+        return $this->getMaxComplexBookingCount() - $this->getComplexBookingCount();
+    }
+
+
+    /**
+     * Test whether there is place in this session for the given operation considering only the maximum number of complex bookings
+     *
+     * @param $operation
+     *
+     * @return bool
+     */
+    public function isTherePlaceForComplexBooking($operation) {
+        if ($this->isComplexBookingCountLimited() &&
+          $this->getComplexBookingCount() >= $this->getMaxComplexBookingCount() &&
+          $operation->isComplex()) {
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * Test whether the given operation can be booked into this session.
@@ -316,8 +400,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             return false;
         }
 
-        if ($this->max_procedures) {
-            if ($this->getBookedProcedureCount() + $operation->getProcedureCount() > $this->max_procedures) {
+        if ($this->isProcedureCountLimited()) {
+            if ($this->getBookedProcedureCount() + $operation->getProcedureCount() > $this->getMaxProcedureCount()) {
                 return false;
             }
         }
@@ -355,8 +439,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             }
         }
 
-        if ($this->max_procedures) {
-            if ($this->getBookedProcedureCount() + $operation->getProcedureCount() > $this->max_procedures) {
+        if ($this->isProcedureCountLimited()) {
+            if ($this->getBookedProcedureCount() + $operation->getProcedureCount() > $this->getMaxProcedureCount()) {
                 return self::$TOO_MANY_PROCEDURES_REASON;
             }
         }
@@ -563,7 +647,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     protected function validateNewSessionConflict()
     {
         if ($this->isNewRecord) {
-
             $criteria = new CDbCriteria();
 
             $criteria->addCondition('theatre_id = :theatre_id');

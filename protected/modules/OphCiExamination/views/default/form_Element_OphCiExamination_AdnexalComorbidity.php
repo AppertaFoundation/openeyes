@@ -17,8 +17,8 @@
  */
 ?>
 <div class="element-fields element-eyes">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :?>
         <div class="js-element-eye <?=$eye_side?>-eye column <?=$page_side?>"
              data-side="<?=$eye_side?>" >
             <div class="active-form flex-layout"
@@ -41,19 +41,20 @@
                 </div>
             </div>
         </div>
-    <?php
-    $items = array();
-    $itemSets = array();
-    foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
-        foreach ($attribute->getAttributeOptions() as $option) {
-            $items[] = ['label' => (string)$option->slug];
-        }
+        <?php
+        $items = array();
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $itemSets = array();
+        foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+            foreach ($attribute->getAttributeOptions() as $option) {
+                $items[] = ['label' => (string)$option->slug];
+            }
 
-        $itemSets[] = ['items' => $items ,
+            $itemSets[] = ['items' => $items ,
             'header' => $attribute->label ,
             'multiSelect' => $attribute->is_multiselect === '1' ? true : false
-        ];
-    } ?>
+            ];
+        } ?>
 
       <script type="text/javascript">
         $(function () {
@@ -66,7 +67,7 @@
                 return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {'header': $itemSet.header,'multiSelect': $itemSet.multiSelect });
             }),
             onReturn: function (adderDialog, selectedItems) {
-							inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
+                            inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
               inputText.trigger('oninput');
               return true;
             }

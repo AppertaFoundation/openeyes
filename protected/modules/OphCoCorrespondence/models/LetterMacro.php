@@ -53,7 +53,8 @@ class LetterMacro extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name, recipient_id, use_nickname, body, cc_patient, cc_doctor, display_order, site_id, subspecialty_id, firm_id, cc_drss, episode_status_id, letter_type_id', 'safe'),
+            array('name, recipient_id, use_nickname, body, cc_patient, cc_doctor, display_order, site_id,
+             subspecialty_id, firm_id, cc_optometrist,  cc_drss, episode_status_id, letter_type_id', 'safe'),
             array('name, use_nickname, body, cc_patient, cc_doctor, type', 'required'),
             array('site_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'site'),
             array('subspecialty_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'subspecialty'),
@@ -88,6 +89,7 @@ class LetterMacro extends BaseActiveRecordVersioned
             'cc_patient' => 'CC patient',
             'cc_doctor' => 'CC doctor',
             'cc_drss' => 'CC DRSS',
+            'cc_optometrist' => 'CC Optometrist',
             'site_id' => 'Site',
             'subspecialty_id' => 'Subspecialty',
             'firm_id' => Firm::contextLabel(),
@@ -150,18 +152,16 @@ class LetterMacro extends BaseActiveRecordVersioned
 
     public function afterSave()
     {
-        if(isset($_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent']) && isset($_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod']) ){
-
+        if (isset($_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent']) && isset($_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'])) {
             $post_associated_content = $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'];
             $post_init_method = $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'];
 
             $order = 1;
-            foreach($post_associated_content as $key => $pac){
-
-                if(isset($pac['id']) && ($pac['id'] > 0)){
+            foreach ($post_associated_content as $key => $pac) {
+                if (isset($pac['id']) && ($pac['id'] > 0)) {
                     $criteria = new \CDbCriteria();
-                    $criteria->addCondition('id = '.$pac['id']);
-                    $criteria->addCondition('macro_id = '.$this->id);
+                    $criteria->addCondition('id = ' . $pac['id']);
+                    $criteria->addCondition('macro_id = ' . $this->id);
                     $associated_content = MacroInitAssociatedContent::model()->find($criteria);
 
                     $method = 'update';
@@ -170,25 +170,25 @@ class LetterMacro extends BaseActiveRecordVersioned
                     $method = 'save';
                 }
 
-                $associated_content->macro_id           = $this->id;
-                $associated_content->is_system_hidden   = ( isset( $pac["is_system_hidden"] ) ? 1 : 0);
-                $associated_content->is_print_appended  = ( isset( $pac["is_print_appended"] ) ? 1 : 0);
-                $associated_content->init_method_id     = $post_init_method[$key]["method_id"];
-                $associated_content->short_code         = $post_init_method[$key]["short_code"];
-                $associated_content->display_order      = $order;
-                $associated_content->display_title      = $post_init_method[$key]["title"];
+                $associated_content->macro_id = $this->id;
+                $associated_content->is_system_hidden = (isset($pac["is_system_hidden"]) ? 1 : 0);
+                $associated_content->is_print_appended = (isset($pac["is_print_appended"]) ? 1 : 0);
+                $associated_content->init_method_id = $post_init_method[$key]["method_id"];
+                $associated_content->short_code = $post_init_method[$key]["short_code"];
+                $associated_content->display_order = $order;
+                $associated_content->display_title = $post_init_method[$key]["title"];
 
                 $associated_content->{$method}();
                 $order++;
             }
         }
 
-        if(isset($_POST['delete_associated'])){
-            foreach($_POST['delete_associated'] as $key => $da){
-                if($da['delete'] > 0){
+        if (isset($_POST['delete_associated'])) {
+            foreach ($_POST['delete_associated'] as $key => $da) {
+                if ($da['delete'] > 0) {
                     $criteria = new \CDbCriteria();
-                    $criteria->addCondition('id = '.$da['delete']);
-                    $criteria->addCondition('macro_id = '.$this->id);
+                    $criteria->addCondition('id = ' . $da['delete']);
+                    $criteria->addCondition('macro_id = ' . $this->id);
                     MacroInitAssociatedContent::model()->deleteAll($criteria);
                 }
             }

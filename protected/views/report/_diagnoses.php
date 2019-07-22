@@ -17,50 +17,37 @@
  */
 ?>
 <table class="standard">
-	<thead>
-		<tr>
-			<th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
-			<th><?php echo Patient::model()->getAttributeLabel('dob')?></th>
-			<th><?php echo Patient::model()->getAttributeLabel('first_name')?></th>
-			<th><?php echo Patient::model()->getAttributeLabel('last_name')?></th>
-			<th>Date</th>
-			<th>Diagnoses</th>
-		</tr>
-	<tbody>
-		<?php if (empty($report->diagnoses)) {?>
-			<tr>
-				<td colspan="6">
-					No patients were found with the selected search criteria.
-				</td>
-			</tr>
-		<?php }else{?>
-			<?php foreach ($report->diagnoses as $ts => $diagnosis) {?>
-				<tr>
-					<td><?php echo $diagnosis['hos_num']?></td>
-					<td><?php echo $diagnosis['dob'] ? date('j M Y', strtotime($diagnosis['dob'])) : 'Unknown'?></td>
-					<td><?php echo $diagnosis['first_name']?></td>
-					<td><?php echo $diagnosis['last_name']?></td>
-					<td><?php echo date('j M Y', $ts)?></td>
-					<td>
-						<?php
-                        $_diagnosis = array_shift($diagnosis['diagnoses']);
-    echo $_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].')';
-    ?>
-					</td>
-				</tr>
-				<?php foreach ($diagnosis['diagnoses'] as $_diagnosis) {?>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td><?php echo date('j M Y', strtotime($_diagnosis['date']))?></td>
-						<td>
-							<?php echo $_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].')'?>
-						</td>
-					</tr>
-				<?php }?>
-			<?php }?>
-		<?php }?>
-	</tbody>
+    <thead>
+        <tr>
+            <th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
+            <th><?php echo Patient::model()->getAttributeLabel('dob')?></th>
+            <th><?php echo Patient::model()->getAttributeLabel('first_name')?></th>
+            <th><?php echo Patient::model()->getAttributeLabel('last_name')?></th>
+            <th>Date</th>
+            <th>Diagnoses</th>
+        </tr>
+    <tbody>
+        <?php if (empty($report->diagnoses)) {?>
+            <tr>
+                <td colspan="6">
+                    No patients were found with the selected search criteria.
+                </td>
+            </tr>
+        <?php } else {?>
+            <?php foreach ($report->diagnoses as $ts => $diagnosis) {
+                foreach ($diagnosis['diagnoses'] as $_diagnosis) { ?>
+                    <tr>
+                        <td><?= $diagnosis['hos_num'] ?></td>
+                        <td><?= $diagnosis['dob'] ? date('j M Y', strtotime($diagnosis['dob'])) : 'Unknown' ?></td>
+                        <td><?= $diagnosis['first_name'] ?></td>
+                        <td><?= $diagnosis['last_name'] ?></td>
+                        <td><?= isset($_diagnosis['date']) ? date('j M Y', strtotime($_diagnosis['date'])) : date('j M Y', $ts) ?></td>
+                        <td>
+                            <?= $_diagnosis['eye'] . ' ' . $_diagnosis['disorder'] . ' (' . $_diagnosis['type'] . ')'; ?>
+                        </td>
+                    </tr>
+                <?php } ?>
+            <?php } ?>
+        <?php } ?>
+    </tbody>
 </table>

@@ -49,37 +49,35 @@ class SiteController extends BaseController
     public function actionSearch()
     {
         if (isset($_POST['query']) && $query = trim($_POST['query'])) {
-
                 //empty string
-                if (strlen($query) == 0) {
-                    Yii::app()->user->setFlash('warning.search_error', 'Please enter either a hospital number or a firstname and lastname.');
-                } else {
-
-                    // Event ID
-                    if (preg_match('/^(E|Event)\s*[:;]\s*([0-9]+)$/i', $query, $matches)) {
-                        $event_id = $matches[2];
-                        if ($event = Event::model()->findByPk($event_id)) {
-                            $event_class_name = $event->eventType->class_name;
-                            $this->redirect(array($event_class_name.'/default/view/'.$event_id));
-                        } else {
-                            Yii::app()->user->setFlash('warning.search_error', 'Event ID not found');
-                            $this->redirect('/');
-                        }
-
-                        return;
+            if (strlen($query) == 0) {
+                Yii::app()->user->setFlash('warning.search_error', 'Please enter either a hospital number or a firstname and lastname.');
+            } else {
+                // Event ID
+                if (preg_match('/^(E|Event)\s*[:;]\s*([0-9]+)$/i', $query, $matches)) {
+                    $event_id = $matches[2];
+                    if ($event = Event::model()->findByPk($event_id)) {
+                        $event_class_name = $event->eventType->class_name;
+                        $this->redirect(array($event_class_name.'/default/view/'.$event_id));
                     } else {
-                        $patientSearch = new PatientSearch();
+                        Yii::app()->user->setFlash('warning.search_error', 'Event ID not found');
+                        $this->redirect('/');
+                    }
 
-                        // lets check if it is a NHS number, Hospital number or Patient name
+                    return;
+                } else {
+                    $patientSearch = new PatientSearch();
 
-                        if ($patientSearch->getNHSnumber($query) || $patientSearch->getHospitalNumber($query) || $patientSearch->getPatientName($query)) {
-                            $this->redirect(array('patient/search', 'term' => $query));
-                        } else {
-                            // not a valid search
-                            Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
-                        }
+                    // lets check if it is a NHS number, Hospital number or Patient name
+
+                    if ($patientSearch->getNHSnumber($query) || $patientSearch->getHospitalNumber($query) || $patientSearch->getPatientName($query)) {
+                        $this->redirect(array('patient/search', 'term' => $query));
+                    } else {
+                        // not a valid search
+                        Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
                     }
                 }
+            }
         }
 
         $this->redirect('/');
@@ -117,14 +115,7 @@ class SiteController extends BaseController
      */
     public function actionChangeSiteAndFirm()
     {
-        if (!$return_url = @$_GET['returnUrl']) {
-            if (!$return_url = @$_POST['returnUrl']) {
-                throw new CHttpException(500, 'Return URL must be specified');
-            }
-        }
-        if (@$_GET['patient_id']) {
-            $patient = Patient::model()->findByPk(@$_GET['patient_id']);
-        }
+        $return_url = \Yii::app()->request->getParam('returnUrl');
         $this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $return_url), false, true);
     }
 
@@ -164,7 +155,6 @@ class SiteController extends BaseController
             $model->attributes = $_POST['LoginForm'];
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
-
                 // Flag site for confirmation
                 Yii::app()->session['confirm_site_and_firm'] = true;
 

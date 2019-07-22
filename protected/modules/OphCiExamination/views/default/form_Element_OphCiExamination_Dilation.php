@@ -30,7 +30,7 @@ foreach ($dilation_drugs as $d_drug) {
 <div class="element-fields element-eyes edit-Dilation">
   <input type="hidden" name="dilation_treatments_valid" value="1"/>
     <?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField')) ?>
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>" data-side="<?= $eye_side ?>">
         <div class="active-form data-group flex-layout"
              style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
@@ -40,7 +40,7 @@ foreach ($dilation_drugs as $d_drug) {
                    style="<?= (!$element->{$eye_side . '_treatments'}) ? 'display: none;' : '' ?>">
               <tbody class="plain" id="dilation_<?= $eye_side ?>">
               <?php foreach ($element->{$eye_side . '_treatments'} as $treatment) {
-                  $this->renderPartial(
+                    $this->renderPartial(
                       'form_Element_OphCiExamination_Dilation_Treatment',
                       array(
                           'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_treatments]',
@@ -51,8 +51,8 @@ foreach ($dilation_drugs as $d_drug) {
                           'drug_id' => $treatment->drug_id,
                           'data_order' => $treatment->drug->display_order,
                       )
-                  );
-                  ++$key;
+                    );
+                    ++$key;
               } ?>
               </tbody>
             </table>
@@ -74,10 +74,10 @@ foreach ($dilation_drugs as $d_drug) {
                   <td>
                     <div class="flex-layout flex-top flex-left">
                       <ul class="add-options" data-multi="false" data-clickadd="false">
-                          <?php foreach ($element->getAllDilationDrugs($eye_side) as $id => $drug): ?>
+                          <?php foreach ($element->getAllDilationDrugs($eye_side) as $id => $drug) : ?>
                             <li data-str="<?= $id ?>"
                                 data-order="<?= $dilation_drugs_order[$id] ?>"><?= $drug ?></li>
-                          <?php endforeach; ?>
+                            <?php endforeach; ?>
                       </ul>
                     </div>
                   </td>

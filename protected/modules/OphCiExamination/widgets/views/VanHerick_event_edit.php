@@ -25,8 +25,7 @@
 <div class="element-fields element-eyes" id="<?= $model_name ?>_element">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-<?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-
+<?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
     <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?> <?=(!$element->hasEye($eye_side))? "inactive":""?>" data-side="<?=$eye_side?>">
 
         <div class="active-form flex-layout" style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>">
@@ -68,8 +67,8 @@
             <area data-vh="Grade 0 (0-5%)" shape="rect" coords="0,0,225,225" />
             <area data-vh="Grade 1 (6-15%)" shape="rect" coords="0,225,225,450" />
             <area data-vh="Grade 1 (16-25%)" shape="rect" coords="0,450,225,675" />
-            <area data-vh="Grade 2 (26-30%)" shape="rect" coords="225,0,450,225" />
-            <area data-vh="Grade 3 (31-75%)" shape="rect" coords="225,225,450,450" />
+            <area data-vh="Grade 2 (26-40%)" shape="rect" coords="225,0,450,225" />
+            <area data-vh="Grade 3 (41-75%)" shape="rect" coords="225,225,450,450" />
             <area data-vh="Grade 4 (76-100%)" shape="rect" coords="225,450,450,675" />
         </map>
     </div>
@@ -78,7 +77,7 @@
 
 
 
-<?php if(false): ?>
+<?php if (false) : ?>
 <div class="element-fields element-eyes row" id="<?= $model_name ?>_element">
 
         <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>

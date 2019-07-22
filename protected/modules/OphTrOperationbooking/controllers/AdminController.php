@@ -644,8 +644,12 @@ class AdminController extends ModuleAdminController
 
         if (empty($_GET) && empty($_POST) && !empty(Yii::app()->session['admin_sequences'])) {
             $this->redirectWith(Yii::app()->session['admin_sequences']);
-        } elseif (!empty($_GET)) {
-            Yii::app()->session['admin_sequences'] = $_GET;
+        }
+
+        $save_from_GET = $_GET;
+        unset($save_from_GET['page']);
+        if (!empty($save_from_GET)) {
+            Yii::app()->session['admin_sequences'] = $save_from_GET;
         }
 
         if (@$_POST['generateSessions']) {
@@ -1018,8 +1022,12 @@ class AdminController extends ModuleAdminController
 
         if (empty($_GET) && !empty(Yii::app()->session['admin_sessions'])) {
             $this->redirectWith(Yii::app()->session['admin_sessions']);
-        } elseif (!empty($_GET)) {
-            Yii::app()->session['admin_sessions'] = $_GET;
+        }
+
+        $save_from_GET = $_GET;
+        unset($save_from_GET['page']);
+        if (!empty($save_from_GET)) {
+            Yii::app()->session['admin_sessions'] = $save_from_GET;
         }
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Session'));

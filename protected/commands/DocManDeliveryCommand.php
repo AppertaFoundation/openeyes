@@ -1,19 +1,17 @@
 <?php
-
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -74,7 +72,7 @@ EOH;
         $this->path = $this->export_path ? $this->export_path : Yii::app()->params['docman_export_dir'];
 
         $template_path = dirname(Yii::app()->basePath) . '/protected/modules/OphCoCorrespondence/views/templates/xml/docman/';
-        if(!$this->xml_template){
+        if (!$this->xml_template) {
             $template_name = isset(\Yii::app()->params['docman_xml_template']) ? \Yii::app()->params['docman_xml_template'] : 'default';
             $this->xml_template = $template_path . $template_name . '.php';
         }
@@ -84,7 +82,7 @@ EOH;
 
         $this->checkPath($this->path);
 
-        if($this->generate_csv = Yii::app()->params['docman_generate_csv']){
+        if ($this->generate_csv = Yii::app()->params['docman_generate_csv']) {
             $this->csv_file_options['file_name'] = implode(DIRECTORY_SEPARATOR, array($this->path, sprintf($this->csv_file_options['format'], date('Ymd'))));
             $this->createCSVFile();
         }
@@ -95,15 +93,14 @@ EOH;
     private function createCSVFile()
     {
         //if file doesn't exists we create one and put the header
-        if(!file_exists($this->csv_file_options['file_name'])){
-            try{
+        if (!file_exists($this->csv_file_options['file_name'])) {
+            try {
                 $fp = fopen($this->csv_file_options['file_name'], 'ab');
                 fputcsv($fp, $this->csv_file_options['header']);
                 fclose($fp);
-            }catch (\Exception $exception){
+            } catch (\Exception $exception) {
                 \OELog::log($exception->getMessage());
             }
-
         }
     }
 
@@ -134,7 +131,6 @@ EOH;
     {
         $pending_documents = $this->getDocumentsByOutputStatus("PENDING");
         foreach ($pending_documents as $document) {
-
             $this->event = Event::model()->findByPk($document->document_target->document_instance->correspondence_event_id);
 
             $this->processDocumentOutput($document);
@@ -143,18 +139,16 @@ EOH;
 
     private function processDocumentOutput($document)
     {
-        if($document->output_type == 'Docman'){
+        if ($document->output_type == 'Docman') {
             echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . ' :: Docman' . PHP_EOL;
             $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
             // $this->savePDFFile generates xml if required
-
-        } else if($document->output_type == 'Internalreferral'){
-
+        } else if ($document->output_type == 'Internalreferral') {
             $file_info = $this->getFileName('Internal');
             //Docman xml will be used
             $xml_generated = $this->generateXMLOutput($file_info['filename'], $document);
 
-            if ($xml_generated){
+            if ($xml_generated) {
                 $internal_referral_command = new InternalReferralDeliveryCommand();
                 $internal_referral_command->setFileRandomNumber( $file_info['rand'] );
 
@@ -167,12 +161,12 @@ EOH;
     public function actionGenerateOne($event_id, $path = null)
     {
 
-        if( $path ){
+        if ( $path ) {
             $this->path = $path;
             $this->checkPath($path);
         }
 
-        if(!$this->event){
+        if (!$this->event) {
             $this->event = Event::model()->findByPk($event_id);
         }
 
@@ -186,7 +180,7 @@ EOH;
         $criteria->addCondition("event.deleted = 0");
 
         $criteria_string = '';
-        if($this->with_internal_referral){
+        if ($this->with_internal_referral) {
             $criteria_string = " OR t.`output_type`= 'Internalreferral'";
         }
 
@@ -203,7 +197,7 @@ EOH;
      * @return CActiveRecord[]
      */
     private function getDocumentsByOutputStatus($output_status = null)
-    {   
+    {
         $criteria = new CDbCriteria();
         $criteria->join = "JOIN `document_target` tr ON t.`document_target_id` = tr.id";
         $criteria->join .= " JOIN `document_instance` i ON tr.`document_instance_id` = i.`id`";
@@ -211,11 +205,11 @@ EOH;
         $criteria->addCondition("e.deleted = 0");
 
         $criteria_string = '';
-        if($this->with_internal_referral){
+        if ($this->with_internal_referral) {
             $criteria_string = " OR t.`output_type`= 'Internalreferral'";
         }
 
-        if($output_status){
+        if ($output_status) {
             $criteria->addCondition("t.`output_status` = :output_status");
             $criteria->params = array(':output_status' => $output_status);
         }
@@ -252,7 +246,7 @@ EOH;
 
             curl_setopt($ch, CURLOPT_URL, $login_page);
             // disable SSL certificate check for locally issued certificates
-            if(Yii::app()->params['disable_ssl_certificate_check']) {
+            if (Yii::app()->params['disable_ssl_certificate_check']) {
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             }
             curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
@@ -285,7 +279,7 @@ EOH;
 
             curl_close($ch);
 
-            if(substr($content, 0, 4) !== "%PDF"){
+            if (substr($content, 0, 4) !== "%PDF") {
                 echo 'File is not a PDF for event id: '.$this->event->id."\n";
                 $this->updateFailedDelivery($output_id);
                 return false;
@@ -325,7 +319,7 @@ EOH;
         $format =  isset(Yii::app()->params['docman_filename_format']) ? Yii::app()->params['docman_filename_format'] : 'format1';
         $rand = rand();
 
-        switch ($format){
+        switch ($format) {
             case 'format2':
                 $filename = ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
                         strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
@@ -359,6 +353,10 @@ EOH;
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
         $sub_obj = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty : null;
+        $pasapi_assignment =  \OEModule\PASAPI\models\PasApiAssignment::model()->findByAttributes([
+                    'resource_type' => \OEModule\PASAPI\resources\PatientAppointment::$resource_type,
+                    'internal_id' => $this->event->worklist_patient_id,
+                    'internal_type' => '\WorklistPatient']);
 
         //I decided to pass each value separately to keep the XML files clean and easier to modify each value if necessary
         $data = [
@@ -405,7 +403,7 @@ EOH;
             'location_code' => isset($element_letter->toLocation) ? $element_letter->toLocation->site->location_code : '',
             'output_type' => $document_output->output_type,
 
-            'visit_id' => $this->event->pas_visit_id,
+            'visit_id' => $pasapi_assignment ? $pasapi_assignment->resource_id : '',
         ];
 
         $xml = $this->renderFile($this->xml_template, ['data' => $data], true);
@@ -471,7 +469,7 @@ EOH;
         $criteria->order = 'event_date desc, created_date desc';
 
         $last_opnote_date = '';
-        if($op_note = Event::model()->find($criteria)){
+        if ($op_note = Event::model()->find($criteria)) {
             $last_opnote_date = $op_note->event_date;
         }
 
@@ -484,25 +482,25 @@ EOH;
         $criteria->order = 'event_date desc, created_date desc';
 
         $last_exam_date = '';
-        if($examEvent = Event::model()->find($criteria)){
+        if ($examEvent = Event::model()->find($criteria)) {
             $last_exam_date = $examEvent->event_date;
         }
 
         $last_significant_event_date = '';
-        if(!$last_exam_date && $last_opnote_date) {
+        if (!$last_exam_date && $last_opnote_date) {
             $last_significant_event_date = $last_opnote_date;
         }
-        if($last_exam_date && !$last_opnote_date) {
+        if ($last_exam_date && !$last_opnote_date) {
             $last_significant_event_date = $last_exam_date;
         }
-        if(!$last_exam_date && !$last_opnote_date) {
+        if (!$last_exam_date && !$last_opnote_date) {
             $last_significant_event_date = null;
         }
-        if($last_exam_date && $last_opnote_date){
+        if ($last_exam_date && $last_opnote_date) {
             $diff = date_diff(date_create($last_exam_date), date_create($last_opnote_date));
-            if($diff->days >= 0){
+            if ($diff->days >= 0) {
                 $last_significant_event_date = $last_opnote_date;
-            }else{
+            } else {
                 $last_significant_event_date = $last_exam_date;
             }
         }

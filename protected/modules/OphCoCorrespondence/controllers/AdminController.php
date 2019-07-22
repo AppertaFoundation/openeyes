@@ -21,6 +21,15 @@ class AdminController extends \ModuleAdminController
 
     public $defaultAction = 'letterMacros';
 
+    public function actions() {
+        return [
+            'sortLetterMacros' => [
+                'class' => 'SaveDisplayOrderAction',
+                'model' => LetterMacro::model(),
+                ],
+        ];
+    }
+
     public function actionLetterMacros()
     {
         $macros = $this->getMacros();
@@ -29,6 +38,11 @@ class AdminController extends \ModuleAdminController
 
         $unique_names = CHtml::listData($macros, 'name', 'name');
         asort($unique_names);
+
+
+        $assetManager = Yii::app()->getAssetManager();
+        $assetManager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
+        $assetManager->registerScriptFile('/js/oeadmin/list.js');
 
         $this->render('letter_macros', array(
             'macros' => $macros,
@@ -40,7 +54,7 @@ class AdminController extends \ModuleAdminController
 
     public function actionLetterSettings()
     {
-        $this->render('/admin/letter_settings',array(
+        $this->render('/admin/letter_settings', array(
             'settings' => OphCoCorrespondenceLetterSettings::model()->findAll(),
         ));
     }
@@ -157,7 +171,7 @@ class AdminController extends \ModuleAdminController
             }
         }
 
-        $criteria->order = 'site_id asc, subspecialty_id asc, firm_id asc, name asc';
+        $criteria->order = 'display_order asc, site_id asc, subspecialty_id asc, firm_id asc, name asc';
 
         return LetterMacro::model()->findAll($criteria);
     }
@@ -212,7 +226,6 @@ class AdminController extends \ModuleAdminController
         $errors = array();
 
         if (!empty($_POST)) {
-
             $macro->attributes = $_POST['LetterMacro'];
 
             if (!$macro->validate()) {
@@ -240,7 +253,7 @@ class AdminController extends \ModuleAdminController
 
     public function actionDeleteLetterMacros()
     {
-        if(!isset($_POST['id'])) {
+        if (!isset($_POST['id'])) {
             return null;
         }
         //Make all the macro ids null that is equal to the macro id
