@@ -1126,9 +1126,15 @@ class AnalyticsController extends BaseController
                           'visible' => true,
                           'color' => '#aaa',
                           'thickness' => 1
-                      )
-                  )
-                  
+                        ),
+                        'hoverinfo' => 'text',
+                        'hovertext' => array_map(
+                            function ($item) {
+                                return " Mean: " . $item['average'] . "<br> SD: " . $item['SD'] . "<br> Patient No: " . count($item['patients']);
+                            },
+                            array_values(${$side . '_second_list'})
+                        ),
+                    )
               );
           }
           $custom_data['csv_data']=$this->custom_csv_data;
