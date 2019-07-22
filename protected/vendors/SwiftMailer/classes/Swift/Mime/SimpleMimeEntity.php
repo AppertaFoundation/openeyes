@@ -317,8 +317,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             // immediate children
             foreach ($this->_compositeRanges as $mediaType => $range) {
                 if ($lowestLevel > $range[0]
-                    && $lowestLevel <= $range[1])
-                {
+                    && $lowestLevel <= $range[1]) {
                     $newContentType = $mediaType;
                     break;
                 }
@@ -720,8 +719,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     {
         if (!preg_match(
             '/^[a-z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-z0-9\'\(\)\+_\-,\.\/:=\?]$/Di',
-            $boundary))
-        {
+            $boundary)) {
             throw new Swift_RfcComplianceException('Mime boundary set is not RFC 2046 compliant.');
         }
     }
@@ -761,8 +759,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         $lowercaseType = strtolower($child->getContentType());
 
         if (isset($filter[$realLevel])
-            && isset($filter[$realLevel][$lowercaseType]))
-        {
+            && isset($filter[$realLevel][$lowercaseType])) {
             return $filter[$realLevel][$lowercaseType];
         } else {
             return $realLevel;
@@ -847,8 +844,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             '/^' . $this->_grammar->getDefinition('id-left') . '@' .
             $this->_grammar->getDefinition('id-right') . '$/D',
             $id
-            ))
-        {
+            )) {
             throw new Swift_RfcComplianceException(
                 'Invalid ID given <' . $id . '>'
                 );

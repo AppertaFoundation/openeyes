@@ -17,19 +17,19 @@
  */
 ?>
 <tr class="intraocularPressureReading" data-key="<?php echo $key ?>">
-	<td>
-		<?php if (isset($reading) && $reading->id) { ?>
-		<input type="hidden" name="intraocularpressure_reading[<?php echo $key ?>][id]" value="<?php echo $reading->id?>" />
-		<?php } ?>
-		<input type="hidden" name="intraocularpressure_reading[<?php echo $key ?>][side]" value="<?php echo $side ?>" />
-		<?=\CHtml::textField('intraocularpressure_reading['.$key.'][measurement_timestamp]', isset($reading) ? substr($reading->measurement_timestamp, 0, 5) : date('H:i'), array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'small'))?>
-	</td>
-	<td>
-		<?=\CHtml::textField('intraocularpressure_reading['.$key.'][value]', @$reading->value, array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'small'))?>
-	</td>
-	<td class="readingActions">
-		<?php if (!isset($no_remove) || !$no_remove) {?>
-			<a class="removeReading" href="#">Remove</a>
-		<?php }?>
-	</td>
+    <td>
+        <?php if (isset($reading) && $reading->id) { ?>
+        <input type="hidden" name="intraocularpressure_reading[<?php echo $key ?>][id]" value="<?php echo $reading->id?>" />
+        <?php } ?>
+        <input type="hidden" name="intraocularpressure_reading[<?php echo $key ?>][side]" value="<?php echo $side ?>" />
+        <?=\CHtml::textField('intraocularpressure_reading['.$key.'][measurement_timestamp]', isset($reading) ? substr($reading->measurement_timestamp, 0, 5) : date('H:i'), array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'small'))?>
+    </td>
+    <td>
+        <?=\CHtml::textField('intraocularpressure_reading['.$key.'][value]', @$reading->value, array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'small'))?>
+    </td>
+    <td class="readingActions">
+        <?php if (!isset($no_remove) || !$no_remove) {?>
+            <a class="removeReading" href="#">Remove</a>
+        <?php }?>
+    </td>
 </tr>

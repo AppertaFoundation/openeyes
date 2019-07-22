@@ -174,11 +174,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $allergyString = implode(', ', array_column($allergies, 'name'));
             $allergyOtherString = implode(', ', array_column($allergiesOther, 'other'));
 
-            if ($allergyOtherString && $allergyString){
+            if ($allergyOtherString && $allergyString) {
                 $allergyString = $allergyString . ", " . $allergyOtherString;
             }
 
-            if ($allergyOtherString && !$allergyString){
+            if ($allergyOtherString && !$allergyString) {
                 $allergyString = $allergyOtherString;
             }
 
@@ -217,8 +217,12 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         $status = 'Not checked';
 
-        if($risk['status'] === true){ $status = 'Present'; };
-        if($risk['status'] === false){ $status = 'Not present'; };
+        if ($risk['status'] === true) {
+            $status = 'Present';
+        };
+        if ($risk['status'] === false) {
+            $status = 'Not present';
+        };
 
         return $status;
     }
@@ -275,7 +279,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         $diabetic_disorders = $patient->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET);
 
-        if(!empty($diabetic_disorders)) {
+        if (!empty($diabetic_disorders)) {
             foreach ($diabetic_disorders as $disorder) {
                 $lines[] = $disorder;
             }
@@ -292,7 +296,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         });
 
         $lines = array_merge($lines, array_map(function($risk){
-            if($risk->comments != "") {
+            if ($risk->comments != "") {
                 return '<span class="has-tooltip" data-tooltip-content="'.$risk->comments.'">'.$risk->name.'</span>';
             }
             return $risk->name;

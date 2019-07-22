@@ -52,7 +52,7 @@ $biometry_data = [
                 </td>
                 <td colspan="2"></td>
                 <td>
-                  <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+                    <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                 </td>
             </tr>
             <tr>

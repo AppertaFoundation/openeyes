@@ -16,8 +16,8 @@
  */
 class m170413_144855_firm_service_context extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->insert('setting_metadata', array(
             'element_type_id' => null,
             'field_type_id' => 4,
@@ -38,19 +38,19 @@ class m170413_144855_firm_service_context extends OEMigration
         $this->addColumn('firm_version', 'runtime_selectable', 'boolean not null default true');
     }
 
-	public function down()
-	{
-	    $this->dropColumn('firm_version', 'runtime_selectable');
+    public function down()
+    {
+        $this->dropColumn('firm_version', 'runtime_selectable');
         $this->dropColumn('firm_version', 'can_own_an_episode');
         $this->dropColumn('firm', 'runtime_selectable');
         $this->dropColumn('firm', 'can_own_an_episode');
 
-		$this->delete('setting_metadata',
+        $this->delete('setting_metadata',
             'key = :key',
             array(':key' => 'service_firm_label'));
         $this->delete('setting_metadata',
             'key = :key',
             array(':key' => 'context_firm_label'));
-	}
+    }
 
 }

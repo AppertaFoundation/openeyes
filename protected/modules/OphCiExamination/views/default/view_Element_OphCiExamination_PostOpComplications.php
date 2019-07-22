@@ -24,10 +24,10 @@ $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_com
 
 <?php if (isset($operation_note_id)) : ?>
     <div class="element-data element-eyes">
-        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
             <div class="js-element-eye <?= $eye_side ?>-eye column">
                 <div class="data-group">
-                    <?php if ($element->hasEye($eye_side)):
+                    <?php if ($element->hasEye($eye_side)) :
                         $eye_abbr = $eye_side == 'right' ? 'R' : 'L';
                         $eye_macro = $eye_side == 'right' ? \Eye::RIGHT : \Eye::LEFT;
                         ?>
@@ -40,14 +40,14 @@ $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_com
                                     } ?>
                                 </td>
                             </tr>
-                            <?php foreach ($element->getFullComplicationList($eye_macro) as $value): ?>
+                            <?php foreach ($element->getFullComplicationList($eye_macro) as $value) : ?>
                                 <tr>
                                     <td class=postop-complication-name><?php echo $value['name']; ?></td>
                                     <td></td>
                                 </tr>
                             <?php endforeach; ?>
                         </table>
-                    <?php else: ?>
+                    <?php else : ?>
                         <div class="data-value not-recorded">
                             Not assessed in this examination
                         </div>

@@ -2,10 +2,10 @@
 
 class m180704_095046_migrate_van_herick_data extends CDbMigration
 {
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-        $dataProvider = new CActiveDataProvider('OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy',[
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+        $dataProvider = new CActiveDataProvider('OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy', [
             'criteria' => [
                 'condition'=>'left_van_herick_id IS NOT NULL OR right_van_herick_id IS NOT NULL'
             ],
@@ -19,14 +19,13 @@ class m180704_095046_migrate_van_herick_data extends CDbMigration
             $van_herick_element->right_van_herick_id =  $gonioscopy->right_van_herick_id;
 
             $van_herick_element->eye_id = \EYE::BOTH;
-            if($van_herick_element->left_van_herick_id && !$van_herick_element->right_van_herick_id){
+            if ($van_herick_element->left_van_herick_id && !$van_herick_element->right_van_herick_id) {
                 $van_herick_element->eye_id = \EYE::LEFT;
-            } else if(!$van_herick_element->left_van_herick_id && $van_herick_element->right_van_herick_id) {
+            } else if (!$van_herick_element->left_van_herick_id && $van_herick_element->right_van_herick_id) {
                 $van_herick_element->eye_id = \EYE::RIGHT;
             }
 
-            if($van_herick_element->save()){
-
+            if ($van_herick_element->save()) {
                 $data = [
                     'Element_OphCiExamination_Gonioscopy' => $gonioscopy->attributes,
                     'VanHerick' => $van_herick_element->attributes,
@@ -40,11 +39,11 @@ class m180704_095046_migrate_van_herick_data extends CDbMigration
                 return false;
             }
         }
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         echo "m180704_095046_migrate_van_herick_data does not support migration down.\n";
         return false;
-	}
+    }
 }

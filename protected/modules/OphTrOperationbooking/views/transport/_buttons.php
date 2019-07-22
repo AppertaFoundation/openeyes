@@ -17,15 +17,15 @@
  */
 ?>
 <?php if ($this->checkAccess('OprnConfirmTransport')) { ?>
-	<button type="submit" class="btn_transport_confirm">
-		Confirm
-	</button>
+    <button type="submit" class="btn_transport_confirm">
+        Confirm
+    </button>
 <?php } ?>
 <?php if ($this->checkAccess('OprnPrint')) { ?>
-	<button type="submit" class="btn_transport_print">
-		Print list
-	</button>
-	<button type="submit" class="btn_transport_download">
-		Download CSV
-	</button>
+    <button type="submit" class="btn_transport_print">
+        Print list
+    </button>
+    <button type="submit" class="btn_transport_download">
+        Download CSV
+    </button>
 <?php } ?>

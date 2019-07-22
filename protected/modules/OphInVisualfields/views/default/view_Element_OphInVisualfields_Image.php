@@ -19,17 +19,16 @@
 
 <div class="element-data element-eyes">
 
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_isde => $eye_side): ?>
-
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_isde => $eye_side) : ?>
       <div class="<?= $eye_side ?>-eye">
 
-          <?php if ($element->{$eye_side . '_field_id'}):
-              $eye_test = $element->{$eye_side . '_field'}; ?>
+          <?php if ($element->{$eye_side . '_field_id'}) :
+                $eye_test = $element->{$eye_side . '_field'}; ?>
             <a class="OphInVisualfields_field_image" data-image-id="<?= $eye_test->image_id ?>" href="#">
               <img src="<?php echo '/file/view/' . $eye_test->cropped_image_id . '/400/img.gif'; ?>">
             </a>
 
-          <?php endif; ?>
+            <?php endif; ?>
 
         <table class="label-value cols-10">
           <tbody>
@@ -38,7 +37,7 @@
               <div class="data-label">Date</div>
             </td>
             <td>
-                <?php if ($element->{$eye_side . '_field_id'}): ?>
+                <?php if ($element->{$eye_side . '_field_id'}) : ?>
                   <div class="data-value">
                       <?php echo $element->{$eye_side . '_field'}->study_datetime ?>
                   </div>
@@ -50,7 +49,7 @@
               <div class="data-label">Strategy</div>
             </td>
             <td>
-                <?php if ($element->{$eye_side . '_field_id'}): ?>
+                <?php if ($element->{$eye_side . '_field_id'}) : ?>
                   <div class="data-value">
                       <?php echo $element->{$eye_side . '_field'}->strategy->name ?>
                   </div>
@@ -62,7 +61,7 @@
               <div class="data-label">Test Name</div>
             </td>
             <td>
-                <?php if ($element->{$eye_side . '_field_id'}): ?>
+                <?php if ($element->{$eye_side . '_field_id'}) : ?>
                   <div class="data-value">
                       <?php echo $element->{$eye_side . '_field'}->pattern->name ?>
                   </div>

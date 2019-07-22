@@ -15,12 +15,12 @@
     <?php foreach ($disorder_section->disorders as $disorder) {
         $affected = $element->hasCviDisorderForSide($disorder, $side);
         $main_cause = $element->isCviDisorderMainCauseForSide($disorder, $side);
-             ?>
+        ?>
             <tr>
               <td><?php echo $disorder->name; ?></td>
               <td><?php echo ($affected) ? 'Yes' : 'No'; ?></td>
               <td><?php echo ($main_cause) ? 'Yes' : 'No';?></td>
             </tr>
-        <?php } ?>
+    <?php } ?>
     </tbody>
 </table>

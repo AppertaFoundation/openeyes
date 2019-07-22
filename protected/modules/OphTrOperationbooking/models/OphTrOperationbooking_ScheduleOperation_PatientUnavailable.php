@@ -61,9 +61,8 @@ class OphTrOperationbooking_ScheduleOperation_PatientUnavailable extends BaseAct
         $format_check = preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->$attribute);
         $date_format = DateTime::createFromFormat('Y-m-d', $this->$attribute);
 
-        if( ($date_format && ($date_format->format('Y-m-d') !== $this->$attribute)) || !$format_check){
-
-            if(!$this->hasErrors($attribute)){
+        if ( ($date_format && ($date_format->format('Y-m-d') !== $this->$attribute)) || !$format_check) {
+            if (!$this->hasErrors($attribute)) {
                 $this->addError($attribute, $this->getAttributeLabel($attribute) . ': Wrong date format.');
             }
         }

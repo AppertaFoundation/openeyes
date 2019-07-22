@@ -20,7 +20,7 @@
     <div class="data-group">
         <div class="cols-10 column"><h2>View Genetics Study</h2></div>
         <div class="cols-2 column right">
-            <?php if( $this->checkAccess('OprnEditGeneticPatient') ): ?>
+            <?php if ( $this->checkAccess('OprnEditGeneticPatient') ) : ?>
                 <a href="/Genetics/study/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/study/view/').$model->id; ?>" class="button small right" id="study_edit">Edit</a>
             <?php endif; ?>
         </div>
@@ -37,9 +37,9 @@
                     'type' => 'raw',
                     'value' => function() use ($model){
                         $html = null;
-                        if($model->subjects){
+                        if ($model->subjects) {
                             $html = '<ul>';
-                            foreach($model->subjects as $subject){
+                            foreach ($model->subjects as $subject) {
                                 $html .= '<li>';
                                 $html .= '<a href="/Genetics/subject/view/'.$subject->id.'">' . $subject->patient->fullName .  '</a>';
                                 $html .= '</li>';
@@ -54,9 +54,9 @@
                     'type' => 'raw',
                     'value' => function() use ($model){
                         $investigators = '';
-                        if($model->proposers){
+                        if ($model->proposers) {
                             $investigators = '<ul>';
-                            foreach($model->proposers as $proposer){
+                            foreach ($model->proposers as $proposer) {
                                 $investigators .= '<li>'.$proposer->first_name.' '.$proposer->last_name.'</li>';
                             }
                             $investigators .= '</ul>';
@@ -64,7 +64,7 @@
                         return $investigators;
                     }
                 )
-            ) 
+            )
 
             ));
         

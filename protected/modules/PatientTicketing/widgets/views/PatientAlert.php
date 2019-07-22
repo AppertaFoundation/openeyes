@@ -47,7 +47,6 @@ $tickets = array_filter($tickets, function ($ticket) use ($patient_ticket_in_rev
 });
 
 if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
-
     <?php if ($this->assetFolder) { ?>
     <script type="text/javascript" src="<?php echo $this->assetFolder ?>/<?php echo $this->shortName ?>.js"></script>
     <?php } ?>
@@ -106,18 +105,18 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
               <div data-ticket-id="<?= $ticket->id ?>">
                   <?php $this->widget($summary_widget, array('ticket' => $ticket)); ?>
                   <?php
-                  $qs_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
-                  $qs_r = $qs_svc->getQueueSetForTicket($ticket->id);
-                  if ($qs_svc->isQueueSetPermissionedForUser($qs_r, Yii::app()->user->id)) {
-                      $this->widget('OEModule\PatientTicketing\widgets\TicketMove', array(
+                    $qs_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
+                    $qs_r = $qs_svc->getQueueSetForTicket($ticket->id);
+                    if ($qs_svc->isQueueSetPermissionedForUser($qs_r, Yii::app()->user->id)) {
+                        $this->widget('OEModule\PatientTicketing\widgets\TicketMove', array(
                               'ticket' => $ticket,
                           )
-                      );
-                  }
-                  ?>
+                        );
+                    }
+                    ?>
               </div>
             </div>
-          <?php } ?>
+            <?php } ?>
       </div>
     </div>
   </div>

@@ -4,7 +4,7 @@ class m180601_104426_create_oescape_summary_table extends OEMigration
 {
 
     public function safeUp()
-	{
+    {
         $this->createOETable(
             'oescape_summary_item',
             array(
@@ -28,12 +28,12 @@ class m180601_104426_create_oescape_summary_table extends OEMigration
                 'constraint oescape_summarry_ssid_fk foreign key (subspecialty_id) references subspecialty (id)',
             )
         );
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         $this->dropTable('oescape_summary');
         $this->dropTable('oescape_summary_item');
-	}
+    }
 
 }

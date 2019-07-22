@@ -23,7 +23,9 @@
     </div>
 </td>
 <td>
-    <div class="panel diagnosis<?php if (!$label) { ?> hide<?php } ?>"
+    <div class="panel diagnosis<?php if (!$label) {
+        ?> hide<?php
+                               } ?>"
          id="enteredDiagnosisText"
          style="<?=!($label)?"display: none;":""?>">
         <?php echo $label ?>
@@ -49,7 +51,7 @@
         'form' => $form,
         'callback' => $callback
     ));
-    ?>
+?>
 </td>
 
 <script type="text/javascript">
