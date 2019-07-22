@@ -34,7 +34,6 @@ class GenericProcedureDataController extends ModuleAdminController
                     $criteria->addCondition('proc_id = :id');
                     $criteria->params[':id'] = $search['query'];
                 } else {
-
                     $criteria->addSearchCondition('procedure.term', $search['query'], true, 'OR');
                     $criteria->addSearchCondition('procedure.snomed_term', $search['query'], true, 'OR');
                     $criteria->addSearchCondition('procedure.aliases', $search['query'], true, 'OR');

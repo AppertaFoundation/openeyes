@@ -17,9 +17,9 @@
   <div class="cols-8 column">
     <h2>Anaesthetic Agents</h2>
   </div>
-	
-	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
-	<?php
+    
+    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
         'enableAjaxValidation' => false,
@@ -28,7 +28,7 @@
             'field' => 5,
         ),
     ))?>
-	<?php echo $form->textField($agent, 'name')?>
-	<?php echo $form->formActions(array('cancel-uri' => '/admin/viewAnaestheticAgent'))?>
-	<?php $this->endWidget()?>
+    <?php echo $form->textField($agent, 'name')?>
+    <?php echo $form->formActions(array('cancel-uri' => '/admin/viewAnaestheticAgent'))?>
+    <?php $this->endWidget()?>
 </div>

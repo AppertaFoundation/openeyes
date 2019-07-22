@@ -102,7 +102,7 @@ class PastSurgery extends \BaseEventTypeElement
     {
         $entries = $this->operations;
         foreach ($entries as $key=>$entry) {
-            if($entry->had_operation == PastSurgery_Operation::$NOT_CHECKED) {
+            if ($entry->had_operation == PastSurgery_Operation::$NOT_CHECKED) {
                 unset($entries[$key]);
             }
         }

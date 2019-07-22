@@ -886,8 +886,7 @@ class Zend_Ldap
     {
         if ($basedn === null) {
             $basedn = $this->getBaseDn();
-        }
-        else if ($basedn instanceof Zend_Ldap_Dn) {
+        } else if ($basedn instanceof Zend_Ldap_Dn) {
             $basedn = $basedn->toString();
         }
 
@@ -908,7 +907,7 @@ class Zend_Ldap
                 break;
         }
 
-        if($search === false) {
+        if ($search === false) {
             /**
              * @see Zend_Ldap_Exception
              */
@@ -917,7 +916,7 @@ class Zend_Ldap
         }
         if (!is_null($sort) && is_string($sort)) {
             $isSorted = @ldap_sort($this->getResource(), $search, $sort);
-            if($search === false) {
+            if ($search === false) {
                 /**
                  * @see Zend_Ldap_Exception
                  */
@@ -1036,7 +1035,7 @@ class Zend_Ldap
             $result = $this->search("(objectClass=*)", $dn, self::SEARCH_SCOPE_BASE,
                 $attributes, null);
             return $result->getFirst();
-        } catch (Zend_Ldap_Exception $e){
+        } catch (Zend_Ldap_Exception $e) {
             if ($throwOnNotFound !== false) throw $e;
         }
         return null;
@@ -1123,7 +1122,7 @@ class Zend_Ldap
         }
 
         $isAdded = @ldap_add($this->getResource(), $dn->toString(), $entry);
-        if($isAdded === false) {
+        if ($isAdded === false) {
             /**
              * @see Zend_Ldap_Exception
              */
@@ -1160,7 +1159,7 @@ class Zend_Ldap
 
         if (count($entry) > 0) {
             $isModified = @ldap_modify($this->getResource(), $dn->toString(), $entry);
-            if($isModified === false) {
+            if ($isModified === false) {
                 /**
                  * @see Zend_Ldap_Exception
                  */
@@ -1214,7 +1213,7 @@ class Zend_Ldap
             }
         }
         $isDeleted = @ldap_delete($this->getResource(), $dn);
-        if($isDeleted === false) {
+        if ($isDeleted === false) {
             /**
              * @see Zend_Ldap_Exception
              */
@@ -1335,14 +1334,13 @@ class Zend_Ldap
             $newRdn = Zend_Ldap_Dn::implodeRdn(array_shift($newDnParts));
             $newParent = Zend_Ldap_Dn::implodeDn($newDnParts);
             $isOK = @ldap_rename($this->getResource(), $from, $newRdn, $newParent, true);
-            if($isOK === false) {
+            if ($isOK === false) {
                 /**
                  * @see Zend_Ldap_Exception
                  */
                 require_once 'Zend/Ldap/Exception.php';
                 throw new Zend_Ldap_Exception($this, 'renaming ' . $from . ' to ' . $to);
-            }
-            else if (!$this->exists($to)) $emulate = true;
+            } else if (!$this->exists($to)) $emulate = true;
         }
         if ($emulate) {
             $this->copy($from, $to, $recursively);

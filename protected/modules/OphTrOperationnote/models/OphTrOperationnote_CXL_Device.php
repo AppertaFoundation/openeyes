@@ -108,9 +108,9 @@ class OphTrOperationnote_CXL_Device extends BaseActiveRecordVersioned
     public function getDefault()
     {
         $defaultId = $this->find("defaultChoice = 1");
-        if($defaultId){
+        if ($defaultId) {
             return $defaultId->id;
-        }else{
+        } else {
             return 1;
         }
     }
@@ -118,4 +118,5 @@ class OphTrOperationnote_CXL_Device extends BaseActiveRecordVersioned
     {
         $chosenName = $this->find("id = " . $id);
         return $chosenName->name;
-    }}
+    }
+}

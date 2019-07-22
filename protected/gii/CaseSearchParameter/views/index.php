@@ -10,59 +10,59 @@
 <?php $form = $this->beginWidget('CCodeForm', array('model' => $model)); ?>
 
   <div class="row">
-      <?php echo $form->labelEx($model, 'className'); ?>
-      <?php echo $form->textField($model, 'className', array('size' => 65, 'id' => 'class-name')); ?>
+        <?php echo $form->labelEx($model, 'className'); ?>
+        <?php echo $form->textField($model, 'className', array('size' => 65, 'id' => 'class-name')); ?>
     <div class="tooltip">
       Parameter class name must only contain word characters.
     </div>
-      <?php echo $form->error($model, 'className'); ?>
+        <?php echo $form->error($model, 'className'); ?>
   </div>
   <div class="row">
-      <?php echo $form->labelEx($model, 'name'); ?>
-      <?php echo $form->textField($model, 'name', array('size' => 65, 'id' => 'name')); ?>
+        <?php echo $form->labelEx($model, 'name'); ?>
+        <?php echo $form->textField($model, 'name', array('size' => 65, 'id' => 'name')); ?>
     <div class="tooltip">
       This value is displayed on-screen.
     </div>
-      <?php echo $form->error($model, 'name'); ?>
+        <?php echo $form->error($model, 'name'); ?>
   </div>
 
   <div class="row">
-      <?php echo $form->labelEx($model, 'alias'); ?>
-      <?php echo $form->textField($model, 'alias', array('size' => 20, 'id' => 'alias')); ?>
+        <?php echo $form->labelEx($model, 'alias'); ?>
+        <?php echo $form->textField($model, 'alias', array('size' => 20, 'id' => 'alias')); ?>
     <div class="tooltip">
       SQL alias prefix must only contain word characters and underscores. This should be unique to all other parameter
       aliases.
     </div>
-      <?php echo $form->error($model, 'alias'); ?>
+        <?php echo $form->error($model, 'alias'); ?>
   </div>
 
   <div class="row">
-      <?php echo $form->labelEx($model, 'attributeList'); ?>
-      <?php echo $form->textField($model, 'attributeList', array('size' => 65)); ?>
+        <?php echo $form->labelEx($model, 'attributeList'); ?>
+        <?php echo $form->textField($model, 'attributeList', array('size' => 65)); ?>
     <div class="tooltip">
       Separate each attribute name with a comma. Attribute names must only consist of word characters.
     </div>
-      <?php echo $form->error($model, 'attributeList'); ?>
+        <?php echo $form->error($model, 'attributeList'); ?>
   </div>
 
   <div class="row">
-      <?php echo $form->labelEx($model, 'searchProviders'); ?>
-      <?php echo $form->textField($model, 'searchProviders', array('size' => 65)); ?>
+        <?php echo $form->labelEx($model, 'searchProviders'); ?>
+        <?php echo $form->textField($model, 'searchProviders', array('size' => 65)); ?>
     <div class="tooltip">
       At least one search provider must be listed here. Separate each search provider with a comma.
     </div>
-      <?php echo $form->error($model, 'searchProviders'); ?>
+        <?php echo $form->error($model, 'searchProviders'); ?>
   </div>
 
   <div class="row sticky">
-      <?php echo $form->labelEx($model, 'path'); ?>
-      <?php echo $form->textField($model, 'path', array('size' => 65)); ?>
+        <?php echo $form->labelEx($model, 'path'); ?>
+        <?php echo $form->textField($model, 'path', array('size' => 65)); ?>
     <div class="tooltip">
       This refers to the module that the new model class and test case should be generated under.
       It should be specified in the form of a path alias, for example, <code>application.modules.OphCiExamination</code>.
       Alternatively, you can specify <code>application</code> here to place the code at the application level.
     </div>
-      <?php echo $form->error($model, 'path'); ?>
+        <?php echo $form->error($model, 'path'); ?>
 
   </div>
 
