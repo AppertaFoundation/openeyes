@@ -44,7 +44,7 @@ $consultantName = $firm->consultant ? ($firm->consultant->getFullName() . $cost_
 $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 ?>
 
-<?php if (!$data['fpten']): ?>
+<?php if (!isset($data['fpten']) || !$data['fpten']): ?>
   <?php if ($header_text !== null): ?>
       <div class="clearfix"><?= $header_text ?></div>
   <?php endif; ?>

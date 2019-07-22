@@ -79,6 +79,10 @@ class DefaultController extends BaseEventTypeController
         if (isset($_POST['saveprint'])) {
             Yii::app()->session['print_prescription'] = true;
         }
+        // Save and print FP10 clicked, stash print FP10 flag
+        if (isset($_POST['saveprintfp10'])) {
+            Yii::app()->session['print_prescription_fp10'] = true;
+        }
     }
 
     public function printActions()
