@@ -103,6 +103,7 @@ function addGpItem(wrapper_id, ui){
 $(document).ready(function ()
 {
   highLightError("Patient_gp_id_em_","cannot be blank",'#autocomplete_gp_id');
+  highLightError("Patient_practice_id_em_", "cannot be blank", '#autocomplete_gp_id');
 });
 
 function highLightError(elementId, containText,highLightFiled){

@@ -365,7 +365,11 @@ foreach ($ethnic_list as $key=>$item){
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                 <?php echo Yii::app()->params['gp_label']; ?>
                 <br/>
-                <?= $form->error($patient, 'gp_id') ?>
+                <?php echo $form->error($patient, 'gp_id');
+                if (!empty($patient->gp_id)) {
+                    echo $form->error($patient, 'practice_id');
+                }
+                ?>
             </td>
             <td>
                 <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_gp_id']); ?>
