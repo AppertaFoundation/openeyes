@@ -241,7 +241,7 @@ class WKHtmlToPDF extends WKHtmlToX
             throw new Exception("Unable to generate $pdf_file: $res");
         }
 
-        //$this->deleteFile($html_file);
+        $this->deleteFile($html_file);
         $this->deleteFile($footer_file);
 
         if ($pdf = $this->getPDFOptions($pdf_file)) {
