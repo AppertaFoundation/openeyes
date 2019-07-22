@@ -170,6 +170,11 @@ class Element_OphCiPhasing_IntraocularPressure extends SplitEventTypeElement
         return parent::afterValidate();
     }
 
+    public function getReadings($side)
+		{
+
+		}
+
     public function updateReadings($side, $data)
     {
         $side_str = ($side == OphCiPhasing_Reading::RIGHT) ? 'right' : 'left';

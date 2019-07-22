@@ -34,29 +34,31 @@
       //BEGIN SAMPLE DATA
 
 			var sample_data = [[1, 2, 3], [4], [12, 34, 5], [15, 26, 37, 48], [2], [9, 8, 7, 6, 5, 4, 3, 2, 1], [45], [78, 56], [10, 2, 3, 4, 5], [1, 2, 3], [4], [12, 34, 5], [15, 26, 37, 48], [2], [9, 8, 7, 6, 5, 4, 3, 2, 1], [45], [78, 56], [10, 2, 3, 4, 5]];
-			var sample_minimums = [];
-      var sample_maximums = [];
-      var sample_averages = [];
+			var sample_minimums = [sample_data.length];
+      var sample_maximums = [sample_data.length];
+      var sample_averages = [sample_data.length];
 
-      var array = [];
-			var arraymin = [];
+      var array = [sample_data.length];
+			var arraymin = [sample_data.length];
+
+			var sample_x_data = [sample_data.length];
 
 			for(i = 0; i < sample_data.length; i++) {
 				console.log(sample_data[i])
 
-				sample_minimums.push(Math.min(...sample_data[i]));
+				sample_minimums[i] = (Math.min(...sample_data[i]));
 				console.log("Minimum :" + sample_minimums[i]);
 
-				sample_maximums.push(Math.max(...sample_data[i]));
+				sample_maximums[i] = (Math.max(...sample_data[i]));
 				console.log("Maximum :" + sample_maximums[i]);
 
-				sample_averages.push((sample_data[i].reduce((a, b) => a + b, 0) / sample_data[i].length));
+				sample_averages[i] = ((sample_data[i].reduce((a, b) => a + b, 0) / sample_data[i].length));
 				console.log("Average :" + sample_averages[i]);
 
 				console.log();
 
-				array.push(sample_maximums[i] - sample_minimums[i]);
-				arraymin.push(sample_averages[i] - sample_minimums[i]);
+				array[i] = (sample_maximums[i] - sample_minimums[i]);
+				arraymin[i] = (sample_averages[i] - sample_minimums[i]);
 			}
 
 			//END SAMPLE DATA
