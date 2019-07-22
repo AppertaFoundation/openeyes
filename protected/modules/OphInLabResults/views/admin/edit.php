@@ -1,8 +1,5 @@
 <?php
-
 /**
- * OpenEyes.
- *
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -12,28 +9,33 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DefaultController extends \BaseEventTypeController
-{
+?>
 
-    protected $show_element_sidebar = false;
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'adminform',
+    'enableAjaxValidation' => false,
+    'htmlOptions' => array(
+        'enctype' => 'multipart/form-data',
+    ),
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+)) ?>
 
-    protected function initActionCreate()
-    {
-        parent::initActionCreate();
-        $this->registerEditScripts();
-    }
+<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
 
-    protected function initActionUpdate()
-    {
-        parent::initActionUpdate();
-        $this->registerEditScripts();
-    }
+<?php
+$this->renderPartial('/admin/form_' . get_class($model), array(
+    'model' => $model,
+    'form' => $form,
+    'title' => $title,
+)) ?>
 
-    protected function registerEditScripts()
-    {
-        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.Lab.Form.js', 'application.modules.OphInLabResults.assets');
-    }
-}
+<?php echo $form->formActions(array('cancel-uri' => isset($cancel_uri) ? $cancel_uri : "")) ?>
+
+<?php $this->endWidget() ?>
