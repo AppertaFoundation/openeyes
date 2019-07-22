@@ -1174,12 +1174,12 @@ class AnalyticsController extends BaseController
                             array_values(${$side . '_second_list'})
                         ),
                     )
-              );
-          }
-          $custom_data['csv_data']=$this->custom_csv_data;
-      }
-      $disorder_data = $this->getDisorders($subspecialty_id,$this->filters['clinical_surgeon_id'],$this->filters['date_from'],$this->filters['date_to']);
-      $clinical_data = array(
+                );
+            }
+            $custom_data['csv_data']=$this->custom_csv_data;
+        }
+        $disorder_data = $this->getDisorders($subspecialty_id, $this->filters['clinical_surgeon_id'], $this->filters['date_from'], $this->filters['date_to']);
+        $clinical_data = array(
           'x' => $disorder_data['x'],
           'y' => $disorder_data['y'],
           'text' => $disorder_data['text'],
