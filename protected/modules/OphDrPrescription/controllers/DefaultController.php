@@ -23,7 +23,6 @@ class DefaultController extends BaseEventTypeController
         'drugList' => self::ACTION_TYPE_FORM,
         'repeatForm' => self::ACTION_TYPE_FORM,
         'routeOptions' => self::ACTION_TYPE_FORM,
-        'routeOptions' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,

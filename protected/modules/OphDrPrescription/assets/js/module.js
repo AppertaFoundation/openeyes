@@ -67,7 +67,7 @@ $(document).ready(function () {
         'type': 'GET',
         'url': baseUrl + '/OphDrPrescription/default/doPrint/' + OE_event_id,
         'success': function (html) {
-          if (html == "1") {
+          if (html.trim() == "1") {
             window.location.reload();
           } else {
             new OpenEyes.UI.Dialog.Alert({
@@ -88,7 +88,7 @@ $(document).ready(function () {
         'type': 'GET',
         'url': baseUrl + '/OphDrPrescription/default/doPrint/' + OE_event_id,
         'success': function (html) {
-          if (html == "1") {
+          if (html.trim() == "1") {
             window.location.reload();
           } else {
             new OpenEyes.UI.Dialog.Alert({
@@ -113,7 +113,7 @@ function do_print_prescription() {
     'type': 'GET',
     'url': baseUrl + '/OphDrPrescription/default/markPrinted?event_id=' + OE_event_id,
     'success': function (html) {
-      if (html == "1") {
+      if (html.trim() == "1") {
         printIFrameUrl(OE_print_url, null);
       } else {
         new OpenEyes.UI.Dialog.Alert({
@@ -130,8 +130,7 @@ function do_print_fpTen() {
     'type': 'GET',
     'url': baseUrl + '/OphDrPrescription/default/markPrinted?event_id=' + OE_event_id,
     'success': function (html) {
-      if (html == "1") {
-        console.log(OE_print_url);
+      if (html.trim() == "1") {
         printIFrameUrl(OE_print_url + '?fpten=true&print_footer=false', null);
       } else {
         new OpenEyes.UI.Dialog.Alert({
