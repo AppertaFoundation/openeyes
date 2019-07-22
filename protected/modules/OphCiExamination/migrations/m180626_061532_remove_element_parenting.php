@@ -12,7 +12,6 @@ class m180626_061532_remove_element_parenting extends OEMigration
         $event_type_ids = $this->dbConnection->createCommand()->select('id')->from('event_type')->queryColumn();
 
         foreach ($event_type_ids as $event_type_id) {
-
             // Order elements with the complex "by parent display orde,r then by child display order with parents at teh start of their groups"
             $elements = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('event_type_id = :event_type_id',
                 array(':event_type_id' => $event_type_id))->order(
@@ -46,7 +45,6 @@ class m180626_061532_remove_element_parenting extends OEMigration
             'id');
 
         foreach ($event_type_ids as $event_type_id) {
-
             $event_name = $this->dbConnection->createCommand()
                 ->select('name')
                 ->from('event_type')
@@ -102,7 +100,7 @@ class m180626_061532_remove_element_parenting extends OEMigration
         // Group tiles are now located in the element_group table, and the column can now bw removed
         // Check that group_title exists
         $table = $this->dbConnection->schema->getTable('element_type');
-        if(!isset($table->columns['group_title'])) {
+        if (!isset($table->columns['group_title'])) {
             //Assume all these things are extant if group title is
             $this->dropColumn('element_type', 'group_title');
             $this->dropColumn('element_type_version', 'group_title');

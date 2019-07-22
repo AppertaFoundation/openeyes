@@ -144,7 +144,7 @@ class Zend_Validate_Ip extends Zend_Validate_Abstract
      */
     protected function _validateIPv4($value) {
         $ip2long = ip2long($value);
-        if($ip2long === false) {
+        if ($ip2long === false) {
             return false;
         }
 

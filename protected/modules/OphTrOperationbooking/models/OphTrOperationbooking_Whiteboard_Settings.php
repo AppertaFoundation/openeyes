@@ -54,17 +54,17 @@ class OphTrOperationbooking_Whiteboard_Settings extends BaseSetting
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id,true);
-        $criteria->compare('display_order',$this->display_order);
-        $criteria->compare('field_type_id',$this->field_type_id,true);
-        $criteria->compare('key',$this->key,true);
-        $criteria->compare('name',$this->name,true);
-        $criteria->compare('data',$this->data,true);
-        $criteria->compare('default_value',$this->default_value,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('display_order', $this->display_order);
+        $criteria->compare('field_type_id', $this->field_type_id, true);
+        $criteria->compare('key', $this->key, true);
+        $criteria->compare('name', $this->name, true);
+        $criteria->compare('data', $this->data, true);
+        $criteria->compare('default_value', $this->default_value, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,

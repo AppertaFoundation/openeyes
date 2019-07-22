@@ -42,7 +42,8 @@ class Swift_DependencyContainer
      *
      * Use {@link getInstance()} instead.
      */
-    public function __construct() { }
+    public function __construct() {
+    }
 
     /**
      * Returns a singleton of the DependencyContainer.

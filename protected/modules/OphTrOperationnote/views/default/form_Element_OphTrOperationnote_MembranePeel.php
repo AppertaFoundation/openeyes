@@ -27,18 +27,18 @@
         <tbody>
         <tr>
           <td>
-              <?php echo $element->getAttributeLabel('membrane_blue'); ?>
+                <?php echo $element->getAttributeLabel('membrane_blue'); ?>
           </td>
           <td>
-              <?php echo $form->radioBoolean($element, 'membrane_blue', array('nowrapper' => true)) ?>
+                <?php echo $form->radioBoolean($element, 'membrane_blue', array('nowrapper' => true)) ?>
           </td>
         </tr>
         <tr>
           <td>
-              <?php echo $element->getAttributeLabel('brilliant_blue'); ?>
+                <?php echo $element->getAttributeLabel('brilliant_blue'); ?>
           </td>
           <td>
-              <?php echo $form->radioBoolean($element, 'brilliant_blue', array('nowrapper' => true)) ?>
+                <?php echo $form->radioBoolean($element, 'brilliant_blue', array('nowrapper' => true)) ?>
           </td>
         </tr>
         </tbody>
@@ -54,19 +54,19 @@
         <tbody>
         <tr>
           <td>
-              <?php echo $element->getAttributeLabel('other_dye'); ?>
+                <?php echo $element->getAttributeLabel('other_dye'); ?>
           </td>
           <td>
-              <?php echo $form->textField($element, 'other_dye',
+                <?php echo $form->textField($element, 'other_dye',
                   array('nowrapper' => true, 'class' => 'cols-12', 'placeholder' => 'Other dye;'), array()) ?>
           </td>
         </tr>
         <tr>
           <td>
-              <?php echo $element->getAttributeLabel('comments'); ?>
+                <?php echo $element->getAttributeLabel('comments'); ?>
           </td>
           <td>
-              <?php echo $form->textArea($element, 'comments', array('nowrapper' => true, 'class' => 'cols-11'), false,
+                <?php echo $form->textArea($element, 'comments', array('nowrapper' => true, 'class' => 'cols-11'), false,
                   array('placeholder' => 'Comments')) ?>
           </td>
         </tr>

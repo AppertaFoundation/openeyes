@@ -143,7 +143,7 @@ class Helper
         $mon = $monthIndex !== 0 ? DateTime::createFromFormat('!m', $monthIndex)->format('M') : '';
         $day = (integer)substr($value, 8, 2) ?: '';
 
-        return "<span class='day'>$day</span><span class='mth'>$mon</span><span class='yr'>$year</span>";
+        return "<span class='day'>$day </span><span class='mth'>$mon </span><span class='yr'>$year</span>";
     }
 
     /**

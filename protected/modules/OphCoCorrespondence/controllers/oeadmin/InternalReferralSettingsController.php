@@ -91,7 +91,6 @@ class InternalReferralSettingsController extends ModuleAdminController
                     $is_ok = false;
                     break;
                 }
-
             }
 
             if ($is_ok) {
@@ -110,7 +109,6 @@ class InternalReferralSettingsController extends ModuleAdminController
 
                 $return = array('success' => false, 'message' => $message);
             }
-
         } catch (Exception $e) {
             $transaction->rollback();
             $return = array('success' => false, 'message' => $e->getMessage());

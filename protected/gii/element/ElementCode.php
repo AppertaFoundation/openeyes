@@ -825,13 +825,13 @@ class ElementCode extends CCodeModel
     /*
      * Resets all session variables to allow restart in case of error
      */
-     public function resetGenerator()
+    public function resetGenerator()
      {
-         // Reset session variables
-            unset(Yii::app()->session['elementName']);
-         unset(Yii::app()->session['tableName']);
-         unset(Yii::app()->session['level']);
-         unset(Yii::app()->session['create']);
-         unset(Yii::app()->session['create_site_element_types_for']);
-     }
+        // Reset session variables
+           unset(Yii::app()->session['elementName']);
+        unset(Yii::app()->session['tableName']);
+        unset(Yii::app()->session['level']);
+        unset(Yii::app()->session['create']);
+        unset(Yii::app()->session['create_site_element_types_for']);
+    }
 }

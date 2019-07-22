@@ -22,7 +22,6 @@ class ContactController extends \BaseController
             $criteria->join = "left join contact_label cl on cl.id = t.contact_label_id ";
             $criteria->join .= "left join address ad on ad.contact_id = t.id";
             if (isset($_GET['term']) && $term = $_GET['term']) {
-
                 $criteria->addSearchCondition('last_name', $term, true, 'OR');
                 $criteria->addSearchCondition('first_name', $term, true, 'OR');
                 $criteria->addSearchCondition('cl.name', $term, true, 'OR');
@@ -129,11 +128,11 @@ class ContactController extends \BaseController
                     }
                 }
 
-                if($data->contact_label_error){
+                if ($data->contact_label_error) {
                     $errors['contact_label_limit'] = $data->contact_label_error;
                 }
 
-                if($data->contact_label_id == ""){
+                if ($data->contact_label_id == "") {
                     $errors['missing_contact_label'] = "Please select a Contact Type";
                 }
 
@@ -148,7 +147,6 @@ class ContactController extends \BaseController
                     echo \CJSON::encode($this->contactStructure($contact));
                 }
             }
-
         }
     }
 }

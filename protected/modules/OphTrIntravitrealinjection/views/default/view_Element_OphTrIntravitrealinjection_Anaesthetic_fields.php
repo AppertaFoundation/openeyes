@@ -21,7 +21,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_anaesthetictype_id') ?>:
+            <?php echo $element->getAttributeLabel($side . '_anaesthetictype_id') ?>:
       </div>
     </td>
     <td>
@@ -31,7 +31,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_anaestheticagent_id') ?>:
+            <?php echo $element->getAttributeLabel($side . '_anaestheticagent_id') ?>:
       </div>
     </td>
     <td><?php echo $element->{$side . '_anaestheticagent'}->name ?></td>

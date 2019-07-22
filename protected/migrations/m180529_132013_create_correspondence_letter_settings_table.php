@@ -5,7 +5,7 @@ class m180529_132013_create_correspondence_letter_settings_table extends OEMigra
 
     public function up()
     {
-        $this->createOETable('ophcocorrespondence_letter_settings',array(
+        $this->createOETable('ophcocorrespondence_letter_settings', array(
             'id' => 'pk',
             'display_order' => "tinyint(3) unsigned DEFAULT '0'",
             'field_type_id' => 'int(10) unsigned NOT NULL',
@@ -26,7 +26,7 @@ class m180529_132013_create_correspondence_letter_settings_table extends OEMigra
             'value' => 'varchar(255) COLLATE utf8_bin NOT NULL',
         ), $versioned = true);
 
-        $this->insert('ophcocorrespondence_letter_settings',array(
+        $this->insert('ophcocorrespondence_letter_settings', array(
             'field_type_id' => 4,
             'key' => 'letter_footer_blank_line_count',
             'name' => 'Letter footer blank line count'
@@ -40,14 +40,14 @@ class m180529_132013_create_correspondence_letter_settings_table extends OEMigra
         $this->dropOETable('ophcocorrespondence_letter_setting_value', $versioned = true);
     }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

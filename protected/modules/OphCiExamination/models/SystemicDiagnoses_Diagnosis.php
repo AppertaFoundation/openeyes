@@ -92,7 +92,7 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
 
     public function sideValidator($attribute, $params)
     {
-        if(!$this->side_id){
+        if (!$this->side_id) {
             $this->addError($attribute, "Eye must be selected");
         }
 
@@ -102,7 +102,7 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
     {
         //-9 is the N/A option but we do not save it, if null is posted that means
         //the user did not checked any checkbox so we return error in the validation part
-        if($this->side_id == -9){
+        if ($this->side_id == -9) {
             $this->side_id = null;
         }
 

@@ -17,35 +17,35 @@
   <div class="cols-8 column">
     <h2>Anaesthetic Agents</h2>
   </div>
-	<form id="admin_anaesthetic_agent">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="standard">
-			<thead>
-			<tr>
-				<th>Agent Name</th>
-				<th>Action</th>
-			</tr>
-			</thead>
-			<tbody>
-			<?php foreach (AnaestheticAgent::model()->findAll(array('order' => 'display_order asc')) as $i => $anaestheticAgent) {?>
-				<tr>
-					<td><?php echo $anaestheticAgent->name?></td>
-					<td>
-						<a href="/admin/editAnaestheticAgent/<?= $anaestheticAgent->id ?>">Edit</a>
-						&nbsp;|&nbsp;
-						<a href="/admin/deleteAnaestheticAgent/<?= $anaestheticAgent->id ?>">Delete</a>
-					</td>
-				</tr>
-			<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-			<tr>
-				<td colspan="3">
-					<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphTrOperationnote/admin/addPostOpDrug'))->toHtml()?>
-					<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphTrOperationnote/admin/deletePostOpDrugs', 'data-object' => 'drug'))->toHtml()?>
-				</td>
-			</tr>
-			</tfoot>
-		</table>
-	</form>
+    <form id="admin_anaesthetic_agent">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+        <table class="standard">
+            <thead>
+            <tr>
+                <th>Agent Name</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach (AnaestheticAgent::model()->findAll(array('order' => 'display_order asc')) as $i => $anaestheticAgent) {?>
+                <tr>
+                    <td><?php echo $anaestheticAgent->name?></td>
+                    <td>
+                        <a href="/admin/editAnaestheticAgent/<?= $anaestheticAgent->id ?>">Edit</a>
+                        &nbsp;|&nbsp;
+                        <a href="/admin/deleteAnaestheticAgent/<?= $anaestheticAgent->id ?>">Delete</a>
+                    </td>
+                </tr>
+            <?php }?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="3">
+                    <?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphTrOperationnote/admin/addPostOpDrug'))->toHtml()?>
+                    <?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphTrOperationnote/admin/deletePostOpDrugs', 'data-object' => 'drug'))->toHtml()?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

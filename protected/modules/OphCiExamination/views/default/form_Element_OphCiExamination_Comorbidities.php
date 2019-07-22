@@ -25,7 +25,7 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
 
     <?=\CHtml::hiddenField('comorbidities_items_valid', 1, array('id' => 'comorbidities_items_valid')) ?>
   <div class="comorbidities-multi-select">
-      <?php echo $form->multiSelectList(
+        <?php echo $form->multiSelectList(
           $element,
           CHtml::modelName($element) . '[items]',
           'items',
@@ -48,7 +48,7 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
           true
       ) ?>
 
-      <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false, array(
+        <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false, array(
           'class' => 'js-comment-field js-comment-container',
           'data-comment-button' => '#' . CHtml::modelName($element) . '_comment_button',
           'placeholder' => 'Enter comments here',
@@ -59,7 +59,9 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
           class="button js-add-comments"
           data-comment-container="#<?= CHtml::modelName($element) . '_comments'; ?>"
           type="button"
-          style="<?php if ($element->comments): ?>visibility: hidden;<?php endif; ?>"
+          style="<?php if ($element->comments) :
+                ?>visibility: hidden;<?php
+                 endif; ?>"
   >
     <i class="oe-i comments small-icon"></i>
   </button>

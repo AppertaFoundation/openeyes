@@ -2,18 +2,18 @@
 
 class m170928_080054_update_some_shortcodes extends OEMigration
 {
-	public function up()
-	{
-	    $this->update(
-	        'patient_shortcode',
+    public function up()
+    {
+        $this->update(
+            'patient_shortcode',
             array(
                 'method' => 'getLetterLaserManagementFindings',
                 'description' => 'Laser Management Findings'),
             'method = :orig_method',
             array(':orig_method' => 'getLetterLaserManagementPlan'));
 
-	    $this->update(
-	        'patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             array(
                 'event_type_id' => $this->getIdOfEventTypeByClassName('OphCiExamination')
             ),
@@ -21,11 +21,11 @@ class m170928_080054_update_some_shortcodes extends OEMigration
             array(':orig_method' => 'getGlaucomaManagement')
         );
 
-	}
+    }
 
-	public function down()
-	{
-	    if ($correspondence_event_id = $this->getIdOfEventTypeByClassName('OphCoCorrespondence'))
+    public function down()
+    {
+        if ($correspondence_event_id = $this->getIdOfEventTypeByClassName('OphCoCorrespondence'))
         $this->update(
             'patient_shortcode',
             array(
@@ -40,16 +40,16 @@ class m170928_080054_update_some_shortcodes extends OEMigration
                 'method' => 'getLetterLaserManagementPlan',
                 'description' => 'Laser Management Plan'),
             'method = ?', array('getLetterLaserManagementFindings'));
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

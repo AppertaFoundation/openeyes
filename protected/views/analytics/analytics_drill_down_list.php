@@ -1,7 +1,7 @@
 <?php $coreAPI = new CoreAPI();
       $operation_API = new OphTrOperationnote_API();
       $cataract = isset($event_list);
-      ?>
+?>
 <div class="analytics-patient-list <?=$cataract? 'analytics-event-list':'';?>" style="display: none;" >
     <div class="flex-layout">
         <h3 id="js-list-title">Patient List</h3>
@@ -14,7 +14,7 @@
             <col style="width: 200px;">
             <col style="width: 100px;">
             <col style="width: 50px;">
-           <?= $cataract?
+            <?= $cataract?
                ' <col style="width: 350px;">
                  <col style="width: 50px;">
                  <col style="width: 400px;">
@@ -38,12 +38,12 @@
         <tbody>
         <?php
         foreach (($cataract? $event_list : $patient_list) as $item) {
-              if ($cataract){
+            if ($cataract) {
                 $row = array_search($item['patient_id'], array_column($patient_list, 'id'));
                 $patient = $patient_list[$row];
-              }else{
+            } else {
                 $patient = $item;
-              }
+            }
             ?>
             <tr id="<?= $cataract? $item['event_id']: $patient['id']; ?>" class="analytics-patient-list-row <?=$cataract? 'analytics-event-list-row':'';?> clickable"
                 data-link="<?php echo Yii::app()->createUrl("/patient/summary/" . $patient['id']); ?>"

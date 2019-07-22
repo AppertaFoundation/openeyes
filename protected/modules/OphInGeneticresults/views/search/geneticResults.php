@@ -20,13 +20,13 @@
   <h2>Genetic test/result</h2>
 
 
-      <?php
-      $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        <?php
+        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
           'id' => 'searchform',
           'enableAjaxValidation' => false,
           'focus' => '#search',
           'action' => Yii::app()->createUrl('/OphInGeneticresults/search/geneticResults'),
-      )) ?>
+        )) ?>
     <div class="cols-12 column">
       <div class="cols-12 column">
         <table class="standard">
@@ -112,7 +112,7 @@
                         <!-- <label for="GeneticsPatient_comments">Search for a diagnosis</label> -->
                         <span id="enteredDiagnosisText" class="<?php echo $value ? '' : 'hidden' ?>" style="display:block; margin-bottom:5px;">
                             <?php
-                            if($value){
+                            if ($value) {
                                 $disorder = Disorder::model()->findByPk($value);
                                 echo $disorder->term;
                                 ?><i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i><?php
@@ -139,7 +139,7 @@
         </button>
       </div>
     </div>
-      <?php $this->endWidget() ?>
+        <?php $this->endWidget() ?>
     <div style="clear:both"></div>
     <hr>
 
@@ -148,19 +148,19 @@
   <form id="genetics_result">
     <input type="hidden" id="select_all" value="0"/>
 
-      <?php if (count($genetic_tests) < 1) { ?>
+        <?php if (count($genetic_tests) < 1) { ?>
         <div class="alert-box no_results">
           <span class="column_no_results">
-                  <?php if (!empty($_GET)){ ?>
+                  <?php if (!empty($_GET)) { ?>
                     No results found.
-                  <?php } else { ?>
+                    <?php } else { ?>
                     Enter criteria to search for genetic results.
-                  <?php } ?>
+                    <?php } ?>
           </span>
         </div>
-      <?php } ?>
+        <?php } ?>
 
-      <?php if (!empty($genetic_tests)) { ?>
+        <?php if (!empty($genetic_tests)) { ?>
         <table class="standard">
           <thead>
           <tr>
@@ -180,20 +180,22 @@
           </tr>
           </thead>
           <tbody>
-          <?php foreach ($genetic_tests as $i => $test) { ?>
+            <?php foreach ($genetic_tests as $i => $test) { ?>
             <tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGeneticresults/default/view/' . $test->event_id) ?>">
                   <td><?php echo $test->NHSDate('result_date') ?></td>
 <!--                  <td>--><?php //echo CHtml::link($test->event->episode->patient->geneticsPatient->id, '/Genetics/subject/view/id/' . $test->event->episode->patient->geneticsPatient->id ); ?><!--</td>-->
                   <td><?php echo $test->event->episode->patient->hos_num ?></td>
                 <td>
-                    <?php foreach($test->event->episode->patient->geneticsPatient->pedigrees as $i => $pedigrees): ?>
-                        <?php if($i > 0){ echo ", ";} ?>
+                    <?php foreach ($test->event->episode->patient->geneticsPatient->pedigrees as $i => $pedigrees) : ?>
+                        <?php if ($i > 0) {
+                            echo ", ";
+                        } ?>
                         <?=\CHtml::link($pedigrees->id, '/Genetics/pedigree/view/id/' . $pedigrees->id ); ?>
                     <?php endforeach; ?>
                 </td>
                   <td><?php echo strtoupper($test->event->episode->patient->last_name) ?>, <?php echo $test->event->episode->patient->first_name ?></td>
                   <td><?php echo $test->event->episode->patient->contact->maiden_name ?></td>
-                  <td><?php echo str_replace(',',', ', $test->gene->name) ?></td>
+                  <td><?php echo str_replace(',', ', ', $test->gene->name) ?></td>
 <!--                  <td>--><?php //echo $test->method->name ?><!--</td>-->
                   <td><?php echo $test->homo ? 'Yes' : 'No' ?></td>
                   <td><?php echo $test->base_change ?></td>
@@ -201,7 +203,7 @@
 <!--                <td>--><?php //echo $test->result ?><!--</td>-->
                 <td><?php echo $test->effect->name ?></td>
             </tr>
-          <?php } ?>
+            <?php } ?>
           </tbody>
           <tfoot class="pagination-container">
           <tr>
@@ -220,11 +222,11 @@
                         'htmlOptions'=>array('class'=>'pagination right'),
                         'selectedPageCssClass' => 'current'
                     ));
-                   ?>
+                ?>
             </td>
           </tr>
           </tfoot>
         </table>
-      <?php } ?>
+        <?php } ?>
   </form>
 </div>

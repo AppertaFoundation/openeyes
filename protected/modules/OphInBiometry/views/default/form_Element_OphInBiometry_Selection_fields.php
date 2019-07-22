@@ -96,7 +96,6 @@
                 </td>
             </tr>
             <?php
-
         }
         if (!$this->is_auto) {
             ?>
@@ -109,7 +108,6 @@
                 </td>
             </tr>
             <?php
-
         }
         if ($this->is_auto) {
             echo $form->hiddenField($element, 'predicted_refraction_' . $side, array('value' => $element->{"predicted_refraction_$side"}));
@@ -297,7 +295,6 @@
             </td>
             </tr>
             <?php
-
         }
         ?>
         <?php
