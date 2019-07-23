@@ -24,7 +24,8 @@
     "phploc/phploc": "*",
     "pdepend/pdepend": "2.2.4",
     "phpmd/phpmd": "@stable",
-    "sebastian/phpcpd": "*"
+    "sebastian/phpcpd": "*",
+    "squizlabs/php_codesniffer": "3.*"
   },
   "config": {
     "bin-dir": "bin"
