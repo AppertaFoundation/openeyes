@@ -529,8 +529,8 @@ class PatientController extends BaseController
             }
 
             if ($iop) {
-                $header_data['IOP']['right'] = $iop->getAverageReading('right');
-                $header_data['IOP']['left'] = $iop->getAverageReading('left');
+                $header_data['IOP']['right'] = $iop->getReading('right');
+                $header_data['IOP']['left'] = $iop->getReading('left');
                 $header_data['IOP']['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
             }
 

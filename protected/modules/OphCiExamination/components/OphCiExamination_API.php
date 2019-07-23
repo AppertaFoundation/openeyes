@@ -223,11 +223,11 @@ class OphCiExamination_API extends \BaseAPI
 
         if ($iop) {
             $readings = array();
-            $reading = $iop->getAverageReading('right');
+            $reading = $iop->getReading('right');
             if ($reading) {
                 $readings[] = "r:{$reading}" . ($iop->isReadingAverage('right') ? ' (avg)' : '');
             }
-            $reading = $iop->getAverageReading('left');
+            $reading = $iop->getReading('left');
             if ($reading) {
                 $readings[] = "l:{$reading}" . ($iop->isReadingAverage('left') ? ' (avg)' : '');
             }
@@ -357,12 +357,12 @@ class OphCiExamination_API extends \BaseAPI
 
         $iops = $this->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
         foreach ($iops as $iop) {
-            $iop_right = $iop->getAverageReading('right');
+            $iop_right = $iop->getReading('right');
             if ($iop_right > $max_values['right']) {
                 $max_values['right'] = $iop_right;
             }
 
-            $iop_left = $iop->getAverageReading('left');
+            $iop_left = $iop->getReading('left');
             if ($iop_left > $max_values['left']) {
                 $max_values['left'] = $iop_left;
             }

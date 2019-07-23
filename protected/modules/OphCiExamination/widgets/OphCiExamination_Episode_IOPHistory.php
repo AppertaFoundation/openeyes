@@ -87,7 +87,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
     protected function addIop(\FlotChart $chart, ExamModels\Element_OphCiExamination_IntraocularPressure $iop, $timestamp, $side)
     {
-        if (($reading = $iop->getAverageReading($side))) {
+        if (($reading = $iop->getReading($side))) {
             $seriesName = strtoupper($side[0]).'E';
             $chart->addPoint($seriesName, $timestamp, $reading, "{$reading} mmHg");
         }
@@ -133,15 +133,15 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 			$exam_events = Event::model()->getEventsOfTypeForPatient($this->event_type, $this->patient);
 			$phasing_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Phasing")), $this->patient);
 
-			//$events = array_merge($exam_events, $phasing_events);
+			$events = array_merge($exam_events, $phasing_events);
 
-			foreach ($exam_events as $event) {
+			foreach ($events as $event) {
 				$iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
 
         if ($iop) {
           $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
           foreach (['left', 'right'] as $side) {
-            $reading = $iop->getAverageReading($side);
+            $reading = $iop->getReading($side);
             if ($reading){
               array_push($iop_data_list[$side], array('x'=>$timestamp, 'y'=>(float)$reading));
             }

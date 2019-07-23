@@ -115,7 +115,7 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
 
     public function getLetter_reading($side)
     {
-        $reading = $this->getAverageReading($side);
+        $reading = $this->getReading($side);
 
         if (!$reading) {
             if ($this->{"{$side}_qualitative_values"}) {
@@ -189,7 +189,7 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
 			return $return_readings;
 		}
 
-    public function getAverageReading($side)
+    public function getReading($side)
     {
         if (!$values = $this->{"{$side}_integer_values"}) {
             return;
