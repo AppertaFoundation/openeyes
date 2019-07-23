@@ -131,7 +131,7 @@ function do_print_fpTen() {
     'url': baseUrl + '/OphDrPrescription/default/markPrinted?event_id=' + OE_event_id,
     'success': function (html) {
       if (html.trim() == "1") {
-        printIFrameUrl(OE_print_url + '?fpten=true&print_footer=false', null);
+        printIFrameUrl(OE_print_url + '?print_mode=WP10&print_footer=false', null);
       } else {
         new OpenEyes.UI.Dialog.Alert({
           content: "There was an error printing the prescription, please try again or contact support for assistance."

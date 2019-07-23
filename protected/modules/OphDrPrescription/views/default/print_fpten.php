@@ -18,7 +18,7 @@
 Yii::app()->clientScript->registerCssFile(Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets')) . '/css/fpten.css');
 ?>
 <div id="fpten-container">
-    <?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy, 'fpten' => true, 'user' => $user)); ?>
+    <?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy, 'print_mode' => $print_mode, 'user' => $user)); ?>
 </div>
 
 

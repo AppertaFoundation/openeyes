@@ -36,6 +36,8 @@ class WKHtmlToPDF extends WKHtmlToX
     public $page_size;
     public $orientation;
     public $disable_smart_shrinking;
+    public $page_width;
+    public $page_height;
 
     public function __construct()
     {
@@ -55,6 +57,8 @@ class WKHtmlToPDF extends WKHtmlToX
         $this->page_size = Yii::app()->params['wkhtmltopdf_page_size'];
         $this->orientation = Yii::app()->params['wkhtmltopdf_orientation'];
         $this->disable_smart_shrinking = Yii::app()->params['wkhtmltopdf_disable_smart_shrinking'] ?: false;
+        $this->page_width = Yii::app()->params['wkhtmltopdf_page_width'];
+        $this->page_height = Yii::app()->params['wkhtmltopdf_page_height'];
     }
 
     public function formatFooter($footer, $left, $middle, $right)
@@ -231,7 +235,15 @@ class WKHtmlToPDF extends WKHtmlToX
         $page_size = $this->page_size;
 
         $nice = Yii::app()->params['wkhtmltopdf_nice_level'] ? 'nice -n' . Yii::app()->params['wkhtmltopdf_nice_level'] . ' ' : '';
-        $res = $this->execute($nice . escapeshellarg($this->application_path) . ($this->disable_smart_shrinking ? ' --disable-smart-shrinking' : null) . ($print_footer === 'true' ? ' --footer-html ' . escapeshellarg($footer_file) : null)  . ($this->orientation ? " --orientation $this->orientation" : null) . " --print-media-type $top_margin $bottom_margin $left_margin $right_margin " . ($page_size ? "--page-size $page_size ": null).  escapeshellarg($html_file) . ' ' . escapeshellarg($pdf_file) . ' 2>&1');
+        $res = $this->execute($nice . escapeshellarg($this->application_path)
+            . ($this->disable_smart_shrinking ? ' --disable-smart-shrinking' : null)
+            . ($print_footer === 'true' ? ' --footer-html ' . escapeshellarg($footer_file) : null)
+            . ($this->orientation ? " --orientation $this->orientation" : null)
+            . " --print-media-type $top_margin $bottom_margin $left_margin $right_margin "
+            . ($this->page_width ? "--page-width $this->page_width " : null)
+            . ($this->page_width ? "--page-height $this->page_height " : null)
+            . ($page_size ? "--page-size $page_size ": null)
+            . escapeshellarg($html_file) . ' ' . escapeshellarg($pdf_file) . ' 2>&1');
 
         if (!$this->fileExists($pdf_file) || $this->fileSize($pdf_file) == 0) {
             if ($this->fileSize($pdf_file) == 0) {

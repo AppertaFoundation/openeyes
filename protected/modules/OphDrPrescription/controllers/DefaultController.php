@@ -412,7 +412,7 @@ class DefaultController extends BaseEventTypeController
 
     public function actionPrint($id)
     {
-        $fpten = Yii::app()->request->getParam('fpten', 'false');
+        $print_mode = Yii::app()->request->getParam('print_mode', null);
 
         $user = User::model()->findByPk(Yii::app()->user->id);
 
@@ -421,16 +421,19 @@ class DefaultController extends BaseEventTypeController
 
         $pdf_documents = (int)Yii::app()->request->getParam('pdf_documents');
 
-        if ($fpten === 'true') {
+        if ($print_mode === 'WP10' || $print_mode === 'FP10') {
             Yii::app()->params['wkhtmltopdf_left_margin'] = '0mm';
             Yii::app()->params['wkhtmltopdf_right_margin'] = '0mm';
             Yii::app()->params['wkhtmltopdf_top_margin'] = '6mm';
             Yii::app()->params['wkhtmltopdf_bottom_margin'] = '0mm';
             Yii::app()->params['wkhtmltopdf_orientation'] = 'Landscape';
+            //Yii::app()->params['wkhtmltopdf_page_height'] = '210mm';
+            //Yii::app()->params['wkhtmltopdf_page_width'] = '177mm';
             Yii::app()->params['wkhtmltopdf_page_size'] = 'A4';
             Yii::app()->params['wkhtmltopdf_disable_smart_shrinking'] = true;
             $this->render('print_fpten', array(
-                'user' => $user
+                'user' => $user,
+                'print_mode' => $print_mode
             ));
         } else if( $pdf_documents == 1 ){
             Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';

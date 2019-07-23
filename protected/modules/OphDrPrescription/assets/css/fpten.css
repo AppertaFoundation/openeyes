@@ -7,94 +7,97 @@
 * This has the initial margin from the top of the page, plus any requisite margins for the surrounds of the form.
 * It also contains the default font specifications.
 */
+
+body {
+    margin: 0;
+}
+
 #fpten-container {
     font-family: arial, sans-serif;
     font-weight: bold;
     font-size: 7.5pt;
-    padding: 3mm 2mm 9mm 3mm;
-    width: 101mm;
-    height: 160mm;
+    padding: 3mm 3mm 12mm 3mm;
+    width: 102mm;
+    height: 156mm;
 }
 
-.fpten-form-row {
-    display: block;
-    width: 100%;
-    height: auto;
-    position: relative;
+.fpten-form-row:before, .fpten-form-row:after {
+    display: table;
+    content: '';
+}
+
+.fpten-form-row:after{
+    clear: both;
 }
 
 .fpten-form-column {
-    display: inline;
+    display: table-cell;
     float: left;
-    position: relative;
 }
 
 #fpten-trust-code {
     font-size: 12pt;
+    font-weight: initial;
 }
 
 /*Site box appears at the bottom toward the center.*/
 #fpten-site {
     text-align: left;
-    height: 26.5mm;
-    width: 30mm;
-    margin-left: 13.5mm;
-    padding-top: 3mm;
-    padding-left: 2mm;
+    height: 30mm;
+    width: 50mm;
+    margin-left: 14mm;
+    padding-top: 2mm;
+    padding-left: 3mm;
+    font-weight: initial;
 }
 
 #fpten-site-code {
-    padding-top: 3mm;
     text-align: left;
-    height: 26.5mm;
-    width: 30mm;
+    height: 30mm;
+    padding-top: 1mm;
 }
 
 /*Age box appears at the top toward the center.*/
 #fpten-age {
-    padding-top: 3mm;
-    margin-left: 28mm;
+    height: 11mm;
+    width: 19mm;
+    margin-left: 30mm;
+    padding-top: 5mm;
     text-align: center;
-    height: 17mm;
-    width: 13mm;
-    line-height: 17mm;
 }
 
 /*DOB box appears directly below the Age box.*/
 #fpten-dob {
-    height: 17mm;
-    width: 13mm;
-    margin-left: 28mm;
-    padding-top: 3mm;
+    height: 10mm;
+    width: 19mm;
+    margin-left: 30mm;
+    padding-bottom: 6mm;
     text-align: center;
-    line-height: 17mm;
+    line-height: 10mm;
 }
 
 /*Patient details box appears at the top right corner beside age and DOB.*/
 #fpten-patient-details {
     text-align: left;
-    padding-top: 3mm;
+    padding-top: 5mm;
     padding-left: 2mm;
-    height: 34mm;
-    width: 32.7mm;
+    height: 21mm;
 }
 
 /*Postcode is right-aligned to the edge of the parent box.*/
 #fpten-postcode-nhs {
     text-align: left;
-    height: 34mm;
-    width: 16.3mm;
-    padding-left: 1mm;
+    height: 21mm;
+    padding-top: 5mm;
 }
 
 /*Prescriber initiative appears at top of main box in the center*/
 #fpten-prescriber {
-    font-size: 7pt;
     height: 10mm;
-    width: 59.5mm;
-    margin-left: 16mm;
+    padding-top: 2mm;
+    width: 44mm;
     text-align: center;
-    line-height: 10mm;
+    font-size: 8pt;
 }
 
 .fpten-prescriber-code {
@@ -108,16 +111,23 @@
 /*Appears beneath the prescriber.*/
 #fpten-prescription-list {
     padding-right: 5mm;
-    height: 72.5mm;
-    width: 71.5mm;
-    margin-left: 16mm;
+    height: 59mm;
+    width: 65mm;
+    margin-left: 30mm;
+}
+
+#wpten-doctor-name {
+    width: 39mm;
+    height: 12mm;
+    margin-left: 30mm;
+    line-height: 12mm;
 }
 
 /*Appears directly above the Trust code in the site box.*/
 #fpten-date {
-    width: 34.7mm;
-    height: 11.5mm;
-    text-align: left;
-    margin-left: 48mm;
-    line-height: 11.5mm;
+    width: 27mm;
+    height: 12mm;
+    text-align: center;
+    margin-left: 68mm;
+    line-height: 12mm;
 }
