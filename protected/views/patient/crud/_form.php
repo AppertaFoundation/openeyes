@@ -365,8 +365,14 @@ foreach ($ethnic_list as $key=>$item){
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                 <?php echo Yii::app()->params['gp_label']; ?>
                 <br/>
-                <?php echo $form->error($patient, 'gp_id');
+                <?php
+                /*
+                 * Add the errors to the gp label associated with gp first.
+                 * If there are no errors on the  GP label from gp_id, then add the errors associated with practice to the gp label itself.
+                 */
+                echo $form->error($patient, 'gp_id');
                 if (!empty($patient->gp_id)) {
+                    // No errors from GP, add errors from Practice.
                     echo $form->error($patient, 'practice_id');
                 }
                 ?>

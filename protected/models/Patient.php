@@ -133,7 +133,7 @@ class Patient extends BaseActiveRecordVersioned
             array('hos_num', 'required', 'on' => Yii::app()->params['institution_code'] !== 'CERA' ? 'pas' : '' ),
             array('gender', 'required', 'on' => array('self_register')),
             array('gp_id', 'required', 'on' => 'referral'),
-            array('practice_id', 'gpPracticeValidator'),
+            array('practice_id', 'gpPracticeValidator', 'on' => 'referral'),
 
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
@@ -356,6 +356,9 @@ class Patient extends BaseActiveRecordVersioned
         }
     }
 
+    /**
+     * This validator is to check if the GP has a practice associated with it or not.
+     **/
     public function gpPracticeValidator($attribute)
     {
         if(Yii::app()->params['institution_code'] === 'CERA' && empty($this->practice_id)){
