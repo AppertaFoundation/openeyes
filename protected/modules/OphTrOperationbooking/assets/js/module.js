@@ -139,7 +139,7 @@
             $(this).parent().html('None');
         });
 
-        $('.autosize').autosize();
+        autosize($('.autosize'));
 
         $(this).on('click', '#et_print_admission_form', function () {
             printIFrameUrl(baseUrl + '/OphTrOperationbooking/default/admissionForm/' + OE_event_id);

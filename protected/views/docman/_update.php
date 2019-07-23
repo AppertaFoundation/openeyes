@@ -67,7 +67,14 @@
 											<?php
 											$contact_type = strtoupper($target->contact_type);
 											$contact_type = $contact_type == 'PRACTICE' ? Yii::app()->params['gp_label'] : $contact_type;
-                                            $contact_nick_name = $contact_type === 'GP' ? $element['event']['episode']['patient']['gp']['contact']->nick_name : $element['event']['episode']['patient']['contact']->nick_name;
+                                            $contact_nick_name = null;
+                                                if($contact_type === 'GP') {
+                                                    if(isset($element['event']['episode']['patient']['gp']['contact'])){
+                                                        $contact_nick_name = $element['event']['episode']['patient']['gp']['contact']->nick_name;
+                                                    }
+                                                } else {
+                                                    $contact_nick_name = $element['event']['episode']['patient']['contact']->nick_name;
+                                                }
 
 											$this->renderPartial('//docman/table/contact_name_type', array(
 												'address_targets' => $element->address_targets,

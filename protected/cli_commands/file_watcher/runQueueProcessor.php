@@ -38,7 +38,7 @@
         echo "Checking file watcher status...\n";
         $result = shell_exec('sudo service dicom-file-watcher status');
         echo 'result: '.$result;
-        if (trim($result) == 'dicom-file-watcher stop/waiting') {
+        if (trim($result) == 'dicom-file-watcher stop/waiting' || (stripos($result, 'dicom-file-watcher.service') !== false && stripos($result, 'active (running)') === false)) {
             echo "File watcher is not running, trying to start...\n";
             shell_exec('sudo service dicom-file-watcher start');
             checkFileWatcher();

@@ -32,27 +32,9 @@
             <div class="flex-layout flex-top">
                 <div class="cols-11">
                     <div id="js-listview-risks-pro" class="cols-full listview-pro">
-                        <!--                Anticoagulants and alpha blockers being mandatory risk items to be displayed, we check if $element contains these in either yes, or no and if it doesn't in either, we display it as unchecked forcefully-->
-                        <?php
-                        $anticoagulants = false;
-                        $alphablockers = false;
-                        $entries = array_merge($element->getEntriesDisplay('present'), $element->getEntriesDisplay('not_present'));
-
-                        foreach ($entries as $entry) {
-                            if (strpos($entry['risk'] . ' ', 'Anticoagulants') !== false) {
-                                $anticoagulants = true;
-                            }
-
-                            if (strpos($entry['risk'], 'Alpha blockers') !== false) {
-                                $alphablockers = true;
-                            }
-                        }
-
-                        if ($anticoagulants == false) {
-                            $not_checked_required_risks[] = 'Anticoagulants';
-                        }
-                        if ($alphablockers == false) {
-                            $not_checked_required_risks[] = 'Alpha blockers';
+                        <?php $not_checked_required_risks = $this->getNotCheckedRequiredRisks($element);
+                        if(count($not_checked_required_risks) === 0) {
+                            unset($not_checked_required_risks);
                         } ?>
                         <table class="last-left">
                             <tbody>

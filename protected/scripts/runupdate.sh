@@ -212,7 +212,7 @@ for module in ${modules[@]}; do
 done
 
 # update composer
-sudo composer self-update
+sudo -E composer self-update
 
 # Now reset/relink various config files etc
 if [ "$fix" = "1" ]; then bash $SCRIPTDIR/oe-fix.sh $fixparams; fi

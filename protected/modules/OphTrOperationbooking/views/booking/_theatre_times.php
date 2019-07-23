@@ -62,7 +62,7 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                                     -
                                   <?= $session->end_time ?>
                                 </div>
-                              <?php if ($session->max_procedures) { ?>
+                              <?php if ($session->isProcedureCountLimited()) { ?>
                                   <div class="available-procedures" title="Available procedures"><?= $session->getAvailableProcedureCount() ?> Procedure(s) available</div>
                               <?php }
                               if ($session->isComplexBookingCountLimited()) { ?>
@@ -83,11 +83,11 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                                 if ($session->paediatric) { ?>
                                     <div class="paediatric" title="Paediatric Session">Paediatric</div>
                                 <?php }
-                                if ($session->max_procedures) { ?>
-                                    <div class="max-procedures" title="Max procedures">Max <?= $session->max_procedures ?> Procedures</div>
+                                if ($session->isProcedureCountLimited()) { ?>
+                                    <div class="max-procedures" title="Max procedures">Max <?= $session->getMaxProcedureCount() ?> Procedures</div>
                                 <?php }
                                 if ($session->isComplexBookingCountLimited()) { ?>
-                                    <div class="max-complex-bookings" title="Max complex bookings">Max <?= $session->max_complex_bookings ?> Complex Bookings</div>
+                                    <div class="max-complex-bookings" title="Max complex bookings">Max <?= $session->getMaxComplexBookingCount() ?> Complex Bookings</div>
                                 <?php } ?>
                             </div>
                         </td>
