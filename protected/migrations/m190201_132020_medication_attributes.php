@@ -18,6 +18,9 @@ class m190201_132020_medication_attributes extends OEMigration
             'description' => 'VARCHAR(256) NULL'
         ), true);
 
+	    $this->createIndex('med_attr_opt_med_att_idx', 'medication_attribute_option', 'medication_attribute_id');
+	    $this->createIndex('med_attr_opt_value_idx', 'medication_attribute_option', 'value');
+
         $this->addForeignKey('fk_med_attr_opt_attr_id', 'medication_attribute_option', 'medication_attribute_id', 'medication_attribute', 'id', 'CASCADE');
 
 	    $this->createOETable('medication_attribute_assignment', array(
