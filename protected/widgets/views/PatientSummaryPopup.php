@@ -32,7 +32,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     <?php if ($this->patient->nhsNumberStatus): ?>
         <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
             <i class="oe-i exclamation pad-right no-click medium-icon"></i><b>
-                NHS Number: <?= $this->patient->nhsNumberStatus->description; ?></b>
+                <?php echo Yii::app()->params['nhs_num_label'] . ((Yii::app()->params['institution_code']==='CERA')? '' : ' Number') ?>: <?= $this->patient->nhsNumberStatus->description; ?></b>
         </div>
     <?php endif; ?>
     <?php if (count($this->patient->identifiers) > 0) { ?>
