@@ -270,7 +270,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.updateTextualDisplay($row);
           if(typeof $row.data('bound_entry') !== 'undefined') {
               controller.updateTextualDisplay($row.data('bound_entry'));
-              if($(e.target).hasClass("route")) {
+              if($(e.target).hasClass("js-route")) {
                   controller.updateRowRouteOptions($row.data('bound_entry'));
               }
           }
@@ -648,8 +648,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.boundController.setRowData($row, data);
         this.boundController.initialiseRow($row);
         if(data.end_date !== "") {
-            this.boundController.showStopControls($row);
+            this.showStopControls($row);
         }
+        this.updateRowRouteOptions($row);
 
         $row.find(".js-prepended_markup:visible").load("/medicationManagement/getInfoBox?medication_id="+data.medication_id);
 
