@@ -277,7 +277,7 @@ class DefaultController extends \BaseEventTypeController
             foreach ($diagnoses as $d) {
                 $already_in = false;
                 foreach ($_diagnoses as $ad) {
-                    if ($d->disorder_id == $ad->disorder_id) {
+                    if (($d->disorder_id === $ad->disorder_id) && ($d->date === $ad->date)) {
                         $already_in = true;
                         // set the eye correctly (The principal diagnosis for the episode is the first diagnosis, so
                         // no need to check that.
