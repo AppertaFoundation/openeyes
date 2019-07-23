@@ -132,7 +132,8 @@ class Patient extends BaseActiveRecordVersioned
             array('dob, patient_source', 'required'),
             array('hos_num', 'required', 'on' => Yii::app()->params['institution_code'] !== 'CERA' ? 'pas' : '' ),
             array('gender', 'required', 'on' => array('self_register')),
-            array('gp_id, practice_id', 'required', 'on' => 'referral'),
+            array('gp_id', 'required', 'on' => 'referral'),
+            array('practice_id', 'gpPracticeValidator'),
 
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
@@ -355,6 +356,12 @@ class Patient extends BaseActiveRecordVersioned
         }
     }
 
+    public function gpPracticeValidator($attribute)
+    {
+        if(Yii::app()->params['institution_code'] === 'CERA' && empty($this->practice_id)){
+            $this->addError($attribute, "Referring Practitioner has no associated practice. Please add a Practitioner with an associated practice.");
+        }
+    }
 
     /**
      * @return array customized attribute labels (name=>label)
