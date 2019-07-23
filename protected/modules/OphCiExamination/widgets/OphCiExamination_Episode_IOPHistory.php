@@ -102,6 +102,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         }
     }
 
+    //Currently only gets value for examination data.
     public function getIOPData(){
         $iop_data_list = array('right'=>array(), 'left'=>array());
         $events = $this->event_type->api->getEvents($this->patient, false);
@@ -124,32 +125,76 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         return $iop_data_list;
     }
 
+    //Gets values for examination and phasing data
     public function getPlotlyIOPData(){
-      $iop_data_list = array('right'=>array(), 'left'=>array());
-      $iop_plotly_list = array('right'=>array('x'=>array(), 'y'=>array()), 'left'=>array('x'=>array(), 'y'=>array()));
 
-      //$events = $this->event_type->api->getEvents($this->patient, false);//Original, working without side effects
+			$iop_data_list = array(
+				'examination'=>array(
+					'right'=>array(
+						'event_id'=>array(),
+						'x'=>array(),
+						'y'=>array()),
+					'left'=>array(
+						'event_id'=>array(),
+						'x'=>array(),
+						'y'=>array())),
+				'phasing'=>array(
+					'right'=>array(
+						'event_id'=>array(),
+						'x'=>array(),
+						'y'=>array()),
+					'left'=>array(
+						'event_id'=>array(),
+						'x'=>array(),
+						'y'=>array())));
 
 			$exam_events = Event::model()->getEventsOfTypeForPatient($this->event_type, $this->patient);
 			$phasing_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Phasing")), $this->patient);
 
-			$events = array_merge($exam_events, $phasing_events);
+			foreach ($phasing_events as $phasing_event){
+				$iop = $phasing_event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
 
-			foreach ($events as $event) {
-				$iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
+				if($iop) {
+					$timestamp = Helper::mysqlDate2JsTimestamp($phasing_event->event_date);
 
-        if ($iop) {
-          $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
-          foreach (['left', 'right'] as $side) {
-            $reading = $iop->getReading($side);
-            if ($reading){
-              array_push($iop_data_list[$side], array('x'=>$timestamp, 'y'=>(float)$reading));
-            }
-          }
-        }
-      }
+					foreach (['left', 'right'] as $side) {
+						$phasing_readings = $iop->getReadings($side);
 
-      foreach (['left', 'right'] as $side){
+						foreach ($phasing_readings as $phasing_reading) {
+
+							if($phasing_reading) {
+								array_push($iop_data_list['phasing'][$side]['event_id'], $phasing_event->id);
+								array_push($iop_data_list['phasing'][$side]['x'], $timestamp);
+								array_push($iop_data_list['phasing'][$side]['y'], $phasing_reading);
+							}
+						}
+					}
+				}
+			}
+
+			foreach ($exam_events as $exam_event) {
+				$iop = $exam_event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
+
+				if ($iop) {
+					$timestamp = Helper::mysqlDate2JsTimestamp($exam_event->event_date);
+
+					foreach (['left', 'right'] as $side) {
+						$exam_readings = $iop->getReadings($side);
+
+						if(count($exam_readings) > 0) {
+							foreach ($exam_readings as $exam_reading) {
+								if ($exam_reading) {
+									array_push($iop_data_list['examination'][$side]['event_id'], $exam_event->id);
+									array_push($iop_data_list['examination'][$side]['x'], $timestamp);
+									array_push($iop_data_list['examination'][$side]['y'], $exam_reading);
+								}
+							}
+						}
+					}
+				}
+			}
+
+/*      foreach (['left', 'right'] as $side){
         usort($iop_data_list[$side], function($item1, $item2){
           if ($item1['x'] == $item2['x']) return 0;
           return $item1['x'] < $item2['x'] ? -1 : 1;
@@ -158,8 +203,10 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
           $iop_plotly_list[$side]['x'][] = $item['x'];
           $iop_plotly_list[$side]['y'][] = $item['y'];
         }
-      }
-      return $iop_plotly_list;
+      }*/
+      //return $iop_plotly_list;
+
+			return $iop_data_list;
     }
 
     public function getTargetIOP(){

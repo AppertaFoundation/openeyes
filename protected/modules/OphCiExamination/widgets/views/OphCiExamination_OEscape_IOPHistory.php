@@ -11,7 +11,7 @@
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
     var sides = ['left', 'right'];
 
-    //plotly
+    //plotly data should be in format: [eventType][eye]=>(event_id, x, y)
     var iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
 
     for (var side of sides){
@@ -87,14 +87,14 @@
           symbol: 'circle',
           size: 10,
         },
-/*				error_y: {
+				error_y: {
         	type: "data",
 					symmetric: false,
 					color: "#888",
 					array: array,
 					arrayminus: arraymin,
         	visible: true
-				},*/
+				},
       }];
 
       Plotly.newPlot(
