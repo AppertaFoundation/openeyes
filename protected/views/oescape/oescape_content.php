@@ -17,9 +17,14 @@
  */
 ?>
 <?php $this->renderPartial('//patient/_patient_alerts') ?>
-<main class="oescape flex-layout flex-stretch"  id="oescape-layout">
+
+<?php   $this->renderPartial('//oescape/oescape_drill_down_list', array(
+    'event_list'=> $cssClass,
+    'patient_list' => $content
+)) ?> 
+<div class="oescape flex-layout flex-stretch"  id="oescape-layout" style="display:none;">
     <?php echo $content; ?>
-</main>
+</div>
 <script type="text/javascript">
   $('#oescape-layout').ready(function() {
     //Immediately set the size to the selected value
