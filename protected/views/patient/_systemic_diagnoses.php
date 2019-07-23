@@ -31,7 +31,9 @@
             <tr>
                 <th>Date</th>
                 <th>Diagnosis</th>
-                <?php if ($this->checkAccess('OprnEditSystemicDiagnosis')) { ?><th>Actions</th><?php } ?>
+                <?php if ($this->checkAccess('OprnEditSystemicDiagnosis')) {
+                    ?><th>Actions</th><?php
+                } ?>
             </tr>
             </thead>
             <tbody>

@@ -57,7 +57,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                 'id' => "et_cancel",
                 'class' => 'large button'
             ]);
-            ?>
+?>
         </td>
     </tr>
     </tfoot>
@@ -70,7 +70,6 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'model' => $model,
     )) ?>
     <?php
-
 } ?>
 
 </div>

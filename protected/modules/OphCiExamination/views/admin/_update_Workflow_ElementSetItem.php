@@ -44,7 +44,7 @@
             <td><?=\CHtml::activeCheckBox($item, 'is_mandatory', array('class' => 'workflow-item-attr'))?></td>
             <td><a href="#" class="removeElementType" rel="<?php echo $item->id?>" data-element-type-id="<?php echo $item->element_type_id?>">Remove</a></td>
           </tr>
-            <?php } ?>
+        <?php } ?>
         </tbody>
         <tfoot class="pagination-container">
         <tr>

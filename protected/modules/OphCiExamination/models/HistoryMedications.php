@@ -88,7 +88,7 @@ class HistoryMedications extends \BaseEventTypeElement
     public function getStoppedOrderedEntries()
     {
         $stoppedEntries = array_filter($this->orderedEntries, function ($entry) {
-            return $entry->end_date && $entry->end_date <= date('Y-m-d' , strtotime($this->event->event_date));
+            return $entry->end_date && $entry->end_date <= date('Y-m-d', strtotime($this->event->event_date));
         });
         return $stoppedEntries;
     }
@@ -96,7 +96,7 @@ class HistoryMedications extends \BaseEventTypeElement
     public function getCurrentOrderedEntries()
     {
         $currentEntries = array_filter($this->orderedEntries, function ($entry) {
-            return !$entry->end_date || $entry->end_date > date('Y-m-d' , strtotime($this->event->event_date));
+            return !$entry->end_date || $entry->end_date > date('Y-m-d', strtotime($this->event->event_date));
         });
         return $currentEntries;
     }

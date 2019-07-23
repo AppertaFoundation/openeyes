@@ -110,10 +110,10 @@
 </table>
 <?php if (Yii::app()->params['profile_user_can_edit']) {?>
       <div class="profile-actions">
-          <?php echo EventAction::button('Update', 'save',null, array('class'=>'button large hint green'))->toHtml()?>
+          <?php echo EventAction::button('Update', 'save', null, array('class'=>'button large hint green'))->toHtml()?>
         <i class="spinner" title="Loading..." style="display: none;"></i>
       </div>
-        <?php }?>
+<?php }?>
 
     <?php $this->endWidget()?>
 

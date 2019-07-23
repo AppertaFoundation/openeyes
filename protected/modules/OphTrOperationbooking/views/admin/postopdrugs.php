@@ -36,7 +36,11 @@
                         $criteria->compare('deleted', 0);
                         $criteria->order = 'display_order asc';
                         foreach (PostopDrug::model()->findAll($criteria) as $i => $drug) {?>
-                            <li class="<?php if ($i % 2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $drug->id?>">
+                            <li class="<?php if ($i % 2 == 0) {
+                                ?>even<?php
+                                       } else {
+                                            ?>odd<?php
+                                       }?>" data-attr-id="<?php echo $drug->id?>">
                                 <span class="column_name"><a class="drugItem" href="#" rel="<?php echo $drug->id?>"><?php echo $drug->name?></a></span>
                                 <span class="column_deleted"><a class="deleteDrugItem" href="#" rel="<?php echo $drug->id?>">delete</a></span>
                             </li>

@@ -20,25 +20,25 @@ class m190314_160734_alter_view_patient_allergy_assignment extends CDbMigration
         where `aa`.has_allergy = '1'
       ";
 
-      protected $_current_definition_allergy_examination_events = "select 
+    protected $_current_definition_allergy_examination_events = "select 
         event_date, 
         event.created_date, 
         event_id, patient_id 
         from et_ophciexamination_allergies et join event on et.event_id = event.id join episode on event.episode_id = episode.id
-      ";   
+      ";
 
     public function safeUp()
     {
-    $new_definition_patient_allergy_assignment = $this->_current_definition_patient_allergy_assignment." and deleted = 0";
+        $new_definition_patient_allergy_assignment = $this->_current_definition_patient_allergy_assignment." and deleted = 0";
         $new_definition_allergy_examination_events = $this->_current_definition_allergy_examination_events." and event.deleted = 0";
 
-    $this->execute("CREATE OR REPLACE VIEW `patient_allergy_assignment` AS {$new_definition_patient_allergy_assignment}");
+        $this->execute("CREATE OR REPLACE VIEW `patient_allergy_assignment` AS {$new_definition_patient_allergy_assignment}");
         $this->execute("CREATE OR REPLACE VIEW `allergy_examination_events` AS {$new_definition_allergy_examination_events}");
     }
 
     public function safeDown()
     {
-    $this->execute("CREATE OR REPLACE VIEW `patient_allergy_assignment` AS {$this->_current_definition_patient_allergy_assignment}");
+        $this->execute("CREATE OR REPLACE VIEW `patient_allergy_assignment` AS {$this->_current_definition_patient_allergy_assignment}");
         $this->execute("CREATE OR REPLACE VIEW `allergy_examination_events` AS {$this->_current_definition_allergy_examination_events}");
     }
 }

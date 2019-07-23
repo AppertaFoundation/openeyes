@@ -24,7 +24,7 @@
     </h3>
   </header>
   <div class="element-fields full-width">
-      <?php echo $form->dropDownList(
+        <?php echo $form->dropDownList(
           $element, 'site_id',
           Site::model()->getListForCurrentInstitution(),
           array(

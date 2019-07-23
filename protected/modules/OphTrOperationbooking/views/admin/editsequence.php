@@ -29,19 +29,19 @@
         <tbody>
             <tr>
                 <td>
-                  <?= $form->labelEx($sequence, 'firm_id'); ?>
+                    <?= $form->labelEx($sequence, 'firm_id'); ?>
                 </td>
                 <td>
-                  <?= $form->dropDownList($sequence, 'firm_id', Firm::model()->getListWithSpecialties(),
+                    <?= $form->dropDownList($sequence, 'firm_id', Firm::model()->getListWithSpecialties(),
                     ['empty' => '- Emergency -', 'nowrapper' => true, 'class' => 'cols-12', ])?>
                 </td>
             </tr>
             <tr>
                 <td>
-                  <?= $form->labelEx($sequence, 'theatre_id'); ?>
+                    <?= $form->labelEx($sequence, 'theatre_id'); ?>
                 </td>
                 <td>
-                  <?= $form->dropDownList($sequence, 'theatre_id',
+                    <?= $form->dropDownList($sequence, 'theatre_id',
                     CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->
                     activeOrPk($sequence->theatre_id)->findAll(['order' => 'name']), 'id', 'nameWithSite'),
                     ['empty' => '- None -', 'nowrapper' => true])?>
@@ -49,28 +49,28 @@
             </tr>
             <tr>
                 <td>
-                  <?= $form->labelEx($sequence, 'start_date'); ?>
+                    <?= $form->labelEx($sequence, 'start_date'); ?>
                 </td>
                 <td>
-                  <?= $form->datePicker($sequence, 'start_date', [],
+                    <?= $form->datePicker($sequence, 'start_date', [],
                     ['null' => true, 'nowrapper' => true]) ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                  <?= $form->labelEx($sequence, 'end_date'); ?>
+                    <?= $form->labelEx($sequence, 'end_date'); ?>
                 </td>
                 <td>
-                  <?= $form->datePicker($sequence, 'end_date', [],
+                    <?= $form->datePicker($sequence, 'end_date', [],
                     ['null' => true, 'nowrapper' => true]) ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                  <?= $form->labelEx($sequence, 'weekday'); ?>
+                    <?= $form->labelEx($sequence, 'weekday'); ?>
                 </td>
                 <td>
-                  <?= $form->dropDownList($sequence, 'weekday', [
+                    <?= $form->dropDownList($sequence, 'weekday', [
                             1 => 'Monday',
                             2 => 'Tuesday',
                             3 => 'Wednesday',
@@ -84,26 +84,26 @@
             </tr>
             <tr>
                 <td>
-                  <?= $form->labelEx($sequence, 'start_time'); ?>
+                    <?= $form->labelEx($sequence, 'start_time'); ?>
                 </td>
                 <td>
-                  <?= $form->textField($sequence, 'start_time', ['nowrapper' => true]) ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                  <?= $form->labelEx($sequence, 'end_time'); ?>
-                </td>
-                <td>
-                  <?= $form->textField($sequence, 'end_time', ['nowrapper' => true]) ?>
+                    <?= $form->textField($sequence, 'start_time', ['nowrapper' => true]) ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                  <?= $form->labelEx($sequence, 'default_admission_time'); ?>
+                    <?= $form->labelEx($sequence, 'end_time'); ?>
                 </td>
                 <td>
-                  <?= $form->textField($sequence, 'default_admission_time', ['nowrapper' => true]) ?>
+                    <?= $form->textField($sequence, 'end_time', ['nowrapper' => true]) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->labelEx($sequence, 'default_admission_time'); ?>
+                </td>
+                <td>
+                    <?= $form->textField($sequence, 'default_admission_time', ['nowrapper' => true]) ?>
                 </td>
             </tr>
             <tr>
@@ -116,42 +116,42 @@
             </tr>
             <tr>
                 <td>
-                  <?= $form->labelEx($sequence, 'interval_id'); ?>
+                    <?= $form->labelEx($sequence, 'interval_id'); ?>
                 </td>
                 <td>
-                  <?= $form->dropDownList($sequence, 'interval_id', 'OphTrOperationbooking_Operation_Sequence_Interval', ['nowrapper' => true]) ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                  <?= $form->labelEx($sequence, 'consultant'); ?>
-                </td>
-                <td>
-                  <?= $form->radioBoolean($sequence, 'consultant', ['nowrapper' => true]) ?>
+                    <?= $form->dropDownList($sequence, 'interval_id', 'OphTrOperationbooking_Operation_Sequence_Interval', ['nowrapper' => true]) ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                  <?= $form->labelEx($sequence, 'paediatric'); ?>
+                    <?= $form->labelEx($sequence, 'consultant'); ?>
                 </td>
                 <td>
-                  <?= $form->radioBoolean($sequence, 'paediatric', ['nowrapper' => true]) ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                  <?= $form->labelEx($sequence, 'anaesthetist'); ?>
-                </td>
-                <td>
-                  <?= $form->radioBoolean($sequence, 'anaesthetist', ['nowrapper' => true]) ?>
+                    <?= $form->radioBoolean($sequence, 'consultant', ['nowrapper' => true]) ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                  <?= $form->labelEx($sequence, 'general_anaesthetic'); ?>
+                    <?= $form->labelEx($sequence, 'paediatric'); ?>
                 </td>
                 <td>
-                  <?= $form->radioBoolean($sequence, 'general_anaesthetic', ['nowrapper' => true]) ?>
+                    <?= $form->radioBoolean($sequence, 'paediatric', ['nowrapper' => true]) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->labelEx($sequence, 'anaesthetist'); ?>
+                </td>
+                <td>
+                    <?= $form->radioBoolean($sequence, 'anaesthetist', ['nowrapper' => true]) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->labelEx($sequence, 'general_anaesthetic'); ?>
+                </td>
+                <td>
+                    <?= $form->radioBoolean($sequence, 'general_anaesthetic', ['nowrapper' => true]) ?>
                 </td>
             </tr>
             <tr>
@@ -167,23 +167,33 @@
 
                     <label class="inline">
                         <input type="checkbox" name="OphTrOperationbooking_Operation_Sequence[week_selection_week1]" value="1"
-                          <?php if ($sequence->week_selection & 1) {?> checked="checked"<?php }?>/> 1<sup>st</sup>
+                            <?php if ($sequence->week_selection & 1) {
+                                ?> checked="checked"<?php
+                            }?>/> 1<sup>st</sup>
                     </label>
                     <label class="inline">
                         <input type="checkbox" name="OphTrOperationbooking_Operation_Sequence[week_selection_week2]" value="1"
-                          <?php if ($sequence->week_selection & 2) {?> checked="checked"<?php }?>/> 2<sup>nd</sup>
+                            <?php if ($sequence->week_selection & 2) {
+                                ?> checked="checked"<?php
+                            }?>/> 2<sup>nd</sup>
                     </label>
                     <label class="inline">
                         <input type="checkbox" name="OphTrOperationbooking_Operation_Sequence[week_selection_week3]" value="1"
-                          <?php if ($sequence->week_selection & 4) {?> checked="checked"<?php }?>/> 3<sup>rd</sup>
+                            <?php if ($sequence->week_selection & 4) {
+                                ?> checked="checked"<?php
+                            }?>/> 3<sup>rd</sup>
                     </label>
                     <label class="inline">
                         <input type="checkbox" name="OphTrOperationbooking_Operation_Sequence[week_selection_week4]" value="1"
-                          <?php if ($sequence->week_selection & 8) {?> checked="checked"<?php }?>/> 4<sup>th</sup>
+                            <?php if ($sequence->week_selection & 8) {
+                                ?> checked="checked"<?php
+                            }?>/> 4<sup>th</sup>
                     </label>
                     <label class="inline">
                         <input type="checkbox" name="OphTrOperationbooking_Operation_Sequence[week_selection_week5]" value="1"
-                          <?php if ($sequence->week_selection & 16) {?> checked="checked"<?php }?>/> 5<sup>th</sup>
+                            <?php if ($sequence->week_selection & 16) {
+                                ?> checked="checked"<?php
+                            }?>/> 5<sup>th</sup>
                     </label>
                 </td>
             </tr>
@@ -197,7 +207,7 @@
                     Yii::app()->createUrl('OphTrOperationbooking/admin/viewSequences'),
                     array('level' => 'cancel')
                 )->toHtml();
-            ?>
+?>
             <?php if ($sequence->id) {?>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <?php echo EventAction::button('View sessions', 'view_sessions', array(), array('class' => 'button small'))->toHtml()?>

@@ -35,7 +35,7 @@ if (!empty($sop) && Yii::app()->params['enable_forum_integration'] === 'on') {
         ));
 }
 
-if ($this->checkEditAccess()){
+if ($this->checkEditAccess()) {
     array_unshift(
     $this->event_actions,
         EventAction::link('Choose Lens', Yii::app()->createUrl($this->module->id.'/default/update/'.$this->event->id), null, array('class' => 'button small')
@@ -71,5 +71,5 @@ if ($this->is_auto) {
 
 $this->renderOpenElements($this->action->id); ?>
 <?php $this->renderPartial('//default/delete');?>
-<?php $this->renderPartial('_va_view' , ['action' => 'view']);?>
+<?php $this->renderPartial('_va_view', ['action' => 'view']);?>
 <?php $this->endContent()?>

@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data element-eyes">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column">
           <?php if ($element->hasEye($eye_side)) { ?>
               <table>
@@ -36,8 +36,8 @@
                   </td>
                   <td class="cols-5 column data-value">
                       <?php
-                      echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->{$eye_side.'_blepharitis_id'});
-                      ?>
+                        echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->{$eye_side.'_blepharitis_id'});
+                        ?>
                   </td>
                 </tr>
                 <tr class="data-group">
@@ -46,8 +46,8 @@
                   </td>
                   <td class="cols-5 column data-value">
                       <?php
-                      echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->{$eye_side.'_dry_eye_id'});
-                      ?>
+                        echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->{$eye_side.'_dry_eye_id'});
+                        ?>
                   </td>
                 </tr>
                 <tr class="data-group">
@@ -56,16 +56,16 @@
                   </td>
                   <td class="cols-5 column data-value">
                       <?php
-                      if($element->right_cornea_id){
-                          echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->getName($element->{$eye_side.'_cornea_id'});
-                      } ?>
+                        if ($element->right_cornea_id) {
+                            echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->getName($element->{$eye_side.'_cornea_id'});
+                        } ?>
                   </td>
                 </tr>
                 </tbody>
               </table>
-          <?php } else { ?>
+            <?php } else { ?>
             Not recorded
-          <?php } ?>
+            <?php } ?>
       </div>
     <?php endforeach; ?>
 </div>

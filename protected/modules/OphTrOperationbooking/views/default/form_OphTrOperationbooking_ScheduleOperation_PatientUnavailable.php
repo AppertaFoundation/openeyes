@@ -35,7 +35,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
         'options' => array(
             'minDate' => 'today',
         ) ));
-        ?>
+?>
     </td>
     <td>
         <?php $form->widget("application.widgets.{$dateFieldWidget}", array(
@@ -50,7 +50,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
         'options' => array(
             'minDate' => 'today',
         )));
-        ?>
+?>
     </td>
     <td>
         <?=\CHtml::dropDownList($element_name.'[patient_unavailables]['.$key.'][reason_id]',

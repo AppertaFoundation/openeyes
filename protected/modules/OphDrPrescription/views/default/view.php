@@ -23,11 +23,11 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
 
     <?php
         // Event actions
-        if ($this->checkPrintAccess()) {
-            if(!$Element->draft || $this->checkEditAccess()){
-                $this->event_actions[] = EventAction::printButton();
-            }
+    if ($this->checkPrintAccess()) {
+        if (!$Element->draft || $this->checkEditAccess()) {
+            $this->event_actions[] = EventAction::printButton();
         }
+    }
     ?>
 
     <?php $this->renderPartial('//base/_messages'); ?>
@@ -46,10 +46,10 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
     <?php $this->renderOptionalElements($this->action->id); ?>
 
     <script type="text/javascript">
-        <?php 
+        <?php
         if (isset(Yii::app()->session['print_prescription'])) {
             unset(Yii::app()->session['print_prescription']);
-        ?>
+            ?>
         $(document).ready(function() {
             do_print_prescription();
         });

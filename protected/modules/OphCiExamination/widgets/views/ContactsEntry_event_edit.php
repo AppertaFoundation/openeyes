@@ -3,7 +3,7 @@
 
 
 if (!isset($values)) {
-    if(isset($entry) && isset($entry->contact)){
+    if (isset($entry) && isset($entry->contact)) {
         $contact = $entry->contact;
     }
     $values = array(
@@ -25,13 +25,15 @@ if (!isset($values)) {
     <td><?= $values['email'] ?></td>
     <td><?= $values['phone'] ?></td>
     <td><?= $values['address'] ?></td>
-    <?php if($show_comments) {
+    <?php if ($show_comments) {
         $comment = isset($entry->comment) ? $entry->comment : "";
         ?>
         <td>
     <span class="comment-group js-comment-container"
           id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-          style="<?php if (!$comment): ?>display: none;<?php endif; ?>"
+          style="<?php if (!$comment) :
+                ?>display: none;<?php
+                 endif; ?>"
           data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
                    <textarea id="<?= $model_name ?>_comments[]"
                              name="<?= $model_name ?>[comments][]"
@@ -43,7 +45,9 @@ if (!isset($values)) {
                     class="button js-add-comments"
                     data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
                     type="button"
-                    style="<?php if ($comment): ?>visibility: hidden;<?php endif; ?>"
+                    style="<?php if ($comment) :
+                        ?>visibility: hidden;<?php
+                           endif; ?>"
             >
                 <i class="oe-i comments small-icon"></i>
             </button>

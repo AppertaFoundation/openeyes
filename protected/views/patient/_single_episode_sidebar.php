@@ -55,33 +55,35 @@ $operation_status_to_css_class = [
     <?php if (is_array($ordered_episodes)) { ?>
         <ul class="events" id="js-events-by-date">
             <?php foreach ($ordered_episodes as $specialty_episodes) {
-                  foreach ($specialty_episodes['episodes'] as $i => $episode) {
-                      // Episode events
-                      if ($episode->subspecialty) {
-                          $tag = $episode->subspecialty ? $episode->subspecialty->ref_spec : 'Ss';
-                      } else {
-                          $tag = "Le";
-                      }
-                      $subspecialty_name = $episode->getSubspecialtyText();
-                      foreach ($episode->events as $event) {
-                          /* @var Event $event */
+                foreach ($specialty_episodes['episodes'] as $i => $episode) {
+                    // Episode events
+                    if ($episode->subspecialty) {
+                        $tag = $episode->subspecialty ? $episode->subspecialty->ref_spec : 'Ss';
+                    } else {
+                        $tag = "Le";
+                    }
+                    $subspecialty_name = $episode->getSubspecialtyText();
+                    foreach ($episode->events as $event) {
+                        /* @var Event $event */
 
-                          $highlight = false;
+                        $highlight = false;
 
-                          if (isset($this->event) && $this->event->id == $event->id) {
-                              $highlight = true;
-                              $current_subspecialty = $episode->subspecialty;
-                          }
+                        if (isset($this->event) && $this->event->id == $event->id) {
+                            $highlight = true;
+                            $current_subspecialty = $episode->subspecialty;
+                        }
 
-                          $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
-                          $event_name = $event->getEventName();
-                          $event_image = EventImage::model()->find('event_id = :event_id', array(':event_id' => $event->id));
-                          $patientTicketing_API = new \OEModule\PatientTicketing\components\PatientTicketing_API();
-                          $virtual_clinic_event = $patientTicketing_API->getTicketForEvent($event);
-                          ?>
+                        $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
+                        $event_name = $event->getEventName();
+                        $event_image = EventImage::model()->find('event_id = :event_id', array(':event_id' => $event->id));
+                        $patientTicketing_API = new \OEModule\PatientTicketing\components\PatientTicketing_API();
+                        $virtual_clinic_event = $patientTicketing_API->getTicketForEvent($event);
+                        ?>
 
                       <li id="js-sideEvent<?php echo $event->id ?>"
-                          class="event <?php if ($highlight) { ?> selected<?php } ?>"
+                          class="event <?php if ($highlight) {
+                                ?> selected<?php
+                                       } ?>"
                           data-event-id="<?= $event->id ?>"
                           data-event-date="<?= $event->event_date ?>" data-created-date="<?= $event->created_date ?>"
                           data-event-year-display="<?= substr($event->NHSDate('event_date'), -4) ?>"
@@ -91,7 +93,7 @@ $operation_status_to_css_class = [
                           data-event-icon='<?= $event->getEventIcon('medium') ?>'
                           <?php if ($event_image !== null && $event_image->status->name === 'CREATED') { ?>
                             data-event-image-url="<?= Yii::app()->createUrl('eventImage/view/' . $event_image->event_id) ?>"
-                          <?php } ?>
+                            <?php } ?>
                       >
                         <div class="tooltip quicklook" style="display: none; ">
                           <div class="event-name"><?php echo $event_name ?></div>
@@ -104,11 +106,11 @@ $operation_status_to_css_class = [
                             }
 
                             $operation = $event->getElementByClass('Element_OphTrOperationbooking_Operation');
-                            if($operation) {
+                            if ($operation) {
                                 $status_name = $operation->status->name;
                                 $css_class = $operation_status_to_css_class[$status_name];
                                 $event_icon_class .= ' ' . $css_class;
-                                if(!$event->hasIssue('Operation requires scheduling')) {
+                                if (!$event->hasIssue('Operation requires scheduling')) {
                                     // this needs to be checked to avoid issue duplication, because the issue
                                     // 'Operation requires scheduling' is saved to the database
                                     // as an event issue, while the others are not
@@ -137,10 +139,10 @@ $operation_status_to_css_class = [
                             }
                             ?>
                             <span class="event-type js-event-a<?=$event_icon_class?>">
-                                <?= $event->getEventIcon() ?>
+                              <?= $event->getEventIcon() ?>
                             </span>
                             <span class="event-extra">
-                                <?php
+                              <?php
                                 $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
                                 if (method_exists($api, 'getLaterality')) {
                                     $this->widget('EyeLateralityWidget', ['eye' => $api->getLaterality($event->id), 'pad' => '']);
@@ -148,15 +150,15 @@ $operation_status_to_css_class = [
                             </span>
                             <span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' backdated' : '' ?>">
                             <?php echo $event->event_date
-                                ? $event->NHSDateAsHTML('event_date')
-                                : $event->NHSDateAsHTML('created_date');
+                              ? $event->NHSDateAsHTML('event_date')
+                              : $event->NHSDateAsHTML('created_date');
                             ?>
                           </span>
                           <span class="tag"><?= $tag ?></span>
                         </a>
                       </li>
-                      <?php }
-                  }
+                    <?php }
+                }
             } ?>
         </ul>
     <?php } ?>
@@ -172,8 +174,8 @@ $this->renderPartial('//patient/add_new_event', array(
     'patient_id' => $this->patient->id,
     'event_types' => EventType::model()->getEventTypeModules(),
 ));
-if($this->editable){
-  $this->renderPartial('//patient/change_event_context', array(
+if ($this->editable) {
+    $this->renderPartial('//patient/change_event_context', array(
       'button_selector' => '.js-change_context',
       'view_subspecialty' => $current_subspecialty,
       'episodes' => $active_episodes,
@@ -181,9 +183,9 @@ if($this->editable){
       'patient_id' => $this->patient->id,
       'workflowSteps' => OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps($this->event->episode->status->id),
       'currentStep' => (isset($this->event->eventType->class_name) && $this->event->eventType->class_name == 'OphCiExamination' ? $this->getCurrentStep() : '' ),
-      'currentFirm' => (isset($this->event->firm_id) ? $this->event->firm_id : '""'), // for some strange reason '' doesn't reslove to an empty str 
+      'currentFirm' => (isset($this->event->firm_id) ? $this->event->firm_id : '""'), // for some strange reason '' doesn't reslove to an empty str
       'event_types' => $this->event->eventType->name
-  ));
+    ));
 }
 ?>
 <?php

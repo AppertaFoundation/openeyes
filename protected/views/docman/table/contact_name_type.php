@@ -51,7 +51,7 @@
         ]
     );
 
-    if(!$is_editable){
+    if (!$is_editable) {
         echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, array(
             'id' => 'yDocumentTarget_'.$row_index.'_attributes_contact_type')
         );

@@ -54,21 +54,15 @@ class MedicationController extends BaseAdminController
 
         $criteria = new CDbCriteria();
 
-        foreach (array('name, aliases', 'external_code', 'external_source') as $field)
-        {
-            if(isset($_GET['search'][$field]) && $_GET['search'][$field] != '')
-            {
-                if(strpos($field, ', ') === false)
-                {
+        foreach (array('name, aliases', 'external_code', 'external_source') as $field) {
+            if (isset($_GET['search'][$field]) && $_GET['search'][$field] != '') {
+                if (strpos($field, ', ') === false) {
                     // Single column fields
                     $criteria->compare($field, $_GET['search'][$field], ($field != 'active'));
-                }
-                else
-                {
+                } else {
                     // Combined fields
                     $crit2 = new CDbCriteria();
-                    foreach (explode(', ', $field) as $column)
-                    {
+                    foreach (explode(', ', $field) as $column) {
                         $crit2->compare($column, $_GET['search'][$field], true, 'OR');
                     }
 
@@ -77,8 +71,7 @@ class MedicationController extends BaseAdminController
             }
         }
 
-        if(isset($_GET['search']['tags.name']) && $_GET['search']['tags.name'] != '')
-        {
+        if (isset($_GET['search']['tags.name']) && $_GET['search']['tags.name'] != '') {
             $command = Yii::app()->db->createCommand("SELECT medication_drug_id FROM medication_drug_tag WHERE tag_id IN (SELECT id FROM tag WHERE name LIKE CONCAT('%', :tagname ,'%'))");
             $matching_ids = $command->queryColumn(array(':tagname' => $_GET['search']['tags.name']));
             $criteria->addInCondition('id', $matching_ids, 'AND');

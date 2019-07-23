@@ -377,7 +377,6 @@ class Event extends BaseActiveRecordVersioned
             }
 
             $this->onAfterSoftDelete(new CEvent($this));
-
         } catch (Exception $e) {
             if ($transaction) {
                 $transaction->rollback();
@@ -628,9 +627,8 @@ class Event extends BaseActiveRecordVersioned
             // TODO: this really should be in the module API with some kind of default text here
             if (property_exists($this->automated_source, 'goc_number')) {
                 $result .= 'Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')'. "<br>";
-
             }
-            if(property_exists($this->automated_source, 'address')){
+            if (property_exists($this->automated_source, 'address')) {
                 $result .= 'Optometrist Address: '.$this->automated_source->address;
             }
 

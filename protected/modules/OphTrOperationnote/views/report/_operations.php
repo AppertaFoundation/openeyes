@@ -30,7 +30,7 @@
                     No operations were found with the selected search criteria.
                 </td>
             </tr>
-        <?php }else{?>
+        <?php } else {?>
             <?php foreach ($report->operations as $ts => $operation) {?>
                 <tr>
                     <?php foreach ($operation as $item) {?>

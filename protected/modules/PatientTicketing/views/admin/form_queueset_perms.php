@@ -32,23 +32,20 @@ $roles = $qs_svc->getQueueSetRoles();
 
 <div class="data-group">
     <?php
-        if (count($roles) > 1) {
-            ?>
+    if (count($roles) > 1) {
+        ?>
             <div class="alert-box issue">Support for multiple Patient Ticketing roles not yet implemented.</div>
         <?php
-
-        } elseif (count($roles == 1)) {
-            ?>
+    } elseif (count($roles == 1)) {
+        ?>
         <div class="alert-box info">User(s) will be given the "<?=$roles[0]?>" role if not already setup.</div>
         <input type="hidden" name="user_role" value="<?=$roles[0]?>" />
-    <?php
-
-        } else {
-            ?>
+        <?php
+    } else {
+        ?>
             <div>Error: At least one role must be configured for Patient Ticketing!</div>
-    <?php
-
-        }
+        <?php
+    }
     ?>
 </div>
 
@@ -111,7 +108,7 @@ $roles = $qs_svc->getQueueSetRoles();
                 'username' => '{{username}}',
                 'id' => '{{id}}',
             ));
-        ?>
+            ?>
     </script>
 </div>
 

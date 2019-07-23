@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data element-eyes">
-        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
                 <div class="<?= $eye_side ?>-eye">
                         <h3 class="<?= $eye_side ?>-color-text"><?=\CHtml::encode($element->getAttributeLabel($eye_side)) ?></h3>
                         <?php if ($element->hasEye($eye_side)) {

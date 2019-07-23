@@ -93,7 +93,7 @@
     </table>
     <h2 class="pageBreak">To be retained in patient's notes</h2>
     <?php for ($i = 0; $i < 2; ++$i) { ?>
-            <?php if($i == 1){ ?>
+            <?php if ($i == 1) { ?>
                 <div class="break"></div>
             <?php } ?>
        
@@ -144,10 +144,10 @@
                 <p>
                     I have interpreted the information above to the patient to the best of my ability and in a way in which I believe s/he can understand.
                 </p>
-                <?php echo $this->renderPartial('signature_table3', array('vi' => ($css_class == 'impaired'), 'name' => $elements['Element_OphTrConsent_Other']->interpreter_name)) ?>
+                    <?php echo $this->renderPartial('signature_table3', array('vi' => ($css_class == 'impaired'), 'name' => $elements['Element_OphTrConsent_Other']->interpreter_name)) ?>
                 <div class="spacer"></div>
-            <?php } ?>
-<?php } ?>
+                <?php } ?>
+    <?php } ?>
         <div class="break"></div>
         <p>Top copy accepted by patient: yes/no (please ring)</p>
         <h3>Statement of patient</h3>

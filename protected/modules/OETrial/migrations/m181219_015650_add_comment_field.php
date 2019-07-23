@@ -12,8 +12,8 @@ class m181219_015650_add_comment_field extends OEMigration
 
     public function down()
     {
-        $this->dropColumn('trial_patient','comment');
-        $this->dropColumn('trial_patient_version','comment');
+        $this->dropColumn('trial_patient', 'comment');
+        $this->dropColumn('trial_patient_version', 'comment');
     }
 
     /*

@@ -22,7 +22,7 @@
         <label>Medication drugs tagged</label>
     </div>
     <div class="cols-5 data-group column end">
-        <?php if($items_count > 0): ?>
+        <?php if ($items_count > 0) : ?>
         <table class="generic-admin" id="drugs_list">
             <thead>
                 <tr>
@@ -30,14 +30,14 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($items as $i): ?>
+                <?php foreach ($items as $i) : ?>
                 <tr>
                     <td><?php echo htmlentities($i->name); ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <?php else: ?>
+        <?php else : ?>
         <p>
             No medication drugs have been tagged yet.
         </p>

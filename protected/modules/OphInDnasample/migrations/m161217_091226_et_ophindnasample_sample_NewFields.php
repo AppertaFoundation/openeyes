@@ -30,7 +30,7 @@ class m161217_091226_et_ophindnasample_sample_NewFields extends CDbMigration
             'id'=>'pk',
             'et_ophindnasample_sample_id'=>'INT(10) unsigned',
             'genetics_study_id'=>'integer'
-        ),  '');
+        ), '');
 
         $this->createIndex('idx_et_ophindnasample_sample_id',
             'et_ophindnasample_sample_genetics_studies',
