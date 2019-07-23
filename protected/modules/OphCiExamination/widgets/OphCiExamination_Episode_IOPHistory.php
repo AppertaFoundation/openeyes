@@ -131,30 +131,30 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 			$iop_data_list = array(
 				'examination'=>array(
 					'right'=>array(
-						'event_id'=>array(),
-						'x'=>array(),
-						'y'=>array()),
+						'event_id'=>'',
+						'x'=>'',
+						'y'=>''),
 					'left'=>array(
-						'event_id'=>array(),
-						'x'=>array(),
-						'y'=>array())),
+						'event_id'=>'',
+						'x'=>'',
+						'y'=>'')),
 				'phasing'=>array(
 					'right'=>array(
-						'event_id'=>array(),
-						'x'=>array(),
-						'y'=>array()),
+						'event_id'=>'',
+						'x'=>'',
+						'y'=>''),
 					'left'=>array(
-						'event_id'=>array(),
-						'x'=>array(),
-						'y'=>array())));
+						'event_id'=>'',
+						'x'=>'',
+						'y'=>'')));
 
 			$exam_events = Event::model()->getEventsOfTypeForPatient($this->event_type, $this->patient);
 			$phasing_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Phasing")), $this->patient);
 
-			foreach ($phasing_events as $phasing_event){
+			foreach ($phasing_events as $phasing_event) {
 				$iop = $phasing_event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
 
-				if($iop) {
+				if ($iop) {
 					$timestamp = Helper::mysqlDate2JsTimestamp($phasing_event->event_date);
 
 					foreach (['left', 'right'] as $side) {
@@ -162,10 +162,13 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
 						foreach ($phasing_readings as $phasing_reading) {
 
-							if($phasing_reading) {
-								array_push($iop_data_list['phasing'][$side]['event_id'], $phasing_event->id);
-								array_push($iop_data_list['phasing'][$side]['x'], $timestamp);
-								array_push($iop_data_list['phasing'][$side]['y'], $phasing_reading);
+							if ($phasing_reading) {
+								array_push(
+									$iop_data_list['phasing'][$side],
+									array(
+										'event_id' => $phasing_event->id,
+										'x' => $timestamp,
+										'y' => $phasing_reading));
 							}
 						}
 					}
@@ -184,9 +187,12 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 						if(count($exam_readings) > 0) {
 							foreach ($exam_readings as $exam_reading) {
 								if ($exam_reading) {
-									array_push($iop_data_list['examination'][$side]['event_id'], $exam_event->id);
-									array_push($iop_data_list['examination'][$side]['x'], $timestamp);
-									array_push($iop_data_list['examination'][$side]['y'], $exam_reading);
+									array_push(
+										$iop_data_list['examination'][$side],
+										array(
+											'event_id' => $exam_event->id,
+											'x' => $timestamp,
+											'y' => $exam_reading));
 								}
 							}
 						}
