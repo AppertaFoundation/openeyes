@@ -21,7 +21,9 @@
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
         <div id="<?= $eye_side ?>-eye-selection"
-             class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) { ?>inactive<?php } ?>"
+             class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) {
+                    ?>inactive<?php
+                                   } ?>"
              data-side="<?= $eye_side ?>" style="display: <?= $this->action->id === "create" ? "none" : "" ?>">
             <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
                 <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>

@@ -61,7 +61,7 @@
                     $criteria = new CDbCriteria();
 
                     if (!empty(${'lens_' . $side})) {
-                        if($manual_override) {
+                        if ($manual_override) {
                             $criteria->condition = 'active = 1';
                         } else {
                             $criteria->condition = 'id in (' . implode(',', array_unique(${'lens_' . $side})) . ')';
