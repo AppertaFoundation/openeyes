@@ -65,11 +65,11 @@
 
       var data =[{
         name: 'IOP('+((side=='right')?'R':'L')+')',
-        x: x_data,
-        y: sample_averages,
+//        x: x_data,
+//        y: sample_averages,
 
-//				x: x_data,
-//				y: iop_plotly_data[side]['y'],
+				x: x_data,
+				y: iop_plotly_data[side]['y'],
 
 
 				line: {
@@ -87,14 +87,14 @@
           symbol: 'circle',
           size: 10,
         },
-				error_y: {
+/*				error_y: {
         	type: "data",
 					symmetric: false,
 					color: "#888",
 					array: array,
 					arrayminus: arraymin,
         	visible: true
-				},
+				},*/
       }];
 
       Plotly.newPlot(

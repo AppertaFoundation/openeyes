@@ -87,7 +87,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
     protected function addIop(\FlotChart $chart, ExamModels\Element_OphCiExamination_IntraocularPressure $iop, $timestamp, $side)
     {
-        if (($reading = $iop->getReading($side))) {
+        if (($reading = $iop->getAverageReading($side))) {
             $seriesName = strtoupper($side[0]).'E';
             $chart->addPoint($seriesName, $timestamp, $reading, "{$reading} mmHg");
         }
@@ -128,43 +128,26 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
       $iop_data_list = array('right'=>array(), 'left'=>array());
       $iop_plotly_list = array('right'=>array('x'=>array(), 'y'=>array()), 'left'=>array('x'=>array(), 'y'=>array()));
 
-      $events = $this->event_type->api->getEvents($this->patient, false);//Original, working without side effects
-			//$events = Event::model()->getEventsOfTypeForPatient($this->event_type, $this->patient);//First modification
-			//$event_type_phasing = EventType::model()->find('class_name=?', array('OphCiPhasing'));//Needed to find Phasing events
-			//$events = $event_type_phasing->api->getEvents($this->patient);
+      //$events = $this->event_type->api->getEvents($this->patient, false);//Original, working without side effects
 
-			$phasing_event_model = Element_OphCiPhasing_IntraocularPressure::model();
-			$events = $phasing_event_model->api->getEvents($this->patient);
+			$exam_events = Event::model()->getEventsOfTypeForPatient($this->event_type, $this->patient);
+			$phasing_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Phasing")), $this->patient);
 
-      foreach ($events as $event) {
+			//$events = array_merge($exam_events, $phasing_events);
+
+			foreach ($exam_events as $event) {
 				$iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
-				//$iop = $event->getElementByClass('OEModule\OphCiPhasing\models\Element_OphCiPhasing_IntraocularPressure');
 
         if ($iop) {
           $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
           foreach (['left', 'right'] as $side) {
-            $reading = $iop->getReading($side);
+            $reading = $iop->getAverageReading($side);
             if ($reading){
               array_push($iop_data_list[$side], array('x'=>$timestamp, 'y'=>(float)$reading));
             }
           }
         }
       }
-
-      //Original, working without side effects
-/*			foreach ($events as $examevent) {
-				$iop = $examevent->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
-
-				if ($iop) {
-					$timestamp = Helper::mysqlDate2JsTimestamp($examevent->event_date);
-					foreach (['left', 'right'] as $side) {
-						$reading = $iop->getReading($side);
-						if ($reading){
-							array_push($iop_data_list[$side], array('x'=>$timestamp, 'y'=>(float)$reading));
-						}
-					}
-				}
-			}*/
 
       foreach (['left', 'right'] as $side){
         usort($iop_data_list[$side], function($item1, $item2){
