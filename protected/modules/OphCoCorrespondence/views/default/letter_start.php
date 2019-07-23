@@ -17,39 +17,48 @@
  */
 $logoHelper = new LogoHelper();
 ?>
-
-<div class="logo">
-    <?= $logoHelper->render() ?>
-</div>
-<div class="flex-layout flex-top" style="position: relative; top:<?= $this->action->id === 'view' ? "50px" : "110px" ?>;">
-<div class="cols-left">
-    <div class="to-address">
-        <div class="to-address-header">
-            To:
-        </div>
-        <div class="to-address-address" style="font-weight: bold;">
-            <?php echo str_replace("\n", '<br/>', CHtml::encode($toAddress)) ?>
-        </div>
+<header class="print-header">
+    <div class="logo">
+        <?= $logoHelper->render('//base/_logo', 70) ?>
     </div>
-</div>
-<div>
-    <?php if ($element->site) { ?>
+</header>
+
+<main class="print-main">
+    <div class="flex-layout">
         <div>
-            <?php
-            echo $element->site->getLetterAddress(array(
-                'include_name' => true,
-                'delimiter' => '<br />',
-                'include_telephone' => true,
-                'include_fax' => true,
-            )) ?>
-            <?php if ($element->direct_line || $element->fax) { ?>
-                <br/>
-            <?php } ?>
-            <?php if ($element->direct_line) { ?>
-                <br/><?php echo $element->getAttributeLabel('direct_line') ?>: <?php echo $element->direct_line ?>
-            <?php } ?>
-            <?php if ($element->fax) { ?>
-                <br/><?php echo $element->getAttributeLabel('fax') ?>: <?php echo $element->fax ?>
+            
+            <p class="nowrap">Date of visit
+            <b><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) { ?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate)) ?>)<?php } ?></b></p>
+            
+            <div class="spacer"></div>
+            <div class="spacer"></div>
+            To:
+            <br/>
+            <div class="address-to">
+                <?php echo str_replace("\n", '<br/>', CHtml::encode($toAddress)) ?>
+            </div>
+        </div>
+
+        <div class="address-from">
+            <?php if ($element->site) { ?>
+                <h5>
+                    <?php
+                    echo $element->site->getLetterAddress(array(
+                        'include_name' => true,
+                        'delimiter' => '<br />',
+                        'include_telephone' => true,
+                        'include_fax' => true,
+                    )) ?>
+                    <?php if ($element->direct_line || $element->fax) { ?>
+                        <br/>
+                    <?php } ?>
+                    <?php if ($element->direct_line) { ?>
+                        <br/><?php echo $element->getAttributeLabel('direct_line') ?>: <?php echo $element->direct_line ?>
+                    <?php } ?>
+                    <?php if ($element->fax) { ?>
+                        <br/><?php echo $element->getAttributeLabel('fax') ?>: <?php echo $element->fax ?>
+                    <?php } ?>
+                </h5>
             <?php } ?>
             <div class="date">
                 <br/><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) {
@@ -57,7 +66,6 @@ $logoHelper = new LogoHelper();
                      } ?>
             </div>
         </div>
-    <?php } ?>
-</div>
-</div>
-<br/><br/>
+    </div>
+    <br/><br/>
+</main>
