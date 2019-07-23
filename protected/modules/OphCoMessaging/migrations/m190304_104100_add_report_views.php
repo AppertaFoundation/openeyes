@@ -16,9 +16,9 @@
  */
 class m190304_104100_add_report_views extends CDbMigration
 {
-  public function safeUp()
-{
-    $this->execute("CREATE OR REPLACE VIEW `v_patient_messages` AS
+    public function safeUp()
+    {
+        $this->execute("CREATE OR REPLACE VIEW `v_patient_messages` AS
     SELECT
         `m`.`id` AS `message_id`,
         `ev`.`patient_id` AS `patient_id`,
@@ -45,10 +45,10 @@ class m190304_104100_add_report_views extends CDbMigration
     WHERE
         (`m`.`deleted` = 0);");
 
-}
+    }
 
-  public function safeDown()
-{
-  $this->execute("DROP VIEW v_patient_messages");
-}
+    public function safeDown()
+    {
+        $this->execute("DROP VIEW v_patient_messages");
+    }
 }

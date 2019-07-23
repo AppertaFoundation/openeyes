@@ -17,43 +17,43 @@
  */
 ?>
 <table class="standard">
-	<thead>
-		<tr>
-			<th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
-			<th><?php echo Patient::model()->getAttributeLabel('dob')?></th>
-			<th><?php echo Patient::model()->getAttributeLabel('first_name')?></th>
-			<th><?php echo Patient::model()->getAttributeLabel('last_name')?></th>
-			<th><?php echo Patient::model()->getAttributeLabel('gender')?></th>
-			<th>Site</th>
-			<th>Consultant's name</th>
-			<th>Date</th>
-			<th>Type</th>
-			<th>Status</th>
-			<th>Link</th>
-		</tr>
-	<tbody>
-		<?php if (empty($report->letters)) {?>
-			<tr>
-				<td colspan="6">
-					No letters were found with the selected search criteria.
-				</td>
-			</tr>
-		<?php }else{?>
-			<?php foreach ($report->letters as $letter) {?>
-				<tr>
-					<td><?php echo $letter['hos_num']?></td>
-					<td><?php echo $letter['dob'] ? date('j M Y',strtotime($letter['dob'])) : 'Unknown'?></td>
-					<td><?php echo $letter['first_name']?></td>
-					<td><?php echo $letter['last_name']?></td>
-					<td><?php echo $letter['gender']?></td>
-					<td><?php echo isset($letter['name']) ? $letter['name'] : 'N/A'; ?></td>
+    <thead>
+        <tr>
+            <th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
+            <th><?php echo Patient::model()->getAttributeLabel('dob')?></th>
+            <th><?php echo Patient::model()->getAttributeLabel('first_name')?></th>
+            <th><?php echo Patient::model()->getAttributeLabel('last_name')?></th>
+            <th><?php echo Patient::model()->getAttributeLabel('gender')?></th>
+            <th>Site</th>
+            <th>Consultant's name</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Link</th>
+        </tr>
+    <tbody>
+        <?php if (empty($report->letters)) {?>
+            <tr>
+                <td colspan="6">
+                    No letters were found with the selected search criteria.
+                </td>
+            </tr>
+        <?php } else {?>
+            <?php foreach ($report->letters as $letter) {?>
+                <tr>
+                    <td><?php echo $letter['hos_num']?></td>
+                    <td><?php echo $letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown'?></td>
+                    <td><?php echo $letter['first_name']?></td>
+                    <td><?php echo $letter['last_name']?></td>
+                    <td><?php echo $letter['gender']?></td>
+                    <td><?php echo isset($letter['name']) ? $letter['name'] : 'N/A'; ?></td>
                     <td><?php echo $letter['cons_first_name'] ." ". $letter['cons_last_name']; ?></td>
-					<td><?php echo date('j M Y',strtotime($letter['created_date']))?> <?php echo substr($letter['created_date'],11,5)?></td>
-					<td><?php echo $letter['type']?></td>
-					<td><?php echo ucfirst($letter['status']);?></td>
-					<td><a href="<?php echo $letter['link']?>">view</a></td>
-				</tr>
-			<?php }?>
-		<?php }?>
-	</tbody>
+                    <td><?php echo date('j M Y', strtotime($letter['created_date']))?> <?php echo substr($letter['created_date'], 11, 5)?></td>
+                    <td><?php echo $letter['type']?></td>
+                    <td><?php echo ucfirst($letter['status']);?></td>
+                    <td><a href="<?php echo $letter['link']?>">view</a></td>
+                </tr>
+            <?php }?>
+        <?php }?>
+    </tbody>
 </table>

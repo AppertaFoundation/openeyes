@@ -88,10 +88,10 @@ class <?php echo "$migrationName";?> extends CDbMigration
                  */
 <?php
     $lines = preg_split('/\r\n|\r|\n/', "$elementFields");
-    foreach ($lines as $line) {
-        echo "
+foreach ($lines as $line) {
+    echo "
                 $line";
-    }
+}
 ?>
 
 

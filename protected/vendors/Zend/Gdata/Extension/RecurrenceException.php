@@ -103,19 +103,17 @@ class Zend_Gdata_Extension_RecurrenceException extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'specialized':
-            if ($attribute->nodeValue == "true") {
-                $this->_specialized = true;
-            }
-            else if ($attribute->nodeValue == "false") {
-                $this->_specialized = false;
-            }
-            else {
-                throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for gCal:selected#value.");
-            }
+            case 'specialized':
+                if ($attribute->nodeValue == "true") {
+                    $this->_specialized = true;
+                } else if ($attribute->nodeValue == "false") {
+                    $this->_specialized = false;
+                } else {
+                    throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for gCal:selected#value.");
+                }
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
@@ -129,18 +127,18 @@ class Zend_Gdata_Extension_RecurrenceException extends Zend_Gdata_Extension
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('gd') . ':' . 'entryLink':
-            $entryLink = new Zend_Gdata_Extension_EntryLink();
-            $entryLink->transferFromDOM($child);
-            $this->_entryLink = $entryLink;
+            case $this->lookupNamespace('gd') . ':' . 'entryLink':
+                $entryLink = new Zend_Gdata_Extension_EntryLink();
+                $entryLink->transferFromDOM($child);
+                $this->_entryLink = $entryLink;
             break;
-        case $this->lookupNamespace('gd') . ':' . 'originalEvent':
-            $originalEvent = new Zend_Gdata_Extension_OriginalEvent();
-            $originalEvent->transferFromDOM($child);
-            $this->_originalEvent = $originalEvent;
+            case $this->lookupNamespace('gd') . ':' . 'originalEvent':
+                $originalEvent = new Zend_Gdata_Extension_OriginalEvent();
+                $originalEvent->transferFromDOM($child);
+                $this->_originalEvent = $originalEvent;
             break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }

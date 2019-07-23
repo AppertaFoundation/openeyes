@@ -63,7 +63,8 @@ class SystemicDiagnoses extends \BaseEventElementWidget
      */
     public function getMissingRequiredSystemicDiagnoses()
     {
-        $current_ids = array_map(function ($e) { return $e->disorder_id; }, array_merge($this->element->diagnoses, $this->element->checked_required_diagnoses));
+        $current_ids = array_map(function ($e) { return $e->disorder_id;
+        }, array_merge($this->element->diagnoses, $this->element->checked_required_diagnoses));
         $missing = array();
 
         foreach ($this->getRequiredSystemicDiagnoses() as $required) {
@@ -83,10 +84,11 @@ class SystemicDiagnoses extends \BaseEventElementWidget
 
     public function getCheckedRequiredSystemicDiagnoses()
     {
-        $current_disorder_ids = array_map(function ($e) { return $e->disorder_id; }, array_merge($this->element->diagnoses));
+        $current_disorder_ids = array_map(function ($e) { return $e->disorder_id;
+        }, array_merge($this->element->diagnoses));
         $checked = array();
         foreach ($this->element->checked_required_diagnoses as $diag) {
-            if(!in_array($diag->disorder_id, $current_disorder_ids)) {
+            if (!in_array($diag->disorder_id, $current_disorder_ids)) {
                 $row = new SystemicDiagnoses_Diagnosis();
                 $row->disorder_id = $diag->disorder_id;
                 $row->side_id = $diag->side_id;
@@ -106,11 +108,13 @@ class SystemicDiagnoses extends \BaseEventElementWidget
         $required_not_checked = $this->getMissingRequiredSystemicDiagnoses();
 
         $ret[] = implode(" // ", $present);
-        if(!empty($required_checked)) {
-            $ret[] = implode(" // ", array_map(function($e){ return '<strong>Not present: </strong>'. $e->disorder->term; }, $required_checked));
+        if (!empty($required_checked)) {
+            $ret[] = implode(" // ", array_map(function($e){ return '<strong>Not present: </strong>'. $e->disorder->term;
+            }, $required_checked));
         }
-        if(!empty($required_not_checked)) {
-            $ret[] = implode(" // ", array_map(function($e){ return '<strong>Not checked: </strong>'. $e->disorder->term; }, $required_not_checked));
+        if (!empty($required_not_checked)) {
+            $ret[] = implode(" // ", array_map(function($e){ return '<strong>Not checked: </strong>'. $e->disorder->term;
+            }, $required_not_checked));
         }
 
         return implode(" // ", $ret);
@@ -123,7 +127,7 @@ class SystemicDiagnoses extends \BaseEventElementWidget
      */
     protected function updateElementFromData($element, $data)
     {
-        if  (!is_a($element, 'OEModule\OphCiExamination\models\SystemicDiagnoses')) {
+        if (!is_a($element, 'OEModule\OphCiExamination\models\SystemicDiagnoses')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
@@ -140,7 +144,6 @@ class SystemicDiagnoses extends \BaseEventElementWidget
         if (array_key_exists('entries', $data)) {
             $entries = array();
             foreach ($data['entries'] as $entry_data) {
-
                 $id = array_key_exists('id', $entry_data) ? $entry_data['id'] : null;
                 $entry = ($id && array_key_exists($id, $entries_by_id)) ?
                     $entries_by_id[$id] :

@@ -19,9 +19,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_assets'); ?>
-	<?php $this->renderPartial('//base/head/_tracking'); ?>
+    <?php $this->renderPartial('//base/head/_meta'); ?>
+    <?php $this->renderPartial('//base/head/_assets'); ?>
+    <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes">
 
@@ -30,26 +30,26 @@
 
 <div class="container main" role="main">
 
-	<?php $this->renderPartial('//base/_header'); ?>
+    <?php $this->renderPartial('//base/_header'); ?>
 
-	<div class="container content">
+    <div class="container content">
 
-		<h1 class="badge admin">Advanced search</h1>
+        <h1 class="badge admin">Advanced search</h1>
 
-		<div class="box content admin-content">
-			<div class="data-group">
-				<aside class="cols-2 column sidebar admin">
-					<?php $this->renderPartial('//site/advanced_search_sidebar'); ?>
-				</aside>
-				<div class="cols-10 column admin">
-					<?php echo $content; ?>
-				</div>
-			</div>
-		</div>
+        <div class="box content admin-content">
+            <div class="data-group">
+                <aside class="cols-2 column sidebar admin">
+                    <?php $this->renderPartial('//site/advanced_search_sidebar'); ?>
+                </aside>
+                <div class="cols-10 column admin">
+                    <?php echo $content; ?>
+                </div>
+            </div>
+        </div>
 
-	</div><!-- /.content -->
+    </div><!-- /.content -->
 
-	<?php $this->renderPartial('//base/_footer'); ?>
+    <?php $this->renderPartial('//base/_footer'); ?>
 
 </div><!-- /.main.container -->
 </body>

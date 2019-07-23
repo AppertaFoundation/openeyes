@@ -57,9 +57,9 @@
                         </colgroup>
                         <tbody>
                         <?php
-                        if(count($entries[(string)AllergyEntry::$NOT_CHECKED]) >0){ ?>
+                        if (count($entries[(string)AllergyEntry::$NOT_CHECKED]) >0) { ?>
                             <?php for ($i = 0; $i < $max_iter; $i++) :?>
-                                <?php if(isset($entries[(string)AllergyEntry::$NOT_CHECKED][$i])){?>
+                                <?php if (isset($entries[(string)AllergyEntry::$NOT_CHECKED][$i])) {?>
                                     <tr>
                                         <td><?= $entries[(string)AllergyEntry::$NOT_CHECKED][$i]->getDisplayAllergy(); ?></td>
                                         <td><?= ($entries[(string)AllergyEntry::$NOT_CHECKED][$i]['comments'] !== "" ?

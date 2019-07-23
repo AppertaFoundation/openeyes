@@ -18,17 +18,17 @@
 ?>
 <div class="element-data element-eyes flex-layout">
   <div class="js-element-eye right-eye cols-6">
-      <?php if ($element->hasRight()) {
-          $this->renderPartial($element->view_view . '_fields', array('side' => 'right', 'element' => $element));
-      } else { ?>
+        <?php if ($element->hasRight()) {
+            $this->renderPartial($element->view_view . '_fields', array('side' => 'right', 'element' => $element));
+        } else { ?>
         <div class="data-value not-recorded">Not recorded</div>
-      <?php } ?>
+        <?php } ?>
   </div>
   <div class="js-element-eye left-eye cols-6">
-      <?php if ($element->hasLeft()) {
-          $this->renderPartial($element->view_view . '_fields', array('side' => 'left', 'element' => $element));
-      } else { ?>
+        <?php if ($element->hasLeft()) {
+            $this->renderPartial($element->view_view . '_fields', array('side' => 'left', 'element' => $element));
+        } else { ?>
         <div class="data-value not-recorded">Not recorded</div>
-      <?php } ?>
+        <?php } ?>
   </div>
 </div>

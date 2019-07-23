@@ -162,21 +162,21 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
                 $both = array(true, false);
-                foreach ($both as $present) {
-                    foreach ($patient->getSystemicDiagnoses($present) as $sd) {
-                        $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
-                        $diagnosis->has_disorder = $present ? SystemicDiagnoses_Diagnosis::$PRESENT : SystemicDiagnoses_Diagnosis::$NOT_PRESENT;
-                        $duplicate_diagnosis = false;
-                        foreach ($diagnoses as $current_diagnosis) {
-                            if ($diagnosis->disorder_id === $current_diagnosis->disorder_id) {
-                                $duplicate_diagnosis = true;
-                            }
-                        }
-                        if (!$duplicate_diagnosis) {
-                            $diagnoses[] = $diagnosis;
+            foreach ($both as $present) {
+                foreach ($patient->getSystemicDiagnoses($present) as $sd) {
+                    $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
+                    $diagnosis->has_disorder = $present ? SystemicDiagnoses_Diagnosis::$PRESENT : SystemicDiagnoses_Diagnosis::$NOT_PRESENT;
+                    $duplicate_diagnosis = false;
+                    foreach ($diagnoses as $current_diagnosis) {
+                        if ($diagnosis->disorder_id === $current_diagnosis->disorder_id) {
+                            $duplicate_diagnosis = true;
                         }
                     }
+                    if (!$duplicate_diagnosis) {
+                        $diagnoses[] = $diagnosis;
+                    }
                 }
+            }
             $this->diagnoses = $diagnoses;
         }
     }
@@ -262,10 +262,9 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         $checked_req_diags = array();
 
         foreach ($diags as $key=>$entry) {
-            if($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_CHECKED) {
+            if ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_CHECKED) {
                 unset($diags[$key]);
-            }
-            else if($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_PRESENT) {
+            } else if ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_PRESENT) {
                 $checked_req_diag = new SystemicDiagnoses_RequiredDiagnosisCheck();
                 $checked_req_diag->setAttributes(array_diff_key($entry->getAttributes(), array('id' => null)), false);
                 $checked_req_diags[] = $checked_req_diag;
@@ -328,7 +327,8 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         if (!in_array($category, array('present', 'not_checked', 'not_present'))) {
             $category  = 'entries';
         }
-        return implode(', ', array_map(function($e) { return $e->getDisplay(); }, $this->$category));
+        return implode(', ', array_map(function($e) { return $e->getDisplay();
+        }, $this->$category));
     }
 
     public function getTileSize($action)

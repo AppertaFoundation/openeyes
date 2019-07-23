@@ -2,7 +2,7 @@
 
 /**
  * DataPatchCommand is a copy of the Yii built in MigrateCommand.
- * 
+ *
  * The following modification have been made
  *  - Yii::getPathOfAlias removed so the migration can accept external path
  *  - Migration table name holder property $migrationTable became CONST, it cannot be overriden from CLI, cannot run accidentaly on main migration table

@@ -40,9 +40,9 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
     
     /**
      * set defaults
-     */    
+     */
     public function init(){
-        $this->iol_power_left = null;    
+        $this->iol_power_left = null;
         $this->iol_power_right = null;
         $this->predicted_refraction_left = null;
         $this->predicted_refraction_right = null;

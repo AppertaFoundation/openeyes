@@ -56,15 +56,15 @@
               </div>
             <?php } ?>
           <div class="data-group">
-              <?php if ($element->checkSignature()) { ?>
+                <?php if ($element->checkSignature()) { ?>
                 <div class="cols-2">
                   <div class="data-label">Captured Signature</div>
                 </div>
                 <div class="cols-4">
                   <img src="/OphCoCvi/default/displayConsentSignature/<?= $this->event->id ?>" style="height: 60px"/>
                 </div>
-                  <?php if ($this->checkEditAccess()) {
-                      $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+                    <?php if ($this->checkEditAccess()) {
+                        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                           'id' => 'remove-consent-signature-form',
                           'action' => $this->getApp()->createUrl($this->getModule()->name . '/default/removeConsentSignature/' . $this->event->id),
                           'enableAjaxValidation' => false,
@@ -72,24 +72,24 @@
                               'label' => 2,
                               'field' => 10,
                           ),
-                      ));
-                      ?>
+                        ));
+                        ?>
                   <input type="hidden" name="signature_file_id" value="<?= $element->signature_file_id ?>"/>
                   <div class="cols-4">
-                      <?=\CHtml::button('Remove patient signature', array(
+                        <?=\CHtml::button('Remove patient signature', array(
                           'type' => 'button',
                           'id' => 'remove-patient-signature',
                           'name' => 'capturePatientSignature',
                           'class' => 'small button warning event-action',
                       )); ?>
                   </div>
-                      <?php
-                      $this->endWidget();
-                  } ?>
-              <?php } else { ?>
-                  <?php if ($this->checkEditAccess()) { ?>
+                        <?php
+                        $this->endWidget();
+                    } ?>
+                <?php } else { ?>
+                    <?php if ($this->checkEditAccess()) { ?>
                   <div class="cols-12">
-                      <?=\CHtml::button('Capture patient signature', array(
+                        <?=\CHtml::button('Capture patient signature', array(
                           'type' => 'button',
                           'id' => 'capture-patient-signature',
                           'name' => 'capturePatientSignature',
@@ -121,8 +121,8 @@
                             array('class' => 'button small secondary')); ?>
                     </div>
                   </div>
-                  <?php }
-              } ?>
+                    <?php }
+                } ?>
           </div>
         </div>
       </div>

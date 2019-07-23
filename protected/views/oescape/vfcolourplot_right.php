@@ -8,32 +8,31 @@
             $pointIds = array();
             $row = 1;
             $id = 0;
-            for ($cy = 38; $cy < 460; $cy += 60) {
-                if ($row == 1 || $row == 8) {
-                    $cx_start = 240;
-                    $cx_max = 420;
-                } elseif ($row == 2 || $row == 7) {
-                    $cx_start = 180;
-                    $cx_max = 480;
-                } elseif ($row == 3 || $row == 6) {
-                    $cx_start = 120;
-                    $cx_max = 540;
-                } elseif ($row == 4 || $row == 5) {
-                    $cx_start = 60;
-                    $cx_max = 540;
-                }
-                for ($cx = $cx_start; $cx <= $cx_max; $cx += 60) {
-                    if (($row != 4 && $row != 5) || !($cx > 300 && $cx < 480)) {
-                        ?>
+        for ($cy = 38; $cy < 460; $cy += 60) {
+            if ($row == 1 || $row == 8) {
+                $cx_start = 240;
+                $cx_max = 420;
+            } elseif ($row == 2 || $row == 7) {
+                $cx_start = 180;
+                $cx_max = 480;
+            } elseif ($row == 3 || $row == 6) {
+                $cx_start = 120;
+                $cx_max = 540;
+            } elseif ($row == 4 || $row == 5) {
+                $cx_start = 60;
+                $cx_max = 540;
+            }
+            for ($cx = $cx_start; $cx <= $cx_max; $cx += 60) {
+                if (($row != 4 && $row != 5) || !($cx > 300 && $cx < 480)) {
+                    ?>
                             <circle id="vfcp_right_<?php echo $id ?>" cx="<?php echo $cx;?>" cy="<?php echo $cy;?>" 
                                     r="29" fill="white" class="colourplot_right"/>
                         <?php
-
-                    }
-                    ++$id;
                 }
-                ++$row;
+                ++$id;
             }
+            ++$row;
+        }
         ?>
        Sorry, your browser does not support inline SVG.
     </svg>

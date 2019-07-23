@@ -18,7 +18,7 @@
 ?>
 
 <div class="element-fields element-eyes">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
         <div id="<?= $eye_side ?>-eye-selection"
              class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) { ?>inactive<?php } ?>"

@@ -106,9 +106,9 @@ class Element_OphTrLaser_AnteriorSegment extends SplitEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-'left_eyedraw' => 'Left Eyedraw',
-'right_eyedraw' => 'Right Eyedraw',
-'eye_id' => 'Eye',
+        'left_eyedraw' => 'Left Eyedraw',
+        'right_eyedraw' => 'Right Eyedraw',
+        'eye_id' => 'Eye',
         );
     }
 

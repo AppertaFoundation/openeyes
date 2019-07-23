@@ -40,8 +40,7 @@ class PatientLevelElementBehaviour extends CActiveRecordBehavior
         if ($this->owner->getIsNewRecord()) {
             if (!$this->owner->event || $this->owner->event->getIsNewRecord()) {
                 return true;
-            }
-            else {
+            } else {
                 $tip = $this->getTipElement();
                 // if there is no tip, then we must be at the tip
                 return $tip ? $this->owner->event->isAfterEvent($tip->event) : true;
