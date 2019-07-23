@@ -463,7 +463,7 @@ foreach ($ethnic_list as $key=>$item){
                     <?= $form->label($patient, 'created_date') ?>
                 </td>
                 <td>
-                    <label for="patient_create_date"><?= date("d-M-Y", strtotime($patient->created_date))?></label>
+                    <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($patient->created_date))?></label>
                 </td>
             </tr>
             <tr>
@@ -471,7 +471,7 @@ foreach ($ethnic_list as $key=>$item){
                     <?= $form->label($patient, 'last_modified_date') ?>
                 </td>
                 <td>
-                    <label for="patient_create_date"><?= date("d-M-Y", strtotime($patient->last_modified_date))?></label>
+                    <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($patient->last_modified_date))?></label>
                 </td>
             </tr>
         <?php } ?>
