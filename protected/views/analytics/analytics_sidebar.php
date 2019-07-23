@@ -505,10 +505,14 @@
             chart.data[0]['y'] = custom_data[i][0]['y'];
             chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
             chart.data[0]['error_y'] = custom_data[i][0]['error_y'];
+            chart.data[0]['hoverinfo'] = custom_data[i][0]['hoverinfo'];
+            chart.data[0]['hovertext'] = custom_data[i][0]['hovertext'];
             chart.data[1]['x'] = custom_data[i][1]['x'];
             chart.data[1]['y'] = custom_data[i][1]['y'];
             chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
             chart.data[1]['error_y'] = custom_data[i][1]['error_y'];
+            chart.data[1]['hoverinfo'] = custom_data[i][1]['hoverinfo'];
+            chart.data[1]['hovertext'] = custom_data[i][1]['hovertext'];
             Plotly.redraw(chart);
         }
             <?php }
