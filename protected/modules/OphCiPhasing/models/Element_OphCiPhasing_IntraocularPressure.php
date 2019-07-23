@@ -180,7 +180,7 @@ class Element_OphCiPhasing_IntraocularPressure extends SplitEventTypeElement
 				$criteria->params = array(':eid' => $this->id, ':sid' => $side);
 
 				foreach (OphCiPhasing_Reading::model()->findAll($criteria) as $reading) {
-						$readings[] = $reading;
+						$readings[] = $reading->value;
 				}
 
 				return $readings;

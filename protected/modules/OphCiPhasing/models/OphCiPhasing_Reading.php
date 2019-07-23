@@ -99,6 +99,11 @@ class OphCiPhasing_Reading extends BaseActiveRecordVersioned
         ));
     }
 
+    public function getValue()
+		{
+			return $this->value;
+		}
+
     /**
      * check the time entry is valid.
      *
