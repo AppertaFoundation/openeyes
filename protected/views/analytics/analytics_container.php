@@ -1,11 +1,13 @@
 <?php
     use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit as VisualAcuityUnit;
     use OEModule\OphCiExamination\widgets\OphCiExamination_Episode_VisualAcuityHistory;
+    
     $va_unit = VisualAcuityUnit::model()->getVAUnit(4);
     $va_init_ticks = VisualAcuityUnit::model()->getInitVaTicks($va_unit);
     $va_final_ticks = VisualAcuityUnit::model()->sliceVATicks($va_init_ticks, 20);
 ?>
 
+<script src="<?= Yii::app()->assetManager->registerScriptFile('../../node_modules/plotly.js-dist/plotly.js');?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
 <?php $this->renderPartial('//analytics/analytics_header', array());?>
 <script>
