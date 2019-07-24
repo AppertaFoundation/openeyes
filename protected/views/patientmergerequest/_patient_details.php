@@ -53,7 +53,7 @@
                     First name(s):
                 </td>
                 <td>
-                    <?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->first_name; ?>
+                    <div class="data-value first_name"><?php echo $model->isNewRecord ? 'Empty' : $model->{"{$type}Patient"}->first_name; ?></div>
                 </td>
             </tr>
             <tr>
@@ -61,7 +61,7 @@
                     Last name:
                 </td>
                 <td>
-                    <?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->last_name; ?>
+                    <div class="data-value last_name"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->last_name; ?></div>
                 </td>
             </tr>
             <tr>
