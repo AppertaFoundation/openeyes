@@ -50,7 +50,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 ev.preventDefault();
 
                 let data = ev.originalEvent.dataTransfer.files;
-                $(ev.target).closest(".upload-box").find("input[type=file]").prop("files", data);
+                controller.documentUpload($(ev.target).closest(".upload-box").find("input[type=file]").prop("files", data));
             },
         });
 
