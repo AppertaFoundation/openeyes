@@ -42,11 +42,11 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
         </tr>
         <tr>
             <td>
-                <?php echo $form->labelEx($contact, 'primary_phone'); ?>
+                <?php echo $form->labelEx($model, 'phone'); ?>
             </td>
             <td>
-                <?php echo $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20)); ?>
-                <?php echo $form->error($contact, 'primary_phone'); ?>
+                <?php echo $form->telField($model, 'phone', array('size' => 15, 'maxlength' => 20)); ?>
+                <?php echo $form->error($model, 'phone'); ?>
             </td>
         </tr>
         <tr>

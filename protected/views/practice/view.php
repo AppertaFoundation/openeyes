@@ -49,10 +49,10 @@ $this->pageTitle = 'View Practice';
                     </tr>
                     <tr>
                         <td>
-                            <?php echo CHtml::activeLabelEx($model->contact, 'primary_phone'); ?>
+                            <?php echo CHtml::label('Phone', null); ?>
                         </td>
                         <td>
-                            <?php echo isset($model->contact->primary_phone) ? CHtml::encode($model->contact->primary_phone) : 'Unknown'; ?>
+                            <?php echo isset($model->phone) ? CHtml::encode($model->phone) : 'Unknown'; ?>
                         </td>
                     </tr>
                     </tbody>
