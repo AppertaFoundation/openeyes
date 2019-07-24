@@ -259,12 +259,12 @@ foreach ($items_data as $group => $items) { ?>
           if ($group_name === 'Print to ' . $data['print_mode']):
               foreach ($items as $item):
                   ?>
+              <div class="fpten-prescription-item">
                   <?= $item->drug->label ?>
                 <br/>
                   <?= is_numeric($item->dose) ? ($item->dose . ' ' . $item->drug->dose_unit . ' ' . $item->frequency->long_name) : $item->dose . ' ' . $item->frequency->long_name ?>
                 <br/><br/>
-                ------------------------------------------
-              <br/>
+              </div>
               <?php endforeach;
           endif;
       endforeach;?>

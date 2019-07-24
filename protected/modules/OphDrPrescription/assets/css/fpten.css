@@ -116,6 +116,11 @@ body {
     margin-left: 30mm;
 }
 
+.fpten-prescription-item {
+    padding-top: 2mm;
+    border-bottom: 1px solid;
+}
+
 #wpten-doctor-name {
     width: 39mm;
     height: 12mm;
