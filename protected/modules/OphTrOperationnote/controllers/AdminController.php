@@ -27,6 +27,7 @@ class AdminController extends ModuleAdminController
      */
     public function actionViewPostOpDrugs()
     {
+        $this->group = "Drugs";
         Audit::add('admin', 'list', null, null,
             array('module' => 'OphTrOperationnote', 'model' => 'OphTrOperationnote_PostopDrug'));
 
