@@ -101,6 +101,12 @@
             <?php endif ?>
       </td>
     </tr>
+    <tr>
+      <td>Dispense Condition/Location</td>
+      <td>
+        <?= CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[dispense_condition]', '', CHtml::listData($dispense_conditions, 'id', 'name'), array('empty' => 'Select'))?>
+      </td>
+    </tr>
     </tbody>
   </table>
   <table class="standard cols-6" id="report-drug-list">

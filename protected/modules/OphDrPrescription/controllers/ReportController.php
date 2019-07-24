@@ -54,10 +54,11 @@ class ReportController extends BaseReportController
     {
         $drugs = Element_OphDrPrescription_Details::model()->commonDrugs();
         $users = User::model()->findAll(array('order' => 'first_name asc,last_name asc'));
+        $dispense_conditions = OphDrPrescription_DispenseCondition::model()->findAll();
 
         Audit::add('Reports', 'view', print_r(['report-name' => 'Prescribed Drugs'], true) );
         $this->pageTitle = 'Prescribed Drugs report';
-        $this->render('prescribedDrugs', array('drugs' => $drugs, 'users' => $users));
+        $this->render('prescribedDrugs', array('drugs' => $drugs, 'users' => $users, 'dispense_conditions' => $dispense_conditions));
     }
 
     public function actionGetDrugs()
