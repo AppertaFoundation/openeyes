@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cae5182ddc0055c8f0033de5b3c86ded",
+    "content-hash": "0a15308270acb68aabc2c0f47ef3d503",
     "packages": [
         {
             "name": "endroid/qrcode",
@@ -450,16 +450,16 @@
         },
         {
             "name": "yiisoft/yii",
-            "version": "1.1.20",
+            "version": "1.1.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii.git",
-                "reference": "6ed38411e7568f7a13c4aab8bcd38bff2a6f2390"
+                "reference": "733ac5856b0b72228346b5a6af10b0b9df18ad6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii/zipball/6ed38411e7568f7a13c4aab8bcd38bff2a6f2390",
-                "reference": "6ed38411e7568f7a13c4aab8bcd38bff2a6f2390",
+                "url": "https://api.github.com/repos/yiisoft/yii/zipball/733ac5856b0b72228346b5a6af10b0b9df18ad6c",
+                "reference": "733ac5856b0b72228346b5a6af10b0b9df18ad6c",
                 "shasum": ""
             },
             "require": {
@@ -467,11 +467,13 @@
             },
             "require-dev": {
                 "phing/phing": "2.*",
+                "phpseclib/mcrypt_compat": "^1.0",
                 "phpunit/phpunit": "~4.8.34",
                 "phpunit/phpunit-selenium": "~1.4.0"
             },
             "suggest": {
-                "ext-mcrypt": "Required by encrypt and decrypt methods of CSecurityManager"
+                "ext-mcrypt": "Required by encrypt and decrypt methods of CSecurityManager",
+                "phpseclib/mcrypt_compat": "To provide mcrypt polyfill when extension is unavailable"
             },
             "bin": [
                 "framework/yiic"
@@ -544,7 +546,7 @@
                 "framework",
                 "yii"
             ],
-            "time": "2018-07-06T17:18:25+00:00"
+            "time": "2019-04-02T07:32:41+00:00"
         }
     ],
     "packages-dev": [

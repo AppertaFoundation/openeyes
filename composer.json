@@ -2,7 +2,7 @@
   "name": "openeyes/openeyes",
   "description": "Electronic Patient Record system for use in Ophthalmology clinics",
   "require": {
-    "yiisoft/yii": "1.1.20",
+    "yiisoft/yii": "1.1.21",
     "rlanvin/php-rrule": "1.2.0",
     "endroid/qrcode": "^1.7",
     "setasign/fpdi-fpdf": "1.6.1",
