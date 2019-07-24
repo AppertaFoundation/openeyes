@@ -32,6 +32,13 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
                         break;
                     }
                 }
+                foreach ($Element->items as $item) {
+                    // If at least one prescription item has 'Print to WP10' selected as the dispense condition, display the Print FP10 button.
+                    if ($item->dispense_condition->name === 'Print to WP10') {
+                        $this->event_actions[] = EventAction::button('Print WP10', "print_wp10");
+                        break;
+                    }
+                }
 
             }
         	if(!$Element->draft || $this->checkEditAccess()){
@@ -64,13 +71,14 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
             do_print_prescription();
         });
         <?php }
-        else if (isset(Yii::app()->session['print_prescription_fp10'])) {
-          unset(Yii::app()->session['print_prescription_fp10']);
+        else if (isset(Yii::app()->session['print_prescription_fp10']) || isset(Yii::app()->session['print_prescription_wp10'])) {
           ?>
         $(document).ready(function() {
-            do_print_fpTen();
+            do_print_fpTen('<?= isset(Yii::app()->session['print_prescription_fp10']) ? 'FP10' : 'WP10' ?>');
         });
-        <?php }?>
+        <?php
+        unset(Yii::app()->session['print_prescription_fp10'], Yii::app()->session['print_prescription_wp10']);
+        }?>
 
     </script>
 <?php $this->renderPartial('//default/delete');?>

@@ -44,7 +44,7 @@ $consultantName = $firm->consultant ? ($firm->consultant->getFullName() . $cost_
 $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 ?>
 
-<?php if (!isset($data['print_mode']) || $data['print_mode'] !== 'WP10'): ?>
+<?php if (!isset($data['print_mode']) || ($data['print_mode'] !== 'WP10' && $data['print_mode'] !== 'FP10')): ?>
   <?php if ($header_text !== null): ?>
       <div class="clearfix"><?= $header_text ?></div>
   <?php endif; ?>
@@ -256,7 +256,7 @@ foreach ($items_data as $group => $items) { ?>
       <?php
       foreach ($this->groupItems($element->items) as $group => $items):
           $group_name = OphDrPrescription_DispenseCondition::model()->findByPk($group)->name;
-          if ($group_name === 'Print to FP10'):
+          if ($group_name === 'Print to ' . $data['print_mode']):
               foreach ($items as $item):
                   ?>
                   <?= $item->drug->label ?>
@@ -302,7 +302,7 @@ foreach ($items_data as $group => $items) { ?>
       <?= $this->site->institution->name ?>
   </div>
   <div id="fpten-site-code" class="fpten-form-column">
-    <span id="fpten-trust-code"><?= $data['user']->registration_code ?></span>
+    <!--span id="fpten-trust-code"><?= $data['user']->registration_code ?></span-->
     <br/>
     <br/>
       <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
@@ -310,8 +310,6 @@ foreach ($items_data as $group => $items) { ?>
       <?= $this->site->contact->address->county ? '<br/>' : null ?>
 
     <br/>
-    <br/>
-      <?= ($data['print_mode'] === 'FP10') ? $this->site->institution->remote_id : null ?>
   </div>
   <?= ($data['print_mode'] === 'FP10') ? '<span class="fpten-form-column fpten-prescriber-code">HP</span>' : null ?>
 </div>

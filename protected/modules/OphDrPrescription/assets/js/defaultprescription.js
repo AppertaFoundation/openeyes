@@ -38,18 +38,28 @@ $('body').delegate('select.drugRoute', 'change', function () {
  * - Change check occurs whenever the dispense condition is changed to or from 'Print to FP10'.
  */
 function fpTenPrintOption() {
-    var exists = false;
+    let fpTenExists = false;
+    let wpTenExists = false;
 
     $('#prescription_items tbody tr').each(function(i, elem) {
-        if ($(elem).find('.dispenseCondition').val() == $(elem).find('.dispenseCondition option:contains("Print to FP10")').val()) {
-            exists = true;
+        if ($(elem).find('.dispenseCondition').val() == $(elem).find('.dispenseCondition option:contains("Print to FP10")').val() && !fpTenExists) {
+            fpTenExists = true;
+        }
+        if ($(elem).find('.dispenseCondition').val() == $(elem).find('.dispenseCondition option:contains("Print to WP10")').val() && !wpTenExists) {
+            wpTenExists = true;
         }
     });
 
-    if (exists) {
+    if (fpTenExists) {
         $('#et_save_print_fp10').show();
     } else if (!$('#et_save_print_fp10').hidden) {
         $('#et_save_print_fp10').hide();
+    }
+
+    if (wpTenExists) {
+        $('#et_save_print_wp10').show();
+    } else if (!$('#et_save_print_wp10').hidden) {
+        $('#et_save_print_wp10').hide();
     }
 }
 

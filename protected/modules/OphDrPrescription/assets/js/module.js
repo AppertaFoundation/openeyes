@@ -47,6 +47,13 @@ $(document).ready(function () {
     }
   });
 
+  $(document).on('click', '#et_save_print_wp10', function (e) {
+    $('#Element_OphDrPrescription_Details_draft').val(0);
+    if (!checkPrescriptionLength()) {
+      e.preventDefault();
+    }
+  });
+
   $(document).on('click', '#et_save', function (e) {
     $('#Element_OphDrPrescription_Details_draft').val(0);
     if (!checkPrescriptionLength()) {
@@ -83,6 +90,7 @@ $(document).ready(function () {
   });
 
   $(document).on('click', '#et_print_fp10', function (e) {
+    var print_mode = $(e.target).data("format");
     if ($('#et_ophdrprescription_draft').val() == 1) {
       $.ajax({
         'type': 'GET',
@@ -98,7 +106,28 @@ $(document).ready(function () {
         }
       });
     } else {
-      do_print_fpTen();
+      do_print_fpTen('FP10');
+      e.preventDefault();
+    }
+  });
+
+  $(document).on('click', '#et_print_wp10', function (e) {
+    if ($('#et_ophdrprescription_draft').val() == 1) {
+      $.ajax({
+        'type': 'GET',
+        'url': baseUrl + '/OphDrPrescription/default/doPrint/' + OE_event_id,
+        'success': function (html) {
+          if (html.trim() == "1") {
+            window.location.reload();
+          } else {
+            new OpenEyes.UI.Dialog.Alert({
+              content: "There was an unexpected error printing the prescription, please try again or contact support for assistance."
+            }).open();
+          }
+        }
+      });
+    } else {
+      do_print_fpTen('WP10');
       e.preventDefault();
     }
   });
@@ -125,13 +154,13 @@ function do_print_prescription() {
   });
 }
 
-function do_print_fpTen() {
+function do_print_fpTen(print_mode) {
   $.ajax({
     'type': 'GET',
     'url': baseUrl + '/OphDrPrescription/default/markPrinted?event_id=' + OE_event_id,
     'success': function (html) {
       if (html.trim() == "1") {
-        printIFrameUrl(OE_print_url + '?print_mode=WP10&print_footer=false', null);
+        printIFrameUrl(OE_print_url + '?print_mode=' + print_mode + '&print_footer=false', null);
       } else {
         new OpenEyes.UI.Dialog.Alert({
           content: "There was an error printing the prescription, please try again or contact support for assistance."
