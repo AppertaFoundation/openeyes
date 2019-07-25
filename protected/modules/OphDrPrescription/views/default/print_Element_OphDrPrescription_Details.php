@@ -223,7 +223,7 @@ foreach ($items_data as $group => $items) { ?>
           <?= ($data['print_mode'] === 'WP10') ? $this->patient->contact->address->postcode : null ?>
       </div>
       <div id="fpten-postcode-nhs" class="fpten-form-column">
-        <br/><br/><br/>
+        <br/><br/>
           <?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
         <br/>
         <br/>
@@ -236,7 +236,7 @@ foreach ($items_data as $group => $items) { ?>
     </div>
       <?php if ($data['print_mode'] === 'WP10'): ?>
         <div class="fpten-form-row">
-          <div id="fpten-prescriber" class="fpten-form-column">
+          <div id="wpten-prescriber" class="fpten-form-column">
             HOSPITAL DOCTOR<br/>MEDDYG YSBYTY
           </div>
         </div>
@@ -270,21 +270,20 @@ foreach ($items_data as $group => $items) { ?>
       endforeach;?>
   </div>
 </div>
-<?php if ($data['print_mode'] === 'WP10'): ?>
-    <div class="fpten-form-row">
-      <div id="wpten-doctor-name" class="fpten-form-column">
-          <?= $data['user']->getFullNameAndTitle() ?>
-      </div>
-    </div>
-<?php endif; ?>
+<div class="fpten-form-row">
+  <div id="wpten-doctor-name" class="fpten-form-column">
+      <?= $data['user']->getFullNameAndTitle() ?>
+  </div>
+</div>
 <div class="fpten-form-row">
   <div id="fpten-date" class="fpten-form-column">
     <?= date('d/m/y') ?>
   </div>
 </div>
 <div class="fpten-form-row">
-  <div id="fpten-site" class="fpten-form-column">
-      <?= ($data['print_mode'] === 'FP10') ? $data['user']->getFullNameAndTitle() . '<br/><br/>' : null ?>
+  <div id="<?= $data['print_mode'] === 'FP10' ? 'fpten-site' : 'wpten-site' ?>" class="fpten-form-column">
+      <?= $this->firm->name ?>
+    <br/><br/>
       <?= $this->site->name ?>
     <br/>
       <?= $this->site->contact->address->address1 ?>
@@ -295,23 +294,24 @@ foreach ($items_data as $group => $items) { ?>
       <?= $this->site->contact->address->county ? '<br/>' : null ?>
       <?= $this->site->contact->address->county ?>
     <br/>
-      <?= $this->site->contact->address->postcode ?>
-    <br/>
+      <?= ($data['print_mode'] === 'WP10') ? $this->site->contact->address->postcode . '<br/>' : null ?>
       <?= $this->site->contact->primary_phone ?>
     <br/>
       <?= $this->site->institution->name ?>
   </div>
+    <?php if  ($data['print_mode'] === 'FP10'): ?>
   <div id="fpten-site-code" class="fpten-form-column">
-    <!--span id="fpten-trust-code"><?= $data['user']->registration_code ?></span-->
+    <span id="fpten-trust-code"><?= $data['user']->registration_code ?></span>
     <br/>
     <br/>
       <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
     <br/>
       <?= $this->site->contact->address->county ? '<br/>' : null ?>
-
+      <?= $this->site->contact->address->postcode ?>
     <br/>
   </div>
   <?= ($data['print_mode'] === 'FP10') ? '<span class="fpten-form-column fpten-prescriber-code">HP</span>' : null ?>
+    <?php endif; ?>
 </div>
 
 <?php endif; ?>
