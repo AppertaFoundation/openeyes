@@ -20,8 +20,8 @@ namespace OEModule\OphCiExamination\components;
  */
 
 use OEModule\OphCiExamination\models;
-use OEModule\OphCiExamination\widgets\HistoryRisks;
 use OEModule\OphCiExamination\widgets\HistoryMedications;
+use OEModule\OphCiExamination\widgets\HistoryRisks;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -898,7 +898,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityFindings($patient, $use_context = false)
     {
-        $va = $this->getElementFromLatestVisibleEvent(
+        $va = $this->getLatestElement(
             'models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context
