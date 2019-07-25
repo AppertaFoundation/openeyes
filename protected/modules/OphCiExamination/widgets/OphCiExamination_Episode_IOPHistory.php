@@ -167,7 +167,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                     if(count($readings) > 0) {
                         foreach ($readings as $reading) {
                             if ($reading) {
-                                $iop_data_list[$side][$event_type_name][$timestamp] = array('id' => $event->id, 'y' => $reading);
+                                $iop_data_list[$side][$event_type_name][$timestamp][] = array('id' => $event->id, 'y' => $reading);
                             }
                         }
                     }else {
