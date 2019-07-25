@@ -215,7 +215,8 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
 
             try {
                 $this->executeCommand("QUIT\r\n", array(221));
-            } catch (Swift_TransportException $e) {}
+            } catch (Swift_TransportException $e) {
+            }
 
             try {
                 $this->_buffer->terminate();
@@ -376,8 +377,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         $valid = (empty($wanted) || in_array($code, $wanted));
 
         if ($evt = $this->_eventDispatcher->createResponseEvent($this, $response,
-            $valid))
-        {
+            $valid)) {
             $this->_eventDispatcher->dispatchEvent($evt, 'responseReceived');
         }
 
@@ -473,8 +473,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     private function _lookupHostname()
     {
         if (!empty($_SERVER['SERVER_NAME'])
-            && $this->_isFqdn($_SERVER['SERVER_NAME']))
-        {
+            && $this->_isFqdn($_SERVER['SERVER_NAME'])) {
             $this->_domain = $_SERVER['SERVER_NAME'];
         } elseif (!empty($_SERVER['SERVER_ADDR'])) {
             $this->_domain = sprintf('[%s]', $_SERVER['SERVER_ADDR']);

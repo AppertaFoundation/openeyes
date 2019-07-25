@@ -1026,7 +1026,7 @@ class AdminController extends ModuleAdminController
 
         $save_from_GET = $_GET;
         unset($save_from_GET['page']);
-        if(!empty($save_from_GET)) {
+        if (!empty($save_from_GET)) {
             Yii::app()->session['admin_sessions'] = $save_from_GET;
         }
 

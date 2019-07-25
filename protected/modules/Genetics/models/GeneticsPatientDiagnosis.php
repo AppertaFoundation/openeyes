@@ -25,44 +25,44 @@
  *
  * The followings are the available model relations:
  */
-class GeneticsPatientDiagnosis extends BaseActiveRecord
-{
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return GeneticsPatientPedigree Issue the static model class
-     */
-    public static function model($className = __CLASS__)
+    class GeneticsPatientDiagnosis extends BaseActiveRecord
     {
-        return parent::model($className);
-    }
+        /**
+         * Returns the static model of the specified AR class.
+         *
+         * @return GeneticsPatientPedigree Issue the static model class
+         */
+        public static function model($className = __CLASS__)
+        {
+            return parent::model($className);
+        }
 
-    /**
-     * @return string the associated database table name
-     */
-    public function tableName()
-    {
-        return 'genetics_patient_diagnosis';
-    }
+        /**
+         * @return string the associated database table name
+         */
+        public function tableName()
+        {
+            return 'genetics_patient_diagnosis';
+        }
 
-    /**
-     * @return array validation rules for model attributes.
-     */
-    public function rules()
-    {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
-        return array();
-    }
+        /**
+         * @return array validation rules for model attributes.
+         */
+        public function rules()
+        {
+            // NOTE: you should only define rules for those attributes that
+            // will receive user inputs.
+            return array();
+        }
 
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        return array(
+        /**
+         * @return array relational rules.
+         */
+        public function relations()
+        {
+            return array(
             'patient' => array(self::BELONGS_TO, 'GeneticsPatient', 'patient_id'),
             'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
-        );
+            );
+        }
     }
-}

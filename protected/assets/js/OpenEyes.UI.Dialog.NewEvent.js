@@ -190,6 +190,7 @@
         self.content.on('click', selectors.eventTypeItem, function (e) {
             if (!$(this).hasClass('add_event_disabled')) {
                 // can proceed
+                $(this).addClass("selected");
                 self.createEvent($(this).data('eventtype-id'));
             }
         });
@@ -474,6 +475,11 @@
         // Stop ongoing background tasks such as lightning image loading. Otherwise user has to wait
         window.stop();
         var self = this;
+
+        // disable click on other events
+        self.content.find('#event-type-list').append('<i class="spinner" title="Loading..."></i>');
+        self.content.find('#event-type-list').css('pointer-events', 'none');
+
         // build params for the new event request
         var requestParams = {
             patient_id: self.options.patientId,

@@ -55,7 +55,8 @@ class HistoryRisks extends \BaseEventElementWidget
             $force[] = $entry->risk_id;
         }
 
-        $ignore = array_map(function($r) { return $r->id; }, $this->getRequiredRisks());
+        $ignore = array_map(function($r) { return $r->id;
+        }, $this->getRequiredRisks());
 
         $criteria = new \CDbCriteria();
         $criteria->addNotInCondition('id', $ignore);
@@ -65,7 +66,8 @@ class HistoryRisks extends \BaseEventElementWidget
 
     public function getMissingRequiredRisks()
     {
-        $current_ids = array_map(function ($e) { return $e->risk_id; }, $this->element->entries);
+        $current_ids = array_map(function ($e) { return $e->risk_id;
+        }, $this->element->entries);
         $missing = array();
         foreach ($this->getRequiredRisks() as $required) {
             if (!in_array($required->id, $current_ids)) {
@@ -85,7 +87,7 @@ class HistoryRisks extends \BaseEventElementWidget
      */
     protected function updateElementFromData($element, $data)
     {
-        if  (!is_a($element, 'OEModule\OphCiExamination\models\HistoryRisks')) {
+        if (!is_a($element, 'OEModule\OphCiExamination\models\HistoryRisks')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
@@ -142,16 +144,16 @@ class HistoryRisks extends \BaseEventElementWidget
         $recorded_risks = [];
 
         foreach ($entries as $entry) {
-            foreach(self::NOT_CHECKED_REQUIRED_RISKS as $risk) {
-                if(strpos($entry['risk'], $risk) !== false) {
+            foreach (self::NOT_CHECKED_REQUIRED_RISKS as $risk) {
+                if (strpos($entry['risk'], $risk) !== false) {
                     $recorded_risks[$risk] = true;
                 }
             }
         }
 
         $not_checked_required_risks = [];
-        foreach(self::NOT_CHECKED_REQUIRED_RISKS as $risk) {
-            if(!isset($recorded_risks[$risk]) || !$recorded_risks[$risk]) {
+        foreach (self::NOT_CHECKED_REQUIRED_RISKS as $risk) {
+            if (!isset($recorded_risks[$risk]) || !$recorded_risks[$risk]) {
                 $not_checked_required_risks[] = $risk;
             }
         }

@@ -19,7 +19,7 @@ class m170706_132937_patient_level_risks extends OEMigration
     }
 
     public function up()
-	{
+    {
         $this->createElementType('OphCiExamination', 'Risks', array(
             'class_name' => 'OEModule\OphCiExamination\models\HistoryRisks',
             'display_order' => 1,
@@ -91,8 +91,8 @@ EOSQL
         $this->createView('risk', 'select * from ophciexamination_risk');
     }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropView('risk');
         $this->dropView('patient_risk_assignment');
         $this->dropView('latest_history_risk_examination_events');
@@ -114,14 +114,14 @@ EOSQL
         $this->delete('element_type', 'id = ?', array($id));
     }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

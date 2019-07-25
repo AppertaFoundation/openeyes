@@ -60,17 +60,16 @@ class OptomFeedbackController extends \BaseEventTypeController
     /**
      *  Optom Feedback manager row save
      */
-    public function actionOptomAjaxEdit( $id )
+    public function actionOptomAjaxEdit($id)
     {
         if ($this->request->isPostRequest) {
             $model = \AutomaticExaminationEventLog::model()->findByPk($id);
-            if(!$model){
+            if (!$model) {
                 $result = json_encode(array(
                     's'     => 0,
                     'msg'   => 'Something went wrong!'
                 ));
-
-            } else{
+            } else {
                 $model->invoice_status_id = $this->request->getPost('invoice_status_id');
                 $model->comment = $this->request->getPost('comment');
 
@@ -83,7 +82,6 @@ class OptomFeedbackController extends \BaseEventTypeController
             }
 
             echo $result;
-
         }
 
     }
@@ -126,10 +124,9 @@ class OptomFeedbackController extends \BaseEventTypeController
         return $this->is_list_filtered;
     }
 
-    public function actionGetAuditEventLog( $id )
+    public function actionGetAuditEventLog($id)
     {
         if ($this->request->isPostRequest) {
-
             $model = \AutomaticExaminationEventLog::model()->findByPk($id);
             $previousVersions = $model->getPreviousVersions();
             array_unshift($previousVersions, $model);

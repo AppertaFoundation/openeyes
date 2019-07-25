@@ -173,7 +173,7 @@ class OphTrOperationbooking_Operation_SessionTest extends CDbTestCase
     public function testAvailableProcedureCountNoMax()
     {
         $test = new OphTrOperationbooking_Operation_Session();
-        $this->assertNull($test->getAvailableProcedureCount());
+        $this->assertEquals($test->getAvailableProcedureCount(), 0);
     }
 
     public function testAvailableProcedureCount()

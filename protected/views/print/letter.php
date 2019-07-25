@@ -22,8 +22,8 @@ if (!isset($id) && isset($this->event_type)) {
 }
 ?>
 <div class="container main" id="<?php echo @$id;?>" style="margin-bottom: 10em;">
-	<?php $this->renderPartial('//print/letter_header')?>
-	<?php $this->renderPartial('//print/letter_content', array(
+    <?php $this->renderPartial('//print/letter_header')?>
+    <?php $this->renderPartial('//print/letter_content', array(
         'hide_modified' => @$hide_modified,
         'hide_created' => @$hide_created,
     ));?>

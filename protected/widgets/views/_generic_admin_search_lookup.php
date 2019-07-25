@@ -63,16 +63,16 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
         'htmlOptions' => $htmlOptions,
     )); ?>
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('#<?= "expand_{$params['field']}_{$i}"?>').on('click', function() {
-			$('#<?= "autocomplete_{$params['field']}_{$i}" ?>').show();
-			$(this).hide();
-			$('#<?= "collapse_{$params['field']}_{$i}"?>').show();
-		});
-		$('#<?= "collapse_{$params['field']}_{$i}"?>').on('click', function() {
-			$('#<?= "autocomplete_{$params['field']}_{$i}" ?>').hide();
-			$(this).hide();
-			$('#<?= "expand_{$params['field']}_{$i}"?>').show();
-		});
-	});
+    $(document).ready(function() {
+        $('#<?= "expand_{$params['field']}_{$i}"?>').on('click', function() {
+            $('#<?= "autocomplete_{$params['field']}_{$i}" ?>').show();
+            $(this).hide();
+            $('#<?= "collapse_{$params['field']}_{$i}"?>').show();
+        });
+        $('#<?= "collapse_{$params['field']}_{$i}"?>').on('click', function() {
+            $('#<?= "autocomplete_{$params['field']}_{$i}" ?>').hide();
+            $(this).hide();
+            $('#<?= "expand_{$params['field']}_{$i}"?>').show();
+        });
+    });
 </script>

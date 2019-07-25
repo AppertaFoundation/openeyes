@@ -145,19 +145,19 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         $model = str_replace('\\', '_', $this->elementType->class_name);
         $va = $_POST[$model];
         foreach (array('left', 'right') as $side) {
-            if (!$this->eyeHasSide($side, $va['eye_id'])){
+            if (!$this->eyeHasSide($side, $va['eye_id'])) {
                 continue;
             }
             $isAssessable =!($va[$side.'_unable_to_assess'] || $va[$side.'_eye_missing']);
             $hasReadings = array_key_exists($side.'_readings', $va);
 
             if (($isAssessable&&$hasReadings)||(!$isAssessable&&!$hasReadings)) {
-                if($hasReadings){
+                if ($hasReadings) {
                     // pick out the method_id's from the submitted readings and tally them up
                     $method_ids = array_column($va[$side.'_readings'], 'method_id');
 
                     // change values to keys. dupicates keys are dropped as keys must be unique
-                    if(count($method_ids) !== count(array_flip($method_ids))){
+                    if (count($method_ids) !== count(array_flip($method_ids))) {
                         $this->addError($side, 'Each method type can only be added once per eye');
                     }
                 } else {
@@ -166,10 +166,10 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
             } elseif ($isAssessable&&!$hasReadings) {
                 $this->addError($side, ucfirst($side).' side has no data.');
             } else {
-                if ($va[$side.'_unable_to_assess']){
+                if ($va[$side.'_unable_to_assess']) {
                     $this->addError($side.'_unable_to_assess', 'Cannot be '.$this->getAttributeLabel($side.'_unable_to_assess').' with VA readings.');
                 }
-                if ($va[$side.'_eye_missing']){
+                if ($va[$side.'_eye_missing']) {
                     $this->addError($side.'_eye_missing', 'Cannot be '.$this->getAttributeLabel($side.'_eye_missing').' with VA readings.');
                 }
             }
@@ -340,28 +340,28 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         return $best;
     }
 
-	/**
-	 * Get the best reading based on the type
-	 *
-	 * @param string $side
-	 * @param $method
-	 */
-	public function getBestReadingByMethods($side,$methods)
+    /**
+     * Get the best reading based on the type
+     *
+     * @param string $side
+     * @param $method
+     */
+    public function getBestReadingByMethods($side, $methods)
     {
         $best = null;
-		foreach($methods as $method) {
-			foreach ($this->{$side.'_readings'} as $reading) {
-				if($reading->method->id == $method->id) {
-					if (!$best || $reading->value >= $best->value) {
-						$best = $reading;
-					}
-				}
-			}
-		}
+        foreach ($methods as $method) {
+            foreach ($this->{$side.'_readings'} as $reading) {
+                if ($reading->method->id == $method->id) {
+                    if (!$best || $reading->value >= $best->value) {
+                        $best = $reading;
+                    }
+                }
+            }
+        }
         if ($best) {
             return $best->convertTo($best->value);
         }
-		return $best;
+        return $best;
     }
 
     /**
@@ -453,7 +453,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      */
     public function getLetter_string()
     {
-       $va_unit = OphCiExamination_VisualAcuityUnit::model()->findByPk($this->getSetting('unit_id'));
+        $va_unit = OphCiExamination_VisualAcuityUnit::model()->findByPk($this->getSetting('unit_id'));
         if (!$unit = OphCiExamination_VisualAcuityUnit::model()->find(
             'name = ?',
             array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit'])

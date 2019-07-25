@@ -21,7 +21,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:
+            <?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:
       </div>
     </td>
     <td><?php echo $element->{$side . '_pre_antisept_drug'}->name ?></td>
@@ -29,7 +29,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:<div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:<div class="data-label">
         </div>
     </td>
     <td><?php echo $element->{$side . '_pre_skin_drug'}->name ?></td>
@@ -37,12 +37,12 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_pre_ioplowering_required') ?>:
+            <?php echo $element->getAttributeLabel($side . '_pre_ioplowering_required') ?>:
       </div>
     </td>
     <td><?php echo $element->{$side . '_pre_ioplowering_required'} ? 'Yes' : 'No' ?></td>
   </tr>
-  <?php if ($element->{$side . '_pre_ioploweringdrugs'}) { ?>
+    <?php if ($element->{$side . '_pre_ioploweringdrugs'}) { ?>
     <tr>
       <td>
         <div class="data-label">
@@ -51,17 +51,17 @@
       </td>
       <td>
           <?php
-          foreach ($element->{$side . '_pre_ioploweringdrugs'} as $item) {
-              echo $item->name . '<br />';
-          }
-          ?>
+            foreach ($element->{$side . '_pre_ioploweringdrugs'} as $item) {
+                echo $item->name . '<br />';
+            }
+            ?>
       </td>
     </tr>
-  <?php } ?>
+    <?php } ?>
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_drug_id') ?>:
+            <?php echo $element->getAttributeLabel($side . '_drug_id') ?>:
       </div>
     </td>
     <td><?php echo $element->{$side . '_drug'}->name ?>    </td>
@@ -69,7 +69,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_number') ?>:
+            <?php echo $element->getAttributeLabel($side . '_number') ?>:
       </div>
     </td>
     <td><?=\CHtml::encode($element->{$side . '_number'}) ?></td>
@@ -77,7 +77,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_batch_number') ?>:
+            <?php echo $element->getAttributeLabel($side . '_batch_number') ?>:
       </div>
     </td>
     <td><?=\CHtml::encode($element->{$side . '_batch_number'}) ?></td>
@@ -85,7 +85,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_batch_expiry_date') ?>:
+            <?php echo $element->getAttributeLabel($side . '_batch_expiry_date') ?>:
       </div>
     </td>
     <td><?php echo $element->NHSDate($side . '_batch_expiry_date') ?></td>
@@ -93,7 +93,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_injection_given_by_id') ?>:
+            <?php echo $element->getAttributeLabel($side . '_injection_given_by_id') ?>:
       </div>
     </td>
     <td><?php echo $element->{$side . '_injection_given_by'}->ReversedFullName ?></td>
@@ -101,7 +101,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_injection_time') ?>:
+            <?php echo $element->getAttributeLabel($side . '_injection_time') ?>:
       </div>
     </td>
     <td><?php echo date('H:i', strtotime($element->{$side . '_injection_time'})); ?></td>
@@ -109,12 +109,12 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo $element->getAttributeLabel($side . '_post_ioplowering_required') ?>:
+            <?php echo $element->getAttributeLabel($side . '_post_ioplowering_required') ?>:
       </div>
     </td>
     <td><?php echo $element->{$side . '_post_ioplowering_required'} ? 'Yes' : 'No' ?></td>
   </tr>
-  <?php if ($element->{$side . '_post_ioploweringdrugs'}) { ?>
+    <?php if ($element->{$side . '_post_ioploweringdrugs'}) { ?>
     <tr>
       <td>
         <div class="data-label">
@@ -123,12 +123,12 @@
       </td>
       <td>
           <?php
-          foreach ($element->{$side . '_post_ioploweringdrugs'} as $item) {
-              echo $item->name . '<br />';
-          }
-          ?>
+            foreach ($element->{$side . '_post_ioploweringdrugs'} as $item) {
+                echo $item->name . '<br />';
+            }
+            ?>
       </td>
     </tr>
-  <?php } ?>
+    <?php } ?>
   </tbody>
 </table>

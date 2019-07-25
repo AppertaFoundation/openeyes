@@ -1,14 +1,14 @@
-	<header class="element-header"><h3 class="element-title">Attachments</h3></header>
-	<div class="element-fields full-width flex-layout">
+    <header class="element-header"><h3 class="element-title">Attachments</h3></header>
+    <div class="element-fields full-width flex-layout">
         <table id="correspondence_attachments_table" class="cols-10">
-			<thead>
-			<tr>
-				<th>Attachment type</th>
-				<th>Title</th>
-				<th>Event Date</th>
-				<th></th>
-			</tr>
-			</thead>
+            <thead>
+            <tr>
+                <th>Attachment type</th>
+                <th>Title</th>
+                <th>Event Date</th>
+                <th></th>
+            </tr>
+            </thead>
             <tbody>
             <?php
             if (empty($patient)) {
@@ -69,7 +69,6 @@
                     <?php
 
                     if (isset($_POST['attachments_event_id'])) { ?>
-
                         <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $row_index ?>]"
                                value="<?= $_POST['attachments_event_id'][$row_index] ?>"/>
                     <?php } else if (isset($value->associated_protected_file_id)) { ?>
@@ -93,7 +92,7 @@
                                name="attachments_display_title[<?= $row_index ?>]" value="<?= $display_title ?>"/></td>
                     <td>
                         <input type="hidden" name="attachments_event_id[<?= $row_index ?>]" value="<?= $event_id ?>"/>
-                        <?php if ($is_macroinit): ?>
+                        <?php if ($is_macroinit) : ?>
                             <input type="hidden" name="attachments_id[<?= $row_index ?>]" value="<?= $ac->id ?>"/>
                         <?php endif; ?>
                         <input type="hidden" name="attachments_system_hidden[<?= $row_index ?>]"
@@ -104,18 +103,16 @@
                                value="<?= $ac->short_code ?>"/>
                         <?= $event_date ?>
                     </td>
-									<td>
-										<i class="oe-i trash"></i>
-									</td>
+                                    <td>
+                                        <i class="oe-i trash"></i>
+                                    </td>
                 </tr>
                 <?php $row_index++;
             }
 
             if (isset($_POST['attachments_event_id'])) {
-
                 $posted_data = array_diff_assoc($_POST['attachments_event_id'], $event_id_compare);
                 if (!empty($posted_data)) {
-
                     foreach ($posted_data as $pdk => $pdv) {
                         $event = Event::model()->findByPk($pdv);
                         $row_index++;

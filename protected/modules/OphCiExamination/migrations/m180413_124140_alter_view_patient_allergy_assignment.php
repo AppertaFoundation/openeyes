@@ -26,8 +26,8 @@ class m180413_124140_alter_view_patient_allergy_assignment extends OEMigration
         $this->execute("CREATE OR REPLACE VIEW `patient_allergy_assignment` AS {$this->_new_definition}");
     }
 
-	public function down()
-	{
-		$this->execute("CREATE OR REPLACE VIEW `patient_allergy_assignment` AS {$this->_current_definition}");
-	}
+    public function down()
+    {
+        $this->execute("CREATE OR REPLACE VIEW `patient_allergy_assignment` AS {$this->_current_definition}");
+    }
 }

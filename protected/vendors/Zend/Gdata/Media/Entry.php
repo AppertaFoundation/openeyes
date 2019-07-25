@@ -97,13 +97,13 @@ class Zend_Gdata_Media_Entry extends Zend_Gdata_Entry
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('media') . ':' . 'group':
-            $mediaGroup = new Zend_Gdata_Media_Extension_MediaGroup();
-            $mediaGroup->transferFromDOM($child);
-            $this->_mediaGroup = $mediaGroup;
+            case $this->lookupNamespace('media') . ':' . 'group':
+                $mediaGroup = new Zend_Gdata_Media_Extension_MediaGroup();
+                $mediaGroup->transferFromDOM($child);
+                $this->_mediaGroup = $mediaGroup;
             break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }
