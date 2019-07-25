@@ -21,6 +21,7 @@
 
 <?php $this->beginWidget('CActiveForm', array(
     'id' => 'ticket-filter',
+    'method' => 'get',
     'action' => [
         '/PatientTicketing/default',
         'cat_id' => $cat_id,
@@ -57,7 +58,7 @@
                         'data' => $data,
                         'htmlOptions' => ['empty' => 'All Lists',],
                         'selectedItemsInputName' => 'queue-ids[]',
-                        'selectedItems' => \Yii::app()->request->getpost('queue-ids', null),
+                        'selectedItems' => \Yii::app()->request->getParam('queue-ids', null),
                     ],
                 ],
             ]);
@@ -70,12 +71,12 @@
                 <td>
                     <?= \CHtml::dropDownList(
                         'subspecialty-id',
-                        @$_POST['subspecialty-id'],
+                        \Yii::app()->request->getParam('subspecialty-id', null),
                         Subspecialty::model()->getList(),
                         [
                             'empty' => 'All specialties',
                             'class' => 'cols-11',
-                            'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+                            'disabled' => (\Yii::app()->request->getParam('emergency_list') == 1 ? 'disabled' : ''),
                         ]
                     );
                     ?>
@@ -83,7 +84,7 @@
             <?php endif; ?>
 
             <td colspan="2">
-                <?php $priorities = \Yii::app()->request->getPost('priority-ids', []); ?>
+                <?php $priorities = \Yii::app()->request->getParam('priority-ids', []); ?>
                 <label class="inline highlight">
                     <?= \CHtml::checkBox('priority-ids[]', in_array(1, $priorities), ['value' => 1]); ?>
                     <i class="oe-i circle-red small pad"></i>
@@ -100,7 +101,7 @@
                     <label class="inline highlight">
                         <?= \CHtml::checkBox(
                             'closed-tickets',
-                            \Yii::app()->request->getPost('closed-tickets', false),
+                            \Yii::app()->request->getParam('closed-tickets', false),
                             ['value' => 1]
                         ); ?>
                         Completed
@@ -123,18 +124,18 @@
             </td>
             <td class="fade">Context</td>
             <td>
-                <?php if (!@$_POST['subspecialty-id']) { ?>
+                <?php if (!$subspecialty_id = \Yii::app()->request->getParam('subspecialty-id', null)) { ?>
                     <?= \CHtml::dropDownList('firm-id', '', array(), array(
                         'class' => 'cols-11',
                         'empty' => 'All ' . Firm::contextLabel() . 's',
                         'disabled' => 'disabled',
                     )) ?>
                 <?php } else { ?>
-                    <?= \CHtml::dropDownList('firm-id', @$_POST['firm-id'],
-                        Firm::model()->getList(@$_POST['subspecialty-id']), array(
+                    <?= \CHtml::dropDownList('firm-id', \Yii::app()->request->getParam('firm-id'),
+                        Firm::model()->getList($subspecialty_id), array(
                             'class' => 'cols-11',
                             'empty' => 'All ' . Firm::contextLabel() . 's',
-                            'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+                            'disabled' => (\Yii::app()->request->getParam('emergency_list', 0) == 1 ? 'disabled' : ''),
                         )) ?>
                 <?php } ?>
             </td>
