@@ -17,7 +17,7 @@
  */
 ?>
   <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape.js')?>"></script>
-  <script src="<?= Yii::app()->assetManager->registerScriptFile('../../node_modules/plotly.js-dist/plotly.js');?>"></script>
+  <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/plotly.js-dist/plotly.js');?>"></script>
   <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
     
 
