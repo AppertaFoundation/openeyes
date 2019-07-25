@@ -173,21 +173,22 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
         return false;
     }
 
-    public function getReadings($side){
+    public function getReadings($side)
+    {
     	$return_readings = array();
 
-			if (!$values = $this->{"{$side}_integer_values"}) {
-				return;
-			}
+        if (!$values = $this->{"{$side}_integer_values"}) {
+            return;
+        }
 
-			foreach($values as $value) {
-				if($value->reading) {
-					$return_readings[] = $value;
-				}
-			}
+        foreach($values as $value) {
+            if($value->reading) {
+                $return_readings[] = $value->reading->value;
+            }
+        }
 
-			return $return_readings;
-		}
+        return $return_readings;
+    }
 
     public function getReading($side)
     {

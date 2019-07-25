@@ -128,77 +128,56 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
     //Gets values for examination and phasing data
     public function getPlotlyIOPData(){
 
-			$iop_data_list = array(
-				'examination'=>array(
-					'right'=>array(
-						'event_id'=>'',
-						'x'=>'',
-						'y'=>''),
-					'left'=>array(
-						'event_id'=>'',
-						'x'=>'',
-						'y'=>'')),
-				'phasing'=>array(
-					'right'=>array(
-						'event_id'=>'',
-						'x'=>'',
-						'y'=>''),
-					'left'=>array(
-						'event_id'=>'',
-						'x'=>'',
-						'y'=>'')));
+        $iop_data_list = array(
+            'left' => array(
+                'examination' => array(),
+                'phasing' => array(),
+            ),
+            'right' => array(
+                'examination' => array(),
+                'phasing' => array(),
+            ),
+        );
 
-			$exam_events = Event::model()->getEventsOfTypeForPatient($this->event_type, $this->patient);
-			$phasing_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Phasing")), $this->patient);
+        $exam_events = Event::model()->getEventsOfTypeForPatient($this->event_type, $this->patient);
+        $phasing_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Phasing")), $this->patient);
 
-			foreach ($phasing_events as $phasing_event) {
-				$iop = $phasing_event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
+        foreach ($phasing_events as $phasing_event) {
+            $events[] = $phasing_event;
+        }
 
-				if ($iop) {
-					$timestamp = Helper::mysqlDate2JsTimestamp($phasing_event->event_date);
+        $events = array_push($exam_events, $phasing_events);
 
-					foreach (['left', 'right'] as $side) {
-						$phasing_readings = $iop->getReadings($side);
+        error_log(var_export($events, true));
 
-						foreach ($phasing_readings as $phasing_reading) {
+        foreach ($events as $event) {
+            //Try to cast to correct event type
+            $iop = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
+            if (!$iop) {
+                $iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
+            }
 
-							if ($phasing_reading) {
-								array_push(
-									$iop_data_list['phasing'][$side],
-									array(
-										'event_id' => $phasing_event->id,
-										'x' => $timestamp,
-										'y' => $phasing_reading));
-							}
-						}
-					}
-				}
-			}
+            //successfully cast
+            if ($iop) {
+                $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
 
-			foreach ($exam_events as $exam_event) {
-				$iop = $exam_event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
+                foreach (['left', 'right'] as $side) {
+                    $readings = $iop->getReadings($side);
+                    $event_type_name = strtolower(EventType::model()->findByPk($event->event_type_id)->name);
 
-				if ($iop) {
-					$timestamp = Helper::mysqlDate2JsTimestamp($exam_event->event_date);
+                    if(count($readings) > 0) {
+                        foreach ($readings as $reading) {
+                            if ($reading) {
+                                $iop_data_list[$side][$event_type_name][$timestamp] = array('id' => $event->id, 'y' => $reading);
+                            }
+                        }
+                    }else {
+                        error_log("Not enough readings to iterate over");
+                    }
+                }
+            }
+        }
 
-					foreach (['left', 'right'] as $side) {
-						$exam_readings = $iop->getReadings($side);
-
-						if(count($exam_readings) > 0) {
-							foreach ($exam_readings as $exam_reading) {
-								if ($exam_reading) {
-									array_push(
-										$iop_data_list['examination'][$side],
-										array(
-											'event_id' => $exam_event->id,
-											'x' => $timestamp,
-											'y' => $exam_reading));
-								}
-							}
-						}
-					}
-				}
-			}
 
 		//must be sorted to display in the correct way on the graph
 /*      foreach (['left', 'right'] as $side){
