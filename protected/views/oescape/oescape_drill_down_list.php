@@ -45,7 +45,7 @@
 
 <script type="text/javascript">
     DisplayDrillThroughData(3492971);
-    
+    var iop_plotly_data 
     // DisplayDrillThroughData(3686611);
     
 
@@ -73,19 +73,21 @@
         /// pull list of ids here
 
         // loop for each ID
-        var iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent(3492971)); ?>
+        iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent(3686611)); ?>//3686611  3492971
         
-        var data_row = "<tr  class='clickable' data-link='/OphCiExamination/default/view/3655754'> <!-- Generated Data -->";
-        data_row += "<td  style='vertical-align: center;'>"+iop_plotly_data["event_id"]+"</td> <!-- Event ID -->";
-        data_row += "<td style='vertical-align: center;'>"+iop_plotly_data["event_name"]+"</td> <!-- Event type -->";
-        data_row += "<td style='vertical-align: center;'>"+iop_plotly_data["eye"]+"</td><!-- Eye -->";
-        data_row += " <td style='vertical-align: center;'>"+iop_plotly_data["instrument_name"]+"</td><!-- Instrument -->";
-        data_row += "<td style='vertical-align: center;'>"+iop_plotly_data["dilated"]+"</td><!-- Dilated -->";
-        data_row += "<td style='vertical-align: center;'>"+iop_plotly_data["reading_values"]+"</td><!-- Value -->";
-        data_row += "<td style='vertical-align: center;'>"+iop_plotly_data["comments"]+"</td><!-- Comments -->";
-        data_row += "</tr>";
+        for (var i=0;i<iop_plotly_data.length;i++){
+            var data_row = "<tr  class='clickable' data-link='/OphCi"+iop_plotly_data[i]["event_name"]+"/default/view/"+iop_plotly_data[i]["event_id"]+"'> <!-- Generated Data -->";
+            data_row += "<td  style='vertical-align: center;'>"+iop_plotly_data[i]["event_id"]+"</td> <!-- Event ID -->";
+            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["event_name"]+"</td> <!-- Event type -->";
+            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["eye"]+"</td><!-- Eye -->";
+            data_row += " <td style='vertical-align: center;'>"+iop_plotly_data[i]["instrument_name"]+"</td><!-- Instrument -->";
+            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["dilated"]+"</td><!-- Dilated -->";
+            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["reading_values"]+"</td><!-- Value -->";
+            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["comments"]+"</td><!-- Comments -->";
+            data_row += "</tr>";
 
-        document.getElementById("DrillDownContent").innerHTML += data_row;
+            document.getElementById("DrillDownContent").innerHTML += data_row;
+        }
         //endloop
     }
 </script>
