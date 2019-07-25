@@ -18,10 +18,8 @@
 ?>
 <?php $this->renderPartial('//patient/_patient_alerts') ?>
 
-<?php   $this->renderPartial('//oescape/oescape_drill_down_list', array(
-    'event_list'=> $cssClass,
-    'patient_list' => $content
-)) ?> 
+<?php   $this->renderPartial('//oescape/oescape_drill_down_list') ?> 
+
 <div class="oescape flex-layout flex-stretch"  id="oescape-layout" style="display:none;">
     <?php echo $content; ?>
 </div>
