@@ -107,7 +107,7 @@ $(document).ready(function ()
 });
 
 function highLightError(elementId, containText,highLightFiled){
-  if(document.getElementById(elementId).innerHTML.includes(containText)){
+  if(document.getElementById(elementId) !== null && document.getElementById(elementId).innerHTML.includes(containText)){
     $(highLightFiled).addClass("error");
   }
 }
