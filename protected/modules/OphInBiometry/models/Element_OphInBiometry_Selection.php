@@ -77,6 +77,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
             array('event_id, eye_id, predicted_refraction_left, predicted_refraction_right, lens_id_left, lens_id_right ,formula_id_left, formula_id_right', 'safe'),
             array('iol_power_left', 'requiredIfLensSelected' , 'side' => 'left'),
             array('iol_power_right', 'requiredIfLensSelected' ,'side' => 'right'),
+            array('manually_overriden_left, manually_overriden_right', 'required'),
             // The following rule is used by search().
             array('iol_power_left, predicted_refraction_left, iol_power_right, predicted_refraction_right', 'match', 'pattern' => '/([0-9]*?)(\.[0-9]{0,2})?/'),
             array('iol_power_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 40, 'min' => -10),
@@ -115,7 +116,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
                 if (((empty($this->formula_id_left)) && ((!empty($this->lens_id_left))))
                     || ((!empty($this->formula_id_left)) && ((empty($this->lens_id_left))))
                 ) {
-                    if (empty($this->formula_id_left)) {
+                    if (empty($this->formula_id_left) && !$this->manually_overriden_left) {
                         $this->addError('formula_id_left', 'Lens and Formula must be selected or left blank (Left side).');
                     }
                 }
@@ -131,7 +132,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
                 if (((empty($this->formula_id_right)) && ((!empty($this->lens_id_right))))
                     || ((!empty($this->formula_id_right)) && ((empty($this->lens_id_right))))
                 ) {
-                    if (empty($this->formula_id_right)) {
+                    if (empty($this->formula_id_right)  && !$this->manually_overriden_right) {
                         $this->addError('formula_id_right', 'Lens and Formula must be selected or left blank (Right side).');
                     }
                 }
@@ -209,5 +210,17 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
     public function isRequiredInUI()
     {
         return true;
+    }
+
+    public function beforeSave()
+    {
+        // We want to delete the formula if the side is manually overridden as you cannot set formula id
+        // When it's in manual override
+        foreach (['left', 'right'] as $eye_side) {
+            if ($this->{"manually_overriden_" . $eye_side}) {
+                $this->{"formula_id_" . $eye_side} = null;
+            }
+        }
+        return parent::beforeSave();
     }
 }

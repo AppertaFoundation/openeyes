@@ -1,4 +1,5 @@
-<div class="data-group">
+<div class="data-group js-<?= $manual_override ? 'manual-override' : 'auto-values'?> <?= $disable ? "js-disable-data-group" : ""?>"
+    style="display:<?=$disable ? "none;" : "block"?>">
     <table class="cols-11 last-left">
         <colgroup>
             <col class="cols-6">
@@ -60,7 +61,11 @@
                     $criteria = new CDbCriteria();
 
                     if (!empty(${'lens_' . $side})) {
-                        $criteria->condition = 'id in (' . implode(',', array_unique(${'lens_' . $side})) . ')';
+                        if ($manual_override) {
+                            $criteria->condition = 'active = 1';
+                        } else {
+                            $criteria->condition = 'id in (' . implode(',', array_unique(${'lens_' . $side})) . ')';
+                        }
                         $lenses = OphInBiometry_LensType_Lens::model()->findAll($criteria, array('order' => 'display_order'));
                         echo $form->dropDownList(
                             $element, 'lens_id_' . $side,
@@ -97,7 +102,7 @@
             </tr>
             <?php
         }
-        if (!$this->is_auto) {
+        if (!$this->is_auto || $manual_override) {
             ?>
             <tr>
                 <td>
@@ -109,7 +114,7 @@
             </tr>
             <?php
         }
-        if ($this->is_auto) {
+        if ($this->is_auto && !$manual_override) {
             echo $form->hiddenField($element, 'predicted_refraction_' . $side, array('value' => $element->{"predicted_refraction_$side"}));
             ?>
             <?php
@@ -298,7 +303,7 @@
         }
         ?>
         <?php
-        if (!$this->is_auto) {
+        if (!$this->is_auto || $manual_override) {
             //$element->iol_power_left = null;
             ?>
             <tr>
@@ -306,7 +311,7 @@
                     IOL Power
                 </td>
                 <td>
-                    <?php echo $form->textField($element, 'iol_power_' . $side, ($this->is_auto) ? array('readonly' => true) : array('placeholder' => '0.00', 'nowrapper' => true), null, array('label' => 4, 'field' => 2)); ?>
+                    <?php echo $form->textField($element, 'iol_power_' . $side, ($this->is_auto &&  !$manual_override) ? array('readonly' => true) : array('placeholder' => '0.00', 'nowrapper' => true), null, array('label' => 4, 'field' => 2)); ?>
                 </td>
             </tr>
             <tr>
@@ -314,7 +319,7 @@
                     Predicted Refraction:
                 </td>
                 <td>
-                    <?php echo $form->textField($element, 'predicted_refraction_' . $side, ($this->is_auto) ? array('readonly' => true) : array('placeholder' => '0.00', 'nowrapper' => true), null, array('label' => 4, 'field' => 2)); ?>
+                    <?php echo $form->textField($element, 'predicted_refraction_' . $side, ($this->is_auto &&  !$manual_override) ? array('readonly' => true) : array('placeholder' => '0.00', 'nowrapper' => true), null, array('label' => 4, 'field' => 2)); ?>
                 </td>
             </tr>
         <?php }

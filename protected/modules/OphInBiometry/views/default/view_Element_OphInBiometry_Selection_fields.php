@@ -62,7 +62,7 @@
                         <div class="data-value">
                             <?php
                             $aconst = 'None';
-                            if ($this->is_auto) {
+                            if ($this->is_auto && !$element->{"manually_overriden_" . $side}) {
                                 $iolrefValues = Element_OphInBiometry_IolRefValues::model()->findAllByAttributes(array('event_id' => $element->event->id));
                                 foreach ($iolrefValues as $iolrefData) {
                                     if (isset($data)) {
