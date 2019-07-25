@@ -139,16 +139,15 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
             ),
         );
 
-        $exam_events = Event::model()->getEventsOfTypeForPatient($this->event_type, $this->patient);
+        $events = Event::model()->getEventsOfTypeForPatient($this->event_type, $this->patient);
         $phasing_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Phasing")), $this->patient);
 
+        //Add phasing events. Tried to do this with array_push but everything became upset.
         foreach ($phasing_events as $phasing_event) {
             $events[] = $phasing_event;
         }
 
-        $events = array_push($exam_events, $phasing_events);
-
-        error_log(var_export($events, true));
+        //error_log(var_export($events, true));
 
         foreach ($events as $event) {
             //Try to cast to correct event type
