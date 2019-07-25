@@ -21,7 +21,6 @@ use OEModule\OphCiExamination\models\HistoryIOP as HistoryIopElement;
 class HistoryIOP extends \BaseEventElementWidget
 {
     public static $moduleName = 'OphCiExamination';
-    protected $print_view = 'HistoryIOP_event_print';
     /**
      * @return HistoryIopElement
      */
