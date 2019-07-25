@@ -12,9 +12,9 @@
             <!-- Service Manager flag -->
             <?php
                 $isServiceMgr = false;
-                if(Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
-                    $isServiceMgr = true;
-                }
+            if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
+                $isServiceMgr = true;
+            }
             ?>
             <button class="analytics-section pro-theme cols-12 selected <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
                     data-section="#js-hs-chart-analytics-clinical-main"

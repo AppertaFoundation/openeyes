@@ -117,7 +117,7 @@ class AnalyticsController extends BaseController
         $event_list = $this->queryCataractEventList();
         // to get event min / max date
         $event_dates = array();
-        foreach($event_list as $dates){
+        foreach ($event_list as $dates) {
             array_push($event_dates, $dates['event_date']);
         }
         if (isset($this->surgeon)) {
