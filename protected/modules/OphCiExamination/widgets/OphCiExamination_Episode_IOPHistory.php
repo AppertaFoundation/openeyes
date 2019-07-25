@@ -257,14 +257,20 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
           $readings = 'N/A';
 
           if ($iop_event) {
-            $side = strtolower($event->eye_id->name);
-            $readings = $event->getReadings($side);
-            //the event is an examination event
+           //the event is an examination event
+           $side = strtolower(Eye::model()->findByPk($iop_event->eye_id)->name);
+            if($side == 'both')//TODO: write something that isn't shit
+                $side = 'left';
+            $readings = $iop_event->getReadings($side);
+
             $instrument_name = $event->{$side . '_instrument'}->name;
           } else if ($iop_event = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure')) {
             //the event is a phasing event
-            $side = strtolower($event->eye_id->name);
-            $readings = $event->getReadings($side);
+            $side = strtolower(Eye::model()->findByPk($iop_event->eye_id)->name);
+            if($side == 'both')//TODO: write something that isn't shit
+                $side = 'left';
+
+            $readings = $iop_event->getReadings($side);
             $instrument_name = OphCiPhasing_Instrument::model()->findByPk($iop_event->{$side . '_instrument_id'})->name;
             $dilated = $iop_event->{$side . '_dilated'};
             $comments = $iop_event->{$side . '_comments'};
@@ -275,7 +281,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
               'event_id' => $event_id,
               'event_name' => $event_name,
               'event_date' => $event->event_date,
-              'eye' => $event->eye_id,
+              'eye' => $side,
               'instrument_name' => $instrument_name,
               'dilated' => $dilated,
               'reading_values' => $readings,
