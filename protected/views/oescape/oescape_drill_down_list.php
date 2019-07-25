@@ -62,6 +62,10 @@
 <!--TODO <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_csv.js')?>"></script> -->
 
 <script type="text/javascript">
+
+     var iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent(3492971)); ?>
+
+
     // generate links (used for drill through data to event details) based upon the datalink they have
     $('.clickable').click(function () {
         var link = $(this).data('link');
