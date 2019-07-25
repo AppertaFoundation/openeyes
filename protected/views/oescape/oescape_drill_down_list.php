@@ -36,25 +36,7 @@
                 <th class="text-left" style="vertical-align: center;">Comments</th><!-- Comments -->
             </tr>
         </thead>
-        <tbody>
-            <tr id='find-me' class="clickable" data-link="/OphCiExamination/default/view/3655754"> 
-                <td class="drill_down_patient_list js-csv-data js-csv-hos_num" style="vertical-align: center;">1661782</td><!-- Event ID -->
-                <td style="vertical-align: center;">Examination</td><!-- Event type -->
-                <td style="vertical-align: center;">Inner</td><!-- Eye -->
-                <td style="vertical-align: center;">Clarinet</td><!-- Instrument -->
-                <td style="vertical-align: center;">5%</td><!-- Dilated -->
-                <td style="vertical-align: center;">9001</td><!-- Value -->
-                <td style="vertical-align: center;">DBZ ref here</td><!-- Comments -->
-            </tr>
-            <tr id='find-me' class="clickable" data-link="/OphCiPhasing/default/view/3436242">
-                <td class="drill_down_patient_list js-csv-data js-csv-hos_num" style="vertical-align: center;">3436242</td><!-- Event ID -->
-                <td style="vertical-align: center;">Phasing</td><!-- Event type -->
-                <td style="vertical-align: center;">left</td><!-- Eye -->
-                <td style="vertical-align: center;">Banjo</td><!-- Instrument -->
-                <td style="vertical-align: center;">200%</td><!-- Dilated -->
-                <td style="vertical-align: center;">5</td><!-- Value -->
-                <td style="vertical-align: center;">Wow!</td><!-- Comments -->
-            </tr>
+        <tbody id='DrillDownContent'>
         </tbody>
     </table>
     
@@ -62,9 +44,10 @@
 <!--TODO <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_csv.js')?>"></script> -->
 
 <script type="text/javascript">
-
-     var iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent(3492971)); ?>
-
+    DisplayDrillThroughData(3492971);
+    
+    // DisplayDrillThroughData(3686611);
+    
 
     // generate links (used for drill through data to event details) based upon the datalink they have
     $('.clickable').click(function () {
@@ -85,4 +68,24 @@
         $(this).hide();
         $('#oescape-layout').show();
     });
+
+    function DisplayDrillThroughData(){
+        /// pull list of ids here
+
+        // loop for each ID
+        var iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent(3492971)); ?>
+        
+        var data_row = "<tr  class='clickable' data-link='/OphCiExamination/default/view/3655754'> <!-- Generated Data -->";
+        data_row += "<td  style='vertical-align: center;'>"+iop_plotly_data["event_id"]+"</td> <!-- Event ID -->";
+        data_row += "<td style='vertical-align: center;'>"+iop_plotly_data["event_name"]+"</td> <!-- Event type -->";
+        data_row += "<td style='vertical-align: center;'>"+iop_plotly_data["eye"]+"</td><!-- Eye -->";
+        data_row += " <td style='vertical-align: center;'>"+iop_plotly_data["instrument_name"]+"</td><!-- Instrument -->";
+        data_row += "<td style='vertical-align: center;'>"+iop_plotly_data["dilated"]+"</td><!-- Dilated -->";
+        data_row += "<td style='vertical-align: center;'>"+iop_plotly_data["reading_values"]+"</td><!-- Value -->";
+        data_row += "<td style='vertical-align: center;'>"+iop_plotly_data["comments"]+"</td><!-- Comments -->";
+        data_row += "</tr>";
+
+        document.getElementById("DrillDownContent").innerHTML += data_row;
+        //endloop
+    }
 </script>
