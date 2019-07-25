@@ -200,7 +200,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 				}
 			}
 
-			//must be sorted to display in the correct way on the graph
+		//must be sorted to display in the correct way on the graph
 /*      foreach (['left', 'right'] as $side){
         usort($iop_data_list[$side], function($item1, $item2){
           if ($item1['x'] == $item2['x']) return 0;
@@ -213,7 +213,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
       }*/
       //return $iop_plotly_list;
 
-			return $iop_data_list;
+	  return $iop_data_list;
     }
 
     public function getTargetIOP(){
@@ -239,45 +239,47 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         $event = Event::model()->find('id=:id', array(':id' => $event_id));
 
         if ($event) {
-            //Try to get event as examination event
-            $iop_event = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
+          //Find the name of the event type
+          $event_name = EventType::model()->findByPk($event->event_type_id)->name;
 
-            $event_name = EventType::model()->findByPk($event->event_type)->name;
+          //We only want Examination and Phasing events
+          if($event_name != 'Examination' && $event_name != 'Phasing') {
+            throw new InvalidArgumentException("Event type should be Phasing or Examination");
+          }
+          //Try to get event as examination event
+          $iop_event = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
 
-            if($event_name != 'Examination' && $event_name != 'Phasing') {
-                throw new InvalidArgumentException("Event type should be Phasing or Examination");
-            }else {
-                $side = strtolower($event->eye_id->name);
-                $instrument_name = "instrument not found";
-                $dilated = 'N/A';
-                $comments = 'N/A';
-                $readings = $event->getReadings($side);
+          //Set defaults shared by both event types
+          $side = strtolower($event->eye_id->name);
+          $instrument_name = "instrument not found";
+          $dilated = 'N/A';
+          $comments = 'N/A';
+          $readings = $event->getReadings($side);
 
-                if ($iop_event) {
-                    //the event is an examination event
-                    $instrument_name = $event->{$side . '_instrument'}->name;
+          if ($iop_event) {
+            //the event is an examination event
+            $instrument_name = $event->{$side . '_instrument'}->name;
+          } else if ($iop_event = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure')) {
+            //the event is a phasing event
+            $instrument_name = OphCiPhasing_Instrument::model()->findByPk($iop_event->{$side . '_instrument_id'})->name;
+            $dilated = $iop_event->{$side . '_dilated'};
+            $comments = $iop_event->{$side . '_comments'};
+          }
 
-                } else if ($iop_event = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure')) {
-                    //the event is a phasing event
-                    $instrument_name = OphCiPhasing_Instrument::model()->findByPk($iop_event->{$side . '_instrument_id'})->name;
-                    $dilated = $iop_event->{$side . '_dilated'};
-                    $comments = $iop_event->{$side . '_comments'};
-                }
-            }
+          if ($iop_event) {
+            $data_array = array(
+              'event_id' => $event_id,
+              'event_name' => $event_name,
+              'event_date' => $event->event_date,
+              'eye' => $event->eye_id,
+              'instrument_name' => $instrument_name,
+              'dilated' => $dilated,
+              'reading_values' => $readings,
+              'comments' => $comments
+            );
 
-            if ($iop_event) {
-                $data_array = array(
-                    'event_id' => $event_id,
-                    'event_name' => $event_name,
-                    'event_date' => $event->event_date,
-                    'eye' => $event->eye_id,
-                    'instrument_name' => $instrument_name,
-                    'dilated' => $dilated,
-                    'reading_values' => $readings,
-                    'comments' => $comments);
-
-                return $data_array;
-            }
+            return $data_array;
+          }
         }else {
             throw new InvalidArgumentException("Attempted to get information for event that doesn't exist.");
         }
