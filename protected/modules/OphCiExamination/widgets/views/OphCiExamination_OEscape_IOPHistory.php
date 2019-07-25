@@ -16,6 +16,8 @@
     //plotly data should be in format: [eventType][eye][x]=>(event_id, y)
     var iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
 
+    console.log(iop_plotly_data);
+
 		for (var side of sides) {
 			for(var event_type of event_types) {
 				var x_data = iop_plotly_data[event_type][side]['x'].map(function (item) {
