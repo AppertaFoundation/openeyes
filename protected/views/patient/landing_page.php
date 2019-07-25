@@ -293,7 +293,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                 </div>
             </section>
 
-            <section class="element view full " id="idg-ele-view-problems-&amp;-plans">
+            <section class="element view full ">
                 <header class="element-header">
                     <h3 class="element-title">Problems &amp; Plans</h3>
                 </header>

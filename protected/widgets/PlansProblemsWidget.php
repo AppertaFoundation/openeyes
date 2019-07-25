@@ -27,7 +27,6 @@ class PlansProblemsWidget extends BaseCWidget
         parent::init();
 
         $criteria = new CDbCriteria();
-        $criteria->addCondition("active=1");
         $criteria->addCondition("patient_id=:patient_id");
         $criteria->params[":patient_id"] = $this->patient_id;
 

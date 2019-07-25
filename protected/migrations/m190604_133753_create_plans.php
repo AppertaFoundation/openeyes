@@ -21,6 +21,7 @@ class m190604_133753_create_plans extends OEMigration
 
     public function down()
     {
+        $this->dropForeignKey('plans_problems_user_fk','plans_problems')
         $this->dropTable('plans_problems');
     }
 }

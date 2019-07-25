@@ -197,15 +197,17 @@ class PatientController extends BaseController
      * @param $new_plans
      * @param $patient_id
      */
-    public function actionUpdatePlansProblems($plan_ids, $new_plans, $patient_id) {
-        $plan_ids = json_decode($plan_ids);
-        $new_plans = json_decode($new_plans);
+    public function actionUpdatePlansProblems() {
+        $request = Yii::app()->request;
+        $plan_ids = json_decode($request->getPost('plan_ids'));
+        $new_plans = json_decode($request->getPost('new_plans'));
+        $patient_id = $request->getPost('patient_id');
 
         $transaction = \Yii::app()->db->beginTransaction();
         try {
             foreach ($new_plans as $plan) {
                 $display_order = $plan[0];
-                $plan_name = $plan[1];
+                $plan_name = strip_tags($plan[1]);
                 $plan = new PlansProblems();
                 $plan->name = $plan_name;
                 $plan->display_order = $display_order;
@@ -252,10 +254,11 @@ class PatientController extends BaseController
         $plans_problems = PlansProblems::model()->display_order()->findAll($criteria);
         $plans = [];
         foreach ($plans_problems as $plan_problem) {
-            $user_created = User::model()->findByPk($plan_problem->last_modified_user_id);
+            $user_created = $plan_problem->createdUser;
 
             $attributes = $plan_problem->attributes;
             $attributes['title'] = $user_created->title . " " . $user_created->last_name . " " . $user_created->first_name;
+            $attributes['create_at'] = \Helper::convertDate2NHS($user_created->created_date);
             $plans[] = $attributes;
         }
 
