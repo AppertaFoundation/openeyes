@@ -250,17 +250,21 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
           $iop_event = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
 
           //Set defaults shared by both event types
-          $side = strtolower($event->eye_id->name);
+          $side = 'N/A';
           $instrument_name = "instrument not found";
           $dilated = 'N/A';
           $comments = 'N/A';
-          $readings = $event->getReadings($side);
+          $readings = 'N/A';
 
           if ($iop_event) {
+            $side = strtolower($event->eye_id->name);
+            $readings = $event->getReadings($side);
             //the event is an examination event
             $instrument_name = $event->{$side . '_instrument'}->name;
           } else if ($iop_event = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure')) {
             //the event is a phasing event
+            $side = strtolower($event->eye_id->name);
+            $readings = $event->getReadings($side);
             $instrument_name = OphCiPhasing_Instrument::model()->findByPk($iop_event->{$side . '_instrument_id'})->name;
             $dilated = $iop_event->{$side . '_dilated'};
             $comments = $iop_event->{$side . '_comments'};
