@@ -292,6 +292,7 @@ return array(
         'default_site_code' => '',
         'institution_code' => '',
         'institution_specialty' => 130,
+        'prescription_form_format' => 'FP10', // Currently handled values are FP10 or WP10. This is only used for printing prescriptions to FP10/WP10 forms.
         'erod_lead_time_weeks' => 3,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
         'specialty_codes' => array(),

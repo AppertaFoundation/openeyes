@@ -1,12 +1,13 @@
 <?php
 
-class m190701_012231_add_fp10_dispense_condition extends OEMigration
+class m190701_012231_add_fp10_wp10_dispense_condition extends OEMigration
 {
-    private $condition = 'Print to FP10';
+    private $condition; // This is set at the start of each operation because it relies on a Yii config parameter.
     private $location = 'N/A';
 
 	public function safeUp()
 	{
+	    $this->condition = 'Print to ' . Yii::app()->params['prescription_form_format'];
 	    $this->insert('ophdrprescription_dispense_condition', array('name' => $this->condition));
 
         $condition_id = $this->dbConnection->createCommand()
@@ -31,6 +32,7 @@ class m190701_012231_add_fp10_dispense_condition extends OEMigration
 
 	public function safeDown()
 	{
+        $this->condition = 'Print to ' . Yii::app()->params['prescription_form_format'];
         $condition_id = $this->dbConnection->createCommand()
             ->select('id')
             ->from('ophdrprescription_dispense_condition')
