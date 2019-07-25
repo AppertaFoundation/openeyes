@@ -13,35 +13,8 @@
 
     var event_types = ['examination', 'phasing'];
 
-    //plotly data should be in format: [eventType][eye]=>(event_id, x, y)
+    //plotly data should be in format: [eventType][eye][x]=>(event_id, y)
     var iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
-
-		var sample_data = [
-			[ //examination
-				[//left
-					['id',//id
-						'x',//x
-						'y'],//y
-				],
-				[//right
-					['id',
-						'x',
-						'y'],
-				]
-			],
-			[ //phasing
-				[//left
-					['id',
-						'x',
-						'y'],
-				],
-				[//right
-					['id',
-						'x',
-						'y'],
-				]
-			]
-		];
 
 		for (var side of sides) {
 			for(var event_type of event_types) {
@@ -62,8 +35,6 @@
 				}
 
 				//BEGIN SAMPLE DATA
-
-
 
 				var sample_data = [[1, 2, 3], [4], [12, 34, 5], [15, 26, 37, 48], [2], [9, 8, 7, 6, 5, 4, 3, 2, 1], [45], [78, 56], [10, 2, 3, 4, 5], [1, 2, 3], [4], [12, 34, 5], [15, 26, 37, 48], [2], [9, 8, 7, 6, 5, 4, 3, 2, 1], [45], [78, 56], [10, 2, 3, 4, 5]];
 				var sample_minimums = [sample_data.length];
