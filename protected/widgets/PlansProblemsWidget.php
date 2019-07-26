@@ -31,6 +31,6 @@ class PlansProblemsWidget extends BaseCWidget
         $criteria->addCondition("patient_id=:patient_id");
         $criteria->params[":patient_id"] = $this->patient_id;
 
-        $this->plans_problems = PlansProblems::model()->display_order()->findAll($criteria);
+        $this->plans_problems = PlansProblems::model()->findAll($criteria);
     }
 }

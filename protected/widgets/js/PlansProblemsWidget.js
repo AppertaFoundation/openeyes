@@ -57,7 +57,6 @@ OpenEyes.UI = OpenEyes.UI || {};
                             controller.updateProblemsPlansList($data);
                         },
                         'error': function (msg) {
-                            console.log(msg);
                             alert("Could not save the plans. Return message: " + msg);
                         }
                     });
@@ -81,31 +80,30 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     PlansProblemsController.prototype.savePlans = function(closeButtons, $input = false) {
         let controller = this;
-        let planIds = new Map();
-        let newPlans = new Map();
-        for (let i = 0; i < closeButtons.length; i++) {
+        let planIds = [];
+        let newPlan;
+        for (let i = 1; i <= closeButtons.length; i++) {
             let planId = $(closeButtons[i]).data('planId');
             if (planId) {
-                planIds.set(i+1, planId);
+                planIds[i] = planId;
             }
         }
 
         if($input){
-            let newPlan = $input.val();
-            newPlans.set(closeButtons.length+1, newPlan);
+            newPlan = $input.val();
         }
 
         $.ajax({
             'url': '/patient/updatePlansProblems',
             'type': 'POST',
-            'data': {"YII_CSRF_TOKEN": YII_CSRF_TOKEN, "plan_ids": JSON.stringify([...planIds]), "new_plans":JSON.stringify([...newPlans]), "patient_id":$('#oe-patient-details').data('patient-id')},
+            'data': {"YII_CSRF_TOKEN": YII_CSRF_TOKEN, "plan_ids": planIds, "new_plan":newPlan, "patient_id":$('#oe-patient-details').data('patient-id')},
             'dataType': 'json',
             'success': function ($data) {
                 controller.updateProblemsPlansList($data);
                 $input.val('');
             },
             'error': function (msg) {
-                alert("Could not save the plans. Return message: " + msg);
+                alert("Could not save the plans. Return message: " + msg.responseText);
             }
         });
     };

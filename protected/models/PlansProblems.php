@@ -141,7 +141,7 @@ class PlansProblems extends \BaseActiveRecordVersioned
 		return parent::model($className);
 	}
 
-    public function scopes() {
-        return ['display_order' => ['order' => 'display_order ASC']];
+    public function defaultScope() {
+        return ['order' => $this->getTableAlias(true, false).'.display_order'];
     }
 }

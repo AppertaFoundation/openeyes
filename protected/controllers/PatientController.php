@@ -194,39 +194,41 @@ class PatientController extends BaseController
      * Save the new plans and update old ones
      *
      * @param $plan_ids
-     * @param $new_plans
+     * @param $new_plan
      * @param $patient_id
      */
     public function actionUpdatePlansProblems() {
         $request = Yii::app()->request;
-        $plan_ids = json_decode($request->getPost('plan_ids'));
-        $new_plans = json_decode($request->getPost('new_plans'));
+        $plan_ids = $request->getPost('plan_ids');
+        $new_plan = $request->getPost('new_plan');
         $patient_id = $request->getPost('patient_id');
 
         $transaction = \Yii::app()->db->beginTransaction();
         try {
-            foreach ($new_plans as $plan) {
-                $display_order = $plan[0];
-                $plan_name = strip_tags($plan[1]);
+            if($new_plan){
+                $display_order = count($plan_ids)+1;
+                $plan_name = strip_tags($new_plan);
                 $plan = new PlansProblems();
                 $plan->name = $plan_name;
                 $plan->display_order = $display_order;
                 $plan->patient_id = $patient_id;
                 if (!$plan->validate()) {
-                    throw new Exception("Could not create a new plan: plan validation failed!");
+                    $this->validationFailed();
                 }
                 $plan->save();
             }
 
-            foreach ($plan_ids as $plan) {
-                $display_order = $plan[0];
-                $plan_id = $plan[1];
-                $plan = PlansProblems::model()->findByPk($plan_id);
-                $plan->display_order = $display_order;
-                if (!$plan->validate()) {
-                    throw new Exception("Could not save the plan: plan validation failed!");
+            if($plan_ids){            
+                foreach ($plan_ids as $display_order => $plan_id) {
+                    if($plan_id){                    
+                        $plan = PlansProblems::model()->findByPk($plan_id);
+                        $plan->display_order = $display_order;
+                        if (!$plan->validate()) {
+                            $this->validationFailed();
+                        }
+                        $plan->save();
+                    }
                 }
-                $plan->save();
             }
 
             $transaction->commit();
@@ -251,7 +253,7 @@ class PatientController extends BaseController
         $criteria->addCondition("patient_id=:patient_id");
         $criteria->params[":patient_id"] = $patient_id;
 
-        $plans_problems = PlansProblems::model()->display_order()->findAll($criteria);
+        $plans_problems = PlansProblems::model()->findAll($criteria);
         $plans = [];
         foreach ($plans_problems as $plan_problem) {
             $user_created = $plan_problem->createdUser;
@@ -263,6 +265,12 @@ class PatientController extends BaseController
         }
 
         return json_encode($plans);
+    }
+
+    protected function validationFailed(){
+        header("HTTP/1.0 500 Internal Server Error");
+        \Yii::log($plan->getErrors());
+        die(json_encode($plan->getErrors()));
     }
 
     public function actionSearch()
