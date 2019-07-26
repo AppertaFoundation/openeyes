@@ -5,6 +5,10 @@
     <div id="plotly-IOP-left" class="plotly-IOP plotly-left plotly-section" data-eye-side="left" style="display: none;"></div>
 </div>
 <script type="text/javascript">
+
+		var readings = {};
+		var graph_data = [];
+
   $(document).ready(function () {
 
 		var IOP_target = <?= CJavaScript::encode($this->getTargetIOP()); ?>;
@@ -14,7 +18,7 @@
 
     var iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
 
-    console.log(iop_plotly_data);
+    //console.log(iop_plotly_data);
 
 		for (var side of sides) {
 			var layout_iop = JSON.parse(JSON.stringify(layout_plotly));
@@ -35,7 +39,7 @@
 			var readings = {};
 
 			for (var data_point of iop_plotly_data[side]) {
-				console.log(data_point);
+				//console.log(data_point);
 				var timestamp = data_point['timestamp'];
 				if(!readings.hasOwnProperty(timestamp)) {
 					readings[timestamp] = [];
@@ -43,24 +47,49 @@
 				readings[timestamp].push(data_point['reading']);
 			}
 
+			//console.log(readings);
+
 			var graph_data = [];
 
-			for (var timestamp in Object.keys(readings)) {
-				graph_data[timestamp] = {
-					'timestamp': new Date(timestamp),
-					'minimum': Math.min(...readings[timestamp]),
-					'average': readings[timestamp].reduce((a, b) => a + b) / readings[timestamp].count(),
-					'maxmimum': Math.max(...readings[timestamp])};
+			for (var key in readings) {
+				console.log(readings[key])
+				graph_data[key] = {
+					'timestamp': new Date(key),
+					'minimum': Math.min(...readings[key]),
+					'average': readings[key].reduce((a, b) => a + b) / Object.keys(readings).length,
+					'maxmimum': Math.max(...readings[key])};
       }
 
 			//END SAMPLE DATA
 
 			console.log(graph_data);
 
+			var x = [];
+			var y = [];
+			var error_array = [];
+			var error_minus = [];
+
+			for(i = 0; i < graph_data.length; i++) {
+          x[i] = graph_data[i]['timestamp'];
+          y[i] = graph_data.map(x => x['average']);
+          error_array[i] = graph_data.map(x => x['maximum'] - x['minimum']);
+          error_minus[i] = graph_data.map(x => x['average'] - x['minimum']);
+      }
+
+			console.log("Graphing values:");
+			console.log("x:");
+			console.log(x);
+			console.log("y:");
+			console.log(y);
+			console.log("error array:");
+			console.log(error_array);
+			console.log("error minus:");
+			console.log(error_minus);
+
 			var data = [{
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
-				x: graph_data.map(x => x['timestamp']),
-				y: graph_data.map(x => x['average']),
+				x: x,
+				y: y,
 
 				//x: x_data,
 				//y: iop_plotly_data[side]['y'],
@@ -69,10 +98,11 @@
 				line: {
 					color: (side == 'right') ? '#9fec6d' : '#fe6767',
 				},
-				text: iop_plotly_data[side]['x'].map(function (item, index) {
-					var d = new Date(item);
-					return OEScape.epochToDateStr(d) + '<br>IOP(' + side + '): ' + iop_plotly_data[side]['y'][index];
-				}),
+				text: "foobar",
+				// text: iop_plotly_data[side]['x'].map(function (item, index) {
+				// 	var d = new Date(item);
+				// 	return OEScape.epochToDateStr(d) + '<br>IOP(' + side + '): ' + iop_plotly_data[side]['y'][index];
+				// }),
 				hoverinfo: 'text',
 				hoverlabel: trace_hoverlabel,
 				type: 'line',
@@ -85,8 +115,8 @@
 					type: "data",
 					symmetric: false,
 					color: "#888",
-					array: graph_data.map(x => x['maximum'] - x['minimum']),
-					arrayminus: graph_data.map(x => x['average'] - x['minimum']),
+					array: error_array,
+					arrayminus: error_minus,
 					visible: true
 				},
 			}];
