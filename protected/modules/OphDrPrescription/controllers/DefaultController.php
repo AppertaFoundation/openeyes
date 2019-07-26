@@ -194,7 +194,7 @@ class DefaultController extends BaseEventTypeController
             $subspecialty_id = $this->firm->getSubspecialtyID();
             $params = array(':subspecialty_id' => $subspecialty_id, ':status_name' => $status_name);
 
-            $set = MedicationSet::model()->with('medicationSetRules')->find(array(
+            $set = MedicationSet::model()->with(['medicationSetRules' => ['with' => 'usageCode']])->find(array(
                 'condition' => 'medicationSetRules.subspecialty_id = :subspecialty_id AND t.name = :status_name',
                 'params' => $params,
             ));
@@ -572,7 +572,7 @@ class DefaultController extends BaseEventTypeController
 		$rule = MedicationSetRule::model()->findByAttributes(array(
 			'subspecialty_id' => $subspecialty_id,
 			'site_id' => $site_id,
-			'usage_code' => 'COMMON_OPH'
+			'usage_code_id' => \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar()
 		));
 		if($rule) {
 			return $rule->medicationSet;

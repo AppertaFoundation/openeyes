@@ -1,4 +1,19 @@
 <?php
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
 /**
  * This is the model class for table "medication".
@@ -247,11 +262,12 @@ class Medication extends BaseActiveRecordVersioned
 
 	public function getSiteSubspecialtyMedications($site_id, $subspecialty_id)
     {
+        $common_oph_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar();
         $criteria = new CDbCriteria();
         $criteria->condition = "id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN 
-                                        (SELECT medication_set_id FROM medication_set_rule WHERE usage_code = 'COMMON_OPH' 
+                                        (SELECT medication_set_id FROM medication_set_rule WHERE usage_code_id = :usage_code_id 
                                             AND site_id=:site_id AND subspecialty_id=:subspecialty_id))";
-        $criteria->params = [":site_id" => $site_id, "subspecialty_id" => $subspecialty_id];
+        $criteria->params = [":site_id" => $site_id, "subspecialty_id" => $subspecialty_id, ':usage_code_id' => $common_oph_id];
         $criteria->order = 'preferred_term';
         return $this->findAll($criteria);
     }
@@ -262,10 +278,11 @@ class Medication extends BaseActiveRecordVersioned
 
     public function getTypes()
     {
+        $drug_code_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'DrugTag'])->queryScalar();
         $criteria = new CDbCriteria();
         $criteria->condition = "id IN (SELECT medication_set_id FROM medication_set_item WHERE medication_id = :medication_id 
-                                            AND medication_set_id IN (SELECT medication_set_id FROM medication_set_rule WHERE usage_code = 'DrugTag'))";
-        $criteria->params = [":medication_id" => $this->id];
+                                            AND medication_set_id IN (SELECT medication_set_id FROM medication_set_rule WHERE usage_code_id = :usage_code_id))";
+        $criteria->params = [":medication_id" => $this->id, ':usage_code_id' => $drug_code_id];
         $criteria->order = 'name';
         return MedicationSet::model()->findAll($criteria);
     }
@@ -325,15 +342,18 @@ class Medication extends BaseActiveRecordVersioned
 
     private function listByUsageCode($usage_code, $subspecialty_id = null, $raw = false, $site_id = null)
     {
+
         $criteria = new CDbCriteria();
-        $criteria->compare('medicationSetRules.usage_code',$usage_code);
+        $criteria->with = ['medicationSetRules.usageCode'];
+        $criteria->together = true;
+        $criteria->compare('usageCode.usage_code',$usage_code);
         if(!is_null($subspecialty_id)) {
             $criteria->compare('medicationSetRules.subspecialty_id', $subspecialty_id);
         }
         if(!is_null($site_id)) {
         	$criteria->compare("medicationSetRules.site_id", $site_id);
 		}
-        $sets = MedicationSet::model()->with('medicationSetRules')->findAll($criteria);
+        $sets = MedicationSet::model()->findAll($criteria);
 
         $return = [];
         $ids = [];
@@ -429,7 +449,7 @@ class Medication extends BaseActiveRecordVersioned
     {
         foreach ($this->getMedicationSetsForCurrentSubspecialty() as $medicationSet) {
             foreach ($medicationSet->medicationSetRules as $rule) {
-                if($rule->usage_code == $usage_code) {
+                if($rule->usageCode && $rule->usageCode->usage_code == $usage_code) {
                     return true;
                 }
             }

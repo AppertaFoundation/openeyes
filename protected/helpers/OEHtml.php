@@ -21,7 +21,7 @@ class OEHtml extends CHtml
             $text = substr($name, 4);
             // $arguments[0] will be the html_options
             // this $arguments[0] might be wrong here but no time to implement properly
-            return self::icon(strtolower($text), $arguments[0]);
+            return self::icon(strtolower($text),isset( $arguments[0]) ?  $arguments[0] : []);
         }
     }
 

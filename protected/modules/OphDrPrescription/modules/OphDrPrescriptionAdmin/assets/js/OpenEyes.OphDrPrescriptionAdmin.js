@@ -79,7 +79,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         let controller = this;
         let data = {};
         let usage_codes = $('#set-filters button.green.hint').map(function (m, button) {
-            let usage_code = $(button).data('usage_code');
+            let usage_code = $(button).data('usage_code_id');
             return usage_code ? usage_code : null;
         }).get();
         const search_term = $('#search_query').length ? $('#search_query').val().trim() : null;
@@ -90,9 +90,9 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
 
         data.search = {};
         if (usage_codes.length) {
-            data.search.usage_codes = usage_codes;
+            data.search.usage_code_ids = usage_codes;
         } else {
-            data.search.usage_codes = '';
+            data.search.usage_code_ids = '';
         }
 
         if (search_term) {
@@ -179,7 +179,6 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
                 }
             },
             complete: function() {
-                //$('.oe-popup-wrap').remove();
                 controller.refreshResult();
             }
         });

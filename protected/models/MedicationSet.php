@@ -65,7 +65,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 			array('name', 'length', 'max'=>255),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('name, deleted_date, last_modified_date, created_date, automatic, hidden', 'safe'),
-			array('medicationSetRules', 'safe'), //autosave relation in admin drugSet page
+
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, name, hidden, automatic, antecedent_medication_set_id, deleted_date, display_order, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
@@ -227,7 +227,7 @@ class MedicationSet extends BaseActiveRecordVersioned
         foreach ($this->medicationSetRules as $rule) {
             $ret_val[]= "Site: " . ($rule->site ? $rule->site->name : '-') .
                 ", SS: " . ($rule->subspecialty ? $rule->subspecialty->name : "-") .
-                ", Usage code: " . $rule->usage_code;
+                ", Usage code: " . ($rule->usageCode ? $rule->usageCode->name : '-');
         }
 
         return implode(" // ", $ret_val);

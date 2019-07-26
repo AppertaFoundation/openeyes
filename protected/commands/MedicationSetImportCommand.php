@@ -46,16 +46,18 @@ EOH;
     {
         $this->spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filename);
 
-        for($i=0;$i<$this->spreadsheet->getSheetCount();$i++)
-        {
+        for ($i = 0; $i < $this->spreadsheet->getSheetCount(); $i++) {
             $worksheet = $this->spreadsheet->getSheet($i);
             $this->createAutomaticSet($worksheet->getTitle(), $this->processSheetCells($worksheet));
         }
 
+        $management_code_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'Management'])->queryScalar();
+
         // Add usage code to the management set
         $rule = new MedicationSetRule();
         $rule->medication_set_id = MedicationSet::model()->find("name = 'medication_management'")->id;
-        $rule->usage_code = 'Management';
+        $rule->usage_code_id = $management_code_id;
+
         $rule->save();
     }
 

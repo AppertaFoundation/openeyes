@@ -18,8 +18,8 @@
 <div class="row divider">
     <h2>Drug Sets</h2>
 </div>
-<?php $isSelected = function($usage_code) use ($search) {
-    if (isset($search['usage_codes']) && in_array($usage_code, $search['usage_codes'])) {
+<?php $isSelected = function($usage_code_id) use ($search) {
+    if (isset($search['usage_code_ids']) && in_array($usage_code_id, $search['usage_code_ids'])) {
         return 'green hint';
     }
 
@@ -31,21 +31,12 @@
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
 
         <div id="set-filters" class="flex-layout row">
-            <?php $codes = [
-                    'COMMON_OPH' => 'Common Ophthalmic Drug Sets',
-                    'COMMON_SYSTEMIC' => 'Common Systemic Drug  Sets',
-                    'PRESCRIPTION_SET' => 'Prescription Drug Sets',
-                    'Drug' => 'Drug',
-                    'DrugTag' => 'Drug Tags',
-                    'Formulary' => 'Formulary Drugs',
-                    'MedicationDrug' => 'Medication Drug',
-            ]; ?>
-            <?php foreach ($codes as $usage_code => $desc) :?>
+            <?php foreach (MedicationUsageCode::model()->findAll() as $usage_code) :?>
                 <button
-                        data-usage_code="<?=$usage_code;?>"
+                        data-usage_code_id="<?=$usage_code->id;?>"
                         type="button"
-                        class="large js-set-select <?=$isSelected($usage_code);?>"
-                ><?=$desc;?>
+                        class="large js-set-select <?=$isSelected($usage_code->id);?>"
+                ><?=$usage_code->name;?>
                 </button>
             <?php endforeach; ?>
         </div>

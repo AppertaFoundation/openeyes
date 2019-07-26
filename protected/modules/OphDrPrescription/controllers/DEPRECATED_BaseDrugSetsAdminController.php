@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-abstract class BaseDrugSetsAdminController extends BaseAdminController
+abstract class DEPRICATED_BaseDrugSetsAdminController extends BaseAdminController
 {
 
     public $group = 'Drugs';
@@ -55,7 +55,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
                     'filterid' => array(
                         'medicationSetRules.site_id' => null,
                         'medicationSetRules.subspecialty_id' => $default_subspecialty_id,
-                        'medicationSetRules.usage_code' => $this->usage_code
+                        'medicationSetRules.usageCode.usage_code' => $this->usage_code
                     ),
                 )
             );
@@ -63,7 +63,8 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
 
         $admin->autosets = MedicationSet::model()->findAll("automatic=1");
 
-        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \''.$this->usage_code.'\'');
+        $admin->getSearch()->getCriteria()->addCondition("medicationSetRules.usageCode.usage_code = :usage_code");
+        $admin->getSearch()->getCriteria()->params[':usage_code'] = $this->usage_code;
         $admin->setListFieldsAction('toEdit');
         $admin->setListTemplate('application.modules.OphDrPrescription.views.admin.common_drug_sets.list');
         $admin->setModelDisplayName($this->modelDisplayName);
@@ -88,7 +89,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
         $admin = new Admin(MedicationSet::model(), $this);
 
         if($id) {
-            $medicationSet = MedicationSet::model()->findByAttributes(['id' => $id]);
+            $medicationSet = MedicationSet::model()->findByPk($id);
 
             if ($medicationSet->automatic != 1) {
                 $admin->setEditFields(array(
@@ -97,8 +98,8 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
                         'widget' => 'CustomView',
                         'viewName' => 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_rules',
                         'viewArguments' => array(
-                            'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
-                            'usage_code' => !empty($this->usage_code) ? $this->usage_code : ''
+                            'medication_set' => $medicationSet,
+                            'usage_code' => $this->usage_code ? $this->usage_code : ''
                         )
                     ),
                     'sets' => array(
@@ -117,7 +118,7 @@ abstract class BaseDrugSetsAdminController extends BaseAdminController
                         'viewName' => 'application.modules.OphDrPrescription.views.admin.common_drug_sets.edit_rules',
                         'viewArguments' => array(
                             'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet(),
-                            'usage_code' => !empty($this->usage_code) ? $this->usage_code : ''
+                            'usage_code' => $this->usage_code ? $this->usage_code : ''
                         )
                     ),
                 ));

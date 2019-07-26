@@ -32,7 +32,7 @@ class DrugSetController extends BaseAdminController
             'query' => null,
             'subspecialty_id' => null,
             'site_id' => null,
-            'usage_codes' => ['COMMON_OPH'],
+            'usage_code_ids' => [MedicationUsageCode::model()->find()->id], // default to start with
         ];
 
         $filters = \Yii::app()->request->getParam('search');
@@ -53,8 +53,8 @@ class DrugSetController extends BaseAdminController
             }
         }
 
-        if (!isset($filters['usage_codes']) || !is_array($filters['usage_codes'])) {
-            $filters['usage_codes'] = [];
+        if (!isset($filters['usage_code_ids']) || !is_array($filters['usage_code_ids'])) {
+            $filters['usage_code_ids'] = [];
         }
 
         return $filters;
@@ -62,11 +62,11 @@ class DrugSetController extends BaseAdminController
 
     public function actionIndex()
     {
-        $assetManager = \Yii::app()->getAssetManager();
-        $baseAssetsPath = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
-        $assetManager->publish($baseAssetsPath);
+        $asset_manager = \Yii::app()->getAssetManager();
+        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $asset_manager->publish($base_assets_path);
 
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
 
         $model = new MedicationSet();
         $model->unsetAttributes();
@@ -100,8 +100,12 @@ class DrugSetController extends BaseAdminController
         $criteria->with = ['medicationSetRules'];
         $criteria->together = true;
 
-        if (isset($filters['usage_codes']) && $filters['usage_codes'] ) {
-            $criteria->addInCondition('usage_code', $filters['usage_codes']);
+        if (isset($filters['usage_code_ids']) && $filters['usage_code_ids'] ) {
+            $criteria->addInCondition('usage_code_id', $filters['usage_code_ids']);
+        }
+
+        if (isset($filters['automatic'])) {
+            $criteria->addCondition('automatic', $filters['automatic']);
         }
 
         if (isset($filters['query']) && $filters['query']) {
@@ -114,8 +118,10 @@ class DrugSetController extends BaseAdminController
                 $criteria->params[":$search_key"] = $filters[$search_key];
             }
         }
-        if (!isset($filters['usage_codes']) || !is_array($filters['usage_codes'])) {
-            $filters['usage_codes'] = [];
+
+        // just make sure usage_code_ids is set every time
+        if (!isset($filters['usage_code_ids']) || !is_array($filters['usage_code_ids'])) {
+            $filters['usage_code_ids'] = [];
         }
 
         return $criteria;
@@ -124,7 +130,6 @@ class DrugSetController extends BaseAdminController
     public function actionSearch()
     {
         $filters = $this->getFilters();
-
         $criteria = $this->getSearchCriteria($filters);
         $data['items'] = [];
 
@@ -158,9 +163,9 @@ class DrugSetController extends BaseAdminController
             $ret_val = [];
 
             foreach ($rules as $rule) {
-                $ret_val[]= "Site: ".(!$rule->site ? "-" : $rule->site->name).
-                    ", SS: ".(!$rule->subspecialty ? "-" : $rule->subspecialty->name).
-                    ", Usage code: ".$rule->usage_code;
+                $ret_val[]= "Site: " . (!$rule->site ? "-" : $rule->site->name) .
+                    ", SS: " . (!$rule->subspecialty ? "-" : $rule->subspecialty->name) .
+                    ", Usage code: " . ($rule->usageCode ? $rule->usageCode->name : '-');
             }
 
             $set_attributes['rules'] = implode(" // ", $ret_val);
@@ -236,7 +241,7 @@ class DrugSetController extends BaseAdminController
      * @param bool $id
      * @throws Exception
      */
-    public function actionEdit($id = false)
+    public function actionEdit($id = null)
     {
         $assetManager = \Yii::app()->getAssetManager();
         $baseAssetsPath = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
@@ -245,19 +250,20 @@ class DrugSetController extends BaseAdminController
         Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
         Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.TableInlieEdit.js', \CClientScript::POS_HEAD);
 
-        $set = new MedicationSet;
         $data = \Yii::app()->request->getParam('MedicationSet');
         $filters = \Yii::app()->request->getParam('search', []);
 
-        if ($id) {
-            $set = MedicationSet::model()->findByPk($id);
+        $set = MedicationSet::model()->findByPk($id);
+
+        if(!$set) {
+            $set = new MedicationSet;
         }
 
         $is_new_record = $set->isNewRecord;
 
         if (\Yii::app()->request->isPostRequest) {
 
-            if ($set) {
+            if (!$set->automatic) {
                 $set->name = $data['name'];
 
                 // set relation
@@ -276,19 +282,33 @@ class DrugSetController extends BaseAdminController
                     }
 
                     if ($rule_model) {
+                        $rule_model->setScenario('manualInsert');
                         $relation[] = $rule_model;
                     }
                 }
 
-                // nice, before we could save all the relations we need to save the set itself because the relations validation will fail
-                // for missing a FK key
-                if($set->save()) {
-                    $set->medicationSetRules = $relation;
-                    if ($set->autoValidateAndSaveRelation(true)->validate() && $set->save()) {
+                $set->medicationSetRules = $relation;
+
+                if ($set->autoValidateRelation(true)->validate() && !$set->getErrors()) {
+                    if ($set->save()) {
+                        foreach ($set->medicationSetRules as $rule_model) {
+                            $rule_model->medication_set_id = $set->id;
+                            $rule_model->save();
+                        }
+
                         $this->redirect($is_new_record ? "/OphDrPrescription/admin/DrugSet/edit/{$set->id}" : "/OphDrPrescription/admin/DrugSet/index");
                     }
                 }
+            } else {
+
+                // if the set is an auto set we just managing site, subspecialty and usage_code
+
+
             }
+
+
+
+
         }
 
         $criteria = new \CDbCriteria();

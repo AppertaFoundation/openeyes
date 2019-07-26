@@ -7,27 +7,66 @@ $sites = array_map(function ($e) {
 $subspecialties = array_map(function ($e) {
     return ['id' => $e->id, 'label' => $e->name];
 }, Subspecialty::model()->findAll());
+
+$is_manual = \Yii::app()->request->getParam('set-type', 'manual') === 'manual';
 ?>
-<h2>Edit Medication set</h2>
+<h2><?= $medication_set->isNewRecord ? 'Create' : 'Edit';?> Medication set</h2>
 <div class="row divider"></div>
 
 <form id="drugset-admin-form" action="/OphDrPrescription/admin/DrugSet/edit/<?=$medication_set->id;?>" method="post">
     <div class="row flex-layout flex-top col-gap">
         <div class="cols-6">
             <table class="large">
+                <colgroup>
+                    <col class="cols-3">
+                    <col class="cols-6">
+                    <col class="cols-1">
+                </colgroup>
                 <tbody>
+                <?php if ($medication_set->isNewRecord) : ?>
                 <tr>
-                    <td>Name</td>
-                    <td>
-                        <?= \CHtml::activeTextField($medication_set, 'name', ['class' => 'cols-full']); ?>
-                        <?= \CHtml::activeHiddenField($medication_set, 'id');?>
+                    <td colspan="3">
+                        <?= CHtml::radioButtonList("set-type", \Yii::app()->request->getParam('set-type', 'manual'), [
+                                'manual' => 'Manual set',
+                                'automatic' => 'Automatic set',
+                        ], [
+                                'template' => "{beginLabel}{input}{labelTitle}{endLabel}",
+                                'separator' => '',
+                                'container' => '',
+                                'labelOptions' => ['class' => 'inline highlight']
+                        ]);?>
                     </td>
-                    <td></td>
+                </tr>
+                <?php endif; ?>
+                <tr>
+                    <td>
+                        <span class="js-manual" style="<?=($is_manual ? 'display:block' : 'display:none');?>">Name</span>
+                        <span class="js-auto" style="<?=(!$is_manual ? 'display:block' : 'display:none');?>">Search Auto Set</span>
+                    </td>
+                    <td>
+                        <?= \CHtml::activeHiddenField($medication_set, 'id');?>
+                        <?php
+                            if ($medication_set->isNewRecord) {
+                                $this->widget('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.widgets.AutoSetSearchAutocomplete', [
+                                        'set' => $medication_set,
+                                        'style' => ($is_manual ? 'display:none' : 'display:block')
+                                ]);
+                            }
+
+                            echo \CHtml::activeTextField($medication_set, 'name', [
+                                    'class' => 'cols-full js-manual',
+                                    'style' => ($is_manual ? 'display:block' : 'display:none'),
+                                    'placeholder' => 'Name of the set'
+                            ]);
+                        ?>
+                    </td>
+                    <td>
+                        <div class="js-spinner-as-icon" style="display:none"><i class="spinner as-icon"></i></div>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-
     </div>
 
     <div class="row">
@@ -55,7 +94,7 @@ $subspecialties = array_map(function ($e) {
                             <?= ($rule->subspecialty_id ? CHtml::encode($rule->subspecialty->name) : "") ?>
                         </td>
                         <td>
-                            <?= CHtml::activeTextField($rule, "[{$k}]usage_code"); ?>
+                            <?= CHtml::activeDropDownList($rule, "[{$k}]usage_code_id", CHtml::listData(MedicationUsageCode::model()->findAll(), 'id', 'name')); ?>
                         </td>
                         <td>
                             <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
@@ -98,12 +137,11 @@ $subspecialties = array_map(function ($e) {
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken?>" />
     <input type="hidden" class="js-search-data js-update-row-data" data-name="set_id" value="<?=$medication_set->id;?>" />
 
-    <?php if (!$medication_set->isNewRecord) :?>
-    <div class="row divider"></div>
-
-    <?php $this->renderPartial('/DrugSet/_meds_in_set', ['medication_set' => $medication_set, 'medication_data_provider' => $medication_data_provider]); ?>
-
+    <?php if (!$medication_set->isNewRecord && !$medication_set->automatic) :?>
+        <div class="row divider"></div>
+        <?php $this->renderPartial('/DrugSet/_meds_in_set', ['medication_set' => $medication_set, 'medication_data_provider' => $medication_data_provider]); ?>
     <?php endif; ?>
+
 </form>
 
 <script type="x-tmpl-mustache" id="rule_row_template" style="display:none">
@@ -118,7 +156,7 @@ $subspecialties = array_map(function ($e) {
         {{subspecialty.label}}
     </td>
     <td>
-        <?= CHtml::textField('MedicationSetRule[{{key}}][usage_code]', ""); ?>
+        <?= CHtml::dropDownList('MedicationSetRule[{{key}}][usage_code_id]', null, CHtml::listData(MedicationUsageCode::model()->findAll(), 'id', 'name')); ?>
     </td>
     <td>
         <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
@@ -174,12 +212,12 @@ $subspecialties = array_map(function ($e) {
                 };
             });
 
-            var lastkey = $("#rule_tbl > tbody > tr:last").attr("data-key");
+            let lastkey = $("#rule_tbl > tbody > tr:last").attr("data-key");
             if (isNaN(lastkey)) {
                 lastkey = 0;
             }
-            var key = parseInt(lastkey) + 1;
-            var template = $('#rule_row_template').html();
+            let key = parseInt(lastkey) + 1;
+            let template = $('#rule_row_template').html();
             Mustache.parse(template);
 
             selObj.key = key;
@@ -189,6 +227,16 @@ $subspecialties = array_map(function ($e) {
             return true;
         },
         enableCustomSearchEntries: true,
+    });
+
+    $('input[name="set-type"]').on('input', function() {
+        const $id_input = $('#MedicationSet_id');
+        $('.js-auto, .js-manual').toggle();
+        let value = $(this).val();
+        if (value === 'manual') {
+            $id_input.val('');
+            $('#MedicationSet_name, #MedicationSet_auto_name').val('');
+        }
     });
 
 </script>

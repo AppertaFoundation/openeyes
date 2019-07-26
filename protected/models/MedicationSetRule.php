@@ -1,4 +1,19 @@
 <?php
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
 /**
  * This is the model class for table "medication_set_rule".
@@ -39,17 +54,18 @@ class MedicationSetRule extends BaseActiveRecordVersioned
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
-		return array(
-			array('medication_set_id', 'required'),
-			array('medication_set_id', 'numerical', 'integerOnly'=>true),
-            array('subspecialty_id, site_id', 'numerical', 'integerOnly' => true, 'allowEmpty' => true),
-			array('usage_code', 'length', 'max'=>255),
-			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
-			array('usage_code, deleted_date, last_modified_date, created_date', 'safe'),
+		return [
+			['medication_set_id', 'required'],
+			['medication_set_id', 'numerical', 'integerOnly'=>true],
+            ['subspecialty_id, site_id', 'numerical', 'integerOnly' => true, 'allowEmpty' => true],
+			['usage_code', 'length', 'max'=>255],
+			['last_modified_user_id, created_user_id', 'length', 'max'=>10],
+			['usage_code_id, deleted_date, last_modified_date, created_date', 'safe'],
+			['usage_code_id', 'required', 'on' => 'manualInsert'],
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, medication_set_id, subspecialty_id, site_id, usage_code, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
-		);
+			['id, medication_set_id, subspecialty_id, site_id, usage_code, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'],
+		];
 	}
 
 	/**
@@ -65,6 +81,7 @@ class MedicationSetRule extends BaseActiveRecordVersioned
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+            'usageCode' => array(self::BELONGS_TO, 'MedicationUsageCode', 'usage_code_id'),
 		);
 	}
 
