@@ -15,6 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+$fpten_setting = SettingMetadata::model()->getSetting('prescription_form_format');
+$fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'));
 ?>
 <h2>Prescribed drugs report</h2>
 
@@ -104,7 +106,9 @@
     <tr>
       <td>Dispense Condition/Location</td>
       <td>
-        <?= CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[dispense_condition]', '', CHtml::listData($dispense_conditions, 'id', 'name'), array('empty' => 'Select'))?>
+        <?= CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[dispense_condition]', '', CHtml::listData($dispense_conditions, 'id', 'name'), array('empty' => 'Select', 'options' => array(
+            $fpten_dispense_condition->id => array('label' => "Print to $fpten_setting")
+            )))?>
       </td>
     </tr>
     </tbody>
