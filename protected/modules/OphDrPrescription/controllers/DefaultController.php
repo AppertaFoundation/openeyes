@@ -430,10 +430,6 @@ class DefaultController extends BaseEventTypeController
             Yii::app()->params['wkhtmltopdf_right_margin'] = '0mm';
             Yii::app()->params['wkhtmltopdf_top_margin'] = '6mm';
             Yii::app()->params['wkhtmltopdf_bottom_margin'] = '0mm';
-            Yii::app()->params['wkhtmltopdf_orientation'] = 'Landscape';
-            //Yii::app()->params['wkhtmltopdf_page_height'] = '210mm';
-            //Yii::app()->params['wkhtmltopdf_page_width'] = '177mm';
-            Yii::app()->params['wkhtmltopdf_page_size'] = 'A4';
             Yii::app()->params['wkhtmltopdf_disable_smart_shrinking'] = true;
             $this->render('print_fpten', array(
                 'user' => $user,
