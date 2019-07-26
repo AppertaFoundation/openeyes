@@ -17,7 +17,8 @@
  */
 
 $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array($this->event->id));
-$form_format = Yii::app()->params['prescription_form_format'];
+$form_format = SettingMetadata::model()->getSetting('prescription_form_format');
+$form_option = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'));
 
 ?>
 <?php $this->beginContent('//patient/event_container', ['Element' => $Element, 'no_face'=>true]); ?>
@@ -28,7 +29,7 @@ $form_format = Yii::app()->params['prescription_form_format'];
             if(!$Element->draft || $this->checkEditAccess()){
                 foreach ($Element->items as $item) {
                     // If at least one prescription item has 'Print to FP10' selected as the dispense condition, display the Print FP10 button.
-                    if ($item->dispense_condition->name === "Print to $form_format") {
+                    if ($item->dispense_condition->id === $form_option->id) {
                         $this->event_actions[] = EventAction::button("Print $form_format", 'print_' . strtolower($form_format));
                         break;
                     }
@@ -52,7 +53,7 @@ $form_format = Yii::app()->params['prescription_form_format'];
         </div>
     <?php }?>
 
-    <?php $this->renderOpenElements($this->action->id); ?>
+    <?php $this->renderOpenElements($this->action->id, null, array('form_setting' => $form_format)); ?>
     <?php $this->renderOptionalElements($this->action->id); ?>
 
     <script type="text/javascript">

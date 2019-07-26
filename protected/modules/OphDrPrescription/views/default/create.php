@@ -24,13 +24,13 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'enableAjaxValidation' => false,
 ));
 
-$form_format = Yii::app()->params['prescription_form_format'];
+$form_format = SettingMetadata::model()->getSetting('prescription_form_format');
 
 // Event actions
 $this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'primary'), array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id));
 $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id));
 $this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id));
-$this->event_actions[] = EventAction::button("Save and print $form_format", 'saveprint' . strtolower($form_format), array('level' => 'secondary'), array('id' => 'et_save_print_' . strtolower($form_format), 'class' => 'button small', 'style' => 'display: none;', 'form' => $form_id));
+$this->event_actions[] = EventAction::button("Save and print $form_format", 'saveprintform', array('level' => 'secondary'), array('id' => 'et_save_print_form', 'class' => 'button small', 'style' => 'display: none;', 'form' => $form_id));
 
 $this->displayErrors($errors) ?>
 

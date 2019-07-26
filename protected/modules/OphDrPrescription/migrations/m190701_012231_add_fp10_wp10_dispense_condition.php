@@ -7,7 +7,7 @@ class m190701_012231_add_fp10_wp10_dispense_condition extends OEMigration
 
 	public function safeUp()
 	{
-	    $this->condition = 'Print to ' . Yii::app()->params['prescription_form_format'];
+	    $this->condition = 'Print to {form_type}';
 	    $this->insert('ophdrprescription_dispense_condition', array('name' => $this->condition));
 
         $condition_id = $this->dbConnection->createCommand()
@@ -32,11 +32,11 @@ class m190701_012231_add_fp10_wp10_dispense_condition extends OEMigration
 
 	public function safeDown()
 	{
-        $this->condition = 'Print to ' . Yii::app()->params['prescription_form_format'];
+        $this->condition = 'Print to {form_type}';
         $condition_id = $this->dbConnection->createCommand()
             ->select('id')
             ->from('ophdrprescription_dispense_condition')
-            ->where("name='".$this->condition."'")->queryScalar();
+            ->where("name = '".$this->condition."'")->queryScalar();
 
         if ($condition_id) {
             $this->delete('ophdrprescription_dispense_condition_assignment',

@@ -49,7 +49,12 @@
               </td>
               <td><?php echo $item->frequency->name ?></td>
               <td><?php echo $item->duration->name ?></td>
-              <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
+              <?php if ($item->dispense_condition->name === 'Print to {form_type}'): ?>
+                <td><?php echo str_replace('{form_type}', $data['form_setting'], $item->dispense_condition->name) . " / " . $item->dispense_location->name ?></td>
+                <?php else: ?>
+                <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
+                <?php endif; ?>
+
                 <td class="prescription-label">
                     <?php if (!is_null($item->comments)) : ?>
                         <i><?=\CHtml::encode($item->comments); ?></i>

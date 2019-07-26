@@ -40,14 +40,7 @@ $(document).ready(function () {
     }
   });
 
-  $(document).on('click', '#et_save_print_fp10', function (e) {
-    $('#Element_OphDrPrescription_Details_draft').val(0);
-    if (!checkPrescriptionLength()) {
-      e.preventDefault();
-    }
-  });
-
-  $(document).on('click', '#et_save_print_wp10', function (e) {
+  $(document).on('click', '#et_save_print_form', function (e) {
     $('#Element_OphDrPrescription_Details_draft').val(0);
     if (!checkPrescriptionLength()) {
       e.preventDefault();
@@ -89,7 +82,7 @@ $(document).ready(function () {
     }
   });
 
-  $(document).on('click', '#et_print_fp10', function (e) {
+  $(document).on('click', '#et_print_form', function (e) {
     var print_mode = $(e.target).data("format");
     if ($('#et_ophdrprescription_draft').val() == 1) {
       $.ajax({
