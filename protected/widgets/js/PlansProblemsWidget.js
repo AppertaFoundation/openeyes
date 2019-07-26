@@ -18,7 +18,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 (function (exports) {
     function PlansProblemsController() {
         this.initialiseTriggers();
-    };
+    }
 
     PlansProblemsController.prototype.initialiseTriggers = function () {
         let controller = this;

@@ -205,7 +205,7 @@ class PatientController extends BaseController
 
         $transaction = \Yii::app()->db->beginTransaction();
         try {
-            if($new_plan){
+            if ($new_plan){
                 $display_order = count($plan_ids)+1;
                 $plan_name = strip_tags($new_plan);
                 $plan = new PlansProblems();
@@ -218,9 +218,9 @@ class PatientController extends BaseController
                 $plan->save();
             }
 
-            if($plan_ids){            
+            if ($plan_ids){
                 foreach ($plan_ids as $display_order => $plan_id) {
-                    if($plan_id){                    
+                    if ($plan_id){
                         $plan = PlansProblems::model()->findByPk($plan_id);
                         $plan->display_order = $display_order;
                         if (!$plan->validate()) {

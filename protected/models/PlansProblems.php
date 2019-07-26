@@ -40,16 +40,16 @@ class PlansProblems extends \BaseActiveRecordVersioned
     public $widgetClass = 'OEModule\widgets\PlansProblems';
 
     /**
-	 * @return string the associated database table name
-	 */
+	* @return string the associated database table name
+	*/
 	public function tableName()
 	{
 		return 'plans_problems';
 	}
 
 	/**
-	 * @return array validation rules for model attributes.
-	 */
+	* @return array validation rules for model attributes.
+	*/
     public function rules()
     {
         // NOTE: you should only define rules for those attributes that
@@ -66,8 +66,8 @@ class PlansProblems extends \BaseActiveRecordVersioned
     }
 
 	/**
-	 * @return array relational rules.
-	 */
+	* @return array relational rules.
+	*/
     public function relations()
     {
         // NOTE: you may need to adjust the relation name and the related
@@ -80,8 +80,8 @@ class PlansProblems extends \BaseActiveRecordVersioned
     }
 
     /**
-     * @return array customized attribute labels (name=>label)
-     */
+    * @return array customized attribute labels (name=>label)
+    */
     public function attributeLabels()
     {
         return array(
@@ -115,15 +115,15 @@ class PlansProblems extends \BaseActiveRecordVersioned
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('name',$this->name,true);
-        $criteria->compare('patient_id',$this->patient_id,true);
-        $criteria->compare('display_order',$this->display_order,true);
-        $criteria->compare('active',$this->active);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('name', $this->name,true);
+        $criteria->compare('patient_id', $this->patient_id,true);
+        $criteria->compare('display_order', $this->display_order,true);
+        $criteria->compare('active', $this->active);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id,true);
+        $criteria->compare('last_modified_date', $this->last_modified_date,true);
+        $criteria->compare('created_user_id', $this->created_user_id,true);
+        $criteria->compare('created_date', $this->created_date,true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
