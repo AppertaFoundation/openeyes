@@ -52,28 +52,37 @@
 			var graph_data = [];
 
 			for (var key in readings) {
-				console.log(readings[key])
+				//console.log("reading data");
+				//console.log(readings[key])
+				//console.log(readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0));
+				//console.log(readings[key].length);
 				graph_data[key] = {
-					'timestamp': new Date(key),
+					'timestamp': key,
 					'minimum': Math.min(...readings[key]),
-					'average': readings[key].reduce((a, b) => a + b) / Object.keys(readings).length,
-					'maxmimum': Math.max(...readings[key])};
+					'average': readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
+					'maxmimum': Math.max(...readings[key])
+				};
       }
 
 			//END SAMPLE DATA
 
-			console.log(graph_data);
+			//console.log(graph_data);
 
 			var x = [];
 			var y = [];
 			var error_array = [];
 			var error_minus = [];
 
-			for(i = 0; i < graph_data.length; i++) {
-          x[i] = graph_data[i]['timestamp'];
-          y[i] = graph_data.map(x => x['average']);
-          error_array[i] = graph_data.map(x => x['maximum'] - x['minimum']);
-          error_minus[i] = graph_data.map(x => x['average'] - x['minimum']);
+			var i = 0;
+			for(key in graph_data) {
+          console.log("Max:".concat(graph_data[key]['maximum']));
+          console.log("Min:".concat(graph_data[key]['minimum']));
+
+          x[i] = graph_data[key]['timestamp'];
+          y[i] = graph_data[key]['average'];
+          error_array[i] = graph_data[key]['maximum'] - graph_data[key]['minimum'];
+          error_minus[i] = graph_data[key]['average'] - graph_data[key]['minimum'];
+          i++;
       }
 
 			console.log("Graphing values:");
