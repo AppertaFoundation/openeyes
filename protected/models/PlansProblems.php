@@ -50,6 +50,7 @@ class PlansProblems extends \BaseActiveRecordVersioned
 	/**
 	* @return array validation rules for model attributes.
 	*/
+
     public function rules()
     {
         // NOTE: you should only define rules for those attributes that
@@ -130,18 +131,19 @@ class PlansProblems extends \BaseActiveRecordVersioned
         ));
     }
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return PlansProblems the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return PlansProblems the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-    public function defaultScope() {
+    public function defaultScope()
+    {
         return ['order' => $this->getTableAlias(true, false).'.display_order'];
     }
 }
