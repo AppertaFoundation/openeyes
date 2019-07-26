@@ -179,6 +179,7 @@
 
                                       extraContactFormCleaning();
                                       $(".js-extra-practice-gp-id").val("");
+                                      $("#PracticeAssociate_practice_id").val("");
                                 }
                           }',
                             ],
@@ -270,6 +271,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                                       }
                                       extraContactFormCleaning();
                                       $(".js-extra-practice-gp-id").val("");
+                                      $("#PracticeAssociate_practice_id").val("");
                                 }
                           }',
                             ],
