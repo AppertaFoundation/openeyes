@@ -225,7 +225,7 @@ class PatientController extends BaseController
                 foreach ($plan_ids as $display_order => $plan_id) {
                     if ($plan_id) {
                         $plan = PlansProblems::model()->findByPk($plan_id);
-                        $plan->display_order = $display_order;
+                        $plan->display_order = $display_order+1;
                         if (!$plan->validate()) {
                             $this->validationFailed();
                         }

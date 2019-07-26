@@ -82,7 +82,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         let controller = this;
         let planIds = [];
         let newPlan;
-        for (let i = 1; i <= closeButtons.length; i++) {
+        for (let i = 0; i <= closeButtons.length; i++) {
             let planId = $(closeButtons[i]).data('planId');
             if (planId) {
                 planIds[i] = planId;
