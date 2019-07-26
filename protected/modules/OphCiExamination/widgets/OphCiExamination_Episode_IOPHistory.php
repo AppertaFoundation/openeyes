@@ -264,12 +264,12 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
         if($event_name == 'Examination') {
             //exam
-            $readings = $iop_element->getReadings($side);
+            $readings = $iop_element->getReadingsWithTime($side);
             $instrument_name = $iop_element->{$side . '_instrument'}->name;
         }
         else if($event_name == 'Phasing') {
             //phasing
-            $readings = $iop_element->getReadings($side);
+            $readings = $iop_element->getReadingsWithTime($side);
             $instrument_name = OphCiPhasing_Instrument::model()->findByPk($iop_element->{$side . '_instrument_id'})->name;
             $dilated = $iop_element->{$side . '_dilated'}?'Yes':'No';
             $comments = $iop_element->{$side . '_comments'};
