@@ -7,7 +7,6 @@
         <h3 id="js-list-title">List of Events</h3>
         <button id="js-back-to-chart" class="selected js-plot-display-label" >Back to chart</button>
     </div>
-    <h3 id="js-list-title">Examination events</h3>
     <table>
         <colgroup>
             <col style="width: 100px;"><!-- Event ID -->
@@ -81,7 +80,7 @@
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["eye"]+"</td><!-- Eye -->";
             data_row += " <td style='vertical-align: center;'>"+iop_plotly_data[i]["instrument_name"]+"</td><!-- Instrument -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["dilated"]+"</td><!-- Dilated -->";
-            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["reading_values"]+"</td><!-- Value -->";
+            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["reading_values"].join(',</br>')+"</td><!-- Value -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["comments"]+"</td><!-- Comments -->";
             data_row += "</tr>";
 

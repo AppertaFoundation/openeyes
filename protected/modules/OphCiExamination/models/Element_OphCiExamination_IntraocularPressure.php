@@ -183,7 +183,7 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
 
         foreach($values as $value) {
             if($value->reading) {
-                $return_readings[] = $value->reading->value;
+                $return_readings[] = date('G:i',strtotime($value->reading_time)).' - '. $value->reading->value. ' mm Hg';
             }
         }
 
