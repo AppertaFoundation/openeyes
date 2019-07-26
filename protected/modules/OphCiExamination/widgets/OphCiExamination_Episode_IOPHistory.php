@@ -267,7 +267,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
             //phasing
             $readings = $iop_element->getReadings($side);
             $instrument_name = OphCiPhasing_Instrument::model()->findByPk($iop_element->{$side . '_instrument_id'})->name;
-            $dilated = $iop_element->{$side . '_dilated'};
+            $dilated = $iop_element->{$side . '_dilated'}?'Yes':'No';
             $comments = $iop_element->{$side . '_comments'};
         }
         else{
@@ -278,7 +278,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
               'event_id' => $iop_element->event_id,
               'event_name' => $event_name,
               'event_date' => $event->event_date,
-              'eye' => $side,
+              'eye' => ucfirst($side),
               'instrument_name' => $instrument_name,
               'dilated' => $dilated,
               'reading_values' => $readings,
