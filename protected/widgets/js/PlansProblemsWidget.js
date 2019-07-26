@@ -100,7 +100,9 @@ OpenEyes.UI = OpenEyes.UI || {};
             'dataType': 'json',
             'success': function ($data) {
                 controller.updateProblemsPlansList($data);
-                $input.val('');
+                if($input){
+                    $input.val('');
+                }
             },
             'error': function (msg) {
                 alert("Could not save the plans. Return message: " + msg.responseText);

@@ -209,7 +209,7 @@ class PatientController extends BaseController
         $transaction = \Yii::app()->db->beginTransaction();
         try {
             if ($new_plan) {
-                $display_order = count($plan_ids)+1;
+                $display_order = (is_array($plan_ids) ? count($plan_ids)+1 : 1);
                 $plan_name = strip_tags($new_plan);
                 $plan = new PlansProblems();
                 $plan->name = $plan_name;
