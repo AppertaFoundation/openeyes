@@ -19,7 +19,7 @@
 <div class="problems-plans">
     <ul class="problems-plans-sortable" id="problems-plans-sortable">
         <?php foreach ($plans_problems as $plan_problem) {
-            if($plan_problem->active){ ?>
+            if ($plan_problem->active) { ?>
             <li>
                 <span class="drag-handle" style="position: absolute;"><i class="oe-i menu medium pro-theme"></i></span>
                 <span style="display:inline-block;margin-left:30px;"><?= $plan_problem->name ?></span>
@@ -29,7 +29,8 @@
                 </div>
                 <div class="remove"><i class="oe-i remove-circle small pro-theme pad" data-plan-id="<?= $plan_problem->id ?>"></i></div>
             </li>
-        <?php } } ?>
+            <?php }
+        } ?>
     </ul>
 
     <?php if ($allow_save) : ?>
@@ -39,7 +40,7 @@
         </div>
     <?php endif; ?>
     <br />
-    <table class="problems-plans">
+    <table class="problems-plans cols-full">
         <colgroup>
             <col class="cols-9">
             <col class="cols-1">
@@ -49,14 +50,14 @@
         <tr>
             <th colspan="2">Past/closed problems</th>
             <th></th>
-            <th>
-                <i class="oe-i small pad js-patient-expand-btn expand"></i>
+            <th style="text-align:right;">
+                <i class="oe-i small pad js-patient-expand-btn expand <?= $pro_theme ?>"></i>
             </th>
         </tr>
         </thead>
         <tbody style="display: none;">
             <?php foreach ($plans_problems as $plan_problem) {
-                if(!$plan_problem->active){  ?>
+                if (!$plan_problem->active) {  ?>
                 <tr>
                     <td style="padding: 6px 3px;"><?= $plan_problem->name ?></td>
                     <td><div class="metadata">
@@ -66,7 +67,8 @@
                     </td>
                     <td><span class="oe-date">Removed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?></span></td>
                 </tr>
-            <?php } } ?>
+                <?php }
+            } ?>
         </tbody>
     </table>
 </div>

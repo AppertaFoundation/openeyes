@@ -306,39 +306,47 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
           <div class="group">
               <div class="label">Surgical History</div>
               <div class="data">
-                    <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class,
-                      [
-                          'patient' => $this->patient,
-                          'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-                      ]); ?>
+                    <?php $this->widget(
+                        \OEModule\OphCiExamination\widgets\PastSurgery::class,
+                        [
+                            'patient' => $this->patient,
+                            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                        ]
+                    ); ?>
               </div>
           </div>
 
-            <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class,
-              [
-                  'patient' => $this->patient,
-                  'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-              ]); ?>
+            <?php $this->widget(
+                \OEModule\OphCiExamination\widgets\HistoryMedications::class,
+                [
+                    'patient' => $this->patient,
+                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                ]
+            ); ?>
 
           <div class="group">
               <div class="label">Family</div>
               <div class="data">
-                    <?php $this->widget(\OEModule\OphCiExamination\widgets\FamilyHistory::class,
-                      [
-                          'patient' => $this->patient,
-                          'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-                      ]); ?>
+                    <?php $this->widget(
+                        \OEModule\OphCiExamination\widgets\FamilyHistory::class,
+                        [
+                            'patient' => $this->patient,
+                            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                        ]
+                    ); ?>
               </div>
           </div>
 
           <div class="group">
               <div class="label">Social</div>
               <div class="data">
-                    <?php $this->widget(\OEModule\OphCiExamination\widgets\SocialHistory::class,
-                      [
-                          'patient' => $this->patient,
-                          'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-                      ]); ?>
+                    <?php $this->widget(
+                        \OEModule\OphCiExamination\widgets\SocialHistory::class,
+                        [
+                            'patient' => $this->patient,
+                            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                        ]
+                    ); ?>
               </div>
           </div>
       </div><!--    .oe-popup-overflow -->
@@ -380,7 +388,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             </div><!-- left -->
             <div class="cols-right">
                 <div class="popup-overflow">
-                    <?php $this->widget('application.widgets.PlansProblemsWidget', ['patient_id' => $this->patient->id]); ?>
+                    <?php $this->widget('application.widgets.PlansProblemsWidget', ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme']); ?>
                 </div><!-- .popup-overflow -->
             </div>
         </div><!-- flex -->

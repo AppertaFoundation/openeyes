@@ -21,6 +21,7 @@ class PlansProblemsWidget extends BaseCWidget
     public $allow_save = true;
     public $patient_id;
     public $plans_problems;
+    public $pro_theme = '';
 
     public function init()
     {
