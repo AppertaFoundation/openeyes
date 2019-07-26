@@ -164,6 +164,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                     data.locked = 1;
                     if(data.will_copy) {
                         $new_row = controller.MMController.addEntry([data], false);
+                        controller.disableRemoveButton($new_row);
                         controller.bindEntries($row, $new_row);
                     }
                 }
