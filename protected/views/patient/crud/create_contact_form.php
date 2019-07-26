@@ -90,7 +90,7 @@
                     <td colspan="2" class="align-right">
                         <?php
                             echo CHtml::ajaxButton('Next',
-                                Yii::app()->controller->createUrl('gp/create', array('context' => 'AJAX')),
+                                Yii::app()->controller->createUrl('gp/validateGpContact'),
                                 array(
                                     'type' => 'POST',
                                     'success' => 'js:function(event){
@@ -98,8 +98,6 @@
                                         $("#extra_gp_errors").html(event);
                                         $("#extra_gp_practitioner-alert-box").css("display","");
                                     }else{
-                                        let gp_info = JSON.parse(event);
-                                        $(".js-extra-practice-gp-id").val(gp_info.id);
                                         $("#extra-gp-form")[0].reset();
                                         $("#extra_gp_errors").text("");
                                         $("#extra_gp_practitioner-alert-box").css("display","none");
@@ -153,8 +151,6 @@
                             </ul>
                             <?= CHtml::hiddenField('PracticeAssociate[practice_id]', $extra_practice_associate->practice_id,
                                 array('class' => 'hidden_id')); ?>
-                            <?= CHtml::hiddenField('PracticeAssociate[gp_id]', $extra_practice_associate->gp_id,
-                                array('class' => 'hidden_id js-extra-practice-gp-id')); ?>
                         </div>
                         <div id="no_practice_associate_result" style="display: none;">
                             <div>No result</div>
@@ -165,11 +161,12 @@
                 <tr>
                     <td colspan="2" class="align-right">
                         <?php echo CHtml::ajaxButton('Add',
-                            Yii::app()->controller->createUrl('practiceAssociate/create', array("context" => 'AJAX')),
+                            Yii::app()->controller->createUrl('practiceAssociate/create'),
                             [
                                 'type' => 'POST',
                                 'success' => 'js:function(event){
                                  if (event.includes("error")){
+                                 console.log(JSON.parse(event));
                                         let error = JSON.parse(event);
                                         $("#extra-existing-practice-errors").html(error.error);
                                         $("#extra-existing-practice-alert-box").css("display","");
@@ -227,7 +224,6 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                 <tbody>
                 <tr>
                     <td>
-                        <input class="js-extra-practice-gp-id" name="PracticeAssociate[gp_id]" type="hidden">
                         <?php echo $extra_practice_form->labelEx($extra_practice_contact, 'first_name'); ?>
                     </td>
                     <td>
@@ -259,7 +255,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                 <tr>
                     <td colspan="2" class="align-right">
                         <?php echo CHtml::ajaxButton('Add',
-                            Yii::app()->controller->createUrl('practice/createAssociate', array("context" => 'AJAX')),
+                            Yii::app()->controller->createUrl('practice/createAssociate'),
                             [
                                 'type' => 'POST',
                                 'success' => 'js:function(event){

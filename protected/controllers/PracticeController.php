@@ -92,34 +92,46 @@ class PracticeController extends BaseController
         }
     }
 
-
+    /**
+     * This function is called at the final step of Add New Contact/Referring Practitioner when user wants to add new
+     * practice and saves all the data (i.e. Contact, Gp, Contact Practice Associate)
+     */
     public function actionCreateAssociate(){
-        $contact = new Contact('manage_practice');
-        $address = new Address('manage_practice');
-        $practice = new Practice('manage_practice');
-        $this->performAjaxValidation(array($practice, $contact, $address));
+        if(Yii::app()->session->contains('contactForm')) {
+            $contactFormData = Yii::app()->session->get('contactForm');
 
+            $gp = new Gp();
+            $contact = new Contact('manage_practice');
 
-        if (isset($_POST['Contact'])) {
-            $contact->attributes = $_POST['Contact'];
-            $address->attributes = $_POST['Address'];
-            $practice->attributes = $_POST['Practice'];
-            list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address,
-                true);
-        }
+            $contact->attributes = $contactFormData;
 
+            list($contact, $gp) = $gp->performGpSave($contact, $gp, 'AJAX');
 
-        if (isset($practice->contact)){
-            $practice_contact_associate = new ContactPracticeAssociate();
-            $practice_contact_associate->gp_id = $_POST['PracticeAssociate']['gp_id'];
-            $practice_contact_associate->practice_id = $practice->id;
-            if ($practice_contact_associate->save()){
-                echo CJSON::encode(array(
-                    'gp_id' => $practice_contact_associate->gp->getPrimaryKey(),
-                ));
+            $contact = new Contact('manage_practice');
+            $address = new Address('manage_practice');
+            $practice = new Practice('manage_practice');
+            $this->performAjaxValidation(array($practice, $contact, $address));
+
+            if (isset($_POST['Contact'])) {
+                $contact->attributes = $_POST['Contact'];
+                $address->attributes = $_POST['Address'];
+                $practice->attributes = $_POST['Practice'];
+                list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address,
+                    true);
+            }
+
+            if (isset($practice->contact)){
+                $practice_contact_associate = new ContactPracticeAssociate();
+                $practice_contact_associate->gp_id = $gp->getPrimaryKey();
+                $practice_contact_associate->practice_id = $practice->id;
+                if ($practice_contact_associate->save()){
+                    unset(Yii::app()->session['contactForm']); # Removing the session variable
+                    echo CJSON::encode(array(
+                        'gp_id' => $practice_contact_associate->gp->getPrimaryKey(),
+                    ));
+                }
             }
         }
-
     }
 
 

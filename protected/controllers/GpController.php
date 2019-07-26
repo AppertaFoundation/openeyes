@@ -50,7 +50,7 @@ class GpController extends BaseController
             ),
             array(
                 'allow', // allow users with either the TaskCreateGp or TaskAddPatient roles to perform 'create' actions
-                'actions' => array('create'),
+                'actions' => array('create', 'validateGpContact'),
                 'roles' => array('TaskCreateGp', 'TaskAddPatient'),
             ),
             array(
@@ -95,7 +95,7 @@ class GpController extends BaseController
         if (isset($_POST['Contact'])) {
             $contact->attributes = $_POST['Contact'];
             $this->performAjaxValidation($contact, $context);
-            list($contact, $gp) = $this->performGpSave($contact, $gp, $context === 'AJAX');
+            list($contact, $gp) = $gp->performGpSave($contact, $gp, $context === 'AJAX');
         }
 
         if ($context === 'AJAX') {
@@ -114,56 +114,22 @@ class GpController extends BaseController
         }
     }
 
-    public function performGpSave(Contact $contact, Gp $gp, $isAjax = false)
+    /**
+     * Just to validate the Contact model on the Add Patient Screen and show the error messages to the user (if any),
+     * when user presses Next in the popup for adding a new contact or Referring Practitioner.
+     */
+    public function actionValidateGpContact()
     {
-        $action = $gp->isNewRecord ? 'add' : 'edit';
-        $transaction = Yii::app()->db->beginTransaction();
+        // manage_gp is used for validation purposes.
+        $contact = new Contact('manage_gp');
 
-        try {
-            if ($contact->save()) {
-                // No need to re-set these values if they already exist.
-                if ($gp->contact_id === null) {
-                    $gp->contact_id = $contact->getPrimaryKey();
-                }
-
-                if ($gp->nat_id === null) {
-                    $gp->nat_id = 0;
-                }
-
-                if ($gp->obj_prof === null) {
-                    $gp->obj_prof = 0;
-                }
-
-                if ($gp->save()) {
-                    $transaction->commit();
-                    Audit::add('Gp', $action . '-gp', "Practitioner manually [id: $gp->id] {$action}ed.");
-                    if (!$isAjax) {
-                        $this->redirect(array('view', 'id' => $gp->id));
-                    }
-                } else {
-                    if ($isAjax) {
-                        throw new CHttpException(400,"Unable to save Practitioner contact");
-                    }
-                    $transaction->rollback();
-                }
+        if (isset($_POST['Contact'])) {
+            if (strpos(CActiveForm::validate($contact), 'cannot be blank' ) !== false) {
+                echo CHtml::errorSummary($contact);
             } else {
-                if ($isAjax) {
-                    throw new CHttpException(400,CHtml::errorSummary($contact));
-                }
-                $transaction->rollback();
-            }
-        } catch (Exception $ex) {
-            OELog::logException($ex);
-            $transaction->rollback();
-            if ($isAjax) {
-                if (strpos($ex->getMessage(),'errorSummary')){
-                    echo $ex->getMessage();
-                }else{
-                    echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
-                }
+                Yii::app()->session->add('contactForm',$_POST['Contact']);
             }
         }
-        return array($contact, $gp);
     }
 
     /**
@@ -188,7 +154,7 @@ class GpController extends BaseController
                 $contact->contact_label_id = null;
             }
 
-            list($contact, $model) = $this->performGpSave($contact, $model);
+            list($contact, $model) = $model->performGpSave($contact, $model);
         }
 
         $this->render('update', array(
