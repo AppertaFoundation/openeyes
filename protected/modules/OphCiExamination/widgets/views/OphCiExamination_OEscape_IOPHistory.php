@@ -6,14 +6,11 @@
 </div>
 <script type="text/javascript">
   $(document).ready(function () {
-		console.log("checkpoint");
 
 		var IOP_target = <?= CJavaScript::encode($this->getTargetIOP()); ?>;
     var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
     var sides = ['left', 'right'];
-
-    console.log("checkpoint");
 
     var iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
 
@@ -35,23 +32,25 @@
 
 			//BEGIN SAMPLE DATA
 
-			console.log("checkpoint");
-
-			var readings = [];
+			var readings = {};
 
 			for (var data_point of iop_plotly_data[side]) {
-				readings[data_point['timestamp']][] = data_point['reading'];
+				console.log(data_point);
+				var timestamp = data_point['timestamp'];
+				if(!readings.hasOwnProperty(timestamp)) {
+					readings[timestamp] = [];
+				}
+				readings[timestamp].push(data_point['reading']);
 			}
 
 			var graph_data = [];
 
-			for (var timestamp in readings.keys()) {
-				graph_data[timestamp] = [
+			for (var timestamp in Object.keys(readings)) {
+				graph_data[timestamp] = {
 					'timestamp': new Date(timestamp),
-					'minimum': math.min(...readings[timestamp]),
+					'minimum': Math.min(...readings[timestamp]),
 					'average': readings[timestamp].reduce((a, b) => a + b) / readings[timestamp].count(),
-					'maxmimum': math.max(...readings[timestamp]),
-				];
+					'maxmimum': Math.max(...readings[timestamp])};
       }
 
 			//END SAMPLE DATA
