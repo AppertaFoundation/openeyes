@@ -2,26 +2,32 @@
 
 class m190604_133753_create_plans extends OEMigration
 {
-    public function up()
+    public function safeUp()
     {
-        $this->createOETable('plans_problems',
+        $this->createOETable(
+            'plans_problems',
             [
                 'id' => 'pk',
                 'name' => 'varchar(255) NOT NULL',
                 'patient_id' => 'int(10) unsigned NOT NULL',
                 'display_order' => 'int(10) unsigned NOT NULL',
                 'active' => 'bool default true'
-            ]
-        , true);
+            ],
+            true
+        );
 
-        $this->addForeignKey('plans_problems_user_fk',
-            'plans_problems', 'patient_id',
-            'patient', 'id');
+        $this->addForeignKey(
+            'plans_problems_user_fk',
+            'plans_problems',
+            'patient_id',
+            'patient',
+            'id'
+        );
     }
 
-    public function down()
+    public function safeDown()
     {
-        $this->dropForeignKey('plans_problems_user_fk','plans_problems')
+        $this->dropForeignKey('plans_problems_user_fk', 'plans_problems');
         $this->dropTable('plans_problems');
     }
 }
