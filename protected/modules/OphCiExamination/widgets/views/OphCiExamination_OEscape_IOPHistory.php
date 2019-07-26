@@ -5,7 +5,6 @@
     <div id="plotly-IOP-left" class="plotly-IOP plotly-left plotly-section" data-eye-side="left" style="display: none;"></div>
 </div>
 <script type="text/javascript">
-    var readings = {};
   $(document).ready(function () {
 
 		var IOP_target = <?= CJavaScript::encode($this->getTargetIOP()); ?>;
@@ -33,28 +32,25 @@
 
 			//BEGIN SAMPLE DATA
 
-			// var readings = {};
+			var readings = {};
 
 			for (var data_point of iop_plotly_data[side]) {
 				console.log(data_point);
 				var timestamp = data_point['timestamp'];
 				if(!readings.hasOwnProperty(timestamp)) {
-					readings.push({
-								key: timestamp,
-								value: []
-						});
-        }
+					readings[timestamp] = [];
+				}
 				readings[timestamp].push(data_point['reading']);
 			}
 
 			var graph_data = [];
 
-			for (var timestamp in readings.keys()) {
+			for (var timestamp in Object.keys(readings)) {
 				graph_data[timestamp] = {
 					'timestamp': new Date(timestamp),
-					'minimum': math.min(...readings[timestamp]),
+					'minimum': Math.min(...readings[timestamp]),
 					'average': readings[timestamp].reduce((a, b) => a + b) / readings[timestamp].count(),
-					'maxmimum': math.max(...readings[timestamp])};
+					'maxmimum': Math.max(...readings[timestamp])};
       }
 
 			//END SAMPLE DATA
