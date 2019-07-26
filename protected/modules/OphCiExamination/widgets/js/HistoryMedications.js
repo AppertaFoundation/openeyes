@@ -164,6 +164,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var key = $row.attr("data-key");
         var $tapers = controller.$table.find("tr[data-parent-key="+key+"]");
         $tapers.remove();
+        controller.removeBoundEntry($row);
         $row.remove();
     });
 
@@ -628,6 +629,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.options.onControllerBound(controller, name);
     };
 
+    HistoryMedicationsController.prototype.disableRemoveButton = function ($row) {
+        const $removeButton = $row.find(".js-remove");
+        const $removeButtonWrapper = $removeButton.parent();
+        $removeButton.addClass("disabled");
+        $removeButtonWrapper.addClass("js-has-tooltip");
+        $removeButtonWrapper.data("tooltip-content", $removeButtonWrapper.data("tooltip-content-comes-from-history"));
+    };
 
     HistoryMedicationsController.prototype.copyRow = function($origin, $target, old_values)
     {
@@ -653,6 +661,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.updateRowRouteOptions($row);
 
         $row.find(".js-prepended_markup:visible").load("/medicationManagement/getInfoBox?medication_id="+data.medication_id);
+        this.disableRemoveButton($row);
 
         return $row;
     };
