@@ -166,7 +166,6 @@
                                 'type' => 'POST',
                                 'success' => 'js:function(event){
                                  if (event.includes("error")){
-                                 console.log(JSON.parse(event));
                                         let error = JSON.parse(event);
                                         $("#extra-existing-practice-errors").html(error.error);
                                         $("#extra-existing-practice-alert-box").css("display","");
