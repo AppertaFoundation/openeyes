@@ -129,14 +129,8 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
     public function getPlotlyIOPData(){
 
         $iop_data_list = array(
-            'left' => array(
-                'examination' => array(),
-                'phasing' => array(),
-            ),
-            'right' => array(
-                'examination' => array(),
-                'phasing' => array(),
-            ),
+            'left' => array(),
+            'right' => array(),
         );
 
         $events = Event::model()->getEventsOfTypeForPatient($this->event_type, $this->patient);
@@ -159,15 +153,15 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
             //successfully cast
             if ($iop) {
                 $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
+								$event_type_name = strtolower(EventType::model()->findByPk($event->event_type_id)->name);
 
                 foreach (['left', 'right'] as $side) {
                     $readings = $iop->getReadings($side);
-                    $event_type_name = strtolower(EventType::model()->findByPk($event->event_type_id)->name);
 
                     if(count($readings) > 0) {
                         foreach ($readings as $reading) {
                             if ($reading) {
-                                $iop_data_list[$side][$event_type_name][$timestamp][] = array('id' => $event->id, 'y' => $reading);
+                                $iop_data_list[$side][] = array('id' => $event->id, 'event_type' => $event_type_name, 'timestanp' => $timestamp, 'reading' => $reading);
                             }
                         }
                     }else {
@@ -219,7 +213,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
         $event = Event::model()->find('id=:id', array(':id' => $event_id));
 
-        if ($event) {           
+        if ($event) {
           //Find the name of the event type
           $event_name = EventType::model()->findByPk($event->event_type_id)->name;
 
@@ -240,7 +234,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
             //after all that, if we got an event
             if ($iop_event) {
-               
+
                 //the event is an examination event
                 $side = strtolower(Eye::model()->findByPk($iop_event->eye_id)->name);
                 if($side == 'both'){
@@ -266,7 +260,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
         if($event_name == 'Examination') {
             //exam
-            $readings = $iop_element->getReadings($side);        
+            $readings = $iop_element->getReadings($side);
             $instrument_name = $iop_element->{$side . '_instrument'}->name;
         }
         else if($event_name == 'Phasing') {

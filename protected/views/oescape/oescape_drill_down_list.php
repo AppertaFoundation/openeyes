@@ -39,15 +39,14 @@
         <tbody id='DrillDownContent'>
         </tbody>
     </table>
-    
+
 </div>
 <!--TODO <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_csv.js')?>"></script> -->
 
 <script type="text/javascript">
     DisplayDrillThroughData(3492971);
-    var iop_plotly_data 
-    // DisplayDrillThroughData(3686611);
-    
+    var iop_plotly_data
+    //DisplayDrillThroughData(3686611);
 
     // generate links (used for drill through data to event details) based upon the datalink they have
     $('.clickable').click(function () {
@@ -73,8 +72,8 @@
         /// pull list of ids here
 
         // loop for each ID
-        iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent(3686611)); ?>//3686611  3492971
-        
+        iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent(3492971)); ?>//3686611  3492971
+
         for (var i=0;i<iop_plotly_data.length;i++){
             var data_row = "<tr  class='clickable' data-link='/OphCi"+iop_plotly_data[i]["event_name"]+"/default/view/"+iop_plotly_data[i]["event_id"]+"'> <!-- Generated Data -->";
             data_row += "<td  style='vertical-align: center;'>"+iop_plotly_data[i]["event_id"]+"</td> <!-- Event ID -->";
