@@ -64,7 +64,7 @@
 				  'parent_ids': readings[key].map(r => r['reading']),
 					'timestamp': key,
 					'minimum': Math.min(...readings[key].map(r => r['reading'])),
-					'average': readings[key].reduce((a, b) => parseInt(a['reading']) + parseInt(b['reading']), 0) / readings[key].length,
+					'average': readings[key].map(r => r['reading']).reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
 					'maximum': Math.max(...readings[key].map(r => r['reading']))
 				};
       }
