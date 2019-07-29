@@ -54,16 +54,24 @@
         $('#js-back-to-chart').hide();
         $('#oescape-layout').show();
     });
-    function DisplayDrillThroughData(){
+
+    InitDrillThroughData();
+    
+    
+    function DisplayDrillThroughData(id){
+
+    $('.event_'+id).show();
+    }
+    function InitDrillThroughData(){
         /// pull list of ids here
         document.getElementById("DrillDownContent").innerHTML = '';
         // loop for each ID
-        iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent(3686611)); ?>//3686611  3492971
+        iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent($this->patient)); ?>//3686611  3492971
 
-				console.log(iop_plotly_data);
+				// console.log(iop_plotly_data);
 
         for (var i = 0; i < iop_plotly_data.length; i++){
-            var data_row = "<tr  class='clickable' data-link='/OphCi"+iop_plotly_data[i]["event_name"]+"/default/view/"+iop_plotly_data[i]["event_id"]+"'> <!-- Generated Data -->";
+            var data_row = "<tr  class='clickable event_rows event_" + iop_plotly_data[i]["event_id"]+"' data-link='/OphCi"+iop_plotly_data[i]["event_name"]+"/default/view/"+iop_plotly_data[i]["event_id"]+"'> <!-- Generated Data -->";
             data_row += "<td  style='vertical-align: center;'>"+iop_plotly_data[i]["event_id"]+"</td> <!-- Event ID -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["event_name"]+"</td> <!-- Event type -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["eye"]+"</td><!-- Eye -->";
