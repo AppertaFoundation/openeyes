@@ -109,7 +109,7 @@
 					color: (side == 'right') ? '#9fec6d' : '#fe6767',
 				},
 				text: x.map(function (item, index) {
-				 	var d = Date.parse(item);
+				 	var d = new Date(parseInt(item));
           return OEScape.epochToDateStr(d) + '<br>IOP(' + side + '): ' + y[index];
           //return item + '<br>IOP(' + side + '): ' + y[index];
 				}),

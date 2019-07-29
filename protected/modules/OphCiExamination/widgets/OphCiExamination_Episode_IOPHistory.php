@@ -238,7 +238,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
           //Find the name of the event type
           $event_name = EventType::model()->findByPk($event->event_type_id)->name;
 
-          //We only want Examination and Phasing events
+          //Process event differently depending on type
           if($event_name == 'Examination') {
 						$iop_event = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
 						$side = strtolower(Eye::model()->findByPk($iop_event->eye_id)->name);
