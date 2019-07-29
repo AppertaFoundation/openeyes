@@ -276,7 +276,7 @@ class PatientController extends BaseController
 
     protected function validationFailed()
     {
-        header("HTTP/1.0 500 Internal Server Error");
+        header("HTTP/1.0 400 Bad Request");
         \Yii::log($plan->getErrors());
         die(json_encode($plan->getErrors()));
     }
