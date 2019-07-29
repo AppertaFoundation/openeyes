@@ -2310,7 +2310,7 @@
         },
         {
             "name": "sensiolabs/behat-page-object-extension",
-            "version": "v1.0.1",
+            "version": "v1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/BehatPageObjectExtension.git",
