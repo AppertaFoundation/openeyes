@@ -191,8 +191,34 @@ class Element_OphCiPhasing_IntraocularPressure extends SplitEventTypeElement
         $criteria->params = array(':eid' => $this->id, ':sid' => $side);
 
         foreach (OphCiPhasing_Reading::model()->findAll($criteria) as $reading) {
-					//$readings[] = date('G:i',strtotime($reading->measurement_timestamp)).' - '. $reading->value. ' mm Hg';
 					$readings[] = $reading->value;
+        }
+
+        return $readings;
+    }
+
+    public function getReadingsWithTime($side)
+    {
+        switch($side){
+            case "right":
+            $side = '0';
+            break;
+            case "left":
+            $side = '1';
+            break;
+            default:
+            break;
+        }
+
+        $readings = array();
+
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('element_id = :eid');
+        $criteria->addCondition('side = :sid');
+        $criteria->params = array(':eid' => $this->id, ':sid' => $side);
+
+        foreach (OphCiPhasing_Reading::model()->findAll($criteria) as $reading) {
+					$readings[] = date('G:i',strtotime($reading->measurement_timestamp)).' - '. $reading->value. ' mm Hg';
         }
 
         return $readings;
