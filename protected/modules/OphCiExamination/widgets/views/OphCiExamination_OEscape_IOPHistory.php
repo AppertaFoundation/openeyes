@@ -60,7 +60,7 @@
 					'timestamp': key,
 					'minimum': Math.min(...readings[key]),
 					'average': readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
-					'maxmimum': Math.max(...readings[key])
+					'maximum': Math.max(...readings[key])
 				};
       }
 
@@ -75,6 +75,7 @@
 
 			var i = 0;
 			for(key in graph_data) {
+			    console.log(graph_data[key]);
           console.log("Max:".concat(graph_data[key]['maximum']));
           console.log("Min:".concat(graph_data[key]['minimum']));
 
@@ -107,11 +108,11 @@
 				line: {
 					color: (side == 'right') ? '#9fec6d' : '#fe6767',
 				},
-				text: "foobar",
-				// text: iop_plotly_data[side]['x'].map(function (item, index) {
-				// 	var d = new Date(item);
-				// 	return OEScape.epochToDateStr(d) + '<br>IOP(' + side + '): ' + iop_plotly_data[side]['y'][index];
-				// }),
+				text: x.map(function (item, index) {
+				 	var d = Date.parse(item);
+          return OEScape.epochToDateStr(d) + '<br>IOP(' + side + '): ' + y[index];
+          //return item + '<br>IOP(' + side + '): ' + y[index];
+				}),
 				hoverinfo: 'text',
 				hoverlabel: trace_hoverlabel,
 				type: 'line',
