@@ -228,7 +228,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                         <?php echo $extra_practice_form->labelEx($extra_practice_contact, 'first_name'); ?>
                     </td>
                     <td>
-                        <?php echo $extra_practice_form->textArea($extra_practice_contact, 'first_name', array('maxlength' => 300, 'cols' => 40)); ?>
+                        <?php echo $extra_practice_form->textArea($extra_practice_contact, 'first_name', array('maxlength' => 300, 'cols' => 40, 'class' => 'cols-10')); ?>
                         <?php echo $extra_practice_form->error($extra_practice_contact, 'first_name'); ?>
                     </td>
                 </tr>
@@ -237,7 +237,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                         <?php echo $extra_practice_form->labelEx($extra_practice, 'code'); ?>
                     </td>
                     <td>
-                        <?php echo $extra_practice_form->textField($extra_practice, 'code', array('size' => 15, 'maxlength' => 20)); ?>
+                        <?php echo $extra_practice_form->textField($extra_practice, 'code', array('size' => 15, 'maxlength' => 20, 'class' => 'cols-10')); ?>
                         <?php echo $extra_practice_form->error($extra_practice, 'code'); ?>
                     </td>
                 </tr>
@@ -247,7 +247,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                         <?php echo $extra_practice_form->error($extra_practice_contact, 'primary_phone'); ?>
                     </td>
                     <td>
-                        <?php echo $extra_practice_form->telField($extra_practice_contact, 'primary_phone', array('size' => 15, 'maxlength' => 20)); ?>
+                        <?php echo $extra_practice_form->telField($extra_practice_contact, 'primary_phone', array('size' => 15, 'maxlength' => 20, 'class' => 'cols-10')); ?>
                     </td>
                 </tr>
                 <tr>
