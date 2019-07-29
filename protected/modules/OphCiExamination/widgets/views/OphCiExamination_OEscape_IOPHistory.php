@@ -57,7 +57,7 @@
 				//console.log(readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0));
 				//console.log(readings[key].length);
 				graph_data[key] = {
-				  'parent_id': iop_plotly_data[side]['id'],
+				  'parent_id': '3686611',
 					'timestamp': key,
 					'minimum': Math.min(...readings[key]),
 					'average': readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
@@ -77,7 +77,7 @@
 
 			var i = 0;
 			for(key in graph_data) {
-			    // console.log(graph_data[key]);
+			    console.log(graph_data[key]);
           // console.log("Max:".concat(graph_data[key]['maximum']));
           // console.log("Min:".concat(graph_data[key]['minimum']));
           x[i] = graph_data[key]['timestamp'];
@@ -93,6 +93,8 @@
 			// console.log(x);
 			// console.log("y:");
 			// console.log(y);
+			console.log("Event ids:");
+			console.log(event_ids);
 			// console.log("error array:");
 			// console.log(error_array);
 			// console.log("error minus:");
