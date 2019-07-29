@@ -189,7 +189,7 @@ class PatientController extends BaseController
         $plan->active = false;
         $plan->save();
 
-        echo $this->actionGetPlansProblems($patient_id);
+        echo $this->actionGetPlansProblems($patient_id, true);
     }
 
     /**
@@ -250,10 +250,12 @@ class PatientController extends BaseController
      * @param $patient_id
      * @return false|string
      */
-    public function actionGetPlansProblems($patient_id)
+    public function actionGetPlansProblems($patient_id, $inc_deactive = false)
     {
         $criteria = new CDbCriteria();
-        $criteria->addCondition("active=1");
+        if(!$inc_deactive){
+            $criteria->addCondition("active=1");
+        }
         $criteria->addCondition("patient_id=:patient_id");
         $criteria->params[":patient_id"] = $patient_id;
 
@@ -264,7 +266,8 @@ class PatientController extends BaseController
 
             $attributes = $plan_problem->attributes;
             $attributes['title'] = $user_created->title . " " . $user_created->last_name . " " . $user_created->first_name;
-            $attributes['create_at'] = \Helper::convertDate2NHS($user_created->created_date);
+            $attributes['create_at'] = \Helper::convertDate2NHS($plan_problem->created_date);
+            $attributes['last_modified'] = \Helper::convertDate2NHS($plan_problem->last_modified_date);
             $plans[] = $attributes;
         }
 

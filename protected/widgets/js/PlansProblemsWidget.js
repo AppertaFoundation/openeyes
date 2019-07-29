@@ -55,6 +55,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                         'dataType': 'json',
                         'success': function ($data) {
                             controller.updateProblemsPlansList($data);
+                            controller.updatePastProblemsPlansList($data);
                         },
                         'error': function (msg) {
                             alert("Could not save the plans. Return message: " + msg);
@@ -123,8 +124,32 @@ OpenEyes.UI = OpenEyes.UI || {};
         $ul.empty();
 
         for (let i = 0; i < allPlans.length; i++) {
-            let $li = Mustache.render(template, {name:allPlans[i].name, title:allPlans[i].title, create_at:allPlans[i].create_at, id:allPlans[i].id});
-            $ul.append($li);
+            if(allPlans[i].active){
+                let $li = Mustache.render(template, {name:allPlans[i].name, title:allPlans[i].title, create_at:allPlans[i].create_at, id:allPlans[i].id});
+                $ul.append($li);
+            }
+        }
+    }
+
+    PlansProblemsController.prototype.updatePastProblemsPlansList = function(allPlans) {
+        let $tbody =  $('table.problems-plans').find('tbody');
+        let template = `
+                <tr>
+                    <td style="padding: 6px 3px;">{{name}}</td>
+                    <td><div class="metadata">
+                        <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="{{title}}<br /> Created: {{create_at}}"></i>
+                    </div>
+                    </td>
+                    <td><span class="oe-date">Removed: {{last_modified}}</span></td>
+                </tr>
+        `
+        $tbody.empty();
+
+        for (let i = 0; i < allPlans.length; i++) {
+            if(!allPlans[i].active){
+                let $tr = Mustache.render(template, {name:allPlans[i].name, title:allPlans[i].title, create_at:allPlans[i].create_at, last_modified:allPlans[i].last_modified, id:allPlans[i].id});
+                $tbody.append($tr);
+            }
         }
     }
 
