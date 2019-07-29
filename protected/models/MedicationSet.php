@@ -122,9 +122,8 @@ class MedicationSet extends BaseActiveRecordVersioned
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
-            'adminListAction' => 'Action',
-            'itemsCount' => 'Items count',
-            'rulesString' => 'Rules',
+			'itemsCount' => 'Items count',
+			'rulesString' => 'Rules',
 			'hidden' => 'Hidden/system',
 			'automatic' => 'Automatic'
 		);

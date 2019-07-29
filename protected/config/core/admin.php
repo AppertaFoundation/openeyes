@@ -53,13 +53,15 @@ return array(
                 'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit'
             ),
             'Drugs' => array(
-                'All Sets' => '/OphDrPrescription/admin/DrugSet/index',
+            		// Hidden for now
+                // 'All Sets' => '/OphDrPrescription/admin/DrugSet/index',
                 'All Medications' => '/OphDrPrescription/refMedicationAdmin/list',
                 'Local Drugs' => '/OphDrPrescription/localDrugsAdmin/list',
                 'DM+D Drugs' => '/OphDrPrescription/dmdDrugsAdmin/list',
                 'Export' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/RefMedicationAdmin/exportForm'),
                 'Auto set rules' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/medicationSetAutoRulesAdmin/list'),
-				'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
+							  'Better Auto set rules' => '/OphDrPrescription/admin/AutoSetRule/index',
+								'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
                 'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
                 'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/PrescriptionEditOptions'),
                 /*

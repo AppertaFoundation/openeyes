@@ -70,8 +70,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
     };
 
 
-    DrugSetController.prototype.addRow = function(data)
-    {
+    DrugSetController.prototype.addRow = function(data) {
         return Mustache.render($(this.options.templateSelector).html(), data);
     };
 
