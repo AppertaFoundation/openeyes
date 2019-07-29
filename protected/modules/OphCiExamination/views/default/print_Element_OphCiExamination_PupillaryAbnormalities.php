@@ -16,10 +16,10 @@
  */
 ?>
 <div class="element-data element-eyes flex-layout">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) { ?>
         <table class="label-item cols-6 <?= $eye_side ?>-eye">
             <tbody>
-                <?php if ($element->{$eye_side . '_rapd'} === '1'){ ?>
+                <?php if ($element->{$eye_side . '_rapd'} === '1') { ?>
                 <tr>
                     <td class="large-text">RAPD present</td>
                 </tr>
@@ -27,16 +27,16 @@
                 
                 <tr>
                     <td class="large-text">
-                    <?php 
+                    <?php
                     if ($element->hasEye($eye_side) && $element->{$eye_side . '_abnormality'}) {
                         echo $element->{$eye_side . '_abnormality'}->name;
-                    } else { 
+                    } else {
                         echo 'Not recorded';
-                    } 
+                    }
                     ?>
                     </td>
                 </tr>
-                <?php if ($element->{$eye_side . '_comments'}){?>
+                <?php if ($element->{$eye_side . '_comments'}) {?>
                     <tr>
                         <td><?= Yii::app()->format->Ntext($element->{$eye_side . '_comments'}) ?></td>
                     </tr>

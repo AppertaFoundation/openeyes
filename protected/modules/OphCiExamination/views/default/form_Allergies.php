@@ -18,7 +18,7 @@
 ?>
 <div class="element-fields flex-layout full-width ">
   <div class="cols-12 column">
-      <?php if ($this->checkAccess('OprnEditAllergy')) { ?>
+        <?php if ($this->checkAccess('OprnEditAllergy')) { ?>
         <input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_Allergy[allergy_loaded]"
                value="1">
         <div id="add_allergy">
@@ -76,7 +76,7 @@
             <button type="button" class="secondary small btn_save_allergy right">Add</button>
           </div>
         </div>
-      <?php } ?>
+        <?php } ?>
   </div>
   <div class="cols-12 data-group column">
     <table>
@@ -88,7 +88,7 @@
       </tr>
       </thead>
       <tbody id="OphCiExamination_allergy">
-      <?php foreach ($this->allergies as $aa) { ?>
+        <?php foreach ($this->allergies as $aa) { ?>
         <script type="text/javascript">
           removeAllergyFromSelect(<?= $aa->allergy->id?>, '<?= $aa->allergy->name ?>');
         </script>
@@ -114,11 +114,11 @@
                 <?php }
             } ?>
         </tr>
-          <?php
-      }
-      foreach ($this->deletedAllergies as $deletedId) {
-          echo '<input type="hidden" value="' . $deletedId . '" name="deleted_allergies[]">';
-      } ?>
+            <?php
+        }
+        foreach ($this->deletedAllergies as $deletedId) {
+            echo '<input type="hidden" value="' . $deletedId . '" name="deleted_allergies[]">';
+        } ?>
       </tbody>
     </table>
   </div>

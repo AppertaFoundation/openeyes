@@ -18,22 +18,22 @@ class m170510_131532_event_allergy_record extends OEMigration
         $this->dbConnection->createCommand('drop view ' . $view_name)->execute();
     }
 
-	public function up()
-	{
-	    $original_allergies_element_id = $this->getIdOfElementTypeByClassName(
-	        'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy');
-	    $this->update('element_type',
+    public function up()
+    {
+        $original_allergies_element_id = $this->getIdOfElementTypeByClassName(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy');
+        $this->update('element_type',
             array('default' => false),
             'id = :eid',
             array(':eid' => $original_allergies_element_id));
 
-	    $display_order = $this->dbConnection->createCommand()
+        $display_order = $this->dbConnection->createCommand()
             ->select(array('display_order'))
             ->from('element_type')
             ->where('id = :id', array(':id' => $original_allergies_element_id))->queryScalar();
 
-	    $this->createElementType('OphCiExamination', 'Allergies', array(
-	        'class_name' => 'OEModule\OphCiExamination\models\Allergies',
+        $this->createElementType('OphCiExamination', 'Allergies', array(
+            'class_name' => 'OEModule\OphCiExamination\models\Allergies',
             'display_order' => $display_order,
             'parent_class' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_History'
         ));
@@ -103,12 +103,12 @@ EOSQL
         $this->createView('allergy', 'select * from ophciexamination_allergy');
     }
 
-	public function down()
-	{
-	    $this->dropView('allergy');
-	    $this->dropView('patient_allergy_assignment');
-	    $this->dropView('latest_allergy_examination_events');
-	    $this->dropView('allergy_examination_events');
+    public function down()
+    {
+        $this->dropView('allergy');
+        $this->dropView('patient_allergy_assignment');
+        $this->dropView('latest_allergy_examination_events');
+        $this->dropView('allergy_examination_events');
 
         $this->renameColumn('patient', static::$archive_prefix . 'no_allergies_date', 'no_allergies_date');
         $this->renameColumn('patient_version', static::$archive_prefix . 'no_allergies_date', 'no_allergies_date');
@@ -133,16 +133,16 @@ EOSQL
             array(':element_type_id' => $element_type_id));
         $this->delete('element_type', 'id = :id',
             array(':id' => $element_type_id));
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

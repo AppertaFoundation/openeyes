@@ -593,7 +593,7 @@ return array(
         ),*/
         'hos_num_label' => 'ID',
         'nhs_num_label' => 'NHS',
-      'ethnic_group_filters' => array(
+        'ethnic_group_filters' => array(
         'Indigenous Australian',
         'Greek',
         'Italian'

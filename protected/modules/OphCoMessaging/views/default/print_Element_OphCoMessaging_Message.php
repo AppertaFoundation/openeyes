@@ -62,10 +62,10 @@
             <td>
                 <div><?php if ($element->urgent) { ?>
                         <span class="highlighter">Yes</span>
-                    <?php } else {
-                        ?> <span>No</span>
-                    <?php }
-                    ?>
+                        <?php } else {
+                            ?> <span>No</span>
+                        <?php }
+                        ?>
                 </div>
             </td>
         </tr>
@@ -105,7 +105,7 @@
                 <td>
                     <div class="data-value"><?php echo $comment->user->getFullnameAndTitle(); ?></div>
                 </td>
-            </tr>			
+            </tr>           
         </tbody>
     </table>
 <?php } ?>

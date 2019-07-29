@@ -15,22 +15,22 @@
 ?>
 
 <?php if ($patient->medications) { ?>
-	<table class="plain patient-data">
-		<tr>
-			<th>Adherence</th>
-			<td><?=@$patient->adherence ? $patient->adherence->level->name : 'Not Recorded'?></td>
-		</tr>
-		<tr>
-			<th>Comments</th>
-			<td><?=@$patient->adherence->comments ? $patient->adherence->textWithLineBreaks('comments') : 'Not Recorded'?></td>
-		</tr>
-		<?php if ($this->checkAccess('OprnEditMedication')) { ?>
-			<tr>
-				<th>Actions</th>
-				<td>
-					<a href="#" class="medication_edit" data-id="adherence">Edit</a>
-				</td>
-			</tr>
-		<?php } ?>
-	</table>
+    <table class="plain patient-data">
+        <tr>
+            <th>Adherence</th>
+            <td><?=@$patient->adherence ? $patient->adherence->level->name : 'Not Recorded'?></td>
+        </tr>
+        <tr>
+            <th>Comments</th>
+            <td><?=@$patient->adherence->comments ? $patient->adherence->textWithLineBreaks('comments') : 'Not Recorded'?></td>
+        </tr>
+        <?php if ($this->checkAccess('OprnEditMedication')) { ?>
+            <tr>
+                <th>Actions</th>
+                <td>
+                    <a href="#" class="medication_edit" data-id="adherence">Edit</a>
+                </td>
+            </tr>
+        <?php } ?>
+    </table>
 <?php } ?>

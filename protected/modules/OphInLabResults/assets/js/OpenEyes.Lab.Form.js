@@ -30,7 +30,10 @@ OpenEyes.Lab = OpenEyes.Lab || {};
             $(document).one("element_removed", function () {
                 $resultTypeSelect.val('');
             });
+        } else {
+            $resultTypeSelect.val('');
         }
+        $('#Element_OphInLabResults_Details_result_type_id').attr("disabled", false);
     }
 
     /**
@@ -51,15 +54,32 @@ OpenEyes.Lab = OpenEyes.Lab || {};
             url: ajaxElementUri,
             data: {
                 patient_id: OE_patient_id,
-                id: option.dataset.elementId
+                id: option.dataset.elementId,
+                type: option.dataset.typeId,
             },
             dataType: 'html',
             success: function (data) {
                 var $dataElement = $('<section></section>').html(data);
                 $dataElement.find('.js-remove-element').on('click', removeResultElement);
                 $('.lab-results-type').parent().after($dataElement);
+
+                if (option.dataset.fieldTypeName === "Numeric Field") {
+                    $('#Element_OphInLabResults_Entry_result').on('input', function () {
+                        let result = this;
+                        setTimeout(function (result) {
+                            if (option.dataset.normalMax !== "" && option.dataset.normalMin !== "") {
+                                if (parseInt($(result).val()) > parseInt(option.dataset.normalMax) || parseInt($(result).val()) < parseInt(option.dataset.normalMin)) {
+                                    $('.js-lab-result-warning').show();
+                                } else {
+                                    $('.js-lab-result-warning').hide();
+                                }
+                            }
+                        }, 1000, result);
+                    });
+                }
                 enableButtons();
                 autosize($('textarea'));
+                $('#Element_OphInLabResults_Details_result_type_id').attr("disabled", true);
             }
         });
     }

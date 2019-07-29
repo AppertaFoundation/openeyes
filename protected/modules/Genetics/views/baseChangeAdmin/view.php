@@ -20,15 +20,15 @@
     <div class="data-group">
         <div class="cols-10 column"><h2>View Base Change Type</h2></div>
         <div class="cols-2 column right">
-            <?php if( $this->checkAccess('OprnEditGeneticPatient') ): ?>
+            <?php if ( $this->checkAccess('OprnEditGeneticPatient') ) : ?>
                 <a href="/Genetics/baseChangeAdmin/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/baseChangeAdmin/view/').$model->id; ?>" class="button small right" id="baseChangeAdmin_edit">Edit</a>
             <?php endif; ?>
         </div>
     </div>
-        <?php 
+        <?php
             $this->widget('zii.widgets.CDetailView', array(
                 'data'=>$model,
                 'htmlOptions' => array('class'=>'detailview'),
-                'attributes'=>array('id','change') 
-            )); 
-        ?>
+                'attributes'=>array('id','change')
+            ));
+            ?>

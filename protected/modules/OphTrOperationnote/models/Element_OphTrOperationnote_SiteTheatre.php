@@ -100,19 +100,15 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
 
             if (!$this->site_id) {
                 $site = $api->findSiteForBookingEvent($event);
-                if($site)
-                {
+                if ($site) {
                     $this->site_id = $site->id;
-                }
-                elseif(isset(Yii::app()->controller->getBookingOperation()->site_id))
-                {
+                } elseif (isset(Yii::app()->controller->getBookingOperation()->site_id)) {
                     $this->site_id = Yii::app()->controller->getBookingOperation()->site_id;
                 }
             }
             if (!$this->theatre_id) {
                 $theatre = $api->findTheatreForBookingEvent($event);
-                if($theatre)
-                {
+                if ($theatre) {
                     $this->theatre_id = $theatre->id;
                 }
             }

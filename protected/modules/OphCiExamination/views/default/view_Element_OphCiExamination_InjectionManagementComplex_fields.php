@@ -27,7 +27,7 @@
             <?= Yii::app()->format->Ntext($element->{"{$side}NoTreatmentReasonName"}) ?>
         </td>
       </tr>
-    <?php else: ?>
+    <?php else : ?>
       <tr>
         <td class="cols-4">
             <?= $element->getAttributeLabel($side.'_diagnosis1_id')?>:
@@ -36,7 +36,7 @@
             <?= $element->{$side.'_diagnosis1'}->term?>
         </td>
       </tr>
-      <?php if ($element->{$side.'_diagnosis2_id'}) {?>
+        <?php if ($element->{$side.'_diagnosis2_id'}) {?>
         <tr>
           <td class="cols-4">
               <?= $element->getAttributeLabel($side.'_diagnosis2_id')?>:
@@ -45,18 +45,18 @@
               <?php echo $element->{$side.'_diagnosis2'}->term?>
           </td>
         </tr>
-      <?php }
-      foreach ($element->{$side.'_answers'} as $answer) {?>
+        <?php }
+        foreach ($element->{$side.'_answers'} as $answer) {?>
         <tr>
           <td class="cols-4">
-              <?php echo $answer->question->question?>
+                <?php echo $answer->question->question?>
           </td>
           <td class="cols-8">
-              <?php echo ($answer->answer) ? 'Yes' : 'No'?>
+                <?php echo ($answer->answer) ? 'Yes' : 'No'?>
           </td>
         </tr>
-      <?php }?>
-      <?php if ($element->{$side.'_treatment'}) {?>
+        <?php }?>
+        <?php if ($element->{$side.'_treatment'}) {?>
         <tr>
           <td class="cols-4">
               <?php echo $element->getAttributeLabel($side.'_treatment_id')?>:
@@ -65,7 +65,7 @@
               <?php echo $element->{$side.'_treatment'}->name?>
           </td>
         </tr>
-      <?php }?>
+        <?php }?>
       <tr>
         <td class="cols-4">
             <?php echo $element->getAttributeLabel($side.'_risks')?>:
@@ -73,8 +73,8 @@
         <td class="cols-8">
             <?php
             if (!$element->{$side.'_risks'}) {
-              echo 'None';
-              } else {
+                echo 'None';
+            } else {
                 foreach ($element->{$side.'_risks'} as $item) {
                     echo $item->name.'<br />';
                 }

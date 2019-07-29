@@ -18,13 +18,13 @@ if ($this->legend_id) {
 }
 ?>
 <script type="text/javascript">
-	$(document).ready(function() {
-		OpenEyes.UI.Widgets.FlotChart.render(
-			'<?= $this->chart_id ?>',
-			<?= CJavaScript::encode(array_values($this->series)) ?>,
-			<?= CJavaScript::encode($this->options) ?>,
-			<?= CJavaScript::encode(array_flip($this->yaxis_map)) ?>,
-			<?= CJavaScript::encode($this->point_labels) ?>
-		);
-	});
+    $(document).ready(function() {
+        OpenEyes.UI.Widgets.FlotChart.render(
+            '<?= $this->chart_id ?>',
+            <?= CJavaScript::encode(array_values($this->series)) ?>,
+            <?= CJavaScript::encode($this->options) ?>,
+            <?= CJavaScript::encode(array_flip($this->yaxis_map)) ?>,
+            <?= CJavaScript::encode($this->point_labels) ?>
+        );
+    });
 </script>

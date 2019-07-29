@@ -2,9 +2,9 @@
 
 class m190303_184800_add_report_views extends CDbMigration
 {
-	public function safeUp()
-	{
-	    $this->execute("CREATE OR REPLACE VIEW `v_patient_va` AS
+    public function safeUp()
+    {
+        $this->execute("CREATE OR REPLACE VIEW `v_patient_va` AS
     SELECT
         `pe`.`patient_id` AS `patient_id`,
         `eva`.`event_id` AS `event_id`,
@@ -33,7 +33,7 @@ class m190303_184800_add_report_views extends CDbMigration
     ORDER BY `pe`.`patient_id` , `pe`.`event_date` , `pe`.`event_created_date` , `pe`.`event_last_modified_date`;");
 
 
-	    $this->execute("CREATE OR REPLACE VIEW `v_patient_va_converted` AS
+        $this->execute("CREATE OR REPLACE VIEW `v_patient_va_converted` AS
     SELECT
         `pe`.`patient_id` AS `patient_id`,
         `eva`.`event_id` AS `event_id`,
@@ -99,11 +99,11 @@ class m190303_184800_add_report_views extends CDbMigration
     WHERE
         (`v`.`unit_id` = `eva`.`unit_id`)
     ORDER BY `pe`.`patient_id` , `pe`.`event_date` , `pe`.`event_created_date` , `pe`.`event_last_modified_date`;");
-	}
+    }
 
-	public function safeDown()
-	{
-		$this->execute("DROP VIEW v_patient_va");
-		$this->execute("DROP VIEW v_patient_va_converted");
-	}
+    public function safeDown()
+    {
+        $this->execute("DROP VIEW v_patient_va");
+        $this->execute("DROP VIEW v_patient_va_converted");
+    }
 }

@@ -20,7 +20,7 @@
     <div class="cols-full data-group column">
         <table>
             <?php if ($this->patient->allergyAssignments) {
-            ?>
+                ?>
             <thead>
             <tr>
                 <th>Name</th>
@@ -28,8 +28,8 @@
             </tr>
             </thead>
             <tbody id="OphCiExamination_allergy">
-            <?php
-            foreach ($this->patient->allergyAssignments as $aa) {
+                <?php
+                foreach ($this->patient->allergyAssignments as $aa) {
                     ?>
                     <script type="text/javascript">
                         removeAllergyFromSelect(<?= $aa->allergy->id?>, '<?= $aa->allergy->name ?>');
