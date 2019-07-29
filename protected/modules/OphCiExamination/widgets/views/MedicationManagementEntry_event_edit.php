@@ -216,10 +216,12 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <?php endif; ?>
         </td>
         <td>
-
-			<?php if ($removable) { ?>
+            <?php $tooltip_content_comes_from_history = "This item comes from medication history. " .
+                    "If you wish to delete it, it must be deleted from the Medication History element. " .
+                    "Alternatively, mark this item as stopped."; ?>
+            <span data-tooltip-content-comes-from-history="<?= $tooltip_content_comes_from_history ?>">
                 <i class="oe-i trash js-remove"></i>
-			<?php } ?>
+            </span>
         </td>
     </tr>
 <?php

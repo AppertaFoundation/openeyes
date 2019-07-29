@@ -120,6 +120,9 @@ do
 			restorefile="$2"
 			shift
 		;;
+		--dmd) dmdimport="TRUE"
+			## Run the DMD import after database reset
+		;;
     	*)  if [ "$p" == "--hard" ]; then
                 echo "Unknown parameter $p $2"
                 exit 1
@@ -215,7 +218,10 @@ fi
 
 echo "Clearing current database..."
 
-dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant all privileges on ${DATABASE_NAME:-openeyes}.* to '${DATABASE_USER:-openeyes}'@'%' identified by '$pass'; flush privileges;"
+dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; 
+			grant all privileges on ${DATABASE_NAME:-openeyes}.* to '${DATABASE_USER:-openeyes}'@'%' identified by '$pass'; 
+			GRANT FILE ON *.* TO '${DATABASE_USER:-openeyes}'@'%'; 
+			flush privileges;"
 
 echo ""
 ## write-out command to console (helps with debugging)
@@ -360,6 +366,9 @@ if [ $dwservrunning = 1 ]; then
 	echo "Restarting dicom-file-watcher..."
 	sudo service dicom-file-watcher start
 fi
+
+[ ! -z "$dmdimport" ] && $SCRIPTDIR/dmd-import.sh || :
+
 
 printf "\e[42m\e[97m  RESET COMPLETE  \e[0m \n"
 echo ""
