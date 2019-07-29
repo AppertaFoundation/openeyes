@@ -248,7 +248,7 @@ foreach ($items_data as $group => $items) { ?>
       <?php if ($data['print_mode'] === 'WP10'): ?>
         <div class="fpten-form-row">
           <div id="wpten-prescriber" class="fpten-form-column">
-            <!--HOSPITAL DOCTOR<br/>MEDDYG YSBYTY-->&nbsp;<br/>&nbsp;<br/>
+            <!--HOSPITAL DOCTOR<br/>MEDDYG YSBYTY>&nbsp;<br/>&nbsp;<br/>-->
           </div>
         </div>
       <?php endif; ?>

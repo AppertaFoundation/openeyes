@@ -17,8 +17,8 @@ body {
     font-weight: bold;
     font-size: 7.5pt;
     padding: 3mm 3mm 10mm 3mm;
-    width: 102mm;
-    height: 156mm;
+    width: 105mm;
+    height: 170mm;
     vertical-align: middle;
 }
 
@@ -44,8 +44,8 @@ body {
 /*Site box appears at the bottom toward the center.*/
 #fpten-site, #wpten-site {
     text-align: left;
-    height: 29mm;
-    width: 49mm;
+    height: 31mm;
+    width: 52mm;
     margin-left: 14mm;
     padding-top: 2mm;
     padding-left: 3mm;
@@ -65,20 +65,21 @@ body {
 
 /*Age box appears at the top toward the center.*/
 #fpten-age {
-    height: 16mm;
+    padding-top: 5mm;
+    height: 13mm;
     width: 19mm;
     margin-left: 30mm;
-    line-height: 16mm;
+    line-height: 8mm;
     text-align: center;
 }
 
 /*DOB box appears directly below the Age box.*/
 #fpten-dob {
-    height: 16mm;
+    height: 13mm;
     width: 19mm;
     margin-left: 30mm;
     text-align: center;
-    line-height: 10mm;
+    line-height: 13mm;
 }
 
 /*Patient details box appears at the top right corner beside age and DOB.*/
@@ -95,14 +96,10 @@ body {
 }
 
 /*Postcode is right-aligned to the edge of the parent box.*/
-#fpten-postcode-nhs, #wpten-postcode-nhs {
-    text-align: left;
-    height: 21mm;
-    padding-top: 5mm;
-}
-
 #fpten-postcode-nhs {
+    text-align: left;
     height: 26mm;
+    padding-top: 5mm;
 }
 
 /*Prescriber initiative appears at top of main box in the center*/
@@ -138,7 +135,7 @@ body {
     padding-left: 2mm;
     padding-top: 1mm;
     height: 64mm;
-    width: 71mm;
+    width: 72mm;
     margin-left: 30mm;
 }
 
