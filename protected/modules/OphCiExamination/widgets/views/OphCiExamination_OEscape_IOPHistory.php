@@ -18,7 +18,7 @@
 
     var iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
 
-    //console.log(iop_plotly_data);
+    console.log(iop_plotly_data);
 
 		for (var side of sides) {
 			var layout_iop = JSON.parse(JSON.stringify(layout_plotly));
@@ -44,10 +44,14 @@
 				if(!readings.hasOwnProperty(timestamp)) {
 					readings[timestamp] = [];
 				}
-				readings[timestamp].push(data_point['reading']);
+				readings[timestamp].push(
+				    {
+								'id': data_point['id'],
+								'reading': data_point['reading']
+				    });
 			}
 
-			//console.log(readings);
+			console.log(readings);
 
 			var graph_data = [];
 
@@ -57,11 +61,11 @@
 				//console.log(readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0));
 				//console.log(readings[key].length);
 				graph_data[key] = {
-				  'parent_id': '3686611',
+				  'parent_ids': readings[key].map(r => r['reading']),
 					'timestamp': key,
-					'minimum': Math.min(...readings[key]),
-					'average': readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
-					'maximum': Math.max(...readings[key])
+					'minimum': Math.min(...readings[key].map(r => r['reading'])),
+					'average': readings[key].reduce((a, b) => parseInt(a['reading']) + parseInt(b['reading']), 0) / readings[key].length,
+					'maximum': Math.max(...readings[key].map(r => r['reading']))
 				};
       }
 
@@ -82,7 +86,7 @@
           // console.log("Min:".concat(graph_data[key]['minimum']));
           x[i] = graph_data[key]['timestamp'];
           y[i] = graph_data[key]['average'];
-          event_ids[i] = graph_data[key]['parent_id'];
+          event_ids[i] = graph_data[key]['parent_ids'];
           error_array[i] = graph_data[key]['maximum'] - graph_data[key]['minimum'];
           error_minus[i] = graph_data[key]['average'] - graph_data[key]['minimum'];
           i++;
