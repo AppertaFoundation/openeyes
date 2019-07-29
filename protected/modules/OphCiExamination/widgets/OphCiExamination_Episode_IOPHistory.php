@@ -242,22 +242,27 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
           if($event_name == 'Examination') {
 						$iop_event = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
 						$side = strtolower(Eye::model()->findByPk($iop_event->eye_id)->name);
-						if($side == 'both'){
-							array_push($output, OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'left',$event_name));
-							array_push($output, OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'right',$event_name));
+
+						if($side == 'both' || $side == 'left'){
+							$readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'left',$event_name);
+							array_push($output, ...$readings);
 						}
-						else{
-							array_push($output, OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,$side,$event_name));
+
+						if($side == 'both' || $side == 'right'){
+							$readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'right',$event_name);
+							array_push($output, ...$readings);
 						}
           }else if($event_name == 'Phasing') {
 						$iop_event = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
 						$side = strtolower(Eye::model()->findByPk($iop_event->eye_id)->name);
-						if($side == 'both'){
-							array_push($output, OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'left',$event_name));
-							array_push($output, OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'right',$event_name));
+						if($side == 'both' || $side == 'left'){
+							$readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'left',$event_name);
+							array_push($output, ...$readings);
 						}
-						else{
-							array_push($output, OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,$side,$event_name));
+
+						if($side == 'both' || $side == 'right'){
+							$readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'right',$event_name);
+							array_push($output, ...$readings);
 						}
 					}else {
 						throw new InvalidArgumentException("Event type should be Phasing or Examination");
@@ -269,48 +274,49 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
     }
     static function getDrillthroughIOPDataForEventSide($event, $iop_element, $side, $event_name)
     {
+    		$readings_array = array();
         //Set defaults shared by both event types
-        if($event_name == 'Examination') {
-          //exam
-					if ($iop_element) {
-						$data_array = array(
-							'event_id' => $iop_element->event_id,
-							'event_name' => $event_name,
-							'event_date' => $event->event_date,
-							'eye' => ucfirst($side),
-							// 'instrument_name' => $iop_element->{$side . '_instrument'}->name,
-							'instrument_name' => OphCiPhasing_Instrument::model()->findByPk($iop_element->left_integer_values[0]->instrument_id)->name,
-							'dilated' => "N/A",
-							'reading_values' => $iop_element->getReadingsWithTime($side),
-							'comments' => "N/A"
-						);
-
-						return $data_array;
-					}	else {
-						throw new InvalidArgumentException("Attempted to get information for event that doesn't exist.");
+				if($iop_element)
+					if($event_name == 'Examination') {
+						//exam
+							foreach($iop_element->{$side . '_values'} as $reading)
+							{
+								$readings_array[] = array(
+									'event_id' => $iop_element->event_id,
+									'event_name' => $event_name,
+									'event_date' => $event->event_date,
+									'eye' => ucfirst($side),
+									'instrument_name' => ExamModels\OphCiExamination_Instrument::model()->findByPk($reading->instrument_id)->name,
+									//'instrument_name' => OphCiPhasing_Instrument::model()->findByPk($iop_element->left_integer_values[0]->instrument_id)->name,
+									'dilated' => "N/A",
+									'reading_value' => ExamModels\OphCiExamination_IntraocularPressure_Reading::model()->findByPk($reading->reading_id)->value,
+									'comments' => "N/A"
+								);
+							}
 					}
-        }
-        else if($event_name == 'Phasing') {
-          //phasing
-					if ($iop_element) {
-						$data_array = array(
-							'event_id' => $iop_element->event_id,
-							'event_name' => $event_name,
-							'event_date' => $event->event_date,
-							'eye' => ucfirst($side),
-							'instrument_name' => OphCiPhasing_Instrument::model()->findByPk($iop_element->{$side . '_instrument_id'})->name,
-							'dilated' => $iop_element->{$side . '_dilated'}?'Yes':'No',
-							'reading_values' => $iop_element->getReadingsWithTime($side),
-							'comments' => $iop_element->{$side . '_comments'}
-						);
-
-						return $data_array;
-					}	else {
-						throw new InvalidArgumentException("Attempted to get information for event that doesn't exist.");
+					else if($event_name == 'Phasing') {
+						//phasing
+						if ($iop_element) {
+							$readings_array[] = array(
+								'event_id' => $iop_element->event_id,
+								'event_name' => $event_name,
+								'event_date' => $event->event_date,
+								'eye' => ucfirst($side),
+								'instrument_name' => OphCiPhasing_Instrument::model()->findByPk($iop_element->{$side . '_instrument_id'})->name,
+								'dilated' => $iop_element->{$side . '_dilated'}?'Yes':'No',
+								'reading_value' => $iop_element->getReadingsWithTime($side),
+								'comments' => $iop_element->{$side . '_comments'}
+							);
+						}	else {
+							throw new InvalidArgumentException("Attempted to get information for event that doesn't exist.");
+						}
 					}
-        }
-        else{
-            throw new InvalidArgumentException("Event type should be Phasing or Examination");
-        }
+					else{
+							throw new InvalidArgumentException("Event type should be Phasing or Examination");
+        }	else {
+					throw new InvalidArgumentException("Attempted to get information for event that doesn't exist.");
+				}
+
+        return $readings_array;
     }
 }

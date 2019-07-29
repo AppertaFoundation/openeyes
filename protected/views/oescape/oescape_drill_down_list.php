@@ -71,16 +71,18 @@
         /// pull list of ids here
 
         // loop for each ID
-        iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent(3492971)); ?>//3686611  3492971
+        iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent(3686611)); ?>//3686611  3492971
 
-        for (var i=0;i<iop_plotly_data.length;i++){
+				console.log(iop_plotly_data);
+
+        for (var i = 0; i < iop_plotly_data.length; i++){
             var data_row = "<tr  class='clickable' data-link='/OphCi"+iop_plotly_data[i]["event_name"]+"/default/view/"+iop_plotly_data[i]["event_id"]+"'> <!-- Generated Data -->";
             data_row += "<td  style='vertical-align: center;'>"+iop_plotly_data[i]["event_id"]+"</td> <!-- Event ID -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["event_name"]+"</td> <!-- Event type -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["eye"]+"</td><!-- Eye -->";
             data_row += " <td style='vertical-align: center;'>"+iop_plotly_data[i]["instrument_name"]+"</td><!-- Instrument -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["dilated"]+"</td><!-- Dilated -->";
-            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["reading_values"].join(',</br>')+"</td><!-- Value -->";
+            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["reading_value"]+"</td><!-- Value -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["comments"]+"</td><!-- Comments -->";
             data_row += "</tr>";
 

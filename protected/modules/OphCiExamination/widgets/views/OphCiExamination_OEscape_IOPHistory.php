@@ -57,6 +57,7 @@
 				//console.log(readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0));
 				//console.log(readings[key].length);
 				graph_data[key] = {
+				  //'parent_id': iop_plotly_data[side][key]['id'],
 					'timestamp': key,
 					'minimum': Math.min(...readings[key]),
 					'average': readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
@@ -70,14 +71,15 @@
 
 			var x = [];
 			var y = [];
+			//var event_ids = [];
 			var error_array = [];
 			var error_minus = [];
 
 			var i = 0;
 			for(key in graph_data) {
-			    console.log(graph_data[key]);
-          console.log("Max:".concat(graph_data[key]['maximum']));
-          console.log("Min:".concat(graph_data[key]['minimum']));
+			    // console.log(graph_data[key]);
+          // console.log("Max:".concat(graph_data[key]['maximum']));
+          // console.log("Min:".concat(graph_data[key]['minimum']));
 
           x[i] = graph_data[key]['timestamp'];
           y[i] = graph_data[key]['average'];
@@ -86,15 +88,15 @@
           i++;
       }
 
-			console.log("Graphing values:");
-			console.log("x:");
-			console.log(x);
-			console.log("y:");
-			console.log(y);
-			console.log("error array:");
-			console.log(error_array);
-			console.log("error minus:");
-			console.log(error_minus);
+			// console.log("Graphing values:");
+			// console.log("x:");
+			// console.log(x);
+			// console.log("y:");
+			// console.log(y);
+			// console.log("error array:");
+			// console.log(error_array);
+			// console.log("error minus:");
+			// console.log(error_minus);
 
 			var data = [{
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
@@ -121,6 +123,7 @@
 					symbol: 'circle',
 					size: 10,
 				},
+				//customdata: event_ids,
 				error_y: {
 					type: "data",
 					symmetric: false,
@@ -130,6 +133,8 @@
 					visible: true
 				},
 			}];
+
+			//console.log(data);
 
 			Plotly.newPlot(
 				'plotly-IOP-' + side, data, layout_iop, options_plotly
