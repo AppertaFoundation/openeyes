@@ -179,6 +179,7 @@
 
                                       extraContactFormCleaning();
                                       $(".js-extra-practice-gp-id").val("");
+//                                      clearing practice_id value (stored in the hidden field) from the HTML DOM after the contact/gp has been successfully added
                                       $("#PracticeAssociate_practice_id").val("");
                                 }
                           }',
@@ -271,6 +272,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                                       }
                                       extraContactFormCleaning();
                                       $(".js-extra-practice-gp-id").val("");
+//                                      clearing practice_id value (stored in the hidden field) from the HTML DOM after the contact/gp has been successfully added
                                       $("#PracticeAssociate_practice_id").val("");
                                 }
                           }',
