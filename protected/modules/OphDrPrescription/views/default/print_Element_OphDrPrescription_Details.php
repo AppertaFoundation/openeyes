@@ -35,6 +35,15 @@ if ($footer_param !== null) {
     $footer_text = strip_tags($footer_param, $allowed_tags);
 }
 
+$form_css_class = null;
+
+if ($data['print_mode'] === 'FP10') {
+  $form_css_class = 'fpten';
+}
+else if ($data['print_mode'] === 'WP10') {
+  $form_css_class = 'wpten';
+}
+
 ?>
 
 <?php
@@ -212,7 +221,7 @@ foreach ($items_data as $group => $items) { ?>
   </div>
   <div class="fpten-form-column">
     <div class="fpten-form-row">
-      <div id="fpten-patient-details" class="fpten-form-column">
+      <div id="<?= $form_css_class ?>-patient-details" class="fpten-form-column">
           <?=$this->patient->fullname ?><br/>
           <?= $this->patient->contact->address->address1 ?>
           <?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
@@ -222,6 +231,7 @@ foreach ($items_data as $group => $items) { ?>
           <?= $this->patient->contact->address->county ?><br/>
           <?= ($data['print_mode'] === 'WP10') ? $this->patient->contact->address->postcode : null ?>
       </div>
+      <?php if ($data['print_mode'] === 'FP10'): ?>
       <div id="fpten-postcode-nhs" class="fpten-form-column">
         <br/><br/>
           <?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
@@ -233,11 +243,12 @@ foreach ($items_data as $group => $items) { ?>
         <br/>
           <?= ($data['print_mode'] === 'FP10') ? $this->patient->nhs_num : null?>
       </div>
+      <?php endif; ?>
     </div>
       <?php if ($data['print_mode'] === 'WP10'): ?>
         <div class="fpten-form-row">
           <div id="wpten-prescriber" class="fpten-form-column">
-            HOSPITAL DOCTOR<br/>MEDDYG YSBYTY
+            <!--HOSPITAL DOCTOR<br/>MEDDYG YSBYTY-->&nbsp;<br/>&nbsp;<br/>
           </div>
         </div>
       <?php endif; ?>
@@ -252,11 +263,11 @@ foreach ($items_data as $group => $items) { ?>
 </div>
 <?php endif; ?>
 <div class="fpten-form-row">
-  <div id="fpten-prescription-list" class="fpten-form-column">
+  <div id="<?= $form_css_class ?>-prescription-list" class="fpten-form-column">
       <?php
       foreach ($this->groupItems($element->items) as $group => $items):
           $group_name = OphDrPrescription_DispenseCondition::model()->findByPk($group)->name;
-          if ($group_name === 'Print to ' . $data['print_mode']):
+          if (str_replace('{form_type}', $data['print_mode'], $group_name) === 'Print to ' . $data['print_mode']):
               foreach ($items as $item):
                   ?>
               <div class="fpten-prescription-item">

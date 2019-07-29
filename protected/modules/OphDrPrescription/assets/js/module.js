@@ -82,8 +82,7 @@ $(document).ready(function () {
     }
   });
 
-  $(document).on('click', '#et_print_form', function (e) {
-    var print_mode = $(e.target).data("format");
+  $(document).on('click', '#et_print_fp10', function (e) {
     if ($('#et_ophdrprescription_draft').val() == 1) {
       $.ajax({
         'type': 'GET',

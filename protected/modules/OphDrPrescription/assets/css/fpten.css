@@ -16,9 +16,10 @@ body {
     font-family: arial, sans-serif;
     font-weight: bold;
     font-size: 7.5pt;
-    padding: 3mm 3mm 12mm 3mm;
+    padding: 3mm 3mm 10mm 3mm;
     width: 102mm;
     height: 156mm;
+    vertical-align: middle;
 }
 
 .fpten-form-row:before, .fpten-form-row:after {
@@ -43,8 +44,8 @@ body {
 /*Site box appears at the bottom toward the center.*/
 #fpten-site, #wpten-site {
     text-align: left;
-    height: 30mm;
-    width: 50mm;
+    height: 29mm;
+    width: 49mm;
     margin-left: 14mm;
     padding-top: 2mm;
     padding-left: 3mm;
@@ -64,19 +65,18 @@ body {
 
 /*Age box appears at the top toward the center.*/
 #fpten-age {
-    height: 11mm;
+    height: 16mm;
     width: 19mm;
     margin-left: 30mm;
-    padding-top: 5mm;
+    line-height: 16mm;
     text-align: center;
 }
 
 /*DOB box appears directly below the Age box.*/
 #fpten-dob {
-    height: 10mm;
+    height: 16mm;
     width: 19mm;
     margin-left: 30mm;
-    padding-bottom: 6mm;
     text-align: center;
     line-height: 10mm;
 }
@@ -86,7 +86,7 @@ body {
     text-align: left;
     padding-top: 5mm;
     padding-left: 2mm;
-    height: 21mm;
+    height: 26mm;
 }
 
 #fpten-patient-details {
@@ -117,10 +117,9 @@ body {
 
 #wpten-prescriber {
     height: 10mm;
-    padding-top: 2mm;
-    width: 44mm;
     text-align: center;
     font-size: 8pt;
+    line-height: 5mm;
 }
 
 .fpten-prescriber-code {
@@ -129,13 +128,17 @@ body {
     width: 15mm;
     line-height: 10mm;
     text-align: center;
+    margin-right: 0;
+    float: right;
 }
 
 /*Appears beneath the prescriber.*/
 #fpten-prescription-list, #wpten-prescription-list {
     padding-right: 5mm;
-    height: 59mm;
-    width: 65mm;
+    padding-left: 2mm;
+    padding-top: 1mm;
+    height: 64mm;
+    width: 71mm;
     margin-left: 30mm;
 }
 
@@ -153,11 +156,12 @@ body {
     height: 12mm;
     margin-left: 30mm;
     line-height: 12mm;
+    text-align: center;
 }
 
 /*Appears directly above the Trust code in the site box.*/
 #fpten-date {
-    width: 27mm;
+    width: 35mm;
     height: 12mm;
     text-align: center;
     margin-left: 68mm;
