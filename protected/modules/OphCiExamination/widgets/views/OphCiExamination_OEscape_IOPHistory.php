@@ -80,7 +80,6 @@
 			    // console.log(graph_data[key]);
           // console.log("Max:".concat(graph_data[key]['maximum']));
           // console.log("Min:".concat(graph_data[key]['minimum']));
-
           x[i] = graph_data[key]['timestamp'];
           y[i] = graph_data[key]['average'];
           error_array[i] = graph_data[key]['maximum'] - graph_data[key]['minimum'];
@@ -139,6 +138,16 @@
 			Plotly.newPlot(
 				'plotly-IOP-' + side, data, layout_iop, options_plotly
 			);
+
 		}
+
+
+		var report = document.getElementById('plotly-IOP-right');
+        report.on('plotly_click',function(data){
+            $('.analytics-patient-list').show();
+            $('#js-back-to-chart').show();
+            $('#oescape-layout').hide();
+            DisplayDrillThroughData();
+        });
   });
 </script>
