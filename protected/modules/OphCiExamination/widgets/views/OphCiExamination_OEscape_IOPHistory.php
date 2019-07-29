@@ -57,7 +57,7 @@
 				//console.log(readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0));
 				//console.log(readings[key].length);
 				graph_data[key] = {
-				  //'parent_id': iop_plotly_data[side][key]['id'],
+				  'parent_id': iop_plotly_data[side]['id'],
 					'timestamp': key,
 					'minimum': Math.min(...readings[key]),
 					'average': readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
@@ -71,7 +71,7 @@
 
 			var x = [];
 			var y = [];
-			//var event_ids = [];
+			var event_ids = [];
 			var error_array = [];
 			var error_minus = [];
 
@@ -82,6 +82,7 @@
           // console.log("Min:".concat(graph_data[key]['minimum']));
           x[i] = graph_data[key]['timestamp'];
           y[i] = graph_data[key]['average'];
+          event_ids[i] = graph_data[key]['parent_id'];
           error_array[i] = graph_data[key]['maximum'] - graph_data[key]['minimum'];
           error_minus[i] = graph_data[key]['average'] - graph_data[key]['minimum'];
           i++;
@@ -122,7 +123,7 @@
 					symbol: 'circle',
 					size: 10,
 				},
-				//customdata: event_ids,
+				customdata: event_ids,
 				error_y: {
 					type: "data",
 					symmetric: false,
