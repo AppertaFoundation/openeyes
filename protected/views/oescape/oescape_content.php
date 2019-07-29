@@ -20,7 +20,7 @@
 
 <?php   $this->renderPartial('//oescape/oescape_drill_down_list') ?> 
 
-<div class="oescape flex-layout flex-stretch"  id="oescape-layout" style="display:none;">
+<div class="oescape flex-layout flex-stretch"  id="oescape-layout">
     <?php echo $content; ?>
 </div>
 <script type="text/javascript">

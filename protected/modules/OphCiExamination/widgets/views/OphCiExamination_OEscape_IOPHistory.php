@@ -75,9 +75,9 @@
 
 			var i = 0;
 			for(key in graph_data) {
-			    console.log(graph_data[key]);
-          console.log("Max:".concat(graph_data[key]['maximum']));
-          console.log("Min:".concat(graph_data[key]['minimum']));
+		// 	    console.log(graph_data[key]);
+        //   console.log("Max:".concat(graph_data[key]['maximum']));
+        //   console.log("Min:".concat(graph_data[key]['minimum']));
 
           x[i] = graph_data[key]['timestamp'];
           y[i] = graph_data[key]['average'];
@@ -86,15 +86,15 @@
           i++;
       }
 
-			console.log("Graphing values:");
-			console.log("x:");
-			console.log(x);
-			console.log("y:");
-			console.log(y);
-			console.log("error array:");
-			console.log(error_array);
-			console.log("error minus:");
-			console.log(error_minus);
+			// console.log("Graphing values:");
+			// console.log("x:");
+			// console.log(x);
+			// console.log("y:");
+			// console.log(y);
+			// console.log("error array:");
+			// console.log(error_array);
+			// console.log("error minus:");
+			// console.log(error_minus);
 
 			var data = [{
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
@@ -134,6 +134,16 @@
 			Plotly.newPlot(
 				'plotly-IOP-' + side, data, layout_iop, options_plotly
 			);
+			
 		}
+
+		
+		var report = document.getElementById('plotly-IOP-right');
+        report.on('plotly_click',function(data){  
+            $('.analytics-patient-list').show();
+            $('#js-back-to-chart').show();      
+            $('#oescape-layout').hide();
+            DisplayDrillThroughData();
+        });
   });
 </script>
