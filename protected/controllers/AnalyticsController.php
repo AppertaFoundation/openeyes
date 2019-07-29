@@ -115,6 +115,11 @@ class AnalyticsController extends BaseController
         $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
         $current_user = User::model()->findByPk(Yii::app()->user->id);
         $event_list = $this->queryCataractEventList();
+        // to get event min / max date
+        $event_dates = array();
+        foreach ($event_list as $dates) {
+            array_push($event_dates, $dates['event_date']);
+        }
         if (isset($this->surgeon)) {
             $user_list = null;
         } else {
@@ -127,6 +132,8 @@ class AnalyticsController extends BaseController
               'service_data'=> array(),
               'custom_data' => array(),
               'event_list' => $event_list,
+              'min_event_date'=>date('Y-m-d', strtotime($event_dates[0])),
+              'max_event_date'=>date('Y-m-d', strtotime($event_dates[count($event_dates) - 1])),
               'patient_list' => $this->patient_list,
               'user_list' => $user_list,
               'current_user'=>$current_user,
