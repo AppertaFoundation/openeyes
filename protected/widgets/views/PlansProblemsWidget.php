@@ -61,7 +61,7 @@
                 <tr>
                     <td style="padding: 6px 3px;"><?= $plan_problem->name ?></td>
                     <td><div class="metadata">
-                        <i class="oe-i info small pro-theme js-has-tooltip"
+                        <i class="oe-i info small <?= $pro_theme ?> js-has-tooltip"
                        data-tooltip-content="<?= $plan_problem->createdUser->title ?> <?= $plan_problem->createdUser->first_name ?> <?= $plan_problem->createdUser->last_name ?> <br /> Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?>"></i>
                     </div>
                     </td>
