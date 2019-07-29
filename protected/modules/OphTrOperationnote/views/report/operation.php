@@ -20,44 +20,44 @@
     <tbody>
     <tr class="col-gap">
       <td>
-          <?=\CHtml::label('Surgeon', 'surgeon_id') ?>
+            <?=\CHtml::label('Surgeon', 'surgeon_id') ?>
       </td>
       <td>
-          <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
-              <?=\CHtml::dropDownList('surgeon_id', null, $surgeons, array('empty' => 'All surgeons')) ?>
-          <?php else: ?>
-              <?php
-              $user = User::model()->findByPk(Yii::app()->user->id);
-              echo CHtml::dropDownList(null, '',
+            <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)) : ?>
+                <?=\CHtml::dropDownList('surgeon_id', null, $surgeons, array('empty' => 'All surgeons')) ?>
+            <?php else : ?>
+                <?php
+                $user = User::model()->findByPk(Yii::app()->user->id);
+                echo CHtml::dropDownList(null, '',
                   array(Yii::app()->user->id => $user->fullName),
                   array(
                       'disabled' => 'disabled',
                       'readonly' => 'readonly',
                       'style' => 'background-color:#D3D3D3;',
                   ) //for some reason the chrome doesn't gray out
-              );
-              echo CHtml::hiddenField('surgeon_id', Yii::app()->user->id);
-              ?>
-          <?php endif ?>
+                );
+                echo CHtml::hiddenField('surgeon_id', Yii::app()->user->id);
+                ?>
+            <?php endif ?>
       </td>
       <td>Procedure</td>
       <td>
-          <?php
-          $this->widget('application.widgets.ProcedureSelection', array(
+            <?php
+            $this->widget('application.widgets.ProcedureSelection', array(
               'newRecord' => true,
               'last' => true,
               'label' => '',
               'popupButton' => false,
-          ));
-          ?>
+            ));
+            ?>
       </td>
     </tr>
     <tr class="col-gap">
       <td>
-          <?=\CHtml::label('Cataract Complications', 'cat_complications'); ?>
+            <?=\CHtml::label('Cataract Complications', 'cat_complications'); ?>
       </td>
       <td>
-          <?php $this->widget('application.widgets.MultiSelectList', array(
+            <?php $this->widget('application.widgets.MultiSelectList', array(
               'field' => 'complications',
               'options' => CHtml::listData(OphTrOperationnote_CataractComplications::model()->findAll(), 'id', 'name'),
               'htmlOptions' => array('empty' => '- Complications -', 'multiple' => 'multiple', 'nowrapper' => true),
@@ -95,20 +95,20 @@
         <h3>Operation Booking</h3>
         <ul>
           <li>
-              <?=\CHtml::checkBox('bookingcomments'); ?>
-              <?=\CHtml::label('Comments', 'bookingcomments') ?>
+                <?=\CHtml::checkBox('bookingcomments'); ?>
+                <?=\CHtml::label('Comments', 'bookingcomments') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('booking_diagnosis'); ?>
-              <?=\CHtml::label('Operation booking diagnosis', 'booking_diagnosis') ?>
+                <?=\CHtml::checkBox('booking_diagnosis'); ?>
+                <?=\CHtml::label('Operation booking diagnosis', 'booking_diagnosis') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('surgerydate'); ?>
-              <?=\CHtml::label('Surgery Date', 'surgerydate') ?>
+                <?=\CHtml::checkBox('surgerydate'); ?>
+                <?=\CHtml::label('Surgery Date', 'surgerydate') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('theatre'); ?>
-              <?=\CHtml::label('Theatre', 'theatre') ?>
+                <?=\CHtml::checkBox('theatre'); ?>
+                <?=\CHtml::label('Theatre', 'theatre') ?>
           </li>
         </ul>
       </td>
@@ -116,28 +116,28 @@
         <h3>Examination</h3>
         <ul>
           <li>
-              <?=\CHtml::checkBox('comorbidities'); ?>
-              <?=\CHtml::label('Comorbidities', 'comorbidities') ?>
+                <?=\CHtml::checkBox('comorbidities'); ?>
+                <?=\CHtml::label('Comorbidities', 'comorbidities') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('first_eye'); ?>
-              <?=\CHtml::label('First or Second Eye', 'first_eye') ?>
+                <?=\CHtml::checkBox('first_eye'); ?>
+                <?=\CHtml::label('First or Second Eye', 'first_eye') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('refraction_values'); ?>
-              <?=\CHtml::label('Refraction Values', 'refraction_values') ?>
+                <?=\CHtml::checkBox('refraction_values'); ?>
+                <?=\CHtml::label('Refraction Values', 'refraction_values') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('target_refraction'); ?>
-              <?=\CHtml::label('Target Refraction', 'target_refraction') ?>
+                <?=\CHtml::checkBox('target_refraction'); ?>
+                <?=\CHtml::label('Target Refraction', 'target_refraction') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('cataract_surgical_management'); ?>
-              <?=\CHtml::label('Cataract Surgical Management', 'cataract_surgical_management') ?>
+                <?=\CHtml::checkBox('cataract_surgical_management'); ?>
+                <?=\CHtml::label('Cataract Surgical Management', 'cataract_surgical_management') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('va_values'); ?>
-              <?=\CHtml::label('VA Values', 'va_values') ?>
+                <?=\CHtml::checkBox('va_values'); ?>
+                <?=\CHtml::label('VA Values', 'va_values') ?>
           </li>
         </ul>
       </td>
@@ -145,64 +145,64 @@
         <h3>Operation Note</h3>
         <ul>
           <li>
-              <?=\CHtml::checkBox('cataract_report'); ?>
-              <?=\CHtml::label('Cataract Report', 'cataract_report') ?>
+                <?=\CHtml::checkBox('cataract_report'); ?>
+                <?=\CHtml::label('Cataract Report', 'cataract_report') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('incision_site'); ?>
-              <?=\CHtml::label('Cataract Operation Details', 'incision_site') ?>
+                <?=\CHtml::checkBox('incision_site'); ?>
+                <?=\CHtml::label('Cataract Operation Details', 'incision_site') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('cataract_complication_notes'); ?>
-              <?=\CHtml::label('Cataract Complication Notes', 'cataract_complication_notes') ?>
+                <?=\CHtml::checkBox('cataract_complication_notes'); ?>
+                <?=\CHtml::label('Cataract Complication Notes', 'cataract_complication_notes') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('tamponade_used'); ?>
-              <?=\CHtml::label('Tamponade Used', 'tamponade_used') ?>
+                <?=\CHtml::checkBox('tamponade_used'); ?>
+                <?=\CHtml::label('Tamponade Used', 'tamponade_used') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('anaesthetic_type'); ?>
-              <?=\CHtml::label('Anaesthetic Type', 'anaesthetic_type') ?>
+                <?=\CHtml::checkBox('anaesthetic_type'); ?>
+                <?=\CHtml::label('Anaesthetic Type', 'anaesthetic_type') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('anaesthetic_delivery'); ?>
-              <?=\CHtml::label('Anaesthetic Delivery', 'anaesthetic_delivery') ?>
+                <?=\CHtml::checkBox('anaesthetic_delivery'); ?>
+                <?=\CHtml::label('Anaesthetic Delivery', 'anaesthetic_delivery') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('anaesthetic_complications'); ?>
-              <?=\CHtml::label('Anaesthetic Complications', 'anaesthetic_complications') ?>
+                <?=\CHtml::checkBox('anaesthetic_complications'); ?>
+                <?=\CHtml::label('Anaesthetic Complications', 'anaesthetic_complications') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('anaesthetic_comments'); ?>
-              <?=\CHtml::label('Anaesthetic Comments', 'anaesthetic_comments') ?>
+                <?=\CHtml::checkBox('anaesthetic_comments'); ?>
+                <?=\CHtml::label('Anaesthetic Comments', 'anaesthetic_comments') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('surgeon'); ?>
-              <?=\CHtml::label('Surgeon', 'surgeon') ?>
+                <?=\CHtml::checkBox('surgeon'); ?>
+                <?=\CHtml::label('Surgeon', 'surgeon') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('surgeon_role'); ?>
-              <?=\CHtml::label('Surgeon role', 'surgeon_role') ?>
+                <?=\CHtml::checkBox('surgeon_role'); ?>
+                <?=\CHtml::label('Surgeon role', 'surgeon_role') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('assistant'); ?>
-              <?=\CHtml::label('Assistant', 'assistant') ?>
+                <?=\CHtml::checkBox('assistant'); ?>
+                <?=\CHtml::label('Assistant', 'assistant') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('assistant_role'); ?>
-              <?=\CHtml::label('Assistant role', 'assistant_role') ?>
+                <?=\CHtml::checkBox('assistant_role'); ?>
+                <?=\CHtml::label('Assistant role', 'assistant_role') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('supervising_surgeon'); ?>
-              <?=\CHtml::label('Supervising surgeon', 'supervising_surgeon') ?>
+                <?=\CHtml::checkBox('supervising_surgeon'); ?>
+                <?=\CHtml::label('Supervising surgeon', 'supervising_surgeon') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('supervising_surgeon_role'); ?>
-              <?=\CHtml::label('Supervising surgeon role', 'supervising_surgeon_role') ?>
+                <?=\CHtml::checkBox('supervising_surgeon_role'); ?>
+                <?=\CHtml::label('Supervising surgeon role', 'supervising_surgeon_role') ?>
           </li>
           <li>
-              <?=\CHtml::checkBox('opnote_comments'); ?>
-              <?=\CHtml::label('Operation Note Comments', 'opnote_comments') ?>
+                <?=\CHtml::checkBox('opnote_comments'); ?>
+                <?=\CHtml::label('Operation Note Comments', 'opnote_comments') ?>
           </li>
         </ul>
       </td>
@@ -212,8 +212,8 @@
         <h3>Patient Data</h3>
         <ul>
           <li>
-              <?=\CHtml::checkBox('patient_oph_diagnoses'); ?>
-              <?=\CHtml::label('Patient Ophthalmic Diagnoses', 'patient_oph_diagnoses') ?>
+                <?=\CHtml::checkBox('patient_oph_diagnoses'); ?>
+                <?=\CHtml::label('Patient Ophthalmic Diagnoses', 'patient_oph_diagnoses') ?>
           </li>
         </ul>
       </td>

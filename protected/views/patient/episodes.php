@@ -21,7 +21,7 @@ extract($this->getEpisodes());
 $current_episode = isset($current_episode) ? $current_episode : @$this->current_episode;
 ?>
 
-<?php if($noEpisodes) { ?>
+<?php if ($noEpisodes) { ?>
   <div class="oe-sem-no-events">
     <h3>No Events</h3>
     <div class="alert-box alert">
@@ -35,7 +35,7 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
         <?php } ?>
     </nav>
   </div>
-    <?php $this->renderPartial('//patient/add_new_event',array(
+    <?php $this->renderPartial('//patient/add_new_event', array(
         'button_selector' => '#add-event',
         'episodes' => array(),
         'context_firm' => $this->firm,
@@ -43,7 +43,6 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
         'event_types' => EventType::model()->getEventTypeModules(),
     ));?>
 <?php } else {
-
     $this->beginContent('//patient/episodes_container', array(
         'css_class' => isset($cssClass) ? $cssClass : '',
         'episode' => isset($current_episode)? $current_episode: ''
@@ -60,10 +59,10 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
             );
         }
     } elseif (count($legacyepisodes)) {?>
-		<h2>No episodes</h2>
-		<div class="alert-box alert with-icon">
-			There are currently no events for this patient, please click the Add <?= strtolower(Episode::getEpisodeLabel()) ?> button to begin recording events.
-		</div>
-	<?php }
+        <h2>No episodes</h2>
+        <div class="alert-box alert with-icon">
+            There are currently no events for this patient, please click the Add <?= strtolower(Episode::getEpisodeLabel()) ?> button to begin recording events.
+        </div>
+    <?php }
     $this->endContent();
 }?>

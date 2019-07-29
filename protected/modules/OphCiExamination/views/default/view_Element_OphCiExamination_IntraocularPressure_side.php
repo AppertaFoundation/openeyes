@@ -13,13 +13,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if ($element->{"{$side}_values"}): ?>
+<?php if ($element->{"{$side}_values"}) : ?>
   <table class="large">
     <colgroup>
       <col class="cols-4">
     </colgroup>
     <tbody>
-    <?php foreach ($element->{"{$side}_values"} as $value): ?>
+    <?php foreach ($element->{"{$side}_values"} as $value) : ?>
       <tr>
         <td><?= $value->instrument->scale ? $value->qualitative_reading->name : $value->reading->name.'mm Hg' ?></td>
         <td>
@@ -33,6 +33,6 @@
   </table>
 <?php endif ?>
 
-<?php if ($element->{"{$side}_comments"}): ?>
+<?php if ($element->{"{$side}_comments"}) : ?>
     <span class="large-text" style="padding-left: 5px"><?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?></span>
 <?php endif; ?>

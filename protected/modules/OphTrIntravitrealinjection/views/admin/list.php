@@ -19,31 +19,31 @@
 
 <div class="box admin">
 
-	<header class="box-header">
-		<h2 class="box-title"><?php echo $title ? $title : 'Intravitreal Injection Admin' ?></h2>
-		<div class="box-actions">
-			<a class="button small" href="<?php echo Yii::app()->createUrl('OphTrIntravitrealinjection/admin/create'.$model_class); ?>">Add New</a>
-		</div>
-	</header>
+    <header class="box-header">
+        <h2 class="box-title"><?php echo $title ? $title : 'Intravitreal Injection Admin' ?></h2>
+        <div class="box-actions">
+            <a class="button small" href="<?php echo Yii::app()->createUrl('OphTrIntravitrealinjection/admin/create'.$model_class); ?>">Add New</a>
+        </div>
+    </header>
 
-	<table class="standard">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Available?</th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php
+    <table class="standard">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Available?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
             foreach ($model_list as $i => $model) {?>
-				<tr data-attr-id="<?php echo $model->id?>">
-					<?php
+                <tr data-attr-id="<?php echo $model->id?>">
+                    <?php
                     $this->renderPartial('list_'.get_class($model), array(
                         'model' => $model,
                         ));
-                ?>
-				</tr>
-			<?php }?>
-		</tbody>
-	</table>
+                    ?>
+                </tr>
+            <?php }?>
+        </tbody>
+    </table>
 </div>

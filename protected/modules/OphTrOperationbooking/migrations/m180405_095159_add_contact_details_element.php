@@ -2,8 +2,8 @@
 
 class m180405_095159_add_contact_details_element extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->createElementType('OphTrOperationbooking', 'Contact Details', array(
             'class_name' => 'Element_OphTrOperationbooking_ContactDetails',
             'display_order' => 40,
@@ -20,22 +20,22 @@ class m180405_095159_add_contact_details_element extends OEMigration
         ), true);
 
         $this->addForeignKey('et_ophtroperationbooking_contact_details_event_fk', 'et_ophtroperationbooking_contact_details', 'event_id', 'event', 'id');
-	}
+    }
 
-	public function down()
-	{
-		$this->dropForeignKey('et_ophtroperationbooking_contact_details_event_fk','et_ophtroperationbooking_contact_details');
+    public function down()
+    {
+        $this->dropForeignKey('et_ophtroperationbooking_contact_details_event_fk', 'et_ophtroperationbooking_contact_details');
         $this->dropTable('et_ophtroperationbooking_contact_details');
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

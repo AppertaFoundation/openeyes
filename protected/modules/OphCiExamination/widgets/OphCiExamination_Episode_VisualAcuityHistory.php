@@ -60,7 +60,7 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
      * @param $val float|int value of Visual Acuity to be adjusted
      * @return float|int adjusted value
      */
-    public function getAdjustedVA( $val )
+    public function getAdjustedVA($val)
     {
         return $val > 4 ? $val : ($val-2) * 10;
     }
@@ -75,9 +75,9 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $va_len = sizeof($va_ticks);
         $step = $va_len/20;
         $no_numeric_val_count = 4;   //keep the 4 no number labels: CF, HM, PL, NPL
-        $this->va_ticks = array_slice($va_ticks, 0,$no_numeric_val_count);
+        $this->va_ticks = array_slice($va_ticks, 0, $no_numeric_val_count);
 
-        for ($i = $no_numeric_val_count+1; $i<=$va_len-$step; $i+=$step){
+        for ($i = $no_numeric_val_count+1; $i<=$va_len-$step; $i+=$step) {
             array_push($this->va_ticks, $va_ticks[$i]);
         }
 
@@ -129,46 +129,46 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
             $this->patient,
             false
         ) as $va) {
-            foreach (['left', 'right'] as $side){
-              $reading = $va->getBestReading($side);
-                if ($reading){
+            foreach (['left', 'right'] as $side) {
+                $reading = $va->getBestReading($side);
+                if ($reading) {
                     $va_value = $this->getAdjustedVA((float)$reading->value);
                     $va_data_list[$side][] = array( 'y'=>$va_value,'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date));
                 }
             }
         }
-        foreach (['left', 'right'] as $side){
+        foreach (['left', 'right'] as $side) {
             usort($va_data_list[$side], array("EpisodeSummaryWidget","sortData"));
         }
         return $va_data_list;
     }
 
-  public function getPlotlyVaData(){
-    $va_data_list = array('right'=>array(), 'left'=>array());
-    $va_plotly_list = array('right'=>array('x'=>array(), 'y'=>array()), 'left'=>array('x'=>array(), 'y'=>array()));
-    foreach ($this->event_type->api->getElements(
-      'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
-      $this->patient,
-      false
-    ) as $va) {
-      foreach (['left', 'right'] as $side){
-        $reading = $va->getBestReading($side);
-        if ($reading){
-          $va_value = $this->getAdjustedVA((float)$reading->value);
-          $va_data_list[$side][] = array( 'y'=>$va_value,'x'=>date('Y-m-d', Helper::mysqlDate2JsTimestamp($va->event->event_date)/1000));
+    public function getPlotlyVaData(){
+        $va_data_list = array('right'=>array(), 'left'=>array());
+        $va_plotly_list = array('right'=>array('x'=>array(), 'y'=>array()), 'left'=>array('x'=>array(), 'y'=>array()));
+        foreach ($this->event_type->api->getElements(
+        'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
+        $this->patient,
+        false
+        ) as $va) {
+            foreach (['left', 'right'] as $side) {
+                $reading = $va->getBestReading($side);
+                if ($reading) {
+                    $va_value = $this->getAdjustedVA((float)$reading->value);
+                    $va_data_list[$side][] = array( 'y'=>$va_value,'x'=>date('Y-m-d', Helper::mysqlDate2JsTimestamp($va->event->event_date)/1000));
+                }
+            }
         }
-      }
-    }
-    foreach (['left', 'right'] as $side){
-      usort($va_data_list[$side], array("EpisodeSummaryWidget","sortData"));
-      foreach ($va_data_list[$side] as $item ){
-        $va_plotly_list[$side]['x'][] = $item['x'];
-        $va_plotly_list[$side]['y'][] = $item['y'];
-      }
-    }
+        foreach (['left', 'right'] as $side) {
+            usort($va_data_list[$side], array("EpisodeSummaryWidget","sortData"));
+            foreach ($va_data_list[$side] as $item ) {
+                $va_plotly_list[$side]['x'][] = $item['x'];
+                $va_plotly_list[$side]['y'][] = $item['y'];
+            }
+        }
 
-    return $va_plotly_list;
-  }
+        return $va_plotly_list;
+    }
 
     public function getVaAxis() {
         return $this->va_axis;
@@ -176,8 +176,8 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
 
     public function getVaTicks() {
         $tick_data = array('tick_position'=> array(), 'tick_labels'=> array());
-        foreach ($this->va_ticks as $tick){
-            array_push($tick_data['tick_position'],(float)$tick[0]);
+        foreach ($this->va_ticks as $tick) {
+            array_push($tick_data['tick_position'], (float)$tick[0]);
             array_push($tick_data['tick_labels'], $tick[1]);
         }
         return $tick_data;
@@ -192,7 +192,7 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
             $va_ticks[] = array($this->getAdjustedVA($value->base_value), $value->value);
         }
 
-        if($va_ticks[0][1] !== 'NPL'){
+        if ($va_ticks[0][1] !== 'NPL') {
             array_unshift($va_ticks, [$this->getAdjustedVA(4), 'CF']);
             array_unshift($va_ticks, [$this->getAdjustedVA(3), 'HM']);
             array_unshift($va_ticks, [$this->getAdjustedVA(2), 'PL']);

@@ -425,7 +425,6 @@ class DefaultController extends BaseEventTypeController
                         }
                     } else {
                         throw new Exception('could not save event');
-
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
@@ -1081,14 +1080,12 @@ class DefaultController extends BaseEventTypeController
         //AnaestheticType
         $type_assessments = array();
         if (isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])) {
-
             $type_assessments_by_id = array();
             foreach ($element->anaesthetic_type_assignments as $type_assignments) {
                 $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
             }
 
             foreach ($data['AnaestheticType'] as $anaesthetic_type_id) {
-
                 if (!array_key_exists($anaesthetic_type_id, $type_assessments_by_id)) {
                     $anaesthetic_type_assesment = new OphTrOperationnote_OperationAnaestheticType();
                 } else {
@@ -1122,14 +1119,12 @@ class DefaultController extends BaseEventTypeController
         //AnaestheticDelivery
         $delivery_assessments = array();
         if (isset($data['AnaestheticDelivery']) && is_array($data['AnaestheticDelivery'])) {
-
             $delivery_assessments_by_id = array();
             foreach ($element->anaesthetic_delivery_assignments as $delivery_assignments) {
                 $delivery_assessments_by_id[$delivery_assignments->anaesthetic_delivery_id] = $delivery_assignments;
             }
 
             foreach ($data['AnaestheticDelivery'] as $anaesthetic_delivery_id) {
-
                 if (!array_key_exists($anaesthetic_delivery_id, $delivery_assessments_by_id)) {
                     $anaesthetic_delivery_assesment = new OphTrOperationnote_OperationAnaestheticDelivery();
                 } else {
@@ -1315,6 +1310,19 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
+        //event date
+        if (isset($data['Event']['event_date'])) {
+            $event = $this->event;
+            $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            if (!$event->validate()) {
+                foreach ($event->getErrors() as $errormsgs) {
+                    foreach ($errormsgs as $error) {
+                        $errors[$this->event_type->name][] = $error;
+                    }
+                }
+            }
+        }
+
         return $errors;
     }
 
@@ -1338,5 +1346,22 @@ class DefaultController extends BaseEventTypeController
                 '<span class="extra-info">' . Helper::convertDate2NHS($this->event->event_date) . '</span>';
         }
         return null;
+    }
+
+    /**
+     * @param $proc_id
+     * @return OphTrOperationnote_Attribute[]
+     *
+     * Returns attributes that belong
+     * to the given procedure
+     */
+
+    protected function getAttributesForProcedure($proc_id)
+    {
+        $crit = new CDbCriteria();
+        $crit->compare('proc_id', $proc_id);
+        $crit->order = "display_order";
+
+        return OphTrOperationnote_Attribute::model()->findAll($crit);
     }
 }
