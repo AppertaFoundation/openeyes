@@ -147,14 +147,26 @@
 			);
 
 		}
-
-
 		var report = document.getElementById('plotly-IOP-right');
-        report.on('plotly_click',function(data){
-            $('.analytics-patient-list').show();
-            $('#js-back-to-chart').show();
-            $('#oescape-layout').hide();
-            DisplayDrillThroughData();
-        });
+  		report.on('plotly_click',function(data){
+			// console.log (data);
+          for(var i=0; i < data.points.length; i++){
+			console.log (data.points[i]);
+              if (data.points[i].customdata){
+				$('.analytics-patient-list').show();
+				$('#js-back-to-chart').show();      
+				$('#oescape-layout').hide();
+				
+				$('.event_rows').hide();
+				  var showlist = data.points[i].customdata;
+				//   console.log (showlist);
+                  for (var j=0; j<showlist.length; j++){
+                    var id = showlist[j].toString();
+					DisplayDrillThroughData(id);
+                      $('.event_'+id).show();
+                  }
+              }
+          }
+  });
   });
 </script>

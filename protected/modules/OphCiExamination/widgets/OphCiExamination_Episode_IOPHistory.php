@@ -228,49 +228,69 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         return $iop_target;
     }
 
-    public static function getDrillthroughIOPDataForEvent($event_id)
+    public static function getDrillthroughIOPDataForEvent($patient)
     {
-         //declare output array
+        $exam_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Examination")), $patient);
+        $phasing_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Phasing")), $patient);
+
+        $event_list = array();
+
+        if($exam_events) {
+           array_push($event_list, ...$exam_events);
+        }
+
+        if($phasing_events) {
+            array_push($event_list, ...$phasing_events);
+        }
+
         $output = array();
-
-        $event = Event::model()->find('id=:id', array(':id' => $event_id));
-
+        foreach($event_list as $event){
+         //declare output array
         if ($event) {
           //Find the name of the event type
+          $event_id = $event->id;
+
           $event_name = EventType::model()->findByPk($event->event_type_id)->name;
 
           //Process event differently depending on type
           if($event_name == 'Examination') {
-						$iop_event = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
-						$side = strtolower(Eye::model()->findByPk($iop_event->eye_id)->name);
+                        $iop_event = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
+                        if($iop_event)
+                        {
+                            $side = strtolower(Eye::model()->findByPk($iop_event->eye_id)->name);
 
-						if($side == 'both' || $side == 'left'){
-							$readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'left',$event_name);
-							array_push($output, ...$readings);
-						}
+                            if($side == 'both' || $side == 'left'){
+                                $readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'left',$event_name);
+                                array_push($output, ...$readings);
+                            }
 
-						if($side == 'both' || $side == 'right'){
-							$readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'right',$event_name);
-							array_push($output, ...$readings);
-						}
+                            if($side == 'both' || $side == 'right'){
+                                $readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'right',$event_name);
+                                array_push($output, ...$readings);
+                            }
+                        }
           }else if($event_name == 'Phasing') {
-						$iop_event = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
-						$side = strtolower(Eye::model()->findByPk($iop_event->eye_id)->name);
-						if($side == 'both' || $side == 'left'){
-							$readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'left',$event_name);
-							array_push($output, ...$readings);
-						}
+                        $iop_event = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
+                        if($iop_event)
+                        {
+                            $side = strtolower(Eye::model()->findByPk($iop_event->eye_id)->name);
+                            if($side == 'both' || $side == 'left'){
+                                $readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'left',$event_name);
+                                array_push($output, ...$readings);
+                            }
 
-						if($side == 'both' || $side == 'right'){
-							$readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'right',$event_name);
-							array_push($output, ...$readings);
-						}
+                            if($side == 'both' || $side == 'right'){
+                                $readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'right',$event_name);
+                                array_push($output, ...$readings);
+                            }
+                        }
 					}else {
 						throw new InvalidArgumentException("Event type should be Phasing or Examination");
 					}
         }else {
             throw new InvalidArgumentException("Attempted to get information for event that doesn't exist.");
         }
+    }
         return $output;
     }
     static function getDrillthroughIOPDataForEventSide($event, $iop_element, $side, $event_name)
