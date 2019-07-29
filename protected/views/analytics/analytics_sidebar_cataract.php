@@ -1,6 +1,5 @@
 <?PHP Yii::app()->getAssetManager()->registerScriptFile('../../../node_modules/jspdf/dist/jspdf.min.js') ?>
 <div class="analytics-options">
-
     <?php $this->renderPartial('analytics_sidebar_header', array('specialty'=>$specialty));?>
 
     <div class="specialty"><?= $specialty ?></div>
@@ -10,6 +9,13 @@
             if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
                 $clinical_button_disable = false;
             }?>
+            <!-- Service Manager flag -->
+            <?php
+                $isServiceMgr = false;
+            if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
+                $isServiceMgr = true;
+            }
+            ?>
             <button class="analytics-section pro-theme cols-12 selected <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
                     data-section="#js-hs-chart-analytics-clinical-main"
                     data-tab="#js-charts-clinical">
@@ -48,8 +54,9 @@
                 <div class="row">
                     <button id="js-clear-date-range" class="pro-theme" type="button" onclick="viewAllDates()">View all dates</button>
                 </div>
+                <!-- only the user with service manager role can view all surgeons -->
                 <div class="row">
-                    <button id="js-all-surgeons" class="pro-theme" type="button" onclick="viewAllSurgeons()">View all surgeons</button>
+                    <button id="js-all-surgeons" style="<?=$isServiceMgr ? '' : 'display:none;'?>" class="pro-theme" type="button" onclick="viewAllSurgeons()">View all surgeons</button>
                 </div>
                 <button class="pro-theme green hint cols-full update-chart-btn" type="submit">Update Chart</button>
             </form>
@@ -74,10 +81,11 @@
         $side_bar_user_list = null;
     }
     ?>
-    $('#search-form').on('submit', function (e) {
-        e.preventDefault();
-        $('.report-search-form').trigger('submit');
-    });
+    // when the page is initialized with the first plot initialized, #search-form will get submit event in OpenEyes.Dash.js
+    // $('#search-form').on('submit', function (e) {
+    //     e.preventDefault();
+    //     $('.report-search-form').trigger('submit');
+    // });
 
     function viewAllSurgeons() {
         if ($('#analytics_allsurgeons').val() == 'on') {
@@ -101,6 +109,11 @@
         }
     });
     $('.js-cataract-report-type').on('click',function () {
+        // everytime switching between cataract report type will bind a submit event on #search-form
+        // clear that out at beginning, as plot initialization will bind submit event
+        if($._data(document.getElementById('search-form'), "events").hasOwnProperty('submit')){
+            $('#search-form').off('submit')
+        }
         $(this).addClass("selected");
         $('.js-cataract-report-type').not(this).removeClass("selected");
         $('#pcr-risk-grid').html("");
@@ -139,13 +152,27 @@
                 break;
         }
     });
-    
     // allow one click every two seconds
     // to avoid multi-click on this button
     $('#js-download-pdf').on('click', _.throttle(reportPlotToPDF, 2000, {'trailing': false}));
 
     // the callback for download pdf click event
     function reportPlotToPDF(){
+        // grab dates
+        // if from, to not filled, the max / min date from event data will be filled in
+        var date = "";
+        var from_date = $('#analytics_datepicker_from').val() ? $('#analytics_datepicker_from').val() : "<?php echo $min_event_date?>";
+        var to_date = $('#analytics_datepicker_to').val() ? " to " + $('#analytics_datepicker_to').val() : " to " + "<?php echo $max_event_date?>";
+        // make sure the entry is logical
+        if(new Date(from_date) > new Date(to_date)){
+            alert('From date cannot be later than To date')
+            return;
+        }
+        if(new Date(to_date) < new Date(from_date)){
+            alert('To date cannot be earlier than From date')
+            return;
+        }
+        date = from_date + to_date
         // prevent click during downloading
         if($(this).text() === 'Downloading...'){
             return false;
@@ -185,8 +212,9 @@
 
         // plot config
         var config = {
-            paper_bgcolor: 'white',
-            plot_bgcolor: 'white',
+            // transparent plot bg color for not blocking texts
+            paper_bgcolor: 'rgba(0, 0, 0, 0)',
+            plot_bgcolor: 'rgba(0, 0, 0, 0)',
             font: {
                 color: 'black',
             },
@@ -212,7 +240,7 @@
         var counter = 1;
 
         // margin top
-        var marginT = 10;
+        var marginT = 15;
         // margin left
         var marginL = 10;
 
@@ -235,7 +263,12 @@
                 configPlotPDF(currentPlot, config);
                 Plotly.toImage(currentPlot)
                     .then((dataURL)=>{
-                        doc.addImage(dataURL, 'PNG', marginT, marginL, plotWidth, plotHeight);
+                        doc.setFontSize(8);
+                        doc.text(15, 10, 'Surgeon Name: ' + 
+                        "<?php echo $current_user->contact->first_name . ' ' . $current_user->contact->last_name; ?>");
+                        doc.text(15, 20, 'Date: ' + date);
+
+                        doc.addImage(dataURL, 'PNG', marginL, marginT, plotWidth, plotHeight);
                         counter++;
                     });
                     // put the color back for update chart function

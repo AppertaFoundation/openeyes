@@ -20,6 +20,8 @@
                     'specialty'=>$specialty,
                     'user_list'=>$user_list,
                     'current_user'=>$current_user,
+                    'min_event_date'=>$min_event_date, // minimum event date
+                    'max_event_date'=>$max_event_date, // maxium event date
                 )
             );
         } else {

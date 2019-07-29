@@ -69,7 +69,7 @@ class ContactController extends \BaseController
             'label' => $contact->getFullName() .
                 (isset($contact->label) && isset($contact->label->name) ?
                     " (" . $contact->label->name . ")" : "")
-                . (isset($contact->national_code) ? "(" . $contact->national_code . ")" : "") .
+                . (isset($contact->national_code) && trim($contact->national_code) ? "(" . $contact->national_code . ")" : "") .
                 " " . ($contact->address ? $contact->address->getLetterLine() : ""),
             'id' => $contact['id'],
             'name' => $contact->getFullName(),
