@@ -77,10 +77,10 @@ class Zend_Gdata_Gapps_EmailListRecipientQuery extends Zend_Gdata_Gapps_Query
      * @param string $value The email list name to filter search results by,
      *          or null to disable.
      */
-     public function setEmailListName($value)
+    public function setEmailListName($value)
      {
-         $this->_emailListName = $value;
-     }
+        $this->_emailListName = $value;
+    }
 
     /**
      * Get the email list name to query for. If no name is set, null will be

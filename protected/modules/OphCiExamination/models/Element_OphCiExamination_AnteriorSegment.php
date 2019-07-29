@@ -228,8 +228,8 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
             throw new \CException('patient object required for setting ' . get_class($this) . ' default options');
         }
         $processor = new \EDProcessor();
-        $processor->loadElementEyedrawDoodles($patient, $this,\Eye::LEFT, 'left_eyedraw');
-        $processor->loadElementEyedrawDoodles($patient, $this,\Eye::RIGHT, 'right_eyedraw');
+        $processor->loadElementEyedrawDoodles($patient, $this, \Eye::LEFT, 'left_eyedraw');
+        $processor->loadElementEyedrawDoodles($patient, $this, \Eye::RIGHT, 'right_eyedraw');
     }
 
     /**
@@ -259,14 +259,14 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
 
     public function afterFind()
     {
-        if(!$this->isNewRecord && $this->eye_id != \Eye::BOTH) {
+        if (!$this->isNewRecord && $this->eye_id != \Eye::BOTH) {
             $eye_id = $this->eye_id == \Eye::LEFT ? \Eye::RIGHT : \Eye::LEFT;
             $patient = $this->event->episode->patient;
             $processor = new \EDProcessor();
             $processor->loadElementEyedrawDoodles($patient, $this, $eye_id, strtolower(\Eye::methodPostFix($eye_id)) . '_eyedraw');
         }
 
-        if($this->right_eyedraw2 || $this->left_eyedraw2){
+        if ($this->right_eyedraw2 || $this->left_eyedraw2) {
             $this->has_side_view = true;
         }
         parent::afterFind();

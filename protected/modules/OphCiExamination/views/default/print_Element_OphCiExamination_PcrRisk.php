@@ -14,12 +14,12 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
 <div class="element-data element-eyes flex-layout">
     <?php
     $pcr = new PcrRisk();
     foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) {
-    ?>
+        ?>
         <div class="cols-6 <?= $eye_side ?>-eye <?= $page_side ?>" data-side="<?= $eye_side ?>">
             <?php if ($element->{$eye_side . '_glaucoma'}) { ?>
             <div class="cols-12">

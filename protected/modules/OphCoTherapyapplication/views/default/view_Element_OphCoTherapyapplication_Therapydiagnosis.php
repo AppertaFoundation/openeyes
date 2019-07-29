@@ -17,15 +17,15 @@
 ?>
 
 <div class="element-data element-eyes">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <div class="js-element-eye <?= $eye_side ?>-eye column">
-            <?php if ($element->hasEye($eye_side)): ?>
+            <?php if ($element->hasEye($eye_side)) : ?>
                 <div class="flex-layout flex-top flex-left">
                     <?php
                         $this->renderPartial($element->view_view . '_fields', array('side' => $eye_side, 'element' => $element));
                     ?>
                 </div>
-            <?php else: ?>
+            <?php else : ?>
                 <div class="data-value not-recorded">Not recorded</div>
             <?php endif; ?>
         </div>

@@ -24,7 +24,7 @@
                 <div class="mdl-selectfield">
                  <h3>Months Post Op</h3>
                    <select name="months" id="visual-acuity-months" style="font-size: 1em; width: inherit;">
-                    <?php foreach (range(1, 300) as $month): ?>
+                    <?php foreach (range(1, 300) as $month) : ?>
                            <option value="<?=$month?>" <?=($month == 4) ? 'selected' : '' ?>><?=$month?> </option>
                     <?php endforeach ?>
                     </select>
@@ -34,7 +34,7 @@
                 <select name="method" id="visual-acuity-methods" style="font-size: 1em; width: inherit;">
                     <option value="">All</option>
                     <option value="best" selected>Best Corrected</option>
-                    <?php foreach ($methods as $method):?>
+                    <?php foreach ($methods as $method) :?>
                     <option value="<?=$method['id']?>"><?=$method['name']?></option>
                     <?php endforeach;?>
                 </select>

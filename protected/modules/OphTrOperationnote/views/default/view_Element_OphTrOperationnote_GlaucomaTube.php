@@ -25,8 +25,8 @@
 
     <div class="eyedraw flex-layout flex-top">
       <div class="eyedraw-canvas">
-          <?php
-          $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+            <?php
+            $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
               'mode' => 'view',
               'width' => $this->action->id === 'view' ? 200 : 120,
               'height' => $this->action->id === 'view' ? 200 : 120,
@@ -34,8 +34,8 @@
               'attribute' => 'eyedraw',
               'scale' => 0.72,
               'idSuffix' => 'GlaucomaTube',
-          ));
-          ?>
+            ));
+            ?>
       </div>
 
       <div class="eyedraw-data cols-5">

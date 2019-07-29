@@ -21,7 +21,7 @@ class DrugTypeTest extends CDbTestCase
     /**
         * @var DrugType
         */
-       protected $model;
+    protected $model;
     public $fixtures = array(
             'drugtypes' => 'DrugType',
        );
@@ -30,50 +30,50 @@ class DrugTypeTest extends CDbTestCase
         * Sets up the fixture, for example, opens a network connection.
         * This method is called before a test is executed.
         */
-       protected function setUp()
+    protected function setUp()
        {
-           parent::setUp();
-           $this->model = new DrugType();
-       }
+        parent::setUp();
+        $this->model = new DrugType();
+    }
 
        /**
         * Tears down the fixture, for example, closes a network connection.
         * This method is called after a test is executed.
         */
-       protected function tearDown()
+    protected function tearDown()
        {
-       }
+    }
 
        /**
         * @covers DrugType::model
         *
         * @todo   Implement testModel().
         */
-       public function testModel()
+    public function testModel()
        {
-           $this->assertEquals('DrugType', get_class(DrugType::model()), 'Class name should match model.');
-       }
+        $this->assertEquals('DrugType', get_class(DrugType::model()), 'Class name should match model.');
+    }
 
        /**
         * @covers DrugForm::tableName
         *
         * @todo   Implement testTableName().
         */
-       public function testTableName()
+    public function testTableName()
        {
-           $this->assertEquals('drug_type', $this->model->tableName());
-       }
+        $this->assertEquals('drug_type', $this->model->tableName());
+    }
 
        /**
         * @covers DrugForm::rules
         *
         * @todo   Implement testRules().
         */
-       public function testRules()
+    public function testRules()
        {
-           $this->assertTrue($this->drugtypes('drugtype1')->validate());
-           $this->assertEmpty($this->drugtypes('drugtype2')->errors);
-       }
+        $this->assertTrue($this->drugtypes('drugtype1')->validate());
+        $this->assertEmpty($this->drugtypes('drugtype2')->errors);
+    }
 
 
        /**
@@ -81,20 +81,20 @@ class DrugTypeTest extends CDbTestCase
         *
         * @todo   Implement testSearch().
         */
-       public function testSearch()
+    public function testSearch()
        {
-           $this->model->setAttributes($this->drugtypes('drugtype1')->getAttributes());
-           $results = $this->model->search();
-           $data = $results->getData();
+        $this->model->setAttributes($this->drugtypes('drugtype1')->getAttributes());
+        $results = $this->model->search();
+        $data = $results->getData();
 
-           $expectedKeys = array('drugtype1');
-           $expectedResults = array();
-           if (!empty($expectedKeys)) {
-               foreach ($expectedKeys as $key) {
-                   $expectedResults[] = $this->drugtypes($key);
-               }
-           }
-           $this->assertEquals(1, $results->getItemCount());
-           $this->assertEquals($expectedResults, $data);
-       }
+        $expectedKeys = array('drugtype1');
+        $expectedResults = array();
+        if (!empty($expectedKeys)) {
+            foreach ($expectedKeys as $key) {
+                $expectedResults[] = $this->drugtypes($key);
+            }
+        }
+        $this->assertEquals(1, $results->getItemCount());
+        $this->assertEquals($expectedResults, $data);
+    }
 }

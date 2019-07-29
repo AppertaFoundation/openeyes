@@ -39,7 +39,7 @@ class HelperTest extends CTestCase
         );
 
         if (PHP_INT_SIZE === 8) { // 64 bit
-        $dates[] = array('9999-12-31 23:59:59', 253402300799000);
+            $dates[] = array('9999-12-31 23:59:59', 253402300799000);
         }
 
         return $dates;
@@ -226,7 +226,7 @@ class HelperTest extends CTestCase
     {
         $random_string = '';
         for ($i = 0; $i < 5; $i++) {
-            $random_string .= substr( md5(mt_rand()), 0, mt_rand(1,32));
+            $random_string .= substr( md5(mt_rand()), 0, mt_rand(1, 32));
         }
 
         $checksum = md5($random_string);

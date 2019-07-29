@@ -242,7 +242,6 @@ class DefaultController extends BaseEventTypeController
         $episode = $this->episode;
 
         if ($episode) {
-
             // get the list of valid diagnosis codes
             $valid_disorders = OphCoTherapyapplication_TherapyDisorder::model()->findAll();
             $vd_ids = array();

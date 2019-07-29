@@ -48,7 +48,6 @@ class PreviousTrialParameterTest extends CDbTestCase
                 $this->fail('Failed on valid query operation ' . $op . ': ' . $e);
             }
             $this->assertTrue(true);
-
         }
 
         // Ensure that a HTTP exception is raised if an invalid operation is specified.

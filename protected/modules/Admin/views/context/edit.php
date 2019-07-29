@@ -44,7 +44,7 @@
         </colgroup>
         <tbody>
         <tr>
-            <td>Pass Code</td>
+            <td>PAS Code</td>
             <td> <?=\CHtml::activeTextField($firm, 'pas_code', ['class' => 'cols-full']); ?> </td>
         </tr>
         <tr>

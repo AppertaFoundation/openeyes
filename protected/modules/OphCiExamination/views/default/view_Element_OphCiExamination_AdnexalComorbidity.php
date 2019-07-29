@@ -20,11 +20,11 @@
     <div class="js-element-eye right-eye cols-6 data-group">
         <div class="data-value">
             <span class="large-text">
-              <?php if ($element->hasRight()) {
-                  echo Yii::app()->format->Ntext($element->right_description);
-              } else { ?>
+                <?php if ($element->hasRight()) {
+                    echo Yii::app()->format->Ntext($element->right_description);
+                } else { ?>
                   Not recorded
-              <?php } ?>
+                <?php } ?>
             </span>
         </div>
     </div>
@@ -32,9 +32,9 @@
         <div class="data-value">
             <span class="large-text"><?php if ($element->hasLeft()) {
                   echo Yii::app()->format->Ntext($element->left_description);
-              } else { ?>
+                                     } else { ?>
                   Not recorded
-              <?php } ?>
+                                        <?php } ?>
             </span>
         </div>
     </div>

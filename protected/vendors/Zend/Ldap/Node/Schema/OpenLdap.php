@@ -156,7 +156,6 @@ class Zend_Ldap_Node_Schema_OpenLdap extends Zend_Ldap_Node_Schema
             $val = $this->_parseAttributeType($value);
             $val = new Zend_Ldap_Node_Schema_AttributeType_OpenLdap($val);
             $this->_attributeTypes[$val->getName()] = $val;
-
         }
         foreach ($this->_attributeTypes as $val) {
             if (count($val->sup) > 0) {
@@ -281,9 +280,9 @@ class Zend_Ldap_Node_Schema_OpenLdap extends Zend_Ldap_Node_Schema
         foreach ($parents as $parent) {
             if (!array_key_exists($parent, $repository)) continue;
             if (!array_key_exists('_parents', $data) || !is_array($data['_parents'])) {
-               $data['_parents'] = array();
-           }
-           $data['_parents'][] = $repository[$parent];
+                $data['_parents'] = array();
+            }
+            $data['_parents'][] = $repository[$parent];
         }
         $node->setData($data);
     }

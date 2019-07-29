@@ -17,33 +17,33 @@
  */
 ?>
 <div id="diaryTemplate">
-	<div id="d_title">TCIs in date range <?=\CHtml::encode($_POST['date-start'])?> to <?=\CHtml::encode($_POST['date-end'])?></div>
-	<table>
-		<tr>
-			<th>Patient no</th>
-			<th>Patient name</th>
-			<th>D.O.B.</th>
-			<th>Age</th>
-			<th>Sex</th>
-			<th>Op. date</th>
-			<th>Ward</th>
-			<th>Consultant</th>
-			<th>Subspecialty</th>
-		</tr>
-		<?php foreach ($bookings as $booking) {
+    <div id="d_title">TCIs in date range <?=\CHtml::encode($_POST['date-start'])?> to <?=\CHtml::encode($_POST['date-end'])?></div>
+    <table>
+        <tr>
+            <th>Patient no</th>
+            <th>Patient name</th>
+            <th>D.O.B.</th>
+            <th>Age</th>
+            <th>Sex</th>
+            <th>Op. date</th>
+            <th>Ward</th>
+            <th>Consultant</th>
+            <th>Subspecialty</th>
+        </tr>
+        <?php foreach ($bookings as $booking) {
             if ($booking->operation->event) { ?>
-				<tr>
-					<td><?php echo $booking->operation->event->episode->patient->hos_num?></td>
-					<td><strong><?php echo strtoupper($booking->operation->event->episode->patient->last_name) ?></strong>, <?php echo $booking->operation->event->episode->patient->first_name?></td>
-					<td><?php echo $booking->operation->event->episode->patient->NHSDate('dob')?></td>
-					<td><?php echo $booking->operation->event->episode->patient->age?></td>
-					<td><?php echo $booking->operation->event->episode->patient->gender?></td>
-					<td><?php echo $booking->NHSDate('session_date')?></td>
-					<td><?php echo $booking->ward ? $booking->ward->name : 'None'?></td>
-					<td><?php echo $booking->session->firm->pas_code?></td>
-					<td><?php echo $booking->session->firm->serviceSubspecialtyAssignment->subspecialty->name?></td>
-				</tr>
-			<?php }
-} ?>
-	</table>
+                <tr>
+                    <td><?php echo $booking->operation->event->episode->patient->hos_num?></td>
+                    <td><strong><?php echo strtoupper($booking->operation->event->episode->patient->last_name) ?></strong>, <?php echo $booking->operation->event->episode->patient->first_name?></td>
+                    <td><?php echo $booking->operation->event->episode->patient->NHSDate('dob')?></td>
+                    <td><?php echo $booking->operation->event->episode->patient->age?></td>
+                    <td><?php echo $booking->operation->event->episode->patient->gender?></td>
+                    <td><?php echo $booking->NHSDate('session_date')?></td>
+                    <td><?php echo $booking->ward ? $booking->ward->name : 'None'?></td>
+                    <td><?php echo $booking->session->firm->pas_code?></td>
+                    <td><?php echo $booking->session->firm->serviceSubspecialtyAssignment->subspecialty->name?></td>
+                </tr>
+            <?php }
+        } ?>
+    </table>
 </div>
