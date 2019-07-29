@@ -61,7 +61,7 @@
 				//console.log(readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0));
 				//console.log(readings[key].length);
 				graph_data[key] = {
-				  'parent_ids': readings[key].map(r => r['reading']),
+				  'parent_ids': readings[key].map(r => r['id']),
 					'timestamp': key,
 					'minimum': Math.min(...readings[key].map(r => r['reading'])),
 					'average': readings[key].map(r => r['reading']).reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
