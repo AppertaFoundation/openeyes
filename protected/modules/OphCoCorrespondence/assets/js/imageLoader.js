@@ -87,14 +87,12 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
     ImageLoaderController.prototype.showErrorView = function () {
         let controller = this;
         controller.$htmlViewContainer.show();
-        controller.$spinner.hide();
     };
 
     ImageLoaderController.prototype.showSuccessView = function () {
         let controller = this;
         new OpenEyes.OphCoCorrespondence.DocumentViewerController();
         $('#' + controller.options.imageId + '0').show();
-        controller.$spinner.hide();
         controller.$imageContainer.show();
     };
 

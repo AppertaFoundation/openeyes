@@ -62,6 +62,21 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         ];
     }
 
+    public function beforeValidate()
+    {
+        if ( preg_match('/^(\d{2}):(\d{2})$/', $this->start_time)) {
+            // the format is 00:00, we need to append :00
+            $this->start_time .= ':00';
+        }
+
+        if ( preg_match('/^(\d{2}):(\d{2})$/', $this->end_time)) {
+            // the format is 00:00, we need to append :00
+            $this->end_time .= ':00';
+        }
+
+        return parent::beforeValidate();
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -168,6 +183,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         foreach (array('start_time', 'end_time') as $time_attr) {
             $this->$time_attr = substr($this->$time_attr, 0, 5);
         }
+
         parent::afterFind();
     }
 

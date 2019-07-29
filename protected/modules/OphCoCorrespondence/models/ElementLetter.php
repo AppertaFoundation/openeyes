@@ -995,6 +995,20 @@ class ElementLetter extends BaseEventTypeElement
         }
     }
 
+    public function getToAddressContactType() {
+        if($this->document_instance && $this->document_instance[0]->document_target) {
+            foreach ($this->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    if($target->ToCc === 'To'){
+                        return $target->contact_type;
+                    }
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @return string
      */
@@ -1008,7 +1022,7 @@ class ElementLetter extends BaseEventTypeElement
                 foreach ($instance->document_target as $target) {
                     if($target->ToCc != 'To'){
                         $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                        $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
+                        $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
                     }
                 }
             }
@@ -1070,5 +1084,15 @@ class ElementLetter extends BaseEventTypeElement
         }
 
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function checkPrint(){
+        if((strpos(Yii::app()->request->urlReferrer, 'update') || strpos(Yii::app()->request->urlReferrer, 'create')) && !$this->draft){
+            return "1";
+        }
+        return "0";
     }
 }

@@ -17,7 +17,7 @@
  */
 ?>
 
-<div id="patientMergeWrapper" class="container content">
+<div id="patientMergeWrapper" class="container content main-event">
     <?php $this->renderPartial('//base/_messages') ?>
   <div class="cols-4 column large-centered text-right large-offset-8">
     <section class="box dashboard">
