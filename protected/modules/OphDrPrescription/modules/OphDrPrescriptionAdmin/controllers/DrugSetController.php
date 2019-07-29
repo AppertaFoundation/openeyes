@@ -37,8 +37,6 @@ class DrugSetController extends BaseAdminController
 
         $filters = \Yii::app()->request->getParam('search');
 
-        \Yii::app()->session['sets_filters'] = [];
-
         if (!$filters) {
             $filters = \Yii::app()->session->get('sets_filters');
             $filters = $filters ? $filters : $default;
@@ -257,6 +255,11 @@ class DrugSetController extends BaseAdminController
 
         if(!$set) {
             $set = new MedicationSet;
+        }
+
+        // automatic sets cannot be edited here
+        if ($set->automatic) {
+            $this->redirect("/OphDrPrescription/admin/DrugSet/index");
         }
 
         $is_new_record = $set->isNewRecord;

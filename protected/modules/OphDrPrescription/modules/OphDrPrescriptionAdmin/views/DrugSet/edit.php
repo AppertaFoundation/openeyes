@@ -23,39 +23,12 @@ $is_manual = \Yii::app()->request->getParam('set-type', 'manual') === 'manual';
                     <col class="cols-1">
                 </colgroup>
                 <tbody>
-                <?php if ($medication_set->isNewRecord) : ?>
                 <tr>
-                    <td colspan="3">
-                        <?= CHtml::radioButtonList("set-type", \Yii::app()->request->getParam('set-type', 'manual'), [
-                                'manual' => 'Manual set',
-                                'automatic' => 'Automatic set',
-                        ], [
-                                'template' => "{beginLabel}{input}{labelTitle}{endLabel}",
-                                'separator' => '',
-                                'container' => '',
-                                'labelOptions' => ['class' => 'inline highlight']
-                        ]);?>
-                    </td>
-                </tr>
-                <?php endif; ?>
-                <tr>
-                    <td>
-                        <span class="js-manual" style="<?=($is_manual ? 'display:block' : 'display:none');?>">Name</span>
-                        <span class="js-auto" style="<?=(!$is_manual ? 'display:block' : 'display:none');?>">Search Auto Set</span>
-                    </td>
+                    <td>Name</td>
                     <td>
                         <?= \CHtml::activeHiddenField($medication_set, 'id');?>
-                        <?php
-                            if ($medication_set->isNewRecord) {
-                                $this->widget('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.widgets.AutoSetSearchAutocomplete', [
-                                        'set' => $medication_set,
-                                        'style' => ($is_manual ? 'display:none' : 'display:block')
-                                ]);
-                            }
-
-                            echo \CHtml::activeTextField($medication_set, 'name', [
-                                    'class' => 'cols-full js-manual',
-                                    'style' => ($is_manual ? 'display:block' : 'display:none'),
+                        <?= \CHtml::activeTextField($medication_set, 'name', [
+                                    'class' => 'cols-full',
                                     'placeholder' => 'Name of the set'
                             ]);
                         ?>
@@ -164,22 +137,22 @@ $is_manual = \Yii::app()->request->getParam('set-type', 'manual') === 'manual';
 </tr>
 </script>
 <script>
-    var drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
+    let drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
         tableSelector: '#meds-list',
         searchUrl: '/OphDrPrescription/admin/DrugSet/searchmedication',
         templateSelector: '#medication_template'
     });
+    $('#meds-list').data('drugSetController', drugSetController);
 
-    var tableInlineEditController = new OpenEyes.TableInlineEdit({
+    let tableInlineEditController = new OpenEyes.TableInlineEdit({
         tableSelector: '#meds-list',
         templateSelector: '#medication_template',
         onAjaxError: function() {
             drugSetController.refreshResult();
-        },
-        onAjaxComplete: function() {
-            //drugSetController.refreshResult();
         }
     });
+
+    $('#meds-list').data('tableInlineEditController', tableInlineEditController);
 
     $(function () {
         $(document).on("click", ".js-delete-rule", function (e) {
@@ -228,15 +201,4 @@ $is_manual = \Yii::app()->request->getParam('set-type', 'manual') === 'manual';
         },
         enableCustomSearchEntries: true,
     });
-
-    $('input[name="set-type"]').on('input', function() {
-        const $id_input = $('#MedicationSet_id');
-        $('.js-auto, .js-manual').toggle();
-        let value = $(this).val();
-        if (value === 'manual') {
-            $id_input.val('');
-            $('#MedicationSet_name, #MedicationSet_auto_name').val('');
-        }
-    });
-
 </script>
