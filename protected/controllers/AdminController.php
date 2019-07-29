@@ -614,15 +614,15 @@ class AdminController extends BaseAdminController
             $query = explode(' ', $q);
 
             if (count($query) == 1) {
-                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($q), false);
-                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($q), false, 'OR');
+                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($q), true);
+                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($q), true, 'OR');
             } elseif (count($query) == 2) {
-                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($query[0]), false);
-                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($query[1]), false);
+                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($query[0]), true);
+                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($query[1]), true);
             } elseif (count($query) >= 3) {
-                $criteria->addSearchCondition('lower(`t`.title)', strtolower($query[0]), false);
-                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($query[1]), false);
-                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($query[2]), false);
+                $criteria->addSearchCondition('lower(`t`.title)', strtolower($query[0]), true);
+                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($query[1]), true);
+                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($query[2]), true);
             }
         }
 
@@ -667,7 +667,7 @@ class AdminController extends BaseAdminController
                     throw new Exception('Unable to save contact: ' . print_r($contact->getErrors(), true));
                 }
                 Audit::add('admin-Contact', 'edit', $contact->id);
-                $this->redirect('/admin/contacts?q=' . $contact->fullName);
+                $this->redirect('/admin/contacts');
             }
         } else {
             Audit::add('admin-Contact', 'view', $id);
