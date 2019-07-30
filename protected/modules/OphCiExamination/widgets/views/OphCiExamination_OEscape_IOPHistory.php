@@ -18,8 +18,6 @@
 
     var iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
 
-    console.log(iop_plotly_data);
-
 		for (var side of sides) {
 			var layout_iop = JSON.parse(JSON.stringify(layout_plotly));
 			layout_iop['shapes'] = [];
@@ -39,7 +37,6 @@
 			var readings = {};
 
 			for (var data_point of iop_plotly_data[side]) {
-				//console.log(data_point);
 				var timestamp = data_point['timestamp'];
 				if(!readings.hasOwnProperty(timestamp)) {
 					readings[timestamp] = [];
@@ -51,15 +48,9 @@
 				    });
 			}
 
-			console.log(readings);
-
 			var graph_data = [];
 
 			for (var key in readings) {
-				//console.log("reading data");
-				//console.log(readings[key])
-				//console.log(readings[key].reduce((a, b) => parseInt(a) + parseInt(b), 0));
-				//console.log(readings[key].length);
 				graph_data[key] = {
 				  'parent_ids': readings[key].map(r => r['id']),
 					'timestamp': key,
@@ -68,11 +59,6 @@
 					'maximum': Math.max(...readings[key].map(r => r['reading']))
 				};
       }
-
-			//END SAMPLE DATA
-
-			//console.log(graph_data);
-
 			var x = [];
 			var y = [];
 			var event_ids = [];
@@ -81,9 +67,6 @@
 
 			var i = 0;
 			for(key in graph_data) {
-			    console.log(graph_data[key]);
-          // console.log("Max:".concat(graph_data[key]['maximum']));
-          // console.log("Min:".concat(graph_data[key]['minimum']));
           x[i] = graph_data[key]['timestamp'];
           y[i] = graph_data[key]['average'];
           event_ids[i] = graph_data[key]['parent_ids'];
@@ -91,19 +74,6 @@
           error_minus[i] = graph_data[key]['average'] - graph_data[key]['minimum'];
           i++;
       }
-
-			// console.log("Graphing values:");
-			// console.log("x:");
-			// console.log(x);
-			// console.log("y:");
-			// console.log(y);
-			console.log("Event ids:");
-			console.log(event_ids);
-			// console.log("error array:");
-			// console.log(error_array);
-			// console.log("error minus:");
-			// console.log(error_minus);
-
 			var data = [{
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
 				x: x,
@@ -139,9 +109,6 @@
 					visible: true
 				},
 			}];
-
-			//console.log(data);
-
 			Plotly.newPlot(
 				'plotly-IOP-' + side, data, layout_iop, options_plotly
 			);
@@ -149,9 +116,7 @@
 		}
 		var report = document.getElementById('plotly-IOP-right');
   		report.on('plotly_click',function(data){
-			// console.log (data);
           for(var i=0; i < data.points.length; i++){
-			console.log (data.points[i]);
               if (data.points[i].customdata){
 				$('.analytics-patient-list').show();
 				$('#js-back-to-chart').show();      
@@ -159,7 +124,6 @@
 				
 				$('.event_rows').hide();
 				  var showlist = data.points[i].customdata;
-				//   console.log (showlist);
                   for (var j=0; j<showlist.length; j++){
                     var id = showlist[j].toString();
 					DisplayDrillThroughData(id);
