@@ -56,19 +56,23 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             },
         });
 
+        //Check at a given id if the file has been uploaded or not. If not, return false and show an error.
         $(controller.options.uploadFormButton).on('click',function (e) {
             e.preventDefault();
             let valid = true;
+            //Check whether the document upload event is single or double-sided
             let mode = ($(controller.options.singleUploadSelector).is(':visible'))? controller.options.singleUploadSelector: controller.options.doubleUploadSelector;
             $(mode + " " +controller.options.fileInputSelector).each(function () {
                 let input_selector  = $(this).attr('id');
                 let file = document.getElementById(input_selector).files[0];
                 if (file === undefined){
-                    valid = false;
-                    return false;
+                    //No file was uploaded
+                		valid = false;
+                		return false;
                 }
             });
 
+            //Submit the document only if it is valid. Else display a dialogue box
             if(valid) {
                 $('#document-create').submit();
             }else{
