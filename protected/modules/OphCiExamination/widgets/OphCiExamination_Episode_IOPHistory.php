@@ -306,6 +306,10 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 					if($event_name == 'Examination') {
 							foreach($iop_element->{$side . '_values'} as $reading)
 							{
+								$reading_model = ExamModels\OphCiExamination_IntraocularPressure_Value::model()->find("element_id=:element_id", array(":element_id" => $iop_element->id));
+								$reading_value = ExamModels\OphCiExamination_IntraocularPressure_Reading::model()->findByPk($reading_model->reading_id);
+								error_log($reading_value->value);
+
 								$readings_array[] = array(
 									'event_id' => $iop_element->event_id,
 									'event_name' => $event_name,
@@ -313,14 +317,15 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 									'eye' => ucfirst($side),
 									'instrument_name' => ExamModels\OphCiExamination_Instrument::model()->findByPk($reading->instrument_id)->name,
 									'dilated' => "N/A",
-									'reading_value' => OphCiExamination_Episode_IOPHistory::getFormattedReading($reading,' mm Hg'),
-									'comments' => "N/A"
+									'reading_value' => OphCiExamination_Episode_IOPHistory::getFormattedReading($reading_value->value, $reading_model->reading_time,' mm Hg'),
+									'comments' => $iop_element->{$side . '_comments'}
 								);
 							}
 					}
 					else if($event_name == 'Phasing') {
 						if ($iop_element) {
 							$readings = OphCiPhasing_Reading::model()->findAll("element_id=:element_id", array(":element_id" => $iop_element->id));
+
 							foreach($readings as $reading) {
 								$readings_array[] = array(
 									'event_id' => $iop_element->event_id,
@@ -329,7 +334,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 									'eye' => ucfirst($side),
 									'instrument_name' => OphCiPhasing_Instrument::model()->findByPk($iop_element->{$side . '_instrument_id'})->name,
 									'dilated' => $iop_element->{$side . '_dilated'} ? 'Yes' : 'No',
-									'reading_value' => $reading->value,
+									'reading_value' => OphCiExamination_Episode_IOPHistory::getFormattedReading($reading->value, $reading->measurement_timestamp, ' mm Hg'),
 									'comments' => $iop_element->{$side . '_comments'}
 								);
 							}
@@ -346,12 +351,12 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         return $readings_array;
     }
 
-    static function getFormattedReading($reading, $reading_unit)
+    static function getFormattedReading($reading_value, $timestamp, $reading_unit)
     {
-        $time=date('G:i',strtotime($reading->reading_time));
-        $val = ExamModels\OphCiExamination_IntraocularPressure_Reading::model()->findByPk($reading->reading_id)->value;
+        $time=date('G:i',strtotime($timestamp));
+        $val = $reading_value;
         $return_reading = $time.' - '.  $val .' ' .$reading_unit;
-        
+
         return $return_reading;
     }
 }
