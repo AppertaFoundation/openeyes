@@ -13,23 +13,19 @@ PatientPanel.patientPopups = {
     // patient popups
     var quicklook = new OpenEyes.UI.NavBtnPopup('quicklook',
         parentElement.find('.js-quicklook-btn'),
-        parentElement.find('.patient-summary-quicklook'),
-        {asdf: 'hello1'}
+        parentElement.find('.patient-summary-quicklook')
     );
     var demographics = new OpenEyes.UI.NavBtnPopup('demographics',
         parentElement.find('.js-demographics-btn'),
-        parentElement.find('.patient-popup-demographics'),
-        {asdf: 'hello2'}
+        parentElement.find('.patient-popup-demographics')
     );
     var management = new OpenEyes.UI.NavBtnPopup('management',
         parentElement.find('.js-management-btn'),
-        parentElement.find('.patient-popup-management'),
-        {asdf: 'hello3'}
+        parentElement.find('.patient-popup-management')
     );
     var risks = new OpenEyes.UI.NavBtnPopup('risks',
         parentElement.find('.js-allergies-risks-btn'),
-        parentElement.find('.patient-popup-allergies-risks'),
-        {asdf: 'hello4'}
+        parentElement.find('.patient-popup-allergies-risks')
     );
 
     var all = [quicklook, demographics, management, risks];
@@ -37,8 +33,7 @@ PatientPanel.patientPopups = {
     if (parentElement.find('.js-trials-btn')) {
       var trials = new OpenEyes.UI.NavBtnPopup('trials',
         parentElement.find('.js-trials-btn'),
-        parentElement.find('.patient-popup-trials'),
-          {asdf: 'hello5'}
+        parentElement.find('.patient-popup-trials')
       );
       all.push(trials);
     }

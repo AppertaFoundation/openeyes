@@ -28,7 +28,7 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographics -->
-<div class="oe-patient-popup patient-popup-demographics" style="display:none; ">
+<div class="oe-patient-popup patient-popup-demographics" style="display:none;">
     <?php if ($this->patient->nhsNumberStatus): ?>
         <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
             <i class="oe-i exclamation pad-right no-click medium-icon"></i><b>
@@ -459,7 +459,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 </div>
 
 <?php if(Yii::app()->getModule('OETrial')) { ?>
-<div class="oe-patient-popup patient-popup-trials" style="display: none;position: absolute; left: 0px;">
+<div class="oe-patient-popup patient-popup-trials" style="display: none;">
   <div class="flex-layout flex-top">
       <?php
       $this->widget('application.modules.OETrial.widgets.PatientTrialSummary', array(
@@ -469,4 +469,3 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
   </div>
 </div>
 <?php } ?>
-
