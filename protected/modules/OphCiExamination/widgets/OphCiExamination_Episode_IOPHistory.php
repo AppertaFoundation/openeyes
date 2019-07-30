@@ -261,12 +261,14 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
                             if($side == 'both' || $side == 'left'){
                                 $readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'left',$event_name);
-                                array_push($output, ...$readings);
+                                if($readings)
+                                	array_push($output, ...$readings);
                             }
 
                             if($side == 'both' || $side == 'right'){
                                 $readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'right',$event_name);
-                                array_push($output, ...$readings);
+                                if($readings)
+                                	array_push($output, ...$readings);
                             }
                         }
           }else if($event_name == 'Phasing') {
@@ -276,12 +278,14 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                             $side = strtolower(Eye::model()->findByPk($iop_event->eye_id)->name);
                             if($side == 'both' || $side == 'left'){
                                 $readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'left',$event_name);
-                                array_push($output, ...$readings);
+                                if($readings)
+                                	array_push($output, ...$readings);
                             }
 
                             if($side == 'both' || $side == 'right'){
                                 $readings = OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEventSide($event,$iop_event,'right',$event_name);
-                                array_push($output, ...$readings);
+                                if($readings)
+                                	array_push($output, ...$readings);
                             }
                         }
 					}else {
@@ -293,6 +297,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
     }
         return $output;
     }
+
     static function getDrillthroughIOPDataForEventSide($event, $iop_element, $side, $event_name)
     {
     		$readings_array = array();
