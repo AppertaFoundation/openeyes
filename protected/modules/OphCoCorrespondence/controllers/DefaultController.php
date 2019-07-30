@@ -32,7 +32,8 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,
-        'getInitMethodDataById' => self::ACTION_TYPE_FORM
+        'getInitMethodDataById' => self::ACTION_TYPE_FORM,
+        'savePrint'    => self::ACTION_TYPE_PRINT,
     );
 
     protected $show_element_sidebar = false;
@@ -1003,5 +1004,17 @@ class DefaultController extends BaseEventTypeController
     {
         $letter = ElementLetter::model()->findByAttributes(['event_id' => $this->event->id]);
         return $letter->markDocumentRelationTreeDeleted();
+    }
+
+    public function actionSavePrint($event_id){
+        $cookies = Yii::app()->request->cookies;
+        $cookies['savePrint'] = new CHttpCookie('savePrint', $event_id, [
+            'expire' => strtotime('+20 seconds')
+        ]);
+        if ($cookies->contains('savePrint')){
+            echo 'ok';
+        } else {
+            echo 'failed to created print cookie';
+        }
     }
 }

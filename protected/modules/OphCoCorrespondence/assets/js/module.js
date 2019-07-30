@@ -283,15 +283,17 @@ $(document).ready(function() {
         if(attachment_check == 1){
             disableButtons();
             $('#ElementLetter_draft').val(0);
-
-            $('#'+event_form ).submit();
         } else {
             $(document).ajaxStop(function() {
                 disableButtons();
                 $('#ElementLetter_draft').val(0);
-                $('#'+event_form ).submit();
             });
         }
+
+        // ajax call to create php cookie
+        $.get(baseUrl + '/OphCoCorrespondence/Default/savePrint?event_id='+OE_event_id, function(response){
+            $('#'+event_form ).submit();
+        });
     });
 
     $('#et_savedraft').click(function(e){
