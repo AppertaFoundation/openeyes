@@ -36,11 +36,7 @@
 
 <script type="text/javascript">
     var iop_plotly_data;
-    // generate links (used for drill through data to event details) based upon the datalink they have
-    $('.clickable').click(function () {
-        var link = $(this).data('link');
-        window.location.href = link;
-    });
+
 
     // to drill through data from chart
     $('.js-plot-display-label').click(function () {
@@ -59,16 +55,20 @@
     
     
     function DisplayDrillThroughData(id){
+        //display relevant content
+        $('.event_'+id).show();
 
-    $('.event_'+id).show();
+        // generate links (used for drill through data to event details) based upon the datalink they have
+        $('.clickable').click(function () {
+        var link = $('.event_'+id).data('link');
+        window.location.href = link;
+        });
     }
     function InitDrillThroughData(){
         /// pull list of ids here
         document.getElementById("DrillDownContent").innerHTML = '';
         // loop for each ID
-        iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent($this->patient)); ?>//3686611  3492971
-
-				// console.log(iop_plotly_data);
+        iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent($this->patient)); ?>
 
         for (var i = 0; i < iop_plotly_data.length; i++){
             var data_row = "<tr  class='clickable event_rows event_" + iop_plotly_data[i]["event_id"]+"' data-link='/OphCi"+iop_plotly_data[i]["event_name"]+"/default/view/"+iop_plotly_data[i]["event_id"]+"'> <!-- Generated Data -->";
