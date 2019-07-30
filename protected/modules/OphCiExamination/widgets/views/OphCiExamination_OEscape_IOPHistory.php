@@ -124,23 +124,29 @@
 			);
 
 		}
-		var report = document.getElementById('plotly-IOP-right');
-  		report.on('plotly_click',function(data){
-          for(var i=0; i < data.points.length; i++){
-              if (data.points[i].customdata){
-				$('.analytics-patient-list').show();
-				$('#js-back-to-chart').show();
-				$('#oescape-layout').hide();
+		listenForClickEvent('plotly-IOP-right');
+		listenForClickEvent('plotly-IOP-left');
 
-				$('.event_rows').hide();
-				  var showlist = data.points[i].customdata;
-                  for (var j=0; j<showlist.length; j++){
-                    var id = showlist[j].toString();
-					DisplayDrillThroughData(id);
-                      $('.event_'+id).show();
-                  }
-              }
-          }
-  });
+		function listenForClickEvent(elementId){
+			var report = document.getElementById(elementId);
+			report.on('plotly_click',function(data){
+				for(var i=0; i < data.points.length; i++){
+					if (data.points[i].customdata){
+						$('.analytics-patient-list').show();
+						$('#js-back-to-chart').show();
+						$('#oescape-layout').hide();
+
+						$('.event_rows').hide();
+						var showlist = data.points[i].customdata;
+						for (var j=0; j<showlist.length; j++){
+							var id = showlist[j].toString();
+							DisplayDrillThroughData(id);
+							$('.event_'+id).show();
+						}
+					}
+				}
+			
+			});
+		}
   });
 </script>
