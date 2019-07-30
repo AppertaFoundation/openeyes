@@ -301,10 +301,9 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
     static function getDrillthroughIOPDataForEventSide($event, $iop_element, $side, $event_name)
     {
     		$readings_array = array();
-        //Set defaults shared by both event types
+
 				if($iop_element)
 					if($event_name == 'Examination') {
-						//exam
 							foreach($iop_element->{$side . '_values'} as $reading)
 							{
 								$readings_array[] = array(
@@ -321,18 +320,20 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 							}
 					}
 					else if($event_name == 'Phasing') {
-						//phasing
 						if ($iop_element) {
-							$readings_array[] = array(
-								'event_id' => $iop_element->event_id,
-								'event_name' => $event_name,
-								'event_date' => $event->event_date,
-								'eye' => ucfirst($side),
-								'instrument_name' => OphCiPhasing_Instrument::model()->findByPk($iop_element->{$side . '_instrument_id'})->name,
-								'dilated' => $iop_element->{$side . '_dilated'}?'Yes':'No',
-								'reading_value' => $iop_element->getReadingsWithTime($side),
-								'comments' => $iop_element->{$side . '_comments'}
-							);
+							$readings = OphCiPhasing_Reading::model()->findAll("element_id=:element_id", array(":element_id" => $iop_element->id));
+							foreach($readings as $reading) {
+								$readings_array[] = array(
+									'event_id' => $iop_element->event_id,
+									'event_name' => $event_name,
+									'event_date' => $event->event_date,
+									'eye' => ucfirst($side),
+									'instrument_name' => OphCiPhasing_Instrument::model()->findByPk($iop_element->{$side . '_instrument_id'})->name,
+									'dilated' => $iop_element->{$side . '_dilated'} ? 'Yes' : 'No',
+									'reading_value' => $reading->value,
+									'comments' => $iop_element->{$side . '_comments'}
+								);
+							}
 						}	else {
 							throw new InvalidArgumentException("Attempted to get information for event that doesn't exist.");
 						}

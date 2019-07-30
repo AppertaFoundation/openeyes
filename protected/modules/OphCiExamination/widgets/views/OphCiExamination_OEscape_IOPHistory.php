@@ -82,8 +82,6 @@
           i++;
       }
 
-			console.log(display_data);
-
 			var data = [{
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
 				x: x,
