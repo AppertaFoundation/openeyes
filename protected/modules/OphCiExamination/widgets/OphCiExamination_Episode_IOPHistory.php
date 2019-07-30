@@ -317,7 +317,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 									'eye' => ucfirst($side),
 									'instrument_name' => ExamModels\OphCiExamination_Instrument::model()->findByPk($reading->instrument_id)->name,
 									'dilated' => "N/A",
-									//'reading_value' => OphCiExamination_Episode_IOPHistory::getFormattedReading($reading_value->value, $reading_model->reading_time,' mm Hg'),
+									'reading_value' => OphCiExamination_Episode_IOPHistory::getFormattedReading($reading_value->value, $reading_model->reading_time,' mm Hg'),
 									'comments' => "N/A"
 								);
 							}
