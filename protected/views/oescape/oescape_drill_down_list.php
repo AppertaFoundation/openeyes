@@ -32,11 +32,9 @@
     </table>
 
 </div>
-<!--TODO <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_csv.js')?>"></script> -->
 
 <script type="text/javascript">
     var iop_plotly_data;
-
 
     // to drill through data from chart
     $('.js-plot-display-label').click(function () {
@@ -51,8 +49,8 @@
         $('#oescape-layout').show();
     });
 
+    //call the initialization for the data here so that it gets called
     InitDrillThroughData();
-    
     
     function DisplayDrillThroughData(id){
         //display relevant content
