@@ -32,10 +32,9 @@
 				//setYTargetLine(layout_iop, marker_line_plotly_options, marking_annotations, IOP_target, side, x_data[0], x_data[x_data.length - 1]);
 			}
 
-			//BEGIN SAMPLE DATA
-
 			var readings = {};
 
+			//Get readings from date
 			for (var data_point of iop_plotly_data[side]) {
 				var timestamp = data_point['timestamp'];
 				if(!readings.hasOwnProperty(timestamp)) {
@@ -50,6 +49,7 @@
 
 			var graph_data = [];
 
+			//Format readings for graph display
 			for (var key in readings) {
 				graph_data[key] = {
 				  'parent_ids': readings[key].map(r => r['id']),
@@ -60,6 +60,8 @@
 					'reading_count': readings[key].length
 				};
       }
+
+			//Create arrays to pass to graph
 			var x = [];
 			var y = [];
 			var event_ids = [];
@@ -86,11 +88,6 @@
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
 				x: x,
 				y: y,
-
-				//x: x_data,
-				//y: iop_plotly_data[side]['y'],
-
-
 				line: {
 					color: (side == 'right') ? '#9fec6d' : '#fe6767',
 				},
@@ -99,7 +96,6 @@
           return OEScape.epochToDateStr(d)
 							+ '<br>IOP(' + side + '): '
 							+ '<br>' + display_data[index];
-          //return item + '<br>IOP(' + side + '): ' + y[index];
 				}),
 				hoverinfo: 'text',
 				hoverlabel: trace_hoverlabel,
@@ -127,6 +123,7 @@
 		listenForClickEvent('plotly-IOP-right');
 		listenForClickEvent('plotly-IOP-left');
 
+		//Click event for drillthrough data display
 		function listenForClickEvent(elementId){
 			var report = document.getElementById(elementId);
 			report.on('plotly_click',function(data){
@@ -145,7 +142,7 @@
 						}
 					}
 				}
-			
+
 			});
 		}
   });
