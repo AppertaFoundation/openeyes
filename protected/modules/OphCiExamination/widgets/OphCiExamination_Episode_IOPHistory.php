@@ -312,9 +312,8 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 									'event_date' => $event->event_date,
 									'eye' => ucfirst($side),
 									'instrument_name' => ExamModels\OphCiExamination_Instrument::model()->findByPk($reading->instrument_id)->name,
-									//'instrument_name' => OphCiPhasing_Instrument::model()->findByPk($iop_element->left_integer_values[0]->instrument_id)->name,
 									'dilated' => "N/A",
-									'reading_value' => ExamModels\OphCiExamination_IntraocularPressure_Reading::model()->findByPk($reading->reading_id)->value,
+									'reading_value' => OphCiExamination_Episode_IOPHistory::getFormattedReading($reading,' mm Hg'),
 									'comments' => "N/A"
 								);
 							}
@@ -345,5 +344,14 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 				}
 
         return $readings_array;
+    }
+
+    static function getFormattedReading($reading, $reading_unit)
+    {
+        $time=date('G:i',strtotime($reading->reading_time));
+        $val = ExamModels\OphCiExamination_IntraocularPressure_Reading::model()->findByPk($reading->reading_id)->value;
+        $return_reading = $time.' - '.  $val .' ' .$reading_unit;
+        
+        return $return_reading;
     }
 }
