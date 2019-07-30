@@ -25,18 +25,18 @@
     <section class="element edit cols-11">
       <div class="element-fields">
 
-          <?php if ($trial->trialType->code === TrialType::INTERVENTION_CODE): ?>
+            <?php if ($trial->trialType->code === TrialType::INTERVENTION_CODE) : ?>
             <div class="alert-box alert with-icon">
               This is an Intervention Trial. Participants of this Trial cannot be accepted into other Intervention
               Trials
             </div>
-          <?php endif; ?>
+            <?php endif; ?>
 
-          <?php if (!$trial->is_open): ?>
+            <?php if (!$trial->is_open) : ?>
             <div class="alert-box alert with-icon">This Trial has been closed. You will need to reopen it before you
               can make any changes.
             </div>
-          <?php endif; ?>
+            <?php endif; ?>
       </div>
     </section>
 
@@ -53,18 +53,18 @@
         <tr class="col-gap">
           <td>Principal Investigator</td>
           <td>
-              <?php $principal_investigators = $trial->getTrialPrincipalInvestigators();
-              foreach ($principal_investigators as $item){
-                echo $item->user->getFullName().'<br>';
-              }
-             ?>
+                <?php $principal_investigators = $trial->getTrialPrincipalInvestigators();
+                foreach ($principal_investigators as $item) {
+                    echo $item->user->getFullName().'<br>';
+                }
+                ?>
           </td>
           <td>Date</td>
           <td>
-              <?= $trial->getStartedDateForDisplay(); ?>
-              <?php if ($trial->started_date !== null): ?>
+                <?= $trial->getStartedDateForDisplay(); ?>
+                <?php if ($trial->started_date !== null) : ?>
                 &mdash; <?= $trial->getClosedDateForDisplay() ?>
-              <?php endif; ?>
+                <?php endif; ?>
           </td>
         </tr>
         <tr>
@@ -73,7 +73,7 @@
                 <?= $trial->getEthicsNumberForDisplay(); ?>
             </td>
         </tr>
-        <?php if ($trial->external_data_link !== ''): ?>
+        <?php if ($trial->external_data_link !== '') : ?>
           <tr class="col-gap">
             <td><?= $trial->getAttributeLabel('external_data_link') ?></td>
             <td>
@@ -82,7 +82,7 @@
             </td>
           </tr>
         <?php endif; ?>
-        <?php if (strlen($trial->description)): ?>
+        <?php if (strlen($trial->description)) : ?>
           <tr class="col-gap">
             <td>Description</td>
             <td colspan="3">
@@ -95,7 +95,7 @@
     </div>
 
 
-      <?php $this->renderPartial('_patientList', array(
+        <?php $this->renderPartial('_patientList', array(
           'trial' => $trial,
           'permission' => $permission,
           'renderTreatmentType' => true,
@@ -104,7 +104,7 @@
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
       )); ?>
-      <?php $this->renderPartial('_patientList', array(
+        <?php $this->renderPartial('_patientList', array(
           'trial' => $trial,
           'permission' => $permission,
           'renderTreatmentType' => false,
@@ -113,7 +113,7 @@
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
       )); ?>
-      <?php $this->renderPartial('_patientList', array(
+        <?php $this->renderPartial('_patientList', array(
           'trial' => $trial,
           'permission' => $permission,
           'renderTreatmentType' => false,

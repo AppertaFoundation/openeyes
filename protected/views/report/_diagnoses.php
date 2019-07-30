@@ -33,7 +33,7 @@
                     No patients were found with the selected search criteria.
                 </td>
             </tr>
-        <?php }else{?>
+        <?php } else {?>
             <?php foreach ($report->diagnoses as $ts => $diagnosis) {
                 foreach ($diagnosis['diagnoses'] as $_diagnosis) { ?>
                     <tr>

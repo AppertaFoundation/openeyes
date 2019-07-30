@@ -40,7 +40,9 @@
   <div class="flex-layout flex-right">
       <span class="js-comment-container cols-full flex-layout"
             id="<?= CHtml::modelName($element) . '_' . $side . '_comment_container' ?>"
-            style="<?php if (!$element->{$side . '_description'}): ?>display: none;<?php endif; ?>"
+            style="<?php if (!$element->{$side . '_description'}) :
+                ?>display: none;<?php
+                   endif; ?>"
             data-comment-button="#<?= CHtml::modelName($element) . '_' . $side . '_comment_button' ?>">
             <?php echo $form->textArea(
                 $element, $side . '_description',
@@ -58,7 +60,9 @@
         id="<?= CHtml::modelName($element) . '_' . $side . '_comment_button' ?>"
         type="button"
         class="button js-add-comments"
-        style="<?php if ($element->{$side . '_description'}): ?>visibility: hidden;<?php endif; ?>"
+        style="<?php if ($element->{$side . '_description'}) :
+            ?>visibility: hidden;<?php
+               endif; ?>"
         data-comment-container="#<?= CHtml::modelName($element) . '_' . $side . '_comment_container' ?>">
       <i class="oe-i comments small-icon"></i>
     </button>

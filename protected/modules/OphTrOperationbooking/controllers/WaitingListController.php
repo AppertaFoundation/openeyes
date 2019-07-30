@@ -141,7 +141,7 @@ class WaitingListController extends BaseModuleController
             $whereParams[':site_id'] = $site_id;
         }
 
-        if($include_on_hold === "1"){
+        if ($include_on_hold === "1") {
             $on_hold_status_id =  OphTrOperationbooking_Operation_Status::model()->find('name = "On-Hold"')->id;
             $on_hold_status_condition = ", " . $on_hold_status_id;
         } else {
@@ -249,7 +249,7 @@ class WaitingListController extends BaseModuleController
     protected function getFilteredFirms($subspecialtyId)
     {
         $criteria = new CDbCriteria();
-        if($subspecialtyId > 0){
+        if ($subspecialtyId > 0) {
             $criteria->addCondition('subspecialty_id = :subspecialtyId');
             $criteria->params[':subspecialtyId'] = $subspecialtyId;
         }
@@ -541,15 +541,14 @@ class WaitingListController extends BaseModuleController
         header('Content-type: application/json');
         $success = true;
 
-        if(!$element = Element_OphTrOperationbooking_Operation::model()->find("event_id = :event_id", array(":event_id" => $event_id)))
-        {
+        if (!$element = Element_OphTrOperationbooking_Operation::model()->find("event_id = :event_id", array(":event_id" => $event_id))) {
             echo CJSON::encode(array('success'=>false, 'This event could not be found.'));
             exit;
         }
 
         $transaction = \Yii::app()->db->beginTransaction();
 
-        try{
+        try {
             $element->status_id = 2; //@TODO: change hardcoded id to a query
             $element->save();
             $message = '';
@@ -567,14 +566,12 @@ class WaitingListController extends BaseModuleController
             $event->episode->save();
 
             $transaction->commit();
-
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $message = $e->getMessage();
 
             \OELog::log($message);
             $transaction->rollback();
             $success = false;
-
         }
 
         echo CJSON::encode(array('success' => $success, 'message' => $message));

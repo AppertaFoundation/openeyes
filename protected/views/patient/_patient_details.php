@@ -47,7 +47,7 @@
                 <td class="data-label"><?= $this->patient->isDeceased() ? "Deceased:" : "Age:" ?></td>
                 <td class="data-value"><?= $this->patient->isDeceased() ? "Yes" : $this->patient->getAge() ?></td>
             </tr>
-            <?php if ($this->patient->isDeceased()):?>
+            <?php if ($this->patient->isDeceased()) :?>
                 <tr class="data-group">
                     <td class="data-label">Date of Death:</td>
                     <td class="data-value"><?= $this->patient->date_of_death ? $this->patient->NHSDate('date_of_death').' (Age '.$this->patient->getAge().')' : "Date of Patient's death unknown." ?></td>

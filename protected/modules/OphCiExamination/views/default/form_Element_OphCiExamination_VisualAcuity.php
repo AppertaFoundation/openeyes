@@ -27,18 +27,18 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
     'id', 'name');
 $key = 0;
 
-if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
+if (isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
     ?>
     <script type="text/javascript">
             var valOptions = <?= CJSON::encode($val_options)?>;
             var OE_patient_firstname = "<?php echo $this->patient->first_name; ?>";
             var OE_patient_lastname = "<?php echo $this->patient->last_name; ?>";
-            var OE_patient_dob = "<?php echo str_replace("-","",$this->patient->dob); ?>";
+            var OE_patient_dob = "<?php echo str_replace("-", "", $this->patient->dob); ?>";
             var OE_patient_address = "<?php echo $this->patient->getSummaryAddress("^"); ?>";
             var OE_patient_gender = "<?php echo $this->patient->gender; ?>";
             var OE_COMPLog_port = <?php echo Yii::app()->params['COMPLog_port']; ?>;
     </script>
-<?php
+    <?php
     Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CompLog.js", CClientScript::POS_END);
 }
 
@@ -46,27 +46,26 @@ if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port
 ?>
 <div class="element-both-eyes">
   <div>
-      <?php if ($element->isNewRecord) { ?>
+        <?php if ($element->isNewRecord) { ?>
           <span class="data-label">VA Scale &nbsp;&nbsp;</span>
             <?=\CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
                 CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
                 model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
                     'id', 'name'), array('class' => 'inline'));
-          if ($element->unit->information) { ?>
+            if ($element->unit->information) { ?>
             <span class="js-has-tooltip fa oe-i info small"
                   data-tooltip-content="<?php echo $element->unit->information ?>"></span>
-          <?php }
-      }
+            <?php }
+        }
 
-      if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0)
-      {
-      ?>
+        if (isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
+            ?>
           <button class="button blue hint" name="complog" id="et_complog">Measure in COMPLog</button>
           <iframe id="complog_launcher" src="" width="0" height="0" style="display:none;">
           </iframe>
-      <?php
-      }
-      ?>
+            <?php
+        }
+        ?>
       </div>
 </div>
 
@@ -82,7 +81,7 @@ if ($cvi_api) {
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
           data-side="<?= $eye_side ?>"
       >
@@ -95,8 +94,8 @@ if ($cvi_api) {
               <tbody>
               <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                   // Adjust currently element readings to match unit steps
-                  $reading->loadClosest($element->unit->id);
-                  $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
+                    $reading->loadClosest($element->unit->id);
+                    $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
                       'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_readings]',
                       'key' => $key,
                       'reading' => $reading,
@@ -105,8 +104,8 @@ if ($cvi_api) {
                       'val_options' => $val_options,
                       'methods' => $methods,
                       'asset_path' => $this->getAssetPathForElement($element),
-                  ));
-                  ++$key;
+                    ));
+                    ++$key;
               } ?>
               </tbody>
             </table>
@@ -228,12 +227,12 @@ Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($bas
 
     OphCiExamination_VisualAcuity_method_ids = [ <?php
         $first = true;
-        foreach ($methods as $index => $method) {
-            if (!$first) {
-                echo ', ';
-            }
-            $first = false;
-            echo $index;
-        } ?> ];
+    foreach ($methods as $index => $method) {
+        if (!$first) {
+            echo ', ';
+        }
+        $first = false;
+        echo $index;
+    } ?> ];
   });
 </script>

@@ -43,7 +43,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
       <span class="medication-display">
         <span class="medication-name">
-          <?= $entry->getMedicationDisplay() ?>
+            <?= $entry->getMedicationDisplay() ?>
         </span>
       </span>
         <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $entry->drug_id ?>"/>

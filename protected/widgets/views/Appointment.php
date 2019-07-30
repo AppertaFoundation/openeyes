@@ -50,7 +50,7 @@
 </table>
 
 <?php if ($past_worklist_patients) { ?>
-    <table class="patient-appointments">
+    <table class="patient-appointments cols-full">
         <colgroup>
             <col class="cols-2">
             <col class="cols-5">
@@ -61,7 +61,7 @@
         <tr>
             <th colspan="2">Past appointments</th>
             <th></th>
-            <th>
+            <th style="text-align: right">
                 <i class="oe-i small pad js-patient-expand-btn expand <?= $pro_theme ?>"></i>
             </th>
         </tr>

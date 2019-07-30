@@ -38,8 +38,8 @@
                                         'showAnim' => 'fold',
                                         'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                                     ),
-                                    'value' => @$_GET['date_from'],
-                                    'htmlOptions' => array('class' => 'inline fixed-width'),
+                                                                        'value' => @$_GET['date_from'],
+                                                                        'htmlOptions' => array('class' => 'inline fixed-width'),
                                 ))?>
                                 <label for="transport_date_to" class="inline align">
                                     To:
@@ -68,19 +68,27 @@
                                         Include:
                                     </legend>
                                     <label class="inline">
-                                        <input type="checkbox" name="include_bookings" id="include_bookings" class="filter" value="1"<?php if (@$_GET['include_bookings']) {?> checked="checked"<?php }?> />
+                                        <input type="checkbox" name="include_bookings" id="include_bookings" class="filter" value="1"<?php if (@$_GET['include_bookings']) {
+                                            ?> checked="checked"<?php
+                                                                                                                                     }?> />
                                         Bookings
                                     </label>
                                     <label class="inline">
-                                        <input type="checkbox" name="include_reschedules" id="include_reschedules" class="filter" value="1"<?php if (@$_GET['include_reschedules']) {?> checked="checked"<?php }?> />
+                                        <input type="checkbox" name="include_reschedules" id="include_reschedules" class="filter" value="1"<?php if (@$_GET['include_reschedules']) {
+                                            ?> checked="checked"<?php
+                                                                                                                                           }?> />
                                         Reschedules
                                     </label>
                                     <label class="inline">
-                                        <input type="checkbox" name="include_cancellations" id="include_cancellations" class="filter" value="1"<?php if (@$_GET['include_cancellations']) {?> checked="checked"<?php }?> />
+                                        <input type="checkbox" name="include_cancellations" id="include_cancellations" class="filter" value="1"<?php if (@$_GET['include_cancellations']) {
+                                            ?> checked="checked"<?php
+                                                                                                                                               }?> />
                                         Cancellations
                                     </label>
                                     <label class="inline">
-                                        <input type="checkbox" name="include_completed" id="include_completed" class="filter" value="1"<?php if (@$_GET['include_completed']) {?> checked="checked"<?php }?> />
+                                        <input type="checkbox" name="include_completed" id="include_completed" class="filter" value="1"<?php if (@$_GET['include_completed']) {
+                                            ?> checked="checked"<?php
+                                                                                                                                       }?> />
                                         Completed
                                     </label>
                                 </fieldset>

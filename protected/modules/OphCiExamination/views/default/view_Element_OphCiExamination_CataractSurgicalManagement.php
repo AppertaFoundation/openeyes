@@ -24,7 +24,7 @@
                     <td scope="row"><?php echo $element->getAttributeLabel('eye_id')?>:</td>
                     <td><?php echo $element->eye ? $element->eye->name : 'Not specified'?></td>
                 </tr>
-        <?php if (isset($active_check) && ($active_check === 'on')):?>
+        <?php if (isset($active_check) && ($active_check === 'on')) :?>
           <tr>
             <td scope="row"><?php echo $element->getAttributeLabel('city_road')?>:</td>
             <td><?php echo $element->city_road ? 'Yes' : 'No'?></td>
@@ -68,11 +68,11 @@
                     </td>
                     <td>
                         <?php
-            if ($element->reasonForSurgery) {
-                foreach ($element->reasonForSurgery as $reason) {
-                    echo $reason->name.'<br />';
-                }
-            }?>
+                        if ($element->reasonForSurgery) {
+                            foreach ($element->reasonForSurgery as $reason) {
+                                echo $reason->name.'<br />';
+                            }
+                        }?>
                     </td>
                 </tr>
             </tbody>

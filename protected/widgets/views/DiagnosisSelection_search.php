@@ -24,7 +24,11 @@
             </label>
         </div>
     <?php }?>
-    <div class="cols-<?php if ($label) { echo $layoutColumns['field']; }else{?>12<?php }?> column end">
+    <div class="cols-<?php if ($label) {
+        echo $layoutColumns['field'];
+                     } else {
+                            ?>12<?php
+                     }?> column end">
         <div class="data-group collapse in flex-layout flex-top">
             <div class="cols-10 column">
                 <div class="dropdown-row">

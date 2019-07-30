@@ -110,13 +110,13 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
             if (($iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure'))) {
                 $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
                 foreach (['left', 'right'] as $side) {
-                    if ($reading = $iop->getReading($side)){
+                    if ($reading = $iop->getReading($side)) {
                         array_push($iop_data_list[$side], array('x'=>$timestamp, 'y'=>(float)$reading));
                     }
                 }
             }
         }
-        foreach (['left', 'right'] as $side){
+        foreach (['left', 'right'] as $side) {
             usort($iop_data_list[$side], function($item1, $item2){
                 if ($item1['x'] == $item2['x']) return 0;
                 return $item1['x'] < $item2['x'] ? -1 : 1;

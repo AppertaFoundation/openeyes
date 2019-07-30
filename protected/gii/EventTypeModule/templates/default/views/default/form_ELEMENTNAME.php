@@ -18,12 +18,12 @@
 
 <div class="element-fields data-group">
 <?php
-        if (isset($element)) {
-            foreach ($element['fields'] as $field) {?>
+if (isset($element)) {
+    foreach ($element['fields'] as $field) {?>
     <div class="field-row">
         <?php echo $this->getHTMLField($field, 'create')."\n"; ?>
     </div>
-<?php }
-        }
-    ?>
+    <?php }
+}
+?>
 </div>

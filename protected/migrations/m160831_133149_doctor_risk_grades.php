@@ -42,7 +42,7 @@ class m160831_133149_doctor_risk_grades extends OEMigration
             'Specialty trainee (year 6)' => '1.6',
         );
 
-        foreach ($values as $grade => $pcrValue){
+        foreach ($values as $grade => $pcrValue) {
             $this->update('doctor_grade', array('pcr_risk_value' => $pcrValue), '`grade` = "'.$grade.'"');
         }
 
@@ -53,7 +53,7 @@ class m160831_133149_doctor_risk_grades extends OEMigration
     public function down()
     {
         $this->dropColumn('doctor_grade', 'pcr_risk_value');
-        foreach ($this->existingPcrGrades as $grade){
+        foreach ($this->existingPcrGrades as $grade) {
             $this->update('doctor_grade', array('has_pcr_risk' => 1), 'grade = "'.$grade.'"');
         }
     }

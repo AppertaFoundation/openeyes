@@ -88,14 +88,14 @@
                 <td><?= $form->textField($session, 'max_complex_bookings', ['nowrapper' => true]); ?></td>
             </tr>
             <?php $current = $session->getBookedProcedureCount();
-                if($current) { ?>
+            if ($current) { ?>
                     <tr class = "<?= $session->isProcedureCountLimited() && $current > $session->getMaxProcedureCount() ? "alert-box alert" : "" ?>">
                         <td>Current Booked Procedures</td>
                         <td>
                             <div class="field-value" id="current-proc-count"><?= $current ?></div>
                         </td>
                     </tr>
-                <?php }
+            <?php }
             ?>
 
             <?php $boolean_fields = ['consultant', 'paediatric', 'anaesthetist', 'general_anaesthetic', 'available'];
@@ -106,7 +106,9 @@
                 </tr>
             <?php endforeach; ?>
 
-            <tr id="unavailablereason_id_wrapper" <?php if ($session->available) {?> style="display: none;"<?php } ?> >
+            <tr id="unavailablereason_id_wrapper" <?php if ($session->available) {
+                ?> style="display: none;"<?php
+                                                  } ?> >
                 <td>
                     <label for="OphTrOperationbooking_Operation_Session_unavailablereason_id"><?= $session->getAttributeLabel('unavailablereason_id'); ?>:</label>
                 </td>

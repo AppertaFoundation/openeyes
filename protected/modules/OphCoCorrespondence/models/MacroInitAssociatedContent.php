@@ -107,19 +107,19 @@ class MacroInitAssociatedContent extends BaseActiveRecord
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id,true);
-        $criteria->compare('macro_id',$this->macro_id,true);
-        $criteria->compare('is_system_hidden',$this->is_system_hidden);
-        $criteria->compare('is_print_appended',$this->is_print_appended);
-        $criteria->compare('init_method_id',$this->init_method_id,true);
-        $criteria->compare('init_protected_file_id',$this->init_protected_file_id,true);
-        $criteria->compare('short_code',$this->short_code,true);
-        $criteria->compare('display_order',$this->display_order);
-        $criteria->compare('display_title',$this->display_title,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('macro_id', $this->macro_id, true);
+        $criteria->compare('is_system_hidden', $this->is_system_hidden);
+        $criteria->compare('is_print_appended', $this->is_print_appended);
+        $criteria->compare('init_method_id', $this->init_method_id, true);
+        $criteria->compare('init_protected_file_id', $this->init_protected_file_id, true);
+        $criteria->compare('short_code', $this->short_code, true);
+        $criteria->compare('display_order', $this->display_order);
+        $criteria->compare('display_title', $this->display_title, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -132,7 +132,7 @@ class MacroInitAssociatedContent extends BaseActiveRecord
      * @param string $className active record class name.
      * @return MacroInitAssociatedContent the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

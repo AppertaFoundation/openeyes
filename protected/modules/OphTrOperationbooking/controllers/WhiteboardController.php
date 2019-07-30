@@ -57,7 +57,7 @@ class WhiteboardController extends BaseDashboardController
     {
         $id = Yii::app()->request->getParam('id');
         $whiteboard = OphTrOperationbooking_Whiteboard::model()->with('booking')->findByAttributes(array('event_id' => $id));
-        if($whiteboard){
+        if ($whiteboard) {
             $this->setWhiteboard($whiteboard);
         }
 
@@ -103,9 +103,9 @@ class WhiteboardController extends BaseDashboardController
     {
         $whiteboard = $this->getWhiteboard();
 
-        if( (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) ||
+        if ( (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) ||
             ($whiteboard->booking->status->name === 'Completed' && $this->extendedEditablePeriod())
-        ){
+        ) {
             return true;
         }
     }
@@ -115,12 +115,12 @@ class WhiteboardController extends BaseDashboardController
         $whiteboard = $this->getWhiteboard();
 
         $window = 0;
-        if (isset(\Yii::app()->params['refresh_after_opbooking_completed'])){
+        if (isset(\Yii::app()->params['refresh_after_opbooking_completed'])) {
             $window = \Yii::app()->params['refresh_after_opbooking_completed'] ? \Yii::app()->params['refresh_after_opbooking_completed'] : 0;
         }
 
         // Older bookings have no operation_completion_date, those will not be refreshable
-        if(!$window || ($window <= 0) || !is_numeric($window) || !$whiteboard->booking->operation_completion_date){
+        if (!$window || ($window <= 0) || !is_numeric($window) || !$whiteboard->booking->operation_completion_date) {
             return false;
         }
 
@@ -154,8 +154,7 @@ class WhiteboardController extends BaseDashboardController
         }
         $this->setWhiteboard($whiteboard);
 
-        if (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed)
-        {
+        if (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) {
             $whiteboard->loadData($id);
         }
 
@@ -166,7 +165,7 @@ class WhiteboardController extends BaseDashboardController
      * Reload the data for the whiteboard.
      *
      * If the data is wrong we can reload it and update the database.
-     * 
+     *
      * @param $id
      *
      * @throws CException
@@ -230,15 +229,15 @@ class WhiteboardController extends BaseDashboardController
         }
 
         $savable = array('comments', 'predicted_additional_equipment');
-        foreach($savable as $toSave){
-            if( isset($_POST[$toSave])){
+        foreach ($savable as $toSave) {
+            if ( isset($_POST[$toSave])) {
                 $whiteboard->$toSave = $_POST[$toSave];
             }
         }
 
         $whiteboard->save();
 
-        if(Yii::app()->request->isAjaxRequest){
+        if (Yii::app()->request->isAjaxRequest) {
             $this->renderJSON(array('success' => true));
         } else {
             $this->redirect('/OphTrOperationbooking/whiteboard/view/'.$id);

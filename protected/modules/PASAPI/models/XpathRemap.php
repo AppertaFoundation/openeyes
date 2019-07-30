@@ -58,7 +58,7 @@ class XpathRemap extends \BaseActiveRecordVersioned
         'values' => array(self::HAS_MANY, '\OEModule\PASAPI\models\RemapValue', 'xpath_id'),
         'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
         'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-    );
+        );
     }
 
     /**
@@ -69,7 +69,7 @@ class XpathRemap extends \BaseActiveRecordVersioned
         return array(
         'xpath' => 'XPath',
         'name' => 'Name',
-    );
+        );
     }
 
     /**
