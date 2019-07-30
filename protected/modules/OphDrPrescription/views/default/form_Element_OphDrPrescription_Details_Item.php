@@ -77,7 +77,7 @@
       <?=\CHtml::textField('Element_OphDrPrescription_Details[items][' . $key . '][dose]', $item->dose,
           array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)) ?>
       <span><?php echo $item->dose_unit_term ?></span>
-      <input type="hidden" name="'Element_OphDrPrescription_Details[items]['<?=$key?>'][dose_unit_term]" value="<?php echo $item->dose_unit_term ?>" />
+      <input type="hidden" name="Element_OphDrPrescription_Details[items][<?=$key?>][dose_unit_term]" value="<?php echo $item->dose_unit_term ?>" />
   </td>
   <td>
       <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][route_id]', $item->route_id,
