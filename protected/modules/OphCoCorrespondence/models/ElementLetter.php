@@ -993,9 +993,7 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($print_target_id) {
-                        if ($target->ToCc == 'To' && in_array($target->id, $print_target_id)) {
-                            return $target->contact_name . "\n" . $target->address;
-                        } else if ($target->ToCc == 'Cc' && in_array($target->id, $print_target_id)) {
+                        if (in_array($target->ToCc, ['To', 'Cc']) && in_array($target->id, $print_target_id)) {
                             return $target->contact_name . "\n" . $target->address;
                         }
                     } else {
