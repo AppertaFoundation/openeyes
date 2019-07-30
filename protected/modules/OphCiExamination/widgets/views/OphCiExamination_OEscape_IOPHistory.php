@@ -56,7 +56,8 @@
 					'timestamp': key,
 					'minimum': Math.min(...readings[key].map(r => r['reading'])),
 					'average': readings[key].map(r => r['reading']).reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
-					'maximum': Math.max(...readings[key].map(r => r['reading']))
+					'maximum': Math.max(...readings[key].map(r => r['reading'])),
+					'reading_count': readings[key].length
 				};
       }
 			var x = [];
@@ -64,6 +65,7 @@
 			var event_ids = [];
 			var error_array = [];
 			var error_minus = [];
+			var display_data = [];
 
 			var i = 0;
 			for(key in graph_data) {
@@ -72,8 +74,16 @@
           event_ids[i] = graph_data[key]['parent_ids'];
           error_array[i] = graph_data[key]['maximum'] - graph_data[key]['minimum'];
           error_minus[i] = graph_data[key]['average'] - graph_data[key]['minimum'];
+          display_data[i] =
+							'Maximum: ' + graph_data[key]['maximum'].toString() + '<br>'
+							+ 'Average: ' + graph_data[key]['average'].toString() + '<br>'
+							+ 'Minimum: ' + graph_data[key]['minimum'].toString() + '<br>'
+							+ 'Readings: ' + graph_data[key]['reading_count'].toString();
           i++;
       }
+
+			console.log(display_data);
+
 			var data = [{
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
 				x: x,
@@ -88,7 +98,9 @@
 				},
 				text: x.map(function (item, index) {
 				 	var d = new Date(parseInt(item));
-          return OEScape.epochToDateStr(d) + '<br>IOP(' + side + '): ' + y[index];
+          return OEScape.epochToDateStr(d)
+							+ '<br>IOP(' + side + '): '
+							+ '<br>' + display_data[index];
           //return item + '<br>IOP(' + side + '): ' + y[index];
 				}),
 				hoverinfo: 'text',
@@ -119,9 +131,9 @@
           for(var i=0; i < data.points.length; i++){
               if (data.points[i].customdata){
 				$('.analytics-patient-list').show();
-				$('#js-back-to-chart').show();      
+				$('#js-back-to-chart').show();
 				$('#oescape-layout').hide();
-				
+
 				$('.event_rows').hide();
 				  var showlist = data.points[i].customdata;
                   for (var j=0; j<showlist.length; j++){
