@@ -291,7 +291,7 @@ $(document).ready(function() {
         }
 
         // ajax call to create php cookie
-        $.get(baseUrl + '/OphCoCorrespondence/Default/savePrint?event_id='+OE_event_id, function(response){
+        $.get(baseUrl + '/OphCoCorrespondence/Default/savePrint?event_id='+OE_event_id, function(){
             $('#'+event_form ).submit();
         });
     });

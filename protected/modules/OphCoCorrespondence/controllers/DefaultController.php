@@ -1011,7 +1011,7 @@ class DefaultController extends BaseEventTypeController
         $cookies['savePrint'] = new CHttpCookie('savePrint', $event_id, [
             'expire' => strtotime('+20 seconds')
         ]);
-        if ($cookies->contains('savePrint')){
+        if ($cookies->contains('savePrint')) {
             echo 'ok';
         } else {
             echo 'failed to created print cookie';

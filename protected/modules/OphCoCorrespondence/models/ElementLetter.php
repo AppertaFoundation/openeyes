@@ -982,22 +982,22 @@ class ElementLetter extends BaseEventTypeElement
     {
         $print_target_id = [];
         $print_output = $this->getOutputByType();
-        if ($print_output){
+        if ($print_output) {
             foreach ($print_output as $print_target) {
                 $print_target_id[] = $print_target->document_target_id;
             }
         }
-        
+
         if($this->document_instance && $this->document_instance[0]->document_target) {
 
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
-                    if($print_target_id){
+                    if ($print_target_id) {
                         if ($target->ToCc == 'To' && in_array($target->id, $print_target_id)) {
                             return $target->contact_name . "\n" . $target->address;
                         } else if ($target->ToCc == 'Cc' && in_array($target->id, $print_target_id)) {
                             return $target->contact_name . "\n" . $target->address;
-                        }                        
+                        }
                     } else {
                         if ($target->ToCc == 'To') {
                             return $target->contact_name . "\n" . $target->address;
@@ -1109,7 +1109,7 @@ class ElementLetter extends BaseEventTypeElement
         $cookies = Yii::app()->request->cookies;
         $print_output = $this->getOutputByType();
         $additional_print_info = (count($print_output) > 1 ? '&all=1' : '');
-        if ($cookies->contains('savePrint')){
+        if ($cookies->contains('savePrint')) {
             if (!$this->draft && $print_output) {
                 return "1".$additional_print_info;
             }
