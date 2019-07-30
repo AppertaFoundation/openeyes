@@ -32,8 +32,6 @@
 				//setYTargetLine(layout_iop, marker_line_plotly_options, marking_annotations, IOP_target, side, x_data[0], x_data[x_data.length - 1]);
 			}
 
-			//BEGIN SAMPLE DATA
-
 			var readings = {};
 
 			for (var data_point of iop_plotly_data[side]) {
@@ -86,11 +84,6 @@
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
 				x: x,
 				y: y,
-
-				//x: x_data,
-				//y: iop_plotly_data[side]['y'],
-
-
 				line: {
 					color: (side == 'right') ? '#9fec6d' : '#fe6767',
 				},
@@ -99,7 +92,6 @@
           return OEScape.epochToDateStr(d)
 							+ '<br>IOP(' + side + '): '
 							+ '<br>' + display_data[index];
-          //return item + '<br>IOP(' + side + '): ' + y[index];
 				}),
 				hoverinfo: 'text',
 				hoverlabel: trace_hoverlabel,
@@ -145,7 +137,7 @@
 						}
 					}
 				}
-			
+
 			});
 		}
   });

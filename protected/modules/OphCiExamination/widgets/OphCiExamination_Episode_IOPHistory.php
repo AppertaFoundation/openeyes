@@ -133,7 +133,6 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
             'right' => array(),
         );
 
-      //  $exam_events = Event::model()->getEventsOfTypeForPatient($this->event_type, $this->patient);
 			$exam_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Examination")), $this->patient);
 			$phasing_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Phasing")), $this->patient);
 
