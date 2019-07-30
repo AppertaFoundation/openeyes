@@ -188,23 +188,6 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
         }
 
         return $return_readings;
-    }  
-    
-    public function getReadingsWithTime($side)
-    {
-    	$return_readings = array();
-
-        if (!$values = $this->{"{$side}_integer_values"}) {
-            return;
-        }
-
-        foreach($values as $value) {
-            if($value->reading) {
-				$return_readings[] = date('G:i',strtotime($value->reading_time)).' - '. $value->reading->value. ' mm Hg';
-            }
-        }
-
-        return $return_readings;
     }
 
     public function getReading($side)

@@ -34,6 +34,7 @@
 
 			var readings = {};
 
+			//Get readings from date
 			for (var data_point of iop_plotly_data[side]) {
 				var timestamp = data_point['timestamp'];
 				if(!readings.hasOwnProperty(timestamp)) {
@@ -48,6 +49,7 @@
 
 			var graph_data = [];
 
+			//Format readings for graph display
 			for (var key in readings) {
 				graph_data[key] = {
 				  'parent_ids': readings[key].map(r => r['id']),
@@ -58,6 +60,8 @@
 					'reading_count': readings[key].length
 				};
       }
+
+			//Create arrays to pass to graph
 			var x = [];
 			var y = [];
 			var event_ids = [];
@@ -119,6 +123,7 @@
 		listenForClickEvent('plotly-IOP-right');
 		listenForClickEvent('plotly-IOP-left');
 
+		//Click event for drillthrough data display
 		function listenForClickEvent(elementId){
 			var report = document.getElementById(elementId);
 			report.on('plotly_click',function(data){
