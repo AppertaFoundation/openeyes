@@ -12,7 +12,7 @@ class m160915_093448_add_document_management_tables extends OEMigration
             'allowChangeRecipients' => 'tinyint(4) NOT NULL DEFAULT 1',
             'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
             'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
-        ),true);
+        ), true);
 
         $this->createOETable('document_instance', array(
             'id' => 'pk',
@@ -20,7 +20,7 @@ class m160915_093448_add_document_management_tables extends OEMigration
             'correspondence_event_id' => 'int(10) unsigned NOT NULL',
             'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
             'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
-        ),true);
+        ), true);
 
         $this->createOETable('document_instance_data', array(
             'id' => 'pk',

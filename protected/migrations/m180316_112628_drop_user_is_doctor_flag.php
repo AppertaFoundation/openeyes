@@ -4,8 +4,8 @@ class m180316_112628_drop_user_is_doctor_flag extends \OEMigration
 {
     public function up()
     {
-        $this->dropColumn('user','is_doctor');
-        $this->dropColumn('user_version','is_doctor');
+        $this->dropColumn('user', 'is_doctor');
+        $this->dropColumn('user_version', 'is_doctor');
     }
 
     public function down()

@@ -13,6 +13,6 @@ class m170310_113752_add_column_to_letter_type_and_add_internal_ref extends OEMi
     {
         $this->dropColumn('ophcocorrespondence_letter_type', 'is_active');
         $this->dropTable('ophcocorrespondence_letter_type_version');
-        $this->delete('ophcocorrespondence_letter_type','name = :name',array('name' => 'Internal Referral'));
+        $this->delete('ophcocorrespondence_letter_type', 'name = :name', array('name' => 'Internal Referral'));
     }
 }

@@ -37,7 +37,7 @@ class m170704_235811_add_trial_roles extends OEMigration
 
         $this->delete('authassignment', 'itemname = "' . self::VIEW_TRIALS_ROLE . '"');
 
-        $this->delete('authitemchild','parent = "' . self::VIEW_TRIALS_ROLE . '"');
+        $this->delete('authitemchild', 'parent = "' . self::VIEW_TRIALS_ROLE . '"');
         $this->delete('authitem', 'name = "' . self::VIEW_TRIALS_TASK . '"');
         $this->delete('authitem', 'name = "' . self::VIEW_TRIALS_ROLE . '"');
     }

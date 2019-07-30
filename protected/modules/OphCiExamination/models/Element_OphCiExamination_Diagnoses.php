@@ -174,7 +174,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 };
             }
             if ($u_disorder['principal']) {
-                $this->event->episode->setPrincipalDiagnosis($u_disorder['disorder_id'], $u_disorder['eye_id'] ,  $u_disorder['date']);
+                $this->event->episode->setPrincipalDiagnosis($u_disorder['disorder_id'], $u_disorder['eye_id'], $u_disorder['date']);
             } else {
                 //add a secondary diagnosis
                 // Note that this may be creating duplicate diagnoses, but that is okay as the dates on them will differ
@@ -329,7 +329,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         <table class="standard">
             <tbody>
             <?php
-            foreach ($table_vals as $val):?>
+            foreach ($table_vals as $val) :?>
                 <tr>
                     <td><?= $val['date'] ?></td>
                     <td><?= @$val['principal'] ? 'Principal: ' : '' ?><?= $val['laterality'] . $val['term'] ?></td>
@@ -427,7 +427,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 }
 
                 $term = isset($diagnosis->disorder)  ? $diagnosis->disorder->term : "($key)";
-                if(!$diagnosis->eye_id){
+                if (!$diagnosis->eye_id) {
                     // without this OE tries to perform a save / or at least run the saveComplexAttributes_Element_OphCiExamination_Diagnoses()
                     // where we need to have an eye_id - probably this need further investigation and refactor
                     $this->addError('diagnoses', $term . ': Eye is required');

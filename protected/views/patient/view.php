@@ -45,9 +45,10 @@ $warnings = $this->patient->getWarnings($clinical);
 
         <?php if ($warnings) { ?>
       <div class="alert-box patient with-icon">
-          <?php foreach ($warnings as $warn) {?>
+            <?php foreach ($warnings as $warn) {?>
             <strong><?= $warn['long_msg']; ?></strong>
-            - <?= $warn['details']; }?>
+            - <?= $warn['details'];
+            }?>
       </div>
         <?php }?>
 
@@ -55,7 +56,7 @@ $warnings = $this->patient->getWarnings($clinical);
         </div>
     <div class="patient-content flex-layout flex-top col-gap-small">
     <div class="cols-half">
-            <?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])): ?>
+            <?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])) : ?>
                 <section class="element patient-info">
                     <div class="data-group">
                         <?php $last_updated = strtotime($this->patient->last_modified_date) ?>
@@ -78,7 +79,7 @@ $warnings = $this->patient->getWarnings($clinical);
             <?php $this->renderModulePartials('patient_summary_column1')?>
     </div>
     <div class="cols-half" id="patient-summary-form-container">
-        <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
+        <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')) : ?>
           <section class="element view full patient-info internalreferral internalreferral-doclist">
               <?=\CHtml::link('View patient referrals', $component->generateUrlForDocumentList($this->patient)); ?>
             <i class="spinner" title="Loading..." style="display: none;"></i>

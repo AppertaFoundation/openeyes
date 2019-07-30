@@ -41,9 +41,9 @@
     </tbody>
   </table>
 
-  <?= \OEHtml::submitButton() ?>
+    <?= \OEHtml::submitButton() ?>
 
-  <?= \OEHtml::cancelButton("Cancel", [
+    <?= \OEHtml::cancelButton("Cancel", [
     'data-uri' => '/OphCiExamination/admin/Drug/dilationDrugs',
   ]) ?>
 

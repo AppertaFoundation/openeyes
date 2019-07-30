@@ -41,5 +41,5 @@
         ));
 
         $this->endWidget();
-    ?>
+        ?>
 </div>

@@ -26,7 +26,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($dataProvided as $practice): ?>
+                <?php foreach ($dataProvided as $practice) : ?>
                     <tr id="r<?php echo $practice->id; ?>" class="clickable">
                         <td><?php echo CHtml::encode($practice->contact->getFullName()); ?></td>
                         <td><?php echo CHtml::encode($practice->getAddressLines()); ?></td>
@@ -37,7 +37,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 </tbody>
                 <tfoot class="pagination-container">
                 <tr>
-                    <?php if (Yii::app()->user->checkAccess('TaskCreatePractice')): ?>
+                    <?php if (Yii::app()->user->checkAccess('TaskCreatePractice')) : ?>
                     <td>
                         <a href="<?=$this->createUrl('/practice/create')?>">
                         <button class="button hint green">

@@ -171,7 +171,7 @@ class DocmanController extends BaseController
             $contact_nickname = $contact->nick_name;
         }
         
-        if($address){
+        if ($address) {
             $address = implode("\n", $address->getLetterArray());
         }
 
@@ -179,10 +179,10 @@ class DocmanController extends BaseController
         $this->renderPartial(
             '/docman/document_row_recipient',
             array(
-                'contact_id' => $contact_id, 
-                'address' => $address, 
-                'row_index' => $last_row_index + 1, 
-                'selected_contact_type' => $selected_contact_type, 
+                'contact_id' => $contact_id,
+                'address' => $address,
+                'row_index' => $last_row_index + 1,
+                'selected_contact_type' => $selected_contact_type,
                 'contact_name' => $contact_name,
                 'contact_nickname' => $contact_nickname,
                 'can_send_electronically' => isset($patient->gp) || isset($patient->practice),

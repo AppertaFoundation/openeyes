@@ -134,9 +134,8 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $data->leftJoin("document_target", "document_instance.id = document_target.document_instance_id");
         $data->leftJoin("document_output", "document_target.id = document_output.document_target_id");
 
-        if($this->statuses) {
-
-            if( in_array('DRAFT', $this->statuses) ){
+        if ($this->statuses) {
+            if ( in_array('DRAFT', $this->statuses) ) {
                 $data->andWhere(['or', 'l.draft = 1', ['in', 'document_output.output_status', $this->statuses] ]);
             } else {
                 $data->andWhere(['in', 'document_output.output_status', $this->statuses]);
@@ -190,7 +189,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 
         $data->leftJoin("{$letter_table[0]} {$letter_table[1]}", "{$letter_table[1]}.event_id = e.id");
 
-        if($type == 'Correspondence'  ){
+        if ($type == 'Correspondence'  ) {
             $clause = "({$letter_table[1]}.id is not null and e.event_type_id = :et_{$letter_table[1]}_id ";
             $where_params[":et_{$letter_table[1]}_id"] = $et->id;
         } else {
@@ -211,12 +210,11 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         }
 
         //If user does NOT have the RBAC role 'Report' then select the current user
-        if( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
+        if ( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ) {
             $this->author_id = Yii::app()->user->id;
         }
 
         if ($this->author_id) {
-
             if (!$author = User::model()->findByPk($this->author_id)) {
                 throw new Exception("User not found: $this->author_id");
             }

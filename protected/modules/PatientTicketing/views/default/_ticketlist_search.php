@@ -156,7 +156,7 @@
             <td></td>
             <td style="padding-top:0px" id="patient-result-wrapper">
                 <ul id="patient-result-list" class="oe-multi-select inline">
-                    <?php foreach($patients as $patient): ?>
+                    <?php foreach ($patients as $patient) : ?>
                         <li data-patient_id="<?=$patient->id?>">
                             <?="{$patient->first_name} {$patient->last_name} ({$patient->hos_num})"?>
                             <i class="oe-i remove-circle small-icon pad-left"></i>

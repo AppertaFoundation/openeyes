@@ -21,23 +21,27 @@
 <?php if (@$htmlOptions['nowrapper']) {?>
     <?=\CHtml::textField($name, $value, $htmlOptions)?>
 <?php } else {?>
-    <div id="div_<?=\CHtml::modelName($element)?>_<?php echo $field?>" class="data-group"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
+    <div id="div_<?=\CHtml::modelName($element)?>_<?php echo $field?>" class="data-group"<?php if (@$htmlOptions['hide']) {
+        ?> style="display: none;"<?php
+                 }?>>
         <div class="cols-<?php echo $layoutColumns['label'];?> column">
             <?php
             $labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
-    $labelText .= ':';
-    echo Chtml::label($labelText, Chtml::getIdByName($name));
-    ?>
+            $labelText .= ':';
+            echo Chtml::label($labelText, Chtml::getIdByName($name));
+            ?>
         </div>
-        <div class="cols-<?php echo $layoutColumns['field'];?> column<?php if(empty($htmlOptions['append-text']) || empty($layoutColumns['append-text'])){?> end<?php }?>">
+        <div class="cols-<?php echo $layoutColumns['field'];?> column<?php if (empty($htmlOptions['append-text']) || empty($layoutColumns['append-text'])) {
+            ?> end<?php
+                         }?>">
             <?=\CHtml::textField($name, $value, $htmlOptions)?>
             <?php if (!empty($links)) {
-    foreach ($links as $link) {
-        echo '<span class="field-info">'.CHtml::link($link['title'], $link['href'], array('id' => $link['id'])).'</span>';
-    }
+                foreach ($links as $link) {
+                    echo '<span class="field-info">'.CHtml::link($link['title'], $link['href'], array('id' => $link['id'])).'</span>';
+                }
             }?>
         </div>
-        <?php if(!empty($htmlOptions['append-text']) && !empty($layoutColumns['append-text'])){?>
+        <?php if (!empty($htmlOptions['append-text']) && !empty($layoutColumns['append-text'])) {?>
             <div class="large-<?php echo $layoutColumns['append-text'];?> column collapse in end">
                 <span class="field-info"><?php echo $htmlOptions['append-text'];?></span>
             </div>

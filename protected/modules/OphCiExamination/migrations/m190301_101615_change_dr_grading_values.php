@@ -25,11 +25,11 @@ class m190301_101615_change_dr_grading_values extends CDbMigration
     public function safeUp()
     {
         // switch all "M1S" values to "M1A"
-        $this->update($this->drgrading_table,array('left_nscmaculopathy_id' => $this->get_M1A('id')),'left_nscmaculopathy_id=:id', array(':id'=>$this->get_M1S('id')));
-        $this->update($this->drgrading_table,array('right_nscmaculopathy_id' => $this->get_M1A('id')),'right_nscmaculopathy_id=:id', array(':id'=>$this->get_M1S('id')));
+        $this->update($this->drgrading_table, array('left_nscmaculopathy_id' => $this->get_M1A('id')), 'left_nscmaculopathy_id=:id', array(':id'=>$this->get_M1S('id')));
+        $this->update($this->drgrading_table, array('right_nscmaculopathy_id' => $this->get_M1A('id')), 'right_nscmaculopathy_id=:id', array(':id'=>$this->get_M1S('id')));
 
         // Rename "M1A" to "M1"
-        $this->update($this->maculopathy_table,array('name' => 'M1'),'id = :id', array(':id' => $this->get_M1A('id'))); // won't update on :name
+        $this->update($this->maculopathy_table, array('name' => 'M1'), 'id = :id', array(':id' => $this->get_M1A('id'))); // won't update on :name
         
         // Delete the "M1S" value
         $this->delete($this->maculopathy_table, 'id=:id', array(':id' => $this->get_M1S('id')));
@@ -48,9 +48,9 @@ class m190301_101615_change_dr_grading_values extends CDbMigration
             'active' => 1,
         ));
 
-        $this->update($this->maculopathy_table,array('name' => 'M1A'),'id = :id', array(':id' => 2));
+        $this->update($this->maculopathy_table, array('name' => 'M1A'), 'id = :id', array(':id' => 2));
 
-        $this->update($this->drgrading_table,array('left_nscmaculopathy_id' => 3),'left_nscmaculopathy_id=:id', array(':id'=>2));
-        $this->update($this->drgrading_table,array('right_nscmaculopathy_id' => 3),'right_nscmaculopathy_id=:id', array(':id'=>2));
+        $this->update($this->drgrading_table, array('left_nscmaculopathy_id' => 3), 'left_nscmaculopathy_id=:id', array(':id'=>2));
+        $this->update($this->drgrading_table, array('right_nscmaculopathy_id' => 3), 'right_nscmaculopathy_id=:id', array(':id'=>2));
     }
 }

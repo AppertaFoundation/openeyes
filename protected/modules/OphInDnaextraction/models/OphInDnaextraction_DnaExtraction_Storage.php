@@ -62,7 +62,7 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
 
         $this->setLetterRange( $boxRanges['maxletter'] );
 
-        if( !in_array($this->letter, $this->letterRange) ){
+        if ( !in_array($this->letter, $this->letterRange) ) {
             $this->addError($attribute, 'This letter is larger than maximum value.');
         }
     }
@@ -79,7 +79,7 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
         
         $this->setNumberRange( $boxRanges['maxnumber'] );
         
-        if( !in_array($this->number, $this->numberRange) ){
+        if ( !in_array($this->number, $this->numberRange) ) {
             $this->addError($attribute, 'This number is larger than maximum value.');
         }
     }
@@ -87,7 +87,7 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
     /*
      * Available storage in admin
      */
-    public function availabeStorage( $attribute, $params )
+    public function availabeStorage($attribute, $params)
     {
         $availabeStorage = Yii::app()->db->createCommand()
             ->select('id')
@@ -95,8 +95,8 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
             ->where('box_id =:box_id and letter =:letter and number =:number', array(':box_id' => $this->box_id, ':letter' => $this->letter, ':number' => $this->number))
             ->queryScalar();
         
-        if($availabeStorage){
-          $this->addError('Box', 'These parameters are already in use.');
+        if ($availabeStorage) {
+            $this->addError('Box', 'These parameters are already in use.');
         }
     }
 
@@ -133,48 +133,48 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
     
     protected function beforeDelete(){
        
-        if($this->extraction != NULL){
-           return FALSE;
-        }     
+        if ($this->extraction != NULL) {
+            return FALSE;
+        }
         return parent::beforeDelete();
     }
     
     /*
-     * Set letter range 
+     * Set letter range
      */
-    protected function setLetterRange( $maxletter )
+    protected function setLetterRange($maxletter)
     {
-        $this->letterRange = range('A' , $maxletter);
+        $this->letterRange = range('A', $maxletter);
     }
     
     /*
-     * Set number range 
+     * Set number range
      */
-    protected function setNumberRange( $maxnumber )
+    protected function setNumberRange($maxnumber)
     {
-        $this->numberRange = range('1' , $maxnumber);
+        $this->numberRange = range('1', $maxnumber);
     }
     
-    public function generateLetterArrays( $box_id,  $maxletter , $maxnumber)
+    public function generateLetterArrays($box_id, $maxletter, $maxnumber)
     {
         $this->setLetterRange($maxletter);
         $this->setNumberRange($maxnumber);
         
         $result = array();
         $i = 0;
-        foreach($this->letterRange as $letter){
-            foreach($this->numberRange as $number){
-                $result[$i]['box_id'] = $box_id; 
-                $result[$i]['letter'] = $letter; 
-                $result[$i]['number'] = $number; 
+        foreach ($this->letterRange as $letter) {
+            foreach ($this->numberRange as $number) {
+                $result[$i]['box_id'] = $box_id;
+                $result[$i]['letter'] = $letter;
+                $result[$i]['number'] = $number;
                 
                 $i++;
             }
-        }        
+        }
         return $result;
     }
     
-    public function getAllLetterNumberToBox( $boxid )
+    public function getAllLetterNumberToBox($boxid)
     {
          $boxes = Yii::app()->db->createCommand()
             ->select('box_id, letter, number')
@@ -187,24 +187,23 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
     }
     
     
-    public function getAvailableCombinedList( $id = NULL)
+    public function getAvailableCombinedList($id = NULL)
     {
         //if id not exits, it means event is create, so we need only available box - letter - number combinations
-        if( $id == NULL){
+        if ( $id == NULL) {
             $getAvailableBoxes = Yii::app()->db->createCommand()
                 ->select("opaddress.id, CONCAT(opbox.value,' - ',opaddress.letter,' - ',opaddress.number ) AS value")
                 ->from('ophindnaextraction_storage_address opaddress')
-                ->join('ophindnaextraction_dnaextraction_box opbox','opaddress.box_id = opbox.id' )
+                ->join('ophindnaextraction_dnaextraction_box opbox', 'opaddress.box_id = opbox.id' )
                 ->where('opaddress.id NOT IN (SELECT storage_id FROM et_ophindnaextraction_dnaextraction WHERE id IS NOT NULL) ')
                 ->order('opbox.value ASC, opaddress.letter ASC, opaddress.number ASC')
                 ->queryAll();
         } else {
-
             //We need available boxes - letters - numbers combinations and the stored row
             $getAvailableBoxes = Yii::app()->db->createCommand()
                 ->select("opaddress.id, CONCAT(opbox.value,' - ',opaddress.letter,' - ',opaddress.number ) AS value")
                 ->from('ophindnaextraction_storage_address opaddress')
-                ->join('ophindnaextraction_dnaextraction_box opbox','opaddress.box_id = opbox.id' )
+                ->join('ophindnaextraction_dnaextraction_box opbox', 'opaddress.box_id = opbox.id' )
                 ->where('opaddress.id NOT IN (SELECT storage_id FROM et_ophindnaextraction_dnaextraction WHERE storage_id != '.$id.') ')
                 ->order('opbox.value ASC, opaddress.letter ASC, opaddress.number ASC')
                 ->queryAll();

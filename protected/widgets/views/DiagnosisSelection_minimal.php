@@ -20,7 +20,9 @@
 
 <?php if (!$nowrapper) {?>
     <div class="data-group diagnosis-selection">
-        <div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+        <div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {
+            ?> hide<?php
+                         }?>">
             <label for="<?php echo $class_field;?>">Diagnosis:</label>
         </div>
         <div class="cols-<?php echo $layoutColumns['field'];?> column end">
@@ -58,7 +60,9 @@
         <?php if (!$nowrapper) {?>
             <div id="div_<?php echo "{$class_field}_secondary_to"?>" class="data-group hidden">
                 <?php if (!$nowrapper) {?>
-                    <div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+                    <div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {
+                        ?> hide<?php
+                                     }?>">
                         <label for="<?php echo "{$class_field}_secondary_to";?>">Associated diagnosis:</label>
                     </div>
                 <?php }?>
@@ -74,7 +78,9 @@
     <?php if (!$nowrapper) {?>
         <div class="data-group">
             <?php if (!$nowrapper) {?>
-                <div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+                <div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {
+                    ?> hide<?php
+                                 }?>">
                     <label></label>
                 </div>
             <?php }?>

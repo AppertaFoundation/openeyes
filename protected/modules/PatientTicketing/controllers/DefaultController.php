@@ -234,7 +234,7 @@ class DefaultController extends \BaseModuleController
         $cat_id = Yii::app()->request->getParam('cat_id');
         $qs_id = Yii::app()->request->getParam('queueset_id');
         $reset_filters = Yii::app()->request->getParam('reset_filters', false);
-        if($reset_filters) {
+        if ($reset_filters) {
             Yii::app()->session['patientticket_filter'] = [];
             unset($_GET['reset_filters']);
         }
@@ -272,8 +272,7 @@ class DefaultController extends \BaseModuleController
                             break;
                         }
                     }
-                }
-                else {
+                } else {
                     //multiple queueset, but none of them selected, let's load the first one
                     $queueset = $queuesets[0];
                 }
@@ -286,17 +285,17 @@ class DefaultController extends \BaseModuleController
                 $filter_keys = array('queue-ids', 'priority-ids', 'subspecialty-id', 'firm-id', 'my-tickets', 'closed-tickets', 'patient-ids');
                 $filter_options = array();
 
-                    foreach ($filter_keys as $k) {
-                        if (!is_null($param = \Yii::app()->request->getParam($k, null))) {
-                            $filter_options[$k] = $param;
-                        }
+                foreach ($filter_keys as $k) {
+                    if (!is_null($param = \Yii::app()->request->getParam($k, null))) {
+                        $filter_options[$k] = $param;
                     }
+                }
 
-                    if(empty($filter_options) && !empty(Yii::app()->session['patientticket_filter']) && !$reset_filters) {
-                        $filter_options = Yii::app()->session['patientticket_filter'];
-                        $redir = array_merge(['/PatientTicketing/default'], $filter_options, ['cat_id' => $category->getID()]);
-                        $this->redirect($redir);
-                    }
+                if (empty($filter_options) && !empty(Yii::app()->session['patientticket_filter']) && !$reset_filters) {
+                    $filter_options = Yii::app()->session['patientticket_filter'];
+                    $redir = array_merge(['/PatientTicketing/default'], $filter_options, ['cat_id' => $category->getID()]);
+                    $this->redirect($redir);
+                }
 
                 Yii::app()->session['patientticket_filter'] = $filter_options;
 

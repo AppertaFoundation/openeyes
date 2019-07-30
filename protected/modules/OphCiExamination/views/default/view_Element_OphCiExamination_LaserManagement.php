@@ -17,14 +17,14 @@
  */
 ?>
 <div class="sub-element-data element-eyes flex-layout flex-top">
-  <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :?>
     <div class="js-element-eye <?=$eye?>-eye column cols-full">
-        <?php if ($element->{'has'.ucfirst($eye)}()):
-    $this->renderPartial($element->view_view.'_fields',
+        <?php if ($element->{'has'.ucfirst($eye)}()) :
+            $this->renderPartial($element->view_view.'_fields',
                 array('eye' => $eye, 'element' => $element));
-    else:?>
+        else :?>
       <div class="data-value not-recorded">Not recorded</div>
         <?php endif;?>
     </div>
-  <?php endforeach;?>
+    <?php endforeach;?>
 </div>

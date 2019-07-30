@@ -5,14 +5,14 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
     public function up()
     {
 
-        $this->createOETable('ophtrconsent_procedure_anaesthetic_type',array(
+        $this->createOETable('ophtrconsent_procedure_anaesthetic_type', array(
             'id' => 'pk',
             'et_ophtrconsent_procedure_id' => 'int(10) unsigned NOT NULL',
             'anaesthetic_type_id' => 'int(10) unsigned NOT NULL',
         ), true);
 
-        $this->addForeignKey('ophtrconsent_procedure_to_anaest_type', 'ophtrconsent_procedure_anaesthetic_type','anaesthetic_type_id',
-            'anaesthetic_type','id');
+        $this->addForeignKey('ophtrconsent_procedure_to_anaest_type', 'ophtrconsent_procedure_anaesthetic_type', 'anaesthetic_type_id',
+            'anaesthetic_type', 'id');
 
         $this->addForeignKey('ophtrconsent_procedure_to_anaest_type_to_el', 'ophtrconsent_procedure_anaesthetic_type', 'et_ophtrconsent_procedure_id',
             'et_ophtrconsent_procedure', 'id');
@@ -32,15 +32,14 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
         $transaction = $this->getDbConnection()->beginTransaction();
         try {
             foreach ($iterator as $element) {
-
                 // if event was deleted
-                if(!$event = $element->event) {
+                if (!$event = $element->event) {
                     $event = Event::model()->disableDefaultScope()->findByPk($element->event_id);
                 } else {
                     $event = $element->event;
                 }
 
-                if(!$episode = $event->episode) {
+                if (!$episode = $event->episode) {
                     $episode = Episode::model()->disableDefaultScope()->findByPk($event->episode_id);
                 } else {
                     $episode = $event->episode;
@@ -51,9 +50,7 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
                 //migrate all existing ConsentForm with "LAS" to "LA"
                 if ($element->anaesthetic_type_id == $anaesthetic_topical_id ||
                     $element->anaesthetic_type_id == $anaesthetic_LAC_id ||
-                    $element->anaesthetic_type_id == $anaesthetic_LAS_id)
-                    {
-
+                    $element->anaesthetic_type_id == $anaesthetic_LAS_id) {
                         // adding LA
                         $this->createOrUpdate('OphTrConsent_Procedure_AnaestheticType', array(
                             'et_ophtrconsent_procedure_id' => $element->id,
@@ -84,7 +81,6 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
                             'Remove redundant Anaesthetic options',
                             array('module' => 'OphTrConsent', 'model' => 'Element_OphTrConsent_Procedure', 'event_id' => $element->event_id,
                                 'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
-
                 } else {
                     $this->createOrUpdate('OphTrConsent_Procedure_AnaestheticType', array(
                         'et_ophtrconsent_procedure_id' => $element->id,
@@ -112,10 +108,8 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
                         array('module' => 'OphTrConsent', 'model' => 'Element_OphTrConsent_Procedure', 'event_id' => $element->event_id,
                             'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
                 }
-
             }
             $transaction->commit();
-
         } catch (Exception $e) {
             $transaction->rollback();
             \OELog::log($e->getMessage());
@@ -126,11 +120,11 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
 
     private function createOrUpdate($model_name, $attributes)
     {
-        if(!$model = $model_name::model()->findByAttributes($attributes)){
+        if (!$model = $model_name::model()->findByAttributes($attributes)) {
             $model = new $model_name;
         }
 
-        foreach($attributes as $attribute => $value){
+        foreach ($attributes as $attribute => $value) {
             $model->{$attribute} = $value;
         }
 

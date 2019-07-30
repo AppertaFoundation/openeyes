@@ -68,7 +68,7 @@ class TrialContext extends CWidget
      * @return bool Whether the variable was set
      */
     private function ensureVarSet($var, $data = null){
-        if($data && $data[$var]){
+        if ($data && $data[$var]) {
             $this->$var = $data[$var];
             return true;
         } else {

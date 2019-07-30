@@ -11,7 +11,7 @@ class m180702_122324_create_van_herick_tables extends \OEMigration
             'left_van_herick_id' => 'int(10) unsigned DEFAULT NULL',
             'right_van_herick_id' => 'int(10) unsigned DEFAULT NULL',
             'eye_id' => "int(10) unsigned NOT NULL DEFAULT '3'",
-        ),true);
+        ), true);
 
         $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name', array(':class_name' => 'OphCiExamination'))->queryScalar();
         $this->insertOEElementType(['OEModule\OphCiExamination\models\VanHerick' => ['name' => 'Van Herick', 'display_order' => 37]], $event_type_id);

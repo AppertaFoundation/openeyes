@@ -8,7 +8,7 @@ class m170222_195519_add_issue_to_draft_prescriptions extends CDbMigration
         $draft_id = $this->dbConnection->createCommand()->select('*')->from('issue')->where('name = :name', array(':name' => 'Draft'))->queryScalar();
 
         //no Draft in the issue table, we have to add it
-        if(!$draft_id){
+        if (!$draft_id) {
             $this->insert('issue', array('name' => 'Draft') );
         }
 
