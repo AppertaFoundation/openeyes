@@ -987,7 +987,6 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->will($this->returnValue($wm));
 
         // verify the filter of display context
-        $user = ComponentStubGenerator::generate('User');
         $site = ComponentStubGenerator::generate('Site');
         $firm = ComponentStubGenerator::generate('Firm');
 
@@ -1000,7 +999,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->with($wls[1])
             ->will($this->returnValue(false));
 
-        $this->assertEquals(array($wls[0]), $manager->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, new DateTime()));
+        $this->assertEquals(array($wls[0]), $manager->getCurrentAutomaticWorklistsForUserContext($site, $firm, new DateTime()));
     }
 
     public function shouldDisplayWorklistForContextProvider()
