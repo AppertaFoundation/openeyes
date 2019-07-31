@@ -1465,7 +1465,7 @@ class AnalyticsController extends BaseController
                                 'weeks'=>$over_weeks,
                             );
                         if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
-                            $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient->id;
                         } else {
                             $followup_patient_list['overdue'][$over_weeks][] = $current_patient->id;
                         }
