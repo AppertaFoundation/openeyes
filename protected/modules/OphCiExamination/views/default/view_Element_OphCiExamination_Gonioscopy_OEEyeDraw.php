@@ -33,8 +33,8 @@
 
     <?php $iris = $element->{$side . '_iris'};
     if ($iris) { ?>
-      <div class="data-label"><?= $element->getAttributeLabel($side . '_iris_id') ?>:</div>
-      <div class="data-value"><?= Yii::app()->format->Ntext($iris->name) ?></div>
+      <div class="data-label inline"><?= $element->getAttributeLabel($side . '_iris_id') ?>:</div>
+      <div class="data-value inline"><?= Yii::app()->format->Ntext($iris->name) ?></div>
     <?php } ?>
 
     <?php if ($element->{$side . '_description'}) { ?>

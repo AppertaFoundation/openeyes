@@ -58,8 +58,8 @@ class DefaultController extends BaseEventTypeController
      * @return int|string
      */
     public function return_bytes($val) {
-        $val = (int)trim($val);
         $last = strtolower($val[strlen($val)-1]);
+        $val = (int)trim($val);
         switch($last) {
             case 'g':
                 $val *= (1024 * 1024 * 1024); //1073741824

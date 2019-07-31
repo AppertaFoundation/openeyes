@@ -569,7 +569,7 @@ $(document).ready(function() {
                 // must've changed their mind, restore the value
                 $(this).val($(this).data('stored-value'));
             }
-            $(this).autosize();
+            autosize($(this));
 
         });
     }
@@ -1038,7 +1038,7 @@ $(document).ready(function() {
             new_principal = true;
         }
 
-        $('.js-diagnoses').find('input[type="hidden"]').map(function() {
+        $(this).closest('tr').find('input[type="hidden"]').map(function() {
             if ($(this).val() == disorder_id) {
                 $(this).remove();
             }
@@ -1990,8 +1990,7 @@ function OphCiExamination_ClinicOutcomes_updateFollowUpLabel() {
   }
 
   var dummy_text = $('#follow-up-dummy-input');
-  dummy_text.val(label_str);
-  dummy_text.trigger('oninput');
+  dummy_text.html(label_str);
 }
 
 function OphCiExamination_AddAllergy(){
@@ -2042,7 +2041,7 @@ function removeAllergyFromSelect( allergy_id, allergy_name ){
 var eyedraw_added_diagnoses = [];
 
 $(document).ready(function() {
-    $('textarea').autosize();
+    autosize($('textarea'));
 });
 
 /*

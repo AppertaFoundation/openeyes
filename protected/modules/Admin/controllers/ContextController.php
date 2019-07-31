@@ -65,6 +65,7 @@ class ContextController extends BaseAdminController
     public function actionEdit($id)
     {
         $firm = Firm::model()->findByPk($id);
+        $firm->subspecialty_id = $firm->getSubspecialtyID();
         if (!$firm) {
             throw new Exception("Firm not found: $id");
         }

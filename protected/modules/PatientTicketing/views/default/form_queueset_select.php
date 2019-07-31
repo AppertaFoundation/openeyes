@@ -32,7 +32,7 @@ $form = $this->beginWidget('CActiveForm', array(
     'id' => 'ticket-filter',
     'enableAjaxValidation' => false,
     'method' => 'get',
-    'action' => ["/{$this->module->id}/default/"],
+    'action' => ["/{$this->module->id}/default/", "reset_filters" => 1],
 ));
 ?>
 
@@ -48,7 +48,7 @@ $form = $this->beginWidget('CActiveForm', array(
       <ul class="btn-list">
           <?php foreach ($queueset_list as $id => $item) { ?>
             <li id="<?= $id ?>" class="<?= $queueset && (integer)$queueset_id === $id ? 'selected' : '' ?>">
-              <a><?= $item ?></a>
+              <?= $item ?>
             </li>
           <?php } ?>
       </ul>

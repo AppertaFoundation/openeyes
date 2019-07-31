@@ -6,15 +6,27 @@
 <script type="text/javascript">
     var custom_layout, custom_data;
     $(document).ready(function () {
+
         custom_layout = JSON.parse(JSON.stringify(analytics_layout));
         custom_data = <?= CJavaScript::encode($custom_data); ?>;
         
         window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
         custom_layout['xaxis']['title'] = "Time post procedure (weeks)";
         custom_layout['xaxis']['rangeslider'] = {};
-        custom_layout['yaxis']['title'] = "Visual Acuity";
+        custom_layout['yaxis']['title'] = getVATitle();
+
+      //Set VA unit tick labels
+      var va_mode = $('#js-chart-filter-plot');
+      if (va_mode.html().includes('absolute')) {
+        custom_layout['yaxis']['tickmode'] = 'array';
+        custom_layout['yaxis']['tickvals'] = <?= CJavaScript::encode($va_final_ticks['tick_position']); ?>;
+        custom_layout['yaxis']['ticktext'] = <?= CJavaScript::encode($va_final_ticks['tick_labels']); ?>;
+      } else {
+        custom_layout['yaxis']['tickmode'] = 'auto';
+      }
+      
         custom_layout['yaxis2'] = {
-            title: 'IOP (mm Hg)',
+            title: '<?=  $specialty=="Glaucoma"?"IOP (mm Hg)":"CRT &mu;m" ?>',
             titlefont: {
                 family: 'sans-serif',
                 size: 12,
