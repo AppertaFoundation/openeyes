@@ -1374,7 +1374,7 @@ class AnalyticsController extends BaseController
                 //Follow up is overdue
                 $over_weeks = -$followup_item['weeks'];
                 if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                    $followup_csv_data['overdue'] =
+                    $followup_csv_data['overdue'][] =
                         array(
                             'patient_id'=>$followup_item['patient_id'],
                             'weeks'=>$over_weeks,
