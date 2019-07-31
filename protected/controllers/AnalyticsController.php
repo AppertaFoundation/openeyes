@@ -1300,8 +1300,7 @@ class AnalyticsController extends BaseController
                 ($end_date && $event_time > $end_date)) {
                 continue;
             }
-            $current_patient = Patient::model()->findByPk($followup_item['patient_id']);
-            $patient_worklist = $this->checkPatientWorklist($current_patient->id);
+            $patient_worklist = $this->checkPatientWorklist($followup_item['patient_id']);
             $latest_worklist_time = isset($patient_worklist) ? $patient_worklist/1000 : null;
             $latest_time = isset($latest_worklist_time)? max($event_time, $latest_worklist_time):$event_time;
             $due_time = Helper::mysqlDate2JsTimestamp($followup_item['due_date'])/1000;
@@ -1314,13 +1313,13 @@ class AnalyticsController extends BaseController
                 if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
                     $followup_csv_data['overdue'] =
                         array(
-                            'patient_id'=>$current_patient->id,
+                            'patient_id'=>$followup_item['patient_id'],
                             'weeks'=>$over_weeks,
                         );
                     if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
-                        $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                        $followup_patient_list['overdue'][$over_weeks] = array($followup_item['patient_id']);
                     } else {
-                        $followup_patient_list['overdue'][$over_weeks][] = $current_patient->id;
+                        $followup_patient_list['overdue'][$over_weeks][] = $followup_item['patient_id'];
                     }
                 }
             } else {
@@ -1331,13 +1330,13 @@ class AnalyticsController extends BaseController
                 if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
                     $followup_csv_data['coming'][] =
                         array(
-                            'patient_id'=>$current_patient->id,
+                            'patient_id'=>$followup_item['patient_id'],
                             'weeks'=>$coming_weeks,
                         );
                     if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
-                        $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
+                        $followup_patient_list['coming'][$coming_weeks] = array($followup_item['patient_id']);
                     } else {
-                        $followup_patient_list['coming'][$coming_weeks][] = $current_patient->id;
+                        $followup_patient_list['coming'][$coming_weeks][] = $followup_item['patient_id'];
                     }
                 }
             }
@@ -1432,13 +1431,13 @@ class AnalyticsController extends BaseController
         To calculate how long a patient will wait frm the date of referral to the date assigned in a worklist*/
         $referral_document_elements = $referral_document_command->queryAll();
         foreach ($referral_document_elements as $referral_element) {
-            $current_patient = Patient::model()->findByPk($referral_element['patient_id']);
+            //$current_patient = Patient::model()->findByPk($referral_element['patient_id']);
             $current_referral_date = Helper::mysqlDate2JsTimestamp($referral_element['event_date']) / 1000;
             if ( ($start_date && $current_referral_date < $start_date) ||
                 ($end_date && $current_referral_date > $end_date)) {
                 continue;
             }
-            $current_patient_on_worklist = WorklistPatient::model()->findByAttributes(array('patient_id'=>$current_patient->id), array('order'=>'t.when ASC'));
+            $current_patient_on_worklist = WorklistPatient::model()->findByAttributes(array('patient_id'=>$referral_element['patient_id']), array('order'=>'t.when ASC'));
             if (isset($current_patient_on_worklist) && !empty($current_patient_on_worklist)) {
                 $appointment_time = Helper::mysqlDate2JsTimestamp($current_patient_on_worklist->when)/1000;
                 if ($appointment_time >= $current_referral_date) {
@@ -1447,19 +1446,19 @@ class AnalyticsController extends BaseController
             } else {
                 $current_time = time();
                 if ($current_time > $current_referral_date) {
-                    $waiting_time = ceil((($current_time - $current_referral_date)/(self::WEEKTIME)));
+                    $waiting_time = ceil(($current_time - $current_referral_date)/ self::WEEKTIME);
                 }
             }
             if (isset($waiting_time) && $waiting_time <= self::FOLLOWUP_WEEK_LIMITED) {
                 $followup_csv_data['waiting'][] =
                     array(
-                        'patient_id'=>$current_patient->id,
+                        'patient_id'=>$referral_element['patient_id'],
                         'weeks'=>$waiting_time,
                     );
                 if (! isset($followup_patient_list['waiting'][$waiting_time])) {
                     $followup_patient_list['waiting'][$waiting_time]= array();
                 }
-                $followup_patient_list['waiting'][$waiting_time][] = $current_patient->id;
+                $followup_patient_list['waiting'][$waiting_time][] = $referral_element['patient_id'];
             }
         }
         ksort($followup_patient_list['waiting']);
