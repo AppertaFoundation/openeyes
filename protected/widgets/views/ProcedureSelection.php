@@ -206,14 +206,14 @@
             // Remove removed procedure from the removed_stack
             var stack = [];
             var popped = null;
-            $.each(window["removed_stack_" + identifier], function (key, value) {
+            $.each(removed_stack_<?php echo $identifier?>, function (key, value) {
                 if (value["id"] != procedure_id) {
                     stack.push(value);
                 } else {
                     popped = value;
                 }
             });
-            window["removed_stack_" + identifier] = stack;
+            removed_stack_<?php echo $identifier?> = stack;
 
             // Refresh the current procedure select box in case the removed procedure came from there
             if ($('#subsection_id_' + identifier).length) {
@@ -287,7 +287,7 @@
                         $('select[name=select_procedure_id_' + identifier + '] option').map(function () {
                             var obj = $(this);
 
-                            $.each(window["removed_stack_" + identifier], function (key, value) {
+                            $.each(removed_stack_<?php echo $identifier?>, function (key, value) {
                                 if (value["id"] == obj.val()) {
                                     obj.remove();
                                 }
@@ -375,7 +375,7 @@
                                 var id = $(this).val();
                                 var name = $(this).text();
 
-                                window["removed_stack_" + identifier].push({name: name, id: id});
+                                removed_stack_<?php echo $identifier?>.push({name: name, id: id});
 
                                 $(this).remove();
                             }
@@ -442,6 +442,15 @@
 
             });
             initialiseProcedureAdder();
+        });
+
+        $("input[id*='_complexity_']").on('click', function() {
+            let $estimated = $('#Element_OphTrOperationbooking_Operation_total_duration_procs');
+            if ($estimated) {
+                if(typeof updateTotalDuration === "function"){
+                    updateTotalDuration('procs');
+                }
+            }
         });
     });
 </script>
