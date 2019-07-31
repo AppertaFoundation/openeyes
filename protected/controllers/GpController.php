@@ -127,7 +127,13 @@ class GpController extends BaseController
             if (strpos(CActiveForm::validate($contact), 'cannot be blank' ) !== false) {
                 echo CHtml::errorSummary($contact);
             } else {
-                Yii::app()->session->add('contactForm',$_POST['Contact']);
+                echo CJSON::encode(array(
+                    'title' => $contact->title,
+                    'firstName' => $contact->first_name,
+                    'lastName' => $contact->last_name,
+                    'primaryPhone' => $contact->primary_phone,
+                    'labelId' => isset($contact->label) ? $contact->label->id : ''
+                ));
             }
         }
     }

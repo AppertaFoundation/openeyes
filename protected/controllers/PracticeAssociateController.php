@@ -33,8 +33,8 @@ class PracticeAssociateController extends BaseController
      * (i.e. Contact, Gp and Contact Practice Associate)
      */
     public function actionCreate(){
-         if(Yii::app()->session->contains('contactForm')){
-            $contactFormData = Yii::app()->session->get('contactForm');
+        if (isset($_POST['Contact'])) {
+            $contactFormData = $_POST['Contact'];
 
             $gp = new Gp();
             $contact = new Contact('manage_gp');
@@ -47,13 +47,12 @@ class PracticeAssociateController extends BaseController
                 $contact_practice_associate = new ContactPracticeAssociate();
                 $contact_practice_associate->gp_id = $gp->getPrimaryKey();
                 $contact_practice_associate->practice_id = $_POST['PracticeAssociate']['practice_id'];
-                if ($contact_practice_associate->save()){
-                    unset(Yii::app()->session['contactForm']); # Removing the session variable
+                if ($contact_practice_associate->save()) {
                     echo CJSON::encode(array(
-                        'gp_id'    => $contact_practice_associate->gp_id,
+                        'gp_id' => $contact_practice_associate->gp_id,
                     ));
-                }else{
-                    echo CJSON::encode(array('error'=>$contact_practice_associate->getError('practice_id')));
+                } else {
+                    echo CJSON::encode(array('error' => $contact_practice_associate->getError('practice_id')));
                 }
             }
         }
