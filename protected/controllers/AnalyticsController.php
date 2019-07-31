@@ -220,9 +220,9 @@ class AnalyticsController extends BaseController
      * @param $data_list
      * @param $sum
      * @param $count
-     * @return floatcustom_csv_data
+     * @return float custom_csv_data
      * This function is used to calculate the standard deviation of an array.
-     * Used for Glaucuoma and MR subspecialties VA/IOP/CRT plots.
+     * Used for Glaucoma and MR subspecialties VA/IOP/CRT plots.
      * Normally we don't need the sum and number count passed as variables because they are can be get from the original array
      * But in this situation, we get the sum and count from the upper function, pass and use them directly will cause less calculations.
      */
@@ -236,8 +236,7 @@ class AnalyticsController extends BaseController
         }
         $variance /= $count;
 
-        $standard_deviation = sqrt($variance);
-        return $standard_deviation;
+        return sqrt($variance);
     }
 
     /**
@@ -337,7 +336,6 @@ class AnalyticsController extends BaseController
 
     /**
      * @param $age
-     * @param $protocol Todo: seems this parameter is never used, need specify.
      * @param $date
      * @return bool
      *
@@ -380,22 +378,22 @@ class AnalyticsController extends BaseController
             ->group('eov.id');
 
         if (isset($basic_criteria)) {
-            if ($subspecialty == 'Medical Retina') {
+            if ($subspecialty === 'Medical Retina') {
                 $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('eot.'.$eye_side.'_drug_id '.$basic_criteria)
                     ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
-            } elseif ($subspecialty == 'Glaucoma') {
+            } elseif ($subspecialty === 'Glaucoma') {
                 $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('et.'.$eye_side.'_value '.$basic_criteria)
                     ->group('patient_id, left_value,right_value');
             }
         } else {
-            if ($subspecialty == 'Medical Retina') {
+            if ($subspecialty === 'Medical Retina') {
                 $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , eot.left_drug_id as left_value, eot.right_drug_id as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('eot.left_drug_id IS NOT NULL or eot.right_drug_id IS NOT NULL')
                     ->group('ep.patient_id');
                 ;
-            } elseif ($subspecialty == 'Glaucoma') {
+            } elseif ($subspecialty === 'Glaucoma') {
                 $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , et.left_value  as left_value, et.right_value as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('et.left_value IS NOT NULL or et.right_value IS NOT NULL')
                     ->group('et.patient_id');
@@ -519,7 +517,7 @@ class AnalyticsController extends BaseController
 
     public function queryDiagnosesFilteredPatientListCommand($eye_side, $caller = 'custom')
     {
-        if ($caller == 'followup') {
+        if ($caller === 'followup') {
             $diagnoses = isset($this->filters['service_diagnosis'])? $this->filters['service_diagnosis']: null;
         } else {
             $diagnoses = isset($this->filters['custom_diagnosis'])? $this->filters['custom_diagnosis']: null;
@@ -584,7 +582,7 @@ class AnalyticsController extends BaseController
                     continue;
                 }
 
-                if ($element['name'] == '1value') {
+                if ($element['name'] === '1value') {
                     switch ($type) {
                         case 'VA':
                             $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element['value'])->getBestReading($side);
@@ -598,10 +596,10 @@ class AnalyticsController extends BaseController
                     }
 
                     if (isset($reading)) {
-                        if ($type == 'VA') {
+                        if ($type === 'VA') {
                             $reading = $reading->value;
                         }
-                        if ($type == 'CRT') {
+                        if ($type === 'CRT') {
                             $reading = $reading->{$side.'_sft'};
                         }
                     } else {
@@ -652,7 +650,7 @@ class AnalyticsController extends BaseController
                         );
                     }
                     if (isset($reading)) {
-                        array_push($this->custom_csv_data[$current_patient->id][$side][$type], $reading);
+                        $this->custom_csv_data[$current_patient->id][$side][$type][] = $reading;
                     }
 
                     $current_week = floor((($current_time/1000) - ($initial_reading[$element['patient_id']]['event_date']/1000)) / self::WEEKTIME);
@@ -660,18 +658,18 @@ class AnalyticsController extends BaseController
                     if (array_key_exists((int)$current_week, ${$side.'_list'})) {
                         ${$side.'_list'}[$current_week]['count']+=1;
                         ${$side.'_list'}[$current_week]['sum']+=$reading;
-                        ${$side.'_list'}[$current_week]['square_sum']+= pow($reading, 2);
+                        ${$side.'_list'}[$current_week]['square_sum']+= $reading ** 2;
                         ${$side.'_list'}[$current_week]['average'] = round( ${$side.'_list'}[$current_week]['sum']/ ${$side.'_list'}[$current_week]['count']);
                         ${$side.'_list'}[$current_week]['SD'] = $this->calculateStandardDeviationByDataSet(${$side.'_list'}[$current_week]);
-                        array_push( ${$side.'_list'}[$current_week]['patients'], $current_patient->id);
+                        ${$side.'_list'}[$current_week]['patients'][] =  $current_patient;
                     } else {
                         ${$side.'_list'}[$current_week] = array(
                             'count'=> 1,
                             'sum' => $reading,
-                            'square_sum'=> pow($reading, 2),
+                            'square_sum'=> $reading ** 2,
                             'average'=>$reading,
                             'SD'=>0,
-                            'patients' => array($current_patient->id),
+                            'patients' => array($current_patient),
                         );
                     }
                 }
@@ -685,7 +683,7 @@ class AnalyticsController extends BaseController
     }
     public function calculateStandardDeviationByDataSet($data_set)
     {
-        $square_average = pow($data_set['average'], 2);
+        $square_average = $data_set['average'] ** 2;
         $square_sum = $data_set['square_sum'];
         $sum = $data_set['sum'];
         $average = $data_set['average'];
@@ -747,30 +745,30 @@ class AnalyticsController extends BaseController
                 'age'=>$current_patient->getAge(),
                 'diagnoses'=>$current_patient->getDiagnosesTermsArray(),
                 'left'=>array(
-                    "VA"=>array(),
-                    "CRT"=>array(),
-                    "IOP"=>array(),
+                    'VA' =>array(),
+                    'CRT' =>array(),
+                    'IOP' =>array(),
                 ),
                 'right'=>array(
-                    "VA"=>array(),
-                    "CRT"=>array(),
-                    "IOP"=>array(),
+                    'VA' =>array(),
+                    'CRT' =>array(),
+                    'IOP' =>array(),
                 ),
             );
         }
         if (isset($right_reading)) {
-            array_push($this->custom_csv_data[$current_patient->id]['right'][$type], $right_reading);
+            $this->custom_csv_data[$current_patient->id]['right'][$type][] = $right_reading;
         }
         if (isset($left_reading)) {
-            array_push($this->custom_csv_data[$current_patient->id]['left'][$type], $left_reading);
+            $this->custom_csv_data[$current_patient->id]['left'][$type][] = $left_reading;
         }
     }
-    
+
 
     public function getCommonDisorders($subspecialty_id = null, $only_name = false)
     {
         $criteria = new CDbCriteria();
-        if (isset($criteria) && isset($subspecialty_id)) {
+        if (isset($criteria, $subspecialty_id)) {
             $criteria->compare('subspecialty_id', $subspecialty_id);
         }
         $common_ophthalmic_disorders= CommonOphthalmicDisorder::model()->findAll($criteria);
@@ -875,8 +873,7 @@ class AnalyticsController extends BaseController
             ->from('patient')
             ->where(array('not in', 'id', array_merge_recursive(array_column($patient_with_secondary_disorder, 'patient_id'), array_column($patient_with_disorder, 'id'))));
 
-        $patient_without_disorder = $command_no_disorder_patient->queryAll();
-        return $patient_without_disorder;
+        return $command_no_disorder_patient->queryAll();
     }
 
     public function getDisorders($subspecialty_id = null, $surgeon_id = null, $start_date = null, $end_date = null)
@@ -1012,14 +1009,14 @@ class AnalyticsController extends BaseController
         $plot_va_change = Yii::app()->request->getParam('custom_plot');
 
         if (isset($custom_diagnosis)) {
-            $diagnoses_MR = $this->getIdByName(array("age-related macular degeneration","Branch retinal vein occlusion","Central retinal vein occlusion","Diabetic macular oedema"), Disorder::class, 'term');
+            $diagnoses_MR = $this->getIdByName(array('age-related macular degeneration', 'Branch retinal vein occlusion', 'Central retinal vein occlusion', 'Diabetic macular oedema'), Disorder::class, 'term');
             $diagnoses_GL = $this->getIdByName(array('glaucoma', 'open-angle glaucoma', 'angle-closure glaucoma', 'Low tension glaucoma', 'Ocular hypertension'), Disorder::class, 'term');
             $custom_diagnosis_array = explode(",", $custom_diagnosis);
             $custom_diagnosis = array();
             foreach ($custom_diagnosis_array as $item) {
-                if ($specialty === "Medical Retina") {
+                if ($specialty === 'Medical Retina') {
                       $custom_diagnosis = array_merge_recursive($custom_diagnosis, $diagnoses_MR[$item]);
-                } else if ($specialty === "Glaucoma") {
+                } else if ($specialty === 'Glaucoma') {
                       $custom_diagnosis = array_merge_recursive($custom_diagnosis, $diagnoses_GL[$item]);
                 } else {
                     $custom_diagnosis = null;
@@ -1030,12 +1027,12 @@ class AnalyticsController extends BaseController
         if (isset($custom_treatment)) {
             $treatments = $this->getIdByName(array('Lucentis', 'Eylea', 'Avastin', 'Triamcinolone', 'Ozurdex'), OphTrIntravitrealinjection_Treatment_Drug::class, 'name');
             $custom_treatment = $treatments[$custom_treatment];
-            $custom_treatment = 'IN ('.implode(",", $custom_treatment).')';
+            $custom_treatment = 'IN ('.implode(',', $custom_treatment).')';
         }
         if (isset($custom_procedure)) {
             $procedures = $this->getIdByName(array('cataract extraction','Trabeculectomy', 'aqueous shunt','Cypass Stent Insertion','Selective laser trabeculoplasty','Laser coagulation ciliary body'), Procedure::class, 'term');
             $custom_procedure = $procedures[$custom_procedure];
-            $custom_procedure = 'IN ('.implode(",", $custom_procedure).')';
+            $custom_procedure = 'IN ('.implode(',', $custom_procedure).')';
         }
         if (isset($plot_va_change)) {
             $plot_va_change = true;
@@ -1068,7 +1065,7 @@ class AnalyticsController extends BaseController
           'clinical_surgeon_id'=>$clinical_surgeon_id,
           'custom_surgeon_id'=>$custom_surgeon_id,
           'procedure'=>$custom_procedure,
-          'plot_va_change'=> ($plot_va_change)? $plot_va_change:null,
+          'plot_va_change'=> $plot_va_change ?: null,
         );
     }
     public function getIdByName($name_array, $model, $name_attribute)
@@ -1102,21 +1099,21 @@ class AnalyticsController extends BaseController
             $this->surgeon = $surgeon_id;
         }
         $this->custom_csv_data = array();
-        if ($specialty == 'All') {
+        if ($specialty === 'All') {
             $subspecialty_id = null;
             $custom_data = array();
         } else {
             $subspecialty_id = $this->getSubspecialtyID($specialty);
             list($left_va_list, $right_va_list) = $this->getCustomVA($specialty, $this->filters['custom_surgeon_id']);
-            if ($specialty === "Glaucoma") {
+            if ($specialty === 'Glaucoma') {
                 list($left_second_list,$right_second_list) = $this->getCustomIOP($specialty, $this->filters['custom_surgeon_id']);
-            } elseif ($specialty === "Medical Retina") {
+            } elseif ($specialty === 'Medical Retina') {
                 list($left_second_list,$right_second_list) = $this->getCustomCRT($specialty, $this->filters['custom_surgeon_id']);
             }
 
             foreach (['left','right'] as $side) {
                 if (isset($this->filters['plot_va_change']) && $this->filters['plot_va_change']) {
-                    $this->filters['plot_va_change_initial_va_value'] = (empty(${$side.'_va_list'}))? null: ${$side.'_va_list'}[0]['average'];
+                    $this->filters['plot_va_change_initial_va_value'] = empty(${$side.'_va_list'}) ? null: ${$side.'_va_list'}[0]['average'];
                 }
                 $custom_data[] = array(
                   array(
@@ -1151,7 +1148,7 @@ class AnalyticsController extends BaseController
                                 if (isset($this->filters['plot_va_change_initial_va_value'])) {
                                     $cVal -= (float)$this->filters['plot_va_change_initial_va_value'];
                                 }
-                                    return " Mean: " . $cVal . "<br> SD: " . $item['SD'] ."<br> Patient No: ".count($item['patients']);
+                                    return " Mean: " . $cVal . '<br> SD: ' . $item['SD'] . '<br> Patient No: ' .count($item['patients']);
                             },
                             array_values(${$side . '_va_list'})
                         ),
@@ -1182,7 +1179,7 @@ class AnalyticsController extends BaseController
                         'hoverinfo' => 'text',
                         'hovertext' => array_map(
                             function ($item) {
-                                return " Mean: " . $item['average'] . "<br> SD: " . $item['SD'] . "<br> Patient No: " . count($item['patients']);
+                                return " Mean: " . $item['average'] . '<br> SD: ' . $item['SD'] . '<br> Patient No: ' . count($item['patients']);
                             },
                             array_values(${$side . '_second_list'})
                         ),
@@ -1315,15 +1312,15 @@ class AnalyticsController extends BaseController
                 //Follow up is overdue
                 $over_weeks = -$followup_item['weeks'];
                 if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                    array_push($followup_csv_data['overdue'],
+                    $followup_csv_data['overdue'] =
                         array(
                             'patient_id'=>$current_patient->id,
                             'weeks'=>$over_weeks,
-                        ));
+                        );
                     if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
                         $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
                     } else {
-                        array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                        $followup_patient_list['overdue'][$over_weeks][] = $current_patient->id;
                     }
                 }
             } else {
@@ -1332,15 +1329,15 @@ class AnalyticsController extends BaseController
                 }
                 $coming_weeks = $followup_item['weeks'];
                 if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                    array_push($followup_csv_data['coming'],
+                    $followup_csv_data['coming'][] =
                         array(
                             'patient_id'=>$current_patient->id,
                             'weeks'=>$coming_weeks,
-                        ));
+                        );
                     if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
                         $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
                     } else {
-                        array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                        $followup_patient_list['coming'][$coming_weeks][] = $current_patient->id;
                     }
                 }
             }
@@ -1355,7 +1352,7 @@ class AnalyticsController extends BaseController
                 ($end_date && $assignment_time > $end_date)) {
                 continue;
             }
-            if (isset($this->surgeon) && isset($current_event)) {
+            if (isset($this->surgeon, $current_event)) {
                 if ($this->surgeon !== $current_event->created_user_id) {
                     continue;
                 }
@@ -1398,35 +1395,34 @@ class AnalyticsController extends BaseController
                         continue;
                     }
                     //Follow up is overdue
-                    $over_weeks = intval(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                    $over_weeks = (int)(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
                     if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                        array_push($followup_csv_data['overdue'],
+                        $followup_csv_data['overdue'][] =
                             array(
                                 'patient_id'=>$current_patient->id,
                                 'weeks'=>$over_weeks,
-                            )
-                        );
+                            );
                         if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
                             $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
                         } else {
-                            array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient->id;
                         }
                     }
                 } else {
                     if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time) {
                         continue;
                     }
-                    $coming_weeks = intval(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                    $coming_weeks = (int)(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
                     if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                        array_push($followup_csv_data['coming'],
+                        $followup_csv_data['coming'][] =
                             array(
                                 'patient_id'=>$current_patient->id,
                                 'weeks'=>$coming_weeks,
-                            ));
+                            );
                         if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
                             $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
                         } else {
-                            array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                            $followup_patient_list['coming'][$coming_weeks][] = $current_patient->id;
                         }
                     }
                 }
@@ -1446,7 +1442,7 @@ class AnalyticsController extends BaseController
             if (isset($current_patient_on_worklist) && !empty($current_patient_on_worklist)) {
                 $appointment_time = Helper::mysqlDate2JsTimestamp($current_patient_on_worklist->when)/1000;
                 if ($appointment_time >= $current_referral_date) {
-                    $waiting_time = ceil((($appointment_time - $current_referral_date)/(self::WEEKTIME)));
+                    $waiting_time = ceil(($appointment_time - $current_referral_date) / self::WEEKTIME);
                 }
             } else {
                 $current_time = time();
@@ -1455,15 +1451,15 @@ class AnalyticsController extends BaseController
                 }
             }
             if (isset($waiting_time) && $waiting_time <= self::FOLLOWUP_WEEK_LIMITED) {
-                array_push($followup_csv_data['waiting'],
+                $followup_csv_data['waiting'][] =
                     array(
                         'patient_id'=>$current_patient->id,
                         'weeks'=>$waiting_time,
-                    ));
+                    );
                 if (! isset($followup_patient_list['waiting'][$waiting_time])) {
                     $followup_patient_list['waiting'][$waiting_time]= array();
                 }
-                array_push($followup_patient_list['waiting'][$waiting_time], $current_patient->id);
+                $followup_patient_list['waiting'][$waiting_time][] = $current_patient->id;
             }
         }
         ksort($followup_patient_list['waiting']);
@@ -1496,7 +1492,7 @@ class AnalyticsController extends BaseController
         return $return_data;
     }
     /**
-     * @param $events
+     * @param $events array
      * @return mixed
      * This function is writen for the use of php usort() function
      */
