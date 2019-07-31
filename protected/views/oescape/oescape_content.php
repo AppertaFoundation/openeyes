@@ -16,9 +16,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $this->renderPartial('//patient/_patient_alerts') ?>
+<?php $this->renderPartial('//patient/_patient_alerts'); // load the patient alerts
 
-<?php   $this->renderPartial('//oescape/oescape_drill_down_list') ?> 
+// if on the Glaucoma or General Ophthalmology load the drill though for the IOP data
+if (in_array($subspecialty->id,[7,12])){
+  $this->renderPartial('//oescape/oescape_drill_down_list');
+}
+?>
 
 <div class="oescape flex-layout flex-stretch"  id="oescape-layout">
     <?php echo $content; ?>

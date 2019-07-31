@@ -30,4 +30,5 @@
 <?php $this->renderPartial('//oescape/oescape_content', array(
     'cssClass' => $cssClass,
     'content' => $content,
+    'subspecialty' => $subspecialty,
 )) ?>
