@@ -37,7 +37,7 @@ class OphDrPrescription_API extends BaseAPI
                 $detailDate = substr($detail->event->event_date, 0, 10);
                 $latestDate = substr($latest->event->event_date, 0, 10);
                 if(strtotime($detailDate) === strtotime($latestDate)){
-                    $result .= $detail->getLetterText()."\n";
+                    $result .= $detail->getLetterText()."<br>";
                 }
             }
             return $result;

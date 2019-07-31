@@ -44,7 +44,7 @@
         </colgroup>
         <tbody>
         <tr>
-            <td>Pass Code</td>
+            <td>PAS Code</td>
             <td> <?=\CHtml::activeTextField($firm, 'pas_code', ['class' => 'cols-full']); ?> </td>
         </tr>
         <tr>
@@ -116,12 +116,13 @@
 
     <?php $this->endWidget() ?>
 
-    <?php if (isset($siteSecretaries) && $siteSecretaries) : ?>
+    <?php if (isset($siteSecretaries)) : ?>
         <?=$this->renderPartial(
             'application.modules.OphCoCorrespondence.views.admin.secretary.edit',
             [
                 'errors' => array(),
-                'siteSecretaries' => $siteSecretaries
+                'siteSecretaries' => $siteSecretaries,
+                'newSiteSecretary' => $newSiteSecretary
             ]
         ) ?>
     <?php endif; ?>

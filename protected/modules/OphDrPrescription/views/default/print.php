@@ -19,6 +19,7 @@
 
 ?>
 	<?php if (@$copy) {?>
+        <div class="break"></div>
 		<div class="watermark">
 			<img src="<?= $this->assetPath.'/img/copy_for_'.$copy.'.png' ?>"/>
 		</div>
