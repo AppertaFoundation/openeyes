@@ -1274,16 +1274,76 @@ class AnalyticsController extends BaseController
             'coming' => array(),
             'waiting' => array(),
         );
-        $followup_elements_command =  $this->getLatestEventByType('examination', $subspecialty_id);
-        $followup_elements_command->select('e.id as event_id, p.id as patient_id, e.event_date as event_date, DATE_ADD(event_date, INTERVAL IF(period.name = \'weeks\', 7 ,IF( period.name = \'months\', 30, IF(period.name = \'years\', 365, 1)))*eoc.followup_quantity DAY) as due_date, CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = \'weeks\', 7 ,IF( period.name = \'months\', 30, IF(period.name = \'years\', 365, 1)))*eoc.followup_quantity DAY),current_date())/7 AS INT) as weeks')
-            ->leftJoin('et_ophciexamination_clinicoutcome eoc', 'eoc.event_id = e.id')
-            ->leftJoin('period', 'period.id = eoc.followup_period_id')
-            ->andWhere('eoc.id IS NOT NULL and eoc.followup_period_id IS NOT NULL');
-        $referral_document_command = $this->getLatestEventByType('document', $subspecialty_id);
-        $referral_document_command->select('e.id as event_id, p.id as patient_id, e.event_date as event_date')
-            ->leftJoin('et_ophcodocument_document eod', 'e.id = eod.event_id')
-            ->leftJoin('ophcodocument_sub_types ost', 'eod.event_sub_type = ost.id')
-            ->andWhere('ost.name = "Referral Letter"');
+        // extract out the query in the foreach loop
+        // and integrate them into the following query
+        // function call extracted: findByPK, checkPatientWorklist...
+        // use the column value instead the object from findByPk within the loop
+        $followup_elements_command = Yii::app()->db->createCommand("
+        select 
+          e.id as event_id
+        , p.id as patient_id
+        , UNIX_TIMESTAMP(e.event_date) as event_date
+        , UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY)) as due_date
+        , CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY),current_date())/7 AS INT) as weeks
+        , w.start
+        from event e
+        left join episode e2 on e.episode_id = e2.id
+        left join patient p on p.id = e2.patient_id
+        left join event_type e3 on e3.id = e.event_type_id
+        left join firm f on e2.firm_id = f.id
+        left join service_subspecialty_assignment ssa on ssa.id = f.service_subspecialty_assignment_id
+        left join et_ophciexamination_clinicoutcome eoc on eoc.event_id = e.id
+        left join period on period.id = eoc.followup_period_id
+        left join worklist_patient wp
+        on p.id = wp.patient_id
+        left join worklist w
+        on wp.worklist_id = w.id
+        where p.deleted <> 1 and e.deleted <> 1 and e2.deleted <> 1
+        and lower(e3.name) like lower('%examination%')
+        and e.event_date = (
+          select MAX(e4.event_date) from event e4
+          left join episode e5 on e4.episode_id = e5.id
+          left join patient p2 on e5.patient_id = p2.id
+          left join event_type e6 ON e6.id = e4.event_type_id
+          WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0 
+          and lower(e3.name) like lower('%examination%')
+        )
+        and eoc.id is not null
+        and eoc.followup_period_id is not null
+        ");
+
+        // extract out the query in the foreach loop
+        // and integrate them into the following query
+        // use the column value instead the object from findByPk within the loop
+        $referral_document_command = Yii::app()->db->createCommand("
+        select 
+            e.id as event_id
+            , p.id as patient_id
+            , UNIX_TIMESTAMP(e.event_date) as event_date
+            , UNIX_TIMESTAMP(wp.when) as 'when'
+        from event e
+        left join episode e2 on e.episode_id = e2.id
+        left join patient p on p.id = e2.patient_id
+        left join event_type e3 on e3.id = e.event_type_id
+        left join firm f on e2.firm_id = f.id
+        left join service_subspecialty_assignment ssa on ssa.id = f.service_subspecialty_assignment_id
+        left join et_ophcodocument_document eod on e.id = eod.event_id
+        left join ophcodocument_sub_types ost on eod.event_sub_type = ost.id
+        left join worklist_patient wp on p.id = wp.patient_id
+        left join worklist w on wp.worklist_id = w.id
+        where ost.name = 'Referral Letter'
+        and p.deleted <> 1 and e.deleted <> 1 and e2.deleted <> 1
+        and lower(e3.name) like lower('%document%')
+        and e.event_date = (
+            select MAX(e4.event_date) from event e4
+            left join episode e5 on e4.episode_id = e5.id
+            left join patient p2 on e5.patient_id = p2.id
+            left join event_type e6 ON e6.id = e4.event_type_id
+        WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0 
+        and lower(e3.name) like lower('%document%')
+        )
+
+        ");
         if ($diagnosis) {
             $command_filtered_patients_by_diagnosis = Yii::app()->db->createCommand()
                 ->select('dp.patient_id', 'distinct')
@@ -1295,15 +1355,18 @@ class AnalyticsController extends BaseController
         $current_time = time();
         foreach ($followup_elements as $followup_item) {
             /* Calculate the coming and overdue followups */
-            $event_time = Helper::mysqlDate2JsTimestamp($followup_item['event_date'])/1000;
+            $event_time = $followup_item['event_date'];
             if ( ($start_date && $event_time < $start_date) ||
                 ($end_date && $event_time > $end_date)) {
                 continue;
             }
-            $patient_worklist = $this->checkPatientWorklist($followup_item['patient_id']);
-            $latest_worklist_time = isset($patient_worklist) ? $patient_worklist/1000 : null;
+
+            $latest_worklist_time = isset($followup_item['start']) ? $followup_item['start']/1000 : null;
+
             $latest_time = isset($latest_worklist_time)? max($event_time, $latest_worklist_time):$event_time;
-            $due_time = Helper::mysqlDate2JsTimestamp($followup_item['due_date'])/1000;
+            
+            $due_time = $followup_item['due_date'];
+
             if ( $followup_item['weeks'] <= 0) {
                 if ($latest_time > $event_time) {
                     continue;
@@ -1431,15 +1494,14 @@ class AnalyticsController extends BaseController
         To calculate how long a patient will wait frm the date of referral to the date assigned in a worklist*/
         $referral_document_elements = $referral_document_command->queryAll();
         foreach ($referral_document_elements as $referral_element) {
-            //$current_patient = Patient::model()->findByPk($referral_element['patient_id']);
-            $current_referral_date = Helper::mysqlDate2JsTimestamp($referral_element['event_date']) / 1000;
+            $current_referral_date = $referral_element['event_date'];
             if ( ($start_date && $current_referral_date < $start_date) ||
                 ($end_date && $current_referral_date > $end_date)) {
                 continue;
             }
-            $current_patient_on_worklist = WorklistPatient::model()->findByAttributes(array('patient_id'=>$referral_element['patient_id']), array('order'=>'t.when ASC'));
+            $current_patient_on_worklist = $referral_element['when'];
             if (isset($current_patient_on_worklist) && !empty($current_patient_on_worklist)) {
-                $appointment_time = Helper::mysqlDate2JsTimestamp($current_patient_on_worklist->when)/1000;
+                $appointment_time = $referral_element['when'];
                 if ($appointment_time >= $current_referral_date) {
                     $waiting_time = ceil(($appointment_time - $current_referral_date) / self::WEEKTIME);
                 }
