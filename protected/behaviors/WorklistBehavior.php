@@ -1,3 +1,5 @@
+
+
 <?php
 /**
  * OpenEyes
@@ -39,7 +41,6 @@ class WorklistBehavior extends CBehavior
         $action = isset($event->params['action']) ? $event->params['action'] : null;
 
         if ($action && ($action->id === 'create') && $this->owner->event) {
-
             $patient_id = isset($this->owner->patient->id) ? $this->owner->patient->id : null;
             $worklist_patient_id = null;
 
@@ -65,7 +66,6 @@ class WorklistBehavior extends CBehavior
                 $this->owner->event->worklist_patient_id = $worklist_patient->id;
             } else {
                 $this->owner->event->worklist_patient_id = null;
-                $worklist_patient = null;
 
                 $search_past_days = (string)SettingMetadata::model()->getSetting('worklist_future_search_days');
                 $search_future_days = (string)SettingMetadata::model()->getSetting('worklist_past_search_days');
@@ -79,19 +79,17 @@ class WorklistBehavior extends CBehavior
                 }
 
                 // The nearest booked appointment from/to -30days(default)
-                if (!$worklist_patient) {
-                    $criteria = new \CDbCriteria();
-                    $criteria->addCondition('patient_id = :patient_id');
-                    $criteria->addCondition('t.when >= :start_date');
-                    $criteria->addCondition('t.when <= :end_date');
-                    $criteria->order = 'TIMESTAMPDIFF(MINUTE, t.when, NOW())';
-                    $criteria->params = [
-                        ':patient_id' => $patient_id,
-                        ':start_date' => date('Y-m-d 00:00:00', strtotime("-{$search_past_days} days")),
-                        ':end_date' => date('Y-m-d 23:59:59', strtotime("+{$search_future_days} days"))
-                    ];
-                    $worklist_patient = WorklistPatient::model()->find($criteria);
-                }
+                $criteria = new \CDbCriteria();
+                $criteria->addCondition('patient_id = :patient_id');
+                $criteria->addCondition('t.when >= :start_date');
+                $criteria->addCondition('t.when <= :end_date');
+                $criteria->order = 'TIMESTAMPDIFF(MINUTE, t.when, NOW())';
+                $criteria->params = [
+                    ':patient_id' => $patient_id,
+                    ':start_date' => date('Y-m-d 00:00:00', strtotime("-{$search_past_days} days")),
+                    ':end_date' => date('Y-m-d 23:59:59', strtotime("+{$search_future_days} days"))
+                ];
+                $worklist_patient = WorklistPatient::model()->find($criteria);
 
                 if ($worklist_patient) {
                     $this->owner->event->worklist_patient_id = $worklist_patient->id;
@@ -111,7 +109,6 @@ class WorklistBehavior extends CBehavior
          */
 
         if (isset(\Yii::app()->session['patientticket_ticket_ids']) && \Yii::app()->session['patientticket_ticket_ids']) {
-
             $patientticket_ticket_id = Yii::app()->session['patientticket_ticket_ids'];
             $ticket = Ticket::model()->findByPk($patientticket_ticket_id);
             $ticket_patient_id = null;
@@ -129,14 +126,37 @@ class WorklistBehavior extends CBehavior
             }
         }
 
-        // for Eye Casualty events, the only time the patient wont be added to todays Eye Casualty unbooked worklist is if they already have a "booked" eye casualty appointment for today
-        if($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE')) {
+        // if there is an event->worklist_patient_id we check if the worklist is EyeCasualty and is for today
+        $worklist_patient_today_AE = null;
+        if ($this->owner->event->worklist_patient_id) {
 
+            $criteria = new \CDbCriteria();
+
+            $criteria->with = ['worklist.displayContext.subspecialty'];
+            $criteria->together = true;
+            $criteria->addCondition('t.when >= :start_date');
+            $criteria->addCondition('t.when <= :end_date');
+            $criteria->addCondition('subspecialty.ref_spec = :subspecialty_ref_spec');
+            $criteria->addCondition('patient_id = :patient_id');
+
+            $criteria->params = [
+                ':patient_id' => $patient_id,
+                ':subspecialty_ref_spec' => "AE",
+                ':start_date' => date('Y-m-d 00:00:00'),
+                ':end_date' => date('Y-m-d 23:59:59')
+            ];
+
+            $worklist_patient_today_AE = \WorklistPatient::model()->find($criteria);
+        }
+
+        // for Eye Casualty events, the only time the patient wont be added to todays Eye Casualty unbooked worklist is if they already have a "booked" eye casualty appointment for today
+        if($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE' && !($worklist_patient_today_AE)) ) {
             $unbooked_worklist_manager = new \UnbookedWorklist();
             $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
+
             if ($unbooked_worklist) {
                 $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
-                if($worklist_patient) {
+                if ($worklist_patient) {
                     //event already saved here we need to set this indicidually
                     $this->owner->event->saveAttributes(['worklist_patient_id' => $worklist_patient->id]);
                 } else {

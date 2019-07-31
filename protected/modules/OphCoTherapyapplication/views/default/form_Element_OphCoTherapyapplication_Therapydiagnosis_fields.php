@@ -85,7 +85,9 @@ $layoutColumns = array('label' => 4, 'field' => 8);
         ));?>
     </div>
 </div>
-<div class="row<?php if (!array_key_exists($element->{$side.'_diagnosis1_id'}, $l2_disorders)) { echo ' hidden'; }?>" id="<?php echo $side ?>_diagnosis2_wrapper">
+<div class="row<?php if (!array_key_exists($element->{$side.'_diagnosis1_id'}, $l2_disorders)) {
+    echo ' hidden';
+               }?>" id="<?php echo $side ?>_diagnosis2_wrapper">
     <div class="cols-<?php echo $layoutColumns['label']?> column">
         <label for="<?php echo get_class($element).'_'.$side.'_diagnosis2_id';?>">
             <?php echo $element->getAttributeLabel($side.'_diagnosis2_id'); ?>:

@@ -19,7 +19,7 @@ use OEModule\OphCiExamination\models\PastSurgery_Operation;
 
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('PastSurgery.js') ?>"></script>
-<script type="text/javascript" src="<?= $this->getPublishedPath('../widgets/js','EyeSelector.js' , true) ?>"></script>
+<script type="text/javascript" src="<?= $this->getPublishedPath('../widgets/js', 'EyeSelector.js', true) ?>"></script>
 <?php
 $model_name = CHtml::modelName($element);
 ?>
@@ -78,7 +78,7 @@ $model_name = CHtml::modelName($element);
             }
             $api = $this->getApp()->moduleAPI->get('OphTrOperationnote');
 
-            foreach($api->getOperationsSummaryData($this->patient) as $operation){
+            foreach ($api->getOperationsSummaryData($this->patient) as $operation) {
                 $this->render(
                         'PastSurgery_OperationNote_event_edit',
                         array(
@@ -109,7 +109,7 @@ $model_name = CHtml::modelName($element);
                     'placeholder' => $element->getAttributeLabel('comments'),
                 )
             )
-            ?>
+                    ?>
             <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
         </div>
     </div>
@@ -118,7 +118,9 @@ $model_name = CHtml::modelName($element);
         <button id="<?= $model_name ?>-comment-button"
                 class="button js-add-comments"
                 data-comment-container="#<?= $model_name ?>-comments"
-                style="<?php if ($element->comments): ?>visibility: hidden;<?php endif; ?>"
+                style="<?php if ($element->comments) :
+                    ?>visibility: hidden;<?php
+                       endif; ?>"
                 type="button">
             <i class="oe-i comments small-icon"></i>
         </button>
@@ -159,7 +161,7 @@ $model_name = CHtml::modelName($element);
     $(document).ready(function () {
       controller = new OpenEyes.OphCiExamination.PreviousSurgeryController();
 
-      <?php  $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc')); ?>
+        <?php  $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc')); ?>
 
       var item_list = <?= CJSON::encode(
           array_map(function ($op_item) {

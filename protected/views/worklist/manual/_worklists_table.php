@@ -25,7 +25,6 @@
 
     foreach ($items as $item) {
         ?><tr class="draggablelist-item" data-item-id="<?= $item->id ?>"><td><?= $item->name ?></td></tr><?php
-
     }
 
     ?>

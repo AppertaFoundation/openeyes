@@ -104,7 +104,7 @@ class PastSurgery_Operation extends \BaseEventTypeElement
                 'class' => 'application.behaviors.OeDateFormat',
                 'date_columns' => [],
                 'fuzzy_date_field' => 'date']];
-        }
+    }
 
     /**
      * Checking whether side_id is not null

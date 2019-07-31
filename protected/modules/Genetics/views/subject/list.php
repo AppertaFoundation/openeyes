@@ -21,7 +21,7 @@
     <h2>Patients</h2>
 
     <div class="search-form">
-        <?php $this->renderPartial('_list_search',array(
+        <?php $this->renderPartial('_list_search', array(
             'model' => $model,
         ));  ?>
     </div><!-- search-form -->
@@ -31,7 +31,7 @@
     $item_count = GeneticsPatient::model()->count();
 
     //we do not display any results until the user click on the search button - and post his/her query
-    if( !Yii::app()->request->getQuery('GeneticsPatient')){
+    if ( !Yii::app()->request->getQuery('GeneticsPatient')) {
         $criteria = $dataProvider->getCriteria();
         $criteria->addCondition("1 != 1");
         $dataProvider->setCriteria($criteria);
@@ -72,8 +72,7 @@
                 'value' => function($data){
 
                     $family_ids = '';
-                    foreach($data->pedigrees as $pedigrees){
-
+                    foreach ($data->pedigrees as $pedigrees) {
                         $family_ids .= $family_ids ? '<br>' : '';
                         $family_ids .= CHtml::link($pedigrees->id, '/Genetics/pedigree/view/' . $pedigrees->id);
                     }
@@ -123,9 +122,9 @@
                 'header' => 'Affected status',
                 'type' => 'raw',
                 'value' => function($model){
-                    if($model->pedigrees){
+                    if ($model->pedigrees) {
                         $html = '';
-                        foreach($model->pedigrees as $pedigree){
+                        foreach ($model->pedigrees as $pedigree) {
                             $html .= $html ? '<br>' : '';
                             $gene = isset($pedigree->gene) ? ' (Gene: ' . $pedigree->gene->name . ')' : '';
                             $html .= '<a href="/Genetics/pedigree/view/' . $pedigree->id . '">' . $pedigree->id . $gene . '</a>';

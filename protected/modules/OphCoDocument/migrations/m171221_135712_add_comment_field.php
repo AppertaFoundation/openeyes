@@ -11,8 +11,8 @@ class m171221_135712_add_comment_field extends OEMigration
 
     public function down()
     {
-        $this->dropColumn('et_ophcodocument_document','comment');
-        $this->dropColumn('et_ophcodocument_document_version','comment');
+        $this->dropColumn('et_ophcodocument_document', 'comment');
+        $this->dropColumn('et_ophcodocument_document_version', 'comment');
     }
 
     /*

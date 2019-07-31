@@ -18,7 +18,7 @@
 ?>
 <div class="sub-element-fields">
   <div class="data-group" style="position: relative; z-index: 3">
-      <?php echo $form->radioButtons($element, 'eye_id',
+        <?php echo $form->radioButtons($element, 'eye_id',
           CHtml::listData(
               \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(),
               'id',
@@ -39,13 +39,13 @@
       <tr>
         <td>
           <div>
-              <?php
-              if ($active_check === 'on') {
-                  echo $form->checkbox($element, 'city_road', array('nowrapper' => true));
-                  echo $form->checkbox($element, 'satellite', array('nowrapper' => true));
-              }
-              ?>
-              <?php echo $form->checkbox($element, 'fast_track', array('nowrapper' => true)) ?>
+                <?php
+                if ($active_check === 'on') {
+                    echo $form->checkbox($element, 'city_road', array('nowrapper' => true));
+                    echo $form->checkbox($element, 'satellite', array('nowrapper' => true));
+                }
+                ?>
+                <?php echo $form->checkbox($element, 'fast_track', array('nowrapper' => true)) ?>
           </div>
         </td>
         <td></td>
@@ -69,12 +69,12 @@
       <tr class="flex-layout ">
         <td>
           <label for="<?php echo get_class($element) . '_suitable_for_surgeon_id'; ?>">
-              <?php echo $element->getAttributeLabel('suitable_for_surgeon_id') ?>:
+                <?php echo $element->getAttributeLabel('suitable_for_surgeon_id') ?>:
           </label>
         </td>
         <td class="flex-layout">
           <div class="cols-6">
-              <?php echo $form->dropDownList(
+                <?php echo $form->dropDownList(
                   $element,
                   'suitable_for_surgeon_id',
                   '\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_SuitableForSurgeon',
@@ -82,8 +82,8 @@
               ) ?>
           </div>
           <label class="inline cols-6" style="padding-left: 4px">
-              <?php echo $form->checkbox($element, 'supervised', array('nowrapper' => true, 'no-label' => true)) ?>
-              <?php echo $element->getAttributeLabel('supervised') ?>
+                <?php echo $form->checkbox($element, 'supervised', array('nowrapper' => true, 'no-label' => true)) ?>
+                <?php echo $element->getAttributeLabel('supervised') ?>
           </label>
         </td>
       </tr>
@@ -109,8 +109,8 @@
         </label>
     </div>
     <div class="cols-6 column">
-          <?php
-          echo $form->multiSelectList(
+            <?php
+            echo $form->multiSelectList(
               $element,
               'OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement[reasonForSurgery]',
               'reasonForSurgery',
@@ -128,8 +128,8 @@
               false,
               false,
               array('label' => 3, 'field' => 9)
-          );
-          ?>
+            );
+            ?>
     </div>
   </div>
 </div>

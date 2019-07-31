@@ -35,5 +35,5 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
           array('subspecialty' => $subspecialty)
       );
 
-    $this->endContent();
-?>
+      $this->endContent();
+        ?>

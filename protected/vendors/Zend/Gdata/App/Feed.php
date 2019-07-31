@@ -111,15 +111,15 @@ class Zend_Gdata_App_Feed extends Zend_Gdata_App_FeedSourceParent
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('atom') . ':' . 'entry':
-            $newEntry = new $this->_entryClassName($child);
-            $newEntry->setHttpClient($this->getHttpClient());
-            $newEntry->setMajorProtocolVersion($this->getMajorProtocolVersion());
-            $newEntry->setMinorProtocolVersion($this->getMinorProtocolVersion());
-            $this->_entry[] = $newEntry;
+            case $this->lookupNamespace('atom') . ':' . 'entry':
+                $newEntry = new $this->_entryClassName($child);
+                $newEntry->setHttpClient($this->getHttpClient());
+                $newEntry->setMajorProtocolVersion($this->getMajorProtocolVersion());
+                $newEntry->setMinorProtocolVersion($this->getMinorProtocolVersion());
+                $this->_entry[] = $newEntry;
             break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }

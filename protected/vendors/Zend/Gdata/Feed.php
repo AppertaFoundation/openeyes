@@ -133,23 +133,23 @@ class Zend_Gdata_Feed extends Zend_Gdata_App_Feed
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('openSearch') . ':' . 'totalResults':
-            $totalResults = new Zend_Gdata_Extension_OpenSearchTotalResults();
-            $totalResults->transferFromDOM($child);
-            $this->_totalResults = $totalResults;
+            case $this->lookupNamespace('openSearch') . ':' . 'totalResults':
+                $totalResults = new Zend_Gdata_Extension_OpenSearchTotalResults();
+                $totalResults->transferFromDOM($child);
+                $this->_totalResults = $totalResults;
             break;
-        case $this->lookupNamespace('openSearch') . ':' . 'startIndex':
-            $startIndex = new Zend_Gdata_Extension_OpenSearchStartIndex();
-            $startIndex->transferFromDOM($child);
-            $this->_startIndex = $startIndex;
+            case $this->lookupNamespace('openSearch') . ':' . 'startIndex':
+                $startIndex = new Zend_Gdata_Extension_OpenSearchStartIndex();
+                $startIndex->transferFromDOM($child);
+                $this->_startIndex = $startIndex;
             break;
-        case $this->lookupNamespace('openSearch') . ':' . 'itemsPerPage':
-            $itemsPerPage = new Zend_Gdata_Extension_OpenSearchItemsPerPage();
-            $itemsPerPage->transferFromDOM($child);
-            $this->_itemsPerPage = $itemsPerPage;
+            case $this->lookupNamespace('openSearch') . ':' . 'itemsPerPage':
+                $itemsPerPage = new Zend_Gdata_Extension_OpenSearchItemsPerPage();
+                $itemsPerPage->transferFromDOM($child);
+                $this->_itemsPerPage = $itemsPerPage;
             break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }
@@ -164,20 +164,19 @@ class Zend_Gdata_Feed extends Zend_Gdata_App_Feed
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'etag':
-            // ETags are special, since they can be conveyed by either the
-            // HTTP ETag header or as an XML attribute.
-            $etag = $attribute->nodeValue;
-            if ($this->_etag === null) {
-                $this->_etag = $etag;
-            }
-            elseif ($this->_etag != $etag) {
-                require_once('Zend/Gdata/App/IOException.php');
-                throw new Zend_Gdata_App_IOException("ETag mismatch");
-            }
+            case 'etag':
+                // ETags are special, since they can be conveyed by either the
+                // HTTP ETag header or as an XML attribute.
+                $etag = $attribute->nodeValue;
+                if ($this->_etag === null) {
+                    $this->_etag = $etag;
+                } elseif ($this->_etag != $etag) {
+                    require_once('Zend/Gdata/App/IOException.php');
+                    throw new Zend_Gdata_App_IOException("ETag mismatch");
+                }
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
             break;
         }
     }

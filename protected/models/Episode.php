@@ -473,11 +473,10 @@ class Episode extends BaseActiveRecordVersioned
         }
     }
 
-    public function setPrincipalDiagnosis($disorder_id, $eye_id , $disorder_date = false)
+    public function setPrincipalDiagnosis($disorder_id, $eye_id, $disorder_date = false)
     {
         if (!$disorder_date) {
             $disorder_date = date('Y-m-d');
-
         }
         $this->disorder_id = $disorder_id;
         $this->eye_id = $eye_id;
@@ -491,7 +490,7 @@ class Episode extends BaseActiveRecordVersioned
 
     public function getDisplayDate()
     {
-        if(!$this->disorder_date) {
+        if (!$this->disorder_date) {
             return null;
         }
         return \Helper::formatFuzzyDate($this->disorder_date);

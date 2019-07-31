@@ -312,13 +312,12 @@ class EventType extends BaseActiveRecordVersioned
         foreach (ElementType::model()->findAll($criteria) as $element_type) {
             $element_class = $element_type->class_name;
             $element  = new $element_class();
-            if(method_exists($element, "isEnabled")){
-                if(!$element->isEnabled()){
+            if (method_exists($element, "isEnabled")) {
+                if (!$element->isEnabled()) {
                     continue;
                 }
             }
             $elements[] = $element;
-            
         }
 
         return $elements;

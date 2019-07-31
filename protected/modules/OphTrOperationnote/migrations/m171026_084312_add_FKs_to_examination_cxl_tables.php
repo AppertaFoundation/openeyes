@@ -26,8 +26,8 @@ class m171026_084312_add_FKs_to_examination_cxl_tables extends OEMigration
         $this->addForeignKey('et_ophciexamination_keratometry_eye', 'et_ophciexamination_keratometry', 'eye_id', 'eye', 'id');
         $this->addForeignKey('et_ophciexamination_keratometry_tomographer', 'et_ophciexamination_keratometry', 'tomographer_id', 'ophciexamination_tomographer_device', 'id');
 
-        $this->dropColumn('et_ophciexamination_keratometry','tomographer_scan_quality_id');
-        $this->dropColumn('et_ophciexamination_keratometry_version','tomographer_scan_quality_id');
+        $this->dropColumn('et_ophciexamination_keratometry', 'tomographer_scan_quality_id');
+        $this->dropColumn('et_ophciexamination_keratometry_version', 'tomographer_scan_quality_id');
 
         $this->addForeignKey('et_ophciexamination_keratometry_rgf', 'et_ophciexamination_keratometry', 'right_quality_front', 'ophciexamination_cxl_quality_score', 'id');
         $this->addForeignKey('et_ophciexamination_keratometry_rgb', 'et_ophciexamination_keratometry', 'right_quality_back', 'ophciexamination_cxl_quality_score', 'id');
