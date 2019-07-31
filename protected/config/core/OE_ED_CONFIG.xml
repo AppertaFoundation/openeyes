@@ -2022,7 +2022,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           </INDEX_LIST>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Examiantion Allergies</PRIMARY_TERM>
+          <PRIMARY_TERM>Examination Allergies</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Allergies</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
@@ -2088,6 +2088,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_substance_misuse_id</GOTO_ID>
             </INDEX>
           </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Contacts</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Contacts</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Observations</PRIMARY_TERM>
@@ -2485,6 +2489,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           </SECONDARY_TERM_LIST>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure</OPEN_ELEMENT_CLASS_NAME>
           <GOTO_ID>OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_%position_values_0_reading_id</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>IOP History</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryIOP</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Drops</PRIMARY_TERM>
