@@ -665,7 +665,6 @@ class Patient extends BaseActiveRecordVersioned
             <?php foreach ($this->getOphthalmicDiagnosesSummary() as $diagnosis) : ?>
                 <?php list($side, $disorder_term, $date) = explode('~', $diagnosis, 3); ?>
                 <tr>
-                    <td><?= Helper::convertDate2NHS($date) ?></td>
                     <td><?= mb_strtoupper($side).' '.$disorder_term?></td>
                 </tr>
             <?php endforeach; ?>
