@@ -329,8 +329,8 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
           break;
         }
         // Class of deleted doodle
-        const deletedDoodle = msgArray['object'];
-        const deletedDoodleClass = deletedDoodle.className;
+        let deletedDoodle = msgArray['object'];
+        let deletedDoodleClass = deletedDoodle.className;
 
         // check if a pair doodle should be removed from secondary
         if (this.secondaryDrawingReady()) {
@@ -367,8 +367,8 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         }
         break;
       case 'parameterChanged':
-        const change = msgArray['object'];
-        const selectedDoodle = msgArray['selectedDoodle'];
+        let change = msgArray['object'];
+        let selectedDoodle = msgArray['selectedDoodle'];
         if (this.secondaryDoodlesLoaded) {
           if (this.options.pairArray[change.doodle.className] !== undefined) {
             // get the corresponding secondary doodle and it's sync parameter definitions
