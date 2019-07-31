@@ -14,5 +14,5 @@ module.exports = function(grunt) {
 		/* Load our custom grunt tasks */
 		grunt.loadTasks('./grunt/tasks');
 
-        grunt.registerTask('default', ['uglify', 'jshint']);
+        grunt.registerTask('default', ['uglify']);
 };

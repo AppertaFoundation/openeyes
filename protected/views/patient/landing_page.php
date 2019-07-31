@@ -291,6 +291,15 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                     </div>
                 </div>
             </section>
+
+            <section class="element view full ">
+                <header class="element-header">
+                    <h3 class="element-title">Problems &amp; Plans</h3>
+                </header>
+                <div class="element-data full-width">
+                    <?php $this->widget('application.widgets.PlansProblemsWidget', ['allow_save' => false, 'patient_id' => $this->patient->id]); ?>
+                </div>
+            </section>
         </div>
     </div>
 

@@ -1310,6 +1310,19 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
+        //event date
+        if (isset($data['Event']['event_date'])) {
+            $event = $this->event;
+            $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            if (!$event->validate()) {
+                foreach ($event->getErrors() as $errormsgs) {
+                    foreach ($errormsgs as $error) {
+                        $errors[$this->event_type->name][] = $error;
+                    }
+                }
+            }
+        }
+
         return $errors;
     }
 

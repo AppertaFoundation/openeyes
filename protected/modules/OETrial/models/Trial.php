@@ -119,7 +119,8 @@ class Trial extends BaseActiveRecordVersioned
   /*
   * Get the ethics number as a string
   */
-    public function getEthicsNumberForDisplay() {
+    public function getEthicsNumberForDisplay()
+    {
         return $this->ethics_number === null ? 'NA' : $this-> ethics_number;
     }
 
@@ -225,10 +226,11 @@ class Trial extends BaseActiveRecordVersioned
     public function hasShortlistedPatients()
     {
         return TrialPatient::model()->exists('trial_id = :trialId AND status_id = :patientStatus',
-        array(
-        ':trialId' => $this->id,
-        ':patientStatus' => TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id,
-        ));
+            array(
+                ':trialId' => $this->id,
+                ':patientStatus' => TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id,
+            )
+        );
     }
 
   /**
@@ -249,13 +251,13 @@ class Trial extends BaseActiveRecordVersioned
         return $dataProviders;
     }
 
-  /**
-   * Create a data provider for patients in the Trial
-   * @param TrialPatientStatus $patient_status The status of patients of
-   * @param string $sort_by The field name to sort by
-   * @param string $sort_dir The direction to sort the results by
-   * @return CActiveDataProvider The data provider of patients with the given status
-   */
+    /**
+     * Create a data provider for patients in the Trial
+     * @param TrialPatientStatus $patient_status The status of patients of
+     * @param string $sort_by The field name to sort by
+     * @param string $sort_dir The direction to sort the results by
+     * @return CActiveDataProvider The data provider of patients with the given status
+     */
     public function getPatientDataProvider($patient_status, $sort_by, $sort_dir)
     {
       // Get the column to sort by ('t' => trial_patient, p => patient, e => ethnic_group, c => contact))
@@ -264,51 +266,51 @@ class Trial extends BaseActiveRecordVersioned
             case 'Name':
             default:
                 $sortBySql = "c.last_name $sort_dir, c.first_name";
-            break;
+                break;
             case 'Gender':
                 $sortBySql = 'p.gender';
-            break;
+                break;
             case 'Age':
-                $sortBySql = 'NOW() - p.dob';
-            break;
+                $sortBySql = 'IFNULL(p.date_of_death, NOW()) - p.dob';
+                break;
             case 'Ethnicity':
                 $sortBySql = 'IFNULL(e.name, "Unknown")';
-            break;
+                break;
             case 'External Reference':
                 $sortBySql = 'ISNULL(t.external_trial_identifier), t.external_trial_identifier';
-            break;
+                break;
             case 'Treatment Type':
                 $sortBySql = 'ISNULL(treatment_type_id), t.treatment_type_id';
-            break;
+                break;
         }
-
-        $sortExpr = "$sortBySql $sort_dir, c.last_name ASC, c.first_name ASC";
-
-        $patientDataProvider = new CActiveDataProvider('TrialPatient', array(
-        'criteria' => array(
-        'condition' => 'trial_id = :trialId AND status_id = :patientStatus',
-        'join' => 'JOIN patient p ON p.id = t.patient_id
-                           JOIN contact c ON c.id = p.contact_id
-                           LEFT JOIN ethnic_group e ON e.id = p.ethnic_group_id',
-        'order' => $sortExpr,
-        'params' => array(
-          ':trialId' => $this->id,
-          ':patientStatus' => $patient_status->id,
-        ),
-        ),
-        'pagination' => array(
-        'pageSize' => 10,
-        ),
-        ));
-
-        return $patientDataProvider;
+  
+          $sortExpr = "$sortBySql $sort_dir, c.last_name ASC, c.first_name ASC";
+  
+          $patientDataProvider = new CActiveDataProvider('TrialPatient', array(
+          'criteria' => array(
+          'condition' => 'trial_id = :trialId AND status_id = :patientStatus',
+          'join' => 'JOIN patient p ON p.id = t.patient_id
+                             JOIN contact c ON c.id = p.contact_id
+                             LEFT JOIN ethnic_group e ON e.id = p.ethnic_group_id',
+          'order' => $sortExpr,
+          'params' => array(
+            ':trialId' => $this->id,
+            ':patientStatus' => $patient_status->id,
+          ),
+          ),
+          'pagination' => array(
+          'pageSize' => 10,
+          ),
+          ));
+  
+          return $patientDataProvider;
     }
-
-  /**
-   * Get a list of trials for a specific trial type. The output of this can be used to render drop-down lists.
-   * @param TrialType $type The trial type.
-   * @return array A list of trials of the specified trial type.
-   */
+  
+    /**
+     * Get a list of trials for a specific trial type. The output of this can be used to render drop-down lists.
+     * @param TrialType $type The trial type.
+     * @return array A list of trials of the specified trial type.
+     */
     public static function getTrialList($type)
     {
         if (!$type) {
@@ -316,8 +318,8 @@ class Trial extends BaseActiveRecordVersioned
         }
 
         return CHtml::listData(Trial::model()->findAll('trial_type_id=:type', array(':type' => $type)),
-        'id',
-        'name'
+            'id',
+            'name'
         );
     }
 
@@ -354,11 +356,11 @@ class Trial extends BaseActiveRecordVersioned
     public function removePatient($patient_id)
     {
         $trialPatient = TrialPatient::model()->find(
-        'patient_id = :patientId AND trial_id = :trialId',
-        array(
-          ':patientId' => $patient_id,
-          ':trialId' => $this->id,
-        )
+            'patient_id = :patientId AND trial_id = :trialId',
+            array(
+              ':patientId' => $patient_id,
+              ':trialId' => $this->id,
+            )
         );
 
         if ($trialPatient === null) {
@@ -375,7 +377,7 @@ class Trial extends BaseActiveRecordVersioned
     public function getUserPermission($user_id)
     {
         return @UserTrialAssignment::model()->find(
-        'user_id = :user_id AND trial_id = :trial_id',
+            'user_id = :user_id AND trial_id = :trial_id',
         array(':user_id' => $user_id, ':trial_id' => $this->id))->trialPermission;
     }
 
@@ -391,11 +393,12 @@ class Trial extends BaseActiveRecordVersioned
     public function addUserPermission($user_id, $permission, $role)
     {
         if (UserTrialAssignment::model()->exists(
-        'trial_id = :trialId AND user_id = :userId',
-        array(
-          ':trialId' => $this->id,
-          ':userId' => $user_id,
-        ))
+            'trial_id = :trialId AND user_id = :userId',
+            array(
+              ':trialId' => $this->id,
+              ':userId' => $user_id,
+            )
+        )
         ) {
             return self::RETURN_CODE_USER_PERMISSION_ALREADY_EXISTS;
         }
@@ -440,9 +443,9 @@ class Trial extends BaseActiveRecordVersioned
         if ($assignment->trialPermission->can_manage) {
             $managerCount = UserTrialAssignment::model()->count('trial_id = :trialId AND EXISTS (
             SELECT tp.id FROM trial_permission tp WHERE tp.id = trial_permission_id AND tp.can_manage)',
-            array(
-            ':trialId' => $this->id,
-            )
+                array(
+                ':trialId' => $this->id,
+                )
             );
 
             if ($managerCount <= 1) {
