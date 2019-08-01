@@ -137,17 +137,17 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
             'right' => array(),
         );
 
-				$exam_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Examination")), $this->patient);
-				$phasing_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Phasing")), $this->patient);
+                $exam_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Examination")), $this->patient);
+                $phasing_events = Event::model()->getEventsOfTypeForPatient(EventType::model()->find('name=:name', array(':name'=>"Phasing")), $this->patient);
 
         //add exam readings
         foreach ($exam_events as $exam_event) {
-						//Try to get correct element type
-						$iop = $exam_event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
-						//If successful
+                        //Try to get correct element type
+                        $iop = $exam_event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
+                        //If successful
             if ($iop) {
                 //Get timestamp and event type
-								$timestamp = Helper::mysqlDate2JsTimestamp($exam_event->event_date);
+                                $timestamp = Helper::mysqlDate2JsTimestamp($exam_event->event_date);
                 $event_type_name = strtolower(EventType::model()->findByPk($exam_event->event_type_id)->name);
                 foreach (['left', 'right'] as $side) {
                     $readings = $iop->getReadings($side);
@@ -239,84 +239,87 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
         //Declare unified event list and add all relevant events
 
-				$output = array();
+                $output = array();
 
-				if ($exam_events) {
-						foreach ($exam_events as $event) {
-								$iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
-								if($iop)
-										array_push($output, ...self::getExaminationReadingsFormatted($iop));
-						}
+        if ($exam_events) {
+            foreach ($exam_events as $event) {
+                        $iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
+                if ($iop) {
+                    array_push($output, ...self::getExaminationReadingsFormatted($iop));
+                }
+            }
         }
 
-			if ($phasing_events) {
-						foreach ($phasing_events as $event)
-						{
-								$iop = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
-								if($iop)
-										array_push($output, ...self::getPhasingReadingsFormatted($iop));
-						}
+        if ($phasing_events) {
+            foreach ($phasing_events as $event) {
+                $iop = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
+                if ($iop) {
+                        array_push($output, ...self::getPhasingReadingsFormatted($iop));
+                }
+            }
         }
 
         return $output;
     }
 
     static function getExaminationReadingsFormatted($iop_element)
-		{
-				$event_name = EventType::model()->findByPk($iop_element->event->event_type_id)->name;
+    {
+                $event_name = EventType::model()->findByPk($iop_element->event->event_type_id)->name;
 
-				if(!$event_name == 'Examination')
-						throw new Exception("Event should be of type examination. Got " . $event_name);
+        if (!$event_name == 'Examination') {
+                throw new Exception("Event should be of type examination. Got " . $event_name);
+        }
 
-				$readings_array = array();
+                $readings_array = array();
 
-				$iop_vals = ExamModels\OphCiExamination_IntraocularPressure_Value::model()->findAll("element_id=:element_id", array(":element_id" => $iop_element->id));
+                $iop_vals = ExamModels\OphCiExamination_IntraocularPressure_Value::model()->findAll("element_id=:element_id", array(":element_id" => $iop_element->id));
 
-				foreach ($iop_vals as $reading) {
-						$side = strtolower($reading->eye);
+        foreach ($iop_vals as $reading) {
+                $side = strtolower($reading->eye);
 
-						$readings_array[] = array(
-								'event_id' => $iop_element->event_id,
-								'event_name' => $event_name,
-								'event_date' => $iop_element->event->event_date,
-								'eye' => $side,
-								'instrument_name' => $reading->instrument->name,
-								'dilated' => 'N/A',
-								'reading_value' => self::getFormattedReading($reading->reading->value, $reading->reading_time,'mmHg'),
-								'comments' => $iop_element->{$side . '_comments'}
-						);
-				}
+                $readings_array[] = array(
+                        'event_id' => $iop_element->event_id,
+                        'event_name' => $event_name,
+                        'event_date' => $iop_element->event->event_date,
+                        'eye' => $side,
+                        'instrument_name' => $reading->instrument->name,
+                        'dilated' => 'N/A',
+                        'reading_value' => self::getFormattedReading($reading->reading->value, $reading->reading_time, 'mmHg'),
+                        'comments' => $iop_element->{$side . '_comments'}
+                );
+        }
 
 
-			return $readings_array;
-		}
+            return $readings_array;
+    }
 
     static function getPhasingReadingsFormatted($iop_element)
-		{
-				$event_name = EventType::model()->findByPk($iop_element->event->event_type_id)->name;
+    {
+                $event_name = EventType::model()->findByPk($iop_element->event->event_type_id)->name;
 
-				if(!$event_name == 'Phasing')
-					throw new Exception("Event should be of type phasing. Got " . $event_name);
+        if (!$event_name == 'Phasing') {
+            throw new Exception("Event should be of type phasing. Got " . $event_name);
+        }
 
-				$readings_array = array();
+                $readings_array = array();
 
-				foreach ($iop_element->readings as $reading) {
-						$side = strtolower($reading->getSideAsString());
+        foreach ($iop_element->readings as $reading) {
+                $side = strtolower($reading->getSideAsString());
 
-						$readings_array[] = array(
-								'event_id' => $iop_element->event_id,
-								'event_name' => $event_name,
-								'event_date' => $iop_element->event->event_date,
-								'eye' => $side,
-								'instrument_name' => $iop_element->{$side . '_instrument'}->name,
-								'dilated' => $iop_element->{$side . '_dilated'} == 1 ? 'Yes' : 'No',
-								'reading_value' => self::getFormattedReading($reading->value, $reading->measurement_timestamp, 'mmHg'),
-								'comments' => $iop_element->{$side . '_comments'}
-						);
-				}
+                $readings_array[] = array(
+                        'event_id' => $iop_element->event_id,
+                        'event_name' => $event_name,
+                        'event_date' => $iop_element->event->event_date,
+                        'eye' => $side,
+                        'instrument_name' => $iop_element->{$side . '_instrument'}->name,
+                        'dilated' => $iop_element->{$side . '_dilated'} == 1 ? 'Yes' : 'No',
+                        'reading_value' => self::getFormattedReading($reading->value, $reading->measurement_timestamp, 'mmHg'),
+                        'comments' => $iop_element->{$side . '_comments'}
+                );
+        }
 
-				return $readings_array;
-		}
+                return $readings_array;
+    }
 
     //Function for formatting reading values for drillthrough list
     static function getFormattedReading($reading_value, $timestamp, $reading_unit)

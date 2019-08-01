@@ -174,9 +174,9 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
     }
 
     public function getSideAsString()
-		{
-				return \Eye::model()->findByPk($this->eye_id)->name;
-		}
+    {
+                return \Eye::model()->findByPk($this->eye_id)->name;
+    }
 
     public function getReadings($side)
     {

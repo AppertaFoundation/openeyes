@@ -1,6 +1,6 @@
 <?php $coreAPI = new CoreAPI();
       $operation_API = new OphTrOperationnote_API();
-      ?>
+?>
 <div class="analytics-patient-list" style="display: none;" >
     <div class="flex-layout">
         <h3 id="js-list-title">List of Events</h3>
