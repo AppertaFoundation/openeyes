@@ -39,7 +39,7 @@
     // to drill through data from chart
     $('.js-plot-display-label').click(function () {
         $('.analytics-patient-list').show();
-        $('#js-back-to-chart').show();      
+        $('#js-back-to-chart').show();
         $('#oescape-layout').hide();
     });
     //back to chart from drill through data
@@ -51,7 +51,7 @@
 
     //call the initialization for the data here so that it gets called
     InitDrillThroughData();
-    
+
     function DisplayDrillThroughData(id){
         //display relevant content
         $('.event_'+id).show();
@@ -73,7 +73,7 @@
             data_row += "<td  style='vertical-align: center;'>"+iop_plotly_data[i]["event_id"]+"</td> <!-- Event ID -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["event_name"]+"</td> <!-- Event type -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["eye"]+"</td><!-- Eye -->";
-            data_row += " <td style='vertical-align: center;'>"+iop_plotly_data[i]["instrument_name"]+"</td><!-- Instrument -->";
+            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["instrument_name"]+"</td><!-- Instrument -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["dilated"]+"</td><!-- Dilated -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["reading_value"]+"</td><!-- Value -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["comments"]+"</td><!-- Comments -->";

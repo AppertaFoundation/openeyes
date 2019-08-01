@@ -17,6 +17,8 @@
 	//plotly
     var iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
 
+    console.log(iop_plotly_data);
+
 		for (var side of sides) {
 			var layout_iop = JSON.parse(JSON.stringify(layout_plotly));
 			layout_iop['shapes'] = [];
