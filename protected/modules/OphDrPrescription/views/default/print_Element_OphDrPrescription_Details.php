@@ -235,19 +235,18 @@ foreach ($items_data as $group => $items) { ?>
 							<?= $this->patient->contact->address->city ?>
 							<?= $this->patient->contact->address->county ? '<br/>' : null ?>
 							<?= $this->patient->contact->address->county ?>
-							<span id="fpten-postcode"><?= ($data['print_mode'] === 'FP10') ? $this->patient->contact->address->postcode : null ?></span><br/>
-							<?= ($data['print_mode'] === 'WP10') ? $this->patient->contact->address->postcode : null ?>
+							<span id="fpten-postcode"><?= $this->patient->contact->address->postcode?></span>
 						</div>
 					</div>
 					<div class="fpten-form-row">
 							<div id="fpten-nhs" class="fpten-form-column">
-								<span id="fpten-nhs-text"><?= $this->patient->nhs_num ?></span>
+								<span id="fpten-nhs-text"><?= ($data['print_mode'] === 'WP10') ? 'NHS Number: ' . $this->patient->nhs_num : $this->patient->nhs_num ?></span>
 							</div>
 					</div>
 					<?php if ($data['print_mode'] === 'WP10'): ?>
 						<div class="fpten-form-row">
 							<div id="wpten-prescriber" class="fpten-form-column">
-								<!--HOSPITAL DOCTOR<br/>MEDDYG YSBYTY>&nbsp;<br/>&nbsp;<br/>-->
+								<!--HOSPITAL YSBYTY-->
 							</div>
 						</div>
 					<?php endif; ?>
@@ -285,8 +284,7 @@ foreach ($items_data as $group => $items) { ?>
 								endforeach; ?>
 								<div class="fpten-prescription-list-filler">
 									<?php for ($i = 0; $i < MAX_FPTEN_LINES - $prescription_lines_used; $i++): ?>
-										<br/>
-										<?= ($side === 'left') ? 'x' : 'GP COPY' ?>
+										<br/><?= ($side === 'left') ? 'x' : 'GP COPY' ?>
 									<?php endfor;?>
 								</div>
 							</div>
@@ -329,7 +327,7 @@ foreach ($items_data as $group => $items) { ?>
 					<div id="fpten-site-code" class="fpten-form-column">
 						<span id="fpten-trust-code"><?= $data['user']->registration_code ?></span>
 					</div>
-					<?= ($side === 'left') ? '<span class="fpten-form-column fpten-prescriber-code">HP</span>' : null ?>
+					<span class="fpten-form-column fpten-prescriber-code">HP</span>
 				<?php endif; ?>
 			</div>
 	</div>
