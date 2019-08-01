@@ -660,7 +660,7 @@ class ElementLetter extends BaseEventTypeElement
             );
         }
 
-        if(isset($_POST['attachments_event_id'])){
+        if (isset($_POST['attachments_event_id'])) {
 
             $attachments_last_event_id = Yii::app()->request->getPost('attachments_event_id');
             $attachments_system_hidden = Yii::app()->request->getPost('attachments_system_hidden');
@@ -670,7 +670,7 @@ class ElementLetter extends BaseEventTypeElement
             $attachments_protected_file_id = Yii::app()->request->getPost('file_id');
             $attachments_display_title = Yii::app()->request->getPost('attachments_display_title');
 
-            if( isset( $attachments_last_event_id )){
+            if (isset( $attachments_last_event_id )) {
                 $order = 1;
                 foreach($attachments_last_event_id as $key => $last_event){
 
