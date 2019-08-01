@@ -16,9 +16,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 Yii::app()->clientScript->registerCssFile(Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets')) . '/css/fpten.css');
-?>
-<div id="fpten-container">
-    <?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy, 'print_mode' => $print_mode, 'user' => $user)); ?>
-</div>
+$this->renderOpenElements($this->action->id, null, array('copy' => @$copy, 'print_mode' => $print_mode, 'user' => $user));
 
 

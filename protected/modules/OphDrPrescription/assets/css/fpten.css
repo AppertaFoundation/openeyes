@@ -12,11 +12,11 @@ body {
     margin: 0;
 }
 
-#fpten-container {
+.fpten-container {
     font-family: arial, sans-serif;
     font-weight: bold;
     font-size: 7.5pt;
-    padding: 3mm 3mm 3mm 3mm;
+    padding: 3mm 3mm 0 3mm;
     width: 105mm;
     height: 170mm;
     vertical-align: middle;
@@ -45,7 +45,7 @@ body {
 #fpten-site, #wpten-site {
     text-align: left;
     height: 31mm;
-    width: 52mm;
+    width: 42mm;
     margin-left: 14mm;
     padding-top: 2mm;
     padding-left: 3mm;
@@ -53,7 +53,6 @@ body {
 }
 
 #fpten-site {
-    width: 42mm;
     font-weight: bold;
 }
 
@@ -87,25 +86,31 @@ body {
     text-align: left;
     padding-top: 5mm;
     padding-left: 2mm;
-    height: 26mm;
-}
-
-#fpten-patient-details {
-    height: 26mm;
-    width: 29mm;
+    height: 16mm;
+		width: 50mm;
 }
 
 /*Postcode is right-aligned to the edge of the parent box.*/
-#fpten-postcode-nhs {
-    text-align: left;
-    height: 26mm;
-    padding-top: 5mm;
+#fpten-nhs {
+    height: 5mm;
+		width: 50mm;
+		padding-top: 2mm;
+}
+
+#fpten-nhs-text {
+	float: right;
+	text-align: left;
+}
+
+#fpten-postcode {
+	text-align: left;
+	float: right;
 }
 
 /*Prescriber initiative appears at top of main box in the center*/
 #fpten-prescriber {
     height: 10mm;
-    width: 51mm;
+    width: 52mm;
     margin-left: 30mm;
     text-align: center;
     font-size: 8pt;
@@ -135,12 +140,8 @@ body {
     padding-left: 2mm;
     padding-top: 1mm;
     height: 64mm;
-    width: 72mm;
-    margin-left: 30mm;
-}
-
-#fpten-prescription-list {
     width: 50mm;
+    margin-left: 30mm;
 }
 
 .fpten-prescription-item {
@@ -148,7 +149,11 @@ body {
     border-bottom: 1px solid;
 }
 
-#wpten-doctor-name {
+.fpten-prescription-list-filler {
+	text-align: center;
+}
+
+#fpten-doctor-name {
     width: 39mm;
     height: 12mm;
     margin-left: 30mm;

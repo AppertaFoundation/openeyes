@@ -18,6 +18,8 @@
 ?>
 <?php
 
+const MAX_FPTEN_LINES = 20;
+
 $copy = $data['copy'];
 
 $header_text = null;
@@ -207,122 +209,132 @@ foreach ($items_data as $group => $items) { ?>
   <?php endif; ?>
 <?php else: ?>
 <div class="fpten-form-row">
-  <div class="fpten-form-column">
-    <div class="fpten-form-row">
-      <div id="fpten-age" class="fpten-form-column">
-          <?= $this->patient->getAge() . 'y' ?>
-      </div>
-    </div>
-    <div class="fpten-form-row">
-      <div id="fpten-dob" class="fpten-form-column">
-          <?= Helper::convertDate2Short($this->patient->dob) ?>
-      </div>
-    </div>
-  </div>
-  <div class="fpten-form-column">
-    <div class="fpten-form-row">
-      <div id="<?= $form_css_class ?>-patient-details" class="fpten-form-column">
-          <?=$this->patient->fullname ?><br/>
-          <?= $this->patient->contact->address->address1 ?>
-          <?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
-          <?= $this->patient->contact->address->address2 ?><br/>
-          <?= $this->patient->contact->address->city ?>
-          <?= $this->patient->contact->address->county ? '<br/>' : null ?>
-          <?= $this->patient->contact->address->county ?><br/>
-          <?= ($data['print_mode'] === 'WP10') ? $this->patient->contact->address->postcode : null ?>
-      </div>
-      <?php if ($data['print_mode'] === 'FP10'): ?>
-      <div id="fpten-postcode-nhs" class="fpten-form-column">
-        <br/><br/>
-          <?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
-        <br/>
-        <br/>
-          <?= $this->patient->contact->address->county ? '<br/>' : null ?>
-          <?= ($data['print_mode'] === 'FP10') ? $this->patient->contact->address->postcode : null ?>
-        <br/>
-        <br/>
-          <?= ($data['print_mode'] === 'FP10') ? $this->patient->nhs_num : null?>
-      </div>
-      <?php endif; ?>
-    </div>
-      <?php if ($data['print_mode'] === 'WP10'): ?>
-        <div class="fpten-form-row">
-          <div id="wpten-prescriber" class="fpten-form-column">
-            <!--HOSPITAL DOCTOR<br/>MEDDYG YSBYTY>&nbsp;<br/>&nbsp;<br/>-->
-          </div>
-        </div>
-      <?php endif; ?>
-  </div>
+		<?php foreach (array('left', 'right') as $side):
+			$prescription_lines_used = 0;?>
+	<div class="fpten-container fpten-form-column">
+			<div class="fpten-form-row">
+				<div class="fpten-form-column">
+					<div class="fpten-form-row">
+						<div id="fpten-age" class="fpten-form-column">
+							<?= $this->patient->getAge() . 'y' ?>
+						</div>
+					</div>
+					<div class="fpten-form-row">
+						<div id="fpten-dob" class="fpten-form-column">
+							<?= Helper::convertDate2Short($this->patient->dob) ?>
+						</div>
+					</div>
+				</div>
+				<div class="fpten-form-column">
+					<div class="fpten-form-row">
+						<div id="<?= $form_css_class ?>-patient-details" class="fpten-form-column">
+							<?=$this->patient->fullname ?><br/>
+							<?= $this->patient->contact->address->address1 ?>
+							<?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
+							<?= $this->patient->contact->address->address2 ?><br/>
+							<?= $this->patient->contact->address->city ?>
+							<?= $this->patient->contact->address->county ? '<br/>' : null ?>
+							<?= $this->patient->contact->address->county ?>
+							<span id="fpten-postcode"><?= ($data['print_mode'] === 'FP10') ? $this->patient->contact->address->postcode : null ?></span><br/>
+							<?= ($data['print_mode'] === 'WP10') ? $this->patient->contact->address->postcode : null ?>
+						</div>
+					</div>
+					<div class="fpten-form-row">
+							<div id="fpten-nhs" class="fpten-form-column">
+								<span id="fpten-nhs-text"><?= $this->patient->nhs_num ?></span>
+							</div>
+					</div>
+					<?php if ($data['print_mode'] === 'WP10'): ?>
+						<div class="fpten-form-row">
+							<div id="wpten-prescriber" class="fpten-form-column">
+								<!--HOSPITAL DOCTOR<br/>MEDDYG YSBYTY>&nbsp;<br/>&nbsp;<br/>-->
+							</div>
+						</div>
+					<?php endif; ?>
+				</div>
+			</div>
+
+				<div class="fpten-form-row">
+					<div class="fpten-form-column">
+						<?php if ($data['print_mode'] === 'FP10'): ?>
+						<div id="fpten-prescriber" class="fpten-form-row">
+							HOSPITAL PRESCRIBER
+						</div>
+						<?php endif; ?>
+						<div class="fpten-form-row">
+							<div id="<?= $form_css_class ?>-prescription-list" class="fpten-form-column">
+								<?php
+								foreach ($this->groupItems($element->items) as $group => $items):
+									$group_name = OphDrPrescription_DispenseCondition::model()->findByPk($group)->name;
+									if (str_replace('{form_type}', $data['print_mode'], $group_name) === 'Print to ' . $data['print_mode']):
+										foreach ($items as $item):
+											?>
+											<div class="fpten-prescription-item">
+												<?= $item->drug->label ?>
+												<br/>
+												Dose: <?= is_numeric($item->dose) ? ($item->dose . ' ' . $item->drug->dose_unit) : $item->dose?>
+												<br/>
+												Frequency: <?= $item->frequency->long_name ?>
+												<br/>
+												<br/>
+											</div>
+											<?php
+											$prescription_lines_used += 5;
+										endforeach;
+									endif;
+								endforeach; ?>
+								<div class="fpten-prescription-list-filler">
+									<?php for ($i = 0; $i < MAX_FPTEN_LINES - $prescription_lines_used; $i++): ?>
+										<br/>
+										<?= ($side === 'left') ? 'x' : 'GP COPY' ?>
+									<?php endfor;?>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php if ($side === 'left'): ?>
+					<span class="fpten-form-column fpten-prescriber-code">HP</span>
+					<?php endif; ?>
+				</div>
+			<div class="fpten-form-row">
+				<div id="fpten-doctor-name" class="fpten-form-column">
+					<?= $data['user']->getFullNameAndTitle() ?>
+				</div>
+			</div>
+			<div class="fpten-form-row">
+				<div id="fpten-date" class="fpten-form-column">
+					<?= date('d/m/y') ?>
+				</div>
+			</div>
+			<div class="fpten-form-row">
+				<div id="<?= $form_css_class ?>-site" class="fpten-form-column">
+					<?= $this->firm->name ?>
+					<br/>
+					<?= $this->site->name ?>
+					<br/>
+					<?= $this->site->contact->address->address1 ?>
+					<?= $this->site->contact->address->address2 ? '<br/>' : null ?>
+					<?= $this->site->contact->address->address2 ?>
+					<br/>
+					<?= $this->site->contact->address->city ?>
+					<?= $this->site->contact->address->county ? '<br/>' : null ?>
+					<?= $this->site->contact->address->county ?>
+					<br/>
+					<?= $this->site->contact->address->postcode ?> <br/>
+					<?= $this->site->contact->primary_phone ?>
+					<br/>
+					<?= $this->site->institution->name ?>
+				</div>
+				<?php if  ($side === 'left'): ?>
+					<div id="fpten-site-code" class="fpten-form-column">
+						<span id="fpten-trust-code"><?= $data['user']->registration_code ?></span>
+					</div>
+					<?= ($side === 'left') ? '<span class="fpten-form-column fpten-prescriber-code">HP</span>' : null ?>
+				<?php endif; ?>
+			</div>
+	</div>
+		<?php endforeach; ?>
 </div>
-<?php if ($data['print_mode'] === 'FP10'): ?>
-<div class="fpten-form-row">
-  <div id="fpten-prescriber" class="fpten-form-column">
-      HOSPITAL PRESCRIBER
-  </div>
-  <span class="fpten-form-column fpten-prescriber-code">HP</span>
-</div>
-<?php endif; ?>
-<div class="fpten-form-row">
-  <div id="<?= $form_css_class ?>-prescription-list" class="fpten-form-column">
-      <?php
-      foreach ($this->groupItems($element->items) as $group => $items):
-          $group_name = OphDrPrescription_DispenseCondition::model()->findByPk($group)->name;
-          if (str_replace('{form_type}', $data['print_mode'], $group_name) === 'Print to ' . $data['print_mode']):
-              foreach ($items as $item):
-                  ?>
-              <div class="fpten-prescription-item">
-                  <?= $item->drug->label ?>
-                <br/>
-                  <?= is_numeric($item->dose) ? ($item->dose . ' ' . $item->drug->dose_unit . ' ' . $item->frequency->long_name) : $item->dose . ' ' . $item->frequency->long_name ?>
-                <br/><br/>
-              </div>
-              <?php endforeach;
-          endif;
-      endforeach;?>
-  </div>
-</div>
-<div class="fpten-form-row">
-  <div id="wpten-doctor-name" class="fpten-form-column">
-      <?= $data['user']->getFullNameAndTitle() ?>
-  </div>
-</div>
-<div class="fpten-form-row">
-  <div id="fpten-date" class="fpten-form-column">
-    <?= date('d/m/y') ?>
-  </div>
-</div>
-<div class="fpten-form-row">
-  <div id="<?= $data['print_mode'] === 'FP10' ? 'fpten-site' : 'wpten-site' ?>" class="fpten-form-column">
-      <?= $this->firm->name ?>
-    <br/><br/>
-      <?= $this->site->name ?>
-    <br/>
-      <?= $this->site->contact->address->address1 ?>
-      <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
-      <?= $this->site->contact->address->address2 ?>
-    <br/>
-      <?= $this->site->contact->address->city ?>
-      <?= $this->site->contact->address->county ? '<br/>' : null ?>
-      <?= $this->site->contact->address->county ?>
-    <br/>
-      <?= ($data['print_mode'] === 'WP10') ? $this->site->contact->address->postcode . '<br/>' : null ?>
-      <?= $this->site->contact->primary_phone ?>
-    <br/>
-      <?= $this->site->institution->name ?>
-  </div>
-    <?php if  ($data['print_mode'] === 'FP10'): ?>
-  <div id="fpten-site-code" class="fpten-form-column">
-    <span id="fpten-trust-code"><?= $data['user']->registration_code ?></span>
-    <br/>
-    <br/>
-      <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
-    <br/>
-      <?= $this->site->contact->address->county ? '<br/>' : null ?>
-      <?= $this->site->contact->address->postcode ?>
-    <br/>
-  </div>
-  <?= ($data['print_mode'] === 'FP10') ? '<span class="fpten-form-column fpten-prescriber-code">HP</span>' : null ?>
-    <?php endif; ?>
-</div>
+
 
 <?php endif; ?>
