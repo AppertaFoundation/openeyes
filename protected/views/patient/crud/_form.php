@@ -489,7 +489,7 @@ foreach ($ethnic_list as $key=>$item){
       </table>
     </div>
     <div class="row flex-layout">
-        <?= CHtml::link('Back to Previous Screen', ( $patient->isNewRecord ? Yii::app()-> baseURL . '/' : Yii::app()->createUrl($prevUrl) ), array('class' => 'button blue hint')); ?>
+        <?= CHtml::link('Cancel', ( $patient->isNewRecord ? Yii::app()-> baseURL . '/' : Yii::app()->createUrl($prevUrl) ), array('class' => 'button blue hint')); ?>
         <?= CHtml::submitButton($patient->isNewRecord ? 'Create new patient' : 'Save patient',
             array('class' => 'button green hint')); ?>
     </div>
