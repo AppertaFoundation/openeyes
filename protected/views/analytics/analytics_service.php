@@ -5,11 +5,8 @@
     function constructPlotlyData(service_data) {
         var service_layout = JSON.parse(JSON.stringify(analytics_layout));
         service_layout['xaxis']['rangemode'] = 'nonnegative';
-        service_layout['xaxis']['dtick'] = 5;
-        service_layout['xaxis']['range'] = [0, 80];
         service_layout['yaxis']['title'] = 'Patient count';
         service_layout['yaxis']['tickformat'] = 'd';
-        service_layout['yaxis']['dtick'] = 1;
 
         var overdue_data = {
             name: "Overdue followups",
