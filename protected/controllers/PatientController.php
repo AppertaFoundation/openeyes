@@ -2060,7 +2060,7 @@ class PatientController extends BaseController
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id the ID of the model to be updated
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $prevUrl)
     {
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
 
@@ -2213,6 +2213,7 @@ class PatientController extends BaseController
             'referral' => $referral,
             'patientuserreferral' => $patient_user_referral,
             'patient_identifiers' => $patient_identifiers,
+            'prevUrl'=>$prevUrl,
         ));
     }
 

@@ -126,7 +126,7 @@ $deceased = $this->patient->isDeceased();
                 <div class="patient-local-edit js-patient-local-edit-btn"
                 <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials))  echo 'style ="top: 35px; right: 0px"'?>
                 >
-                    <a href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>" >
+                    <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id'=>$this->patient->id, 'prevUrl'=>Yii::app()->request->url)); ?>" >
                         <svg viewBox="0 0 30 30" class="icon">
                             <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
                         </svg>
