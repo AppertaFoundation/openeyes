@@ -291,8 +291,10 @@ $(document).ready(function() {
         }
 
         // ajax call to create php cookie
-        $.get(baseUrl + '/OphCoCorrespondence/Default/savePrint?event_id='+OE_event_id, function(){
-            $('#'+event_form ).submit();
+        $.get(baseUrl + '/OphCoCorrespondence/Default/savePrint?event_id='+OE_event_id, function() {
+			// we need to know which button was clicked in ElementLetter.php, and the button doesn't get posted outside of the form
+			$('#'+event_form ).append( $('<input>', {type: 'hidden', name: 'saveprint', value: '1'}) );
+			$('#'+event_form ).submit();
         });
     });
 

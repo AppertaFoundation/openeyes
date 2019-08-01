@@ -980,26 +980,11 @@ class ElementLetter extends BaseEventTypeElement
      */
     public function getToAddress()
     {
-        $print_target_id = [];
-        $print_output = $this->getOutputByType();
-        if ($print_output) {
-            foreach ($print_output as $print_target) {
-                $print_target_id[] = $print_target->document_target_id;
-            }
-        }
-
         if($this->document_instance && $this->document_instance[0]->document_target) {
-
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
-                    if ($print_target_id) {
-                        if (in_array($target->ToCc, ['To', 'Cc']) && in_array($target->id, $print_target_id)) {
-                            return $target->contact_name . "\n" . $target->address;
-                        }
-                    } else {
-                        if ($target->ToCc == 'To') {
-                            return $target->contact_name . "\n" . $target->address;
-                        }
+                    if ($target->ToCc == 'To') {
+                        return $target->contact_name . "\n" . $target->address;
                     }
                 }
             }

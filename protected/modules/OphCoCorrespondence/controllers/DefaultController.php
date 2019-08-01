@@ -475,7 +475,7 @@ class DefaultController extends BaseEventTypeController
         $recipients = array();
 
         // after "Save and Print" button clicked we only print out what the user checked
-        if( isset($_GET['OphCoCorrespondence_print_checked']) && $_GET['OphCoCorrespondence_print_checked'] == "1" ){
+        if (Yii::app()->user->getState('correspondece_element_letter_saved', true)) {
 
             // check if the first recipient is GP
             $docunemt_instance = $letter->document_instance[0];
@@ -529,8 +529,8 @@ class DefaultController extends BaseEventTypeController
                     $recipients[] = $letter_address;
                 }
             }
-
         }
+
         return $recipients;
 
     }
