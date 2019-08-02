@@ -262,6 +262,7 @@ $(document).ready(function() {
 
         var event_button = $(this);
         var event_form = event_button.attr('form');
+		$('#ElementLetter_draft').val(0);
 
         // ajax call to create php cookie
         $.get(baseUrl + '/OphCoCorrespondence/Default/savePrint?event_id='+OE_event_id, function() {
