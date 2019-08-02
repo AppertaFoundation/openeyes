@@ -689,7 +689,16 @@ $this->renderPartial('../patient/crud/create_contact_form',
                     $('.'+id).append(response.content);
                 }
                 $('#js-remove-extra-gp-'+response.gp_id).click(function(){
-                    $(this).parent('li').remove();
+                    // If else condition is added to handle both the cases (i.e. when removing contact/gp) as they have been implemented differently.
+                    if(id == 'js-selected_gp'){
+                        // For Gp
+                        $(this).parent('li').find('span').text('');
+                        $(this).parent('li').find('input').remove();
+                        $(this).parent('li').hide();
+                    } else {
+                        // For contacts
+                        $(this).parent('li').remove();
+                    }
                 });
                 if(id == 'js-selected_gp'){
                     var wrapper = $('#selected_gp_wrapper');

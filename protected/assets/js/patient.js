@@ -1,6 +1,7 @@
 // change the function name from addItem to addItemP
 function addItemPatientForm(wrapper_id, ui, updatePracticeId = false) {
   var $wrapper = $('#' + wrapper_id);
+  $wrapper.find('li').show();
   $wrapper.find('.js-name').text(ui.item.label);
   if (updatePracticeId) {
     $('#Patient_practice_id').val(ui.item.practiceId);
