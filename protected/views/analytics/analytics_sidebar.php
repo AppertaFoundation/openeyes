@@ -406,7 +406,7 @@
     function getDataFilters(){
         var specialty = "<?=$specialty;?>";
         var side_bar_user_list = <?=CJavaScript::encode($side_bar_user_list);?>;
-        var service_common_disorders = <?=CJavaScript::encode($common_disorders);?>;
+        var service_common_disorders = JSON.parse(<?=json_encode($common_disorders);?>);
         var mr_custom_diagnosis = ['AMD(wet)', 'BRVO', 'CRVO', 'DMO'];
         var gl_custom_diagnosis = ['Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension'];
         var mr_custom_treatment = ['Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex'];

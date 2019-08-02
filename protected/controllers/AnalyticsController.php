@@ -99,8 +99,8 @@ class AnalyticsController extends BaseController
         $this->render('/analytics/analytics_container',
             array(
                 'specialty'=>'All',
-                'service_data'=> $follow_patient_list,
-                'clinical_data' => $clinical_data,
+                'service_data'=> json_encode($follow_patient_list),
+                'clinical_data' => json_encode($clinical_data),
                 'patient_list' => $this->patient_list,
                 'user_list' => $user_list,
                 'current_user'=> $current_user,

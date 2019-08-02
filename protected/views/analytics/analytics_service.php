@@ -131,7 +131,7 @@
     }
 
     $(document).ready(function () {
-        var service_data = <?= CJavaScript::encode($service_data); ?>;
+        var service_data = JSON.parse(<?= json_encode($service_data); ?>);
         window.csv_data_for_report['service_data'] = service_data['csv_data'];
         constructPlotlyData(service_data['plot_data']);
     });
