@@ -596,6 +596,7 @@ class DefaultController extends BaseEventTypeController
             throw new Exception("Event not found: $id");
         }
 
+        $recipient = Yii::app()->request->getParam('recipient');
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
@@ -617,7 +618,7 @@ class DefaultController extends BaseEventTypeController
          */
         $this->pdf_print_documents = 1;
 
-        if( $print_outputs ){
+        if ($print_outputs) {
             foreach($print_outputs as $output){
                 $output->output_status = "COMPLETE";
                 $output->save();

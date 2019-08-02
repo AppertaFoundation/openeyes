@@ -274,7 +274,6 @@ $(document).ready(function() {
 
     $('#et_savedraft').click(function(e){
         e.preventDefault();
-        var attachment_check = checkAttachmentFileExist( 0 );
 
         var event_button = $(this);
         var event_form = event_button.attr('form');
