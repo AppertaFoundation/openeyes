@@ -1158,31 +1158,59 @@ class DefaultController extends \BaseEventTypeController
     protected function saveComplexAttributes_HistoryIOP($element, $data, $index)
     {
         $data = $data['OEModule_OphCiExamination_models_HistoryIOP'];
+        $examination_ids = [];
+        $iop_elements = [];
 
         foreach (['left', 'right'] as $side) {
             if (array_key_exists("{$side}_values", $data) && $data["{$side}_values"]) {
                 foreach ($data["{$side}_values"] as $index => $values) {
-                    // create a new event and set the event_date as selected iop date
-                    $examinationEvent = new \Event();
-                    $examinationEvent->episode_id = $element->event->episode_id;
-                    $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
-                    $examinationEvent->event_date = \DateTime::createFromFormat('d-m-Y', $values['examination_date'])->format('Y-m-d');
-                    $examinationEvent->event_type_id = $element->event->event_type_id;
+                    if (isset($examination_ids[$values['examination_date']])) {
+                        continue;
+                    } else {
+                        // create a new event and set the event_date as selected iop date
+                        $examinationEvent = new \Event();
+                        $examinationEvent->episode_id = $element->event->episode_id;
+                        $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
+                        $examinationEvent->event_date = \DateTime::createFromFormat('d-m-Y', $values['examination_date'])->format('Y-m-d');
+                        $examinationEvent->event_type_id = $element->event->event_type_id;
 
-                    if (!$examinationEvent->save()) {
-                        throw new \Exception('Unable to save a new examination for the IOP readings: ' . print_r($examinationEvent->errors, true));
+                        if (!$examinationEvent->save()) {
+                            throw new \Exception('Unable to save a new examination for the IOP readings: ' . print_r($examinationEvent->errors, true));
+                        }
+
+                        $examination_ids[$values['examination_date']] = $examinationEvent->id;
+                    }
+                }
+            }
+        }
+
+        foreach (['left', 'right'] as $side) {
+            if (array_key_exists("{$side}_values", $data) && $data["{$side}_values"]) {
+                foreach ($data["{$side}_values"] as $index => $values) {
+                    if (!isset($iop_elements[$values['examination_date']])) {
+                        // create a new iop element
+                        $iop_element = new models\Element_OphCiExamination_IntraocularPressure();
+                        $iop_element->event_id = $examination_ids[$values['examination_date']];
+
+                        // set both sides comments as not recorded
+                        $iop_element["left_comments"] = "IOP values not recorded for this eye.";
+                        $iop_element["right_comments"] = "IOP values not recorded for this eye.";
+
+                        if (!$iop_element->save(false)) {
+                            throw new \Exception('Unable to save a new IOP element: ' . print_r($iop_element->errors, true));
+                        }
+
+                        $iop_elements[$values['examination_date']] = $iop_element;
                     }
 
-                    // create a new iop element
-                    $iop_element = new models\Element_OphCiExamination_IntraocularPressure();
-                    $iop_element->event_id = $examinationEvent->id;
-                    if (isset($values["{$side}_comments"]) && $values["{$side}_comments"]) {
+                    $iop_element = $iop_elements[$values['examination_date']];
+                    if (isset($values["{$side}_comments"])) {
+                        // override current sides comments if exists
                         $iop_element["{$side}_comments"] = $values["{$side}_comments"];
-                    }
-                    $iop_element[$this->getOtherSide('left', 'right', $side) . "_comments"] = "IOP values not recorded for this eye.";
 
-                    if (!$iop_element->save(false)) {
-                        throw new \Exception('Unable to save a new IOP element: ' . print_r($iop_element->errors, true));
+                        if (!$iop_element->save(false)) {
+                            throw new \Exception('Unable to save a new IOP element: ' . print_r($iop_element->errors, true));
+                        }
                     }
 
                     // create a reading record from the values the user has given
