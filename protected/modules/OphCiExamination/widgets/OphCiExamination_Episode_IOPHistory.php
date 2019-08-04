@@ -246,7 +246,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                         $iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
                 if ($iop) {
                 	$readings = self::getExaminationReadingsFormatted($iop);
-                	if($readings.length > 0)
+                	if(count($readings) > 0)
                     array_push($output, ...$readings);
                 }
             }
@@ -257,7 +257,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                 $iop = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
                 if ($iop) {
 										$readings = self::getPhasingReadingsFormatted($iop);
-										if($readings.length > 0)
+										if(count($readings) > 0)
                         array_push($output, ...$readings);
                 }
             }
