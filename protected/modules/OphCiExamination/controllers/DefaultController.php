@@ -1168,17 +1168,17 @@ class DefaultController extends \BaseEventTypeController
                         continue;
                     } else {
                         // create a new event and set the event_date as selected iop date
-                        $examinationEvent = new \Event();
-                        $examinationEvent->episode_id = $element->event->episode_id;
-                        $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
-                        $examinationEvent->event_date = \DateTime::createFromFormat('d-m-Y', $values['examination_date'])->format('Y-m-d');
-                        $examinationEvent->event_type_id = $element->event->event_type_id;
+                        $examination_event = new \Event();
+                        $examination_event->episode_id = $element->event->episode_id;
+                        $examination_event->created_user_id = $examination_event->last_modified_user_id = \Yii::app()->user->id;
+                        $examination_event->event_date = \DateTime::createFromFormat('d-m-Y', $values['examination_date'])->format('Y-m-d');
+                        $examination_event->event_type_id = $element->event->event_type_id;
 
-                        if (!$examinationEvent->save()) {
-                            throw new \Exception('Unable to save a new examination for the IOP readings: ' . print_r($examinationEvent->errors, true));
+                        if (!$examination_event->save()) {
+                            throw new \Exception('Unable to save a new examination for the IOP readings: ' . print_r($examination_event->errors, true));
                         }
 
-                        $examination_ids[$values['examination_date']] = $examinationEvent->id;
+                        $examination_ids[$values['examination_date']] = $examination_event->id;
                     }
                 }
             }
