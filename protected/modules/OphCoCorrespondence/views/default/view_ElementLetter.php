@@ -83,7 +83,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];?>
             <p style="margin-bottom: 100px;">Generating PDFs</p>
             <i class="spinner"></i>
         </div>
-        <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?html=1&auto_print=0" style="width: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>px; height: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>px; border: 0; position: relative;"></iframe>
+        <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=<?= $element->checkPrint() ?>&recipient=To" style="width: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>px; height: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>px; border: 0; position: relative;"></iframe>
     </div>
 </div>
 <script type="text/javascript">
