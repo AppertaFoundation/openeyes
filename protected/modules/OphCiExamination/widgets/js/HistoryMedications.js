@@ -164,6 +164,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var key = $row.attr("data-key");
         var $tapers = controller.$table.find("tr[data-parent-key="+key+"]");
         $tapers.remove();
+        controller.removeBoundEntry($row);
         $row.remove();
     });
 
@@ -270,7 +271,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.updateTextualDisplay($row);
           if(typeof $row.data('bound_entry') !== 'undefined') {
               controller.updateTextualDisplay($row.data('bound_entry'));
-              if($(e.target).hasClass("route")) {
+              if($(e.target).hasClass("js-route")) {
                   controller.updateRowRouteOptions($row.data('bound_entry'));
               }
           }
@@ -359,7 +360,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var $datepicker_control = $datepicker_wrapper.find("input");
         $row.find(".js-meds-stop-btn").hide();
         var default_date = $datepicker_control.attr("data-default");
-        if(typeof default_date !== "undefined" && default_date !== false) {
+        const currently_set_date = $datepicker_control.val();
+        if(typeof default_date !== "undefined" && default_date !== false && !currently_set_date) {
             $datepicker_control.val(default_date);
         }
         $datepicker_wrapper.show();
@@ -627,6 +629,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.options.onControllerBound(controller, name);
     };
 
+    HistoryMedicationsController.prototype.disableRemoveButton = function ($row) {
+        const $removeButton = $row.find(".js-remove");
+        const $removeButtonWrapper = $removeButton.parent();
+        $removeButton.addClass("disabled");
+        $removeButtonWrapper.addClass("js-has-tooltip");
+        $removeButtonWrapper.data("tooltip-content", $removeButtonWrapper.data("tooltip-content-comes-from-history"));
+    };
 
     HistoryMedicationsController.prototype.copyRow = function($origin, $target, old_values)
     {
@@ -646,8 +655,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.boundController.setRowData($row, data);
         this.boundController.initialiseRow($row);
+        if(data.end_date !== "") {
+            this.showStopControls($row);
+        }
+        this.updateRowRouteOptions($row);
 
         $row.find(".js-prepended_markup:visible").load("/medicationManagement/getInfoBox?medication_id="+data.medication_id);
+        this.disableRemoveButton($row);
 
         return $row;
     };

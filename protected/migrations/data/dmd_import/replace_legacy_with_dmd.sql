@@ -5,6 +5,8 @@ LEFT JOIN medication AS dmd ON dmd.preferred_code = legacy.preferred_code
 WHERE legacy.source_type = 'LEGACY' AND legacy.source_subtype = 'medication_drug'
 AND dmd.source_type = 'DM+D';
 
+ALTER TABLE tmp_medication_match ADD INDEX legacy_id_idx (`legacy_id`);
+
 UPDATE event_medication_use AS emu
 LEFT JOIN tmp_medication_match AS tmp ON tmp.legacy_id = emu.medication_id
 SET emu.medication_id = tmp.dmd_id

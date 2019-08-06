@@ -21,7 +21,7 @@ FROM medication rm
 
   LEFT JOIN {prefix}vmp_drug_route drt ON drt.vpid = amp2.vpid
   LEFT JOIN {prefix}lookup_route lr ON lr.cd = drt.routecd
-  LEFT JOIN medication_route mr ON mr.term COLLATE utf8_general_ci = lr.desc AND mr.source_type = 'DM+D'
+  LEFT JOIN medication_route mr ON mr.term = lr.desc AND mr.source_type = 'DM+D'
 
 WHERE
   rm.source_type='DM+D';

@@ -36,9 +36,4 @@ class FormularyDrugsAdminController extends BaseAdminController
         $admin->setModelDisplayName("Formulary drugs");
         $admin->listModel(false);
     }
-
-    public function actionToList($id)
-    {
-        $this->redirect('/OphDrPrescription/refMedicationSetAdmin/list?ref_set_id='.$id);
-    }
 }

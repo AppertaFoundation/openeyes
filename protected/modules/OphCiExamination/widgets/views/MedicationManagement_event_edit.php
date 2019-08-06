@@ -89,7 +89,6 @@ $element_errors = $element->getErrors();
                                     'direct_edit' => false,
                                     'usage_type' => /* $entry->usage_type */ 'UTYPE',
                                     'row_type' => /*$entry->group */ 'group',
-                                    'removable' => /* $entry->group === "new" */ "old",
                                     'is_last' => ($row_count == $total_count - 1),
                                     'prescribe_access' => $prescribe_access,
                                     'patient' => $this->patient,
@@ -124,7 +123,6 @@ $element_errors = $element->getErrors();
                 'model_name' => $model_name,
                 'field_prefix' => $model_name . '[entries][{{row_count}}]',
                 'row_count' => '{{row_count}}',
-                'removable' => true,
                 'direct_edit' => true,
                 'route_options' => $route_options,
                 'frequency_options' => $frequency_options,
@@ -182,7 +180,6 @@ $element_errors = $element->getErrors();
                 <?php if(!$this->isPostedEntries() && $this->element->getIsNewRecord()): ?>
                     $.each(window.HMController.$table.children("tbody").children("tr"), function(i, e){
                         var $newrow = window.HMController.copyRow($(e), window.MMController.$table.children("tbody"));
-                        $newrow.find(".js-remove").remove();
                         window.HMController.bindEntries($(e), $newrow);
 
                         var hidden = ($(e).find(".js-to-be-copied").val() == 0);

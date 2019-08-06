@@ -120,8 +120,13 @@ $(document).ready(function(){
             enableButtons();
           }).open();
         } else {
+          let reponse = JSON.parse(html);
+          let msg = "One or more Element attributes could not be deleted as they are in use.";
+          if (reponse.message) {
+            msg = reponse.message;
+          }
           new OpenEyes.UI.Dialog.Alert({
-            content: "One or more Element attributes could not be deleted as they are in use.",
+            content: msg,
             closeCallback: function () {
                 enableButtons();
             }
