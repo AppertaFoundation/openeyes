@@ -7,13 +7,11 @@
 /* @var string $sort_dir */
 ?>
 
-<div class="title">
-    <?php $this->renderPartial('_trial_header', array(
-        'trial' => $trial,
-        'title' => CHtml::encode($trial->name),
-        'permission' => $permission,
-    )); ?>
-</div>
+<?php $this->renderPartial('_trial_header', array(
+    'trial' => $trial,
+    'title' => CHtml::encode($trial->name),
+    'permission' => $permission,
+)); ?>
 
 <div class="oe-full-content subgrid oe-worklists">
 
