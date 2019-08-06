@@ -18,9 +18,9 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
-use Yii;
-use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\components;
+use OEModule\OphCiExamination\models;
+use Yii;
 
 /*
  * This is the controller class for the OphCiExamination event. It provides the required methods for the ajax loading of elements, and rendering the required and optional elements (including the children relationship)
@@ -281,7 +281,7 @@ class DefaultController extends \BaseEventTypeController
             foreach ($diagnoses as $d) {
                 $already_in = false;
                 foreach ($_diagnoses as $ad) {
-                    if ($d->disorder_id == $ad->disorder_id) {
+                    if (($d->disorder_id === $ad->disorder_id) && ($d->date === $ad->date)) {
                         $already_in = true;
                         // set the eye correctly (The principal diagnosis for the episode is the first diagnosis, so
                         // no need to check that.
@@ -1509,8 +1509,8 @@ class DefaultController extends \BaseEventTypeController
         if (!$element_assignment && $this->event) {
             \OELog::log("Assignment not found for event id: {$this->event->id}");
         }
-
-        if ($this->action->id == 'update' && !$element_assignment->step_completed) {
+      
+        if ($this->action->id == 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
             $this->step = $this->getCurrentStep();
         }
     }
