@@ -80,9 +80,9 @@ if ($api) {
 ?>
 <section class="element full <?php if ($action == 'update') {
     echo 'edit  edit-biometry';
-} else if ($action == 'view') {
-    echo 'priority';
-} ?>
+                             } else if ($action == 'view') {
+                                 echo 'priority';
+                             } ?>
   eye-divider ">
     <header class="element-header">
         <h3 class="element-title">Visual Acuity <?= '<br />' . $VAdate; ?></h3>
@@ -96,7 +96,7 @@ if ($api) {
             $_data = $eye_side . 'Data';
             $data = ${$_data};
             if (count($method_name)) {
-            ?>
+                ?>
             <div class="data-value">
                 <?= $unitname ?>
             </div>
@@ -113,14 +113,14 @@ if ($api) {
                 </div>
             </div>
         </div>
-        <?php
-        } else { ?>
+                <?php
+            } else { ?>
         <div class="data-value not-recorded">
             Not recorded
         </div>
     </div>
-    <?php }
-    endforeach; ?>
+            <?php }
+        endforeach; ?>
     </div>
 </section>
 <?php
@@ -171,9 +171,9 @@ if ($api) {
 ?>
 <section class="element full <?php if ($action == 'update') {
     echo 'edit  edit-biometry';
-} else if ($action == 'view') {
-    echo 'priority';
-} ?>
+                             } else if ($action == 'view') {
+                                 echo 'priority';
+                             } ?>
   eye-divider ">
     <header class="element-header">
         <h2 class="element-title">Near Visual Acuity <?= '<br />' . $NearVAdate; ?></h2>
@@ -215,25 +215,25 @@ $eventid = Event::model()->findAll(array(
     'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->id,
     'order' => 'event_date DESC',
 ));
-if ($eventid){
+if ($eventid) {
 // Loop through responses, for ones that have RefractionValues
-for ($i = 0; $i < count($eventid); ++$i) {
-    $refraction_values = $api->getRefractionValues($eventid[$i]->id);
-    if ($refraction_values) {
-        if (!$refractfound) {
-            $refractelement = $refraction_values;
-            $refract_event_date = $eventid[$i]->event_date;
-            $refractfound = true;
+    for ($i = 0; $i < count($eventid); ++$i) {
+        $refraction_values = $api->getRefractionValues($eventid[$i]->id);
+        if ($refraction_values) {
+            if (!$refractfound) {
+                $refractelement = $refraction_values;
+                $refract_event_date = $eventid[$i]->event_date;
+                $refractfound = true;
+            }
         }
     }
-}
-if ($refractfound) {
-    ?>
+    if ($refractfound) {
+        ?>
     <section class="element full <?php if ($action == 'update') {
         echo 'edit  edit-biometry';
-    } else if ($action == 'view') {
-        echo 'priority';
-    } ?>
+                                 } else if ($action == 'view') {
+                                                          echo 'priority';
+                                 } ?>
   eye-divider ">
         <header class="element-header">
             <h3 class="element-title">Refraction <?= '<br />' . \Helper::convertDate2NHS($refract_event_date); ?></h3>
@@ -258,13 +258,13 @@ if ($refractfound) {
             <?php endforeach; ?>
         </div>
     </section>
-    <?php
-} else { ?>
+        <?php
+    } else { ?>
 <section class="element full <?php if ($action == 'update') {
     echo 'edit  edit-biometry';
-} else if ($action == 'view') {
-    echo 'priority';
-} ?>
+                             } else if ($action == 'view') {
+                                                      echo 'priority';
+                             } ?>
   eye-divider ">
     <header class="element-header">
         <h3 class="element-title">Refraction</h3>
@@ -275,8 +275,8 @@ if ($refractfound) {
                 <div class="data-value not-recorded">
                     Not recorded
                 </div>
-            </div> <?php endforeach; ?>
+        <?php endforeach; ?>
     </div>
     <?php }
-    } ?>
+} ?>
 </section>

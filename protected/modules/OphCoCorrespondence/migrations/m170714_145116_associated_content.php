@@ -2,8 +2,8 @@
 
 class m170714_145116_associated_content extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
         $this->createTable('macro_init_associated_content', array(
             'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -52,8 +52,8 @@ class m170714_145116_associated_content extends CDbMigration
 
     }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropForeignKey('fk_event_associated_content_protected_file1', 'event_associated_content');
         $this->dropForeignKey('fk_event_associated_content_event2', 'event_associated_content');
         $this->dropForeignKey('fk_event_associated_content_event1', 'event_associated_content');

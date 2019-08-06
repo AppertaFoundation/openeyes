@@ -89,7 +89,7 @@
             <div class="cols-2">per</div>
 
             <?=\CHtml::activeDropDownList($model, 'cost_type_id',
-                CHtml::listData(OphCoTherapyapplication_Treatment_CostType::model()->findAll(), 'id', 'name'),[
+                CHtml::listData(OphCoTherapyapplication_Treatment_CostType::model()->findAll(), 'id', 'name'), [
                         'class' => 'cols-4'
                 ]);?>
         </div>
@@ -107,7 +107,7 @@
             ])?>
             <div class="cols-1"></div>
             <?=\CHtml::activeDropDownList($model, 'monitoring_frequency_period_id',
-                CHtml::listData(Period::model()->findAll(), 'id', 'name'),[
+                CHtml::listData(Period::model()->findAll(), 'id', 'name'), [
                     'class' => 'cols-8'
                 ]);?>
         </div>

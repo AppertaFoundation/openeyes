@@ -2,8 +2,8 @@
 
 class m161117_212912_add_left_right_document_ids extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->renameColumn('et_ophcodocument_document', 'document_id', 'single_document_id');
         $this->renameColumn('et_ophcodocument_document_version', 'document_id', 'single_document_id');
         $this->addColumn('et_ophcodocument_document', 'left_document_id', 'int(11)');
@@ -29,20 +29,20 @@ class m161117_212912_add_left_right_document_ids extends OEMigration
 
     }
 
-	public function down()
-	{
-		echo "Not supported here!\n";
-		return true;
-	}
+    public function down()
+    {
+        echo "Not supported here!\n";
+        return true;
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

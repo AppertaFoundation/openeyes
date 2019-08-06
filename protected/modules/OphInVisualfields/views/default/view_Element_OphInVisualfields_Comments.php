@@ -17,16 +17,16 @@
  */
 ?>
 <div class="element-data">
-	<div class="data-group">
-		<div class="cols-2 column">
-			<div class="data-label">
-				<?php echo $element->getAttributeLabel('comments')?>:
-			</div>
-		</div>
-		<div class="cols-10 column">
-			<div class="data-value">
-				<?= $element->textWithLineBreaks('comments') ?>
-			</div>
-		</div>
-	</div>
+    <div class="data-group">
+        <div class="cols-2 column">
+            <div class="data-label">
+                <?php echo $element->getAttributeLabel('comments')?>:
+            </div>
+        </div>
+        <div class="cols-10 column">
+            <div class="data-value">
+                <?= $element->textWithLineBreaks('comments') ?>
+            </div>
+        </div>
+    </div>
 </div>

@@ -6,9 +6,9 @@
       <tr>
         <td><?=\CHtml::label('Consultant', 'firm_id') ?></td>
         <td>
-            <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
+            <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)) : ?>
                 <?=\CHtml::dropDownList('firm_id', null, $firms, array('empty' => 'All consultants')) ?>
-            <?php else: ?>
+            <?php else : ?>
                 <?php
                 $firm = Firm::model()->findByAttributes(array('consultant_id' => Yii::app()->user->id));
 
