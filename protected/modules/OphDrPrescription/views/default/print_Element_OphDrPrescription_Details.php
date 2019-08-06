@@ -18,7 +18,7 @@
 ?>
 <?php
 
-const MAX_FPTEN_LINES = 20;
+const MAX_FPTEN_LINES = 19;
 
 $copy = $data['copy'];
 
@@ -247,6 +247,7 @@ foreach ($items_data as $group => $items) { ?>
 						<div class="fpten-form-row">
 							<div id="wpten-prescriber" class="fpten-form-column">
 								<!--HOSPITAL YSBYTY-->
+								<!--DOCTOR MEDDYG-->
 							</div>
 						</div>
 					<?php endif; ?>
