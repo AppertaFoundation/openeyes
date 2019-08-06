@@ -53,6 +53,9 @@ class CsvController extends BaseController
             if (($handle = fopen($_FILES['Csv']['tmp_name']['csvFile'], "r")) !== false) {
                 if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
                     foreach ($line as $header) {
+                        // basic sanitization, remove non printable chars - This is required if the CSV file is
+                        // exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
+                        $header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
                         $headers[] = $header;
                     }
                 }
