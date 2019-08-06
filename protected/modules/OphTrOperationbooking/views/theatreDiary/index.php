@@ -185,14 +185,16 @@
 </style>
 
 <script type="text/javascript">
-  $(document).ready(function () {
-    pickmeup('#date-start', {
-      format: 'Y-m-d'
-    });
-    pickmeup('#date-end', {
-      format: 'Y-m-d'
-    });
+    $(document).ready(function () {
+        pickmeup('#date-start', {
+            format: 'Y-m-d',
+            hide_on_select: true,
+        });
+        pickmeup('#date-end', {
+            format: 'Y-m-d',
+            hide_on_select: true,
+        });
 
-    return getDiary();
-  });
+        return getDiary();
+    });
 </script>
