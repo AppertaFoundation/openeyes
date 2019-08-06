@@ -116,12 +116,13 @@
 
     <?php $this->endWidget() ?>
 
-    <?php if (isset($siteSecretaries) && $siteSecretaries) : ?>
+    <?php if (isset($siteSecretaries)) : ?>
         <?=$this->renderPartial(
             'application.modules.OphCoCorrespondence.views.admin.secretary.edit',
             [
                 'errors' => array(),
-                'siteSecretaries' => $siteSecretaries
+                'siteSecretaries' => $siteSecretaries,
+                'newSiteSecretary' => $newSiteSecretary
             ]
         ) ?>
     <?php endif; ?>
