@@ -7,8 +7,14 @@
 $editing = in_array($this->action->id, ['update', 'create'], true);
 ?>
 
+<!-- CERA-491 The css is hard-coded to solve the issue that the long title name break the layout. -->
 <nav class="oe-full-header flex-layout">
-  <div class="title wordcaps"><?= $title ?></div>
+  <?php if (strlen($title) <= 124) {?>
+      <div class="title wordcaps" ><?= $title ?></div>
+  <?php } else {?>
+      <div class="title wordcaps" style="font-size: 0.8em; line-height: 1.3; max-width: 1000px "><?= $title ?></div>
+  <?php } ?>
+
   <div>
       <?php if ($editing) { ?>
         <button class="button header-tab green" name="save" type="submit" form="trial-form">
