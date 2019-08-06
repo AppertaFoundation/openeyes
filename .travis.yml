@@ -1,46 +1,16 @@
-language: php
-sudo: required
-dist: trusty
-php:
-  - '5.6'
-git:
-  submodules: false
+language: generic
+dist: bionic
+
+services:
+  - docker
 
 before_install:
-  - ssh-add ~/.ssh/id_rsa
-  - git submodule update --init
-install:
-  # Git Clone OE Dependencies. Sample module contains the MySQL data dump necessary for the unit tests to run.
-  - git clone git@github.com:openeyes/Sample.git protected/modules/sample
+  - docker pull appertaopeneyes/ci:latest
 
-  # Get vendor dependencies (Both PHP and JS)
-  - composer install
-  - npm install
-before_script:
-#  - echo 'date.timezone = "Australia/Melbourne"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini # Set the PHP timezone to UTC +10:00:00
-  - sudo chmod a+x mysql-ci.sh # Make the shell script to populate the databases executable.
-  - ./mysql-ci.sh # Configure the test database
 script:
-  # Create the runtime folders.
-  - mkdir assets
-  - mkdir cache
-  - cd protected
-  - mkdir cache
-  - mkdir cache/events
+  - docker run --name=oe -e OE_MODE=TEST -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH -v ~/.ssh/id_rsa:/run/secrets/SSH_PRIVATE_KEY -v $TRAVIS_BUILD_DIR:/var/www/openeyes appertaopeneyes/ci:latest
 
-  # Copy the sample config files into place.
-  - cp config/local.sample/common.sample.php config/local/common.php
 
-  # Run migrations
-  - php yiic migrate --interactive=0
-  - php yiic migratemodules --interactive=0
-  - php yiic generateuniquecode --interactive=0
-  - php yiic generatesessions --interactive=0
-  - php yiic eyedrawconfigload --filename="./config/core/OE_ED_CONFIG.xml"
-
-  # Run unit tests.
-  - cd tests
-  - php ../../vendor/phpunit/phpunit/phpunit.php ./unit/
 notifications:
   slack:
     on_pull_requests: false

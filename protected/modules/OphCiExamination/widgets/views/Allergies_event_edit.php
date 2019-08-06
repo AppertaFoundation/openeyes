@@ -27,7 +27,7 @@ $required_allergy_ids = array_map(function ($r) {
 ?>
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
-
+    <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_entry_table" class="cols-10">
         <colgroup>
             <col class="cols-3">
