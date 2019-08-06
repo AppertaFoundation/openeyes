@@ -13,7 +13,6 @@
     'permission' => $permission,
 )); ?>
 
-
 <div class="oe-full-content subgrid oe-worklists">
 
     <?php $this->renderPartial('_trialActions', array(
