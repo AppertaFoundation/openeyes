@@ -23,13 +23,8 @@ namespace OEModule\OphCiExamination\models;
  *
  * The followings are the available columns in table:
  *
- * @property string $id
- * @property int $event_id
- * @property int $eye_id
- * @property OphCiExamination_PupillaryAbnormalities_Abnormality $left_abnormality
- * @property OphCiExamination_PupillaryAbnormalities_Abnormality $right_abnormality
- * @property string $left_comments
- * @property string $right_comments
+ * @deprecated This class is no longer in use and has been replaced
+ * @see PupillaryAbnormalities
  */
 class Element_OphCiExamination_PupillaryAbnormalities extends \SplitEventTypeElement
 {

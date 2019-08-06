@@ -45,6 +45,13 @@ class OphCiExamination_PupillaryAbnormalities_Abnormality extends \BaseActiveRec
         return 'ophciexamination_pupillaryabnormalities_abnormality';
     }
 
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
+
     public function defaultScope()
     {
         return array('order' => $this->getTableAlias(true, false).'.display_order');
