@@ -136,13 +136,7 @@ class CsvController extends BaseController
         }
         $new_trial->trial_type_id = TrialType::model()->find('code = ?', array($trial['trial_type']))->id;
         $new_trial->description = !empty($trial['description']) ? $trial['description'] : null;
-
-        if(array_key_exists('principal_investigator',$_SESSION) && !empty($_SESSION['principal_investigator'])) {
-            $new_trial->owner_user_id = $_SESSION['principal_investigator'];
-        } else {
-            $new_trial->owner_user_id =  Yii::app()->user->id;
-        }
-
+        $new_trial->owner_user_id =  Yii::app()->user->id;
         $new_trial->is_open = isset($trial['is_open']) && $trial['is_open'] !== '' ? $trial['is_open'] : false;
         $new_trial->started_date = !empty($trial['started_date']) ? $trial['started_date'] : null;
         $new_trial->closed_date = !empty($trial['closed_date']) ? $trial['closed_date'] : null;

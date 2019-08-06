@@ -236,7 +236,10 @@ class Trial extends BaseActiveRecordVersioned
               $newPermission->trial_id = $this->id;
               $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
               if ($user_id == $current_user_id){
-                  $newPermission->role = 'Trial Owner';
+                  // Always make the current user as the owner of the trial.
+                  if (Yii::app()->user->id == $user_id) {
+                      $newPermission->role = 'Trial Owner';
+                  }
                   $newPermission->is_principal_investigator = 1;
               }
               if (!$newPermission->save()) {
