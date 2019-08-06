@@ -16,6 +16,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\components\OphCiExamination_API;
 use OEModule\PASAPI\resources\Patient;
 
 /**
@@ -284,39 +285,64 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     {
         parent::afterSave();
         if ($this->update_patient_level) {
-            // extract event from the event id of the element - in afterSave the relation doesn't
-            // work when the instance has only just been saved
-            $event = \Event::model()->findByPk($this->event_id);
-            /** @var \Patient $patient */
-            $patient = $event->getPatient();
-            $sd_ids_to_keep = array();
-
-            // update or create the secondary diagnoses for the diagnoses on this element
-            foreach ($this->diagnoses as $diagnosis) {
-                $sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
-                $sd_ids_to_keep[] = $sd->id;
-            }
-
-            // then delete any other secondary diagnoses still on the patient.
-            foreach ($patient->getSystemicDiagnoses() as $sd) {
-                if (!in_array($sd->id, $sd_ids_to_keep)) {
-                    $sd->delete();
-                }
-            }
-
-            $sd_ids_to_keep = array();
-            // update or create not present secondary diagnoses
-            foreach ($this->checked_required_diagnoses as $diagnosis) {
-                $sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
-                $sd_ids_to_keep[] = $sd->id;
-            }
-
-            foreach ($patient->getSystemicDiagnoses(false) as $sd) {
-                if (!in_array($sd->id, $sd_ids_to_keep)) {
-                    $sd->delete();
-                }
-            }
+            $this->updatePatientLevelSystemicDiagnoses();
         }
+    }
+
+    public function updatePatientLevelSystemicDiagnoses()
+	{
+		// extract event from the event id of the element - in afterSave the relation doesn't
+		// work when the instance has only just been saved
+		$event = \Event::model()->findByPk($this->event_id);
+		/** @var \Patient $patient */
+		$patient = $event->getPatient();
+		$sd_ids_to_keep = array();
+
+		// update or create the secondary diagnoses for the diagnoses on this element
+		foreach ($this->diagnoses as $diagnosis) {
+			$sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
+			$sd_ids_to_keep[] = $sd->id;
+		}
+
+		// then delete any other secondary diagnoses still on the patient.
+		foreach ($patient->getSystemicDiagnoses() as $sd) {
+			if (!in_array($sd->id, $sd_ids_to_keep)) {
+				$sd->delete();
+			}
+		}
+
+		$sd_ids_to_keep = array();
+		// update or create not present secondary diagnoses
+		foreach ($this->checked_required_diagnoses as $diagnosis) {
+			$sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
+			$sd_ids_to_keep[] = $sd->id;
+		}
+
+		foreach ($patient->getSystemicDiagnoses(false) as $sd) {
+			if (!in_array($sd->id, $sd_ids_to_keep)) {
+				$sd->delete();
+			}
+		}
+	}
+
+	public function afterDelete()
+	{
+		$api = new OphCiExamination_API();
+		$event = \Event::model()->findByPk($this->event_id);
+		/** @var \Patient $patient */
+		$patient = $event->getPatient();
+		$et = $api->getLatestElement(SystemicDiagnoses::class, $patient);
+		if($et) {
+			// There is an earlier element: revert diagnoses
+			/** @var SystemicDiagnoses $et */
+			$et->updatePatientLevelSystemicDiagnoses();
+		}
+		else {
+			// This is the only element: remove diagnoses
+			$this->updatePatientLevelSystemicDiagnoses();
+		}
+
+		return parent::afterDelete();
     }
 
     /**
