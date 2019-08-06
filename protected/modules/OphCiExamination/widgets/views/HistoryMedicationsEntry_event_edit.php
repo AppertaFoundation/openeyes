@@ -89,7 +89,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
       <fieldset class="data-group fuzzy-date">
       <?php if (!$entry->start_date||$removable) { ?>
         <input id="datepicker_1_<?=$row_count?>" name="<?= $field_prefix ?>[start_date]"
-               value="<?= $entry->start_date? $entry->start_date: date('Y-m-d') ?>"
+               value="<?= $entry->start_date ? $entry->start_date : (Yii::app()->request->isPostRequest ?  "" : date('Y-m-d')) ?>"
                style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
         <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
       <?php } else { ?>
