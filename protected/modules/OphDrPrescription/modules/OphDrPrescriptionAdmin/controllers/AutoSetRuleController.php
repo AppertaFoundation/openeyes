@@ -26,6 +26,39 @@ class AutoSetRuleController extends BaseAdminController
 
     public $assetPath;
 
+    public function actionIndex()
+    {
+        $asset_manager = \Yii::app()->getAssetManager();
+        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $asset_manager->publish($base_assets_path);
+
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+
+        $model = new MedicationSet();
+        $model->unsetAttributes();
+        if (isset($_GET['MedicationSet'])) {
+            $model->attributes = $_GET['MedicationSet'];
+        }
+
+        $filters = $this->getFilters();
+        $criteria = $this->getSearchCriteria($filters);
+
+        $data_provider = new CActiveDataProvider('MedicationSet', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = $this->itemsPerPage;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        $this->render('/AutoSetRule/index', [
+            'data_provider' => $data_provider,
+            'search' => $filters
+        ]);
+    }
+
     public function getFilters()
     {
         $default = [
@@ -58,39 +91,6 @@ class AutoSetRuleController extends BaseAdminController
         return $filters;
     }
 
-    public function actionIndex()
-    {
-        $asset_manager = \Yii::app()->getAssetManager();
-        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
-        $asset_manager->publish($base_assets_path);
-
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
-
-        $model = new MedicationSet();
-        $model->unsetAttributes();
-        if (isset($_GET['MedicationSet'])) {
-            $model->attributes = $_GET['MedicationSet'];
-        }
-
-        $filters = $this->getFilters();
-        $criteria = $this->getSearchCriteria($filters);
-
-        $data_provider = new CActiveDataProvider('MedicationSet', [
-            'criteria' => $criteria,
-        ]);
-
-        $pagination = new CPagination($data_provider->totalItemCount);
-        $pagination->pageSize = $this->itemsPerPage;
-        $pagination->applyLimit($criteria);
-
-        $data_provider->pagination = $pagination;
-
-        $this->render('/AutoSetRule/index', [
-            'data_provider' => $data_provider,
-            'search' => $filters
-        ]);
-    }
-
     private function getSearchCriteria($filters = [])
     {
         $criteria = new \CDbCriteria();
@@ -102,7 +102,7 @@ class AutoSetRuleController extends BaseAdminController
             $criteria->addSearchCondition('name', $filters['query']);
         }
 
-				$criteria->addCondition("automatic = 1");
+        $criteria->addCondition("automatic = 1");
 
         return $criteria;
     }
@@ -143,7 +143,7 @@ class AutoSetRuleController extends BaseAdminController
             $ret_val = [];
 
             foreach ($rules as $rule) {
-                $ret_val[]= "Site: " . (!$rule->site ? "-" : $rule->site->name) .
+                $ret_val[] = "Site: " . (!$rule->site ? "-" : $rule->site->name) .
                     ", SS: " . (!$rule->subspecialty ? "-" : $rule->subspecialty->name) .
                     ", Usage code: " . ($rule->usageCode ? $rule->usageCode->name : '-');
             }
@@ -223,69 +223,74 @@ class AutoSetRuleController extends BaseAdminController
      */
     public function actionEdit($id = null)
     {
-        $assetManager = \Yii::app()->getAssetManager();
-        $baseAssetsPath = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
-        $assetManager->publish($baseAssetsPath);
+        $error = [];
+        $asset_manager = \Yii::app()->getAssetManager();
+        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $asset_manager->publish($base_assets_path);
 
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.TableInlieEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.UI.TableInlieEdit.js', \CClientScript::POS_HEAD);
 
         $data = \Yii::app()->request->getParam('MedicationSet');
-        $filters = \Yii::app()->request->getParam('search', []);
 
         $set = MedicationSet::model()->findByPk($id);
 
-        if(!$set) {
+        if (!$set) {
             $set = new MedicationSet;
+            $set->automatic = 1;
         }
-
-        $is_new_record = $set->isNewRecord;
 
         if (\Yii::app()->request->isPostRequest) {
+            $set->tmp_attrs = \Yii::app()->request->getParam('MedicationAutoRuleAttributes', []);
+            $set->tmp_sets = \Yii::app()->request->getParam('MedicationSetAutoRuleSetMemberships', []);
+            $set->tmp_meds = \Yii::app()->request->getParam('MedicationSetAutoRuleMedication', []);
+            $set->tmp_rules = \Yii::app()->request->getParam('MedicationSetRule', []);
 
+            $set->name = $data['name'];
+            $set->hidden = $data['hidden'];
+
+            //validate here so if tmp_rules are empty we can return these errors as well
+            $set->validate();
+
+            if (!$set->tmp_rules) {
+                $set->addError('medicationSetRules', 'Usage rules must be set.');
+            }
+
+            if (!$set->hasErrors() && $set->save()) {
+                $this->redirect('/OphDrPrescription/admin/autoSetRule/index');
+            }
         }
 
-        $this->render('/autoSetRule/edit', ['medication_set' => $set, 'medication_data_provider' => $data_provider]);
+        $this->render('/AutoSetRule/edit/edit', ['set' => $set, 'error' => $error]);
+    }
+
+    public function actionPopulateAll()
+    {
+        shell_exec("php " . Yii::app()->basePath . "/yiic populateAutoMedicationSets >/dev/null 2>&1 &");
+        Yii::app()->user->setFlash('success', "Rebuild process started at " . date('H:i') . ".");
+        $this->redirect('/OphDrPrescription/medicationSetAutoRulesAdmin/list');
     }
 
     public function actionDelete()
     {
-        $ids = \Yii::app()->request->getParam('delete-ids', []);
-        $usage_code = \Yii::app()->request->getParam('usage-code');
-        $response['message'] = '';
-
+        $ids = Yii::app()->request->getPost("delete-ids", []);
         foreach ($ids as $id) {
-            $set = \MedicationSet::model()->findByPk($id);
-
-            if ($set && $usage_code) {
-
-                // if the set is automatic we just remove the usage code
-                if ($set->automatic) {
-                    $deleted_rows = $set->removeUsageCode($usage_code);
-
-                } else {
-                    $count = $set->itemsCount();
-                    if (!$count) {
-                        if (\MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $id])) {
-                            $set->delete();
-                        }
-                    } else {
-                        $response['message'] .= "Set '{$set->name}' is not empty. Please delete the medications first.<br>";
-                    }
-                }
+            $set = MedicationSet::model()->findByPk($id);
+            $trans = Yii::app()->db->beginTransaction();
+            try {
+                $set->delete();
+            } catch (Exception $e) {
+                $trans->rollback();
+                \OELog::log($e->getMessage());
+                echo 0;
+                exit;
             }
+
+            $trans->commit();
         }
 
-        // This is because of handleButton.js handles the deletion - yes should be refactored...
-        // protected/assets/js/handleButtons.js
-        if ($response['message']) {
-            echo \CJSON::encode($response);
-        } else {
-            echo "1";
-        }
-
-        \Yii::app()->end();
-
+        echo 1;
+        exit;
     }
 
     public function actionUpdateMedicationDefaults()
@@ -300,7 +305,7 @@ class AutoSetRuleController extends BaseAdminController
 
                 $item = \MedicationSetItem::model()->findByPk($item_data['id']);
 
-                if($item) {
+                if ($item) {
                     $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
                     $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
                     $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
@@ -324,7 +329,7 @@ class AutoSetRuleController extends BaseAdminController
             $set = \MedicationSet::model()->findByPk($set_id);
             $medication_id = \Yii::app()->request->getParam('medication_id');
 
-            if($set && $medication_id) {
+            if ($set && $medication_id) {
                 $id = $set->addMedication($medication_id);
                 $result['success'] = (bool)$id;
                 $result['id'] = $id;
@@ -341,7 +346,7 @@ class AutoSetRuleController extends BaseAdminController
         if (\Yii::app()->request->isPostRequest) {
             $item = \Yii::app()->request->getParam('MedicationSetItem');
 
-            if(isset($item['id'])) {
+            if (isset($item['id'])) {
                 $affected_rows = \MedicationSetItem::model()->deleteByPk($item['id']);
                 $result['success'] = (bool)$affected_rows;
             } else {

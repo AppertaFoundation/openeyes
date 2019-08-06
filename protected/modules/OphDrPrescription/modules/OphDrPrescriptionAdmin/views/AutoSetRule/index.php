@@ -89,6 +89,10 @@
                         'id' => 'delete_sets',
                         'class' => 'button large',
                     ]); ?>
+                    <?=\CHtml::linkButton('Rebuild all sets now',
+                        array('href' => '/OphDrPrescription/medicationSetAutoRulesAdmin/populateAll',
+                            'class' => 'button large')); ?>
+
                 </td>
                 <td colspan="4">
                     <?php $this->widget('LinkPager', ['pages' => $data_provider->pagination]); ?>
@@ -115,7 +119,8 @@
 </script>
 
 <script>
-    var drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
-        searchUrl: '/OphDrPrescription/admin/autoSetRule/search'
-		});
+    let drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
+        searchUrl: '/OphDrPrescription/admin/autoSetRule/search',
+        deleteUrl: '/OphDrPrescription/admin/autoSetRule/delete'
+    });
 </script>

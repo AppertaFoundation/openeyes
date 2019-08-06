@@ -272,9 +272,10 @@ class DrugSetController extends BaseAdminController
                 // set relation
                 $relation = [];
                 $rules = \Yii::app()->request->getParam('MedicationSetRule', []);
-
+                $keep_rule_ids = [];
                 foreach ($rules as $rule) {
                     if (isset($rule['id']) && $rule['id']) {
+                        $keep_rule_ids[] = $rule['id'];
                         $rule_model = MedicationSetRule::model()->findByPk($rule['id']);
                         if ($rule_model) {
                             $rule_model->attributes = $rule;
@@ -285,12 +286,16 @@ class DrugSetController extends BaseAdminController
                     }
 
                     if ($rule_model) {
-                        $rule_model->setScenario('manualInsert');
                         $relation[] = $rule_model;
                     }
                 }
 
                 $set->medicationSetRules = $relation;
+                $criteria = new \CDbCriteria();
+                $criteria->addNotInCondition('id', $keep_rule_ids);
+                $criteria->addCondition('medication_set_id = :set_id');
+                $criteria->params['set_id'] = $set->id;
+                \MedicationSetRule::model()->deleteAll($criteria);
 
                 if ($set->autoValidateRelation(true)->validate() && !$set->getErrors()) {
                     if ($set->save()) {
