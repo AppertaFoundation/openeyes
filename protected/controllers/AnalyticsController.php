@@ -1172,7 +1172,7 @@ class AnalyticsController extends BaseController
                           'visible' => true,
                           'color' => '#aaa',
                           'thickness' => 1
-                            ),
+                        ),
                         'hoverinfo' => 'text',
                         'hovertext' => array_map(
                             function ($item) {
