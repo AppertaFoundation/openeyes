@@ -1984,8 +1984,7 @@ function OphCiExamination_ClinicOutcomes_updateFollowUpLabel() {
   }
 
   var dummy_text = $('#follow-up-dummy-input');
-  dummy_text.val(label_str);
-  dummy_text.trigger('oninput');
+  dummy_text.html(label_str);
 }
 
 function OphCiExamination_AddAllergy(){

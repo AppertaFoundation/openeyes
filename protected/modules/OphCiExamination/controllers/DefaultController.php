@@ -18,9 +18,9 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
-use Yii;
-use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\components;
+use OEModule\OphCiExamination\models;
+use Yii;
 
 /*
  * This is the controller class for the OphCiExamination event. It provides the required methods for the ajax loading of elements, and rendering the required and optional elements (including the children relationship)
@@ -1566,7 +1566,7 @@ class DefaultController extends \BaseEventTypeController
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
         }
 
-        if ($this->action->id == 'update' && !$element_assignment->step_completed) {
+        if ($this->action->id == 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
             $this->step = $this->getCurrentStep();
         }
     }

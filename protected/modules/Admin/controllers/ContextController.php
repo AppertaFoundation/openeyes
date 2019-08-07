@@ -86,21 +86,21 @@ class ContextController extends BaseAdminController
             Audit::add('admin-Firm', 'view', $id);
         }
 
-        $site_secretaries = array();
+        $siteSecretaries = array();
         if (isset(Yii::app()->modules['OphCoCorrespondence'])) {
             $firmSiteSecretaries = new FirmSiteSecretary();
             $site_secretaries = $firmSiteSecretaries->findSiteSecretaryForFirm($id);
             $firmSiteSecretaries->firm_id = $id;
-            $site_secretaries[] = $firmSiteSecretaries;
+            $siteSecretaries[] = $firmSiteSecretaries;
         }
 
         $this->render('edit', array(
             'firm' => $firm,
             'errors' => @$errors,
-            'site_secretaries' => $site_secretaries,
+            'siteSecretaries' => $site_secretaries,
             'subspecialties_list_data' => CHtml::listData(Subspecialty::model()->findAll(['order' => 'name']), 'id', 'name'),
             'consultant_list_data' => CHtml::listData(User::model()->findAll(['order' => 'first_name,last_name']), 'id', 'fullName'),
-
+            'newSiteSecretary' => new FirmSiteSecretary(),
         ));
     }
 }
