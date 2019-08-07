@@ -503,9 +503,10 @@
                 });
             }
 
-            if (dialog.popup.find('.flex-layout.flex-top.flex-left .js-search-autocomplete.search').val().length) {
+            const $input = dialog.popup.find('.flex-layout.flex-top.flex-left .js-search-autocomplete.search');
+            if ($input.val().length) {
                 // reset search list when adding an item
-                dialog.popup.find('.flex-layout.flex-top.flex-left .js-search-autocomplete.search').val("");
+                $input.val("");
                 // run item search with empty text so AdderDialogs that extend this class run their custom settings
                 this.runItemSearch('');
             }
