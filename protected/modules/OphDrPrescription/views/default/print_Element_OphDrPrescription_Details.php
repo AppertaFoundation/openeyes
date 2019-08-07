@@ -211,16 +211,16 @@ foreach ($items_data as $group => $items) { ?>
 <div class="fpten-form-row">
 		<?php foreach (array('left', 'right') as $side):
 			$prescription_lines_used = 0;?>
-	<div class="fpten-container fpten-form-column">
+	<div class="<?= $form_css_class ?>-container fpten-form-column">
 			<div class="fpten-form-row">
 				<div class="fpten-form-column">
 					<div class="fpten-form-row">
-						<div id="fpten-age" class="fpten-form-column">
+						<div id="<?= $form_css_class ?>-age" class="fpten-form-column">
 							<?= $this->patient->getAge() . 'y' ?>
 						</div>
 					</div>
 					<div class="fpten-form-row">
-						<div id="fpten-dob" class="fpten-form-column">
+						<div id="<?= $form_css_class ?>-dob" class="fpten-form-column">
 							<?= Helper::convertDate2Short($this->patient->dob) ?>
 						</div>
 					</div>
@@ -240,7 +240,7 @@ foreach ($items_data as $group => $items) { ?>
 					</div>
 					<div class="fpten-form-row">
 							<div id="fpten-nhs" class="fpten-form-column">
-								<span id="fpten-nhs-text"><?= ($data['print_mode'] === 'WP10') ? 'NHS Number: ' . $this->patient->nhs_num : $this->patient->nhs_num ?></span>
+								<span id="<?= $form_css_class ?>-nhs-text"><?= ($data['print_mode'] === 'WP10') ? 'NHS Number: ' . $this->patient->nhs_num : $this->patient->nhs_num ?></span>
 							</div>
 					</div>
 					<?php if ($data['print_mode'] === 'WP10'): ?>
@@ -296,12 +296,12 @@ foreach ($items_data as $group => $items) { ?>
 					<?php endif; ?>
 				</div>
 			<div class="fpten-form-row">
-				<div id="fpten-doctor-name" class="fpten-form-column">
+				<div id="<?= $form_css_class ?>-doctor-name" class="fpten-form-column">
 					<?= $data['user']->getFullNameAndTitle() ?>
 				</div>
 			</div>
 			<div class="fpten-form-row">
-				<div id="fpten-date" class="fpten-form-column">
+				<div id="<?= $form_css_class ?>-date" class="fpten-form-column">
 					<?= date('d/m/y') ?>
 				</div>
 			</div>
@@ -325,7 +325,7 @@ foreach ($items_data as $group => $items) { ?>
 					<?= $this->site->institution->name ?>
 				</div>
 				<?php if  ($side === 'left'): ?>
-					<div id="fpten-site-code" class="fpten-form-column">
+					<div id="<?= $form_css_class ?>-site-code" class="fpten-form-column">
 						<span id="fpten-trust-code"><?= $data['user']->registration_code ?></span>
 					</div>
 					<span class="fpten-form-column fpten-prescriber-code">HP</span>
