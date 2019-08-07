@@ -254,17 +254,23 @@ foreach ($ethnic_list as $key=>$item){
               <?= $form->error($patient, 'nhs_num') ?>
           </td>
         </tr>
-        <tr class="nhs-num-status" style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
-          <td>
-              <?= $form->label($patient, 'nhs_num_status_id') ?>
-            <br/>
-              <?= $form->error($patient, 'nhs_num_status_id') ?>
-          </td>
-          <td>
-              <?= $form->dropDownList($patient, 'nhs_num_status_id', $nhs_num_statuses,
-                  array('empty' => '-- select --')); ?>
-          </td>
-        </tr>
+<!--        Making the NHS number status to be visible only if use case is not for CERA as they dont want this- CERA-499 -->
+        <?php
+        if (Yii::app()->params['institution_code']!=='CERA'){?>
+             <tr class="nhs-num-status" style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
+              <td>
+                  <?= $form->label($patient, 'nhs_num_status_id') ?>
+                <br/>
+                  <?= $form->error($patient, 'nhs_num_status_id') ?>
+              </td>
+              <td>
+                  <?= $form->dropDownList($patient, 'nhs_num_status_id', $nhs_num_statuses,
+                      array('empty' => '-- select --')); ?>
+              </td>
+            </tr>
+        <?php
+        }
+        ?>
         <?= $this->renderPartial('crud/_patient_identifiers', array(
                 'form' => $form,
                 'patient_identifiers' => $patient_identifiers,
