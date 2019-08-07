@@ -57,9 +57,9 @@
                     style="vertical-align: center;"><?= $patient['age']; ?></td>
                 <td class="js-anonymise js-csv-gender"
                     style="vertical-align: center;"><?= $patient['gender']; ?></td>
-                <td class="text-left" style="vertical-align: center;" class="js-csv-diagnoses"><?= $patient['diagnoses']; ?></td>
+                <td class="text-left js-csv-diagnoses" style="vertical-align: center;"><?= $patient['diagnoses']; ?></td>
                 <?=$cataract? '<td class="text-left" style="vertical-align: center;">'.$item['eye_side'].'</td>':'';?>
-                <td class="text-left" style="vertical-align: center;" class="js-csv-procedures"><?= $cataract? $item['procedures']:$patient['procedures']; ?></td>
+                <td class="text-left js-csv-procedures" style="vertical-align: center;"><?= $cataract? $item['procedures']:$patient['procedures']; ?></td>
                 <?=$cataract? '<td style="vertical-align: center;">'.Helper::convertDate2NHS($item['event_date']).'</td>':'';?>
             </tr>
         <?php } ?>
