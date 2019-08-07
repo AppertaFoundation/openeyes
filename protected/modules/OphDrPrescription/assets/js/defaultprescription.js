@@ -253,10 +253,6 @@ $(function () {
         } else {
             addItems(selectedItems);
         }
-
-        $('.js-search-autocomplete').val("");
-        $('.js-search-autocomplete').keyup();
-
     },
   });
 
