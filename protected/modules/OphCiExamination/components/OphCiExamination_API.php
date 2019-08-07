@@ -1079,7 +1079,7 @@ class OphCiExamination_API extends \BaseAPI
             $managment_summaries = [];
             foreach ($management_summaries as $summaries) {
                 $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->short_name;
-                $user = \User::model()->findByPk($summaries->event->episode->last_modified_user_id);
+                $user = \User::model()->findByPk($summaries->event->last_modified_user_id);
                 $user_name = $user->first_name . ' ' . $user->last_name;
                 $summary_obj = new \stdClass();
                 $created_date = \Helper::convertDate2NHS($summaries->event->event_date);

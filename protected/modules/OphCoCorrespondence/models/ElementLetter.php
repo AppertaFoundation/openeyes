@@ -660,7 +660,7 @@ class ElementLetter extends BaseEventTypeElement
             );
         }
 
-        if(isset($_POST['attachments_event_id'])){
+        if (isset($_POST['attachments_event_id'])) {
 
             $attachments_last_event_id = Yii::app()->request->getPost('attachments_event_id');
             $attachments_system_hidden = Yii::app()->request->getPost('attachments_system_hidden');
@@ -670,7 +670,7 @@ class ElementLetter extends BaseEventTypeElement
             $attachments_protected_file_id = Yii::app()->request->getPost('file_id');
             $attachments_display_title = Yii::app()->request->getPost('attachments_display_title');
 
-            if( isset( $attachments_last_event_id )){
+            if (isset( $attachments_last_event_id )) {
                 $order = 1;
                 foreach($attachments_last_event_id as $key => $last_event){
 
@@ -981,10 +981,9 @@ class ElementLetter extends BaseEventTypeElement
     public function getToAddress()
     {
         if($this->document_instance && $this->document_instance[0]->document_target) {
-
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
-                    if($target->ToCc == 'To'){
+                    if ($target->ToCc == 'To') {
                         return $target->contact_name . "\n" . $target->address;
                     }
                 }
@@ -1090,9 +1089,14 @@ class ElementLetter extends BaseEventTypeElement
      * @return string
      */
     public function checkPrint(){
-        if((strpos(Yii::app()->request->urlReferrer, 'update') || strpos(Yii::app()->request->urlReferrer, 'create')) && !$this->draft){
-            return "1";
+        $cookies = Yii::app()->request->cookies;
+        $print_output = $this->getOutputByType();
+        $additional_print_info = (count($print_output) > 1 ? '&all=1' : '');
+        if ($cookies->contains('savePrint')) {
+            if (!$this->draft && $print_output) {
+                return "1".$additional_print_info;
+            }
         }
-        return "0";
+        return "0".$additional_print_info;
     }
 }
