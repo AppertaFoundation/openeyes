@@ -630,6 +630,8 @@ $this->renderPartial('../patient/crud/create_contact_form',
         event.preventDefault();
         extraContactFormCleaning();
         $(".js-extra-practice-gp-id").val("");
+        // clearing the selected gp role id if user has closed the popup.
+        $(".js-extra-gp-contact-label-id").val("");
     });
 
     $('#js-add-extra-practice-btn').click(function(event){
