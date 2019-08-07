@@ -163,7 +163,8 @@ class Drug extends BaseActiveRecordVersioned
                 'value' => $drug->name,
                 'name' => $drug->tallmanlabel,
                 'id' => $drug->id,
-                'tags' => array_map(function($t) { return $t->id;}, $drug->tags),
+                'tags' => array_map(function($t) { return $t->id;
+                }, $drug->tags),
             );
         }
 
@@ -173,7 +174,8 @@ class Drug extends BaseActiveRecordVersioned
                 'value' => $common_medication_drug->medication_drug->name,
                 'name' => $common_medication_drug->medication_drug->name, // these should be handled somehow different...
                 'id' => $common_medication_drug->medication_drug->id.'@@M',
-                'tags' => array_map(function($t) { return $t->id;}, $common_medication_drug->medication_drug->tags),
+                'tags' => array_map(function($t) { return $t->id;
+                }, $common_medication_drug->medication_drug->tags),
             );
         }
 
@@ -205,7 +207,8 @@ class Drug extends BaseActiveRecordVersioned
 
     public function isPreservativeFree()
     {
-        return in_array(1, array_map(function($e){ return $e->id; }, $this->tags));
+        return in_array(1, array_map(function($e){ return $e->id;
+        }, $this->tags));
     }
 
     public function __toString()

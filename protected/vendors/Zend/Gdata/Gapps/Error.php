@@ -89,7 +89,7 @@ class Zend_Gdata_Gapps_Error extends Zend_Gdata_App_Base
      * @param integer $value The new value for the error code.
      */
     public function setErrorCode($value) {
-       $this->_errorCode = $value;
+        $this->_errorCode = $value;
     }
 
     /**
@@ -139,7 +139,7 @@ class Zend_Gdata_Gapps_Error extends Zend_Gdata_App_Base
      * @param string $value The reason this exception occurred.
      */
     public function setReason($value) {
-       $this->_reason = $value;
+        $this->_reason = $value;
     }
 
     /**
@@ -149,7 +149,7 @@ class Zend_Gdata_Gapps_Error extends Zend_Gdata_App_Base
      * @return string The reason this exception occurred.
      */
     public function getReason() {
-       return $this->_reason;
+        return $this->_reason;
     }
 
     /**
@@ -159,7 +159,7 @@ class Zend_Gdata_Gapps_Error extends Zend_Gdata_App_Base
      * @param string $value The invalid input that triggered this exception.
      */
     public function setInvalidInput($value) {
-       $this->_invalidInput = $value;
+        $this->_invalidInput = $value;
     }
 
     /**
@@ -169,7 +169,7 @@ class Zend_Gdata_Gapps_Error extends Zend_Gdata_App_Base
      * @return string The reason this exception occurred.
      */
     public function getInvalidInput() {
-       return $this->_invalidInput;
+        return $this->_invalidInput;
     }
 
     /**
@@ -206,17 +206,17 @@ class Zend_Gdata_Gapps_Error extends Zend_Gdata_App_Base
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'errorCode':
-            $this->_errorCode = $attribute->nodeValue;
+            case 'errorCode':
+                $this->_errorCode = $attribute->nodeValue;
             break;
-        case 'reason':
-            $this->_reason = $attribute->nodeValue;
+            case 'reason':
+                $this->_reason = $attribute->nodeValue;
             break;
-        case 'invalidInput':
-            $this->_invalidInput = $attribute->nodeValue;
+            case 'invalidInput':
+                $this->_invalidInput = $attribute->nodeValue;
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 

@@ -17,7 +17,7 @@
  */
 ?>
 <?php
-$this->beginContent('//patient/event_container',array('no_face'=>true));
+$this->beginContent('//patient/event_container', array('no_face'=>true));
 $assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
 $this->moduleNameCssClass .= ' edit';
 ?>
@@ -33,7 +33,7 @@ $warnings = $this->patient->getWarnings($clinical);
             'id' => 'operation-note-select',
             'enableAjaxValidation' => false,
         ));
-        ?>
+?>
 
         <?php $this->displayErrors($errors) ?>
 
@@ -57,9 +57,9 @@ $warnings = $this->patient->getWarnings($clinical);
       <div class="data-group">
           <div class="data-value flex-layout">
             <p>
-                <?php if (count($operations) > 0): ?>
+                <?php if (count($operations) > 0) : ?>
                   Please indicate whether this operation note relates to a booking or an unbooked emergency:
-                <?php else: ?>
+                <?php else : ?>
                   There are no open bookings in the current episode so only an emergency operation note can be created.
                 <?php endif; ?>
             </p>
@@ -77,13 +77,13 @@ $warnings = $this->patient->getWarnings($clinical);
               </thead>
               <tbody>
 
-              <?php foreach ($operations as $operation): ?>
+                <?php foreach ($operations as $operation) : ?>
                 <tr>
                   <td>
                     <span class="cols-3 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
                     <?php if (!$theatre_diary_disabled) {
-                        if($operation->booking){
-                          echo $operation->booking->session->NHSDate('date');
+                        if ($operation->booking) {
+                            echo $operation->booking->session->NHSDate('date');
                         }
                     } ?>
                     </span>
@@ -101,7 +101,7 @@ $warnings = $this->patient->getWarnings($clinical);
                       <?= $operation->comments; ?>
                   </td>
                 </tr>
-              <?php endforeach; ?>
+                <?php endforeach; ?>
               <tr>
                 <td>N/A</td>
                 <td>
@@ -113,8 +113,8 @@ $warnings = $this->patient->getWarnings($clinical);
             </table>
           </div>
         </div>
-          <?php $this->displayErrors($errors, true) ?>
-          <?php $this->endWidget(); ?>
+            <?php $this->displayErrors($errors, true) ?>
+            <?php $this->endWidget(); ?>
     </section>
 </div>
 <script type="text/javascript">

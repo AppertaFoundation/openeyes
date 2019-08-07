@@ -593,12 +593,12 @@ return array(
         ),*/
         'hos_num_label' => 'ID',
         'nhs_num_label' => 'NHS',
-      'ethnic_group_filters' => array(
+        'ethnic_group_filters' => array(
         'Indigenous Australian',
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.3a',
+      'oe_version' => '3.4a',
       'gp_label' => 'GP',
       // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
       'worklist_dashboard_future_days' => 0,

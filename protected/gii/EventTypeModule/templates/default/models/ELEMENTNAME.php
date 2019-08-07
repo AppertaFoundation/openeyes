@@ -17,8 +17,8 @@
 
 /**
  * This is the model class for table "<?php if (isset($element)) {
-    echo $element['table_name'];
-} ?>".
+        echo $element['table_name'];
+                                      } ?>".
  *
  * The followings are the available columns in table:
  * @property string $id
@@ -67,7 +67,7 @@ if (isset($element)) {
 
 class <?php if (isset($element)) {
     echo $element['class_name'];
-} ?> extends BaseEventTypeElement
+      } ?> extends BaseEventTypeElement
 {
     /**
      * Returns the static model of the specified AR class.
@@ -84,8 +84,8 @@ class <?php if (isset($element)) {
     public function tableName()
     {
         return '<?php if (isset($element)) {
-    echo $element['table_name'];
-} ?>';
+            echo $element['table_name'];
+                } ?>';
     }
 
     /**
@@ -95,29 +95,29 @@ class <?php if (isset($element)) {
     {
         return array(
             array('event_id, <?php if (isset($element)) {
-    foreach ($element['fields'] as $field) {
-        if ($field['type'] != 'Multi select') {
-            echo $field['name'].', ';
-        }
-        if ($field['type'] == 'EyeDraw' && @$field['extra_report']) {
-            echo $field['name'].'2, ';
-        }
-    }
-} ?>', 'safe'),
+                foreach ($element['fields'] as $field) {
+                    if ($field['type'] != 'Multi select') {
+                        echo $field['name'].', ';
+                    }
+                    if ($field['type'] == 'EyeDraw' && @$field['extra_report']) {
+                        echo $field['name'].'2, ';
+                    }
+                }
+                             } ?>', 'safe'),
             array('<?php if (isset($element)) {
-    foreach ($element['fields'] as $field) {
-        if ($field['required'] && $field['type'] != 'Multi select') {
-            echo $field['name'].', ';
-        }
-    }
-} ?>', 'required'),
+                foreach ($element['fields'] as $field) {
+                    if ($field['required'] && $field['type'] != 'Multi select') {
+                        echo $field['name'].', ';
+                    }
+                }
+                   } ?>', 'required'),
             array('id, event_id, <?php if (isset($element)) {
-    foreach ($element['fields'] as $field) {
-        if ($field['type'] != 'Multi select') {
-            echo $field['name'].', ';
-        }
-    }
-} ?>', 'safe', 'on' => 'search'),
+                foreach ($element['fields'] as $field) {
+                    if ($field['type'] != 'Multi select') {
+                        echo $field['name'].', ';
+                    }
+                }
+                                 } ?>', 'safe', 'on' => 'search'),
 <?php if (isset($element)) {
     foreach ($element['fields'] as $field) {
         if ($field['type'] == 'Integer' && (strlen(@$field['integer_min_value']) || strlen(@$field['integer_max_value']))) {
@@ -168,7 +168,7 @@ class <?php if (isset($element)) {
     foreach ($element['relations'] as $relation) {
         ?>
             '<?php echo $relation['name']?>' => array(self::<?php echo $relation['type']?>, '<?php echo $relation['class']?>', '<?php echo $relation['field']?>'),
-<?php 
+        <?php
     }
 }?>
         );
@@ -243,7 +243,7 @@ if (isset($element)) {
     {
         return new Eye;
     }
-<?php 
+    <?php
 }?>
 
 <?php if (isset($element) && !empty($element['defaults_methods'])) {
@@ -257,7 +257,7 @@ if (isset($element)) {
         }
         return $ids;
     }
-<?php
+            <?php
         } else {
             ?>
     public function get<?php echo $default_method['method']?>() {
@@ -267,7 +267,7 @@ if (isset($element)) {
         }
         return $ids;
     }
-<?php
+            <?php
         }
     }
 }
@@ -308,7 +308,7 @@ if (isset($element)) {
                 }
             }
         }
-<?php 
+            <?php
         }
     }
 }?>

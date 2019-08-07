@@ -49,7 +49,7 @@
     <td></td>
   </tr>
 
-  <?php if ($element->witness_required) { ?>
+    <?php if ($element->witness_required) { ?>
     <tr>
       <td>
           <?=\CHtml::encode($element->getAttributeLabel('witness_name')) ?>:
@@ -59,7 +59,7 @@
       </td>
       <td></td>
     </tr>
-  <?php } ?>
+    <?php } ?>
   <tr>
     <td>
         <?=\CHtml::encode($element->getAttributeLabel('interpreter_required')) ?>:
@@ -69,7 +69,7 @@
     </td>
     <td></td>
   </tr>
-  <?php if ($element->interpreter_required) { ?>
+    <?php if ($element->interpreter_required) { ?>
     <tr>
       <td>
           <?=\CHtml::encode($element->getAttributeLabel('interpreter_name')) ?>:
@@ -79,8 +79,8 @@
       </td>
       <td></td>
     </tr>
-  <?php } ?>
-  <?php if ($element->parent_guardian) { ?>
+    <?php } ?>
+    <?php if ($element->parent_guardian) { ?>
     <tr>
       <td>
           <?=\CHtml::encode($element->getAttributeLabel('parent_guardian')) ?>:
@@ -90,7 +90,7 @@
       </td>
       <td></td>
     </tr>
-  <?php } ?>
+    <?php } ?>
   <tr>
     <td>
         <?=\CHtml::encode($element->getAttributeLabel('include_supplementary_consent')) ?>:

@@ -29,13 +29,13 @@ if (!isset($values)) {
 }
 
 if (isset($entry->start_date) && strtotime($entry->start_date)) {
-    list($start_sel_year, $start_sel_month, $start_sel_day) = array_pad(explode('-', $entry->start_date), 3,0);
-}else {
+    list($start_sel_year, $start_sel_month, $start_sel_day) = array_pad(explode('-', $entry->start_date), 3, 0);
+} else {
     $start_sel_day = $start_sel_month = null;
     $start_sel_year = date('Y');
 }
 if (isset($entry->end_date) && strtotime($entry->end_date)) {
-    list($end_sel_year, $end_sel_month, $end_sel_day) = array_pad(explode('-', $entry->end_date), 3,0);
+    list($end_sel_year, $end_sel_month, $end_sel_day) = array_pad(explode('-', $entry->end_date), 3, 0);
 } else {
     $end_sel_day = $end_sel_month = null;
     $end_sel_year = date('Y');
@@ -48,12 +48,12 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     <td>
       <span class="medication-display">
         <span class="medication-name">
-          <?= $values['medication_name'] ?>
+            <?= $values['medication_name'] ?>
         </span>
       </span>
-      <?php if ($entry->originallyStopped) { ?>
+        <?php if ($entry->originallyStopped) { ?>
         <i class="oe-i stop small pad"></i>
-      <?php } ?>
+        <?php } ?>
         <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $values['drug_id'] ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_drug_id]" value="<?= $values['medication_drug_id'] ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $values['medication_name'] ?>" />
@@ -62,11 +62,11 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         $select_options = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);
         $html_options = ['empty' => '- Select -'];
         $hide_search = strlen($entry->getMedicationDisplay()) > 0;
-        if($hide_search){
+        if ($hide_search) {
             $html_options['style'] = 'display: none;';
         }
 
-        foreach($select_options as $select_option){
+        foreach ($select_options as $select_option) {
             $html_options['options'][$select_option['id']] = [
                 'data-tags' => implode(',', $select_option['tags']),
                 'data-tallmanlabel' => $select_option['name'],
@@ -87,17 +87,17 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     </td>
     <td>
       <fieldset class="data-group fuzzy-date">
-      <?php if (!$entry->start_date||$removable) { ?>
+        <?php if (!$entry->start_date||$removable) { ?>
         <input id="datepicker_1_<?=$row_count?>" name="<?= $field_prefix ?>[start_date]"
-               value="<?= $entry->start_date? $entry->start_date: date('Y-m-d') ?>"
+               value="<?= $entry->start_date ? $entry->start_date : (Yii::app()->request->isPostRequest ?  "" : date('Y-m-d')) ?>"
                style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
         <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
-      <?php } else { ?>
+        <?php } else { ?>
         <i class="oe-i start small pad"></i>
-          <?=Helper::formatFuzzyDate($entry->start_date) ?>
+            <?=Helper::formatFuzzyDate($entry->start_date) ?>
         <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
 
-      <?php } ?>
+        <?php } ?>
     <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
     <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
     </fieldset>

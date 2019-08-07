@@ -2,8 +2,8 @@
 
 class m190528_105000_change_CXL_slit_element_type_to_the_right_element_group extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
         $examination_event_type = EventType::model()->find('name = ?', ['Examination']);
 
@@ -12,11 +12,11 @@ class m190528_105000_change_CXL_slit_element_type_to_the_right_element_group ext
         $this->update('element_type',
             ['element_group_id' => $element_group->id],
             'class_name = :class_name', [':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp']);
-	}
+    }
 
-	public function down()
-	{
-		echo "does not support migration down.\n";
-		return false;
-	}
+    public function down()
+    {
+        echo "does not support migration down.\n";
+        return false;
+    }
 }

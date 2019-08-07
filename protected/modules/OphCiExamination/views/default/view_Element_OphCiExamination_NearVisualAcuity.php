@@ -17,31 +17,38 @@
  */
 ?>
 <div class="element-data element-eyes">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column">
-          <?php if ($element->hasEye($eye_side)): ?>
+          <?php if ($element->hasEye($eye_side)) : ?>
             <div class="data-value">
-              <?php if ($element->getCombined($eye_side)):
-                  echo $element->unit->name ?>
+                <?php if ($element->getCombined($eye_side)) :
+                    echo $element->unit->name ?>
               <span class="priority-text">
-                <?php echo $element->getCombined($eye_side) ?>
+                    <?php echo $element->getCombined($eye_side) ?>
               </span>
-                  <?php echo $this->renderPartial('_visual_acuity_tooltip',
+                    <?php echo $this->renderPartial('_visual_acuity_tooltip',
                       array('element' => $element, 'side' => $eye_side, 'is_near' => true)); ?>
-              <?php else: ?>
+                <?php else : ?>
                   Not recorded
-                    <?php if ($element->{$eye_side . '_unable_to_assess'}): ?>
-                      (Unable to assess<?php if ($element->{$eye_side . '_eye_missing'}): ?>, eye missing<?php endif; ?>)
-                    <?php elseif ($element->{$eye_side . '_eye_missing'}): ?>
+                    <?php if ($element->{$eye_side . '_unable_to_assess'}) : ?>
+                      (Unable to assess<?php if ($element->{$eye_side . '_eye_missing'}) :
+                            ?>, eye missing<?php
+                                       endif; ?>)
+                    <?php elseif ($element->{$eye_side . '_eye_missing'}) : ?>
                       (Eye missing)
                     <?php endif; ?>
-              <?php endif; ?>
+                <?php endif; ?>
             </div>
-          <?php else: ?>
+              <div>
+                  <?php if ($element->{$eye_side . '_notes'}) : ?>
+                        <?= $element->textWithLineBreaks($eye_side . '_notes') ?>
+                    <?php endif; ?>
+              </div>
+            <?php else : ?>
             <div class="data-value not-recorded">
               Not recorded
             </div>
-          <?php endif; ?>
+            <?php endif; ?>
       </div>
     <?php endforeach; ?>
 </div>

@@ -17,13 +17,13 @@
  */
 ?>
 <div class="element-data element-eyes">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="<?= $eye_side ?>-eye">
 
           <?php if ($element->hasEye($eye_side)) {
-              if (!$element->{$eye_side . '_procedures'}) { ?>
+                if (!$element->{$eye_side . '_procedures'}) { ?>
                 None
-              <?php } else { ?>
+                <?php } else { ?>
                 <table class="cols-11 last-left">
                     <?php foreach ($element->{$eye_side . '_procedures'} as $proc) { ?>
                       <tr>
@@ -31,10 +31,10 @@
                       </tr>
                     <?php } ?>
                 </table>
-              <?php } ?>
-          <?php } else { ?>
+                <?php } ?>
+            <?php } else { ?>
             <div class="data-value not-recorded">Not recorded</div>
-          <?php } ?>
+            <?php } ?>
       </div>
     <?php endforeach; ?>
 </div>

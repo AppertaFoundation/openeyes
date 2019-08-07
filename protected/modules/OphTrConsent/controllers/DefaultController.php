@@ -36,7 +36,7 @@ class DefaultController extends BaseEventTypeController
         Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
         Yii::app()->clientScript->registerScript(
             'AnaestheticController',
-            'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrConsent_Procedure_AnaestheticType\'});',CClientScript::POS_END);
+            'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrConsent_Procedure_AnaestheticType\'});', CClientScript::POS_END);
 
         return parent::beforeAction($action);
     }
@@ -63,8 +63,7 @@ class DefaultController extends BaseEventTypeController
                 $anaesthetic_types = array();
                 if ($this->booking_operation->anaesthetic_type) {
                     foreach ($this->booking_operation->anaesthetic_type as $anaesthetic_type) {
-
-                        if( !array_key_exists($anaesthetic_type->id, $type_assessments_by_id) ){
+                        if ( !array_key_exists($anaesthetic_type->id, $type_assessments_by_id) ) {
                             $anaesthetic_type_assesment = new OphTrConsent_Procedure_AnaestheticType();
                         } else {
                             $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type->id];

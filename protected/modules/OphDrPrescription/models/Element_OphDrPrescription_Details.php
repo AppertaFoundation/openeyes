@@ -121,13 +121,13 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         $return = '';
         foreach ($this->items as $item) {
             if ($return) {
-                $return .= "\n";
+                $return .= "<br>";
             }
             $return .= $item->getDescription();
 
             if ($item->tapers) {
                 foreach ($item->tapers as $taper) {
-                    $return .= "\n   ".$taper->getDescription();
+                    $return .= "<br>  ".$taper->getDescription();
                 }
             }
         }
@@ -260,9 +260,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
 
     protected function afterSave()
     {
-        if(($this->draft == 0) && ($this->printed == 0)){
+        if (($this->draft == 0) && ($this->printed == 0)) {
             $this->event->deleteIssue('Draft');
-        } else if($this->draft == 1) {
+        } else if ($this->draft == 1) {
             $this->event->addIssue('Draft');
         } else {
             $this->event->deleteIssue('Draft');
@@ -360,7 +360,8 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         if (!$this->draft) {
             $this->getApp()->event->dispatch('after_medications_save', array(
                 'patient' => $this->event->getPatient(),
-                'drugs' => array_map(function($item) {return $item->drug; }, $this->items)
+                'drugs' => array_map(function($item) {return $item->drug;
+                }, $this->items)
             ));
         }
     }
@@ -372,7 +373,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      */
     public function getInfotext()
     {
-        if(($this->draft == 0) && ($this->printed == 0)){
+        if (($this->draft == 0) && ($this->printed == 0)) {
             return 'Saved';
         } else if (!$this->printed) {
             return 'Draft';
