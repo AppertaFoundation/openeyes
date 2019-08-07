@@ -503,7 +503,7 @@
                 });
             }
 
-            const $input = dialog.popup.find('.flex-layout.flex-top.flex-left .js-search-autocomplete.search');
+            const $input = dialog.popup.find('.js-search-autocomplete.search');
             if ($input.val().length) {
                 // reset search list when adding an item
                 $input.val("");
