@@ -35,6 +35,68 @@ class HistoryMedications extends BaseMedicationElement
     {
         return 'et_ophciexamination_history_medications';
     }
+
+    public function behaviors()
+    {
+        return array(
+            'PatientLevelElementBehaviour' => 'PatientLevelElementBehaviour',
+        );
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('event_id, entries', 'safe'),
+            array('entries', 'required', 'message' => 'At least one medication must be recorded, or the History Medications element should be removed.')
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array_merge(array(
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'entries' => array(
+                self::HAS_MANY,
+                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
+                'element_id',
+            ),
+            'orderedEntries' => array(self::HAS_MANY,
+                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
+                'element_id',
+                'order' => 'orderedEntries.start_date desc, orderedEntries.end_date desc, orderedEntries.last_modified_date'),
+        ),
+            $this->getEntryRelations()
+        );
+    }
+
+    public function getStoppedOrderedEntries()
+    {
+        $stoppedEntries = array_filter($this->orderedEntries, function ($entry) {
+            return $entry->end_date && $entry->end_date <= date('Y-m-d', strtotime($this->event->event_date));
+        });
+        return $stoppedEntries;
+    }
+
+    public function getCurrentOrderedEntries()
+    {
+        $currentEntries = array_filter($this->orderedEntries, function ($entry) {
+            return !$entry->end_date || $entry->end_date > date('Y-m-d', strtotime($this->event->event_date));
+        });
+        return $currentEntries;
+    }
+
     protected function errorAttributeException($attribute, $message)
     {
         if ($attribute === \CHtml::modelName($this) . '_entries') {

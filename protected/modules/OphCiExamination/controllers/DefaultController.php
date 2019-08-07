@@ -18,9 +18,9 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
-use Yii;
-use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\components;
+use OEModule\OphCiExamination\models;
+use Yii;
 
 /*
  * This is the controller class for the OphCiExamination event. It provides the required methods for the ajax loading of elements, and rendering the required and optional elements (including the children relationship)
@@ -110,10 +110,8 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function checkElementsForData($elements)
     {
-        foreach($elements as $element)
-        {
-            if($element->id > 0)
-            {
+        foreach ($elements as $element) {
+            if ($element->id > 0) {
                 return true;
             }
         }
@@ -125,7 +123,7 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return array
      */
-    protected function getElementFilterList($include_hidden=true)
+    protected function getElementFilterList($include_hidden = true)
     {
         $remove = components\ExaminationHelper::elementFilterList();
 
@@ -150,10 +148,10 @@ class DefaultController extends \BaseEventTypeController
         $final = array();
         foreach ($elements as $el) {
             if (in_array(get_class($el), $remove)) {
-                if($el->id > null || $this->checkElementsForData($this->getElements($el->getElementType()))) {
+                if ($el->id > null || $this->checkElementsForData($this->getElements($el->getElementType()))) {
                     $final[] = $el;
                 }
-            }else{
+            } else {
                 $final[] = $el;
             }
         }
@@ -260,7 +258,6 @@ class DefaultController extends \BaseEventTypeController
                 $d->eye_id = $this->episode->eye_id;
 
                 $diagnoses[] = $d;
-
             }
 
             foreach ($this->patient->getOphthalmicDiagnoses() as $sd) {
@@ -277,7 +274,7 @@ class DefaultController extends \BaseEventTypeController
             foreach ($diagnoses as $d) {
                 $already_in = false;
                 foreach ($_diagnoses as $ad) {
-                    if ($d->disorder_id == $ad->disorder_id) {
+                    if (($d->disorder_id === $ad->disorder_id) && ($d->date === $ad->date)) {
                         $already_in = true;
                         // set the eye correctly (The principal diagnosis for the episode is the first diagnosis, so
                         // no need to check that.
@@ -408,7 +405,7 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-		$active_check = "";
+        $active_check = "";
 
         $view_data = array_merge(array(
             'active_check' => $active_check,
@@ -1271,7 +1268,7 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidateElementsFromData($data)
     {
         $errors = parent::setAndValidateElementsFromData($data);
-        if(isset($data['OEModule_OphCiExamination_models_HistoryIOP'])) {
+        if (isset($data['OEModule_OphCiExamination_models_HistoryIOP'])) {
             $errors = $this->setAndValidateHistoryIopFromData($data, $errors);
         }
 
@@ -1281,18 +1278,86 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $posted_risk = [];
-        if(isset($data['OEModule_OphCiExamination_models_HistoryRisks']['entries'])){
-            $posted_risk = array_map(function($r){ return $r['risk_id'];}, $data['OEModule_OphCiExamination_models_HistoryRisks']['entries']);
+        if (isset($data['OEModule_OphCiExamination_models_HistoryRisks']['entries'])) {
+            $posted_risk = array_map(function($r){ return $r['risk_id'];
+            }, $data['OEModule_OphCiExamination_models_HistoryRisks']['entries']);
         }
 
         // Element was open, we check the required risks
-        if(isset($data['OEModule_OphCiExamination_models_HistoryRisks'])){
+        if (isset($data['OEModule_OphCiExamination_models_HistoryRisks'])) {
             $errors = $this->setAndValidateHistoryRisksFromData($errors, $posted_risk);
         }
 
         $api = Yii::app()->moduleAPI->get('PatientTicketing');
         if (isset($data['patientticket_queue']) && $api) {
             $errors = $this->setAndValidatePatientTicketingFromData($data, $errors, $api);
+        }
+
+        if(isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])){
+            $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
+        }
+
+        return $errors;
+    }
+
+    protected function setAndValidateOphthalmicDiagnosesFromData($data, $errors)
+    {
+        $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
+        $diagnoses = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses');
+        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'];
+        $duplicate_exists = false;
+
+        $concat_occurrences = [];
+        foreach ($entries as $entry) {
+            if (isset($entry['right_eye']) && isset($entry['left_eye'])) {
+                $eye_id =  \Eye::BOTH;
+            } else if (isset($entry['right_eye'])) {
+                $eye_id =  \Eye::RIGHT;
+            } else if (isset($entry['left_eye'])) {
+                $eye_id =  \Eye::LEFT;
+            }
+
+            // create a string with concatenation of  the columns that must be unique
+            $concat_data = $eye_id.$entry['disorder_id'].$entry['date'];
+
+            // do not take into consideration rows that have an id associated as they are already in the database
+            if (isset($entry['id']) && $entry['id']) {
+                $concat_occurrences[] = $concat_data;
+                continue;
+            }
+
+            // search if the input is already present in the database
+            $not_already_exists = true;
+            if (isset($diagnoses->id)) {
+                $criteria = new \CDbCriteria();
+                $criteria->addCondition('element_diagnoses_id=:element_diagnoses_id');
+                $criteria->addCondition('eye_id=:eye_id');
+                $criteria->addCondition('disorder_id=:disorder_id');
+                $criteria->addCondition('date=:date');
+
+                $criteria->params[":element_diagnoses_id"] = $diagnoses->id;
+                $criteria->params[":eye_id"] = $eye_id;
+                $criteria->params[":disorder_id"] = $entry['disorder_id'];
+                $criteria->params[":date"] = $entry['date'];
+
+                $count_saved_diagnosis = models\OphCiExamination_Diagnosis::model()->count($criteria);
+
+                // allow no more than one appearance in the database
+                $not_already_exists = $count_saved_diagnosis <= 1;
+            }
+
+            // if the concatenated info is not already present (neither on the screen nor in the database)
+            if ($not_already_exists && !in_array($concat_data, $concat_occurrences)) {
+                // add it to the known array
+                $concat_occurrences[] = $concat_data;
+            } else {
+                $duplicate_exists = true;
+            }
+        }
+
+        // if there is any duplicate, add error message
+        if ($duplicate_exists) {
+            $errors[$et_name][] = "You have 1 or more duplicate diagnoses. Each combo of diagnosis, eye side and date must be unique.";
         }
 
         return $errors;
@@ -1328,7 +1393,7 @@ class DefaultController extends \BaseEventTypeController
 
         $missing_risks = [];
         foreach ($exam_api->getRequiredRisks($this->patient) as $required_risk) {
-            if( !in_array($required_risk->id, $posted_risk) ){
+            if ( !in_array($required_risk->id, $posted_risk) ) {
                 $missing_risks[] = $required_risk;
             }
         }
@@ -1372,7 +1437,7 @@ class DefaultController extends \BaseEventTypeController
 
             if (count($err)) {
                 $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-                if(isset($errors[$et_name])) {
+                if (isset($errors[$et_name])) {
                     if ($errors[$et_name]) {
                         $errors[$et_name] = array_merge($errors[$et_name], $err);
                     } else {
@@ -1447,7 +1512,6 @@ class DefaultController extends \BaseEventTypeController
 
 
         foreach ($contact_ids as $key => $contact_id) {
-
             $foundExistingAssignment = false;
             foreach ($patientContactAssignments as $patientContactAssignment) {
                 if ($patientContactAssignment->contact_id == $contact_id) {
@@ -1513,7 +1577,7 @@ class DefaultController extends \BaseEventTypeController
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
         }
 
-        if ($this->action->id == 'update' && !$element_assignment->step_completed) {
+        if ($this->action->id == 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
             $this->step = $this->getCurrentStep();
         }
     }
@@ -1609,7 +1673,7 @@ class DefaultController extends \BaseEventTypeController
             $element = models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element_id);
             $element->cvi_alert_dismissed = 1;
 
-            if($element->save()) {
+            if ($element->save()) {
                 echo \CJSON::encode(array('success' => 'true'));
             }
         }

@@ -51,7 +51,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($siteSecretaries as $id => $siteSecretary): ?>
+        <?php foreach ($siteSecretaries as $id => $siteSecretary) : ?>
             <tr class="secretaryFormRow">
                 <td>
                     <?=\CHtml::activeHiddenField($siteSecretary, "[$id]firm_id"); ?>
@@ -66,11 +66,30 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                 </td>
                 <td>
                     <button type="submit" form="deleteSecretaryForm" name="id" class="small"
-                            value="<?php echo $siteSecretary->id ?>">Delete
+                            value="<?php echo $siteSecretary->id ?>"><i class="oe-i trash-blue "></i>
                     </button>
                 </td>
             </tr>
         <?php endforeach; ?>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                <button class="button hint green js-showBlankRow" type="button"><i class="oe-i plus pro-theme"></i></button> <!-- show new row -->
+            </td>
+        </tr>
+        <tr class="secretaryFormRow js-addNewRow">
+            <td>
+                <?=\CHtml::activeHiddenField($newSiteSecretary, "[new]firm_id", ["value" => $_GET['id']]); ?>
+                <?=\CHtml::activeHiddenField($newSiteSecretary, "[new]id"); ?>
+                <?=\CHtml::activeDropDownList($newSiteSecretary, "[new]site_id", CHtml::listData(Site::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
+            </td>
+            <td><?=\CHtml::activeTextField($newSiteSecretary, "[new]direct_line", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?></td>
+            <td><?=\CHtml::activeTextField($newSiteSecretary, "[new]fax", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?></td>
+            <td><button class="addButton small">Add</button></td>
+        </tr>
+
         <tr>
             <td>
                 <?php echo $form->formActions(); ?>

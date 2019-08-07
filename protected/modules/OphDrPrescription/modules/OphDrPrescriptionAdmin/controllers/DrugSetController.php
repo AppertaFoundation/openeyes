@@ -283,7 +283,6 @@ class DrugSetController extends BaseAdminController
         }
 
         \Yii::app()->end();
-
     }
 
     public function actionAddMedicationToSet()

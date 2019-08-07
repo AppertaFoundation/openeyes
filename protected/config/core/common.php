@@ -81,7 +81,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201905135800',
+            'time' => '201907311628',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -593,7 +593,7 @@ return array(
         ),*/
         'hos_num_label' => 'ID',
         'nhs_num_label' => 'NHS',
-      'ethnic_group_filters' => array(
+        'ethnic_group_filters' => array(
         'Indigenous Australian',
         'Greek',
         'Italian'

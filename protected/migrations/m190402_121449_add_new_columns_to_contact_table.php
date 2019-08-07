@@ -7,8 +7,8 @@ class m190402_121449_add_new_columns_to_contact_table extends CDbMigration
         $this->addColumn('contact', 'active', 'TINYINT(1) DEFAULT 1');
         $this->addColumn('patient_contact_assignment', 'comment', 'text');
         $this->addColumn('contact', 'national_code', 'VARCHAR(25)');
-        $this->addColumn('contact', 'fax' , 'VARCHAR(25)');
-        $this->addColumn('contact_version', 'fax' , 'VARCHAR(25)');
+        $this->addColumn('contact', 'fax', 'VARCHAR(25)');
+        $this->addColumn('contact_version', 'fax', 'VARCHAR(25)');
         $this->addColumn('contact_version', 'active', 'TINYINT(1) DEFAULT 1');
         $this->addColumn('contact_version', 'national_code', 'VARCHAR(25)');
         $this->addColumn('patient_contact_assignment_version', 'comment', 'text');

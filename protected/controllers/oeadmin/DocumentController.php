@@ -32,7 +32,7 @@ class DocumentController extends BaseAdminController
     {
         $model = OphCoDocument_Sub_Types::model();
         $document_sub_types = $model->findAll();
-        $this->render('//admin/document_sub_types' , $document_sub_types);
+        $this->render('//admin/document_sub_types', $document_sub_types);
     }
 
 }

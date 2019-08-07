@@ -43,13 +43,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 <?php if (!$current_eye_meds && !$stopped_eye_meds) { ?>
     <div class="nil-recorded">Nil recorded.</div>
 <?php } else { ?>
-    <?php if ($current_eye_meds): ?>
+    <?php if ($current_eye_meds) : ?>
         <table id="<?= $model_name ?>_entry_table">
             <colgroup>
                 <col class="cols-7">
             </colgroup>
             <tbody>
-            <?php foreach ($current_eye_meds as $entry): ?>
+            <?php foreach ($current_eye_meds as $entry) : ?>
                 <tr>
                     <td><strong><?= $entry->getMedicationDisplay() ?></strong></td>
                     <td>
@@ -71,7 +71,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
         </table>
     <?php endif; ?>
 
-    <?php if ($stopped_eye_meds): ?>
+    <?php if ($stopped_eye_meds) : ?>
         <table>
             <colgroup>
                 <col class="cols-7">
@@ -86,7 +86,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             </tr>
             </thead>
             <tbody style="display: none;">
-            <?php foreach ($stopped_eye_meds as $entry): ?>
+            <?php foreach ($stopped_eye_meds as $entry) : ?>
                 <tr>
                     <td><strong><?= $entry->getMedicationDisplay() ?></strong></td>
                     <td>

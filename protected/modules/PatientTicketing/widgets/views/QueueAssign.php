@@ -27,18 +27,18 @@
 if ($queue) { ?>
   <table class="cols-full">
       <?php
-      foreach ($form_fields as $fld) {
-          if (@$fld['type'] === 'widget') {
-              $this->widget('OEModule\PatientTicketing\widgets\\' . $fld['widget_name'], array(
+        foreach ($form_fields as $fld) {
+            if (@$fld['type'] === 'widget') {
+                $this->widget('OEModule\PatientTicketing\widgets\\' . $fld['widget_name'], array(
                   'ticket' => $this->ticket,
                   'label_width' => $this->label_width,
                   'data_width' => $this->data_width,
                   'form_name' => $fld['form_name'],
                   'form_data' => $form_data,
-              ));
-          } else { ?>
+                ));
+            } else { ?>
             <tr>
-                  <?php if (@$fld['choices']) { ?>
+                    <?php if (@$fld['choices']) { ?>
                 <td>
                     <label for="<?= $fld['form_name'] ?>"><?= $fld['label'] ?>:</label>
                 </td>
@@ -50,12 +50,12 @@ if ($queue) { ?>
                               ['empty' => ($fld['required']) ? 'Select' : 'None', 'class'=>'cols-full']
                           ) ?>
                       </td>
-                  <?php } else { ?>
+                    <?php } else { ?>
                       <td colspan="2">
                           <div class="row divider">
                               <?php
                               //may need to expand this beyond textarea and select in the future.
-                              $notes = @$form_data[$fld['form_name']]; ?>
+                                $notes = @$form_data[$fld['form_name']]; ?>
                               <textarea id="<?= $fld['form_name'] ?>"
                                         name="<?= $fld['form_name'] ?>"
                                         class="cols-full"
@@ -63,24 +63,23 @@ if ($queue) { ?>
                                         rows="5"><?= trim($notes) ?></textarea>
                           </div>
                       </td>
-                  <?php } ?>
+                    <?php } ?>
 
             </tr>
-          <?php } ?>
-      <?php } ?>
+            <?php } ?>
+        <?php } ?>
 
       <?php if ($auto_save) {
-          ?>
+            ?>
         <script>
           $(document).ready(function () {
             window.patientTicketChanged = true;
             window.changedTickets[<?=$this->current_queue_id?>] = true;
           });
         </script>
-          <?php
-
+            <?php
       }
-      ?>
+        ?>
   </table>
     <?php if ($this->patient_id) { ?>
     <div class="vc-actions">
@@ -92,7 +91,7 @@ if ($queue) { ?>
             >
                 <?= $et->name ?>
             </a>
-          <?php } ?>
+            <?php } ?>
 
           <?php if ($print_letter_event) { ?>
             <a href="<?= Yii::app()->baseURL ?>/<?= $print_letter_event->eventType->class_name ?>/default/doPrintAndView/<?= $print_letter_event->id ?>?all=1"
@@ -101,7 +100,7 @@ if ($queue) { ?>
             >
               Print Letter
             </a>
-          <?php } ?>
+            <?php } ?>
       </div>
         <?php echo @$extra_view_data['buttons']; ?>
     </div>

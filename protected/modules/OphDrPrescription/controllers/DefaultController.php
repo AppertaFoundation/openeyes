@@ -1,20 +1,19 @@
 <?php
 /**
- * OpenEyes.
-*
-* (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
-* (C) OpenEyes Foundation, 2011-2013
-* This file is part of OpenEyes.
-* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
-* You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
-*
-* @link http://www.openeyes.org.uk
-*
-* @author OpenEyes <info@openeyes.org.uk>
-* @copyright Copyright (c) 2011-2013, OpenEyes Foundation
-* @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
-*/
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 class DefaultController extends BaseEventTypeController
 {
     protected $show_element_sidebar = false;
@@ -240,11 +239,11 @@ class DefaultController extends BaseEventTypeController
      * @param $reason_id
      * @param $reason_text
      */
-    protected function showReasonForEdit( $reason_id, $reason_text )
+    protected function showReasonForEdit($reason_id, $reason_text)
     {
         $edit_reason = OphDrPrescriptionEditReasons::model()->findByPk($reason_id);
-        if($edit_reason != null){
-            if($reason_id > 1){
+        if ($edit_reason != null) {
+            if ($reason_id > 1) {
                 Yii::app()->user->setFlash('alert.edit_reason', 'Edit reason: '.$edit_reason->caption);
             } else {
                 Yii::app()->user->setFlash('alert.edit_reason', 'Edit reason: '.$reason_text);
@@ -270,7 +269,6 @@ class DefaultController extends BaseEventTypeController
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
             if (isset($_GET['type_id']) && $type_id = $_GET['type_id']) {
-
                 $criteria->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id = :type_id)");
                 $params[':type_id'] = $type_id;
             }
@@ -289,8 +287,6 @@ class DefaultController extends BaseEventTypeController
 
 
                 foreach ($drugs as $drug) {
-
-                	/** @var Medication $drug */
                     $infoBox = new MedicationInfoBox();
                     $infoBox->medication_id = $drug->id;
                     $infoBox->init();
@@ -385,14 +381,13 @@ class DefaultController extends BaseEventTypeController
      */
     protected function setElementComplexAttributesFromData($element, $data, $index = null)
     {
-        if (get_class($element) == 'Element_OphDrPrescription_Details' && @$data['Element_OphDrPrescription_Details']['items']) {
-
+        if (get_class($element) == 'Element_OphDrPrescription_Details' && isset($data['Element_OphDrPrescription_Details']['items']) && $data['Element_OphDrPrescription_Details']['items']) {
             // Form has been posted, so we should return the submitted values instead
             $items = array();
             foreach ($data['Element_OphDrPrescription_Details']['items'] as $item) {
                 $item_model = new OphDrPrescription_Item();
                 $item_model->attributes = $item;
-                if($item_model->start_date_string_YYYYMMDD == '') {
+                if ($item_model->start_date_string_YYYYMMDD == '') {
                     $item_model->start_date = substr($this->event->event_date, 0, 10);
                 }
                 if (isset($item['taper'])) {
@@ -435,14 +430,14 @@ class DefaultController extends BaseEventTypeController
         $this->layout = '//layouts/print';
 
         $pdf_documents = (int)Yii::app()->request->getParam('pdf_documents');
-        if( $pdf_documents == 1 ){
+        if ( $pdf_documents == 1 ) {
             $this->render('print');
         } else {
             $this->render('print');
-            if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
+            if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
                 $this->render('print', array('copy' => 'notes'));
             }
-            if(Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
+            if (Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
                 $this->render('print', array('copy' => 'patient'));
             }
         }
@@ -463,11 +458,11 @@ class DefaultController extends BaseEventTypeController
         $this->pdf_print_suffix = Site::model()->findByPk(Yii::app()->session['selected_site_id'])->id;
 
         $document_count = 1;
-        if(Yii::app()->params['disable_print_notes_copy'] == 'off'){
+        if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
             $document_count++;
         }
 
-        if(Yii::app()->params['disable_prescription_patient_copy'] == 'off'){
+        if (Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
             $document_count++;
         }
 
@@ -521,7 +516,7 @@ class DefaultController extends BaseEventTypeController
     public function actionMarkPrinted()
     {
         $event_id = Yii::app()->request->getParam('event_id');
-        if(!$event_id){
+        if (!$event_id) {
             throw new Exception('Prescription id not provided');
         }
 
@@ -592,7 +587,6 @@ class DefaultController extends BaseEventTypeController
     {
         $item = new OphDrPrescription_Item();
         if (is_a($source, 'OphDrPrescription_Item')) {
-
             // Source is a prescription item, so we should clone it
             foreach (array(
                          'medication_id',
@@ -619,8 +613,6 @@ class DefaultController extends BaseEventTypeController
             }
         } else {
             if (is_a($source, MedicationSetItem::class)) {
-
-                /** @var MedicationSetItem $source */
                 $item->medication_id = $source->medication_id;
                 $item->frequency_id = $source->default_frequency_id;
                 $item->form_id = $source->default_form_id ? $source->default_form_id : $source->medication->default_form_id;
@@ -628,7 +620,6 @@ class DefaultController extends BaseEventTypeController
                 $item->dose_unit_term = $source->default_dose_unit_term ? $source->default_dose_unit_term : $source->medication->default_dose_unit_term;
                 $item->route_id = $source->default_route_id ? $source->default_route_id : $source->medication->default_route_id;
                 $item->duration = $source->default_duration_id;
-
 
                 if ($source->tapers) {
                     $tapers = array();
@@ -646,7 +637,6 @@ class DefaultController extends BaseEventTypeController
                     $item->tapers = $tapers;
                 }
             } elseif (is_int($source) || (int) $source) {
-
                 // Source is an integer, so we use it as a drug_id
                 $item->medication_id = $source;
                 $medSet = $this->getCommonDrugsRefSet();
@@ -688,28 +678,22 @@ class DefaultController extends BaseEventTypeController
 
         $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
 
-        if(is_null($reason) && !$model->draft)
-        {
+        if (is_null($reason) && !$model->draft) {
             $this->render('ask_reason', array(
                 'id'        =>  $id,
                 'draft'     => $model->draft,
                 'printed'   => $model->printed
             ));
-        }
-        else
-        {
-            if(isset($_GET['do_not_save']) && $_GET['do_not_save']=='1')
-            {
+        } else {
+            if (isset($_GET['do_not_save']) && $_GET['do_not_save']=='1') {
                 $reason_id = isset($_GET['reason']) ? $_GET['reason'] : 0;
                 $reason_other_text = isset($_GET['reason_other']) ? $_GET['reason_other'] : '';
                // $_POST=null;
-            }
-            else
-            {
+            } else {
                 $reason_id = $model->edit_reason_id;
                 $reason_other_text = $model->edit_reason_other;
             }
-            $this->showReasonForEdit($reason_id,$reason_other_text);
+            $this->showReasonForEdit($reason_id, $reason_other_text);
             parent::actionUpdate($id);
         }
     }
@@ -760,8 +744,7 @@ class DefaultController extends BaseEventTypeController
     public function groupItems($items)
     {
         $item_group = array();
-        foreach($items as $item)
-        {
+        foreach ($items as $item) {
             $item_group[$item->dispense_condition_id][] = $item;
         }
         return $item_group;
@@ -770,9 +753,8 @@ class DefaultController extends BaseEventTypeController
 
     public function getSiteAndTheatreForLatestEvent()
     {
-        if($api = Yii::app()->moduleAPI->get('OphTrOperationnote')){
-            if($site_theatre = $api->getElementFromLatestEvent('Element_OphTrOperationnote_SiteTheatre', $this->patient, true))
-            {
+        if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+            if ($site_theatre = $api->getElementFromLatestEvent('Element_OphTrOperationnote_SiteTheatre', $this->patient, true)) {
                 return $site_theatre;
             }
         }

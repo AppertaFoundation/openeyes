@@ -1,4 +1,20 @@
 <?php
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ */
 
 use OEModule\OphCiExamination\models;
 
@@ -25,13 +41,11 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                 $meds_entries = array_merge($meds->entries, $untracked);
 
                 foreach ($meds_entries as $entry) {
-
                     if (!$entry->medication_id) {
                         continue;
                     }
 
                     $meds_tag = array();
-
                     if ($entry->medication_id){
                         foreach($entry->medication->getTypes() as $item) {
                             $meds_tag[] = $item->name;
@@ -47,7 +61,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                     /*$drug_aliases = $entry->drug_id&&$entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
                     $drug_name = $entry->drug_id ? $entry->drug->name.$drug_aliases : $entry->medication_drug->name;*/
 
-                    if($entry->start_date === null || $entry->start_date === "0000-00-00" || $entry->start_date === "") {
+                    if ($entry->start_date === null || $entry->start_date === "0000-00-00" || $entry->start_date === "") {
                         continue;
                     }
 
@@ -70,10 +84,10 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                             'high' => $end_date?:$latest_date,
                             'stop_reason' => $stop_reason
                         );
-                        if (!in_array($drug_name, array_keys($medication_list[$eye_side]))){
+                        if (!in_array($drug_name, array_keys($medication_list[$eye_side]))) {
                             $medication_list[$eye_side][$drug_name] = [];
                         }
-                        if (!in_array($new_medi_record, $medication_list[$eye_side][$drug_name]) ){
+                        if (!in_array($new_medi_record, $medication_list[$eye_side][$drug_name]) ) {
                             $medication_list[$eye_side][$drug_name][] = $new_medi_record;
                         }
                     }
@@ -81,11 +95,9 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
             }
         }
 
-
         foreach (['left', 'right'] as $side) {
-
             foreach ($medication_list[$side] as $key => &$med) {
-                if (sizeof($med)>1){
+                if (sizeof($med)>1) {
                     $med = $this->purifyMedicationSeries($med);    //sort and merge each medication's time series
                 }
             }
@@ -116,12 +128,12 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
         // From the earliest open time, merge overlopped time series into single one,
         // keep the earliest start time and latest stop time and stop reason
         // add to result array.
-        while($i<sizeof($medication_series)){
+        while ($i<sizeof($medication_series)) {
             $begin = $medication_series[$i]['low'];
             $end = $medication_series[$i]['high'];
             $stop_reason = $medication_series[$i]['stop_reason'];
-            while($i<sizeof($medication_series)-1 && $medication_series[$i+1]['low']<$end){
-                if ($medication_series[$i+1]['high']>$end){
+            while ($i<sizeof($medication_series)-1 && $medication_series[$i+1]['low']<$end) {
+                if ($medication_series[$i+1]['high']>$end) {
                     $end = $medication_series[$i+1]['high'];
                     $stop_reason = $medication_series[$i+1]['stop_reason'];
                 }

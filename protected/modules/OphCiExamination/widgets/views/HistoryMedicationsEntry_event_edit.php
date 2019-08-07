@@ -19,8 +19,6 @@
 
 <?php
 
-/** @var EventMedicationUse $entry */
-
 if (isset($entry->start_date_string_YYYYMMDD) && !is_null($entry->start_date_string_YYYYMMDD)) {
     $start_date = $entry->start_date_string_YYYYMMDD;
 }
@@ -37,7 +35,6 @@ if (isset($entry->end_date) && !is_null($entry->end_date_string_YYYYMMDD)) {
     $end_sel_year = substr($entry->end_date_string_YYYYMMDD, 0, 4);
     $end_sel_month = substr($entry->end_date_string_YYYYMMDD, 4, 2);
     $end_sel_day = substr($entry->end_date_string_YYYYMMDD, 6, 2);
-
 } else {
     $end_sel_day = date('d');
     $end_sel_month = date('m');

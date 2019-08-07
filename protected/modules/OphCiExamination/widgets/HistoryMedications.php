@@ -165,10 +165,6 @@ class HistoryMedications extends BaseMedicationWidget
         }
     }
 
-    /**
-     * @return array
-     */
-
     public function getMergedManagementEntries()
     {
         if(empty($this->element->entries)) {
@@ -239,7 +235,7 @@ class HistoryMedications extends BaseMedicationWidget
     {
         // custom mode for rendering in the patient popup because the data is more complex
         // for this history element than others which just provide a list.
-        $short_name = substr(strrchr(get_class($this), '\\'),1);
+        $short_name = substr(strrchr(get_class($this), '\\'), 1);
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
             return  $short_name . '_patient_popup';
         }

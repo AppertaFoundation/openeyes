@@ -61,7 +61,7 @@ class EffectAdminController extends BaseAdminController
 
         $valid = $admin->editModel(false);
 
-        if (Yii::app()->request->isPostRequest) {        
+        if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Genetic Results Effect Saved");
                 $this->redirect('/' . $this->module->id . '/' .$this->id . '/list');

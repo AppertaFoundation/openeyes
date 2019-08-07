@@ -14,9 +14,9 @@
  */
 $medications = $current ? $patient->medications : $patient->previous_medications;
 ?>
-<?php if ($medications): ?>
+<?php if ($medications) : ?>
     <h4><?= $current ? 'Current' : 'Previous' ?></h4>
-    <?php foreach ($medications as $medication): ?>
+    <?php foreach ($medications as $medication) : ?>
         <table class="plain patient-data">
             <tr>
                 <th>Medication</th>
@@ -43,7 +43,7 @@ $medications = $current ? $patient->medications : $patient->previous_medications
                     ?>
                 </td>
             </tr>
-            <?php if ($this->checkAccess('OprnEditMedication')): ?>
+            <?php if ($this->checkAccess('OprnEditMedication')) : ?>
                 <tr>
                     <th>Actions</th>
                     <td>
@@ -55,7 +55,7 @@ $medications = $current ? $patient->medications : $patient->previous_medications
                                data-drug-name="<?= $medication->getDrugLabel() ?>">
                                 Stop</a> |
                         <?php } ?>
-                        <?php if (!$medication->prescription_item_id):?>
+                        <?php if (!$medication->prescription_item_id) :?>
                         <a href="#" class="medication_delete" data-id="<?= $medication->id ?>">Delete</a>
                         <?php endif;?>
                     </td>

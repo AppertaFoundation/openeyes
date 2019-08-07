@@ -62,14 +62,14 @@ class BaseChangeAdminController extends BaseAdminController
             'referer' => 'referer',
             'change' => 'text',
         ));
-        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
 
         $valid = $admin->editModel(false);
 
-        if (Yii::app()->request->isPostRequest) {        
+        if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Base Change Type Saved");
-                $url = str_replace('/edit','/view',(Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
+                $url = str_replace('/edit', '/view', (Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
                 $this->redirect($url);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
@@ -100,5 +100,5 @@ class BaseChangeAdminController extends BaseAdminController
         }
 
         return $model;
-    }    
+    }
 }

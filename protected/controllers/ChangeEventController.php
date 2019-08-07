@@ -160,8 +160,7 @@ class ChangeEventController extends BaseController
             $this->app->user->setFlash('success', "{$this->element_type->name} updated.");
 
             $transaction->commit();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $transaction->rollback();
             throw $e;
         }
@@ -193,7 +192,7 @@ class ChangeEventController extends BaseController
         $event_id = \Yii::app()->request->getPost('eventId');
         $patient_id = \Yii::app()->request->getPost('patientId');
 
-        if($event_id && $patient_id){
+        if ($event_id && $patient_id) {
             $event = \Event::model()->findByPk($event_id);
             $episode = \Episode::model()->findByPk($event->episode_id);
             $properties = array('patient_id' => $patient_id, 'episode_id' => $episode->id, 'event_id' => $event->id, 'event_type_id' => $event->event_type_id);
@@ -205,7 +204,6 @@ class ChangeEventController extends BaseController
                 $data = 'Context changed, firm remains the same';
                 if ($firm_id) {
                     if ($episode->firm_id !== $firm_id) {
-
                         $current_firm = \Firm::model()->findByPk($episode->firm_id);
                         $new_firm = \Firm::model()->findByPk($firm_id);
 
@@ -226,15 +224,15 @@ class ChangeEventController extends BaseController
                         $data = 'Changed from '.$current_firm->name.' to '.\Firm::model()->findByPk($firm_id)->name;
                     }
                     $episode->last_modified_user_id = Yii::app()->user->id;
-                    $episode->last_modified_date = date('Y-m-d H:i:s');                    
+                    $episode->last_modified_date = date('Y-m-d H:i:s');
                 }
 
-                if($episode->save()) {
+                if ($episode->save()) {
                     Audit::add('episode', $action, $data, null, $properties);
 
                     $selected_workflow_step_id =  \Yii::app()->request->getPost('selectedWorkflowStepId');
 
-                    if($selected_workflow_step_id){
+                    if ($selected_workflow_step_id) {
                         $assignment = OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id));
 
                         if (!$assignment) {
@@ -249,7 +247,7 @@ class ChangeEventController extends BaseController
                         if ($assignment->save()) {
                             $data = 'Changed step to ' . OphCiExamination_ElementSet::model()->findByPk($selected_workflow_step_id)->name;
                             Audit::add('element set assignment', 'update', $data, null, $properties);
-                        }                        
+                        }
                     }
 
                     $event->episode_id = $episode->id;
@@ -257,12 +255,12 @@ class ChangeEventController extends BaseController
                     $event->last_modified_date = date('Y-m-d H:i:s');
                     $event->firm_id = \Yii::app()->request->getPost('selectedContextId');
 
-                    if($event->save()) {
+                    if ($event->save()) {
                         Audit::add('event', 'update', $data = null, $log_message = null, $properties);
                         $outcome = 'true';
                     }
                 }
-            }            
+            }
         }
 
         echo $outcome;

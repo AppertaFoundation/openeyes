@@ -14,14 +14,14 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
 
 <div class="box admin">
   <div class="cols-10 column">
     <h2>Manage Manual Worklists</h2>
-      <?php echo EventAction::link('Add Worklist', '/worklist/manualAdd/', array(), array('class' => 'button primary small'))->toHtml()?>
+        <?php echo EventAction::link('Add Worklist', '/worklist/manualAdd/', array(), array('class' => 'button primary small'))->toHtml()?>
 
-      <?php if ($current_worklists || $available_worklists) { ?>
+        <?php if ($current_worklists || $available_worklists) { ?>
             <div id="draggablelist">
                 <?= CHtml::beginForm(array('/worklist/manualUpdateDisplayOrder'), 'post'); ?>
                 <?= CHtml::hiddenField('item_ids'); ?>
@@ -42,9 +42,9 @@
                 <?= CHtml::endForm(); ?>
             </div>
             <?php
-            } else {?>
+        } else {?>
                 <div class="alert-box info">You currently have no access to any manual worklists. You may add one by clicking the button above ...</div>
-            <?php } ?>
+        <?php } ?>
         </div>
 </div>
 <script type="text/javascript">
@@ -64,7 +64,7 @@
         var items_available = $('#draggablelist-items-available');
 
         var extractItemIds = function () {
-            $('#draggablelist #item_ids').val(	// remove -items
+            $('#draggablelist #item_ids').val(  // remove -items
                 items_enabled.find('.draggablelist-item').map(
                     function () {
                         return $(this).data('item-id');

@@ -18,38 +18,37 @@
 ?>
 <?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
-	<?php
+    <?php
         // Event actions
-        if ($this->checkPrintAccess()) {
-            // TODO: need to check if the event is draft!
-            $elementLetter = ElementLetter::model()->findByAttributes(array('event_id'=>$this->event->id));
+    if ($this->checkPrintAccess()) {
+        // TODO: need to check if the event is draft!
+        $elementLetter = ElementLetter::model()->findByAttributes(array('event_id'=>$this->event->id));
 
-            if($elementLetter->draft){
-                $this->event_actions[] = EventAction::button('Print Draft', 'print', null, array('class' => 'small'));
-            } else {
-                $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'button small'));
-                $this->event_actions[] = EventAction::button(
-                    'Print all',
-                    'printall',
-                    null,
-                    array(
-                        'id' => 'et_print_all',
-                        'class' => 'small',
-                    )
-                );
-            }
-            
+        if ($elementLetter->draft) {
+            $this->event_actions[] = EventAction::button('Print Draft', 'print', null, array('class' => 'small'));
+        } else {
+            $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'button small'));
+            $this->event_actions[] = EventAction::button(
+                'Print all',
+                'printall',
+                null,
+                array(
+                    'id' => 'et_print_all',
+                    'class' => 'small',
+                )
+            );
         }
+    }
     ?>
 
-	<?php if ($this->event->delete_pending) {?>
-		<div class="alert-box alert with-icon">
-			This event is pending deletion and has been locked.
-		</div>
-	<?php }?>
+    <?php if ($this->event->delete_pending) {?>
+        <div class="alert-box alert with-icon">
+            This event is pending deletion and has been locked.
+        </div>
+    <?php }?>
 
-	<input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>css" />
+    <input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>css" />
 
-	<?php $this->renderOpenElements($this->action->id); ?>
+    <?php $this->renderOpenElements($this->action->id); ?>
 <?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>
