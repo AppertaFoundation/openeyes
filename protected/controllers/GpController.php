@@ -26,6 +26,11 @@ Yii::import('application.controllers.*');
 class GpController extends BaseController
 {
     /**
+     * @var string to display if user has not selected a role while saving the Gp or Contact.
+     */
+    public static $errorRoleNotSelected='Please select a Role.';
+
+    /**
      * @return array action filters
      */
     public function filters()
@@ -115,7 +120,7 @@ class GpController extends BaseController
     }
 
     /**
-     * Just to validate the Contact model on the Add Patient Screen and show the error messages to the user (if any),
+     * Just to validate the Contact model and Role field on the Add Patient Screen and show the error messages to the user (if any),
      * when user presses Next in the popup for adding a new contact or Referring Practitioner.
      */
     public function actionValidateGpContact()
@@ -124,8 +129,35 @@ class GpController extends BaseController
         $contact = new Contact('manage_gp');
 
         if (isset($_POST['Contact'])) {
-            if (strpos(CActiveForm::validate($contact), 'cannot be blank' ) !== false) {
-                echo CHtml::errorSummary($contact);
+            if ((strpos(CActiveForm::validate($contact), 'cannot be blank' ) !== false) or !isset($contact->label)) {
+
+                // get the error messages for the contact model.
+                $errorSummary = CHtml::errorSummary($contact);
+
+                if (empty($errorSummary) and empty($contact->label->id)) {
+                    // If the contact model did not return any errors and above condition is true
+                    // then it means user has not selected any Role.
+                    $htmlOptions['class'] = CHtml::$errorSummaryCss;
+                    $header='<p>'.Yii::t('','Please fix the following input errors:').'</p>';
+                    $content="<li>".GpController::$errorRoleNotSelected."</li>";
+
+                    echo CHtml::tag('div',$htmlOptions,$header."\n<ul>\n$content</ul>");
+                } else {
+                    // Contact model returned errors.
+                    $doc = new DOMDocument();
+                    // The options in the loadHTML makes sure that there will be no doctype, html or body tags in the output
+                    $doc->loadHTML($errorSummary,LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                    // Check that if user has not selected any Role for the Gp or contact then append the role
+                    // error message to the existing error message.
+                    if (empty($contact->label->id)) {
+                        //get the ul element
+                        $descBox = $doc->getElementsByTagName('ul')->item(0);
+                        $appended = $doc->createElement('li', GpController::$errorRoleNotSelected);
+                        //actually append the element
+                        $descBox->appendChild($appended);
+                    }
+                    echo $doc->saveHTML();
+                }
             } else {
                 echo CJSON::encode(array(
                     'title' => $contact->title,

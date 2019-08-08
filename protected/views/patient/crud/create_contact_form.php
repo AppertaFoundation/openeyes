@@ -55,7 +55,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'Role'); ?>
+                        <label><?php echo $extra_gp_contact->getAttributeLabel('Role'); ?> <span class="required">*</span></label>
                     </td>
                     <td>
                         <?php echo $extra_gp_form->error($extra_gp_contact, 'contact_label_id'); ?>
@@ -364,5 +364,8 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
     });
     $('#extra_gp_selected_contact_label_wrapper').find('.removeReading').click(function () {
         $('#extra_gp_selected_contact_label_wrapper').css('display','none');
+        // clearing the selected gp role id when user removes the role of the gp/contact.
+        $('.js-extra-gp-contact-label-id').val('');
+
     });
 </script>
