@@ -133,7 +133,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
     ) ?>;
 
     <?php
-            $drugTypes = [];
+        $drugTypes = [];
         foreach ($element->drugTypes() as $key=>$drugType) {
             $drugTypes[] = [
                 'label' => $drugType,
