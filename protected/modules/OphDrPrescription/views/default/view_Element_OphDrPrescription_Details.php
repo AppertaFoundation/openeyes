@@ -39,7 +39,7 @@
                       <i class="oe-i warning small pad js-has-tooltip"
                          data-tooltip-content="Allergic to <?= implode(',', $this->patient->getPatientDrugAllergy($item->drug_id))?>">
                       </i>
-                  <?php endif; ?>
+                    <?php endif; ?>
                   <?php echo $item->drug->tallmanlabel; ?></td>
               <td><?php echo $item->dose ?></td>
               <td><?php echo $item->route->name ?>
