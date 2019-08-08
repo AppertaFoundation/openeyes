@@ -221,7 +221,7 @@ foreach ($items_data as $group => $items) { ?>
 					</div>
 					<div class="fpten-form-row">
 						<div id="<?= $form_css_class ?>-dob" class="fpten-form-column">
-							<?= Helper::convertDate2Short($this->patient->dob) ?>
+							<?= Helper::convertDate2FullYear($this->patient->dob) ?>
 						</div>
 					</div>
 				</div>
@@ -235,7 +235,7 @@ foreach ($items_data as $group => $items) { ?>
 							<?= $this->patient->contact->address->city ?>
 							<?= $this->patient->contact->address->county ? '<br/>' : null ?>
 							<?= $this->patient->contact->address->county ?>
-							<span id="fpten-postcode"><?= $this->patient->contact->address->postcode?></span>
+							<span id="fpten-postcode"><?= str_replace(' ', '', $this->patient->contact->address->postcode)?></span>
 						</div>
 					</div>
 					<div class="fpten-form-row">
@@ -276,10 +276,12 @@ foreach ($items_data as $group => $items) { ?>
 												<br/>
 												Frequency: <?= $item->frequency->long_name ?>
 												<br/>
+												Duration: <?= $item->duration->name?>
+												<br/>
 												<br/>
 											</div>
 											<?php
-											$prescription_lines_used += 5;
+											$prescription_lines_used += 4; // In reality this could be many more due to wrapping, but this will cater for single-line scenarios. The CSS overflow override will handle extras.
 										endforeach;
 									endif;
 								endforeach; ?>
@@ -302,7 +304,7 @@ foreach ($items_data as $group => $items) { ?>
 			</div>
 			<div class="fpten-form-row">
 				<div id="<?= $form_css_class ?>-date" class="fpten-form-column">
-					<?= date('d/m/y') ?>
+					<?= date('d/m/Y') ?>
 				</div>
 			</div>
 			<div class="fpten-form-row">
@@ -319,7 +321,7 @@ foreach ($items_data as $group => $items) { ?>
 					<?= $this->site->contact->address->county ? '<br/>' : null ?>
 					<?= $this->site->contact->address->county ?>
 					<br/>
-					<?= $this->site->contact->address->postcode ?> <br/>
+					<?= str_replace(' ', '', $this->site->contact->address->postcode) ?> <br/>
 					<?= $this->site->contact->primary_phone ?>
 					<br/>
 					<?= $this->site->institution->name ?>
