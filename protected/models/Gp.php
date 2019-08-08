@@ -273,7 +273,7 @@ class Gp extends BaseActiveRecordVersioned
                     $transaction->commit();
                     Audit::add('Gp', $action . '-gp', "Practitioner manually [id: $gp->id] {$action}ed.");
                     if (!$isAjax) {
-                        $this->redirect(array('view', 'id' => $gp->id));
+                        Yii::app()->getController()->redirect(array('view','id'=>$gp->id));
                     }
                 } else {
                     if ($isAjax) {

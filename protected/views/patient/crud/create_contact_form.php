@@ -91,7 +91,7 @@
                     <td colspan="2" class="align-right">
                         <?php
                             echo CHtml::ajaxButton('Next',
-                                Yii::app()->controller->createUrl('gp/validateGpContact'),
+                                Yii::app()->controller->createUrl('gp/create', array('context' => 'AJAX')),
                                 array(
                                     'type' => 'POST',
                                     'success' => 'js:function(event){
