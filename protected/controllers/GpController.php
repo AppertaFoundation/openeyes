@@ -173,23 +173,15 @@ class GpController extends BaseController
         Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
         $model = $this->loadModel($id);
         $contact = $model->contact;
-        $contact->setScenario('manage_gp');
+        $contact->setScenario(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
 
         $this->performAjaxValidation($contact);
 
         if (isset($_POST['Contact'])) {
 
             $contact->attributes = $_POST['Contact'];
-            if ($_POST['Contact']['contact_label_id'] == '')
-            {
-                $contact->contact_label_id = null;
-            }
-
+            $this->performAjaxValidation($contact);
             list($contact, $model) = $model->performGpSave($contact, $model);
-
-            if($model->id) {
-                $this->redirect(array('view', 'id' => $model->id));
-            }
         }
 
         $this->render('update', array(
