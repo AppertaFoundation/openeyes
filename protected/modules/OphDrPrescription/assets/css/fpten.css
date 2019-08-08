@@ -49,6 +49,7 @@ body {
 }
 
 #fpten-trust-code {
+    padding-top: 2mm;
     font-size: 12pt;
     font-weight: initial;
 }
