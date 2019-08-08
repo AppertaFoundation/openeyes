@@ -1255,7 +1255,7 @@ class AnalyticsController extends BaseController
         , UNIX_TIMESTAMP(e.event_date) as event_date
         , UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY)) as due_date
         , CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY),current_date())/7 AS INT) as weeks
-        , w.start
+        , UNIX_TIMESTAMP(w.start)
         from event e
         left join episode e2 on e.episode_id = e2.id
         left join patient p on p.id = e2.patient_id
@@ -1331,7 +1331,7 @@ class AnalyticsController extends BaseController
                 continue;
             }
 
-            $latest_worklist_time = isset($followup_item['start']) ? $followup_item['start']/1000 : null;
+            $latest_worklist_time = isset($followup_item['start']) ? $followup_item['start'] : null;
 
             $latest_time = isset($latest_worklist_time)? max($event_time, $latest_worklist_time):$event_time;
             
