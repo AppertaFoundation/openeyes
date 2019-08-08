@@ -2,8 +2,8 @@
 
 class m190726_003640_add_prescription_form_format_setting extends CDbMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         $id = $this->getDbConnection()->createCommand('select id from setting_field_type where name ="Dropdown list"')->queryRow();
         $this->insert('setting_metadata', array(
             'element_type_id' => null,
@@ -16,10 +16,10 @@ class m190726_003640_add_prescription_form_format_setting extends CDbMigration
             )),
             'default_value' => 'FP10',
         ));
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         $this->delete('setting_metadata', '`key` = "prescription_form_format"');
-	}
+    }
 }

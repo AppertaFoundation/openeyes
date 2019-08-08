@@ -55,7 +55,8 @@ class DefaultController extends BaseEventTypeController
         $this->jsVars['common_drug_metadata'] = array();
         foreach (Element_OphDrPrescription_Details::model()->commonDrugs() as $drug) {
             $this->jsVars['common_drug_metadata'][$drug->id] = array(
-                    'type_id' => array_map(function($e){ return $e->id;
+                    'type_id' => array_map(function ($e) {
+                        return $e->id;
                     }, $drug->type),
                     'preservative_free' => (int)$drug->isPreservativeFree(),
             );
@@ -436,7 +437,7 @@ class DefaultController extends BaseEventTypeController
                 'user' => $user,
                 'print_mode' => $print_mode
             ));
-        } else if( $pdf_documents == 1 ){
+        } else if ( $pdf_documents == 1 ) {
             Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
             Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
             $this->render('print');

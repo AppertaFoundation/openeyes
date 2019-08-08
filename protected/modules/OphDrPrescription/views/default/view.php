@@ -25,20 +25,20 @@ $form_option = OphDrPrescription_DispenseCondition::model()->findByAttributes(ar
 
     <?php
         // Event actions
-        if ($this->checkPrintAccess()) {
-            if(!$Element->draft || $this->checkEditAccess()){
-                foreach ($Element->items as $item) {
-                    // If at least one prescription item has 'Print to FP10' selected as the dispense condition, display the Print FP10 button.
-                    if ($item->dispense_condition->id === $form_option->id) {
-                        $this->event_actions[] = EventAction::button("Print $form_format", 'print_' . strtolower($form_format));
-                        break;
-                    }
+    if ($this->checkPrintAccess()) {
+        if (!$Element->draft || $this->checkEditAccess()) {
+            foreach ($Element->items as $item) {
+                // If at least one prescription item has 'Print to FP10' selected as the dispense condition, display the Print FP10 button.
+                if ($item->dispense_condition->id === $form_option->id) {
+                    $this->event_actions[] = EventAction::button("Print $form_format", 'print_' . strtolower($form_format));
+                    break;
                 }
             }
-        	if(!$Element->draft || $this->checkEditAccess()){
-        		$this->event_actions[] = EventAction::printButton();
-        	}
         }
+        if (!$Element->draft || $this->checkEditAccess()) {
+            $this->event_actions[] = EventAction::printButton();
+        }
+    }
     ?>
 
     <?php $this->renderPartial('//base/_messages'); ?>
@@ -64,14 +64,13 @@ $form_option = OphDrPrescription_DispenseCondition::model()->findByAttributes(ar
         $(document).ready(function() {
             do_print_prescription();
         });
-        <?php }
-        else if (isset(Yii::app()->session['print_prescription_fp10']) || isset(Yii::app()->session['print_prescription_wp10'])) {
-          ?>
+        <?php } else if (isset(Yii::app()->session['print_prescription_fp10']) || isset(Yii::app()->session['print_prescription_wp10'])) {
+            ?>
         $(document).ready(function() {
             do_print_fpTen('<?= isset(Yii::app()->session['print_prescription_fp10']) ? 'FP10' : 'WP10' ?>');
         });
-        <?php
-        unset(Yii::app()->session['print_prescription_fp10'], Yii::app()->session['print_prescription_wp10']);
+            <?php
+            unset(Yii::app()->session['print_prescription_fp10'], Yii::app()->session['print_prescription_wp10']);
         }?>
 
     </script>
