@@ -333,7 +333,7 @@ foreach ($ethnic_list as $key=>$item){
 								<?php if (Yii::app()->params['institution_code']=='CERA'): ?>
 									<tr>
 										<td>
-											<label for="contact">Contacts</label>
+											<label for="contact">Other Practitioner Contacts</label>
 										</td>
 										<td>
 											<?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_extra_gps_id']); ?>
@@ -358,7 +358,7 @@ foreach ($ethnic_list as $key=>$item){
 												</ul>
 											</div>
 											<?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
-												<a id="js-add-contact-btn2" href="#">Add New Contact</a>
+												<a id="js-add-contact-btn2" href="#">Add New Practitioner Contact</a>
 											<?php } ?>
 											<div id="no_extra_gps_result" style="display: none;">
 												<div>No result</div>
@@ -620,7 +620,7 @@ $this->renderPartial('../patient/crud/create_contact_form',
     });
 
     $('#js-add-contact-btn2').click(function(event){
-        $('#extra_gp_adding_title').text("Add New Contact");
+        $('#extra_gp_adding_title').text("Add New Practitioner Contact");
         $('#extra_gp_adding_form').css('display','');
         return false;
     });

@@ -143,7 +143,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                           $gp = $pca->gp; ?>
                           <tr>
                               <td>
-                                  Contact <?= $index; ?>
+                                  Other Practitioner <br> Contact <?= $index; ?>
                               </td>
                               <td>
                                   <div>
