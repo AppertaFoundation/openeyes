@@ -229,7 +229,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                 <div class="fpten-form-column">
                     <div class="fpten-form-row">
                         <div id="<?= $form_css_class ?>-patient-details" class="fpten-form-column">
-                            <?=$this->patient->fullname ?><br/>
+                            <?= $this->patient->fullname ?><br/>
                             <?= $this->patient->contact->address->address1 ?>
                             <?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
                             <?= $this->patient->contact->address->address2 ?><br/>
@@ -300,7 +300,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                 </div>
             <div class="fpten-form-row">
                 <div id="<?= $form_css_class ?>-doctor-name" class="fpten-form-column">
-                    <?= $data['user']->getFullNameAndTitle() ?>
+                    <?= $this->event->usermodified->fullname ?>
                 </div>
             </div>
             <div class="fpten-form-row">
@@ -329,7 +329,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                 </div>
                 <?php if ($side === 'left') : ?>
                     <div id="<?= $form_css_class ?>-site-code" class="fpten-form-column">
-                        <span id="fpten-trust-code"><?= $data['user']->registration_code ?></span>
+                        <span id="fpten-trust-code"><?= $element->usermodified->registration_code ?></span>
                     </div>
                     <span class="fpten-form-column fpten-prescriber-code">HP</span>
                 <?php endif; ?>
