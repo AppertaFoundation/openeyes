@@ -107,7 +107,7 @@ class PracticeController extends BaseController
             $contact->primary_phone = $_POST['Contact']['contact_primary_phone'];
             $contact->contact_label_id = $_POST['Contact']['contact_label_id'];
 
-            list($contact, $gp) = $gp->performGpSave($contact, $gp, 'AJAX');
+            list($contact, $gp) = $gp->performGpSave($contact, $gp, true);
 
             $contactPractice = new Contact('manage_practice');
             $address = new Address('manage_practice');

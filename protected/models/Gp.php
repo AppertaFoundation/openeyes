@@ -272,9 +272,6 @@ class Gp extends BaseActiveRecordVersioned
                 if ($gp->save()) {
                     $transaction->commit();
                     Audit::add('Gp', $action . '-gp', "Practitioner manually [id: $gp->id] {$action}ed.");
-                    if (!$isAjax) {
-                        $this->redirect(array('view', 'id' => $gp->id));
-                    }
                 } else {
                     if ($isAjax) {
                         throw new CHttpException(400,"Unable to save Practitioner contact");

@@ -41,7 +41,7 @@ class PracticeAssociateController extends BaseController
 
             $contact->attributes = $contactFormData;
 
-            list($contact, $gp) = $gp->performGpSave($contact, $gp,  'AJAX');
+            list($contact, $gp) = $gp->performGpSave($contact, $gp,  true);
 
             if (isset($_POST['PracticeAssociate'])) {
                 $contact_practice_associate = new ContactPracticeAssociate();
