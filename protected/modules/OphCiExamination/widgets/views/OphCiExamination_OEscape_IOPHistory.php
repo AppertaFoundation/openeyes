@@ -17,6 +17,8 @@
 	//plotly
     var iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
 
+    console.log(iop_plotly_data);
+
 		for (var side of sides) {
 			var layout_iop = JSON.parse(JSON.stringify(layout_plotly));
 			layout_iop['shapes'] = [];
@@ -69,12 +71,12 @@
           x[i] = graph_data[key]['timestamp'];
           y[i] = graph_data[key]['average'];
           event_ids[i] = graph_data[key]['parent_ids'];
-          error_array[i] = graph_data[key]['maximum'] - graph_data[key]['minimum'];
+          error_array[i] = graph_data[key]['maximum'] - graph_data[key]['average'];
           error_minus[i] = graph_data[key]['average'] - graph_data[key]['minimum'];
           display_data[i] =
-							'Maximum: ' + graph_data[key]['maximum'].toString() + '<br>'
-							+ 'Average: ' + graph_data[key]['average'].toString() + '<br>'
-							+ 'Minimum: ' + graph_data[key]['minimum'].toString() + '<br>'
+							'Maximum: ' + graph_data[key]['maximum'].toFixed(2).toString() + ' mmHg <br>'
+							+ 'Average: ' + graph_data[key]['average'].toFixed(2).toString() + ' mmHg <br>'
+							+ 'Minimum: ' + graph_data[key]['minimum'].toFixed(2).toString() + ' mmHg <br>'
 							+ 'Readings: ' + graph_data[key]['reading_count'].toString();
           i++;
       }

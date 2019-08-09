@@ -19,8 +19,8 @@
 <?php $this->renderPartial('//patient/_patient_alerts'); // load the patient alerts
 
 // if on the Glaucoma or General Ophthalmology load the drill though for the IOP data
-if (in_array($subspecialty->id,[7,12])){
-  $this->renderPartial('//oescape/oescape_drill_down_list');
+if (in_array($subspecialty->id, [7,12])) {
+    $this->renderPartial('//oescape/oescape_drill_down_list');
 }
 ?>
 

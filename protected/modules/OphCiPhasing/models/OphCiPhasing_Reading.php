@@ -99,10 +99,22 @@ class OphCiPhasing_Reading extends BaseActiveRecordVersioned
         ));
     }
 
+    public function getSideAsString()
+    {
+        switch ($this->side) {
+            case self::RIGHT:
+                return 'right';
+            case self::LEFT:
+                return 'left';
+        }
+
+                throw new Exception("Invalid side.");
+    }
+
     public function getValue()
-		{
-			return $this->value;
-		}
+    {
+            return $this->value;
+    }
 
     /**
      * check the time entry is valid.
