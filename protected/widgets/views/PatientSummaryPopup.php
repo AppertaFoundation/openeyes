@@ -80,18 +80,22 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <td>Telephone</td>
             <td><?= !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown' ?></td>
           </tr>
-          <tr>
-            <td>Mobile</td>
-            <td>Unknown</td>
-          </tr>
+          <?php if (Yii::app()->params['institution_code'] !== 'CERA'): ?>
+              <tr>
+                <td>Mobile</td>
+                <td>Unknown</td>
+              </tr>
+          <?php endif; ?>
           <tr>
             <td>Email</td>
             <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
           </tr>
-          <tr>
-            <td>Next of kin</td>
-            <td>Unknown</td>
-          </tr>
+          <?php if (Yii::app()->params['institution_code'] !== 'CERA'): ?>
+              <tr>
+                <td>Next of kin</td>
+                <td>Unknown</td>
+              </tr>
+          <?php endif; ?>
           </tbody>
         </table>
       </div><!-- .popup-overflow -->
