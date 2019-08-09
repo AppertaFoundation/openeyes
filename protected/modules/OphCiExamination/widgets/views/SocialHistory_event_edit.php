@@ -211,7 +211,7 @@
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                     return ['label' => $item->name, 'id' => $item->id, 'selected' => $item->id === $element->occupation_id];
                 }, $element->occupation_options, [])
-            ) ?>, {'header': 'Employment', 'id': 'occupation_id', 'mandatory': true}),
+            ) ?>, {'header': 'Employment', 'id': 'occupation_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?php
@@ -226,7 +226,7 @@
                         'selected' => in_array($item->id, $selected_driving_statuses),
                     ];
                 }, $element->driving_statuses_options, [])
-            ) ?>, {'header': 'Driving Status', 'multiSelect': true, 'id': 'driving_statuses'}),
+            ) ?>, {'header': 'Driving Status', 'id': 'driving_statuses'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -236,7 +236,7 @@
                         'selected' => $element->smoking_status_id === $item->id,
                     ];
                 }, $element->smoking_status_options, [])
-            ) ?>, {'header': 'Smoking Status', 'id': 'smoking_status_id', 'mandatory': true}),
+            ) ?>, {'header': 'Smoking Status', 'id': 'smoking_status_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -246,13 +246,13 @@
                         'selected' => $element->accommodation_id === $item->id,
                     ];
                 }, $element->accommodation_options, [])
-            ) ?>, {'header': 'Accommodation', 'id': 'accommodation_id', 'mandatory': true}),
+            ) ?>, {'header': 'Accommodation', 'id': 'accommodation_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                     return ['label' => $item->name, 'id' => $item->id, 'selected' => $element->carer_id === $item->id];
                 }, $element->carer_options, [])
-            ) ?>, {'header': 'Carer', 'id': 'carer_id', 'mandatory': true}),
+            ) ?>, {'header': 'Carer', 'id': 'carer_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -262,14 +262,14 @@
                         'selected' => $element->substance_misuse_id === $item->id,
                     ];
                 }, $element->substance_misuse_options, [])
-            ) ?>, {'header': 'Substance Misuse', 'id': 'substance_misuse_id', 'mandatory': true}),
+            ) ?>, {'header': 'Substance Misuse', 'id': 'substance_misuse_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) use ($element) {
                 return ['label' => $item, 'id' => $item,
                     'selected' => isset($element->alcohol_intake) && $element->alcohol_intake == $item];
             }, array_merge(range(0, 15, 5),range(20, 100, 10),[150],range(200, 400, 100)))
-        ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake', 'mandatory': true})
+        ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake'})
       ],
       onReturn: function (adderDialog, selectedItems) {
         controller.addEntry(selectedItems);
