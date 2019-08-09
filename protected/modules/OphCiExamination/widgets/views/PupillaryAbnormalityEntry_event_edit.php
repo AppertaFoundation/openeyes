@@ -33,32 +33,36 @@ if (!isset($values)) {
 }
 ?>
 
-<tr class="row-<?= $row_count; ?><?php echo !$removable ? " read-only" : ''; ?>" data-key="<?= $row_count; ?>">
-    <td id="<?= $model_name ?>_entries_<?= $row_count ?>_pupillary_abnormalities">
+<tr id="<?= $model_name ?>_entries" class="row-<?= $row_count; ?><?= !$removable ? " read-only" : ''; ?>" data-key="<?= $row_count; ?>">
+    <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
         <?= $values['abnormality_display']; ?>
         <input type="hidden" name="<?= $field_prefix ?>[abnormality_id]" value="<?= $values['abnormality_id'] ?>"/>
         <input type="hidden" name="<?= $field_prefix ?>[eye_id]" value="<?= $eye_id ?>"/>
     </td>
-    <td class="nowrap">
-        <label class="inline highlight">
-            <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
-                $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$NOT_CHECKED,
-                array('value' => PupillaryAbnormalityEntry::$NOT_CHECKED)); ?>
-            Not checked
-        </label>
-        <label class="inline highlight">
-            <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
-                $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$PRESENT,
-                array('value' => PupillaryAbnormalityEntry::$PRESENT)); ?>
-            yes
-        </label>
-        <label class="inline highlight">
-            <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
-                $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$NOT_PRESENT,
-                array('value' => PupillaryAbnormalityEntry::$NOT_PRESENT)); ?>
-            no
-        </label>
+    <td id="<?= $model_name ?>_entries_<?= $side . '_' . $row_count ?>_has_abnormality" class="nowrap">
+        <?php if($removable){
+            echo CHtml::hiddenField($field_prefix . '[has_abnormality]', (string)PupillaryAbnormalityEntry::$PRESENT);
+        }else{ ?>
+            <label class="inline highlight">
+                <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
+                     $posted_not_checked,
+                    array('value' => PupillaryAbnormalityEntry::$NOT_CHECKED)); ?>
+                Not checked
+            </label>
+            <label class="inline highlight">
+                <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
+                    $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$PRESENT,
+                    array('value' => PupillaryAbnormalityEntry::$PRESENT)); ?>
+                yes
+            </label>
+            <label class="inline highlight">
+                <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
+                    $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$NOT_PRESENT,
+                    array('value' => PupillaryAbnormalityEntry::$NOT_PRESENT)); ?>
+                no
+            </label>
+        <?php }?>
     </td>
     <td>
         <div class="cols-full">

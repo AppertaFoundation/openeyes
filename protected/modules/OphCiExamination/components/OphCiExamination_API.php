@@ -2568,7 +2568,7 @@ class OphCiExamination_API extends \BaseAPI
         foreach ($sets as $set) {
             if ($set->entries) {
                 foreach ($set->entries as $abnormality_entry) {
-                    $abnormality = $abnormality_entry->ophciexaminationAllergy;
+                    $abnormality = $abnormality_entry->ophciexaminationAbnormality;
                     if (isset($abnormality) && isset($abnormality->id)) {
                         $required[$abnormality->id] = $abnormality;
                     }

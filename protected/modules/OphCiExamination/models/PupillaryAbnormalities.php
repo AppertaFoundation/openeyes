@@ -90,23 +90,29 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
     public function getAbnormalityOptions()
     {
         $force = array();
-        foreach ($this->entries_left as $entry) {
-            $force[] = $entry->abnormality_id;
+        foreach (array('left', 'right') as $side) {
+            foreach ($this->{'entries_'.$side} as $entry) {
+                $force[] = $entry->abnormality_id;
+            }
         }
 
         return OphCiExamination_PupillaryAbnormalities_Abnormality::model()->activeOrPk($force)->findAll();
     }
 
-    public function afterSave()
+    public function beforeSave()
     {
-        foreach (array('left', 'right') as $eye_side) {
-            if ($this->{'no_pupillaryabnormalities_date_' . $eye_side}) {
-                foreach ($this->{'entries_' . $eye_side} as $entry) {
-                    $entry->delete();
+        foreach (array('left', 'right') as $side) {
+            if($this->{'no_pupillaryabnormalities_date_'.$side}){
+                $entries = $this->{'entries_' . $side};
+                foreach ($entries as $key => $entry) {
+                    if ($entry->has_abnormality == PupillaryAbnormalityEntry::$NOT_CHECKED) {
+                        unset($entries[$key]);
+                    }
                 }
+                $this->{'entries_'.$side} = $entries;
             }
         }
-        parent::afterSave();
+        return parent::beforeSave();
     }
 
     /**
@@ -122,7 +128,7 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
                 continue;
             }
             $has_entries = array_key_exists('entries_' . $side, $pa);
-            $no_abnormalities = array_key_exists($side . '_no_pupillaryabnormalities', $pa);
+            $no_abnormalities = (array_key_exists($side . '_no_pupillaryabnormalities', $pa) && $pa[$side . '_no_pupillaryabnormalities'] === '1');
 
             if (!$has_entries && !$no_abnormalities) {
                 $this->addError($side, ucfirst($side) . ' side has no data.');
@@ -168,14 +174,17 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
     public function loadFromExisting($element)
     {
         foreach (array('left', 'right') as $side) {
-            if (!$this->eyeHasSide($side, $this->eye_id)) {
+            if (!$this->eyeHasSide($side, $element->eye_id)) {
                 continue;
             }
 
             $this->{'no_pupillaryabnormalities_date_' . $side} = $element->{'no_pupillaryabnormalities_date_' . $side};
 
+            // use previous session's entries
             $entries = $this->{'entries_' . $side};
+            // if there are no posted entries from previous session
             if (!$entries) {
+                // add the entries from the DB
                 foreach ($element->{'entries_' . $side} as $entry) {
                     $new_entry = new PupillaryAbnormalityEntry();
                     $new_entry->loadFromExisting($entry);

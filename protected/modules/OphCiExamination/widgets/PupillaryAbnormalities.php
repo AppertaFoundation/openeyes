@@ -47,12 +47,12 @@ class PupillaryAbnormalities extends \BaseEventElementWidget
         $entries = array();
         foreach ($sides as $side) {
 
-            if (array_key_exists($side  .'_no_pupillaryabnormalities', $data)  && $data[$side . '_no_pupillaryabnormalities'] == 1) {
+            if (array_key_exists($side  .'_no_pupillaryabnormalities', $data)  && $data[$side . '_no_pupillaryabnormalities'] === "1") {
                 if(!$element->{'no_pupillaryabnormalities_date_' . $side}){
                     $element->{'no_pupillaryabnormalities_date_' . $side} = date('Y-m-d H:i:s');
-                }elseif($element->{'no_pupillaryabnormalities_date_' . $side}){
-                    $element->{'no_pupillaryabnormalities_date_' . $side} = null;
                 }
+            }else{
+                $element->{'no_pupillaryabnormalities_date_' . $side} = null;
             }
 
             // pre-cache current entries so any entries that remain in place will use the same db row
@@ -93,14 +93,13 @@ class PupillaryAbnormalities extends \BaseEventElementWidget
      * Gets all required missing pupillary abnormalities
      * @return array
      */
-    public function getMissingRequiredAbnormalities()
+    public function getMissingRequiredAbnormalities($side)
     {
         $current_ids = array_map(function ($e) {
             return $e->abnormality_id;
-        },
-            $this->element->entries_left);
+        }, $this->element->{'entries_' . $side});
 
-        $missing = array();
+        $missing = [];
         foreach ($this->getRequiredAbnormalities() as $required) {
             if (!in_array($required->id, $current_ids)) {
                 $entry = new PupillaryAbnormalityEntry();
@@ -112,13 +111,22 @@ class PupillaryAbnormalities extends \BaseEventElementWidget
         return $missing;
     }
 
+    public function isAbnormalitiesSet($element, $side){
+        foreach ($element->{'entries_'.$side} as $entry) {
+            if ($entry->has_abnormality === (string) PupillaryAbnormalityEntry::$PRESENT) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @param $row
      * @return bool
      */
-    public function postedNotChecked($row)
+    public function postedNotChecked($row, $side)
     {
-        return \Helper::elementFinder(\CHtml::modelName($this->element) . ".entries.$row.has_abnormality", $_POST)
+        return \Helper::elementFinder(\CHtml::modelName($this->element) . ".entries_.$side.$row.has_abnormality", $_POST)
             == PupillaryAbnormalityEntry::$NOT_CHECKED;
     }
 }

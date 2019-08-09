@@ -16,88 +16,107 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php use \OEModule\OphCiExamination\models\PupillaryAbnormalityEntry; ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('PupillaryAbnormalities.js') ?>"></script>
 <?php
 $model_name = CHtml::modelName($element);
 $required_abnormality_ids = array_map(function ($r) {
     return $r->id;
 }, $this->getRequiredAbnormalities());
-$missing_req_abnormalities = $this->getMissingRequiredAbnormalities();
 ?>
+
+<script type="text/javascript">
+    var pupillaryAbnormalityController;
+    $(document).ready(function () {
+        pupillaryAbnormalityController = new OpenEyes.OphCiExamination.PupillaryAbnormalitiesController({
+            element: $('#<?=$model_name?>_element')
+        });
+    });
+</script>
 
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <div class="<?= $eye_side ?>-eye column <?= $page_side ?> side js-element-eye" data-side="<?= $eye_side ?>">
             <div class="active-form flex-layout" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
-                <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-                <table class="cols-full pa-entry-table">
-                    <colgroup>
-                        <col class="cols-3">
-                        <col>
-                        <col class="cols-4">
-                    </colgroup>
-                    <tbody>
-                    <tr class="no-abnormalities-wrapper">
-                        <td colspan="4">
-                            <label class="inline highlight" for="<?= $eye_side ?>_no_pupillaryabnormalities">
-                                <?= \CHtml::checkBox($model_name . '[' . $eye_side . '_no_pupillaryabnormalities]', $element->{'no_pupillaryabnormalities_date_' . $eye_side} ? true : false); ?>
-                                Confirm patient has no pupillary abnormalities
-                            </label>
-                    </tr>
+                <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
+                <div class="cols-full">
+                    <table class="cols-full pa-entry-table">
+                        <colgroup>
+                            <col class="cols-3">
+                            <col>
+                            <col class="cols-4">
+                        </colgroup>
+                        <tbody>
+                        <tr id="<?= $model_name ?>_no_abnormalities_wrapper_<?= $eye_side ?>"
+                            <?= $this->isAbnormalitiesSet($element, $eye_side) ? ' style="display:none"' : '' ?>>
+                            <td colspan="4">
+                                <input type="hidden"
+                                       name="<?= $model_name . '[' . $eye_side . '_no_pupillaryabnormalities]' ?>"
+                                       value="0">
+                                <label class="inline highlight" for="<?= $eye_side ?>_no_pupillaryabnormalities">
+                                    <?= \CHtml::checkBox($model_name . '[' . $eye_side . '_no_pupillaryabnormalities]', $element->{'no_pupillaryabnormalities_date_' . $eye_side} ? true : false); ?>
+                                    Confirm patient has no pupillary abnormalities
+                                </label>
+                            </td>
+                        </tr>
 
-                    <?php
-                    $row_count = 0;
-                    foreach ($missing_req_abnormalities as $entry) {
-                        $this->render(
-                            'PupillaryAbnormalityEntry_event_edit',
-                            array(
-                                'entry' => $entry,
-                                'form' => $form,
-                                'side' => $eye_side,
-                                'model_name' => $model_name,
-                                'removable' => false,
-                                'abnormalities' => $element->getAbnormalityOptions(),
-                                'field_prefix' => $model_name . '[entries_' . $eye_side . '][' . $row_count . ']',
-                                'row_count' => $row_count,
-                                'posted_not_checked' => $element->widget->postedNotChecked($row_count),
-                                'has_abnormality' => $entry->has_abnormality,
-                                'eye_id' => $eye_side === "left" ? 1 : 2,
-                            )
-                        );
-                        $row_count++;
-                    }
+                        <?php
+                        $missing_req_abnormalities = $this->getMissingRequiredAbnormalities($eye_side);
+                        $row_count = 0;
+                        foreach ($missing_req_abnormalities as $entry) {
+                            $this->render(
+                                'PupillaryAbnormalityEntry_event_edit',
+                                array(
+                                    'entry' => $entry,
+                                    'form' => $form,
+                                    'side' => $eye_side,
+                                    'model_name' => $model_name,
+                                    'removable' => false,
+                                    'abnormalities' => $element->getAbnormalityOptions(),
+                                    'has_abnormality' => $entry->has_abnormality,
+                                    'field_prefix' => $model_name . '[entries_' . $eye_side . '][' . $row_count . ']',
+                                    'row_count' => $row_count,
+                                    'eye_id' => $eye_side === "left" ? 1 : 2,
+                                    'posted_not_checked' => $element->widget->postedNotChecked($row_count, $eye_side),
+                                )
+                            );
+                            $row_count++;
+                        }
 
-                    foreach ($element->{'entries_' . $eye_side} as $i => $entry) {
-                        $this->render(
-                            'PupillaryAbnormalityEntry_event_edit',
-                            array(
-                                'entry' => $entry,
-                                'form' => $form,
-                                'side' => $eye_side,
-                                'model_name' => $model_name,
-                                'removable' => !in_array($entry->abnormality_id, $required_abnormality_ids),
-                                'abnormalities' => $element->getAbnormalityOptions(),
-                                'field_prefix' => $model_name . '[entries_' . $eye_side . '][' . $row_count . ']',
-                                'row_count' => $row_count,
-                                'posted_not_checked' => $element->widget->postedNotChecked($row_count),
-                                'has_abnormality' => $entry->has_abnormality,
-                                'eye_id' => $eye_side === "left" ? 1 : 2,
-                            )
-                        );
-                        $row_count++;
-                    } ?>
+                        foreach ($element->{'entries_' . $eye_side} as $i => $entry) {
+                            $this->render(
+                                'PupillaryAbnormalityEntry_event_edit',
+                                array(
+                                    'entry' => $entry,
+                                    'form' => $form,
+                                    'side' => $eye_side,
+                                    'model_name' => $model_name,
+                                    'removable' => !in_array($entry->abnormality_id, $required_abnormality_ids),
+                                    'abnormalities' => $element->getAbnormalityOptions(),
+                                    'field_prefix' => $model_name . '[entries_' . $eye_side . '][' . $row_count . ']',
+                                    'row_count' => $row_count,
+                                    'has_abnormality' => $entry->has_abnormality,
+                                    'eye_id' => $eye_side === "left" ? 1 : 2,
+                                    'posted_not_checked' => $element->widget->postedNotChecked($row_count, $eye_side),
+                                )
+                            );
+                            $row_count++;
+                        } ?>
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                    <div class="flex-layout flex-right">
+                        <div class="add-data-actions flex-item-bottom" id="history-abnormality-popup-<?= $eye_side ?>">
+                            <button class="button hint green js-add-select-search"
+                                    id="add-abnormality-btn-<?= $eye_side ?>"
+                                    type="button">
+                                <i class="oe-i plus pro-theme"></i>
+                            </button>
+                        </div>
+                    </div>
 
-                <div class="add-data-actions flex-item-bottom" id="history-abnormality-popup-<?= $eye_side ?>">
-                    <button class="button hint green js-add-select-search" id="add-abnormality-btn-<?= $eye_side ?>"
-                            type="button">
-                        <i class="oe-i plus pro-theme"></i>
-                    </button>
                 </div>
-
             </div>
             <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
                 <div class="add-side">
@@ -119,19 +138,18 @@ $missing_req_abnormalities = $this->getMissingRequiredAbnormalities();
                     )?>, {'multiSelect': true})],
                     onReturn: function (adderDialog, selectedItems) {
                         var tableSelector = '.<?= $eye_side ?>-eye .pa-entry-table';
-                        addEntry(tableSelector, selectedItems);
+                        pupillaryAbnormalityController.addEntry(tableSelector, selectedItems);
                         return true;
                     }
                 });
             });
-
         </script>
     <?php endforeach; ?>
 </div>
 
 <script type="text/template" id="<?= CHtml::modelName($element) . '_entry_template' ?>" style="display:none">
     <?php
-    $empty_entry = new \OEModule\OphCiExamination\models\PupillaryAbnormalityEntry();
+    $empty_entry = new PupillaryAbnormalityEntry();
     $this->render(
         'PupillaryAbnormalityEntry_event_edit',
         array(
@@ -150,7 +168,7 @@ $missing_req_abnormalities = $this->getMissingRequiredAbnormalities();
                 'abnormality_id' => '{{abnormality_id}}',
                 'abnormality_display' => '{{abnormality_display}}',
                 'comments' => null,
-                'has_abnormality' => (string)\OEModule\OphCiExamination\models\PupillaryAbnormalityEntry::$PRESENT,
+                'has_abnormality' => (string)PupillaryAbnormalityEntry::$PRESENT,
             ),
         )
     );

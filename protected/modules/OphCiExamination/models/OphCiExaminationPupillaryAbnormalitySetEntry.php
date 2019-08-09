@@ -55,7 +55,7 @@ class OphCiExaminationPupillaryAbnormalitySetEntry extends \BaseActiveRecordVers
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'ophciexaminationPupillaryAbnormality' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_PupillaryAbnormalities_Abnormality', 'ophciexamination_abnormality_id'),
+            'ophciexaminationAbnormality' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_PupillaryAbnormalities_Abnormality', 'ophciexamination_abnormality_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
