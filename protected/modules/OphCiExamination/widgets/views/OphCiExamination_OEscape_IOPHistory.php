@@ -149,8 +149,24 @@
 						for (var j=0; j<showlist.length; j++){
 							var id = showlist[j].toString();
 							DisplayDrillThroughData(id);
-							$('.event_'+id).show();
 						}
+
+						//calculate max displayed value
+						iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent($this->patient)); ?>;
+						max_visible = '';
+						max_id = '';
+						for (var i = 0; i < iop_plotly_data.length; i++){
+							if (showlist.includes(iop_plotly_data[i]["event_id"]))
+							{
+								// console.log(iop_plotly_data[i]["raw_value"] )
+								if (max_visible < iop_plotly_data[i]["raw_value"]){
+									max_visible = iop_plotly_data[i]["raw_value"];
+									max_id= iop_plotly_data[i]["event_id"];
+								}
+							}
+						}
+						
+						$('.event_'+max_id+'.val_'+max_visible).css('background-color','orange');
 					}
 				}
 

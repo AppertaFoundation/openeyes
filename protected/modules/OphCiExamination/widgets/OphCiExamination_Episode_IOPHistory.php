@@ -289,6 +289,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                         'instrument_name' => $reading->instrument->name,
                         'dilated' => 'N/A',
                         'reading_value' => self::getFormattedReading($reading->reading->value, $reading->reading_time, 'mmHg'),
+                        'raw_value' => $reading->reading->value,
                         'comments' => $iop_element->{$side . '_comments'}
                 );
         }
@@ -318,6 +319,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                         'instrument_name' => $iop_element->{$side . '_instrument'}->name,
                         'dilated' => $iop_element->{$side . '_dilated'} == 1 ? 'Yes' : 'No',
                         'reading_value' => self::getFormattedReading($reading->value, $reading->measurement_timestamp, 'mmHg'),
+                        'raw_value' => $reading->value,
                         'comments' => $iop_element->{$side . '_comments'}
                 );
         }
