@@ -141,33 +141,31 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 //                  Removed the check for other practitioner not being the same as a referring practitioner and a check for whether
 //                  a  a ref prac id is set as this was causing no contacts to be displayed - CERA-504
                   if (isset($pca->gp)) {
-                      if (1==1) {
-                          $gp = $pca->gp; ?>
-                          <tr>
-                              <td>
-                                  Other Practitioner <br> Contact <?= $index; ?>
-                              </td>
-                              <td>
-                                  <div>
-                                      <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
-                                  </div>
-                                  <?php
-                                  if (isset($gp->contactPracticeAssociate)) {
-                                      $practice = $gp->contactPracticeAssociate->practice;
-                                      if (isset($practice)) {
-                                          $address = $practice->contact->address;
-                                          ?>
-                                          <div>
-                                              <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
-                                          </div>
-                                          <?php
-                                      }
-                                  } ?>
-                              </td>
-                          </tr>
-                          <?php
-                          $index += 1;
-                      }
+                      $gp = $pca->gp; ?>
+                      <tr>
+                          <td>
+                              Other Practitioner <br> Contact <?= $index; ?>
+                          </td>
+                          <td>
+                              <div>
+                                  <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
+                              </div>
+                              <?php
+                              if (isset($gp->contactPracticeAssociate)) {
+                                  $practice = $gp->contactPracticeAssociate->practice;
+                                  if (isset($practice)) {
+                                      $address = $practice->contact->address;
+                                      ?>
+                                      <div>
+                                          <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
+                                      </div>
+                                      <?php
+                                  }
+                              } ?>
+                          </td>
+                      </tr>
+                      <?php
+                      $index += 1;
                   }
               }
           }
