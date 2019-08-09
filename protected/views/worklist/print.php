@@ -12,7 +12,7 @@ $site = Site::model()->findByPk($site_id);
 $date_from = Yii::app()->request->getParam('date_from');
 $date_to = Yii::app()->request->getParam('date_to');
 
-if($date_from == "" && $date_to == "") {
+if($date_from === "" && $date_to === "") {
     $date_range = "All dates";
 }
 else {
