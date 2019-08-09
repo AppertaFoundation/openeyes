@@ -17,8 +17,6 @@
 	//plotly
     var iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
 
-    console.log(iop_plotly_data);
-
 		for (var side of sides) {
 			var layout_iop = JSON.parse(JSON.stringify(layout_plotly));
 			layout_iop['shapes'] = [];
@@ -40,6 +38,7 @@
 				readings[timestamp].push(
 				    {
 								'id': data_point['id'],
+								'event_type': data_point['event_type'],
 								'reading': data_point['reading']
 				    });
 			}
@@ -48,9 +47,23 @@
 
 			//Format readings for graph display
 			for (var key in readings) {
+        var hasExam = readings[key].some(et => et['event_type'].toLowerCase() === 'examination');
+        var hasPhasing = readings[key].some(et => et['event_type'].toLowerCase() === 'phasing');
+
+        var eventTypeString = 'No event type found';
+
+        if(hasExam && hasPhasing) {
+					eventTypeString = 'Examination & Phasing';
+        }else if(hasExam) {
+					eventTypeString = 'Examination';
+        }else if(hasPhasing) {
+					eventTypeString = 'Phasing';
+        }
+
 				graph_data[key] = {
 				  'parent_ids': readings[key].map(r => r['id']),
 					'timestamp': key,
+					'event_type': eventTypeString,
 					'minimum': Math.min(...readings[key].map(r => r['reading'])),
 					'average': readings[key].map(r => r['reading']).reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
 					'maximum': Math.max(...readings[key].map(r => r['reading'])),
@@ -74,7 +87,8 @@
           error_array[i] = graph_data[key]['maximum'] - graph_data[key]['average'];
           error_minus[i] = graph_data[key]['average'] - graph_data[key]['minimum'];
           display_data[i] =
-							'Maximum: ' + graph_data[key]['maximum'].toFixed(2).toString() + ' mmHg <br>'
+							graph_data[key]['event_type'] + '<br>'
+							+ 'Maximum: ' + graph_data[key]['maximum'].toFixed(2).toString() + ' mmHg <br>'
 							+ 'Average: ' + graph_data[key]['average'].toFixed(2).toString() + ' mmHg <br>'
 							+ 'Minimum: ' + graph_data[key]['minimum'].toFixed(2).toString() + ' mmHg <br>'
 							+ 'Readings: ' + graph_data[key]['reading_count'].toString();
