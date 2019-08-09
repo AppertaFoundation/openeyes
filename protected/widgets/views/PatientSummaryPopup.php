@@ -138,8 +138,10 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                   if ($index > 3) {
                       break;
                   }
-                  if (isset($pca->gp) && isset($this->patient->gp)) {
-                      if ($this->patient->gp->contact->id !== $pca->gp->contact->id) {
+//                  Removed the check for other practitioner not being the same as a referring practitioner and a check for whether
+//                  a  a ref prac id is set as this was causing no contacts to be displayed - CERA-504
+                  if (isset($pca->gp)) {
+                      if (1==1) {
                           $gp = $pca->gp; ?>
                           <tr>
                               <td>
