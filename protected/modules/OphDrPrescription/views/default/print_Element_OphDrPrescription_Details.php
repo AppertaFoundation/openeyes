@@ -39,10 +39,12 @@ if ($footer_param !== null) {
 
 $form_css_class = null;
 
-if ($data['print_mode'] === 'FP10') {
-    $form_css_class = 'fpten';
-} else if ($data['print_mode'] === 'WP10') {
-    $form_css_class = 'wpten';
+if (isset($data['print_mode'])) {
+	if ($data['print_mode'] === 'FP10') {
+		$form_css_class = 'fpten';
+	} else if ($data['print_mode'] === 'WP10') {
+		$form_css_class = 'wpten';
+	}
 }
 
 $default_cost_code = SettingMetadata::model()->getSetting('default_prescription_code_code');
