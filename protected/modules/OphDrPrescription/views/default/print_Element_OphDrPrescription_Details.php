@@ -45,6 +45,8 @@ if ($data['print_mode'] === 'FP10') {
     $form_css_class = 'wpten';
 }
 
+$default_cost_code = SettingMetadata::model()->getSetting('default_prescription_code_code');
+
 ?>
 
 <?php
@@ -269,6 +271,11 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                                     $group_name = OphDrPrescription_DispenseCondition::model()->findByPk($group)->name;
                                     if (str_replace('{form_type}', $data['print_mode'], $group_name) === 'Print to ' . $data['print_mode']) :
                                         foreach ($items as $item) :
+																					if ($prescription_lines_used >= MAX_FPTEN_LINES) {
+																						// As multi-page printing is not yet supported, break the loop if 19 lines has been exceeded.
+																						// In a future revision, this should increment the page counter and reset the lines used.
+																						break;
+																					}
                                             ?>
                                             <div class="fpten-prescription-item">
                                                 <?= $item->drug->label ?>
@@ -279,10 +286,20 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                                                 <br/>
                                                 Duration: <?= $item->duration->name?>
                                                 <br/>
-                                                <br/>
+
+																							<?php
+																							foreach ($item->tapers as $taper): ?>
+																							<!--then<br/>
+																								Dose: <?=is_numeric($taper->dose) ? ($taper->dose . ' ' . $item->drug->dose_unit) : $taper->dose ?><br/>
+																							Frequency: <?= $taper->frequency->long_name ?><br/>
+																							Duration: <?= $taper->duration->name?> <br/-->
+																							<?php
+																							//$prescription_lines_used += 4;
+																							endforeach; ?>
+																							<br/>
                                             </div>
                                             <?php
-                                            $prescription_lines_used += 4; // In reality this could be many more due to wrapping, but this will cater for single-line scenarios. The CSS overflow override will handle extras.
+																					$prescription_lines_used += 4; // In reality this could be many more due to wrapping, but this will cater for single-line scenarios. The CSS overflow override will handle extras.
                                         endforeach;
                                     endif;
                                 endforeach; ?>
@@ -300,7 +317,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                 </div>
             <div class="fpten-form-row">
                 <div id="<?= $form_css_class ?>-doctor-name" class="fpten-form-column">
-                    <?= $this->event->usermodified->fullname ?>
+                    <?= $this->event->usermodified->getFullNameAndTitle() ?>
                 </div>
             </div>
             <div class="fpten-form-row">
@@ -310,8 +327,6 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
             </div>
             <div class="fpten-form-row">
                 <div id="<?= $form_css_class ?>-site" class="fpten-form-column">
-                    <?= $this->firm->name ?>
-                    <br/>
                     <?= $this->site->name ?>
                     <br/>
                     <?= $this->site->contact->address->address1 ?>
@@ -323,13 +338,20 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                     <?= $this->site->contact->address->county ?>
                     <br/>
                     <?= str_replace(' ', '', $this->site->contact->address->postcode) ?> <br/>
-                    <?= $this->site->contact->primary_phone ?>
+                    Tel: <?= $this->site->contact->primary_phone ?>
                     <br/>
                     <?= $this->site->institution->name ?>
                 </div>
                 <?php if ($side === 'left') : ?>
                     <div id="<?= $form_css_class ?>-site-code" class="fpten-form-column">
-                        <span id="fpten-trust-code"><?= $element->usermodified->registration_code ?></span>
+                        <span id="fpten-trust-code"><?= str_replace('GMC', '', $element->usermodified->registration_code) ?></span>
+											<br/>
+											<?= $this->site->contact->address->address2 ? '<br/>' : null ?>
+											<br/>
+											<?= $this->site->contact->address->county ? '<br/>' : null ?>
+											<br/>
+											<br/>
+											<?= $this->firm->cost_code ?: $default_cost_code ?>
                     </div>
                     <span class="fpten-form-column fpten-prescriber-code">HP</span>
                 <?php endif; ?>

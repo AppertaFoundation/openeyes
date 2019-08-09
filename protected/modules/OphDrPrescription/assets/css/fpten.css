@@ -13,25 +13,15 @@ body {
 }
 
 .fpten-container, .wpten-container {
-    font-family: arial, sans-serif;
-    font-weight: bold;
-    font-size: 7.5pt;
-    padding: 3mm 3mm 0 3mm;
-    width: 105mm;
-}
-
-.fpten-container {
-	width: 105mm;
-}
-
-.fpten-container {
 	font-family: arial, sans-serif;
 	font-weight: bold;
 	font-size: 7.5pt;
 	padding: 3mm 0 0 3mm;
 	width: 105mm;
-	height: 170mm;
-	vertical-align: middle;
+}
+
+.fpten-container {
+	width: 105mm;
 }
 
 .fpten-form-row:before, .fpten-form-row:after {
@@ -83,7 +73,7 @@ body {
     height: 13mm;
     width: 19mm;
     margin-left: 30mm;
-    line-height: 8mm;
+    line-height: 13mm;
     text-align: center;
 }
 
@@ -91,6 +81,7 @@ body {
 	padding-top: 3mm;
 	height: 7mm;
 	line-height: 7mm;
+	margin-left: 32mm;
 }
 
 /*DOB box appears directly below the Age box.*/
@@ -106,6 +97,7 @@ body {
 	height: 15mm;
 	padding-top: 3mm;
 	line-height: 15mm;
+	margin-left: 32mm;
 }
 
 /*Patient details box appears at the top right corner beside age and DOB.*/
@@ -132,6 +124,7 @@ body {
 
 #fpten-nhs {
 	height: 5mm;
+	line-height: 5mm;
 	float: right;
 }
 
@@ -211,7 +204,8 @@ body {
 }
 
 #fpten-doctor-name {
-	height: 16mm;
+	height: 18mm;
+	line-height: 18mm;
 }
 
 /*Appears directly above the Trust code in the site box.*/

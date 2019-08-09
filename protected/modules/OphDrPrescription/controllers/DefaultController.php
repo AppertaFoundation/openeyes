@@ -286,7 +286,7 @@ class DefaultController extends BaseEventTypeController
 
                 $drugs = Drug::model()->active()->findAll($criteria);
 
-                
+
                 foreach ($drugs as $drug) {
                     $return[] = array(
                         'label' => $drug->tallmanlabel,
@@ -426,7 +426,7 @@ class DefaultController extends BaseEventTypeController
         if ($print_mode === 'WP10' || $print_mode === 'FP10') {
             Yii::app()->params['wkhtmltopdf_left_margin'] = '0mm';
             Yii::app()->params['wkhtmltopdf_right_margin'] = '0mm';
-            Yii::app()->params['wkhtmltopdf_top_margin'] = '8mm';
+            Yii::app()->params['wkhtmltopdf_top_margin'] = '6mm';
             Yii::app()->params['wkhtmltopdf_bottom_margin'] = '0mm';
             //Yii::app()->params['wkhtmltopdf_page_width'] = '210mm';
             //Yii::app()->params['wkhtmltopdf_page_height'] = '178mm';
