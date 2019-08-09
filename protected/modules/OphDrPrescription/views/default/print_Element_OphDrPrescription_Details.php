@@ -344,7 +344,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                 </div>
                 <?php if ($side === 'left') : ?>
                     <div id="<?= $form_css_class ?>-site-code" class="fpten-form-column">
-                        <span id="fpten-trust-code"><?= str_replace('GMC', '', $element->usermodified->registration_code) ?></span>
+                        <span id="fpten-trust-code"><?=  preg_replace('/\D/', '', $element->usermodified->registration_code) ?></span>
 											<br/>
 											<?= $this->site->contact->address->address2 ? '<br/>' : null ?>
 											<br/>
