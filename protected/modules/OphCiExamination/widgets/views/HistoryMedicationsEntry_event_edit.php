@@ -122,7 +122,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
             <?php else: ?>
                 <input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
                        value="<?= $entry->start_date_string_YYYYMMDD ? $entry->start_date_string_YYYYMMDD : date('Y-md') ?>"/>
-                <?= Helper::convertMySQL2NHS($entry->start_date) ?>
+                <?= \Helper::formatFuzzyDate($entry->start_date) ?>
             <?php endif; ?>
         </fieldset>
     </td>
