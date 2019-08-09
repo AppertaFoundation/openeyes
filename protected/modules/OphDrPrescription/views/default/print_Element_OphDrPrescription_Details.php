@@ -291,12 +291,12 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 
                                                                                             <?php
                                                                                             foreach ($item->tapers as $taper) : ?>
-                                                                                            <!--then<br/>
+                                                                                            then<br/>
                                                                                                 Dose: <?=is_numeric($taper->dose) ? ($taper->dose . ' ' . $item->drug->dose_unit) : $taper->dose ?><br/>
                                                                                             Frequency: <?= $taper->frequency->long_name ?><br/>
                                                                                             Duration: <?= $taper->duration->name?> <br/-->
                                                                                                 <?php
-                                                                                            //$prescription_lines_used += 4;
+                                                                                            $prescription_lines_used += 4;
                                                                                             endforeach; ?>
                                                                                             <br/>
                                             </div>
@@ -353,6 +353,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                                             <?= $this->site->contact->address->county ? '<br/>' : null ?>
                                             <br/>
                                             <br/>
+											                      <br/>
                                             <?= $this->firm->cost_code ?: $default_cost_code ?>
                     </div>
                     <span class="fpten-form-column fpten-prescriber-code">HP</span>
