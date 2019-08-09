@@ -8,7 +8,6 @@
     </div>
     <table>
         <colgroup>
-            <col style="width: 100px;"><!-- Event ID -->
             <col style="width: 100px"><!-- Event type -->
             <col style="width: 100px;"><!-- Eye-->
             <col style="width: 100px;"><!-- Instrument -->
@@ -18,7 +17,6 @@
         </colgroup>
         <thead>
             <tr>
-                <th class="drill_down_patient_list text-left" style="vertical-align: center;">Event ID</th><!-- Event ID -->
                 <th class="text-left" style="vertical-align: center;">Event Type</th><!-- Event type -->
                 <th class="text-left" style="vertical-align: center;">Eye (left or right)</th><!-- Eye-->
                 <th class="text-left" style="vertical-align: center;">Instrument</th><!-- Instrument -->
@@ -70,7 +68,6 @@
 
         for (var i = 0; i < iop_plotly_data.length; i++){
             var data_row = "<tr  class='clickable event_rows event_" + iop_plotly_data[i]["event_id"]+"' data-link='/OphCi"+iop_plotly_data[i]["event_name"]+"/default/view/"+iop_plotly_data[i]["event_id"]+"'> <!-- Generated Data -->";
-            data_row += "<td  style='vertical-align: center;'>"+iop_plotly_data[i]["event_id"]+"</td> <!-- Event ID -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["event_name"]+"</td> <!-- Event type -->";
             data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["eye"]+"</td><!-- Eye -->";
             data_row += " <td style='vertical-align: center;'>"+iop_plotly_data[i]["instrument_name"]+"</td><!-- Instrument -->";
