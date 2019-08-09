@@ -47,7 +47,8 @@ class ExaminationHelper
             'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion',
             'OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk',
             'OEModule\OphCiExamination\models\Element_OphCiExamination_Comorbidities',
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Risks'
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Risks',
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities'
         ));
 
     }

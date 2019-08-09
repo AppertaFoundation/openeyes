@@ -1246,6 +1246,50 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Custom validation on Pupillary Abnormalities element
+     *
+     * @param $data
+     * @param $errors
+     * @return mixed
+     */
+    protected function setAndValidatePupillaryAbnormalitiesFromData($data, $errors){
+        $et_name = models\PupillaryAbnormalities::model()->getElementTypeName();
+        $data = $data['OEModule_OphCiExamination_models_PupillaryAbnormalities'];
+        $pupillaryAbnormalities = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PupillaryAbnormalities');
+
+        $pupillaryAbnormalities->eye_id = $data['eye_id'];
+
+        foreach (['left', 'right'] as $side) {
+            if (isset($data['entries_' . $side])) {
+
+                $entries = [];
+
+                foreach ($data['entries_' . $side] as $index => $value) {
+                    $entry = new models\PupillaryAbnormalityEntry();
+                    $entry->attributes = $value;
+                    $entries[] = $entry;
+                    if (!$entry->validate()) {
+                        $entryErrors = $entry->getErrors();
+                        foreach ($entryErrors as $entryErrorAttributeName => $entryErrorMessages) {
+                            foreach ($entryErrorMessages as $entryErrorMessage) {
+                                $pupillaryAbnormalities->addError("entries_{$side}_" . $index . '_' . $entryErrorAttributeName, $entryErrorMessage);
+                            }
+                        }
+                    }
+                }
+                $pupillaryAbnormalities->{'entries_' . $side} = $entries;
+
+            } else {
+                if (isset($data[$side . '_no_pupillaryabnormalities'])) {
+                    $pupillaryAbnormalities->{'no_pupillaryabnormalities_date_' . $side} = $data[$side . '_no_pupillaryabnormalities'];
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
      * custom validation for virtual clinic referral.
      *
      * this should hand off validation to a faked PatientTicket request via the API.
@@ -1284,6 +1328,10 @@ class DefaultController extends \BaseEventTypeController
 
         if(isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])){
             $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
+        }
+
+        if (isset($data['OEModule_OphCiExamination_models_PupillaryAbnormalities'])){
+            $errors = $this->setAndValidatePupillaryAbnormalitiesFromData($data, $errors);
         }
 
         return $errors;
