@@ -217,6 +217,36 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
     }
 
     $(document).ready(function () {
+        let findings_are_validated = false;
+
+        $('.generic-admin-save').on('click', function (e) {
+            if (findings_are_validated) {
+                findings_are_validated = false;
+                return;
+            }
+
+            e.preventDefault();
+
+            let warnings = false;
+            let rows = $('table.generic-admin tr');
+            for (let i = 0; i < rows.length; i++) {
+                let input = $(rows[i]).find('.finding-search-autocomplete.finding-search-inputfield.ui-autocomplete-input');
+                if (input.val() && input.val().length && $(input).is(":visible")) {
+                    $(input).addClass('highlighted-error error');
+                    warnings = true;
+                }
+            }
+
+            if (warnings) {
+                alert("Please select a valid finding from the list.");
+            } else {
+                // validation finished, set the flag
+                findings_are_validated = true;
+                // only if there are no errors in the page proceed to save
+                $(this).trigger('click');
+            }
+        });
+
         $('#subspecialty_id').on('change', function () {
             $(this).closest('form').submit();
         });
