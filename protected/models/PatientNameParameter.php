@@ -56,13 +56,17 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
 
     public function renderParameter($id)
     {
-        ?>
-        <div class="flex-layout flex-left">
+      ?>
+      <div class="flex-layout flex-left js-case-search-param">
+        <div class="parameter-option">
             <?= $this->getDisplayTitle() ?>
+        </div>
+        <div class="parameter-option">
             <?php echo CHtml::activeTextField($this, "[$id]patient_name"); ?>
             <?php echo CHtml::error($this, "[$id]patient_name"); ?>
         </div>
-        <?php
+      </div>
+      <?php
     }
 
     /**
@@ -89,7 +93,10 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
 FROM patient p 
 JOIN contact c 
   ON c.id = p.contact_id
-WHERE LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_$this->id)";
+WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_like_$this->id)) OR (LOWER(CONCAT(c.last_name, ' ', c.first_name)) $op LOWER(:p_n_name_like_$this->id)) OR
+     SOUNDEX(c.first_name) = SOUNDEX(:p_n_name_$this->id)
+      OR SOUNDEX(c.last_name) = SOUNDEX(:p_n_name_$this->id)
+";
     }
 
     /**
@@ -100,7 +107,8 @@ WHERE LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_$this->i
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_n_name_$this->id" => '%' . $this->patient_name . '%',
+            "p_n_name_like_$this->id" => '%' . $this->patient_name . '%',
+            "p_n_name_$this->id" => $this->patient_name,
         );
     }
 

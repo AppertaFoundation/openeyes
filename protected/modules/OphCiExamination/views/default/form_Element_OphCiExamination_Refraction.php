@@ -44,14 +44,14 @@
               <tbody>
               <tr>
                 <td class="cols-2">
-                    <?= CHtml::activeTextField($element, $eye_side . '_sphere', array('class' => 'cols-11')) ?>
+                    <?= CHtml::activeTextField($element, $eye_side . '_sphere', array('class' => 'cols-11', 'readonly'=>true)) ?>
                 </td>
                 <td class="cols-2">
-                    <?= CHtml::activeTextField($element, $eye_side . '_cylinder', array('class' => 'cols-11')) ?>
+                    <?= CHtml::activeTextField($element, $eye_side . '_cylinder', array('class' => 'cols-11','readonly'=>true)) ?>
                 </td>
                 <td class="cols-2">
                     <?=\CHtml::activeTextField($element, $eye_side . '_axis',
-                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis cols-11')) ?>
+                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis cols-11', 'readonly'=>true)) ?>
                 </td>
                 <td class="cols-4">
                     <?=\CHtml::activeDropDownList($element, $eye_side . '_type_id',
@@ -235,7 +235,7 @@
             applyRefractionSettings<?= $eye_side ?>,
             $('#add-to-refraction-btn-<?= $eye_side ?>'),
             $('#add-to-refraction-<?= $eye_side ?>').find('.add-icon-btn'),
-            $('#add-to-refraction-<?= $eye_side ?>').find('.close-icon-btn, .add-icon-btn'),
+            $('#add-to-refraction-<?= $eye_side ?>').find('.close-icon-btn'),
           );
         });
       </script>

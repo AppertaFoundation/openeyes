@@ -492,4 +492,39 @@ class Helper
 
         return $eye_id;
     }
+
+    public static function array_dump_html(array $data){
+        $return_info = "";
+        foreach ($data as $key => $value){
+            if (is_array($value)){
+                $value = Helper::array_dump_html($value);
+            }
+            $return_info .= $value.'<br>';
+        }
+        return $return_info;
+		}
+
+    /**
+     * Return bites based on the ini_get returns value e.g. 2M
+     * @param $val
+     * @return int|string
+     */
+    public static function return_bytes($val) {
+        $val = trim($val);
+        $last = strtolower($val[strlen($val)-1]);
+        switch($last) {
+            case 'g':
+                $val *= (1024 * 1024 * 1024); //1073741824
+                break;
+            case 'm':
+                $val *= (1024 * 1024); //1048576
+                break;
+            case 'k':
+                $val *= 1024;
+                break;
+        }
+
+        return $val;
+
+    }
 }

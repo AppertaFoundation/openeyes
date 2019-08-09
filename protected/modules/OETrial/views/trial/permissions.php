@@ -108,7 +108,7 @@
                         }',
                           ),
                           'htmlOptions' => array(
-                              'placeholder' => 'search Users',
+                              'placeholder' => 'Search Users',
                           ),
                       )); ?>
                   </td>

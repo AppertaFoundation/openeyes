@@ -166,7 +166,7 @@ if ($this->checkClinicalEditAccess()) { ?>
             'element' => $element,
             'form' => $form,
         ))?>
-        <?php echo $form->textArea($element, 'diagnoses_not_covered', [] , false ,['class' => 'autosize'],['label' => 3]) ?>
+        <?php echo $form->textArea($element, 'diagnoses_not_covered', [] , false ,['class' => 'cols-full'],['label' => 3]) ?>
       </div>
           <?php
             /* Not closing the section tag as it's going to be closed from the element_container form */ ?>

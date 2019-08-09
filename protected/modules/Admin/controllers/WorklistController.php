@@ -15,11 +15,10 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class WorklistAdminController extends BaseAdminController
+class WorklistController extends BaseAdminController
 {
-    public $layout = 'admin';
     public $items_per_page = 30;
-    public $group = 'Worklists';
+    public $group = 'Worklist';
 
     /**
      * @var WorklistManager
@@ -55,7 +54,7 @@ class WorklistAdminController extends BaseAdminController
     {
         $definitions = $this->manager->getWorklistDefinitions();
 
-        $this->render('//admin/worklists/definitions', array(
+        $this->render('definitions', array(
             'definitions' => $definitions,
         ));
     }
@@ -71,7 +70,7 @@ class WorklistAdminController extends BaseAdminController
     {
         $definition = $this->getWorklistDefinition($id);
 
-        $this->render('//admin/worklists/definition', array(
+        $this->render('definition', array(
             'definition' => $definition,
         ));
     }
@@ -102,11 +101,11 @@ class WorklistAdminController extends BaseAdminController
             } else {
                 $this->flashMessage('success', 'Worklist Definition saved');
 
-                return $this->redirect(array('/worklistAdmin/definitions'));
+                return $this->redirect(array('/Admin/worklist/definitions'));
             }
         }
 
-        $this->render('//admin/worklists/definition_edit', array(
+        $this->render('definition_edit', array(
             'definition' => $definition,
             'errors' => @$errors,
         ));
@@ -132,7 +131,7 @@ class WorklistAdminController extends BaseAdminController
             $this->flashMessage('error', 'Could not delete worklist definition');
         }
 
-        return $this->redirect('/worklistAdmin/definitions');
+        return $this->redirect('/Admin/worklist/definitions');
     }
 
     /**
@@ -166,7 +165,7 @@ class WorklistAdminController extends BaseAdminController
     {
         $definition = $this->getWorklistDefinition($id);
 
-        $this->render('//admin/worklists/definition_worklists', array(
+        $this->render('definition_worklists', array(
             'definition' => $definition,
         ));
     }
@@ -187,7 +186,7 @@ class WorklistAdminController extends BaseAdminController
             }
         }
 
-        $this->redirect('/worklistAdmin/definitions/');
+        $this->redirect('/Admin/worklist/definitions/');
     }
 
     /**
@@ -208,7 +207,7 @@ class WorklistAdminController extends BaseAdminController
             throw new CHttpException(400, 'Worklist does not have a definition so not viewable in this admin.');
         }
 
-        $this->render('//admin/worklists/worklist_patients', array(
+        $this->render('worklist_patients', array(
             'worklist' => $worklist,
         ));
     }
@@ -230,9 +229,9 @@ class WorklistAdminController extends BaseAdminController
             } else {
                 $this->flashMessage('error', "Unable to delete instances for Worklist Definition {$definition->name}");
             }
-            $this->redirect('/worklistAdmin/definitions');
+            $this->redirect('/Admin/worklist/definitions');
         }
-        $this->render('//admin/worklists/definition_worklists_delete', array(
+        $this->render('definition_worklists_delete', array(
             'definition' => $definition,
         ));
     }
@@ -256,7 +255,7 @@ class WorklistAdminController extends BaseAdminController
             $this->flashMessage('success', "Worklist Generation Completed for {$definition->name}. {$new_count} new instances created.");
         }
 
-        $this->redirect(array('/worklistAdmin/definitions'));
+        $this->redirect(array('/Admin/worklist/definitions'));
     }
 
     /**
@@ -270,7 +269,7 @@ class WorklistAdminController extends BaseAdminController
     {
         $definition = $this->getWorklistDefinition($id);
 
-        $this->render('//admin/worklists/definition_mappings', array(
+        $this->render('definition_mappings', array(
             'definition' => $definition,
         ));
     }
@@ -301,14 +300,14 @@ class WorklistAdminController extends BaseAdminController
                 $_POST['WorklistDefinitionMapping']['valuelist'],
                 $_POST['WorklistDefinitionMapping']['willdisplay'])) {
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
-                $this->redirect(array('/worklistAdmin/definitionMappings/'.$id));
+                $this->redirect(array('/Admin/worklist/definitionMappings/'.$id));
             } else {
                 $errors = $mapping->getErrors();
                 $errors[] = $this->manager->getErrors();
             }
         }
 
-        $this->render('//admin/worklists/definition_mapping', array(
+        $this->render('definition_mapping', array(
             'mapping' => $mapping,
             'errors' => @$errors,
         ));
@@ -338,14 +337,14 @@ class WorklistAdminController extends BaseAdminController
                 $_POST['WorklistDefinitionMapping']['valuelist'],
                 $_POST['WorklistDefinitionMapping']['willdisplay'])) {
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
-                $this->redirect(array('/worklistAdmin/definitionMappings/'.$mapping->worklist_definition_id));
+                $this->redirect(array('/Admin/worklist/definitionMappings/'.$mapping->worklist_definition_id));
             } else {
                 $errors = $mapping->getErrors();
                 $errors[] = $this->manager->getErrors();
             }
         }
 
-        $this->render('//admin/worklists/definition_mapping', array(
+        $this->render('definition_mapping', array(
             'mapping' => $mapping,
             'errors' => @$errors,
         ));
@@ -374,7 +373,7 @@ class WorklistAdminController extends BaseAdminController
             $this->flashMessage('error', 'Cannot delete mapping.');
         }
 
-        $this->redirect(array('/worklistAdmin/definitionMappings/'.$mapping->worklist_definition_id));
+        $this->redirect(array('/Admin/worklist/definitionMappings/'.$mapping->worklist_definition_id));
     }
 
     /**
@@ -396,14 +395,14 @@ class WorklistAdminController extends BaseAdminController
             }
         }
 
-        $this->redirect('/worklistAdmin/definitionMappings/'.$id);
+        $this->redirect('/Admin/worklist/definitionMappings/'.$id);
     }
 
     public function actionDefinitionDisplayContexts($id)
     {
         $definition = $this->getWorklistDefinition($id);
 
-        $this->render('//admin/worklists/definition_display_contexts', array(
+        $this->render('definition_display_contexts', array(
             'definition' => $definition,
         ));
     }
@@ -425,13 +424,13 @@ class WorklistAdminController extends BaseAdminController
             $display_context->attributes = $_POST['WorklistDefinitionDisplayContext'];
             if ($display_context->save()) {
                 $this->flashMessage('success', 'Worklist Definition Display Context saved.');
-                $this->redirect(array('/worklistAdmin/definitionDisplayContexts/'.$id));
+                $this->redirect(array('/Admin/worklist/definitionDisplayContexts/'.$id));
             } else {
                 $errors = $display_context->getErrors();
             }
         }
 
-        $this->render('//admin/worklists/definition_display_context_edit', array(
+        $this->render('definition_display_context_edit', array(
             'display_context' => $display_context,
             'errors' => @$errors,
         ));
@@ -454,6 +453,6 @@ class WorklistAdminController extends BaseAdminController
             $this->flashMessage('error', 'Cannot delete Display Context.');
         }
 
-        $this->redirect(array('/worklistAdmin/definitionDisplayContexts/'.$display_context->worklist_definition_id));
+        $this->redirect(array('/Admin/worklist/definitionDisplayContexts/'.$display_context->worklist_definition_id));
     }
 }

@@ -134,6 +134,7 @@
                         ),
                         'htmlOptions' => array(
                                 'placeholder' => $placeholder,
+                                'class' => "cols-12",
                         ),
                 ));
                 ?>

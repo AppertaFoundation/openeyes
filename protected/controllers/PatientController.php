@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,10 +9,11 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 Yii::import('application.controllers.*');
+use OEModule\OphCiExamination\models;
 
 /**
  * Class PatientController
@@ -49,7 +47,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer', 'summary'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -90,9 +88,13 @@ class PatientController extends BaseController
                 'roles' => array('OprnEditSocialHistory'),
             ),
             array('allow',
-                'actions' => array('create', 'update', 'findDuplicates'),
+                'actions' => array('create', 'update', 'findDuplicates', 'findDuplicatesByIdentifier'),
                 'roles' => array('TaskAddPatient'),
-            )
+            ),
+						array('allow',
+							'actions'=>array('summary'),
+							'roles'=>array('User'),
+						)
         );
     }
 
@@ -141,21 +143,51 @@ class PatientController extends BaseController
         $this->redirect(array('episodes', 'id' => $id));
     }
 
+    public function actionSummary($id) {
+        $this->layout = '//layouts/events_and_episodes';
+        $this->patient = Patient::model()->findByPk($id);
+        $this->pageTitle = "Summary";
+
+        $episodes = $this->patient->episodes;
+        $legacy_episodes = $this->patient->legacyepisodes;
+        $support_service_episodes = $this->patient->supportserviceepisodes;
+
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['episode', 'episode.patient'];
+        $criteria->addCondition('patient.id=:patient_id');
+        $criteria->params['patient_id'] = $this->patient->id;
+        $criteria->order = 't.last_modified_date desc';
+        $criteria->limit = 3;
+        $events = Event::model()->findAll($criteria);
+
+        $no_episodes = count($episodes) < 1 && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
+
+        if ($no_episodes) {
+            $this->layout = '//layouts/events_and_episodes_no_header';
+        }
+
+        $this->render('landing_page', array(
+            'events' => $events,
+            'patient' => $this->patient,
+            'no_episodes' => $no_episodes,
+        ));
+    }
+
     public function actionSearch()
     {
         $term = \Yii::app()->request->getParam('term', '');
 
         $patientSearch = new PatientSearch();
-      $dataProvider = $patientSearch->search($term);
-      $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
-      $search_terms = $patientSearch->getSearchTerms();
+        $dataProvider = $patientSearch->search($term);
+        $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
+        $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
             Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');
 
             $message = 'Sorry, no results ';
             if ($search_terms['hos_num']) {
-                $message .= 'for Hospital Number <strong>"'.$search_terms['hos_num'].'"</strong>';
+                $message .= 'for '.Yii::app()->params['hos_num_label']. ((Yii::app()->params['institution_code']=='CERA')?' ':' Number').'<strong>"'.$search_terms['hos_num'].'"</strong>';
 
                 // check if the record was merged into another record
                 $criteria = new CDbCriteria();
@@ -168,7 +200,7 @@ class PatientController extends BaseController
                     $message = 'Hospital Number <strong>'.$search_terms['hos_num'].'</strong> was merged into <strong>'.$patientMergeRequest->primary_hos_num.'</strong>';
                 }
             } elseif ($search_terms['nhs_num']) {
-                $message .= 'for '. Yii::app()->params['nhs_num_label'].' Number <strong>"'.$search_terms['nhs_num'].'"</strong>';
+                $message .= 'for '. Yii::app()->params['nhs_num_label'].((Yii::app()->params['institution_code']==='CERA')? '' : ' Number').' <strong>"'.$search_terms['nhs_num'].'"</strong>';
             } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
                 $message .= 'for Patient Name <strong>"'.$search_terms['first_name'].' '.$search_terms['last_name'].'"</strong>';
             } else {
@@ -184,7 +216,7 @@ class PatientController extends BaseController
         } elseif ($itemCount == 1) {
             $item = $dataProvider->getData()[0];
             $api = new CoreAPI();
-            $this->redirect(array($api->generateEpisodeLink($item)));
+            $this->redirect(array($api->generatePatientLandingPageLink($item)));
         } else {
             $this->renderPatientPanel = false;
             $this->pageTitle = $term . ' - Search';
@@ -201,36 +233,36 @@ class PatientController extends BaseController
         }
     }
 
-   /**
-    * Ajax search.
-    */
-   public function actionAjaxSearch()
-   {
-       $term = trim(\Yii::app()->request->getParam('term', ''));
-       $result = array();
-       $patientSearch = new PatientSearch();
-       if ($patientSearch->isValidSearchTerm($term)) {
-           $dataProvider = $patientSearch->search($term);
-           foreach ($dataProvider->getData() as $patient) {
-               $result[] = array(
-                   'id' => $patient->id,
-                   'first_name' => $patient->first_name,
-                   'last_name' => $patient->last_name,
-                   'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
-                   'gender' => $patient->getGenderString(),
-                   'genderletter' => $patient->gender,
-                   'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
-                   'hos_num' => $patient->hos_num,
-                   'nhsnum' => $patient->nhsnum,
-                   // in script.js we override the behaviour for showing search results and its require the label key to be present
-                   'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
-                   'is_deceased' => $patient->is_deceased,
-               );
-           }
-       }
-       echo CJavaScript::jsonEncode($result);
-       Yii::app()->end();
-   }
+    /**
+     * Ajax search.
+     */
+    public function actionAjaxSearch()
+    {
+        $term = trim(\Yii::app()->request->getParam('term', ''));
+        $result = array();
+        $patientSearch = new PatientSearch();
+        if ($patientSearch->isValidSearchTerm($term)) {
+            $dataProvider = $patientSearch->search($term);
+            foreach ($dataProvider->getData() as $patient) {
+                $result[] = array(
+                    'id' => $patient->id,
+                    'first_name' => $patient->first_name,
+                    'last_name' => $patient->last_name,
+                    'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
+                    'gender' => $patient->getGenderString(),
+                    'genderletter' => $patient->gender,
+                    'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
+                    'hos_num' => $patient->hos_num,
+                    'nhsnum' => $patient->nhsnum,
+                    // in script.js we override the behaviour for showing search results and its require the label key to be present
+                    'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
+                    'is_deceased' => $patient->is_deceased,
+                );
+            }
+        }
+        echo CJavaScript::jsonEncode($result);
+        Yii::app()->end();
+    }
 
     public function actionParentEvent($id)
     {
@@ -256,7 +288,7 @@ class PatientController extends BaseController
             //display the flash message
             Yii::app()->user->setFlash('warning.no-results', $merged->getMergedMessage());
 
-            $this->redirect( ($redirect_link ? $redirect_link : $primary_patient->generateEpisodeLink()));
+            $this->redirect( ($redirect_link ? $redirect_link : (new CoreAPI())->generatePatientLandingPageLink($this->patient)));
         }
     }
 
@@ -314,7 +346,7 @@ class PatientController extends BaseController
             'title' => empty($episodes) ? '' : 'Episode summary',
             'episodes' => $episodes,
             'site' => $site,
-            'cssClass' => 'episodes-list',
+            'css_class' => 'episodes-list',
             'noEpisodes' => $no_episodes,
         ));
     }
@@ -338,16 +370,16 @@ class PatientController extends BaseController
 
         $this->title = 'Episode summary';
         $this->event_tabs = array(
-                array(
-                        'label' => 'View',
-                        'active' => true,
-                ),
+            array(
+                'label' => 'View',
+                'active' => true,
+            ),
         );
 
         if ($this->checkAccess('OprnEditEpisode', $this->firm, $this->episode) && $this->episode->firm) {
             $this->event_tabs[] = array(
-                    'label' => 'Edit',
-                    'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
+                'label' => 'Edit',
+                'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
             );
         }
         $this->current_episode = $this->episode;
@@ -414,14 +446,14 @@ class PatientController extends BaseController
 
         $this->title = 'Episode summary';
         $this->event_tabs = array(
-                array(
-                        'label' => 'View',
-                        'href' => Yii::app()->createUrl('/patient/episode/'.$this->episode->id),
-                ),
-                array(
-                        'label' => 'Edit',
-                        'active' => true,
-                ),
+            array(
+                'label' => 'View',
+                'href' => Yii::app()->createUrl('/patient/episode/'.$this->episode->id),
+            ),
+            array(
+                'label' => 'Edit',
+                'active' => true,
+            ),
         );
 
         $status = Yii::app()->session['episode_hide_status'];
@@ -444,7 +476,8 @@ class PatientController extends BaseController
         ));
     }
 
-    public function actionOEscape($subspecialty_id, $patient_id){
+    public function actionOEscape($subspecialty_id, $patient_id)
+    {
 
         $subspecialty = Subspecialty::model()->findByPk($subspecialty_id);
         $patient = Patient::model()->findByPk($patient_id);
@@ -459,18 +492,57 @@ class PatientController extends BaseController
 
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
-        $this->event_tabs = array(
-            array(
+        $this->event_tabs = [
+            [
                 'label' => 'View',
                 'active' => true,
-            ),
-        );
+            ],
+        ];
+
+        $header_data = [];
+        if ($subspecialty->ref_spec == 'GL') {
+            $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+            $cct_element = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+                $this->patient,
+                false //use context
+            );
+
+            $criteria = new \CDbCriteria();
+            $criteria->with = ['event.episode'];
+            $criteria->addCondition('episode.patient_id = :patient_id');
+            $criteria->params[':patient_id'] = $this->patient->id;
+            $criteria->order = "event.event_date ASC";
+            $iop = models\Element_OphCiExamination_IntraocularPressure::model()->find($criteria);
+
+            if ($cct_element) {
+                if ($cct_element->hasLeft()) {
+                    $header_data['CCT']['left'] = $cct_element->left_value;
+                }
+                if ($cct_element->hasRight()) {
+                    $header_data['CCT']['right'] = $cct_element->right_value;
+                }
+                $header_data['CCT']['date'] = \Helper::convertMySQL2NHS($cct_element->event->event_date);
+            }
+
+            if ($iop) {
+                $header_data['IOP']['right'] = $iop->getReading('right');
+                $header_data['IOP']['left'] = $iop->getReading('left');
+                $header_data['IOP']['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
+            }
+
+            $max_iop = $exam_api->getMaxIOPValues($patient);
+            if ($max_iop) {
+                $header_data['IOP_MAX']['right'] = $max_iop['right'];
+                $header_data['IOP_MAX']['left'] = $max_iop['left'];
+            }
+        }
 
         $this->render('/oescape/oescapes', array(
             'title' => '' ,
             'subspecialty' => $subspecialty,
             'site' => $site,
             'noEpisodes' => false,
+            'header_data' => $header_data
         ));
     }
 
@@ -1637,6 +1709,12 @@ class PatientController extends BaseController
     public function actionCreate()
     {
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
+
+        // Executing the js function (without passing the id param as it will be null on create patient screen)
+        // to find duplicate patients on entering create patient screen each time so that the warning message
+        // does not disappear after refreshing.
+        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates();', CClientScript::POS_READY);
+
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
         $this->fixedHotlist = true;
@@ -1663,58 +1741,73 @@ class PatientController extends BaseController
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
 
-          $referral = new PatientReferral();
-          if (isset($_POST['PatientReferral'])) {
-            $referral->attributes = $_POST['PatientReferral'];
-          }
-
-          if (isset($_POST['PatientUserReferral'])) {
-            $patient_user_referral = new PatientUserReferral();
-            if ($_POST['PatientUserReferral']['user_id'] != -1) {
-              $patient_user_referral->attributes = $_POST['PatientUserReferral'];
+            $referral = new PatientReferral();
+            if (isset($_POST['PatientReferral'])) {
+                $referral->attributes = $_POST['PatientReferral'];
             }
-          }
-          switch ($patient->patient_source) {
-            case Patient::PATIENT_SOURCE_OTHER:
-              $contact->setScenario('other_register');
-              $patient->setScenario('other_register');
-              $address->setScenario('other_register');
-              $referral->setScenario('other_register');
-              break;
-            case Patient::PATIENT_SOURCE_REFERRAL:
-              $contact->setScenario('referral');
-              $patient->setScenario('referral');
-              $address->setScenario('referral');
-              $referral->setScenario('referral');
-              break;
-            case Patient::PATIENT_SOURCE_SELF_REGISTER:
-              $contact->setScenario('self_register');
-              $patient->setScenario('self_register');
-              $address->setScenario('self_register');
-              $referral->setScenario('self_register');
-              break;
-            default:
-              $contact->setScenario('manual');
-              break;
-          }
+
+            if (isset($_POST['ExtraContact'])){
+                $gp_ids = $_POST['ExtraContact']['gp_id'];
+                $pca_models = array();
+                foreach ($gp_ids as $gp_id){
+                    $pca_model = new PatientContactAssociate();
+                    $pca_model->gp_id = $gp_id;
+                    $pca_models[] = $pca_model;
+                }
+                if (!empty($pca_models)){
+                    $patient->patientContactAssociates = $pca_models;
+                }
+            }
+
+            if (isset($_POST['PatientUserReferral'])) {
+                $patient_user_referral = new PatientUserReferral();
+                if ($_POST['PatientUserReferral']['user_id'] != -1) {
+                    $patient_user_referral->attributes = $_POST['PatientUserReferral'];
+                }
+            }
+            switch ($patient->patient_source) {
+                case Patient::PATIENT_SOURCE_OTHER:
+                    $contact->setScenario('other_register');
+                    $patient->setScenario('other_register');
+                    $address->setScenario('other_register');
+                    $referral->setScenario('other_register');
+                    break;
+                case Patient::PATIENT_SOURCE_REFERRAL:
+                    $contact->setScenario('referral');
+                    $patient->setScenario('referral');
+                    $address->setScenario('referral');
+                    $referral->setScenario('referral');
+                    break;
+                case Patient::PATIENT_SOURCE_SELF_REGISTER:
+                    $contact->setScenario('self_register');
+                    $patient->setScenario('self_register');
+                    $address->setScenario('self_register');
+                    $referral->setScenario('self_register');
+                    break;
+                default:
+                    $contact->setScenario('manual');
+                    break;
+            }
             // not to be sync with PAS
             $patient->is_local = 1;
 
 
-          // Don't save if the user just changed the "Patient Source"
-          if ($_POST["changePatientSource"] == 0) {
-            list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
-              $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
-          } else {
-            // Return the same page to the user without saving
-            // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
-            $patient->beforeValidate();
-            $patient->beforeSave();
-          }
+            // Don't save if the user just changed the "Patient Source"
+            if ($_POST["changePatientSource"] == 0) {
+                list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
+                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+            } else {
+                // Return the same page to the user without saving
+                // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
+                $patient->beforeValidate();
+                $patient->beforeSave();
+            }
         }
-        if($patient->getIsNewRecord()){
+        // Only auto increment hos no. when the set_auto_increment is on
+        if($patient->getIsNewRecord() && Yii::app()->params['set_auto_increment'] == 'on'){
             $patient->hos_num = $patient->autoCompleteHosNum();
         }
+
         $this->render('crud/create', array(
             'patient' => $patient,
             'contact' => $contact,
@@ -1727,7 +1820,7 @@ class PatientController extends BaseController
             'practiceaddress' => $practiceaddress,
             'practice' => $practice
         ));
-   }
+    }
 
     /**
      * Gets the PatientIdentifier records from $_POST
@@ -1752,20 +1845,20 @@ class PatientController extends BaseController
 
         return $patient_identifiers;
     }
-   
-   /**
-    * Saving the Contact, Patient and Address object
-    *
-    * @param Contact $contact
-    * @param Patient $patient
-    * @param Address $address
-    * @param PatientIdentifier[] $patient_identifiers
-    * @param PatientReferral $referral
-    * @param PatientUserReferral $patient_user_referral
-    * @return array on validation error returns the 3 objects otherwise redirects to the patient view page
-    *
-    * @throws
-    */
+
+    /**
+     * Saving the Contact, Patient and Address object
+     *
+     * @param Contact $contact
+     * @param Patient $patient
+     * @param Address $address
+     * @param PatientIdentifier[] $patient_identifiers
+     * @param PatientReferral $referral
+     * @param PatientUserReferral $patient_user_referral
+     * @return array on validation error returns the 3 objects otherwise redirects to the patient view page
+     *
+     * @throws
+     */
     private function performPatientSave(
         Contact $contact,
         Patient $patient,
@@ -1794,7 +1887,7 @@ class PatientController extends BaseController
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
                 } else {
-                    $redirect = array('/patient/episodes/' . $patient->id);
+                    $redirect = array('/patient/summary/' . $patient->id);
                 }
                 $transaction->commit();
                 $this->redirect($redirect);
@@ -1843,6 +1936,11 @@ class PatientController extends BaseController
         PatientUserReferral &$patient_user_referral,
         &$patient_identifiers)
     {
+
+        if(!$this->checkForReferralFiles($referral, $patient)) {
+            return false;
+        }
+
         if (!$contact->save()) {
             return false;
         }
@@ -1876,6 +1974,21 @@ class PatientController extends BaseController
         }
 
 
+        if (isset($patient->gp) && isset($patient->practice)){
+            $existing_cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id));
+            if (isset($existing_cpa)){
+                $existing_cpa->practice_id = $patient->practice_id;
+                $existing_cpa->save();
+            }else{
+                $new_cpa = new ContactPracticeAssociate();
+                $new_cpa->gp_id = $patient->gp_id;
+                $new_cpa->practice_id = $patient->practice_id;
+                $new_cpa->save();
+            }
+        }
+
+        $this->performPatientContactAssociatesSave($patient);
+
         $action = $patient->isNewRecord ? 'add' : 'edit';
         Audit::add(
             'Patient',
@@ -1884,6 +1997,22 @@ class PatientController extends BaseController
         );
         return true;
     }
+
+    private function performPatientContactAssociatesSave($patient){
+        $existing_gp = PatientContactAssociate::model()->getGPsByPatientId($patient->id);
+        if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)){
+            foreach ($patient->patientContactAssociates as $patientContactAssociate){
+                if (!isset($patientContactAssociate->patient_id)){
+                    $patientContactAssociate->patient_id = $patient->id;
+                }
+
+                if (empty($existing_gp) || !in_array($patientContactAssociate->gp_id,$existing_gp)){
+                    $patientContactAssociate->save();
+                }
+            }
+        }
+    }
+
 
     /**
      * Saves the input $Patient_identiiers according to the config params
@@ -1899,6 +2028,9 @@ class PatientController extends BaseController
         $success = true;
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
+
+            if (empty($post_info->code) || empty($post_info->value))
+                continue;
 
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
                 ':patient_id' => $patient->id,
@@ -1928,9 +2060,13 @@ class PatientController extends BaseController
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id the ID of the model to be updated
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $prevUrl)
     {
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
+
+        // Executing the js function to find duplicate patients on entering update patient screen each time to
+        // retain the warning message on screen after refreshing.
+        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates('.$id.');', CClientScript::POS_READY);
 
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
@@ -1957,74 +2093,113 @@ class PatientController extends BaseController
         $patient_identifiers = PatientIdentifier::model()->findAll('patient_id = ?', array($patient->id));
 
 
-      //only local patient can be edited
-      if ($patient->is_local == 0) {
-        Yii::app()->user->setFlash('warning.update-patient', 'Only local patients can be edited.');
-        $this->redirect(array('view', 'id' => $patient->id));
-      }
+        //only local patient can be edited
+        if ($patient->is_local == 0) {
+            Yii::app()->user->setFlash('warning.update-patient', 'Only local patients can be edited.');
+            $this->redirect(array('view', 'id' => $patient->id));
+        }
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
-          $contact->attributes = $_POST['Contact'];
-          $patient->attributes = $_POST['Patient'];
-          $address->attributes = $_POST['Address'];
-          $patient_identifiers = $this->getPatientIdentifiers($patient);
+            
+            $contact->attributes = $_POST['Contact'];
+            $patient->attributes = $_POST['Patient'];
+            $address->attributes = $_POST['Address'];
+            $patient_identifiers = $this->getPatientIdentifiers($patient);
 
-          if (isset($_POST['PatientReferral'])) {
-            $referral->attributes = $_POST['PatientReferral'];
-          }
-
-          // not to be sync with PAS
-          $patient->is_local = 1;
-
-          if (isset($_POST['PatientUserReferral'])) {
-            if ($_POST['PatientUserReferral']['user_id'] == -1) {
-              if (isset($patient_user_referral->user_id)) {
-                $patient_user_referral->delete();
-              }
-            } elseif ($_POST['PatientUserReferral']['user_id'] != $patient_user_referral->user_id) {
-              if (isset($patient_user_referral->user_id)) {
-                $patient_user_referral->delete();
-              }
-              $patient_user_referral = new PatientUserReferral();
-              $patient_user_referral->attributes = $_POST['PatientUserReferral'];
+            if (isset($_POST['PatientReferral'])) {
+                $referral->attributes = $_POST['PatientReferral'];
             }
-          }
+
+
+            if (isset($_POST['ExtraContact'])){
+                $gp_ids = $_POST['ExtraContact']['gp_id'];
+                $pca_models = array();
+                $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+                if (isset($existing_pca_models)){
+                    foreach ($existing_pca_models as $existing_pca_model){
+                        if (!in_array($existing_pca_model->id, $gp_ids)){
+                            $existing_pca_model->delete();
+                        }else{
+                            array_push($pca_models,$existing_pca_model);
+                            if (($key = array_search($existing_pca_model->id, $gp_ids)) !== false) {
+                                unset($gp_ids[$key]);
+                            }
+                        }
+                    }
+                }
+
+                foreach ($gp_ids as $gp_id){
+                    $pca_model = new PatientContactAssociate();
+                    $pca_model->gp_id = $gp_id;
+                    $pca_model->patient_id = $patient->id;
+                    array_push($pca_models,$pca_model);
+                }
+
+                if (!empty($pca_models)){
+                    $patient->patientContactAssociates = $pca_models;
+                }
+            }else{
+                $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+                if (isset($existing_pca_models)){
+                    foreach ($existing_pca_models as $existing_pca_model){
+                        $existing_pca_model->delete();
+                    }
+                }
+            }
+
+            // not to be sync with PAS
+            $patient->is_local = 1;
+
+            if (isset($_POST['PatientUserReferral'])) {
+                if ($_POST['PatientUserReferral']['user_id'] == -1) {
+                    if (isset($patient_user_referral->user_id)) {
+                        $patient_user_referral->delete();
+                    }
+                } elseif ($_POST['PatientUserReferral']['user_id'] != $patient_user_referral->user_id) {
+                    if (isset($patient_user_referral->user_id)) {
+                        $patient_user_referral->delete();
+                    }
+                    $patient_user_referral = new PatientUserReferral();
+                    $patient_user_referral->attributes = $_POST['PatientUserReferral'];
+                }
+            }
         }
 
-          switch ($patient->patient_source) {
+        switch ($patient->patient_source) {
+
             case Patient::PATIENT_SOURCE_OTHER:
-              $contact->setScenario('other_register');
-              $patient->setScenario('other_register');
-              $address->setScenario('other_register');
-              $referral->setScenario('other_register');
-              break;
+                $contact->setScenario('other_register');
+                $patient->setScenario('other_register');
+                $address->setScenario('other_register');
+                $referral->setScenario('other_register');
+                break;
             case Patient::PATIENT_SOURCE_REFERRAL:
-              $contact->setScenario('referral');
-              $patient->setScenario('referral');
-              $address->setScenario('referral');
-              $referral->setScenario('referral');
-              break;
+                $contact->setScenario('referral');
+                $patient->setScenario('referral');
+                $address->setScenario('referral');
+                $referral->setScenario('referral');
+                break;
             case Patient::PATIENT_SOURCE_SELF_REGISTER:
-              $contact->setScenario('self_register');
-              $patient->setScenario('self_register');
-              $address->setScenario('self_register');
-              $referral->setScenario('self_register');
-              break;
+                $contact->setScenario('self_register');
+                $patient->setScenario('self_register');
+                $address->setScenario('self_register');
+                $referral->setScenario('self_register');
+                break;
             default:
-              $contact->setScenario('manual');
-              $patient->setScenario('manual');
-              $address->setScenario('manual');
-              $referral->setScenario('manual');
-              break;
-          }
-
-          $this->performAjaxValidation(array($patient, $contact, $address));
-
-      if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
-        if ($_POST['changePatientSource'] == 0) {
-          list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
-            $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+                $contact->setScenario('manual');
+                $patient->setScenario('manual');
+                $address->setScenario('manual');
+                $referral->setScenario('manual');
+                break;
         }
-      }
+
+        $this->performAjaxValidation(array($patient, $contact, $address));
+
+        if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
+            if ($_POST['changePatientSource'] == 0) {
+                list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
+                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+            }
+        }
 
 
         $this->render('crud/update', array(
@@ -2036,8 +2211,9 @@ class PatientController extends BaseController
             'practiceaddress' => $practiceaddress,
             'practice' => $practice,
             'referral' => $referral,
-          'patientuserreferral' => $patient_user_referral,
-          'patient_identifiers' => $patient_identifiers,
+            'patientuserreferral' => $patient_user_referral,
+            'patient_identifiers' => $patient_identifiers,
+            'prevUrl'=>$prevUrl,
         ));
     }
 
@@ -2067,20 +2243,34 @@ class PatientController extends BaseController
         $criteria->addSearchCondition('LOWER(last_name)', '', true, 'OR');
 
         $criteria->addSearchCondition('concat(first_name, " ", last_name)', $term, true, 'OR');
-        $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', $term, true, 'OR');
+        $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', strtolower($term), true, 'OR');
 
         $gps = Gp::model()->with('contact')->findAll($criteria);
 
         $output = array();
         foreach($gps as $gp){
-            $output[] = array(
-                'label' => $gp->correspondenceName,
-                'value' => $gp->id
-            );
+            $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
+            $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
+            $practiceDetails = $gp->getAssociatedPractice($gp->id);
+            if (isset($practice_contact_associate->practice)){
+                $practiceId = $practiceDetails['id'];
+                $practice = $practice_contact_associate->practice;
+                $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+                $output[] = array(
+                    'label' => $gp->correspondenceName.$role.$practiceNameAddress,
+                    'value' => $gp->id,
+                    'practiceId' => $practiceId
+                );
+            }
+            else {
+                $output[] = array(
+                    'label' => $gp->correspondenceName.$role,
+                    'value' => $gp->id,
+                    'practiceId' => ''
+                );
+            }
         }
-
         echo CJSON::encode($output);
-
         Yii::app()->end();
     }
 
@@ -2093,14 +2283,14 @@ class PatientController extends BaseController
         $criteria->join .= '  JOIN address on contact.id = address.contact_id';
         $criteria->addCondition('( (date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW()))');
 
-        $criteria->addSearchCondition('LOWER(CONCAT_WS(", ", address1, address2, city, county, postcode))', $term);
+        $criteria->addSearchCondition('LOWER(CONCAT_WS(", ", first_name ,address1, address2, city, county, postcode))', $term);
 
         $practices = Practice::model()->findAll($criteria);
 
         $output = array();
         foreach($practices as $practice){
             $output[] = array(
-                'label' => $practice->getAddressLines(),
+                'label' => $practice->getPracticeNames(),
                 'value' => $practice->id
             );
         }
@@ -2122,31 +2312,48 @@ class PatientController extends BaseController
         $this->getApp()->end();
     }
 
-  public function actionFindDuplicates($firstName, $last_name, $dob, $id = null)
-  {
-    $patients = Patient::findDuplicates($firstName, $last_name, $dob, $id);
+    public function actionFindDuplicates($firstName, $last_name, $dob, $id = null)
+    {
+        $patients = Patient::findDuplicates($firstName, $last_name, $dob, $id);
 
-    if (isset($patients['error'])) {
-      $this->renderPartial('crud/_conflicts_error', array(
-        'errors' => $patients['error'],
-      ));
+        if (isset($patients['error'])) {
+            $this->renderPartial('crud/_conflicts_error', array(
+                'errors' => $patients['error'],
+            ));
 
+        }
+        else {
+            if (count($patients) !== 0) {
+                $this->renderPartial('crud/_conflicts', array(
+                    'patients' => $patients,
+                    'name' => $firstName . ' ' . $last_name
+                ));
+            }
+            else {
+                $this->renderPartial('crud/_conflicts', array(
+                    'name' => $firstName . ' ' . $last_name
+                ));
+            }
+        }
     }
-    else {
-      if (count($patients) !== 0) {
-        $this->renderPartial('crud/_conflicts', array(
-          'patients' => $patients,
-          'name' => $firstName . ' ' . $last_name
-        ));
-      }
-      else {
-        $this->renderPartial('crud/_conflicts', array(
-          'name' => $firstName . ' ' . $last_name
-        ));
-      }
-    }
+
+  public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null){
+
+        $patients = Patient::findDuplicatesByIdentifier($identifier_code, $identifier_value, $id);
+
+        if (isset($patients['error'])){
+            $this->renderPartial('crud/_conflicts_error', array(
+                'errors' => $patients['error'],
+            ));
+        } else {
+            if (count($patients) !== 0) {
+                $this->renderPartial('crud/_conflicts_identifier', array(
+                    'patients' => $patients,
+                    'identifier_code' => $identifier_code,
+                ));
+            }
+        }
   }
-
 
     /**
      * Ajax method for viewing previous elements.
@@ -2199,6 +2406,9 @@ class PatientController extends BaseController
      */
     public function actionPerformReferralDoc($patient, $referral)
     {
+        // To get allowed file types from the model
+        $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
+
         $firm_id = Yii::app()->session['selected_firm_id'];
         //Get or Create an episode
         list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm_id);
@@ -2208,6 +2418,7 @@ class PatientController extends BaseController
         $event->episode_id = $episode->id;
         $event->firm_id = $firm_id;
         $event->event_type_id = EventType::model()->findByAttributes(array('name' => 'Document'))->id;
+        $event->event_date = date('Y-m-d');
         $referral_letter_type_id = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Referral Letter'))->id;
 
         if (!$event->save()) {
@@ -2218,12 +2429,19 @@ class PatientController extends BaseController
         foreach ($_FILES as $file) {
             $tmp_name = $file["tmp_name"]["uploadedFile"];
 
+
             //If no document is selected this can throw errors
             if ($tmp_name == '') {
                 continue;
             }
             $p_file = ProtectedFile::createFromFile($tmp_name);
             $p_file->name = $file["name"]["uploadedFile"];
+
+            if(!in_array($p_file->mimetype,$allowed_file_types) ) {
+                $message = 'Only the following file types can be uploaded: ' . ( implode(', ', $allowed_file_types) ) . '.';
+                $referral->addError('uploadedFile', $message);
+            }
+
             if ($p_file->save()) {
                 unlink($tmp_name);
                 $document = new Element_OphCoDocument_Document();
@@ -2247,16 +2465,7 @@ class PatientController extends BaseController
             $patient_source = $_POST['Patient']['patient_source'];
             if($patient_source == Patient::PATIENT_SOURCE_REFERRAL){
                 //If there is no existing referral letter document, add an error
-                $command = Yii::app()->db->createCommand()->setText("
-                    select count(*) 'referral letters'
-                    from patient p
-                    join episode e on p.id = e.patient_id
-                    join event e2 on e.id = e2.episode_id
-                    join et_ophcodocument_document d on d.event_id = e2.id
-                      and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
-                    where p.id = $patient->id;"
-                );
-                if ($command->queryScalar() == 0){
+                if ($this->checkExistingReferralLetter($patient)){
                     $referral->addError('uploadedFile', 'Referral requires a letter file');
                 }
             }
@@ -2269,6 +2478,48 @@ class PatientController extends BaseController
         }
         return !$referral->hasErrors();
     }
+
+    public function checkForReferralFiles($referral, $patient){
+
+        // To get allowed file types from the model
+        $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
+
+        // To get maximum file size that can be uploaded from the model
+        $max_document_size = Helper::return_bytes(ini_get('upload_max_filesize'));
+
+        foreach ($_FILES as $file) {
+            $name = $file["name"]["uploadedFile"];
+            $size = $file["size"]["uploadedFile"];
+            $type = $file["type"]["uploadedFile"];
+
+
+            //Check only if document has been added
+            if ($name != '') {
+
+                // PHP automatically discards the files that exceed the maximum file upload limit.
+                // So when the size parameter is 0 and the name is not null, it means the file size is large
+                if ($size == 0) {
+                    $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . $max_document_size / 1048576 . " MB ";
+                    $referral->addError('uploadedFile', $message);
+                    return false;
+                }
+
+                // Check for compatible file types
+                else if (!in_array($type, $allowed_file_types)) {
+                    $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
+                    $referral->addError('uploadedFile', $message);
+                    return false;
+                }
+            }
+            // The file field is empty. It should throw error for referral scenario
+            else if($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
+                $referral->addError('uploadedFile', 'Referral requires a letter file');
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     /**
      * @param Patient $patient
@@ -2291,6 +2542,26 @@ class PatientController extends BaseController
             }
         }
         return [$episode, $episode_is_new];
+    }
+
+    /**
+     * @param $patient
+     * @return bool any existing referral letter for this patient will return false
+     */
+    protected function checkExistingReferralLetter($patient){
+        if (!isset($patient->id)){
+            return true;
+        }
+        $command = Yii::app()->db->createCommand()->setText("
+                    select count(*) 'referral letters'
+                    from patient p
+                    join episode e on p.id = e.patient_id
+                    join event e2 on e.id = e2.episode_id
+                    join et_ophcodocument_document d on d.event_id = e2.id
+                      and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
+                    where e2.deleted = 0 and p.id = $patient->id;"
+        );
+        return ($command->queryScalar() == 0);
     }
 
 }

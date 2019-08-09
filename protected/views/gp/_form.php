@@ -54,7 +54,7 @@
         </tr>
         <tr>
             <td>
-                <?php echo $form->labelEx($model, 'Role'); ?>
+                <label><?php echo $model->getAttributeLabel('Role'); ?> <span class="required">*</span></label>
             </td>
             <td>
                 <?php echo $form->error($model, 'contact_label_id'); ?>
@@ -65,9 +65,9 @@
             <td></td>
             <td>
                 <div>
-                              <span class="js-name">
-                                <?php echo isset($model->label) ? $model->label->name : ''; ?>
-                              </span>
+                    <span class="js-name">
+                        <?php echo isset($model->label) ? $model->label->name : ''; ?>
+                    </span>
                     <?php echo CHtml::hiddenField('Contact[contact_label_id]'
                         , $model->contact_label_id, array('class' => 'hidden_id')); ?>
                 </div>
@@ -86,29 +86,8 @@
         </tr>
         <tr>
             <td colspan="2" class="align-right">
-                <?php if ($context !== 'AJAX') {
+                <?php
                     echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save');
-                } else {
-                    echo CHtml::ajaxButton('Add',
-                        Yii::app()->controller->createUrl('gp/create', array('context' => 'AJAX')),
-                        array(
-                            'type' => 'POST',
-                            'error' => 'js:function(error){
-                 new OpenEyes.UI.Dialog.Alert({
-                 content: "First name and Last name cannot be blank."
-                }).open();
-              }',
-                            'success' => 'js:function(event){
-                 removeSelectedGP();
-                 addGpItem("selected_gp_wrapper",event);
-                 $("#gpdialog").closest(".ui-dialog-content").dialog("close");
-              }',
-                            'complete' => 'js:function(){
-                  $("#gp_form")[0].reset();
-            }',
-                        )
-                    );
-                }
                 ?>
             </td>
         </tr>

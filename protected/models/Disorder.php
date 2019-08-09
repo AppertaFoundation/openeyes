@@ -25,6 +25,8 @@
  * @property string $fully_specified_name
  * @property string $term
  * @property int $systemic
+ * @property string $aliases
+ * @property int $specialty_id
  *
  * The followings are the available model relations:
  * @property CommonOphthalmicDisorder[] $commonOphthalmicDisorders
@@ -85,13 +87,13 @@ class Disorder extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('id, fully_specified_name, term', 'required'),
+            array('fully_specified_name, term', 'required'),
             array('id', 'length', 'max' => 10),
             array('id', 'checkDisorderExists'),
-            array('fully_specified_name, term', 'length', 'max' => 255),
+            array('fully_specified_name, term , aliases , specialty_id', 'length', 'max' => 255),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, fully_specified_name, term, systemic', 'safe', 'on' => 'search'),
+            array('id, fully_specified_name, term, systemic , aliases', 'safe', 'on' => 'search'),
         );
     }
 
@@ -141,6 +143,7 @@ class Disorder extends BaseActiveRecordVersioned
             'fully_specified_name' => 'Fully Specified Name',
             'term' => 'Term',
             'systemic' => 'Systemic',
+            'aliases' => 'Aliases'
         );
     }
 
@@ -157,8 +160,8 @@ class Disorder extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('fully_specified_name', $this->fully_specified_name, true);
-        $criteria->compare('term', $this->term, true);
+        $criteria->compare('lower(fully_specified_name)', strtolower($this->fully_specified_name), true);
+        $criteria->compare('lower(term)', strtolower($this->term), true);
 
         return new CActiveDataProvider(get_class($this), array('criteria' => $criteria));
     }

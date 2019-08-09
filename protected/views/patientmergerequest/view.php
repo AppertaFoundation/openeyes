@@ -17,50 +17,53 @@
  */
 ?>
 
-<div id="patientMergeWrapper" class="container content">
+<div id="patientMergeWrapper" class="main-event container">
     <?php $this->renderPartial('//base/_messages') ?>
-  <div class="cols-4 column large-centered text-right large-offset-8">
-    <section class="box dashboard">
-        <?php
-        echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'),
-                array('class' => 'button small')) . ' ';
-        echo CHtml::link('edit', array('patientMergeRequest/update', 'id' => $model->id),
-            array('class' => 'button small secondary'));
-        if (Yii::app()->user->checkAccess('Patient Merge')) {
-            echo ' ' . CHtml::link('merge', array('patientMergeRequest/merge', 'id' => $model->id),
-                    array('class' => 'button small warning '));
-        }
-        ?>
-    </section>
+  <div class="element-fields full-width flex-layout flex-top col-gap element">
+      <div class="cols-3">
+          <section class="box dashboard">
+              <?php
+              echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'),
+                      array('class' => 'button small')) . ' ';
+              echo CHtml::link('edit', array('patientMergeRequest/update', 'id' => $model->id),
+                  array('class' => 'button small secondary'));
+              if (Yii::app()->user->checkAccess('Patient Merge')) {
+                  echo ' ' . CHtml::link('merge', array('patientMergeRequest/merge', 'id' => $model->id),
+                          array('class' => 'button small warning '));
+              }
+              ?>
+          </section>
+      </div>
   </div>
 
   <form id="grid_header_form"
+        class="element-fields full-width col-gap"
         action="<?php echo Yii::app()->createUrl('/patientMergeRequest/merge', array('id' => $model->id)) ?>"
         method="post">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
       <?=\CHtml::activeHiddenField($model, 'id') ?>
-    <div class="data-group">
-      <div class="cols-5 column">
+    <div class="cols-12 flex-layout">
+      <div class="cols-5">
         <h2 class="secondaryPatient">Secondary</h2>
           <?php $this->renderPartial('//patientmergerequest/_patient_details',
               array('model' => $model, 'type' => 'secondary')) ?>
       </div>
 
-      <div class="cols-2 column text-center">
+      <div class="cols-2" style="text-align: center">
         <h2>INTO</h2>
         <img class="into-arrow"
              src="<?= Yii::app()->assetManager->createUrl('img/_elements/graphic/right-black-arrow_128_30.png') ?>"
              alt="OpenEyes logo"/>
       </div>
 
-      <div class="cols-5 column">
+      <div class="cols-5">
         <h2 class="primaryPatient">Primary</h2>
           <?php $this->renderPartial('//patientmergerequest/_patient_details',
               array('model' => $model, 'type' => 'primary')) ?>
       </div>
     </div>
     <hr>
-    <div class="cols-5 column">Comment:
+    <div class="cols-5">Comment:
         <?=\CHtml::activeTextArea($model, 'comment', array('disabled' => 'disabled')); ?>
     </div>
     <br>

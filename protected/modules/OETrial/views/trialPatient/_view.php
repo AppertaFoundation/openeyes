@@ -58,8 +58,8 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
               )
           ) ?>
         <div class="js-external-trial-identifier-actions" style="display: none;">
-          <a class="js-save-external-trial-identifier">Save</a>
-          <a class="js-cancel-external-trial-identifier">Cancel</a>
+          <a class="js-save-external-trial-identifier button">Save</a>
+          <a class="js-cancel-external-trial-identifier button">Cancel</a>
           <span class="js-spinner-as-icon" style="display: none;"><i class="spinner as-icon"></i></span>
         </div>
           <?php
@@ -100,7 +100,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
 
     <td> <!-- Comment -->
         <div class="add-data-actions">
-            <button id="trial_patient_comment_button" type="button">
+            <button id="trial_patient_comment_button" type="button" <?php if($data->comment != null) echo 'class="hint green"'; ?> >
                 <i class="oe-i comments small-icon"></i>
             </button>
         </div>

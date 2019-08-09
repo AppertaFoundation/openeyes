@@ -246,6 +246,7 @@ class AdminController extends BaseAdminController
 
     public function actionManageFindings()
     {
+        $this->group = 'Disorders';
         if (Yii::app()->request->isPostRequest) {
             $findings = Yii::app()->request->getParam('Finding', []);
             $subspecialities_ids = Yii::app()->request->getParam('subspecialty-ids', []);
@@ -673,7 +674,7 @@ class AdminController extends BaseAdminController
                     throw new Exception('Unable to save contact: ' . print_r($contact->getErrors(), true));
                 }
                 Audit::add('admin-Contact', 'edit', $contact->id);
-                $this->redirect('/admin/contacts?q=' . $contact->fullName);
+                $this->redirect('/admin/contacts');
             }
         } else {
             Audit::add('admin-Contact', 'view', $id);
@@ -940,7 +941,6 @@ class AdminController extends BaseAdminController
          */
 
         $contact->nick_name = 'NULL';
-        $contact->primary_phone = 'NULL';
         $contact->title = null;
         $contact->first_name = '';
         $contact->last_name = '';

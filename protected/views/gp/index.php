@@ -2,6 +2,8 @@
 /* @var GpController $this */
 /* @var CActiveDataProvider $dataProvider */
 /* @var string $search_term */
+$dataProvider->getPagination()->setPageSize(30);
+
 $dataProvided = $dataProvider->getData();
 $this->pageTitle = 'Practitioners';
 $items_per_page = $dataProvider->getPagination()->getPageSize();
@@ -14,27 +16,35 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
         <div class="title wordcaps">
             <b>Practitioner</b>
         </div>
-
     </div>
-    <div class="oe-full-content oe-new-patient flex-layout flex-top">
-        <div class="cols-6">
-            <h2>
-                Practitioners: viewing <?php echo $from ?> - <?php echo $to ?>
-                of <?php echo $dataProvider->totalItemCount ?>
-            </h2>
 
-            <div class="large-4 column">
-                <?php $form = $this->beginWidget('CActiveForm', array(
-                    'id' => 'practitioner-search-form',
-                    'method' => 'get',
-                    'action' => Yii::app()->createUrl('/gp'),
-                )); ?>
-                <?php echo CHtml::textField('search_term', $search_term,
-                    array('placeholder' => 'Enter search query...')); ?>
-                <?php $this->endWidget(); ?>
+    <div class="oe-full-content flex-top">
+        <div class="flex-layout oe-new-patient">
+            <div class="cols-3">
+                <h2>
+                    Practitioners: viewing <?php echo $from ?> - <?php echo $to ?>
+                    of <?php echo $dataProvider->totalItemCount ?>
+                </h2>
+                <div>
+                    <?php $form = $this->beginWidget('CActiveForm', array(
+                        'id' => 'practitioner-search-form',
+                        'method' => 'get',
+                        'action' => Yii::app()->createUrl('/gp'),
+                    )); ?>
+                    <?php echo CHtml::textField('search_term', $search_term,
+                        array('placeholder' => 'Enter search query...')); ?>
+                    <?php $this->endWidget(); ?>
+                </div>
             </div>
+            <?php if (Yii::app()->user->checkAccess('TaskCreateGp')): ?>
+                <div class="cols-4 column end">
+                        <p><?php echo CHtml::link('Create Practitioner', $this->createUrl('/gp/create')); ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
-        <table id="gp-grid" class="standard">
+
+        <table id="gp-grid" class="standard" >
             <thead>
             <tr>
                 <th>Name</th>
@@ -70,17 +80,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
             </tr>
             </tfoot>
         </table>
-        <?php if (Yii::app()->user->checkAccess('TaskCreateGp')): ?>
-            <div class="large-4 column end">
-                <div class="row">
-                    <div class="large-12 column end">
-                        <div class="box generic">
-                            <p><?php echo CHtml::link('Create Practitioner', $this->createUrl('/gp/create')); ?></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
+
     </div>
 
 </div>

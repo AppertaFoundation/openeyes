@@ -64,7 +64,7 @@ $specialties = Specialty::model()->findAll();
                 <?php echo $form->labelEx($model,'active'); ?>
             </td>
             <td>
-                <?php echo $form->checkBox($model,'active',array('checked'=>'checked')); ?>
+                <?php echo $form->checkBox($model,'active',array('checked'=> ($model->active)? "checked":"")); ?>
                 <?php echo $form->error($model,'active'); ?>
             </td>
         </tr>

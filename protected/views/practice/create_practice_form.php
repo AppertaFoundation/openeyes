@@ -37,7 +37,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                         <?php echo $form->labelEx($contact, 'first_name'); ?>
                     </td>
                     <td>
-                        <?php echo $form->textField($contact, 'first_name', array('size' => 15, 'maxlength' => 20)); ?>
+                        <?php echo $form->textArea($contact, 'first_name', array('size' => 50, 'maxlength' => 300)); ?>
                         <?php echo $form->error($contact, 'first_name'); ?>
                     </td>
                 </tr>
@@ -60,7 +60,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                     </td>
                 </tr>
                 <tr>
-                    <?php $this->renderPartial('../patient/_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
+                    <?php $this->renderPartial('../practice/_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
                 </tr>
                 <tr>
                     <td colspan="2" class="align-right">
@@ -75,12 +75,14 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                                      $("#practice-alert-box").css("display","");
                                     }else{
                                removeSelectedPractice();
-                               addGpItem("selected_practice_wrapper",event);
+                               addGpItem("practice",event);
                                $("#practice-form")[0].reset();
                                 $("#js-add-practice-event").css("display","none");
+                                $("#practice-alert-box").css("display","none");
                                 }
                           }',
-                            ]
+                            ],
+                            array('class' => 'button hint green')
                         );
                         ?>
                     </td>

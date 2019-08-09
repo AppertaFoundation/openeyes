@@ -77,8 +77,10 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
             'name');
 
         ?>
-        <div class="flex-layout flex-left flex-top">
+      <div class="flex-layout flex-left js-case-search-param">
+        <div class="parameter-option">
             <?= $this->getDisplayTitle() ?>
+        </div>
             <span class="parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]side", $sides, array('empty' => 'Any side')); ?>
             </span>

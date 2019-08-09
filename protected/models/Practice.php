@@ -80,8 +80,6 @@ class Practice extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('code', 'required'),
-            array('code','required','on' => 'manage_practice'),
             array('phone, contact_id, code', 'safe'),
             array('id, code', 'safe', 'on' => 'search'),
         );
@@ -185,12 +183,29 @@ class Practice extends BaseActiveRecordVersioned
     
     public function getAddressLines()
     {
-        if( isset($this->contact->address ) ){
-            return "{$this->contact->address->address1}, {$this->contact->address->address2}, "
-                            . "{$this->contact->address->city}, {$this->contact->address->county}, {$this->contact->address->postcode}";
+        if( isset($this->contact->address) ){
+            $address1 = $this->contact->address->address1 ? $this->contact->address->address1.", " : '';
+            $address2 = $this->contact->address->address2 ? $this->contact->address->address2.", " : '';
+            $city = $this->contact->address->city ? $this->contact->address->city.", " : '';
+            $county = $this->contact->address->county ? $this->contact->address->county.", " : '';
+            $postcode = $this->contact->address->postcode ? $this->contact->address->postcode.", " : '';
+            $country = $this->contact->address->country->name ? $this->contact->address->country->name : '';
+            return $address1 . $address2 . $city . $county . $postcode . $country . '.';
         } else {
             return '';
         }
+    }
+
+    public function getPracticeNames()
+    {
+        $name = $this->contact->getCorrespondenceName() ? $this->contact->getCorrespondenceName()." - " : '';
+        $address1 = $this->contact->address->address1 ? $this->contact->address->address1 . ", " : '';
+        $address2 = $this->contact->address->address2 ? $this->contact->address->address2 . ", " : '';
+        $city = $this->contact->address->city ? $this->contact->address->city . ", " : '';
+        $county = $this->contact->address->county ? $this->contact->address->county . ", " : '';
+        $postcode = $this->contact->address->postcode ? $this->contact->address->postcode . ", " : '';
+        $country = $this->contact->address->country->name ? $this->contact->address->country->name : '';
+        return $name . $address1 . $address2 . $city . $county . $postcode . $country . '.';
     }
 
     /**

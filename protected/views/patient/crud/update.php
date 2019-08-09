@@ -16,4 +16,5 @@
     'referral' => $referral,
     'patientuserreferral' => $patientuserreferral,
     'patient_identifiers' => $patient_identifiers,
+    'prevUrl'=>$prevUrl,
 )); ?>

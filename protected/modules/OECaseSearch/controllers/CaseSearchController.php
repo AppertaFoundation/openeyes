@@ -7,6 +7,8 @@ class CaseSearchController extends BaseModuleController
      */
     public $trialContext;
 
+    public $resultOrder;
+
     public function filters()
     {
         return array(
@@ -37,7 +39,11 @@ class CaseSearchController extends BaseModuleController
         $parameters = array();
         $auditValues = array();
         $fixedParameters = $this->module->getFixedParams();
+        $parameterList = array();
         $ids = array();
+        $pagination = array(
+            'pageSize' => 10,
+        );
         if (isset($_SESSION['last_search'])) {
             $ids = $_SESSION['last_search'];
         }
@@ -48,10 +54,11 @@ class CaseSearchController extends BaseModuleController
         }
 
         $criteria = new CDbCriteria();
-
+        $this->resultOrder = '';
         foreach ($this->module->getConfigParam('parameters') as $group) {
             foreach ($group as $parameter) {
                 $paramName = $parameter . 'Parameter';
+                array_push($parameterList,$paramName);
                 if (isset($_POST[$paramName])) {
                     foreach ($_POST[$paramName] as $id => $param) {
                         $newParam = new $paramName;
@@ -64,7 +71,6 @@ class CaseSearchController extends BaseModuleController
                 }
             }
         }
-
         foreach ($fixedParameters as $parameter) {
             if (isset($_POST[get_class($parameter)])) {
                 foreach ($_POST[get_class($parameter)] as $id => $param) {
@@ -107,29 +113,52 @@ class CaseSearchController extends BaseModuleController
             if (!isset($_SESSION['last_search']) || empty($_SESSION['last_search'])) {
                 $_SESSION['last_search'] = $ids;
             }
+            $_SESSION['last_search_params'] = $parameters;
+            $pagination['currentPage'] = 0;
+        }
+
+        if (isset($_SESSION['last_search_params'])){
+            foreach ($_SESSION['last_search_params'] as $key => $param) {
+                if ($param->name == "patient_name"){
+                    if (!empty($this->resultOrder)){
+                        $this->resultOrder .= ',';
+                    }
+                    $this->resultOrder .= '(levenshtein_ratio(last_name, \''.$param->patient_name.'\')+levenshtein_ratio(first_name, \''.$param->patient_name.'\'))';
+                }
+            }
         }
 
         // If there are no IDs found, pass -1 as the value (as this will not match with anything).
         $criteria->compare('t.id', empty($ids) ? -1 : $ids);
         $criteria->with = 'contact';
-        $criteria->order = 'last_name, first_name';
+        if ($this->resultOrder == ''){
+            $this->resultOrder = 'last_name, first_name';
+        }
+        $criteria->order = $this->resultOrder.' DESC';
         $criteria->compare('t.deleted', 0);
 
         // A data provider is used here to allow faster search times. Results are iterated through using the data provider's pagination functionality and the CListView widget's pager.
         $patientData = new CActiveDataProvider('Patient', array(
             'criteria' => $criteria,
             'totalItemCount' => count($ids),
-            'pagination' => array(
-                'pageSize' => 10,
-            ),
+            'pagination' => $pagination,
         ));
+
 
         // Get the list of parameter types for display on-screen.
         $paramList = $this->module->getParamList();
+        if (isset($_SESSION['last_search_params']) && !empty($_SESSION['last_search_params'])){
+            foreach ($_SESSION['last_search_params'] as $key => $last_search_param){
+                $last_search_param_name = get_class($last_search_param);
+                if (!in_array($last_search_param_name,$parameterList)){
+                    unset($_SESSION['last_search_params'][$key]);
+                }
+            }
+        }
 
         $this->render('index', array(
             'paramList' => $paramList,
-            'params' => $parameters,
+            'params' => (empty($parameters) && isset($_SESSION['last_search_params']))?  $_SESSION['last_search_params']:$parameters,
             'fixedParams' => $fixedParameters,
             'patients' => $patientData,
         ));
@@ -157,6 +186,7 @@ class CaseSearchController extends BaseModuleController
     public function actionClear()
     {
         unset($_SESSION['last_search']);
+        unset($_SESSION['last_search_params']);
     }
 
     public function beforeAction($action)

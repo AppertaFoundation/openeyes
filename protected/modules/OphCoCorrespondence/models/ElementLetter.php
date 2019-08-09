@@ -70,8 +70,8 @@ class ElementLetter extends BaseEventTypeElement
             array('to_subspecialty_id', 'internalReferralServiceValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
-            array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
-            array('use_nickname', 'required'),
+            array('date, introduction, body, footer', 'requiredIfNotDraft'),
+            array('use_nickname , site_id', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
@@ -125,6 +125,7 @@ class ElementLetter extends BaseEventTypeElement
             'to_firm_id' => 'To Consultant',
             'is_urgent' => 'Urgent',
             'is_same_condition' => '',
+            'site_id' => 'Site',
         );
     }
 
@@ -298,7 +299,7 @@ class ElementLetter extends BaseEventTypeElement
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' ('.Yii::app()->params['gp_label'].')';
+                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' ('.((isset($patient->gp->contact->label))? $patient->gp->contact->label->name : Yii::app()->params['gp_label']).')';
             } else {
                 $options['Gp'.$patient->gp_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
             }
@@ -369,6 +370,17 @@ class ElementLetter extends BaseEventTypeElement
                     $options['Contact'.$pca->contact_id] .= ', '.$pca->contact->address->address1.')';
                 } else {
                     $options['Contact'.$pca->contact_id] .= ') - NO ADDRESS';
+                }
+            }
+        }
+
+        $pcassocitates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+        if (isset($pcassocitates) && Yii::app()->params['institution_code']=='CERA'){
+            foreach ($pcassocitates as $pcassocitate){
+                $gp = $pcassocitate->gp;
+                $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
+                if (isset($cpa->practice) && !empty($cpa->practice->getAddressLines())){
+                    $options['ContactPracticeAssociate'.$cpa->id] = $gp->contact->fullname.' ('.((isset($gp->contact->label))? $gp->contact->label->name : Yii::app()->params['gp_label']).')';
                 }
             }
         }

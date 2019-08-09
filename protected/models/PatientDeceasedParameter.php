@@ -65,13 +65,14 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
      */
     public function query($searchProvider)
     {
+        $op = '=';
         switch ($this->operation)
         {
             case '0':
                 return 'SELECT id FROM patient WHERE NOT(is_deceased)';
                 break;
             case '1':
-                return 'SELECT id FROM patient';
+                return 'SELECT id FROM patient WHERE is_deceased'. $op .$this->operation;
                 break;
             default:
                 throw new CHttpException(400, "Invalid value specified: $this->operation");

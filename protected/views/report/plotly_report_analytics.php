@@ -23,6 +23,7 @@
     layout['plot_bgcolor'] = '#101925';
     layout['width'] = '1460';
     layout['height'] = '800';
+    layout['xaxis']['rangemode'] = 'tozero';
     layout['xaxis']['linecolor'] = '#fff';
     layout['yaxis']['linecolor'] = '#fff';
     if (layout['yaxis']['showgrid']){

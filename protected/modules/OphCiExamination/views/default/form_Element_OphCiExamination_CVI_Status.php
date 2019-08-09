@@ -30,7 +30,7 @@
         </td>
         <td>
           <input id= "<?= CHtml::modelName($element) . '_element_date_0'?>"
-                 placeholder="dd Mmm yyyy"
+                 placeholder="dd MMM yyyy"
                  name="<?= CHtml::modelName($element) . '[element_date]' ?>"
                  value="<?= isset($element->element_date) ? $element->getFormatedDate() : $last_cvi_date ?>"
                  autocomplete="off"/>

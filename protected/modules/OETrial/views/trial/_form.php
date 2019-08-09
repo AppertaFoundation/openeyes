@@ -96,6 +96,7 @@
                       'nowrapper' => true,
                   ),
                   'value' => $trial->closed_date,
+                  'htmlOptions'=>array('null'=>'null'),
               ))
               ?>
 
