@@ -24,7 +24,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'enableAjaxValidation' => false,
 ));
 
-$form_format = SettingMetadata::model()->getSetting('prescription_form_format');
+$settings = new SettingMetadata();
+$form_format = $settings->getSetting('prescription_form_format');
 
 // Event actions
 $this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'primary'), array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id));

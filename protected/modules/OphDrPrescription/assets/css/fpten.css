@@ -38,7 +38,7 @@ body {
     float: left;
 }
 
-#fpten-trust-code {
+#fpten-registration-code {
     padding-top: 2mm;
     font-size: 12pt;
     font-weight: initial;
@@ -172,7 +172,6 @@ body {
 
 /*Appears beneath the prescriber.*/
 #fpten-prescription-list, #wpten-prescription-list {
-    /*padding-right: 5mm;*/
     padding-left: 2mm;
     padding-top: 1mm;
     height: 64mm;
@@ -182,12 +181,13 @@ body {
 }
 
 #fpten-prescription-list {
-	height: 57mm;
+	height: 60mm;
 	width: 57mm;
 }
 
 .fpten-prescription-item {
     padding-top: 2mm;
+    padding-bottom: 2mm;
     border-bottom: 1px solid;
 }
 

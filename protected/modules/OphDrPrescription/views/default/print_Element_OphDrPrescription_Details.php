@@ -47,7 +47,8 @@ if (isset($data['print_mode'])) {
     }
 }
 
-$default_cost_code = SettingMetadata::model()->getSetting('default_prescription_code_code');
+$settings = new SettingMetadata();
+$default_cost_code = $settings->getSetting('default_prescription_code_code');
 
 ?>
 
@@ -280,28 +281,25 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                                             }
                                             ?>
                                             <div class="fpten-prescription-item">
-                                                <?= $item->drug->label ?>
+                                                <?= $item->drug->label ?>, <?=$item->route->name ?><?php if ($item->route_option) {
+																								echo ' (' . $item->route_option->name . ')';
+																							} ?>
                                                 <br/>
                                                 Dose: <?= is_numeric($item->dose) ? ($item->dose . ' ' . $item->drug->dose_unit) : $item->dose?>
                                                 <br/>
-                                                Frequency: <?= $item->frequency->long_name ?>
-                                                <br/>
-                                                Duration: <?= $item->duration->name?>
-                                                <br/>
+                                                Frequency: <?= $item->frequency->long_name ?> for <?= $item->duration->name?>
 
                                                                                             <?php
                                                                                             foreach ($item->tapers as $taper) : ?>
-                                                                                            then<br/>
+                                                                                            <br/>then<br/>
                                                                                                 Dose: <?=is_numeric($taper->dose) ? ($taper->dose . ' ' . $item->drug->dose_unit) : $taper->dose ?><br/>
-                                                                                            Frequency: <?= $taper->frequency->long_name ?><br/>
-                                                                                            Duration: <?= $taper->duration->name?> <br/-->
+                                                                                            Frequency: <?= $taper->frequency->long_name ?> for <?= $taper->duration->name?>
                                                                                                 <?php
-                                                                                                $prescription_lines_used += 4;
+                                                                                                $prescription_lines_used += 3;
                                                                                             endforeach; ?>
-                                                                                            <br/>
                                             </div>
                                             <?php
-                                                                                    $prescription_lines_used += 4; // In reality this could be many more due to wrapping, but this will cater for single-line scenarios. The CSS overflow override will handle extras.
+                                                                                    $prescription_lines_used += 3; // In reality this could be many more due to wrapping, but this will cater for single-line scenarios. The CSS overflow override will handle extras.
                                         endforeach;
                                     endif;
                                 endforeach; ?>
@@ -319,7 +317,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                 </div>
             <div class="fpten-form-row">
                 <div id="<?= $form_css_class ?>-doctor-name" class="fpten-form-column">
-                    <?= $this->event->usermodified->getFullNameAndTitle() ?>
+
                 </div>
             </div>
             <div class="fpten-form-row">
@@ -329,6 +327,8 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
             </div>
             <div class="fpten-form-row">
                 <div id="<?= $form_css_class ?>-site" class="fpten-form-column">
+									  <?= $this->event->usermodified->getFullNameAndTitle() ?>
+									  <br/>
                     <?= $this->site->name ?>
                     <br/>
                     <?= $this->site->contact->address->address1 ?>
@@ -346,7 +346,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                 </div>
                 <?php if ($side === 'left') : ?>
                     <div id="<?= $form_css_class ?>-site-code" class="fpten-form-column">
-                        <span id="fpten-trust-code"><?=  preg_replace('/\D/', '', $element->usermodified->registration_code) ?></span>
+                        <span id="fpten-registration-code"><?=  str_replace('GMC', '', $element->usermodified->registration_code) ?></span>
                                             <br/>
                                             <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
                                             <br/>
@@ -354,6 +354,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                                             <br/>
                                             <br/>
                                                                   <br/>
+											<br/>
                                             <?= $this->firm->cost_code ?: $default_cost_code ?>
                     </div>
                     <span class="fpten-form-column fpten-prescriber-code">HP</span>

@@ -21,7 +21,8 @@ global $reason_other_text;
 
 <?php
 $form_id = 'prescription-update';
-$form_format = SettingMetadata::model()->getSetting('prescription_form_format');
+$settings = new SettingMetadata();
+$form_format = $settings->getSetting('prescription_form_format');
 $this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
 
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(

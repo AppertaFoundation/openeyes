@@ -17,7 +17,8 @@
  */
 
 $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array($this->event->id));
-$form_format = SettingMetadata::model()->getSetting('prescription_form_format');
+$settings = new SettingMetadata();
+$form_format = $settings->getSetting('prescription_form_format');
 $form_option = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'));
 
 ?>
