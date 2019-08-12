@@ -4,7 +4,7 @@
   "require": {
     "yiisoft/yii": "1.1.21",
     "rlanvin/php-rrule": "1.2.0",
-    "endroid/qrcode": "^1.7",
+    "endroid/qr-code": "^1.7",
     "setasign/fpdi-fpdf": "1.6.1",
     "xthiago/pdf-version-converter": "dev-master"
   },
