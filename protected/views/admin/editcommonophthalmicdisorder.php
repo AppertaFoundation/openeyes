@@ -228,10 +228,10 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             e.preventDefault();
 
             let warnings = false;
-            let rows = $('table.generic-admin tr');
-            for (let i = 0; i < rows.length; i++) {
-                let input = $(rows[i]).find('.finding-search-autocomplete.finding-search-inputfield.ui-autocomplete-input');
-                if (input.val() && input.val().length && $(input).is(":visible")) {
+            let $rows = $('table.generic-admin tr');
+            for (let i = 0; i < $rows.length; i++) {
+                let input = $($rows[i]).find('.finding-search-autocomplete.finding-search-inputfield.ui-autocomplete-input');
+                if (input.val() && $(input).is(":visible")) {
                     $(input).addClass('highlighted-error error');
                     warnings = true;
                 }
