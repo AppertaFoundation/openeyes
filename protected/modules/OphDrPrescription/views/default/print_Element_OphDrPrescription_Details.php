@@ -282,8 +282,8 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                                             ?>
                                             <div class="fpten-prescription-item">
                                                 <?= $item->drug->label ?>, <?=$item->route->name ?><?php if ($item->route_option) {
-																								echo ' (' . $item->route_option->name . ')';
-																							} ?>
+                                                                                                echo ' (' . $item->route_option->name . ')';
+                                                } ?>
                                                 <br/>
                                                 Dose: <?= is_numeric($item->dose) ? ($item->dose . ' ' . $item->drug->dose_unit) : $item->dose?>
                                                 <br/>
@@ -327,8 +327,8 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
             </div>
             <div class="fpten-form-row">
                 <div id="<?= $form_css_class ?>-site" class="fpten-form-column">
-									  <?= $this->event->usermodified->getFullNameAndTitle() ?>
-									  <br/>
+                                      <?= $this->event->usermodified->getFullNameAndTitle() ?>
+                                      <br/>
                     <?= $this->site->name ?>
                     <br/>
                     <?= $this->site->contact->address->address1 ?>
@@ -354,7 +354,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                                             <br/>
                                             <br/>
                                                                   <br/>
-											<br/>
+                                            <br/>
                                             <?= $this->firm->cost_code ?: $default_cost_code ?>
                     </div>
                     <span class="fpten-form-column fpten-prescriber-code">HP</span>
