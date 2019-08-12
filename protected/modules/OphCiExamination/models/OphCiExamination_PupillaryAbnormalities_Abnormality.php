@@ -92,4 +92,9 @@ class OphCiExamination_PupillaryAbnormalities_Abnormality extends \BaseActiveRec
                 'criteria' => $criteria,
         ));
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

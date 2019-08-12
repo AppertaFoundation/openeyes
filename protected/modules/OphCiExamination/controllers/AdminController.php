@@ -914,16 +914,6 @@ class AdminController extends \ModuleAdminController
         $this->genericAdmin('Edit Allergies', 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', ['div_wrapper_class' => 'cols-5']);
     }
 
-    /**
-     * Lists and allows editing of Pupillary Abnormality records.
-     *
-     * @throws Exception
-     */
-    public function actionPupillaryAbnormalities()
-    {
-        $this->genericAdmin('Edit Pupillary Abnormalities', 'OEModule\OphCiExamination\models\OphCiExamination_PupillaryAbnormalities_Abnormality', ['div_wrapper_class' => 'cols-5']);
-    }
-
     public function actionRisks()
     {
         $extra_fields = array(
