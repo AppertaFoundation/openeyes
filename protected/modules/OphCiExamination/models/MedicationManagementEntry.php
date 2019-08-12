@@ -160,7 +160,7 @@
 				}
 			}
 
-			return true;
+			return parent::afterValidate();
 		}
 
 		public function saveTapers()
