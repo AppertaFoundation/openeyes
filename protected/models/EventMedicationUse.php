@@ -22,8 +22,6 @@ use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property integer $duration
  * @property integer $dispense_location_id
  * @property integer $dispense_condition_id
- * @property string $start_date_string_YYYYMMDD
- * @property string $end_date_string_YYYYMMDD
  * @property string $start_date
  * @property string $end_date
  * @property string $last_modified_user_id
@@ -114,13 +112,14 @@ class EventMedicationUse extends BaseElement
 			array('dose_unit_term', 'validateDoseUnitTerm'),
 			array('usage_type', 'default', 'value' => static::getUsageType(), 'on' => 'insert'),
 			array('usage_subtype', 'default', 'value' => static::getUsageSubType(), 'on' => 'insert'),
-			array('start_date_string_YYYYMMDD, end_date_string_YYYYMMDD', 'OEFuzzyDateValidator'),
+			array('end_date', 'OEFuzzyDateValidator'),
+			array('start_date', 'OEFuzzyDateValidatorNotFuture'),
 			array('last_modified_date, created_date, event_id', 'safe'),
 			array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, start_date_string_YYYYMMDD, end_date_string_YYYYMMDD, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -151,7 +150,7 @@ class EventMedicationUse extends BaseElement
 
     public function copiedFields()
     {
-        return ['usage_type', 'usage_subtype', 'medication_id', 'start_date_string_YYYYMMDD', 'end_date_string_YYYYMMDD', 'first_prescribed_med_use_id',
+        return ['usage_type', 'usage_subtype', 'medication_id', 'start_date', 'end_date', 'first_prescribed_med_use_id',
                 'form_id', 'laterality', 'route_id', 'frequency_id', 'duration', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
                 'dose', 'copied_from_med_use_id', 'dose_unit_term'];
 	}
@@ -201,8 +200,8 @@ class EventMedicationUse extends BaseElement
 			'duration' => 'Duration',
 			'dispense_location_id' => 'Dispense Location',
 			'dispense_condition_id' => 'Dispense Condition',
-			'start_date_string_YYYYMMDD' => 'Start Date',
-			'end_date_string_YYYYMMDD' => 'End Date',
+			'start_date' => 'Start Date',
+			'end_date' => 'End Date',
 			'last_modified_user_id' => 'Last Modified User',
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
@@ -244,8 +243,8 @@ class EventMedicationUse extends BaseElement
 		$criteria->compare('duration',$this->duration);
 		$criteria->compare('dispense_location_id',$this->dispense_location_id);
 		$criteria->compare('dispense_condition_id',$this->dispense_condition_id);
-		$criteria->compare('start_date_string_YYYYMMDD',$this->start_date_string_YYYYMMDD,true);
-		$criteria->compare('end_date_string_YYYYMMDD',$this->end_date_string_YYYYMMDD,true);
+		$criteria->compare('start_date',$this->start_date,true);
+		$criteria->compare('end_date',$this->end_date,true);
 		$criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
 		$criteria->compare('last_modified_date',$this->last_modified_date,true);
 		$criteria->compare('created_user_id',$this->created_user_id,true);
@@ -311,10 +310,10 @@ class EventMedicationUse extends BaseElement
     public function getDatesDisplay()
     {
         $res = array();
-        if ($this->start_date_string_YYYYMMDD) {
+        if ($this->start_date) {
             $res[] = \Helper::formatFuzzyDate($this->start_date);
         }
-        if ($this->end_date_string_YYYYMMDD) {
+        if ($this->end_date) {
             if (count($res)) {
                 $res[] = '-';
             }
@@ -362,14 +361,14 @@ class EventMedicationUse extends BaseElement
 
     public function getStart_date()
     {
-        return is_null($this->start_date_string_YYYYMMDD) ? null : substr($this->start_date_string_YYYYMMDD, 0, 4).'-'
-                .substr($this->start_date_string_YYYYMMDD, 4, 2).'-'
-                .substr($this->start_date_string_YYYYMMDD, 6, 2);
+        return is_null($this->start_date) ? null : substr($this->start_date, 0, 4).'-'
+                .substr($this->start_date, 4, 2).'-'
+                .substr($this->start_date, 6, 2);
     }
 
     public function getStartDateDisplay()
     {
-        if ($this->start_date_string_YYYYMMDD) {
+        if ($this->start_date) {
             return \Helper::formatFuzzyDate($this->start_date);
         }
         else {
@@ -379,7 +378,7 @@ class EventMedicationUse extends BaseElement
 
     public function getStopDateDisplay()
     {
-        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date_string_YYYYMMDD) . '</div>';
+        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
     }
 
     public function getEndDateDisplay($default = "")
@@ -419,9 +418,9 @@ class EventMedicationUse extends BaseElement
 
     public function getEnd_date()
     {
-        return is_null($this->end_date_string_YYYYMMDD) ? null : substr($this->end_date_string_YYYYMMDD, 0, 4).'-'
-            .substr($this->end_date_string_YYYYMMDD, 4, 2).'-'
-            .substr($this->end_date_string_YYYYMMDD, 6, 2);
+        return is_null($this->end_date) ? null : substr($this->end_date, 0, 4).'-'
+            .substr($this->end_date, 4, 2).'-'
+            .substr($this->end_date, 6, 2);
     }
 
     /**
@@ -432,7 +431,7 @@ class EventMedicationUse extends BaseElement
 
     public function setStart_date($date)
     {
-        $this->start_date_string_YYYYMMDD = is_null($date) ? null : str_replace('-', '', $date);
+        $this->start_date = is_null($date) ? null : str_replace('-', '', $date);
         return $this;
     }
 
@@ -444,7 +443,7 @@ class EventMedicationUse extends BaseElement
 
     public function setEnd_date($date)
     {
-        $this->end_date_string_YYYYMMDD = is_null($date) ? null : str_replace('-', '', $date);
+        $this->end_date = is_null($date) ? null : str_replace('-', '', $date);
         return $this;
     }
 
@@ -544,11 +543,11 @@ class EventMedicationUse extends BaseElement
     private function clonefromPrescriptionItem($item)
     {
         $attrs = ['medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
-                  'dose', 'frequency_id', 'frequency', 'start_date_string_YYYYMMDD'];
+                  'dose', 'frequency_id', 'frequency', 'start_date'];
         foreach ($attrs as $attr) {
             $this->$attr = $item->$attr;
         }
-        if (!$this->end_date_string_YYYYMMDD) {
+        if (!$this->end_date) {
             $end_date = $item->end_date;
             $compare_date = new \DateTime();
 

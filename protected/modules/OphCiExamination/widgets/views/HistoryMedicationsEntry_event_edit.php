@@ -21,8 +21,8 @@
 
 /** @var EventMedicationUse $entry */
 
-if (isset($entry->start_date_string_YYYYMMDD) && !is_null($entry->start_date_string_YYYYMMDD)) {
-    $start_date = $entry->start_date_string_YYYYMMDD;
+if (isset($entry->start_date) && !is_null($entry->start_date)) {
+    $start_date = $entry->start_date;
 }
 else {
     $start_date = date('Ymd');
@@ -32,11 +32,11 @@ $start_sel_year = substr($start_date, 0, 4);
 $start_sel_month = substr($start_date, 4, 2);
 $start_sel_day = substr($start_date, 6, 2);
 
-if (isset($entry->end_date) && !is_null($entry->end_date_string_YYYYMMDD)) {
+if (isset($entry->end_date) && !is_null($entry->end_date)) {
 
-    $end_sel_year = substr($entry->end_date_string_YYYYMMDD, 0, 4);
-    $end_sel_month = substr($entry->end_date_string_YYYYMMDD, 4, 2);
-    $end_sel_day = substr($entry->end_date_string_YYYYMMDD, 6, 2);
+    $end_sel_year = substr($entry->end_date, 0, 4);
+    $end_sel_month = substr($entry->end_date, 4, 2);
+    $end_sel_day = substr($entry->end_date, 6, 2);
 
 } else {
     $end_sel_day = date('d');
@@ -121,7 +121,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                    data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
             <?php else: ?>
                 <input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
-                       value="<?= $entry->start_date_string_YYYYMMDD ? $entry->start_date_string_YYYYMMDD : date('Y-md') ?>"/>
+                       value="<?= $entry->start_date ? $entry->start_date : date('Y-md') ?>"/>
                 <?= Helper::convertMySQL2NHS($entry->start_date) ?>
             <?php endif; ?>
         </fieldset>
