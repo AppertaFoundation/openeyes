@@ -34,9 +34,9 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
     public function actionIndex()
     {
         $this->group = 'Examination';
-        $assetManager = Yii::app()->getAssetManager();
-        $assetManager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
-        $assetManager->registerScriptFile('/js/oeadmin/list.js');
+        $asset_Manager = Yii::app()->getAssetManager();
+        $asset_Manager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
+        $asset_Manager->registerScriptFile('/js/oeadmin/list.js');
 
         $this->render('/pupillaryabnormalities/index', [
             'model' => OphCiExamination_PupillaryAbnormalities_Abnormality::model(),

@@ -34,8 +34,6 @@ class PupillaryAbnormalityEntry extends \BaseElement
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
-    const LEFT = \Eye::LEFT;
-    const RIGHT = \Eye::RIGHT;
 
     /**
      * Returns the static model of the specified AR class.
