@@ -22,8 +22,8 @@ use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property integer $duration
  * @property integer $dispense_location_id
  * @property integer $dispense_condition_id
- * @property string $start_date
- * @property string $end_date
+ * @property Date $start_date
+ * @property Date $end_date
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
