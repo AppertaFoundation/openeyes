@@ -174,14 +174,14 @@ body {
 #fpten-prescription-list, #wpten-prescription-list {
     padding-left: 2mm;
     padding-top: 1mm;
-    height: 64mm;
+    height: 76mm;
     width: 50mm;
     margin-left: 30mm;
-		overflow: hidden;
+	overflow: hidden;
 }
 
 #fpten-prescription-list {
-	height: 60mm;
+	height: 78mm;
 	width: 57mm;
 }
 
@@ -193,19 +193,6 @@ body {
 
 .fpten-prescription-list-filler {
 	text-align: center;
-}
-
-#fpten-doctor-name, #wpten-doctor-name {
-    width: 39mm;
-    height: 12mm;
-    margin-left: 30mm;
-    line-height: 12mm;
-    text-align: center;
-}
-
-#fpten-doctor-name {
-	height: 18mm;
-	line-height: 18mm;
 }
 
 /*Appears directly above the Trust code in the site box.*/

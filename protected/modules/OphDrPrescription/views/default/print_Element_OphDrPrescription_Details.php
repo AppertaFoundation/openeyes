@@ -18,7 +18,8 @@
 ?>
 <?php
 
-const MAX_FPTEN_LINES = 19;
+const MAX_FPTEN_LINES = 30;
+
 
 $copy = $data['copy'];
 
@@ -49,6 +50,9 @@ if (isset($data['print_mode'])) {
 
 $settings = new SettingMetadata();
 $default_cost_code = $settings->getSetting('default_prescription_code_code');
+$page_count = 1;
+$current_item_index = 0;
+$total_items = count($element->items)
 
 ?>
 
@@ -215,8 +219,13 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
     <?php endif; ?>
 <?php else : ?>
 <div class="fpten-form-row">
-        <?php foreach (array('left', 'right') as $side) :
-            $prescription_lines_used = 0;?>
+	<?php for ($i = 0; $i < $page_count; $i++):
+	if ($i !== 0) { ?>
+	<p style="page-break-after: always;">
+	<!--PAGE BREAK-->
+	</p>
+	<?php }?>
+        <?php foreach (array('left', 'right') as $side) :?>
     <div class="<?= $form_css_class ?>-container fpten-form-column">
             <div class="fpten-form-row">
                 <div class="fpten-form-column">
@@ -270,43 +279,49 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                         <div class="fpten-form-row">
                             <div id="<?= $form_css_class ?>-prescription-list" class="fpten-form-column">
                                 <?php
-                                foreach ($this->groupItems($element->items) as $group => $items) :
-                                    $group_name = OphDrPrescription_DispenseCondition::model()->findByPk($group)->name;
-                                    if (str_replace('{form_type}', $data['print_mode'], $group_name) === 'Print to ' . $data['print_mode']) :
-                                        foreach ($items as $item) :
-                                            if ($prescription_lines_used >= MAX_FPTEN_LINES) {
-                                                // As multi-page printing is not yet supported, break the loop if 19 lines has been exceeded.
-                                                // In a future revision, this should increment the page counter and reset the lines used.
-                                                break;
-                                            }
-                                            ?>
-                                            <div class="fpten-prescription-item">
-                                                <?= $item->drug->label ?>, <?=$item->route->name ?><?php if ($item->route_option) {
-                                                                                                echo ' (' . $item->route_option->name . ')';
-                                                } ?>
-                                                <br/>
-                                                Dose: <?= is_numeric($item->dose) ? ($item->dose . ' ' . $item->drug->dose_unit) : $item->dose?>
-                                                <br/>
-                                                Frequency: <?= $item->frequency->long_name ?> for <?= $item->duration->name?>
+                                $prescription_lines_used = 0;
+                                for ($j = $current_item_index; $j < $total_items; $j++):
+                                	$item = $element->items[$j];
+                                    $group_name = $item->dispense_condition->name;
+                                    if (str_replace('{form_type}', $data['print_mode'], $group_name) === 'Print to ' . $data['print_mode']) {
+                                            $drug_label = $item->drug->label . ', ' . $item->route->name . ($item->route_option ? ' (' . $item->route_option->name . ')' : null);
+                                            $dose = is_numeric($item->dose) ? ($item->dose . ' ' . $item->drug->dose_unit) : $item->dose;
+																						$frequency = $item->frequency->long_name . ' for ' . $item->duration->name;
 
-                                                                                            <?php
-                                                                                            foreach ($item->tapers as $taper) : ?>
-                                                                                            <br/>then<br/>
-                                                                                                Dose: <?=is_numeric($taper->dose) ? ($taper->dose . ' ' . $item->drug->dose_unit) : $taper->dose ?><br/>
-                                                                                            Frequency: <?= $taper->frequency->long_name ?> for <?= $taper->duration->name?>
-                                                                                                <?php
-                                                                                                $prescription_lines_used += 3;
-                                                                                            endforeach; ?>
+																				        // Work out how many lines are being used for this prescription item. If it exceeds the maximum lines - currently used lines, separate it onto its own script.
+                                                                                        // If the lines used is greater than the maximum, however, it cannot be split onto its own script. Currently a limitation on the logic.
+																						if ($item->fpTenLinesUsed() + 1 > MAX_FPTEN_LINES - $prescription_lines_used) {
+																							if ($side === 'right') {
+																							    // We only want to change the page counter and the base item index once the right side of the page has been rendered.
+                                                                                                $page_count++;
+                                                                                                $current_item_index = $j;
+                                                                                            }
+																							break;
+																						}
+                                            ?>
+                                            <div class="fpten-prescription-item fpten-form-row">
+                                                <?= $drug_label ?>
+                                                <br/>
+                                                Dose: <?= $dose ?>
+                                                <br/>
+                                                Frequency: <?= $frequency ?>
+                       
+                       <?php
+                         foreach ($item->tapers as $taper) : ?>
+                         <br/>then<br/>
+                          Dose: <?= is_numeric($taper->dose) ? ($taper->dose . ' ' . $item->drug->dose_unit) : $taper->dose ?><br/>
+                           Frequency: <?= $taper->frequency->long_name . ' for ' . $taper->duration->name ?>
+                          <?php
+                         endforeach; ?>
                                             </div>
                                             <?php
-                                                                                    $prescription_lines_used += 3; // In reality this could be many more due to wrapping, but this will cater for single-line scenarios. The CSS overflow override will handle extras.
-                                        endforeach;
-                                    endif;
-                                endforeach; ?>
-                                <div class="fpten-prescription-list-filler">
-                                    <?php for ($i = 0; $i < MAX_FPTEN_LINES - $prescription_lines_used; $i++) : ?>
+                                            $prescription_lines_used += $item->fpTenLinesUsed() + 1;
+                                    }
+                                endfor; ?>
+                                <div class="fpten-prescription-list-filler fpten-form-row">
+                                    <?php for ($line = 0; $line < MAX_FPTEN_LINES - $prescription_lines_used; $line++) { ?>
                                         <br/><?= ($side === 'left') ? 'x' : 'GP COPY' ?>
-                                    <?php endfor;?>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
@@ -315,11 +330,6 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                     <span class="fpten-form-column fpten-prescriber-code">HP</span>
                     <?php endif; ?>
                 </div>
-            <div class="fpten-form-row">
-                <div id="<?= $form_css_class ?>-doctor-name" class="fpten-form-column">
-
-                </div>
-            </div>
             <div class="fpten-form-row">
                 <div id="<?= $form_css_class ?>-date" class="fpten-form-column">
                     <?= date('d/m/Y') ?>
@@ -353,7 +363,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
                                             <?= $this->site->contact->address->county ? '<br/>' : null ?>
                                             <br/>
                                             <br/>
-                                                                  <br/>
+                                            <br/>
                                             <br/>
                                             <?= $this->firm->cost_code ?: $default_cost_code ?>
                     </div>
@@ -363,6 +373,4 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
     </div>
         <?php endforeach; ?>
 </div>
-
-
-<?php endif; ?>
+<?php endfor; endif; ?>

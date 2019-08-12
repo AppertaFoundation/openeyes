@@ -30,6 +30,11 @@
  * @property OphDrPrescription_ItemTaper[] $tapers
  * @property string $comments
  */
+
+// Maximum characters per line on FP10/WP10 form is roughly 36.
+// Assuming the space left of the white margin can be used for printing, this could be expanded further.
+const MAX_FPTEN_LINE_CHARS = 36;
+
 class OphDrPrescription_Item extends BaseActiveRecordVersioned
 {
     /**
@@ -206,6 +211,34 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             $end_date->add(DateInterval::createFromDateString($taper->duration->name));
         }
         return $end_date;
+    }
+
+    /**
+     * Get the number of lines that will be printed out for this specific item.
+     * @return int Number of lines used.
+     */
+    public function fpTenLinesUsed()
+    {
+        $drug_label = $this->drug->label . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
+        $dose = is_numeric($this->dose) ? ($this->dose . ' ' . $this->drug->dose_unit) : $this->dose;
+        $frequency = $this->frequency->long_name . ' for ' . $this->duration->name;
+
+        // Work out how many print lines will be used for this prescription item. This will also include lines used by tapers.
+        // We get the ceiling value because any decimal value indicates one extra line in use.
+        $item_lines_used = (strlen($drug_label) / MAX_FPTEN_LINE_CHARS)
+            + ceil(strlen($dose) / MAX_FPTEN_LINE_CHARS)
+            + ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS);
+
+        foreach ($this->tapers as $taper) {
+            $taper_dose = is_numeric($taper->dose) ? ($taper->dose . ' ' . $this->drug->dose_unit) : $taper->dose;
+            $taper_frequency = $taper->frequency->long_name . ' for ' . $taper->duration->name;
+            $item_lines_used += 1
+                + ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS)
+                + ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);
+        }
+
+        // Return the truncated number of lines.
+        return $item_lines_used;
     }
 
     public function getAdministrationDisplay()
