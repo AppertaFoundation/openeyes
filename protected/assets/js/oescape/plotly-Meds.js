@@ -3,7 +3,7 @@ var meds_yaxis = {
   showticklabels: false,
   showgrid: false,
   autorange: false,
-
+  fixedrange: true,
 };
 
 var meds_xaxis = {

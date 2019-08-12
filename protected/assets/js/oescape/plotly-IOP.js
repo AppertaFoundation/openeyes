@@ -16,6 +16,7 @@ function setYAxis_IOP() {
     },
     showticklabels: true,
     dtick: 5,
+    fixedrange: true
   };
 }
 
