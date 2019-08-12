@@ -53,6 +53,9 @@ class CsvController extends BaseController
             if (($handle = fopen($_FILES['Csv']['tmp_name']['csvFile'], "r")) !== false) {
                 if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
                     foreach ($line as $header) {
+                        // basic sanitization, remove non printable chars - This is required if the CSV file is
+                        // exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
+                        $header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
                         $headers[] = $header;
                     }
                 }
@@ -113,6 +116,18 @@ class CsvController extends BaseController
         if ($new_trial !== null) {
             return $errors;
         }
+
+        //check that principal investigator's user name exists in the system
+        if(!empty($trial['principal_investigator'])) {
+            $principal_investigator = User::model()->find('username = ?', array($trial['principal_investigator']));
+            if(!isset($principal_investigator)) {
+                $errors[] = 'The entered Principal Investigator does not exist in the system.';
+                return $errors;
+            } else {
+                $_SESSION['principal_investigator'] = $principal_investigator->id;
+            }
+        }
+
         //create new trial
         $new_trial = new Trial();
         $new_trial->name = $trial['name'];
@@ -121,7 +136,7 @@ class CsvController extends BaseController
         }
         $new_trial->trial_type_id = TrialType::model()->find('code = ?', array($trial['trial_type']))->id;
         $new_trial->description = !empty($trial['description']) ? $trial['description'] : null;
-        $new_trial->owner_user_id = Yii::app()->user->id;
+        $new_trial->owner_user_id =  Yii::app()->user->id;
         $new_trial->is_open = isset($trial['is_open']) && $trial['is_open'] !== '' ? $trial['is_open'] : false;
         $new_trial->started_date = !empty($trial['started_date']) ? $trial['started_date'] : null;
         $new_trial->closed_date = !empty($trial['closed_date']) ? $trial['closed_date'] : null;

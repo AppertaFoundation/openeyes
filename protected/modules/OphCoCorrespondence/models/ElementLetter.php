@@ -374,6 +374,17 @@ class ElementLetter extends BaseEventTypeElement
             }
         }
 
+        $pcassocitates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+        if (isset($pcassocitates) && Yii::app()->params['institution_code']=='CERA'){
+            foreach ($pcassocitates as $pcassocitate){
+                $gp = $pcassocitate->gp;
+                $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
+                if (isset($cpa->practice) && !empty($cpa->practice->getAddressLines())){
+                    $options['ContactPracticeAssociate'.$cpa->id] = $gp->contact->fullname.' ('.((isset($gp->contact->label))? $gp->contact->label->name : Yii::app()->params['gp_label']).')';
+                }
+            }
+        }
+
         asort($options);
 
         return $options;

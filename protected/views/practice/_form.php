@@ -27,7 +27,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 <?php echo $form->labelEx($contact, 'first_name'); ?>
             </td>
             <td>
-                <?php echo $form->textArea($contact, 'first_name', array('size' => 30, 'maxlength' => 300)); ?>
+                <?php echo $form->textArea($contact, 'first_name', array('size' => 30, 'maxlength' => 300, 'class' => 'cols-10')); ?>
                 <?php echo $form->error($contact, 'first_name'); ?>
             </td>
         </tr>
@@ -36,17 +36,17 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 <?php echo $form->labelEx($model, 'code'); ?>
             </td>
             <td>
-                <?php echo $form->textField($model, 'code', array('size' => 15, 'maxlength' => 20)); ?>
+                <?php echo $form->textField($model, 'code', array('size' => 15, 'maxlength' => 20, 'class' => 'cols-10')); ?>
                 <?php echo $form->error($model, 'code'); ?>
             </td>
         </tr>
         <tr>
             <td>
-                <?php echo $form->labelEx($contact, 'primary_phone'); ?>
+                <?php echo $form->labelEx($model, 'phone'); ?>
             </td>
             <td>
-                <?php echo $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20)); ?>
-                <?php echo $form->error($contact, 'primary_phone'); ?>
+                <?php echo $form->telField($model, 'phone', array('size' => 15, 'maxlength' => 20)); ?>
+                <?php echo $form->error($model, 'phone'); ?>
             </td>
         </tr>
         <tr>

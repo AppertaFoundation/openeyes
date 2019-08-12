@@ -144,7 +144,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 	    var search_options = ``;
 
         $.each(response,function(index, value){
-        	search_options += `<li class="oe-menu-item" role="presentation"><a id="ui-id-`+index+`" tabindex="-1">`;
+        	search_options += `<li class="oe-menu-item" role="presentation"><a id="ui-id-`+index+`" tabindex="-1" style="text-align: justify">`;
         	if(value.fullname !== undefined){
         		search_options += matchSearchTerm(value.fullname);
         	}

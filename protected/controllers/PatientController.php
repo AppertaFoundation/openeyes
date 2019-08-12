@@ -187,7 +187,7 @@ class PatientController extends BaseController
 
             $message = 'Sorry, no results ';
             if ($search_terms['hos_num']) {
-                $message .= 'for Hospital Number <strong>"'.$search_terms['hos_num'].'"</strong>';
+                $message .= 'for '.Yii::app()->params['hos_num_label']. ((Yii::app()->params['institution_code']=='CERA')?' ':' Number').'<strong>"'.$search_terms['hos_num'].'"</strong>';
 
                 // check if the record was merged into another record
                 $criteria = new CDbCriteria();
@@ -200,7 +200,7 @@ class PatientController extends BaseController
                     $message = 'Hospital Number <strong>'.$search_terms['hos_num'].'</strong> was merged into <strong>'.$patientMergeRequest->primary_hos_num.'</strong>';
                 }
             } elseif ($search_terms['nhs_num']) {
-                $message .= 'for '. Yii::app()->params['nhs_num_label'].' Number <strong>"'.$search_terms['nhs_num'].'"</strong>';
+                $message .= 'for '. Yii::app()->params['nhs_num_label'].((Yii::app()->params['institution_code']==='CERA')? '' : ' Number').' <strong>"'.$search_terms['nhs_num'].'"</strong>';
             } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
                 $message .= 'for Patient Name <strong>"'.$search_terms['first_name'].' '.$search_terms['last_name'].'"</strong>';
             } else {
@@ -1709,6 +1709,12 @@ class PatientController extends BaseController
     public function actionCreate()
     {
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
+
+        // Executing the js function (without passing the id param as it will be null on create patient screen)
+        // to find duplicate patients on entering create patient screen each time so that the warning message
+        // does not disappear after refreshing.
+        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates();', CClientScript::POS_READY);
+
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
         $this->fixedHotlist = true;
@@ -1724,7 +1730,6 @@ class PatientController extends BaseController
         $patient_identifiers = $this->getPatientIdentifiers($patient);
 
         $gpcontact = new Contact();
-        $patient_referral_contact = new Contact();
         $practicecontact = new Contact();
         $practiceaddress = new Address();
         $practice = new Practice();
@@ -1739,6 +1744,19 @@ class PatientController extends BaseController
             $referral = new PatientReferral();
             if (isset($_POST['PatientReferral'])) {
                 $referral->attributes = $_POST['PatientReferral'];
+            }
+
+            if (isset($_POST['ExtraContact'])){
+                $gp_ids = $_POST['ExtraContact']['gp_id'];
+                $pca_models = array();
+                foreach ($gp_ids as $gp_id){
+                    $pca_model = new PatientContactAssociate();
+                    $pca_model->gp_id = $gp_id;
+                    $pca_models[] = $pca_model;
+                }
+                if (!empty($pca_models)){
+                    $patient->patientContactAssociates = $pca_models;
+                }
             }
 
             if (isset($_POST['PatientUserReferral'])) {
@@ -1785,9 +1803,11 @@ class PatientController extends BaseController
                 $patient->beforeSave();
             }
         }
-        if($patient->getIsNewRecord()){
+        // Only auto increment hos no. when the set_auto_increment is on
+        if($patient->getIsNewRecord() && Yii::app()->params['set_auto_increment'] == 'on'){
             $patient->hos_num = $patient->autoCompleteHosNum();
         }
+
         $this->render('crud/create', array(
             'patient' => $patient,
             'contact' => $contact,
@@ -1796,7 +1816,6 @@ class PatientController extends BaseController
             'patientuserreferral' => isset($patient_user_referral) ? $patient_user_referral : new PatientUserReferral(),
             'patient_identifiers' => $patient_identifiers,
             'gpcontact' => $gpcontact,
-            'pr_contact' => $patient_referral_contact,
             'practicecontact' => $practicecontact,
             'practiceaddress' => $practiceaddress,
             'practice' => $practice
@@ -1955,6 +1974,21 @@ class PatientController extends BaseController
         }
 
 
+        if (isset($patient->gp) && isset($patient->practice)){
+            $existing_cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id));
+            if (isset($existing_cpa)){
+                $existing_cpa->practice_id = $patient->practice_id;
+                $existing_cpa->save();
+            }else{
+                $new_cpa = new ContactPracticeAssociate();
+                $new_cpa->gp_id = $patient->gp_id;
+                $new_cpa->practice_id = $patient->practice_id;
+                $new_cpa->save();
+            }
+        }
+
+        $this->performPatientContactAssociatesSave($patient);
+
         $action = $patient->isNewRecord ? 'add' : 'edit';
         Audit::add(
             'Patient',
@@ -1963,6 +1997,22 @@ class PatientController extends BaseController
         );
         return true;
     }
+
+    private function performPatientContactAssociatesSave($patient){
+        $existing_gp = PatientContactAssociate::model()->getGPsByPatientId($patient->id);
+        if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)){
+            foreach ($patient->patientContactAssociates as $patientContactAssociate){
+                if (!isset($patientContactAssociate->patient_id)){
+                    $patientContactAssociate->patient_id = $patient->id;
+                }
+
+                if (empty($existing_gp) || !in_array($patientContactAssociate->gp_id,$existing_gp)){
+                    $patientContactAssociate->save();
+                }
+            }
+        }
+    }
+
 
     /**
      * Saves the input $Patient_identiiers according to the config params
@@ -2010,9 +2060,13 @@ class PatientController extends BaseController
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id the ID of the model to be updated
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $prevUrl)
     {
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
+
+        // Executing the js function to find duplicate patients on entering update patient screen each time to
+        // retain the warning message on screen after refreshing.
+        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates('.$id.');', CClientScript::POS_READY);
 
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
@@ -2021,7 +2075,6 @@ class PatientController extends BaseController
         $patient = $this->loadModel($id);
         $referral = isset($patient->referral) ? $patient->referral : new PatientReferral();
         $this->pageTitle = 'Update Patient - ' . $patient->last_name . ', ' . $patient->first_name;
-        $prcontact = isset($patient->patient_referral) ? $patient->patient_referral->contact: new Contact();
         $gpcontact = isset($patient->gp) ? $patient-> gp->contact : new Contact();
         $practice = isset($patient->practice) ? $patient->practice : new Practice();
         $practicecontact = isset($patient->practice) ? $patient-> practice->contact : new Contact();
@@ -2054,6 +2107,43 @@ class PatientController extends BaseController
 
             if (isset($_POST['PatientReferral'])) {
                 $referral->attributes = $_POST['PatientReferral'];
+            }
+
+
+            if (isset($_POST['ExtraContact'])){
+                $gp_ids = $_POST['ExtraContact']['gp_id'];
+                $pca_models = array();
+                $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+                if (isset($existing_pca_models)){
+                    foreach ($existing_pca_models as $existing_pca_model){
+                        if (!in_array($existing_pca_model->id, $gp_ids)){
+                            $existing_pca_model->delete();
+                        }else{
+                            array_push($pca_models,$existing_pca_model);
+                            if (($key = array_search($existing_pca_model->id, $gp_ids)) !== false) {
+                                unset($gp_ids[$key]);
+                            }
+                        }
+                    }
+                }
+
+                foreach ($gp_ids as $gp_id){
+                    $pca_model = new PatientContactAssociate();
+                    $pca_model->gp_id = $gp_id;
+                    $pca_model->patient_id = $patient->id;
+                    array_push($pca_models,$pca_model);
+                }
+
+                if (!empty($pca_models)){
+                    $patient->patientContactAssociates = $pca_models;
+                }
+            }else{
+                $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+                if (isset($existing_pca_models)){
+                    foreach ($existing_pca_models as $existing_pca_model){
+                        $existing_pca_model->delete();
+                    }
+                }
             }
 
             // not to be sync with PAS
@@ -2123,6 +2213,7 @@ class PatientController extends BaseController
             'referral' => $referral,
             'patientuserreferral' => $patient_user_referral,
             'patient_identifiers' => $patient_identifiers,
+            'prevUrl'=>$prevUrl,
         ));
     }
 
@@ -2152,20 +2243,34 @@ class PatientController extends BaseController
         $criteria->addSearchCondition('LOWER(last_name)', '', true, 'OR');
 
         $criteria->addSearchCondition('concat(first_name, " ", last_name)', $term, true, 'OR');
-        $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', $term, true, 'OR');
+        $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', strtolower($term), true, 'OR');
 
         $gps = Gp::model()->with('contact')->findAll($criteria);
 
         $output = array();
         foreach($gps as $gp){
-            $output[] = array(
-                'label' => $gp->correspondenceName,
-                'value' => $gp->id
-            );
+            $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
+            $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
+            $practiceDetails = $gp->getAssociatedPractice($gp->id);
+            if (isset($practice_contact_associate->practice)){
+                $practiceId = $practiceDetails['id'];
+                $practice = $practice_contact_associate->practice;
+                $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+                $output[] = array(
+                    'label' => $gp->correspondenceName.$role.$practiceNameAddress,
+                    'value' => $gp->id,
+                    'practiceId' => $practiceId
+                );
+            }
+            else {
+                $output[] = array(
+                    'label' => $gp->correspondenceName.$role,
+                    'value' => $gp->id,
+                    'practiceId' => ''
+                );
+            }
         }
-
         echo CJSON::encode($output);
-
         Yii::app()->end();
     }
 
@@ -2178,14 +2283,14 @@ class PatientController extends BaseController
         $criteria->join .= '  JOIN address on contact.id = address.contact_id';
         $criteria->addCondition('( (date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW()))');
 
-        $criteria->addSearchCondition('LOWER(CONCAT_WS(", ", address1, address2, city, county, postcode))', $term);
+        $criteria->addSearchCondition('LOWER(CONCAT_WS(", ", first_name ,address1, address2, city, county, postcode))', $term);
 
         $practices = Practice::model()->findAll($criteria);
 
         $output = array();
         foreach($practices as $practice){
             $output[] = array(
-                'label' => $practice->getAddressLines(),
+                'label' => $practice->getPracticeNames(),
                 'value' => $practice->id
             );
         }

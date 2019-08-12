@@ -69,5 +69,31 @@ PatientPanel.patientPopups = {
       var popup = this.popupBtns[i];
       popup.isLatched = false;
     }
+  },
+
+  /**
+   * This function checks the popup to see if it is going outside the viewport and adjusts the
+   * top of the popup to make it appear above the button.
+   * @param button The ref to the button (image) that opens the popup on mouseover.
+   * @param content The ref to the popup element.
+   */
+  adjustTop: function(button, content) {
+    // height of the icons (such as demographics, management, quicklook)
+    var iconHeight = 35;
+
+    var topButton = $(button).offset().top;
+    var popupHeight = $(content).show().height();
+    var popupTop = $(content).show().offset().top;
+
+    // this variable holds the total length from the top of the window to the button of the popup.
+    var total = popupHeight + popupTop ;
+
+    var windowHeight = $(window).height();
+
+    if( (total + iconHeight)  > windowHeight) {
+      // this property is removed when the mouse leaves the icon.
+      $(content).css({ top: (topButton - popupHeight - iconHeight) + 'px' });
+    }
   }
+
 };

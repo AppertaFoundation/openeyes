@@ -7,7 +7,7 @@
   <h3>Actions</h3>
   <ul>
         <li>
-            <?=\CHtml::link('Go Back to Trial', Yii::app()-> baseURL.'/OETrial/trial') ?>
+            <?=\CHtml::link('Go Back to Trials', Yii::app()-> baseURL.'/OETrial/trial') ?>
         </li>
       <?php if ($trial->is_open && $permission->can_edit): ?>
         <li>
@@ -17,7 +17,7 @@
       <?php if (CsvController::uploadAccess()): ?>
         <li>
           <a href = <?=  Yii::app()->createURL('csv/upload',
-              array('context' => 'trialsPatients', 'backuri' => '/OETrial/trial/view/'.$trial->id)
+              array('context' => 'trialPatients', 'backuri' => '/OETrial/trial/view/'.$trial->id)
           ) ?> >Upload trial patients</a>
         </li>
       <?php endif; ?>

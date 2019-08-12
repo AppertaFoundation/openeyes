@@ -1,7 +1,12 @@
 // change the function name from addItem to addItemP
-function addItemPatientForm(wrapper_id, ui) {
+function addItemPatientForm(wrapper_id, ui, updatePracticeId = false) {
   var $wrapper = $('#' + wrapper_id);
+  $wrapper.find('li').show();
   $wrapper.find('.js-name').text(ui.item.label);
+  if (updatePracticeId) {
+    $('#Patient_practice_id').val(ui.item.practiceId);
+    $('#prac_id').val(ui.item.practiceId);
+  }
   $wrapper.show();
   $wrapper.find('.hidden_id').val(ui.item.value);
 }
@@ -70,17 +75,6 @@ $(function () {
     $(selector).toggle($(this).is(':checked'));
   });
 
-  $('#is_pr_gp').on('change', function () {
-    var selector = $(this).data('child_row');
-    var isChecked = $(this).is(':checked');
-    if (isChecked){
-      $(selector).hide();
-      $('#Patient_gp_id').val($('#Patient_patient_referral_id').val());
-    } else {
-      $(selector).show();
-    }
-  });
-
   $('#selected_pr_wrapper').on('click', '.js-remove-pr', function () {
     removeSelectedGP('pr');
   });
@@ -109,13 +103,12 @@ function addGpItem(wrapper_id, ui){
 
 $(document).ready(function ()
 {
-  highLightError("Patient_gp_id_em_","GP cannot be blank",'#autocomplete_gp_id');
-  highLightError("Patient_patient_referral_id_em_","Referred By cannot be blank",'#autocomplete_pr_id');
-  highLightError("Patient_practice_id_em_","Practice cannot be blank",'#autocomplete_practice_id');
+  highLightError("Patient_gp_id_em_","cannot be blank",'#autocomplete_gp_id');
+  highLightError("Patient_practice_id_em_", "Please add a Practitioner with an associated practice.", '#autocomplete_gp_id');
 });
 
 function highLightError(elementId, containText,highLightFiled){
-  if(document.getElementById(elementId).innerHTML.includes(containText)){
+  if(document.getElementById(elementId) !== null && document.getElementById(elementId).innerHTML.includes(containText)){
     $(highLightFiled).addClass("error");
   }
 }

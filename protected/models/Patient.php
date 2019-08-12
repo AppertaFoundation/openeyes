@@ -33,7 +33,6 @@
  * @property string $nhs_num
  * @property string $primary_phone
  * @property int $gp_id
- * @property int $patient_referral_id
  * @property int $practice_id
  * @property string $created_date
  * @property string $last_modified_date
@@ -131,17 +130,17 @@ class Patient extends BaseActiveRecordVersioned
         return array(
             array('pas_key', 'length', 'max' => 10),
             array('dob, patient_source', 'required'),
-            array('hos_num', 'required', 'on' => 'pas'),
+            array('hos_num', 'required', 'on' => Yii::app()->params['institution_code'] !== 'CERA' ? 'pas' : '' ),
             array('gender', 'required', 'on' => array('self_register')),
-            array('patient_referral_id, gp_id, practice_id', 'required', 'on' => 'referral'),
+            array('gp_id', 'required', 'on' => 'referral'),
+            array('practice_id', 'gpPracticeValidator', 'on' => 'referral'),
 
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
+            array('nhs_num', 'nhsNumValidator'), // 'on' => 'manual'
             array('gender,is_local', 'length', 'max' => 1),
 
-            array('nhs_num', 'numerical'),
-
-            array('dob, is_deceased, date_of_death, ethnic_group_id, patient_referral_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
+            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
             array('deleted', 'safe'),
             array('dob', 'dateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('dob','dateOfBirthRangeValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
@@ -169,7 +168,6 @@ class Patient extends BaseActiveRecordVersioned
             ),
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
             'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
-            'patient_referral' => array(self::BELONGS_TO, 'Gp', 'patient_referral_id'),
             'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
             'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
             'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)',
@@ -196,6 +194,7 @@ class Patient extends BaseActiveRecordVersioned
             'trials' => array(self::HAS_MANY, 'TrialPatient', 'patient_id'),
             'patientuserreferral' => array(self::HAS_MANY, 'PatientUserReferral', 'patient_id','alias' => 'patient_user_referral','order' => 'patient_user_referral.created_date DESC' ),
             'identifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id'),
+            'patientContactAssociates'=>array(self::HAS_MANY,'PatientContactAssociate','patient_id'),
         );
     }
 
@@ -210,6 +209,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function hosNumValidator($attribute, $params)
     {
+        // This condition does not work for CERA but leaving the code here as the functionality might break for UK. NEEDS TESTING before removal
         if ($this->scenario === 'manual') {
             // Use the PatientSearch to sanitise and validate the hospital number
             $hos_num = (new PatientSearch())->getHospitalNumber($this->hos_num);
@@ -224,11 +224,60 @@ class Patient extends BaseActiveRecordVersioned
                 $this->addError($attribute, 'Not a valid Hospital Number');
             }
         }
+
+        if(Yii::app()->params['institution_code'] === 'CERA') {
+            $cera_id = $this->hos_num;
+            if(strlen($cera_id)>0) {
+                // removing the leading 0's
+                $cera_id = ltrim($cera_id, '0');
+                $item_count = Patient::model()->count('hos_num = ? AND id != ?',
+                    array($cera_id,$this->id? $this->id : -1));
+                if ($item_count) {
+                    $this->addError($attribute, 'A patient already exists with this CERA ID. The next unique number is '.$this->autoCompleteHosNum());
+                }
+            }
+        }
+    }
+
+
+    public function nhsNumValidator($attribute, $params){
+        // Validation only triggers for CERA
+        if (Yii::app()->params['institution_code'] == 'CERA') {
+
+            // Throw validation warning message if user has entered non-numeric character
+            if(!ctype_digit($this->nhs_num) && strlen($this->nhs_num)>0) {
+                $this->addError($attribute, 'Please enter only numbers.');
+            }
+
+            $medicareNo = preg_replace("/[^\d]/", "", $this->nhs_num);
+
+            // Check for 11 digits
+            $length = strlen($medicareNo);
+            if($length>0) {
+                if ($length==11) {
+                    // Test leading digit and checksum
+                    if (preg_match("/^([2-6]\d{7})(\d)/", $medicareNo, $matches)) {
+                        $base = $matches[1];
+                        $checkDigit = $matches[2];
+                        $sum = 0;
+                        $weights = array(1, 3, 7, 9, 1, 3, 7, 9);
+                        foreach ($weights as $position => $weight) {
+                            $sum += $base[$position] * $weight;
+                        }
+                        return ($sum % 10) == intval($checkDigit);
+                    }
+                    else {
+                        $this->addError($attribute, 'Not a valid Medicare Number');
+                    }
+                } else {
+                    $this->addError($attribute, 'Not a valid Medicare Number');
+                }
+            }
+        }
     }
 
 //    Generates an auto incremented Hospital Number
     public function autoCompleteHosNum(){
-        if(Yii::app()->params['set_auto_increment'] == 'on'){
             $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
             $command = Yii::app()->db->createCommand($query);
             $command->prepare();
@@ -241,7 +290,6 @@ class Patient extends BaseActiveRecordVersioned
             } else {
                 return ($default_hos_num[0] + 1);
             }
-        }
     }
 
     /**
@@ -308,6 +356,15 @@ class Patient extends BaseActiveRecordVersioned
         }
     }
 
+    /**
+     * This validator is to check if the GP has a practice associated with it or not.
+     **/
+    public function gpPracticeValidator($attribute)
+    {
+        if(Yii::app()->params['institution_code'] === 'CERA' && empty($this->practice_id)){
+            $this->addError($attribute, "Referring Practitioner has no associated practice. Please add a Practitioner with an associated practice.");
+        }
+    }
 
     /**
      * @return array customized attribute labels (name=>label)
@@ -326,7 +383,6 @@ class Patient extends BaseActiveRecordVersioned
             'deleted' => 'Is Deleted',
             'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Status',
             'gp_id' => Yii::app()->params['general_practitioner_label'],
-            'patient_referral_id' => 'Referred By',
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient?',
             'patient_source' => 'Patient Source'
@@ -420,21 +476,20 @@ class Patient extends BaseActiveRecordVersioned
             'sortBy' => 'hos_num*1',
             'sortDir' => 'asc',
         );
-
         $criteria = new CDbCriteria();
         $criteria->compare('t.id', $this->id);
         $criteria->join = 'JOIN contact ON contact_id = contact.id';
         if (isset($params['first_name'])) {
-            $criteria->compare('contact.first_name', $params['first_name'], false);
+            $criteria->compare('LOWER(contact.first_name)', strtolower($params['first_name']), false);
         }
         if (isset($params['last_name'])) {
-            $criteria->compare('contact.last_name', $params['last_name'], false);
+            $criteria->compare('LOWER(contact.last_name)', strtolower($params['last_name']), false);
         }
         if (isset($params['maiden_name'])) {
-            $criteria->compare('contact.maiden_name', $params['maiden_name'], false);
+            $criteria->compare('LOWER(contact.maiden_name)', strtolower($params['maiden_name']), false);
         }
 
-        if (strlen($this->nhs_num) == 10) {
+        if (strlen($this->nhs_num) == (Yii::app()->params['default_country'] === 'Australia' ? 11 : 10) ) {
             $criteria->compare('nhs_num', $this->nhs_num, false);
         } else {
             $criteria->compare('hos_num', $this->hos_num, false);
@@ -573,6 +628,16 @@ class Patient extends BaseActiveRecordVersioned
         }
 
         return $this->_orderedepisodes;
+    }
+
+    /**
+     * Get the patient's dob.
+     *
+     * @return string
+     */
+    public function getDOB()
+    {
+        return $this->dob;
     }
 
     /**
@@ -1620,7 +1685,13 @@ class Patient extends BaseActiveRecordVersioned
     {
         $nhs_num = preg_replace('/[^0-9]/', '', $this->nhs_num);
 
-        return $nhs_num ? substr($nhs_num, 0, 3).' '.substr($nhs_num, 3, 3).' '.substr($nhs_num, 6, 4) : 'not known';
+        if (Yii::app()->params['default_country'] === 'Australia') {
+            $nhs_num = $nhs_num ? substr($nhs_num, 0, 4).' '.substr($nhs_num, 4, 5).' '.substr($nhs_num, 9, 1).' '.substr($nhs_num, 10, 1) : 'not known';
+        } else {
+            $nhs_num = $nhs_num ? substr($nhs_num, 0, 3).' '.substr($nhs_num, 3, 3).' '.substr($nhs_num, 6, 4) : 'not known';
+        }
+
+        return $nhs_num;
     }
 
     public function hasLegacyLetters()

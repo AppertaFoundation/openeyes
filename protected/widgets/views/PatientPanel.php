@@ -51,11 +51,13 @@ $deceased = $this->patient->isDeceased();
     <div class="flex-layout">
         <div class="patient-details">
             <div class="hospital-number">
-                <span><?php echo Yii::app()->params['hos_num_label'] ?> </span>
+<!--                Displaying only ID label (instead of CERA ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
+                <span><?php echo ( Yii::app()->params['institution_code'] === 'CERA' ? explode(" ", Yii::app()->params['hos_num_label'])[1] : Yii::app()->params['hos_num_label'] ) ?> </span>
                 <?php echo $this->patient->hos_num ?>
             </div>
             <div class="nhs-number">
-                <span><?php echo Yii::app()->params['nhs_num_label'] ?></span>
+<!--                Displaying only Medicare label (instead of Medicare ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
+                <span><?php echo ( Yii::app()->params['institution_code'] === 'CERA' ? explode(" ", Yii::app()->params['nhs_num_label'])[0] : Yii::app()->params['nhs_num_label'] ) ?></span>
                 <?php echo $this->patient->nhsnum ?>
                 <?php if ($this->patient->nhsNumberStatus) : ?>
                     <i class="oe-i <?= $this->patient->nhsNumberStatus->icon->class_name ?: 'exclamation' ?> small"></i>
@@ -63,7 +65,8 @@ $deceased = $this->patient->isDeceased();
             </div>
 
             <div class="patient-gender">
-                <em>Gender</em>
+<!--                Displaying Gen. (instead of Gender) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
+                <em><?php echo (Yii::app()->params['institution_code'] === 'CERA' ? 'Gen.' : 'Gender') ?></em>
                 <?php echo $this->patient->getGenderString() ?>
             </div>
             <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
@@ -123,7 +126,7 @@ $deceased = $this->patient->isDeceased();
                 <div class="patient-local-edit js-patient-local-edit-btn"
                 <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials))  echo 'style ="top: 35px; right: 0px"'?>
                 >
-                    <a href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>" >
+                    <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id'=>$this->patient->id, 'prevUrl'=>Yii::app()->request->url)); ?>" >
                         <svg viewBox="0 0 30 30" class="icon">
                             <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
                         </svg>

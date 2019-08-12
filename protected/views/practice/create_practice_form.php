@@ -60,7 +60,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                     </td>
                 </tr>
                 <tr>
-                    <?php $this->renderPartial('../patient/_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
+                    <?php $this->renderPartial('../practice/_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
                 </tr>
                 <tr>
                     <td colspan="2" class="align-right">

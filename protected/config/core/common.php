@@ -597,14 +597,14 @@ return array(
         ),*/
         'hos_num_label' => 'Hospital',
         'nhs_num_label' => 'NHS',
-      'ethnic_group_filters' => array(
-        'Indigenous Australian',
-        'Greek',
-        'Italian'
-      ),
-      'oe_version' => '3.2a',
-      'gp_label' => 'GP',
-      // number of days in the future to retrieve worklists for the automatic dashboard render
-      'worklist_dashboard_future_days' => 0
+        'ethnic_group_filters' => array(
+            'Indigenous Australian',
+            'Greek',
+            'Italian'
+        ),
+        'oe_version' => '3.2a',
+        'gp_label' => 'GP',
+        // number of days in the future to retrieve worklists for the automatic dashboard render
+        'worklist_dashboard_future_days' => 0
     ),
 );
