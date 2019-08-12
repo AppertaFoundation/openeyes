@@ -2126,7 +2126,7 @@ class Patient extends BaseActiveRecordVersioned
             $d = $ep->diagnosis;
             if ($d && $d->specialty && $d->specialty->code == 130) {
                 $diagnosis = $api->getPrincipalOphtalmicDiagnosis($ep, $d->id);
-                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getFormatedDate() . '~' . ($diagnosis->element_diagnoses->event_id ? $diagnosis->element_diagnoses->event_id : '');
+                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getFormatedDate() . '~' . (isset($diagnosis->element_diagnoses->event_id) ? $diagnosis->element_diagnoses->event_id : '');
             }
         }
 
