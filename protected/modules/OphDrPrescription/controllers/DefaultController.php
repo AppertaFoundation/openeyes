@@ -670,12 +670,13 @@ class DefaultController extends BaseEventTypeController
                 }
             }
         }
+        $unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
         if (isset($this->patient)) {
             $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item, 'patient' => $this->patient));
+                array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options));
         } else {
             $output = $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item), true);
+                array('key' => $key, 'item' => $item, 'unit_options' => $unit_options), true);
 
             return $output;
         }
