@@ -266,6 +266,15 @@ class EventMedicationUse extends BaseElement
 		return parent::model($className);
 	}
 
+	public function afterValidate()
+	{
+		if ($this->start_date_string_YYYYMMDD && $this->end_date_string_YYYYMMDD &&
+			$this->start_date_string_YYYYMMDD > $this->end_date_string_YYYYMMDD) {
+			$this->addError('end_date_string_YYYYMMDD', 'Stop date must be on or after start date');
+		}
+		parent::afterValidate();
+	}
+
     /**
      * @return bool
      */
