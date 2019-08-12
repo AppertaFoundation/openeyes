@@ -165,8 +165,10 @@
 								}
 							}
 						}
-						
-						$('.event_'+max_id+'.val_'+max_visible).css('background-color','orange');
+						var rows = $('.event_'+max_id+'.val_'+max_visible);
+						rows.css('font-weight','bold');
+						rows.children('td').css('color','white');
+						rows.children('.event_comments:not(:contains(Peak IOP))').append(' Peak IOP');
 					}
 				}
 

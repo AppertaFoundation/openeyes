@@ -68,13 +68,13 @@
 
         for (var i = 0; i < iop_plotly_data.length; i++){
             var data_row = "<tr  class='clickable event_rows event_" + iop_plotly_data[i]["event_id"]+" val_"  + iop_plotly_data[i]["raw_value"] +
-            "' data-link='/OphCi"+iop_plotly_data[i]["event_name"]+"/default/view/"+iop_plotly_data[i]["event_id"]+"'> <!-- Generated Data -->";
-            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["event_name"]+"</td> <!-- Event type -->";
-            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["eye"]+"</td><!-- Eye -->";
-            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["instrument_name"]+"</td><!-- Instrument -->";
-            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["dilated"]+"</td><!-- Dilated -->";
-            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["reading_value"]+"</td><!-- Value -->";
-            data_row += "<td style='vertical-align: center;'>"+iop_plotly_data[i]["comments"]+"</td><!-- Comments -->";
+            "' data-link='/OphCi"+iop_plotly_data[i]["event_name"]+"/default/view/"+iop_plotly_data[i]["event_id"]+"'>";
+            data_row += "<td class='event_type' style='vertical-align: center;'>"+iop_plotly_data[i]["event_name"]+"</td>";
+            data_row += "<td class='event_eye' style='vertical-align: center;'>"+iop_plotly_data[i]["eye"]+"</td>";
+            data_row += "<td class='event_instrument' style='vertical-align: center;'>"+iop_plotly_data[i]["instrument_name"]+"</td>";
+            data_row += "<td class='event_dilated' style='vertical-align: center;'>"+iop_plotly_data[i]["dilated"]+"</td>";
+            data_row += "<td class='event_value' style='vertical-align: center;'>"+iop_plotly_data[i]["reading_value"]+"</td>";
+            data_row += "<td class='event_comments' style='vertical-align: center;'>"+iop_plotly_data[i]["comments"]+"</td>";
             data_row += "</tr>";
 
             document.getElementById("DrillDownContent").innerHTML += data_row;
