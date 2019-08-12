@@ -21,7 +21,7 @@
 
 /** @var EventMedicationUse $entry */
 
-if (isset($entry->start_date) && !is_null($entry->start_date)) {
+if (isset($entry->start_date)) {
     $start_date = $entry->start_date;
 }
 else {
