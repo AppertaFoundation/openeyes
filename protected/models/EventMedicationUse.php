@@ -407,44 +407,6 @@ class EventMedicationUse extends BaseElement
         return implode(' , ', $result    );
     }
 
-
-    /**
-     * Getter to make this class compatible with HistoryMedicationsEntry
-     *
-     * @return null|string
-     */
-
-    public function getEnd_date()
-    {
-        return is_null($this->end_date) ? null : substr($this->end_date, 0, 4).'-'
-            .substr($this->end_date, 4, 2).'-'
-            .substr($this->end_date, 6, 2);
-    }
-
-    /**
-     * Setter to make this class compatible with HistoryMedicationsEntry
-     *
-     * @return $this
-     */
-
-    public function setStart_date($date)
-    {
-        $this->start_date = is_null($date) ? null : str_replace('-', '', $date);
-        return $this;
-    }
-
-    /**
-     * Setter to make this class compatible with HistoryMedicationsEntry
-     *
-     * @return $this
-     */
-
-    public function setEnd_date($date)
-    {
-        $this->end_date = is_null($date) ? null : str_replace('-', '', $date);
-        return $this;
-    }
-
     public function getChk_prescribe()
     {
         return $this->chk_prescribe;
