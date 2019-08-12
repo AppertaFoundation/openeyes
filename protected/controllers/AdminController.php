@@ -941,7 +941,6 @@ class AdminController extends BaseAdminController
          */
 
         $contact->nick_name = 'NULL';
-        $contact->primary_phone = 'NULL';
         $contact->title = null;
         $contact->first_name = '';
         $contact->last_name = '';

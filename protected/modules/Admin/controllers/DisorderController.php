@@ -15,6 +15,8 @@
  */
 class DisorderController extends BaseAdminController
 {
+    public $group = "Disorders";
+
     public function actionList()
     {
         Audit::add('admin', 'list', null, false,

@@ -201,7 +201,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($contact, 'primary_phone') ?>
         </td>
         <td>
-            <?= $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20, 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+            <?= $form->telField($contact, 'primary_phone', array('size' => 15,'placeholder'=>'Phone number', 'maxlength' => 20, 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       <tr>
@@ -211,7 +211,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($address, 'email') ?>
         </td>
         <td>
-            <?= $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255, 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+            <?= $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255, 'placeholder'=>'Email','autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       </tbody>
@@ -223,7 +223,7 @@ foreach ($ethnic_list as $key=>$item){
       <table class="standard highlight-rows">
         <tbody>
         <tr>
-          <td>
+          <td class=<?= Yii::app()->params['institution_code'] === 'CERA' ? 'required':'' ?>>
               <?= $form->label($patient, 'hos_num') ?>
             <br/>
               <?= $form->error($patient, 'hos_num') ?>
@@ -254,17 +254,23 @@ foreach ($ethnic_list as $key=>$item){
               <?= $form->error($patient, 'nhs_num') ?>
           </td>
         </tr>
-        <tr class="nhs-num-status" style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
-          <td>
-              <?= $form->label($patient, 'nhs_num_status_id') ?>
-            <br/>
-              <?= $form->error($patient, 'nhs_num_status_id') ?>
-          </td>
-          <td>
-              <?= $form->dropDownList($patient, 'nhs_num_status_id', $nhs_num_statuses,
-                  array('empty' => '-- select --')); ?>
-          </td>
-        </tr>
+<!--        Making the NHS number status to be visible only if use case is not for CERA as they dont want this- CERA-499 -->
+        <?php
+        if (Yii::app()->params['institution_code']!=='CERA'){?>
+             <tr class="nhs-num-status" style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
+              <td>
+                  <?= $form->label($patient, 'nhs_num_status_id') ?>
+                <br/>
+                  <?= $form->error($patient, 'nhs_num_status_id') ?>
+              </td>
+              <td>
+                  <?= $form->dropDownList($patient, 'nhs_num_status_id', $nhs_num_statuses,
+                      array('empty' => '-- select --')); ?>
+              </td>
+            </tr>
+        <?php
+        }
+        ?>
         <?= $this->renderPartial('crud/_patient_identifiers', array(
                 'form' => $form,
                 'patient_identifiers' => $patient_identifiers,
@@ -320,116 +326,87 @@ foreach ($ethnic_list as $key=>$item){
                 </tbody>
             </table>
         </div>
+
         <div class="row divider">
             <table class="standard highlight-rows">
                 <tbody>
-        <tr>
-          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
-            <?= $form->label($referral, 'uploadedFile'); ?>
-            <br/>
-              <?= $form->error($referral, 'uploadedFile')?>
-          </td>
-          <td>
-            <?= $form->fileField($referral, 'uploadedFile'); ?>
-          </td>
-        </tr>
-        <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
-        <tr>
+
+        <tr id="js-patient-gp-row">
             <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
-                <?= $form->label($patient, 'patient_referral_id') ?>
+                <?php echo Yii::app()->params['gp_label']; ?>
                 <br/>
-                <?= $form->error($patient, 'patient_referral_id') ?>
-            </td>
-            <td>
-                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_pr_id']); ?>
-                <div id="selected_pr_wrapper" style="<?= !isset($patient->patient_referral_id) || ($patient->patient_referral_id === '') ? 'display: none;' : '' ?>">
-                    <ul class="oe-multi-select js-selected_pr">
-                        <li>
-                  <span class="js-name">
-                      <?= $patient->patient_referral_id ? Gp::model()->findByPk(array('id' => $patient->patient_referral_id))->getCorrespondenceName() : '' ?>
-                  </span>
-                            <i class="oe-i remove-circle small-icon pad-left js-remove-pr"></i>
-                        </li>
-                    </ul>
-                    <?= CHtml::hiddenField('Patient[patient_referral_id]', $patient->patient_referral_id, array('class' => 'hidden_id')) ?>
-                </div>
-                <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
-                <a id="js-add-pr-btn" href="#">Add Referring Practitioner</a>
-                <?php } ?>
-                <div id="no_pr_result" style="display: none;">
-                    <div>No result</div>
-                </div>
-            </td>
-        </tr>
-        <?php $isPRSameASGP = false;
-        if ( isset($patient->patient_referral_id) && isset($patient->gp_id) && ($patient->patient_referral_id !== '') && ($patient->gp_id !== '') && ($patient->patient_referral_id === $patient->gp_id)) {
-            $isPRSameASGP = true;
-        } ?>
-        <tr>
-            <td>
-                <?= CHtml::checkBox('is_pr_gp', $isPRSameASGP, array('data-child_row' => '#js-patient-gp-row')) ?>
-                Is Referring Practitioner patient's GP?
-            </td>
-        </tr>
-        <?php endif; ?>
-        <tr id="js-patient-gp-row" style="<?= Yii::app()->params['institution_code']=='CERA' && $isPRSameASGP ? 'display: none': ''; ?>">
-            <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
-                <?= $form->label($patient, 'gp_id') ?>
-                <br/>
-                <?= $form->error($patient, 'gp_id') ?>
+                <?php
+                /*
+                 * Add the errors to the gp label associated with gp first.
+                 * If there are no errors on the  GP label from gp_id, then add the errors associated with practice to the gp label itself.
+                 */
+                echo $form->error($patient, 'gp_id');
+                if (!empty($patient->gp_id)) {
+                    // No errors from GP, add errors from Practice.
+                    echo $form->error($patient, 'practice_id');
+                }
+                ?>
             </td>
             <td>
                 <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_gp_id']); ?>
-                <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
+                <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : 'color: white;' ?>">
                     <ul class="oe-multi-select js-selected_gp">
                         <li>
-                  <span class="js-name">
-                      <?= $patient->gp_id ? Gp::model()->findByPk(array('id' => $patient->gp_id))->getCorrespondenceName() : '' ?>
-                  </span>
+                            <span class="js-name" style="text-align:justify">
+                              <?php
+                                  if (($patient->gp_id)){
+                                    $gp = Gp::model()->findByPk(array('id' => $patient->gp_id));
+                                    $practice  = $gp->getAssociatePractice();
+                                    $practiceDetails = $gp->getAssociatedPractice($gp->id);
+                                    $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
+                                    $practiceNameAddress = $practice ? ($practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():''): '';
+                              ?>
+                                <?=$gp->getCorrespondenceName().$role.$practiceNameAddress?>
+                                <?php
+                                    }
+                                    else{
+                                      ?>
+                                        <?=''?>
+                                <?php
+                                    }
+                                ?>
+                            </span>
                             <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
                         </li>
                     </ul>
                     <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
                 </div>
+                <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
+                    <a id="js-add-contact-btn1" href="#">Add Referring Practitioner</a>
+                <?php } ?>
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
                 </div>
-                <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
-                <a id="js-add-gp-btn" href="#">
-                  <?= Yii::app()->params['institution_code']=='CERA'?
-                    "Add General Practitioner": "Add Referring Practitioner"; ?>
-                </a>
-                <?php } ?>
-            </td>
-        </tr>
-        <tr>
-          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
-              <?= $form->label($patient, 'practice_id') ?>
-            <br/>
-              <?= $form->error($patient, 'practice_id') ?>
-          </td>
-          <td>
-              <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_practice_id']); ?>
-            <div id="selected_practice_wrapper" style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
-              <ul class="oe-multi-select js-selected_practice">
-                <li>
-                  <span class="js-name">
+
+                <ul class="oe-multi-select js-selected_practice" style="display: none;">
+                    <li>
+                  <span id="prac_id" class="js-name">
                       <?= $patient->practice_id ? Practice::model()->findByPk(array('id' => $patient->practice_id))->getAddressLines() : '' ?>
                   </span>
-                  <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
-                </li>
-              </ul>
-                    <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
-                        array('class' => 'hidden_id')); ?>
-                </div>
-                <div id="no_practice_result" style="display: none;">
-                    <div>No result</div>
-                </div>
-                <?php if (Yii::app()->user->checkAccess('Create Practice')) { ?>
-                <a id="js-add-practice-btn" href="#">Add Practice</a>
-                <?php } ?>
+                    </li>
+                </ul>
+                <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
+                    array('class' => 'hidden_id')); ?>
+
             </td>
         </tr>
+
+        <tr>
+            <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
+                <?= $form->label($referral, 'uploadedFile'); ?>
+                <br/>
+                <?= $form->error($referral, 'uploadedFile')?>
+            </td>
+            <td>
+                <?= $form->fileField($referral, 'uploadedFile'); ?>
+            </td>
+        </tr>
+        
         <tr>
           <td>
             <?= $form->label($patientuserreferral, 'Referred to') ?>
@@ -466,7 +443,7 @@ foreach ($ethnic_list as $key=>$item){
                     <?= $form->label($patient, 'created_date') ?>
                 </td>
                 <td>
-                    <label for="patient_create_date"><?= date("d-M-Y", strtotime($patient->created_date))?></label>
+                    <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($patient->created_date))?></label>
                 </td>
             </tr>
             <tr>
@@ -474,14 +451,52 @@ foreach ($ethnic_list as $key=>$item){
                     <?= $form->label($patient, 'last_modified_date') ?>
                 </td>
                 <td>
-                    <label for="patient_create_date"><?= date("d-M-Y", strtotime($patient->last_modified_date))?></label>
+                    <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($patient->last_modified_date))?></label>
                 </td>
             </tr>
         <?php } ?>
+
+        <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
+            <tr>
+                <td>
+                    <label for="contact">Other Practitioner Contacts</label>
+                </td>
+                <td>
+                    <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_extra_gps_id']); ?>
+                    <div id="selected_extra_gps_wrapper">
+                        <ul class="oe-multi-select js-selected_extra_gps">
+                            <?php
+                            if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)){
+                                foreach ($patient->patientContactAssociates as $patientContactAssociate){
+                                    $gp = $patientContactAssociate->gp;
+                                    $practice  = $gp ? $gp->getAssociatePractice() : '';
+                                    $practiceDetails = $gp ? $gp->getAssociatedPractice($gp->id) : '';
+                                    $practiceNameAddress = $practice ? ($practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():''): '';
+                                    $role = $gp ? $gp->getGPROle()?' - '.$gp->getGPROle() :'' : '' ;
+                                    //The line below is to ensure a newly added referring practitioner does not show up in the list of contacts also
+                                    if($gp && $gp->id != $patient->gp_id){
+                                        ?>
+                                        <li><span class="js-name" style="text-align:justify"><?=$gp->getCorrespondenceName().$role.$practiceNameAddress?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
+                                    <?php }
+                                }
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                    <?php if (Yii::app()->user->checkAccess('Create GP')) { ?>
+                        <a id="js-add-contact-btn2" href="#">Add New Practitioner Contact</a>
+                    <?php } ?>
+                    <div id="no_extra_gps_result" style="display: none;">
+                        <div>No result</div>
+                    </div>
+                </td>
+            </tr>
+        <?php endif; ?>
         </tbody>
       </table>
     </div>
-    <div class="row flex-layout flex-right">
+    <div class="row flex-layout">
+        <?= CHtml::link('Cancel', ( $patient->isNewRecord ? Yii::app()-> baseURL . '/' : ( isset($prevUrl) ? Yii::app()->createUrl($prevUrl) : null ) ), array('class' => 'button blue hint')); ?>
         <?= CHtml::submitButton($patient->isNewRecord ? 'Create new patient' : 'Save patient',
             array('class' => 'button green hint')); ?>
     </div>
@@ -490,16 +505,20 @@ foreach ($ethnic_list as $key=>$item){
 <?php $this->endWidget(); ?>
 <script>
     OpenEyes.UI.AutoCompleteSearch.init({
-        input: $('#autocomplete_pr_id'),
+        input: $('#autocomplete_extra_gps_id'),
         url: '/patient/gpList',
         maxHeight: '200px',
         onSelect: function(){
             let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-            removeSelectedGP('pr');
-            addItemPatientForm('selected_pr_wrapper', {item: AutoCompleteResponse});
-            if ($('#is_pr_gp').is(':checked')){
-                removeSelectedGP();
-                addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse});
+            let addGp = true;
+            $.each($('.js-extra-gps'),function () {
+                if ($(this)[0].value == AutoCompleteResponse.value){
+                    addGp = false;
+                    return addGp;
+                }
+            });
+            if(addGp){
+                addExtraGp('js-selected_extra_gps',AutoCompleteResponse.value);
             }
         }
     });
@@ -510,7 +529,7 @@ foreach ($ethnic_list as $key=>$item){
       onSelect: function(){
       let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
       removeSelectedGP();
-      addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse});
+      addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse}, true);
     }
   });
   OpenEyes.UI.AutoCompleteSearch.init({
@@ -557,6 +576,26 @@ $this->renderPartial('../gp/create_gp_form',
 ?>
 
 
+<?php
+$extra_gp_contact = new Contact('manage_gp');
+$extra_practice = new Practice('manage_practice');
+$extra_practice_address = new Address('manage_practice');
+$extra_practice_contact = new Contact('manage_practice');
+$extra_practice_associate = new ContactPracticeAssociate();
+$this->renderPartial('../patient/crud/create_contact_form',
+    array(
+        'extra_gp_contact' => $extra_gp_contact,
+        'extra_practice'=>$extra_practice,
+        'extra_practice_address'=>$extra_practice_address,
+        'extra_practice_contact'=>$extra_practice_contact,
+        'extra_practice_associate' => $extra_practice_associate,
+        'context' => 'AJAX',
+    ),
+    false);
+?>
+
+
+
 
 
 <script>
@@ -565,7 +604,6 @@ $this->renderPartial('../gp/create_gp_form',
         $("#gp-form")[0].reset();
         $("#errors").text("");
         $(".alert-box").css("display","none");
-        console.log($('.js-add-practitioner-event'));
         $('.js-add-practitioner-event').css('display','none');
 
     });
@@ -576,13 +614,37 @@ $this->renderPartial('../gp/create_gp_form',
         return false;
     });
 
-    $('#js-add-pr-btn').click(function(event){
-        $('#js-add-gp-event').css('display','');
-        $('#gp_adding_title').data('type','pr');
-        $('#gp_adding_title').html('Add Referring Practitioner')
+    $('#js-add-contact-btn1').click(function(event){
+        $('#extra_gp_adding_title').text("Add Referring Practitioner");
+        $('#extra_gp_adding_form').css('display','');
         return false;
     });
 
+    $('#js-add-contact-btn2').click(function(event){
+        $('#extra_gp_adding_title').text("Add New Practitioner Contact");
+        $('#extra_gp_adding_form').css('display','');
+        return false;
+    });
+
+
+    $('.js-cancel-add-contact').click(function(event){
+        event.preventDefault();
+        extraContactFormCleaning();
+        $(".js-extra-practice-gp-id").val("");
+        // clearing the selected gp role id if user has closed the popup.
+        $(".js-extra-gp-contact-label-id").val("");
+    });
+
+    $('#js-add-extra-practice-btn').click(function(event){
+        event.preventDefault();
+        extraContactFormCleaning();
+        $('#extra_practice_adding_new_form').css('display','');
+    });
+
+    $('.js-remove-extra-gps').click(function(event){
+        event.preventDefault();
+        $(this).parent('li').remove();
+    });
 
   function findDuplicates(id) {
     var first_name = $('#Contact_first_name').val();
@@ -621,6 +683,65 @@ $this->renderPartial('../gp/create_gp_form',
         $wrapper.find('.js-name').text(JsonObj.label);
         $wrapper.show();
         $wrapper.find('.hidden_id').val(JsonObj.id);
+    }
+
+    function addExtraGp(id, gpId){
+        $.ajax({
+            url: "<?php echo Yii::app()->controller->createUrl('practiceAssociate/getGpWithPractice'); ?>",
+            data: {gp_id : gpId},
+            type: 'GET',
+            success: function (response) {
+                response = JSON.parse(response);
+                if(id == 'js-selected_gp'){
+                    $('.'+id).html(response.content);
+                }else if(id == 'js-selected_extra_gps'){
+                    $('.'+id).append(response.content);
+                }
+                $('#js-remove-extra-gp-'+response.gp_id).click(function(){
+                    // If else condition is added to handle both the cases (i.e. when removing contact/gp) as they have been implemented differently.
+                    if(id == 'js-selected_gp'){
+                        // For Gp
+                        $(this).parent('li').find('span').text('');
+                        $(this).parent('li').find('input').remove();
+                        $(this).parent('li').hide();
+                    } else {
+                        // For contacts
+                        $(this).parent('li').remove();
+                    }
+                });
+                if(id == 'js-selected_gp'){
+                    var wrapper = $('#selected_gp_wrapper');
+                    wrapper.find('.js-name').text(response.label);
+                    wrapper.find('.hidden_id').val(response.gp_id);
+                    $('#Patient_practice_id').val(response.practice_id);
+                    $('#prac_id').val(response.practice_id);
+                    wrapper.show();
+                }
+            }
+        }
+        )
+    }
+    
+    function extraContactFormCleaning(){
+        $("#extra-gp-form")[0].reset();
+        $("#extra_gp_errors").text("");
+        $("#extra_gp_practitioner-alert-box").css("display","none");
+        $('#extra_gp_adding_form').css('display','none');
+        $('#extra_gp_selected_contact_label_wrapper').css('display','none');
+        $('#extra_gp_selected_contact_label_wrapper').find('.js-name').html("");
+
+        $("#extra-adding-existing-practice-form")[0].reset();
+        $("#extra-existing-practice-errors").text("");
+        $("#extra-existing-practice-alert-box").css("display","none");
+        $('#extra_practice_adding_existing_form').css('display','none');
+        $('.js-selected-practice-associate').find('li').remove();
+
+
+        $("#extra-adding-practice-form")[0].reset();
+        $("#extra-practice-errors").text("");
+        $("#extra-practice-practice-alert-box").css("display","none");
+        $('#extra_practice_adding_new_form').css('display','none');
+        $("#extra_practice_adding_existing_form")
     }
 
 </script>

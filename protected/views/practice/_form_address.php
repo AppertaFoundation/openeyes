@@ -29,7 +29,7 @@
   </td>
   <td>
       <?php echo $form->dropDownList($address, 'address_type_id', $address_type_ids,
-          array('empty' => '-- select --')); ?>
+          array('empty' => '-- select --', 'class' => 'cols-10')); ?>
   </td>
 <tr>
 <tr>
@@ -37,7 +37,7 @@
       <?= $form->labelEx($address, 'address1') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1')) ?>
+      <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1', 'class' => 'cols-10')) ?>
       <?= $form->error($address, 'address1') ?>
   </td>
 </tr>
@@ -47,7 +47,7 @@
       <?= $form->labelEx($address, 'address2') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2')) ?>
+      <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2', 'class' => 'cols-10')) ?>
       <?= $form->error($address, 'address2') ?>
   </td>
 </tr>
@@ -56,7 +56,7 @@
       <?= $form->labelEx($address, 'city') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City')) ?>
+      <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City', 'class' => 'cols-10')) ?>
       <?= $form->error($address, 'city') ?>
   </td>
 </tr>
@@ -66,7 +66,7 @@
       <?= $form->labelEx($address, 'postcode') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode')) ?>
+      <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode', 'class' => 'cols-10')) ?>
       <?= $form->error($address, 'postcode') ?>
   </td>
 </tr>
@@ -76,7 +76,7 @@
       <?= $form->labelEx($address, Yii::app()->params['county_label']) ?>
   </td>
   <td>
-      <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'))) ?>
+      <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'), 'class' => 'cols-10')) ?>
       <?= $form->error($address, Yii::app()->params['county_label']) ?>
   </td>
 </tr>
@@ -88,7 +88,7 @@
   <td>
       <?= $form->dropDownList($address, 'country_id', $countries, (in_array(Yii::app()->params['default_country'],$countries)) ?
           array('options' => array(array_search(Yii::app()->params['default_country'], $countries)=>array('selected'=>true)),
-              'placeholder' => 'Country') : array('empty' => '-- select --'))  ?>
+              'placeholder' => 'Country', 'class' => 'cols-10') : array('empty' => '-- select --', 'class' => 'cols-10'))  ?>
       <?= $form->error($address, 'country_id') ?>
   </td>
 </tr>

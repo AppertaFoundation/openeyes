@@ -212,31 +212,42 @@ class Trial extends BaseActiveRecordVersioned
    */
   protected function afterSave()
   {
-    parent::afterSave();
+      parent::afterSave();
 
-    if ($this->getIsNewRecord()) {
+      if ($this->getIsNewRecord()) {
 
-      // Create a new permission assignment for the user that created the Trial
-      $current_user_id = Yii::app()->user->id;
-      $admin_user_group = User::model()->findAllByRoles(array('admin'));
-      if (!in_array($current_user_id,$admin_user_group)){
-          array_push($admin_user_group,$current_user_id);
-      }
-      foreach ($admin_user_group as $user_id){
-          $newPermission = new UserTrialAssignment();
-          $newPermission->user_id = $user_id;
-          $newPermission->trial_id = $this->id;
-          $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
-          if ($user_id == $current_user_id){
-              $newPermission->role = 'Trial Owner';
-              $newPermission->is_principal_investigator = 1;
+          // Create a new permission assignment for the user that created the Trial
+          if(array_key_exists('principal_investigator',$_SESSION) && !empty($_SESSION['principal_investigator'])) {
+              $current_user_id = $_SESSION['principal_investigator'];
+          } else {
+              $current_user_id =  Yii::app()->user->id;
           }
-          if (!$newPermission->save()) {
-              throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
-                  . print_r($newPermission->getErrors(), true));
+
+          // unsetting the session, so that if it is empty for the next row it won't insert the principal investigator that was entered for the previous row for the trial import.
+          unset($_SESSION['principal_investigator']);
+
+          $admin_user_group = User::model()->findAllByRoles(array('admin'));
+          if (!in_array($current_user_id,$admin_user_group)){
+              array_push($admin_user_group,$current_user_id);
+          }
+          foreach ($admin_user_group as $user_id){
+              $newPermission = new UserTrialAssignment();
+              $newPermission->user_id = $user_id;
+              $newPermission->trial_id = $this->id;
+              $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
+              if ($user_id == $current_user_id){
+                  // Always make the current user as the owner of the trial.
+                  if (Yii::app()->user->id == $user_id) {
+                      $newPermission->role = 'Trial Owner';
+                  }
+                  $newPermission->is_principal_investigator = 1;
+              }
+              if (!$newPermission->save()) {
+                  throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
+                      . print_r($newPermission->getErrors(), true));
+              }
           }
       }
-    }
   }
 
   /**

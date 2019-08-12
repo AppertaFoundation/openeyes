@@ -100,7 +100,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
 
     <td> <!-- Comment -->
         <div class="add-data-actions">
-            <button id="trial_patient_comment_button" type="button">
+            <button id="trial_patient_comment_button" type="button" <?php if($data->comment != null) echo 'class="hint green"'; ?> >
                 <i class="oe-i comments small-icon"></i>
             </button>
         </div>

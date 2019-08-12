@@ -1,4 +1,4 @@
-<tr id="conflicts" class="cols-full error" style="font-style: italic; font-size: small;">
+<tr id="conflicts" class="cols-full alert-box error" style="font-style: italic; font-size: small;">
     <?php if (isset($patients)): ?>
         <td class="row field-row">
             <p>Duplicate patient detected.</p>

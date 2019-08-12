@@ -29,7 +29,7 @@ class PracticeController extends BaseController
             array(
                 'allow',
                 // allow users with either the TaskCreatePractice or TaskAddPatient roles to perform 'create' actions
-                'actions' => array('create'),
+                'actions' => array('create','createAssociate'),
                 'roles' => array('TaskCreatePractice', 'TaskAddPatient'),
             ),
             array(
@@ -93,6 +93,51 @@ class PracticeController extends BaseController
     }
 
     /**
+     * This function is called at the final step of Add New Contact/Referring Practitioner when user wants to add new
+     * practice and saves all the data (i.e. Contact, Gp, Contact Practice Associate)
+     */
+    public function actionCreateAssociate(){
+        if (isset($_POST['Contact'])) {
+            $gp = new Gp();
+            $contact = new Contact('manage_gp');
+
+            $contact->title = $_POST['Contact']['contact_title'];
+            $contact->first_name = $_POST['Contact']['contact_first_name'];
+            $contact->last_name = $_POST['Contact']['contact_last_name'];
+            $contact->primary_phone = $_POST['Contact']['contact_primary_phone'];
+            $contact->contact_label_id = $_POST['Contact']['contact_label_id'];
+
+            list($contact, $gp) = $gp->performGpSave($contact, $gp, true);
+
+            $contactPractice = new Contact('manage_practice');
+            $address = new Address('manage_practice');
+            $practice = new Practice('manage_practice');
+            $this->performAjaxValidation(array($practice, $contactPractice, $address));
+
+            if (isset($_POST['Contact'])) {
+                $contactPractice->first_name = $_POST['Contact']['first_name'];
+                $contactPractice->primary_phone = $_POST['Contact']['primary_phone'];
+                $address->attributes = $_POST['Address'];
+                $practice->attributes = $_POST['Practice'];
+                list($contactPractice, $practice, $address) = $this->performPracticeSave($contactPractice, $practice, $address,
+                    true);
+            }
+
+            if (isset($practice->contact)) {
+                $practice_contact_associate = new ContactPracticeAssociate();
+                $practice_contact_associate->gp_id = $gp->getPrimaryKey();
+                $practice_contact_associate->practice_id = $practice->id;
+                if ($practice_contact_associate->save()) {
+                    echo CJSON::encode(array(
+                        'gp_id' => $practice_contact_associate->gp->getPrimaryKey(),
+                    ));
+                }
+            }
+        }
+    }
+
+
+    /**
      * @param Contact $contact
      * @param Practice $practice
      * @param Address $address
@@ -103,9 +148,6 @@ class PracticeController extends BaseController
     public function performPracticeSave(Contact $contact, Practice $practice, Address $address, $isAjax = false)
     {
         $action = $practice->isNewRecord ? 'add' : 'edit';
-        if (!$practice->code) {
-            $practice->code = 'CERA'; // This will be the same for ALL practices added through the frontend. But only change it if it isn't already set!
-        }
         $transaction = Yii::app()->db->beginTransaction();
         try {
             if ($contact->save()) {

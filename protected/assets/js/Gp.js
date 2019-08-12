@@ -2,7 +2,7 @@ function removeSelectedContactLabel() {
     $('#no_contact_label_result').hide();
     $('.selected_contact_label span.name').text('');
     $('#selected_contact_label_wrapper').hide();
-    $('#Contact_contact_label_id').val('-1');
+    $('#Contact_contact_label_id').val('');
 }
 function addItem(wrapper_id, ui){
     var $wrapper = $('#' + wrapper_id);

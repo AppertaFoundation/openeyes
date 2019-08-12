@@ -18,7 +18,7 @@
 class WorklistController extends BaseAdminController
 {
     public $items_per_page = 30;
-    public $group = 'Worklists';
+    public $group = 'Worklist';
 
     /**
      * @var WorklistManager

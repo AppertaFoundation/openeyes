@@ -32,7 +32,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     <?php if ($this->patient->nhsNumberStatus): ?>
         <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
             <i class="oe-i exclamation pad-right no-click medium-icon"></i><b>
-                NHS Number: <?= $this->patient->nhsNumberStatus->description; ?></b>
+                <?php echo Yii::app()->params['nhs_num_label'] . ((Yii::app()->params['institution_code']==='CERA')? '' : ' Number') ?>: <?= $this->patient->nhsNumberStatus->description; ?></b>
         </div>
     <?php endif; ?>
     <?php if (count($this->patient->identifiers) > 0) { ?>
@@ -80,18 +80,22 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <td>Telephone</td>
             <td><?= !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown' ?></td>
           </tr>
-          <tr>
-            <td>Mobile</td>
-            <td>Unknown</td>
-          </tr>
+          <?php if (Yii::app()->params['institution_code'] !== 'CERA'): ?>
+              <tr>
+                <td>Mobile</td>
+                <td>Unknown</td>
+              </tr>
+          <?php endif; ?>
           <tr>
             <td>Email</td>
             <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
           </tr>
-          <tr>
-            <td>Next of kin</td>
-            <td>Unknown</td>
-          </tr>
+          <?php if (Yii::app()->params['institution_code'] !== 'CERA'): ?>
+              <tr>
+                <td>Next of kin</td>
+                <td>Unknown</td>
+              </tr>
+          <?php endif; ?>
           </tbody>
         </table>
       </div><!-- .popup-overflow -->
@@ -105,52 +109,78 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 
         <table class="patient-demographics" style="position: relative; right: 0; cursor: default;">
           <tbody>
-          <?php if(isset($this->patient->patient_referral_id) && Yii::app()->params['institution_code'] === 'CERA'){ ?>
-          <tr>
-              <td><?php echo 'Referring '.Yii::app()->params['general_practitioner_label'] ?></td>
-              <td><?= $this->patient->patient_referral ? $this->patient->patient_referral->contact->fullName : 'Unknown'; ?></td>
-          </tr>
-          <tr>
-              <td><?php echo 'Referring '.Yii::app()->params['general_practitioner_label'].' Role' ?></td>
-              <td><?= ($this->patient->patient_referral && $this->patient->patient_referral->contact->label) ? $this->patient->patient_referral->contact->label->name : 'Unknown'; ?></td>
-          </tr>
-          <tr>
-              <td><?php echo 'Referring '.Yii::app()->params['gp_label']?> Address</td>
-              <td><?= ($this->patient->patient_referral && $this->patient->patient_referral->contact->address) ? $this->patient->patient_referral->contact->address->letterLine : 'Unknown'; ?></td>
-          </tr>
-          <tr>
-              <td><?php echo 'Referring '.Yii::app()->params['gp_label']?> Telephone</td>
-              <td><?= ($this->patient->gp && $this->patient->patient_referral->contact->primary_phone) ? $this->patient->patient_referral->contact->primary_phone : 'Unknown'; ?></td>
-          </tr>
-          <?php } ?>
-          <tr>
-            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
-            <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
-          </tr>
-          <tr>
-              <td><?php echo Yii::app()->params['general_practitioner_label'].' Role' ?></td>
-              <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
-          </tr>
-          <tr>
-            <td><?php echo Yii::app()->params['gp_label']?> Address</td>
-            <td><?= ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></td>
-          </tr>
-          <tr>
-            <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
-            <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
-          </tr>
+              <tr>
+                  <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                  <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
+              </tr>
+              <tr>
+                  <td><?php echo Yii::app()->params['general_practitioner_label'].' Role' ?></td>
+                  <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
+              </tr>
+              <?php if (($this->patient->gp_id)) {
+                  $gp = Gp::model()->findByPk(array('id' => $this->patient->gp_id));
+                  $practice = $gp->getAssociatePractice();
+              }?>
+              <tr>
+                  <td><?php echo Yii::app()->params['gp_label']?> Address</td>
+                  <td> <?= isset($practice) ? $practice->getAddresslines() : 'Unknown' ?></td>
+              </tr>
+              <tr>
+                  <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
+                  <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
+              </tr>
           <?php if (isset($this->referredTo)){ ?>
               <tr>
                   <td><?php echo 'Referred to '?></td>
                   <td><?php echo $this->referredTo->getFullNameAndTitle();?></td>
               </tr>
           <?php }?>
+          <?php
+          if (isset($this->patient->patientContactAssociates) && Yii::app()->params['institution_code'] == 'CERA') {
+              $index = 1;
+              foreach ($this->patient->patientContactAssociates as $pca) {
+                  if ($index > 3) {
+                      break;
+                  }
+//                  Removed the check for other practitioner not being the same as a referring practitioner and a check for whether
+//                  a  a ref prac id is set as this was causing no contacts to be displayed - CERA-504
+                  if (isset($pca->gp)) {
+                      $gp = $pca->gp; ?>
+                      <tr>
+                          <td>
+                              Other Practitioner <br> Contact <?= $index; ?>
+                          </td>
+                          <td>
+                              <div>
+                                  <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
+                              </div>
+                              <?php
+                              if (isset($gp->contactPracticeAssociate)) {
+                                  $practice = $gp->contactPracticeAssociate->practice;
+                                  if (isset($practice)) {
+                                      $address = $practice->contact->address;
+                                      ?>
+                                      <div>
+                                          <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
+                                      </div>
+                                      <?php
+                                  }
+                              } ?>
+                          </td>
+                      </tr>
+                      <?php
+                      $index += 1;
+                  }
+              }
+          }
+          ?>
           <tr>
               <td>
                   Created Date:
               </td>
               <td>
-                  <label for="patient_create_date"><?= date("d-M-Y", strtotime($this->patient->created_date))?></label>
+<!--                  Added a timestamp for create date and modified date -- CERA-490 -->
+                  <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($this->patient->created_date))?></label>
               </td>
           </tr>
           <tr>
@@ -158,7 +188,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                   Last Modified Date:
               </td>
               <td>
-                  <label for="patient_create_date"><?= date("d-M-Y", strtotime($this->patient->last_modified_date))?></label>
+                  <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($this->patient->last_modified_date))?></label>
               </td>
           </tr>
           </tbody>
