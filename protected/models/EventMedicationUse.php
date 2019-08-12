@@ -361,9 +361,7 @@ class EventMedicationUse extends BaseElement
 
     public function getStart_date()
     {
-        return is_null($this->start_date) ? null : substr($this->start_date, 0, 4).'-'
-                .substr($this->start_date, 4, 2).'-'
-                .substr($this->start_date, 6, 2);
+        return is_null($this->start_date) ? null : $this->start_date;
     }
 
     public function getStartDateDisplay()
