@@ -100,7 +100,7 @@
     <script>
         $(document).ready(function () {
             $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function () {
-                var id = $(this).closest('tr').data('id');
+                let id = $(this).closest('tr').data('id');
                 window.location.href = '/OphCiExamination/admin/PupillaryAbnormalityAssignment/update/' + id;
             });
         });

@@ -45,13 +45,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     PupillaryAbnormalitiesController.prototype.initialiseTriggers = function () {
-        var controller = this;
+        let controller = this;
 
         $(document).ready(function () {
 
             $('.side').each(function () {
-                var side = $(this).attr('data-side');
-                var table = $('.' + side + '-eye ' + controller.entryTableSelector);
+                let side = $(this).attr('data-side');
+                let table = $('.' + side + '-eye ' + controller.entryTableSelector);
 
                 if ($('#' + controller.options.modelName + '_' + side + '_no_pupillaryabnormalities').prop('checked')) {
                     table.find('tr:not(:first-child)').hide();
@@ -62,8 +62,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         this.noAbnormalities.on('click', function (e) {
-            var side = $(this).closest('.side').attr('data-side');
-            var table = $('.' + side + '-eye ' + controller.entryTableSelector);
+            let side = $(this).closest('.side').attr('data-side');
+            let table = $('.' + side + '-eye ' + controller.entryTableSelector);
 
             if ($(this).prop('checked')) {
                 table.find('tr:not(:first-child)').hide();
@@ -79,7 +79,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         this.entryTable.on('click', 'i.trash', function (e) {
-            var side = $(this).closest('.side').attr('data-side');
+            let side = $(this).closest('.side').attr('data-side');
 
             $(this).closest('tr').remove();
             controller.dedupeAbnormalitiesSelector('.' + side + '-eye');
@@ -88,13 +88,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         this.entryTable.on('change', 'input[type=radio]', function () {
-            var side = $(this).closest('.side').attr('data-side');
+            let side = $(this).closest('.side').attr('data-side');
             controller.updateNoAbnormality(side);
         });
     };
 
     PupillaryAbnormalitiesController.prototype.setRadioButtonsToNo = function (table) {
-        console.log(table.find('input[type=radio]'));
         table.find('input[type=radio]').each(function () {
             if ($(this).val() === "0") {
                 $(this).prop('checked', true);
@@ -103,11 +102,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     PupillaryAbnormalitiesController.prototype.dedupeAbnormalitiesSelector = function (side) {
-        var abnormalitySelector = this.abnormalitySelector;
-        var selectedAbnormalities = [];
+        let abnormalitySelector = this.abnormalitySelector;
+        let selectedAbnormalities = [];
 
         $(side + abnormalitySelector).each(function () {
-            var value = this.getAttribute('value');
+            let value = this.getAttribute('value');
             selectedAbnormalities.push(value);
         });
 
@@ -121,13 +120,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     PupillaryAbnormalitiesController.prototype.createRows = function (selectedItems, tableSelector) {
-        var newRows = [];
-        var side = $(tableSelector.split(' ')[0]).attr('data-side');
-        var eye_id = (side === "left") ? 1 : 2;
-        var template = this.templateText;
+        let newRows = [];
+        let side = $(tableSelector.split(' ')[0]).attr('data-side');
+        let eye_id = (side === "left") ? 1 : 2;
+        let template = this.templateText;
 
         $(selectedItems).each(function () {
-            var data = {};
+            let data = {};
             data.side = side;
             data.row_count = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key') + newRows.length;
             data.abnormality_id = this.id;
@@ -139,7 +138,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     PupillaryAbnormalitiesController.prototype.addEntry = function (tableSelector, selectedItems) {
-        var side = $(tableSelector.split(' ')[0]).attr('data-side');
+        let side = $(tableSelector.split(' ')[0]).attr('data-side');
 
         $(tableSelector + ' tbody').append(this.createRows(selectedItems, tableSelector));
         $('.flex-item-bottom').find('.selected').removeClass('selected');
@@ -149,8 +148,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     PupillaryAbnormalitiesController.prototype.isAbnormalitiesChecked = function (value, side){
-        var valueChecked = false;
-        var table = $('.' + side + '-eye ' + this.entryTableSelector);
+        let valueChecked = false;
+        let table = $('.' + side + '-eye ' + this.entryTableSelector);
 
         table.find('input[type=radio]:checked , input[type=hidden][id$="has_abnormality"]').each(function () {
             if ($(this).val() === value) {
@@ -162,8 +161,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     PupillaryAbnormalitiesController.prototype.updateNoAbnormality = function (side) {
-        var wrapper = $(this.noAbnormalitiesWrapper + side);
-        var field = $('#' + this.options.modelName + '_' + side + '_no_pupillaryabnormalities');
+        let wrapper = $(this.noAbnormalitiesWrapper + side);
+        let field = $('#' + this.options.modelName + '_' + side + '_no_pupillaryabnormalities');
 
         if (wrapper.prop('checked')) {
             field.prop('checked', false);

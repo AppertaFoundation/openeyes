@@ -131,12 +131,12 @@
                 }
             ],
         ];
-        $dataProvider = new \CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationPupillaryAbnormalitySetEntry');
-        $dataProvider->setData($model->entries);
+        $data_provider = new \CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationPupillaryAbnormalitySetEntry');
+        $data_provider->setData($model->entries);
 
         ?>
         <?php $this->widget('zii.widgets.grid.CGridView', [
-            'dataProvider' => $dataProvider,
+            'dataProvider' => $data_provider,
             'itemsCssClass' => 'generic-admin standard',
             //'template' => '{items}',
             "emptyTagName" => 'span',
@@ -210,10 +210,10 @@
 
 <script>
     $(document).ready(function () {
-        var $table = $('table.generic-admin');
+        let $table = $('table.generic-admin');
 
         $('#add_new_abnormality').on('click', function (e) {
-            var data = {}, $row
+            let data = {}, $row
             $table = $('table.generic-admin');
 
             data['row'] = OpenEyes.Util.getNextDataKey($table.find('tbody tr'), 'row');
@@ -233,7 +233,7 @@
         });
 
         $(this).on('change', '#subspecialty-id', function (e) {
-            var subspecialty_id = $(this).val();
+            let subspecialty_id = $(this).val();
 
             if (subspecialty_id === '') {
                 $('#firm-id option').remove();

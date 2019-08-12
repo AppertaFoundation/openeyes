@@ -71,8 +71,8 @@ class m190730_084706_upgrade_pupil_element extends OEMigration
 
 
         // Data migration
-        $dataProvider = new CActiveDataProvider('OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities');
-        $iterator = new CDataProviderIterator($dataProvider);
+        $data_provider = new CActiveDataProvider('OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities');
+        $iterator = new CDataProviderIterator($data_provider);
 
         foreach ($iterator as $item) {
             foreach (['left', 'right'] as $side) {

@@ -1255,9 +1255,9 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidatePupillaryAbnormalitiesFromData($data, $errors){
         $et_name = models\PupillaryAbnormalities::model()->getElementTypeName();
         $data = $data['OEModule_OphCiExamination_models_PupillaryAbnormalities'];
-        $pupillaryAbnormalities = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PupillaryAbnormalities');
+        $pupillary_abnormalities = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PupillaryAbnormalities');
 
-        $pupillaryAbnormalities->eye_id = $data['eye_id'];
+        $pupillary_abnormalities->eye_id = $data['eye_id'];
 
         foreach (['left', 'right'] as $side) {
             if (isset($data['entries_' . $side])) {
@@ -1272,16 +1272,16 @@ class DefaultController extends \BaseEventTypeController
                         $entryErrors = $entry->getErrors();
                         foreach ($entryErrors as $entryErrorAttributeName => $entryErrorMessages) {
                             foreach ($entryErrorMessages as $entryErrorMessage) {
-                                $pupillaryAbnormalities->addError("entries_{$side}_" . $index . '_' . $entryErrorAttributeName, $entryErrorMessage);
+                                $pupillary_abnormalities->addError("entries_{$side}_" . $index . '_' . $entryErrorAttributeName, $entryErrorMessage);
                             }
                         }
                     }
                 }
-                $pupillaryAbnormalities->{'entries_' . $side} = $entries;
+                $pupillary_abnormalities->{'entries_' . $side} = $entries;
 
             } else {
                 if (isset($data[$side . '_no_pupillaryabnormalities'])) {
-                    $pupillaryAbnormalities->{'no_pupillaryabnormalities_date_' . $side} = $data[$side . '_no_pupillaryabnormalities'];
+                    $pupillary_abnormalities->{'no_pupillaryabnormalities_date_' . $side} = $data[$side . '_no_pupillaryabnormalities'];
                 }
             }
         }
