@@ -34,26 +34,26 @@ class PracticeAssociateController extends BaseController
      */
     public function actionCreate(){
         if (isset($_POST['Contact'])) {
-            $contactFormData = $_POST['Contact'];
+            $contact_practice_associate = new ContactPracticeAssociate();
+            $contact_practice_associate->practice_id = $_POST['PracticeAssociate']['practice_id'];
 
-            $gp = new Gp();
-            $contact = new Contact('manage_gp');
+            if ($contact_practice_associate->validate(array('practice_id'))) {
 
-            $contact->attributes = $contactFormData;
+                $contactFormData = $_POST['Contact'];
+                $gp = new Gp();
+                $contact = new Contact('manage_gp');
+                $contact->attributes = $contactFormData;
 
-            list($contact, $gp) = $gp->performGpSave($contact, $gp,  true);
-
-            if (isset($_POST['PracticeAssociate'])) {
-                $contact_practice_associate = new ContactPracticeAssociate();
+                list($contact, $gp) = $this->performGpSave($contact, $gp,  true);
                 $contact_practice_associate->gp_id = $gp->getPrimaryKey();
-                $contact_practice_associate->practice_id = $_POST['PracticeAssociate']['practice_id'];
+
                 if ($contact_practice_associate->save()) {
                     echo CJSON::encode(array(
                         'gp_id' => $contact_practice_associate->gp_id,
                     ));
-                } else {
-                    echo CJSON::encode(array('error' => $contact_practice_associate->getError('practice_id')));
                 }
+            } else {
+                echo CJSON::encode(array('error' => $contact_practice_associate->getError('practice_id')));
             }
         }
     }
@@ -75,6 +75,65 @@ class PracticeAssociateController extends BaseController
             $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i><input type="hidden" class="js-extra-gps" name="ExtraContact[gp_id][]" value="'.$gp_id.'"></li>';
         }
         echo CJSON::encode($return_array);
+    }
+
+    /**
+     * @param Contact $contact
+     * @param Gp $gp
+     * @param bool $isAjax
+     * @return array
+     * @throws CException
+     */
+    public function performGpSave(Contact $contact, Gp $gp, $isAjax = false)
+    {
+        $action = $gp->isNewRecord ? 'add' : 'edit';
+        $transaction = Yii::app()->db->beginTransaction();
+
+        try {
+            if ($contact->save()) {
+                // No need to re-set these values if they already exist.
+                if ($gp->contact_id === null) {
+                    $gp->contact_id = $contact->getPrimaryKey();
+                }
+
+                if ($gp->nat_id === null) {
+                    $gp->nat_id = 0;
+                }
+
+                if ($gp->obj_prof === null) {
+                    $gp->obj_prof = 0;
+                }
+
+                if ($gp->save()) {
+                    $transaction->commit();
+                    Audit::add('Gp', $action . '-gp', "Practitioner manually [id: $gp->id] {$action}ed.");
+                    if (!$isAjax) {
+                        $this->redirect(array('view','id'=>$gp->id));
+                    }
+                } else {
+                    if ($isAjax) {
+                        throw new CHttpException(400,"Unable to save Practitioner contact");
+                    }
+                    $transaction->rollback();
+                }
+            } else {
+                if ($isAjax) {
+                    throw new CHttpException(400,CHtml::errorSummary($contact));
+                }
+                $transaction->rollback();
+            }
+        } catch (Exception $ex) {
+            OELog::logException($ex);
+            $transaction->rollback();
+            if ($isAjax) {
+                if (strpos($ex->getMessage(),'errorSummary')){
+                    echo $ex->getMessage();
+                }else{
+                    echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
+                }
+            }
+        }
+        return array($contact, $gp);
     }
 
 }
