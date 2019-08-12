@@ -436,25 +436,6 @@ foreach ($ethnic_list as $key=>$item){
             </div>
           </td>
         </tr>
-        <?php
-        if(Yii::app()->controller->action->id == 'update'){?>
-            <tr>
-                <td>
-                    <?= $form->label($patient, 'created_date') ?>
-                </td>
-                <td>
-                    <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($patient->created_date))?></label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <?= $form->label($patient, 'last_modified_date') ?>
-                </td>
-                <td>
-                    <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($patient->last_modified_date))?></label>
-                </td>
-            </tr>
-        <?php } ?>
 
         <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
             <tr>
@@ -492,6 +473,26 @@ foreach ($ethnic_list as $key=>$item){
                 </td>
             </tr>
         <?php endif; ?>
+
+        <?php
+        if(Yii::app()->controller->action->id == 'update'){?>
+            <tr>
+                <td>
+                    <?= $form->label($patient, 'created_date') ?>
+                </td>
+                <td>
+                    <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($patient->created_date))?></label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->label($patient, 'last_modified_date') ?>
+                </td>
+                <td>
+                    <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($patient->last_modified_date))?></label>
+                </td>
+            </tr>
+        <?php } ?>
         </tbody>
       </table>
     </div>
