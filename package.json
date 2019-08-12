@@ -24,6 +24,6 @@
     "sortablejs": "^1.8.4",
     "tinymce": "^4.8.2",
     "autosize": "^4.0.0",
-    "jspdf": "^1.5.0"
+    "jspdf": "1.5.2"
   }
 }
