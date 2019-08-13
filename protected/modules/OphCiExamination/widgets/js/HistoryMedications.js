@@ -228,7 +228,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     });
   };
 
-  HistoryMedicationsController.prototype.initialiseRow = function($row)
+  HistoryMedicationsController.prototype.initialiseRow = function($row, data)
   {
       var controller = this;
 
@@ -302,9 +302,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
       var med = $row.data("medication");
-      if($row.find(".js-unit-dropdown").length > 0 && typeof med !== "undefined" && typeof med.dose_unit_term === "undefined") {
-          $row.find(".js-unit-dropdown").removeAttr("disabled").show();
-          $row.find(".dose_unit_term").attr("disabled", "disabled");
+      if($row.find(".js-unit-dropdown").length > 0 && typeof med !== "undefined" &&
+				(typeof med.dose_unit_term === "undefined" || med.dose_unit_term === "" ||
+					(typeof data !== "undefined" && data.show_dose_units))
+			) {
+          	$row.find(".js-unit-dropdown").removeAttr("disabled").show();
+						$row.find(".dose_unit_term").attr("disabled", "disabled");
+						$row.find("span.js-dose-unit-term").hide();
       }
   };
 
@@ -449,8 +453,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $.each(this.fields, function(i, field){
             if(typeof excl_fields === 'undefined' || excl_fields.indexOf(field) === -1) {
                 if(typeof data[field] !== "undefined") {
-                    var $input = $("[name='"+self.options.modelName+"[entries]["+rc+"]["+field+"]']");
-                    $input.val(data[field]);
+									var $input = $("[name='"+self.options.modelName+"[entries]["+rc+"]["+field+"]']");
+									$input.val(data[field]);
                 }
             }
         });
@@ -613,12 +617,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         if(typeof new_allergy_ids !== "undefined") {
             let intersection = matched_allergy_ids.filter(x => new_allergy_ids.includes(x));
-            
+
             if(intersection.length > 0) {
                 let dlg = new OpenEyes.UI.Dialog.Alert({
                     content: "Allergy warning! Please check entries in Medication Management."
                 });
-                dlg.open();    
+                dlg.open();
             }
         }
     };
@@ -642,6 +646,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var $row = $(this.boundController.createRow());
         $row.appendTo($target);
         var data = this.getRowData($origin, old_values);
+        data.show_dose_units = !($origin.find('select.js-unit-dropdown').attr('disabled') === "disabled");
         data.usage_type = $target.attr("data-usage-type");
 
         /*
@@ -654,7 +659,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
 
         this.boundController.setRowData($row, data);
-        this.boundController.initialiseRow($row);
+        this.boundController.initialiseRow($row, data);
         if(data.end_date !== "") {
             this.showStopControls($row);
         }
