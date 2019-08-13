@@ -477,7 +477,7 @@ class DefaultController extends BaseEventTypeController
         // after "Save and Print" button clicked we only print out what the user checked
         if (\Yii::app()->user->getState('correspondece_element_letter_saved', true)) {
 
-            if (sizeof($letter->document_instance)) {
+            if ($letter->document_instance) {
                 // check if the first recipient is GP
                 $docunemt_instance = $letter->document_instance[0];
                 $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
