@@ -279,7 +279,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       controller.setDatepicker();
 
-      $row.on("change", ".js-dose, .js-frequency, .js-route, .js-laterality, .js-stop-reason", controls_onchange);
+      $row.on("change", ".js-dose, .js-unit-dropdown, .js-frequency, .js-route, .js-laterality, .js-stop-reason", controls_onchange);
       var $end_date_ctrl = $row.find(".js-end-date");
       var $start_date_ctrl = $row.find(".js-start-date");
 
