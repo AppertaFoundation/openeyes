@@ -119,7 +119,7 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
             if($this->{'no_pupillaryabnormalities_date_'.$side}){
                 $entries = $this->{'entries_' . $side};
                 foreach ($entries as $key => $entry) {
-                    if ($entry->has_abnormality == PupillaryAbnormalityEntry::$NOT_CHECKED) {
+                    if ($entry->has_abnormality === PupillaryAbnormalityEntry::$NOT_CHECKED) {
                         unset($entries[$key]);
                     }
                 }
@@ -223,7 +223,7 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
     private function sortEntries($entries)
     {
         usort($entries, function ($a, $b) {
-            if ($a->has_abnormality == $b->has_abnormality) {
+            if ($a->has_abnormality === $b->has_abnormality) {
                 return 0;
             }
             return $a->has_abnormality < $b->has_abnormality ? 1 : -1;
@@ -234,7 +234,7 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
 
     public function getDisplayOrder($action)
     {
-        return $action == 'view' ? 50 : parent::getDisplayOrder($action);
+        return $action === 'view' ? 50 : parent::getDisplayOrder($action);
     }
 
     /**

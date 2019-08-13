@@ -45,7 +45,7 @@
                                     <?php foreach ($entries[(string)PupillaryAbnormalityEntry::$PRESENT] as $entry) : ?>
                                         <li>
                                             <?= $entry->getDisplayAbnormality(); ?>
-                                            <?php if ($entry['comments'] != "") { ?>
+                                            <?php if ($entry['comments'] !== "") { ?>
                                                 <small class="fade">(<?= $entry['comments'] ?>)</small>
                                             <?php } ?>
                                         </li>
@@ -64,7 +64,7 @@
                                     <?php foreach ($entries[(string)PupillaryAbnormalityEntry::$NOT_CHECKED] as $entry) : ?>
                                         <li>
                                             <?= $entry->getDisplayAbnormality(); ?>
-                                            <?php if ($entry['comments'] != "") { ?>
+                                            <?php if ($entry['comments'] !== "") { ?>
                                                 <small class="fade">(<?= $entry['comments'] ?>)</small>
                                             <?php } ?>
                                         </li>
@@ -83,7 +83,7 @@
                                     <?php foreach ($entries[(string)PupillaryAbnormalityEntry::$NOT_PRESENT] as $entry) : ?>
                                         <li>
                                             <?= $entry->getDisplayAbnormality(); ?>
-                                            <?php if ($entry['comments'] != "") { ?>
+                                            <?php if ($entry['comments'] !== "") { ?>
                                                 <small class="fade">(<?= $entry['comments'] ?>)</small>
                                             <?php } ?>
                                         </li>

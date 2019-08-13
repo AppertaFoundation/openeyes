@@ -45,7 +45,7 @@
                                 <?php foreach ($entries[(string)PupillaryAbnormalityEntry::$PRESENT] as $entry) : ?>
                                     <li>
                                         <?= $entry->getDisplayAbnormality(); ?>
-                                        <?php if ($entry['comments'] != "") { ?>
+                                        <?php if ($entry['comments'] !== "") { ?>
                                             <i class="oe-i comments-added small pad js-has-tooltip"
                                                data-tooltip-content="<?= $entry['comments']; ?>"
                                                pro"="" list="" mode"=""></i>
@@ -66,7 +66,7 @@
                                 <?php foreach ($entries[(string)PupillaryAbnormalityEntry::$NOT_CHECKED] as $entry) : ?>
                                     <li>
                                         <?= $entry->getDisplayAbnormality(); ?>
-                                        <?php if ($entry['comments'] != "") { ?>
+                                        <?php if ($entry['comments'] !== "") { ?>
                                             <i class="oe-i comments-added small pad js-has-tooltip"
                                                data-tooltip-content="<?= $entry['comments']; ?>"
                                                pro"="" list="" mode"=""></i>
@@ -87,7 +87,7 @@
                                 <?php foreach ($entries[(string)PupillaryAbnormalityEntry::$NOT_PRESENT] as $entry) : ?>
                                     <li>
                                         <?= $entry->getDisplayAbnormality(); ?>
-                                        <?php if ($entry['comments'] != "") { ?>
+                                        <?php if ($entry['comments'] !== "") { ?>
                                             <i class="oe-i comments-added small pad js-has-tooltip"
                                                data-tooltip-content="<?= $entry['comments']; ?>"
                                                pro"="" list="" mode"=""></i>

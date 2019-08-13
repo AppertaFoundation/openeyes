@@ -40,9 +40,9 @@ class PupillaryAbnormalities extends \BaseEventElementWidget
     protected function updateElementFromData($element, $data)
     {
         $sides = array(strtolower($data['eye_id']));
-        if ($sides[0] == '3') {
+        if ($sides[0] === '3') {
             $sides = array('left', 'right');
-        }elseif($sides[0] == '2'){
+        }elseif($sides[0] === '2'){
             $sides = array('right');
         }else{
             $sides = array('left');
@@ -140,6 +140,6 @@ class PupillaryAbnormalities extends \BaseEventElementWidget
     public function postedNotChecked($row, $side)
     {
         return \Helper::elementFinder(\CHtml::modelName($this->element) . ".entries_.$side.$row.has_abnormality", $_POST)
-            == PupillaryAbnormalityEntry::$NOT_CHECKED;
+            === PupillaryAbnormalityEntry::$NOT_CHECKED;
     }
 }
