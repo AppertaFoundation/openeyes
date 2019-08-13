@@ -148,7 +148,7 @@ class PatientController extends BaseController
     public function actionSummary($id)
     {
         $this->layout = '//layouts/events_and_episodes';
-        $this->patient = Patient::model()->findByPk($id);
+        $this->patient = $this->loadModel($id, false);
         $this->pageTitle = "Summary";
 
         $episodes = $this->patient->episodes;
@@ -408,7 +408,7 @@ class PatientController extends BaseController
     public function actionEpisodes()
     {
         $this->layout = '//layouts/events_and_episodes';
-        $this->patient = $this->loadModel($_GET['id']);
+        $this->patient = $this->loadModel($_GET['id'], false);
         $this->pageTitle = 'Episodes';
 
         //if $this->patient was merged we redirect the user to the primary patient's page
@@ -772,11 +772,12 @@ class PatientController extends BaseController
      * If the data model is not found, an HTTP exception will be raised.
      *
      * @param int $id the ID of the model to be loaded
+	 * @param bool $allow_deleted Whether to throw a 404 error in case the patient is deleted
      */
-    public function loadModel($id)
+    public function loadModel($id, $allow_deleted = true)
     {
         $model = Patient::model()->findByPk((int) $id);
-        if ($model === null) {
+        if ($model === null || (!$allow_deleted && $model->deleted)) {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
 
