@@ -40,10 +40,10 @@
                                             'showAnim' => 'fold',
                                             'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                                         ),
-                                        'value' => Yii::app()->request->getParam('date_from'),
-                                        'htmlOptions' => array(
-                                            'placeholder' => 'From',
-                                            'class' => 'cols-5',
+                                                                  'value' => Yii::app()->request->getParam('date_from'),
+                                                                  'htmlOptions' => array(
+                                                                  'placeholder' => 'From',
+                                                                  'class' => 'cols-5',
                                         ),
                                     )) ?>
                                     <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(

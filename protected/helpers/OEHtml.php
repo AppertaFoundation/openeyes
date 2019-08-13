@@ -19,7 +19,7 @@ class OEHtml extends CHtml
     {
         return self::tag("i", array_merge($htmlOption, [
             "class" => "oe-i $text"  . (isset($htmlOption["class"]) ? " " . $htmlOption["class"] : ""),
-        ]),'', true);
+        ]), '', true);
     }
 
     public static function button($text, $htmlOption = [])

@@ -19,7 +19,7 @@ class OphCiExamination_Episode_IOP extends \EpisodeSummaryWidget
         if ($iop = $this->event_type->api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure',
             $this->episode->patient,
             false)
-        ){
+        ) {
             $this->render('OphCiExamination_Episode_IOP', array('iop' => $iop));
         }
     }

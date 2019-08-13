@@ -16,23 +16,23 @@ $base_name = CHtml::modelName($value) . "[{$side}_values][{$index}]";
 ?>
 <tr data-index="<?= $index ?>" data-side="<?= $side ?>" data-index="<?= $index ?>">
   <td>
-      <?= CHtml::textField(
+        <?= CHtml::textField(
               "{$base_name}[reading_time]",
               $time,
               array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-11')
       ) ?>
   </td>
   <td style="<?=(!$value_reading_id) ? "display: none":"" ?>">
-      <?php if ($value_reading_id) { ?>
-          <?= $value_reading_name ?>
-          <?= CHtml::hiddenField("{$base_name}[reading_id]", $value_reading_id) ?>
-      <?php } ?>
+        <?php if ($value_reading_id) { ?>
+            <?= $value_reading_name ?>
+            <?= CHtml::hiddenField("{$base_name}[reading_id]", $value_reading_id) ?>
+        <?php } ?>
   </td>
   <td class="scale_values" style="<?= (!$value_qualitative_reading_id) ? "display: none":""?>">
-      <?php if ($value_qualitative_reading_id) { ?>
-        <?= $value_qualitative_reading_name ?>
-        <?= CHtml::hiddenField("{$base_name}[qualitative_reading_id]", $value_qualitative_reading_id) ?>
-      <?php } ?>
+        <?php if ($value_qualitative_reading_id) { ?>
+            <?= $value_qualitative_reading_name ?>
+            <?= CHtml::hiddenField("{$base_name}[qualitative_reading_id]", $value_qualitative_reading_id) ?>
+        <?php } ?>
   </td>
     <td>
     <input type="hidden" name="<?= $base_name ?>[instrument_id]"

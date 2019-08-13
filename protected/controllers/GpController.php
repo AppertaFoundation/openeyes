@@ -140,13 +140,13 @@ class GpController extends BaseController
                     }
                 } else {
                     if ($isAjax) {
-                        throw new CHttpException(400,"Unable to save Practitioner contact");
+                        throw new CHttpException(400, "Unable to save Practitioner contact");
                     }
                     $transaction->rollback();
                 }
             } else {
                 if ($isAjax) {
-                    throw new CHttpException(400,"Unable to save Practitioner contact");
+                    throw new CHttpException(400, "Unable to save Practitioner contact");
                 }
                 $transaction->rollback();
             }
@@ -154,7 +154,7 @@ class GpController extends BaseController
             OELog::logException($ex);
             $transaction->rollback();
             if ($isAjax) {
-                throw new CHttpException(400,"Unable to save Practitioner contact");
+                throw new CHttpException(400, "Unable to save Practitioner contact");
             }
         }
 
@@ -176,10 +176,8 @@ class GpController extends BaseController
         $this->performAjaxValidation($contact);
 
         if (isset($_POST['Contact'])) {
-
             $contact->attributes = $_POST['Contact'];
-            if ($_POST['Contact']['contact_label_id'] == -1)
-            {
+            if ($_POST['Contact']['contact_label_id'] == -1) {
                 $contact->contact_label_id = null;
             }
 
@@ -202,7 +200,7 @@ class GpController extends BaseController
         $labels = ContactLabel::model()->findAll($criteria);
 
         $output = array();
-        foreach($labels as $label){
+        foreach ($labels as $label) {
             $output[] = array(
                 'label' => $label->name,
                 'value' => $label->name,

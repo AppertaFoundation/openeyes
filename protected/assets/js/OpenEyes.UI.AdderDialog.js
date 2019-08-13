@@ -325,8 +325,9 @@
         let $integerColumnsContainer = $('<div class="lists-layout"/>');
         for (let i = 0; i < itemSet.options.splitIntegerNumberColumns.length; i++) {
             let $divList = $('<div />', {class: "list-wrap"}).appendTo($integerColumnsContainer);
-            let $list = $('<ul />', {class: 'number'}).appendTo($divList);
-            for (let digit = itemSet.options.splitIntegerNumberColumns[i].min; digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
+            let $list = $('<ul />', {class: 'number', id: 'number-digit-' + i}).appendTo($divList);
+            for (let digit = itemSet.options.splitIntegerNumberColumns[i].min;
+								 digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
                 let $listItem = $('<li data-'+itemSet.options.id+'="'+digit+'"/>');
                 $listItem.append(digit);
                 $listItem.appendTo($list);

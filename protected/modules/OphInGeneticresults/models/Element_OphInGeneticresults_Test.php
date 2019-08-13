@@ -148,7 +148,7 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
      */
     public function possibleWithdrawalEvents(Patient $patient)
     {
-        if(!Yii::app()->modules['OphInDnaextraction']) {
+        if (!Yii::app()->modules['OphInDnaextraction']) {
             return array();
         }
 
@@ -169,8 +169,8 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
      */
     public function validateForMethod($attribute, $params)
     {
-        if($this->method) {
-            if(isset($params['method']) && ($params['method'] === $this->method->name && !$this->$attribute)){
+        if ($this->method) {
+            if (isset($params['method']) && ($params['method'] === $this->method->name && !$this->$attribute)) {
                 $this->addError($attribute, 'This is required when then method is set to ' . $params['method']);
             }
         }

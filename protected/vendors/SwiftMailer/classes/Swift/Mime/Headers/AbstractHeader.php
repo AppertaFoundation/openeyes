@@ -486,8 +486,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
             //Line longer than specified maximum or token was just a new line
             if (("\r\n" == $token) ||
                 ($i > 0 && strlen($currentLine . $token) > $this->_lineLength)
-                && 0 < strlen($currentLine))
-            {
+                && 0 < strlen($currentLine)) {
                 $headerLines[] = '';
                 $currentLine =& $headerLines[$lineCount++];
             }

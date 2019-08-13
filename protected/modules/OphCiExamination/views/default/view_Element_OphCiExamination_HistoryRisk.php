@@ -18,9 +18,9 @@
 ?>
 <div class="sub-element-data">
   <div class="data-value">
-      <?= $element->anticoagulantText(); ?>
+        <?= $element->anticoagulantText(); ?>
   </div>
   <div class="data-value">
-      <?= $element->alphaBlockerText(); ?>
+        <?= $element->alphaBlockerText(); ?>
   </div>
 </div>

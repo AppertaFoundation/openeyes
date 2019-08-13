@@ -9,10 +9,10 @@ module.exports = function(grunt) {
 		require('load-grunt-tasks')(grunt, 'grunt-*');
 
         grunt.loadNpmTasks('grunt-contrib-compass');
-        grunt.loadNpmTasks('grunt-contrib-uglify');
+        grunt.loadNpmTasks('grunt-contrib-uglify-es');
 
 		/* Load our custom grunt tasks */
 		grunt.loadTasks('./grunt/tasks');
 
-        grunt.registerTask('default', ['uglify', 'jshint']);
+        grunt.registerTask('default', ['uglify']);
 };
