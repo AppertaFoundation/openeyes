@@ -25,7 +25,7 @@
 $toAddressContactType = $element->getToAddressContactType();
 
 if (!@$no_header) {?>
-    <header class="print-header" style="margin-bottom: 0px;">
+    <header class="print-header" style="margin-bottom: 0;">
     <?php
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
