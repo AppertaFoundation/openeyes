@@ -20,25 +20,16 @@
 
 /** @var \OEModule\OphCiExamination\models\MedicationManagementEntry $entry */
 
-if (isset($entry->start_date) && !is_null($entry->start_date)) {
+if (isset($entry->start_date)) {
 	$start_date = $entry->start_date;
+} else {
+	$start_date = date('Y-m-d');
 }
-else {
-	$start_date = date('Ymd');
-}
 
-$start_sel_year = substr($start_date, 0, 4);
-$start_sel_month = substr($start_date, 4, 2);
-$start_sel_day = substr($start_date, 6, 2);
+list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $start_date);
 
-if (isset($entry->end_date) && !is_null($entry->end_date)) {
-
-	$end_date = $entry->end_date;
-
-	$end_sel_year = substr($end_date, 0, 4);
-	$end_sel_month = substr($end_date, 4, 2);
-	$end_sel_day = substr($end_date, 6, 2);
-
+if (isset($entry->end_date)) {
+	list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
 } else {
 	$end_sel_day = date('d');
 	$end_sel_month = date('m');
