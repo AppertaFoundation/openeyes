@@ -362,17 +362,6 @@ class EventMedicationUse extends BaseElement
         }
     }
 
-    /**
-     * Getter to make this class compatible with HistoryMedicationsEntry
-     *
-     * @return null|string
-     */
-
-    public function getStart_date()
-    {
-        return is_null($this->start_date) ? null : $this->start_date;
-    }
-
     public function getStartDateDisplay()
     {
         if ($this->start_date) {
