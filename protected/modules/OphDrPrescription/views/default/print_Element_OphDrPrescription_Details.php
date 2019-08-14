@@ -17,9 +17,10 @@
      */
 ?>
 <?php
-
-    const MAX_FPTEN_LINES = 30;
-
+    /**
+     * @var Element_OphDrPrescription_Details $element
+     */
+    const MAX_FPTEN_LINES = 21;
 
     $copy = $data['copy'];
 
@@ -39,6 +40,7 @@
     }
 
     $form_css_class = null;
+    $split_print = false;
 
     if (isset($data['print_mode'])) {
         if ($data['print_mode'] === 'FP10') {
@@ -51,11 +53,18 @@
     $settings = new SettingMetadata();
     $default_cost_code = $settings->getSetting('default_prescription_code_code');
     $page_count = 1;
-    $current_item_index = 0;
-    $current_taper_index = 0;
     $total_items = count($element->items);
 
+    $current_item_index = 0;
+    $current_taper_index = 0;
     $current_item_attr = null; // If a single item is greater than 30 lines, this will capture the attribute that overflows.
+
+    $current_item_copy = 0;
+    $current_taper_copy = 0;
+    $current_attr_copy = null; // If a single item is greater than 30 lines, this will capture the attribute that overflows.
+
+    $end_of_page = false;
+
 
 ?>
 
@@ -221,198 +230,261 @@
         <div><?= $footer_text ?></div>
     <?php endif; ?>
 <?php else : ?>
-    <div class="fpten-form-row">
     <?php for ($i = 0; $i < $page_count; $i++):
         if ($i !== 0) { ?>
             <p style="page-break-after: always;">
                 <!--PAGE BREAK-->
             </p>
         <?php } ?>
-        <?php foreach (array('left', 'right') as $side) : ?>
-        <div class="<?= $form_css_class ?>-container fpten-form-column">
-            <div class="fpten-form-row">
-                <div class="fpten-form-column">
+        <div class="fpten-form-row">
+            <?php foreach (array('left', 'right') as $side) : ?>
+                <div class="<?= $form_css_class ?>-container fpten-form-column">
                     <div class="fpten-form-row">
-                        <div id="<?= $form_css_class ?>-age" class="fpten-form-column">
-                            <?= $this->patient->getAge() . 'y' ?>
-                        </div>
-                    </div>
-                    <div class="fpten-form-row">
-                        <div id="<?= $form_css_class ?>-dob" class="fpten-form-column">
-                            <?= Helper::convertDate2FullYear($this->patient->dob) ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="fpten-form-column">
-                    <div class="fpten-form-row">
-                        <div id="<?= $form_css_class ?>-patient-details" class="fpten-form-column">
-                            <?= $this->patient->fullname ?><br/>
-                            <?= $this->patient->contact->address->address1 ?>
-                            <?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
-                            <?= $this->patient->contact->address->address2 ?><br/>
-                            <?= $this->patient->contact->address->city ?>
-                            <?= $this->patient->contact->address->county ? '<br/>' : null ?>
-                            <?= $this->patient->contact->address->county ?>
-                            <span id="fpten-postcode"><?= str_replace(' ', '', $this->patient->contact->address->postcode) ?></span>
-                        </div>
-                    </div>
-                    <div class="fpten-form-row">
-                        <div id="fpten-nhs" class="fpten-form-column">
-                            <span id="<?= $form_css_class ?>-nhs-text"><?= ($data['print_mode'] === 'WP10') ? 'NHS Number: ' . $this->patient->nhs_num : $this->patient->nhs_num ?></span>
-                        </div>
-                    </div>
-                    <?php if ($data['print_mode'] === 'WP10') : ?>
-                        <div class="fpten-form-row">
-                            <div id="wpten-prescriber" class="fpten-form-column">
-                                <!--HOSPITAL YSBYTY-->
-                                <!--DOCTOR MEDDYG-->
+                        <div class="fpten-form-column">
+                            <div class="fpten-form-row">
+                                <div id="<?= $form_css_class ?>-age" class="fpten-form-column">
+                                    <?= $this->patient->getAge() . 'y' ?>
+                                </div>
+                            </div>
+                            <div class="fpten-form-row">
+                                <div id="<?= $form_css_class ?>-dob" class="fpten-form-column">
+                                    <?= Helper::convertDate2FullYear($this->patient->dob) ?>
+                                </div>
                             </div>
                         </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <div class="fpten-form-row">
-                <div class="fpten-form-column">
-                    <?php if ($data['print_mode'] === 'FP10') : ?>
-                        <div id="fpten-prescriber" class="fpten-form-row">
-                            HOSPITAL PRESCRIBER
+                        <div class="fpten-form-column">
+                            <div class="fpten-form-row">
+                                <div id="<?= $form_css_class ?>-patient-details" class="fpten-form-column">
+                                    <?= $this->patient->fullname ?><br/>
+                                    <?= $this->patient->contact->address->address1 ?>
+                                    <?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
+                                    <?= $this->patient->contact->address->address2 ?><br/>
+                                    <?= $this->patient->contact->address->city ?>
+                                    <?= $this->patient->contact->address->county ? '<br/>' : null ?>
+                                    <?= $this->patient->contact->address->county ?>
+                                    <span id="fpten-postcode"><?= str_replace(' ', '', $this->patient->contact->address->postcode) ?></span>
+                                </div>
+                            </div>
+                            <div class="fpten-form-row">
+                                <div id="fpten-nhs" class="fpten-form-column">
+                                    <span id="<?= $form_css_class ?>-nhs-text"><?= ($data['print_mode'] === 'WP10') ? 'NHS Number: ' . $this->patient->nhs_num : $this->patient->nhs_num ?></span>
+                                </div>
+                            </div>
+                            <?php if ($data['print_mode'] === 'WP10') : ?>
+                                <div class="fpten-form-row">
+                                    <div id="wpten-prescriber" class="fpten-form-column">
+                                        <!--HOSPITAL YSBYTY-->
+                                        <!--DOCTOR MEDDYG-->
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                    <?php endif; ?>
-                    <div class="fpten-form-row">
-                        <div id="<?= $form_css_class ?>-prescription-list" class="fpten-form-column">
-                            <?php
-                                $prescription_lines_used = 0;
-                                for ($j = $current_item_index; $j < $total_items; $j++):
-                                    $item = $element->items[$j];
-                                    $group_name = $item->dispense_condition->name;
-                                    if (str_replace('{form_type}', $data['print_mode'], $group_name) === 'Print to ' . $data['print_mode']) {
-                                        $drug_label = $item->drug->label . ', ' . $item->route->name . ($item->route_option ? ' (' . $item->route_option->name . ')' : null);
-                                        $dose = is_numeric($item->dose) ? ($item->dose . ' ' . $item->drug->dose_unit) : $item->dose;
-                                        $frequency = $item->frequency->long_name . ' for ' . $item->duration->name;
+                    </div>
 
-                                        // Work out how many lines are being used for this prescription item. If it exceeds the maximum lines - currently used lines, separate it onto its own script.
-                                        // If the lines used is greater than the maximum, however, it cannot be split onto its own script. Currently a limitation on the logic.
-                                        if ($item->fpTenLinesUsed() + 1 > MAX_FPTEN_LINES) {
-                                            // Single item will not fit on a single script.
-                                        } else if ($item->fpTenLinesUsed() + 1 > MAX_FPTEN_LINES - $prescription_lines_used) {
-                                            if ($side === 'right') {
-                                                // We only want to change the page counter and the base item index once the right side of the page has been rendered.
-                                                $page_count++;
-                                                $current_item_index = $j;
-                                            }
-                                            break;
-                                        }
-                                        ?>
-                                        <div class="fpten-prescription-item fpten-form-row">
-                                            <?php
+                    <div class="fpten-form-row">
+                        <div class="fpten-form-column">
+                            <?php if ($data['print_mode'] === 'FP10') : ?>
+                                <div id="fpten-prescriber" class="fpten-form-row">
+                                    HOSPITAL PRESCRIBER
+                                </div>
+                            <?php endif; ?>
+                            <div class="fpten-form-row">
+                                <div id="<?= $form_css_class ?>-prescription-list" class="fpten-form-column">
+                                    <?php
+                                        $prescription_lines_used = 0;
+                                        for ($j = $current_item_index; $j < $total_items; $j++):
+                                            $item = $element->items[$j];
+                                            $group_name = $item->dispense_condition->name;
+                                            if (str_replace('{form_type}', $data['print_mode'], $group_name) === 'Print to ' . $data['print_mode']) {
+                                                $drug_label = $item->drug->label . ', ' . $item->route->name . ($item->route_option ? ' (' . $item->route_option->name . ')' : null);
+                                                $dose = is_numeric($item->dose) ? "{$item->dose} {$item->drug->dose_unit}" : $item->dose;
+                                                $frequency = "{$item->frequency->long_name} for {$item->duration->name}";
+                                                $total_tapers = count($item->tapers);
+
+                                                if ($split_print) {
+                                                    $current_item_copy = $current_item_index;
+                                                    $current_attr_copy = $current_item_attr;
+                                                    $current_taper_copy = $current_taper_index;
+                                                }
+
+                                                // Work out how many lines are being used for this prescription item. If it exceeds the maximum lines - currently used lines, separate it onto its own script.
+                                                // If the lines used is greater than the maximum, split the printout between multiple pages.
+                                                if ($item->fpTenLinesUsed() + 1 > MAX_FPTEN_LINES - $prescription_lines_used && !$split_print) {
+                                                    if ($side === 'right') {
+                                                        // We only want to change the page counter and the base item index once the right side of the page has been rendered.
+                                                        $page_count++;
+                                                        $current_item_index = $j;
+                                                        if ($item->fpTenLinesUsed() + 1 > MAX_FPTEN_LINES) {
+                                                            // Single item will not fit on a single script.
+                                                            $split_print = true;
+                                                        } else {
+                                                            $split_print = false;
+                                                        }
+                                                    }
+                                                    break;
+                                                }
+
+                                                ?>
+                                                <div class="fpten-prescription-item fpten-form-row">
+                                                <?php
                                                 if ($item->getAttrLength('item_drug') > MAX_FPTEN_LINES - $prescription_lines_used) {
-                                                    $page_count++;
-                                                    $current_item_index = $j;
-                                                    $current_item_attr = 'item_drug';
+                                                    if ($side === 'right' && !$current_item_attr) {
+                                                        $page_count++;
+                                                        $current_item_index = $j;
+                                                        $current_item_attr = 'item_drug';
+                                                    }
                                                     break;
                                                 }
-                                                echo "$drug_label<br/>";
+                                                if (!$current_item_attr || $current_item_attr === 'item_drug') {
+                                                    echo "$drug_label<br/>";
+                                                    $current_item_attr = null;
+                                                    $prescription_lines_used += $item->getAttrLength('item_drug');
+                                                }
                                                 if ($item->getAttrLength('item_dose') > MAX_FPTEN_LINES - $prescription_lines_used) {
-                                                    $page_count++;
-                                                    $current_item_index = $j;
-                                                    $current_item_attr = 'item_dose';
+                                                    if ($side === 'right' && !$current_item_attr) {
+                                                        $page_count++;
+                                                        $current_item_index = $j;
+                                                        $current_item_attr = 'item_dose';
+                                                    }
                                                     break;
                                                 }
-                                                echo "Dose: $dose<br/>";
+                                                if (!$current_item_attr || $current_item_attr === 'item_dose') {
+                                                    echo "Dose: $dose<br/>";
+                                                    $current_item_attr = null;
+                                                    $prescription_lines_used += $item->getAttrLength('item_dose');
+                                                }
                                                 if ($item->getAttrLength('item_frequency') > MAX_FPTEN_LINES - $prescription_lines_used) {
-                                                    $page_count++;
-                                                    $current_item_index = $j;
-                                                    $current_item_attr = 'item_frequency';
+                                                    if ($side === 'right' && !$current_item_attr) {
+                                                        $page_count++;
+                                                        $current_item_index = $j;
+                                                        $current_item_attr = 'item_frequency';
+                                                    }
                                                     break;
                                                 }
-                                                echo "Frequency: $frequency"; ?>
+                                                if (!$current_item_attr || $current_item_attr === 'item_frequency') {
+                                                    echo "Frequency: $frequency";
+                                                    $current_item_attr = null;
+                                                    $prescription_lines_used += $item->getAttrLength('item_frequency');
+                                                }
+                                                for ($index = $current_taper_index; $index < $total_tapers; $index++):
+                                                    $taper = $item->tapers[$index];
+                                                    if ($item->getAttrLength("taper{$index}_label") > MAX_FPTEN_LINES - $prescription_lines_used) {
+                                                        if ($side === 'right' && !$current_item_attr) {
+                                                            $page_count++;
+                                                            $current_item_index = $j;
+                                                            $current_taper_index = $index;
+                                                            $current_item_attr = "taper{$index}_label";
+                                                            $end_of_page = true;
+                                                        }
+                                                        break;
+                                                    }
+                                                    if (!$current_item_attr || $current_item_attr === "taper{$index}_label") {
+                                                        echo '<br/>then<br/>';
+                                                        $current_item_attr = null;
+                                                        $prescription_lines_used += $item->getAttrLength("taper{$index}_label");
+                                                    }
+                                                    if ($item->getAttrLength("taper{$index}_dose") > MAX_FPTEN_LINES - $prescription_lines_used) {
+                                                        if ($side === 'right' && !$current_item_attr) {
+                                                            $page_count++;
+                                                            $current_item_index = $j;
+                                                            $current_taper_index = $index;
+                                                            $current_item_attr = "taper{$index}_dose";
+                                                            $end_of_page = true;
+                                                        }
+                                                        break;
+                                                    }
+                                                    if (!$current_item_attr || $current_item_attr === "taper{$index}_dose") {
+                                                        echo 'Dose: ' . (is_numeric($taper->dose) ? ($taper->dose . ' ' . $item->drug->dose_unit) : $taper->dose) . '<br/>';
+                                                        $current_item_attr = null;
+                                                        $prescription_lines_used += $item->getAttrLength("taper{$index}_dose");
+                                                    }
+                                                    if ($item->getAttrLength("taper{$index}_frequency") > MAX_FPTEN_LINES - $prescription_lines_used) {
+                                                        if ($side === 'right' && !$current_item_attr) {
+                                                            $page_count++;
+                                                            $current_item_index = $j;
+                                                            $current_taper_index = $index;
+                                                            $current_item_attr = "taper{$index}_frequency";
+                                                            $end_of_page = true;
+                                                        }
+                                                        break;
+                                                    }
+                                                    if (!$current_item_attr || $current_item_attr === "taper{$index}_frequency") {
+                                                        echo "Frequency: {$taper->frequency->long_name} for {$taper->duration->name}";
+                                                        $current_item_attr = null;
+                                                        $prescription_lines_used += $item->getAttrLength("taper{$index}_frequency");
+                                                    }
+                                                endfor;
+                                                    $prescription_lines_used++; // Add 1 line for the horizontal rule.
+                                                    echo '</div>';
 
-                                            <?php
-                                                foreach ($item->tapers as $index => $taper):
-                                                    if ($item->getAttrLength('taper' . $index . '_label') > MAX_FPTEN_LINES - $prescription_lines_used) {
-                                                        $page_count++;
-                                                        $current_item_index = $j;
-                                                        $current_taper_index = $index;
-                                                        $current_item_attr = 'taper' . $index . '_label';
+                                                    if ($end_of_page) {
+                                                        $end_of_page = false;
                                                         break;
                                                     }
-                                                    echo '<br/>then<br/>';
-                                                    if ($item->getAttrLength('taper' . $index . '_dose') > MAX_FPTEN_LINES - $prescription_lines_used) {
-                                                        $page_count++;
-                                                        $current_item_index = $j;
-                                                        $current_taper_index = $index;
-                                                        $current_item_attr = 'taper' . $index . '_dose';
-                                                        break;
+                                                    if ($split_print && $side === 'right') {
+                                                        $split_print = false;
                                                     }
-                                                    echo 'Dose: ' . (is_numeric($taper->dose) ? ($taper->dose . ' ' . $item->drug->dose_unit) : $taper->dose) . '<br/>';
-                                                    if ($item->getAttrLength('taper' . $index . '_frequency') > MAX_FPTEN_LINES - $prescription_lines_used) {
-                                                        $page_count++;
-                                                        $current_item_index = $j;
-                                                        $current_taper_index = $index;
-                                                        $current_item_attr = 'taper' . $index . '_frequency';
-                                                        break;
+                                                    else if ($split_print && $side === 'left' && $current_attr_copy) {
+                                                        $current_item_attr = $current_attr_copy;
                                                     }
-                                                    echo 'Frequency: ' . $taper->frequency->long_name . ' for ' . $taper->duration->name;
-                                                endforeach; ?>
-                                        </div>
-                                        <?php
-                                        $prescription_lines_used += $item->fpTenLinesUsed() + 1;
-                                    }
-                                endfor; ?>
-                            <div class="fpten-prescription-list-filler fpten-form-row">
-                                <?php for ($line = 0; $line < MAX_FPTEN_LINES - $prescription_lines_used; $line++) { ?>
-                                    <br/><?= ($side === 'left') ? 'x' : 'GP COPY' ?>
-                                <?php } ?>
+                                            } ?>
+                                        <?php endfor; ?>
+                                    <div class="fpten-prescription-list-filler fpten-form-row">
+                                        <?php for ($line = 0; $line < MAX_FPTEN_LINES - $prescription_lines_used; $line++) {
+                                            if ($line !== 0) {
+                                                echo '<br/>';
+                                            }?>
+                                            <?= ($side === 'left') ? 'x' : 'GP COPY' ?>
+                                        <?php } ?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <?php if ($side === 'left') : ?>
+                            <span class="fpten-form-column fpten-prescriber-code">HP</span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="fpten-form-row">
+                        <div id="<?= $form_css_class ?>-date" class="fpten-form-column">
+                            <?= date('d/m/Y') ?>
+                        </div>
+                    </div>
+                    <div class="fpten-form-row">
+                        <div id="<?= $form_css_class ?>-site" class="fpten-form-column">
+                            <?= $this->event->usermodified->getFullNameAndTitle() ?>
+                            <br/>
+                            <?= $this->site->name ?>
+                            <br/>
+                            <?= $this->site->contact->address->address1 ?>
+                            <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
+                            <?= $this->site->contact->address->address2 ?>
+                            <br/>
+                            <?= $this->site->contact->address->city ?>
+                            <?= $this->site->contact->address->county ? '<br/>' : null ?>
+                            <?= $this->site->contact->address->county ?>
+                            <br/>
+                            <?= str_replace(' ', '', $this->site->contact->address->postcode) ?> <br/>
+                            Tel: <?= $this->site->contact->primary_phone ?>
+                            <br/>
+                            <?= $this->site->institution->name ?>
+                        </div>
+                        <?php if ($side === 'left') : ?>
+                            <div id="<?= $form_css_class ?>-site-code" class="fpten-form-column">
+                                <span id="fpten-registration-code"><?= str_replace('GMC', '', $element->usermodified->registration_code) ?></span>
+                                <br/>
+                                <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
+                                <br/>
+                                <?= $this->site->contact->address->county ? '<br/>' : null ?>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <?= $this->firm->cost_code ?: $default_cost_code ?>
+                            </div>
+                            <span class="fpten-form-column fpten-prescriber-code">HP</span>
+                        <?php endif; ?>
                     </div>
                 </div>
-                <?php if ($side === 'left') : ?>
-                    <span class="fpten-form-column fpten-prescriber-code">HP</span>
-                <?php endif; ?>
-            </div>
-            <div class="fpten-form-row">
-                <div id="<?= $form_css_class ?>-date" class="fpten-form-column">
-                    <?= date('d/m/Y') ?>
-                </div>
-            </div>
-            <div class="fpten-form-row">
-                <div id="<?= $form_css_class ?>-site" class="fpten-form-column">
-                    <?= $this->event->usermodified->getFullNameAndTitle() ?>
-                    <br/>
-                    <?= $this->site->name ?>
-                    <br/>
-                    <?= $this->site->contact->address->address1 ?>
-                    <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
-                    <?= $this->site->contact->address->address2 ?>
-                    <br/>
-                    <?= $this->site->contact->address->city ?>
-                    <?= $this->site->contact->address->county ? '<br/>' : null ?>
-                    <?= $this->site->contact->address->county ?>
-                    <br/>
-                    <?= str_replace(' ', '', $this->site->contact->address->postcode) ?> <br/>
-                    Tel: <?= $this->site->contact->primary_phone ?>
-                    <br/>
-                    <?= $this->site->institution->name ?>
-                </div>
-                <?php if ($side === 'left') : ?>
-                    <div id="<?= $form_css_class ?>-site-code" class="fpten-form-column">
-                        <span id="fpten-registration-code"><?= str_replace('GMC', '', $element->usermodified->registration_code) ?></span>
-                        <br/>
-                        <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
-                        <br/>
-                        <?= $this->site->contact->address->county ? '<br/>' : null ?>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <?= $this->firm->cost_code ?: $default_cost_code ?>
-                    </div>
-                    <span class="fpten-form-column fpten-prescriber-code">HP</span>
-                <?php endif; ?>
-            </div>
-        </div>
-    <?php endforeach; ?>
+            <?php endforeach; ?>
         </div>
     <?php endfor; endif; ?>
