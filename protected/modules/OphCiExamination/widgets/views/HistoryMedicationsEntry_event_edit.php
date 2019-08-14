@@ -21,27 +21,20 @@
 
 /** @var EventMedicationUse $entry */
 
-if (isset($entry->start_date_string_YYYYMMDD) && !is_null($entry->start_date_string_YYYYMMDD)) {
-    $start_date = $entry->start_date_string_YYYYMMDD;
-}
-else {
-    $start_date = date('Ymd');
-}
-
-$start_sel_year = substr($start_date, 0, 4);
-$start_sel_month = substr($start_date, 4, 2);
-$start_sel_day = substr($start_date, 6, 2);
-
-if (isset($entry->end_date) && !is_null($entry->end_date_string_YYYYMMDD)) {
-
-    $end_sel_year = substr($entry->end_date_string_YYYYMMDD, 0, 4);
-    $end_sel_month = substr($entry->end_date_string_YYYYMMDD, 4, 2);
-    $end_sel_day = substr($entry->end_date_string_YYYYMMDD, 6, 2);
-
+if (isset($entry->start_date)) {
+	$start_date = $entry->start_date;
 } else {
-    $end_sel_day = date('d');
-    $end_sel_month = date('m');
-    $end_sel_year = date('Y');
+	$start_date = date('Y-m-d');
+}
+
+list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $start_date);
+
+if (isset($entry->end_date)) {
+	list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
+} else {
+	$end_sel_day = date('d');
+	$end_sel_month = date('m');
+	$end_sel_year = date('Y');
 }
 
 $chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_type == "prescribed");
@@ -121,8 +114,8 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                    data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
             <?php else: ?>
                 <input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
-                       value="<?= $entry->start_date_string_YYYYMMDD ? $entry->start_date_string_YYYYMMDD : date('Y-md') ?>"/>
-                <?= Helper::convertMySQL2NHS($entry->start_date) ?>
+                       value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
+							<?= $entry->getStartDateDisplay() ?>
             <?php endif; ?>
         </fieldset>
     </td>
