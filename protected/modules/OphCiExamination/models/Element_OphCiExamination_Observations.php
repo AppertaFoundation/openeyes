@@ -29,27 +29,27 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Observations extends \BaseEventTypeElement
 {
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'et_ophciexamination_observations';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'et_ophciexamination_observations';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('event_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
-			array('blood_pressure_systolic, blood_pressure_diastolic, o2_sat, pulse', 'length', 'max'=>3),
-			array('blood_glucose, hba1c', 'length', 'max'=>4),
-			array('height, weight', 'length', 'max'=>5),
-			array('last_modified_date, created_date', 'safe'),
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('event_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('blood_pressure_systolic, blood_pressure_diastolic, o2_sat, pulse', 'length', 'max'=>3),
+            array('blood_glucose, hba1c', 'length', 'max'=>4),
+            array('height, weight', 'length', 'max'=>5),
+            array('last_modified_date, created_date', 'safe'),
             array('blood_pressure_systolic', 'numerical','min'=>0, 'max'=>400),
             array('blood_pressure_diastolic', 'numerical','min'=>0, 'max'=>400),
             array('o2_sat', 'numerical','min'=>0, 'max'=>100),
@@ -59,96 +59,96 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
             array('weight', 'numerical', 'min'=>0.0, 'max'=>250.0),
             array('pulse', 'numerical', 'min'=>0, 'max'=>200),
             array('blood_pressure_systolic,blood_pressure_diastolic,o2_sat,blood_glucose,hba1c,height,weight,pulse', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, event_id, blood_pressure_systolic, blood_pressure_diastolic, o2_sat, blood_glucose, hba1c, height, weight, pulse, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
-		);
-	}
+            array('id, event_id, blood_pressure_systolic, blood_pressure_diastolic, o2_sat, blood_glucose, hba1c, height, weight, pulse, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'event_id' => 'Event',
-			'blood_pressure' => 'Blood pressure',
-			'blood_pressure_systolic' => 'Blood p. systolic',
-			'blood_pressure_diastolic' => 'Blood p. diastolic',
-			'o2_sat' => 'O2 Sat (air)',
-			'blood_glucose' => 'Blood Glucose',
-			'hba1c' => 'HbA1c',
-			'height' => 'Height',
-			'weight' => 'Weight',
-			'pulse' => 'Pulse',
-			'last_modified_user_id' => 'Last Modified User',
-			'last_modified_date' => 'Last Modified Date',
-			'created_user_id' => 'Created User',
-			'created_date' => 'Created Date',
-		);
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'blood_pressure' => 'Blood pressure',
+            'blood_pressure_systolic' => 'Blood p. systolic',
+            'blood_pressure_diastolic' => 'Blood p. diastolic',
+            'o2_sat' => 'O2 Sat (air)',
+            'blood_glucose' => 'Blood Glucose',
+            'hba1c' => 'HbA1c',
+            'height' => 'Height',
+            'weight' => 'Weight',
+            'pulse' => 'Pulse',
+            'last_modified_user_id' => 'Last Modified User',
+            'last_modified_date' => 'Last Modified Date',
+            'created_user_id' => 'Created User',
+            'created_date' => 'Created Date',
+        );
+    }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     * based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+        $criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('event_id',$this->event_id,true);
-		$criteria->compare('blood_pressure_systolic',$this->blood_pressure_systolic,true);
-		$criteria->compare('blood_pressure_diastolic',$this->blood_pressure_diastolic,true);
-		$criteria->compare('o2_sat',$this->o2_sat,true);
-		$criteria->compare('blood_glucose',$this->blood_glucose,true);
-		$criteria->compare('hba1c',$this->hba1c,true);
-		$criteria->compare('height',$this->height,true);
-		$criteria->compare('weight',$this->weight,true);
-		$criteria->compare('pulse',$this->pulse,true);
-		$criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-		$criteria->compare('last_modified_date',$this->last_modified_date,true);
-		$criteria->compare('created_user_id',$this->created_user_id,true);
-		$criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('blood_pressure_systolic', $this->blood_pressure_systolic, true);
+        $criteria->compare('blood_pressure_diastolic', $this->blood_pressure_diastolic, true);
+        $criteria->compare('o2_sat', $this->o2_sat, true);
+        $criteria->compare('blood_glucose', $this->blood_glucose, true);
+        $criteria->compare('hba1c', $this->hba1c, true);
+        $criteria->compare('height', $this->height, true);
+        $criteria->compare('weight', $this->weight, true);
+        $criteria->compare('pulse', $this->pulse, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}
+        return new CActiveDataProvider($this, array(
+            'criteria'=>$criteria,
+        ));
+    }
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return Element_OphCiExamination_Observations the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return Element_OphCiExamination_Observations the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
     /*
      * Calculate BMI
@@ -156,7 +156,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
      * @params $height height in centimeters
      * @return float
      */
-    public function bmiCalculator( $weight , $height)
+    public function bmiCalculator($weight, $height)
     {
         $height_meter = $height / 100;
         $result = $weight / ($height_meter * $height_meter);

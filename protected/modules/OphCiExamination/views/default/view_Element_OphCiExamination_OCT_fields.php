@@ -62,7 +62,7 @@
         <?php echo $element->{'get' . ucfirst($side) . 'FluidString'}(); ?>
     </td>
   </tr>
-  <?php if ($element->{$side . '_comments'}) { ?>
+    <?php if ($element->{$side . '_comments'}) { ?>
     <tr>
       <td>
           <?php echo $element->getAttributeLabel($side . '_comments') ?>:
@@ -73,7 +73,7 @@
           </div>
       </td>
     </tr>
-  <?php } ?>
+    <?php } ?>
   </tbody>
 </table>
 

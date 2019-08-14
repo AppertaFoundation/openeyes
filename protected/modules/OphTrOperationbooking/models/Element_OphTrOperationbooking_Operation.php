@@ -32,6 +32,8 @@
  * @property string $decision_date
  * @property string $comments
  * @property string $comments_rtt
+ * @property string $on_hold_reason
+ * @property string $on_hold_comment
  * @property int $referral_id
  * @property int $rtt_id
  * @property int $preassessment_booking_required
@@ -66,7 +68,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     const LETTER_REMOVAL = 4;
 
     // these reflect an actual status, relating to actions required rather than letters sent
-    const STATUS_WHITE = 0; // no action required.	the default status.
+    const STATUS_WHITE = 0; // no action required.  the default status.
     const STATUS_PURPLE = 1; // no invitation letter has been sent
     const STATUS_GREEN1 = 2; // it's two weeks since an invitation letter was sent with no further letters going out
     const STATUS_GREEN2 = 3; // it's two weeks since 1st reminder was sent with no further letters going out
@@ -139,6 +141,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('site_id, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
             array('status_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
             array('priority_id, eye_id, organising_admission_user_id, preassessment_booking_required, overnight_booking_required_id, complexity, is_golden_patient',    'safe'),
+            array('on_hold_reason, on_hold_comment', 'safe'),
 
             array('named_consultant_id', 'RequiredIfFieldValidator', 'field' => 'consultant_required', 'value' => true, 'on' => 'insert'),
             array('cancellation_comment', 'length', 'max' => 200),
@@ -146,7 +149,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('total_duration', 'validateDuration'),
             array('referral_id', 'validateReferral'),
             array('decision_date', 'OEDateValidatorNotFuture'),
-            array('eye_id, consultant_required, overnight_stay_required_id', 'required'),
+            array('eye_id, consultant_required, overnight_stay_required_id, preassessment_booking_required', 'required'),
             array('anaesthetic_choice_id, stop_medication, complexity', 'required', 'on' => 'insert'),
             array('stop_medication_details', 'RequiredIfFieldValidator', 'field' => 'stop_medication', 'value' => true),
             array('site_id, priority_id, decision_date', 'required'),
@@ -155,7 +158,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('organising_admission_user_id', 'required', 'on' => 'insert'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, eye_id, consultant_required, site_id, priority_id, decision_date, comments, comments_rtt', 'safe', 'on' => 'search'),
+            array('id, event_id, eye_id, consultant_required, site_id, priority_id, decision_date, comments, comments_rtt, on_hold_reason, on_hold_comment', 'safe', 'on' => 'search'),
         );
     }
 
@@ -233,6 +236,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'complexity' => 'Complexity',
             'is_golden_patient' => 'Suitable as golden patient',
             'cancellation_reason_id' => ($this->reschedule ? 'Reschedule Reason' : 'Cancellation Reason'),
+            'on_hold_comment' => 'On Hold Comment',
+            'on_hold_reason' => 'On Hold Reason',
         );
     }
 
@@ -294,7 +299,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
         $this->special_equipment = false;
-        $this->preassessment_booking_required = Yii::app()->params['pre_assessment_booking_default_value'];
+        $preassesment_booking_default_value = Yii::app()->params['pre_assessment_booking_default_value'];
+        $this->preassessment_booking_required = (isset($preassesment_booking_default_value) && $preassesment_booking_default_value === 2) ?
+            null :
+            $preassesment_booking_default_value;
         $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
 
         $this->organising_admission_user_id = Yii::app()->user->id;
@@ -330,7 +338,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
     public function beforeValidate()
     {
-        if(!isset($this->overnight_stay_required_id) || is_null($this->overnight_stay_required_id)) {
+        if (!isset($this->overnight_stay_required_id) || is_null($this->overnight_stay_required_id)) {
             $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
         }
         return parent::beforeValidate();
@@ -434,7 +442,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
 
-        if( !count($this->anaesthetic_type_assignments)){
+        if ( !count($this->anaesthetic_type_assignments)) {
             $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 
@@ -594,7 +602,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      * Returns the letter status for an operation.
      *
      * Checks to see if it's an operation to be scheduled or an operation to be rescheduled. If it's the former it bases its calculation
-     *	 on the operation creation date. If it's the latter it bases it on the most recent cancelled_booking creation date.
+     *   on the operation creation date. If it's the latter it bases it on the most recent cancelled_booking creation date.
      *
      * return int
      */
@@ -687,7 +695,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $rtt_date = $this->getRTTBreach();
 
         $criteria = new CDbCriteria();
-        if($firm->id) {
+        if ($firm->id) {
             $criteria->compare('firm_id', $firm->id);
         } else {
             $criteria->addCondition('firm_id is null');
@@ -720,7 +728,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                         } else {
                             $hasFreeProcedures = false;
                             foreach ($sessiondata[$date] as $session) {
-
                                 // Check if at least one session has enough allocated max_procedures to allow the booking
                                 if (!$session->operationBookable($this)) {
                                     continue;
@@ -904,7 +911,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function hasAnaestheticTypeByCode($code)
     {
         return count(array_filter($this->anaesthetic_type,
-                function($a_type) use ($code) { return $a_type == $code;})
+                function($a_type) use ($code) { return $a_type == $code;
+                })
             ) > 0;
     }
 
@@ -1009,8 +1017,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                                  ->with(array(
                                 'firm' => array(
                                         'joinType' => 'JOIN',
-                                ),
-                        ))
+                                 ),
+                                 ))
                          ->findAll($criteria) as $session) {
             $available_time = $session->availableMinutes;
             if ($available_time < $this->total_duration) {
@@ -1717,8 +1725,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
     public function getAnaesthetist_required(){
         $anaesthetist_required = false;
-        foreach($this->anaesthetic_type as $anaesthetic_type){
-            if( in_array($anaesthetic_type->id, $this->anaesthetist_required_ids) ){
+        foreach ($this->anaesthetic_type as $anaesthetic_type) {
+            if ( in_array($anaesthetic_type->id, $this->anaesthetist_required_ids) ) {
                 $anaesthetist_required = true;
             }
         }

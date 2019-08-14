@@ -35,11 +35,11 @@
     <tr>
       <td>Drugs:</td>
       <td>
-          <?php
+            <?php
           // set name to null as it is not required to send this value to the server
-          echo CHtml::dropDownList(null, null,
+            echo CHtml::dropDownList(null, null,
               CHtml::listData($drugs, 'id', 'tallmanlabel'), array('empty' => '-- Select --', 'id' => 'drug_id'));
-          ?>
+            ?>
           <div class="cols-4">
             <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
           </div>
@@ -82,23 +82,23 @@
     <tr>
       <td>User</td>
       <td>
-          <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
-              <?=\CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
+            <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)) : ?>
+                <?=\CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
                   CHtml::listData($users, 'id', 'fullName'), array('empty' => 'Select')) ?>
-          <?php else: ?>
-              <?php
-              $user = User::model()->findByPk(Yii::app()->user->id);
-              echo CHtml::dropDownList(null, '',
+            <?php else : ?>
+                <?php
+                $user = User::model()->findByPk(Yii::app()->user->id);
+                echo CHtml::dropDownList(null, '',
                   array(Yii::app()->user->id => $user->fullName),
                   array(
                       'disabled' => 'disabled',
                       'readonly' => 'readonly',
                       'style' => 'background-color:#D3D3D3;',
                   ) //for some reason the chrome doesn't gray out
-              );
-              echo CHtml::hiddenField('OphDrPrescription_ReportPrescribedDrugs[user_id]', Yii::app()->user->id);
-              ?>
-          <?php endif ?>
+                );
+                echo CHtml::hiddenField('OphDrPrescription_ReportPrescribedDrugs[user_id]', Yii::app()->user->id);
+                ?>
+            <?php endif ?>
       </td>
     </tr>
     </tbody>

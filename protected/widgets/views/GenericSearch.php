@@ -148,7 +148,7 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
                         </td> <?php
                         break;
                 }
-            else : ?>
+                else : ?>
                 <td>
                     <?php
                     echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
@@ -157,7 +157,7 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
                     ));
                     ?>
                 </td>
-                <?php
+                        <?php
             endif;
         endforeach;
         ?>

@@ -39,7 +39,6 @@ class WorklistBehavior extends CBehavior
         $action = isset($event->params['action']) ? $event->params['action'] : null;
 
         if ($action && ($action->id === 'create') && $this->owner->event) {
-
             $patient_id = isset($this->owner->patient->id) ? $this->owner->patient->id : null;
             $worklist_patient_id = null;
 
@@ -108,7 +107,6 @@ class WorklistBehavior extends CBehavior
          */
 
         if (isset(\Yii::app()->session['patientticket_ticket_ids']) && \Yii::app()->session['patientticket_ticket_ids']) {
-
             $patientticket_ticket_id = Yii::app()->session['patientticket_ticket_ids'];
             $ticket = Ticket::model()->findByPk($patientticket_ticket_id);
             $ticket_patient_id = null;
@@ -156,7 +154,7 @@ class WorklistBehavior extends CBehavior
 
             if ($unbooked_worklist) {
                 $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
-                if($worklist_patient) {
+                if ($worklist_patient) {
                     //event already saved here we need to set this indicidually
                     $this->owner->event->saveAttributes(['worklist_patient_id' => $worklist_patient->id]);
                 } else {

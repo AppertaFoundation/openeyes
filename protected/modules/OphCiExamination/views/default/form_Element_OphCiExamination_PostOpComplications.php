@@ -62,8 +62,8 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
     </div>
   <div class="element-fields element-eyes">
       <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-      <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
-          $eye_abbr = $eye_side === 'right' ? 'R' : 'L'; ?>
+      <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :
+            $eye_abbr = $eye_side === 'right' ? 'R' : 'L'; ?>
         <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>" data-side="<?= $eye_side ?>">
           <hr/>
           <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
@@ -77,11 +77,11 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                         'id' => $eye_side . '-complication-select',
                         'nolabel' => true,
                     ),
-                    false,
-                    array()
+                                   false,
+                                   array()
                 );
                 $eye_macro = $eye_side == 'right' ? \Eye::RIGHT : \Eye::LEFT;
-                $this->widget('application.widgets.AutoCompleteSearch',['field_name' => $eye_side . '_complication_autocomplete_id']);
+                $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => $eye_side . '_complication_autocomplete_id']);
                 ?>
             </div>
           </div>
@@ -96,7 +96,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                    style="display: <?php echo ${$eye_side . '_values'} ? '' : 'none' ?>"
                    data-sideletter="<?= $eye_abbr ?>">
               <tbody>
-              <?php foreach (${$eye_side . '_values'} as $key => $value): ?>
+              <?php foreach (${$eye_side . '_values'} as $key => $value) : ?>
                 <tr>
                   <td class="postop-complication-name">
                       <?php echo $value['name']; ?>
@@ -109,7 +109,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                     </a>
                   </td>
                 </tr>
-              <?php endforeach; ?>
+                <?php endforeach; ?>
               </tbody>
             </table>
           </div>
@@ -122,7 +122,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
             </div>
           </div>
         </div>
-      <?php endforeach; ?>
+        <?php endforeach; ?>
   </div>
 
 <?php else: ?>

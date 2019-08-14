@@ -15,20 +15,20 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
 <table class="cols-full last-left">
   <tbody>
-  <?php echo $form->hiddenField($element, 'booking_event_id')?>
+    <?php echo $form->hiddenField($element, 'booking_event_id')?>
   <tr>
     <td>
         <?=\CHtml::encode($element->getAttributeLabel('eye_id')); ?>
     </td>
     <td>
-      <?php echo $form->radioButtons(
+        <?php echo $form->radioButtons(
           $element,
           'eye_id',
           CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
-          null, false, false,false,false,
+          null, false, false, false, false,
           array('nowrapper' => true),
           array()
       )?>
@@ -45,7 +45,7 @@
             'AnaestheticType',
             array_map(function($element){
                 return $element['id'];
-              }, $element->anaesthetic_type
+            }, $element->anaesthetic_type
             ),
             'Anaesthetic Type',
             false, false, false, false,

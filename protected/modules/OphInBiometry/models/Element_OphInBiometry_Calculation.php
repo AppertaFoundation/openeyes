@@ -40,7 +40,7 @@ class Element_OphInBiometry_Calculation extends SplitEventTypeElement
 
     /**
      * set defaults
-     */    
+     */
     public function init(){
         $this->target_refraction_left = null;
         $this->target_refraction_right = null;

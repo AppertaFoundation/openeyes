@@ -111,7 +111,6 @@ class User extends BaseActiveRecordVersioned
                         array('password_repeat', 'safe'),
                     )
                 );
-
             } else {
                 return array_merge(
                     $commonRules,
@@ -138,7 +137,6 @@ class User extends BaseActiveRecordVersioned
                     )
                 );
             }
-
         } elseif (Yii::app()->params['auth_source'] == 'LDAP') {
             return array_merge(
                 $commonRules,
@@ -489,7 +487,7 @@ class User extends BaseActiveRecordVersioned
     public function beforeValidate()
     {
         //When LDAP is enabled and the user is not a local user than we generate a random password
-        if($this->isNewRecord && \Yii::app()->params['auth_source'] == 'LDAP' && !$this->is_local){
+        if ($this->isNewRecord && \Yii::app()->params['auth_source'] == 'LDAP' && !$this->is_local) {
             $password = $this->generateRandomPassword();
             $this->password = $password;
             $this->password_repeat = $password;
@@ -783,19 +781,19 @@ class User extends BaseActiveRecordVersioned
 
         $users = Yii::app()->db->createCommand("SELECT DISTINCT(userid) FROM `authassignment` WHERE `itemname` IN ('" . (implode("','", $roles)) . "')")->queryAll();
 
-        foreach($users as $index => $user){
+        foreach ($users as $index => $user) {
             $user_ids[] = $user['userid'];
         }
 
         $criteria = new CDbCriteria();
         $criteria->addInCondition('t.id', $user_ids);
 
-        if( !empty($user_ids)){
+        if ( !empty($user_ids)) {
             $users = $this->findAll($criteria);
 
-            foreach($users as $id => $user) {
-                foreach($roles as $role){
-                    if(Yii::app()->authManager->checkAccess($role, $user->id)) {
+            foreach ($users as $id => $user) {
+                foreach ($roles as $role) {
+                    if (Yii::app()->authManager->checkAccess($role, $user->id)) {
                         $users_with_roles[$user->id] = $return_models ? $user : $user->id;
                     }
                 }

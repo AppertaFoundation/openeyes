@@ -33,8 +33,8 @@
         <?php } else { ?>
           <h4>
               <?php foreach ($element->procedures as $item) {
-                  echo $item->term ?><br/>
-              <?php } ?>
+                    echo $item->term ?><br/>
+                <?php } ?>
           </h4>
         <?php } ?>
     </td>
@@ -63,15 +63,15 @@
     </td>
     <td>
       <ul>
-          <?php if (!$element->additional_procedures) { ?>
+            <?php if (!$element->additional_procedures) { ?>
             <li>None</li>
-          <?php } else { ?>
+            <?php } else { ?>
             <li>
                 <?php foreach ($element->additional_procedures as $item) {
                     echo $item->term ?><br/>
                 <?php } ?>
             </li>
-          <?php } ?>
+            <?php } ?>
       </ul>
     </td>
     <td></td>

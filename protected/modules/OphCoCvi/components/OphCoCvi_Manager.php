@@ -504,7 +504,6 @@ class OphCoCvi_Manager extends \CComponent
             } else {
                 $signature = imagecreatetruecolor(1, 1);
             }
-
         }
 
 
@@ -769,19 +768,17 @@ class OphCoCvi_Manager extends \CComponent
             AND (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
                 $criteria->addCondition('t.is_draft = false OR event.info LIKE "Complete%" OR event.info LIKE "Incomplete%"');
         } elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))
-        AND (!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))){
+        AND (!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))) {
             $criteria->addCondition('event.info LIKE "Complete%" OR event.info LIKE "Incomplete%"');
-        }  elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))
+        } elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))
             AND (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
                $criteria->addCondition('t.is_draft = false OR event.info LIKE "Complete%"');
         } elseif ((!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))
             AND (isset($filter['show_issued']) && (bool)$filter['show_issued'])) {
             $criteria->addCondition('t.is_draft = false OR event.info LIKE "Incomplete%"');
-        } elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete'])))
-        {
+        } elseif ((!array_key_exists('issue_complete', $filter) || (isset($filter['issue_complete']) && (bool)$filter['issue_complete']))) {
             $criteria->addCondition('event.info LIKE "Complete%"');
-        } elseif ((!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete'])))
-            {
+        } elseif ((!array_key_exists('issue_incomplete', $filter) || (isset($filter['issue_incomplete']) && (bool)$filter['issue_incomplete']))) {
             $criteria->addCondition('event.info LIKE "Incomplete%"');
         } elseif (isset($filter['show_issued']) && (bool)$filter['show_issued']) {
             $criteria->addCondition('t.is_draft = false');
@@ -911,7 +908,6 @@ class OphCoCvi_Manager extends \CComponent
     public function signCvi(\Event $event, \User $user, $pin)
     {
         if ($user->signature_file_id) {
-
             $decodedImage = $user->getDecryptedSignature($pin);
             if ($decodedImage) {
                 $transaction = $this->startTransaction();

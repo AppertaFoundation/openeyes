@@ -24,11 +24,11 @@
             <label>Ready for second eye?</label>
         </div>
         <div class="cols-10 column end">
-            <?php if ($element->ready_for_second_eye === '1'):?>
+            <?php if ($element->ready_for_second_eye === '1') :?>
                 Yes
-            <?php elseif ($element->ready_for_second_eye === '0'):?>
+            <?php elseif ($element->ready_for_second_eye === '0') :?>
                 No
-            <?php else: ?>
+            <?php else : ?>
                 Not Applicable
             <?php endif;?>
         </div>

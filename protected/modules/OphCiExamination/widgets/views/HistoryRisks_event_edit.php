@@ -46,19 +46,19 @@ $required_risk_ids = array_map(function ($r) {
       <tr class="cols-full <?= (count($element->entries) + count($missing_req_risks)) ? ' hidden' : '' ?> <?= $model_name ?>_no_risks_wrapper">
          <td colspan="5" class="align-left">
               <label class="inline highlight" for="<?= $model_name ?>_no_risks">
-              <?= \CHtml::checkBox($model_name . '[no_risks]', $element->no_risks_date ? true : false,
+                <?= \CHtml::checkBox($model_name . '[no_risks]', $element->no_risks_date ? true : false,
                   array('class' => $model_name . '_no_risks')); ?>
                   Confirm patient has no risks
               </label>
          </td>
       </tr>
-      <?php if (count($element->entries) || count($missing_req_risks)): ?>
-      <?php
-      $row_count = 0;
-      foreach ($missing_req_risks as $entry) {
-          $this->render(
-              'HistoryRisksEntry_event_edit',
-              array(
+        <?php if (count($element->entries) || count($missing_req_risks)) : ?>
+            <?php
+            $row_count = 0;
+            foreach ($missing_req_risks as $entry) {
+                $this->render(
+                    'HistoryRisksEntry_event_edit',
+                    array(
                   'entry' => $entry,
                   'form' => $form,
                   'model_name' => $model_name,
@@ -66,15 +66,15 @@ $required_risk_ids = array_map(function ($r) {
                   'row_count' => $row_count,
                   'removable' => false,
                   'posted_not_checked' => $element->widget->postedNotChecked($row_count),
-              )
-          );
-          $row_count++;
-      } ?>
-      <?php
-      foreach ($element->entries as $entry) {
-          $this->render(
-              'HistoryRisksEntry_event_edit',
-              array(
+                    )
+                );
+                $row_count++;
+            } ?>
+            <?php
+            foreach ($element->entries as $entry) {
+                $this->render(
+                    'HistoryRisksEntry_event_edit',
+                    array(
                   'entry' => $entry,
                   'form' => $form,
                   'model_name' => $model_name,
@@ -83,11 +83,11 @@ $required_risk_ids = array_map(function ($r) {
                   'removable' => !in_array($entry->risk_id, $required_risk_ids),
                   'risks' => $risks_options,
                   'posted_not_checked' => $element->widget->postedNotChecked($row_count),
-              )
-          );
-          $row_count++;
-      } ?>
-      <?php endif ?>
+                    )
+                );
+                $row_count++;
+            } ?>
+        <?php endif ?>
       </tbody>
     </table>
   </div>
@@ -98,9 +98,9 @@ $required_risk_ids = array_map(function ($r) {
     </button>
   </div>
   <script type="text/template" class="<?= CHtml::modelName($element) . '_entry_template' ?> hidden">
-      <?php
-      $empty_entry = new \OEModule\OphCiExamination\models\HistoryRisksEntry();
-      $this->render(
+        <?php
+        $empty_entry = new \OEModule\OphCiExamination\models\HistoryRisksEntry();
+        $this->render(
           'HistoryRisksEntry_event_edit',
           array(
               'entry' => $empty_entry,
@@ -120,8 +120,8 @@ $required_risk_ids = array_map(function ($r) {
                   'has_risk' => (string)HistoryRisksEntry::$PRESENT,
               ),
           )
-      );
-      ?>
+        );
+        ?>
   </script>
 </div>
 
