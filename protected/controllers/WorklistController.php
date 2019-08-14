@@ -115,7 +115,7 @@ class WorklistController extends BaseController
 		$this->layout = '//layouts/print';
 		$worklists = $this->getWorkLists($date_from, $date_to);
 		if($list_id) {
-			$worklists = array_filter($worklists, function($e) use($list_id){ return $e->id == $list_id; });
+			$worklists = array_filter($worklists, function($e) use($list_id){ return (int)$e->id === (int)$list_id; });
 		}
 
 		// TODO
