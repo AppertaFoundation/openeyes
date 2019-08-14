@@ -25,7 +25,7 @@ $core_api = new CoreAPI();
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.TableController.js'), ClientScript::POS_END);
 
-$is_printing = isset($is_printing) && ($is_printing == true);
+$is_printing = isset($is_printing) && ($is_printing === true);
 ?>
 
 <div class="worklist-group js-filter-group" id="js-worklist-<?=$worklist->id?>-wrapper">
