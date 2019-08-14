@@ -131,11 +131,11 @@
 			);
 
 		}
-		listenForClickEvent('plotly-IOP-right');
-		listenForClickEvent('plotly-IOP-left');
+		listenForClickEvent('plotly-IOP-right','right');
+		listenForClickEvent('plotly-IOP-left','left');
 
 		//Click event for drillthrough data display
-		function listenForClickEvent(elementId){
+		function listenForClickEvent(elementId, side){
 			var report = document.getElementById(elementId);
 			report.on('plotly_click',function(data){
 				for(var i=0; i < data.points.length; i++){
@@ -146,9 +146,10 @@
 
 						$('.event_rows').hide();
 						var showlist = data.points[i].customdata;
+						// console.log(data.points[i]);
 						for (var j=0; j<showlist.length; j++){
 							var id = showlist[j].toString();
-							DisplayDrillThroughData(id);
+							DisplayDrillThroughData(id, side);
 						}
 
 						//calculate max displayed value
@@ -158,17 +159,24 @@
 						for (var i = 0; i < iop_plotly_data.length; i++){
 							if (showlist.includes(iop_plotly_data[i]["event_id"]))
 							{
-								// console.log(iop_plotly_data[i]["raw_value"] )
-								if (max_visible < iop_plotly_data[i]["raw_value"]){
-									max_visible = iop_plotly_data[i]["raw_value"];
-									max_id= iop_plotly_data[i]["event_id"];
+								if(iop_plotly_data[i]["eye"]==side){
+									if (max_visible < iop_plotly_data[i]["raw_value"]){
+										max_visible = iop_plotly_data[i]["raw_value"];
+										max_id= iop_plotly_data[i]["event_id"];
+									}
 								}
 							}
 						}
-						var rows = $('.event_'+max_id+'.val_'+max_visible);
+						var rows = $('.event_'+max_id+'_'+side+'.val_'+max_visible);
+						var msg = 'Peak IOP '+side.toUpperCase()+' eye'
 						rows.css('font-weight','bold');
 						rows.children('td').css('color','white');
-						rows.children('.event_comments:not(:contains(Peak IOP))').append(' Peak IOP');
+						var comment = rows.children('.event_comments:not(:contains('+msg+'))');
+						console.log(comment.innerHTML);
+						if(comment.innerHTML=="")
+						comment.prepend(msg+' - ');
+						else
+						comment.append(msg);
 					}
 				}
 

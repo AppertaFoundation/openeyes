@@ -50,13 +50,13 @@
     //call the initialization for the data here so that it gets called
     InitDrillThroughData();
 
-    function DisplayDrillThroughData(id){
+    function DisplayDrillThroughData(id,side){
         //display relevant content
-        $('.event_'+id).show();
+        $('.event_'+id+'_'+side).show();
 
         // generate links (used for drill through data to event details) based upon the datalink they have
         $('.clickable').click(function () {
-        var link = $('.event_'+id).data('link');
+        var link = $('.event_'+id+'_'+side).data('link');
         window.location.href = link;
         });
     }
@@ -67,7 +67,7 @@
         iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent($this->patient)); ?>;
 
         for (var i = 0; i < iop_plotly_data.length; i++){
-            var data_row = "<tr  class='clickable event_rows event_" + iop_plotly_data[i]["event_id"]+" val_"  + iop_plotly_data[i]["raw_value"] +
+            var data_row = "<tr  class='clickable event_rows event_" + iop_plotly_data[i]["event_id"]+"_" + iop_plotly_data[i]["eye"]+" val_"  + iop_plotly_data[i]["raw_value"] +
             "' data-link='/OphCi"+iop_plotly_data[i]["event_name"]+"/default/view/"+iop_plotly_data[i]["event_id"]+"'>";
             data_row += "<td class='event_type' style='vertical-align: center;'>"+iop_plotly_data[i]["event_name"]+"</td>";
             data_row += "<td class='event_eye' style='vertical-align: center;'>"+iop_plotly_data[i]["eye"]+"</td>";
