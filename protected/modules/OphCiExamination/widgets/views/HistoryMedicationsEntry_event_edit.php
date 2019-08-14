@@ -115,7 +115,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
             <?php else: ?>
                 <input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
                        value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
-                <?= Helper::convertMySQL2NHS($entry->start_date) ?>
+							<?= $entry->getStartDateDisplay() ?>
             <?php endif; ?>
         </fieldset>
     </td>

@@ -135,7 +135,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
         <td>
             <fieldset>
                 <input type="hidden" name="<?= $field_prefix ?>[start_date]"
-                       value="<?= $entry->start_date ? $entry->start_date : date('Ymd') ?>"/>
+                       value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
                 <i class="oe-i start small pad"></i>
 				<?php if($is_new || $this->isPostedEntries()): ?>
                     <input id="<?= $model_name ?>_datepicker_2_<?= $row_count ?>" name="<?= $field_prefix ?>[start_date]" value="<?= $this->isPostedEntries() ? $entry->start_date : date('Y-m-d') ?>"
@@ -144,7 +144,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                     <i class="js-has-tooltip oe-i info small pad right"
                        data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
 				<?php else: ?>
-					<?= Helper::convertMySQL2NHS($entry->start_date) ?>
+					<?= $entry->getStartDateDisplay() ?>
 				<?php endif; ?>
             </fieldset>
         </td>
