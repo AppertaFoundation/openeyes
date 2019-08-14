@@ -175,11 +175,12 @@
 						rows.css('font-weight','bold');
 						rows.children('td').css('color','white');
 						var comment = rows.children('.event_comments:not(:contains('+msg+'))');
-						console.log(comment.innerHTML);
-						if(comment.innerHTML=="")
-						comment.prepend(msg+' - ');
-						else
-						comment.append(msg);
+						if(comment.length>0){
+							if(comment[0].innerText)
+							comment.append(' - '+msg);
+							else
+							comment.append(msg);
+						}
 					}
 				}
 
