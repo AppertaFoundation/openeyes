@@ -16,11 +16,6 @@
  */
 ?>
 <?php
-$frequency_options = array();
-foreach ($element->getFrequencyOptions() as $k=>$v) {
-	$frequency_options[$v->id] = $v->term." (".$v->code.")";
-}
-
 /** @var OphDrPrescription_ItemTaper $entry */
 ?>
 
