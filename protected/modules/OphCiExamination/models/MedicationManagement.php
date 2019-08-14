@@ -114,7 +114,9 @@ class MedicationManagement extends BaseMedicationElement
         $event_date = $this->event->event_date;
 
         return array_filter($this->visible_entries, function($e) use($event_date) {
-            return ($e->start_date < $event_date && is_null($e->end_date));
+            return ($e->start_date < $event_date &&
+							(is_null($e->end_date) || $e->end_date > date('Y-m-d'))
+						);
         });
     }
 
@@ -138,7 +140,7 @@ class MedicationManagement extends BaseMedicationElement
     public function getStoppedEntries()
     {
         return array_filter($this->visible_entries, function($e){
-            return !is_null($e->end_date);
+            return !is_null($e->end_date) && $e->end_date <= date('Y-m-d');;
         });
     }
 
