@@ -17,7 +17,7 @@
       <?php if (CsvController::uploadAccess()): ?>
         <li>
           <a href = <?=  Yii::app()->createURL('csv/upload',
-              array('context' => 'trialsPatients', 'backuri' => '/OETrial/trial/view/'.$trial->id)
+              array('context' => 'trialPatients', 'backuri' => '/OETrial/trial/view/'.$trial->id)
           ) ?> >Upload trial patients</a>
         </li>
       <?php endif; ?>
