@@ -115,7 +115,9 @@ class MedicationManagement extends BaseMedicationElement
         $event_date_YYYYMMDD = substr($event_date, 0, 4).substr($event_date, 5, 2).substr($event_date, 8, 2);
 
         return array_filter($this->visible_entries, function($e) use($event_date_YYYYMMDD) {
-            return ($e->start_date_string_YYYYMMDD < $event_date_YYYYMMDD && is_null($e->end_date_string_YYYYMMDD));
+            return ($e->start_date_string_YYYYMMDD < $event_date_YYYYMMDD &&
+							(is_null($e->end_date_string_YYYYMMDD) || $e->end_date_string_YYYYMMDD > date('Ymd'))
+						);
         });
     }
 
@@ -139,7 +141,7 @@ class MedicationManagement extends BaseMedicationElement
     public function getStoppedEntries()
     {
         return array_filter($this->visible_entries, function($e){
-            return !is_null($e->end_date_string_YYYYMMDD);
+            return !is_null($e->end_date_string_YYYYMMDD) && $e->end_date_string_YYYYMMDD <= date('Ymd');;
         });
     }
 
@@ -393,7 +395,7 @@ class MedicationManagement extends BaseMedicationElement
         $prescription_details = $this->getPrescriptionDetails();
         $prescription_details->event_id = $prescription->id;
         $prescription_details->draft = 1;
-        
+
         if(!$prescription_details->save(false)){
             \Yii::trace(print_r($prescription_details->errors, true));
 			throw new \Exception("An error occured during saving");
