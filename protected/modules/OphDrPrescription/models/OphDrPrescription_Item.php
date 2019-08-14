@@ -224,9 +224,9 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
      */
     public function fpTenLinesUsed()
     {
-        $drug_label = $this->drug->label . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
-        $dose = is_numeric($this->dose) ? ($this->dose . ' ' . $this->drug->dose_unit) : $this->dose;
-        $frequency = $this->frequency->long_name . ' for ' . $this->duration->name;
+        $drug_label = $this->drug->label;
+        $dose = 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose) . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
+        $frequency = "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
 
         $this->fpten_line_usage['item_drug'] = ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS);
         $this->fpten_line_usage['item_dose'] = ceil(strlen($dose) / MAX_FPTEN_LINE_CHARS);
@@ -239,11 +239,11 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             + ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS);
 
         foreach ($this->tapers as $index => $taper) {
-            $taper_dose = is_numeric($taper->dose) ? ($taper->dose . ' ' . $this->drug->dose_unit) : $taper->dose;
-            $taper_frequency = $taper->frequency->long_name . ' for ' . $taper->duration->name;
-            $this->fpten_line_usage['taper' . $index . '_label'] = 1;
-            $this->fpten_line_usage['taper' . $index . '_dose'] = ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS);
-            $this->fpten_line_usage['taper' . $index . '_frequency'] = ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);
+            $taper_dose = 'Dose: ' . (is_numeric($taper->dose) ? ($taper->dose . ' ' . $this->drug->dose_unit) : $taper->dose) . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
+            $taper_frequency = "Frequency: {$taper->frequency->long_name} for {$taper->duration->name}";
+            $this->fpten_line_usage["taper{$index}_label"] = 1;
+            $this->fpten_line_usage["taper{$index}_dose"] = ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS);
+            $this->fpten_line_usage["taper{$index}_frequency"] = ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);
             $item_lines_used += 1
                 + ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS)
                 + ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);

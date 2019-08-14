@@ -296,8 +296,8 @@
                                             $item = $element->items[$j];
                                             $group_name = $item->dispense_condition->name;
                                             if (str_replace('{form_type}', $data['print_mode'], $group_name) === 'Print to ' . $data['print_mode']) {
-                                                $drug_label = $item->drug->label . ', ' . $item->route->name . ($item->route_option ? ' (' . $item->route_option->name . ')' : null);
-                                                $dose = is_numeric($item->dose) ? "{$item->dose} {$item->drug->dose_unit}" : $item->dose;
+                                                $drug_label = $item->drug->label;
+                                                $dose = (is_numeric($item->dose) ? "{$item->dose} {$item->drug->dose_unit}" : $item->dose) . ', ' . $item->route->name . ($item->route_option ? ' (' . $item->route_option->name . ')' : null);
                                                 $frequency = "{$item->frequency->long_name} for {$item->duration->name}";
                                                 $total_tapers = count($item->tapers);
 
@@ -394,7 +394,7 @@
                                                         break;
                                                     }
                                                     if (!$current_item_attr || $current_item_attr === "taper{$index}_dose") {
-                                                        echo 'Dose: ' . (is_numeric($taper->dose) ? ($taper->dose . ' ' . $item->drug->dose_unit) : $taper->dose) . '<br/>';
+                                                        echo 'Dose: ' . (is_numeric($taper->dose) ? ($taper->dose . ' ' . $item->drug->dose_unit) : $taper->dose) . ', ' . $item->route->name . ($item->route_option ? ' (' . $item->route_option->name . ')' : null) . '<br/>';
                                                         $current_item_attr = null;
                                                         $prescription_lines_used += $item->getAttrLength("taper{$index}_dose");
                                                     }
