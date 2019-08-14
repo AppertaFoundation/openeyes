@@ -171,10 +171,12 @@ class EventMedicationUse extends BaseElement
 			'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
 			'medication' => array(self::BELONGS_TO, Medication::class, 'medication_id'),
 			'route' => array(self::BELONGS_TO, MedicationRoute::class, 'route_id'),
-            'stopReason' => array(self::BELONGS_TO, HistoryMedicationsStopReason::class, 'stop_reason_id'),
-            'prescriptionItem' => array(self::BELONGS_TO, OphDrPrescription_Item::class, 'prescription_item_id'),
-            'medicationLaterality' => array(self::BELONGS_TO, MedicationLaterality::class, 'laterality'),
-            'drugDuration' => array(self::BELONGS_TO, DrugDuration::class, 'duration')
+			'stopReason' => array(self::BELONGS_TO, HistoryMedicationsStopReason::class, 'stop_reason_id'),
+			'prescriptionItem' => array(self::BELONGS_TO, OphDrPrescription_Item::class, 'prescription_item_id'),
+			'medicationLaterality' => array(self::BELONGS_TO, MedicationLaterality::class, 'laterality'),
+			'drugDuration' => array(self::BELONGS_TO, DrugDuration::class, 'duration'),
+			'dispenseLocation' => array(self::BELONGS_TO, OphDrPrescription_DispenseLocation::class, 'dispense_location_id'),
+			'dispenseCondition' => array(self::BELONGS_TO, OphDrPrescription_DispenseCondition::class, 'dispense_condition_id'),
 		);
 	}
 
