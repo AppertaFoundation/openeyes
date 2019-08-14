@@ -86,12 +86,16 @@
           event_ids[i] = graph_data[key]['parent_ids'];
           error_array[i] = graph_data[key]['maximum'] - graph_data[key]['average'];
           error_minus[i] = graph_data[key]['average'] - graph_data[key]['minimum'];
-          display_data[i] =
-							graph_data[key]['event_type'] + '<br>'
-							+ 'Maximum: ' + graph_data[key]['maximum'].toFixed(2).toString() + ' mmHg <br>'
-							+ 'Average: ' + graph_data[key]['average'].toFixed(2).toString() + ' mmHg <br>'
-							+ 'Minimum: ' + graph_data[key]['minimum'].toFixed(2).toString() + ' mmHg <br>'
-							+ 'Readings: ' + graph_data[key]['reading_count'].toString();
+          display_data[i] =	graph_data[key]['event_type'] + ' IOP';
+          if(graph_data[key]['reading_count'] > 1) {
+              display_data[i] += '<br>'
+              + 'Maximum: ' + Math.round(graph_data[key]['maximum']).toString() + ' mmHg <br>'
+              + 'Average: ' + Math.round(graph_data[key]['average']).toString() + ' mmHg <br>'
+              + 'Minimum: ' + Math.round(graph_data[key]['minimum']).toString() + ' mmHg <br>'
+              + 'Readings: ' + graph_data[key]['reading_count'].toString();
+          }else if(graph_data[key]['reading_count'] === 1){
+						display_data[i] += '<br>Reading: ' + Math.round(graph_data[key]['average']).toString() + ' mmHg';
+          }
           i++;
       }
 
@@ -105,7 +109,6 @@
 				text: x.map(function (item, index) {
 				 	var d = new Date(parseInt(item));
           return OEScape.epochToDateStr(d)
-							+ '<br>IOP(' + side + '): '
 							+ '<br>' + display_data[index];
 				}),
 				hoverinfo: 'text',
