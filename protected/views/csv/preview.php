@@ -17,13 +17,14 @@
             'CActiveForm',
             array(
                 'id' => 'import-form',
-                'action' => Yii::app()->createURL('csv/import', array('context' => $context)),
+                'action' => Yii::app()->createURL('csv/import', array('context' => $context, 'csv' => $csv_id)),
                 'enableAjaxValidation' => false,
                 'htmlOptions' => array('enctype' => 'multipart/form-data',
                 'class' => 'oe-full-main',
                  ),
             )
         );
+
         if (!empty($table)): ?>
             <div style="overflow: auto">
                 <table class="standard highlight-rows">

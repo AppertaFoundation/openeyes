@@ -3,7 +3,9 @@
 
 class CsvController extends BaseController
 {
-    static $contexts = array(
+	public static	$file_path = "tempfiles/";
+
+	static $contexts = array(
         'trials' => array(
             'successAction' => 'OETrial/trial',
             'createAction' => 'createNewTrial',
@@ -47,6 +49,14 @@ class CsvController extends BaseController
 
     public function actionPreview($context)
     {
+				if(file_exists(self::$file_path)) {
+					$file_list = glob(self::$file_path . "*");
+					foreach ($file_list as $file) {
+						unlink($file);
+					}
+					rmdir(self::$file_path);
+				}
+
         $table = array();
         $headers = array();
         if (isset($_FILES['Csv']['tmp_name']['csvFile']) && $_FILES['Csv']['tmp_name']['csvFile'] !== "") {
@@ -71,35 +81,75 @@ class CsvController extends BaseController
                 fclose($handle);
             }
         }
-        $_SESSION['table_data'] = $table;
-        $this->render('preview', array('table' => $table, 'context' => $context));
 
+        $csv_id = 'foobarbaz';
+
+        if(!file_exists(self::$file_path)) {
+					mkdir(self::$file_path);
+				}
+
+        copy($_FILES['Csv']['tmp_name']['csvFile'], self::$file_path . $csv_id . ".csv");
+
+        $this->render('preview', array('table' => $table, 'csv_id' => $csv_id, 'context' => $context));
     }
 
-    public function actionImport($context)
+    public function actionImport($context, $csv)
     {
-        $transaction = Yii::app()->db->beginTransaction();
-        $errors = null;
-        $row_num = 0;
-        $createAction = self::$contexts[$context]['createAction'];
-        foreach ($_SESSION['table_data'] as $row) {
-            $row_num++;
-            $errors = $this->$createAction($row);
-            if(!empty($errors))break;
-        }
-        if (empty($errors)){
-            $transaction->commit();
-            $this->redirect(Yii::app()->createURL(self::$contexts[$context]['successAction']));
-        } else {
-            $transaction->rollback();
-            array_unshift($errors, self::$contexts[$context]['errorMsg'].$row_num);
-            $this->render(
-                'upload',
-                array(
-                    'errors' => $errors,
-                    'context' => $context,
-                )
-            );
+    	$csv_file_path = self::$file_path . $csv . ".csv";
+
+    	error_log(file_get_contents($csv_file_path));
+
+			$table = array();
+			$headers = array();
+			if (($handle = fopen($csv_file_path, "r")) !== false) {
+				if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+					foreach ($line as $header) {
+						// basic sanitization, remove non printable chars - This is required if the CSV file is
+						// exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
+						$header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
+						$headers[] = $header;
+					}
+				}
+
+				while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+					$row = array();
+					$header_count = 0;
+					foreach ($line as $cel) {
+						$row[$headers[$header_count++]] = $cel;
+					}
+					$table[] = $row;
+				}
+				fclose($handle);
+			}
+
+			$transaction = Yii::app()->db->beginTransaction();
+			$errors = null;
+			$row_num = 0;
+			$createAction = self::$contexts[$context]['createAction'];
+
+			foreach ($table as $row) {
+				//error_log($row);
+					$row_num++;
+					$errors = $this->$createAction($row);
+					if(!empty($errors)) {
+						break;
+					}
+			}
+			if (empty($errors)){
+					$transaction->commit();
+					error_log("Transaction committed");
+					$this->redirect(Yii::app()->createURL(self::$contexts[$context]['successAction']));
+			} else {
+					$transaction->rollback();
+					array_unshift($errors, self::$contexts[$context]['errorMsg'].$row_num);
+					error_log("Transaction rolled back");
+					$this->render(
+							'upload',
+							array(
+									'errors' => $errors,
+									'context' => $context,
+							)
+					);
         }
     }
 
@@ -154,7 +204,7 @@ class CsvController extends BaseController
     {
         $errors = array();
 
-        if(!empty($patient['CERA_number'])){
+			if(!empty($patient['CERA_number'])){
             $new_patient = Patient::model()->findByAttributes(array('hos_num' => $patient['CERA_number']));
             if ($new_patient !== null){
                 return $errors;
