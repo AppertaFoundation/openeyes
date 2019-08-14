@@ -664,7 +664,7 @@ class PatientController extends BaseController
      * If the data model is not found, an HTTP exception will be raised.
      *
      * @param int $id the ID of the model to be loaded
-	 * @param bool $allow_deleted Whether to throw a 404 error in case the patient is deleted
+     * @param bool $allow_deleted Whether to throw a 404 error in case the patient is deleted
      */
     public function loadModel($id, $allow_deleted = true)
     {
