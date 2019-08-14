@@ -37,6 +37,7 @@ const MAX_FPTEN_LINE_CHARS = 36;
 
 class OphDrPrescription_Item extends BaseActiveRecordVersioned
 {
+    private $fpten_line_usage = array();
     /**
      * Returns the static model of the specified AR class.
      *
@@ -154,6 +155,10 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         ));
     }
 
+    public function getAttrLength($attr) {
+        return $this->fpten_line_usage[$attr];
+    }
+
     public function getDescription()
     {
         $return = $this->drug->label;
@@ -223,15 +228,22 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         $dose = is_numeric($this->dose) ? ($this->dose . ' ' . $this->drug->dose_unit) : $this->dose;
         $frequency = $this->frequency->long_name . ' for ' . $this->duration->name;
 
+        $this->fpten_line_usage['item_drug'] = ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS);
+        $this->fpten_line_usage['item_dose'] = ceil(strlen($dose) / MAX_FPTEN_LINE_CHARS);
+        $this->fpten_line_usage['item_frequency'] = ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS);
+
         // Work out how many print lines will be used for this prescription item. This will also include lines used by tapers.
         // We get the ceiling value because any decimal value indicates one extra line in use.
-        $item_lines_used = (strlen($drug_label) / MAX_FPTEN_LINE_CHARS)
+        $item_lines_used = ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS)
             + ceil(strlen($dose) / MAX_FPTEN_LINE_CHARS)
             + ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS);
 
-        foreach ($this->tapers as $taper) {
+        foreach ($this->tapers as $index => $taper) {
             $taper_dose = is_numeric($taper->dose) ? ($taper->dose . ' ' . $this->drug->dose_unit) : $taper->dose;
             $taper_frequency = $taper->frequency->long_name . ' for ' . $taper->duration->name;
+            $this->fpten_line_usage['taper' . $index . '_label'] = 1;
+            $this->fpten_line_usage['taper' . $index . '_dose'] = ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS);
+            $this->fpten_line_usage['taper' . $index . '_frequency'] = ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);
             $item_lines_used += 1
                 + ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS)
                 + ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);
