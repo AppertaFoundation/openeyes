@@ -331,5 +331,18 @@ return array(
         'delete_reason' => null,
         'delete_pending' => false,
     ),
+    'event24' => array(
+        'episode_id' => 10,
+        'created_user_id' => 1,
+        'event_type_id' => 1008,
+        'last_modified_user_id' => 1,
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+        'created_date' => '2014-01-01 00:00:50',
+        'event_date' => date('Y-m-d 00:00:00'),
+        'info' => 'someinfo',
+        'deleted' => false,
+        'delete_reason' => null,
+        'delete_pending' => false,
+    ),
 
 );
