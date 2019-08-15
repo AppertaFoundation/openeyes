@@ -58,19 +58,19 @@
 			return array_merge(
 				parent::rules(),
 				array(
-					array('start_date_string_YYYYMMDD', 'validateStartDate'),
+					array('start_date', 'validateStartDate'),
 				)
 			);
         }
 
         public function validateStartDate()
 		{
-			if($this->start_date_string_YYYYMMDD == "" && !$this->hidden && $this->getScenario() == "to_be_prescribed") {
-				$this->addError("start_date_string_YYYYMMDD", "Start date must not be empty when prescribing");
+			if(!isset($this->start_date) && !$this->hidden && $this->getScenario() == "to_be_prescribed") {
+				$this->addError("start_date", "Start date must not be empty when prescribing");
 			}
 			else {
 				$validator = new \OEFuzzyDateValidator();
-				$validator->validateAttribute($this, "start_date_string_YYYYMMDD");
+				$validator->validateAttribute($this, "start_date");
 			}
 		}
 
@@ -160,7 +160,7 @@
 				}
 			}
 
-			return true;
+			return parent::afterValidate();
 		}
 
 		public function saveTapers()
