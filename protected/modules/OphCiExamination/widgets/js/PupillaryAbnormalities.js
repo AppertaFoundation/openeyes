@@ -61,7 +61,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             });
         });
 
-        this.noAbnormalities.on('click', function (e) {
+        this.noAbnormalities.on('click', function () {
             let side = $(this).closest('.side').attr('data-side');
             let table = $('.' + side + '-eye ' + controller.entryTableSelector);
 

@@ -103,7 +103,7 @@
                 </tbody>
             </table>
 
-        <?php else: ?>
+        <?php else : ?>
             <div class="data-value not-recorded">
                 <?= ucfirst($eye_side) ?> eye not recorded
             </div>
