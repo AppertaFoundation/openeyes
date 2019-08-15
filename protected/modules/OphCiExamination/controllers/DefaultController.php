@@ -1261,7 +1261,6 @@ class DefaultController extends \BaseEventTypeController
 
         foreach (['left', 'right'] as $side) {
             if (isset($data['entries_' . $side])) {
-
                 $entries = [];
 
                 foreach ($data['entries_' . $side] as $index => $value) {
@@ -1278,7 +1277,6 @@ class DefaultController extends \BaseEventTypeController
                     }
                 }
                 $pupillary_abnormalities->{'entries_' . $side} = $entries;
-
             } else {
                 if (isset($data[$side . '_no_pupillaryabnormalities'])) {
                     $pupillary_abnormalities->{'no_pupillaryabnormalities_date_' . $side} = $data[$side . '_no_pupillaryabnormalities'];
@@ -1330,7 +1328,7 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
         }
 
-        if (isset($data['OEModule_OphCiExamination_models_PupillaryAbnormalities'])){
+        if (isset($data['OEModule_OphCiExamination_models_PupillaryAbnormalities'])) {
             $errors = $this->setAndValidatePupillaryAbnormalitiesFromData($data, $errors);
         }
 

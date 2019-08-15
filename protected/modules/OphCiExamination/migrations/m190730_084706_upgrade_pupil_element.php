@@ -135,8 +135,8 @@ class m190730_084706_upgrade_pupil_element extends OEMigration
         $this->update('ophciexamination_pupillaryabnormalities_abnormality', array('active' => 0), "id = '1'"); // disable 'Normal' option
     }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         $this->dropForeignKey('et_ophciexamination_pupillaryabnormality_entry_ei_fk', 'ophciexamination_pupillary_abnormality_entry');
         $this->dropForeignKey('et_ophciexamination_pupillaryabnormality__entry_ab_fk', 'ophciexamination_pupillary_abnormality_entry');
         $this->dropForeignKey('et_ophciexamination_pupillaryabnormality_entry_eye_fk', 'ophciexamination_pupillary_abnormality_entry');
@@ -158,6 +158,6 @@ class m190730_084706_upgrade_pupil_element extends OEMigration
 
         $this->dropOETable('ophciexamination_pupillary_abnormality_set', true);
 
-        $this->delete('element_type', "class_name = :class_name" , [':class_name' => 'OEModule\OphCiExamination\models\PupillaryAbnormalities']);
-	}
+        $this->delete('element_type', "class_name = :class_name", [':class_name' => 'OEModule\OphCiExamination\models\PupillaryAbnormalities']);
+    }
 }

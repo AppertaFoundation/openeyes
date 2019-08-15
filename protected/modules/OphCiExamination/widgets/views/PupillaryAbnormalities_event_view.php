@@ -21,13 +21,13 @@
 <div class="element-data element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
     <div class="js-element-eye <?= $eye_side ?>-eye column">
-        <?php if ($element->{'no_pupillaryabnormalities_date_' . $eye_side}): ?>
+        <?php if ($element->{'no_pupillaryabnormalities_date_' . $eye_side}) : ?>
             <div class="data-value">
                 <span class="large-text">
                     Patient has no <?= $eye_side ?> pupillary abnormalitites (confirmed)
                 </span>
             </div>
-        <?php elseif($element->{'entries_'.$eye_side}):
+        <?php elseif ($element->{'entries_' . $eye_side}) :
             $entries = [];
             foreach ([(string)PupillaryAbnormalityEntry::$NOT_PRESENT, (string)PupillaryAbnormalityEntry::$PRESENT, (string)PupillaryAbnormalityEntry::$NOT_CHECKED] as $key) {
                 $entries[$key] = array_values(array_filter($element->getSortedEntries($eye_side), function ($e) use ($key) {

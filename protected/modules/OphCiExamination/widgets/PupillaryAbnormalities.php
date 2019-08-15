@@ -14,6 +14,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 namespace OEModule\OphCiExamination\widgets;
 
 use OEModule\OphCiExamination\models\PupillaryAbnormalities as PupillaryAbnormalitiesElement;
@@ -42,29 +43,26 @@ class PupillaryAbnormalities extends \BaseEventElementWidget
         $sides = array(strtolower($data['eye_id']));
         if ($sides[0] === '3') {
             $sides = array('left', 'right');
-        }elseif($sides[0] === '2'){
+        } elseif ($sides[0] === '2') {
             $sides = array('right');
-        }else{
+        } else {
             $sides = array('left');
         }
-
         if (!is_a($element, 'OEModule\OphCiExamination\models\PupillaryAbnormalities')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
-
-        if(array_key_exists('eye_id', $data)){
+        if (array_key_exists('eye_id', $data)) {
             $element->eye_id = $data['eye_id'];
         }
-
         $entries_by_id = array();
         $entries = array();
-        foreach ($sides as $side) {
 
-            if (array_key_exists($side  .'_no_pupillaryabnormalities', $data)  && $data[$side . '_no_pupillaryabnormalities'] === "1") {
-                if(!$element->{'no_pupillaryabnormalities_date_' . $side}){
+        foreach ($sides as $side) {
+            if (array_key_exists($side . '_no_pupillaryabnormalities', $data) && $data[$side . '_no_pupillaryabnormalities'] === "1") {
+                if (!$element->{'no_pupillaryabnormalities_date_' . $side}) {
                     $element->{'no_pupillaryabnormalities_date_' . $side} = date('Y-m-d H:i:s');
                 }
-            }else{
+            } else {
                 $element->{'no_pupillaryabnormalities_date_' . $side} = null;
             }
 
@@ -124,9 +122,10 @@ class PupillaryAbnormalities extends \BaseEventElementWidget
         return $missing;
     }
 
-    public function isAbnormalitiesSet($element, $side){
-        foreach ($element->{'entries_'.$side} as $entry) {
-            if ($entry->has_abnormality === (string) PupillaryAbnormalityEntry::$PRESENT) {
+    public function isAbnormalitiesSet($element, $side)
+    {
+        foreach ($element->{'entries_' . $side} as $entry) {
+            if ($entry->has_abnormality === (string)PupillaryAbnormalityEntry::$PRESENT) {
                 return true;
             }
         }

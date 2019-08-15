@@ -27,7 +27,7 @@
                     Patient has no <?= $eye_side ?> pupillary abnormalitites (confirmed)
                 </span>
                 </div>
-            <?php elseif($element->{'entries_'.$eye_side}):
+            <?php elseif ($element->{'entries_'.$eye_side}) :
                 $entries = [];
                 foreach ([(string)PupillaryAbnormalityEntry::$NOT_PRESENT, (string)PupillaryAbnormalityEntry::$PRESENT, (string)PupillaryAbnormalityEntry::$NOT_CHECKED] as $key) {
                     $entries[$key] = array_values(array_filter($element->getSortedEntries($eye_side), function ($e) use ($key) {
@@ -97,7 +97,7 @@
                     </tbody>
                 </table>
 
-            <?php else: ?>
+            <?php else : ?>
                 <div class="data-value not-recorded">
                     <?= ucfirst($eye_side) ?> eye not recorded
                 </div>

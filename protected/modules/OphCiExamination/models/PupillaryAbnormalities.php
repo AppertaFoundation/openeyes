@@ -116,7 +116,7 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
     public function beforeSave()
     {
         foreach (array('left', 'right') as $side) {
-            if($this->{'no_pupillaryabnormalities_date_'.$side}){
+            if ($this->{'no_pupillaryabnormalities_date_' . $side}) {
                 $entries = $this->{'entries_' . $side};
                 foreach ($entries as $key => $entry) {
                     if ($entry->has_abnormality === PupillaryAbnormalityEntry::$NOT_CHECKED) {
@@ -253,7 +253,6 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
                 $entries = $this->sortEntries($this->{'entries_' . $side});
                 return implode(' <br /> ', $entries);
             }
-
         }
     }
 }
