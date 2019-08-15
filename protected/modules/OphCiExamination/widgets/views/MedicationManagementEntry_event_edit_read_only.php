@@ -135,23 +135,26 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 			<div class="alternative-display inline">
 				<div class="alternative-display-element textual">
 						<?php if(!is_null($entry->end_date)) {?>
+							<input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date?>"/>
 							<?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
 						<?php } ?>
 			</div>
 		</td>
 		<td>
 			<?php if(isset($entry->stop_reason_id)) {
-			echo HistoryMedicationsStopReason::model()->findByPk($entry->stop_reason_id)->name;
+				$stop_reason = HistoryMedicationsStopReason::model()->findByPk($entry->stop_reason_id);
+				echo isset($stop_reason) ? $stop_reason->name : "";
 			} ?>
 		</td>
 		<td>
-			<?=DrugDuration::model()->findByPK($entry->duration)->name?>
+			<?php $drug_duration = DrugDuration::model()->findByPK($entry->duration); ?>
+			<?= isset($drug_duration) ? $drug_duration->name : ""?>
 		</td>
 		<td>
-			<?= $entry->dispenseCondition->name ?>
+			<?= isset($entry->dispenseCondition) ? $entry->dispenseCondition->name : "" ?>
 		</td>
 		<td>
-			<?= $entry->dispenseLocation->name ?>
+			<?= isset($entry->dispenseLocation) ? $entry->dispenseLocation->name : "" ?>
 		</td>
 		<td>
 				<i class="oe-i no-permissions medium-icon js-has-tooltip" data-tooltip-content="You do not have permissions"></i>
