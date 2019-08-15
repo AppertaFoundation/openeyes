@@ -167,6 +167,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function getAllElementTypes()
     {
+        if ($this->action->id == 'update') {
+            return parent::getAllElementTypes();
+        }
+
         $remove = $this->getElementFilterList(false);
         return array_filter(
             parent::getAllElementTypes(),
@@ -342,6 +346,13 @@ class DefaultController extends \BaseEventTypeController
     public function renderOpenElements($action, $form = null, $date = null)
     {
         $elements = $this->getElements($action);
+
+        // add OpenEyes.UI.RestrictedData js
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath);
+
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
 
         /* @var \OEModule\OphCoCvi\components\OphCoCvi_API $cvi_api */
         $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
@@ -1502,6 +1513,10 @@ class DefaultController extends \BaseEventTypeController
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
         }
 
+        if (!$element_assignment && $this->event) {
+            \OELog::log("Assignment not found for event id: {$this->event->id}");
+        }
+      
         if ($this->action->id == 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
             $this->step = $this->getCurrentStep();
         }
