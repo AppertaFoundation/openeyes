@@ -107,13 +107,12 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 					}
 				}
 
-				if ($entry_data['start_date'] !== '') {
+				if (isset($entry_data['start_date']) && $entry_data['start_date'] !== '') {
 					list($start_year, $start_month, $start_day) = array_pad(explode('-', $entry_data['start_date']), 3, null);
 					$entry->start_date = \Helper::padFuzzyDate($start_year, $start_month, $start_day);
 				}
 
-
-				if ($entry_data['end_date'] !== '') {
+				if (isset($entry_data['end_date']) && $entry_data['end_date'] !== '') {
 					list($end_year, $end_month, $end_day) = array_pad(explode('-', $entry_data['end_date']), 3, null);
 					$entry->end_date = \Helper::padFuzzyDate($end_year, $end_month, $end_day);
 				} else {
