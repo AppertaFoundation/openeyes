@@ -82,8 +82,13 @@ $creating = isset($creating) ? $creating : false;
             </tbody>
           </table>
         </div>
+		  <?php if ($element->isInternalReferralEnabled()): ?>
+              <div class="internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?> ">
+				  <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
+              </div>
+		  <?php endif; ?>
         <div class="data-group">
-          <table class="cols-full pad-top">
+          <table class="cols-full">
 						<colgroup>
 							<col class="cols-3">
 							<col class="cols-7">
@@ -146,18 +151,6 @@ $creating = isset($creating) ? $creating : false;
                   <?php echo $form->textField($element, 'fax', array('nowrapper' => true, 'class' => 'cols-full'), array(),
                       array_merge($layoutColumns, array('field' => 2))) ?>
               </td>
-            </tr>
-            <tr>
-                <?php if ($element->isInternalReferralEnabled()): ?>
-                  <div
-                      class="data-group internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?> ">
-                    <div class="cols-2 column"></div>
-
-                    <div class="cols-10 column">
-                        <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
-                    </div>
-                  </div>
-                <?php endif; ?>
             </tr>
             </tbody>
           </table>
