@@ -64,6 +64,6 @@ $display_queue = $ticket->getDisplayQueueAssignment();
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('.js-report table').addClass('borders');
+        $('.js-report table').addClass('borders').removeClass('standard');
     });
 </script>

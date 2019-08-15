@@ -73,7 +73,7 @@ while (true) {
         unset($arr);
     }
     $mysqli->close();
-    sleep(5);
+    sleep(300);  // 5 minutes to match DICOM queue processor, and avoid thrashing a CPU.
 }
 
 function processDir($dirResource, $root, $logger)
