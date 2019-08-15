@@ -4,7 +4,7 @@ class m180806_054140_add_fk_evt_med_uses extends CDbMigration
 {
 	public function up()
 	{
-	    $this->addForeignKey('fk_emu_duration', 'event_medication_use', 'duration', 'drug_duration', 'id');
+	    $this->addForeignKey('fk_emu_duration', 'event_medication_use', 'duration_id', 'drug_duration', 'id');
 	}
 
 	public function down()

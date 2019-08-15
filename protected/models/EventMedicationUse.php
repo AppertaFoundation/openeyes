@@ -106,7 +106,7 @@ class EventMedicationUse extends BaseElement
 		// will receive user inputs.
 		return array(
 			array('usage_type, medication_id', 'required'),
-			array('first_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly'=>true),
+			array('first_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration_id, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly'=>true),
 			array('dose', 'numerical'),
 			array('laterality', 'validateLaterality'),
 			array('event_id, copied_from_med_use_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
@@ -116,11 +116,11 @@ class EventMedicationUse extends BaseElement
 			array('usage_subtype', 'default', 'value' => static::getUsageSubType(), 'on' => 'insert'),
 			array('start_date_string_YYYYMMDD, end_date_string_YYYYMMDD', 'OEFuzzyDateValidator'),
 			array('last_modified_date, created_date, event_id', 'safe'),
-			array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration', 'required', 'on' => 'to_be_prescribed'),
+			array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, start_date_string_YYYYMMDD, end_date_string_YYYYMMDD, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration_id, dispense_location_id, dispense_condition_id, start_date_string_YYYYMMDD, end_date_string_YYYYMMDD, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -152,7 +152,7 @@ class EventMedicationUse extends BaseElement
     public function copiedFields()
     {
         return ['usage_type', 'usage_subtype', 'medication_id', 'start_date_string_YYYYMMDD', 'end_date_string_YYYYMMDD', 'first_prescribed_med_use_id',
-                'form_id', 'laterality', 'route_id', 'frequency_id', 'duration', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
+                'form_id', 'laterality', 'route_id', 'frequency_id', 'duration_id', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
                 'dose', 'copied_from_med_use_id', 'dose_unit_term'];
 	}
 
@@ -175,7 +175,7 @@ class EventMedicationUse extends BaseElement
             'stopReason' => array(self::BELONGS_TO, HistoryMedicationsStopReason::class, 'stop_reason_id'),
             'prescriptionItem' => array(self::BELONGS_TO, OphDrPrescription_Item::class, 'prescription_item_id'),
             'medicationLaterality' => array(self::BELONGS_TO, MedicationLaterality::class, 'laterality'),
-            'drugDuration' => array(self::BELONGS_TO, DrugDuration::class, 'duration')
+            'drugDuration' => array(self::BELONGS_TO, DrugDuration::class, 'duration_id')
 		);
 	}
 
@@ -198,7 +198,7 @@ class EventMedicationUse extends BaseElement
 			'dose_unit_term' => 'Dose Unit Term',
 			'route_id' => 'Route',
 			'frequency_id' => 'Frequency',
-			'duration' => 'Duration',
+			'duration_id' => 'Duration',
 			'dispense_location_id' => 'Dispense Location',
 			'dispense_condition_id' => 'Dispense Condition',
 			'start_date_string_YYYYMMDD' => 'Start Date',
@@ -241,7 +241,7 @@ class EventMedicationUse extends BaseElement
 		$criteria->compare('dose_unit_term',$this->dose_unit_term,true);
 		$criteria->compare('route_id',$this->route_id);
 		$criteria->compare('frequency_id',$this->frequency_id);
-		$criteria->compare('duration',$this->duration);
+		$criteria->compare('duration',$this->duration_id);
 		$criteria->compare('dispense_location_id',$this->dispense_location_id);
 		$criteria->compare('dispense_condition_id',$this->dispense_condition_id);
 		$criteria->compare('start_date_string_YYYYMMDD',$this->start_date_string_YYYYMMDD,true);

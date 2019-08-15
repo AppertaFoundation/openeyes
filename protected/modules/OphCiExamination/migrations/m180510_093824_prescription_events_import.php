@@ -142,7 +142,7 @@ class m180510_093824_prescription_events_import extends CDbMigration
                         dose_unit_term,
                         route_id, 
                         frequency_id, 
-                        duration, 
+                        duration_id,
                         dispense_location_id, 
                         dispense_condition_id,  
                         start_date_string_YYYYMMDD,

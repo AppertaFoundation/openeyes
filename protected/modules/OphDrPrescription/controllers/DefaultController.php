@@ -420,7 +420,6 @@ class DefaultController extends BaseEventTypeController
     {
         foreach ($this->open_elements as $element) {
             if (get_class($element) == 'Element_OphDrPrescription_Details') {
-                /** @var Element_OphDrPrescription_Details $element */
                 $element->updateItems(isset($data['Element_OphDrPrescription_Details']['items']) ? $data['Element_OphDrPrescription_Details']['items'] : array());
             }
         }

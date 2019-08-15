@@ -130,7 +130,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             'dose_unit_term'                => 'VARCHAR(255) NULL',
             'route_id'                      => 'INT NULL',
             'frequency_id'                  => 'INT NULL',
-            'duration'                      => 'INT(10) unsigned NULL',
+            'duration_id'                   => 'INT(10) unsigned NULL',
             'dispense_location_id'          => 'INT NULL',
             'dispense_condition_id'         => 'INT NULL',
             'start_date_string_YYYYMMDD'    =>  'VARCHAR(8) NOT NULL',

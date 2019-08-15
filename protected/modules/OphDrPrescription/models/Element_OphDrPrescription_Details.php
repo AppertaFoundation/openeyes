@@ -292,10 +292,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @throws Exception
      */
-    public function updateItems($items)
+    public function updateItems(array $items)
     {
-        $itemCount = count($items);
-        if ($itemCount == 0) {
+        if (!$items) {
             throw new Exception('Item cannot be blank.');
         } else {
             if (!$this->id) {
@@ -320,6 +319,12 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                     $item_model = OphDrPrescription_Item::model()->findByPk($item['id']);
                     unset($existing_item_ids[$item['id']]);
                 } else {
+
+                    if (!$item instanceof OphDrPrescription_Item) {
+                        $item_model = new OphDrPrescription_Item();
+                    } else {
+                        $item_model = $item;
+                    }
                     // Item is new
                     $item_model = new OphDrPrescription_Item();
                     $item_model->event_id = $this->event_id;
@@ -327,10 +332,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 }
 
                 // Save main item attributes
-
                 $item_model->setAttributes($item);
                 $item_model->start_date = substr($this->event->event_date, 0, 10);
-                $item_model->save();
+                $s = $item_model->save();
 
                 // Tapering
                 $new_tapers = (isset($item['taper'])) ? $item['taper'] : array();

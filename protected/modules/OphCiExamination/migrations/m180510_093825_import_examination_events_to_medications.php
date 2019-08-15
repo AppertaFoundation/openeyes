@@ -52,7 +52,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                         dose_unit_term,
                         route_id, 
                         frequency_id, 
-                        duration, 
+                        duration_id, 
                         stop_reason_id,
                         prescription_item_id,
                         start_date_string_YYYYMMDD,
