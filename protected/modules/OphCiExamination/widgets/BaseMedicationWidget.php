@@ -115,6 +115,8 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 				if (isset($entry_data['end_date']) && $entry_data['end_date'] !== '') {
 					list($end_year, $end_month, $end_day) = array_pad(explode('-', $entry_data['end_date']), 3, null);
 					$entry->end_date = \Helper::padFuzzyDate($end_year, $end_month, $end_day);
+				} else {
+					$entry->end_date = null;
 				}
 
 				if (in_array('prescribe', $entry->attributeNames()) && $entry->prescribe) {
