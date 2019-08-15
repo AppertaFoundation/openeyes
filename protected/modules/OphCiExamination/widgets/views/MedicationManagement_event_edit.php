@@ -74,7 +74,7 @@ $element_errors = $element->getErrors();
                     $total_count = count($element->entries);
                     foreach ($element->entries as $key=>$entry) {
 
-                    				if($prescribe_access) {
+                    				if($prescribe_access || $entry->prescribe == 0 ) {
 															$this->render(
 																'MedicationManagementEntry_event_edit',
 																array(
