@@ -21,7 +21,7 @@ class m190815_080206_create_imagenet_url extends CDbMigration
 
 	public function down()
 	{
-        $this->delete('setting_installation', 'key = :key', [':key'=>'']);
-        $this->delete('setting_metadata', 'key = :key', [':key'=>'']);
+        $this->delete('setting_installation', 'key = :key', [':key'=>'imagenet_url']);
+        $this->delete('setting_metadata', 'key = :key', [':key'=>'imagenet_url']);
 	}
 }
