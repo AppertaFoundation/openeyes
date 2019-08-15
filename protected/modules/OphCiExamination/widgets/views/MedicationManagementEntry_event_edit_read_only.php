@@ -57,7 +57,6 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 	>
 
 		<td>
-			</button>
 			<span class="js-prepended_markup">
             <?php
 						if(!is_null($entry->medication_id)) {
