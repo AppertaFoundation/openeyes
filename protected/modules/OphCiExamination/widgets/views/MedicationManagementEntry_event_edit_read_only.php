@@ -57,7 +57,6 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 	>
 
 		<td>
-				<i class="oe-i child-arrow small"></i>
 			</button>
 			<span class="js-prepended_markup">
             <?php
