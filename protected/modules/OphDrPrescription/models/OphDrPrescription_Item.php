@@ -58,7 +58,7 @@ class OphDrPrescription_Item extends EventMedicationUse
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('dispense_location_id, dispense_condition_id, start_date, frequency_id', 'required'),
+            array('dose, dispense_location_id, dispense_condition_id, start_date, frequency_id', 'required'),
         ));
     }
 
