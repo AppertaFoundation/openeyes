@@ -1,6 +1,6 @@
 <?php
 
-use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
+use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
 
 /**
  * This is the model class for table "event_medication_use".
@@ -128,7 +128,7 @@ class EventMedicationUse extends BaseElement
      */
     public function validateLaterality()
     {
-        if (!$this->laterality && $this->route_id && in_array($this->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL))) {
+        if (!$this->laterality && $this->route_id && $this->route->has_laterality === "1") {
             $this->addError('option_id', "You must specify laterality for route '{$this->route->term}'");
         }
     }
