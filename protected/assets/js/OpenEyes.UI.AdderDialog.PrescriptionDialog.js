@@ -23,6 +23,7 @@
 
     this.popup.on('click', '.js-drug-types li', function () {
       dialog.popup.find('.js-drug-types li.selected').not(this).removeClass('selected');
+      dialog.popup.find('.js-drug-list li.selected').not(this).removeClass('selected');
       dialog.runItemSearch(dialog.popup.find('input.search').val());
     });
     this.popup.on('click', '.js-no-preservative li', function () {
@@ -120,6 +121,7 @@
             ajax: 'ajax'
         });
 
+        dialog.popup.find('.js-drug-list li.selected').not(this).removeClass('selected');
         this.searchRequest = $.getJSON(this.options.searchOptions.searchSource + '?' + params, function (results) {
         dialog.searchRequest = null;
         var no_data = !$(results).length;
