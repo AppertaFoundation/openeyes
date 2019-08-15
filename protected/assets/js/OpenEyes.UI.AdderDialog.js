@@ -503,13 +503,14 @@
                 });
             }
 
+            // deselect options when closing the adderDialog
+            dialog.popup.find('.selected').removeClass('selected');
+
             const $input = dialog.popup.find('.js-search-autocomplete.search');
-            if ($input.val().length) {
-                // reset search list when adding an item
-                $input.val("");
-                // run item search with empty text so AdderDialogs that extend this class run their custom settings
-                this.runItemSearch('');
-            }
+            // reset search list when adding an item
+            $input.val("");
+            // run item search with empty text so AdderDialogs that extend this class run their custom settings
+            this.runItemSearch('');
 
             this.close();
         }
