@@ -37,6 +37,9 @@
 	<td></td>
 	<td></td>
 	<td>
-		read only
+		<?php $tooltip_no_prescribe_role = "This taper is from a prescribed medication and cannot be edited without prescribe permissions."; ?>
+		<span data-tooltip-content="<?= $tooltip_no_prescribe_role ?>" class="js-has-tooltip">
+				 <i class="oe-i trash js-remove disabled"></i>
+			</span>
 	</td>
 </tr>

@@ -57,7 +57,6 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 	>
 
 		<td>
-			<button class="js-add-taper" type="button" title="Add taper" disabled="disabled" style="<?=$prescribe_hide_style?>">
 				<i class="oe-i child-arrow small"></i>
 			</button>
 			<span class="js-prepended_markup">
@@ -161,12 +160,10 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 				<input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>" />
 		</td>
 		<td>
-			<?php $tooltip_content_comes_from_history = "This item comes from medication history. " .
-				"If you wish to delete it, it must be deleted from the Medication History element. " .
-				"Alternatively, mark this item as stopped."; ?>
-			<span data-tooltip-content-comes-from-history="<?= $tooltip_content_comes_from_history ?>">
-							read only
- 			</span>
+			<?php $tooltip_no_prescribe_role = "This item is already prescribed and cannot be edited without prescribe permissions."; ?>
+			<span data-tooltip-content="<?= $tooltip_no_prescribe_role ?>" class="js-has-tooltip">
+				 <i class="oe-i trash js-remove disabled"></i>
+			</span>
 		</td>
 	</tr>
 <?php
