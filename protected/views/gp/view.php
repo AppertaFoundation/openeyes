@@ -48,6 +48,12 @@ $this->pageTitle = 'View Practitioner';
                             <?php echo CHtml::encode(isset($model->contact->label) ? $model->contact->label->name : ''); ?>
                         </td>
                     </tr>
+                    <tr>
+                        <td>Active:</td>
+                        <td>
+                            <i class="oe-i <?= (isset($model->getActiveStatus($model->id)->is_active)? 'tick' : 'remove');?> small"></i>
+                        </td>
+                    </tr>
                     </tbody>
                     <!--Add the address row here when GPs get tied directly to practices rather than through patient records.-->
                 </table>
