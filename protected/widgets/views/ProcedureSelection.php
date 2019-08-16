@@ -221,21 +221,32 @@
                 updateProcedureSelect(identifier);
             } else if (popped) {
                 // No subsections, so we should be safe to just push it back into the list
-                $('ul.add-options.js-search-results').append('<option value="' + popped["id"] + '">' + popped["name"] + '</option>').removeAttr('disabled');
-                sort_selectbox($('ul.add-options.js-search-results'));
+                $('ul.add-options[data-id="select"]').append(
+                    '<li data-label="'+popped["name"]+'" data-id="'+popped["id"]+'">' +
+                        '<span class="auto-width">'+popped["name"]+'</span>' +
+                    '</li>'
+                ).removeAttr('disabled');
+                sort_ul($('ul.add-options[data-id="select"]'));
             }
 
             return false;
         }
 
-        function selectSort(a, b) {
-            if (a.innerHTML == rootItem) {
-                return -1;
-            } else if (b.innerHTML == rootItem) {
-                return 1;
-            }
-            return (a.innerHTML > b.innerHTML) ? 1 : -1;
-        };
+        function sort_ul(element) {
+            let rootItem = element.children('li:first').text();
+            element.append(element.children('li').sort(selectSortSuper(rootItem)));
+        }
+
+        function selectSortSuper(rootItem) {
+            return function selectSort(a, b) {
+                if (a.innerHTML == rootItem) {
+                    return -1;
+                } else if (b.innerHTML == rootItem) {
+                    return 1;
+                }
+                return (a.innerHTML > b.innerHTML) ? 1 : -1;
+            };
+        }
 
         $('select[id^=subsection_id]').unbind('change').change(function () {
             var m = $(this).attr('id').match(/^subsection_id_(.*)$/);
