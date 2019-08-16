@@ -444,7 +444,7 @@ class Patient extends BaseActiveRecordVersioned
                 $this->{$date_column} = null;
             }
         }
-        
+
         return parent::beforeSave();
     }
 
@@ -478,7 +478,7 @@ class Patient extends BaseActiveRecordVersioned
 
         return true;
     }
-    
+
     public function isEditable()
     {
         return $this->is_local && ( Yii::app()->user->checkAccess('TaskAddPatient'));
@@ -596,7 +596,7 @@ class Patient extends BaseActiveRecordVersioned
      * @param $separator
      *
      * @return string|null
-     */    
+     */
     public function getAllergiesSeparatedString($prefix='', $separator=',', $lastSeparatorNeeded=false)
     {
         $multiAllergies = '';
@@ -615,22 +615,22 @@ class Patient extends BaseActiveRecordVersioned
      *
      *
      * @return array|null
-     */    
+     */
     public function getDiagnosesTermsArray()
     {
         $allEpisodesDiagnoses = array();
         $allOphthalmicDiagnoses = array();
-        
+
         foreach($this->episodes as $oneEpisode){
             if($oneEpisode->diagnosis){
                 $allEpisodesDiagnoses[] = $oneEpisode->eye->adjective . ' ' . $oneEpisode->diagnosis->term;
             }
         }
-        
+
         foreach( $this->ophthalmicDiagnoses as $oneDiagnosis ){
             $allOphthalmicDiagnoses[] = $oneDiagnosis->eye->adjective . ' ' . $oneDiagnosis->disorder->term;
         }
-        
+
         return array_merge($allOphthalmicDiagnoses,$allEpisodesDiagnoses);
     }
 
@@ -639,17 +639,17 @@ class Patient extends BaseActiveRecordVersioned
      *
      *
      * @return string|null
-     */ 
+     */
     public function getUniqueDiagnosesString($prefix='', $separator=',', $lastSeparatorNeeded=false)
     {
         $allDiagnoses = array();
         $allDiagnosesString ='';
 
         foreach($this->getDiagnosesTermsArray() as $diagnosisTerm) {
-            
+
             $allDiagnoses[$diagnosisTerm] = $prefix.$diagnosisTerm;
         }
-        
+
         $allDiagnosesString = implode($separator,$allDiagnoses).($lastSeparatorNeeded ? $separator:'');
         return $allDiagnosesString;
     }
@@ -898,7 +898,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     protected function instantiate($attributes)
     {
-        $model = parent::instantiate($attributes);    
+        $model = parent::instantiate($attributes);
         $model->use_pas = $this->use_pas;
 
         return $model;
@@ -1316,7 +1316,7 @@ class Patient extends BaseActiveRecordVersioned
     public function setNoFamilyHistory()
     {
         trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECRATED);
-        
+
         if (!empty($this->familyHistory)) {
             throw new Exception('Unable to set no family history date as patient still has family history assigned');
         }
@@ -2281,7 +2281,7 @@ class Patient extends BaseActiveRecordVersioned
                         $diagnosis->delete();
                     } else {
                         if(intval($diagnosis->eye_id) === Eye::BOTH) {
-                            $diagnosis->eye_id = intval($eye->id) === 1 ? 2 : 1;
+                            $diagnosis->eye_id = intval($eye->id) === Eye::LEFT ? Eye::RIGHT : Eye::LEFT;
                             $diagnosis->save();
                         } else {
                             $diagnosis->delete();
