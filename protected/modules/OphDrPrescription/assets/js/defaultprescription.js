@@ -253,8 +253,6 @@ $(function () {
         } else {
             addItems(selectedItems);
         }
-
-
     },
   });
 
