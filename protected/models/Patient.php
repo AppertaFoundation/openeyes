@@ -2265,8 +2265,8 @@ class Patient extends BaseActiveRecordVersioned
                         $episode->disorder_id = null;
                         $episode->disorder_date = null;
                     } else {
-                        if (intval($episode->eye_id) === Eye::BOTH) {
-                            $episode->eye_id = intval($eye->id) == 1 ? 2 : 1;
+                        if(intval($episode->eye_id) === Eye::BOTH) {
+                            $episode->eye_id = intval($eye->id) == Eye::LEFT ? Eye::RIGHT : Eye::LEFT;
                         } else {
                             $episode->eye_id = null;
                             $episode->disorder_id = null;
