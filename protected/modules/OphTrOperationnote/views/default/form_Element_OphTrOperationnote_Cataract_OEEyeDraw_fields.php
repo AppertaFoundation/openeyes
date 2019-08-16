@@ -266,6 +266,9 @@
     $(document).ready(function () {
         autosize($('#Element_OphTrOperationnote_Cataract_comments'));
         autosize($('#Element_OphTrOperationnote_Cataract_complication_notes'));
+        autosize($('#Element_OphTrOperationnote_Cataract_report'));
+
+        $('#Element_OphTrOperationnote_Cataract_report').css('overflow', '');
 
         $("#Element_OphTrOperationnote_Cataract_iol_type_id option").each(function() {
             if($(this).text() === '-') {

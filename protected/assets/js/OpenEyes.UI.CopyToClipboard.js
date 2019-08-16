@@ -17,7 +17,9 @@ OpenEyes.UI = OpenEyes.UI || {};
         'selector': '.js-copy-to-clipboard',
         'wrapper': 'body',
         'callback': function($element){
-            $("<span>",{"class":"js-copy-to-clipboard-copied", "style":"color:lightgreen;margin-left:5px;"}).text("copied").insertAfter($element);
+            if (!$('.js-copy-to-clipboard-copied').length) {
+                $("<span>",{"class":"js-copy-to-clipboard-copied", "style":"color:lightgreen;margin-left:5px;"}).text("copied").insertAfter($element);
+            }
             $(".js-copy-to-clipboard-copied").fadeOut(2000, function(){ $(".js-copy-to-clipboard-copied").remove(); });
         },
     };
