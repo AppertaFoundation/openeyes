@@ -131,8 +131,11 @@ class m190730_084706_upgrade_pupil_element extends OEMigration
         }
 
         //update elements for pupillary abnormalities list
-        $this->update('ophciexamination_pupillaryabnormalities_abnormality', array('active' => 1), "id = '2'"); // enable 'RAPD' option
-        $this->update('ophciexamination_pupillaryabnormalities_abnormality', array('active' => 0), "id = '1'"); // disable 'Normal' option
+        $this->update('ophciexamination_pupillaryabnormalities_abnormality', ['active' => 1], "id = '2'"); // enable 'RAPD' option
+        $this->update('ophciexamination_pupillaryabnormalities_abnormality', ['active' => 0], "id = '1'"); // disable 'Normal' option
+        $this->insert('ophciexamination_pupillaryabnormalities_abnormality', ['name' => 'Fixed', 'display_order' => '70', 'active' => 1]);
+        $this->insert('ophciexamination_pupillaryabnormalities_abnormality', ['name' => 'Fixed-dilated', 'display_order' => '80', 'active' => 1]);
+        $this->insert('ophciexamination_pupillaryabnormalities_abnormality', ['name' => 'Dilated', 'display_order' => '90', 'active' => 1]);
     }
 
     public function safeDown()
@@ -159,5 +162,9 @@ class m190730_084706_upgrade_pupil_element extends OEMigration
         $this->dropOETable('ophciexamination_pupillary_abnormality_set', true);
 
         $this->delete('element_type', "class_name = :class_name", [':class_name' => 'OEModule\OphCiExamination\models\PupillaryAbnormalities']);
+
+        $this->delete('ophciexamination_pupillaryabnormalities_abnormality', "name = :name", [':name' => 'Fixed']);
+        $this->delete('ophciexamination_pupillaryabnormalities_abnormality', "name = :name", [':name' => 'Fixed-dilated']);
+        $this->delete('ophciexamination_pupillaryabnormalities_abnormality', "name = :name", [':name' => 'Dilated']);
     }
 }
