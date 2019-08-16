@@ -1,6 +1,7 @@
 <?php $coreAPI = new CoreAPI();
       $operation_API = new OphTrOperationnote_API();
       $cataract = isset($event_list);
+      $base_patient_url = Yii::app()->createUrl('/patient/summary');
 ?>
 <div class="analytics-patient-list <?=$cataract? 'analytics-event-list':'';?>" style="display: none;" >
     <div class="flex-layout">
@@ -46,7 +47,7 @@
             }
             ?>
             <tr id="<?= $cataract? $item['event_id']: $patient['id']; ?>" class="analytics-patient-list-row <?=$cataract? 'analytics-event-list-row':'';?> clickable"
-                data-link="<?php echo Yii::app()->createUrl("/patient/summary/" . $patient['id']); ?>"
+                data-link="<?php echo "$base_patient_url/" . $patient['id']; ?>"
                 style="display: none">
                 <td class="drill_down_patient_list js-csv-data js-csv-hos_num"
                     style="vertical-align: center;"><?= $patient['hos_num']; ?></td>
