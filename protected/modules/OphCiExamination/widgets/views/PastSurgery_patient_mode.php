@@ -18,17 +18,15 @@
 ?>
 <table>
     <tbody>
+    <colgroup>
+        <col class="cols-8"><col>
+    </colgroup>
     <?php if (!$operations || sizeof($operations)==0) { ?>
       <div class="nil-recorded">Nil recorded.</div>
     <?php } else {
      foreach ($operations as $operation) {?>
         <tr>
           <td><?= array_key_exists('object', $operation) ? $operation['object']->operation : $operation['operation']; ?></td>
-          <td>
-              <?php if (array_key_exists('link', $operation)) { ?>
-                <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle pro-theme small pad"></i></a>
-              <?php } ?>
-          </td>
           <td>
               <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
               <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
@@ -42,6 +40,11 @@
                   Helper::formatFuzzyDate($operation['date']); ?>
           </span>
           </td>
+            <td>
+                <?php if (array_key_exists('link', $operation)) { ?>
+                    <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle small pad"></i></a>
+                <?php } ?>
+            </td>
         </tr>
     <?php } }?>
     </tbody>
