@@ -99,8 +99,8 @@ class AnalyticsController extends BaseController
         $this->render('/analytics/analytics_container',
             array(
                 'specialty'=>'All',
-                'service_data'=> $follow_patient_list,
-                'clinical_data' => $clinical_data,
+                'service_data'=> json_encode($follow_patient_list),
+                'clinical_data' => json_encode($clinical_data),
                 'patient_list' => $this->patient_list,
                 'user_list' => $user_list,
                 'current_user'=> $current_user,
@@ -147,13 +147,13 @@ class AnalyticsController extends BaseController
         $this->render('/analytics/analytics_container',
           array(
               'specialty' => 'Medical Retina',
-              'service_data' => $follow_patient_list,
+              'service_data' => json_encode($follow_patient_list),
               'custom_data' => $custom_data,
               'patient_list' => $this->patient_list,
               'user_list' => $user_list,
               'current_user' => $current_user,
               'common_disorders' => $common_ophthalmic_disorders,
-              'clinical_data'=>$clinical_data,
+              'clinical_data'=> json_encode($clinical_data),
           )
         );
     }
@@ -164,13 +164,13 @@ class AnalyticsController extends BaseController
         $this->render('/analytics/analytics_container',
           array(
               'specialty' => 'Glaucoma',
-              'service_data' => $follow_patient_list,
+              'service_data' => json_encode($follow_patient_list),
               'custom_data' => $custom_data,
               'patient_list' => $this->patient_list,
               'user_list' => $user_list,
               'current_user' => $current_user,
               'common_disorders' => $common_ophthalmic_disorders,
-              'clinical_data'=>$clinical_data,
+              'clinical_data'=> json_encode($clinical_data),
           )
         );
     }
@@ -220,9 +220,9 @@ class AnalyticsController extends BaseController
      * @param $data_list
      * @param $sum
      * @param $count
-     * @return floatcustom_csv_data
+     * @return float custom_csv_data
      * This function is used to calculate the standard deviation of an array.
-     * Used for Glaucuoma and MR subspecialties VA/IOP/CRT plots.
+     * Used for Glaucoma and MR subspecialties VA/IOP/CRT plots.
      * Normally we don't need the sum and number count passed as variables because they are can be get from the original array
      * But in this situation, we get the sum and count from the upper function, pass and use them directly will cause less calculations.
      */
@@ -236,8 +236,7 @@ class AnalyticsController extends BaseController
         }
         $variance /= $count;
 
-        $standard_deviation = sqrt($variance);
-        return $standard_deviation;
+        return sqrt($variance);
     }
 
     /**
@@ -337,7 +336,6 @@ class AnalyticsController extends BaseController
 
     /**
      * @param $age
-     * @param $protocol Todo: seems this parameter is never used, need specify.
      * @param $date
      * @return bool
      *
@@ -380,22 +378,22 @@ class AnalyticsController extends BaseController
             ->group('eov.id');
 
         if (isset($basic_criteria)) {
-            if ($subspecialty == 'Medical Retina') {
+            if ($subspecialty === 'Medical Retina') {
                 $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('eot.'.$eye_side.'_drug_id '.$basic_criteria)
                     ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
-            } elseif ($subspecialty == 'Glaucoma') {
+            } elseif ($subspecialty === 'Glaucoma') {
                 $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('et.'.$eye_side.'_value '.$basic_criteria)
                     ->group('patient_id, left_value,right_value');
             }
         } else {
-            if ($subspecialty == 'Medical Retina') {
+            if ($subspecialty === 'Medical Retina') {
                 $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , eot.left_drug_id as left_value, eot.right_drug_id as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('eot.left_drug_id IS NOT NULL or eot.right_drug_id IS NOT NULL')
                     ->group('ep.patient_id');
                 ;
-            } elseif ($subspecialty == 'Glaucoma') {
+            } elseif ($subspecialty === 'Glaucoma') {
                 $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , et.left_value  as left_value, et.right_value as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('et.left_value IS NOT NULL or et.right_value IS NOT NULL')
                     ->group('et.patient_id');
@@ -519,7 +517,7 @@ class AnalyticsController extends BaseController
 
     public function queryDiagnosesFilteredPatientListCommand($eye_side, $caller = 'custom')
     {
-        if ($caller == 'followup') {
+        if ($caller === 'followup') {
             $diagnoses = isset($this->filters['service_diagnosis'])? $this->filters['service_diagnosis']: null;
         } else {
             $diagnoses = isset($this->filters['custom_diagnosis'])? $this->filters['custom_diagnosis']: null;
@@ -584,7 +582,7 @@ class AnalyticsController extends BaseController
                     continue;
                 }
 
-                if ($element['name'] == '1value') {
+                if ($element['name'] === '1value') {
                     switch ($type) {
                         case 'VA':
                             $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element['value'])->getBestReading($side);
@@ -598,10 +596,10 @@ class AnalyticsController extends BaseController
                     }
 
                     if (isset($reading)) {
-                        if ($type == 'VA') {
+                        if ($type === 'VA') {
                             $reading = $reading->value;
                         }
-                        if ($type == 'CRT') {
+                        if ($type === 'CRT') {
                             $reading = $reading->{$side.'_sft'};
                         }
                     } else {
@@ -652,7 +650,7 @@ class AnalyticsController extends BaseController
                         );
                     }
                     if (isset($reading)) {
-                        array_push($this->custom_csv_data[$current_patient->id][$side][$type], $reading);
+                        $this->custom_csv_data[$current_patient->id][$side][$type][] = $reading;
                     }
 
                     $current_week = floor((($current_time/1000) - ($initial_reading[$element['patient_id']]['event_date']/1000)) / self::WEEKTIME);
@@ -660,18 +658,18 @@ class AnalyticsController extends BaseController
                     if (array_key_exists((int)$current_week, ${$side.'_list'})) {
                         ${$side.'_list'}[$current_week]['count']+=1;
                         ${$side.'_list'}[$current_week]['sum']+=$reading;
-                        ${$side.'_list'}[$current_week]['square_sum']+= pow($reading, 2);
+                        ${$side.'_list'}[$current_week]['square_sum']+= $reading ** 2;
                         ${$side.'_list'}[$current_week]['average'] = round( ${$side.'_list'}[$current_week]['sum']/ ${$side.'_list'}[$current_week]['count']);
                         ${$side.'_list'}[$current_week]['SD'] = $this->calculateStandardDeviationByDataSet(${$side.'_list'}[$current_week]);
-                        array_push( ${$side.'_list'}[$current_week]['patients'], $current_patient->id);
+                        ${$side.'_list'}[$current_week]['patients'][] =  $current_patient;
                     } else {
                         ${$side.'_list'}[$current_week] = array(
                             'count'=> 1,
                             'sum' => $reading,
-                            'square_sum'=> pow($reading, 2),
+                            'square_sum'=> $reading ** 2,
                             'average'=>$reading,
                             'SD'=>0,
-                            'patients' => array($current_patient->id),
+                            'patients' => array($current_patient),
                         );
                     }
                 }
@@ -685,7 +683,7 @@ class AnalyticsController extends BaseController
     }
     public function calculateStandardDeviationByDataSet($data_set)
     {
-        $square_average = pow($data_set['average'], 2);
+        $square_average = $data_set['average'] ** 2;
         $square_sum = $data_set['square_sum'];
         $sum = $data_set['sum'];
         $average = $data_set['average'];
@@ -747,41 +745,55 @@ class AnalyticsController extends BaseController
                 'age'=>$current_patient->getAge(),
                 'diagnoses'=>$current_patient->getDiagnosesTermsArray(),
                 'left'=>array(
-                    "VA"=>array(),
-                    "CRT"=>array(),
-                    "IOP"=>array(),
+                    'VA' =>array(),
+                    'CRT' =>array(),
+                    'IOP' =>array(),
                 ),
                 'right'=>array(
-                    "VA"=>array(),
-                    "CRT"=>array(),
-                    "IOP"=>array(),
+                    'VA' =>array(),
+                    'CRT' =>array(),
+                    'IOP' =>array(),
                 ),
             );
         }
         if (isset($right_reading)) {
-            array_push($this->custom_csv_data[$current_patient->id]['right'][$type], $right_reading);
+            $this->custom_csv_data[$current_patient->id]['right'][$type][] = $right_reading;
         }
         if (isset($left_reading)) {
-            array_push($this->custom_csv_data[$current_patient->id]['left'][$type], $left_reading);
+            $this->custom_csv_data[$current_patient->id]['left'][$type][] = $left_reading;
         }
     }
-    
+
 
     public function getCommonDisorders($subspecialty_id = null, $only_name = false)
     {
         $criteria = new CDbCriteria();
-        if (isset($criteria) && isset($subspecialty_id)) {
+        if (isset($criteria, $subspecialty_id)) {
             $criteria->compare('subspecialty_id', $subspecialty_id);
         }
-        $common_ophthalmic_disorders= CommonOphthalmicDisorder::model()->findAll($criteria);
-        $common_ophthalmic_disorders_only_name = array();
+        // for performance purpose, as $disorder->disorder-> will
+        // cause high cost
+        
+        $where = $subspecialty_id ? "WHERE cod.subspecialty_id = " . $subspecialty_id : "";
+
         if ($only_name) {
-            foreach ($common_ophthalmic_disorders as $disorder) {
-                if (isset($disorder->disorder->id)) {
-                    $common_ophthalmic_disorders_only_name[$disorder->disorder->id] = $disorder->disorder->term;
-                }
-            }
-            $common_ophthalmic_disorders = $common_ophthalmic_disorders_only_name;
+            $common_ophthalmic_disorders_command = Yii::app()->db->createCommand("
+                SELECT DISTINCT
+                    d.term
+                FROM common_ophthalmic_disorder cod
+                LEFT JOIN disorder d
+                    ON d.id = cod.disorder_id
+            ");
+            $common_ophthalmic_disorders = $common_ophthalmic_disorders_command->queryAll($criteria);
+        } else {
+            $sql = "
+                SELECT DISTINCT
+                    cod.id
+                  , cod.disorder_id
+                FROM common_ophthalmic_disorder cod
+            ";
+            $sql .= $where;
+            $common_ophthalmic_disorders = CommonOphthalmicDisorder::model()->findAllBySQL($sql);
         }
         return $common_ophthalmic_disorders;
     }
@@ -813,16 +825,22 @@ class AnalyticsController extends BaseController
     public function queryDiagnosis($subspecialty_id = null, $surgeon_id = null, $start_date = null, $end_date = null)
     {
         $command_principal = Yii::app()->db->createCommand()
-            ->select('e.patient_id as patient_id, e.disorder_id as disorder_id', 'DISTINCT')
+            ->select('e.patient_id as patient_id, c.first_name, c.last_name, p.hos_num, p.dob, p.date_of_death, e.disorder_id as disorder_id, d.term, d.fully_specified_name', 'DISTINCT')
             ->from('episode e')
+            ->leftJoin('disorder d', 'd.id = e.disorder_id')
+            ->join('patient p', 'p.id = e.patient_id')
+            ->join('contact c', 'c.id = p.contact_id')
             ->leftJoin('firm f', 'e.firm_id = f.id')
             ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
             ->where('e.disorder_id IS NOT NULL')
             ->andWhere('e.deleted = 0');
 
         $command_secondary = Yii::app()->db->createCommand()
-            ->select('sd.patient_id as patient_id, sd.disorder_id as disorder_id', 'DISTINCT')
+            ->select('sd.patient_id as patient_id, c.first_name, c.last_name, p.hos_num, p.dob, p.date_of_death, sd.disorder_id as disorder_id, d.term, d.fully_specified_name', 'DISTINCT')
             ->from('secondary_diagnosis sd')
+            ->leftJoin('disorder d', 'd.id = sd.disorder_id')
+            ->join('patient p', 'p.id = sd.patient_id')
+            ->join('contact c', 'c.id = p.contact_id')
             ->leftJoin('episode e', 'e.patient_id = sd.patient_id')
             ->leftJoin('firm f', 'e.firm_id = f.id')
             ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
@@ -869,8 +887,7 @@ class AnalyticsController extends BaseController
             ->from('patient')
             ->where(array('not in', 'id', array_merge_recursive(array_column($patient_with_secondary_disorder, 'patient_id'), array_column($patient_with_disorder, 'id'))));
 
-        $patient_without_disorder = $command_no_disorder_patient->queryAll();
-        return $patient_without_disorder;
+        return $command_no_disorder_patient->queryAll();
     }
 
     public function getDisorders($subspecialty_id = null, $surgeon_id = null, $start_date = null, $end_date = null)
@@ -894,56 +911,45 @@ class AnalyticsController extends BaseController
         $disorder_list_csv = array();
         //get common ophthalmic disorders for given subspecialty
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id);
+
+        // for performance purpose, get all the disorder data first
+        // instead of querying them within a loop
+        $disorder_id_list = array();
         foreach ($common_ophthalmic_disorders as $disorder) {
-            if (isset($disorder->disorder->id)) {
-                if (!array_key_exists($disorder->disorder->id, $disorder_patient_list)) {
-                    $disorder_patient_list[$disorder->disorder->id]= array(
-                      'full_name' => $disorder->disorder->fully_specified_name,
-                      'short_name' => $disorder->disorder->term,
-                      'patient_list' => array(),
-                    );
-                }
-            }
+            array_push($disorder_id_list, $disorder['disorder_id']);
         }
-        // this is secondary_common_ophthalmic_disorders regarding to the latest comment by toby
-  //      $secondary_common_ophthalmic_disorders = SecondaryToCommonOphthalmicDisorder::model()->findAll();
-  //      foreach ($secondary_common_ophthalmic_disorders as $disorder){
-  //          if(isset($disorder->disorder->id)){
-  //              if ($disorder->parent->subspecialty_id !== $subspecialty_id)
-  //                  continue;
-  //              if (!array_key_exists($disorder->disorder->id, $disorder_patient_list)){
-  //                  $disorder_patient_list[$disorder->disorder->id]= array(
-  //                      'full_name' => $disorder->disorder->fully_specified_name,
-  //                      'short_name' => $disorder->disorder->term,
-  //                      'patient_list' => array(),
-  //                  );
-  //              }
-  //          }
-  //      }
+        $disorder_list_command = "SELECT * FROM disorder WHERE id IN (" . implode(', ', $disorder_id_list) . ') ORDER BY id';
+
+        $disorder_list = Disorder::model()->findAllBySql($disorder_list_command);
+        foreach ($disorder_list as $disorder) {
+            $disorder_patient_list[$disorder['id']]= array(
+                'full_name' => $disorder['fully_specified_name'],
+                'short_name' => $disorder['term'],
+                'patient_list' => array(),
+            );
+        }
+    
         $diagnoses = $this->queryDiagnosis($subspecialty_id, $surgeon_id, $start_date, $end_date);
         foreach ($diagnoses as $current_diagnosis) {
-            $current_patient = Patient::model()->findByPk($current_diagnosis['patient_id']);
-
             $disorder_id = $current_diagnosis['disorder_id'];
-            $diagnosis_item = Disorder::model()->findByPk($disorder_id);
-            $disorder_list_csv[$diagnosis_item->term.$current_patient->id] = array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$diagnosis_item->term);
+            $disorder_list_csv[$current_diagnosis['term'].$current_diagnosis['patient_id']] = array($current_diagnosis['first_name'],$current_diagnosis['last_name'],$current_diagnosis['hos_num'],$current_diagnosis['dob'],Helper::getAge($current_diagnosis['dob'], $current_diagnosis['date_of_death']),$current_diagnosis['term']);
             if (array_key_exists($disorder_id, $disorder_patient_list)) {
-                if (!in_array($current_patient->id, $disorder_patient_list[$disorder_id]['patient_list'])) {
-                    array_push($disorder_patient_list[$disorder_id]['patient_list'], $current_patient->id);
+                if (!in_array($current_diagnosis['patient_id'], $disorder_patient_list[$disorder_id]['patient_list'])) {
+                    $disorder_patient_list[$disorder_id]['patient_list'][] = $current_diagnosis['patient_id'];
                 }
             } else {
                 if (!array_key_exists($disorder_id, $other_disorder_list)) {
                     $other_disorder_list[$disorder_id]= array(
-                      'full_name' => $diagnosis_item->fully_specified_name,
-                      'short_name' => $diagnosis_item->term,
+                      'full_name' => $current_diagnosis['fully_specified_name'],
+                      'short_name' => $current_diagnosis['term'],
                       'patient_list' => array(),
                     );
                 }
-                if (!in_array($current_patient->id, $other_disorder_list[$disorder_id]['patient_list'])) {
-                    array_push($other_disorder_list[$disorder_id]['patient_list'], $current_patient->id);
+                if (!in_array($current_diagnosis['patient_id'], $other_disorder_list[$disorder_id]['patient_list'])) {
+                    $other_disorder_list[$disorder_id]['patient_list'][] = $current_diagnosis['patient_id'];
                 }
-                if (!in_array($current_patient->id, $other_patient_list)) {
-                    array_push($other_patient_list, $current_patient->id);
+                if (!in_array($current_diagnosis['patient_id'], $other_patient_list)) {
+                    $other_patient_list[] = $current_diagnosis['patient_id'];
                 }
             }
         }
@@ -1006,14 +1012,14 @@ class AnalyticsController extends BaseController
         $plot_va_change = Yii::app()->request->getParam('custom_plot');
 
         if (isset($custom_diagnosis)) {
-            $diagnoses_MR = $this->getIdByName(array("age-related macular degeneration","Branch retinal vein occlusion","Central retinal vein occlusion","Diabetic macular oedema"), Disorder::class, 'term');
+            $diagnoses_MR = $this->getIdByName(array('age-related macular degeneration', 'Branch retinal vein occlusion', 'Central retinal vein occlusion', 'Diabetic macular oedema'), Disorder::class, 'term');
             $diagnoses_GL = $this->getIdByName(array('glaucoma', 'open-angle glaucoma', 'angle-closure glaucoma', 'Low tension glaucoma', 'Ocular hypertension'), Disorder::class, 'term');
             $custom_diagnosis_array = explode(",", $custom_diagnosis);
             $custom_diagnosis = array();
             foreach ($custom_diagnosis_array as $item) {
-                if ($specialty === "Medical Retina") {
+                if ($specialty === 'Medical Retina') {
                       $custom_diagnosis = array_merge_recursive($custom_diagnosis, $diagnoses_MR[$item]);
-                } else if ($specialty === "Glaucoma") {
+                } else if ($specialty === 'Glaucoma') {
                       $custom_diagnosis = array_merge_recursive($custom_diagnosis, $diagnoses_GL[$item]);
                 } else {
                     $custom_diagnosis = null;
@@ -1024,12 +1030,12 @@ class AnalyticsController extends BaseController
         if (isset($custom_treatment)) {
             $treatments = $this->getIdByName(array('Lucentis', 'Eylea', 'Avastin', 'Triamcinolone', 'Ozurdex'), OphTrIntravitrealinjection_Treatment_Drug::class, 'name');
             $custom_treatment = $treatments[$custom_treatment];
-            $custom_treatment = 'IN ('.implode(",", $custom_treatment).')';
+            $custom_treatment = 'IN ('.implode(',', $custom_treatment).')';
         }
         if (isset($custom_procedure)) {
             $procedures = $this->getIdByName(array('cataract extraction','Trabeculectomy', 'aqueous shunt','Cypass Stent Insertion','Selective laser trabeculoplasty','Laser coagulation ciliary body'), Procedure::class, 'term');
             $custom_procedure = $procedures[$custom_procedure];
-            $custom_procedure = 'IN ('.implode(",", $custom_procedure).')';
+            $custom_procedure = 'IN ('.implode(',', $custom_procedure).')';
         }
         if (isset($plot_va_change)) {
             $plot_va_change = true;
@@ -1062,7 +1068,7 @@ class AnalyticsController extends BaseController
           'clinical_surgeon_id'=>$clinical_surgeon_id,
           'custom_surgeon_id'=>$custom_surgeon_id,
           'procedure'=>$custom_procedure,
-          'plot_va_change'=> ($plot_va_change)? $plot_va_change:null,
+          'plot_va_change'=> $plot_va_change ?: null,
         );
     }
     public function getIdByName($name_array, $model, $name_attribute)
@@ -1096,21 +1102,21 @@ class AnalyticsController extends BaseController
             $this->surgeon = $surgeon_id;
         }
         $this->custom_csv_data = array();
-        if ($specialty == 'All') {
+        if ($specialty === 'All') {
             $subspecialty_id = null;
             $custom_data = array();
         } else {
             $subspecialty_id = $this->getSubspecialtyID($specialty);
             list($left_va_list, $right_va_list) = $this->getCustomVA($specialty, $this->filters['custom_surgeon_id']);
-            if ($specialty === "Glaucoma") {
+            if ($specialty === 'Glaucoma') {
                 list($left_second_list,$right_second_list) = $this->getCustomIOP($specialty, $this->filters['custom_surgeon_id']);
-            } elseif ($specialty === "Medical Retina") {
+            } elseif ($specialty === 'Medical Retina') {
                 list($left_second_list,$right_second_list) = $this->getCustomCRT($specialty, $this->filters['custom_surgeon_id']);
             }
 
             foreach (['left','right'] as $side) {
                 if (isset($this->filters['plot_va_change']) && $this->filters['plot_va_change']) {
-                    $this->filters['plot_va_change_initial_va_value'] = (empty(${$side.'_va_list'}))? null: ${$side.'_va_list'}[0]['average'];
+                    $this->filters['plot_va_change_initial_va_value'] = empty(${$side.'_va_list'}) ? null: ${$side.'_va_list'}[0]['average'];
                 }
                 $custom_data[] = array(
                   array(
@@ -1145,7 +1151,7 @@ class AnalyticsController extends BaseController
                                 if (isset($this->filters['plot_va_change_initial_va_value'])) {
                                     $cVal -= (float)$this->filters['plot_va_change_initial_va_value'];
                                 }
-                                    return " Mean: " . $cVal . "<br> SD: " . $item['SD'] ."<br> Patient No: ".count($item['patients']);
+                                    return " Mean: " . $cVal . '<br> SD: ' . $item['SD'] . '<br> Patient No: ' .count($item['patients']);
                             },
                             array_values(${$side . '_va_list'})
                         ),
@@ -1176,7 +1182,7 @@ class AnalyticsController extends BaseController
                         'hoverinfo' => 'text',
                         'hovertext' => array_map(
                             function ($item) {
-                                return " Mean: " . $item['average'] . "<br> SD: " . $item['SD'] . "<br> Patient No: " . count($item['patients']);
+                                return " Mean: " . $item['average'] . '<br> SD: ' . $item['SD'] . '<br> Patient No: ' . count($item['patients']);
                             },
                             array_values(${$side . '_second_list'})
                         ),
@@ -1226,39 +1232,6 @@ class AnalyticsController extends BaseController
         }
         return $period;
     }
-
-    /**
-     * @param $subspecialty_id
-     * @param null $start_date
-     * @param null $end_date
-     * @return array
-     * This function is used to get three followup data (overdue, coming, waiting) for "Service" section
-     * Todo: split this function into small chunk of code to make it more readable
-     *
-     */
-    public function getLatestEventByType($event_type_name, $subspecialty_id)
-    {
-        $event_type_command = '';
-        $command = Yii::app()->db->createCommand()
-            ->from('event e')
-            ->leftJoin('episode e2', 'e.episode_id = e2.id')
-            ->leftJoin('patient p', 'p.id = e2.patient_id')
-            ->leftJoin('event_type e3', 'e3.id = e.event_type_id')
-            ->leftJoin('firm', 'e2.firm_id = firm.id')
-            ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = firm.service_subspecialty_assignment_id')
-            ->where('p.deleted <> 1 and e.deleted <> 1 and e2.deleted <>1');
-        if (isset($event_type_name)) {
-            $command->andWhere('lower(e3.name) like lower(\'%'.$event_type_name.'%\')');
-            $event_type_command = ' and lower(e3.name) like lower(\'%'.$event_type_name.'%\')';
-        }
-        $command->andWhere('e.event_date = (
-                select MAX(e4.event_date) from event e4
-                left join episode e5 ON e4.episode_id = e5.id
-                left join patient p2 ON e5.patient_id = p2.id
-                left join event_type e6 ON e6.id = e4.event_type_id
-                WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0 and p2.deleted = 0'.$event_type_command.')');
-        return $command;
-    }
     public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null, $diagnosis = null)
     {
         $followup_patient_list = array(
@@ -1271,16 +1244,76 @@ class AnalyticsController extends BaseController
             'coming' => array(),
             'waiting' => array(),
         );
-        $followup_elements_command =  $this->getLatestEventByType('examination', $subspecialty_id);
-        $followup_elements_command->select('e.id as event_id, p.id as patient_id, e.event_date as event_date, DATE_ADD(event_date, INTERVAL IF(period.name = \'weeks\', 7 ,IF( period.name = \'months\', 30, IF(period.name = \'years\', 365, 1)))*eoc.followup_quantity DAY) as due_date, CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = \'weeks\', 7 ,IF( period.name = \'months\', 30, IF(period.name = \'years\', 365, 1)))*eoc.followup_quantity DAY),current_date())/7 AS INT) as weeks')
-            ->leftJoin('et_ophciexamination_clinicoutcome eoc', 'eoc.event_id = e.id')
-            ->leftJoin('period', 'period.id = eoc.followup_period_id')
-            ->andWhere('eoc.id IS NOT NULL and eoc.followup_period_id IS NOT NULL');
-        $referral_document_command = $this->getLatestEventByType('document', $subspecialty_id);
-        $referral_document_command->select('e.id as event_id, p.id as patient_id, e.event_date as event_date')
-            ->leftJoin('et_ophcodocument_document eod', 'e.id = eod.event_id')
-            ->leftJoin('ophcodocument_sub_types ost', 'eod.event_sub_type = ost.id')
-            ->andWhere('ost.name = "Referral Letter"');
+        // extract out the query in the foreach loop
+        // and integrate them into the following query
+        // function call extracted: findByPK, checkPatientWorklist...
+        // use the column value instead the object from findByPk within the loop
+        $followup_elements_command = Yii::app()->db->createCommand("
+        select 
+          e.id as event_id
+        , p.id as patient_id
+        , UNIX_TIMESTAMP(e.event_date) as event_date
+        , UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY)) as due_date
+        , CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY),current_date())/7 AS INT) as weeks
+        , UNIX_TIMESTAMP(w.start)
+        from event e
+        left join episode e2 on e.episode_id = e2.id
+        left join patient p on p.id = e2.patient_id
+        left join event_type e3 on e3.id = e.event_type_id
+        left join firm f on e2.firm_id = f.id
+        left join service_subspecialty_assignment ssa on ssa.id = f.service_subspecialty_assignment_id
+        left join et_ophciexamination_clinicoutcome eoc on eoc.event_id = e.id
+        left join period on period.id = eoc.followup_period_id
+        left join worklist_patient wp
+        on p.id = wp.patient_id
+        left join worklist w
+        on wp.worklist_id = w.id
+        where p.deleted <> 1 and e.deleted <> 1 and e2.deleted <> 1
+        and lower(e3.name) like lower('%examination%')
+        and e.event_date = (
+          select MAX(e4.event_date) from event e4
+          left join episode e5 on e4.episode_id = e5.id
+          left join patient p2 on e5.patient_id = p2.id
+          left join event_type e6 ON e6.id = e4.event_type_id
+          WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0 
+          and lower(e3.name) like lower('%examination%')
+        )
+        and eoc.id is not null
+        and eoc.followup_period_id is not null
+        ");
+
+        // extract out the query in the foreach loop
+        // and integrate them into the following query
+        // use the column value instead the object from findByPk within the loop
+        $referral_document_command = Yii::app()->db->createCommand("
+        select 
+            e.id as event_id
+            , p.id as patient_id
+            , UNIX_TIMESTAMP(e.event_date) as event_date
+            , UNIX_TIMESTAMP(wp.when) as 'when'
+        from event e
+        left join episode e2 on e.episode_id = e2.id
+        left join patient p on p.id = e2.patient_id
+        left join event_type e3 on e3.id = e.event_type_id
+        left join firm f on e2.firm_id = f.id
+        left join service_subspecialty_assignment ssa on ssa.id = f.service_subspecialty_assignment_id
+        left join et_ophcodocument_document eod on e.id = eod.event_id
+        left join ophcodocument_sub_types ost on eod.event_sub_type = ost.id
+        left join worklist_patient wp on p.id = wp.patient_id
+        left join worklist w on wp.worklist_id = w.id
+        where ost.name = 'Referral Letter'
+        and p.deleted <> 1 and e.deleted <> 1 and e2.deleted <> 1
+        and lower(e3.name) like lower('%document%')
+        and e.event_date = (
+            select MAX(e4.event_date) from event e4
+            left join episode e5 on e4.episode_id = e5.id
+            left join patient p2 on e5.patient_id = p2.id
+            left join event_type e6 ON e6.id = e4.event_type_id
+        WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0 
+        and lower(e3.name) like lower('%document%')
+        )
+
+        ");
         if ($diagnosis) {
             $command_filtered_patients_by_diagnosis = Yii::app()->db->createCommand()
                 ->select('dp.patient_id', 'distinct')
@@ -1292,16 +1325,18 @@ class AnalyticsController extends BaseController
         $current_time = time();
         foreach ($followup_elements as $followup_item) {
             /* Calculate the coming and overdue followups */
-            $event_time = Helper::mysqlDate2JsTimestamp($followup_item['event_date'])/1000;
+            $event_time = $followup_item['event_date'];
             if ( ($start_date && $event_time < $start_date) ||
                 ($end_date && $event_time > $end_date)) {
                 continue;
             }
-            $current_patient = Patient::model()->findByPk($followup_item['patient_id']);
-            $patient_worklist = $this->checkPatientWorklist($current_patient->id);
-            $latest_worklist_time = isset($patient_worklist) ? $patient_worklist/1000 : null;
+
+            $latest_worklist_time = isset($followup_item['start']) ? $followup_item['start'] : null;
+
             $latest_time = isset($latest_worklist_time)? max($event_time, $latest_worklist_time):$event_time;
-            $due_time = Helper::mysqlDate2JsTimestamp($followup_item['due_date'])/1000;
+            
+            $due_time = $followup_item['due_date'];
+
             if ( $followup_item['weeks'] <= 0) {
                 if ($latest_time > $event_time) {
                     continue;
@@ -1309,15 +1344,15 @@ class AnalyticsController extends BaseController
                 //Follow up is overdue
                 $over_weeks = -$followup_item['weeks'];
                 if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                    array_push($followup_csv_data['overdue'],
+                    $followup_csv_data['overdue'][] =
                         array(
-                            'patient_id'=>$current_patient->id,
+                            'patient_id'=>$followup_item['patient_id'],
                             'weeks'=>$over_weeks,
-                        ));
+                        );
                     if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
-                        $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                        $followup_patient_list['overdue'][$over_weeks][] = $followup_item['patient_id'];
                     } else {
-                        array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                        $followup_patient_list['overdue'][$over_weeks][] = $followup_item['patient_id'];
                     }
                 }
             } else {
@@ -1326,15 +1361,15 @@ class AnalyticsController extends BaseController
                 }
                 $coming_weeks = $followup_item['weeks'];
                 if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                    array_push($followup_csv_data['coming'],
+                    $followup_csv_data['coming'][] =
                         array(
-                            'patient_id'=>$current_patient->id,
+                            'patient_id'=>$followup_item['patient_id'],
                             'weeks'=>$coming_weeks,
-                        ));
+                        );
                     if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
-                        $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
+                        $followup_patient_list['coming'][$coming_weeks] = array($followup_item['patient_id']);
                     } else {
-                        array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                        $followup_patient_list['coming'][$coming_weeks][] = $followup_item['patient_id'];
                     }
                 }
             }
@@ -1349,7 +1384,7 @@ class AnalyticsController extends BaseController
                 ($end_date && $assignment_time > $end_date)) {
                 continue;
             }
-            if (isset($this->surgeon) && isset($current_event)) {
+            if (isset($this->surgeon, $current_event)) {
                 if ($this->surgeon !== $current_event->created_user_id) {
                     continue;
                 }
@@ -1392,35 +1427,34 @@ class AnalyticsController extends BaseController
                         continue;
                     }
                     //Follow up is overdue
-                    $over_weeks = intval(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                    $over_weeks = (int)(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
                     if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                        array_push($followup_csv_data['overdue'],
+                        $followup_csv_data['overdue'][] =
                             array(
                                 'patient_id'=>$current_patient->id,
                                 'weeks'=>$over_weeks,
-                            )
-                        );
+                            );
                         if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
-                            $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient->id;
                         } else {
-                            array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient->id;
                         }
                     }
                 } else {
                     if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time) {
                         continue;
                     }
-                    $coming_weeks = intval(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                    $coming_weeks = (int)(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
                     if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                        array_push($followup_csv_data['coming'],
+                        $followup_csv_data['coming'][] =
                             array(
                                 'patient_id'=>$current_patient->id,
                                 'weeks'=>$coming_weeks,
-                            ));
+                            );
                         if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
                             $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
                         } else {
-                            array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                            $followup_patient_list['coming'][$coming_weeks][] = $current_patient->id;
                         }
                     }
                 }
@@ -1430,34 +1464,33 @@ class AnalyticsController extends BaseController
         To calculate how long a patient will wait frm the date of referral to the date assigned in a worklist*/
         $referral_document_elements = $referral_document_command->queryAll();
         foreach ($referral_document_elements as $referral_element) {
-            $current_patient = Patient::model()->findByPk($referral_element['patient_id']);
-            $current_referral_date = Helper::mysqlDate2JsTimestamp($referral_element['event_date']) / 1000;
+            $current_referral_date = $referral_element['event_date'];
             if ( ($start_date && $current_referral_date < $start_date) ||
                 ($end_date && $current_referral_date > $end_date)) {
                 continue;
             }
-            $current_patient_on_worklist = WorklistPatient::model()->findByAttributes(array('patient_id'=>$current_patient->id), array('order'=>'t.when ASC'));
+            $current_patient_on_worklist = $referral_element['when'];
             if (isset($current_patient_on_worklist) && !empty($current_patient_on_worklist)) {
-                $appointment_time = Helper::mysqlDate2JsTimestamp($current_patient_on_worklist->when)/1000;
+                $appointment_time = $referral_element['when'];
                 if ($appointment_time >= $current_referral_date) {
-                    $waiting_time = ceil((($appointment_time - $current_referral_date)/(self::WEEKTIME)));
+                    $waiting_time = ceil(($appointment_time - $current_referral_date) / self::WEEKTIME);
                 }
             } else {
                 $current_time = time();
                 if ($current_time > $current_referral_date) {
-                    $waiting_time = ceil((($current_time - $current_referral_date)/(self::WEEKTIME)));
+                    $waiting_time = ceil(($current_time - $current_referral_date)/ self::WEEKTIME);
                 }
             }
             if (isset($waiting_time) && $waiting_time <= self::FOLLOWUP_WEEK_LIMITED) {
-                array_push($followup_csv_data['waiting'],
+                $followup_csv_data['waiting'][] =
                     array(
-                        'patient_id'=>$current_patient->id,
+                        'patient_id'=>$referral_element['patient_id'],
                         'weeks'=>$waiting_time,
-                    ));
+                    );
                 if (! isset($followup_patient_list['waiting'][$waiting_time])) {
                     $followup_patient_list['waiting'][$waiting_time]= array();
                 }
-                array_push($followup_patient_list['waiting'][$waiting_time], $current_patient->id);
+                $followup_patient_list['waiting'][$waiting_time][] = $referral_element['patient_id'];
             }
         }
         ksort($followup_patient_list['waiting']);
@@ -1490,7 +1523,7 @@ class AnalyticsController extends BaseController
         return $return_data;
     }
     /**
-     * @param $events
+     * @param $events array
      * @return mixed
      * This function is writen for the use of php usort() function
      */
