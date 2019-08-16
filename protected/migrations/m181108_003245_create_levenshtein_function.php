@@ -4,10 +4,10 @@ class m181108_003245_create_levenshtein_function extends OEMigration
 {
 
   // Use safeUp/safeDown to do migration with transaction
-  public function safeUp()
-  {
-    // Source: https://stackoverflow.com/questions/4671378/levenshtein-mysql-php
-    $this->execute('
+    public function safeUp()
+    {
+      // Source: https://stackoverflow.com/questions/4671378/levenshtein-mysql-php
+        $this->execute('
 CREATE FUNCTION levenshtein( s1 VARCHAR(255), s2 VARCHAR(255) )
   RETURNS INT
   DETERMINISTIC
@@ -48,7 +48,7 @@ CREATE FUNCTION levenshtein( s1 VARCHAR(255), s2 VARCHAR(255) )
     RETURN c;
   END;');
 
-    $this->execute('
+        $this->execute('
 CREATE FUNCTION levenshtein_ratio( s1 VARCHAR(255), s2 VARCHAR(255) )
   RETURNS INT
   DETERMINISTIC
@@ -63,11 +63,11 @@ CREATE FUNCTION levenshtein_ratio( s1 VARCHAR(255), s2 VARCHAR(255) )
     RETURN ROUND((1 - LEVENSHTEIN(s1, s2) / max_len) * 100);
   END;');
 
-  }
+    }
 
-  public function safeDown()
-  {
-    $this->execute('DROP FUNCTION levenshtein_ratio');
-    $this->execute('DROP FUNCTION levenshtein');
-  }
+    public function safeDown()
+    {
+        $this->execute('DROP FUNCTION levenshtein_ratio');
+        $this->execute('DROP FUNCTION levenshtein');
+    }
 }

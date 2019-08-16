@@ -41,7 +41,9 @@ if (isset($values['date']) && strtotime($values['date'])) {
 }
 
 ?>
-<tr class="row-<?=$row_count;?><?php if($removable){ echo " read-only"; } ?>"
+<tr class="row-<?=$row_count;?><?php if ($removable) {
+    echo " read-only";
+               } ?>"
     <?= $removable ? "data-key='{$row_count}'" : ''; ?>
     id="<?= $model_name ?>_operations_<?=$row_count?>"
 >
@@ -58,7 +60,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <?php endif; ?>
     </td>
     <td class="past-surgery-entry has-operation">
-        <?php if(!$required) {
+        <?php if (!$required) {
             if ($values['had_operation'] === (string)PastSurgery_Operation::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
                     <?=\CHtml::radioButton(

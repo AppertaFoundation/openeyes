@@ -34,7 +34,7 @@ class LegacyFieldsCommandTest extends CDbTestCase
      * Each file needs to be uniquely named, so we use time to determine file names.
      * However, since the file contents references a unique image name too,
      * this also needs to be changed.
-     * 
+     *
      * @param type $file
      */
     private function prepareFile($file)

@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -22,7 +22,7 @@
     <div class="data-group">
         <div class="cols-3 column">Number:</div>
         <div class="cols-9 column end">
-           <?=\CHtml::textField('dnaextraction_number', $element->number)?>
+            <?=\CHtml::textField('dnaextraction_number', $element->number)?>
         </div>
     </div>
 </form>

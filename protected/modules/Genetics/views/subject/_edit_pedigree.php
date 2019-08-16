@@ -27,13 +27,13 @@
     <div class="cols-5 column">
       <div class="multi-select">
 
-          <?php // ok, so this is here because this is saved through the Admin() class and we need to mimic the behavior and the html for the MultiSelectList ?>
+            <?php // ok, so this is here because this is saved through the Admin() class and we need to mimic the behavior and the html for the MultiSelectList ?>
         <select class="hidden"></select>
 
         <input type="hidden" name="GeneticsPatient[MultiSelectList_GeneticsPatient[pedigrees]]"
                class="multi-select-list-name">
-          <?php
-          $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+            <?php
+            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
               'id' => 'GeneticsPatient_pedigreeAutoComplete',
               'name' => 'GeneticsPatient[pedigree]',
               'value' => '',
@@ -64,17 +64,17 @@
               'htmlOptions' => array(
                   'placeholder' => 'Search for pedigree id',
               ),
-          )); ?>
+            )); ?>
 
         <ul class="MultiSelectList pedigree-list multi-select-selections">
-            <?php foreach (GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $genetics_patient->id)) as $pedigree): ?>
+            <?php foreach (GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $genetics_patient->id)) as $pedigree) : ?>
               <li>
                 <a href="/Genetics/pedigree/edit/<?= $pedigree->pedigree_id; ?>">
                   <span class="text">
                       <?= $pedigree->pedigree_id; ?>
-                      <?php if ($pedigree->pedigree->gene): ?>
+                      <?php if ($pedigree->pedigree->gene) : ?>
                         (<?= $pedigree->pedigree->gene->name ?>)
-                      <?php endif; ?>
+                        <?php endif; ?>
                   </span>
                 </a>
 
@@ -84,7 +84,7 @@
                 <input type="hidden" name="GeneticsPatient[pedigrees][]" value="<?= $pedigree->pedigree_id; ?>">
 
                 <select name="GeneticsPatient[pedigrees_through][<?= $pedigree->pedigree_id; ?>][status_id]">
-                    <?php foreach (PedigreeStatus::model()->findAll() as $pedigree_status): ?>
+                    <?php foreach (PedigreeStatus::model()->findAll() as $pedigree_status) : ?>
                       <option
                           value="<?= $pedigree_status->id; ?>" <?php echo $pedigree_status->id == $pedigree->status_id ? 'selected=""' : ''; ?>><?= $pedigree_status->name; ?></option>
                     <?php endforeach; ?>
@@ -108,8 +108,7 @@
       '<input type="hidden" name="GeneticsPatient[pedigrees][]" value="{{pedigreeId}}">' +
 
       '<select name="GeneticsPatient[pedigrees_through][{{pedigreeId}}][status_id]">' +
-        <?php foreach(PedigreeStatus::model()->findAll() as $pedigree_status): ?>
-
+        <?php foreach (PedigreeStatus::model()->findAll() as $pedigree_status) : ?>
       '<option value="<?=$pedigree_status->id;?>" <?php echo $pedigree_status->name == 'Unknown' ? 'selected=""' : ''?> ><?=$pedigree_status->name;?></option>' +
 
         <?php endforeach; ?>

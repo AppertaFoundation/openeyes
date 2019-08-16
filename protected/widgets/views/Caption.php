@@ -17,38 +17,40 @@
  */
 ?>
 <?php if (@$htmlOptions['nowrapper']) {?>
-	<?php echo $value?>
+    <?php echo $value?>
 <?php } else {?>
-	<div id="div_<?=\CHtml::modelName($element)?>_<?php echo $field?>" class="data-group "<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-		<div class="cols-<?php echo $layoutColumns['label'];?> column">
-			<?php
-			if($label) {
-				$labelText=$label;
-			}
-			else {
-				$labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
-			}
-			$labelText .= ':';
-			if($this->controller->action->id=="view") {
-				?>
-				<div class="data-label"><?= $labelText?></div>
-			<?php
-			}
-			else {
-				echo Chtml::label($labelText, Chtml::getIdByName($name));
-			}
-			?>
-		</div>
-		<div class="cols-<?php echo $layoutColumns['field'];?> column<?php if(empty($htmlOptions['append-text']) || empty($layoutColumns['append-text'])){?> end<?php }?>">
-			<?php
-			if(!(strtolower($this->controller->action->id)=="create" || strtolower($this->controller->action->id)=="update")) { ?>
-				<div class="data-value">
-					<?php echo $value?>
-				</div>
-			<?php
-			} else 	{
-				echo $value;
-			} ?>
-		</div>
-	</div>
+    <div id="div_<?=\CHtml::modelName($element)?>_<?php echo $field?>" class="data-group "<?php if (@$htmlOptions['hide']) {
+        ?> style="display: none;"<?php
+                 }?>>
+        <div class="cols-<?php echo $layoutColumns['label'];?> column">
+            <?php
+            if ($label) {
+                $labelText=$label;
+            } else {
+                $labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
+            }
+            $labelText .= ':';
+            if ($this->controller->action->id=="view") {
+                ?>
+                <div class="data-label"><?= $labelText?></div>
+                <?php
+            } else {
+                echo Chtml::label($labelText, Chtml::getIdByName($name));
+            }
+            ?>
+        </div>
+        <div class="cols-<?php echo $layoutColumns['field'];?> column<?php if (empty($htmlOptions['append-text']) || empty($layoutColumns['append-text'])) {
+            ?> end<?php
+                         }?>">
+            <?php
+            if (!(strtolower($this->controller->action->id)=="create" || strtolower($this->controller->action->id)=="update")) { ?>
+                <div class="data-value">
+                    <?php echo $value?>
+                </div>
+                <?php
+            } else {
+                echo $value;
+            } ?>
+        </div>
+    </div>
 <?php }?>

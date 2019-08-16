@@ -26,9 +26,11 @@
 
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div id="<?php echo $eye_side ?>-eye-calculation"
-           class="js-element-eye <?php echo $eye_side ?>-eye <?php echo $page_side ?> column <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
+           class="js-element-eye <?php echo $eye_side ?>-eye <?php echo $page_side ?> column <?php if (!$element->hasEye($eye_side)) {
+                ?> inactive<?php
+                                 } ?>"
            data-side="<?php echo $eye_side ?>" style="display: <?=$this->action->id === "create" ? "none" : "" ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
             <?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
@@ -40,15 +42,15 @@
           </div>
         </div>
       </div>
-      <?php if ($this->action->id === "create") {?>
+        <?php if ($this->action->id === "create") {?>
         <div class="js-element-eye <?= $eye_side ?>-eye column">
             Calculation editing is not available.
         </div>
-      <?php } ?>
+        <?php } ?>
     <?php endforeach; ?>
 </div>
 <div class="element-fields element-eyes">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div id="<?php echo $eye_side ?>-eye-comments"
            class="js-element-eye <?php echo $eye_side ?>-eye <?php echo $page_side ?> disabled"
            data-side="<?php echo $eye_side ?>" style="display: <?=$this->action->id === "create" ? "none" : "" ?>">
@@ -70,7 +72,7 @@
 </div>
 
 <div id="comments" style="background-color: inherit">
-	<span class="field-info large-12" style="display: <?=$this->action->id === "create" ? "none" : "" ?>">
+    <span class="field-info large-12" style="display: <?=$this->action->id === "create" ? "none" : "" ?>">
         <?php
         if ($this->is_auto) {
             if (!$this->getAutoBiometryEventData($this->event->id)[0]->is700() || $element->{'comments'}) {
@@ -84,5 +86,5 @@
             echo $form->textField($element, 'comments', array('style' => 'width:1027px;', 'nowrapper' => true), null);
         }
         ?>
-	</span>
+    </span>
 </div>

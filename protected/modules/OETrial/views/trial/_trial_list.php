@@ -34,24 +34,24 @@
     <?php foreach (array('Name', 'Date Started', 'Date Closed', 'Owner', 'Status') as $i => $field) { ?>
       <th id="patient-grid_c<?php echo $i; ?>">
           <?php
-          $new_sort_dir = ($i === $sort_by) ? 1 - $sort_dir : 0;
-          $sort_symbol = '';
-          if ($i === $sort_by) {
-              $sort_symbol = $sort_dir === 1 ? '&#x25BC;' /* down arrow */ : '&#x25B2;'; /* up arrow */
-          }
+            $new_sort_dir = ($i === $sort_by) ? 1 - $sort_dir : 0;
+            $sort_symbol = '';
+            if ($i === $sort_by) {
+                $sort_symbol = $sort_dir === 1 ? '&#x25BC;' /* down arrow */ : '&#x25B2;'; /* up arrow */
+            }
 
-          echo CHtml::link(
+            echo CHtml::link(
               $field . $sort_symbol,
               Yii::app()->createUrl('/OETrial/trial/index',
                   array('sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
           );
-          ?>
+            ?>
       </th>
     <?php } ?>
     </thead>
     <tbody>
-      <?php /* @var Trial $trial */
-      foreach ($dataProvided as $i => $trial): ?>
+        <?php /* @var Trial $trial */
+        foreach ($dataProvided as $i => $trial) : ?>
         <tr id="r<?php echo $trial->id; ?>" class="clickable">
           <td><?php echo CHtml::encode($trial->name); ?></td>
           <td><?php echo $trial->getStartedDateForDisplay(); ?></td>
@@ -59,14 +59,14 @@
           <td><?php echo CHtml::encode($trial->ownerUser->getFullName()); ?></td>
           <td><?php echo $trial->is_open ? 'Open' : 'Closed' ?></td>
         </tr>
-      <?php endforeach; ?>
+        <?php endforeach; ?>
     </tbody>
 
     <tfoot class="pagination-container">
     <tr>
       <td colspan="7">
-          <?php
-          $this->widget('LinkPager', array(
+            <?php
+            $this->widget('LinkPager', array(
               'pages' => $dataProvider->getPagination(),
               'maxButtonCount' => 15,
               'cssFile' => false,
@@ -75,8 +75,8 @@
               'htmlOptions' => array(
                   'class' => 'pagination',
               ),
-          ));
-          ?>
+            ));
+            ?>
       </td>
     </tr>
     </tfoot>

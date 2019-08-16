@@ -501,13 +501,13 @@ function AngleMarksController(_drawing) {
         data;
 
     // Register controller for notifications
-    _drawing.registerForNotifications(this, 'notificationHandler', ['ready']);
+    _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'afterReset']);
 
     // Method called for notification
     this.notificationHandler = function (_messageArray) {
 
         switch (_messageArray['eventName']) {
-            // Ready notification
+            case 'afterReset':
             case 'ready':
                 this.initAntSegAngleMarks();
                 break;
@@ -625,7 +625,7 @@ function sidePortController(_drawing) {
     var meridian;
 
     // Register controller for notifications
-    _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'beforeReset', 'reset', 'resetEdit', 'parameterChanged', 'doodleAdded', 'doodleDeleted', 'doodlesLoaded']);
+    _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'beforeReset', 'afterReset', 'resetEdit', 'parameterChanged', 'doodleAdded', 'doodleDeleted', 'doodlesLoaded']);
 
     this.addSidePorts = function() {
         var has_sideport = _drawing.hasDoodleOfClass('SidePort');
@@ -664,26 +664,37 @@ function sidePortController(_drawing) {
 
                 break;
 
-            case 'beforeReset':
-                iol_position = $('#Element_OphTrOperationnote_Cataract_iol_position_id').val();
-                break;
-
-            case 'reset':
-                this.addSidePorts();
+            case 'beforeReset': {
+                    iol_position = $('#Element_OphTrOperationnote_Cataract_iol_position_id').val();
+                    let surgeonDrawing = ED.getInstance('ed_drawing_edit_Position');
+                    if(surgeonDrawing) {
+                        surgeonDrawing.resetEyedraw();
+                    }
+                }
                 break;
             case 'resetEdit':
-                if ($(_drawing.canvas).parents('.eyedraw-row.cataract').data('isNew')) {
-                    // new eyedraws are loaded in the same way as editing, so might still be a new
-                    // eyedraw that is being reset.
-                    this.addSidePorts();
-                }
                 $('#Element_OphTrOperationnote_Cataract_iol_position_id').val(iol_position);
                 $('#Element_OphTrOperationnote_Cataract_incision_site_id').val(site_id);
                 $('#Element_OphTrOperationnote_Cataract_incision_type_id').val(type_id);
                 $('#Element_OphTrOperationnote_Cataract_length').val(length);
                 $('#Element_OphTrOperationnote_Cataract_meridian').val(meridian);
                 break;
-
+            case 'afterReset':
+                // Get reference to the phakoIncision
+                phakoIncision = _drawing.firstDoodleOfClass('PhakoIncision');
+                if(this.resetDoodleSet === false || // resetDoodleSet === false when the eyedraw is new
+                    // but new eyedraws are loaded in the same way as editing, so might still be a new
+                    // eyedraw that is being reset.
+                    $(_drawing.canvas).parents('.eyedraw-row.cataract').data('isNew')) {
+                    this.addSidePorts();
+                }
+                // Else cancel sync for an updated drawing
+                else {
+                    if (typeof(phakoIncision) != 'undefined') {
+                        phakoIncision.willSync = false;
+                    }
+                }
+                break;
             // Parameter change notification
             case 'parameterChanged':
                 // Get rotation value of surgeon doodle

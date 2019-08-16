@@ -2,8 +2,8 @@
 
 class m170316_093759_display_name_field extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->addColumn('ophinbiometry_lenstype_lens', 'display_name', 'varchar(255) NOT NULL');
         $this->addColumn('ophinbiometry_lenstype_lens_version', 'display_name', 'varchar(255) NOT NULL');
 
@@ -58,10 +58,10 @@ class m170316_093759_display_name_field extends CDbMigration
                                  join event ev on((ev.id = eol.event_id))) 
                                  join episode ep on((ep.id = ev.episode_id))) 
                                  order by eol.last_modified_date;');
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropColumn('ophinbiometry_lenstype_lens', 'display_name');
         $this->dropColumn('ophinbiometry_lenstype_lens_version', 'display_name');
 
@@ -96,16 +96,16 @@ class m170316_093759_display_name_field extends CDbMigration
                                  join event ev on((ev.id = eol.event_id))) 
                                  join episode ep on((ep.id = ev.episode_id))) 
                                  order by eol.last_modified_date;');
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

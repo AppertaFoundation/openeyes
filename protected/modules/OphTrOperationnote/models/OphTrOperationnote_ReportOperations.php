@@ -142,7 +142,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         $date_from = date('Y-m-d', strtotime('-1 year'));
         $date_to = date('Y-m-d');
 
-        if( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
+        if ( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ) {
             $this->surgeon_id = Yii::app()->user->id;
         }
 
@@ -808,9 +808,8 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         $anaesthetic = Element_OphTrOperationnote_Anaesthetic::model()->find('event_id = :event_id', array(':event_id' => $event_id));
 
         if ($anaesthetic_type && $anaesthetic) {
-
             $record['anaesthetic_type'] = '';
-            foreach($anaesthetic->anaesthetic_type as $anaesthetic_type){
+            foreach ($anaesthetic->anaesthetic_type as $anaesthetic_type) {
                 $record['anaesthetic_type'] .= !$record['anaesthetic_type'] ? '' : ', ';
                 $record['anaesthetic_type'] .= $anaesthetic_type->name;
             }
@@ -818,9 +817,8 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 
 
         if ($anaesthetic_delivery && $anaesthetic) {
-            
             $record['anaesthetic_delivery'] = '';
-            foreach($anaesthetic->anaesthetic_delivery as $anaesthetic_delivery) {
+            foreach ($anaesthetic->anaesthetic_delivery as $anaesthetic_delivery) {
                 $record['anaesthetic_delivery'] .= !$record['anaesthetic_delivery'] ? '' : ', ';
                 $record['anaesthetic_delivery'] .= $anaesthetic_delivery->name;
             }
