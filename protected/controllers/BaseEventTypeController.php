@@ -2512,7 +2512,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function removeEventImages()
     {
-        EventImage::model()->deleteAll('event_id = ?', $this->event->id);
+        EventImage::model()->deleteAll('event_id = :event_id', ['event_id' => $this->event->id]);
     }
 
     /**
