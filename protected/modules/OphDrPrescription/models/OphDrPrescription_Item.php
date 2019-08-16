@@ -155,6 +155,11 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         ));
     }
 
+    /**
+     * Get the number of lines an attribute will use on an FP10 form.
+     * @param $attr string
+     * @return int
+     */
     public function getAttrLength($attr) {
         return $this->fpten_line_usage[$attr];
     }
@@ -228,25 +233,25 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         $dose = 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose) . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
         $frequency = "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
 
-        $this->fpten_line_usage['item_drug'] = ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS);
-        $this->fpten_line_usage['item_dose'] = ceil(strlen($dose) / MAX_FPTEN_LINE_CHARS);
-        $this->fpten_line_usage['item_frequency'] = ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS);
+        $this->fpten_line_usage['item_drug'] = (int)ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS);
+        $this->fpten_line_usage['item_dose'] = (int)ceil(strlen($dose) / MAX_FPTEN_LINE_CHARS);
+        $this->fpten_line_usage['item_frequency'] = (int)ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS);
 
         // Work out how many print lines will be used for this prescription item. This will also include lines used by tapers.
         // We get the ceiling value because any decimal value indicates one extra line in use.
-        $item_lines_used = ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS)
+        $item_lines_used = (int)(ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS)
             + ceil(strlen($dose) / MAX_FPTEN_LINE_CHARS)
-            + ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS);
+            + ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS));
 
         foreach ($this->tapers as $index => $taper) {
             $taper_dose = 'Dose: ' . (is_numeric($taper->dose) ? ($taper->dose . ' ' . $this->drug->dose_unit) : $taper->dose) . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
             $taper_frequency = "Frequency: {$taper->frequency->long_name} for {$taper->duration->name}";
             $this->fpten_line_usage["taper{$index}_label"] = 1;
-            $this->fpten_line_usage["taper{$index}_dose"] = ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS);
-            $this->fpten_line_usage["taper{$index}_frequency"] = ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);
+            $this->fpten_line_usage["taper{$index}_dose"] = (int)ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS);
+            $this->fpten_line_usage["taper{$index}_frequency"] = (int)ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);
             $item_lines_used += 1
-                + ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS)
-                + ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);
+                + (int)ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS)
+                + (int)ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);
         }
 
         // Return the truncated number of lines.
