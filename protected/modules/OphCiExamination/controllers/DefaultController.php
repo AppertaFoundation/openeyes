@@ -1157,6 +1157,7 @@ class DefaultController extends \BaseEventTypeController
 
     protected function saveComplexAttributes_HistoryIOP($element, $data, $index)
     {
+        $iop_element_this_event = models\Element_OphCiExamination_IntraocularPressure::model()->findByAttributes(['event_id' => $this->event->id]);
         $data = $data['OEModule_OphCiExamination_models_HistoryIOP'];
         $examination_ids = [];
         $iop_elements = [];
@@ -1164,21 +1165,23 @@ class DefaultController extends \BaseEventTypeController
         foreach (['left', 'right'] as $side) {
             if (array_key_exists("{$side}_values", $data) && $data["{$side}_values"]) {
                 foreach ($data["{$side}_values"] as $index => $values) {
-                    if (isset($examination_ids[$values['examination_date']])) {
-                        continue;
-                    } else {
-                        // create a new event and set the event_date as selected iop date
-                        $examination_event = new \Event();
-                        $examination_event->episode_id = $element->event->episode_id;
-                        $examination_event->created_user_id = $examination_event->last_modified_user_id = \Yii::app()->user->id;
-                        $examination_event->event_date = \DateTime::createFromFormat('d-m-Y', $values['examination_date'])->format('Y-m-d');
-                        $examination_event->event_type_id = $element->event->event_type_id;
+                    if ($values['examination_date'] !== date('d-m-Y')) {
+                        if (isset($examination_ids[$values['examination_date']])) {
+                            continue;
+                        } else {
+                            // create a new event and set the event_date as selected iop date
+                            $examination_event = new \Event();
+                            $examination_event->episode_id = $element->event->episode_id;
+                            $examination_event->created_user_id = $examination_event->last_modified_user_id = \Yii::app()->user->id;
+                            $examination_event->event_date = \DateTime::createFromFormat('d-m-Y', $values['examination_date'])->format('Y-m-d');
+                            $examination_event->event_type_id = $element->event->event_type_id;
 
-                        if (!$examination_event->save()) {
-                            throw new \Exception('Unable to save a new examination for the IOP readings: ' . print_r($examination_event->errors, true));
+                            if (!$examination_event->save()) {
+                                throw new \Exception('Unable to save a new examination for the IOP readings: ' . print_r($examination_event->errors, true));
+                            }
+
+                            $examination_ids[$values['examination_date']] = $examination_event->id;
                         }
-
-                        $examination_ids[$values['examination_date']] = $examination_event->id;
                     }
                 }
             }
@@ -1188,9 +1191,22 @@ class DefaultController extends \BaseEventTypeController
             if (array_key_exists("{$side}_values", $data) && $data["{$side}_values"]) {
                 foreach ($data["{$side}_values"] as $index => $values) {
                     if (!isset($iop_elements[$values['examination_date']])) {
-                        // create a new iop element
-                        $iop_element = new models\Element_OphCiExamination_IntraocularPressure();
-                        $iop_element->event_id = $examination_ids[$values['examination_date']];
+                        // the same date as today: use the newly created event
+                        if ($values['examination_date'] === date('d-m-Y')) {
+                            // if an IOP element already exists for this event, use it
+                            if ($iop_element_this_event) {
+                                $iop_element = $iop_element_this_event;
+                            } else {
+                                // otherwise create a new iop element
+                                $iop_element = new models\Element_OphCiExamination_IntraocularPressure();
+                            }
+                            // set event_id as current event's id
+                            $iop_element->event_id = $this->event->id;
+                        } else {
+                          // create a new iop element and set the event_id computed before from $examination_ids
+                            $iop_element = new models\Element_OphCiExamination_IntraocularPressure();
+                            $iop_element->event_id = $examination_ids[$values['examination_date']];
+                        }
 
                         // set both sides comments as not recorded
                         $iop_element["left_comments"] = "IOP values not recorded for this eye.";
