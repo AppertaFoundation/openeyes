@@ -65,7 +65,7 @@ class GpController extends BaseController
             ),
             array(
                 'allow', // allow anyone to search for contact labels
-                'actions' => array('contactLabelList'),
+                'actions' => array('contactLabelList', 'gpList'),
                 'users' => array('*')
             ),
             array(
@@ -181,6 +181,35 @@ class GpController extends BaseController
                 'label' => $label->name,
                 'value' => $label->name,
                 'id' => $label->id
+            );
+        }
+
+        echo CJSON::encode($output);
+
+        Yii::app()->end();
+    }
+
+    /**
+     * List all gp's that contain the $term
+     * @param string $term what to search on
+     */
+    public function actionGpList($term)
+    {
+        $labels= Yii::app()->db->createCommand()
+            ->select('g.id, c.first_name, c.last_name, cl.name as role')
+            ->from('gp g')
+            ->join('contact c', 'c.id = g.contact_id')
+            ->join('contact_label cl', 'cl.id = c.contact_label_id')
+            ->where('(LOWER(c.first_name) LIKE LOWER(:first_name)) OR (LOWER(c.last_name) LIKE LOWER(:last_name))',
+                array(':first_name' => "%{$term}%", ':last_name' => "%{$term}%"))
+            ->queryAll();
+
+        $output = array();
+        foreach($labels as $label){
+            $output[] = array(
+                'id' => $label['id'],
+                'label' => $label['first_name'].' '. $label['last_name'].' - '.$label['role'],
+                'value' => $label['first_name'].' '. $label['last_name'].' - '.$label['role']
             );
         }
 
