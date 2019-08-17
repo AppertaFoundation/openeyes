@@ -6,6 +6,7 @@
 <?php
 $countries = CHtml::listData(Country::model()->findAll(), 'id', 'name');
 $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name');
+//$gp = new Gp();
 ?>
 
 <div class="form">
@@ -52,6 +53,33 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
         <tr>
             <?php $this->renderPartial('_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
         </tr>
+        <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
+            <tr>
+                <td>
+                    <label><?php echo $gp->getAttributeLabel('Practitioner'); ?> <span class="required">*</span></label>
+                </td>
+                <td>
+                    <?php echo $form->error($gp, 'id'); ?>
+
+                    <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'gp_autocomplete_id']); ?>
+                    <div id="gp_selected_wrapper">
+                        <ul class="oe-multi-select js-selected_gps">
+                            <?php if(!empty($gpIdList)): ?>
+                                <?php foreach ($gpIdList as $gpId){ ?>
+                                    <?php if(!empty($gpId)): ?>
+                                    <li>
+                                        <span class="js-name" style="text-align:justify"><?php echo $gp->findByPk($gpId)->getCorrespondenceName().' - '.$gp->findByPk($gpId)->getGPROle() ?></span>
+                                        <i id=js-remove-gp-<?php echo $gpId ?> class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>
+                                        <input type="hidden" name="Gp[id][]" class="js-gps" value=<?php echo $gpId ?>>
+                                    </li>
+                                    <?php endif; ?>
+                                <?php } ?>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        <?php endif; ?>
         <tr>
             <td colspan="2" class="align-right">
                 <?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
@@ -61,3 +89,39 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
     </table>
     <?php $this->endWidget(); ?>
 </div><!-- form -->
+
+<script>
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $('#gp_autocomplete_id'),
+        url: '/gp/gpList',
+        maxHeight: '200px',
+        onSelect: function(){
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            $('.js-selected_gps').append(
+                '<li>' +
+                    '<span class="js-name" style="text-align:justify">'+ AutoCompleteResponse.label +'</span>' +
+                    '<i id=js-remove-gp-'+AutoCompleteResponse.id  + ' class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>' +
+                    '<input type="hidden" name="Gp[id][]" class="js-gps" value="'+ AutoCompleteResponse.id +'">' +
+                '</li>'
+            );
+        }
+    });
+
+    $('.js-remove-gps').click(function() {
+        $(this).parent('li').find('span').text('');
+        $(this).parent('li').find('input').remove();
+        $(this).parent('li').hide();
+    });
+
+    $(document).ready(function ()
+    {
+        highLightError("Gp_id_em_","Please select at least one",'#gp_autocomplete_id');
+    });
+
+    function highLightError(elementId, containText,highLightFiled){
+        if(document.getElementById(elementId) !== null && document.getElementById(elementId).innerHTML.includes(containText)){
+            $(highLightFiled).addClass("error");
+        }
+    }
+
+</script>

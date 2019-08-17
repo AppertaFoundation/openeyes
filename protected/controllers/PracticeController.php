@@ -66,30 +66,41 @@ class PracticeController extends BaseController
         $contact = new Contact('manage_practice');
         $address = new Address('manage_practice');
         $practice = new Practice('manage_practice');
-        $this->performAjaxValidation(array($practice, $contact, $address));
+
+        $gp = new Gp('manage_practice');
+
+        $gpIdList = array();
+        if (isset($_POST['Gp'])) {
+            foreach ($_POST['Gp'] as $gpId) {
+                $gpIdList = $gpId;
+            }
+        }
+
+        $this->performAjaxValidation(array($practice, $contact, $address, $gp));
         if (isset($_POST['Contact'])) {
             $contact->attributes = $_POST['Contact'];
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
-            list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address,
-                $context === 'AJAX');
-        }
-        if ($context === 'AJAX') {
-            if (isset($practice->contact)){
-                $displayText = ($practice->contact->first_name ? ($practice->contact->first_name . ', ') : '') . $practice->getAddressLines();
-                echo CJSON::encode(array(
-                    'label' => $displayText,
-                    'value' => $displayText,
-                    'id' => $practice->getPrimaryKey(),
-                ));
+
+            if ($contact->validate(array('first_name')) and $address->validate(array('address1', 'city', 'postcode', 'country')) and (!isset($_POST['Gp']) ? $gp->validate(array('id')) : 1 == 1)) {
+                list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address, $gpIdList, false);
+            } else {
+                $contact->validate(array('first_name'));
+                $address->validate(array('address1', 'city', 'postcode', 'country'));
+                // Only validate Gp (i.e. Practitioner field) when user has not selected Gp
+                if (!isset($_POST['Gp'])) {
+                    $gp->validate(array('id'));
+                }
             }
-        } else {
-            $this->render('create', array(
-                'model' => $practice,
-                'address' => $address,
-                'contact' => $contact,
-            ));
         }
+
+        $this->render('create', array(
+            'model' => $practice,
+            'address' => $address,
+            'contact' => $contact,
+            'gp' => $gp,
+            'gpIdList' => $gpIdList,
+        ));
     }
 
     /**
@@ -201,7 +212,7 @@ class PracticeController extends BaseController
      * @return array
      * @throws CException
      */
-    public function performPracticeSave(Contact $contact, Practice $practice, Address $address, $isAjax = false)
+    public function performPracticeSave(Contact $contact, Practice $practice, Address $address, $gpIdList,$isAjax = false)
     {
         $action = $practice->isNewRecord ? 'add' : 'edit';
         $transaction = Yii::app()->db->beginTransaction();
@@ -216,9 +227,21 @@ class PracticeController extends BaseController
                             Audit::add('Practice', $action . '-practice',
                                 "Practice manually [id: $practice->id] {$action}ed.");
                             if (!$isAjax) {
-                                $this->redirect(array('view', 'id' => $practice->id));
-                            }
+                                $isLastAssociate = false;
+                                for ($i = 0; $i < count($gpIdList); $i++) {
+                                    $practice_contact_associate = new ContactPracticeAssociate();
+                                    $practice_contact_associate->gp_id = $gpIdList[$i];
+                                    $practice_contact_associate->practice_id = $practice->id;
+                                    $practice_contact_associate->save();
+                                    if ($i == (count($gpIdList)-1)) {
+                                        $isLastAssociate = true;
+                                    }
+                                    if($isLastAssociate) {
+                                        $this->redirect(array('view', 'id' => $practice->id));
+                                    }
 
+                                }
+                            }
                         } else {
                             $address->validate();
                             $address->clearErrors('contact_id');
