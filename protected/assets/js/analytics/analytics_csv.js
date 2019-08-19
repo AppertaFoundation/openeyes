@@ -18,6 +18,7 @@ function current_service_data_to_csv(anonymized = false){
      data.forEach(function (item) {
          let item_patient = $('#'+item['patient_id']);
          let patient_name = item_patient.find('.js-csv-name').html();
+         let diagnoses = item_patient.find('.js-csv-diagnoses').html();
          patient_name = patient_name.split(' ');
          item = [
              (patient_name[0] == undefined)? '': patient_name[0],
@@ -25,7 +26,7 @@ function current_service_data_to_csv(anonymized = false){
              item_patient.find('.js-csv-hos_num').html(),
              item_patient.find('.js-csv-dob').html(),
              item_patient.find('.js-csv-age').html(),
-             item_patient.find('.js-csv-diagnoses').html().replace(/,/g,'|'),
+             diagnoses == undefined ? "" : diagnoses.replace(/,/g,'|'),
              item['weeks'],
          ];
          if(anonymized){
@@ -51,16 +52,16 @@ function current_custom_data_to_csv(additional_type,anonymized=false){
         var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses, VA-L, "+additional_type+"-L, VA-R,"+additional_type+"-R\n";
     }
     var data = Object.values(window.csv_data_for_report['custom_data']);
-    console.log(data);
     var file_name = "clinical_data";
     data.forEach(function (item) {
         let item_patient = $('#'+item['patient_id']);
         let patient_name = item_patient.find('.js-csv-name').html();
+        let diagnoses = item_patient.find('.js-csv-diagnoses').html();
         patient_name = patient_name.split(' ');
         item = {
             'left':item['left'],
             'right':item['right'],
-            'diagnoses':item_patient.find('.js-csv-diagnoses').html().replace(/,/g,'|'),
+            'diagnoses':diagnoses == undefined ? "" : diagnoses.replace(/,/g,'|'),
             'hos_num':item_patient.find('.js-csv-hos_num').html(),
             'age':item_patient.find('.js-csv-age').html(),
             'dob':item_patient.find('.js-csv-dob').html(),

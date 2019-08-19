@@ -43,6 +43,10 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
+                'actions' => array('deactivatePlansProblems', 'updatePlansProblems'),
+                'roles' => array('Edit'),
+            ),
+            array('allow',
                 'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList', 'getInternalReferralDocumentListUrl' ),
                 'users' => array('@'),
             ),
@@ -141,7 +145,8 @@ class PatientController extends BaseController
         $this->redirect(array('summary', 'id' => $id));
     }
 
-    public function actionSummary($id) {
+    public function actionSummary($id)
+    {
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = Patient::model()->findByPk($id);
         $this->pageTitle = "Summary";
@@ -169,6 +174,111 @@ class PatientController extends BaseController
             'patient' => $this->patient,
             'no_episodes' => $no_episodes,
         ));
+    }
+
+    /**
+     * Inactivate plan for given patient
+     *
+     * @param $plan_id
+     * @param $patient_id
+     * @throws Exception
+     */
+    public function actionDeactivatePlansProblems($plan_id, $patient_id)
+    {
+        $plan = PlansProblems::model()->findByPk($plan_id);
+        $plan->active = false;
+        $plan->save();
+
+        echo $this->actionGetPlansProblems($patient_id, true);
+    }
+
+    /**
+     * Save the new plans and update old ones
+     *
+     * @param $plan_ids
+     * @param $new_plan
+     * @param $patient_id
+     */
+    public function actionUpdatePlansProblems()
+    {
+        $request = Yii::app()->request;
+        $plan_ids = $request->getPost('plan_ids');
+        $new_plan = $request->getPost('new_plan');
+        $patient_id = $request->getPost('patient_id');
+
+        $transaction = \Yii::app()->db->beginTransaction();
+        try {
+            if ($new_plan) {
+                $display_order = (is_array($plan_ids) ? count($plan_ids)+1 : 1);
+                $plan_name = strip_tags($new_plan);
+                $plan = new PlansProblems();
+                $plan->name = $plan_name;
+                $plan->display_order = $display_order;
+                $plan->patient_id = $patient_id;
+                if (!$plan->validate()) {
+                    $this->validationFailed();
+                }
+                $plan->save();
+            }
+
+            if ($plan_ids) {
+                foreach ($plan_ids as $display_order => $plan_id) {
+                    if ($plan_id) {
+                        $plan = PlansProblems::model()->findByPk($plan_id);
+                        $plan->display_order = $display_order+1;
+                        if (!$plan->validate()) {
+                            $this->validationFailed();
+                        }
+                        $plan->save();
+                    }
+                }
+            }
+
+            $transaction->commit();
+        } catch (Exception $exception) {
+            \Yii::log($exception);
+            $transaction->rollback();
+        }
+
+
+        echo $this->actionGetPlansProblems($patient_id);
+    }
+
+    /**
+     * Get a list of plans and problems for given patient
+     *
+     * @param $patient_id
+     * @return false|string
+     */
+    public function actionGetPlansProblems($patient_id, $inc_deactive = false)
+    {
+        $criteria = new CDbCriteria();
+        if(!$inc_deactive){
+            $criteria->addCondition("active=1");
+        }
+        $criteria->addCondition("patient_id=:patient_id");
+        $criteria->params[":patient_id"] = $patient_id;
+
+        $plans_problems = PlansProblems::model()->findAll($criteria);
+        $plans = [];
+        foreach ($plans_problems as $plan_problem) {
+            $user_created = $plan_problem->createdUser;
+
+            $attributes = $plan_problem->attributes;
+            $attributes['title'] = $user_created->title . " " . $user_created->last_name . " " . $user_created->first_name;
+            $attributes['create_at'] = \Helper::convertDate2NHS($plan_problem->created_date);
+            $attributes['last_modified'] = \Helper::convertDate2NHS($plan_problem->last_modified_date);
+            $plans[] = $attributes;
+        }
+
+        return json_encode($plans);
+    }
+
+    protected function validationFailed()
+    {
+        header("HTTP/1.0 400 Bad Request");
+        \Yii::log($plan->getErrors());
+        die(json_encode($plan->getErrors()));
     }
 
     public function actionSearch()
@@ -580,7 +690,7 @@ class PatientController extends BaseController
         /* @var OphCoDocument_Sub_Types $documentTyoe */
         foreach (OphCoDocument_Sub_Types::model()->findAll() as $documentType) {
             // Find the document events for that subtype ...
-            $documentEvents = array_filter($eventTypeMap['Document'], function($documentEvent) use ($documentType) {
+            $documentEvents = array_filter($eventTypeMap['Document'], function ($documentEvent) use ($documentType) {
                 $documentElement = $documentEvent->getElementByClass(Element_OphCoDocument_Document::class);
                 return $documentElement->sub_type->id === $documentType->id;
             });
@@ -1846,8 +1956,8 @@ class PatientController extends BaseController
         Address $address,
         PatientReferral $referral,
         PatientUserReferral $patient_user_referral,
-        $patient_identifiers)
-    {
+        $patient_identifiers
+    ) {
         $patientScenario = $patient->getScenario();
         $transaction = Yii::app()->db->beginTransaction();
         try {
@@ -1913,8 +2023,8 @@ class PatientController extends BaseController
         Address &$address,
         PatientReferral &$referral,
         PatientUserReferral &$patient_user_referral,
-        &$patient_identifiers)
-    {
+        &$patient_identifiers
+    ) {
         if (!$contact->save()) {
             return false;
         }
@@ -2355,7 +2465,8 @@ class PatientController extends BaseController
      * @return array(Episode, bool) The created or found episode and whether or not is was created
      * @throws Exception If a episode could not be found or created
      */
-    private function getOrCreateEpisode($patient, $firm_id){
+    private function getOrCreateEpisode($patient, $firm_id)
+    {
         $episode = Episode::model()->findByAttributes(array('firm_id' => $firm_id, 'patient_id' => $patient->id));
         $episode_is_new = false;
         if (!$episode) {

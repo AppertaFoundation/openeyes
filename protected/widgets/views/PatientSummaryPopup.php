@@ -258,7 +258,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                             <?php } ?>
 
                             <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
-                                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis, 3); ?>
+                                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis); ?>
                                 <tr>
                                     <td><?= $name ?></td>
                                     <td>
@@ -306,39 +306,47 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
           <div class="group">
               <div class="label">Surgical History</div>
               <div class="data">
-                    <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class,
-                      [
-                          'patient' => $this->patient,
-                          'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-                      ]); ?>
+                    <?php $this->widget(
+                        \OEModule\OphCiExamination\widgets\PastSurgery::class,
+                        [
+                            'patient' => $this->patient,
+                            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                        ]
+                    ); ?>
               </div>
           </div>
 
-            <?php $this->widget(\OEModule\OphCiExamination\widgets\HistoryMedications::class,
-              [
-                  'patient' => $this->patient,
-                  'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-              ]); ?>
+            <?php $this->widget(
+                \OEModule\OphCiExamination\widgets\HistoryMedications::class,
+                [
+                    'patient' => $this->patient,
+                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                ]
+            ); ?>
 
           <div class="group">
               <div class="label">Family</div>
               <div class="data">
-                    <?php $this->widget(\OEModule\OphCiExamination\widgets\FamilyHistory::class,
-                      [
-                          'patient' => $this->patient,
-                          'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-                      ]); ?>
+                    <?php $this->widget(
+                        \OEModule\OphCiExamination\widgets\FamilyHistory::class,
+                        [
+                            'patient' => $this->patient,
+                            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                        ]
+                    ); ?>
               </div>
           </div>
 
           <div class="group">
               <div class="label">Social</div>
               <div class="data">
-                    <?php $this->widget(\OEModule\OphCiExamination\widgets\SocialHistory::class,
-                      [
-                          'patient' => $this->patient,
-                          'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-                      ]); ?>
+                    <?php $this->widget(
+                        \OEModule\OphCiExamination\widgets\SocialHistory::class,
+                        [
+                            'patient' => $this->patient,
+                            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                        ]
+                    ); ?>
               </div>
           </div>
       </div><!--    .oe-popup-overflow -->
@@ -363,26 +371,28 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                     <span class="month"><?= $summary->date[1] ?></span>
                                     <span class="year"><?= $summary->date[2] ?></span>
                                 </span>
-                          </td>
-                          <td><?= $summary->comments ?></td>
-                          <td><i class="oe-i info small pro-theme js-has-tooltip"
-                                 data-tooltip-content="<?= $summary->user ?>"></i></td>
-                      </tr>
+                                    </td>
+                                    <td><?= $summary->comments ?></td>
+                                    <td><i class="oe-i info small pro-theme js-has-tooltip"
+                                           data-tooltip-content="<?= $summary->user ?>"></i></td>
+                                </tr>
                             <?php }
                         } ?>
-              </tbody>
-          </table>
-      </div><!-- .popup-overflow -->
-    </div><!-- left -->
-      <div class="cols-right">
-          <div class="popup-overflow">
-              <div class="subtitle">Appointments</div>
-                <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme']) ?>
-          </div><!-- .popup-overflow -->
-      </div>
-  </div><!-- flex -->
-</div>
-
+                        </tbody>
+                    </table>
+                </div><!-- .popup-overflow -->
+                <div class="popup-overflow">
+                    <div class="subtitle">Appointments</div>
+                    <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme']) ?>
+                </div><!-- .popup-overflow -->
+            </div><!-- left -->
+            <div class="cols-right">
+                <div class="popup-overflow">
+                    <?php $this->widget('application.widgets.PlansProblemsWidget', ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme']); ?>
+                </div><!-- .popup-overflow -->
+            </div>
+        </div><!-- flex -->
+    </div>
 <div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;">
   <div class="flex-layout flex-top">
     <div class="cols-left">

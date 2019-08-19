@@ -18,9 +18,9 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
-use Yii;
-use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\components;
+use OEModule\OphCiExamination\models;
+use Yii;
 
 /*
  * This is the controller class for the OphCiExamination event. It provides the required methods for the ajax loading of elements, and rendering the required and optional elements (including the children relationship)
@@ -165,6 +165,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function getAllElementTypes()
     {
+        if ($this->action->id == 'update') {
+            return parent::getAllElementTypes();
+        }
+
         $remove = $this->getElementFilterList(false);
         return array_filter(
             parent::getAllElementTypes(),
@@ -339,6 +343,13 @@ class DefaultController extends \BaseEventTypeController
     public function renderOpenElements($action, $form = null, $date = null)
     {
         $elements = $this->getElements($action);
+
+        // add OpenEyes.UI.RestrictedData js
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath);
+
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
 
         /* @var \OEModule\OphCoCvi\components\OphCoCvi_API $cvi_api */
         $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
@@ -1154,32 +1165,76 @@ class DefaultController extends \BaseEventTypeController
 
     protected function saveComplexAttributes_HistoryIOP($element, $data, $index)
     {
+        $iop_element_this_event = models\Element_OphCiExamination_IntraocularPressure::model()->findByAttributes(['event_id' => $this->event->id]);
         $data = $data['OEModule_OphCiExamination_models_HistoryIOP'];
+        $examination_ids = [];
+        $iop_elements = [];
 
         foreach (['left', 'right'] as $side) {
             if (array_key_exists("{$side}_values", $data) && $data["{$side}_values"]) {
                 foreach ($data["{$side}_values"] as $index => $values) {
-                    // create a new event and set the event_date as selected iop date
-                    $examinationEvent = new \Event();
-                    $examinationEvent->episode_id = $element->event->episode_id;
-                    $examinationEvent->created_user_id = $examinationEvent->last_modified_user_id = \Yii::app()->user->id;
-                    $examinationEvent->event_date = \DateTime::createFromFormat('d-m-Y', $values['examination_date'])->format('Y-m-d');
-                    $examinationEvent->event_type_id = $element->event->event_type_id;
+                    if ($values['examination_date'] !== date('d-m-Y')) {
+                        if (isset($examination_ids[$values['examination_date']])) {
+                            continue;
+                        } else {
+                            // create a new event and set the event_date as selected iop date
+                            $examination_event = new \Event();
+                            $examination_event->episode_id = $element->event->episode_id;
+                            $examination_event->created_user_id = $examination_event->last_modified_user_id = \Yii::app()->user->id;
+                            $examination_event->event_date = \DateTime::createFromFormat('d-m-Y', $values['examination_date'])->format('Y-m-d');
+                            $examination_event->event_type_id = $element->event->event_type_id;
 
-                    if (!$examinationEvent->save()) {
-                        throw new \Exception('Unable to save a new examination for the IOP readings: ' . print_r($examinationEvent->errors, true));
+                            if (!$examination_event->save()) {
+                                throw new \Exception('Unable to save a new examination for the IOP readings: ' . print_r($examination_event->errors, true));
+                            }
+
+                            $examination_ids[$values['examination_date']] = $examination_event->id;
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach (['left', 'right'] as $side) {
+            if (array_key_exists("{$side}_values", $data) && $data["{$side}_values"]) {
+                foreach ($data["{$side}_values"] as $index => $values) {
+                    if (!isset($iop_elements[$values['examination_date']])) {
+                        // the same date as today: use the newly created event
+                        if ($values['examination_date'] === date('d-m-Y')) {
+                            // if an IOP element already exists for this event, use it
+                            if ($iop_element_this_event) {
+                                $iop_element = $iop_element_this_event;
+                            } else {
+                                // otherwise create a new iop element
+                                $iop_element = new models\Element_OphCiExamination_IntraocularPressure();
+                            }
+                            // set event_id as current event's id
+                            $iop_element->event_id = $this->event->id;
+                        } else {
+                          // create a new iop element and set the event_id computed before from $examination_ids
+                            $iop_element = new models\Element_OphCiExamination_IntraocularPressure();
+                            $iop_element->event_id = $examination_ids[$values['examination_date']];
+                        }
+
+                        // set both sides comments as not recorded
+                        $iop_element["left_comments"] = "IOP values not recorded for this eye.";
+                        $iop_element["right_comments"] = "IOP values not recorded for this eye.";
+
+                        if (!$iop_element->save(false)) {
+                            throw new \Exception('Unable to save a new IOP element: ' . print_r($iop_element->errors, true));
+                        }
+
+                        $iop_elements[$values['examination_date']] = $iop_element;
                     }
 
-                    // create a new iop element
-                    $iop_element = new models\Element_OphCiExamination_IntraocularPressure();
-                    $iop_element->event_id = $examinationEvent->id;
-                    if (isset($values["{$side}_comments"]) && $values["{$side}_comments"]) {
+                    $iop_element = $iop_elements[$values['examination_date']];
+                    if (isset($values["{$side}_comments"])) {
+                        // override current sides comments if exists
                         $iop_element["{$side}_comments"] = $values["{$side}_comments"];
-                    }
-                    $iop_element[$this->getOtherSide('left', 'right', $side) . "_comments"] = "IOP values not recorded for this eye.";
 
-                    if (!$iop_element->save(false)) {
-                        throw new \Exception('Unable to save a new IOP element: ' . print_r($iop_element->errors, true));
+                        if (!$iop_element->save(false)) {
+                            throw new \Exception('Unable to save a new IOP element: ' . print_r($iop_element->errors, true));
+                        }
                     }
 
                     // create a reading record from the values the user has given
@@ -1566,7 +1621,11 @@ class DefaultController extends \BaseEventTypeController
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
         }
 
-        if ($this->action->id == 'update' && !$element_assignment->step_completed) {
+        if (!$element_assignment && $this->event) {
+            \OELog::log("Assignment not found for event id: {$this->event->id}");
+        }
+      
+        if ($this->action->id == 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
             $this->step = $this->getCurrentStep();
         }
     }

@@ -20,8 +20,8 @@ namespace OEModule\OphCiExamination\components;
  */
 
 use OEModule\OphCiExamination\models;
-use OEModule\OphCiExamination\widgets\HistoryRisks;
 use OEModule\OphCiExamination\widgets\HistoryMedications;
+use OEModule\OphCiExamination\widgets\HistoryRisks;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -745,7 +745,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityLeft($patient, $use_context = false)
     {
-        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
     }
 
     public function getLetterVisualAcuityDate($patient, $side, $use_context = false)
@@ -774,7 +774,7 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getLetterVisualAcuityRight($patient, $use_context = false)
     {
-        return ($best = $this->getBestVisualAcuity($patient, 'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient, 'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
     }
 
     public function getLetterVAMethodName($patient, $side, $use_context = false)
@@ -898,7 +898,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityFindings($patient, $use_context = false)
     {
-        $va = $this->getElementFromLatestVisibleEvent(
+        $va = $this->getLatestElement(
             'models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context
@@ -1079,7 +1079,7 @@ class OphCiExamination_API extends \BaseAPI
             $managment_summaries = [];
             foreach ($management_summaries as $summaries) {
                 $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->short_name;
-                $user = \User::model()->findByPk($summaries->event->episode->last_modified_user_id);
+                $user = \User::model()->findByPk($summaries->event->last_modified_user_id);
                 $user_name = $user->first_name . ' ' . $user->last_name;
                 $summary_obj = new \stdClass();
                 $created_date = \Helper::convertDate2NHS($summaries->event->event_date);
