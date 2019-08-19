@@ -34,9 +34,9 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
     public function actionIndex()
     {
         $this->group = 'Examination';
-        $asset_Manager = Yii::app()->getAssetManager();
-        $asset_Manager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
-        $asset_Manager->registerScriptFile('/js/oeadmin/list.js');
+        $asset_manager = Yii::app()->getAssetManager();
+        $asset_manager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
+        $asset_manager->registerScriptFile('/js/oeadmin/list.js');
 
         $this->render('/pupillaryabnormalities/index', [
             'model' => OphCiExamination_PupillaryAbnormalities_Abnormality::model(),
@@ -106,12 +106,17 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
         $delete_ids = isset($_POST['select']) ? $_POST['select'] : [];
         $transaction = Yii::app()->db->beginTransaction();
         $success = true;
+        $result = [];
+        $result['status'] = 1;
+        $result['errors'] = "";
         try {
             foreach ($delete_ids as $abnormality_id) {
                 $abnormality = OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findByPk($abnormality_id);
                 if ($abnormality) {
                     if (!$abnormality->delete()) {
                         $success = false;
+                        $result['status'] = 0;
+                        $result['errors'][]= $abnormality->getErrors();
                         break;
                     } else {
                         Audit::add('admin-pupillary-abnormality', 'delete', $abnormality);
@@ -120,15 +125,17 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
             }
         } catch (Exception $e) {
             \OELog::log($e->getMessage());
+            $result['status'] = 0;
+            $result['errors'][]= $e->getMessage();
             $success = false;
         }
 
         if ($success) {
             $transaction->commit();
-            echo '1';
         } else {
             $transaction->rollback();
-            echo '0';
         }
+
+        echo json_encode($result);
     }
 }
