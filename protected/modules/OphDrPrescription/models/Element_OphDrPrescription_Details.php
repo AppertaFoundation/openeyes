@@ -292,15 +292,15 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @throws Exception
      */
-    public function updateItems(array $items)
+    public function updateItems($items)
     {
-        if (!$items) {
+        $itemCount = count($items);
+        if ($itemCount == 0) {
             throw new Exception('Item cannot be blank.');
         } else {
             if (!$this->id) {
                 throw new Exception('Cannot call updateItems on unsaved instance.');
             }
-
             // Get a list of ids so we can keep track of what's been removed
             $existing_item_ids = array();
             $existing_taper_ids = array();
@@ -311,7 +311,6 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                     $existing_taper_ids[$taper->id] = $taper->id;
                 }
             }
-
             // Process (any) posted prescription items
             foreach ($items as $item) {
                 if (isset($item['id']) && isset($existing_item_ids[$item['id']])) {
@@ -319,23 +318,15 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                     $item_model = OphDrPrescription_Item::model()->findByPk($item['id']);
                     unset($existing_item_ids[$item['id']]);
                 } else {
-
-                    if (!$item instanceof OphDrPrescription_Item) {
-                        $item_model = new OphDrPrescription_Item();
-                    } else {
-                        $item_model = $item;
-                    }
                     // Item is new
                     $item_model = new OphDrPrescription_Item();
                     $item_model->event_id = $this->event_id;
                     $item_model->medication_id = $item['medication_id'];
                 }
-
                 // Save main item attributes
                 $item_model->setAttributes($item);
                 $item_model->start_date = substr($this->event->event_date, 0, 10);
-                $s = $item_model->save();
-
+                $item_model->save();
                 // Tapering
                 $new_tapers = (isset($item['taper'])) ? $item['taper'] : array();
                 foreach ($new_tapers as $taper) {
@@ -354,9 +345,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                     $taper_model->save();
                 }
             }
-
             // Delete existing relations to medication management items
-
             foreach ($existing_item_ids as $item_id) {
                 $related = EventMedicationUse::model()->findAllByAttributes(['prescription_item_id' => $item_id]);
                 foreach ($related as $record) {
@@ -364,12 +353,10 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                     $record->save();
                 }
             }
-
             // Delete remaining (removed) ids
             OphDrPrescription_ItemTaper::model()->deleteByPk(array_values($existing_taper_ids));
             OphDrPrescription_Item::model()->deleteByPk(array_values($existing_item_ids));
         }
-
         if (!$this->draft) {
             $this->getApp()->event->dispatch('after_medications_save', array(
                 'patient' => $this->event->getPatient(),

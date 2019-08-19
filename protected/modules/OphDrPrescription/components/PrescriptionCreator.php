@@ -67,7 +67,7 @@ class PrescriptionCreator extends \EventCreator
         }
     }
 
-    public function addItem(\OphDrPrescription_Item $item)
+    private function addItem(\OphDrPrescription_Item $item)
     {
         $item->scenario = 'automated';
         $this->items[] = $item;
@@ -80,13 +80,17 @@ class PrescriptionCreator extends \EventCreator
         $this->elements['Element_OphDrPrescription_Details']->items = $this->items;
 
         foreach ($this->elements as $element) {
-            $element->event_id = $event_id;
-            if (!$element->save()) {
-                $this->addErrors($element->getErrors());
-                \OELog::log("Element_OphDrPrescription_Details:" . print_r($element->getErrors(), true));
-            } else {
-                $element->updateItems($this->items);
+
+            if ($element instanceof Element_OphDrPrescription_Details) {
+                $element->event_id = $event_id;
+                if (!$element->save()) {
+                    $this->addErrors($element->getErrors());
+                    \OELog::log("Element_OphDrPrescription_Details:" . print_r($element->getErrors(), true));
+                } else {
+                    $element->updateItems($this->items);
+                }
             }
+
         }
 
         return !$this->hasErrors();
