@@ -159,27 +159,29 @@
 						iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent($this->patient)); ?>;
 						max_visible = '';
 						max_id = '';
-						for (var i = 0; i < iop_plotly_data.length; i++){
-							if (showlist.includes(iop_plotly_data[i]["event_id"]))
-							{
-								if(iop_plotly_data[i]["eye"]==side){
-									if (max_visible < iop_plotly_data[i]["raw_value"]){
-										max_visible = iop_plotly_data[i]["raw_value"];
-										max_id= iop_plotly_data[i]["event_id"];
+						if (showlist.length>1){
+							for (var i = 0; i < iop_plotly_data.length; i++){
+								if (showlist.includes(iop_plotly_data[i]["event_id"]))
+								{
+									if(iop_plotly_data[i]["eye"]==side){
+										if (max_visible < iop_plotly_data[i]["raw_value"]){
+											max_visible = iop_plotly_data[i]["raw_value"];
+											max_id= iop_plotly_data[i]["event_id"];
+										}
 									}
 								}
 							}
-						}
-						var rows = $('.event_'+max_id+'_'+side+'.val_'+max_visible);
-						var msg = 'Peak IOP '+side.toUpperCase()+' eye'
-						rows.css('font-weight','bold');
-						rows.children('td').css('color','white');
-						var comment = rows.children('.event_comments:not(:contains('+msg+'))');
-						if(comment.length>0){
-							if(comment[0].innerText)
-							comment.append(' - '+msg);
-							else
-							comment.append(msg);
+							var rows = $('.event_'+max_id+'_'+side+'.val_'+max_visible);
+							var msg = 'Peak IOP '+side.toUpperCase()+' eye'
+							rows.css('font-weight','bold');
+							rows.children('td').css('color','white');
+							var comment = rows.children('.event_comments:not(:contains('+msg+'))');
+							if(comment.length>0){
+								if(comment[0].innerText)
+								comment.append(' - '+msg);
+								else
+								comment.append(msg);
+							}
 						}
 					}
 				}
