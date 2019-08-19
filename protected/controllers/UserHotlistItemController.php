@@ -56,8 +56,9 @@ class UserHotlistItemController extends BaseController
      */
     public function actionRenderHotlistItems($is_open, $date = null)
     {
+        $core_api = new CoreAPI();
         foreach (UserHotlistItem::model()->getHotlistItems($is_open, $date) as $hotlistItem) {
-            echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem));
+            echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem, 'core_api' => $core_api));
         }
     }
 
