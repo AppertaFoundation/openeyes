@@ -942,7 +942,7 @@
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>UTear</EYEDRAW_CLASS_MNEMONIC>
-      <TITLE>Traction ‘U’ tear</TITLE>
+      <TITLE>Traction âUâ tear</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
@@ -2403,7 +2403,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_kmax_value</GOTO_ID>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Thinnest Point Pachymetry (µm)</PRIMARY_TERM>
+              <PRIMARY_TERM>Thinnest Point Pachymetry (Âµm)</PRIMARY_TERM>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_thinnest_point_pachymetry_value</GOTO_ID>
             </INDEX>
@@ -2597,11 +2597,11 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_sft</GOTO_ID>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Thickness increase of 100µm</PRIMARY_TERM>
+              <PRIMARY_TERM>Thickness increase of 100Âµm</PRIMARY_TERM>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
               <GOTO_TAG>legend</GOTO_TAG>
-              <GOTO_TEXT>Thickness increase of 100µm</GOTO_TEXT>
+              <GOTO_TEXT>Thickness increase of 100Âµm</GOTO_TEXT>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>Dry</PRIMARY_TERM>
@@ -2616,6 +2616,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_comments</GOTO_ID>
             </INDEX>
           </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Glaucoma Risk</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_GlaucomaRisk</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>PCR Risk</PRIMARY_TERM>
@@ -3275,7 +3279,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>RRD</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Traction ‘U’ tear</PRIMARY_TERM>
+              <PRIMARY_TERM>Traction âUâ tear</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/UTear.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>UTear</GOTO_DOODLE_CLASS_NAME>
@@ -3386,7 +3390,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
                 <TERM>AC</TERM>
               </SECONDARY_TERM_LIST>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ACIOL.png</IMG_URL>
-              <DESCRIPTION>Anterior chamber lens are fixed with the support of iris. Primarily used as a backup lens when there is damage to the Posterior Chamber. AC IOL is also used in refractive surgery – implanting a lens in phakic eye to correct the refractive power.</DESCRIPTION>
+              <DESCRIPTION>Anterior chamber lens are fixed with the support of iris. Primarily used as a backup lens when there is damage to the Posterior Chamber. AC IOL is also used in refractive surgery â implanting a lens in phakic eye to correct the refractive power.</DESCRIPTION>
               <!-- <GENERAL_NOTE>This is a general note</GENERAL_NOTE>
               <WARNING_NOTE>This is a warning note</WARNING_NOTE> -->
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
