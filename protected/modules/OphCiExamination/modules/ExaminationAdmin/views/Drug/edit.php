@@ -14,7 +14,7 @@
  */
 ?>
 
-<h2><?= $model->id ? 'Edit' : 'Add'?> Dilation Drop</h2>
+<h2><?= $model->id ? 'Edit' : 'Add'?> Drop</h2>
 <?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', [
   'id' => 'OphCiExamination_adminform',

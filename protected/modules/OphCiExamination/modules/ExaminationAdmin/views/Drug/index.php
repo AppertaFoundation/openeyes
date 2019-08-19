@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<h2>Manage Dilation Drops</h2>
+<h2>Manage Drops</h2>
 <?php $this->renderPartial('//base/_messages') ?>
 <div class="cols-5">
     <form id="admin_Drugs">
