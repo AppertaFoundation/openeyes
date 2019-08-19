@@ -30,21 +30,21 @@
         public $site;
         public $firm;
         public $user;
-        private $print_mode;
-        private $page_count = 1;
 
-        private $split_print = false;
         public $current_item_index = 0;
         public $current_taper_index = 0;
         private $current_item_attr; // If a single item is greater than 30 lines, this will capture the attribute that overflows.
+        private $split_print = false;
 
-        //public $split_print_end = false;
         private $total_items;
         private $default_cost_code;
+        private $print_mode;
+        private $page_count = 1;
 
         public function init()
         {
             $settings = new SettingMetadata();
+            $this->total_items = count($this->items);
             $this->print_mode = $settings->getSetting('prescription_form_format');
             $this->default_cost_code = $settings->getSetting('default_prescription_code_code');
         }
@@ -98,10 +98,14 @@
             return $this->current_item_attr;
         }
 
+        /**
+         * @param string|null $attr
+         * @param int|null $taper_index
+         */
         public function setCurrentAttr($attr = null, $taper_index = null)
         {
             if ($attr) {
-                if ($taper_index) {
+                if ($taper_index !== null) {
                     $this->current_item_attr = "taper{$taper_index}_$attr";
                 } else {
                     $this->current_item_attr = "item_$attr";

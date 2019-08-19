@@ -20,7 +20,6 @@
     /**
      * @var Element_OphDrPrescription_Details $element
      */
-    const MAX_FPTEN_LINES = 21;
 
     $copy = $data['copy'];
 

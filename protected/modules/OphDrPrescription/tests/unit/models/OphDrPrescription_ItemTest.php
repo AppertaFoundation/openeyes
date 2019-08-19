@@ -73,4 +73,30 @@
                 $this->assertEquals($length_list[$index], $actual, "Item has $actual lines, expected {$length_list[$index]}.");
             }
         }
+
+        /**
+         * @covers OphDrPrescription_Item::fpTenDose
+         */
+        public function testFpTenDose()
+        {
+            foreach ($this->items as $item) {
+                $expected = 'Dose: ' . (is_numeric($item->dose) ? "{$item->dose} {$item->drug->dose_unit}" : $item->dose) . ', ' . $item->route->name . ($item->route_option ? ' (' . $item->route_option->name . ')' : null);
+                $actual = $item->fpTenDose();
+
+                $this->assertEquals($expected, $actual);
+            }
+        }
+
+        /**
+         * @covers OphDrPrescription_Item::fpTenFrequency
+         */
+        public function testFpTenFrequency()
+        {
+            foreach ($this->items as $item) {
+                $expected = "Frequency: {$item->frequency->long_name} for {$item->duration->name}";
+                $actual = $item->fpTenFrequency();
+
+                $this->assertEquals($expected, $actual);
+            }
+        }
     }

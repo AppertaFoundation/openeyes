@@ -23,5 +23,17 @@
          'route_option_id' => 1,
          'dispense_condition_id' => 5,
          'comments' => 'No tapers'
+     ),
+     'prescription_item3' => array(
+         'id' => 3,
+         'prescription_id' => 1,
+         'drug_id' => 1,
+         'dose' => '10ml',
+         'route_id' => 1,
+         'frequency_id' => 1,
+         'duration_id' => 1,
+         'route_option_id' => 1,
+         'dispense_condition_id' => 4,
+         'comments' => 'Not FP10 printable.'
      )
  );

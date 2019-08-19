@@ -4,7 +4,7 @@
      * @var int $page_number
      * @var string $form_css_class
      */
-
+    const MAX_FPTEN_LINES = 21;
 
     $current_item_copy = 0;
     $current_taper_copy = 0;
