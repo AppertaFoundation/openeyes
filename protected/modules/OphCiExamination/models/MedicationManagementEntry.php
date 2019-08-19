@@ -77,7 +77,7 @@ class MedicationManagementEntry extends \EventMedicationUse
 	{
 		$current_date = date("Y-m-d");
 		if (isset($this->end_date) && $this->end_date < $current_date && !$this->hidden && $this->getScenario() == "to_be_prescribed") {
-			$this->addError("start_date", "End date cannot be in the past when prescribing");
+			$this->addError("end_date", "End date cannot be in the past when prescribing");
 		}
 	}
 
