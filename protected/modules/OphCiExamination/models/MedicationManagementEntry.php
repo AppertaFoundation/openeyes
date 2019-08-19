@@ -76,7 +76,7 @@ class MedicationManagementEntry extends \EventMedicationUse
 	public function validateEndDate()
 	{
 		$current_date = date("Y-m-d");
-		if (isset($this->end_date) && $this->end_date < $current_date && !$this->hidden && $this->getScenario() == "to_be_prescribed") {
+		if ($this->end_date && $this->end_date < $current_date && !$this->hidden && $this->getScenario() == "to_be_prescribed") {
 			$this->addError("end_date", "End date cannot be in the past when prescribing");
 		}
 	}
