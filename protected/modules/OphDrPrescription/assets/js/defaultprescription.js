@@ -254,9 +254,9 @@ $(function () {
     width: 600,
     deselectOnReturn: false,
     onReturn: function (adderDialog, selectedItems) {
-      
+				$('#event-content').trigger('change');
         if(typeof patientAllergies === 'undefined'){
-          patientAllergies = false;    
+          patientAllergies = false;
         }
 
         let allergicDrugsController = new OpenEyes.OphDrPrescription.AllergicDrugsController(patientAllergies);
@@ -278,9 +278,7 @@ $(function () {
             dialog.open();
         } else {
             addItems(selectedItems);
-        }          
-        
-
+        }
     },
   });
 
@@ -288,6 +286,7 @@ $(function () {
     openButton: $('#add-standard-set-btn'),
     itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(prescriptionDrugSets)],
     onReturn: function (adderDialog, selectedItems) {
+			$('#event-content').trigger('change');
       for (let i = 0; i < selectedItems.length; ++i) {
           processSetEntries(selectedItems[i].id);
       }
