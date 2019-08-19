@@ -17,11 +17,13 @@
                 'form_css_class' => $form_css_class,
                 'side' => $side
             ));
+
             $this->render('form_print_item_list', array(
                 'form_css_class' => $form_css_class,
                 'side' => $side,
-                'page_number' => $page_number
+                'page_number' => $page_number,
             ));
+
             $this->render('form_print_footer', array(
                 'form_css_class' => $form_css_class,
                 'side' => $side,

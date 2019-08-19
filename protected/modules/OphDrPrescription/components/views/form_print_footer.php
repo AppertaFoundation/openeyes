@@ -40,7 +40,7 @@
             <br/>
             <br/>
             <br/>
-            <?= $this->firm->cost_code ?: $this->default_cost_code ?>
+            <?= $this->firm->cost_code ?: $this->getDefaultCostCode() ?>
         </div>
         <span class="fpten-form-column fpten-prescriber-code">HP</span>
     <?php endif; ?>

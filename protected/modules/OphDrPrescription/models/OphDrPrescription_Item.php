@@ -275,4 +275,14 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         }
         return $dose . ($this->route_option ? ' ' . $this->route_option : '') . ' ' . $this->route . ' ' . $freq;
     }
+
+    public function fpTenFrequency()
+    {
+        return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
+    }
+
+    public function fpTenDose()
+    {
+        return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose) . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
+    }
 }
