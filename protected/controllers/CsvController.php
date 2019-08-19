@@ -82,7 +82,7 @@ class CsvController extends BaseController
             }
         }
 
-        $csv_id = 'foobarbaz';
+        $csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
 
         if(!file_exists(self::$file_path)) {
 					mkdir(self::$file_path);
@@ -95,9 +95,20 @@ class CsvController extends BaseController
 
     public function actionImport($context, $csv)
     {
+    	$import_log = new ImportLog();
+			$import_log->import_user_id = Yii::app()->user->id;
+			$import_log->startdatetime = date('Y-m-d H:i:s');
+			$import_log->status = "Failure";
+			if(!$import_log->save()) {
+				foreach ($import_log->errors as $error) {
+					//error_log(var_export($error, true));
+				}
+				error_log("WARNING! FAILED TO SAVE IMPORT LOG!");
+			}
+
     	$csv_file_path = self::$file_path . $csv . ".csv";
 
-    	error_log(file_get_contents($csv_file_path));
+    	//error_log("csv identifier is: " . $csv);
 
 			$table = array();
 			$headers = array();
@@ -122,38 +133,93 @@ class CsvController extends BaseController
 				fclose($handle);
 			}
 
-			$transaction = Yii::app()->db->beginTransaction();
 			$errors = null;
 			$row_num = 0;
 			$createAction = self::$contexts[$context]['createAction'];
 
 			foreach ($table as $row) {
-				//error_log($row);
+					$transaction = Yii::app()->db->beginTransaction();
+					$import = new Import();
+					$import->parent_log_id = $import_log->id;
 					$row_num++;
-					$errors = $this->$createAction($row);
+					$errors = $this->$createAction($row, $import);
 					if(!empty($errors)) {
-						break;
+						$transaction->rollback();
+						$import->import_status_id = 2;
+						$import->message = "Import failed: ";
+						foreach ($errors as $error) {
+							$import->message .= "\n" . $error;
+						}
+					}else {
+						$transaction->commit();
+						$import->import_status_id = 8;
+						//$import->message = "Import successful";
+					}
+
+					//error_log(var_export($errors, true));
+
+					if(!$import->save()) {
+						foreach ($import->errors as $error) {
+							//error_log(var_export($error, true));
+						}
+						error_log("WARNING! FAILED TO SAVE IMPORT STATUS!");
 					}
 			}
-			if (empty($errors)){
-					$transaction->commit();
-					error_log("Transaction committed");
-					$this->redirect(Yii::app()->createURL(self::$contexts[$context]['successAction']));
-			} else {
-					$transaction->rollback();
-					array_unshift($errors, self::$contexts[$context]['errorMsg'].$row_num);
-					error_log("Transaction rolled back");
-					$this->render(
-							'upload',
-							array(
-									'errors' => $errors,
-									'context' => $context,
-							)
-					);
-        }
+
+			$summary_table = array();
+			//$summary_table[] = array('message' => 'Message', 'status' => 'Status');
+
+			$import_log->status = "Success";
+
+			foreach (Import::model()->findAllByAttributes(['parent_log_id' => $import_log->id]) as $summary_import) {
+				$summary = array();
+
+				$status = $summary_import->import_status->status_value;
+
+				if($status != 8)
+					$import_log->status = "Failure";
+
+				$summary['Status'] = $status;
+				$summary['Details'] = $summary_import->message;
+
+				//error_log(var_export($summary, true));
+				$summary_table[] = $summary;
+			}
+
+			if(!$import_log->save()) {
+				foreach ($import_log->errors as $error) {
+					//error_log(var_export($error, true));
+				}
+				//error_log("WARNING! FAILED TO SAVE IMPORT LOG!");
+			}
+
+			$this->render(
+				'summary',
+				array(
+					'errors' => $errors,
+					'context' => $context,
+					'table' => $summary_table,
+					)
+			);
+//			if (empty($errors)){
+//					$transaction->commit();
+//					error_log("Transaction committed");
+//					$this->redirect(Yii::app()->createURL(self::$contexts[$context]['successAction']));
+//			} else {
+//					$transaction->rollback();
+//					array_unshift($errors, self::$contexts[$context]['errorMsg'].$row_num);
+//					error_log("Transaction rolled back");
+//					$this->render(
+//							'upload',
+//							array(
+//									'errors' => $errors,
+//									'context' => $context,
+//							)
+//					);
+//        }
     }
 
-    private function createNewTrial($trial)
+    private function createNewTrial($trial, $import)
     {
         $errors = array();
         \Yii::log('createNewTrial called on '.var_export($trial,true));
@@ -200,14 +266,22 @@ class CsvController extends BaseController
         return $errors;
     }
 
-    private function createNewPatient($patient)
+    private function findOrCreateReferringPractitioner($practitioner, $import)
+		{
+
+		}
+
+    private function createNewPatient($patient, $import)
     {
         $errors = array();
 
-			if(!empty($patient['CERA_number'])){
-            $new_patient = Patient::model()->findByAttributes(array('hos_num' => $patient['CERA_number']));
+        //error_log("Importing patient: " . var_export($patient, true));
+
+			if(!empty($patient['CERA_ID'])){
+            $new_patient = Patient::model()->findByAttributes(array('hos_num' => $patient['CERA_ID']));
             if ($new_patient !== null){
-                return $errors;
+							$errors[] = "Duplicate CERA ID (" . $patient['CERA_ID'] . ") found for patient: " . $patient['first_name'] . " " . $patient['last_name'];
+							return $errors;
             }
         }
 
@@ -279,7 +353,7 @@ class CsvController extends BaseController
         }
 
         $new_patient->contact_id = $contact->id;
-        $new_patient->hos_num = !empty($patient['CERA_number']) ? $patient['CERA_number'] : Patient::getNextCeraNumber();
+        $new_patient->hos_num = !empty($patient['CERA_ID']) ? $patient['CERA_ID'] : Patient::getNextCeraNumber();
 
         $new_patient->setScenario('other_register');
         if(!$new_patient->save()){
@@ -515,10 +589,29 @@ class CsvController extends BaseController
             }
         }
 
+        $first_name = $contact->first_name;
+        $last_name = $contact->last_name;
+        $dob = $new_patient->dob;
+
+        $patient_duplicates = Patient::findDuplicates($last_name, $first_name, $dob, null);
+				$CERA_duplicates = Patient::findDuplicatesByIdentifier('hos_num', $patient['CERA_ID']);
+
+        if(count($patient_duplicates) > 0) {
+					$errors[] = "Patient duplicate found for patient: " . $first_name . " " . $last_name;
+				}
+
+				if(empty($errors)) {
+					$import->message = "Import successful for patient: " . $first_name . " " . $last_name;
+					//error_log("Import message pls");
+				}else {
+					//error_log("Error message pls");
+					//error_log(var_export($errors, true));
+				}
+
         return $errors;
     }
 
-    private function createNewTrialPatient($trial_patient)
+    private function createNewTrialPatient($trial_patient, $import)
     {
         $errors = array();
         //trial
