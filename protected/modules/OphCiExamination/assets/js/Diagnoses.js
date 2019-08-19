@@ -476,7 +476,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
                 listSide = $(this).find('input[type="radio"]:checked').val();
                 if (listSide !== side) {
-                    $(this).find('input[type="radio"][value=' + side + ']').prop('checked', true);
+                    $(this).find('input[type="radio"][value=' + id + ']').prop('checked', true);
                 }
                 // stop iterating
                 return false;
