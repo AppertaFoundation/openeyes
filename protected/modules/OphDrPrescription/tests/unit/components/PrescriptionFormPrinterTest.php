@@ -93,6 +93,9 @@
 
             $this->instance->setCurrentAttr('frequency', 0);
             $this->assertEquals('taper0_frequency', $this->instance->getCurrentItemAttr());
+
+            $this->instance->setCurrentAttr();
+            $this->assertNull($this->instance->getCurrentItemAttr());
         }
 
         /**
