@@ -235,6 +235,15 @@ class Gp extends BaseActiveRecordVersioned
         return ($this->contact->label != null?$this->contact->label->name:'');
     }
 
+    public function GetActiveStatus($id){
+        if (isset($id)) {
+            $gp = Gp::model()->findByPk(array('id' => $id));
+            return $gp->is_active;
+        } else {
+            return null;
+        }
+    }
+
     public function getAssociatedPractice($id){
         $query = "SELECT first_name, P.id FROM contact_practice_associate CPA
                         JOIN practice P ON CPA.practice_id = P.id

@@ -51,7 +51,7 @@ $this->pageTitle = 'View Practitioner';
                     <tr>
                         <td>Active:</td>
                         <td>
-                            <i class="oe-i <?= (isset($model->getActiveStatus($model->id)->is_active)? 'tick' : 'remove');?> small"></i>
+                            <i id = 'activeStatus' class="oe-i <?= ($model->getActiveStatus($model->id) ? 'tick' : 'remove');?> small"></i>
                         </td>
                     </tr>
                     </tbody>

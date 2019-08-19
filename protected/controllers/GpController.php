@@ -150,18 +150,20 @@ class GpController extends BaseController
         $model = $this->loadModel($id);
         $contact = $model->contact;
         $contact->setScenario(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
-
         $this->performAjaxValidation($contact);
+        $this->performAjaxValidation($model);
 
-        if (isset($_POST['Contact'])) {
-
+        if (isset($_POST['Contact']) && isset($_POST['Gp']['is_active'])) {
             $contact->attributes = $_POST['Contact'];
+            $model->is_active = $_POST['Gp']['is_active'];
             $this->performAjaxValidation($contact);
+            $this->performAjaxValidation($model);
             list($contact, $model) = $this->performGpSave($contact, $model);
         }
 
         $this->render('update', array(
             'model' => $contact,
+            'gp' => $model,
         ));
     }
 
