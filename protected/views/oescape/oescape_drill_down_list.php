@@ -34,7 +34,7 @@
 </div>
 
 <script type="text/javascript">
-    var iop_plotly_data;
+    let iop_plotly_data;
 
     // to drill through data from chart
     $('.js-plot-display-label').click(function () {
@@ -58,7 +58,7 @@
 
         // generate links (used for drill through data to event details) based upon the datalink they have
         $('.clickable').click(function () {
-        var link = $('.event_'+id+'_'+side).data('link');
+        let link = $('.event_'+id+'_'+side).data('link');
         window.location.href = link;
         });
     }
@@ -68,8 +68,8 @@
         // loop for each ID
         iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent($this->patient)); ?>;
 
-        for (var i = 0; i < iop_plotly_data.length; i++){
-            var data_row = "<tr  class='clickable event_rows event_" + iop_plotly_data[i]["event_id"]+"_" + iop_plotly_data[i]["eye"]+" val_"  + iop_plotly_data[i]["raw_value"] +
+        for (let i = 0; i < iop_plotly_data.length; i++){
+            let data_row = "<tr  class='clickable event_rows event_" + iop_plotly_data[i]["event_id"]+"_" + iop_plotly_data[i]["eye"]+" val_"  + iop_plotly_data[i]["raw_value"] +
             "' data-link='/OphCi"+iop_plotly_data[i]["event_name"]+"/default/view/"+iop_plotly_data[i]["event_id"]+"'>";
             data_row += "<td class='event_type' style='vertical-align: center;'>"+iop_plotly_data[i]["event_name"]+"</td>";
             data_row += "<td class='event_eye' style='vertical-align: center;'>"+iop_plotly_data[i]["eye"]+"</td>";
