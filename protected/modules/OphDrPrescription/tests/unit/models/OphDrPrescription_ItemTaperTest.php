@@ -7,7 +7,8 @@
 class OphDrPrescription_ItemTaperTest extends CDbTestCase
 {
     protected $fixtures = array(
-        'ophdrprescription_item_tapers' => OphDrPrescription_ItemTaper::class
+        'ophdrprescription_item_tapers' => OphDrPrescription_ItemTaper::class,
+        'ophdrprescription_items' => OphDrPrescription_Item::class,
     );
         
     private $instance;
