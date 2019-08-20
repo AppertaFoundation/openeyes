@@ -69,7 +69,7 @@
                             'name' => 'delete',
                             'data-object' => 'pupillaryabnormalities',
                             'data-uri' => '/OphCiExamination/admin/PupillaryAbnormalities/delete',
-                            'id' => 'et_delete'
+                            'id' => 'et_delete_abnormality'
                         ]
                     ); ?>
                 </td>

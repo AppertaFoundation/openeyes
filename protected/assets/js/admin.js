@@ -150,4 +150,33 @@ $(document).ready(function () {
         });
     });
 
+    $('#et_delete_abnormality').click(function (e) {
+        e.preventDefault();
+
+        let $checked = $('input[name="select[]"]:checked');
+        if ($checked.length === 0) {
+            alert('Please select one or more generic procedure data to delete.');
+            return;
+        }
+
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl + '/OphCiExamination/admin/PupillaryAbnormalities/delete',
+            'data': $checked.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+            'success': function (response) {
+                response = JSON.parse(response);
+                if (response['status'] === 1) {
+                    window.location.reload();
+                } else {
+                    $('.js-admin-errors').show();
+                    let $errorContainer = $('.js-admin-error-container');
+                    $errorContainer.html("");
+
+                    response['errors'].forEach(function (error) {
+                        $errorContainer.append('<p class="js-admin-errors">' + error + '</p>');
+                    });
+                }
+            }
+        });
+    });
 });
