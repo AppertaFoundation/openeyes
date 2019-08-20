@@ -288,7 +288,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                         'eye' => $side,
                         'instrument_name' => $reading->instrument->name,
                         'dilated' => 'N/A',
-                        'reading_value' => self::getFormattedReading($reading->reading->value, $reading->reading_time, 'mmHg'),
+                        'reading_time' => date('G:i', strtotime($reading->reading_time)),
                         'raw_value' => $reading->reading->value,
                         'comments' => $iop_element->{$side . '_comments'}
                 );
@@ -318,22 +318,12 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                         'eye' => $side,
                         'instrument_name' => $iop_element->{$side . '_instrument'}->name,
                         'dilated' => $iop_element->{$side . '_dilated'} == 1 ? 'Yes' : 'No',
-                        'reading_value' => self::getFormattedReading($reading->value, $reading->measurement_timestamp, 'mmHg'),
+                        'reading_time' => date('G:i', strtotime($reading->measurement_timestamp)),
                         'raw_value' => $reading->value,
                         'comments' => $iop_element->{$side . '_comments'}
                 );
         }
 
                 return $readings_array;
-    }
-
-    //Function for formatting reading values for drillthrough list
-    static function getFormattedReading($reading_value, $timestamp, $reading_unit)
-    {
-        $time=date('G:i', strtotime($timestamp));
-        $val = $reading_value;
-        $return_reading = $time . ':  ' . $val . ' ' . $reading_unit;
-
-        return $return_reading;
     }
 }

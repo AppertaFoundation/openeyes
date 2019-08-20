@@ -13,15 +13,17 @@
             <col style="width: 100px;"><!-- Instrument -->
             <col style="width: 100px;"><!-- Dilated -->
             <col style="width: 100px;"><!-- Value -->
+            <col style="width: 100px;"><!-- time -->
             <col style="width: 200px;"><!-- Comments -->
         </colgroup>
         <thead>
             <tr>
                 <th class="text-left" style="vertical-align: center;">Event Type</th><!-- Event type -->
-                <th class="text-left" style="vertical-align: center;">Eye (left or right)</th><!-- Eye-->
+                <th class="text-left" style="vertical-align: center;">Eye</th><!-- Eye-->
                 <th class="text-left" style="vertical-align: center;">Instrument</th><!-- Instrument -->
                 <th class="text-left" style="vertical-align: center;">Dilated</th><!-- Dilated -->
-                <th class="text-left" style="vertical-align: center;">Value</th><!-- Value -->
+                <th class="text-left" style="vertical-align: center;">IOP (mmHg)</th><!-- Value -->
+                <th class="text-left" style="vertical-align: center;">Time</th><!-- Time -->
                 <th class="text-left" style="vertical-align: center;">Comments</th><!-- Comments -->
             </tr>
         </thead>
@@ -73,7 +75,8 @@
             data_row += "<td class='event_eye' style='vertical-align: center;'>"+iop_plotly_data[i]["eye"]+"</td>";
             data_row += "<td class='event_instrument' style='vertical-align: center;'>"+iop_plotly_data[i]["instrument_name"]+"</td>";
             data_row += "<td class='event_dilated' style='vertical-align: center;'>"+iop_plotly_data[i]["dilated"]+"</td>";
-            data_row += "<td class='event_value' style='vertical-align: center;'>"+iop_plotly_data[i]["reading_value"]+"</td>";
+            data_row += "<td class='event_value' style='vertical-align: center;'>"+iop_plotly_data[i]["raw_value"]+"</td>";
+            data_row += "<td class='event_value' style='vertical-align: center;'>"+iop_plotly_data[i]["reading_time"]+"</td>";
             data_row += "<td class='event_comments' style='vertical-align: center;'>"+iop_plotly_data[i]["comments"]+"</td>";
             data_row += "</tr>";
 
