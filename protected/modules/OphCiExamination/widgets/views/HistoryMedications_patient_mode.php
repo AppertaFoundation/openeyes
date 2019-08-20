@@ -104,7 +104,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
 <!-- oe-popup-overflow handles scrolling if data overflow height -->
 <div class="oe-popup-overflow quicklook-data-groups">
-
     <div class="group">
         <div class="label">Eye Medications</div>
         <div class="data">

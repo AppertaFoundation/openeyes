@@ -60,10 +60,19 @@ $label_width = 5;
 <div class="element-fields eye-divider">
   <div class="element-both-eyes">
     <table class="cols-full">
+        <colgroup>
+            <col class="cols-2" />
+            <col class="cols-2" />
+            <col class="cols-2" />
+            <col class="cols-2" />
+            <col class="cols-2" />
+            <col class="cols-2" />
+            <col class="cols-1" />
+        </colgroup>
       <tbody>
       <tr>
         <td><?= $form->dropDownList($element, 'clinic_interval_id', $overallPeriods, array(), false,
-                array('label' => $label_width, 'field' => $field_width)) ?></td>
+                array('label' => 6, 'field' => 6)) ?></td>
         <td><?= $form->dropDownList($element, 'photo_id', $overallPeriods, array(), false,
                 array('label' => $label_width, 'field' => $field_width)) ?></td>
         <td><?= $form->dropDownList($element, 'oct_id', $overallPeriods, array(), false,

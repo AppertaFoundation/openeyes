@@ -89,7 +89,7 @@ class DrugController extends \ModuleAdminController
             if ($model->save()) {
                 Audit::add('admin', 'create', serialize($model->attributes), false,
                 ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']);
-                Yii::app()->user->setFlash('success', 'Dilation drops created');
+                Yii::app()->user->setFlash('success', 'Drop created');
                 $this->redirect(['dilationDrugs']);
             } else {
                 $errors = $model->getErrors();
