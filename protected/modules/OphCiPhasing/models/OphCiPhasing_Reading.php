@@ -102,9 +102,9 @@ class OphCiPhasing_Reading extends BaseActiveRecordVersioned
     public function getSideAsString()
     {
         switch ($this->side) {
-            case Eye::RIGHT:
+            case self::RIGHT:
                 return 'right';
-            case Eye::LEFT:
+            case self::LEFT:
                 return 'left';
         }
 
