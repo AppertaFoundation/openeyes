@@ -181,8 +181,8 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
     public function getReadings($side)
     {
         $return_readings = array();
-
-        if (!$values = $this->{"{$side}_integer_values"}) {
+        $values = $this->{"{$side}_integer_values"};
+        if (!$values) {
             return;
         }
 
@@ -197,7 +197,8 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
 
     public function getReading($side)
     {
-        if (!$values = $this->{"{$side}_integer_values"}) {
+        $values = $this->{"{$side}_integer_values"};
+        if (!$values) {
             return;
         }
 
