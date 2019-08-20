@@ -18,4 +18,10 @@
 class AutoCompleteSearch extends BaseCWidget
 {
 	public $field_name = 'oe-autocompletesearch';
+
+    /**
+     * @var bool This variable can be passed when calling the Widget and it controls whether
+     * to display the no results found and minimum characters warning message to the user.
+     */
+	public $hide_no_result_msg = false;
 }
