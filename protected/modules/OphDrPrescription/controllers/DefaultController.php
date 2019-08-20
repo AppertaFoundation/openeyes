@@ -394,7 +394,7 @@ class DefaultController extends BaseEventTypeController
             foreach ($data['Element_OphDrPrescription_Details']['items'] as $item) {
                 $item_model = new OphDrPrescription_Item();
                 $item_model->attributes = $item;
-                if($item_model->start_date_string_YYYYMMDD == '') {
+                if(!$item_model->start_date) {
                     $item_model->start_date = substr($this->event->event_date, 0, 10);
                 }
                 if (isset($item['taper'])) {
@@ -672,12 +672,13 @@ class DefaultController extends BaseEventTypeController
                 }
             }
         }
+        $unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
         if (isset($this->patient)) {
             $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item, 'patient' => $this->patient));
+                array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options));
         } else {
             $output = $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item), true);
+                array('key' => $key, 'item' => $item, 'unit_options' => $unit_options), true);
 
             return $output;
         }
