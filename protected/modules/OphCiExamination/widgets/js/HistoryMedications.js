@@ -257,7 +257,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var $input = $(this).closest(".toggle-switch").find("input");
         var checked = !$input.prop("checked");
         if(!checked) {
-        		var $data_key = $row.attr('data-key');
+        		let $data_key = $row.attr('data-key');
 						$(".js-taper-row[data-parent-key='" + $data_key + "']").remove();
             $row.find(".js-disppense-location option").empty();
             $row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
@@ -288,7 +288,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       if($end_date_ctrl.length > 0) {
           $end_date_ctrl[0].addEventListener('pickmeup-change', function(e){controls_onchange(e);});
       }
-	
+
       if($start_date_ctrl.length > 0) {
           $start_date_ctrl[0].addEventListener('pickmeup-change', function(e){controls_onchange(e);});
       }
