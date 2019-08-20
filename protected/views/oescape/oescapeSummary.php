@@ -51,8 +51,8 @@ if (!empty($subspecialty)) { ?>
 
 <script type="text/javascript">
   // init min and max
-  var min_value = new Date();
-  var max_value = new Date();  
+  let min_value = new Date();
+  let max_value = new Date();  
 
   $(document).ready(function () {
   //set min and max
@@ -66,7 +66,7 @@ if (!empty($subspecialty)) { ?>
     max_value = new Date($('.plotly-right')[0]['layout']['xaxis']['range'][1]);
    }
 
-    var charts = [];
+    let charts = [];
     charts['VA'] = [];
     charts['VA']['right'] = $('.plotly-VA')[0];
     charts['VA']['left'] = $('.plotly-VA')[1];
@@ -82,7 +82,7 @@ if (!empty($subspecialty)) { ?>
 
     //hide cursors in plot
     ['right', 'left'].forEach(function (eye_side) {
-      for(var key in charts){
+      for(let key in charts){
         $(charts[key][eye_side]).find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
       }
       $('.plotly-MR').find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
@@ -91,40 +91,40 @@ if (!empty($subspecialty)) { ?>
     if ($("#charts-container").hasClass('Glaucoma')||$("#charts-container").hasClass('General')){
       $('.right-side-content').show();
 
-      var limits = {};
+      let limits = {};
       ['right', 'left'].forEach(function(eye_side)  {
         limits[eye_side] = {};
         limits[eye_side]['min'] = Object.keys(charts).reduce(function(min, chart_key) {
-          var chart = charts[chart_key];
-          var chart_data_list = chart[eye_side]['data'];
-          var has_data = false;
-          for (var i in chart_data_list){
+          let chart = charts[chart_key];
+          let chart_data_list = chart[eye_side]['data'];
+          let has_data = false;
+          for (let i in chart_data_list){
             if(chart_data_list[i]['x'].length!==0){
               has_data = true;
             }
           }
-          var chart_min = chart[eye_side]['layout']['xaxis']['range'][0];
+          let chart_min = chart[eye_side]['layout']['xaxis']['range'][0];
           return has_data && new Date(chart_min) < min ? new Date(chart_min) : min;
         }, new Date());
         limits[eye_side]['max'] = Object.keys(charts).reduce(function(max, chart_key) {
-          var chart = charts[chart_key];
-          var chart_data_list = chart[eye_side]['data'];
-          var has_data = false;
-          for (var i in chart_data_list){
+          let chart = charts[chart_key];
+          let chart_data_list = chart[eye_side]['data'];
+          let has_data = false;
+          for (let i in chart_data_list){
             if(chart_data_list[i]['x'].length!==0){
               has_data = true;
             }
           }
-          var chart_max = chart[eye_side]['layout']['xaxis']['range'][1];
+          let chart_max = chart[eye_side]['layout']['xaxis']['range'][1];
           return has_data && new Date(chart_max) > max ? new Date(chart_max) : max;
         }, limits[eye_side]['min']);
         if (limits[eye_side]['min']!==limits[eye_side]['max']){
-          for(var key in charts){
+          for(let key in charts){
             Plotly.relayout(charts[key][eye_side], 'xaxis.range', [limits[eye_side].min, limits[eye_side].max]);
 
             if (key==='IOP'){
               //set the iop target line
-              var index = charts[key][eye_side].layout.shapes.length-1;
+              let index = charts[key][eye_side].layout.shapes.length-1;
               if (index>=0 && charts[key][eye_side].layout.shapes[index].y0 == charts[key][eye_side].layout.shapes[index].y1){
                 Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
                 Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
@@ -139,27 +139,27 @@ if (!empty($subspecialty)) { ?>
       $( "#reset-zoom" ).trigger( "click" );
 
       $('.plotly-right, .plotly-left').on('mouseenter mouseover', function (e) {
-        var chart = $(this)[0];
+        let chart = $(this)[0];
         if($(this).hasClass('plotly-right')||$(this).hasClass('plotly-left')){
-          var eye_side = $(chart).attr('data-eye-side');
-          var chart_list = $('.plotly-'+eye_side);
+          let eye_side = $(chart).attr('data-eye-side');
+          let chart_list = $('.plotly-'+eye_side);
 
           // init locals
-          var my_min_value = new Date(chart_list[0]['layout']['xaxis']['range'][0]);
-          var my_max_value = new Date(chart_list[0]['layout']['xaxis']['range'][1]);
+          let my_min_value = new Date(chart_list[0]['layout']['xaxis']['range'][0]);
+          let my_max_value = new Date(chart_list[0]['layout']['xaxis']['range'][1]);
           //set min max
-          for (var i=0; i < chart_list.length; i++){
+          for (let i=0; i < chart_list.length; i++){
           //test min
           if(my_min_value<chart_list[i]['layout']['xaxis']['range'][0])
-          var my_min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
+          let my_min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
           //test max
           if(my_min_value>chart_list[i]['layout']['xaxis']['range'][1])
-          var my_max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
+          let my_max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
           }
           // set these ranges to the min and max values
-          var current_range = [my_min_value, my_max_value];
+          let current_range = [my_min_value, my_max_value];
           // end 
-          for (var i=0; i < chart_list.length; i++){
+          for (let i=0; i < chart_list.length; i++){
             Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
           }
         }
@@ -168,26 +168,26 @@ if (!empty($subspecialty)) { ?>
   });
 
   document.getElementById('reset-zoom').addEventListener('click', function () {
-    var charts = $('.rangeslider-container').parents('.plotly-VA');
+    let charts = $('.rangeslider-container').parents('.plotly-VA');
     //are we looking at the left eye
     if(!charts[0].style.display){
       //then set to left eye      
-    var eye_side = $(charts[0]).attr('data-eye-side');
+    let eye_side = $(charts[0]).attr('data-eye-side');
     }
     else{   
-    var eye_side = $(charts[1]).attr('data-eye-side');
+    let eye_side = $(charts[1]).attr('data-eye-side');
     }
-    var chart_list = $('.plotly-'+eye_side);
+    let chart_list = $('.plotly-'+eye_side);
     //reset the graphs to basics before we st them to thier maximums
-    for (var i=0; i < chart_list.length; i++){
+    for (let i=0; i < chart_list.length; i++){
       Plotly.relayout(chart_list[i], 'xaxis.autorange', true);
     }
     
-    var min_value = new Date(chart_list[0]['layout']['xaxis']['range'][0]);
-    var max_value = new Date(chart_list[0]['layout']['xaxis']['range'][1]);
+    let min_value = new Date(chart_list[0]['layout']['xaxis']['range'][0]);
+    let max_value = new Date(chart_list[0]['layout']['xaxis']['range'][1]);
 
     //set min max
-    for (var i=0; i < chart_list.length; i++){
+    for (let i=0; i < chart_list.length; i++){
     //test min
     if(min_value<chart_list[i]['layout']['xaxis']['range'][0])
     min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
@@ -199,8 +199,8 @@ if (!empty($subspecialty)) { ?>
     max_value.setDate(max_value.getDate() + 15);
 
     // set these new ranges
-    var current_range = [min_value, max_value];
-    for (var i=0; i < chart_list.length; i++){
+    let current_range = [min_value, max_value];
+    for (let i=0; i < chart_list.length; i++){
       Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
     }
 })
