@@ -110,7 +110,7 @@ class ProcedureSubspecialtyAssignment extends BaseActiveRecordVersioned
      */
     public function getProcedureListFromSubspecialty($id)
     {
-        $list = self::model()->with('subspecialty')->with('procedure')->findAll('subspecialty.id = :id', array(':id' => $id)); 
+        $list = self::model()->with('subspecialty')->with('procedure')->findAll('subspecialty.id = :id', array(':id' => $id));
         $result = array();
 
         foreach ($list as $subspecialty) {

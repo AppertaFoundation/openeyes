@@ -278,8 +278,8 @@
                 $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
                 $subspecialty_procedures = ProcedureSubspecialtyAssignment::model()->getProcedureListFromSubspecialty($subspecialty_id);
                 $formatted_procedures = "";
-                foreach($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
-                    $row = "<li data-label='$subspecialty_procedure'data-id='$proc_id' class=''>". 
+                foreach ($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
+                    $row = "<li data-label='$subspecialty_procedure'data-id='$proc_id' class=''>".
                     "<span class='auto-width'>$subspecialty_procedure</span></li>";
                     $formatted_procedures .= $row;
                 }
