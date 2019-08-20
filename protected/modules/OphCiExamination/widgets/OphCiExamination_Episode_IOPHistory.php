@@ -120,7 +120,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         }
         foreach (['left', 'right'] as $side) {
             usort($iop_data_list[$side], function ($item1, $item2) {
-                if ($item1['x'] == $item2['x']) {
+                if ($item1['x'] === $item2['x']) {
                     return 0;
                 }
                 return $item1['x'] < $item2['x'] ? -1 : 1;
@@ -203,7 +203,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         //must be sorted to display in the correct way on the graph
         foreach (['left', 'right'] as $side) {
             usort($iop_data_list[$side], function ($item1, $item2) {
-                if ($item1['timestamp'] == $item2['timestamp']) {
+                if ($item1['timestamp'] === $item2['timestamp']) {
                     return 0;
                 }
                 return $item1['timestamp'] < $item2['timestamp'] ? -1 : 1;
@@ -272,7 +272,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
     {
                 $event_name = EventType::model()->findByPk($iop_element->event->event_type_id)->name;
 
-        if (!$event_name == 'Examination') {
+        if (!$event_name === 'Examination') {
                 throw new Exception("Event should be of type examination. Got " . $event_name);
         }
 
@@ -304,7 +304,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
     {
                 $event_name = EventType::model()->findByPk($iop_element->event->event_type_id)->name;
 
-        if (!$event_name == 'Phasing') {
+        if (!$event_name === 'Phasing') {
             throw new Exception("Event should be of type phasing. Got " . $event_name);
         }
 
@@ -319,7 +319,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                         'event_date' => $iop_element->event->event_date,
                         'eye' => $side,
                         'instrument_name' => $iop_element->{$side . '_instrument'}->name,
-                        'dilated' => $iop_element->{$side . '_dilated'} == 1 ? 'Yes' : 'No',
+                        'dilated' => $iop_element->{$side . '_dilated'} === 1 ? 'Yes' : 'No',
                         'reading_time' => date('G:i', strtotime($reading->measurement_timestamp)),
                         'raw_value' => $reading->value,
                         'comments' => $iop_element->{$side . '_comments'}
