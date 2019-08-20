@@ -25,38 +25,38 @@
         <div class="fpten-form-row">
             <div id="<?= $form_css_class ?>-prescription-list" class="fpten-form-column">
                 <?php
-                    for ($j = $this->current_item_index; $j < $this->getTotalItems(); $j++) {
-                        $item = $this->items[$j];
-                        if ($this->isPrintable($item)) {
-                            $drug_label = $item->drug->label;
-                            $total_tapers = count($item->tapers);
+                for ($j = $this->current_item_index; $j < $this->getTotalItems(); $j++) {
+                    $item = $this->items[$j];
+                    if ($this->isPrintable($item)) {
+                        $drug_label = $item->drug->label;
+                        $total_tapers = count($item->tapers);
 
-                            $current_item_copy = $this->current_item_index ?: $current_item_copy;
-                            $current_attr_copy = $this->getCurrentItemAttr() ?: $current_attr_copy;
-                            $current_taper_copy = $this->current_taper_index ?: $current_taper_copy;
+                        $current_item_copy = $this->current_item_index ?: $current_item_copy;
+                        $current_attr_copy = $this->getCurrentItemAttr() ?: $current_attr_copy;
+                        $current_taper_copy = $this->current_taper_index ?: $current_taper_copy;
 
-                            // Work out how many lines are being used for this prescription item. If it exceeds the maximum lines - currently used lines, separate it onto its own script.
-                            // If the lines used is greater than the maximum, split the printout between multiple pages.
-                            if ($item->fpTenLinesUsed() + 1 > MAX_FPTEN_LINES - $prescription_lines_used && !$this->isSplitPrinting()) {
-                                if ($item->fpTenLinesUsed() + 1 > MAX_FPTEN_LINES) {
-                                    // Single item will not fit on a single script.
-                                    $this->enableSplitPrint();
-                                }
-
-                                if ($side === 'right') {
-                                    // We only want to change the page counter and the base item index once the right side of the page has been rendered.
-                                    $this->addPages();
-                                    $this->current_item_index = $j;
-                                }
-                                // We want to do nothing if all conditions below are true as we want the LHS of the split item to render immediately.
-                                // Otherwise, break the loop.
-                                if (!($page_number === 0 && $j === 0 && $side === 'left' && $this->isSplitPrinting())) {
-                                    break;
-                                }
+                        // Work out how many lines are being used for this prescription item. If it exceeds the maximum lines - currently used lines, separate it onto its own script.
+                        // If the lines used is greater than the maximum, split the printout between multiple pages.
+                        if ($item->fpTenLinesUsed() + 1 > MAX_FPTEN_LINES - $prescription_lines_used && !$this->isSplitPrinting()) {
+                            if ($item->fpTenLinesUsed() + 1 > MAX_FPTEN_LINES) {
+                                // Single item will not fit on a single script.
+                                $this->enableSplitPrint();
                             }
-                ?>
+
+                            if ($side === 'right') {
+                                // We only want to change the page counter and the base item index once the right side of the page has been rendered.
+                                $this->addPages();
+                                $this->current_item_index = $j;
+                            }
+                            // We want to do nothing if all conditions below are true as we want the LHS of the split item to render immediately.
+                            // Otherwise, break the loop.
+                            if (!($page_number === 0 && $j === 0 && $side === 'left' && $this->isSplitPrinting())) {
+                                break;
+                            }
+                        }
+                        ?>
                 <div class="fpten-prescription-item fpten-form-row">
-                    <?php
+                        <?php
                         foreach (array('drug', 'dose', 'frequency') as $attr) {
                             if ($item->getAttrLength("item_$attr") > MAX_FPTEN_LINES - $prescription_lines_used) {
                                 if ($side === 'right' && !$this->getCurrentItemAttr()) {
@@ -130,10 +130,9 @@
                                 $split_print_end = true;
                             }
                         }
-
-                        }
-                        }
-                    ?>
+                    }
+                }
+                ?>
                     <div class="fpten-prescription-list-filler fpten-form-row">
                         <?php for ($line = 0; $line < MAX_FPTEN_LINES - $prescription_lines_used; $line++) {
                             if ($line !== 0) {
@@ -141,13 +140,13 @@
                             }
                             echo ($side === 'left') ? LHS_LINE_FILLER_TEXT : RHS_LINE_FILLER_TEXT;
                         }
-                            if ($split_print_end && $side === 'left' && !$this->isSplitPrinting()) {
-                                $this->setCurrentAttrStr($current_attr_copy);
-                                $this->current_item_index = $current_item_copy;
-                                $this->current_taper_index = $current_taper_copy;
-                                $this->enableSplitPrint();
-                                $split_print_end = false;
-                            } ?>
+                        if ($split_print_end && $side === 'left' && !$this->isSplitPrinting()) {
+                            $this->setCurrentAttrStr($current_attr_copy);
+                            $this->current_item_index = $current_item_copy;
+                            $this->current_taper_index = $current_taper_copy;
+                            $this->enableSplitPrint();
+                            $split_print_end = false;
+                        } ?>
                 </div>
             </div>
         </div>

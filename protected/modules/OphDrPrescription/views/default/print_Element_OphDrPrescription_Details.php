@@ -32,14 +32,14 @@
     $allowed_tags = '<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup><u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
 
     $header_param = Yii::app()->params['prescription_boilerplate_header'];
-    if ($header_param !== null) {
-        $header_text = strip_tags($header_param, $allowed_tags);
-    }
+if ($header_param !== null) {
+    $header_text = strip_tags($header_param, $allowed_tags);
+}
 
     $footer_param = Yii::app()->params['prescription_boilerplate_footer'];
-    if ($footer_param !== null) {
-        $footer_text = strip_tags($footer_param, $allowed_tags);
-    }
+if ($footer_param !== null) {
+    $footer_text = strip_tags($footer_param, $allowed_tags);
+}
 ?>
 
 <?php
@@ -115,13 +115,13 @@
             </thead>
             <tbody>
             <?php
-                foreach ($items as $item) {
-                    ?>
+            foreach ($items as $item) {
+                ?>
                     <tr class="prescriptionItem<?= $this->patient->hasDrugAllergy($item->drug_id) ? ' allergyWarning' : ''; ?> ">
                         <td class="prescriptionLabel"><?= $item->drug->label; ?></td>
                         <td><?= is_numeric($item->dose) ? ($item->dose . " " . $item->drug->dose_unit) : $item->dose ?></td>
                         <td><?= $item->route->name ?><?php if ($item->route_option) {
-                                echo ' (' . $item->route_option->name . ')';
+                            echo ' (' . $item->route_option->name . ')';
                             } ?></td>
                         <td><?= $item->frequency->long_name; ?></td>
                         <td><?= $item->duration->name ?></td>
@@ -154,7 +154,7 @@
                                 <i><?= \CHtml::encode($item->comments); ?></i></td>
                         </tr>
                     <?php }
-                } ?>
+            } ?>
             </tbody>
         </table>
     <?php } ?>
@@ -203,7 +203,7 @@
     <?php if ($footer_text !== null) : ?>
         <div><?= $footer_text ?></div>
     <?php endif; ?>
-<?php else:
+<?php else :
     $this->widget('PrescriptionFormPrinter', array(
         'patient' => $this->patient,
         'site' => $this->site,
