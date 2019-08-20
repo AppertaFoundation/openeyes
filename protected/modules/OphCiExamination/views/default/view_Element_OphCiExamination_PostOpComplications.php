@@ -56,4 +56,17 @@ $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_com
             </div>
         <?php endforeach; ?>
     </div>
+<?php else: ?>
+		<div class="element-data element-eyes">
+			<div class="js-element-eye right-eye">
+				<div class="data-value not-recorded">
+					There are no recorded operations for this patient
+				</div>
+			</div>
+			<div class="js-element-eye left-eye">
+				<div class="data-value not-recorded">
+					There are no recorded operations for this patient
+				</div>
+			</div>
+		</div>
 <?php endif; ?>
