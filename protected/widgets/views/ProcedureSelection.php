@@ -278,9 +278,9 @@
                 $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
                 $subspecialty_procedures = ProcedureSubspecialtyAssignment::model()->getProcedureListFromSubspecialty($subspecialty_id);
                 $formatted_procedures = "";
-                foreach($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
+                foreach ($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
                     $row = "<li data-label=\\\"$subspecialty_procedure\\\" " .
-                    "data-id=\\\"$proc_id\\\" class=\\\"\\\">" . 
+                    "data-id=\\\"$proc_id\\\" class=\\\"\\\">" .
                     "<span class=\\\"auto-width\\\">$subspecialty_procedure</span></li>";
                     $formatted_procedures .= $row;
                 }
@@ -356,7 +356,7 @@
             return false;
         });
 
-        <?php if ($durations): ?>
+        <?php if ($durations) : ?>
         $(document).ready(function () {
             if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
                 $('#projected_duration_<?php echo $identifier?> span').html(parseInt($('#projected_duration_<?php echo $identifier?> span').html()));
