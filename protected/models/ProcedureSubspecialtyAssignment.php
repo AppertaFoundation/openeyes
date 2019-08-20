@@ -102,6 +102,31 @@ class ProcedureSubspecialtyAssignment extends BaseActiveRecordVersioned
     }
 
     /**
+     * Retrieves a list of procedures associated with the subspecialty with the given id.
+     *
+     * @param int $id
+     *
+     * @return array of procedures (proc_id=>term)
+     */
+    public function getProcedureListFromSubspecialty($id)
+    {
+        if (!isset($id)) {
+            return array();
+        }
+
+        $list = self::model()->with('subspecialty')->with('procedure')->findAll('subspecialty.id = :id', array(':id' => $id)); 
+        $result = array();
+
+        foreach($list as $subspecialty) {
+            $result[$subspecialty->procedure->id] = $subspecialty->procedure->term;
+        }
+        
+        asort($result);
+        
+        return $result;
+    }
+
+    /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
