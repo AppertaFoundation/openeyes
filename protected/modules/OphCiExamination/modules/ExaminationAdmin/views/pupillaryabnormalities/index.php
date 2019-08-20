@@ -15,6 +15,12 @@
 ?>
 <h2>Pupillary Abnormalities</h2>
 <?php $this->renderPartial('//base/_messages') ?>
+
+<div class="alert-box error with-icon js-admin-errors" style="display:none">
+    <p>Could not be deleted:</p>
+    <div class="js-admin-error-container"></div>
+</div>
+
 <div class="cols-5">
     <form id="admin_pupillaryabnormalities">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
