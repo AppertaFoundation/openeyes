@@ -244,7 +244,7 @@
 
         function initialiseProcedureAdder() {
             $('.add-options[data-id="subsections"]').on('click', 'li', function () {
-                var id = $(this).attr('class') === 'selected' ? '' : $(this).data('id');
+                let id = $(this).attr('class') === 'selected' ? '' : $(this).data('id');
                 updateProcedureDialog(id);
             });
             if ($('.add-options[data-id="subsections"] > li').length === 0) {
@@ -278,15 +278,14 @@
                 $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
                 $subspecialty_procedures = ProcedureSubspecialtyAssignment::model()->getProcedureListFromSubspecialty($subspecialty_id);
                 $formatted_procedures = "";
-                foreach ($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
-                    $row = "<li data-label=\\\"$subspecialty_procedure\\\" " .
-                    "data-id=\\\"$proc_id\\\" class=\\\"\\\">" .
-                    "<span class=\\\"auto-width\\\">$subspecialty_procedure</span></li>";
+                foreach($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
+                    $row = "<li data-label='$subspecialty_procedure'data-id='$proc_id' class=''>". 
+                    "<span class='auto-width'>$subspecialty_procedure</span></li>";
                     $formatted_procedures .= $row;
                 }
                 ?>
                 $('.add-options[data-id="select"]').each(function () {
-                    $(this).html("<?php echo $formatted_procedures ?>");
+                    $(this).html("<?= $formatted_procedures ?>");
                     $(this).show();
                 });
             }
