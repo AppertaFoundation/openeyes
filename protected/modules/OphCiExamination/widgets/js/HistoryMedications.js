@@ -257,6 +257,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var $input = $(this).closest(".toggle-switch").find("input");
         var checked = !$input.prop("checked");
         if(!checked) {
+						$(".js-taper-row").remove();
             $row.find(".js-disppense-location option").empty();
             $row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
             $row.find(".js-add-taper").hide();
