@@ -281,14 +281,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       controller.setDatepicker();
 
-      $row.on("change", ".js-dose, .js-unit-dropdown, .js-frequency, .js-route, .js-laterality, .js-stop-reason", controls_onchange);
+      $row.on("change", ".js-dose, .js-unit-dropdown, .js-frequency, .js-route, .js-laterality, .js-stop-reason, .js-start-date, .js-end-date", controls_onchange);
       var $end_date_ctrl = $row.find(".js-end-date");
       var $start_date_ctrl = $row.find(".js-start-date");
 
       if($end_date_ctrl.length > 0) {
           $end_date_ctrl[0].addEventListener('pickmeup-change', function(e){controls_onchange(e);});
       }
-
+	
       if($start_date_ctrl.length > 0) {
           $start_date_ctrl[0].addEventListener('pickmeup-change', function(e){controls_onchange(e);});
       }
