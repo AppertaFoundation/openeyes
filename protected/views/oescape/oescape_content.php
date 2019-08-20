@@ -18,8 +18,11 @@
 ?>
 <?php $this->renderPartial('//patient/_patient_alerts'); // load the patient alerts
 
+// get Glaucoma or General Ophthalmology as an array
+$subspecialty_arr = Subspecialty::model()->findAllByAttributes(array('short_name' => ['Glaucoma','General']));
+
 // if on the Glaucoma or General Ophthalmology load the drill though for the IOP data
-if (in_array($subspecialty->id, [7,12])) {
+if (in_array($subspecialty->id, $subspecialty_arr)) {
     $this->renderPartial('//oescape/oescape_drill_down_list');
 }
 ?>
