@@ -634,6 +634,14 @@ $this->renderPartial('../patient/crud/create_contact_form',
         $(".js-extra-practice-gp-id").val("");
         // clearing the selected gp role id if user has closed the popup.
         $(".js-extra-gp-contact-label-id").val("");
+        // enabling title and phone number on closing the popup.
+        $("#extra-gp-form #Contact_title").prop("readonly", false);
+        $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
+        // remove data from hidden field.
+        $('#gp_data_retrieved').val("");
+        $('#extra-gp-message').hide();
+        // unsetting the variable (defined in create_contact_form inside the onselect function of autocompletesearch widget - firstname and lastname field)
+        gp = undefined;
     });
 
     $('#js-add-extra-practice-btn').click(function(event){
