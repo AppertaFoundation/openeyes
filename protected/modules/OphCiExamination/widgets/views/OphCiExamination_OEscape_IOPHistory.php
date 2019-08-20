@@ -6,19 +6,19 @@
 </div>
 <script type="text/javascript">
 
-		var readings = {};
-		var graph_data = [];
+		let readings = {};
+		let graph_data = [];
 
   $(document).ready(function () {
-	var IOP_target = <?= CJavaScript::encode($this->getTargetIOP()); ?>;
-    var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
-    var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
-    var sides = ['left', 'right'];
+	let IOP_target = <?= CJavaScript::encode($this->getTargetIOP()); ?>;
+    let opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
+    let laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
+    let sides = ['left', 'right'];
 	//plotly
-    var iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
+    let iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
 
-		for (var side of sides) {
-			var layout_iop = JSON.parse(JSON.stringify(layout_plotly));
+		for (let side of sides) {
+			let layout_iop = JSON.parse(JSON.stringify(layout_plotly));
 			layout_iop['shapes'] = [];
 			layout_iop['annotations'] = [];
 			layout_iop['yaxis'] = setYAxis_IOP();
@@ -27,11 +27,11 @@
 			setMarkingEvents_plotly(layout_iop, marker_line_plotly_options, marking_annotations, opnote_marking, side, 0, 70);
 			setMarkingEvents_plotly(layout_iop, marker_line_plotly_options, marking_annotations, laser_marking, side, 0, 70);
 
-			var readings = {};
+			let readings = {};
 
 			//Get readings from date
-			for (var data_point of iop_plotly_data[side]) {
-				var timestamp = data_point['timestamp'];
+			for (let data_point of iop_plotly_data[side]) {
+				let timestamp = data_point['timestamp'];
 				if(!readings.hasOwnProperty(timestamp)) {
 					readings[timestamp] = [];
 				}
@@ -43,14 +43,14 @@
 				    });
 			}
 
-			var graph_data = [];
+			let graph_data = [];
 
 			//Format readings for graph display
-			for (var key in readings) {
-        var hasExam = readings[key].some(et => et['event_type'].toLowerCase() === 'examination');
-        var hasPhasing = readings[key].some(et => et['event_type'].toLowerCase() === 'phasing');
+			for (let key in readings) {
+        let hasExam = readings[key].some(et => et['event_type'].toLowerCase() === 'examination');
+        let hasPhasing = readings[key].some(et => et['event_type'].toLowerCase() === 'phasing');
 
-        var eventTypeString = 'No event type found';
+        let eventTypeString = 'No event type found';
 
         if(hasExam && hasPhasing) {
 					eventTypeString = 'Examination & Phasing';
@@ -72,14 +72,14 @@
       }
 
 			//Create arrays to pass to graph
-			var x = [];
-			var y = [];
-			var event_ids = [];
-			var error_array = [];
-			var error_minus = [];
-			var display_data = [];
+			let x = [];
+			let y = [];
+			let event_ids = [];
+			let error_array = [];
+			let error_minus = [];
+			let display_data = [];
 
-			var i = 0;
+			let i = 0;
 			for(key in graph_data) {
           x[i] = graph_data[key]['timestamp'];
           y[i] = graph_data[key]['average'];
@@ -99,7 +99,7 @@
           i++;
       }
 
-			var data = [{
+			let data = [{
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
 				x: x,
 				y: y,
@@ -107,7 +107,7 @@
 					color: (side == 'right') ? '#9fec6d' : '#fe6767',
 				},
 				text: x.map(function (item, index) {
-				 	var d = new Date(parseInt(item));
+				 	let d = new Date(parseInt(item));
           return OEScape.epochToDateStr(d)
 							+ '<br>' + display_data[index];
 				}),
@@ -139,19 +139,19 @@
 
 		//Click event for drillthrough data display
 		function listenForClickEvent(elementId, side){
-			var report = document.getElementById(elementId);
+			let report = document.getElementById(elementId);
 			report.on('plotly_click',function(data){
-				for(var i=0; i < data.points.length; i++){
+				for(let i=0; i < data.points.length; i++){
 					if (data.points[i].customdata){
 						$('.analytics-patient-list').show();
 						$('#js-back-to-chart').show();
 						$('#oescape-layout').hide();
 
 						$('.event_rows').hide();
-						var showlist = data.points[i].customdata;
+						let showlist = data.points[i].customdata;
 						// console.log(data.points[i]);
-						for (var j=0; j<showlist.length; j++){
-							var id = showlist[j].toString();
+						for (let j=0; j<showlist.length; j++){
+							let id = showlist[j].toString();
 							DisplayDrillThroughData(id, side);
 						}
 
@@ -160,7 +160,7 @@
 						max_visible = '';
 						max_id = '';
 						if (showlist.length>1){
-							for (var i = 0; i < iop_plotly_data.length; i++){
+							for (let i = 0; i < iop_plotly_data.length; i++){
 								if (showlist.includes(iop_plotly_data[i]["event_id"]))
 								{
 									if(iop_plotly_data[i]["eye"]==side){
@@ -171,11 +171,11 @@
 									}
 								}
 							}
-							var rows = $('.event_'+max_id+'_'+side+'.val_'+max_visible);
-							var msg = 'Peak IOP '+side.toUpperCase()+' eye'
+							let rows = $('.event_'+max_id+'_'+side+'.val_'+max_visible);
+							let msg = 'Peak IOP '+side.toUpperCase()+' eye'
 							rows.css('font-weight','bold');
 							rows.children('td').css('color','white');
-							var comment = rows.children('.event_comments:not(:contains('+msg+'))');
+							let comment = rows.children('.event_comments:not(:contains('+msg+'))');
 							if(comment.length>0){
 								if(comment[0].innerText)
 								comment.append(' - '+msg);
