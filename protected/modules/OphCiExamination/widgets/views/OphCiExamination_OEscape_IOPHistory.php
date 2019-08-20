@@ -149,7 +149,6 @@
 
 						$('.event_rows').hide();
 						let showlist = data.points[i].customdata;
-						// console.log(data.points[i]);
 						for (let j=0; j<showlist.length; j++){
 							let id = showlist[j].toString();
 							DisplayDrillThroughData(id, side);
@@ -163,7 +162,7 @@
 							for (let i = 0; i < iop_plotly_data.length; i++){
 								if (showlist.includes(iop_plotly_data[i]["event_id"]))
 								{
-									if(iop_plotly_data[i]["eye"]==side){
+									if(iop_plotly_data[i]["eye"]===side){
 										if (max_visible < iop_plotly_data[i]["raw_value"]){
 											max_visible = iop_plotly_data[i]["raw_value"];
 											max_id= iop_plotly_data[i]["event_id"];
