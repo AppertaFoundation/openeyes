@@ -163,11 +163,11 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                             }
                         }
                     } else {
-                        error_log("Not enough readings to iterate over");
+                        OELog::log("Not enough readings to iterate over");
                     }
                 }
             } else {
-                error_log("Could not find IOP examination element for event");
+                OELog::log("Could not find IOP examination element for event");
             }
         }
 
@@ -193,11 +193,11 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                             }
                         }
                     } else {
-                        error_log("Not enough readings to iterate over");
+                        OELog::log("Not enough readings to iterate over");
                     }
                 }
             } else {
-                error_log("Could not find IOP phasing element for event");
+                OELog::log("Could not find IOP phasing element for event");
             }
         }
         //must be sorted to display in the correct way on the graph
