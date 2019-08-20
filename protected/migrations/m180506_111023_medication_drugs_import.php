@@ -230,11 +230,15 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 ")->execute();
 
                 /* Add medication to their respective sets */
-                $drug_sets = Yii::app()->db->createCommand("SELECT id, `name`, subspecialty_id FROM drug_set WHERE id IN (SELECT drug_set_id FROM drug_set_item WHERE drug_id = :drug_id)")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
+                $drug_sets = Yii::app()->db->createCommand("SELECT drug_set.id, `name`, subspecialty_id, dispense_condition_id, dispense_location_id
+                                                            FROM drug_set
+                                                            JOIN drug_set_item ON drug_set.id = drug_set_item.drug_set_id
+                                                            WHERE drug_set_item.drug_id = :drug_id")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
+
                 if($drug_sets) {
                     foreach ($drug_sets as $drug_set) {
                         Yii::app()->db->createCommand("
-                    INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id)
+                    INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id, default_dispense_condition_id, default_dispense_location_id)
                         values (".$ref_medication_id." ,
                          
                          (SELECT id FROM medication_set WHERE `name` = :ref_set_name AND id IN 
@@ -242,10 +246,12 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                          ),
                          
                          NULL,
-                         ".$drug_route_id.",
-                         ".$drug_freq_id." ,
-                         '".$default_dose_unit."',
-                          ".$default_duration_id."
+                         " . $drug_route_id . ",
+                         " . $drug_freq_id . ",
+                         '" . $default_dose_unit . "',
+                          " . $default_duration_id . ",
+                          " . ($drug_set['dispense_condition_id'] ? $drug_set['dispense_condition_id'] : "NULL") . ",
+                          " . ($drug_set['dispense_location_id'] ? $drug_set['dispense_location_id'] : "NULL") . "
                           )
                 ")
                             ->bindValue(':ref_set_name', $drug_set['name'])

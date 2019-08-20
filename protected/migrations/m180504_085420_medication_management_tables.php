@@ -83,16 +83,18 @@ class m180504_085420_medication_management_tables extends OEMigration
         ), true);
 
         $this->createOETable('medication_set_item', array(
-            'id'                        => 'pk',
-            'medication_id'         => 'INT NOT NULL',
-            'medication_set_id'                => 'INT NOT NULL',
-            'default_form_id'              => 'INT NULL',
-            'default_dose'              => 'FLOAT NULL',
-            'default_route_id'             => 'INT NULL',
-            'default_frequency_id'         => 'INT NULL',
-            'default_dose_unit_term'    => 'VARCHAR(255) NULL',
-            'deleted_date'              => 'DATE NULL',
-            'default_duration_id'          => 'INT NULL'
+            'id'                            => 'pk',
+            'medication_id'                 => 'INT NOT NULL',
+            'medication_set_id'             => 'INT NOT NULL',
+            'default_form_id'               => 'INT NULL',
+            'default_dose'                  => 'FLOAT NULL',
+            'default_route_id'              => 'INT NULL',
+            'default_dispense_location_id'  => 'INT NULL',
+            'default_dispense_condition_id' => 'INT NULL',
+            'default_frequency_id'          => 'INT NULL',
+            'default_dose_unit_term'        => 'VARCHAR(255) NULL',
+            'deleted_date'                  => 'DATE NULL',
+            'default_duration_id'           => 'INT NULL'
         ), true);
 
         $this->createIndex('fk_ref_medications_idx', 'medication_set_item', 'medication_id');
@@ -108,6 +110,8 @@ class m180504_085420_medication_management_tables extends OEMigration
         $this->addForeignKey('fk_default_route', 'medication_set_item', 'default_route_id', 'medication_route', 'id', 'NO ACTION' ,'NO ACTION');
         $this->addForeignKey('fk_default_form', 'medication_set_item', 'default_form_id', 'medication_form', 'id', 'NO ACTION' ,'NO ACTION');
         $this->addForeignKey('fk_default_frequency', 'medication_set_item', 'default_frequency_id', 'medication_frequency', 'id', 'NO ACTION' ,'NO ACTION');
+        $this->addForeignKey('fk_default_dispense_location', 'medication_set_item', 'default_dispense_location_id', 'ophdrprescription_dispense_location', 'id', 'NO ACTION' ,'NO ACTION');
+        $this->addForeignKey('fk_default_dispense_condition', 'medication_set_item', 'default_dispense_condition_id', 'ophdrprescription_dispense_condition', 'id', 'NO ACTION' ,'NO ACTION');
         $this->addForeignKey('fk_duration', 'medication_set_item', 'default_duration_id', 'medication_duration', 'id');
 
         $this->createOETable('medication_dose', array(
@@ -149,6 +153,10 @@ class m180504_085420_medication_management_tables extends OEMigration
         $this->addForeignKey('fk_form', 'event_medication_use', 'form_id', 'medication_form', 'id', 'NO ACTION' ,'NO ACTION');
         $this->addForeignKey('fk_route', 'event_medication_use', 'route_id', 'medication_route', 'id', 'NO ACTION' ,'NO ACTION');
         $this->addForeignKey('fk_frequency', 'event_medication_use', 'frequency_id', 'medication_frequency', 'id', 'NO ACTION' ,'NO ACTION');
+        $this->addForeignKey('fk_dispense_location', 'event_medication_use', 'dispense_location_id', 'ophdrprescription_dispense_location', 'id', 'NO ACTION' ,'NO ACTION');
+        $this->addForeignKey('fk_dispense_condition', 'event_medication_use', 'dispense_condition_id', 'ophdrprescription_dispense_condition', 'id', 'NO ACTION' ,'NO ACTION');
+
+
         $this->addForeignKey('fk_event_1', 'event_medication_use', 'event_id', 'event', 'id', 'NO ACTION' ,'NO ACTION');
         $this->addForeignKey('fk_event_2', 'event_medication_use', 'copied_from_med_use_id', 'event', 'id', 'NO ACTION' ,'NO ACTION');
 
