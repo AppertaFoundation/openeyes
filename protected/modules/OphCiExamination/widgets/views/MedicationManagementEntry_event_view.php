@@ -36,6 +36,9 @@
         <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
     </td>
     <td><?= $entry->getStartDateDisplay() ?></td>
+		<?php if(isset($stopped) && $stopped) { ?>
+				<td><?= $entry->getEndDateDisplay() ?></td>
+		<?php } ?>
 </tr>
 <?php if($entry->taper_support): ?>
     <?php foreach ($entry->tapers as $taper): ?>
