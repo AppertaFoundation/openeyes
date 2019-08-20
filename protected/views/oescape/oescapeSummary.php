@@ -27,7 +27,7 @@ if (!empty($subspecialty)) { ?>
     if (!$summaryItems) {
         $summaryItems = OescapeSummaryItem::model()->enabled()->findAll();
     } ?>
-    <button id="js-reset-zoom" class="selected js-plot-display-label" >Reset Zoom Level</button>
+    <button id="reset-zoom" class="selected plot-display-label" >Reset Zoom Level</button>
     <?php if (count($summaryItems)) { ?>
         <?php foreach ($summaryItems as $summaryItem) {
             Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
@@ -136,7 +136,7 @@ if (!empty($subspecialty)) { ?>
 
       });
 
-      $( "#js-reset-zoom" ).trigger( "click" );
+      $( "#reset-zoom" ).trigger( "click" );
 
       $('.plotly-right, .plotly-left').on('mouseenter mouseover', function (e) {
         var chart = $(this)[0];
@@ -167,7 +167,7 @@ if (!empty($subspecialty)) { ?>
     }
   });
 
-  document.getElementById('js-reset-zoom').addEventListener('click', function () {
+  document.getElementById('reset-zoom').addEventListener('click', function () {
     var charts = $('.rangeslider-container').parents('.plotly-VA');
     //are we looking at the left eye
     if(!charts[0].style.display){
