@@ -99,7 +99,7 @@
     <?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
       <td class='route_option_cell'>
 
-          <?php if ($item->route && $options = $item->route->options /* TODO this is not going to work when we remove route.options */) {
+          <?php if ($item->route && $item->route->has_laterality && $options = $item->route->options /* TODO this is not going to work when we remove route.options */) {
               echo CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][laterality]', $item->laterality,
                   CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
           } else {
