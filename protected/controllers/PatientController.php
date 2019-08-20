@@ -2257,6 +2257,11 @@ class PatientController extends BaseController
                 $practice = $practice_contact_associate->practice;
                 $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
                 $output[] = array(
+                    'gpTitle' => $gp->contact->title,
+                    'gpFirstName' => $gp->contact->first_name,
+                    'gpLastName' => $gp->contact->last_name,
+                    'gpPhoneno' => $gp->contact->primary_phone,
+                    'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
                     'label' => $gp->correspondenceName.$role.$practiceNameAddress,
                     'value' => $gp->id,
                     'practiceId' => $practiceId
@@ -2264,6 +2269,11 @@ class PatientController extends BaseController
             }
             else {
                 $output[] = array(
+                    'gpTitle' => $gp->contact->title,
+                    'gpFirstName' => $gp->contact->first_name,
+                    'gpLastName' => $gp->contact->last_name,
+                    'gpPhoneno' => $gp->contact->primary_phone,
+                    'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
                     'label' => $gp->correspondenceName.$role,
                     'value' => $gp->id,
                     'practiceId' => ''
