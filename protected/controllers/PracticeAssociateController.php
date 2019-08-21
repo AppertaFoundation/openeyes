@@ -44,12 +44,42 @@ class PracticeAssociateController extends BaseController
                 $contact = new Contact('manage_gp');
                 $contact->attributes = $contactFormData;
 
-                list($contact, $gp) = $this->performGpSave($contact, $gp,  true);
-                $contact_practice_associate->gp_id = $gp->getPrimaryKey();
+                if(isset($_POST['gp_data_retrieved']) && !empty($_POST['gp_data_retrieved'])) {
+                    $obj = json_decode($_POST['gp_data_retrieved']);
+
+                    if( $obj->firstName == $contact->first_name && $obj->lastName == $contact->last_name && $obj->roleId == $contact->label->id ) {
+                        // we need to check for duplicate here.
+                        $query = Yii::app()->db->createCommand()
+                            ->select('cpa.id')
+                            ->from('contact_practice_associate cpa')
+                            ->where('cpa.gp_id = :gp_id and cpa.practice_id = :practice_id',
+                                array(':gp_id'=> $obj->gpId,':practice_id'=> $contact_practice_associate->practice_id))
+                            ->queryAll();
+
+                        $isDuplicate = count($query);
+
+                        if($isDuplicate === 0) {
+                            $contact_practice_associate->gp_id = $obj->gpId;
+                        } else {
+                            echo CJSON::encode(array('error' => 'This practitioner is already associated with the selected practice.'));
+
+                            Yii::app()->end();
+                        }
+                    } else {
+                        // User has selected one of the search results but modified the test in one of the fields.
+                        list($contact, $gp) = $this->performGpSave($contact, $gp,  true);
+                        $contact_practice_associate->gp_id = $gp->getPrimaryKey();
+                    }
+                } else {
+                    // This is the case when user has not selected any of the search results.
+                    list($contact, $gp) = $this->performGpSave($contact, $gp,  true);
+                    $contact_practice_associate->gp_id = $gp->getPrimaryKey();
+                }
 
                 if ($contact_practice_associate->save()) {
                     echo CJSON::encode(array(
                         'gp_id' => $contact_practice_associate->gp_id,
+                        'practice_id' => $contact_practice_associate->practice_id,
                     ));
                 }
             } else {
@@ -58,9 +88,10 @@ class PracticeAssociateController extends BaseController
         }
     }
 
-    public function actionGetGpWithPractice($gp_id){
-        $return_array = array('gp_id'=>$gp_id,'content'=>'');
-        $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp_id));
+    public function actionGetGpWithPractice($gp_id, $practice_id){
+        Yii::log('gs1'.$practice_id);
+        $return_array = array('gp_id'=>$gp_id,'practice_id'=>$practice_id,'content'=>'');
+        $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp_id,'practice_id'=>$practice_id));
         if (isset($practice_contact_associate)){
             $gp = $practice_contact_associate->gp;
             $practice = $practice_contact_associate->practice;
@@ -69,7 +100,7 @@ class PracticeAssociateController extends BaseController
 
             $return_array['content'] =  '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().$role.$practiceNameAddress.'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'"></li>';
             $return_array['label'] = $gp->getCorrespondenceName().$role.$practiceNameAddress;
-            $return_array['practice_id'] = $practice->id;
+            //$return_array['practice_id'] = $practice->id;
         }else{
             $gp = Gp::model()->findByPk($gp_id);
             $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i><input type="hidden" class="js-extra-gps" name="ExtraContact[gp_id][]" value="'.$gp_id.'"></li>';

@@ -354,22 +354,13 @@ foreach ($ethnic_list as $key=>$item){
                         <li>
                             <span class="js-name" style="text-align:justify">
                               <?php
-                                  if (($patient->gp_id)){
-                                    $gp = Gp::model()->findByPk(array('id' => $patient->gp_id));
-                                    $practice  = $gp->getAssociatePractice();
-                                    $practiceDetails = $gp->getAssociatedPractice($gp->id);
-                                    $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
-                                    $practiceNameAddress = $practice ? ($practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():''): '';
-                              ?>
-                                <?=$gp->getCorrespondenceName().$role.$practiceNameAddress?>
-                                <?php
-                                    }
-                                    else{
-                                      ?>
-                                        <?=''?>
-                                <?php
-                                    }
-                                ?>
+                                  if ($patient->gp_id && $patient->practice_id) {
+                                      $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id, 'practice_id'=>$patient->practice_id));
+                                      $role = $practice_contact_associate->gp->getGPROle()?' - '.$practice_contact_associate->gp->getGPROle():'';
+                                      $practiceNameAddress = $practice_contact_associate->practice ? ($practice_contact_associate->practice->getPracticeNames() ? ' - '.$practice_contact_associate->practice->getPracticeNames():''): '';
+                                  ?>
+                                <?php echo $practice_contact_associate->gp->getCorrespondenceName().$role.$practiceNameAddress?>
+                                <?php } ?>
                             </span>
                             <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
                         </li>
@@ -519,7 +510,7 @@ foreach ($ethnic_list as $key=>$item){
                 }
             });
             if(addGp){
-                addExtraGp('js-selected_extra_gps',AutoCompleteResponse.value);
+                addExtraGp('js-selected_extra_gps',AutoCompleteResponse.value, AutoCompleteResponse.practiceId);
             }
         }
     });
@@ -694,10 +685,10 @@ $this->renderPartial('../patient/crud/create_contact_form',
         $wrapper.find('.hidden_id').val(JsonObj.id);
     }
 
-    function addExtraGp(id, gpId){
+    function addExtraGp(id, gpId, practiceId){
         $.ajax({
             url: "<?php echo Yii::app()->controller->createUrl('practiceAssociate/getGpWithPractice'); ?>",
-            data: {gp_id : gpId},
+            data: {gp_id : gpId, practice_id : practiceId},
             type: 'GET',
             success: function (response) {
                 response = JSON.parse(response);

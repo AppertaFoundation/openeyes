@@ -1974,18 +1974,18 @@ class PatientController extends BaseController
         }
 
 
-        if (isset($patient->gp) && isset($patient->practice)){
-            $existing_cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id));
-            if (isset($existing_cpa)){
-                $existing_cpa->practice_id = $patient->practice_id;
-                $existing_cpa->save();
-            }else{
-                $new_cpa = new ContactPracticeAssociate();
-                $new_cpa->gp_id = $patient->gp_id;
-                $new_cpa->practice_id = $patient->practice_id;
-                $new_cpa->save();
-            }
-        }
+//        if (isset($patient->gp) && isset($patient->practice)){
+//            $existing_cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id));
+//            if (isset($existing_cpa)){
+//                $existing_cpa->practice_id = $patient->practice_id;
+//                $existing_cpa->save();
+//            }else{
+//                $new_cpa = new ContactPracticeAssociate();
+//                $new_cpa->gp_id = $patient->gp_id;
+//                $new_cpa->practice_id = $patient->practice_id;
+//                $new_cpa->save();
+//            }
+//        }
 
         $this->performPatientContactAssociatesSave($patient);
 
@@ -2249,35 +2249,38 @@ class PatientController extends BaseController
 
         $output = array();
         foreach($gps as $gp){
-            $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
-            $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
-            $practiceDetails = $gp->getAssociatedPractice($gp->id);
-            if (isset($practice_contact_associate->practice)){
-                $practiceId = $practiceDetails['id'];
-                $practice = $practice_contact_associate->practice;
-                $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
-                $output[] = array(
-                    'gpTitle' => $gp->contact->title,
-                    'gpFirstName' => $gp->contact->first_name,
-                    'gpLastName' => $gp->contact->last_name,
-                    'gpPhoneno' => $gp->contact->primary_phone,
-                    'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
-                    'label' => $gp->correspondenceName.$role.$practiceNameAddress,
-                    'value' => $gp->id,
-                    'practiceId' => $practiceId
-                );
-            }
-            else {
-                $output[] = array(
-                    'gpTitle' => $gp->contact->title,
-                    'gpFirstName' => $gp->contact->first_name,
-                    'gpLastName' => $gp->contact->last_name,
-                    'gpPhoneno' => $gp->contact->primary_phone,
-                    'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
-                    'label' => $gp->correspondenceName.$role,
-                    'value' => $gp->id,
-                    'practiceId' => ''
-                );
+            $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id'=>$gp->id));
+            foreach($practice_contact_associates as $practice_contact_associate) {
+                $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
+                $practiceDetails = $gp->getAssociatedPractice($gp->id);
+                //Yii::log('gs'.var_dump($practice_contact_associate->practice->id));
+                if (isset($practice_contact_associate->practice)){
+                    $practiceId = $practice_contact_associate->practice->id;
+                    $practice = $practice_contact_associate->practice;
+                    $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+                    $output[] = array(
+                        'gpTitle' => $gp->contact->title,
+                        'gpFirstName' => $gp->contact->first_name,
+                        'gpLastName' => $gp->contact->last_name,
+                        'gpPhoneno' => $gp->contact->primary_phone,
+                        'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                        'label' => $gp->correspondenceName.$role.$practiceNameAddress,
+                        'value' => $gp->id,
+                        'practiceId' => $practiceId
+                    );
+                }
+                else {
+                    $output[] = array(
+                        'gpTitle' => $gp->contact->title,
+                        'gpFirstName' => $gp->contact->first_name,
+                        'gpLastName' => $gp->contact->last_name,
+                        'gpPhoneno' => $gp->contact->primary_phone,
+                        'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                        'label' => $gp->correspondenceName.$role,
+                        'value' => $gp->id,
+                        'practiceId' => ''
+                    );
+                }
             }
         }
         echo CJSON::encode($output);
