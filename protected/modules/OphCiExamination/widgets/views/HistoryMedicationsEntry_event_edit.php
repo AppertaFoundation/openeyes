@@ -39,7 +39,7 @@ $chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_ty
 $chk_stop = isset($entry->chk_stop) ? $entry->chk_stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;
 
-$to_be_copied = !$is_new && !$entry->originallyStopped && $entry->medication->getToBeCopiedIntoMedicationManagement();
+$to_be_copied = !$entry->originallyStopped && isset($entry->medication) && $entry->medication->getToBeCopiedIntoMedicationManagement();
 
 $is_posting = Yii::app()->request->getIsPostRequest();
 
