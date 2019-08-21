@@ -22,10 +22,10 @@
 $subspecialty_arr = Subspecialty::model()->findAllByAttributes(array('short_name' => ['Glaucoma','General']));
 
 // if on the Glaucoma or General Ophthalmology load the drill though for the IOP data
-foreach($subspecialty_arr as $sub ){
-  if ($subspecialty->id === $sub->id) {
-      $this->renderPartial('//oescape/oescape_drill_down_list');
-  }
+foreach ($subspecialty_arr as $sub) {
+    if ($subspecialty->id === $sub->id) {
+        $this->renderPartial('//oescape/oescape_drill_down_list');
+    }
 }
 ?>
 
