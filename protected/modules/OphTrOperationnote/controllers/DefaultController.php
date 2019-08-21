@@ -146,12 +146,13 @@ class DefaultController extends BaseEventTypeController
                                 $transaction->rollback();
 
                                 $log = print_r($result['errors'], true);
-                                \Audit::add('event', 'create', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
+                                \Audit::add('event', 'create-failed', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
                                     'module' => 'OphDrPrescription',
                                     'episode_id' => $this->event->episode->id,
                                     'patient_id' => $this->patient->id,
                                     'model' => 'Element_OphDrPrescription_Details'
                                 ]);
+                                \OELog::log($log);
                             }
                         }
 
@@ -165,7 +166,7 @@ class DefaultController extends BaseEventTypeController
                             } else {
                                 $transaction->rollback();
                                 $log = print_r($result['errors'], true);
-                                \Audit::add('event', 'create', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
+                                \Audit::add('event', 'create-failed', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
                                     'module' => 'OphCoCorrespondence',
                                     'episode_id' => $this->event->episode->id,
                                     'patient_id' => $this->patient->id,
@@ -186,20 +187,24 @@ class DefaultController extends BaseEventTypeController
                                 $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
                                 $correspondence_creator->save();
 
-                                if ($correspondence_creator->save()) {
+                                if ($correspondence_creator->save() && !$correspondence_creator->hasErrors()) {
                                     $transaction->commit();
                                 } else {
                                     $transaction->rollback();
                                     $log = print_r($result['errors'], true);
-                                    \Audit::add('event', 'create', 'Event creation Failed <pre>' . $log . '</pre>', $log, [
+                                    \Audit::add('event', 'create-failed', 'Event creation Failed <pre>' . $log . '</pre>', $log, [
                                         'module' => 'OphCoCorrespondence',
                                         'episode_id' => $this->event->episode->id,
                                         'patient_id' => $this->patient->id,
                                         'model' => 'ElementLetter'
                                     ]);
+
+                                    \Yii::app()->user->setFlash('issue.correspondence', "Unable to create default Optom Letter. Please see audit for details.");
                                 }
                             } else {
-                                \OELog::log("No macro found: {$macro_name}, default setting (macro name) was : {$macro_name}");
+                                $msg = "Unable to create default Optom Letter because: No macro named '$macro_name' was found.";
+                                \OELog::log($msg);
+                                \Yii::app()->user->setFlash('issue.correspondence', $msg);
                             }
                         }
 
@@ -302,22 +307,36 @@ class DefaultController extends BaseEventTypeController
     {
         $drug_set_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_drug_set");
         $subspecialty_id = $this->firm->getSubspecialtyID();
+        $params = [':subspecialty_id' => $subspecialty_id, ':name' => $drug_set_name];
 
         $set = MedicationSet::model()->find([
             'condition' => 'subspecialty_id = :subspecialty_id AND name = :name',
-            'params' => [':subspecialty_id' => $subspecialty_id, ':name' => $drug_set_name],
+            'params' => $params,
             'with' => 'medicationSetRules',
             'together' => true
         ]);
 
-        $prescription_creator = new PrescriptionCreator($this->event->episode);
-        $prescription_creator->patient = $this->patient;
-        $prescription_creator->addMedicationSet($set->id);
-        $prescription_creator->save();
+        $success = false;
+
+        if ($set) {
+            $prescription_creator = new PrescriptionCreator($this->event->episode);
+            $prescription_creator->patient = $this->patient;
+            $prescription_creator->addMedicationSet($set->id);
+            $prescription_creator->save();
+
+            $success = !$prescription_creator->hasErrors();
+            $errors = $prescription_creator->getErrors();
+        } else {
+            $msg = "Unable to create default Prescription because: No drug set named '{$drug_set_name}' was found";
+            $errors[] = [$msg];
+            $errors[] = $params; // these are only going to the logs and audit, not displayed to the user
+
+            \Yii::app()->user->setFlash('issue.prescription', $msg);
+        }
 
         return [
-            'success' => !$prescription_creator->hasErrors(),
-            'errors' => $prescription_creator->getErrors()
+            'success' => $success,
+            'errors' => $errors
         ];
     }
 
@@ -325,14 +344,28 @@ class DefaultController extends BaseEventTypeController
     {
         $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $macro_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_letter");
         $macro = $correspondence_api->getDefaultMacroByEpisodeStatus($this->event->episode, $firm, Yii::app()->session['selected_site_id']);
 
-        $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
-        $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
-        $correspondence_creator->save();
+        $success = false;
+
+        if ($macro) {
+            $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
+            $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
+            $correspondence_creator->save();
+
+            $success = !$correspondence_creator->hasErrors();
+            $errors = $correspondence_creator->getErrors();
+        } else {
+            $msg = "Unable to create default GP Letter because: No macro named '{$macro_name}' was found";
+            $errors[] = [$msg];
+
+            \Yii::app()->user->setFlash('issue.correspondence', $msg);
+        }
+
         return [
-            'success' => !$correspondence_creator->hasErrors(),
-            'errors' => $correspondence_creator->getErrors(),
+            'success' => $success,
+            'errors' => $errors
         ];
     }
 
@@ -428,6 +461,20 @@ class DefaultController extends BaseEventTypeController
             $element->setDefaultOptions();
             $this->renderElement($element, 'create', $form, array(), array('ondemand' => true), false, true);
         }
+    }
+
+    /**
+     * @param $procedure_id
+     *
+     * @return OphTrOperationnote_ProcedureListOperationElement[]
+     */
+    public function getProcedureSpecificElements($procedure_id)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('procedure_id', $procedure_id);
+        $criteria->order = 'display_order asc';
+
+        return OphTrOperationnote_ProcedureListOperationElement::model()->findAll($criteria);
     }
 
     /**
@@ -615,6 +662,32 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * Retrieve AnaestheticAgent instances relevant to the current site and subspecialty. The relation flag indicates
+     * whether we are retrieve the full list of defaults.
+     *
+     * @param string $relation
+     *
+     * @return array
+     */
+    protected function getAnaestheticAgentsBySiteAndSubspecialty($relation = 'siteSubspecialtyAssignments')
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('site_id = :siteId and subspecialty_id = :subspecialtyId');
+        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
+        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
+        $criteria->order = 'name';
+
+        return AnaestheticAgent::model()
+            ->active()
+            ->with(array(
+                $relation => array(
+                    'joinType' => 'JOIN',
+                ),
+            ))
+            ->findAll($criteria);
+    }
+
+    /**
      * Return the list of possible operative devices for the given element.
      *
      * @param Element_OphTrOperationnote_Cataract $element
@@ -627,6 +700,38 @@ class DefaultController extends BaseEventTypeController
         $devices = $this->getOperativeDevicesBySiteAndSubspecialty(false, array_keys($curr_list));
 
         return CHtml::listData($devices, 'id', 'name');
+    }
+
+    /**
+     * Retrieve OperativeDevice instances relevant to the current site and subspecialty. The default flag indicates
+     * whether we are retrieve the full list of defaults.
+     *
+     * @param bool $default
+     *
+     * @return OperativeDevice[]
+     */
+    protected function getOperativeDevicesBySiteAndSubspecialty($default = false, $include_ids = null)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('subspecialty_id = :subspecialtyId and site_id = :siteId');
+        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
+        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
+
+        if ($default) {
+            $criteria->addCondition('siteSubspecialtyAssignments.default = :one');
+            $criteria->params[':one'] = 1;
+        }
+
+        $criteria->order = 'name asc';
+
+        return OperativeDevice::model()
+            ->activeOrPk($include_ids)
+            ->with(array(
+                'siteSubspecialtyAssignments' => array(
+                    'joinType' => 'JOIN',
+                ),
+            ))
+            ->findAll($criteria);
     }
 
     /**
@@ -661,6 +766,37 @@ class DefaultController extends BaseEventTypeController
         $drugs = $this->getPostOpDrugsBySiteAndSubspecialty(false, $drug_ids);
 
         return CHtml::listData($drugs, 'id', 'name');
+    }
+
+    /**
+     * Return the post op drugs for the current site and subspecialty.
+     *
+     * @param bool $default
+     *
+     * @return OphTrOperationnote_PostopDrug[]
+     */
+    protected function getPostOpDrugsBySiteAndSubspecialty($default = false, $include_ids = null)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('subspecialty_id = :subspecialtyId and site_id = :siteId');
+        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
+        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
+
+        if ($default) {
+            $criteria->addCondition('siteSubspecialtyAssignments.default = :one');
+            $criteria->params[':one'] = 1;
+        }
+
+        $criteria->order = 'name asc';
+
+        return OphTrOperationnote_PostopDrug::model()
+            ->with(array(
+                'siteSubspecialtyAssignments' => array(
+                    'joinType' => 'JOIN',
+                ),
+            ))
+            ->activeOrPk($include_ids)
+            ->findAll($criteria);
     }
 
     /**
@@ -855,20 +991,6 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * @param $procedure_id
-     *
-     * @return OphTrOperationnote_ProcedureListOperationElement[]
-     */
-    public function getProcedureSpecificElements($procedure_id)
-    {
-        $criteria = new CDbCriteria();
-        $criteria->compare('procedure_id', $procedure_id);
-        $criteria->order = 'display_order asc';
-
-        return OphTrOperationnote_ProcedureListOperationElement::model()->findAll($criteria);
-    }
-
-    /**
      * @param BaseEventTypeElement $element
      * @param string $action
      * @inheritdoc
@@ -928,32 +1050,6 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * Retrieve AnaestheticAgent instances relevant to the current site and subspecialty. The relation flag indicates
-     * whether we are retrieve the full list of defaults.
-     *
-     * @param string $relation
-     *
-     * @return array
-     */
-    protected function getAnaestheticAgentsBySiteAndSubspecialty($relation = 'siteSubspecialtyAssignments')
-    {
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('site_id = :siteId and subspecialty_id = :subspecialtyId');
-        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
-        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
-        $criteria->order = 'name';
-
-        return AnaestheticAgent::model()
-            ->active()
-            ->with(array(
-                $relation => array(
-                    'joinType' => 'JOIN',
-                ),
-            ))
-            ->findAll($criteria);
-    }
-
-    /**
      * Set the default drugs from site and subspecialty.
      *
      * @param Element_OphTrOperationnote_PostOpDrugs $element
@@ -967,37 +1063,6 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * Return the post op drugs for the current site and subspecialty.
-     *
-     * @param bool $default
-     *
-     * @return OphTrOperationnote_PostopDrug[]
-     */
-    protected function getPostOpDrugsBySiteAndSubspecialty($default = false, $include_ids = null)
-    {
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('subspecialty_id = :subspecialtyId and site_id = :siteId');
-        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
-        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
-
-        if ($default) {
-            $criteria->addCondition('siteSubspecialtyAssignments.default = :one');
-            $criteria->params[':one'] = 1;
-        }
-
-        $criteria->order = 'name asc';
-
-        return OphTrOperationnote_PostopDrug::model()
-            ->with(array(
-                'siteSubspecialtyAssignments' => array(
-                    'joinType' => 'JOIN',
-                ),
-            ))
-            ->activeOrPk($include_ids)
-            ->findAll($criteria);
-    }
-
-    /**
      * Set the default operative devices from the site and subspecialty.
      *
      * @param Element_OphTrOperationnote_Cataract $element
@@ -1008,38 +1073,6 @@ class DefaultController extends BaseEventTypeController
         if ($action == 'create') {
             $element->operative_devices = $this->getOperativeDevicesBySiteAndSubspecialty(true);
         }
-    }
-
-    /**
-     * Retrieve OperativeDevice instances relevant to the current site and subspecialty. The default flag indicates
-     * whether we are retrieve the full list of defaults.
-     *
-     * @param bool $default
-     *
-     * @return OperativeDevice[]
-     */
-    protected function getOperativeDevicesBySiteAndSubspecialty($default = false, $include_ids = null)
-    {
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('subspecialty_id = :subspecialtyId and site_id = :siteId');
-        $criteria->params[':subspecialtyId'] = $this->firm->getSubspecialtyID();
-        $criteria->params[':siteId'] = Yii::app()->session['selected_site_id'];
-
-        if ($default) {
-            $criteria->addCondition('siteSubspecialtyAssignments.default = :one');
-            $criteria->params[':one'] = 1;
-        }
-
-        $criteria->order = 'name asc';
-
-        return OperativeDevice::model()
-            ->activeOrPk($include_ids)
-            ->with(array(
-                'siteSubspecialtyAssignments' => array(
-                    'joinType' => 'JOIN',
-                ),
-            ))
-            ->findAll($criteria);
     }
 
     /**
@@ -1340,5 +1373,22 @@ class DefaultController extends BaseEventTypeController
     {
         parent::afterUpdateElements($event);
         $this->persistPcrRisk();
+    }
+
+    /**
+     * @param $proc_id
+     * @return OphTrOperationnote_Attribute[]
+     *
+     * Returns attributes that belong
+     * to the given procedure
+     */
+
+    protected function getAttributesForProcedure($proc_id)
+    {
+        $crit = new CDbCriteria();
+        $crit->compare('proc_id', $proc_id);
+        $crit->order = "display_order";
+
+        return OphTrOperationnote_Attribute::model()->findAll($crit);
     }
 }
