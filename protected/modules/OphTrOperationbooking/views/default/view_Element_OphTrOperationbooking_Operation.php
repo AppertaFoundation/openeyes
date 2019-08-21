@@ -441,12 +441,32 @@
     <?php } ?>
 <?php } ?>
 
+<script>
+    $('#js-display-whiteboard').click(event => {
+        <?php
+            $eye = Eye::model()->findByPk($element->eye_id);
+            // As a string so as to be injected into the JS below
+            $unsupported = $eye->name === 'Both' ? 'true' : 'false';
+        ?>
+        if (<?= $unsupported ?>) {
+            event.preventDefault();
+            // Dialog used here instead of Dialog.Alert as the PlansProblemsWidget
+            // has a documentwide eventlistener for clicks on oe-popup buttons which
+            // are used by Dialog.Alert.
+            new OpenEyes.UI.Dialog({
+                title: "Alert",
+                content: "Theatre whiteboard does not currently support bilateral procedures."
+            }).open();
+        }
+    });
+</script>
+
 <?php
 $this->event_actions[] = EventAction::link(
     'Display Whiteboard',
     Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/whiteboard/view/' . $element->event_id),
     null,
-    array('class' => 'small button', 'target' => '_blank')
+    array('class' => 'small button', 'target' => '_blank', 'id' => 'js-display-whiteboard')
 );
 if ($element->isEditable()) {
     $td_disabled = $this->module->isTheatreDiaryDisabled();
