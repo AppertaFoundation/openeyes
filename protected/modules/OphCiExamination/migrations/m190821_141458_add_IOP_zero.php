@@ -11,15 +11,4 @@ class m190821_141458_add_IOP_zero extends CDbMigration
     {
         $this->delete('ophciexamination_intraocularpressure_reading', "id = 1");
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }
