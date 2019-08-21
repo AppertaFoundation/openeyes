@@ -45,11 +45,11 @@ if (!empty($episode)) {
           <div class="element-data full-width">
             <div class="tile-data-overflow">
               <?php
-              $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+                $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
               // Get the latest summary from the array although the method seems
               // to currently only return the latest summary.
-              $summary = $exam_api->getManagementSummaries($this->patient)[0];
-              ?>
+                $summary = $exam_api->getManagementSummaries($this->patient)[0];
+                ?>
               <strong>
               <?= $summary->service ?> <?= implode(" ", $summary->date) ?> (<?= $summary->user ?> <span
                 class="js-has-tooltip fa oe-i info small"
@@ -60,7 +60,7 @@ if (!empty($episode)) {
         </section>
             <?php Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js", null, -10); ?>
 
-        <?php } ?>
+      <?php } ?>
     <section class="element tile">
       <header class="element-header">
         <h3 class="element-title">Principal diagnosis:</h3>
@@ -98,7 +98,7 @@ if (!empty($episode)) {
     <?php if (count($summaryItems)) { ?>
         <?php foreach ($summaryItems
 
-                       as $summaryItem) {
+ as $summaryItem) {
         Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
         $widget = $this->createWidget($summaryItem->getClassName(), array(
             'episode' => $episode,
@@ -117,7 +117,7 @@ if (!empty($episode)) {
           <h3 id="<?= $summaryItem->getClassName(); ?>" class="element-title">
               <?= $summaryItem->name; ?>
               <?php if ($widget->collapsible) { ?>
-                <?php } ?>
+              <?php } ?>
           </h3>
         </header>
           <?php if ($widget->collapsible) : ?>
@@ -130,7 +130,7 @@ if (!empty($episode)) {
                   </div>
                 </div>
             </div>
-            <?php endif; ?>
+          <?php endif; ?>
         <div class="full-width summary-content">
             <?php $widget->run(); ?>
         </div>

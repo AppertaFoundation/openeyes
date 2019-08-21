@@ -28,14 +28,14 @@
     </div>
     <div class="cols-half">
       <div class="data-label">Previous Management</div>
-      <?php
-      $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        <?php
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
       // Get the latest summary from the array although the method seems
       // to currently only return the latest summary.
-      $summary = $exam_api->getManagementSummaries($this->patient)[0];
-      ?>
+        $summary = $exam_api->getManagementSummaries($this->patient)[0];
+        ?>
       <strong>
-      <?= $summary->service ?> <?= implode(" ", $summary->date) ?> (<?= $summary->user ?> <span
+        <?= $summary->service ?> <?= implode(" ", $summary->date) ?> (<?= $summary->user ?> <span
         class="js-has-tooltip fa oe-i info small"
         data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> <?= $summary->comments ?>
       </strong>
