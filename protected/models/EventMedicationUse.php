@@ -341,7 +341,9 @@ class EventMedicationUse extends BaseElement
         $res = array();
         foreach (array('dose', 'dose_unit_term', 'medicationLaterality', 'route', 'frequency') as $k) {
             if ($this->$k) {
-                $res[] = $this->$k;
+            		if($k !== "dose_unit_term" || $this->dose) {
+									$res[] = $this->$k;
+								}
             }
         }
         return implode(' ', $res);

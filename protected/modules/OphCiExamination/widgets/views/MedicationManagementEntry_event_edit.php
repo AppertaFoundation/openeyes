@@ -107,7 +107,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                             <?php else: ?>
                             <div class="textual-display">
 							<?php endif; ?>
-                                <span class="js-textual-display-dose"><?= $entry->dose.' '.$entry->dose_unit_term; ?></span>&nbsp;
+                                <span class="js-textual-display-dose"><?= isset($entry->dose) ? $entry->dose . ' ' .$entry->dose_unit_term : ''; ?></span>&nbsp;
                                 <span class="js-textual-display-frequency"><?= $entry->frequency; ?></span>&nbsp;
                                 <span class="js-textual-display-route-laterality"><?= ($entry->laterality ? $entry->medicationLaterality->name : ''); ?> <?= (is_null($entry->route_id) ? "" : $entry->route); ?></span>
                             <?php if($locked == 1): ?>

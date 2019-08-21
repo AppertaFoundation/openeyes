@@ -286,7 +286,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       if($end_date_ctrl.length > 0) {
           $end_date_ctrl[0].addEventListener('pickmeup-change', function(e){controls_onchange(e);});
       }
-	
+
       if($start_date_ctrl.length > 0) {
           $start_date_ctrl[0].addEventListener('pickmeup-change', function(e){controls_onchange(e);});
       }
@@ -561,7 +561,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     HistoryMedicationsController.prototype.updateTextualDisplay = function ($row) {
-        $row.find(".js-textual-display-dose").text($row.find(".js-dose").val() + " " + $row.find(".js-dose-unit-term").text());
+    		let displayDoseText = "";
+    		if($row.find(".js-dose").val() !== '') {
+					displayDoseText = $row.find(".js-dose").val() + " " + $row.find(".js-dose-unit-term").text()
+				}
+        $row.find(".js-textual-display-dose").text(displayDoseText);
         $row.find(".js-textual-display-frequency").text($row.find(".js-frequency option:selected").text());
         var route_lat = "";
         var $lat_ctrl = $row.find(".admin-route-options");
