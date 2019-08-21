@@ -44,22 +44,20 @@ if (!empty($episode)) {
           </header>
           <div class="element-data full-width">
             <div class="tile-data-overflow">
-              <div class="data-value">
-                <div class="inline-previous-element"
-                     data-element-type-id="<?= ElementType::model()->findByAttributes(array('class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'))->id ?>"
-                     data-no-results-text="No previous management recorded"
-                     data-limit="1"
-                     data-template-id="previous-management-template">Loading previous management information ...
-                </div>
-              </div>
+              <?php
+              $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+              // Get the latest summary from the array although the method seems
+              // to currently only return the latest summary.
+              $summary = $exam_api->getManagementSummaries($this->patient)[0];
+              ?>
+              <strong>
+              <?= $summary->service ?> <?= implode(" ", $summary->date) ?> (<?= $summary->user ?> <span
+                class="js-has-tooltip fa oe-i info small"
+                data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> <?= $summary->comments ?>
+              </strong>
             </div>
           </div>
         </section>
-        <script type="text/html" id="previous-management-template">
-          <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span
-                class="js-has-tooltip fa oe-i info small"
-                data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
-        </script>
             <?php Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js", null, -10); ?>
 
         <?php } ?>
