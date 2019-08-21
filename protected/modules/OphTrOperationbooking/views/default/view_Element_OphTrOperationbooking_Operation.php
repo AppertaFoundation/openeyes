@@ -441,25 +441,20 @@
     <?php } ?>
 <?php } ?>
 
+<?php if ($element->eye_id == \EYE::BOTH) : ?>
 <script>
     $('#js-display-whiteboard').click(event => {
-        <?php
-            $eye = Eye::model()->findByPk($element->eye_id);
-            // As a string so as to be injected into the JS below
-            $unsupported = $eye->name === 'Both' ? 'true' : 'false';
-        ?>
-        if (<?= $unsupported ?>) {
-            event.preventDefault();
-            // Dialog used here instead of Dialog.Alert as the PlansProblemsWidget
-            // has a documentwide eventlistener for clicks on oe-popup buttons which
-            // are used by Dialog.Alert.
-            new OpenEyes.UI.Dialog({
-                title: "Alert",
-                content: "Theatre whiteboard does not currently support bilateral procedures."
-            }).open();
-        }
+        event.preventDefault();
+        // Dialog used here instead of Dialog.Alert as the PlansProblemsWidget
+        // has a documentwide eventlistener for clicks on oe-popup buttons which
+        // are used by Dialog.Alert.
+        new OpenEyes.UI.Dialog({
+            title: "Alert",
+            content: "Theatre whiteboard does not currently support bilateral procedures."
+        }).open();
     });
 </script>
+<?php endif; ?>
 
 <?php
 $this->event_actions[] = EventAction::link(
