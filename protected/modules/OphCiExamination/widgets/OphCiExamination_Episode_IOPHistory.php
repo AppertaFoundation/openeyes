@@ -154,13 +154,11 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
                     if (count($readings) > 0) {
                         foreach ($readings as $reading) {
-                            if ($reading) {
                                 $iop_data_list[$side][] = array(
                                     'id' => $exam_event->id,
                                     'event_type' => $event_type_name,
                                     'timestamp' => $timestamp,
                                     'reading' => $reading);
-                            }
                         }
                     } else {
                         OELog::log("Not enough readings to iterate over");
@@ -283,17 +281,19 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         foreach ($iop_vals as $reading) {
                 $side = strtolower($reading->eye);
 
-                $readings_array[] = array(
-                        'event_id' => $iop_element->event_id,
-                        'event_name' => $event_name,
-                        'event_date' => $iop_element->event->event_date,
-                        'eye' => $side,
-                        'instrument_name' => $reading->instrument->name,
-                        'dilated' => 'N/A',
-                        'reading_time' => date('G:i', strtotime($reading->reading_time)),
-                        'raw_value' => $reading->reading->value,
-                        'comments' => $iop_element->{$side . '_comments'}
-                );
+                if($reading->instrument->name != 'Palpation') {
+									$readings_array[] = array(
+										'event_id' => $iop_element->event_id,
+										'event_name' => $event_name,
+										'event_date' => $iop_element->event->event_date,
+										'eye' => $side,
+										'instrument_name' => $reading->instrument->name,
+										'dilated' => 'N/A',
+										'reading_time' => date('G:i', strtotime($reading->reading_time)),
+										'raw_value' => $reading->reading->value,
+										'comments' => $iop_element->{$side . '_comments'}
+									);
+								}
         }
 
 
