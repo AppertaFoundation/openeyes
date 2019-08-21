@@ -4,7 +4,6 @@
      * @var int $page_number
      * @var string $form_css_class
      */
-    const MAX_FPTEN_LINES = 21;
 
     $current_item_copy = 0;
     $current_taper_copy = 0;
@@ -37,8 +36,8 @@
 
                         // Work out how many lines are being used for this prescription item. If it exceeds the maximum lines - currently used lines, separate it onto its own script.
                         // If the lines used is greater than the maximum, split the printout between multiple pages.
-                        if ($item->fpTenLinesUsed() + 1 > MAX_FPTEN_LINES - $prescription_lines_used && !$this->isSplitPrinting()) {
-                            if ($item->fpTenLinesUsed() + 1 > MAX_FPTEN_LINES) {
+                        if ($item->fpTenLinesUsed() + 1 > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used && !$this->isSplitPrinting()) {
+                            if ($item->fpTenLinesUsed() + 1 > PrescriptionFormPrinter::MAX_FPTEN_LINES) {
                                 // Single item will not fit on a single script.
                                 $this->enableSplitPrint();
                             }
@@ -58,7 +57,7 @@
                 <div class="fpten-prescription-item fpten-form-row">
                         <?php
                         foreach (array('drug', 'dose', 'frequency') as $attr) {
-                            if ($item->getAttrLength("item_$attr") > MAX_FPTEN_LINES - $prescription_lines_used) {
+                            if ($item->getAttrLength("item_$attr") > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used) {
                                 if ($side === 'right' && !$this->getCurrentItemAttr()) {
                                     $this->addPages();
                                     $this->current_item_index = $j;
@@ -85,7 +84,7 @@
                         for ($index = $this->current_taper_index; $index < $total_tapers; $index++) {
                             $taper = $item->tapers[$index];
                             foreach (array('label', 'dose', 'frequency') as $attr) {
-                                if ($item->getAttrLength("taper{$index}_$attr") > MAX_FPTEN_LINES - $prescription_lines_used) {
+                                if ($item->getAttrLength("taper{$index}_$attr") > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used) {
                                     if ($side === 'right' && !$this->getCurrentItemAttr()) {
                                         $this->addPages();
                                         $this->current_item_index = $j;
@@ -134,11 +133,11 @@
                 }
                 ?>
                     <div class="fpten-prescription-list-filler fpten-form-row">
-                        <?php for ($line = 0; $line < MAX_FPTEN_LINES - $prescription_lines_used; $line++) {
+                        <?php for ($line = 0; $line < PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used; $line++) {
                             if ($line !== 0) {
                                 echo '<br/>';
                             }
-                            echo ($side === 'left') ? LHS_LINE_FILLER_TEXT : RHS_LINE_FILLER_TEXT;
+                            echo ($side === 'left') ? PrescriptionFormPrinter::LHS_LINE_FILLER_TEXT : PrescriptionFormPrinter::RHS_LINE_FILLER_TEXT;
                         }
                         if ($split_print_end && $side === 'left' && !$this->isSplitPrinting()) {
                             $this->setCurrentAttrStr($current_attr_copy);

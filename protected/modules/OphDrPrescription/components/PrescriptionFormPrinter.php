@@ -20,8 +20,6 @@
      * @property $split_print_end
      * @property $total_items
      */
-    const LHS_LINE_FILLER_TEXT = 'x';
-    const RHS_LINE_FILLER_TEXT = 'GP COPY';
 
 class PrescriptionFormPrinter extends CWidget
 {
@@ -40,6 +38,10 @@ class PrescriptionFormPrinter extends CWidget
     private $default_cost_code;
     private $print_mode;
     private $page_count = 1;
+
+    const MAX_FPTEN_LINES = 21;
+    const LHS_LINE_FILLER_TEXT = 'x';
+    const RHS_LINE_FILLER_TEXT = 'GP COPY';
 
     public function init()
     {
