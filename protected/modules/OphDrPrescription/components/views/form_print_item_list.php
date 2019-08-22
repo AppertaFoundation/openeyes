@@ -56,7 +56,7 @@
                         ?>
                 <div class="fpten-prescription-item fpten-form-row">
                         <?php
-                        foreach (array('drug', 'dose', 'frequency', 'comment') as $attr) {
+                        foreach (array('drug', 'dose', 'frequency') as $attr) {
                             if ($item->getAttrLength("item_$attr") > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used) {
                                 if ($side === 'right' && !$this->getCurrentItemAttr()) {
                                     $this->addPages();
@@ -75,11 +75,6 @@
                                         break;
                                     case 'frequency':
                                         echo $item->fpTenFrequency();
-                                        break;
-                                    case 'comment':
-                                        if ($item->comments) {
-                                            echo "<br/>Comment: $item->comments";
-                                        }
                                         break;
                                 }
                                 $this->setCurrentAttr();
@@ -117,6 +112,24 @@
                                 }
                             }
                         }
+                        if (!$end_of_page) {
+                            if ($item->getAttrLength('item_comment') > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used) {
+                                if ($side === 'right' && !$this->getCurrentItemAttr()) {
+                                    $this->addPages();
+                                    $this->current_item_index = $j;
+                                    $this->setCurrentAttr('comment');
+                                }
+                                $end_of_page = true;
+                            }
+                            if (!$this->getCurrentItemAttr() || $this->getCurrentItemAttr() === 'item_comment') {
+                                if ($item->comments) {
+                                    echo "<br/>Comment: $item->comments";
+                                }
+                                $this->setCurrentAttr();
+                                $prescription_lines_used += $item->getAttrLength('item_comment');
+                            }
+                        }
+
                         $prescription_lines_used++; // Add 1 line for the horizontal rule.
                         ?>
                         </div>
