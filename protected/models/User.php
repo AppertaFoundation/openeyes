@@ -611,10 +611,40 @@ class User extends BaseActiveRecordVersioned
 
         foreach ($added_roles as $role) {
             Yii::app()->authManager->assign($role, $this->id);
+            if ($role == 'admin'){
+                $trials = Trial::model()->findAll();
+                foreach ($trials as $trial) {
+                    $newPermission = new UserTrialAssignment();
+                    $newPermission->user_id = $this->id;
+                    $newPermission->trial_id = $trial->id;
+                    $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
+                    $criteria = new CDbCriteria();
+                    $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id';
+                    $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>$newPermission->trial_permission_id );
+                    if (UserTrialAssignment::model()->exists($criteria) == false){
+                        if (!$newPermission->save()) {
+                            throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
+                                . print_r($newPermission->getErrors(), true));
+                        }
+                    }
+                }
+            }
         }
 
         foreach ($removed_roles as $role) {
             Yii::app()->authManager->revoke($role, $this->id);
+            if ($role == 'admin'){
+                $trials = Trial::model()->findAll();
+                foreach ($trials as $trial) {
+                    $criteria = new CDbCriteria();
+                    $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id';
+                    $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>TrialPermission::model()->find('code = ?', array('MANAGE'))->id );
+                        if (!UserTrialAssignment::model()->deleteAll($criteria)) {
+                            throw new CHttpException(500, 'The user permissions for this trial could not be removed: '
+                                . print_r(UserTrialAssignment::model()->getErrors(), true));
+                        }
+                }
+            }
         }
     }
 
