@@ -147,9 +147,17 @@ class CsvController extends BaseController
 						$transaction->rollback();
 						$import->import_status_id = 2;
 						$import->message = "Import failed: ";
-						foreach ($errors as $error) {
+
+						$flattened_errors = array();
+						array_walk_recursive($errors, function($item) use (&$flattened_errors)  { $flattened_errors[] = $item; });
+
+						//error_log(var_export($flattened_errors, true));
+
+						foreach ($flattened_errors as $error) {
+							error_log("Should not be an array: " . var_export($error, true));
 							$import->message .= "\n" . $error;
 						}
+
 					}else {
 						$transaction->commit();
 						$import->import_status_id = 8;
@@ -265,11 +273,6 @@ class CsvController extends BaseController
 
         return $errors;
     }
-
-    private function findOrCreateReferringPractitioner($practitioner, $import)
-		{
-
-		}
 
     private function createNewPatient($patient, $import)
     {
@@ -517,8 +520,8 @@ class CsvController extends BaseController
             }
         }
 
-        //diagnoses
-        if(!empty($patient['LE_diagnosis']) || !empty($patient['RE_diagnosis'])){
+				if(!empty($patient['diagnosis'])) {
+//        if(!empty($patient['LE_diagnosis']) || !empty($patient['RE_diagnosis'])){
             $context = Firm::model()->findByAttributes(array(
                 'name' => !empty($patient['context']) ? $patient['context'] :  'Medical Retinal firm'
             ));
@@ -551,42 +554,39 @@ class CsvController extends BaseController
                 array_unshift($errors, $element->getErrors());
             }
 
-            if(!empty($patient['LE_diagnosis'])){
-                $disorder = Disorder::model()->findByAttributes(array(
-                    'term' => $patient['LE_diagnosis']
-                ));
-                if($disorder === null){
-                    $errors[] = 'Could not find left eye diagnosis '.$patient['LE_diagnosis'];
-                    return $errors;
-                }
-                $diagnosis = new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis();
-                $diagnosis->element_diagnoses_id = $element->id;
-                $diagnosis->disorder_id = $disorder->id;
-                $diagnosis->eye_id = Eye::LEFT;
-                if(!$diagnosis->save()){
-                    $errors[] = 'Could not save left eye diagnosis';
-                    array_unshift($errors, $diagnosis->getErrors());
-                    return $errors;
-                }
-            }
-            if(!empty($patient['RE_diagnosis'])){
-                $disorder = Disorder::model()->findByAttributes(array(
-                    'term' => $patient['RE_diagnosis']
-                ));
-                if($disorder === null){
-                    $errors[] = 'Could not find right eye diagnosis '.$patient['RE_diagnosis'];
-                    return $errors;
-                }
-                $diagnosis = new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis();
-                $diagnosis->element_diagnoses_id = $element->id;
-                $diagnosis->disorder_id = $disorder->id;
-                $diagnosis->eye_id = Eye::RIGHT;
-                if(!$diagnosis->save()){
-                    $errors[] = 'Could not save right eye diagnosis';
-                    array_unshift($errors, $diagnosis->getErrors());
-                    return $errors;
-                }
-            }
+            //Warning: This will accept any value that is not 'Y' as false
+					$left = $patient['diagnosis_side_l'] == 'Y';
+					$right = $patient['diagnosis_side_r'] == 'Y';
+
+					$eye_id = ($left * 2 + $right * 1);//This is terrible. Fix it.
+
+					//Abusing soundex to strip commas and quotes and to more fuzzily match a diagnosis
+					$disorder_info = Yii::app()->db->createCommand('select id from disorder WHERE SOUNDEX(term) = SOUNDEX(\'' . $patient['diagnosis'] . '\')')->queryAll();
+					error_log("Disorder info: " . var_export($disorder_info, true));
+					$disorder = Disorder::model()->findByPk($disorder_info[0]['id']);
+
+					if($disorder == null) {
+						$errors[] = "Could not find disorder matching name: " . $patient['diagnosis'];
+						return $errors;
+					}
+
+					$diagnosis = new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis();
+					$diagnosis->element_diagnoses_id = $element->id;
+					$diagnosis->disorder_id = $disorder->id;
+					$diagnosis->eye_id = $eye_id;
+					$diagnosis->date = $patient['diagnosis_date'];
+					$diagnosis->principal = $patient['diagnosis_principal'];
+
+					if($diagnosis->eye_id == 0) {
+						$errors[] = "Cannot save diagnosis that does not affect an eye";
+						return $errors;
+					}
+
+					if(!$diagnosis->save()){
+							$errors[] = 'Could not save diagnosis';
+							array_unshift($errors, $diagnosis->getErrors());
+							return $errors;
+					}
         }
 
         $first_name = $contact->first_name;
@@ -594,7 +594,6 @@ class CsvController extends BaseController
         $dob = $new_patient->dob;
 
         $patient_duplicates = Patient::findDuplicates($last_name, $first_name, $dob, null);
-				$CERA_duplicates = Patient::findDuplicatesByIdentifier('hos_num', $patient['CERA_ID']);
 
         if(count($patient_duplicates) > 0) {
 					$errors[] = "Patient duplicate found for patient: " . $first_name . " " . $last_name;
@@ -602,10 +601,6 @@ class CsvController extends BaseController
 
 				if(empty($errors)) {
 					$import->message = "Import successful for patient: " . $first_name . " " . $last_name;
-					//error_log("Import message pls");
-				}else {
-					//error_log("Error message pls");
-					//error_log(var_export($errors, true));
 				}
 
         return $errors;
