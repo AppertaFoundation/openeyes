@@ -185,6 +185,11 @@ $element_errors = $element->getErrors();
 <script type="text/javascript">
 
     $(document).ready(function() {
+
+        $('#<?= $model_name ?>_element').closest('section').on('element_removed', function() {
+            $('.js-change-event-date').removeClass('disabled');
+        });
+
         window.MMController =new OpenEyes.OphCiExamination.HistoryMedicationsController({
             element: $('#<?=$model_name?>_element'),
             modelName: '<?=$model_name?>',
@@ -243,6 +248,12 @@ $element_errors = $element->getErrors();
             booleanSearchFilterURLparam: 'include_branded'
         });
 
-
+        let $changeEventDate = $('.js-change-event-date');
+        $changeEventDate.addClass('disabled');
+        if($changeEventDate.is(":hidden")) {
+            $('.js-event-date-input').hide();
+            $changeEventDate.show();
+            $('.js-event-date').show();
+				}
     });
 </script>
