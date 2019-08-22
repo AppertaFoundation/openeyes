@@ -85,7 +85,6 @@ body {
     padding-top: 3mm;
     height: 7mm;
     line-height: 7mm;
-    margin-left: 32mm;
 }
 
 /*DOB box appears directly below the Age box.*/
@@ -101,15 +100,10 @@ body {
     height: 15mm;
     padding-top: 3mm;
     line-height: 15mm;
-    margin-left: 32mm;
 }
 
-.right #wpten-age, .right #wpten-dob {
+.right #wpten-age, .right #wpten-dob, .right #fpten-age, .right #fpten-dob {
     margin-left: 25mm; !important;
-}
-
-.right #fpten-age, .right #fpten-dob {
-    margin-left: 27mm; !important;
 }
 
 /*Patient details box appears at the top right corner beside age and DOB.*/
@@ -188,7 +182,6 @@ body {
 
 /*Appears beneath the prescriber.*/
 #fpten-prescription-list, #wpten-prescription-list {
-    padding-left: 2mm;
     padding-top: 1mm;
     height: 76mm;
     width: 50mm;
@@ -196,13 +189,13 @@ body {
     overflow: hidden;
 }
 
-.right #fpten-prescription-list, .right #wpten-prescription-list {
-    margin-left: 25mm; !important;
-}
-
 #fpten-prescription-list {
     height: 78mm;
     width: 57mm;
+}
+
+.right #fpten-prescription-list, .right #wpten-prescription-list {
+    margin-left: 25mm; !important;
 }
 
 .fpten-prescription-item {
