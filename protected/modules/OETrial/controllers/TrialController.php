@@ -255,6 +255,7 @@ class TrialController extends BaseModuleController
 
         $permissionDataProvider = new CActiveDataProvider('UserTrialAssignment', array(
             'criteria' => array(
+//                Showing only those users who are either trial owners, principal investigators or study coordinators - CERA-523 - other admins with no relation to the trial are not shown, as requested by CERA
                 'condition' => 'trial_id = :trialId AND (role IS NOT NULL OR is_principal_investigator != 0 OR is_study_coordinator != 0 )' ,
                 'params' => array(
                     ':trialId' => $this->model->id,
