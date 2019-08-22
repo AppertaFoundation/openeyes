@@ -286,7 +286,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       if($end_date_ctrl.length > 0) {
           $end_date_ctrl[0].addEventListener('pickmeup-change', function(e){controls_onchange(e);});
       }
-	
+
       if($start_date_ctrl.length > 0) {
           $start_date_ctrl[0].addEventListener('pickmeup-change', function(e){controls_onchange(e);});
       }
@@ -671,10 +671,35 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return $row;
     };
 
-    HistoryMedicationsController.prototype.bindEntries = function($row1, $row2)
-    {
-        $row1.data("bound_entry", $row2);
-    };
+    HistoryMedicationsController.prototype.getRandomBindedKey = function() {
+			let uniqueKeyFound = false;
+			let randomKey;
+			while(!uniqueKeyFound) {
+				randomKey = generateId(10);
+				uniqueKeyFound = true;
+				$.each($(window).find('.js-binded-key'), function(index, $bindedKey){
+					if(randomKey === $bindedKey.val()){
+						uniqueKeyFound = false;
+					}
+				});
+			}
+
+			return randomKey;
+		};
+
+	  HistoryMedicationsController.prototype.bindEntries = function ($row1, $row2, generateRandomKey) {
+	  	if (generateRandomKey === undefined) {
+	  		generateRandomKey = true;
+	  	}
+
+	  	if (generateRandomKey) {
+	  		let randomBindedKey = this.getRandomBindedKey();
+
+	  		$row1.find('.js-binded-key').val(randomBindedKey);
+	  		$row2.find('.js-binded-key').val(randomBindedKey);
+	  	}
+	  	$row1.data("bound_entry", $row2);
+	  };
 
     HistoryMedicationsController.prototype.updateBoundEntry = function ($row, callback)
     {
