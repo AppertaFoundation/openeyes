@@ -100,15 +100,10 @@ class CsvController extends BaseController
 			$import_log->startdatetime = date('Y-m-d H:i:s');
 			$import_log->status = "Failure";
 			if(!$import_log->save()) {
-				foreach ($import_log->errors as $error) {
-					//error_log(var_export($error, true));
-				}
-				error_log("WARNING! FAILED TO SAVE IMPORT LOG!");
+				\OELog::log("WARNING! FAILED TO SAVE IMPORT LOG!");
 			}
 
     	$csv_file_path = self::$file_path . $csv . ".csv";
-
-    	//error_log("csv identifier is: " . $csv);
 
 			$table = array();
 			$headers = array();
@@ -151,8 +146,6 @@ class CsvController extends BaseController
 						$flattened_errors = array();
 						array_walk_recursive($errors, function($item) use (&$flattened_errors)  { $flattened_errors[] = $item; });
 
-						//error_log(var_export($flattened_errors, true));
-
 						foreach ($flattened_errors as $error) {
 							error_log("Should not be an array: " . var_export($error, true));
 							$import->message .= "\n" . $error;
@@ -161,21 +154,15 @@ class CsvController extends BaseController
 					}else {
 						$transaction->commit();
 						$import->import_status_id = 8;
-						//$import->message = "Import successful";
 					}
 
-					//error_log(var_export($errors, true));
 
 					if(!$import->save()) {
-						foreach ($import->errors as $error) {
-							//error_log(var_export($error, true));
-						}
-						error_log("WARNING! FAILED TO SAVE IMPORT STATUS!");
+						\OELog::log("WARNING! FAILED TO SAVE IMPORT STATUS!");
 					}
 			}
 
 			$summary_table = array();
-			//$summary_table[] = array('message' => 'Message', 'status' => 'Status');
 
 			$import_log->status = "Success";
 
@@ -190,15 +177,11 @@ class CsvController extends BaseController
 				$summary['Status'] = $status;
 				$summary['Details'] = $summary_import->message;
 
-				//error_log(var_export($summary, true));
 				$summary_table[] = $summary;
 			}
 
 			if(!$import_log->save()) {
-				foreach ($import_log->errors as $error) {
-					//error_log(var_export($error, true));
-				}
-				//error_log("WARNING! FAILED TO SAVE IMPORT LOG!");
+				\OELog::log("WARNING! FAILED TO SAVE IMPORT LOG!");
 			}
 
 			$this->render(
@@ -209,22 +192,6 @@ class CsvController extends BaseController
 					'table' => $summary_table,
 					)
 			);
-//			if (empty($errors)){
-//					$transaction->commit();
-//					error_log("Transaction committed");
-//					$this->redirect(Yii::app()->createURL(self::$contexts[$context]['successAction']));
-//			} else {
-//					$transaction->rollback();
-//					array_unshift($errors, self::$contexts[$context]['errorMsg'].$row_num);
-//					error_log("Transaction rolled back");
-//					$this->render(
-//							'upload',
-//							array(
-//									'errors' => $errors,
-//									'context' => $context,
-//							)
-//					);
-//        }
     }
 
     private function createNewTrial($trial, $import)
@@ -277,8 +244,6 @@ class CsvController extends BaseController
     private function createNewPatient($patient, $import)
     {
         $errors = array();
-
-        //error_log("Importing patient: " . var_export($patient, true));
 
 			if(!empty($patient['CERA_ID'])){
             $new_patient = Patient::model()->findByAttributes(array('hos_num' => $patient['CERA_ID']));
@@ -521,7 +486,6 @@ class CsvController extends BaseController
         }
 
 				if(!empty($patient['diagnosis'])) {
-//        if(!empty($patient['LE_diagnosis']) || !empty($patient['RE_diagnosis'])){
             $context = Firm::model()->findByAttributes(array(
                 'name' => !empty($patient['context']) ? $patient['context'] :  'Medical Retinal firm'
             ));
