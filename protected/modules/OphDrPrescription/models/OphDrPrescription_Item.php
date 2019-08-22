@@ -236,12 +236,14 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         $this->fpten_line_usage['item_drug'] = (int)ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS);
         $this->fpten_line_usage['item_dose'] = (int)ceil(strlen($dose) / MAX_FPTEN_LINE_CHARS);
         $this->fpten_line_usage['item_frequency'] = (int)ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS);
+        $this->fpten_line_usage['item_comment'] = $this->comments ? (int)ceil(strlen("Comment: $this->comments") / MAX_FPTEN_LINE_CHARS) : 0;
 
         // Work out how many print lines will be used for this prescription item. This will also include lines used by tapers.
         // We get the ceiling value because any decimal value indicates one extra line in use.
         $item_lines_used = (int)(ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS)
             + ceil(strlen($dose) / MAX_FPTEN_LINE_CHARS)
-            + ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS));
+            + ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS)
+            + ($this->comments ? ceil(strlen("Comment: $this->comments") / MAX_FPTEN_LINE_CHARS) : 0));
 
         foreach ($this->tapers as $index => $taper) {
             $taper_dose = 'Dose: ' . (is_numeric($taper->dose) ? ($taper->dose . ' ' . $this->drug->dose_unit) : $taper->dose) . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);

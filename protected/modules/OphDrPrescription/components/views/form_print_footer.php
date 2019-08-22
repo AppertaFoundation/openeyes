@@ -25,7 +25,7 @@
         <?= $this->site->contact->address->county ?>
         <br/>
         <?= str_replace(' ', '', $this->site->contact->address->postcode) ?> <br/>
-        Tel: <?= $this->site->contact->primary_phone ?>
+        Tel: <?= $this->site->telephone ?>
         <br/>
         <?= $this->site->institution->name ?>
     </div>

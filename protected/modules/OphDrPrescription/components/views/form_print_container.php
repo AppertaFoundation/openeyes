@@ -11,7 +11,7 @@
 <?php endif; ?>
 <div class="fpten-form-row">
     <?php foreach (array('left', 'right') as $side) : ?>
-    <div class="<?= $form_css_class ?>-container fpten-form-column">
+    <div class="<?= $form_css_class ?>-container fpten-form-column <?= $side ?>">
         <?php
             $this->render('form_print_header', array(
                 'form_css_class' => $form_css_class,

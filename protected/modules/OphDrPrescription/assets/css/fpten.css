@@ -13,15 +13,15 @@ body {
 }
 
 .fpten-container, .wpten-container {
-	font-family: arial, sans-serif;
-	font-weight: bold;
-	font-size: 7.5pt;
-	padding: 3mm 0 0 3mm;
-	width: 105mm;
+    font-family: arial, sans-serif;
+    font-weight: bold;
+    font-size: 7.5pt;
+    padding: 3mm 0 0 3mm;
+    width: 105mm;
 }
 
 .fpten-container {
-	width: 105mm;
+    width: 105mm;
 }
 
 .fpten-form-row:before, .fpten-form-row:after {
@@ -55,10 +55,14 @@ body {
     font-weight: initial;
 }
 
+.right #wpten-site, .right #fpten-site {
+    margin-left: 9mm; !important;
+}
+
 #fpten-site {
     font-weight: bold;
-		height: 29mm;
-		width: 45mm;
+    height: 29mm;
+    width: 45mm;
 }
 
 #fpten-site-code, #wpten-site-code {
@@ -78,10 +82,10 @@ body {
 }
 
 #fpten-age {
-	padding-top: 3mm;
-	height: 7mm;
-	line-height: 7mm;
-	margin-left: 32mm;
+    padding-top: 3mm;
+    height: 7mm;
+    line-height: 7mm;
+    margin-left: 32mm;
 }
 
 /*DOB box appears directly below the Age box.*/
@@ -94,10 +98,18 @@ body {
 }
 
 #fpten-dob {
-	height: 15mm;
-	padding-top: 3mm;
-	line-height: 15mm;
-	margin-left: 32mm;
+    height: 15mm;
+    padding-top: 3mm;
+    line-height: 15mm;
+    margin-left: 32mm;
+}
+
+.right #wpten-age, .right #wpten-dob {
+    margin-left: 25mm; !important;
+}
+
+.right #fpten-age, .right #fpten-dob {
+    margin-left: 27mm; !important;
 }
 
 /*Patient details box appears at the top right corner beside age and DOB.*/
@@ -106,41 +118,41 @@ body {
     padding-top: 5mm;
     padding-left: 2mm;
     height: 16mm;
-		width: 50mm;
+    width: 50mm;
 }
 
 /*Postcode is right-aligned to the edge of the parent box.*/
 #fpten-patient-details {
-	width: 50mm;
-	height: 25mm;
-	padding-top: 3mm;
+    width: 50mm;
+    height: 25mm;
+    padding-top: 3mm;
 }
 
 #wpten-nhs {
     height: 5mm;
-		width: 50mm;
-		padding-top: 2mm;
+    width: 50mm;
+    padding-top: 2mm;
 }
 
 #fpten-nhs {
-	height: 5mm;
-	line-height: 5mm;
-	float: right;
+    height: 5mm;
+    line-height: 5mm;
+    float: right;
 }
 
 #fpten-nhs-text, #wpten-nhs-text {
-	float: right;
-	text-align: left;
-	padding-top: 2mm;
+    float: right;
+    text-align: left;
+    padding-top: 2mm;
 }
 
 #fpten-nhs-text {
-	padding-top: 0;
+    padding-top: 0;
 }
 
 #fpten-postcode {
-	text-align: left;
-	float: right;
+    text-align: left;
+    float: right;
 }
 
 /*Prescriber initiative appears at top of main box in the center*/
@@ -151,6 +163,10 @@ body {
     text-align: center;
     font-size: 8pt;
     line-height: 10mm;
+}
+
+.right #fpten-prescriber {
+    margin-left: 25mm; !important;
 }
 
 #wpten-prescriber {
@@ -177,12 +193,16 @@ body {
     height: 76mm;
     width: 50mm;
     margin-left: 30mm;
-	overflow: hidden;
+    overflow: hidden;
+}
+
+.right #fpten-prescription-list, .right #wpten-prescription-list {
+    margin-left: 25mm; !important;
 }
 
 #fpten-prescription-list {
-	height: 78mm;
-	width: 57mm;
+    height: 78mm;
+    width: 57mm;
 }
 
 .fpten-prescription-item {
@@ -192,7 +212,7 @@ body {
 }
 
 .fpten-prescription-list-filler {
-	text-align: center;
+    text-align: center;
     padding-top: 2mm;
 }
 
@@ -206,6 +226,14 @@ body {
 }
 
 #fpten-date {
-	width: 28mm;
-	margin-left: 58mm;
+    width: 28mm;
+    margin-left: 58mm;
+}
+
+.right #wpten-date {
+    margin-left: 63mm; !important;
+}
+
+.right #fpten-date {
+    margin-left: 53mm; !important;
 }

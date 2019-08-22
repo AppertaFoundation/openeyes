@@ -56,7 +56,7 @@
                         ?>
                 <div class="fpten-prescription-item fpten-form-row">
                         <?php
-                        foreach (array('drug', 'dose', 'frequency') as $attr) {
+                        foreach (array('drug', 'dose', 'frequency', 'comment') as $attr) {
                             if ($item->getAttrLength("item_$attr") > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used) {
                                 if ($side === 'right' && !$this->getCurrentItemAttr()) {
                                     $this->addPages();
@@ -75,6 +75,11 @@
                                         break;
                                     case 'frequency':
                                         echo $item->fpTenFrequency();
+                                        break;
+                                    case 'comment':
+                                        if ($item->comments) {
+                                            echo "<br/>Comment: $item->comments";
+                                        }
                                         break;
                                 }
                                 $this->setCurrentAttr();
