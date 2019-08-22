@@ -58,21 +58,8 @@ class OphDrPrescription_Item extends EventMedicationUse
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('start_date_string_YYYYMMDD', 'required'),
-            array('dispense_location_id, dispense_condition_id', 'scenarioValidator'),
+            array('dose, dispense_location_id, dispense_condition_id, start_date, frequency_id', 'required'),
         ));
-    }
-
-    public function scenarioValidator($attribute, $params)
-    {
-        // dispense_location_id and dispense_condition_id comes from the uer interface
-        // but for automated prescription there is no user interaction and there is no default values
-        // we could use
-        if ($this->scenario != 'automated') {
-            if (!$this->$attribute) {
-                $this->addError($attribute, 'Cannot be empty.');
-            }
-        }
     }
 
     public function relations()

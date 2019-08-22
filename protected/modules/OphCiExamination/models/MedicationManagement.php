@@ -93,7 +93,7 @@ class MedicationManagement extends BaseMedicationElement
                 array('id' => 'event_id'),
                 'through' => 'event',
                 'on' => "usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."' ",
-                'order' => 'entries.start_date_string_YYYYMMDD DESC, entries.end_date_string_YYYYMMDD DESC, entries.last_modified_date'
+                'order' => 'entries.start_date DESC, entries.end_date DESC, entries.last_modified_date'
             ),
             'visible_entries' => array(
                 self::HAS_MANY,
@@ -101,7 +101,7 @@ class MedicationManagement extends BaseMedicationElement
                 array('id' => 'event_id'),
                 'through' => 'event',
                 'on' => "hidden = 0 AND usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."' ",
-                'order' => 'visible_entries.start_date_string_YYYYMMDD DESC, visible_entries.end_date_string_YYYYMMDD DESC, visible_entries.last_modified_date'
+                'order' => 'visible_entries.start_date DESC, visible_entries.end_date DESC, visible_entries.last_modified_date'
             ),
 			'prescription' => array(self::BELONGS_TO, \Element_OphDrPrescription_Details::class, 'prescription_id'),
         );
@@ -114,10 +114,11 @@ class MedicationManagement extends BaseMedicationElement
     public function getContinuedEntries()
     {
         $event_date = $this->event->event_date;
-        $event_date_YYYYMMDD = substr($event_date, 0, 4).substr($event_date, 5, 2).substr($event_date, 8, 2);
 
-        return array_filter($this->visible_entries, function($e) use($event_date_YYYYMMDD) {
-            return ($e->start_date_string_YYYYMMDD < $event_date_YYYYMMDD && is_null($e->end_date_string_YYYYMMDD));
+        return array_filter($this->visible_entries, function($e) use($event_date) {
+            return ($e->start_date < $event_date &&
+							(is_null($e->end_date) || $e->end_date > date('Y-m-d'))
+						);
         });
     }
 
@@ -130,7 +131,7 @@ class MedicationManagement extends BaseMedicationElement
         $event_date = $this->event->event_date;
         $event_date_YYYYMMDD = substr($event_date, 0, 4).substr($event_date, 5, 2).substr($event_date, 8, 2);
         return array_filter($this->visible_entries, function($e) use($event_date_YYYYMMDD){
-            return ($e->start_date_string_YYYYMMDD == $event_date_YYYYMMDD && is_null($e->end_date_string_YYYYMMDD));
+            return ($e->start_date == $event_date_YYYYMMDD && is_null($e->end_date));
         });
     }
 
@@ -141,7 +142,7 @@ class MedicationManagement extends BaseMedicationElement
     public function getStoppedEntries()
     {
         return array_filter($this->visible_entries, function($e){
-            return !is_null($e->end_date_string_YYYYMMDD);
+            return !is_null($e->end_date) && $e->end_date <= date('Y-m-d');;
         });
     }
 
@@ -152,9 +153,8 @@ class MedicationManagement extends BaseMedicationElement
     public function getEntriesStoppedToday()
     {
         $event_date = $this->event->event_date;
-        $event_date_YYYYMMDD = substr($event_date, 0, 4).substr($event_date, 5, 2).substr($event_date, 8, 2);
-        return array_filter($this->visible_entries, function($e) use($event_date_YYYYMMDD){
-            return ($e->end_date_string_YYYYMMDD == $event_date_YYYYMMDD);
+        return array_filter($this->visible_entries, function($e) use($event_date){
+            return ($e->end_date == $event_date);
         });
     }
 
@@ -330,7 +330,7 @@ class MedicationManagement extends BaseMedicationElement
 						'frequency_id' => $entry->frequency_id,
 						'duration' => $entry->duration,
 						'dose' => $entry->dose,
-						'start_date_string_YYYYMMDD' => $entry->start_date_string_YYYYMMDD,
+						'start_date' => $entry->start_date,
 						'dispense_location_id' => $entry->dispense_location_id,
 						'dispense_condition_id' => $entry->dispense_condition_id
 					));
@@ -425,7 +425,7 @@ class MedicationManagement extends BaseMedicationElement
         $item->dispense_condition_id = $entry->dispense_condition_id;
         $item->dispense_location_id = $entry->dispense_location_id;
         $item->laterality = $entry->laterality;
-		$item->start_date_string_YYYYMMDD = $entry->start_date_string_YYYYMMDD;
+		$item->start_date = $entry->start_date;
 
 		$item->usage_type = \OphDrPrescription_Item::getUsageType();
 		$item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();

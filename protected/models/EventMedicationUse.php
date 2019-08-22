@@ -1,6 +1,21 @@
 <?php
+/**
+ * OpenEyes.
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
-use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
+use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
 
 /**
  * This is the model class for table "event_medication_use".
@@ -22,10 +37,8 @@ use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property integer $duration
  * @property integer $dispense_location_id
  * @property integer $dispense_condition_id
- * @property string $start_date_string_YYYYMMDD
- * @property string $end_date_string_YYYYMMDD
- * @property string $start_date
- * @property string $end_date
+ * @property Date $start_date
+ * @property Date $end_date
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
@@ -74,9 +87,59 @@ class EventMedicationUse extends BaseElement
     public $chk_stop;
     public $medication_name;
 
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string|null $className
+     * @return BaseElement|mixed
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
     public function getOriginalAttributes()
     {
         return $this->originalAttributes;
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'event_medication_use';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('usage_type, medication_id', 'required'),
+            array('first_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration_id, dispense_location_id, dispense_condition_id, stop_reason_id, 
+			        prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly' => true),
+            array('dose', 'numerical'),
+            array('laterality', 'validateLaterality'),
+            array('event_id, copied_from_med_use_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
+            array('usage_type, usage_subtype, dose_unit_term', 'length', 'max' => 45),
+            array('dose_unit_term', 'validateDoseUnitTerm'),
+            array('usage_type', 'default', 'value' => static::getUsageType(), 'on' => 'insert'),
+            array('usage_subtype', 'default', 'value' => static::getUsageSubType(), 'on' => 'insert'),
+            array('end_date', 'OEFuzzyDateValidator'),
+            array('start_date', 'OEFuzzyDateValidatorNotFuture'),
+            array('last_modified_date, created_date, event_id', 'safe'),
+            array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
+            array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
+            // The following rule is used by search().
+            // @todo Please remove those attributes that should not be searched.
+            array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, medication_id, form_id, laterality,
+			        dose, dose_unit_term, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id, last_modified_date, 
+			        created_user_id, created_date', 'safe', 'on' => 'search'),
+        );
     }
 
     public static function getUsageType()
@@ -89,60 +152,25 @@ class EventMedicationUse extends BaseElement
         return "History";
     }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'event_medication_use';
-	}
-
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('usage_type, medication_id', 'required'),
-			array('first_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration_id, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly'=>true),
-			array('dose', 'numerical'),
-			array('laterality', 'validateLaterality'),
-			array('event_id, copied_from_med_use_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
-			array('usage_type, usage_subtype, dose_unit_term', 'length', 'max'=>45),
-			array('dose_unit_term', 'validateDoseUnitTerm'),
-			array('usage_type', 'default', 'value' => static::getUsageType(), 'on' => 'insert'),
-			array('usage_subtype', 'default', 'value' => static::getUsageSubType(), 'on' => 'insert'),
-			array('start_date_string_YYYYMMDD, end_date_string_YYYYMMDD', 'OEFuzzyDateValidator'),
-			array('last_modified_date, created_date, event_id', 'safe'),
-			array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
-            array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration_id, dispense_location_id, dispense_condition_id, start_date_string_YYYYMMDD, end_date_string_YYYYMMDD, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
-		);
-	}
-
     /**
      * require laterality selection when a route is chosen that has laterality options
      */
     public function validateLaterality()
     {
-        if (!$this->laterality && $this->route_id && in_array($this->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL))) {
+        if (!$this->laterality && $this->route_id && $this->route->has_laterality === "1") {
             $this->addError('option_id', "You must specify laterality for route '{$this->route->term}'");
         }
     }
 
-	/**
-	 * Dose unit is required only if the dose is set
-	 */
+    /**
+     * Dose unit is required only if the dose is set
+     */
 
-	public function validateDoseUnitTerm()
-	{
-		if(!$this->hidden && $this->dose_unit_term == "" && $this->dose != "") {
-			$this->addError("dose_unit_term", "You must select a dose unit if the dose is set.");
-		}
+    public function validateDoseUnitTerm()
+    {
+        if (!$this->hidden && $this->dose_unit_term == "" && $this->dose != "") {
+            $this->addError("dose_unit_term", "You must select a dose unit if the dose is set.");
+        }
     }
 
     /**
@@ -151,130 +179,119 @@ class EventMedicationUse extends BaseElement
 
     public function copiedFields()
     {
-        return ['usage_type', 'usage_subtype', 'medication_id', 'start_date_string_YYYYMMDD', 'end_date_string_YYYYMMDD', 'first_prescribed_med_use_id',
-                'form_id', 'laterality', 'route_id', 'frequency_id', 'duration_id', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
-                'dose', 'copied_from_med_use_id', 'dose_unit_term'];
-	}
+        return ['usage_type', 'usage_subtype', 'medication_id', 'start_date', 'end_date', 'first_prescribed_med_use_id',
+            'form_id', 'laterality', 'route_id', 'frequency_id', 'duration', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
+            'dose', 'copied_from_med_use_id', 'dose_unit_term'
+        ];
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-			'copiedFromMedUse' => array(self::BELONGS_TO, 'Event', 'copied_from_med_use_id'),
-			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'form' => array(self::BELONGS_TO, MedicationForm::class, 'form_id'),
-			'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
-			'medication' => array(self::BELONGS_TO, Medication::class, 'medication_id'),
-			'route' => array(self::BELONGS_TO, MedicationRoute::class, 'route_id'),
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'copiedFromMedUse' => array(self::BELONGS_TO, 'Event', 'copied_from_med_use_id'),
+            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'form' => array(self::BELONGS_TO, MedicationForm::class, 'form_id'),
+            'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
+            'medication' => array(self::BELONGS_TO, Medication::class, 'medication_id'),
+            'route' => array(self::BELONGS_TO, MedicationRoute::class, 'route_id'),
             'stopReason' => array(self::BELONGS_TO, HistoryMedicationsStopReason::class, 'stop_reason_id'),
             'prescriptionItem' => array(self::BELONGS_TO, OphDrPrescription_Item::class, 'prescription_item_id'),
             'medicationLaterality' => array(self::BELONGS_TO, MedicationLaterality::class, 'laterality'),
-            'drugDuration' => array(self::BELONGS_TO, DrugDuration::class, 'duration_id')
-		);
-	}
+            'drugDuration' => array(self::BELONGS_TO, DrugDuration::class, 'duration'),
+            'dispenseLocation' => array(self::BELONGS_TO, OphDrPrescription_DispenseLocation::class, 'dispense_location_id'),
+            'dispenseCondition' => array(self::BELONGS_TO, OphDrPrescription_DispenseCondition::class, 'dispense_condition_id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'event_id' => 'Event',
-			'copied_from_med_use_id' => 'Copied From Med Use',
-			'first_prescribed_med_use_id' => 'First Prescribed Med Use',
-			'usage_type' => 'Usage Type',
-			'usage_subtype' => 'Usage Subtype',
-			'medication_id' => 'Medication',
-			'form_id' => 'Form',
-			'laterality' => 'Laterality',
-			'dose' => 'Dose',
-			'dose_unit_term' => 'Dose Unit Term',
-			'route_id' => 'Route',
-			'frequency_id' => 'Frequency',
-			'duration_id' => 'Duration',
-			'dispense_location_id' => 'Dispense Location',
-			'dispense_condition_id' => 'Dispense Condition',
-			'start_date_string_YYYYMMDD' => 'Start Date',
-			'end_date_string_YYYYMMDD' => 'End Date',
-			'last_modified_user_id' => 'Last Modified User',
-			'last_modified_date' => 'Last Modified Date',
-			'created_user_id' => 'Created User',
-			'created_date' => 'Created Date',
-		);
-	}
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'copied_from_med_use_id' => 'Copied From Med Use',
+            'first_prescribed_med_use_id' => 'First Prescribed Med Use',
+            'usage_type' => 'Usage Type',
+            'usage_subtype' => 'Usage Subtype',
+            'medication_id' => 'Medication',
+            'form_id' => 'Form',
+            'laterality' => 'Laterality',
+            'dose' => 'Dose',
+            'dose_unit_term' => 'Dose Unit Term',
+            'route_id' => 'Route',
+            'frequency_id' => 'Frequency',
+            'duration_id' => 'Duration',
+            'dispense_location_id' => 'Dispense Location',
+            'dispense_condition_id' => 'Dispense Condition',
+            'start_date' => 'Start Date',
+            'end_date' => 'End Date',
+            'last_modified_user_id' => 'Last Modified User',
+            'last_modified_date' => 'Last Modified Date',
+            'created_user_id' => 'Created User',
+            'created_date' => 'Created Date',
+        );
+    }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     * based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+        $criteria = new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('event_id',$this->event_id,true);
-		$criteria->compare('copied_from_med_use_id',$this->copied_from_med_use_id,true);
-		$criteria->compare('first_prescribed_med_use_id',$this->first_prescribed_med_use_id);
-		$criteria->compare('usage_type',$this->usage_type,true);
-		$criteria->compare('usage_subtype',$this->usage_subtype,true);
-		$criteria->compare('medication_id',$this->medication_id);
-		$criteria->compare('form_id',$this->form_id);
-		$criteria->compare('laterality',$this->laterality);
-		$criteria->compare('dose',$this->dose);
-		$criteria->compare('dose_unit_term',$this->dose_unit_term,true);
-		$criteria->compare('route_id',$this->route_id);
-		$criteria->compare('frequency_id',$this->frequency_id);
-		$criteria->compare('duration',$this->duration_id);
-		$criteria->compare('dispense_location_id',$this->dispense_location_id);
-		$criteria->compare('dispense_condition_id',$this->dispense_condition_id);
-		$criteria->compare('start_date_string_YYYYMMDD',$this->start_date_string_YYYYMMDD,true);
-		$criteria->compare('end_date_string_YYYYMMDD',$this->end_date_string_YYYYMMDD,true);
-		$criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-		$criteria->compare('last_modified_date',$this->last_modified_date,true);
-		$criteria->compare('created_user_id',$this->created_user_id,true);
-		$criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('copied_from_med_use_id', $this->copied_from_med_use_id, true);
+        $criteria->compare('first_prescribed_med_use_id', $this->first_prescribed_med_use_id);
+        $criteria->compare('usage_type', $this->usage_type, true);
+        $criteria->compare('usage_subtype', $this->usage_subtype, true);
+        $criteria->compare('medication_id', $this->medication_id);
+        $criteria->compare('form_id', $this->form_id);
+        $criteria->compare('laterality', $this->laterality);
+        $criteria->compare('dose', $this->dose);
+        $criteria->compare('dose_unit_term', $this->dose_unit_term, true);
+        $criteria->compare('route_id', $this->route_id);
+        $criteria->compare('frequency_id', $this->frequency_id);
+        $criteria->compare('duration', $this->duration_id);
+        $criteria->compare('dispense_location_id', $this->dispense_location_id);
+        $criteria->compare('dispense_condition_id', $this->dispense_condition_id);
+        $criteria->compare('start_date', $this->start_date, true);
+        $criteria->compare('end_date', $this->end_date, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+        ));
+    }
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return EventMedicationUse the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
-
-	public function afterValidate()
-	{
-		if ($this->start_date_string_YYYYMMDD && $this->end_date_string_YYYYMMDD &&
-			$this->start_date_string_YYYYMMDD > $this->end_date_string_YYYYMMDD) {
-			$this->addError('end_date_string_YYYYMMDD', 'Stop date must be on or after start date');
-		}
-		parent::afterValidate();
-	}
+    public function afterValidate()
+    {
+        if ($this->start_date && $this->end_date &&
+            $this->start_date > $this->end_date) {
+            $this->addError('end_date', 'Stop date must be on or after start date');
+        }
+        parent::afterValidate();
+    }
 
     /**
      * @return bool
@@ -289,10 +306,9 @@ class EventMedicationUse extends BaseElement
 
     public function getMedicationDisplay($short = false)
     {
-        if(!isset($this->medication)) {
+        if (!isset($this->medication)) {
             return "";
-        }
-        else {
+        } else {
             return $this->medication->getLabel($short);
         }
     }
@@ -320,10 +336,10 @@ class EventMedicationUse extends BaseElement
     public function getDatesDisplay()
     {
         $res = array();
-        if ($this->start_date_string_YYYYMMDD) {
+        if ($this->start_date) {
             $res[] = \Helper::formatFuzzyDate($this->start_date);
         }
-        if ($this->end_date_string_YYYYMMDD) {
+        if ($this->end_date) {
             if (count($res)) {
                 $res[] = '-';
             }
@@ -354,7 +370,7 @@ class EventMedicationUse extends BaseElement
     {
         if ($this->medication) {
             return count(OEModule\OphCiExamination\models\OphCiExaminationRisk::findForMedicationSetIds(array_map(
-                    function($t) {
+                    function ($t) {
                         return $t->id;
                     }, $this->medication->medicationSets
                 ))) > 0;
@@ -363,32 +379,18 @@ class EventMedicationUse extends BaseElement
         }
     }
 
-    /**
-     * Getter to make this class compatible with HistoryMedicationsEntry
-     *
-     * @return null|string
-     */
-
-    public function getStart_date()
-    {
-        return is_null($this->start_date_string_YYYYMMDD) ? null : substr($this->start_date_string_YYYYMMDD, 0, 4).'-'
-                .substr($this->start_date_string_YYYYMMDD, 4, 2).'-'
-                .substr($this->start_date_string_YYYYMMDD, 6, 2);
-    }
-
     public function getStartDateDisplay()
     {
-        if ($this->start_date_string_YYYYMMDD) {
+        if ($this->start_date) {
             return \Helper::formatFuzzyDate($this->start_date);
-        }
-        else {
+        } else {
             return "";
         }
     }
 
     public function getStopDateDisplay()
     {
-        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date_string_YYYYMMDD) . '</div>';
+        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
     }
 
     public function getEndDateDisplay($default = "")
@@ -404,57 +406,19 @@ class EventMedicationUse extends BaseElement
     {
         $result = [];
 
-        if($this->dose){
-            if($this->dose_unit_term) {
+        if ($this->dose) {
+            if ($this->dose_unit_term) {
                 $result[] = $this->dose . ' ' . $this->dose_unit_term;
             } else {
                 $result[] = $this->dose;
             }
         }
 
-        if($this->frequency){
+        if ($this->frequency) {
             $result[] = $this->frequency;
         }
 
-        return implode(' , ', $result    );
-    }
-
-
-    /**
-     * Getter to make this class compatible with HistoryMedicationsEntry
-     *
-     * @return null|string
-     */
-
-    public function getEnd_date()
-    {
-        return is_null($this->end_date_string_YYYYMMDD) ? null : substr($this->end_date_string_YYYYMMDD, 0, 4).'-'
-            .substr($this->end_date_string_YYYYMMDD, 4, 2).'-'
-            .substr($this->end_date_string_YYYYMMDD, 6, 2);
-    }
-
-    /**
-     * Setter to make this class compatible with HistoryMedicationsEntry
-     *
-     * @return $this
-     */
-
-    public function setStart_date($date)
-    {
-        $this->start_date_string_YYYYMMDD = is_null($date) ? null : str_replace('-', '', $date);
-        return $this;
-    }
-
-    /**
-     * Setter to make this class compatible with HistoryMedicationsEntry
-     *
-     * @return $this
-     */
-
-    public function setEnd_date($date)
-    {
-        $this->end_date_string_YYYYMMDD = is_null($date) ? null : str_replace('-', '', $date);
-        return $this;
+        return implode(' , ', $result);
     }
 
     public function getChk_prescribe()
@@ -462,7 +426,7 @@ class EventMedicationUse extends BaseElement
         return $this->chk_prescribe;
     }
 
-    public function setChk_prescribe( $prescribe)
+    public function setChk_prescribe($prescribe)
     {
         $this->chk_prescribe = $prescribe;
     }
@@ -488,15 +452,6 @@ class EventMedicationUse extends BaseElement
             $this->initialiseFromPrescriptionItem();
         }
         */
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function afterFind()
-    {
-        parent::afterFind();
-        $this->updateStateProperties();
     }
 
     public function loadFromPrescriptionItem($item)
@@ -544,20 +499,20 @@ class EventMedicationUse extends BaseElement
     }
 
     /**
-    * Set all the appropriate attributes on this Entry to those on the given
-    * prescription item.
-    *
-    * @param $item
-    */
+     * Set all the appropriate attributes on this Entry to those on the given
+     * prescription item.
+     *
+     * @param $item
+     */
 
     private function clonefromPrescriptionItem($item)
     {
         $attrs = ['medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
-                  'dose', 'frequency_id', 'frequency', 'start_date_string_YYYYMMDD'];
+            'dose', 'frequency_id', 'frequency', 'start_date'];
         foreach ($attrs as $attr) {
             $this->$attr = $item->$attr;
         }
-        if (!$this->end_date_string_YYYYMMDD) {
+        if (!$this->end_date) {
             $end_date = $item->end_date;
             $compare_date = new \DateTime();
 
@@ -573,22 +528,30 @@ class EventMedicationUse extends BaseElement
 
     public function beforeValidate()
     {
-        if($this->medication_id == self::USER_MEDICATION_ID) {
+        if ($this->medication_id == self::USER_MEDICATION_ID) {
             $medication = new Medication();
             $medication->preferred_term = $this->medication_name;
             $medication->short_term = $this->medication_name;
             $medication->source_type = self::USER_MEDICATION_SOURCE_TYPE;
             $medication->source_subtype = self::USER_MEDICATION_SOURCE_SUBTYPE;
             $medication->preferred_code = self::USER_MEDICATION_SOURCE_SUBTYPE;
-            if($medication->save()) {
+            if ($medication->save()) {
                 $medication->addDefaultSearchIndex();
                 $this->medication_id = $medication->id;
-            }
-            else {
-                $this->addError("medication_id", "There has been an error while saving the new medication '".$this->medication_name."'");
+            } else {
+                $this->addError("medication_id", "There has been an error while saving the new medication '" . $this->medication_name . "'");
             }
         }
 
         return parent::beforeValidate();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function afterFind()
+    {
+        parent::afterFind();
+        $this->updateStateProperties();
     }
 }
