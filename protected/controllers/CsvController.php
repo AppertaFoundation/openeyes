@@ -119,9 +119,10 @@ class CsvController extends BaseController
 
         //check that principal investigator's user name exists in the system
         if(!empty($trial['principal_investigator'])) {
-            $principal_investigator = User::model()->find('username = ?', array($trial['principal_investigator']));
+//            CERA-523 CERA-524 only active users can be made principal investigators
+            $principal_investigator = User::model()->find('username = ? AND active = 1', array($trial['principal_investigator']));
             if(!isset($principal_investigator)) {
-                $errors[] = 'The entered Principal Investigator does not exist in the system.';
+                $errors[] = 'The entered Principal Investigator does not exist in the system or is inactive.';
                 return $errors;
             } else {
                 $_SESSION['principal_investigator'] = $principal_investigator->id;
