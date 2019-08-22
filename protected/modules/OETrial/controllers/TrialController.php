@@ -255,7 +255,7 @@ class TrialController extends BaseModuleController
 
         $permissionDataProvider = new CActiveDataProvider('UserTrialAssignment', array(
             'criteria' => array(
-                'condition' => 'trial_id = :trialId',
+                'condition' => 'trial_id = :trialId AND (role IS NOT NULL OR is_principal_investigator != 0 OR is_study_coordinator != 0 )' ,
                 'params' => array(
                     ':trialId' => $this->model->id,
                 ),
