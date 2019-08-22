@@ -2124,7 +2124,7 @@ function decimal2heximal (decimal) {
 }
 
 function generateId (length) {
-	let array = new Uint8Array((length || 40) / 2);
+	let array = new Uint8Array((length || 10) / 2);
 	window.crypto.getRandomValues(array);
 	return Array.from(array, decimal2heximal).join('')
 }

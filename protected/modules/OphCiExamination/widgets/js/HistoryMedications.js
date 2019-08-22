@@ -675,7 +675,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 			let uniqueKeyFound = false;
 			let randomKey;
 			while(!uniqueKeyFound) {
-				randomKey = generateId(10);
+				randomKey = generateId();
 				uniqueKeyFound = true;
 				$.each($(window).find('.js-binded-key'), function(index, $bindedKey){
 					if(randomKey === $bindedKey.val()){
