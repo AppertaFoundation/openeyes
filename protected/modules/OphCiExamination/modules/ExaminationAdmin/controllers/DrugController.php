@@ -48,8 +48,13 @@ class DrugController extends \ModuleAdminController
         $request = Yii::app()->getRequest();
         $id = $request->getParam('id');
         $model = OphCiExamination_Dilation_Drugs::model()->findByPk($id);
+
+        if (!$model) {
+            $this->redirect(['dilationDrugs']);
+        }
+
         $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
-        if ($new_attributes) {
+        if ($model && $new_attributes) {
             $model->setAttributes($new_attributes);
 
             if ($model->save()) {
