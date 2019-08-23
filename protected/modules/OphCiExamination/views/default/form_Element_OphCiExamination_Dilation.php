@@ -81,7 +81,7 @@ foreach ($dilation_drugs as $d_drug) {
                               <li data-str="<?= $id ?>"
                                   data-order="<?= $dilation_drugs_order[$id] ?>"><?= $drug ?></li>
                                 <?php endif; ?>
-                          <?php endforeach; ?>
+                            <?php endforeach; ?>
                       </ul>
                     </div>
                   </td>
