@@ -40,7 +40,9 @@ class DrugController extends \ModuleAdminController
         ];
     }
 
-
+    /**
+     * Updates the selected Model
+     */
     public function actionUpdate()
     {
         $request = Yii::app()->getRequest();
@@ -48,11 +50,9 @@ class DrugController extends \ModuleAdminController
         $model = OphCiExamination_Dilation_Drugs::model()->findByPk($id);
         $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
         if ($new_attributes) {
-            //var_dump($model->attributes); die();
             foreach ($new_attributes as $key => $value) {
                 $model->setAttribute($key, $value);
             }
-            //var_dump($model->attributes); die();
 
             if ($model->save()) {
                 Audit::add('admin', 'edit', serialize($model->attributes), false,
@@ -114,7 +114,6 @@ class DrugController extends \ModuleAdminController
         $request = Yii::app()->getRequest();
         $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
         if ($new_attributes) {
-            //var_dump($model->attributes); die();
             foreach ($new_attributes as $key => $value) {
                 $model->setAttribute($key, $value);
             }
