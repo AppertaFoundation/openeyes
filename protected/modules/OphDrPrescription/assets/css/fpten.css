@@ -76,7 +76,7 @@ body {
     padding-top: 5mm;
     height: 13mm;
     width: 19mm;
-    margin-left: 30mm;
+    margin-left: 32mm;
     line-height: 13mm;
     text-align: center;
 }
@@ -91,7 +91,7 @@ body {
 #fpten-dob, #wpten-dob {
     height: 13mm;
     width: 19mm;
-    margin-left: 30mm;
+    margin-left: 32mm;
     text-align: center;
     line-height: 13mm;
 }
@@ -103,7 +103,7 @@ body {
 }
 
 .right #wpten-age, .right #wpten-dob, .right #fpten-age, .right #fpten-dob {
-    margin-left: 25mm; !important;
+    margin-left: 27mm; !important;
 }
 
 /*Patient details box appears at the top right corner beside age and DOB.*/
