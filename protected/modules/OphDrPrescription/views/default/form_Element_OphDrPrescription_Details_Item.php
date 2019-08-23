@@ -32,6 +32,7 @@
   <td>
       <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][usage_type]" value="<?php echo OphDrPrescription_Item::getUsageType(); ?>" />
       <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][usage_subtype]" value="<?php echo OphDrPrescription_Item::getUsageSubType(); ?>" />
+			<input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][binded_key]" class="js-binded-key" value="<?= $item->binded_key ?>">
       <?php if (isset($patient) && $patient->hasDrugAllergy($item->medication_id)): ?>
       <i class="oe-i warning small pad js-has-tooltip" data-tooltip-content="Allergic to <?= implode(',',$patient->getPatientDrugAllergy($item->medication_id))?>"></i>
       <?php endif; ?>
