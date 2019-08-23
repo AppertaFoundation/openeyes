@@ -319,6 +319,8 @@ class MedicationManagement extends BaseMedicationElement
 				if(!in_array($entry->id, $existing_mgment_items)) {
 					$prescription_Item = new \OphDrPrescription_Item();
 					$prescription_Item->event_id =$prescription->event_id;
+					$prescription_Item->binded_key = substr(bin2hex(random_bytes(10)), 0 , 10);
+
 					$prescription_Item->setAttributes(array(
 						'usage_type' => \OphDrPrescription_Item::getUsageType(),
 						'usage_subtype' => \OphDrPrescription_Item::getUsageSubtype(),
