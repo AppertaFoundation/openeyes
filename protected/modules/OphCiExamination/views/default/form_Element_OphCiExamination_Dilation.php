@@ -23,8 +23,10 @@ $key = 0;
 $dilation_drugs = \OEModule\OphCiExamination\models\OphCiExamination_Dilation_Drugs::model()->findAll();
 
 $dilation_drugs_order = array();
+$dilation_drugs_status = array();
 foreach ($dilation_drugs as $d_drug) {
     $dilation_drugs_order[$d_drug['id']] = $d_drug['display_order'];
+    $dilation_drugs_status[$d_drug['id']] = $d_drug['is_active'];
 }
 ?>
 <div class="element-fields element-eyes edit-Dilation">
@@ -75,8 +77,10 @@ foreach ($dilation_drugs as $d_drug) {
                     <div class="flex-layout flex-top flex-left">
                       <ul class="add-options" data-multi="false" data-clickadd="false">
                           <?php foreach ($element->getAllDilationDrugs($eye_side) as $id => $drug) : ?>
-                            <li data-str="<?= $id ?>"
-                                data-order="<?= $dilation_drugs_order[$id] ?>"><?= $drug ?></li>
+                            <?php if ($dilation_drugs_status[$id]) : ?>
+                              <li data-str="<?= $id ?>"
+                                  data-order="<?= $dilation_drugs_order[$id] ?>"><?= $drug ?></li>
+                              <?php endif; ?>
                             <?php endforeach; ?>
                       </ul>
                     </div>

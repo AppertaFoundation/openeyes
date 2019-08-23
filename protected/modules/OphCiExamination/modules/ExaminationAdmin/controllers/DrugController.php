@@ -40,6 +40,35 @@ class DrugController extends \ModuleAdminController
         ];
     }
 
+
+    public function actionUpdate()
+    {
+        $request = Yii::app()->getRequest();
+        $id = $request->getParam('id');
+        $model = OphCiExamination_Dilation_Drugs::model()->findByPk($id);
+        $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
+        if ($new_attributes) {
+            //var_dump($model->attributes); die();
+            foreach ($new_attributes as $key => $value) {
+                $model->setAttribute($key, $value);
+            }
+            //var_dump($model->attributes); die();
+
+            if ($model->save()) {
+                Audit::add('admin', 'edit', serialize($model->attributes), false,
+                ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']);
+                Yii::app()->user->setFlash('success', 'Drop edited');
+                $this->redirect(['dilationDrugs']);
+            } else {
+                $errors = $model->getErrors();
+            }
+        }
+        $this->render('/Drug/edit', [
+          'model' => $model,
+          'errors' => isset($errors) ? $errors : null,
+        ]);
+    }
+
     /**
     * Deletes the selected models
     */
@@ -83,8 +112,12 @@ class DrugController extends \ModuleAdminController
     {
         $model = new OphCiExamination_Dilation_Drugs();
         $request = Yii::app()->getRequest();
-        if ($request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs')) {
-            $model->attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
+        $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
+        if ($new_attributes) {
+            //var_dump($model->attributes); die();
+            foreach ($new_attributes as $key => $value) {
+                $model->setAttribute($key, $value);
+            }
 
             if ($model->save()) {
                 Audit::add('admin', 'create', serialize($model->attributes), false,

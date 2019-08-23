@@ -51,7 +51,7 @@ class OphCiExamination_Dilation_Drugs extends \BaseActiveRecordVersioned
     {
         return array(
                 array('name', 'required'),
-                array('id, name, display_order', 'safe', 'on' => 'search'),
+                array('id, name, display_order, is_active', 'safe', 'on' => 'search'),
         );
     }
 
@@ -73,6 +73,7 @@ class OphCiExamination_Dilation_Drugs extends \BaseActiveRecordVersioned
         $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
+        $criteria->compare('is_active', $this->is_active, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
