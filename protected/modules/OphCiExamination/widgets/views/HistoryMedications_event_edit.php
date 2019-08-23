@@ -48,8 +48,8 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
         <thead style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >
         <tr>
             <th>
-              <button class="button small show-stopped" type="button">show stopped</button>
-              <button class="button small hide-stopped" type="button" style="display: none;">Hide stopped</button>
+              <button class="button small show-stopped" type="button" style="display: none;">Show stopped</button>
+              <button class="button small hide-stopped" type="button">Hide stopped</button>
             </th>
             <th></th>
             <th>Start</th>
