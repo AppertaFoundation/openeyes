@@ -627,15 +627,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
     };
 
-    HistoryMedicationsController.prototype.bindController = function(controller, name, sendOnControllerBoundEvent) {
-    		if(typeof sendOnControllerBoundEvent === undefined) {
-    			sendOnControllerBoundEvent = true;
-				}
+    HistoryMedicationsController.prototype.bindController = function(controller, name) {
         this[name] = controller;
         this.boundController = controller;
-        if(sendOnControllerBoundEvent) {
-					this.options.onControllerBound(controller, name);
-				}
     };
 
     HistoryMedicationsController.prototype.disableRemoveButton = function ($row) {

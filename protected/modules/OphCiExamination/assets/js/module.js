@@ -2097,8 +2097,8 @@ $(document).on("keyup", ".eyedraw-fields textarea[id$='_description'], .eyedraw-
 function registerElementController(controller, name, bindTo) {
     window[name] = controller;
     if(typeof window[bindTo] !== 'undefined') {
-        window[bindTo].bindController(controller, name, false);
-        controller.bindController(window[bindTo], bindTo, false);
+        window[bindTo].bindController(controller, name);
+        controller.bindController(window[bindTo], bindTo);
         window[bindTo].options.onControllerBound(controller, name);
 				controller.options.onControllerBound(window[bindTo], bindTo);
     }
