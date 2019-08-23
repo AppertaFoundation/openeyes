@@ -197,7 +197,6 @@ class CsvController extends BaseController
     private function createNewTrial($trial, $import)
     {
         $errors = array();
-        \Yii::log('createNewTrial called on '.var_export($trial,true));
         if (empty($trial['name'])) {
             $errors[] = 'Trial has no name';
             return $errors;
@@ -321,7 +320,7 @@ class CsvController extends BaseController
         }
 
         $new_patient->contact_id = $contact->id;
-        $new_patient->hos_num = !empty($patient['CERA_ID']) ? $patient['CERA_ID'] : Patient::getNextCeraNumber();
+        $new_patient->hos_num = !empty($patient['CERA_ID']) ? $patient['CERA_ID'] : Patient::autoCompleteHosNum();
 
         $new_patient->setScenario('other_register');
         if(!$new_patient->save()){
@@ -402,7 +401,6 @@ class CsvController extends BaseController
         if(!empty($patient['opthal_first_name']) || !empty($patient['opthal_last_name'])){
             if(!empty($patient['opthal_first_name']) && !empty($patient['opthal_last_name'])) {
                 $opthal_label = ContactLabel::model()->findByAttributes(array('name' => 'Consultant Ophthalmologist'));
-                Yii::log(CVarDumper::dumpAsString($opthal_label));
                 $opthal_contact = Contact::model()->findByAttributes(array(
                     'id' => $opthal_label->id,
                     'first_name' => $patient['opthal_first_name'],

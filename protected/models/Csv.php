@@ -24,6 +24,7 @@ class Csv
 				$return_data = array();
 				$column_names = explode(',', $file_data[0]);
 
+				//Index starts at 1 to avoid interpreting header as data
 				for($i = 1; $i < count($file_data); $i++) {
 						$raw_data = explode(',', $file_data[$i]);
 						$formatted_data = array();
