@@ -184,46 +184,51 @@ $element_errors = $element->getErrors();
 </div>
 <script type="text/javascript">
 
-    $(document).ready(function() {
-        window.MMController =new OpenEyes.OphCiExamination.HistoryMedicationsController({
+    $(document).ready(function () {
+        window.MMController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
             element: $('#<?=$model_name?>_element'),
             modelName: '<?=$model_name?>',
             patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
             allAllergies: <?= CJSON::encode(CHtml::listData(\OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
 
-            onInit: function(controller) {
+            onInit: function (controller) {
                 registerElementController(controller, "MMController", "HMController");
                 $('section[data-element-type-class="OEModule_OphCiExamination_models_MedicationManagement"]').data("controller", controller);
             },
-            onControllerBound: function(controller, name) {
-                if(name === "HMController") {
+            onControllerBound: function (controller, name) {
+                if (name === "HMController") {
                     this.initRowsFromHistoryElement();
                 }
             },
-            initRowsFromHistoryElement: function() {
+            initRowsFromHistoryElement: function () {
 
-                <?php if(!$this->isPostedEntries() && $this->element->getIsNewRecord()): ?>
-                    $.each(window.HMController.$table.children("tbody").children("tr"), function(i, e){
-                        var $newrow = window.HMController.copyRow($(e), window.MMController.$table.children("tbody"));
-                        window.HMController.bindEntries($(e), $newrow);
-
-                        var hidden = ($(e).find(".js-to-be-copied").val() == 0);
-                        if(hidden) {
-                            $newrow.addClass("hidden");
-                            $newrow.find(".js-hidden").val("1");
-                        }
-                    });
-                <?php else: ?>
-                $.each(window.HMController.$table.children("tbody").children("tr"), function(i, historyMedicationRow){
+                let copyFields = <?=!$this->isPostedEntries() && $this->element->getIsNewRecord() ? 'true' : 'false'?>;
+                $.each(window.HMController.$table.children("tbody").children("tr"), function (i, historyMedicationRow) {
                     let medicationHistoryBindedKey = $(historyMedicationRow).find('.js-binded-key').val();
-                    $.each(window.MMController.$table.children("tbody").children("tr"), function(index, medicationManagementRow) {
-                        if($(medicationManagementRow).find('.js-binded-key').val() === medicationHistoryBindedKey) {
+                    let rowNeedsCopying = true;
+                    let $medicationManagementRow;
+
+                    $.each(window.MMController.$table.children("tbody").children("tr"), function (index, medicationManagementRow) {
+                        if ($(medicationManagementRow).find('.js-binded-key').val() === medicationHistoryBindedKey) {
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
-												}
+                            rowNeedsCopying = false;
+                            $medicationManagementRow = medicationManagementRow;
+
+                        }
                     });
+
+                    if (copyFields && rowNeedsCopying) {
+                        $medicationManagementRow = window.HMController.copyRow($(historyMedicationRow), window.MMController.$table.children("tbody"));
+                        window.HMController.bindEntries($(historyMedicationRow), $medicationManagementRow);
+                    }
+
+                    var hidden = ($(historyMedicationRow).find(".js-to-be-copied").val() == 0);
+                    if(hidden) {
+                        $medicationManagementRow.addClass("hidden");
+                        $medicationManagementRow.find(".js-hidden").val("1");
+                    }
                 });
-                <?php endif; ?>
 
                 window.HMController.setDoNotSaveEntries(true);
                 //this.onAddedEntry();
