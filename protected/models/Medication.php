@@ -157,22 +157,6 @@ class Medication extends BaseActiveRecordVersioned
 		];
 	}
 
-
-	/** This function is needed but not ready yet, commited because of merge */
-	public function getIs_prescribable()
-    {
-        //VTM is never prescribable
-        if ($this->isVTM()) {
-            return false;
-        }
-
-        // AMP is only prescribeable if the parent VMP is prescribable
-        if ($this->isAMP()) {
-            //$vmp = $this::model()->findByAttributes(['vmp_code' => $this->vmp_code, 'amp_term' => null]);
-            //$vmp->
-        }
-    }
-
 	public function isVTM()
     {
         return $this->vtm_term != '' && $this->vmp_term == '' && $this->amp_term == '';

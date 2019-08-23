@@ -96,7 +96,7 @@ class m180504_085420_medication_management_tables extends OEMigration
         ), true);
 
         $this->createIndex('fk_ref_medications_idx', 'medication_set_item', 'medication_id');
-        $this->createIndex('fk_ref_set_idx', 'medication_set_item', 'medication_set_id');
+        $this->createIndex('fk_ref_set_item_idx', 'medication_set_item', 'medication_set_id');
         $this->createIndex('fk_default_route_idx', 'medication_set_item', 'default_route_id');
         $this->createIndex('fk_default_form_idx', 'medication_set_item', 'default_form_id');
         $this->createIndex('fk_default_frequency_idx', 'medication_set_item', 'default_frequency_id');
@@ -160,7 +160,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             'deleted_date'      => 'DATE NULL',
         ], true);
 
-        $this->createIndex('fk_ref_set_idx', 'medication_set_rule', 'medication_set_id');
+        $this->createIndex('fk_ref_set_rule_idx', 'medication_set_rule', 'medication_set_id');
         $this->addForeignKey('fk_ref_set_3', 'medication_set_rule', 'medication_set_id', 'medication_set', 'id', 'NO ACTION' ,'NO ACTION');
 
         $this->createOETable('medication_usage_code', [
@@ -172,8 +172,6 @@ class m180504_085420_medication_management_tables extends OEMigration
             'display_order' => 'TINYINT UNSIGNED DEFAULT NULL',
         ]);
 
-        $this->createIndex('fk_ref_set_idx', 'medication_set_rule', 'medication_set_id');
-        $this->addForeignKey('fk_ref_set_3', 'medication_set_rule', 'medication_set_id', 'medication_set', 'id');
         $this->addForeignKey('medication_set_rule_ibfk_1', 'medication_set_rule', 'usage_code_id', 'medication_usage_code', 'id');
 
         $this->insertMultiple('medication_usage_code', [

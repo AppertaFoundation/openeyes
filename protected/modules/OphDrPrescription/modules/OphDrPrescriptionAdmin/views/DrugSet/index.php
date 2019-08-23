@@ -84,8 +84,8 @@
     <form id="admin_DrugSets">
         <table id="drugset-list" class="standard">
             <colgroup>
-                <col class="cols-1" style="width:3.33333%;">
-                <col class="cols-1" style="width:3.33333%">
+                <col style="width:3.33333%;">
+                <col style="width:3.33333%">
                 <col class="cols-3">
                 <col class="cols-4">
                 <col class="cols-1">

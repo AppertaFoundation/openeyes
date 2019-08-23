@@ -35,7 +35,10 @@ return [
                 'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
                 'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
                 'Prescription Edit Options' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/PrescriptionEditOptions'),
+
                 /*
+                 * Tags should be repalced by sets. However, some places tags are still used. Until I leave the
+                 * admin screen link here and leave the code in place.
                 'Tags' => '/TagsAdmin/list',
                 'Drug types' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/drugType'),
                 */

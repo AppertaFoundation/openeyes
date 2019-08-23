@@ -49,7 +49,9 @@ class MedicationManagementController extends BaseController
         $criteria->with = array('medicationSearchIndexes');
         $criteria->together = true;
 
-        foreach (Medication::model()/*->prescribable()*/->findAll($criteria) as $med) {
+        // use Medication::model()->prescribable()->findAll() to find only prescribable medications
+        // this will need to be used in prescription Adder dialog
+        foreach (Medication::model()->findAll($criteria) as $med) {
             $info_box = new MedicationInfoBox();
             $info_box->medication_id = $med->id;
             $info_box->init();

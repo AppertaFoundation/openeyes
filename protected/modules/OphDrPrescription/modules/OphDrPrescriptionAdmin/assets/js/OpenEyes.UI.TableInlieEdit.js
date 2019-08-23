@@ -75,8 +75,6 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             $(".oe-tooltip").css({"top":top+"px", width:'unset'});
 
-           // const $tr = $(this).closest('tr');
-            //controller.deleteRow($tr);
         });
 
         $('body').on('click', '.oe-tooltip .js-delete-row', function() {
