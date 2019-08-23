@@ -64,7 +64,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           'to_be_copied',
           'prepended_markup',
           'set_ids',
-          'locked'
+          'locked',
+					'binded_key'
       ];
 
     this.initialiseFilters();
@@ -693,7 +694,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 	  	}
 
 	  	if (generateRandomKey) {
-	  		let randomBindedKey = this.getRandomBindedKey();
+	  		let randomBindedKey = $row1.find('.js-binded-key').val();
+
+	  		if(!randomBindedKey) {
+					randomBindedKey = this.getRandomBindedKey();
+				}
 
 	  		$row1.find('.js-binded-key').val(randomBindedKey);
 	  		$row2.find('.js-binded-key').val(randomBindedKey);
@@ -848,6 +853,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
       this.processRisks(medications[i]['set_ids'.split(",")], medications[i]['medication_name']);
       data['allergy_warning'] = this.getAllergyWarning(medications[i]);
+      data['binded_key'] = this.getRandomBindedKey();
+
       newRows.push(Mustache.render(
           template,
           data ));
