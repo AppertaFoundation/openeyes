@@ -52,15 +52,6 @@ $creating = isset($creating) ? $creating : false;
               <col class="cols-7">
             </colgroup>
             <tbody>
-            <tr>
-              <td>
-                Macro
-              </td>
-              <td>
-                  <?=\CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros,
-                      array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')); ?>
-              </td>
-            </tr>
             <?php
             $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
             if ($correspondeceApp === "on") { ?>
