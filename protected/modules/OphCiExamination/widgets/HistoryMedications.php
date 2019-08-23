@@ -16,8 +16,8 @@
  */
 namespace OEModule\OphCiExamination\widgets;
 use OEModule\OphCiExamination\models\HistoryMedications as HistoryMedicationsElement;
-use OEModule\OphCiExamination\models\HistoryMedicationsEntry;
 use OEModule\OphCiExamination\models\MedicationManagement as MedicationManagementElement;
+
 /**
  * Class HistoryMedications
  * @package OEModule\OphCiExamination\widgets
@@ -59,7 +59,7 @@ class HistoryMedications extends BaseMedicationWidget
         if ($this->is_latest_element && $this->element->isNewRecord) {
             return true;
         }
-        $this->missing_prescription_items = (bool) $this->getEntriesForUntrackedPrescriptionItems();
+        $this->missing_prescription_items = (bool) $this->element->getEntriesForUntrackedPrescriptionItems($this->patient);
         foreach ($this->element->entries as $entry) {
             if ($entry->prescriptionNotCurrent()) {
                 return false;
@@ -79,25 +79,52 @@ class HistoryMedications extends BaseMedicationWidget
         if(!is_null($element)) {
             /** @var MedicationManagementElement $element*/
             foreach ($element->entries as $entry) {
-            	/** @var \EventMedicationUse $new_entry */
-                $new_entry = clone $entry;
-                $new_entry->id = null;
-                $new_entry->setIsNewRecord(true);
-				$entries[] = $new_entry;
+            		if(!$entry->prescribe) {
+									/** @var \EventMedicationUse $new_entry */
+									$new_entry = clone $entry;
+									$new_entry->id = null;
+									$new_entry->setIsNewRecord(true);
+									$entries[] = $new_entry;
+								}
             }
         }
 
         return $entries;
     }
 
+	private function getEntriesFromPreviousHistory()
+	{
+		$entries = [];
+		$element = $this->element->getModuleApi()->getLatestElement(HistoryMedicationsElement::class, $this->patient);
+		if(!is_null($element)) {
+			/** @var HistoryMedicationsElement $element*/
+			$entries = $element->entries;
+		}
+
+		return $entries;
+	}
+
     /**
      * @return bool whether any entries were set
      */
 
-    private function setEntriesFromPreviousManagement()
+    private function setEntriesWithPreviousManagement()
     {
-        $entries = $this->getEntriesFromPreviousManagement();
-        $this->element->entries = $entries;
+				$entries = $this->getEntriesFromPreviousManagement();
+        $history_entries = $this->getEntriesFromPreviousHistory();
+        foreach($history_entries as $history_entry) {
+        	$duplicate = false;
+        	foreach($entries as $entry) {
+        		if($entry->binded_key === $history_entry->binded_key) {
+        			$duplicate = true;
+						}
+					}
+
+        	if(!$duplicate) {
+        		$entries[] = $history_entry;
+					}
+				}
+        $this->element->entries = array_merge($entries, $this->element->getEntriesForUntrackedPrescriptionItems($this->patient));
         return !empty($entries);
     }
 
@@ -110,7 +137,7 @@ class HistoryMedications extends BaseMedicationWidget
 
             /*  If there has never been a Management element added, the last
             History element should be taken into account */
-            if(!$this->setEntriesFromPreviousManagement()) {
+            if(!$this->setEntriesWithPreviousManagement()) {
                 parent::setElementFromDefaults();
             }
         }
@@ -128,7 +155,7 @@ class HistoryMedications extends BaseMedicationWidget
             }
             $entries[] = $entry;
         }
-        if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
+        if ($untracked = $this->element->getEntriesForUntrackedPrescriptionItems($this->patient)) {
             // tracking prescription items.
             $this->element->entries = array_merge(
                 $entries,
@@ -143,7 +170,7 @@ class HistoryMedications extends BaseMedicationWidget
     public function getMergedManagementEntries()
     {
         if(empty($this->element->entries)) {
-            $this->setEntriesFromPreviousManagement();
+            $this->setEntriesWithPreviousManagement();
         }
 
         $this->element->assortEntries();
