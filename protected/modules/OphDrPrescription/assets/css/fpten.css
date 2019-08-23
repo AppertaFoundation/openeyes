@@ -76,7 +76,7 @@ body {
     padding-top: 5mm;
     height: 13mm;
     width: 19mm;
-    margin-left: 32mm;
+    margin-left: 31mm;
     line-height: 13mm;
     text-align: center;
 }
@@ -91,7 +91,7 @@ body {
 #fpten-dob, #wpten-dob {
     height: 13mm;
     width: 19mm;
-    margin-left: 32mm;
+    margin-left: 31mm;
     text-align: center;
     line-height: 13mm;
 }
@@ -185,7 +185,7 @@ body {
     padding-top: 1mm;
     height: 76mm;
     width: 50mm;
-    margin-left: 30mm;
+    margin-left: 29mm;
     overflow: hidden;
 }
 

@@ -39,7 +39,7 @@ class PrescriptionFormPrinter extends CWidget
     private $print_mode;
     private $page_count = 1;
 
-    const MAX_FPTEN_LINES = 25;
+    const MAX_FPTEN_LINES = 24;
     const LHS_LINE_FILLER_TEXT = 'x';
     const RHS_LINE_FILLER_TEXT = 'GP COPY';
 
