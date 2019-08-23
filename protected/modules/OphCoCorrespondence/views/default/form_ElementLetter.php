@@ -395,15 +395,19 @@ $creating = isset($creating) ? $creating : false;
                         false, array('class' => 'address')) ?>
                 </td>
             </tr>
+        </table>
+        <table class="cols-full">
+          <colgroup>
+            <col class="cols-2">
+            <col>
+          </colgroup>
+          <tbody> 
             <tr>
-                <td>
-                    From
-                </td>
-                <td>
-                    <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
-                    <?php echo $form->textArea($element, 'footer',
-                        array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
-                </td>
+              <td>From</td>
+              <td>
+                <?php $this->widget('application.widgets.AutoCompleteSearch', ['html_options' => ['placeholder' => 'Search for users full title and details']]); ?>
+                <?php echo $form->textArea($element, 'footer', array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'correspondence-letter-text', 'style' => "overflow: hidden; overflow-wrap: break-word; height: 114px;")) ?>
+              </td>
             </tr>
             <tr>
                 <td>
@@ -438,6 +442,7 @@ $creating = isset($creating) ? $creating : false;
                     </div>
                 </td>
             </tr>
+          </tbody>
         </table>
     </div>
 </div>
@@ -476,7 +481,7 @@ $creating = isset($creating) ? $creating : false;
 
             OpenEyes.UI.AutoCompleteSearch.init({
                 input: $('#oe-autocompletesearch'),
-                url: baseUrl + 'users/correspondence-footer/true',
+                url: baseUrl + '/'+moduleName+'/default/users/correspondence-footer/true',
                 onSelect: function () {
                     let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                     $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
