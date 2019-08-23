@@ -50,22 +50,18 @@ class DrugController extends \ModuleAdminController
         $model = OphCiExamination_Dilation_Drugs::model()->findByPk($id);
         $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
         if ($new_attributes) {
-            foreach ($new_attributes as $key => $value) {
-                $model->setAttribute($key, $value);
-            }
+            $model->setAttributes($new_attributes);
 
             if ($model->save()) {
                 Audit::add('admin', 'edit', serialize($model->attributes), false,
                 ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']);
                 Yii::app()->user->setFlash('success', 'Drop edited');
                 $this->redirect(['dilationDrugs']);
-            } else {
-                $errors = $model->getErrors();
             }
         }
         $this->render('/Drug/edit', [
           'model' => $model,
-          'errors' => isset($errors) ? $errors : null,
+          'errors' => $model->getErrors(),
         ]);
     }
 
@@ -114,22 +110,18 @@ class DrugController extends \ModuleAdminController
         $request = Yii::app()->getRequest();
         $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
         if ($new_attributes) {
-            foreach ($new_attributes as $key => $value) {
-                $model->setAttribute($key, $value);
-            }
+            $model->setAttributes($new_attributes);
 
             if ($model->save()) {
                 Audit::add('admin', 'create', serialize($model->attributes), false,
                 ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']);
                 Yii::app()->user->setFlash('success', 'Drop created');
                 $this->redirect(['dilationDrugs']);
-            } else {
-                $errors = $model->getErrors();
             }
         }
         $this->render('/Drug/edit', [
           'model' => $model,
-          'errors' => isset($errors) ? $errors : null,
+          'errors' => $model->getErrors(),
         ]);
     }
 }

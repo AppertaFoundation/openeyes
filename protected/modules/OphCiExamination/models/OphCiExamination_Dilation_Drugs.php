@@ -52,6 +52,7 @@ class OphCiExamination_Dilation_Drugs extends \BaseActiveRecordVersioned
         return array(
                 array('name', 'required'),
                 array('id, name, display_order, is_active', 'safe', 'on' => 'search'),
+                array('id, name, display_order, is_active', 'safe'),
         );
     }
 
