@@ -153,7 +153,7 @@ class EventMedicationUse extends BaseElement
     {
         return ['usage_type', 'usage_subtype', 'medication_id', 'start_date', 'end_date', 'first_prescribed_med_use_id',
                 'form_id', 'laterality', 'route_id', 'frequency_id', 'duration', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
-                'dose', 'copied_from_med_use_id', 'dose_unit_term'];
+                'dose', 'copied_from_med_use_id', 'dose_unit_term', 'binded_key'];
 	}
 
 	/**
@@ -454,6 +454,7 @@ class EventMedicationUse extends BaseElement
     {
         $this->prescription_item_id = $item->id;
         $this->prescriptionItem = $item;
+        $this->binded_key = $item->binded_key;
         $this->initialiseFromPrescriptionItem();
     }
 
