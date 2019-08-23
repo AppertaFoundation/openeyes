@@ -580,17 +580,19 @@ class DefaultController extends BaseEventTypeController
 		}
     }
 
-    /**
-     * Render the form for a OphDrPrescription_Item, DrugSetItem or Drug (by id).
-     *
-     * @param $key
-     * @param OphDrPrescription_Item|DrugSetItem|int $source
-     *
-     * @throws CException
-     */
+	/**
+	 * Render the form for a OphDrPrescription_Item, DrugSetItem or Drug (by id).
+	 *
+	 * @param $key
+	 * @param OphDrPrescription_Item|DrugSetItem|int $source
+	 *
+	 * @throws CException
+	 * @throws Exception
+	 */
     public function renderPrescriptionItem($key, $source)
     {
         $item = new OphDrPrescription_Item();
+				$item->binded_key = substr(bin2hex(random_bytes(10)), 0 , 10);
         if (is_a($source, 'OphDrPrescription_Item')) {
 
             // Source is a prescription item, so we should clone it
@@ -606,6 +608,7 @@ class DefaultController extends BaseEventTypeController
                      ) as $field) {
                 $item->$field = $source->$field;
             }
+
             if ($source->tapers) {
                 $tapers = array();
                 foreach ($source->tapers as $taper) {
