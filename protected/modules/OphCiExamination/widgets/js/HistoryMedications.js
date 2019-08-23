@@ -150,8 +150,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     if (!this.$table.find('tr.originally-stopped').length) {
         this.$element.find('.show-stopped').hide();
         this.$element.find('.hide-stopped').hide();
-    }else{
-			this.$table.find('tr.originally-stopped').hide();
+    } else {
+    		this.$table.find('tr.originally-stopped').hide();
 		}
   };
 
