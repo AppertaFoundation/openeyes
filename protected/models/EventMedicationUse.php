@@ -45,6 +45,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property string $created_date
  * @property int $stop_reason_id
  * @property int $prescription_item_id
+ * @property string $binded_key
  *
  * The followings are the available model relations:
  * @property Event $copiedFromMedUse
@@ -150,6 +151,42 @@ class EventMedicationUse extends BaseElement
     public static function getUsageSubtype()
     {
         return "History";
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'event_medication_use';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('usage_type, medication_id', 'required'),
+            array('first_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly'=>true),
+            array('dose', 'numerical'),
+            array('laterality', 'validateLaterality'),
+            array('event_id, copied_from_med_use_id, last_modified_user_id, created_user_id, binded_key', 'length', 'max'=>10),
+            array('usage_type, usage_subtype, dose_unit_term', 'length', 'max'=>45),
+            array('dose_unit_term', 'validateDoseUnitTerm'),
+            array('usage_type', 'default', 'value' => static::getUsageType(), 'on' => 'insert'),
+            array('usage_subtype', 'default', 'value' => static::getUsageSubType(), 'on' => 'insert'),
+            array('end_date', 'OEFuzzyDateValidator'),
+            array('start_date', 'OEFuzzyDateValidatorNotFuture'),
+            array('last_modified_date, created_date, event_id', 'safe'),
+            array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration', 'required', 'on' => 'to_be_prescribed'),
+            array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
+            // The following rule is used by search().
+            // @todo Please remove those attributes that should not be searched.
+            array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id, last_modified_date, created_user_id, created_date, binded_key', 'safe', 'on'=>'search'),
+        );
     }
 
     /**

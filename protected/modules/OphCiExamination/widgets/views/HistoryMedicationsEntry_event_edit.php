@@ -67,20 +67,15 @@ $is_posting = Yii::app()->request->getIsPostRequest();
             <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
         </div>
 
-        <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]"
-               value="<?= (int)$entry->is_copied_from_previous_event; ?>"/>
-        <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>"/>
-        <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]"
-               value="<?= !isset($entry->medication_id) ? "{{medication_id}}" : $entry->medication_id ?>"/>
-        <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>"
-               class="medication-name"/>
-        <input type="hidden" name="<?= $field_prefix ?>[usage_type]"
-               value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>"/>
-        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $entry->id ?>"/>
-        <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]"
-               value="<?= $entry->prescription_item_id ?>"/>
-        <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied"
-               value="<?php echo (int)$to_be_copied; ?>"/>
+        <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" />
+        <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
+        <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]" value="<?= !isset($entry->medication_id) ? "{{medication_id}}" : $entry->medication_id ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" class="medication-name" />
+        <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
+				<input type="hidden" name="<?= $field_prefix ?>[binded_key]" class="js-binded-key" value="<?= $entry->binded_key ?>">
     </td>
     <td class="dose-frequency-route">
         <div id="<?= $model_name . "_entries_" . $row_count . "_dfrl_error" ?>">
