@@ -54,7 +54,7 @@ class DrugController extends \ModuleAdminController
         }
 
         $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
-        if ($model && $new_attributes) {
+        if ($new_attributes) {
             $model->setAttributes($new_attributes);
 
             if ($model->save()) {
