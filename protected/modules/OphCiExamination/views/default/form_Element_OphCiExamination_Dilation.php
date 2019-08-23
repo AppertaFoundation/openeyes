@@ -77,11 +77,11 @@ foreach ($dilation_drugs as $d_drug) {
                     <div class="flex-layout flex-top flex-left">
                       <ul class="add-options" data-multi="false" data-clickadd="false">
                           <?php foreach ($element->getAllDilationDrugs($eye_side) as $id => $drug) : ?>
-                            <?php if ($dilation_drugs_status[$id]) : ?>
+                                <?php if ($dilation_drugs_status[$id]) : ?>
                               <li data-str="<?= $id ?>"
                                   data-order="<?= $dilation_drugs_order[$id] ?>"><?= $drug ?></li>
-                              <?php endif; ?>
-                            <?php endforeach; ?>
+                                <?php endif; ?>
+                          <?php endforeach; ?>
                       </ul>
                     </div>
                   </td>
