@@ -25,7 +25,7 @@
                 <tr>
                     <td>Title:</td>
                     <td class="flex-layout">
-                        <?php echo $extra_gp_form->textField($extra_gp_contact, 'title', array('size' => 30, 'maxlength' => 20)); ?>
+                        <?php echo $extra_gp_form->textField($extra_gp_contact, 'title', array('size' => 60, 'maxlength' => 20)); ?>
                         <?php echo $extra_gp_form->error($extra_gp_contact, 'title'); ?>
                     </td>
                 </tr>
@@ -52,7 +52,7 @@
                         <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'primary_phone'); ?>
                     </td>
                     <td>
-                        <?php echo $extra_gp_form->textField($extra_gp_contact, 'primary_phone', array('size' => 30, 'maxlength' => 20, 'autocomplete' => 'off')); ?>
+                        <?php echo $extra_gp_form->textField($extra_gp_contact, 'primary_phone', array('size' => 60, 'maxlength' => 20, 'autocomplete' => 'off')); ?>
                         <?php echo $extra_gp_form->error($extra_gp_contact, 'primary_phone'); ?>
                     </td>
                 </tr>
@@ -113,6 +113,18 @@
                                         $("#extra_gp_practitioner-alert-box").css("display","none");
                                         $("#extra_gp_adding_form").css("display","none");
                                         $("#extra_practice_adding_existing_form").css("display","");
+                                        // The gp variable has been defined globally.
+                                        if(gp.id  == null) {
+                                            // Setting the gpId to -1 as there is no elegant way in php to handle undefined values.
+                                            gp.id = "-1";
+                                        }
+                                        gp.title = response.title;
+                                        gp.firstName = response.firstName;
+                                        gp.lastName = response.lastName;
+                                        gp.phoneno =response.primaryPhone;
+                                        gp.role = response.labelId;
+                                        // Saving the data in the hidden field
+                                        $(".gp_data_retrieved").val(gp.toString());
                                     }
                                   }',
                                 ),
@@ -150,7 +162,7 @@
             <?php echo $extra_existing_practice_form->errorSummary($extra_practice_associate); ?>
             <table class="standard">
                 <tbody>
-                <?php echo CHtml::hiddenField('gp_data_retrieved', '', array('class' => 'hidden_id')); ?>
+                <?php echo CHtml::hiddenField('gp_data_retrieved', '', array('class' => 'hidden_id gp_data_retrieved')); ?>
                 <?php echo CHtml::hiddenField('Contact[title]', '', array('class' => 'hidden_id js-contact-title')); ?>
                 <?php echo CHtml::hiddenField('Contact[first_name]', '', array('class' => 'hidden_id js-contact-first-name')); ?>
                 <?php echo CHtml::hiddenField('Contact[last_name]', '', array('class' => 'hidden_id js-contact-last-name')); ?>
@@ -211,6 +223,19 @@
                                         // Cleaning the contact label id after the contact/gp has been added successfully,
                                         // otherwise the same label gets saved for the contact (if left blank) on adding the contact/gp for the next time
                                         $(".js-extra-gp-contact-label-id").val("");
+                                
+                                        // Hide the message once the existing practice is associated successfully.
+                                        $("#extra-gp-message").hide();
+                                
+                                        // enabling title and phone number on closing the popup.
+                                        $("#extra-gp-form #Contact_title").prop("readonly", false);
+                                        $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
+                                
+                                        // remove data from hidden fields.
+                                        $(".gp_data_retrieved").val("");
+                                
+                                        // unsetting the variable (defined in create_contact_form inside the onselect function of autocompletesearch widget - firstname and lastname field)
+                                        gp = new Gp();
                                     }
                                 }',
                             ],
@@ -252,6 +277,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
             <p class="note text-right">Fields with <span class="required">*</span> are required.</p>
             <?php echo $extra_practice_form->errorSummary($extra_practice); ?>
             <table class="standard">
+                <?php echo CHtml::hiddenField('gp_data_retrieved', '', array('class' => 'hidden_id gp_data_retrieved')); ?>
                 <?php echo CHtml::hiddenField('Contact[contact_title]', '', array('class' => 'hidden_id js-contact-title')); ?>
                 <?php echo CHtml::hiddenField('Contact[contact_first_name]', '', array('class' => 'hidden_id js-contact-first-name')); ?>
                 <?php echo CHtml::hiddenField('Contact[contact_last_name]', '', array('class' => 'hidden_id js-contact-last-name')); ?>
@@ -306,23 +332,34 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                                             addExtraGp("js-selected_extra_gps", response.gp_id, response.practice_id);
                                         }
                                         extraContactFormCleaning();
-                                        $(".js-extra-practice-gp-id").val("");
-
-                                        // clearing practice_id value (stored in the hidden field) from the HTML 
+                                        // clearing practice_id value (stored in the hidden field) from the HTML
                                         // DOM after the contact/gp has been successfully added
                                         $("#PracticeAssociate_practice_id").val("");
-
-                                        // Cleaning the data from the hidden fields as it might cause problems for the 
+                                
+                                        // Cleaning the data from the hidden fields as it might cause problems for the
                                         // non-mandatory fields when trying to add new contact or gp
                                         $(".js-contact-title").val("");
                                         $(".js-contact-first-name").val("");
                                         $(".js-contact-last-name").val("");
                                         $(".js-contact-primary-phone").val("");
                                         $(".js-contact-label-id").val("");
-
-                                        // Cleaning the contact label id after the contact/gp has been added successfully, 
-                                        // otherwise the same label gets saved for the contact (if left blank) on adding the contact/gp for the next time 
+                                
+                                        // Cleaning the contact label id after the contact/gp has been added successfully,
+                                        // otherwise the same label gets saved for the contact (if left blank) on adding the contact/gp for the next time
                                         $(".js-extra-gp-contact-label-id").val("");
+                                
+                                        // Hide the message once the existing practice is associated successfully.
+                                        $("#extra-gp-message").hide();
+                                
+                                        // enabling title and phone number on closing the popup.
+                                        $("#extra-gp-form #Contact_title").prop("readonly", false);
+                                        $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
+                                
+                                        // remove data from hidden fields.
+                                        $(".gp_data_retrieved").val("");
+                                
+                                        // unsetting the variable (defined in create_contact_form inside the onselect function of autocompletesearch widget - firstname and lastname field)
+                                        gp = new Gp();
                                     }
                                 }',
                             ],
@@ -370,7 +407,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
         $('#extra_gp_selected_contact_label_wrapper').css('display','none');
         // clearing the selected gp role id when user removes the role of the gp/contact.
         $('.js-extra-gp-contact-label-id').val('');
-
+        onChangeFirstLastRoleGpFields();
     });
 
     // Initializing the AutoComplete Search widget for the first Name field in the pop-up on adding gp or contact.
@@ -403,10 +440,15 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
         this.lastName = lastName;
         this.phoneno = phoneno;
         this.role = role;
+        this.toString = function() {
+            return '{"gpId": "' + this.id + '", "title": "' + this.title + '", "firstName": "' + this.firstName + '", "lastName": "' + this.lastName + '", "phoneno": "' + this.phoneno + '", "roleId": "' + this.role +'"}';
+        }
     }
 
-    // global gp variable which stores the response when user selects an item from the search results.
-    var gp;
+    // global gp variable to keep track of the gp data.
+    var gp = new Gp();
+
+    var enablePulsateEffect = true;
 
     function searchGps(response) {
         $('#extra-gp-form #Contact_title').val(response.gpTitle);
@@ -414,14 +456,13 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
         $('#Contact\\[last_name\\]').val(response.gpLastName);
         $('#extra-gp-form #Contact_primary_phone').val(response.gpPhoneno);
         autoCompleteContactLabel('extra_gp_selected_contact_label_wrapper', JSON.parse(response.gpRole), '#extra_gp_autocomplete_contact_label_id');
-        // Saving the data in the hidden field to compare against
-        gp = new Gp(response.value, response.gpTitle, response.gpFirstName, response.gpLastName, response.gpPhoneno, JSON.parse(response.gpRole));
-        var gpJsonData = '{"gpId": "' + gp.id + '", "title": "' + gp.title + '", "firstName": "' + gp.firstName + '", "lastName": "' + gp.lastName + '", "phoneno": "' + gp.phoneno + '", "roleId": "' + gp.role.id + '"}';
-        $('#gp_data_retrieved').val(gpJsonData);
+
         // Setting both the title and phone no. to read only if user has select an existing gp.
         $("#extra-gp-form #Contact_title").prop("readonly", true);
         $("#extra-gp-form #Contact_primary_phone").prop("readonly", true);
         $('#extra-gp-message').hide();
+        // Setting the property gpId.
+        gp.id = response.value;
         // Show the message to the user.
         if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
             notifyUserExistingorNewGpRecord(false, true);
@@ -429,8 +470,8 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
             notifyUserExistingorNewGpRecord(false, false);
         }
         pulsateEffect();
+        enablePulsateEffect = true;
     }
-
 
     /**
      * On selecting an item from the search results, this  function adds the item (@param item) to the wrapper (@wrapperId)
@@ -445,63 +486,34 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
     }
 
     $('#extra-gp-form #Contact\\[first_name\\]').on('input',function(e){
-        if(gp !== undefined) {
-            onChangeFirstLastRoleGpFields('first_name', gp.firstName);
-        } else {
-            $('#extra-gp-message').hide();
-            if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
-                notifyUserExistingorNewGpRecord(true, true);
-            } else {
-                notifyUserExistingorNewGpRecord(true, false);
-            }
-        }
+        onChangeFirstLastRoleGpFields();
     });
 
     $('#extra-gp-form #Contact\\[last_name\\]').on('input',function(e){
-        if(gp !== undefined) {
-            onChangeFirstLastRoleGpFields('last_name', gp.lastName);
-        } else {
-            $('#extra-gp-message').hide();
-            if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
-                notifyUserExistingorNewGpRecord(true, true);
-            } else {
-                notifyUserExistingorNewGpRecord(true, false);
-            }
-        }
+        onChangeFirstLastRoleGpFields();
     });
 
-    function onChangeFirstLastRoleGpFields(element, selectedText) {
-        if(gp !== undefined) {
-            if( $('#extra-gp-form #Contact\\[' + element + '\\]').val() == selectedText ) {
-                $("#extra-gp-form #Contact_title").val(gp.title);
-                $("#extra-gp-form #Contact_primary_phone").val(gp.phoneno);
-                autoCompleteContactLabel('extra_gp_selected_contact_label_wrapper', gp.role, '#extra_gp_autocomplete_contact_label_id');
-                $("#extra-gp-form #Contact_title").prop("readonly", true);
-                $("#extra-gp-form #Contact_primary_phone").prop("readonly", true);
-                $('#extra-gp-message').hide();
-                if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
-                    notifyUserExistingorNewGpRecord(false, true);
-                } else {
-                    notifyUserExistingorNewGpRecord(false, false);
-                }
-                pulsateEffect();
-            } else {
-                $("#extra-gp-form #Contact_title").prop("readonly", false);
-                $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
-                $('#extra-gp-message').hide();
-                if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
-                    notifyUserExistingorNewGpRecord(true, true);
-                } else {
-                    notifyUserExistingorNewGpRecord(true, false);
-                }
-            }
+    function onChangeFirstLastRoleGpFields() {
+        gp.id = undefined;
+        $("#extra-gp-form #Contact_title").prop("readonly", false);
+        $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
+        $('#extra-gp-message').hide();
+        if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
+            notifyUserExistingorNewGpRecord(true, true);
+        } else {
+            notifyUserExistingorNewGpRecord(true, false);
+        }
+
+        if (enablePulsateEffect) {
+            pulsateEffect();
+            enablePulsateEffect = false;
         }
     }
 
     /**
-     * This function displays the
-     * @param isNewRecord User has selected the existing practitioner record or a new record.
-     * @param isGp To check whether to show the message
+     * This function display the message to let the user know whether they are associating an existing gp or creating a new one.
+     * @param isNewRecord User has selected the existing practitioner or a new one will be created.
+     * @param isGp To check whether user is adding a gp or gp contact.
      */
     function notifyUserExistingorNewGpRecord(isNewRecord, isGp) {
         $('#extra-gp-message').show();
@@ -509,16 +521,16 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
         var msg = "";
 
         if(!isNewRecord && isGp) {
-            msg = "You have selected an existing practitioner. <br/>Please click Next to create an association of the selected practitioner with a practice.";
+            msg = "You have selected an existing practitioner. <br/>Please click 'Next' to associate the existing practitioner with a practice.";
         }
         if(isNewRecord && isGp) {
-            msg = "This will create a new practitioner record. <br/>Please click Next to create an association of this newly added practitioner with a practice.";
+            msg = "This action will create a new practitioner. <br/>Please click 'Next' to associate the practitioner with a practice.";
         }
         if(!isNewRecord && !isGp) {
-            msg = "You have selected an existing practitioner contact. <br/>Please click Next to create an association of the selected practitioner contact with a practice.";
+            msg = "You have selected an existing practitioner contact. <br/>Please click 'Next' to associate the existing practitioner contact with a practice.";
         }
         if(isNewRecord && !isGp) {
-            msg = "This will create a new practitioner contact record. <br/>Please click Next to create an association of this newly added practitioner contact with the practice.";
+            msg = "This action will create a new practitioner contact. <br/>Please click 'Next' to associate the practitioner contact with a practice.";
         }
 
         $('#extra-gp-message p').html(msg);
