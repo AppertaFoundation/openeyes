@@ -19,6 +19,7 @@
 namespace OEModule\OphCiExamination\widgets;
 
 use OEModule\OphCiExamination\models\MedicationManagement as MedicationManagementElement;
+use OEModule\OphCiExamination\models\MedicationManagementEntry;
 
 class MedicationManagement extends BaseMedicationWidget
 {
@@ -28,4 +29,55 @@ class MedicationManagement extends BaseMedicationWidget
     {
         return true; //TODO idk
     }
+
+	private function setEntries()
+	{
+		$entries = [];
+		$element = $this->element->getModuleApi()->getLatestElement(\OEModule\OphCiExamination\models\HistoryMedications::class, $this->patient);
+		if (!is_null($element)) {
+			$entries = array_merge($element->current_entries, $element->getEntriesForUntrackedPrescriptionItems($this->patient));
+			/** @var MedicationManagementElement $element */
+			foreach ($entries as $entry) {
+				/** @var \EventMedicationUse $new_entry */
+				$medication_management_entry = false;
+
+				foreach ($entry->medication->medicationSets as $medSet) {
+
+					if ($medSet->name == "medication_management") {
+
+						$medication_management_entry = true;
+					}
+				}
+				if ($medication_management_entry) {
+					$new_entry = new MedicationManagementEntry();
+					$new_entry->attributes = $entry->getOriginalAttributes();
+					$new_entry->binded_key = $entry->binded_key;
+					$new_entry->id = null;
+					$new_entry->setIsNewRecord(true);
+					$entries[] = $new_entry;
+				}
+			}
+		} else {
+			$api = \Yii::app()->moduleAPI->get('OphDrPrescription');
+			$untracked_prescription_items = $api->getPrescriptionItemsForPatient($this->patient);
+			foreach ($untracked_prescription_items as $item) {
+				$entry = new MedicationManagementEntry();
+				$entry->loadFromPrescriptionItem($item);
+				$entry->binded_key = $item->binded_key;
+				$entry->usage_type = 'OphDrPrescription';
+
+
+				$entries[] = $entry;
+			}
+		}
+
+		$this->element->entries = $entries;
+	}
+
+	public function getViewData()
+	{
+		$this->setEntries();
+
+		return parent::getViewData();
+	}
 }
