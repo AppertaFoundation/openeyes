@@ -95,11 +95,11 @@
                                 array(
                                     'type' => 'POST',
                                     'success' => 'js:function(event){
-                                    if (event.includes("error")){
-                                        $("#extra_gp_errors").html(event);
+                                    let response = JSON.parse(event);
+                                    if ("error" in response){
+                                        $("#extra_gp_errors").html(response.error);
                                         $("#extra_gp_practitioner-alert-box").css("display","");
                                     } else{
-                                        let response = JSON.parse(event);
                                         $(".js-contact-title").val(response.title);
                                         $(".js-contact-first-name").val(response.firstName);
                                         $(".js-contact-last-name").val(response.lastName);
@@ -177,16 +177,16 @@
                             [
                                 'type' => 'POST',
                                 'success' => 'js:function(event){
-                                    if (event.includes("error")){
-                                        let error = JSON.parse(event);
-                                        $("#extra-existing-practice-errors").html(error.error);
+                                    let response = JSON.parse(event);
+                                    console.log(response);
+                                    if ("error" in response){
+                                        $("#extra-existing-practice-errors").html(response.error);
                                         $("#extra-existing-practice-alert-box").css("display","");
                                     } else{
-                                        let gp = JSON.parse(event);
                                         if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
-                                            addExtraGp("js-selected_gp", gp.gp_id);
+                                            addExtraGp("js-selected_gp", response.gp_id);
                                         }else {
-                                            addExtraGp("js-selected_extra_gps", gp.gp_id);
+                                            addExtraGp("js-selected_extra_gps", response.gp_id);
                                         }
     
                                         extraContactFormCleaning();
@@ -291,15 +291,15 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                             [
                                 'type' => 'POST',
                                 'success' => 'js:function(event){
-                                    if (event.includes("error")){
-                                        $("#extra-practice-errors").html(event);
+                                    let response = JSON.parse(event);
+                                    if ("error" in response){
+                                        $("#extra-practice-errors").html(response.error);
                                         $("#extra-practice-practice-alert-box").css("display","");
                                     }else {
-                                        let gp = JSON.parse(event);
                                         if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
-                                            addExtraGp("js-selected_gp", gp.gp_id);
+                                            addExtraGp("js-selected_gp", response.gp_id);
                                         } else {
-                                            addExtraGp("js-selected_extra_gps", gp.gp_id);
+                                            addExtraGp("js-selected_extra_gps", response.gp_id);
                                         }
                                         extraContactFormCleaning();
                                         $(".js-extra-practice-gp-id").val("");
