@@ -389,9 +389,10 @@ class MedicationManagement extends BaseMedicationElement
             $item = $this->getPrescriptionItem($entry);
             $item->original_item_id = $entry->id;
             $items[] = $item;
+
+            $prescription_creator->additem($item);
         }
 
-        $prescription_creator->elements['Element_OphDrPrescription_Details']->items = $items;
         $prescription_creator->elements['Element_OphDrPrescription_Details']->draft = 1;
 
         $prescription_creator->save();
@@ -406,10 +407,10 @@ class MedicationManagement extends BaseMedicationElement
             $entry->save();
         }
 
-        $original_item_id = $item->original_item_id;
-        $entry = self::$entry_class::model()->findBypk($original_item_id);
-        $entry->prescription_item_id = $item->id;
-        $entry->save();
+        $this->prescription_id = $prescription_creator->elements['Element_OphDrPrescription_Details']->id;
+        // updte only prescription_id - no validation here
+        $this->update(['prescription_id']);
+
     }
 
     private function getPrescriptionItem(\EventMedicationUse $entry)

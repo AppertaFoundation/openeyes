@@ -120,8 +120,8 @@
                 array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
         </td>
         <td class="prescriptionItemDurationId">
-            <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][duration]', $item->duration,
-                CHtml::listData(DrugDuration::model()->activeOrPk($item->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),
+            <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][duration_id]', $item->duration_id,
+                CHtml::listData(DrugDuration::model()->activeOrPk($item->duration_id)->findAll(array('order' => 'display_order')), 'id', 'name'),
                 array('empty' => '-- Select --', 'class' => 'cols-11')) ?>
         </td>
         <td>

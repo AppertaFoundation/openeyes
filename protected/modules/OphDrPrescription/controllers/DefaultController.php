@@ -429,12 +429,12 @@ class DefaultController extends BaseEventTypeController
                           //  unset($existing_item_ids[$item['id']]);
                         } else {
                             $item_model = new OphDrPrescription_Item();
-                            $item_model->event_id = $this->event_id;
+                            $item_model->event_id = $this->event->id;
                             $item_model->medication_id = $item['medication_id'];
+                            $item_model->start_date = substr($this->event->event_date, 0, 10);
                         }
 
                         $item_model->setAttributes($item);
-                        $item_model->start_date = substr($this->event->event_date, 0, 10);
                     }
 
                     $new_tapers = (isset($item['taper'])) ? $item['taper'] : [];

@@ -204,7 +204,7 @@ class EventMedicationUse extends BaseElement
             'stopReason' => array(self::BELONGS_TO, HistoryMedicationsStopReason::class, 'stop_reason_id'),
             'prescriptionItem' => array(self::BELONGS_TO, OphDrPrescription_Item::class, 'prescription_item_id'),
             'medicationLaterality' => array(self::BELONGS_TO, MedicationLaterality::class, 'laterality'),
-            'drugDuration' => array(self::BELONGS_TO, DrugDuration::class, 'duration'),
+            'drugDuration' => array(self::BELONGS_TO, DrugDuration::class, 'duration_id'),
             'dispenseLocation' => array(self::BELONGS_TO, OphDrPrescription_DispenseLocation::class, 'dispense_location_id'),
             'dispenseCondition' => array(self::BELONGS_TO, OphDrPrescription_DispenseCondition::class, 'dispense_condition_id'),
         );
@@ -269,7 +269,7 @@ class EventMedicationUse extends BaseElement
         $criteria->compare('dose_unit_term', $this->dose_unit_term, true);
         $criteria->compare('route_id', $this->route_id);
         $criteria->compare('frequency_id', $this->frequency_id);
-        $criteria->compare('duration', $this->duration_id);
+        $criteria->compare('duration_id', $this->duration_id);
         $criteria->compare('dispense_location_id', $this->dispense_location_id);
         $criteria->compare('dispense_condition_id', $this->dispense_condition_id);
         $criteria->compare('start_date', $this->start_date, true);

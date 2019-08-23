@@ -49,7 +49,7 @@
                   } ?>
               </td>
               <td><?php echo $item->frequency ?$item->frequency->term : '' ?></td>
-              <td><?php echo $item->duration ? $item->drugDuration->name : '' ?></td>
+              <td><?php echo $item->duration_id ? $item->drugDuration->name : '' ?></td>
               <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
                 <td class="prescription-label">
                     <?php if(!is_null($item->comments)): ?>

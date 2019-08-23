@@ -38,15 +38,9 @@ class PrescriptionCreator extends \EventCreator
             $item->route_id = $medication_set_item->default_route_id;
             $item->medication_id = $medication_set_item->medication_id;
             $item->duration_id = $medication_set_item->default_duration_id;
-
-            // Mandatory attributes in the model.
-            // However, no user input and no default value to be used ...
-            // $item->dispense_condition_id = $medication_set_item->dispense_condition_id;
-            // $item->dispense_location_id = $medication_set_item->dispense_location_id;
-            // $item->laterality = $medication_set_item->laterality;
-
-            $item->start_date_string_YYYYMMDD = date('Ymd');
-
+            $item->dispense_condition_id = $medication_set_item->default_dispense_condition_id;
+            $item->dispense_location_id = $medication_set_item->default_dispense_location_id;
+            $item->start_date = date('Ymd');
             $item->usage_type = \OphDrPrescription_Item::getUsageType();
             $item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();
 
@@ -69,7 +63,6 @@ class PrescriptionCreator extends \EventCreator
 
     private function addItem(\OphDrPrescription_Item $item)
     {
-        $item->scenario = 'automated';
         $this->items[] = $item;
     }
 
