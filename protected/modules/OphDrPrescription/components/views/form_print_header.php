@@ -31,7 +31,9 @@
         </div>
         <div class="fpten-form-row">
             <div id="fpten-nhs" class="fpten-form-column">
-                <span id="<?= $form_css_class ?>-nhs-text"><?= ($form_css_class === 'wpten') ? 'NHS Number: ' . $this->patient->nhs_num : $this->patient->nhs_num ?></span>
+                <span id="<?= $form_css_class ?>-nhs-text">
+                    <?= ($form_css_class === 'wpten') ? 'NHS Number: ' . $this->patient->nhs_num : $this->patient->nhs_num ?>
+                </span>
             </div>
         </div>
         <?php if ($form_css_class === 'wpten') : ?>

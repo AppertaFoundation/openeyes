@@ -36,7 +36,8 @@
 
                         // Work out how many lines are being used for this prescription item. If it exceeds the maximum lines - currently used lines, separate it onto its own script.
                         // If the lines used is greater than the maximum, split the printout between multiple pages.
-                        if ($item->fpTenLinesUsed() + 1 > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used && !$this->isSplitPrinting()) {
+                        if ($item->fpTenLinesUsed() + 1 > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used
+                            && !$this->isSplitPrinting()) {
                             if ($item->fpTenLinesUsed() + 1 > PrescriptionFormPrinter::MAX_FPTEN_LINES) {
                                 // Single item will not fit on a single script.
                                 $this->enableSplitPrint();
@@ -84,7 +85,8 @@
                         for ($index = $this->current_taper_index; $index < $total_tapers; $index++) {
                             $taper = $item->tapers[$index];
                             foreach (array('label', 'dose', 'frequency') as $attr) {
-                                if ($item->getAttrLength("taper{$index}_$attr") > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used) {
+                                $lines_remaining = PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used;
+                                if ($item->getAttrLength("taper{$index}_$attr") > $lines_remaining) {
                                     if ($side === 'right' && !$this->getCurrentItemAttr()) {
                                         $this->addPages();
                                         $this->current_item_index = $j;
@@ -141,7 +143,7 @@
                             if ($side === 'right') {
                                 $this->disableSplitPrint();
                                 $split_print_end = false;
-                            } else if ($side === 'left' && $page_number !== 0) {
+                            } elseif ($side === 'left' && $page_number !== 0) {
                                 // This will never apply for the first page, and should only apply for the left hand side.
                                 $this->disableSplitPrint();
                                 $split_print_end = true;

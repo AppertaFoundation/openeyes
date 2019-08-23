@@ -15,6 +15,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var Element_OphDrPrescription_Details $element
+ */
 ?>
 <div class="element-data full-width">
   <div class="data-value">
@@ -35,7 +39,7 @@
             <?php foreach ($element->items as $key => $item) { ?>
             <tr class="prescription-item">
               <td class="priority-text">
-                  <?php if (isset($this->patient) && $this->patient->hasDrugAllergy($item->drug_id)) : ?>
+                    <?php if (isset($this->patient) && $this->patient->hasDrugAllergy($item->drug_id)) : ?>
                       <i class="oe-i warning small pad js-has-tooltip"
                          data-tooltip-content="Allergic to <?= implode(',', $this->patient->getPatientDrugAllergy($item->drug_id))?>">
                       </i>
@@ -50,19 +54,25 @@
               <td><?php echo $item->frequency->name ?></td>
               <td><?php echo $item->duration->name ?></td>
                 <?php if ($item->dispense_condition->name === 'Print to {form_type}') : ?>
-                <td><?php echo str_replace('{form_type}', $data['form_setting'], $item->dispense_condition->name) . " / " . $item->dispense_location->name ?></td>
+                <td>
+                    <?php echo str_replace(
+                        '{form_type}',
+                        $data['form_setting'],
+                        $item->dispense_condition->name
+                    ) . " / {$item->dispense_location->name}" ?>
+                </td>
                 <?php else : ?>
                 <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
                 <?php endif; ?>
 
                 <td class="prescription-label">
-                    <?php if (!is_null($item->comments)) : ?>
+                    <?php if ($item->comments !== null) : ?>
                         <i><?=\CHtml::encode($item->comments); ?></i>
                     <?php endif; ?>
                 </td>
             </tr>
                 <?php foreach ($item->tapers as $taper) { ?>
-              <tr class="prescription-tapier <?php echo (($key % 2) == 0) ? 'even' : 'odd'; ?>">
+              <tr class="prescription-tapier <?php echo (($key % 2) === 0) ? 'even' : 'odd'; ?>">
                 <td class="prescription-label">
                   <i class="oe-i child-arrow small no-click pad"></i>
                   <em class="fade">then</em>

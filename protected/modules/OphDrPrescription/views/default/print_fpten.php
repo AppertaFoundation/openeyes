@@ -14,7 +14,9 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-Yii::app()->clientScript->registerCssFile(Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets')) . '/css/fpten.css');
+Yii::app()->clientScript->registerCssFile(
+    Yii::app()->assetManager->getPublishedUrl(
+        Yii::getPathOfAlias('application.modules.OphDrPrescription.assets')
+    ). '/css/fpten.css'
+);
 $this->renderOpenElements($this->action->id, null, array('copy' => @$copy, 'print_mode' => $print_mode, 'user' => $user));
-
-

@@ -17,6 +17,9 @@
  */
 global $reason_id;
 global $reason_other_text;
+/**
+ * @var $errors
+ */
 ?>
 
 <?php
@@ -31,14 +34,36 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         ));
 
         // Event actions
-        $this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'primary'), array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id));
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id));
-        $this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id));
-        $this->event_actions[] = EventAction::button("Save and print $form_format", 'saveprintform', array('level' => 'secondary'), array('id' => 'et_save_print_form', 'class' => 'button small', 'style' => 'display: none;', 'form' => $form_id));
+        $this->event_actions[] = EventAction::button(
+            'Save draft',
+            'savedraft',
+            array('level' => 'primary'),
+            array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id)
+        );
+        $this->event_actions[] = EventAction::button(
+            'Save',
+            'save',
+            array('level' => 'secondary'),
+            array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id)
+        );
+        $this->event_actions[] = EventAction::button(
+            'Save and print',
+            'saveprint',
+            array('level' => 'secondary'),
+            array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id)
+        );
+        $this->event_actions[] = EventAction::button(
+            "Save and print $form_format",
+            'saveprintform',
+            array('level' => 'secondary'),
+            array('id' => 'et_save_print_form', 'class' => 'button small', 'style' => 'display: none;', 'form' => $form_id)
+        );
 ?>
 
-        <input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_id" name="Element_OphDrPrescription_Details[edit_reason_id]" value="<?php echo htmlentities($reason_id); ?>" />
-        <input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_other_text" name="Element_OphDrPrescription_Details[edit_reason_other]" value="<?php echo htmlentities($reason_other_text); ?>" />
+        <input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_id"
+               name="Element_OphDrPrescription_Details[edit_reason_id]" value="<?php echo htmlentities($reason_id); ?>" />
+        <input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_other_text"
+               name="Element_OphDrPrescription_Details[edit_reason_other]" value="<?php echo htmlentities($reason_other_text); ?>" />
 
         <?php $this->displayErrors($errors)?>
         <?php $this->renderOpenElements($this->action->id, $form); ?>

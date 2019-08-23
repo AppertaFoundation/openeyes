@@ -65,7 +65,7 @@ $form_option = OphDrPrescription_DispenseCondition::model()->findByAttributes(ar
         $(document).ready(function() {
             do_print_prescription();
         });
-        <?php } else if (isset(Yii::app()->session['print_prescription_fp10']) || isset(Yii::app()->session['print_prescription_wp10'])) {
+        <?php } elseif (isset(Yii::app()->session['print_prescription_fp10']) || isset(Yii::app()->session['print_prescription_wp10'])) {
             ?>
         $(document).ready(function() {
             do_print_fpTen('<?= isset(Yii::app()->session['print_prescription_fp10']) ? 'FP10' : 'WP10' ?>');

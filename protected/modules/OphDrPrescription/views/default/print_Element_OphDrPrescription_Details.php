@@ -29,7 +29,8 @@
     $settings = new SettingMetadata();
     $print_mode = $settings->getSetting('prescription_form_format');
 
-    $allowed_tags = '<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup><u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
+    $allowed_tags = '<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup>
+<u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
 
     $header_param = Yii::app()->params['prescription_boilerplate_header'];
 if ($header_param !== null) {
@@ -84,7 +85,7 @@ if ($footer_param !== null) {
     <h2>Allergies</h2>
     <table class="borders">
         <tr>
-            <td><?= $this->patient->getAllergiesString(); ?></td>
+            <td><?= $this->patient->getAllergiesString() ?></td>
         </tr>
     </table>
 
@@ -117,13 +118,13 @@ if ($footer_param !== null) {
             <?php
             foreach ($items as $item) {
                 ?>
-                    <tr class="prescriptionItem<?= $this->patient->hasDrugAllergy($item->drug_id) ? ' allergyWarning' : ''; ?> ">
-                        <td class="prescriptionLabel"><?= $item->drug->label; ?></td>
-                        <td><?= is_numeric($item->dose) ? ($item->dose . " " . $item->drug->dose_unit) : $item->dose ?></td>
+                    <tr class="prescriptionItem<?= $this->patient->hasDrugAllergy($item->drug_id) ? ' allergyWarning' : '' ?> ">
+                        <td class="prescriptionLabel"><?= $item->drug->label ?></td>
+                        <td><?= is_numeric($item->dose) ? ($item->dose . ' ' . $item->drug->dose_unit) : $item->dose ?></td>
                         <td><?= $item->route->name ?><?php if ($item->route_option) {
                             echo ' (' . $item->route_option->name . ')';
                             } ?></td>
-                        <td><?= $item->frequency->long_name; ?></td>
+                        <td><?= $item->frequency->long_name ?></td>
                         <td><?= $item->duration->name ?></td>
                         <?php if (strpos($group_name, 'Hospital') !== false) { ?>
                             <td><?= $item->dispense_location->name ?></td>
@@ -134,11 +135,11 @@ if ($footer_param !== null) {
                     <?php foreach ($item->tapers as $taper) { ?>
                         <tr class="prescriptionTaper">
                             <td class="prescriptionLabel">then</td>
-                            <td><?= is_numeric($taper->dose) ? ($taper->dose . " " . $item->drug->dose_unit) : $taper->dose ?></td>
+                            <td><?= is_numeric($taper->dose) ? ($taper->dose . ' ' . $item->drug->dose_unit) : $taper->dose ?></td>
                             <td>-</td>
                             <td><?= $taper->frequency->long_name ?></td>
                             <td><?= $taper->duration->name ?></td>
-                            <?php if (strpos($group_name, "Hospital") !== false) { ?>
+                            <?php if (strpos($group_name, 'Hospital') !== false) { ?>
                                 <td></td>
                                 <td>-</td>
                                 <td>-</td>
@@ -150,8 +151,8 @@ if ($footer_param !== null) {
                     if (strlen($item->comments) > 0) { ?>
                         <tr class="prescriptionComments">
                             <td class="prescriptionLabel">Comments:</td>
-                            <td colspan="<?= strpos($group_name, "Hospital") !== false ? 7 : 4 ?>">
-                                <i><?= \CHtml::encode($item->comments); ?></i></td>
+                            <td colspan="<?= strpos($group_name, 'Hospital') !== false ? 7 : 4 ?>">
+                                <i><?= CHtml::encode($item->comments) ?></i></td>
                         </tr>
                     <?php }
             } ?>

@@ -67,11 +67,13 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             array('drug_id, dose, route_id, frequency_id, duration_id, dispense_condition_id, dispense_location_id', 'required'),
             array('route_option_id', 'validateRouteOption'),
             array('comments', 'length', 'max'=>256),
-            array('drug_id, dose, route_id, frequency_id, duration_id, id, route_option_id, last_modified_user_id, last_modified_date, created_user_id, created_date, dispense_condition_id, dispense_location_id, comments', 'safe'),
+            array('drug_id, dose, route_id, frequency_id, duration_id, id, route_option_id, last_modified_user_id,
+            last_modified_date, created_user_id, created_date, dispense_condition_id, dispense_location_id, comments', 'safe'),
             //array('', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, dose, prescription_id, drug_id, route_id, route_option_id, frequency_id, duration_id, dispense_condition_id, dispense_location_id', 'safe', 'on' => 'search'),
+            array('id, dose, prescription_id, drug_id, route_id, route_option_id, frequency_id, duration_id,
+            dispense_condition_id, dispense_location_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -160,7 +162,8 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
      * @param $attr string
      * @return int
      */
-    public function getAttrLength($attr) {
+    public function getAttrLength($attr)
+    {
         return $this->fpten_line_usage[$attr];
     }
 
@@ -205,6 +208,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
 
     /**
      * @return DateTime|null
+     * @throws Exception
      */
     public function stopDateFromDuration()
     {
@@ -230,7 +234,8 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
     public function fpTenLinesUsed()
     {
         $drug_label = $this->drug->label;
-        $dose = 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose) . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
+        $dose = 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose)
+            . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
         $frequency = "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
 
         $this->fpten_line_usage['item_drug'] = (int)ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS);
@@ -246,7 +251,8 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             + ($this->comments ? ceil(strlen("Comment: $this->comments") / MAX_FPTEN_LINE_CHARS) : 0));
 
         foreach ($this->tapers as $index => $taper) {
-            $taper_dose = 'Dose: ' . (is_numeric($taper->dose) ? ($taper->dose . ' ' . $this->drug->dose_unit) : $taper->dose) . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
+            $taper_dose = 'Dose: ' . (is_numeric($taper->dose) ? ($taper->dose . ' ' . $this->drug->dose_unit) : $taper->dose)
+                . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
             $taper_frequency = "Frequency: {$taper->frequency->long_name} for {$taper->duration->name}";
             $this->fpten_line_usage["taper{$index}_label"] = 1;
             $this->fpten_line_usage["taper{$index}_dose"] = (int)ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS);
@@ -285,6 +291,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
 
     public function fpTenDose()
     {
-        return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose) . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
+        return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose)
+            . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
     }
 }

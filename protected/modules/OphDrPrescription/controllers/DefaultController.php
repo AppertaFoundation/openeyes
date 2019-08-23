@@ -41,9 +41,11 @@ class DefaultController extends BaseEventTypeController
 
     public function actionView($id)
     {
-        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+        $model = Element_OphDrPrescription_Details::model()
+            ->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
 
-        $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+        $this->editable = $this->userIsAdmin() || $model->draft
+            || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
         return parent::actionView($id);
     }
 
@@ -72,7 +74,8 @@ class DefaultController extends BaseEventTypeController
         $assetManager = Yii::app()->getAssetManager();
         $baseAssetsPath = Yii::getPathOfAlias('application.assets.js');
         $assetManager->publish($baseAssetsPath);
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.InputFieldValidation.js', CClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath)
+            .'/OpenEyes.UI.InputFieldValidation.js', CClientScript::POS_END);
 
         $this->setCommonDrugMetadata();
         $this->showAllergyWarning();
@@ -113,6 +116,7 @@ class DefaultController extends BaseEventTypeController
 
     /**
      * Some additional initialisation for create.
+     * @throws CHttpException
      */
     protected function initActionCreate()
     {
@@ -122,12 +126,12 @@ class DefaultController extends BaseEventTypeController
 
     /**
      * Some additional initialisation for create.
+     * @throws CHttpException
      */
     protected function initActionUpdate()
     {
         parent::initActionUpdate();
         $this->initEdit();
-
     }
 
     /**
@@ -142,8 +146,13 @@ class DefaultController extends BaseEventTypeController
 
         // set required js variables
         $cs = Yii::app()->getClientScript();
-        $cs->registerScript('scr_prescription_view',
-            "prescription_print_url = '".Yii::app()->createUrl('/OphDrPrescription/default/print/'.$this->event->id)."';\n", CClientScript::POS_READY);
+        $cs->registerScript(
+            'scr_prescription_view',
+            "prescription_print_url = '"
+            .Yii::app()->createUrl('/OphDrPrescription/default/print/'.$this->event->id)
+            ."';\n",
+            CClientScript::POS_READY
+        );
 
         // Get prescription details element
         $element = Element_OphDrPrescription_Details::model()->findByAttributes(array('event_id' => $this->event->id));
@@ -189,7 +198,7 @@ class DefaultController extends BaseEventTypeController
     protected function setElementDefaultOptions($element, $action)
     {
         parent::setElementDefaultOptions($element, $action);
-        if ($action == 'create' && get_class($element) == 'Element_OphDrPrescription_Details') {
+        if ($action === 'create' && $element instanceof \Element_OphDrPrescription_Details) {
             // Prepopulate prescription with set by episode status
             // FIXME: It's brittle relying on the set name matching the status
             $items = array();
@@ -361,7 +370,12 @@ class DefaultController extends BaseEventTypeController
     {
         $options = DrugRouteOption::model()->findAllByAttributes(array('drug_route_id' => $route_id));
         if ($options) {
-            echo CHtml::dropDownList('prescription_item['.$key.'][route_option_id]', null, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
+            echo CHtml::dropDownList(
+                'prescription_item['.$key.'][route_option_id]',
+                null,
+                CHtml::listData($options, 'id', 'name'),
+                array('empty' => '-- Select --')
+            );
         } else {
             echo '-';
         }
@@ -376,7 +390,7 @@ class DefaultController extends BaseEventTypeController
      */
     protected function setElementComplexAttributesFromData($element, $data, $index = null)
     {
-        if (get_class($element) == 'Element_OphDrPrescription_Details' && @$data['prescription_item']) {
+        if ($element instanceof \Element_OphDrPrescription_Details && @$data['prescription_item']) {
             // Form has been posted, so we should return the submitted values instead
             $items = array();
             foreach ($data['prescription_item'] as $item) {
@@ -406,7 +420,7 @@ class DefaultController extends BaseEventTypeController
     protected function saveEventComplexAttributesFromData($data)
     {
         foreach ($this->open_elements as $element) {
-            if (get_class($element) == 'Element_OphDrPrescription_Details') {
+            if (get_class($element) === 'Element_OphDrPrescription_Details') {
                 $element->updateItems(isset($data['prescription_item']) ? $data['prescription_item'] : array());
             }
         }
@@ -433,7 +447,7 @@ class DefaultController extends BaseEventTypeController
                 'user' => $user,
                 'print_mode' => $print_mode
             ));
-        } else if ( $pdf_documents == 1 ) {
+        } elseif ($pdf_documents === 1) {
             Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
             Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
             $this->render('print');
@@ -441,10 +455,10 @@ class DefaultController extends BaseEventTypeController
             Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
             Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
             $this->render('print');
-            if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
+            if (Yii::app()->params['disable_print_notes_copy'] === 'off') {
                 $this->render('print', array('copy' => 'notes'));
             }
-            if (Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
+            if (Yii::app()->params['disable_prescription_patient_copy'] === 'off') {
                 $this->render('print', array('copy' => 'patient'));
             }
         }
@@ -465,11 +479,11 @@ class DefaultController extends BaseEventTypeController
         $this->pdf_print_suffix = Site::model()->findByPk(Yii::app()->session['selected_site_id'])->id;
 
         $document_count = 1;
-        if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
+        if (Yii::app()->params['disable_print_notes_copy'] === 'off') {
             $document_count++;
         }
 
-        if (Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
+        if (Yii::app()->params['disable_prescription_patient_copy'] === 'off') {
             $document_count++;
         }
 
@@ -571,7 +585,7 @@ class DefaultController extends BaseEventTypeController
     public function renderPrescriptionItem($key, $source)
     {
         $item = new OphDrPrescription_Item();
-        if (is_a($source, 'OphDrPrescription_Item')) {
+        if ($source instanceof \OphDrPrescription_Item) {
             // Source is a prescription item, so we should clone it
             foreach (array(
                          'drug_id',
@@ -597,7 +611,7 @@ class DefaultController extends BaseEventTypeController
                 $item->tapers = $tapers;
             }
         } else {
-            if (is_a($source, 'DrugSetItem')) {
+            if ($source instanceof \DrugSetItem) {
                 // Source is an drug set item which contains frequency and duration data
                 $item->drug_id = $source->drug_id;
                 foreach (array('duration_id', 'frequency_id', 'dose', 'route_id', 'dispense_condition_id', 'dispense_location_id') as $field) {
@@ -643,11 +657,16 @@ class DefaultController extends BaseEventTypeController
             }
         }
         if (isset($this->patient)) {
-            $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item, 'patient' => $this->patient));
+            $this->renderPartial(
+                '/default/form_Element_OphDrPrescription_Details_Item',
+                array('key' => $key, 'item' => $item, 'patient' => $this->patient)
+            );
         } else {
-            $output = $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item), true);
+            $output = $this->renderPartial(
+                '/default/form_Element_OphDrPrescription_Details_Item',
+                array('key' => $key, 'item' => $item),
+                true
+            );
 
             return $output;
         }
@@ -658,16 +677,17 @@ class DefaultController extends BaseEventTypeController
         global $reason_id;
         global $reason_other_text;
 
-        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+        $model = Element_OphDrPrescription_Details::model()
+            ->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
 
-        if (is_null($reason) && !$model->draft) {
+        if ($reason === null && !$model->draft) {
             $this->render('ask_reason', array(
                 'id'        =>  $id,
                 'draft'     => $model->draft,
                 'printed'   => $model->printed
             ));
         } else {
-            if (isset($_GET['do_not_save']) && $_GET['do_not_save']=='1') {
+            if (isset($_GET['do_not_save']) && $_GET['do_not_save']==='1') {
                 $reason_id = isset($_GET['reason']) ? $_GET['reason'] : 0;
                 $reason_other_text = isset($_GET['reason_other']) ? $_GET['reason_other'] : '';
                // $_POST=null;
@@ -684,7 +704,7 @@ class DefaultController extends BaseEventTypeController
      * Group the different kind of drug items for the printout
      *
      * @param $items
-     * @return Item[]
+     * @return OphDrPrescription_Item[]
      */
     public function groupItems($items)
     {
@@ -699,7 +719,11 @@ class DefaultController extends BaseEventTypeController
     public function getSiteAndTheatreForLatestEvent()
     {
         if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
-            if ($site_theatre = $api->getElementFromLatestEvent('Element_OphTrOperationnote_SiteTheatre', $this->patient, true)) {
+            if ($site_theatre = $api->getElementFromLatestEvent(
+                'Element_OphTrOperationnote_SiteTheatre',
+                $this->patient,
+                true
+            )) {
                 return $site_theatre;
             }
         }

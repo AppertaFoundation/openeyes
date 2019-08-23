@@ -15,8 +15,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
-<?php
+
+/**
+ * @var $errors
+ */
 $form_id = 'prescription-create';
 $this->beginContent('//patient/event_container', array('no_face' => true, 'form_id' => $form_id));
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -28,10 +30,30 @@ $settings = new SettingMetadata();
 $form_format = $settings->getSetting('prescription_form_format');
 
 // Event actions
-$this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'primary'), array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id));
-$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id));
-$this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id));
-$this->event_actions[] = EventAction::button("Save and print $form_format", 'saveprintform', array('level' => 'secondary'), array('id' => 'et_save_print_form', 'class' => 'button small', 'style' => 'display: none;', 'form' => $form_id));
+$this->event_actions[] = EventAction::button(
+    'Save draft',
+    'savedraft',
+    array('level' => 'primary'),
+    array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id)
+);
+$this->event_actions[] = EventAction::button(
+    'Save',
+    'save',
+    array('level' => 'secondary'),
+    array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id)
+);
+$this->event_actions[] = EventAction::button(
+    'Save and print',
+    'saveprint',
+    array('level' => 'secondary'),
+    array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id)
+);
+$this->event_actions[] = EventAction::button(
+    "Save and print $form_format",
+    'saveprintform',
+    array('level' => 'secondary'),
+    array('id' => 'et_save_print_form', 'class' => 'button small','style' => 'display: none;', 'form' => $form_id)
+);
 
 $this->displayErrors($errors) ?>
 
