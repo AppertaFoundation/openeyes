@@ -128,4 +128,30 @@ class HistoryMedications extends BaseMedicationElement
         );
     }
 
+	public function getEntriesForUntrackedPrescriptionItems($patient)
+	{
+		$untracked = array();
+		$api = \Yii::app()->moduleAPI->get('OphDrPrescription');
+		if ($api) {
+			$tracked_prescr_item_ids = array_map(
+				function ($entry) {
+					return $entry->prescription_item_id;
+				},
+				$this->getPrescriptionEntries()
+			);
+			if ($untracked_prescription_items = $api->getPrescriptionItemsForPatient(
+				$patient, $tracked_prescr_item_ids)
+			) {
+				foreach ($untracked_prescription_items as $item) {
+					$entry = new \EventMedicationUse();
+					$entry->loadFromPrescriptionItem($item);
+					$entry->usage_type = 'OphDrPrescription';
+					$untracked[] = $entry;
+				}
+			}
+		}
+
+		return $untracked;
+	}
+
 }

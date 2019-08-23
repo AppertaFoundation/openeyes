@@ -45,36 +45,7 @@ class HistoryMedications extends BaseMedicationWidget
     {
         return $this->mode === static::$EVENT_VIEW_MODE;
     }
-    /**
-     * Creates new Entry records for any prescription items that are not in the
-     * current element.
-     *
-     * @return array
-     */
-    public function getEntriesForUntrackedPrescriptionItems()
-    {
-        $untracked = array();
-        if ($api = $this->getApp()->moduleAPI->get('OphDrPrescription')) {
-            $tracked_prescr_item_ids = array_map(
-                function ($entry) {
-                    return $entry->prescription_item_id;
-                },
-                $this->element->getPrescriptionEntries()
-            );
-            if ($untracked_prescription_items = $api->getPrescriptionItemsForPatient(
-                $this->patient, $tracked_prescr_item_ids)
-            ) {
-                foreach ($untracked_prescription_items as $item) {
-                    $entry = new \EventMedicationUse();
-                    $entry->loadFromPrescriptionItem($item);
-                    $entry->usage_type = 'OphDrPrescription';
-                    $untracked[] = $entry;
-                }
-            }
-        }
 
-        return $untracked;
-    }
     /**
      * @return bool
      * @inheritdoc
