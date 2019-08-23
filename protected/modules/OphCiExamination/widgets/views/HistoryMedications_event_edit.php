@@ -136,7 +136,8 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                 'is_last' => false,
                 'is_new' => true,
                 'patient' => $this->patient,
-				'unit_options' => $unit_options
+								'unit_options' => $unit_options,
+								'is_template' => true,
             )
         );
         ?>
