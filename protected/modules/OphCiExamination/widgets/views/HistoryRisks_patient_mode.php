@@ -21,13 +21,13 @@
 
 <?php $model_name = CHtml::modelName($element); ?>
 
-<?php if (!$this->patient->hasRiskStatus()) : ?>
+<?php if (!$this->patient->hasRiskStatus() && !$this->patient->getDiabetes()) : ?>
     <div class="alert-box info">
-        <strong>Alerts</strong> - Patients alert status is unknown.
+        <strong>Alerts</strong> - status unknown.
     </div>
 <?php elseif ($element->no_risks_date) : ?>
     <div class="alert-box success">
-        <strong>Alerts</strong> - Patient has no known alerts.
+        <strong>Alerts</strong> - none known.
     </div>
 <?php else: ?>
     <div class="alert-box patient">
