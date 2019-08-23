@@ -636,7 +636,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryMedicationsController.prototype.bindController = function(controller, name) {
         this[name] = controller;
         this.boundController = controller;
-        this.options.onControllerBound(controller, name);
     };
 
     HistoryMedicationsController.prototype.disableRemoveButton = function ($row) {
