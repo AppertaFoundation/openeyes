@@ -40,7 +40,7 @@ class PrescriptionCreator extends \EventCreator
             $item->duration_id = $medication_set_item->default_duration_id;
             $item->dispense_condition_id = $medication_set_item->default_dispense_condition_id;
             $item->dispense_location_id = $medication_set_item->default_dispense_location_id;
-            $item->start_date = date('Ymd');
+            $item->start_date = date('Y-m-d');
             $item->usage_type = \OphDrPrescription_Item::getUsageType();
             $item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();
 
