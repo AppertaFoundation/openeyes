@@ -14,7 +14,7 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 
-testtorun="$WROOT/features/bootstrap/Features/CERA"
+testtorun="$WROOT/features/"
 configxml="$WROOT/behat.yml"
 behatpath="$WROOT/vendor/behat/behat/bin/behat"
 otherparams=""

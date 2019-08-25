@@ -35,3 +35,5 @@ alias oeviewlogs="tail -n 150 $WROOT/protected/runtime/application.log"
 alias oeviewmigratelogs="more $WROOT/protected/runtime/migrate.log"
 
 alias oe-reloadaliases="$SCRIPTDIR/set-profile.sh --no-envs && source /etc/profile.d/oe-shortcuts.sh"
+
+alias behat="$WROOT/vendor/behat/behat/bin/behat"
