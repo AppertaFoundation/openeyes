@@ -30,9 +30,10 @@ class DisorderController extends BaseAdminController
                     $criteria->addCondition('id = :id');
                     $criteria->params[':id'] = $search['query'];
                 } else {
-                    $criteria->addSearchCondition('fully_specified_name', $search['query'], true, 'OR');
-                    $criteria->addSearchCondition('term', $search['query'], true, 'OR');
-                    $criteria->addSearchCondition('aliases', $search['query'], true, 'OR');
+//                    Made search case insensitive - CERA-527
+                    $criteria->addSearchCondition('lower(fully_specified_name)', strtolower($search['query']), true, 'OR');
+                    $criteria->addSearchCondition('lower(term)', strtolower($search['query']), true, 'OR');
+                    $criteria->addSearchCondition('aliases', strtolower($search['query']), true, 'OR');
                 }
             }
         }
