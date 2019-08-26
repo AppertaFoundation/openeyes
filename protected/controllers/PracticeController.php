@@ -98,52 +98,108 @@ class PracticeController extends BaseController
      */
     public function actionCreateAssociate(){
         if (isset($_POST['Contact'])) {
-            $gp = new Gp();
-            $contact = new Contact('manage_gp');
-
-            $contact->title = $_POST['Contact']['contact_title'];
-            $contact->first_name = $_POST['Contact']['contact_first_name'];
-            $contact->last_name = $_POST['Contact']['contact_last_name'];
-            $contact->primary_phone = $_POST['Contact']['contact_primary_phone'];
-            $contact->contact_label_id = $_POST['Contact']['contact_label_id'];
-
-            list($contact, $gp) = $gp->performGpSave($contact, $gp, true);
 
             $contactPractice = new Contact('manage_practice');
             $address = new Address('manage_practice');
             $practice = new Practice('manage_practice');
-            $this->performAjaxValidation(array($practice, $contactPractice, $address));
 
-            if (isset($_POST['Contact'])) {
-                $contactPractice->first_name = $_POST['Contact']['first_name'];
-                $contactPractice->primary_phone = $_POST['Contact']['primary_phone'];
-                $address->attributes = $_POST['Address'];
-                $practice->attributes = $_POST['Practice'];
-                list($contactPractice, $practice, $address) = $this->performPracticeSave($contactPractice, $practice, $address,
-                    true);
-            }
+            $contactPractice->first_name = $_POST['Contact']['first_name'];
+            $contactPractice->primary_phone = $_POST['Contact']['primary_phone'];
+            $address->attributes = $_POST['Address'];
+            $practice->attributes = $_POST['Practice'];
 
-            if (isset($practice->contact)) {
-                $practice_contact_associate = new ContactPracticeAssociate();
-                $practice_contact_associate->gp_id = $gp->getPrimaryKey();
-                $practice_contact_associate->practice_id = $practice->id;
-                if ($practice_contact_associate->save()) {
-                    echo CJSON::encode(array(
-                        'gp_id' => $practice_contact_associate->gp->getPrimaryKey(),
-                    ));
+            if ($contactPractice->validate(array('first_name')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
+
+                    $practice_contact_associate = new ContactPracticeAssociate();
+
+                    $gp = new Gp();
+                    $contact = new Contact('manage_gp');
+
+                    $contact->title = $_POST['Contact']['contact_title'];
+                    $contact->first_name = $_POST['Contact']['contact_first_name'];
+                    $contact->last_name = $_POST['Contact']['contact_last_name'];
+                    $contact->primary_phone = $_POST['Contact']['contact_primary_phone'];
+                    $contact->contact_label_id = $_POST['Contact']['contact_label_id'];
+
+                    list($contact, $gp) = $this->performGpSave($contact, $gp, true);
+
+                    list($contactPractice, $practice, $address) = $this->performPracticeSave($contactPractice, $practice, $address,
+                        true);
+
+
+                    $practice_contact_associate->gp_id = $gp->getPrimaryKey();
+                    $practice_contact_associate->practice_id = $practice->id;
+
+                    if ($practice_contact_associate->save()) {
+                        echo CJSON::encode(array(
+                            'gp_id' => $practice_contact_associate->gp->getPrimaryKey(),
+                        ));
+                    }
+                } else {
+                    echo CJSON::encode(array('error' =>  CHtml::errorSummary(array($contactPractice, $address) ) ));
                 }
-            }
         }
     }
 
+    public function performGpSave(Contact $contact, Gp $gp, $isAjax = false)
+    {
+        $action = $gp->isNewRecord ? 'add' : 'edit';
+        $transaction = Yii::app()->db->beginTransaction();
+
+        try {
+            if ($contact->save()) {
+                // No need to re-set these values if they already exist.
+                if ($gp->contact_id === null) {
+                    $gp->contact_id = $contact->getPrimaryKey();
+                }
+
+                if ($gp->nat_id === null) {
+                    $gp->nat_id = 0;
+                }
+
+                if ($gp->obj_prof === null) {
+                    $gp->obj_prof = 0;
+                }
+
+                if ($gp->save()) {
+                    $transaction->commit();
+                    Audit::add('Gp', $action . '-gp', "Practitioner manually [id: $gp->id] {$action}ed.");
+                    if (!$isAjax) {
+                        $this->redirect(array('view','id'=>$gp->id));
+                    }
+                } else {
+                    if ($isAjax) {
+                        throw new CHttpException(400,"Unable to save Practitioner contact");
+                    }
+                    $transaction->rollback();
+                }
+            } else {
+                if ($isAjax) {
+                    throw new CHttpException(400,CHtml::errorSummary($contact));
+                }
+                $transaction->rollback();
+            }
+        } catch (Exception $ex) {
+            OELog::logException($ex);
+            $transaction->rollback();
+            if ($isAjax) {
+                if (strpos($ex->getMessage(),'errorSummary')){
+                    echo $ex->getMessage();
+                }else{
+                    echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
+                }
+            }
+        }
+        return array($contact, $gp);
+    }
 
     /**
      * @param Contact $contact
      * @param Practice $practice
      * @param Address $address
      * @param bool $isAjax
-     * @throws CHttpException
      * @return array
+     * @throws CException
      */
     public function performPracticeSave(Contact $contact, Practice $practice, Address $address, $isAjax = false)
     {
