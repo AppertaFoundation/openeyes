@@ -33,7 +33,8 @@
                 </colgroup>
                 <tr>
                     <td><?= CHtml::textField('search[query]', $search['query'], [
-                            'placeholder' => 'Search Term , Fully Specified Name , Aliases - (all are case sensitive)',
+//                            Removed case sensitive warning after search was made case insensitive- CERA-527
+                            'placeholder' => 'Search Term , Fully Specified Name , Aliases',
                             'class' => 'cols-full',
                         ]); ?>
                     </td>
