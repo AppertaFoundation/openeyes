@@ -58,7 +58,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             array('level' => 'secondary'),
             array('id' => 'et_save_print_form', 'class' => 'button small', 'style' => 'display: none;', 'form' => $form_id)
         );
-?>
+        ?>
 
         <input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_id"
                name="Element_OphDrPrescription_Details[edit_reason_id]" value="<?php echo htmlentities($reason_id); ?>" />
