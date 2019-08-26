@@ -86,7 +86,7 @@ $(document).ready(function () {
     if ($('#et_ophdrprescription_draft').val() == 1) {
       $.ajax({
         'type': 'GET',
-        'url': baseUrl + '/OphDrPrescription/default/doPrint/' + OE_event_id,
+        'url': baseUrl + '/OphDrPrescription/default/doPrint/' + OE_event_id + '?print_mode=FP10',
         'success': function (html) {
           if (html.trim() == "1") {
             window.location.reload();
@@ -107,7 +107,7 @@ $(document).ready(function () {
     if ($('#et_ophdrprescription_draft').val() == 1) {
       $.ajax({
         'type': 'GET',
-        'url': baseUrl + '/OphDrPrescription/default/doPrint/' + OE_event_id,
+        'url': baseUrl + '/OphDrPrescription/default/doPrint/' + OE_event_id + '?print_mode=WP10',
         'success': function (html) {
           if (html.trim() == "1") {
             window.location.reload();
@@ -126,6 +126,10 @@ $(document).ready(function () {
 
   if ($('#et_ophdrprescription_print').val() == 1) {
     setTimeout("do_print_prescription();", 1000);
+  } else if ($('#et_ophdrprescription_print').val() == 2) {
+    setTimeout("do_print_fpTen('FP10');", 1000);
+  } else if ($('#et_ophdrprescription_print').val() == 3) {
+    setTimeout("do_print_fpTen('WP10');", 1000);
   }
 });
 

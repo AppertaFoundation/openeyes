@@ -501,11 +501,21 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionDoPrint($id)
     {
+        $print_mode = Yii::app()->request->getParam('print_mode');
         if (!$prescription = Element_OphDrPrescription_Details::model()->find('event_id=?', array($id))) {
             throw new Exception("Prescription not found for event id: $id");
         }
 
-        $prescription->print = 1;
+        if ($print_mode === 'FP10') {
+            // Set to 2 for FP10 printing. This will prevent the normal print from occurring as well.
+            $prescription->print = 2;
+        } elseif ($print_mode === 'WP10') {
+            // Set to 3 for WP10 printing. This will prevent the normal print from occurring as well.
+            $prescription->print = 3;
+        } else {
+            $prescription->print = 1;
+        }
+
         $prescription->draft = 0;
 
         if (!$prescription->save()) {
@@ -545,7 +555,7 @@ class DefaultController extends BaseEventTypeController
             throw new Exception('Prescription not found for event id: '.$event_id);
         }
 
-        if ($prescription->print == 1) {
+        if ($prescription->print >= 1) {
             $prescription->print = 0;
 
             if (!$prescription->update(["printed"])) {
