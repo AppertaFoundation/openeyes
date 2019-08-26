@@ -147,7 +147,6 @@ class CsvController extends BaseController
 						array_walk_recursive($errors, function($item) use (&$flattened_errors)  { $flattened_errors[] = $item; });
 
 						foreach ($flattened_errors as $error) {
-							error_log("Should not be an array: " . var_export($error, true));
 							$import->message .= "\n" . $error;
 						}
 
@@ -524,7 +523,6 @@ class CsvController extends BaseController
 
 					//Abusing soundex to strip commas and quotes and to more fuzzily match a diagnosis
 					$disorder_info = Yii::app()->db->createCommand('select id from disorder WHERE SOUNDEX(term) = SOUNDEX(\'' . $patient['diagnosis'] . '\')')->queryAll();
-					error_log("Disorder info: " . var_export($disorder_info, true));
 					$disorder = Disorder::model()->findByPk($disorder_info[0]['id']);
 
 					if($disorder == null) {
@@ -555,7 +553,9 @@ class CsvController extends BaseController
         $last_name = $contact->last_name;
         $dob = $new_patient->dob;
 
-        $patient_duplicates = Patient::findDuplicates($last_name, $first_name, $dob, null);
+        $converted_dob = date("d/m/Y", strtotime($dob));
+
+        $patient_duplicates = Patient::findDuplicates($last_name, $first_name, $converted_dob, null);
 
         if(count($patient_duplicates) > 0) {
 					$errors[] = "Patient duplicate found for patient: " . $first_name . " " . $last_name;
