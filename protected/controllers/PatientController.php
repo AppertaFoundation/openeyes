@@ -2099,7 +2099,7 @@ class PatientController extends BaseController
             $this->redirect(array('view', 'id' => $patient->id));
         }
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
-            
+
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
