@@ -281,19 +281,19 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         foreach ($iop_vals as $reading) {
                 $side = strtolower($reading->eye);
 
-                if($reading->instrument->name != 'Palpation') {
-									$readings_array[] = array(
-										'event_id' => $iop_element->event_id,
-										'event_name' => $event_name,
-										'event_date' => $iop_element->event->event_date,
-										'eye' => $side,
-										'instrument_name' => $reading->instrument->name,
-										'dilated' => 'N/A',
-										'reading_time' => date('G:i', strtotime($reading->reading_time)),
-										'raw_value' => $reading->reading->value,
-										'comments' => $iop_element->{$side . '_comments'}
-									);
-								}
+            if ($reading->instrument->name != 'Palpation') {
+                                $readings_array[] = array(
+                                    'event_id' => $iop_element->event_id,
+                                    'event_name' => $event_name,
+                                    'event_date' => $iop_element->event->event_date,
+                                    'eye' => $side,
+                                    'instrument_name' => $reading->instrument->name,
+                                    'dilated' => 'N/A',
+                                    'reading_time' => date('G:i', strtotime($reading->reading_time)),
+                                    'raw_value' => $reading->reading->value,
+                                    'comments' => $iop_element->{$side . '_comments'}
+                                );
+            }
         }
 
 
