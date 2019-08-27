@@ -258,6 +258,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var $input = $(this).closest(".toggle-switch").find("input");
         var checked = !$input.prop("checked");
         if(!checked) {
+        		let $data_key = $row.attr('data-key');
+						$(".js-taper-row[data-parent-key='" + $data_key + "']").remove();
             $row.find(".js-disppense-location option").empty();
             $row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
             $row.find(".js-add-taper").hide();
@@ -562,7 +564,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     HistoryMedicationsController.prototype.updateTextualDisplay = function ($row) {
-        $row.find(".js-textual-display-dose").text($row.find(".js-dose").val() + " " + $row.find(".js-dose-unit-term").text());
+    		let displayDoseText = "";
+    		if($row.find(".js-dose").val() !== '') {
+					displayDoseText = $row.find(".js-dose").val() + " " + $row.find(".js-dose-unit-term").text()
+				}
+        $row.find(".js-textual-display-dose").text(displayDoseText);
         $row.find(".js-textual-display-frequency").text($row.find(".js-frequency option:selected").text());
         var route_lat = "";
         var $lat_ctrl = $row.find(".admin-route-options");
@@ -631,7 +637,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryMedicationsController.prototype.bindController = function(controller, name) {
         this[name] = controller;
         this.boundController = controller;
-        this.options.onControllerBound(controller, name);
     };
 
     HistoryMedicationsController.prototype.disableRemoveButton = function ($row) {

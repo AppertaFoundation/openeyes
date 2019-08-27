@@ -2099,6 +2099,8 @@ function registerElementController(controller, name, bindTo) {
     if(typeof window[bindTo] !== 'undefined') {
         window[bindTo].bindController(controller, name);
         controller.bindController(window[bindTo], bindTo);
+        window[bindTo].options.onControllerBound(controller, name);
+				controller.options.onControllerBound(window[bindTo], bindTo);
     }
 }
 
