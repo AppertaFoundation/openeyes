@@ -159,13 +159,8 @@
 
     PatientSidebar.prototype.loadClickedItem = function ($item, data, callback) {
 			let self = this;
-			let loadItem = false;
 			let elementValidationFunction = $item.data('validation-function');
-			if(typeof elementValidationFunction === "function") {
-					loadItem = elementValidationFunction();
-			} else {
-				loadItem = true;
-			}
+			let loadItem = typeof elementValidationFunction !== "function" || elementValidationFunction();
 
 			if(loadItem) {
 				if ($item.hasClass('loading')) {
