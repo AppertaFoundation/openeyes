@@ -17,7 +17,8 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
     public $layout = 'admin';
     public $group = 'Procedure Management';
 
-    public function actionList() {
+    public function actionList()
+    {
         $spec_id = Yii::app()->request->getParam('subspecialty_id');
         $sub_id = Yii::app()->request->getParam('subsection_id');
 
@@ -27,7 +28,8 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
         ]);
     }
 
-    public function actionAdd() {
+    public function actionAdd()
+    {
         $request = Yii::app()->request;
         $model = new ProcedureSubspecialtySubsectionAssignment();
         $subspecialty_id = $request->getParam('subspecialty_id');
@@ -36,9 +38,12 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
             'proc_id' => $request->getParam('procedure_id')
         ];
 
-        $valid = function($x) { return $x && !empty($x); };
+        $valid = function ($x) {
+            return $x && !empty($x);
 
-        if (!in_array(false,array_map($valid, $attributes))) {
+        };
+
+        if (!in_array(false, array_map($valid, $attributes))) {
             $model->setAttributes($attributes);
 
             if ($model->save()) {
@@ -53,7 +58,8 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
         }
     }
 
-    public function actionDelete() {
+    public function actionDelete()
+    {
         $request = Yii::app()->request;
         $id = $request->getParam('id');
         $subspecialty_id = $request->getParam('subspecialty_id');

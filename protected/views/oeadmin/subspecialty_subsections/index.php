@@ -34,13 +34,13 @@
                             Subspecialty::model()->findAll(),
                             'id',
                             'name',
-                            'subspecialty.name'   
+                            'subspecialty.name'
                         ),
                         [
                             'id' => 'subspecialty-subsection-select',
                             'empty' => 'Select a subspecialty'
                         ])
-                    ?>
+?>
                     </td>
                 </tr>
             </tbody>

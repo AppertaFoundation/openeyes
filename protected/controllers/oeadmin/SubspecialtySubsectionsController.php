@@ -17,7 +17,8 @@ class SubspecialtySubsectionsController extends BaseAdminController {
     public $layout = 'admin';
     public $group = 'Core';
 
-    public function actionList() {
+    public function actionList()
+    {
         $model = SubspecialtySubsection::model();
         $id = Yii::app()->request->getParam('subspecialty_id');
         $model_list = isset($id) ? $model->findAll('subspecialty_id = :sid', [':sid' => $id]) : [];
@@ -29,8 +30,9 @@ class SubspecialtySubsectionsController extends BaseAdminController {
         ]);
     }
 
-    public function actionEdit() {
-        $request = Yii::app()->request; 
+    public function actionEdit()
+    {
+        $request = Yii::app()->request;
         $id = $request->getParam('id');
         $s_id = $request->getParam('subspecialty_id');
         $model = SubspecialtySubsection::model()->findByPk($id);
@@ -61,9 +63,10 @@ class SubspecialtySubsectionsController extends BaseAdminController {
         }
     }
 
-    public function actionCreate() {
+    public function actionCreate()
+    {
         $model = new SubspecialtySubsection();
-        $request = Yii::app()->request; 
+        $request = Yii::app()->request;
         $s_id = $request->getParam('subspecialty_id');
 
         if ($request->getPost('SubspecialtySubsection')) {
@@ -88,7 +91,8 @@ class SubspecialtySubsectionsController extends BaseAdminController {
         }
     }
 
-    public function actionDelete() {
+    public function actionDelete()
+    {
         $id = Yii::app()->request->getParam('id');
         $s_id = Yii::app()->request->getParam('subspecialty_id');
         if (!isset($id) || empty($id)) {
