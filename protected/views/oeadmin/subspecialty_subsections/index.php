@@ -45,6 +45,7 @@
                 </tr>
             </tbody>
         </table>
+        <?php if ($s_id && !empty($s_id)) { ?>
         <table class="standard generic-admin sortable" id="et_sort">
             <thead>
                 <tr>
@@ -76,6 +77,7 @@
                 </tr>
             </tfoot>
         </table>
+        <?php } ?>
     </form>
 </div>
 <script>
