@@ -93,7 +93,14 @@
         // loaded, then just move the view port appropriately.
         self.$element.on('click', '.element', function(e) {
             e.preventDefault();
-            self.loadClickedItem($(e.target));
+						let elementValidationFunction = $(e.target).data('validation-function');
+            if(typeof elementValidationFunction === "function") {
+								if(elementValidationFunction()) {
+									self.loadClickedItem($(e.target));
+								}
+						} else {
+							self.loadClickedItem($(e.target));
+						}
         }.bind(self));
     };
 
@@ -246,7 +253,14 @@
         if ($menuLi) {
             $href = $menuLi.find('a');
             $href.removeClass('selected').removeClass('error');
-            self.loadClickedItem($href, data, callback);
+					let elementValidationFunction = $href.data('validation-function');
+					if(typeof elementValidationFunction  === "function") {
+						if(elementValidationFunction()) {
+							self.loadClickedItem($href, data, callback);
+						}
+					} else {
+						self.loadClickedItem($href, data, callback);
+					}
         } else {
             self.error('Cannot find menu entry for given elementTypeClass '+elementTypeClass);
         }
