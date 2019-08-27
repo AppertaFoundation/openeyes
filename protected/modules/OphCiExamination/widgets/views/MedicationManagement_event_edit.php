@@ -218,6 +218,16 @@ $element_errors = $element->getErrors();
                             $newrow.find(".js-hidden").val("1");
                         }
                     });
+                <?php else: ?>
+                $.each(window.HMController.$table.children("tbody").children("tr"), function(i, historyMedicationRow){
+                    let medicationHistoryBindedKey = $(historyMedicationRow).find('.js-binded-key').val();
+                    $.each(window.MMController.$table.children("tbody").children("tr"), function(index, medicationManagementRow) {
+                        if($(medicationManagementRow).find('.js-binded-key').val() === medicationHistoryBindedKey) {
+                            window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
+                            window.MMController.disableRemoveButton($(medicationManagementRow));
+												}
+                    });
+                });
                 <?php endif; ?>
 
                 window.HMController.setDoNotSaveEntries(true);
