@@ -912,7 +912,7 @@ class AnalyticsController extends BaseController
                             'square_sum'=> $reading ** 2,
                             'average'=>$reading,
                             'SD'=>0,
-                            'patients' => array($current_patient),
+                            'patients' => array($current_patient->id),
                         );
                     }
                 }
