@@ -92,15 +92,8 @@
         // if the clicked element is a child, ensures parent loaded first. if the element is already
         // loaded, then just move the view port appropriately.
         self.$element.on('click', '.element', function(e) {
-            e.preventDefault();
-						let elementValidationFunction = $(e.target).data('validation-function');
-            if(typeof elementValidationFunction === "function") {
-								if(elementValidationFunction()) {
-									self.loadClickedItem($(e.target));
-								}
-						} else {
-							self.loadClickedItem($(e.target));
-						}
+					e.preventDefault();
+					self.loadClickedItem($(e.target));
         }.bind(self));
     };
 
@@ -165,31 +158,42 @@
     };
 
     PatientSidebar.prototype.loadClickedItem = function ($item, data, callback) {
-      if($item.hasClass('loading')) {
-          if (typeof callback === "function")
-              callback();
-          return;
-      }
+			let self = this;
+			let loadItem = false;
+			let elementValidationFunction = $item.data('validation-function');
+			if(typeof elementValidationFunction === "function") {
+					loadItem = elementValidationFunction();
+			} else {
+				loadItem = true;
+			}
 
-      let self = this;
-      if (!$item.hasClass('selected')) {
-          self.markSidebarItems(self.getSidebarItemsForExistingElements($item));
-          // The <li> that contains $item (can be selected or not)
-          let $container = $item.parent();
-          let newCallback = function() {
-            $item.addClass('selected');
-            $item.removeClass('loading');
-            if (typeof callback === "function")
-                callback();
-          };
-          self.loadElement($container, data, newCallback);
-          $item.addClass('loading');
-      } else {
-          // either has no parent or parent is already loaded.
-          self.moveTo($item);
-          if (typeof callback === "function")
-              callback();
-      }
+			if(loadItem) {
+				if ($item.hasClass('loading')) {
+					if (typeof callback === "function")
+						callback();
+					return;
+				}
+
+
+				if (!$item.hasClass('selected')) {
+					self.markSidebarItems(self.getSidebarItemsForExistingElements($item));
+					// The <li> that contains $item (can be selected or not)
+					let $container = $item.parent();
+					let newCallback = function () {
+						$item.addClass('selected');
+						$item.removeClass('loading');
+						if (typeof callback === "function")
+							callback();
+					};
+					self.loadElement($container, data, newCallback);
+					$item.addClass('loading');
+				} else {
+					// either has no parent or parent is already loaded.
+					self.moveTo($item);
+					if (typeof callback === "function")
+						callback();
+				}
+			}
     };
 
     /**
@@ -253,14 +257,7 @@
         if ($menuLi) {
             $href = $menuLi.find('a');
             $href.removeClass('selected').removeClass('error');
-					let elementValidationFunction = $href.data('validation-function');
-					if(typeof elementValidationFunction  === "function") {
-						if(elementValidationFunction()) {
-							self.loadClickedItem($href, data, callback);
-						}
-					} else {
-						self.loadClickedItem($href, data, callback);
-					}
+            self.loadClickedItem($href, data, callback);
         } else {
             self.error('Cannot find menu entry for given elementTypeClass '+elementTypeClass);
         }
