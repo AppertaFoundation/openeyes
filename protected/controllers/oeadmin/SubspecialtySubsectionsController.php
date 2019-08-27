@@ -97,6 +97,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
 
         $transaction = Yii::app()->db->beginTransaction();
         $success = true;
+        $exception_message = null;
 
         try {
             $subsection = SubspecialtySubsection::model()->findByPk($id);
@@ -107,17 +108,25 @@ class SubspecialtySubsectionsController extends BaseAdminController {
                     Audit::add('admin-subspecialtySubsection', 'delete', serialize($subsection));
                 }
             }
-        } catch (Excpetion $e) {
+        } catch (Exception $e) {
             \OELog::log($e->getMessage());
+            $exception_message = $e->getMessage();
             $success = false;
         }
 
         if ($success) {
             $transaction->commit();
+            $this->redirect(['list?subspecialty_id=' . $s_id]);
         } else {
             $transaction->rollback();
+            $model = SubspecialtySubsection::model()->findByPk($id);
+            if (strpos($exception_message, 'foreign key constraint fails') !== false) {
+                $model->addError('In use error', 'This subsection could not be deleted as it is in use.');
+            }
+            $this->render('/oeadmin/subspecialty_subsections/create', [
+                'model' => $model,
+                's_id' => $s_id,
+            ]);
         }
-
-        $this->redirect(['list?subspecialty_id=' . $s_id]);
     }
 }
