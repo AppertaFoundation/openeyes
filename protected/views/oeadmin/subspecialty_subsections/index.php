@@ -80,6 +80,6 @@
 </div>
 <script>
     $('#subspecialty-subsection-select').change( e => {
-        window.location.href = 'view?subspecialty_id=' + e.target.value;
+        window.location.href = 'list?subspecialty_id=' + e.target.value;
     });
 </script>

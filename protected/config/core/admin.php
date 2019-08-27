@@ -41,7 +41,7 @@ return array(
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
                 'Patient Shortcodes' => '/admin/patientshortcodes',
-                'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/view'
+                'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/list'
             ),
             'Worklist' => array(
                 'Automatic Worklists Definitions' => '/Admin/worklist/definitions',
@@ -52,7 +52,7 @@ return array(
                 'Complications' => '/oeadmin/complication/list',
                 'OPCS Codes' => '/oeadmin/opcsCode/list',
                 'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit',
-                'Procedure - Subspecialty Subsection Assignment' =>  '/Admin/procedureSubspecialtyAssignment'
+                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/procedureSubspecialtyAssignment/list'
             ),
             'Drugs' => array(
                 'Common Drugs List' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/commonDrug/list'),

@@ -17,7 +17,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
     public $layout = 'admin';
     public $group = 'Core';
 
-    public function actionView() {
+    public function actionList() {
         $model = SubspecialtySubsection::model();
         $id = Yii::app()->request->getParam('subspecialty_id');
         $model_list = isset($id) ? $model->findAll('subspecialty_id = :sid', [':sid' => $id]) : [];
@@ -36,7 +36,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
         $model = SubspecialtySubsection::model()->findByPk($id);
 
         if (!$model) {
-            $this->redirect(['view?subspecialty_id=' . $s_id]);
+            $this->redirect(['list?subspecialty_id=' . $s_id]);
         }
 
         if ($request->getPost('SubspecialtySubsection')) {
@@ -46,7 +46,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
                 Audit::add('admin', 'edit', serialize($model->attributes), false,
                     ['model' => 'SubspecialtySubsection']);
                 Yii::app()->user->setFlash('success', 'Subsection edited');
-                $this->redirect(['view?subspecialty_id=' . $s_id]);
+                $this->redirect(['list?subspecialty_id=' . $s_id]);
             }
         }
 
@@ -57,7 +57,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
                 'errors' => $model->getErrors(),
             ]);
         } else {
-            $this->redirect(['view']);
+            $this->redirect(['list']);
         }
     }
 
@@ -73,7 +73,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
                 Audit::add('admin', 'create', serialize($model->attributes), false,
                     ['model' => 'SubspecialtySubsection']);
                 Yii::app()->user->setFlash('success', 'Subsection created');
-                $this->redirect(['view?subspecialty_id=' . $s_id]);
+                $this->redirect(['list?subspecialty_id=' . $s_id]);
             }
         }
 
@@ -84,7 +84,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
                 'errors' => $model->getErrors(),
             ]);
         } else {
-            $this->redirect(['view']);
+            $this->redirect(['list']);
         }
     }
 
@@ -92,7 +92,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
         $id = Yii::app()->request->getParam('id');
         $s_id = Yii::app()->request->getParam('subspecialty_id');
         if (!isset($id) || empty($id)) {
-            $this->redirect(['view?subspecialty_id=' . $s_id]);
+            $this->redirect(['list?subspecialty_id=' . $s_id]);
         }
 
         $transaction = Yii::app()->db->beginTransaction();
@@ -118,6 +118,6 @@ class SubspecialtySubsectionsController extends BaseAdminController {
             $transaction->rollback();
         }
 
-        $this->redirect(['view?subspecialty_id=' . $s_id]);
+        $this->redirect(['list?subspecialty_id=' . $s_id]);
     }
 }

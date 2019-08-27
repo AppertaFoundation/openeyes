@@ -57,7 +57,7 @@
     } ?>
 
     <?= \OEHtml::cancelButton("Cancel", [
-        'data-uri' => '/oeadmin/subspecialtySubsections/view?subspecialty_id=' . $s_id,
+        'data-uri' => '/oeadmin/subspecialtySubsections/list?subspecialty_id=' . $s_id,
     ]) ?>
 </div>
 <script>
