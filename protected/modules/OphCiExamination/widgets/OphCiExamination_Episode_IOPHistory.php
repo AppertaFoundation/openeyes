@@ -160,8 +160,6 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                                     'timestamp' => $timestamp,
                                     'reading' => $reading);
                         }
-                    } else {
-                        OELog::log("Not enough readings to iterate over");
                     }
                 }
             } else {
@@ -190,8 +188,6 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                                     'reading' => $reading);
                             }
                         }
-                    } else {
-                        OELog::log("Not enough readings to iterate over");
                     }
                 }
             } else {
@@ -270,10 +266,6 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
     {
                 $event_name = EventType::model()->findByPk($iop_element->event->event_type_id)->name;
 
-        if (!$event_name === 'Examination') {
-                throw new Exception("Event should be of type examination. Got " . $event_name);
-        }
-
                 $readings_array = array();
 
                 $iop_vals = ExamModels\OphCiExamination_IntraocularPressure_Value::model()->findAll("element_id=:element_id", array(":element_id" => $iop_element->id));
@@ -303,10 +295,6 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
     static function getPhasingReadingsFormatted($iop_element)
     {
                 $event_name = EventType::model()->findByPk($iop_element->event->event_type_id)->name;
-
-        if (!$event_name === 'Phasing') {
-            throw new Exception("Event should be of type phasing. Got " . $event_name);
-        }
 
                 $readings_array = array();
 

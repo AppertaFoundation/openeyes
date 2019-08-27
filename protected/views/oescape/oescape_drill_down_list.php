@@ -33,7 +33,7 @@
 
 </div>
 
-<script type="text/javascript">
+<script>
     let iop_plotly_data;
 
     // to drill through data from chart

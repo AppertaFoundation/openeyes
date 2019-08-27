@@ -99,6 +99,8 @@ class OphCiPhasing_Reading extends BaseActiveRecordVersioned
         ));
     }
 
+    //This function is necessary because this model does not store an eye, it stores a side instead.
+		//If this model is changed to use an eye_id, this function is no longer necessary
     public function getSideAsString()
     {
         switch ($this->side) {

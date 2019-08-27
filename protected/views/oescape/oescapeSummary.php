@@ -52,7 +52,7 @@ if (!empty($subspecialty)) { ?>
 <script type="text/javascript">
   // init min and max
   let min_value = new Date();
-  let max_value = new Date();  
+  let max_value = new Date();
 
   $(document).ready(function () {
   //set min and max
@@ -61,7 +61,7 @@ if (!empty($subspecialty)) { ?>
     min_value = new Date($('.plotly-left')[0]['layout']['xaxis']['range'][0]);
     max_value = new Date($('.plotly-left')[0]['layout']['xaxis']['range'][1]);
    }
-   else{     
+   else{
     min_value = new Date($('.plotly-right')[0]['layout']['xaxis']['range'][0]);
     max_value = new Date($('.plotly-right')[0]['layout']['xaxis']['range'][1]);
    }
@@ -158,7 +158,7 @@ if (!empty($subspecialty)) { ?>
           }
           // set these ranges to the min and max values
           let current_range = [my_min_value, my_max_value];
-          // end 
+          // end
           for (let i=0; i < chart_list.length; i++){
             Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
           }
@@ -171,10 +171,10 @@ if (!empty($subspecialty)) { ?>
     let charts = $('.rangeslider-container').parents('.plotly-VA');
     //are we looking at the left eye
     if(!charts[0].style.display){
-      //then set to left eye      
+      //then set to left eye
     let eye_side = $(charts[0]).attr('data-eye-side');
     }
-    else{   
+    else{
     let eye_side = $(charts[1]).attr('data-eye-side');
     }
     let chart_list = $('.plotly-'+eye_side);
@@ -182,24 +182,24 @@ if (!empty($subspecialty)) { ?>
     for (let i=0; i < chart_list.length; i++){
       Plotly.relayout(chart_list[i], 'xaxis.autorange', true);
     }
-    
-    let min_value = new Date(chart_list[0]['layout']['xaxis']['range'][0]);
-    let max_value = new Date(chart_list[0]['layout']['xaxis']['range'][1]);
+
+    let min_date = new Date(chart_list[0]['layout']['xaxis']['range'][0]);
+    let max_date = new Date(chart_list[0]['layout']['xaxis']['range'][1]);
 
     //set min max
     for (let i=0; i < chart_list.length; i++){
     //test min
-    if(min_value<chart_list[i]['layout']['xaxis']['range'][0])
-    min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
+    if(min_date<chart_list[i]['layout']['xaxis']['range'][0])
+    min_date = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
     //test max
-    if(min_value>chart_list[i]['layout']['xaxis']['range'][1])
-    max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
+    if(min_date>chart_list[i]['layout']['xaxis']['range'][1])
+    max_date = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
     }
-    min_value.setDate(min_value.getDate() - 15);
-    max_value.setDate(max_value.getDate() + 15);
+    min_date.setDate(min_date.getDate() - 15);
+    max_date.setDate(max_date.getDate() + 15);
 
     // set these new ranges
-    let current_range = [min_value, max_value];
+    let current_range = [min_date, max_date];
     for (let i=0; i < chart_list.length; i++){
       Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
     }
