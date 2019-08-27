@@ -49,7 +49,7 @@ class MedicationManagement extends BaseMedicationWidget
 				if ($medication_management_entry) {
 					$new_entry = new MedicationManagementEntry();
 					$new_entry->attributes = $entry->getOriginalAttributes();
-					$new_entry->binded_key = $entry->binded_key;
+					$new_entry->bound_key = $entry->bound_key;
 					$new_entry->id = null;
 					$new_entry->setIsNewRecord(true);
 					$new_entries[] = $new_entry;
@@ -62,7 +62,7 @@ class MedicationManagement extends BaseMedicationWidget
 				// Check if it's meds management set
 				$entry = new MedicationManagementEntry();
 				$entry->loadFromPrescriptionItem($item);
-				$entry->binded_key = $item->binded_key;
+				$entry->bound_key = $item->bound_key;
 				$entry->usage_type = 'OphDrPrescription';
 
 

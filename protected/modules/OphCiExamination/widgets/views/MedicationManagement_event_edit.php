@@ -204,12 +204,12 @@ $element_errors = $element->getErrors();
 
                 let copyFields = <?=!$this->isPostedEntries() && $this->element->getIsNewRecord() ? 'true' : 'false'?>;
                 $.each(window.HMController.$table.children("tbody").children("tr"), function (i, historyMedicationRow) {
-                    let medicationHistoryBindedKey = $(historyMedicationRow).find('.js-binded-key').val();
+                    let medicationHistoryBoundKey = $(historyMedicationRow).find('.js-bound-key').val();
                     let rowNeedsCopying = true;
                     let $medicationManagementRow;
 
                     $.each(window.MMController.$table.children("tbody").children("tr"), function (index, medicationManagementRow) {
-                        if ($(medicationManagementRow).find('.js-binded-key').val() === medicationHistoryBindedKey) {
+                        if ($(medicationManagementRow).find('.js-bound-key').val() === medicationHistoryBoundKey) {
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
                             rowNeedsCopying = false;
