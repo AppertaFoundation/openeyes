@@ -113,6 +113,7 @@ class PracticeController extends BaseController
             if ($contactPractice->validate(array('first_name')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
 
                 $practice_contact_associate = new ContactPracticeAssociate();
+                $practice_contact_associate->provider_no = !empty($_POST['ContactPracticeAssociate']['provider_no']) ? $_POST['ContactPracticeAssociate']['provider_no'] : null;
 
                 $gp = new Gp();
                 $contact = new Contact('manage_gp');
@@ -150,20 +151,19 @@ class PracticeController extends BaseController
                     echo CJSON::encode(array('error' => 'Duplicate Practice detected. <br/> A practice with the same practice name and address already exists. Please enter another practice or exit.'));
                     Yii::app()->end();
                 }
-            }
 
-            list($contactPractice, $practice, $address) = $this->performPracticeSave($contactPractice, $practice, $address,
-            true);
+                list($contactPractice, $practice, $address) = $this->performPracticeSave($contactPractice, $practice, $address,
+                    true);
 
-            $practice_contact_associate->practice_id = $practice->id;
+                $practice_contact_associate->practice_id = $practice->id;
 
-            if ($practice_contact_associate->save()) {
-                echo CJSON::encode(array(
-                    'gp_id' => $practice_contact_associate->gp->getPrimaryKey(),
-                    'practice_id' => $practice_contact_associate->practice_id,
-                ));
-            }
-            else {
+                if ($practice_contact_associate->save()) {
+                    echo CJSON::encode(array(
+                        'gp_id' => $practice_contact_associate->gp->getPrimaryKey(),
+                        'practice_id' => $practice_contact_associate->practice_id,
+                    ));
+                }
+            } else {
                 echo CJSON::encode(array('error' =>  CHtml::errorSummary(array($contactPractice, $address) ) ));
             }
         }

@@ -37,6 +37,7 @@ class PracticeAssociateController extends BaseController
         if (isset($_POST['Contact'], $_POST['gp_data_retrieved'])) {
             $contact_practice_associate = new ContactPracticeAssociate();
             $contact_practice_associate->practice_id = $_POST['PracticeAssociate']['practice_id'];
+            $contact_practice_associate->provider_no = !empty($_POST['ContactPracticeAssociate']['provider_no']) ? $_POST['ContactPracticeAssociate']['provider_no'] : null;
 
             if ($contact_practice_associate->validate(array('practice_id'))) {
 
@@ -70,15 +71,15 @@ class PracticeAssociateController extends BaseController
                         // New Gp id will be created
                         list($contact, $gp) = $this->performGpSave($contact, $gp,  true);
                         $contact_practice_associate->gp_id = $gp->getPrimaryKey();
-                    }
                 }
+            }
 
-                if ($contact_practice_associate->save()) {
-                    echo CJSON::encode(array(
-                        'gp_id' => $contact_practice_associate->gp_id,
-                        'practice_id' => $contact_practice_associate->practice_id,
-                    ));
-                }
+            if ($contact_practice_associate->save()) {
+                echo CJSON::encode(array(
+                    'gp_id' => $contact_practice_associate->gp_id,
+                    'practice_id' => $contact_practice_associate->practice_id,
+                ));
+            }
             else {
                 echo CJSON::encode(array('error' => $contact_practice_associate->getError('practice_id')));
             }

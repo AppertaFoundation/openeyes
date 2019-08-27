@@ -56,6 +56,21 @@
                         <?php echo $extra_gp_form->error($extra_gp_contact, 'primary_phone'); ?>
                     </td>
                 </tr>
+
+
+
+                <tr>
+                    <td>
+                        <?php echo $extra_gp_form->labelEx($extra_practice_associate, 'provider_no'); ?>
+                    </td>
+                    <td>
+                        <?php echo $extra_gp_form->textField($extra_practice_associate, 'provider_no', array('size' => 60, 'maxlength' => 20, 'autocomplete' => 'off')); ?>
+                        <?php echo $extra_gp_form->error($extra_practice_associate, 'provider_no'); ?>
+                    </td>
+                </tr>
+
+
+
                 <tr>
                     <td>
                         <label><?php echo $extra_gp_contact->getAttributeLabel('Role'); ?> <span class="required">*</span></label>
@@ -108,6 +123,7 @@
                                         $(".js-contact-last-name").val(response.lastName);
                                         $(".js-contact-primary-phone").val(response.primaryPhone);
                                         $(".js-contact-label-id").val(response.labelId);
+                                        $(".js-contact-practice-provider-no").val(response.providerNo);
                                         $("#extra-gp-form")[0].reset();
                                         $("#extra_gp_errors").text("");
                                         $("#extra_gp_practitioner-alert-box").css("display","none");
@@ -168,6 +184,7 @@
                 <?php echo CHtml::hiddenField('Contact[last_name]', '', array('class' => 'hidden_id js-contact-last-name')); ?>
                 <?php echo CHtml::hiddenField('Contact[primary_phone]', '', array('class' => 'hidden_id js-contact-primary-phone')); ?>
                 <?php echo CHtml::hiddenField('Contact[contact_label_id]', '', array('class' => 'hidden_id js-contact-label-id')); ?>
+                <?php echo CHtml::hiddenField('ContactPracticeAssociate[provider_no]', '', array('class' => 'hidden_id js-contact-practice-provider-no')); ?>
                     <tr>
                         <td>
                             <?php echo $extra_existing_practice_form->labelEx($extra_practice_associate, 'practice_id'); ?>
@@ -219,6 +236,7 @@
                                         $(".js-contact-last-name").val("");
                                         $(".js-contact-primary-phone").val("");
                                         $(".js-contact-label-id").val("");
+                                        $(".js-contact-practice-provider-no").val("");
 
                                         // Cleaning the contact label id after the contact/gp has been added successfully,
                                         // otherwise the same label gets saved for the contact (if left blank) on adding the contact/gp for the next time
@@ -283,6 +301,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                 <?php echo CHtml::hiddenField('Contact[contact_last_name]', '', array('class' => 'hidden_id js-contact-last-name')); ?>
                 <?php echo CHtml::hiddenField('Contact[contact_primary_phone]', '', array('class' => 'hidden_id js-contact-primary-phone')); ?>
                 <?php echo CHtml::hiddenField('Contact[contact_label_id]', '', array('class' => 'hidden_id js-contact-label-id')); ?>
+                <?php echo CHtml::hiddenField('ContactPracticeAssociate[provider_no]', '', array('class' => 'hidden_id js-contact-practice-provider-no')); ?>
                 <tbody>
                 <tr>
                     <td>
@@ -343,6 +362,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                                         $(".js-contact-last-name").val("");
                                         $(".js-contact-primary-phone").val("");
                                         $(".js-contact-label-id").val("");
+                                        $(".js-contact-practice-provider-no").val("");
                                 
                                         // Cleaning the contact label id after the contact/gp has been added successfully,
                                         // otherwise the same label gets saved for the contact (if left blank) on adding the contact/gp for the next time
@@ -457,9 +477,10 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
         $('#extra-gp-form #Contact_primary_phone').val(response.gpPhoneno);
         autoCompleteContactLabel('extra_gp_selected_contact_label_wrapper', JSON.parse(response.gpRole), '#extra_gp_autocomplete_contact_label_id');
 
-        // Setting both the title and phone no. to read only if user has select an existing gp.
+        // Setting the title, phone no. and provider no. to read only if user has select an existing gp.
         $("#extra-gp-form #Contact_title").prop("readonly", true);
         $("#extra-gp-form #Contact_primary_phone").prop("readonly", true);
+        $("#extra-gp-form #ContactPracticeAssociate_provider_no").prop("readonly", true);
         $('#extra-gp-message').hide();
         // Setting the property gpId.
         gp.id = response.value;
@@ -497,6 +518,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
         gp.id = undefined;
         $("#extra-gp-form #Contact_title").prop("readonly", false);
         $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
+        $("#extra-gp-form #ContactPracticeAssociate_provider_no").prop("readonly", false);
         $('#extra-gp-message').hide();
         if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
             notifyUserExistingorNewGpRecord(true, true);
