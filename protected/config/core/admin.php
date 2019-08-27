@@ -52,7 +52,7 @@ return array(
                 'Complications' => '/oeadmin/complication/list',
                 'OPCS Codes' => '/oeadmin/opcsCode/list',
                 'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit',
-                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/procedureSubspecialtyAssignment/list'
+                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list'
             ),
             'Drugs' => array(
                 'Common Drugs List' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/commonDrug/list'),
