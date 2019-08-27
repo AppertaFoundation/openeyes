@@ -180,7 +180,7 @@ class Practice extends BaseActiveRecordVersioned
     {
         return Gp::UNKNOWN_SALUTATION;
     }
-    
+
     public function getAddressLines()
     {
         if( isset($this->contact->address) ){
