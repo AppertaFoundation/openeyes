@@ -102,8 +102,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 	/**
 	 * @When /^I select "([^"]*)" for "([^"]*)"$/
 	 */
-	public function selectOption($option, $label) {
-		$page = $this->mink->getSession ()->getPage ();
+	public function iSelectOption($option, $label) {
+		$page = $this->mink->getSession()->getPage();
 		
 		if (($fieldset = $page->find ( 'xpath', ".//fieldset[(./legend[contains(normalize-space(string(.)), '${label}')])]" ))) {
 			if (($field = $fieldset->find ( 'xpath', ".//label[contains(normalize-space(string(.)), '${option}')]/input[@type='checkbox' or @type='radio']" ))) {
@@ -199,7 +199,11 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 	 */
 	public function clearScreenshots() {
 		$this->screenshots = array ();
-	}
+		// Attempt to maximise the browser (throws exception in headless running, so we ignore the exception)
+		try{ 
+			$this->mink->getSession()->maximizeWindow();
+		} catch ( Exception $e ) { }
+	} 
 	
 	/**
 	 * ription custom loader of features contexts and pages from Yii modules

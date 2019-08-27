@@ -4,11 +4,12 @@ dist: bionic
 services:
   - docker
 
-before_install:
-  - docker pull appertaopeneyes/ci:latest
-
-script:
-  - docker run --name=oe -e OE_MODE=TEST -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH -v ~/.ssh/id_rsa:/run/secrets/SSH_PRIVATE_KEY -v $TRAVIS_BUILD_DIR:/var/www/openeyes appertaopeneyes/ci:latest
+jobs:
+  include:
+    - script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BEHAT_HEADLESS=true -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH behat
+      name: "Behat"
+    - script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH -e WAIT_AFTER_HOSTS=30 phpunit
+      name: "PHPUnit"
 
 
 notifications:

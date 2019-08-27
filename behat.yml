@@ -9,15 +9,14 @@
     # default : works with appertaopeneyes docker images - uses parameters above, or defaults to docker host
     #
     # headless : Same as default, but runs headless
-    # 
+    #
     # local : assumes selenium and web server are installed on localhost (not recommended)
-    # 
+    #
     # local-headless : same as local, but headless
     #
     # docker : Assumes selenium is mapped to port 4444 on the docker host and web server is mapped to port 80
     #
     # docker-headless : same as docker, but headless
-    
 default:
     context:
         parameters:
@@ -38,9 +37,11 @@ default:
             goutte:             ~
             selenium2:
                 # wd_host:        DEFINED BY SELENIUM_WD_HOST environment variable
-                browser: 'chrome'
+                browser: "chrome"
                 capabilities:
                     chrome:
+                    deviceOrientation: "landscape"
+                    deviceType: "desktop"
 
 headless:
     context:
@@ -67,8 +68,10 @@ headless:
                     chrome:
                         switches:
                             - "--headless"
+                    deviceOrientation: "landscape"
+                    deviceType: "desktop"
 
-local: 
+local:
     context:
         parameters:
             sample_db:   "protected/modules/sample/sql/openeyes+ophtroperationbooking.sql"
@@ -91,8 +94,10 @@ local:
                 browser: 'chrome'
                 capabilities:
                     chrome:
+                    deviceOrientation: "landscape"
+                    deviceType: "desktop"
 
-local-headless: 
+local-headless:
     context:
         parameters:
             sample_db:   "protected/modules/sample/sql/openeyes+ophtroperationbooking.sql"
@@ -117,8 +122,10 @@ local-headless:
                     chrome:
                         switches:
                             - "--headless"
+                    deviceOrientation: "landscape"
+                    deviceType: "desktop"
 
-docker: 
+docker:
     context:
         parameters:
             sample_db:   "protected/modules/sample/sql/openeyes+ophtroperationbooking.sql"
@@ -141,8 +148,10 @@ docker:
                 browser: 'chrome'
                 capabilities:
                     chrome:
+                    deviceOrientation: "landscape"
+                    deviceType: "desktop"
 
-docker-headless: 
+docker-headless:
     context:
         parameters:
             sample_db:   "protected/modules/sample/sql/openeyes+ophtroperationbooking.sql"
@@ -167,6 +176,8 @@ docker-headless:
                     chrome:
                         switches:
                             - "--headless"
+                        deviceOrientation: "landscape"
+                        deviceType: "desktop"
 
 fullcustom:
     # This profile must be fully defined by a BEHAT_PARAMS environment variable in url format - See https://docs.behat.org/en/v2.5/guides/7.config.html

@@ -14,9 +14,10 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 
-testtorun="$WROOT/features/"
+testtorun="${BEHAT_TEST_TO_RUN:-$WROOT/features/}"
 configxml="$WROOT/behat.yml"
 behatpath="$WROOT/vendor/behat/behat/bin/behat"
+[ -z $BEHAT_HEADLESS ] && profile="${BEHAT_PROFILE:-default}" || profile="${BEHAT_PROFILE:-headless}"
 otherparams=""
 
 while [[ $# -gt 0 ]]
@@ -30,6 +31,10 @@ do
             ;;
 	    --test|-test)
             testtorun="$2"
+            shift
+            ;;
+        --profile|-profile)
+            profile="$2"
             shift
             ;;
         *)  
@@ -54,5 +59,5 @@ while ! curl -sSL "$statusurl" 2>&1 | jq -r '.value.ready' 2>&1 | grep "true" >/
 done
 
 
-echo -e "\nStarting behat tests with:\n CONFIG: $configxml ${otherparams:+\n ADDITIONAL PARAMETERS: $otherparams}\n TESTS: $testtorun${BEHAT_PARAMS:+\n BEHAT_PARAMS: $BEHAT_PARAMS}\n\n"
-eval $behatpath --config $configxml $otherparams $testtorun
+echo -e "\nStarting behat tests with:\n CONFIG: $configxml ${otherparams:+\n ADDITIONAL PARAMETERS: $otherparams}\n PROFILE: ${profile}\n TESTS: $testtorun${BEHAT_PARAMS:+\n BEHAT_PARAMS: $BEHAT_PARAMS}\n\n"
+eval $behatpath --config $configxml --profile=$profile $otherparams $testtorun
