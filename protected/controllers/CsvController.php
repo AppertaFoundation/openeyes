@@ -147,9 +147,8 @@ class CsvController extends BaseController
 						array_walk_recursive($errors, function($item) use (&$flattened_errors)  { $flattened_errors[] = $item; });
 
 						foreach ($flattened_errors as $error) {
-							$import->message .= "\n" . $error;
+							$import->message .= $error;
 						}
-
 					}else {
 						$transaction->commit();
 						$import->import_status_id = 8;
@@ -181,6 +180,15 @@ class CsvController extends BaseController
 
 			if(!$import_log->save()) {
 				\OELog::log("WARNING! FAILED TO SAVE IMPORT LOG!");
+			}
+
+			//Remove uploaded files
+			if(file_exists(self::$file_path)) {
+				$file_list = glob(self::$file_path . "*");
+				foreach ($file_list as $file) {
+					unlink($file);
+				}
+				rmdir(self::$file_path);
 			}
 
 			$this->render(
@@ -244,13 +252,30 @@ class CsvController extends BaseController
     {
         $errors = array();
 
-			if(!empty($patient['CERA_ID'])){
+				if(!empty($patient['CERA_ID'])){
             $new_patient = Patient::model()->findByAttributes(array('hos_num' => $patient['CERA_ID']));
             if ($new_patient !== null){
 							$errors[] = "Duplicate CERA ID (" . $patient['CERA_ID'] . ") found for patient: " . $patient['first_name'] . " " . $patient['last_name'];
 							return $errors;
             }
         }
+
+				$dupecheck_first_name = $patient['first_name'];
+				$dupecheck_last_name = $patient['last_name'];
+				$dupecheck_dob = $patient['dob'];
+
+				$converted_dob = date("d/m/Y", strtotime($dupecheck_dob));
+
+				$patient_duplicates = Patient::findDuplicates($dupecheck_last_name, $dupecheck_first_name, $converted_dob, null);
+
+				if(count($patient_duplicates) > 0) {
+					$errors[] = "Patient duplicate found for patient: " . $dupecheck_first_name . " " . $dupecheck_last_name . " with DOB " . $dupecheck_dob;
+					foreach ($patient_duplicates as $duplicate) {
+						$errors[] = "<br>Duplicate: " . $duplicate->contact->first_name . " " . $duplicate->contact->last_name . " with DOB " . $duplicate->dob;
+					}
+
+					return $errors;
+				}
 
         $contact = new Contact();
         $contact_cols = array(
@@ -550,20 +575,8 @@ class CsvController extends BaseController
 					}
         }
 
-        $first_name = $contact->first_name;
-        $last_name = $contact->last_name;
-        $dob = $new_patient->dob;
-
-        $converted_dob = date("d/m/Y", strtotime($dob));
-
-        $patient_duplicates = Patient::findDuplicates($last_name, $first_name, $converted_dob, null);
-
-        if(count($patient_duplicates) > 0) {
-					$errors[] = "Patient duplicate found for patient: " . $first_name . " " . $last_name;
-				}
-
 				if(empty($errors)) {
-					$import->message = "Import successful for patient: " . $first_name . " " . $last_name;
+					$import->message = "Import successful for patient: " . $contact->first_name . " " . $contact->last_name;
 				}
 
         return $errors;
