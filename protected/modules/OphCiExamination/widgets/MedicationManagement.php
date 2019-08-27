@@ -32,7 +32,7 @@ class MedicationManagement extends BaseMedicationWidget
 
 	private function setEntries()
 	{
-		$entries = [];
+		$new_entries = [];
 		$element = $this->element->getModuleApi()->getLatestElement(\OEModule\OphCiExamination\models\HistoryMedications::class, $this->patient);
 		if (!is_null($element)) {
 			$entries = array_merge($element->current_entries, $element->getEntriesForUntrackedPrescriptionItems($this->patient));
@@ -42,9 +42,7 @@ class MedicationManagement extends BaseMedicationWidget
 				$medication_management_entry = false;
 
 				foreach ($entry->medication->medicationSets as $medSet) {
-
 					if ($medSet->name == "medication_management") {
-
 						$medication_management_entry = true;
 					}
 				}
@@ -54,24 +52,25 @@ class MedicationManagement extends BaseMedicationWidget
 					$new_entry->binded_key = $entry->binded_key;
 					$new_entry->id = null;
 					$new_entry->setIsNewRecord(true);
-					$entries[] = $new_entry;
+					$new_entries[] = $new_entry;
 				}
 			}
 		} else {
 			$api = \Yii::app()->moduleAPI->get('OphDrPrescription');
 			$untracked_prescription_items = $api->getPrescriptionItemsForPatient($this->patient);
 			foreach ($untracked_prescription_items as $item) {
+				// Check if it's meds management set
 				$entry = new MedicationManagementEntry();
 				$entry->loadFromPrescriptionItem($item);
 				$entry->binded_key = $item->binded_key;
 				$entry->usage_type = 'OphDrPrescription';
 
 
-				$entries[] = $entry;
+				$new_entries[] = $entry;
 			}
 		}
 
-		$this->element->entries = $entries;
+		$this->element->entries = $new_entries;
 	}
 
 	public function getViewData()
