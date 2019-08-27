@@ -117,6 +117,7 @@ class HistoryMedications extends BaseMedicationWidget
         	foreach($entries as $entry) {
         		if($entry->bound_key === $history_entry->bound_key) {
         			$duplicate = true;
+        			break;
 						}
 					}
 

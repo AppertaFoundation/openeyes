@@ -44,6 +44,7 @@ class MedicationManagement extends BaseMedicationWidget
 				foreach ($entry->medication->medicationSets as $medSet) {
 					if ($medSet->name == "medication_management") {
 						$medication_management_entry = true;
+						break;
 					}
 				}
 				if ($medication_management_entry) {
