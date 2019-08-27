@@ -72,6 +72,7 @@
         self.buildTree();
         $scrollElement.append($newContent);
 
+        $(self.options.scroll_selector).trigger('sidebar_loaded');
 
       // find and set up all collapse-groups
         this.$element.find('.collapse-group').each(function() {
