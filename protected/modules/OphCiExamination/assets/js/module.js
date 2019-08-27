@@ -1156,6 +1156,25 @@ $(document).ready(function() {
             OphCiExamination_InjectionManagementComplex_init();
         });
 
+        let date = new Date();
+        let todayDate = date.getDate() + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
+
+        let medicationManagementValidationFunction = function() {
+					if($('.js-event-date-input').val() === todayDate) {
+						return true;
+					} else {
+						new OpenEyes.UI.Dialog.Alert({
+							content: "Medication Management cannot be added due to event date not being the current date"
+						}).open();
+						return false;
+					}
+				}
+
+				$('#episodes-and-events').on('sidebar_loaded', function() {
+					$('li#side-element-Medication-Management').find('a').data('validation-function', medicationManagementValidationFunction);
+				});
+
+
 });
     /** Post Operative Complication function **/
      function setPostOpComplicationTableText()
@@ -2116,5 +2135,5 @@ function bmi_calculator( weight, height){
     height_meter = height / 100;
     result = weight / (height_meter * height_meter);
     return result;
-    
+
 }
