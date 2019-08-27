@@ -141,13 +141,13 @@ class CsvController extends BaseController
 					if(!empty($errors)) {
 						$transaction->rollback();
 						$import->import_status_id = 2;
-						$import->message = "Import failed: ";
+						$import->message = "Import failed on line " . $row_num . ": ";
 
 						$flattened_errors = array();
 						array_walk_recursive($errors, function($item) use (&$flattened_errors)  { $flattened_errors[] = $item; });
 
 						foreach ($flattened_errors as $error) {
-							$import->message .= $error;
+							$import->message .= "<br>" . $error;
 						}
 					}else {
 						$transaction->commit();
@@ -249,7 +249,42 @@ class CsvController extends BaseController
 
     private function createNewPatient($patient, $import)
     {
-        $errors = array();
+			$errors = array();
+
+			$mandatory_fields = array(
+				'first_name',
+				'last_name',
+				'dob',
+				'patient_source',
+				'country',
+				'CERA_ID');
+
+			$mandatory_diagnosis_fields = array(
+				'diagnosis',
+				'diagnosis_side_l',
+				'diagnosis_side_r',
+				'diagnosis_principal',
+				'diagnosis_date');
+
+			foreach ($mandatory_fields as $field) {
+				if(!array_key_exists($field, $patient) || $patient[$field] == ''){
+					$errors[] = "Mandatory field missing: " . $field;
+				}
+			}
+
+			if(array_key_exists('diagnosis', $patient) && $patient['diagnosis'] == "") {
+				foreach($mandatory_diagnosis_fields as $diagnosis_field) {
+					if(!array_key_exists($diagnosis_field, $patient))
+					{
+						$errors[] = "Mandatory diagnosis field missing: " . $diagnosis_field;
+					}
+				}
+			}
+
+			if(count($errors) > 0)
+			{
+				return $errors;
+			}
 
 				if(!empty($patient['CERA_ID'])){
             $new_patient = Patient::model()->findByAttributes(array('hos_num' => $patient['CERA_ID']));
@@ -270,7 +305,7 @@ class CsvController extends BaseController
 				if(count($patient_duplicates) > 0) {
 					$errors[] = "Patient duplicate found for patient: " . $dupecheck_first_name . " " . $dupecheck_last_name . " with DOB " . $dupecheck_dob;
 					foreach ($patient_duplicates as $duplicate) {
-						$errors[] = "<br>Duplicate: " . $duplicate->contact->first_name . " " . $duplicate->contact->last_name . " with DOB " . $duplicate->dob;
+						$errors[] = "Duplicate: " . $duplicate->contact->first_name . " " . $duplicate->contact->last_name . " with DOB " . $duplicate->dob;
 					}
 
 					return $errors;
