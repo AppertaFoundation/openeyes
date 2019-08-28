@@ -48,7 +48,7 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
                 '&subsection_id=' . $attributes['subspecialty_subsection_id']]);
         } else {
             $this->render('/oeadmin/subspecialty_subsection_assignment/index', [
-                'model' => $model,  
+                'model' => $model,
                 'subspecialty_id' => $subspecialty_id,
                 'subsection_id' => $attributes['subspecialty_subsection_id']
             ]);

@@ -55,7 +55,7 @@ if (isset($model)) {
                             'id' => 'subspecialty-select',
                             'empty' => 'Select a subspecialty'
                         ])
-                    ?>
+?>
                     </td>
                 </tr>
                 <tr>
@@ -74,7 +74,7 @@ if (isset($model)) {
                             'id' => 'subsection-select',
                             'empty' => 'Select a subsection'
                         ])
-                    ?>
+?>
                     </td>
                 </tr>
             </tbody>
@@ -92,7 +92,7 @@ if (isset($model)) {
                 <tr>
                     <td><?= $model->getRelated('proc')->term ?></td>
                     <td><a href="<?= 'delete?id=' . $model->id .
-                                    '&subspecialty_id=' . $subspecialty_id . 
+                                    '&subspecialty_id=' . $subspecialty_id .
                                     '&subsection_id=' . $subsection_id ?>" >delete</a></td>
                 </tr>
             <?php } ?>
