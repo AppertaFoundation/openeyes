@@ -52,6 +52,7 @@
         <table class="standard generic-admin">
             <thead>
                 <tr>
+                    <th>Select</th>
                     <th>Subspecialty Subsection</th>
                 </tr>
             </thead>
@@ -59,6 +60,7 @@
             <?php foreach ($model_list as $key => $model) { ?>
                 <tr class="clickable" data-id="<?= $model->id ?>"
                     data-uri="oeadmin/subspecialtySubsections/edit?id=<?= $model->id ?>&subspecialty_id=<?= $subspecialty_id ?>" >
+                    <td><input type="checkbox" name="select[]" value="<?= $model->id ?>"/></td>
                     <td><?= $model->name ?></td>
                 </tr>
             <?php } ?>
@@ -74,6 +76,16 @@
                                 'name' => 'create',
                                 'data-uri' => 'create?subspecialty_id='.$subspecialty_id,
                                 'id' => 'et_add'
+                            ]
+                        ); ?>
+                        <?= \CHtml::button(
+                            'Delete',
+                            [
+                                'class' => 'button large',
+                                'name' => 'delete',
+                                'data-object' => 'subspecialty_sections',
+                                'data-uri' => '/oeadmin/SubspecialtySubsections/delete',
+                                'id' => 'et_delete'
                             ]
                         ); ?>
                     </td>

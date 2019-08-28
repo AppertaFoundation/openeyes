@@ -93,23 +93,21 @@ class SubspecialtySubsectionsController extends BaseAdminController {
 
     public function actionDelete()
     {
-        $id = Yii::app()->request->getParam('id');
-        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
-        if (!isset($id) || empty($id)) {
-            $this->redirect(['list?subspecialty_id=' . $subspecialty_id]);
-        }
-
+        $delete_ids = Yii::app()->request->getPost('select', []);
         $transaction = Yii::app()->db->beginTransaction();
         $success = true;
         $exception_message = null;
 
         try {
-            $subsection = SubspecialtySubsection::model()->findByPk($id);
-            if ($subsection) {
-                if (!$subsection->delete()) {
-                    $success = false;
-                } else {
-                    Audit::add('admin-subspecialtySubsection', 'delete', serialize($subsection));
+            foreach ($delete_ids as $id) {
+                $subsection = SubspecialtySubsection::model()->findByPk($id);
+                if ($subsection) {
+                    if (!$subsection->delete()) {
+                        $success = false;
+                        break;
+                    } else {
+                        Audit::add('admin-subspecialtySubsection', 'delete', serialize($subsection));
+                    }
                 }
             }
         } catch (Exception $e) {
@@ -120,18 +118,18 @@ class SubspecialtySubsectionsController extends BaseAdminController {
 
         if ($success) {
             $transaction->commit();
-            Yii::app()->user->setFlash('success', 'Subsection deleted');
-            $this->redirect(['list?subspecialty_id=' . $subspecialty_id]);
+            echo '1';
         } else {
             $transaction->rollback();
-            $model = SubspecialtySubsection::model()->findByPk($id);
-            if (strpos($exception_message, 'foreign key constraint fails') !== false) {
-                $model->addError('In use error', 'This subsection could not be deleted as it is in use.');
-            }
-            $this->render('/oeadmin/subspecialty_subsections/create', [
-                'model' => $model,
-                'subspecialty_id' => $subspecialty_id,
-            ]);
+            echo '0';
         }
     }
 }
+           // $model = SubspecialtySubsection::model()->findByPk($id);
+           // if (strpos($exception_message, 'foreign key constraint fails') !== false) {
+           //     $model->addError('In use error', 'This subsection could not be deleted as it is in use.');
+           // }
+           // $this->render('/oeadmin/subspecialty_subsections/create', [
+           //     'model' => $model,
+           //     'subspecialty_id' => $subspecialty_id,
+           // ]);
