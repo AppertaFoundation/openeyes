@@ -209,11 +209,7 @@
         });
 
         $('#show-units-checkbox').change( event => {
-            if (event.target.checked)
-                $('.js-unit-fields').show();
-            else
-                $('.js-unit-fields').hide();
-
+            $('.js-unit-fields').toggle(event.target.checked);
         });
     })
 </script>
