@@ -151,7 +151,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$element.find('.show-stopped').hide();
         this.$element.find('.hide-stopped').hide();
     } else {
-        this.$table.find('tr-originally-stopped').hide();
+        this.$table.find('tr.originally-stopped').hide();
     }
   };
 
