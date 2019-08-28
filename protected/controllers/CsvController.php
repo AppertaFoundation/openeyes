@@ -3,7 +3,9 @@
 
 class CsvController extends BaseController
 {
-    static $contexts = array(
+	public static	$file_path = "tempfiles/";
+
+	static $contexts = array(
         'trials' => array(
             'successAction' => 'OETrial/trial',
             'createAction' => 'createNewTrial',
@@ -40,13 +42,21 @@ class CsvController extends BaseController
         );
     }
 
-    public function actionUpload($context, $backuri)
+    public function actionUpload($context)
     {
-        $this->render('upload', array('context' => $context, 'backuri' => $backuri));
+        $this->render('upload', array('context' => $context));
     }
 
     public function actionPreview($context)
     {
+				if(file_exists(self::$file_path)) {
+					$file_list = glob(self::$file_path . "*");
+					foreach ($file_list as $file) {
+						unlink($file);
+					}
+					rmdir(self::$file_path);
+				}
+
         $table = array();
         $headers = array();
         if (isset($_FILES['Csv']['tmp_name']['csvFile']) && $_FILES['Csv']['tmp_name']['csvFile'] !== "") {
@@ -71,42 +81,129 @@ class CsvController extends BaseController
                 fclose($handle);
             }
         }
-        $_SESSION['table_data'] = $table;
-        $this->render('preview', array('table' => $table, 'context' => $context));
 
+        $csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
+
+        if(!file_exists(self::$file_path)) {
+					mkdir(self::$file_path);
+				}
+
+        copy($_FILES['Csv']['tmp_name']['csvFile'], self::$file_path . $csv_id . ".csv");
+
+        $this->render('preview', array('table' => $table, 'csv_id' => $csv_id, 'context' => $context));
     }
 
-    public function actionImport($context)
+    public function actionImport($context, $csv)
     {
-        $transaction = Yii::app()->db->beginTransaction();
-        $errors = null;
-        $row_num = 0;
-        $createAction = self::$contexts[$context]['createAction'];
-        foreach ($_SESSION['table_data'] as $row) {
-            $row_num++;
-            $errors = $this->$createAction($row);
-            if(!empty($errors))break;
-        }
-        if (empty($errors)){
-            $transaction->commit();
-            $this->redirect(Yii::app()->createURL(self::$contexts[$context]['successAction']));
-        } else {
-            $transaction->rollback();
-            array_unshift($errors, self::$contexts[$context]['errorMsg'].$row_num);
-            $this->render(
-                'upload',
-                array(
-                    'errors' => $errors,
-                    'context' => $context,
-                )
-            );
-        }
+    	$import_log = new ImportLog();
+			$import_log->import_user_id = Yii::app()->user->id;
+			$import_log->startdatetime = date('Y-m-d H:i:s');
+			$import_log->status = "Failure";
+			if(!$import_log->save()) {
+				\OELog::log("WARNING! FAILED TO SAVE IMPORT LOG!");
+			}
+
+    	$csv_file_path = self::$file_path . $csv . ".csv";
+
+			$table = array();
+			$headers = array();
+			if (($handle = fopen($csv_file_path, "r")) !== false) {
+				if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+					foreach ($line as $header) {
+						// basic sanitization, remove non printable chars - This is required if the CSV file is
+						// exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
+						$header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
+						$headers[] = $header;
+					}
+				}
+
+				while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+					$row = array();
+					$header_count = 0;
+					foreach ($line as $cel) {
+						$row[$headers[$header_count++]] = $cel;
+					}
+					$table[] = $row;
+				}
+				fclose($handle);
+			}
+
+			$errors = null;
+			$row_num = 0;
+			$createAction = self::$contexts[$context]['createAction'];
+
+			foreach ($table as $row) {
+					$transaction = Yii::app()->db->beginTransaction();
+					$import = new Import();
+					$import->parent_log_id = $import_log->id;
+					$row_num++;
+					$errors = $this->$createAction($row, $import);
+					if(!empty($errors)) {
+						$transaction->rollback();
+						$import->import_status_id = 2;
+						$import->message = "Import failed on line " . $row_num . ": ";
+
+						$flattened_errors = array();
+						array_walk_recursive($errors, function($item) use (&$flattened_errors)  { $flattened_errors[] = $item; });
+
+						foreach ($flattened_errors as $error) {
+							$import->message .= "<br>" . $error;
+						}
+					}else {
+						$transaction->commit();
+						$import->import_status_id = 8;
+					}
+
+
+					if(!$import->save()) {
+						\OELog::log("WARNING! FAILED TO SAVE IMPORT STATUS!");
+					}
+			}
+
+			$summary_table = array();
+
+			$import_log->status = "Success";
+
+			foreach (Import::model()->findAllByAttributes(['parent_log_id' => $import_log->id]) as $summary_import) {
+				$summary = array();
+
+				$status = $summary_import->import_status->status_value;
+
+				if($status != 8)
+					$import_log->status = "Failure";
+
+				$summary['Status'] = $status;
+				$summary['Details'] = $summary_import->message;
+
+				$summary_table[] = $summary;
+			}
+
+			if(!$import_log->save()) {
+				\OELog::log("WARNING! FAILED TO SAVE IMPORT LOG!");
+			}
+
+			//Remove uploaded files
+			if(file_exists(self::$file_path)) {
+				$file_list = glob(self::$file_path . "*");
+				foreach ($file_list as $file) {
+					unlink($file);
+				}
+				rmdir(self::$file_path);
+			}
+
+			$this->render(
+				'summary',
+				array(
+					'errors' => $errors,
+					'context' => $context,
+					'table' => $summary_table,
+					)
+			);
     }
 
-    private function createNewTrial($trial)
+    private function createNewTrial($trial, $import)
     {
         $errors = array();
-        \Yii::log('createNewTrial called on '.var_export($trial,true));
         if (empty($trial['name'])) {
             $errors[] = 'Trial has no name';
             return $errors;
@@ -119,9 +216,10 @@ class CsvController extends BaseController
 
         //check that principal investigator's user name exists in the system
         if(!empty($trial['principal_investigator'])) {
-            $principal_investigator = User::model()->find('username = ?', array($trial['principal_investigator']));
+//            CERA-523 CERA-524 only active users can be made principal investigators
+            $principal_investigator = User::model()->find('username = ? AND active = 1', array($trial['principal_investigator']));
             if(!isset($principal_investigator)) {
-                $errors[] = 'The entered Principal Investigator does not exist in the system.';
+                $errors[] = 'The entered Principal Investigator does not exist in the system or is inactive.';
                 return $errors;
             } else {
                 $_SESSION['principal_investigator'] = $principal_investigator->id;
@@ -150,16 +248,69 @@ class CsvController extends BaseController
         return $errors;
     }
 
-    private function createNewPatient($patient)
+    private function createNewPatient($patient, $import)
     {
-        $errors = array();
+			$errors = array();
 
-        if(!empty($patient['CERA_number'])){
-            $new_patient = Patient::model()->findByAttributes(array('hos_num' => $patient['CERA_number']));
+			$mandatory_fields = array(
+				'first_name',
+				'last_name',
+				'dob',
+				'patient_source',
+				'country',
+				'CERA_ID');
+
+			$mandatory_diagnosis_fields = array(
+				'diagnosis',
+				'diagnosis_side_l',
+				'diagnosis_side_r',
+				'diagnosis_principal',
+				'diagnosis_date');
+
+			foreach ($mandatory_fields as $field) {
+				if(!array_key_exists($field, $patient) || $patient[$field] == ''){
+					$errors[] = "Mandatory field missing: " . $field;
+				}
+			}
+
+			if(array_key_exists('diagnosis', $patient) && $patient['diagnosis'] == "") {
+				foreach($mandatory_diagnosis_fields as $diagnosis_field) {
+					if(!array_key_exists($diagnosis_field, $patient))
+					{
+						$errors[] = "Mandatory diagnosis field missing: " . $diagnosis_field;
+					}
+				}
+			}
+
+			if(count($errors) > 0)
+			{
+				return $errors;
+			}
+
+				if(!empty($patient['CERA_ID'])){
+            $new_patient = Patient::model()->findByAttributes(array('hos_num' => $patient['CERA_ID']));
             if ($new_patient !== null){
-                return $errors;
+							$errors[] = "Duplicate CERA ID (" . $patient['CERA_ID'] . ") found for patient: " . $patient['first_name'] . " " . $patient['last_name'];
+							return $errors;
             }
         }
+
+				$dupecheck_first_name = $patient['first_name'];
+				$dupecheck_last_name = $patient['last_name'];
+				$dupecheck_dob = $patient['dob'];
+
+				$converted_dob = date("d/m/Y", strtotime($dupecheck_dob));
+
+				$patient_duplicates = Patient::findDuplicates($dupecheck_last_name, $dupecheck_first_name, $converted_dob, null);
+
+				if(count($patient_duplicates) > 0) {
+					$errors[] = "Patient duplicate found for patient: " . $dupecheck_first_name . " " . $dupecheck_last_name . " with DOB " . $dupecheck_dob;
+					foreach ($patient_duplicates as $duplicate) {
+						$errors[] = "Duplicate: " . $duplicate->contact->first_name . " " . $duplicate->contact->last_name . " with DOB " . $duplicate->dob;
+					}
+
+					return $errors;
+				}
 
         $contact = new Contact();
         $contact_cols = array(
@@ -229,7 +380,7 @@ class CsvController extends BaseController
         }
 
         $new_patient->contact_id = $contact->id;
-        $new_patient->hos_num = !empty($patient['CERA_number']) ? $patient['CERA_number'] : Patient::getNextCeraNumber();
+        $new_patient->hos_num = !empty($patient['CERA_ID']) ? $patient['CERA_ID'] : Patient::autoCompleteHosNum();
 
         $new_patient->setScenario('other_register');
         if(!$new_patient->save()){
@@ -268,7 +419,7 @@ class CsvController extends BaseController
             if(!empty($patient['optom_first_name']) && !empty($patient['optom_last_name'])) {
                 $optom_label = ContactLabel::model()->findByAttributes(array('name' => 'Optometrist'));
                 $optom_contact = Contact::model()->findByAttributes(array(
-                    'contact_label_id' => $optom_label->id,
+                    'id' => $optom_label->id,
                     'first_name' => $patient['optom_first_name'],
                     'last_name' => $patient['optom_last_name'],
                 ));
@@ -309,9 +460,9 @@ class CsvController extends BaseController
         //opthal
         if(!empty($patient['opthal_first_name']) || !empty($patient['opthal_last_name'])){
             if(!empty($patient['opthal_first_name']) && !empty($patient['opthal_last_name'])) {
-                $opthal_label = ContactLabel::model()->findByAttributes(array('name' => 'Ophthalmologist'));
+                $opthal_label = ContactLabel::model()->findByAttributes(array('name' => 'Consultant Ophthalmologist'));
                 $opthal_contact = Contact::model()->findByAttributes(array(
-                    'contact_label_id' => $opthal_label->id,
+                    'id' => $opthal_label->id,
                     'first_name' => $patient['opthal_first_name'],
                     'last_name' => $patient['opthal_last_name'],
                 ));
@@ -354,7 +505,7 @@ class CsvController extends BaseController
             if(!empty($patient['gp_first_name']) && !empty($patient['gp_last_name'])) {
                 $gp_label = ContactLabel::model()->findByAttributes(array('name' => 'General Practitioner'));
                 $gp_contact = Contact::model()->findByAttributes(array(
-                    'contact_label_id' => $gp_label->id,
+                    'id' => $gp_label->id,
                     'first_name' => $patient['gp_first_name'],
                     'last_name' => $patient['gp_last_name'],
                 ));
@@ -391,9 +542,8 @@ class CsvController extends BaseController
                 return $errors;
             }
         }
-        
-        //diagnoses
-        if(!empty($patient['LE_diagnosis']) || !empty($patient['RE_diagnosis'])){
+
+				if(!empty($patient['diagnosis'])) {
             $context = Firm::model()->findByAttributes(array(
                 'name' => !empty($patient['context']) ? $patient['context'] :  'Medical Retinal firm'
             ));
@@ -426,48 +576,48 @@ class CsvController extends BaseController
                 array_unshift($errors, $element->getErrors());
             }
 
-            if(!empty($patient['LE_diagnosis'])){
-                $disorder = Disorder::model()->findByAttributes(array(
-                    'term' => $patient['LE_diagnosis']
-                ));
-                if($disorder === null){
-                    $errors[] = 'Could not find left eye diagnosis '.$patient['LE_diagnosis'];
-                    return $errors;
-                }
-                $diagnosis = new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis();
-                $diagnosis->element_diagnoses_id = $element->id;
-                $diagnosis->disorder_id = $disorder->id;
-                $diagnosis->eye_id = Eye::LEFT;
-                if(!$diagnosis->save()){
-                    $errors[] = 'Could not save left eye diagnosis';
-                    array_unshift($errors, $diagnosis->getErrors());
-                    return $errors;
-                }
-            }
-            if(!empty($patient['RE_diagnosis'])){
-                $disorder = Disorder::model()->findByAttributes(array(
-                    'term' => $patient['RE_diagnosis']
-                ));
-                if($disorder === null){
-                    $errors[] = 'Could not find right eye diagnosis '.$patient['RE_diagnosis'];
-                    return $errors;
-                }
-                $diagnosis = new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis();
-                $diagnosis->element_diagnoses_id = $element->id;
-                $diagnosis->disorder_id = $disorder->id;
-                $diagnosis->eye_id = Eye::RIGHT;
-                if(!$diagnosis->save()){
-                    $errors[] = 'Could not save right eye diagnosis';
-                    array_unshift($errors, $diagnosis->getErrors());
-                    return $errors;
-                }
-            }
+            //Warning: This will accept any value that is not 'Y' as false
+					$left = $patient['diagnosis_side_l'] == 'Y';
+					$right = $patient['diagnosis_side_r'] == 'Y';
+
+					$eye_id = ($left * 2 + $right * 1);//This is terrible. Fix it.
+
+					//Abusing soundex to strip commas and quotes and to more fuzzily match a diagnosis
+					$disorder_info = Yii::app()->db->createCommand('select id from disorder WHERE SOUNDEX(term) = SOUNDEX(\'' . $patient['diagnosis'] . '\')')->queryAll();
+					$disorder = Disorder::model()->findByPk($disorder_info[0]['id']);
+
+					if($disorder == null) {
+						$errors[] = "Could not find disorder matching name: " . $patient['diagnosis'];
+						return $errors;
+					}
+
+					$diagnosis = new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis();
+					$diagnosis->element_diagnoses_id = $element->id;
+					$diagnosis->disorder_id = $disorder->id;
+					$diagnosis->eye_id = $eye_id;
+					$diagnosis->date = $patient['diagnosis_date'];
+					$diagnosis->principal = $patient['diagnosis_principal'];
+
+					if($diagnosis->eye_id == 0) {
+						$errors[] = "Cannot save diagnosis that does not affect an eye";
+						return $errors;
+					}
+
+					if(!$diagnosis->save()){
+							$errors[] = 'Could not save diagnosis';
+							array_unshift($errors, $diagnosis->getErrors());
+							return $errors;
+					}
         }
+
+				if(empty($errors)) {
+					$import->message = "Import successful for patient: " . $contact->first_name . " " . $contact->last_name;
+				}
 
         return $errors;
     }
 
-    private function createNewTrialPatient($trial_patient)
+    private function createNewTrialPatient($trial_patient, $import)
     {
         $errors = array();
         //trial
