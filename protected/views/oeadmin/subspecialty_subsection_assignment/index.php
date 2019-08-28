@@ -108,7 +108,7 @@ if (isset($model)) {
                     [
                         'class' => 'button large',
                         'name' => 'delete',
-                        'data-object' => 'subspecialty_section_assignment',
+                        'data-object' => 'subspecialty_section_assignments',
                         'data-uri' => '/oeadmin/SubspecialtySubsectionAssignment/delete',
                         'id' => 'et_delete'
                     ]
