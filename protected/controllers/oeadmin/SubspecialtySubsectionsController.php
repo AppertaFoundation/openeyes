@@ -21,7 +21,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
     {
         $model = SubspecialtySubsection::model();
         $id = Yii::app()->request->getParam('subspecialty_id');
-        $model_list = isset($id) ? $model->findAll('subspecialty_id = :sid', [':sid' => $id]) : [];
+        $model_list = $id ? $model->findAll('subspecialty_id = :sid', [':sid' => $id]) : [];
 
         $this->render('/oeadmin/subspecialty_subsections/index', [
             'model' => $model,

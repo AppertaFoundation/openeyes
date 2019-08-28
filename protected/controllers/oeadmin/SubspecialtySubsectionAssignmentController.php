@@ -57,26 +57,20 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
 
     public function actionDelete()
     {
-        $request = Yii::app()->request;
-        $id = $request->getParam('id');
-        $subspecialty_id = $request->getParam('subspecialty_id');
-        $subsection_id = $request->getParam('subsection_id');
-
-        if (!isset($id) || empty($id)) {
-            $this->redirect(['list?subspecialty_id=' . $subspecialty_id .
-                '&subsection_id=' . $subsection_id]);
-        }
-
+        $delete_ids = Yii::app()->request->getPost('select', []);
         $transaction = Yii::app()->db->beginTransaction();
         $success = true;
 
         try {
-            $assignment = ProcedureSubspecialtySubsectionAssignment::model()->findByPk($id);
-            if ($assignment) {
-                if (!$assignment->delete()) {
-                    $success = false;
-                } else {
-                    Audit::add('admin-procedureSubspecialtySubsectionAssignment', 'delete', serialize($assignment));
+            foreach ($delete_ids as $id) {
+                $assignment = ProcedureSubspecialtySubsectionAssignment::model()->findByPk($id);
+                if ($assignment) {
+                    if (!$assignment->delete()) {
+                        $success = false;
+                        break;
+                    } else {
+                        Audit::add('admin-procedureSubspecialtySubsectionAssignment', 'delete', serialize($assignment));
+                    }
                 }
             }
         } catch (Excpetion $e) {
@@ -86,11 +80,10 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
 
         if ($success) {
             $transaction->commit();
-            Yii::app()->user->setFlash('success', 'Assignment deleted');
+            echo '1';
         } else {
             $transaction->rollback();
+            echo '0';
         }
-
-        $this->redirect(['list?subspecialty_id=' . $subspecialty_id . '&subsection_id=' . $subsection_id]);
     }
 }

@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if ($message = Yii::app()->user->getFlash('success')) { ?>
+<?php foreach (Yii::app()->user->getFlashes() as $message) { ?>
 <p class="alert-box info" style="margin-bottom: 0px;"><?= $message ?></p>
 <?php } ?>
 <h2>Manage Subspecialty Subsections</h2>
@@ -49,7 +49,7 @@
             </tbody>
         </table>
         <?php if ($subspecialty_id && !empty($subspecialty_id)) { ?>
-        <table class="standard generic-admin sortable" id="et_sort">
+        <table class="standard generic-admin">
             <thead>
                 <tr>
                     <th>Subspecialty Subsection</th>

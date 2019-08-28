@@ -30,7 +30,7 @@ if (isset($model)) {
 ?>
 <h2>Manage Subspecialty Subsection Assignments</h2>
 <div class="cols-5">
-    <form id="admin_subspecialty_section_assignment">
+    <form id="admin_subspecialty_section_assignments">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
         <input type="hidden" name="page" value="1" />
         <table>
@@ -80,20 +80,18 @@ if (isset($model)) {
             </tbody>
         </table>
         <?php if ($subsection_id && !empty($subsection_id)) { ?>
-        <table class="standard generic-admin sortable" id="et_sort">
+        <table class="standard generic-admin">
             <thead>
                 <tr>
+                    <th>Select</th>
                     <th>Procedure</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
             <?php foreach (ProcedureSubspecialtySubsectionAssignment::model()->findAll('subspecialty_subsection_id = :subid', [':subid' => $subsection_id]) as $model) { ?>
                 <tr>
+                    <td><input type="checkbox" name="select[]" value="<?= $model->id ?>"/></td>
                     <td><?= $model->getRelated('proc')->term ?></td>
-                    <td><a href="<?= 'delete?id=' . $model->id .
-                                    '&subspecialty_id=' . $subspecialty_id .
-                                    '&subsection_id=' . $subsection_id ?>" >delete</a></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -104,6 +102,18 @@ if (isset($model)) {
                 <col class="cols-6">
             </colgroup>
             <tbody>
+                <tr>
+                <?= \CHtml::button(
+                    'Delete',
+                    [
+                        'class' => 'button large',
+                        'name' => 'delete',
+                        'data-object' => 'subspecialty_section_assignment',
+                        'data-uri' => '/oeadmin/SubspecialtySubsectionAssignment/delete',
+                        'id' => 'et_delete'
+                    ]
+                ); ?>
+                </tr>
                 <tr>
                     <td><h3>Add Procedure: </h3></td>
                     <td>
