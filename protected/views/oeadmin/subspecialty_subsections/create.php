@@ -14,7 +14,7 @@
  */
 ?>
 
-<h2><?= $model->id ? 'Edit' : 'Create'?> Subsection for the "<?= Subspecialty::model()->findByPk($s_id)->name ?>" Subspecialty</h2>
+<h2><?= $model->id ? 'Edit' : 'Create'?> Subsection for the "<?= Subspecialty::model()->findByPk($subspecialty_id)->name ?>" Subspecialty</h2>
 <?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', [
   'id' => 'subspecialtySubsection_adminform',
@@ -27,7 +27,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
 
 $this->renderPartial(
   '/oeadmin/subspecialty_subsections/_form',
-  ['form' => $form, 'model' => $model, 's_id' => $s_id]
+  ['form' => $form, 'model' => $model, 'subspecialty_id' => $subspecialty_id]
 );
 
 $this->endWidget();

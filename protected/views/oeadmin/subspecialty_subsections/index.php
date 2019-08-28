@@ -1,6 +1,6 @@
 <?php
 /**
- * (C) OpenEyes Foundation, 2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -9,13 +9,16 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php if ($message = Yii::app()->user->getFlash('success')) { ?>
+<p class="alert-box info" style="margin-bottom: 0px;"><?= $message ?></p>
+<?php } ?>
 <h2>Manage Subspecialty Subsections</h2>
 <div class="cols-5">
-    <form id="admin_Subspecialty_Sections">
+    <form id="admin_subspecialty_sections">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
         <input type="hidden" name="page" value="1" />
         <table>
@@ -29,7 +32,7 @@
                     <td>
                     <?= \CHtml::dropDownList(
                         'subspecialty',
-                        $s_id,
+                        $subspecialty_id,
                         CHtml::listData(
                             Subspecialty::model()->findAll(),
                             'id',
@@ -45,7 +48,7 @@
                 </tr>
             </tbody>
         </table>
-        <?php if ($s_id && !empty($s_id)) { ?>
+        <?php if ($subspecialty_id && !empty($subspecialty_id)) { ?>
         <table class="standard generic-admin sortable" id="et_sort">
             <thead>
                 <tr>
@@ -55,7 +58,7 @@
             <tbody>
             <?php foreach ($model_list as $key => $model) { ?>
                 <tr class="clickable" data-id="<?= $model->id ?>"
-                    data-uri="oeadmin/subspecialtySubsections/edit?id=<?= $model->id ?>&subspecialty_id=<?= $s_id ?>" >
+                    data-uri="oeadmin/subspecialtySubsections/edit?id=<?= $model->id ?>&subspecialty_id=<?= $subspecialty_id ?>" >
                     <td><?= $model->name ?></td>
                 </tr>
             <?php } ?>
@@ -69,7 +72,7 @@
                                 'class' => 'button large',
                                 'type' => 'button',
                                 'name' => 'create',
-                                'data-uri' => 'create?subspecialty_id='.$s_id,
+                                'data-uri' => 'create?subspecialty_id='.$subspecialty_id,
                                 'id' => 'et_add'
                             ]
                         ); ?>

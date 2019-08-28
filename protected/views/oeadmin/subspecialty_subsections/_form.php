@@ -39,7 +39,7 @@
                 <?=\CHtml::activeHiddenField(
                     $model,
                     'subspecialty_id',
-                    [ 'value' => $s_id ]
+                    [ 'value' => $subspecialty_id ]
                 ); ?>
                 </td>
             </tr>
@@ -50,25 +50,25 @@
     
     <?php if ($model->id) {
         echo \OEHtml::Button("Delete", [
-            'id' => 'ss_delete',
+            'id' => 'et_delete_subspecialty_subsection',
             'data-id' => $model->id,
-            'data-s_id' => $s_id
+            'data-subspecialty_id' => $subspecialty_id
         ]);
     } ?>
 
     <?= \OEHtml::cancelButton("Cancel", [
-        'data-uri' => '/oeadmin/subspecialtySubsections/list?subspecialty_id=' . $s_id,
+        'data-uri' => '/oeadmin/subspecialtySubsections/list?subspecialty_id=' . $subspecialty_id,
     ]) ?>
 </div>
 <script>
-    $('#ss_delete').click( event => {
+    $('#et_delete_subspecialty_subsection').click( event => {
         let alert = new OpenEyes.UI.Dialog.Confirm({
             title: 'Delete Subsection',
             content: 'Are you sure you want to delete this subsection?'
         });
         alert.content.on('click', '.ok', (sub_event, main_event=event) => {
             let params = main_event.target.dataset;
-            window.location.href = '/oeadmin/subspecialtySubsections/delete?id=' + params['id'] + '&subspecialty_id=' + params['s_id'];
+            window.location.href = '/oeadmin/subspecialtySubsections/delete?id=' + params['id'] + '&subspecialty_id=' + params['subspecialty_id'];
         });
 
         event.preventDefault();

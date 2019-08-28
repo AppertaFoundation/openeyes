@@ -26,7 +26,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
         $this->render('/oeadmin/subspecialty_subsections/index', [
             'model' => $model,
             'model_list' => $model_list,
-            's_id' => $id,
+            'subspecialty_id' => $id,
         ]);
     }
 
@@ -34,11 +34,11 @@ class SubspecialtySubsectionsController extends BaseAdminController {
     {
         $request = Yii::app()->request;
         $id = $request->getParam('id');
-        $s_id = $request->getParam('subspecialty_id');
+        $subspecialty_id = $request->getParam('subspecialty_id');
         $model = SubspecialtySubsection::model()->findByPk($id);
 
         if (!$model) {
-            $this->redirect(['list?subspecialty_id=' . $s_id]);
+            $this->redirect(['list?subspecialty_id=' . $subspecialty_id]);
         }
 
         if ($request->getPost('SubspecialtySubsection')) {
@@ -48,14 +48,14 @@ class SubspecialtySubsectionsController extends BaseAdminController {
                 Audit::add('admin', 'edit', serialize($model->attributes), false,
                     ['model' => 'SubspecialtySubsection']);
                 Yii::app()->user->setFlash('success', 'Subsection edited');
-                $this->redirect(['list?subspecialty_id=' . $s_id]);
+                $this->redirect(['list?subspecialty_id=' . $subspecialty_id]);
             }
         }
 
-        if (isset($s_id) && !empty($s_id)) {
+        if (isset($subspecialty_id) && !empty($subspecialty_id)) {
             $this->render('/oeadmin/subspecialty_subsections/create', [
                 'model' => $model,
-                's_id' => $s_id,
+                'subspecialty_id' => $subspecialty_id,
                 'errors' => $model->getErrors(),
             ]);
         } else {
@@ -67,7 +67,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
     {
         $model = new SubspecialtySubsection();
         $request = Yii::app()->request;
-        $s_id = $request->getParam('subspecialty_id');
+        $subspecialty_id = $request->getParam('subspecialty_id');
 
         if ($request->getPost('SubspecialtySubsection')) {
             $model->setAttributes($request->getPost('SubspecialtySubsection'));
@@ -76,14 +76,14 @@ class SubspecialtySubsectionsController extends BaseAdminController {
                 Audit::add('admin', 'create', serialize($model->attributes), false,
                     ['model' => 'SubspecialtySubsection']);
                 Yii::app()->user->setFlash('success', 'Subsection created');
-                $this->redirect(['list?subspecialty_id=' . $s_id]);
+                $this->redirect(['list?subspecialty_id=' . $subspecialty_id]);
             }
         }
 
-        if (isset($s_id) && !empty($s_id)) {
+        if (isset($subspecialty_id) && !empty($subspecialty_id)) {
             $this->render('/oeadmin/subspecialty_subsections/create', [
                 'model' => $model,
-                's_id' => $s_id,
+                'subspecialty_id' => $subspecialty_id,
                 'errors' => $model->getErrors(),
             ]);
         } else {
@@ -94,9 +94,9 @@ class SubspecialtySubsectionsController extends BaseAdminController {
     public function actionDelete()
     {
         $id = Yii::app()->request->getParam('id');
-        $s_id = Yii::app()->request->getParam('subspecialty_id');
+        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
         if (!isset($id) || empty($id)) {
-            $this->redirect(['list?subspecialty_id=' . $s_id]);
+            $this->redirect(['list?subspecialty_id=' . $subspecialty_id]);
         }
 
         $transaction = Yii::app()->db->beginTransaction();
@@ -120,7 +120,8 @@ class SubspecialtySubsectionsController extends BaseAdminController {
 
         if ($success) {
             $transaction->commit();
-            $this->redirect(['list?subspecialty_id=' . $s_id]);
+            Yii::app()->user->setFlash('success', 'Subsection deleted');
+            $this->redirect(['list?subspecialty_id=' . $subspecialty_id]);
         } else {
             $transaction->rollback();
             $model = SubspecialtySubsection::model()->findByPk($id);
@@ -129,7 +130,7 @@ class SubspecialtySubsectionsController extends BaseAdminController {
             }
             $this->render('/oeadmin/subspecialty_subsections/create', [
                 'model' => $model,
-                's_id' => $s_id,
+                'subspecialty_id' => $subspecialty_id,
             ]);
         }
     }

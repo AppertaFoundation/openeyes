@@ -19,12 +19,12 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
 
     public function actionList()
     {
-        $spec_id = Yii::app()->request->getParam('subspecialty_id');
-        $sub_id = Yii::app()->request->getParam('subsection_id');
+        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
+        $subsection_id = Yii::app()->request->getParam('subsection_id');
 
         $this->render('/oeadmin/subspecialty_subsection_assignment/index', [
-            'spec_id' => $spec_id,
-            'sub_id' => $sub_id
+            'subspecialty_id' => $subspecialty_id,
+            'subsection_id' => $subsection_id
         ]);
     }
 
@@ -38,23 +38,20 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
             'proc_id' => $request->getParam('procedure_id')
         ];
 
-        $valid = function ($x) {
-            return $x && !empty($x);
+        $model->setAttributes($attributes);
 
-        };
-
-        if (!in_array(false, array_map($valid, $attributes))) {
-            $model->setAttributes($attributes);
-
-            if ($model->save()) {
-                Audit::add('admin', 'add', serialize($model->attributes), false,
-                    ['model' => 'ProcedureSubspecialtySubsectionAssignment']);
-                Yii::app()->user->setFlash('success', 'Assignment edited');
-                $this->redirect(['list?subspecialty_id=' . $subspecialty_id .
-                    '&subsection_id=' . $attributes['subspecialty_subsection_id']]);
-            }
+        if ($model->save()) {
+            Audit::add('admin', 'add', serialize($model->attributes), false,
+                ['model' => 'ProcedureSubspecialtySubsectionAssignment']);
+            Yii::app()->user->setFlash('success', 'Assignment added');
+            $this->redirect(['list?subspecialty_id=' . $subspecialty_id .
+                '&subsection_id=' . $attributes['subspecialty_subsection_id']]);
         } else {
-            $this->redirect(['list']);
+            $this->render('/oeadmin/subspecialty_subsection_assignment/index', [
+                'model' => $model,  
+                'subspecialty_id' => $subspecialty_id,
+                'subsection_id' => $attributes['subspecialty_subsection_id']
+            ]);
         }
     }
 
@@ -89,11 +86,11 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
 
         if ($success) {
             $transaction->commit();
+            Yii::app()->user->setFlash('success', 'Assignment deleted');
         } else {
             $transaction->rollback();
         }
 
-        $this->redirect(['list?subspecialty_id=' . $subspecialty_id .
-            '&subsection_id=' . $subsection_id]);
+        $this->redirect(['list?subspecialty_id=' . $subspecialty_id . '&subsection_id=' . $subsection_id]);
     }
 }

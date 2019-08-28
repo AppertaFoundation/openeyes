@@ -1,6 +1,6 @@
 <?php
 /**
- * (C) OpenEyes Foundation, 2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -9,13 +9,28 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
+<?php foreach (Yii::app()->user->getFlashes() as $message) { ?>
+<p class="alert-box info" style="margin-bottom: 0px;"><?= $message ?></p>
+<?php } ?>
+
+<?php
+if (isset($model)) {
+    echo \CHtml::errorSummary(
+      $model,
+      null,
+      null,
+      ["class" => "alert-box alert with-icon"]
+    );
+}
+?>
 <h2>Manage Subspecialty Subsection Assignments</h2>
 <div class="cols-5">
-    <form id="admin_Subspecialty_Section_Assignment">
+    <form id="admin_subspecialty_section_assignment">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
         <input type="hidden" name="page" value="1" />
         <table>
@@ -29,7 +44,7 @@
                     <td>
                     <?= \CHtml::dropDownList(
                         'subspecialty',
-                        $spec_id,
+                        $subspecialty_id,
                         CHtml::listData(
                             Subspecialty::model()->findAll(),
                             'id',
@@ -37,7 +52,7 @@
                             'subspecialty.name'
                         ),
                         [
-                            'id' => 'ssa-subspecialty-select',
+                            'id' => 'subspecialty-select',
                             'empty' => 'Select a subspecialty'
                         ])
                     ?>
@@ -48,15 +63,15 @@
                     <td>
                     <?= \CHtml::dropDownList(
                         'subsection',
-                        $sub_id,
+                        $subsection_id,
                         CHtml::listData(
-                            SubspecialtySubsection::model()->findAll('subspecialty_id = :specid', [':specid' => $spec_id]),
+                            SubspecialtySubsection::model()->findAll('subspecialty_id = :specid', [':specid' => $subspecialty_id]),
                             'id',
                             'name',
                             'subspecialtySubsection.name'
                         ),
                         [
-                            'id' => 'ssa-subsection-select',
+                            'id' => 'subsection-select',
                             'empty' => 'Select a subsection'
                         ])
                     ?>
@@ -64,7 +79,7 @@
                 </tr>
             </tbody>
         </table>
-        <?php if ($sub_id && !empty($sub_id)) { ?>
+        <?php if ($subsection_id && !empty($subsection_id)) { ?>
         <table class="standard generic-admin sortable" id="et_sort">
             <thead>
                 <tr>
@@ -73,12 +88,12 @@
                 </tr>
             </thead>
             <tbody>
-            <?php foreach (ProcedureSubspecialtySubsectionAssignment::model()->findAll('subspecialty_subsection_id = :subid', [':subid' => $sub_id]) as $model) { ?>
+            <?php foreach (ProcedureSubspecialtySubsectionAssignment::model()->findAll('subspecialty_subsection_id = :subid', [':subid' => $subsection_id]) as $model) { ?>
                 <tr>
                     <td><?= $model->getRelated('proc')->term ?></td>
-                    <td><a href='delete?id=<?= $model->id ?>
-                                &subspecialty_id=<?= $spec_id ?>
-                                &subsection_id=<?= $sub_id ?>' >delete</a></td>
+                    <td><a href="<?= 'delete?id=' . $model->id .
+                                    '&subspecialty_id=' . $subspecialty_id . 
+                                    '&subsection_id=' . $subsection_id ?>" >delete</a></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -102,7 +117,7 @@
                             'procedure.term'
                         ),
                         [
-                            'id' => 'ssa-procedure-add',
+                            'id' => 'procedure-add',
                             'empty' => 'Select a procedure'
                         ])
                     ?>
@@ -114,13 +129,13 @@
     </form>
 </div>
 <script>
-    $('#ssa-subspecialty-select').change( e => {
+    $('#subspecialty-select').change( e => {
         window.location.href = 'list?subspecialty_id=' + e.target.value;
     });
-    $('#ssa-subsection-select').change( e => {
-        window.location.href = e.target.baseURI + '&subsection_id=' + e.target.value;
+    $('#subsection-select').change( e => {
+        window.location.href = 'list?' + e.target.baseURI.split('?')[1].split('&')[0] + '&subsection_id=' + e.target.value;
     });
-    $('#ssa-procedure-add').change( e => {
+    $('#procedure-add').change( e => {
         window.location.href = 'add?' + e.target.baseURI.split('?')[1] + '&procedure_id=' + e.target.value;
     });
 </script>
