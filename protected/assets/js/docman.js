@@ -166,7 +166,7 @@ var docman = (function() {
 
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){
-                            delivery_methods += '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>>';
+                            delivery_methods += '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>';
                         }
                     }
                     else
