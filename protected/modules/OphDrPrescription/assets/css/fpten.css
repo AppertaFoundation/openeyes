@@ -183,15 +183,16 @@ body {
 /*Appears beneath the prescriber.*/
 #fpten-prescription-list, #wpten-prescription-list {
     padding-top: 1mm;
-    height: 76mm;
+    height: 85mm;
     width: 50mm;
-    margin-left: 29mm;
     overflow: hidden;
+    margin-left: 30mm;
 }
 
 #fpten-prescription-list {
     height: 78mm;
     width: 57mm;
+    margin-left: 29mm;
 }
 
 .right #fpten-prescription-list, .right #wpten-prescription-list {
@@ -214,7 +215,7 @@ body {
     width: 35mm;
     height: 12mm;
     text-align: center;
-    margin-left: 68mm;
+    margin-left: 70mm;
     line-height: 12mm;
 }
 
@@ -224,7 +225,7 @@ body {
 }
 
 .right #wpten-date {
-    margin-left: 63mm; !important;
+    margin-left: 65mm; !important;
 }
 
 .right #fpten-date {
