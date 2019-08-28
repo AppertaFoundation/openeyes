@@ -266,10 +266,10 @@ class PatientController extends BaseController
             $last_modifier = $plan_problem->lastModifiedUser;
 
             $attributes = $plan_problem->attributes;
-            $attributes['title'] = $user_created->getFullNameAndTitle();
+            $attributes['title'] = ($user_created ? 'by '.$user_created->getFullNameAndTitle() : '');
             $attributes['create_at'] = \Helper::convertDate2NHS($plan_problem->created_date);
             $attributes['last_modified'] = \Helper::convertDate2NHS($plan_problem->last_modified_date);
-            $attributes['last_modified_by'] = $last_modifier->getFullNameAndTitle();
+            $attributes['last_modified_by'] = ($last_modifier ? 'by '.$last_modifier->getFullNameAndTitle() : '');
             $plans[] = $attributes;
         }
 

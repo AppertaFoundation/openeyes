@@ -117,7 +117,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                 <span class="drag-handle" style="position: absolute;"><i class="oe-i menu medium pro-theme"></i></span>
                 <span style="display:inline-block;margin-left:30px;">{{name}}</span>
                 <div class="metadata">
-                    <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="Created: {{create_at}} by {{title}}"></i>
+                    <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="Created: {{create_at}} {{title}}"></i>
                 </div>
                 <div class="remove"><i class="oe-i remove-circle small pro-theme pad" data-plan-id="{{id}}"></i></div>
             </li>`
@@ -137,7 +137,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                 <tr>
                     <td style="padding: 6px 3px;">{{name}}</td>
                     <td><div class="metadata">
-                        <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="Created: {{create_at}} by {{title}}<br />Closed: {{last_modified}} by {{last_modified_by}}"></i>
+                        <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="Created: {{create_at}} {{title}}<br />Closed: {{last_modified}} {{last_modified_by}}"></i>
                     </div>
                     </td>
                     <td><span class="oe-date">Removed: {{last_modified}}</span></td>
