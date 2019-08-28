@@ -392,7 +392,7 @@ class MedicationManagement extends BaseMedicationElement
         }
         $prescription_details = $this->getPrescriptionDetails();
         $prescription_details->event_id = $prescription->id;
-        $prescription_details->draft = 1;
+        $prescription_details->draft = 0;
 
         if(!$prescription_details->save(false)){
             \Yii::trace(print_r($prescription_details->errors, true));
