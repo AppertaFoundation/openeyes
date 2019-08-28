@@ -197,4 +197,13 @@ class MedicationManagementEntry extends \EventMedicationUse
 
 		return parent::beforeDelete();
 	}
+
+	public function getPrescriptionLink()
+	{
+		if ($this->prescriptionItem) {
+			return "/OphDrPrescription/default/view/" . $this->prescriptionItem->event_id;
+		} else {
+			return "";
+		}
+	}
 }
