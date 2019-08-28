@@ -190,9 +190,13 @@
                     red = "0%";
                     green = "80%";
                 }
+                $bmiContainer.css("background-color", "rgb("+red+", "+green+", "+blue+")");
+            }
+            else {
+                $bmiContainer.css("background-color", '');
             }
             $bmiContainer.text(result);
-            $bmiContainer.css("background-color", "rgb("+red+", "+green+", "+blue+")");
+            
         }
     });
 </script>
