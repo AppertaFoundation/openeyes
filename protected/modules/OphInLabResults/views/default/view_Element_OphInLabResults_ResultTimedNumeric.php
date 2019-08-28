@@ -12,7 +12,7 @@
             ($element->resultType->show_units ? CHtml::encode($element->unit) : "") ?></div></td>
       <td>
           <span class="large-text highlighter orange js-lab-result-warning"
-                style="disply:<?php
+                style="display:<?php
                 if (isset($element->result)&& $element->resultType->normal_min && $element->resultType->normal_min &&
                  ($element->result > $element->resultType->normal_max || $element->result < $element->resultType->normal_min)) {
                       echo "block";
