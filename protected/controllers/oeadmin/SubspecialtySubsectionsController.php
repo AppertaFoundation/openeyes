@@ -125,11 +125,3 @@ class SubspecialtySubsectionsController extends BaseAdminController {
         }
     }
 }
-           // $model = SubspecialtySubsection::model()->findByPk($id);
-           // if (strpos($exception_message, 'foreign key constraint fails') !== false) {
-           //     $model->addError('In use error', 'This subsection could not be deleted as it is in use.');
-           // }
-           // $this->render('/oeadmin/subspecialty_subsections/create', [
-           //     'model' => $model,
-           //     'subspecialty_id' => $subspecialty_id,
-           // ]);
