@@ -246,10 +246,10 @@
 
         // fix plot width
         // marginL * 3 means: left, middle, right
-        var plotWidth = (pageW - marginL * 3) / 2;
+        var plotWidth = (pageW - marginL * 3);
         // fix plot width
         // marginL * 3 means: top, middle, bottom
-        var plotHeight = (pageH - marginT * 3) / 2;
+        var plotHeight = (pageH - marginT * 3);
 
         // get current selected cataract report type
         var selected = $('.js-cataract-report-type.selected').data('report'); 
@@ -263,10 +263,7 @@
                 configPlotPDF(currentPlot, config);
                 Plotly.toImage(currentPlot)
                     .then((dataURL)=>{
-                        doc.setFontSize(8);
-                        doc.text(15, 10, 'Surgeon Name: ' + 
-                        "<?php echo $current_user->contact->first_name . ' ' . $current_user->contact->last_name; ?>");
-                        doc.text(15, 20, 'Date: ' + date);
+                        pageStampDetails(doc, date);
 
                         doc.addImage(dataURL, 'PNG', marginL, marginT, plotWidth, plotHeight);
                         counter++;
@@ -297,12 +294,10 @@
                 // convert the plot into image
                 Plotly.toImage(plot)
                     .then((dataURL)=>{
-                        // calculate offset of the plot in pdf
-                        var offsetW = (counter % 2 === 0) ? (marginL * 2 + plotWidth) : marginL;
-                        var offsetH = ((((counter - 1) % 4) + 1)* plotWidth + marginL * 2 > pageW) ? (marginT * 2 + plotHeight) : marginT;
-
+                        doc.addPage();
+                        pageStampDetails(doc, date);
                         // put the image into pdf
-                        doc.addImage(dataURL, 'PNG', offsetW, offsetH, plotWidth, plotHeight);
+                        doc.addImage(dataURL, 'PNG', marginL, marginT, plotWidth, plotHeight);
                         
                         if(counter >= total){
                             doc.save('Cataract_Plots.pdf');
@@ -310,10 +305,7 @@
                             return saved;
                         } else {
                             counter++;
-                            // every four plots add new page
-                            if(counter % 4 === 1){
-                                doc.addPage();
-                            }
+                            // See Jira OE-8869 to find the removed code (every four plots add new page)
                         }
                     }).then(function(flag){
                         // once the plot is added into pdf, it will be cleared out
@@ -350,5 +342,12 @@
             plot.layout.yaxis.linecolor = config.yaxis.linecolor;
             plot.layout.xaxis.linecolor = config.xaxis.linecolor;
         }
+    }
+
+    function pageStampDetails(doc, date){
+        doc.setFontSize(8);
+        doc.text(15, 10, 'Surgeon Name: ' + 
+        "<?php echo $current_user->contact->first_name . ' ' . $current_user->contact->last_name; ?>");
+        doc.text(15, 20, 'Date: ' + date);
     }
 </script>
