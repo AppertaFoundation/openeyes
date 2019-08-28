@@ -22,22 +22,24 @@
         <table class="standard generic-admin sortable" id="et_sort" data-uri = "/OphCiExamination/admin/Drug/sortDrug">
             <thead>
                 <tr>
-                    <th><input type="checkbox" name="selectall" id="selectall"/></th>
                     <th>Display order</th>
                     <th>Name</th>
+                    <th>Active</th>
                 </tr>
             </thead>
             <tbody>
             <?php foreach ($model_list as $i => $model) { ?>
                 <tr class="clickable" data-id="<?= $model->id ?>"
                     data-uri="OphCiExamination/admin/Drug/update/<?= $model->id ?>" >
-                    <td><input type="checkbox" name="select[]" value="<?= $model->id ?>"/></td>
                     <td class="reorder">
                         <span>&uarr;&darr;</span>
                         <input type="hidden" name="OphCiExamination_Dilation_Drugs[display_order][]" value="<?= $model->id ?>">
                     </td>
                     <td>
                         <?= $model->name ?>
+                    </td>
+                    <td>
+                        <?= $model->is_active ? 'True' : 'False' ?>
                     </td>
                 </tr>
             <?php } ?>
@@ -53,17 +55,6 @@
                                 'name' => 'add',
                                 'data-uri' => '/OphCiExamination/admin/Drug/create',
                                 'id' => 'et_add'
-                            ]
-                        ); ?>
-
-                        <?= \CHtml::button(
-                            'Delete',
-                            [
-                                'class' => 'button large',
-                                'name' => 'delete',
-                                'data-object' => 'Drug',
-                                'data-uri' => '/OphCiExamination/admin/Drug/delete',
-                                'id' => 'et_delete'
                             ]
                         ); ?>
                     </td>

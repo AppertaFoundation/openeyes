@@ -15,7 +15,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
       ),
       'xaxis' => array(
-        'title' => 'Percent of cases',
+        'title' => 'Number of cases',
         'showline' => true,
         'showgrid'=> true,
         'ticks' => 'outside',
