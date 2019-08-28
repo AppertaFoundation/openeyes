@@ -91,7 +91,7 @@ class CsvController extends BaseController
             }
 
         } else { // no file uploaded
-            $errors[] = 'Empty file. Please choose a csv file to upload.';
+            $errors[] = 'No csv file selected. Please choose a csv file to upload.';
             $this->render('upload', array('context' => $context, 'errors' => $errors));
         }
     }
