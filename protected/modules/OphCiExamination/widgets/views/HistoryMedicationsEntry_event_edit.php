@@ -81,8 +81,9 @@ $is_posting = Yii::app()->request->getIsPostRequest();
             <div class="flex-layout">
                 <div class="alternative-display inline">
                     <div class="alternative-display-element textual" <?php if($direct_edit){ echo 'style="display: none;"'; }?>>
-                        <a class="textual-display-dose textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
-							<?= $entry->getAdministrationDisplay() ?>
+                        <a class="textual-display-dose textual-display hint" href="javascript:void(0);" onclick="switch_alternative(this);">
+													<?php $entry_text_display = $entry->getAdministrationDisplay();
+													  	echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         </a>
                     </div>
                     <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
