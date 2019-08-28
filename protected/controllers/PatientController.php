@@ -1849,6 +1849,7 @@ class PatientController extends BaseController
         foreach($_POST['PatientIdentifier'] as $post_info) {
             $patient_identifier = new PatientIdentifier();
             $patient_identifier->patient_id = $patient->id;
+            $patient_identifier->id = $post_info['id'];
             $patient_identifier->code = $post_info['code'];
             $patient_identifier->value = @$post_info['value'];
             $patient_identifiers[] = $patient_identifier;
