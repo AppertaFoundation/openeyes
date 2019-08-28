@@ -17,12 +17,15 @@
 
 ?>
 <div class="problems-plans">
+    <div class="subtitle">
+        Problems &amp; Plans
+    </div>
     <ul class="problems-plans-sortable" id="problems-plans-sortable">
         <?php foreach ($plans_problems as $plan_problem) {
             if ($plan_problem->active) { ?>
             <li>
-                <span class="drag-handle" style="position: absolute;"><i class="oe-i menu medium pro-theme"></i></span>
-                <span style="display:inline-block;margin-left:30px;"><?= $plan_problem->name ?></span>
+                <span class="drag-handle"><i class="oe-i menu medium pro-theme"></i></span>
+                <?= $plan_problem->name ?>
                 <div class="metadata">
                     <i class="oe-i info small pro-theme js-has-tooltip"
                        data-tooltip-content="Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?> <?= ($plan_problem->createdUser ? 'by '.$plan_problem->createdUser->getFullNameAndTitle() : '') ?>"></i>
@@ -79,8 +82,8 @@
 </script>
 <script type="text/html" id="plans-problems-template">
     <li>
-        <span class="drag-handle" style="position: absolute;"><i class="oe-i menu medium pro-theme"></i></span>
-        <span style="display:inline-block;margin-left:30px;">{{name}}</span>
+        <span class="drag-handle"><i class="oe-i menu medium pro-theme"></i></span>
+        {{name}}
         <div class="metadata">
             <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="Created: {{create_at}} {{title}}"></i>
         </div>
