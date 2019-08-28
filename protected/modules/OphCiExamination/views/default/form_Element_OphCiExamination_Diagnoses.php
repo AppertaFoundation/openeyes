@@ -219,7 +219,8 @@ foreach ($this->patient->episodes as $ep) {
             },
             listFilter: true,
             filterListId: "disorder-group-filter",
-            listForFilterId: "disorder-list"
+            listForFilterId: "disorder-list",
+            liClass: "restrict-width extended"
         });
     })
 </script>
