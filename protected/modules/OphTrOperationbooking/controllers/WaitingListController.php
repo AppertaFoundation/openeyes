@@ -90,7 +90,7 @@ class WaitingListController extends BaseModuleController
             $patient_search = new PatientSearch();
             $hos_num = $patient_search->getHospitalNumber($_POST['hos_num']);
             $site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
-						$booking_status =  \Yii::app()->request->getParam('booking_status', '');
+                        $booking_status =  \Yii::app()->request->getParam('booking_status', '');
 
             YiiSession::set('waitinglist_searchoptions', array(
                     'subspecialty-id' => $subspecialty_id,
@@ -142,13 +142,13 @@ class WaitingListController extends BaseModuleController
         }
 
         if ($booking_status) {
-						$where_sql .= ' AND t.status_id = :status_id';
-						$where_params[':status_id'] = $booking_status;
+                        $where_sql .= ' AND t.status_id = :status_id';
+                        $where_params[':status_id'] = $booking_status;
         } else {
-						$booking_status_ids = Yii::app()->db->createCommand()->select('id')->from('ophtroperationbooking_operation_status')
-							->where(['in','name', ['On-Hold', 'Requires scheduling', 'Requires rescheduling', ]])->queryColumn();
-						$booking_status_ids = "(" . implode(',', $booking_status_ids) . ")";
-						$where_sql .= ' AND t.status_id IN ' . $booking_status_ids;
+                        $booking_status_ids = Yii::app()->db->createCommand()->select('id')->from('ophtroperationbooking_operation_status')
+                            ->where(['in','name', ['On-Hold', 'Requires scheduling', 'Requires rescheduling', ]])->queryColumn();
+                        $booking_status_ids = "(" . implode(',', $booking_status_ids) . ")";
+                        $where_sql .= ' AND t.status_id IN ' . $booking_status_ids;
         }
 
         Yii::app()->event->dispatch('start_batch_mode');

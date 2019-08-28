@@ -94,14 +94,14 @@
         </div>
 
           <h4>Status</h4>
-				<?=\CHtml::dropDownList('booking_status',
-					\Yii::app()->request->getParam('booking_status', ''),
-					\CHtml::listData(OphTrOperationbooking_Operation_Status::model()->findAllByAttributes(
-						[ 'name' => [ 'On-Hold', 'Requires scheduling', 'Requires rescheduling', ], ]), 'id', 'name'),
-					array(
-						'empty' => 'All',
-						'class' => 'cols-full',
-					)) ?>
+                <?=\CHtml::dropDownList('booking_status',
+                    \Yii::app()->request->getParam('booking_status', ''),
+                    \CHtml::listData(OphTrOperationbooking_Operation_Status::model()->findAllByAttributes(
+                        [ 'name' => [ 'On-Hold', 'Requires scheduling', 'Requires rescheduling', ], ]), 'id', 'name'),
+                    array(
+                        'empty' => 'All',
+                        'class' => 'cols-full',
+                    )) ?>
         <div class="row">
           <button class="green hint cols-full" type="submit">Search Waiting List</button>
         </div>
