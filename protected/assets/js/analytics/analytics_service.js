@@ -99,7 +99,7 @@ var analytics_service = (function () {
 				dataType: 'json',
 				success: function (data) {
 					// window.csv_data_for_report['service_data'] = data['csv_data']
-					console.log(data['plot_data']);
+					// console.log(data['plot_data']);
 					var plot_data = analytics_toolbox.processPlotData(type, data['plot_data']);
           analytics_toolbox.loadPlot('click', plot_data.data, plot_data.title);
           // console.log($('#js-hs-chart-analytics-service').css('display'))

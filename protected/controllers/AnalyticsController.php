@@ -178,7 +178,9 @@ class AnalyticsController extends BaseController
         $this->getPatientList();
         $assetManager = Yii::app()->getAssetManager();
         $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
-        $current_user = User::model()->findByPk(Yii::app()->user->id);
+        if(!isset($this->current_user)){
+            $this->current_user = User::model()->findByPk(Yii::app()->user->id);
+        }
         $event_list = $this->queryCataractEventList();
         // to get event min / max date
         $event_dates = array();
@@ -207,16 +209,13 @@ class AnalyticsController extends BaseController
         $data = array(
             'dom'=>array(),
             'data'=>array(
-              'clinical_data'=> array(),
-              'service_data'=> array(),
-              'custom_data' => array(),
               'event_list' => $event_list,
               'min_event_date'=>date('Y-m-d', strtotime($event_dates[0])),
               'max_event_date'=>date('Y-m-d', strtotime($event_dates[count($event_dates) - 1])),
-              'patient_list' => $this->patient_list,
-              'data_summary' => json_encode($follow_patient_list['data_sum']),
+            //   'patient_list' => $this->patient_list,
+            //   'data_summary' => json_encode($follow_patient_list['data_sum']),
               'user_list' => $user_list,
-              'current_user'=>json_encode($current_user),
+              'current_user'=>$this->current_user,
             ),
         );
         $data['dom']['sidebar'] = $this->renderPartial('/analytics/analytics_sidebar_cataract',null, true);
@@ -226,21 +225,55 @@ class AnalyticsController extends BaseController
     }
     public function actionMedicalRetina()
     {
-        $this->getPatientList();
-        list($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data,$clinical_data) = $this->getClinicalSpecialityData('Medical Retina');
-        
+        // $this->getPatientList();
+        $specialty = Yii::app()->getRequest()->getParam("specialty");
+        // list($follow_patient_list, $common_ophthalmic_disorders,  $user_list, $custom_data,$clinical_data) = $this->getClinicalSpecialityData('Glaucoma');
+        $subspecialty_id = $this->getSubspecialtyID($specialty);
+        $follow_patient_list = $this->getFollowups($subspecialty_id);
+        if(Yii::app()->request->getParam('report')) {
+            $this->renderJSON(array(
+                'plot_data'=>$follow_patient_list['plot_data'],
+                'csv_data'=>$follow_patient_list['csv_data'],
+            ));
+            return;
+        }
+        $disorder_data = $this->getDisorders($subspecialty_id);
+        if(!isset($this->current_user)){
+            $this->current_user = User::model()->findByPk(Yii::app()->user->id);
+        }
+        $clinical_data = array(
+            'title' => 'Disorders Section',
+            'x' => $disorder_data['x'],
+            'y' => $disorder_data['y'],
+            'text' => $disorder_data['text'],
+            'customdata' =>$disorder_data['customdata'],
+            'csv_data'=>$disorder_data['csv_data'],
+        );
+        $this->filters = array(
+            'date_from' => 0,
+            'date_to' => strtotime(date("Y-m-d h:i:s")),
+        );
+        $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
+        if (isset($this->surgeon)) {
+            $user_list = null;
+        } else {
+            $user_list = User::model()->findAll();
+        }
+        // $custom_data = $this->getCustomData($specialty);
         $data = array(
             'dom'=>array(),
-            'data'=>array(
-                'specialty' => 'Medical Retina',
-                'service_data' => $follow_patient_list,
-                'custom_data' => $custom_data,
-                'patient_list' => $this->patient_list,
-                'user_list' => $user_list,
-                'current_user' => $current_user,
-                'common_disorders' => $common_ophthalmic_disorders,
-                'clinical_data'=>$clinical_data,
-            )
+            'data'=>array(),
+        );
+        $data['dom']['sidebar'] = $this->renderPartial('/analytics/analytics_sidebar', array(
+            'specialty'=>$specialty,
+            'current_user'=>$this->current_user,
+            'common_disorders'=>$common_ophthalmic_disorders,
+            'user_list'=>$user_list,
+        ), true);
+        $data['dom']['plot'] = $this->renderPartial('/analytics/analytics_plots', null, true) . $this->renderPartial('/analytics/analytics_custom', null, true);
+        $data['data'] = array(
+            'service_data'=>$follow_patient_list,
+            'clinical_data'=>$clinical_data,
         );
         exit(json_encode($data));
     }
@@ -296,21 +329,7 @@ class AnalyticsController extends BaseController
         $data['data'] = array(
             'service_data'=>$follow_patient_list,
             'clinical_data'=>$clinical_data,
-            // 'custom_data'=>$custom_data,
-            // 'va_final_ticks'=>$va_final_ticks,
         );
-        // $this->render('/analytics/analytics_container',
-        //   array(
-            //   'specialty' => 'Glaucoma',
-            //   'service_data' => json_encode($follow_patient_list),
-            //   'custom_data' => $custom_data,
-            //   'patient_list' => $this->patient_list,
-            //   'user_list' => $user_list,
-            //   'current_user' => $current_user,
-            //   'common_disorders' => $common_ophthalmic_disorders,
-        //       'clinical_data'=> json_encode($clinical_data),
-        //   )
-        // );
         exit(json_encode($data));
     }
     public function actionGetCustomPlot(){
@@ -350,7 +369,6 @@ class AnalyticsController extends BaseController
                         }, array_values(${$side . '_va_list'})),
                     'customdata' => array_map(
                         function ($item) {
-                            Yii::log(CVarDumper::dumpAsString($item));
                             return $item['patients'];
                         },
                         array_values(${$side . '_va_list'})),

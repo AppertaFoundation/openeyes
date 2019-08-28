@@ -2,7 +2,7 @@ var analytics_custom = (function () {
 	var init = function (data) {
 		var custom_layout = JSON.parse(JSON.stringify(analytics_layout));
 		var custom_data = data['custom_data'];
-		console.log(custom_data)
+		// console.log(custom_data)
 		var va = data['va_final_ticks'];
 		var specialty = analytics_toolbox.getCurrentSpecialty();
 		// window.csv_data_for_report['custom_data'] = custom_data['csv_data'];

@@ -20,11 +20,11 @@
         <div id="js-charts-clinical">
             <br>
             <ul class="charts">
-                <li><a href="#" data-report="PCR" class="js-cataract-report-type selected">PCR Risk</a></li>
-                <li><a href="#" data-report="CP" class="js-cataract-report-type">Complication Profile</a></li>
-                <li><a href="#" data-report="VA" class="js-cataract-report-type">Visual Acuity</a></li>
-                <li><a href="#" data-report="RO" class="js-cataract-report-type">Refractive Outcome</a></li>
-                <li><a href="#" data-report="NOD" class="js-cataract-report-type">NOD Audit</a></li>
+                <li><a href="#" data-container="#pcr-risk-grid" data-report="PCR" class="js-cataract-report-type selected">PCR Risk</a></li>
+                <li><a href="#" data-container="#cataract-complication-grid" data-report="CP" class="js-cataract-report-type">Complication Profile</a></li>
+                <li><a href="#" data-container="#visual-acuity-grid" data-report="VA" class="js-cataract-report-type">Visual Acuity</a></li>
+                <li><a href="#" data-container="#refractive-outcome-grid" data-report="RO" class="js-cataract-report-type">Refractive Outcome</a></li>
+                <li><a href="#" data-container="#nod-audit-grid" data-report="NOD" class="js-cataract-report-type">NOD Audit</a></li>
             </ul>
             <form id="search-form">
                 <div id="search-form-report-search-section"></div>

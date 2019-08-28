@@ -87,6 +87,7 @@
         <div id="js-analytics-spinner" style="display: none;"><i class="spinner"></i></div>
     </main>analytics_custom
     <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/plotly.js-dist/plotly.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('js/dashboard/OpenEyes.Dash.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_toolbox.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_sidebar.js')?>"></script>
@@ -94,6 +95,7 @@
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_service.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_clinical.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_csv.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_cataract.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_drill_down.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/enhancedPopupFixed.js')?>"></script>
     <script>
@@ -107,7 +109,7 @@
             $(this).addClass('selected');
             $('.icon-btn a').not(this).removeClass('selected');
             var target = this.href;
-            var specialty = $(this).data('specialty');
+            var specialty = analytics_toolbox.getCurrentSpecialty();
             $('.specialty').html(specialty);
             
             $.ajax({
@@ -122,7 +124,7 @@
                     var data = JSON.parse(response);
                     // console.log(data)
                     // var data = getPHPData;
-                    
+                    // console.log(data);
                     var php_data = (function(){
                         var side_bar_user_list = JSON.parse(<?=json_encode($user_list);?>)
                         return {
@@ -141,6 +143,11 @@
                     // analytics_service(data['service_data'], data['data_sum'], target);
                     // analytics_clinical('', data['clinical_data'])
                     // analytics_drill_down(target);
+                    if(specialty.toLowerCase() === 'cataract'){
+                        $('#js-analytics-spinner').hide();
+                        analytics_cataract();
+                        return;  
+                    }
                     analytics_sidebar(data['data'], target, php_data['sb_user_list']);
                     // var csv_data = dom['data'] ? dom['data']
                     analytics_drill_down();

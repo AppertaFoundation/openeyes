@@ -1,7 +1,8 @@
 var analytics_clinical = (function(){
   var init = function(flag, clinical_data, custom_data){
+    // console.log(clinical_data);
     console.log(clinical_data);
-    analytics_csv_download(clinical_data)
+    analytics_csv_download(clinical_data['csv_data'])
     var clinical_layout = JSON.parse(JSON.stringify(analytics_layout));
     var clinical_data = clinical_data;
     

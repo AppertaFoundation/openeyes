@@ -149,8 +149,8 @@ var analytics_toolbox = (function () {
 	}
 
 	function plotUpdate(data, specialty, flag) {
-		console.log(data)
-		console.log(specialty)
+		// console.log(data)
+		// console.log(specialty)
 		if(flag === 'service'){
 			var service_type =  $('#js-charts-service .charts li a.selected').data('report');
 			var plot_data = processPlotData(service_type, data[1]['plot_data'])
