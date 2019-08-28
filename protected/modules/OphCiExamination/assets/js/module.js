@@ -2099,6 +2099,8 @@ function registerElementController(controller, name, bindTo) {
     if(typeof window[bindTo] !== 'undefined') {
         window[bindTo].bindController(controller, name);
         controller.bindController(window[bindTo], bindTo);
+        window[bindTo].options.onControllerBound(controller, name);
+				controller.options.onControllerBound(window[bindTo], bindTo);
     }
 }
 
@@ -2116,5 +2118,15 @@ function bmi_calculator( weight, height){
     height_meter = height / 100;
     result = weight / (height_meter * height_meter);
     return result;
-    
+
+}
+
+function decimal2heximal (decimal) {
+	return ('0' + decimal.toString(16)).substr(-2);
+}
+
+function generateId (length) {
+	let array = new Uint8Array((length || 10) / 2);
+	window.crypto.getRandomValues(array);
+	return Array.from(array, decimal2heximal).join('')
 }
