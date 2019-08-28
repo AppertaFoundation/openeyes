@@ -117,7 +117,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                 <span class="drag-handle" style="position: absolute;"><i class="oe-i menu medium pro-theme"></i></span>
                 <span style="display:inline-block;margin-left:30px;">{{name}}</span>
                 <div class="metadata">
-                    <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="{{title}}<br /> Created: {{create_at}}"></i>
+                    <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="Created: {{create_at}} by {{title}}"></i>
                 </div>
                 <div class="remove"><i class="oe-i remove-circle small pro-theme pad" data-plan-id="{{id}}"></i></div>
             </li>`
@@ -137,7 +137,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                 <tr>
                     <td style="padding: 6px 3px;">{{name}}</td>
                     <td><div class="metadata">
-                        <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="{{title}}<br /> Created: {{create_at}}"></i>
+                        <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="Created: {{create_at}} by {{title}}<br />Closed: {{last_modified}} by {{last_modified_by}}"></i>
                     </div>
                     </td>
                     <td><span class="oe-date">Removed: {{last_modified}}</span></td>
@@ -147,7 +147,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         for (let i = 0; i < allPlans.length; i++) {
             if(!allPlans[i].active){
-                let $tr = Mustache.render(template, {name:allPlans[i].name, title:allPlans[i].title, create_at:allPlans[i].create_at, last_modified:allPlans[i].last_modified, id:allPlans[i].id});
+                let $tr = Mustache.render(template, {name:allPlans[i].name, title:allPlans[i].title, create_at:allPlans[i].create_at, last_modified:allPlans[i].last_modified, id:allPlans[i].id, last_modified_by:allPlans[i].last_modified_by});
                 $tbody.append($tr);
             }
         }

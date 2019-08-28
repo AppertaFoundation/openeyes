@@ -25,7 +25,7 @@
                 <span style="display:inline-block;margin-left:30px;"><?= $plan_problem->name ?></span>
                 <div class="metadata">
                     <i class="oe-i info small pro-theme js-has-tooltip"
-                       data-tooltip-content="<?= $plan_problem->createdUser->title ?> <?= $plan_problem->createdUser->first_name ?> <?= $plan_problem->createdUser->last_name ?> <br /> Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?>"></i>
+                       data-tooltip-content="Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?> by <?= $plan_problem->createdUser->getFullNameAndTitle() ?>"></i>
                 </div>
                 <div class="remove"><i class="oe-i remove-circle small pro-theme pad" data-plan-id="<?= $plan_problem->id ?>"></i></div>
             </li>
@@ -62,7 +62,7 @@
                     <td style="padding: 6px 3px;"><?= $plan_problem->name ?></td>
                     <td><div class="metadata">
                         <i class="oe-i info small <?= $pro_theme ?> js-has-tooltip"
-                       data-tooltip-content="<?= $plan_problem->createdUser->title ?> <?= $plan_problem->createdUser->first_name ?> <?= $plan_problem->createdUser->last_name ?> <br /> Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?>"></i>
+                       data-tooltip-content="Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?> by <?= $plan_problem->createdUser->getFullNameAndTitle() ?> <br /> Closed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?> by <?= $plan_problem->lastModifiedUser->getFullNameAndTitle() ?>"></i>
                     </div>
                     </td>
                     <td><span class="oe-date">Removed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?></span></td>
