@@ -38,7 +38,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         }
                     }
 
-                    if ($entry['route_id'] != 1 || !$meds_tag || !in_array('Glaucoma', $meds_tag)) {
+                    if ($entry['route_id'] != 54 || !$meds_tag || !in_array('Glaucoma', $meds_tag)) {
                         continue;
                     }
 
