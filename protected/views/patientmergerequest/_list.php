@@ -4,17 +4,16 @@
         <tr>
             <th class="checkbox"><input type="checkbox" name="selectall" id="selectall" /></th>
             <th class="secondary">
-                <?php echo $data_provider->getSort()->link('secondary_hos_num', 'Secondary<br><span class="hos_num">hospital num</span>', array('class' => 'sort-link')) ?>
-            </th>
+                <!--                Parameterised secondary and primary hospital number - CERA-519-->
+                <?php echo $data_provider->getSort()->link('secondary_hos_num', 'Secondary<br><span class="hos_num">'. (Yii::app()->params["hos_num_label"]). ((Yii::app()->params["institution_code"]=="CERA")?"":" Number").'</span>', array('class' => 'sort-link')) ?>            </th>
             <th></th>
             <th class="primary">
-                <?php echo $data_provider->getSort()->link('primary_hos_num', 'Primary<br><span class="hos_num">hospital num</span>', array('class' => 'sort-link')) ?>
-            </th>
+                <?php echo $data_provider->getSort()->link('primary_hos_num', 'Primary<br><span class="hos_num">'. (Yii::app()->params["hos_num_label"]). ((Yii::app()->params["institution_code"]=="CERA")?"":" Number").'</span>', array('class' => 'sort-link')) ?>            </th>
             <th class="status"><?php echo $data_provider->getSort()->link('status', 'Status', array('class' => 'sort-link')); ?></th>
             <th class="created"><?php echo $data_provider->getSort()->link('created_date', 'Created', array('class' => 'sort-link')); ?></th>
             <?php if ($filters['show_merged']) :?>
             <th class="created"><?php echo $data_provider->getSort()->link('last_modified_date', 'Merged', array('class' => 'sort-link')); ?></th>
-            <?php endif; ?> 
+            <?php endif; ?>
         </tr>
         <?php if ($data_provider->itemCount): ?>
         <tr class="table-filter">
@@ -42,7 +41,7 @@
         </tr>
     </tfoot>
     <tbody>
-        
+
         <?php if ($data_provider->itemCount): ?>
             <?php foreach ($data_provider->getData() as $i => $request): ?>
 
@@ -77,18 +76,18 @@
                     </td>
                     <td class="status">
                         <div class="circle <?php echo strtolower(str_replace(' ', '-', $request->getStatusText())); ?>" ></div>
-                        <?php echo $request->getStatusText(); ?> 
+                        <?php echo $request->getStatusText(); ?>
                     </td>
                     <td class="created"><?php echo $request->created_date; ?> </td>
                     <?php if ($filters['show_merged']) :?>
                     <td class="merged"><?php echo $request->last_modified_date; ?> </td>
-                    <?php endif; ?> 
-                    
+                    <?php endif; ?>
+
                 </tr>
             <?php endforeach;?>
         <?php else: ?>
                 <tr><td colspan="6" >No results found.</td></tr>
         <?php endif; ?>
-        
+
     </tbody>
-</table>    
+</table>

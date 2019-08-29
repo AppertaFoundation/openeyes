@@ -97,59 +97,59 @@ class GpController extends BaseController
         // to the else condition if it is called from the practitioners screen.
         if ($context === 'AJAX') {
 
-            // manage_gp is used for validation purposes.
-            $contact = new Contact('manage_gp');
+            // manage_gp_role_req is used for CERA for validating roles as well.
+            $contact = new Contact(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
+
+            $contactPracticeAssociate = new ContactPracticeAssociate();
 
             if (isset($_POST['Contact'])) {
-                if ((strpos(CActiveForm::validate($contact), 'cannot be blank' ) !== false) or !isset($contact->label)) {
+                $contact->attributes = $_POST['Contact'];
+                if ($contact->validate()) {
 
-                    // get the error messages for the contact model.
-                    $errorSummary = CHtml::errorSummary($contact);
+                    // checking for the duplicate provider no.
+                    if(!empty($_POST['ContactPracticeAssociate']['provider_no'])) {
 
-                    if (empty($errorSummary) and empty($contact->label->id)) {
-                        // If the contact model did not return any errors and above condition is true
-                        // then it means user has not selected any Role.
-                        $htmlOptions['class'] = CHtml::$errorSummaryCss;
-                        $header='<p>'.Yii::t('','Please fix the following input errors:').'</p>';
-                        $content="<li>".GpController::$errorRoleNotSelected."</li>";
+                        $contactPracticeAssociate->provider_no = $_POST['ContactPracticeAssociate']['provider_no'];
 
-                        echo CHtml::tag('div',$htmlOptions,$header."\n<ul>\n$content</ul>");
-                    } else {
-                        // Contact model returned errors.
-                        $doc = new DOMDocument();
-                        // The options in the loadHTML makes sure that there will be no doctype, html or body tags in the output
-                        $doc->loadHTML($errorSummary,LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-                        // Check that if user has not selected any Role for the Gp or contact then append the role
-                        // error message to the existing error message.
-                        if (empty($contact->label->id)) {
-                            //get the ul element
-                            $descBox = $doc->getElementsByTagName('ul')->item(0);
-                            $appended = $doc->createElement('li', GpController::$errorRoleNotSelected);
-                            //actually append the element
-                            $descBox->appendChild($appended);
+                        $query = Yii::app()->db->createCommand()
+                            ->select('cpa.id')
+                            ->from('contact_practice_associate cpa')
+                            ->where('LOWER(cpa.provider_no) = LOWER(:provider_no)',
+                                array(':provider_no' => $contactPracticeAssociate->provider_no))
+                            ->queryAll();
+
+                        $isDuplicate = count($query);
+
+                        if($isDuplicate !== 0) {
+                            echo CJSON::encode(array('error' => 'Duplicate Provider number detected. <br/> This provider number already exists.'));
+                            Yii::app()->end();
                         }
-                        echo $doc->saveHTML();
                     }
-                } else {
+
                     echo CJSON::encode(array(
                         'title' => $contact->title,
                         'firstName' => $contact->first_name,
                         'lastName' => $contact->last_name,
                         'primaryPhone' => $contact->primary_phone,
-                        'labelId' => isset($contact->label) ? $contact->label->id : ''
+                        'labelId' => isset($contact->label) ? $contact->label->id : '',
+                        'providerNo' => isset($contactPracticeAssociate->provider_no) ? $contactPracticeAssociate->provider_no : '',
                     ));
+                } else {
+                    // get the error messages for the contact model.
+                    echo CJSON::encode(array('error' =>  CHtml::errorSummary($contact)));
                 }
             }
         } else {
             Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
             $gp = new Gp();
 
+            // manage_gp_role_req is used for CERA for validating roles as well.
             $contact = new Contact(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
 
             if (isset($_POST['Contact'])) {
                $contact->attributes = $_POST['Contact'];
                $this->performAjaxValidation($contact);
-               list($contact, $gp) = $gp->performGpSave($contact, $gp);
+               list($contact, $gp) = $this->performGpSave($contact, $gp);
 
                if($gp->id) {
                    $this->redirect(array('view', 'id' => $gp->id));
@@ -181,7 +181,7 @@ class GpController extends BaseController
 
             $contact->attributes = $_POST['Contact'];
             $this->performAjaxValidation($contact);
-            list($contact, $model) = $model->performGpSave($contact, $model);
+            list($contact, $model) = $this->performGpSave($contact, $model);
         }
 
         $this->render('update', array(
@@ -239,7 +239,64 @@ class GpController extends BaseController
         ));
     }
 
+    /**
+     * @param Contact $contact
+     * @param Gp $gp
+     * @param bool $isAjax
+     * @return array
+     * @throws CException
+     */
+    public function performGpSave(Contact $contact, Gp $gp, $isAjax = false)
+    {
+        $action = $gp->isNewRecord ? 'add' : 'edit';
+        $transaction = Yii::app()->db->beginTransaction();
 
+        try {
+            if ($contact->save()) {
+                // No need to re-set these values if they already exist.
+                if ($gp->contact_id === null) {
+                    $gp->contact_id = $contact->getPrimaryKey();
+                }
+
+                if ($gp->nat_id === null) {
+                    $gp->nat_id = 0;
+                }
+
+                if ($gp->obj_prof === null) {
+                    $gp->obj_prof = 0;
+                }
+
+                if ($gp->save()) {
+                    $transaction->commit();
+                    Audit::add('Gp', $action . '-gp', "Practitioner manually [id: $gp->id] {$action}ed.");
+                    if (!$isAjax) {
+                        $this->redirect(array('view','id'=>$gp->id));
+                    }
+                } else {
+                    if ($isAjax) {
+                        throw new CHttpException(400,"Unable to save Practitioner contact");
+                    }
+                    $transaction->rollback();
+                }
+            } else {
+                if ($isAjax) {
+                    throw new CHttpException(400,CHtml::errorSummary($contact));
+                }
+                $transaction->rollback();
+            }
+        } catch (Exception $ex) {
+            OELog::logException($ex);
+            $transaction->rollback();
+            if ($isAjax) {
+                if (strpos($ex->getMessage(),'errorSummary')){
+                    echo $ex->getMessage();
+                }else{
+                    echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
+                }
+            }
+        }
+        return array($contact, $gp);
+    }
 
     /**
      * Returns the data model based on the primary key given in the GET variable.

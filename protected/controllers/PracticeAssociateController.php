@@ -31,50 +31,145 @@ class PracticeAssociateController extends BaseController
     /**
      * This function is called at the final step of Add New Contact/Referring Practitioner and saves all the data
      * (i.e. Contact, Gp and Contact Practice Associate)
+     * @throws CException
      */
     public function actionCreate(){
-        if (isset($_POST['Contact'])) {
-            $contactFormData = $_POST['Contact'];
+        if (isset($_POST['Contact'], $_POST['gp_data_retrieved'])) {
+            $contact_practice_associate = new ContactPracticeAssociate();
+            $contact_practice_associate->practice_id = $_POST['PracticeAssociate']['practice_id'];
+            $contact_practice_associate->provider_no = !empty($_POST['ContactPracticeAssociate']['provider_no']) ? $_POST['ContactPracticeAssociate']['provider_no'] : null;
 
-            $gp = new Gp();
-            $contact = new Contact('manage_gp');
+            if ($contact_practice_associate->validate(array('practice_id'))) {
 
-            $contact->attributes = $contactFormData;
+                $contactFormData = $_POST['Contact'];
+                $gp = new Gp();
+                $contact = new Contact('manage_gp');
+                $contact->attributes = $contactFormData;
 
-            list($contact, $gp) = $gp->performGpSave($contact, $gp,  true);
+                // This variable stores the gp details that were entered in the pop-up (in first step)
+                $gpDetails = json_decode($_POST['gp_data_retrieved']);
 
-            if (isset($_POST['PracticeAssociate'])) {
-                $contact_practice_associate = new ContactPracticeAssociate();
-                $contact_practice_associate->gp_id = $gp->getPrimaryKey();
-                $contact_practice_associate->practice_id = $_POST['PracticeAssociate']['practice_id'];
-                if ($contact_practice_associate->save()) {
-                    echo CJSON::encode(array(
-                        'gp_id' => $contact_practice_associate->gp_id,
-                    ));
+                if ($gpDetails->gpId != "-1") {
+                    // Use the existing gp id and look for duplicates.
+                    // check for duplicate
+                    $query = Yii::app()->db->createCommand()
+                        ->select('cpa.id')
+                        ->from('contact_practice_associate cpa')
+                        ->where('cpa.gp_id = :gp_id and cpa.practice_id = :practice_id',
+                            array(':gp_id'=> $gpDetails->gpId,':practice_id'=> $contact_practice_associate->practice_id))
+                        ->queryAll();
+
+                    $isDuplicate = count($query);
+
+                    if($isDuplicate === 0) {
+                        $contact_practice_associate->gp_id = $gpDetails->gpId;
+                    } else {
+                        echo CJSON::encode(array('error' => 'This practitioner is already associated with the selected practice.'));
+                        Yii::app()->end();
+                    }
                 } else {
-                    echo CJSON::encode(array('error' => $contact_practice_associate->getError('practice_id')));
+                        // New Gp id will be created
+                        list($contact, $gp) = $this->performGpSave($contact, $gp,  true);
+                        $contact_practice_associate->gp_id = $gp->getPrimaryKey();
                 }
+            }
+
+            if ($contact_practice_associate->save()) {
+                echo CJSON::encode(array(
+                    'gp_id' => $contact_practice_associate->gp_id,
+                    'practice_id' => $contact_practice_associate->practice_id,
+                ));
+            }
+            else {
+                echo CJSON::encode(array('error' => $contact_practice_associate->getError('practice_id')));
             }
         }
     }
 
-    public function actionGetGpWithPractice($gp_id){
-        $return_array = array('gp_id'=>$gp_id,'content'=>'');
-        $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp_id));
+    public function actionGetGpWithPractice($id, $gp_id, $practice_id){
+        $return_array = array('gp_id'=>$gp_id,'practice_id'=>$practice_id,'content'=>'');
+        $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp_id,'practice_id'=>$practice_id));
         if (isset($practice_contact_associate)){
             $gp = $practice_contact_associate->gp;
             $practice = $practice_contact_associate->practice;
             $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
             $practiceNameAddress = $practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():'';
-
-            $return_array['content'] =  '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().$role.$practiceNameAddress.'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'"></li>';
+            $inputGpElement = '';
+            $inputPracticeElement = '';
+            if($id !== 'js-selected_gp') {
+                $inputGpElement = '<input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'">';
+                $inputPracticeElement = '<input type="hidden" name="ExtraContact[practice_id][]" class="js-extra-practices" value="'.$practice_id.'">';
+            }
+            $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().$role.$practiceNameAddress.'</span><i id="js-remove-extra-gp-'.$gp->id.'-'.$practice->id.'" class="oe-i remove-circle small-icon pad-left"></i>'.$inputGpElement.$inputPracticeElement.'</li>';
             $return_array['label'] = $gp->getCorrespondenceName().$role.$practiceNameAddress;
-            $return_array['practice_id'] = $practice->id;
         }else{
             $gp = Gp::model()->findByPk($gp_id);
-            $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i><input type="hidden" class="js-extra-gps" name="ExtraContact[gp_id][]" value="'.$gp_id.'"></li>';
+            $inputGpElement = '';
+            if($id !== 'js-selected_gp') {
+                $inputGpElement = '<input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'">';
+            }
+            $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i>'.$inputGpElement.'</li>';
         }
         echo CJSON::encode($return_array);
+    }
+
+    /**
+     * @param Contact $contact
+     * @param Gp $gp
+     * @param bool $isAjax
+     * @return array
+     * @throws CException
+     */
+    public function performGpSave(Contact $contact, Gp $gp, $isAjax = false)
+    {
+        $action = $gp->isNewRecord ? 'add' : 'edit';
+        $transaction = Yii::app()->db->beginTransaction();
+
+        try {
+            if ($contact->save()) {
+                // No need to re-set these values if they already exist.
+                if ($gp->contact_id === null) {
+                    $gp->contact_id = $contact->getPrimaryKey();
+                }
+
+                if ($gp->nat_id === null) {
+                    $gp->nat_id = 0;
+                }
+
+                if ($gp->obj_prof === null) {
+                    $gp->obj_prof = 0;
+                }
+
+                if ($gp->save()) {
+                    $transaction->commit();
+                    Audit::add('Gp', $action . '-gp', "Practitioner manually [id: $gp->id] {$action}ed.");
+                    if (!$isAjax) {
+                        $this->redirect(array('view','id'=>$gp->id));
+                    }
+                } else {
+                    if ($isAjax) {
+                        throw new CHttpException(400,"Unable to save Practitioner contact");
+                    }
+                    $transaction->rollback();
+                }
+            } else {
+                if ($isAjax) {
+                    throw new CHttpException(400,CHtml::errorSummary($contact));
+                }
+                $transaction->rollback();
+            }
+        } catch (Exception $ex) {
+            OELog::logException($ex);
+            $transaction->rollback();
+            if ($isAjax) {
+                if (strpos($ex->getMessage(),'errorSummary')){
+                    echo $ex->getMessage();
+                }else{
+                    echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
+                }
+            }
+        }
+        return array($contact, $gp);
     }
 
 }
