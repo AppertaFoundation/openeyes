@@ -17,6 +17,7 @@
 
 class RoutesAdminController extends BaseAdminController
 {
+	public $group = 'Drugs';
 
 	public function actionList()
 	{
