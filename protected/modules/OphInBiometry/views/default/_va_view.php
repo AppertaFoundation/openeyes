@@ -23,7 +23,7 @@ if ($eventtype) {
 ?>
 <?php
 $VAdate = "";
-$VA_data = NULL;
+$VA_data = array();
 $episode = $this->episode;
 $api = Yii::app()->moduleAPI->get('OphCiExamination');
 if ($api) {

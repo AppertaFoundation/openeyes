@@ -22,7 +22,7 @@ class OEHtml extends CHtml
         ]),'', true);
     }
 
-    public static function button($text, $htmlOption = [])
+    public static function button($text = 'button', $htmlOption = [])
     {
         return \CHtml::button(
             $text,

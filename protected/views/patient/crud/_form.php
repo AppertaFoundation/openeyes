@@ -228,7 +228,7 @@ foreach ($ethnic_list as $key=>$item){
               <?= $form->error($patient, 'hos_num') ?>
           </td>
           <td>
-            <?php if (in_array("admin", Yii::app()->user->getRole(Yii::app()->user->getId())))
+            <?php if (in_array("Add patient", Yii::app()->user->getRole(Yii::app()->user->getId())))
             {
                 echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num')));
             } else{
