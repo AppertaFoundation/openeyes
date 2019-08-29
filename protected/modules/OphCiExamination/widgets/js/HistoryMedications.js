@@ -563,12 +563,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     HistoryMedicationsController.prototype.updateTextualDisplay = function ($row) {
-    		let displayDoseText = "";
-    		if($row.find(".js-dose").val() !== '') {
-					displayDoseText = $row.find(".js-dose").val() + " " + $row.find(".js-dose-unit-term").text()
-				}
+        let displayDoseText = "";
+        if($row.find(".js-dose").val() !== '') {
+            displayDoseText = $row.find(".js-dose").val() + " " + $row.find(".js-dose-unit-term").text();
+        }
         $row.find(".js-textual-display-dose").text(displayDoseText);
-        $row.find(".js-textual-display-frequency").text($row.find(".js-frequency option:selected").text());
+        if($row.find(".js-frequency").val() !== ''){
+            $row.find(".js-textual-display-frequency").text($row.find(".js-frequency option:selected").text());
+        }
         var route_lat = "";
         var $lat_ctrl = $row.find(".admin-route-options");
         if($lat_ctrl.val() !== "") {
