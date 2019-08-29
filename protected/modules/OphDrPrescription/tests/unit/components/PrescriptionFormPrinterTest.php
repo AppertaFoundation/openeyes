@@ -214,4 +214,78 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $actual = $this->instance->getTotalItems();
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * @covers PrescriptionFormPrinter::addSplitPage
+     * @covers PrescriptionFormPrinter::resetSplitPageCount
+     * @covers PrescriptionFormPrinter::getTotalSplitPages
+     * @covers PrescriptionFormPrinter::getSplitPageNumber
+     */
+    public function testAddSplitPage()
+    {
+        // Ensure no issues if the line count is greater than the current maximum for a page.
+        $this->instance->resetSplitPageCount(32);
+        $this->instance->addSplitPage();
+        $this->assertEquals(2, $this->instance->getTotalSplitPages());
+        $this->assertEquals(2, $this->instance->getSplitPageNumber());
+
+        // Ensure no issues if the line count is greater than the current maximum for a page and an extra page is attempted to be added.
+        $this->instance->addSplitPage();
+        $this->assertEquals(2, $this->instance->getTotalSplitPages());
+        $this->assertEquals(2, $this->instance->getSplitPageNumber());
+
+        // Ensure no issues if the line count is less than the current maximum for a page.
+        $this->instance->resetSplitPageCount(20);
+        $this->instance->addSplitPage();
+        $this->assertEquals(1, $this->instance->getTotalSplitPages());
+        $this->assertEquals(1, $this->instance->getSplitPageNumber());
+    }
+
+    /**
+     * @covers PrescriptionFormPrinter::getSplitPageNumber
+     */
+    public function testGetSplitPageNumber()
+    {
+        $actual = $this->instance->getSplitPageNumber();
+        $this->assertEquals(1, $actual);
+    }
+
+    /**
+     * @covers PrescriptionFormPrinter::getTotalSplitPages
+     */
+    public function testGetTotalSplitPages()
+    {
+        $actual = $this->instance->getTotalSplitPages();
+        $this->assertEquals(1, $actual);
+    }
+
+    /**
+     * @covers PrescriptionFormPrinter::addSplitPage
+     * @covers PrescriptionFormPrinter::resetSplitPageCount
+     * @covers PrescriptionFormPrinter::getTotalSplitPages
+     * @covers PrescriptionFormPrinter::getSplitPageNumber
+     */
+    public function testResetSplitPageCount()
+    {
+        // Ensure no issues if the line count is less than the current maximum for a page.
+        $this->instance->resetSplitPageCount(20);
+        $this->assertEquals(1, $this->instance->getTotalSplitPages());
+        $this->assertEquals(1, $this->instance->getSplitPageNumber());
+
+        $this->instance->addSplitPage();
+        $this->instance->resetSplitPageCount(20);
+        $this->assertEquals(1, $this->instance->getTotalSplitPages());
+        $this->assertEquals(1, $this->instance->getSplitPageNumber());
+
+        // Ensure no issues if the line count is greater than the current maximum for a page.
+        $this->instance->resetSplitPageCount(32);
+        $this->assertEquals(2, $this->instance->getTotalSplitPages());
+        $this->assertEquals(1, $this->instance->getSplitPageNumber());
+
+        // Ensure no issues if a page is added and then the counter is reset.
+        $this->instance->addSplitPage();
+        $this->instance->resetSplitPageCount(32);
+        $this->assertEquals(2, $this->instance->getTotalSplitPages());
+        $this->assertEquals(1, $this->instance->getSplitPageNumber());
+    }
 }
