@@ -504,7 +504,6 @@ foreach ($ethnic_list as $key=>$item){
         maxHeight: '200px',
         onSelect: function(){
             let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-            console.log(AutoCompleteResponse);
             let addGp = true;
             // traversing the li's to make sure we don't have duplicates (i.e. combination of gpid and practiceid)
             $.each($('.js-selected_extra_gps li'), function() {
