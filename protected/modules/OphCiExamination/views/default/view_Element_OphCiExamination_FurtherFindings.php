@@ -19,19 +19,19 @@
 <div class="element-data full-width">
   <div class="data-value">
       <span class="large-text">
-          <?php if (count($element->further_findings) > 0) { ?>
-              <?php foreach ($element->further_findings_assignment as $i => $finding) {
-                  if ($i > 0) {
-                      echo ', ';
-                  }
-                  echo $finding->finding->name;
-                  if (strlen($finding->description) > 0) {
-                      echo ': ' . CHtml::encode($finding->description);
-                  }
-              } ?>
-          <?php } else { ?>
+            <?php if (count($element->further_findings) > 0) { ?>
+                <?php foreach ($element->further_findings_assignment as $i => $finding) {
+                    if ($i > 0) {
+                        echo ', ';
+                    }
+                    echo $finding->finding->name;
+                    if (strlen($finding->description) > 0) {
+                        echo ': ' . CHtml::encode($finding->description);
+                    }
+                } ?>
+            <?php } else { ?>
               Not recorded
-          <?php } ?>
+            <?php } ?>
       </span>
   </div>
 </div>

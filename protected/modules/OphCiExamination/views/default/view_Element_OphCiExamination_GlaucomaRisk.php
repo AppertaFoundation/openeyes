@@ -19,7 +19,7 @@
 <div class="element-data full-width">
   <div class="pill <?php echo $element->risk->class?>">
       <span class="large-text">
-          <?php echo $element->risk->name?>
+            <?php echo $element->risk->name?>
       </span>
   </div>
 </div>
