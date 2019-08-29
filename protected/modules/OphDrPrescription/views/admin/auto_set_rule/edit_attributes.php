@@ -75,6 +75,16 @@ $rowkey = 0;
                 <div class="flex-layout flex-right">
                     <button class="button hint green js-add-attribute" type="button"><i class="oe-i plus pro-theme"></i></button>
                     <script type="text/javascript">
+                        function displayOptions($selected){
+                            var $tr = $selected.closest("tr");
+                            if ($selected.attr("data-type") === "attr") {
+                                var $all_options = $tr.children("td:eq(1)").find("ul.add-options li");
+                                var $relevant_options = $tr.children("td:eq(1)").find("ul.add-options li[data-attr_id=" + $selected.attr("data-id") + "]");
+                                $all_options.hide();
+                                $relevant_options.show();
+                            }
+                        }
+
                         new OpenEyes.UI.AdderDialog({
                             openButton: $('.js-add-attribute'),
                             itemSets: [
@@ -84,6 +94,11 @@ $rowkey = 0;
                             onOpen: function(adderDialog) {
                                 var $items = adderDialog.$tr.children("td:eq(1)").find("ul.add-options li");
                                 $items.hide();
+
+                                $selected = $('ul li.selected');
+                                if ($selected.length > 0) {
+                                    displayOptions($selected);
+                                }
                             },
                             onReturn: function (adderDialog, selectedItems) {
                                 if(selectedItems.length < 2) {
@@ -116,13 +131,7 @@ $rowkey = 0;
                             },
                             onSelect: function(e) {
                                 var $item = $(e.target).is("span") ? $(e.target).closest("li") : $(e.target);
-                                var $tr = $item.closest("tr");
-                                if($item.attr("data-type") === "attr") {
-                                    var $all_options = $tr.children("td:eq(1)").find("ul.add-options li");
-                                    var $relevant_options = $tr.children("td:eq(1)").find("ul.add-options li[data-attr_id="+$item.attr("data-id")+"]");
-                                    $all_options.hide();
-                                    $relevant_options.show();
-                                }
+                                displayOptions($item);
                             },
                             enableCustomSearchEntries: true,
                         });
