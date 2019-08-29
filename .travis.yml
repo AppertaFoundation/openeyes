@@ -3,10 +3,11 @@ dist: bionic
 
 services:
   - docker
+  - xvfb
 
 jobs:
   include:
-    - script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BEHAT_HEADLESS=true -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH behat
+    - script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH behat
       name: "Behat"
     - script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH -e WAIT_AFTER_HOSTS=30 phpunit
       name: "PHPUnit"

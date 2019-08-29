@@ -18,6 +18,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 	public function setYiiWebApplication(\CWebApplication $yii) {
 		$this->yii = $yii;
 	}
+
 	public function __construct(array $parameters) {
 		// var_dump($this);
 		// echo var_export($this->container->get('behat.console.command')->setFeaturesPaths(), true);
@@ -50,6 +51,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $this->useContext('LabResultsContext', new LabResultsContext($parameters));
         $this->loadModuleContextsPages ( $parameters );
 		
+		//$this->useContext('MinkContext', new MinkContext($parameters) );
+
 		$this->screenshots = array ();
 		$this->screenshotPath = realpath ( join ( DIRECTORY_SEPARATOR, array (
 				__DIR__,
@@ -292,6 +295,14 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
          */
         $page = $this->getPage('OpenEyesPage');
         $page->logout();
+	}
+	
+	/**
+     * @Given /^I wait (\d+) seconds$/
+     */
+    public function iWaitSeconds($arg1)
+    {
+        $this->mink->getSession()->wait($arg1 * 1000);
     }
 
 }
