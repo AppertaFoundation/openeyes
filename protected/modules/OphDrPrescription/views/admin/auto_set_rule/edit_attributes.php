@@ -76,10 +76,10 @@ $rowkey = 0;
                     <button class="button hint green js-add-attribute" type="button"><i class="oe-i plus pro-theme"></i></button>
                     <script type="text/javascript">
                         function displayOptions($selected){
-                            var $tr = $selected.closest("tr");
+                            let $tr = $selected.closest("tr");
                             if ($selected.attr("data-type") === "attr") {
-                                var $all_options = $tr.children("td:eq(1)").find("ul.add-options li");
-                                var $relevant_options = $tr.children("td:eq(1)").find("ul.add-options li[data-attr_id=" + $selected.attr("data-id") + "]");
+                                let $all_options = $tr.children("td:eq(1)").find("ul.add-options li");
+                                let $relevant_options = $tr.children("td:eq(1)").find("ul.add-options li[data-attr_id=" + $selected.attr("data-id") + "]");
                                 $all_options.hide();
                                 $relevant_options.show();
                             }
@@ -95,7 +95,7 @@ $rowkey = 0;
                                 var $items = adderDialog.$tr.children("td:eq(1)").find("ul.add-options li");
                                 $items.hide();
 
-                                $selected = $('ul li.selected');
+                                let $selected = $('ul li.selected');
                                 if ($selected.length > 0) {
                                     displayOptions($selected);
                                 }
@@ -130,7 +130,7 @@ $rowkey = 0;
                                 return true;
                             },
                             onSelect: function(e) {
-                                var $item = $(e.target).is("span") ? $(e.target).closest("li") : $(e.target);
+                                let $item = $(e.target).is("span") ? $(e.target).closest("li") : $(e.target);
                                 displayOptions($item);
                             },
                             enableCustomSearchEntries: true,
