@@ -326,6 +326,7 @@ class Medication extends BaseActiveRecordVersioned
                     'default_form' => $item->default_form_id ? $item->default_form_id : $item->medication->default_form_id,
                     'frequency_id' => $item->default_frequency_id,
                     'route_id' => $item->default_route_id ? $item->default_route_id : $item->medication->default_route_id,
+                    'source_subtype' => $item->medication ? $item->medication->source_subtype : "",
                     'will_copy' => $item->medication->getToBeCopiedIntoMedicationManagement(),
                     'set_ids' =>  array_map(function ($e){
                         return $e->id;
