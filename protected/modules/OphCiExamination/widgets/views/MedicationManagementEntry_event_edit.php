@@ -91,6 +91,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[locked]" value="<?= $locked ?>" class="js-locked" />
 						<input type="hidden" name="<?= $field_prefix ?>[binded_key]" class="js-binded-key" value="<?= $entry->binded_key ?>">
+						<input type="hidden" name="<?= $field_prefix ?>[source_subtype]" class="js-source-subtype" value="{{source_subtype}}" disabled="disabled">
 				</td>
         <td class="dose-frequency-route">
             <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
@@ -197,15 +198,25 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 			?>
         </td>
         <td>
-            <?php if($prescribe_access): ?>
-                <label class="toggle-switch">
-                    <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if($entry->prescribe){ echo "checked"; } ?> />
-                    <span class="toggle-btn js-btn-prescribe"></span>
-                </label>
-            <?php else: ?>
-                <i class="oe-i no-permissions medium-icon js-has-tooltip" data-tooltip-content="You do not have permissions"></i>
-                <input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>" />
-            <?php endif; ?>
+					<?php $medication_is_vtm =  $entry->medication && $entry->medication->source_subtype === "VTM"; ?>
+					<div class="js-medication-vtm-container" style="display:<?= $medication_is_vtm ? "block" : "none";?>">
+						<i class="oe-i no-permissions medium-icon js-has-tooltip"
+							 data-tooltip-content="This is a Vitual Theraputic Moeity and therefore cannot be prescribed"></i>
+						</div>
+					<div class="js-medication-non-vtm-container" style="display:<?= $medication_is_vtm ? "none" : "block";?>">
+					<?php if ($prescribe_access) { ?>
+						<label class="toggle-switch">
+							<input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
+								echo "checked";
+							} ?> />
+							<span class="toggle-btn js-btn-prescribe"></span>
+						</label>
+					<?php } else { ?>
+						<i class="oe-i no-permissions medium-icon js-has-tooltip"
+							 data-tooltip-content="You do not have permissions"></i>
+						<input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>"/>
+					<?php } ?>
+					</div>
         </td>
         <td>
             <?php $tooltip_content_comes_from_history = "This item comes from medication history. " .
