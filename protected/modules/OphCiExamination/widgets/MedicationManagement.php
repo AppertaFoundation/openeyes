@@ -41,10 +41,12 @@ class MedicationManagement extends BaseMedicationWidget
 				/** @var \EventMedicationUse $new_entry */
 				$medication_management_entry = false;
 
-				foreach ($entry->medication->medicationSets as $medSet) {
-					if ($medSet->name == "medication_management") {
-						$medication_management_entry = true;
-						break;
+				if($entry->medication) {
+					foreach ($entry->medication->medicationSets as $medSet) {
+						if ($medSet->name === "medication_management") {
+							$medication_management_entry = true;
+							break;
+						}
 					}
 				}
 				if ($medication_management_entry) {

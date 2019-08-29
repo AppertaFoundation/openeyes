@@ -156,7 +156,8 @@ class HistoryMedications extends BaseMedicationWidget
             }
             $entries[] = $entry;
         }
-        if ($untracked = $this->element->getEntriesForUntrackedPrescriptionItems($this->patient)) {
+			$untracked = $this->element->getEntriesForUntrackedPrescriptionItems($this->patient);
+        if ($untracked) {
             // tracking prescription items.
             $this->element->entries = array_merge(
                 $entries,

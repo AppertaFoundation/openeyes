@@ -139,9 +139,8 @@ class HistoryMedications extends BaseMedicationElement
 				},
 				$this->getPrescriptionEntries()
 			);
-			if ($untracked_prescription_items = $api->getPrescriptionItemsForPatient(
-				$patient, $tracked_prescr_item_ids)
-			) {
+			$untracked_prescription_items = $api->getPrescriptionItemsForPatient($patient, $tracked_prescr_item_ids);
+			if ($untracked_prescription_items) {
 				foreach ($untracked_prescription_items as $item) {
 					$entry = new \EventMedicationUse();
 					$entry->loadFromPrescriptionItem($item);
