@@ -493,8 +493,27 @@ class MedicationManagement extends BaseMedicationElement
      * Compatibility function for AllergicDrugEntriesBehavior
      */
 
-    public function getEntries()
-    {
-        return $this->entries;
-    }
+	public function getEntries()
+	{
+		return $this->entries;
+	}
+
+	public function afterDelete()
+	{
+		foreach ($this->entries as $entry) {
+			$entry->delete();
+		}
+
+		parent::afterDelete();
+	}
+
+	public function softDelete()
+	{
+		foreach ($this->entries as $entry) {
+			$entry->prescription_item_id = null;
+			$entry->save();
+		}
+
+		parent::afterDelete();
+	}
 }
