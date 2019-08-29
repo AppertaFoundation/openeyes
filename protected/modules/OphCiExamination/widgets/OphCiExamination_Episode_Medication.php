@@ -18,9 +18,9 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
         $criteria = new CDbCriteria();
         $criteria->condition = "has_laterality = '1'";
         $routes = MedicationRoute::model()->findAll($criteria);
-        $lateral_routes = array_map(function($e){
+        $lateral_routes = array_map(function ($e) {
             return $e->id;
-        } , $routes);
+        }, $routes);
 
         foreach ($events as $event) {
             if ($meds = $event->getElementByClass('OEModule\OphCiExamination\models\HistoryMedications')) {
@@ -32,15 +32,14 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                 $meds_entries = array_merge($meds->entries, $untracked);
 
                 foreach ($meds_entries as $entry) {
-
                     if (!$entry->medication_id) {
                         continue;
                     }
 
                     $meds_tag = array();
 
-                    if ($entry->medication_id){
-                        foreach($entry->medication->getTypes() as $item) {
+                    if ($entry->medication_id) {
+                        foreach ($entry->medication->getTypes() as $item) {
                             $meds_tag[] = $item->name;
                         }
                     }
@@ -54,7 +53,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                     /*$drug_aliases = $entry->drug_id&&$entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
                     $drug_name = $entry->drug_id ? $entry->drug->name.$drug_aliases : $entry->medication_drug->name;*/
 
-                    if($entry->start_date === null || $entry->start_date === "0000-00-00" || $entry->start_date === "") {
+                    if ($entry->start_date === null || $entry->start_date === "0000-00-00" || $entry->start_date === "") {
                         continue;
                     }
 
@@ -77,10 +76,10 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                             'high' => $end_date?:$latest_date,
                             'stop_reason' => $stop_reason
                         );
-                        if (!in_array($drug_name, array_keys($medication_list[$eye_side]))){
+                        if (!in_array($drug_name, array_keys($medication_list[$eye_side]))) {
                             $medication_list[$eye_side][$drug_name] = [];
                         }
-                        if (!in_array($new_medi_record, $medication_list[$eye_side][$drug_name]) ){
+                        if (!in_array($new_medi_record, $medication_list[$eye_side][$drug_name]) ) {
                             $medication_list[$eye_side][$drug_name][] = $new_medi_record;
                         }
                     }
@@ -90,14 +89,15 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 
 
         foreach (['left', 'right'] as $side) {
-
             foreach ($medication_list[$side] as $key => &$med) {
-                if (sizeof($med)>1){
+                if (sizeof($med)>1) {
                     $med = $this->purifyMedicationSeries($med);    //sort and merge each medication's time series
                 }
             }
-            uasort($medication_list[$side], function ($item1, $item2){
-                if ($item1[0]['low'] == $item2[0]['low']) return 0;
+            uasort($medication_list[$side], function ($item1, $item2) {
+                if ($item1[0]['low'] == $item2[0]['low']) {
+                    return 0;
+                }
                 return $item1[0]['low'] < $item2[0]['low'] ? -1 : 1;
             });
         }
@@ -110,10 +110,13 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
      * @param $medication_series
      * @return array
      */
-    public function purifyMedicationSeries($medication_series){
+    public function purifyMedicationSeries($medication_series)
+    {
         // Sort medication time series by start date
-        usort($medication_series, function ($item1, $item2){
-            if ($item1['low'] == $item2['low']) return 0;
+        usort($medication_series, function ($item1, $item2) {
+            if ($item1['low'] == $item2['low']) {
+                return 0;
+            }
             return $item1['low'] < $item2['low'] ? -1 : 1;
         });
 
@@ -123,12 +126,12 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
         // From the earliest open time, merge overlopped time series into single one,
         // keep the earliest start time and latest stop time and stop reason
         // add to result array.
-        while($i<sizeof($medication_series)){
+        while ($i<sizeof($medication_series)) {
             $begin = $medication_series[$i]['low'];
             $end = $medication_series[$i]['high'];
             $stop_reason = $medication_series[$i]['stop_reason'];
-            while($i<sizeof($medication_series)-1 && $medication_series[$i+1]['low']<$end){
-                if ($medication_series[$i+1]['high']>$end){
+            while ($i<sizeof($medication_series)-1 && $medication_series[$i+1]['low']<$end) {
+                if ($medication_series[$i+1]['high']>$end) {
                     $end = $medication_series[$i+1]['high'];
                     $stop_reason = $medication_series[$i+1]['stop_reason'];
                 }
