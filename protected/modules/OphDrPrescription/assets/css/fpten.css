@@ -38,14 +38,14 @@ body {
     float: left;
 }
 
-#fpten-registration-code {
+.fpten-registration-code {
     padding-top: 2mm;
     font-size: 12pt;
     font-weight: initial;
 }
 
 /*Site box appears at the bottom toward the center.*/
-#fpten-site, #wpten-site {
+.fpten-site, .wpten-site {
     text-align: left;
     height: 31mm;
     width: 42mm;
@@ -55,24 +55,28 @@ body {
     font-weight: initial;
 }
 
-.right #wpten-site, .right #fpten-site {
+.right .wpten-site, .right .fpten-site {
     margin-left: 9mm; !important;
 }
 
-#fpten-site {
+.fpten-site {
     font-weight: bold;
     height: 29mm;
     width: 45mm;
 }
 
-#fpten-site-code, #wpten-site-code {
+.fpten-site-code, .wpten-site-code {
     text-align: left;
     height: 30mm;
     padding-top: 1mm;
 }
 
+.right .fpten-site-code, .right .wpten-site-code {
+    width: 30mm;
+}
+
 /*Age box appears at the top toward the center.*/
-#fpten-age, #wpten-age {
+.fpten-age, .wpten-age {
     padding-top: 5mm;
     height: 13mm;
     width: 19mm;
@@ -81,14 +85,14 @@ body {
     text-align: center;
 }
 
-#fpten-age {
+.fpten-age {
     padding-top: 3mm;
     height: 7mm;
     line-height: 7mm;
 }
 
 /*DOB box appears directly below the Age box.*/
-#fpten-dob, #wpten-dob {
+.fpten-dob, .wpten-dob {
     height: 13mm;
     width: 19mm;
     margin-left: 31mm;
@@ -96,18 +100,18 @@ body {
     line-height: 13mm;
 }
 
-#fpten-dob {
+.fpten-dob {
     height: 15mm;
     padding-top: 3mm;
     line-height: 15mm;
 }
 
-.right #wpten-age, .right #wpten-dob, .right #fpten-age, .right #fpten-dob {
+.right .wpten-age, .right .wpten-dob, .right .fpten-age, .right .fpten-dob {
     margin-left: 27mm; !important;
 }
 
 /*Patient details box appears at the top right corner beside age and DOB.*/
-#fpten-patient-details, #wpten-patient-details {
+.fpten-patient-details, .wpten-patient-details {
     text-align: left;
     padding-top: 5mm;
     padding-left: 2mm;
@@ -116,41 +120,41 @@ body {
 }
 
 /*Postcode is right-aligned to the edge of the parent box.*/
-#fpten-patient-details {
+.fpten-patient-details {
     width: 50mm;
     height: 25mm;
     padding-top: 3mm;
 }
 
-#wpten-nhs {
+.wpten-nhs {
     height: 5mm;
     width: 50mm;
     padding-top: 2mm;
 }
 
-#fpten-nhs {
+.fpten-nhs {
     height: 5mm;
     line-height: 5mm;
     float: right;
 }
 
-#fpten-nhs-text, #wpten-nhs-text {
+.fpten-nhs-text, .wpten-nhs-text {
     float: right;
     text-align: left;
     padding-top: 2mm;
 }
 
-#fpten-nhs-text {
+.fpten-nhs-text {
     padding-top: 0;
 }
 
-#fpten-postcode {
+.fpten-postcode {
     text-align: left;
     float: right;
 }
 
 /*Prescriber initiative appears at top of main box in the center*/
-#fpten-prescriber {
+.fpten-prescriber {
     height: 10mm;
     width: 52mm;
     margin-left: 30mm;
@@ -159,11 +163,11 @@ body {
     line-height: 10mm;
 }
 
-.right #fpten-prescriber {
+.right .fpten-prescriber {
     margin-left: 25mm; !important;
 }
 
-#wpten-prescriber {
+.wpten-prescriber {
     height: 10mm;
     text-align: center;
     font-size: 8pt;
@@ -181,7 +185,7 @@ body {
 }
 
 /*Appears beneath the prescriber.*/
-#fpten-prescription-list, #wpten-prescription-list {
+.fpten-prescription-list, .wpten-prescription-list {
     padding-top: 1mm;
     height: 85mm;
     width: 50mm;
@@ -189,13 +193,13 @@ body {
     margin-left: 30mm;
 }
 
-#fpten-prescription-list {
+.fpten-prescription-list {
     height: 78mm;
     width: 57mm;
     margin-left: 29mm;
 }
 
-.right #fpten-prescription-list, .right #wpten-prescription-list {
+.right .fpten-prescription-list, .right .wpten-prescription-list {
     margin-left: 25mm; !important;
 }
 
@@ -211,7 +215,7 @@ body {
 }
 
 /*Appears directly above the Trust code in the site box.*/
-#fpten-date, #wpten-date {
+.fpten-date, .wpten-date {
     width: 35mm;
     height: 12mm;
     text-align: center;
@@ -219,15 +223,15 @@ body {
     line-height: 12mm;
 }
 
-#fpten-date {
+.fpten-date {
     width: 28mm;
     margin-left: 58mm;
 }
 
-.right #wpten-date {
+.right .wpten-date {
     margin-left: 65mm; !important;
 }
 
-.right #fpten-date {
+.right .fpten-date {
     margin-left: 53mm; !important;
 }

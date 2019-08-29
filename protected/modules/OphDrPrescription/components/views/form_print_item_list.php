@@ -17,12 +17,12 @@
 <div class="fpten-form-row">
     <div class="fpten-form-column">
         <?php if ($this->getPrintMode() === 'FP10') : ?>
-            <div id="fpten-prescriber" class="fpten-form-row">
+            <div class="fpten-form-row fpten-prescriber">
                 HOSPITAL PRESCRIBER
             </div>
         <?php endif; ?>
         <div class="fpten-form-row">
-            <div id="<?= $form_css_class ?>-prescription-list" class="fpten-form-column">
+            <div class="fpten-form-column <?= $form_css_class ?>-prescription-list">
                 <?php
                 for ($j = $this->current_item_index; $j < $this->getTotalItems(); $j++) {
                     $item = $this->items[$j];
@@ -52,6 +52,8 @@
                             // Otherwise, break the loop.
                             if (!($page_number === 0 && $j === 0 && $side === 'left' && $this->isSplitPrinting())) {
                                 break;
+                            } elseif ($this->isSplitPrinting() && $page_number === 0) {
+                                $this->resetSplitPageCount($this->getCurrentItem()->fpTenLinesUsed());
                             }
                         }
                         ?>

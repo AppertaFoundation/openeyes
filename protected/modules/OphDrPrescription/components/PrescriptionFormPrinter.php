@@ -39,6 +39,9 @@ class PrescriptionFormPrinter extends CWidget
     private $print_mode;
     private $page_count = 1;
 
+    private $split_print_page = 1;
+    private $split_print_total_pages = 1;
+
     const MAX_FPTEN_LINES = 24;
     const LHS_LINE_FILLER_TEXT = 'x';
     const RHS_LINE_FILLER_TEXT = 'GP COPY';
@@ -80,6 +83,11 @@ class PrescriptionFormPrinter extends CWidget
         $this->page_count += $num_pages;
     }
 
+    public function addSplitPage($num_pages = 1)
+    {
+        $this->split_print_page += $num_pages;
+    }
+
     public function getTotalPages()
     {
         return $this->page_count;
@@ -98,6 +106,14 @@ class PrescriptionFormPrinter extends CWidget
     public function getCurrentItemAttr()
     {
         return $this->current_item_attr;
+    }
+
+    public function getCurrentItem()
+    {
+        if (isset($this->current_item_index)) {
+            return $this->items[$this->current_item_index];
+        }
+        return null;
     }
 
     /**
@@ -135,5 +151,21 @@ class PrescriptionFormPrinter extends CWidget
     public function isSplitPrinting()
     {
         return $this->split_print;
+    }
+
+    public function getSplitPageNumber()
+    {
+        return $this->split_print_page;
+    }
+
+    public function getTotalSplitPages()
+    {
+        return $this->split_print_total_pages;
+    }
+
+    public function resetSplitPageCount($total_lines)
+    {
+        $this->split_print_page = 1;
+        $this->split_print_total_pages = (int)ceil($total_lines / self::MAX_FPTEN_LINES);
     }
 }

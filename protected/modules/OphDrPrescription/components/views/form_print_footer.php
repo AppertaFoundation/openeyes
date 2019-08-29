@@ -6,12 +6,12 @@
 ?>
 
 <div class="fpten-form-row">
-    <div id="<?= $form_css_class ?>-date" class="fpten-form-column">
+    <div  class="fpten-form-column <?= $form_css_class ?>-date">
         <?= date('d/m/Y') ?>
     </div>
 </div>
 <div class="fpten-form-row">
-    <div id="<?= $form_css_class ?>-site" class="fpten-form-column">
+    <div class="fpten-form-column <?= $form_css_class ?>-site">
         <?= $this->user->getFullNameAndTitle() ?>
         <br/>
         <?= $this->site->name ?>
@@ -29,19 +29,35 @@
         <br/>
         <?= $this->site->institution->name ?>
     </div>
+
+    <div class="fpten-form-column <?= $form_css_class ?>-site-code">
+        <span class="fpten-registration-code">
+            <?= ($side === 'left') ? str_replace('GMC', '', $this->user->registration_code) : '&nbsp;' ?>
+        </span>
+        <br/>
+        <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
+        <br/>
+        <?= $this->site->contact->address->county ? '<br/>' : null ?>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <?php if ($side === 'left') {
+            echo $this->firm->cost_code ?: $this->getDefaultCostCode();
+        } elseif ($side === 'right') {
+            echo "Page {$this->getSplitPageNumber()} of {$this->getTotalSplitPages()}";
+            if ($this->isSplitPrinting()) {
+                if ($this->getSplitPageNumber() === $this->getTotalSplitPages()) {
+                    $this->resetSplitPageCount($this->getCurrentItem()->fpTenLinesUsed());
+                } else {
+                    $this->addSplitPage();
+                }
+            } else {
+                $this->resetSplitPageCount($this->getCurrentItem()->fpTenLinesUsed());
+            }
+        }?>
+    </div>
     <?php if ($side === 'left') : ?>
-        <div id="<?= $form_css_class ?>-site-code" class="fpten-form-column">
-            <span id="fpten-registration-code"><?= str_replace('GMC', '', $this->user->registration_code) ?></span>
-            <br/>
-            <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
-            <br/>
-            <?= $this->site->contact->address->county ? '<br/>' : null ?>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <?= $this->firm->cost_code ?: $this->getDefaultCostCode() ?>
-        </div>
         <span class="fpten-form-column fpten-prescriber-code">HP</span>
     <?php endif; ?>
 </div>
