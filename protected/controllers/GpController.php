@@ -100,15 +100,39 @@ class GpController extends BaseController
             // manage_gp_role_req is used for CERA for validating roles as well.
             $contact = new Contact(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
 
+            $contactPracticeAssociate = new ContactPracticeAssociate();
+
             if (isset($_POST['Contact'])) {
                 $contact->attributes = $_POST['Contact'];
                 if ($contact->validate()) {
+
+                    // checking for the duplicate provider no.
+                    if(!empty($_POST['ContactPracticeAssociate']['provider_no'])) {
+
+                        $contactPracticeAssociate->provider_no = $_POST['ContactPracticeAssociate']['provider_no'];
+
+                        $query = Yii::app()->db->createCommand()
+                            ->select('cpa.id')
+                            ->from('contact_practice_associate cpa')
+                            ->where('LOWER(cpa.provider_no) = LOWER(:provider_no)',
+                                array(':provider_no' => $contactPracticeAssociate->provider_no))
+                            ->queryAll();
+
+                        $isDuplicate = count($query);
+
+                        if($isDuplicate !== 0) {
+                            echo CJSON::encode(array('error' => 'Duplicate Provider number detected. <br/> This provider number already exists.'));
+                            Yii::app()->end();
+                        }
+                    }
+
                     echo CJSON::encode(array(
                         'title' => $contact->title,
                         'firstName' => $contact->first_name,
                         'lastName' => $contact->last_name,
                         'primaryPhone' => $contact->primary_phone,
-                        'labelId' => isset($contact->label) ? $contact->label->id : ''
+                        'labelId' => isset($contact->label) ? $contact->label->id : '',
+                        'providerNo' => isset($contactPracticeAssociate->provider_no) ? $contactPracticeAssociate->provider_no : '',
                     ));
                 } else {
                     // get the error messages for the contact model.
