@@ -139,9 +139,8 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getStoppedEntries()
     {
-        return array_filter($this->visible_entries, function ($e) {
+        return array_filter($this->visible_entries, function($e){
             return !is_null($e->end_date) && $e->end_date <= date('Y-m-d');
-            ;
         });
     }
 
@@ -253,9 +252,8 @@ class MedicationManagement extends BaseMedicationElement
                 return false;
             }
 
-            if ($is_new) {
+            if($is_new) {
                 $id = \Yii::app()->db->getLastInsertID();
-                ;
                 $entry->id = $id;
             }
 
