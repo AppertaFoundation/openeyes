@@ -200,10 +200,6 @@ class MedicationManagementEntry extends \EventMedicationUse
 
 	public function getPrescriptionLink()
 	{
-		if ($this->prescriptionItem) {
-			return "/OphDrPrescription/default/view/" . $this->prescriptionItem->event_id;
-		} else {
-			return "";
-		}
+		return ($this->prescriptionItem ? "/OphDrPrescription/default/view/" . $this->prescriptionItem->event_id : "");
 	}
 }
