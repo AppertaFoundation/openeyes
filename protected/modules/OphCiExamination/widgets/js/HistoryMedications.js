@@ -925,6 +925,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     prepended_markup: selectedItems[i].prepended_markup,
                     set_ids: selectedItems[i].set_ids,
                     allergy_ids: selectedItems[i].allergy_ids,
+										source_subtype: selectedItems[i].source_subtype
                 };
             }
             else {
