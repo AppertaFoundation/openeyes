@@ -42,8 +42,7 @@
                         [
                             'id' => 'subspecialty-subsection-select',
                             'empty' => 'Select a subspecialty'
-                        ])
-?>
+                        ])?>
                     </td>
                 </tr>
             </tbody>

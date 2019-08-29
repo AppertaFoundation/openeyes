@@ -54,8 +54,7 @@ if (isset($model)) {
                         [
                             'id' => 'subspecialty-select',
                             'empty' => 'Select a subspecialty'
-                        ])
-?>
+                        ])?>
                     </td>
                 </tr>
                 <tr>
@@ -73,8 +72,7 @@ if (isset($model)) {
                         [
                             'id' => 'subsection-select',
                             'empty' => 'Select a subsection'
-                        ])
-?>
+                        ])?>
                     </td>
                 </tr>
             </tbody>
