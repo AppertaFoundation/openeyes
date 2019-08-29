@@ -329,6 +329,7 @@ class MedicationManagement extends BaseMedicationElement
 						'frequency_id' => $entry->frequency_id,
 						'duration' => $entry->duration,
 						'dose' => $entry->dose,
+						'dose_unit_term' => $entry->dose_unit_term,
 						'start_date' => $entry->start_date,
 						'dispense_location_id' => $entry->dispense_location_id,
 						'dispense_condition_id' => $entry->dispense_condition_id
