@@ -354,22 +354,13 @@ foreach ($ethnic_list as $key=>$item){
                         <li>
                             <span class="js-name" style="text-align:justify">
                               <?php
-                                  if (($patient->gp_id)){
-                                    $gp = Gp::model()->findByPk(array('id' => $patient->gp_id));
-                                    $practice  = $gp->getAssociatePractice();
-                                    $practiceDetails = $gp->getAssociatedPractice($gp->id);
-                                    $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
-                                    $practiceNameAddress = $practice ? ($practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():''): '';
-                              ?>
-                                <?=$gp->getCorrespondenceName().$role.$practiceNameAddress?>
-                                <?php
-                                    }
-                                    else{
-                                      ?>
-                                        <?=''?>
-                                <?php
-                                    }
-                                ?>
+                                  if ($patient->gp_id && $patient->practice_id) {
+                                      $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id, 'practice_id'=>$patient->practice_id));
+                                      $role = $practice_contact_associate->gp->getGPROle()?' - '.$practice_contact_associate->gp->getGPROle():'';
+                                      $practiceNameAddress = $practice_contact_associate->practice ? ($practice_contact_associate->practice->getPracticeNames() ? ' - '.$practice_contact_associate->practice->getPracticeNames():''): '';
+                                  ?>
+                                <?php echo $practice_contact_associate->gp->getCorrespondenceName().$role.$practiceNameAddress?>
+                                <?php } ?>
                             </span>
                             <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
                         </li>
@@ -446,18 +437,17 @@ foreach ($ethnic_list as $key=>$item){
                     <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_extra_gps_id']); ?>
                     <div id="selected_extra_gps_wrapper">
                         <ul class="oe-multi-select js-selected_extra_gps">
-                            <?php
+                            <?php $i=0;
                             if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)){
                                 foreach ($patient->patientContactAssociates as $patientContactAssociate){
                                     $gp = $patientContactAssociate->gp;
-                                    $practice  = $gp ? $gp->getAssociatePractice() : '';
-                                    $practiceDetails = $gp ? $gp->getAssociatedPractice($gp->id) : '';
+                                    $practice  = $gp ? $patientContactAssociate->practice: '';
                                     $practiceNameAddress = $practice ? ($practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():''): '';
                                     $role = $gp ? $gp->getGPROle()?' - '.$gp->getGPROle() :'' : '' ;
                                     //The line below is to ensure a newly added referring practitioner does not show up in the list of contacts also
-                                    if($gp && $gp->id != $patient->gp_id){
+                                    if($gp && ($gp->id != $patient->gp_id || $practice->id != $patient->practice_id)){
                                         ?>
-                                        <li><span class="js-name" style="text-align:justify"><?=$gp->getCorrespondenceName().$role.$practiceNameAddress?></span><i id="js-remove-extra-gp-<?=$gp->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"></li>
+                                        <li><span class="js-name" style="text-align:justify"><?=$gp->getCorrespondenceName().$role.$practiceNameAddress?></span><i id="js-remove-extra-gp-<?=$gp->id;?>-<?=$practice->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"><input type="hidden" name="ExtraContact[practice_id][]" class="js-extra-practices" value="<?=$practice->id?>"></li>
                                     <?php }
                                 }
                             }
@@ -512,14 +502,20 @@ foreach ($ethnic_list as $key=>$item){
         onSelect: function(){
             let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
             let addGp = true;
-            $.each($('.js-extra-gps'),function () {
-                if ($(this)[0].value == AutoCompleteResponse.value){
+            // traversing the li's to make sure we don't have duplicates (i.e. combination of gpid and practiceid)
+            $.each($('.js-selected_extra_gps li'), function() {
+                var gpId = $(this).find('.js-extra-gps').val();
+                var practiceId = $(this).find('.js-extra-practices').val();
+
+                if (gpId === AutoCompleteResponse.value && practiceId === AutoCompleteResponse.practiceId){
                     addGp = false;
                     return addGp;
                 }
             });
+
+            // If the combination of gpid and practiceid does not already exist in the list then add it to the list.
             if(addGp){
-                addExtraGp('js-selected_extra_gps',AutoCompleteResponse.value);
+                addExtraGp('js-selected_extra_gps', AutoCompleteResponse.value, AutoCompleteResponse.practiceId);
             }
         }
     });
@@ -634,6 +630,16 @@ $this->renderPartial('../patient/crud/create_contact_form',
         $(".js-extra-practice-gp-id").val("");
         // clearing the selected gp role id if user has closed the popup.
         $(".js-extra-gp-contact-label-id").val("");
+        // enabling title, phone number and provider no on closing the popup.
+        $("#extra-gp-form #Contact_title").prop("readonly", false);
+        $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
+        $("#extra-gp-form #ContactPracticeAssociate_provider_no").prop("readonly", false);
+        // remove data from hidden fields.
+        $('.gp_data_retrieved').val("");
+
+        $('#extra-gp-message').hide();
+        // unsetting the variable (defined in create_contact_form inside the onselect function of autocompletesearch widget - firstname and lastname field)
+        gp = new Gp();
     });
 
     $('#js-add-extra-practice-btn').click(function(event){
@@ -686,10 +692,10 @@ $this->renderPartial('../patient/crud/create_contact_form',
         $wrapper.find('.hidden_id').val(JsonObj.id);
     }
 
-    function addExtraGp(id, gpId){
+    function addExtraGp(id, gpId, practiceId){
         $.ajax({
             url: "<?php echo Yii::app()->controller->createUrl('practiceAssociate/getGpWithPractice'); ?>",
-            data: {gp_id : gpId},
+            data: {id : id, gp_id : gpId, practice_id : practiceId},
             type: 'GET',
             success: function (response) {
                 response = JSON.parse(response);
@@ -698,7 +704,7 @@ $this->renderPartial('../patient/crud/create_contact_form',
                 }else if(id == 'js-selected_extra_gps'){
                     $('.'+id).append(response.content);
                 }
-                $('#js-remove-extra-gp-'+response.gp_id).click(function(){
+                $('#js-remove-extra-gp-' + response.gp_id + '-' + response.practice_id).click(function(){
                     // If else condition is added to handle both the cases (i.e. when removing contact/gp) as they have been implemented differently.
                     if(id == 'js-selected_gp'){
                         // For Gp
@@ -742,7 +748,7 @@ $this->renderPartial('../patient/crud/create_contact_form',
         $("#extra-practice-errors").text("");
         $("#extra-practice-practice-alert-box").css("display","none");
         $('#extra_practice_adding_new_form').css('display','none');
-        $("#extra_practice_adding_existing_form")
+        $("#extra_practice_adding_existing_form");
     }
 
 </script>
