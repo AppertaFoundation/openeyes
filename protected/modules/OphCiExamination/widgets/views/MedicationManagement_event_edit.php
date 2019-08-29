@@ -160,6 +160,7 @@ $element_errors = $element->getErrors();
                 'prescribe_access' => $prescribe_access,
                 'patient' => $this->patient,
                 'locked' => '{{locked}}{{^locked}}0{{/locked}}',
+								'source_subtype' => '{{source_subtype}}',
 				'unit_options' => $unit_options,
             )
         );
