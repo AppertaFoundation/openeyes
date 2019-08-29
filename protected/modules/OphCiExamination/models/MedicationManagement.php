@@ -253,9 +253,8 @@ class MedicationManagement extends BaseMedicationElement
                 return false;
             }
 
-            if ($is_new) {
+            if($is_new) {
                 $id = \Yii::app()->db->getLastInsertID();
-                ;
                 $entry->id = $id;
             }
 
