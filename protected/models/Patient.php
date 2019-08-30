@@ -255,6 +255,19 @@ class Patient extends BaseActiveRecordVersioned
             $length = strlen($medicareNo);
             if($length>0) {
                 if ($length==11) {
+
+                    // Unique check
+                    $query = Yii::app()->db->createCommand()
+                        ->select('p.id')
+                        ->from('patient p')
+                        ->where('LOWER(p.nhs_num) = LOWER(:nhs_num) and p.id != :patient_id',
+                            array(':nhs_num'=> $this->nhs_num, ':patient_id' => $this->id))
+                        ->queryAll();
+
+                    if(count($query) !== 0) {
+                        $this->addError($attribute, 'Duplicate Medicare Number entered.');
+                    }
+
                     // Test leading digit and checksum
                     if (preg_match("/^([2-6]\d{7})(\d)/", $medicareNo, $matches)) {
                         $base = $matches[1];
