@@ -100,9 +100,9 @@
         self.subspecialtiesById = {};
         for (var i in self.options.subspecialties) {
             var subspecialty = self.options.subspecialties[i];
-            self.options.currentSubspecialties.forEach(function (currentSubspeciality) {
+            self.options.currentSubspecialties.forEach(function (currentSubspecialty) {
                 subspecialty.services.forEach(function (service) {
-                    if (service.name === currentSubspeciality.service) {
+                    if (service.name === currentSubspecialty.service) {
                         subspecialty.services.splice(subspecialty.services.indexOf(service), 1);
                     }
                 });
