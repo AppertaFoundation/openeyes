@@ -56,7 +56,6 @@ class SubspecialtySubsectionsController extends BaseAdminController {
             $this->render('/oeadmin/subspecialty_subsections/create', [
                 'model' => $model,
                 'subspecialty_id' => $subspecialty_id,
-                'errors' => $model->getErrors(),
             ]);
         } else {
             $this->redirect(['list']);
