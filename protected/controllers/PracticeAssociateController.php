@@ -92,6 +92,7 @@ class PracticeAssociateController extends BaseController
         if (isset($practice_contact_associate)){
             $gp = $practice_contact_associate->gp;
             $practice = $practice_contact_associate->practice;
+            $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
             $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
             $practiceNameAddress = $practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():'';
             $inputGpElement = '';
@@ -100,8 +101,8 @@ class PracticeAssociateController extends BaseController
                 $inputGpElement = '<input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'">';
                 $inputPracticeElement = '<input type="hidden" name="ExtraContact[practice_id][]" class="js-extra-practices" value="'.$practice_id.'">';
             }
-            $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().$role.$practiceNameAddress.'</span><i id="js-remove-extra-gp-'.$gp->id.'-'.$practice->id.'" class="oe-i remove-circle small-icon pad-left"></i>'.$inputGpElement.$inputPracticeElement.'</li>';
-            $return_array['label'] = $gp->getCorrespondenceName().$role.$practiceNameAddress;
+            $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress.'</span><i id="js-remove-extra-gp-'.$gp->id.'-'.$practice->id.'" class="oe-i remove-circle small-icon pad-left"></i>'.$inputGpElement.$inputPracticeElement.'</li>';
+            $return_array['label'] = $gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress;
         }else{
             $gp = Gp::model()->findByPk($gp_id);
             $inputGpElement = '';
