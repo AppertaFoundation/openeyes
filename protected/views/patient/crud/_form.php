@@ -356,10 +356,11 @@ foreach ($ethnic_list as $key=>$item){
                               <?php
                                   if ($patient->gp_id && $patient->practice_id) {
                                       $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id, 'practice_id'=>$patient->practice_id));
+                                      $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
                                       $role = $practice_contact_associate->gp->getGPROle()?' - '.$practice_contact_associate->gp->getGPROle():'';
                                       $practiceNameAddress = $practice_contact_associate->practice ? ($practice_contact_associate->practice->getPracticeNames() ? ' - '.$practice_contact_associate->practice->getPracticeNames():''): '';
                                   ?>
-                                <?php echo $practice_contact_associate->gp->getCorrespondenceName().$role.$practiceNameAddress?>
+                                <?php echo $practice_contact_associate->gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress?>
                                 <?php } ?>
                             </span>
                             <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
@@ -444,10 +445,12 @@ foreach ($ethnic_list as $key=>$item){
                                     $practice  = $gp ? $patientContactAssociate->practice: '';
                                     $practiceNameAddress = $practice ? ($practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():''): '';
                                     $role = $gp ? $gp->getGPROle()?' - '.$gp->getGPROle() :'' : '' ;
+                                    $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id, 'practice_id'=>$practice->id));
+                                    $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
                                     //The line below is to ensure a newly added referring practitioner does not show up in the list of contacts also
                                     if($gp && ($gp->id != $patient->gp_id || $practice->id != $patient->practice_id)){
                                         ?>
-                                        <li><span class="js-name" style="text-align:justify"><?=$gp->getCorrespondenceName().$role.$practiceNameAddress?></span><i id="js-remove-extra-gp-<?=$gp->id;?>-<?=$practice->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"><input type="hidden" name="ExtraContact[practice_id][]" class="js-extra-practices" value="<?=$practice->id?>"></li>
+                                        <li><span class="js-name" style="text-align:justify"><?=$gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress?></span><i id="js-remove-extra-gp-<?=$gp->id;?>-<?=$practice->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"><input type="hidden" name="ExtraContact[practice_id][]" class="js-extra-practices" value="<?=$practice->id?>"></li>
                                     <?php }
                                 }
                             }
@@ -633,7 +636,6 @@ $this->renderPartial('../patient/crud/create_contact_form',
         // enabling title, phone number and provider no on closing the popup.
         $("#extra-gp-form #Contact_title").prop("readonly", false);
         $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
-        $("#extra-gp-form #ContactPracticeAssociate_provider_no").prop("readonly", false);
         // remove data from hidden fields.
         $('.gp_data_retrieved').val("");
 
