@@ -18,7 +18,9 @@
 <?php /** @var EventMedicationUse $entry */ ?>
 <tr>
     <td>
-        <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+        <?php if ($this->mode !== static::$EVENT_PRINT_MODE) {
+            $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
+        } ?>
         <?= $entry->getMedicationDisplay(true) ?>
         <?php if($entry->prescribe && $entry->prescriptionItem): ?>
 					<a href="<?= $entry->getPrescriptionLink(); ?>">
