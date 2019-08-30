@@ -4,7 +4,6 @@
      * @var string $form_css_class
      */
 ?>
-
 <div class="fpten-form-row">
     <div  class="fpten-form-column <?= $form_css_class ?>-date">
         <?= date('d/m/Y') ?>
@@ -44,17 +43,6 @@
         <br/>
         <?php if ($side === 'left') {
             echo $this->firm->cost_code ?: $this->getDefaultCostCode();
-        } elseif ($side === 'right') {
-            echo "Page {$this->getSplitPageNumber()} of {$this->getTotalSplitPages()}";
-            if ($this->isSplitPrinting()) {
-                if ($this->getSplitPageNumber() === $this->getTotalSplitPages()) {
-                    $this->resetSplitPageCount($this->getCurrentItem()->fpTenLinesUsed());
-                } else {
-                    $this->addSplitPage();
-                }
-            } else {
-                $this->resetSplitPageCount($this->getCurrentItem()->fpTenLinesUsed());
-            }
         }?>
     </div>
     <?php if ($side === 'left') : ?>

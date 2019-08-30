@@ -34,6 +34,7 @@
 // Maximum characters per line on FP10/WP10 form is roughly 36.
 // Assuming the space left of the white margin can be used for printing, this could be expanded further.
 const MAX_FPTEN_LINE_CHARS = 36;
+const MAX_WPTEN_LINE_CHARS = 32;
 
 class OphDrPrescription_Item extends BaseActiveRecordVersioned
 {
@@ -233,33 +234,30 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
      */
     public function fpTenLinesUsed()
     {
+        $settings = new SettingMetadata();
+        $max_lines = $settings->getSetting('prescription_form_format') === 'WP10' ? MAX_WPTEN_LINE_CHARS : MAX_FPTEN_LINE_CHARS;
+        $item_lines_used = 0;
         $drug_label = $this->drug->label;
-        $dose = 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose)
-            . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
-        $frequency = "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
 
-        $this->fpten_line_usage['item_drug'] = (int)ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS);
-        $this->fpten_line_usage['item_dose'] = (int)ceil(strlen($dose) / MAX_FPTEN_LINE_CHARS);
-        $this->fpten_line_usage['item_frequency'] = (int)ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS);
-        $this->fpten_line_usage['item_comment'] = $this->comments ? (int)ceil(strlen("Comment: $this->comments") / MAX_FPTEN_LINE_CHARS) : 0;
+        $this->fpten_line_usage['item_drug'] = (int)ceil(strlen($drug_label) / $max_lines);
+        $this->fpten_line_usage['item_dose'] = (int)ceil(strlen($this->fpTenDose()) / $max_lines);
+        $this->fpten_line_usage['item_frequency'] = (int)ceil(strlen($this->fpTenFrequency()) / $max_lines);
+        $this->fpten_line_usage['item_comment'] = $this->comments ? (int)ceil(strlen("Comment: $this->comments") / $max_lines) : 0;
 
         // Work out how many print lines will be used for this prescription item. This will also include lines used by tapers.
         // We get the ceiling value because any decimal value indicates one extra line in use.
-        $item_lines_used = (int)(ceil(strlen($drug_label) / MAX_FPTEN_LINE_CHARS)
-            + ceil(strlen($dose) / MAX_FPTEN_LINE_CHARS)
-            + ceil(strlen($frequency) / MAX_FPTEN_LINE_CHARS)
-            + ($this->comments ? ceil(strlen("Comment: $this->comments") / MAX_FPTEN_LINE_CHARS) : 0));
+        $item_lines_used += (int)ceil(strlen($drug_label) / $max_lines)
+            + (int)ceil(strlen($this->fpTenDose()) / $max_lines)
+            + (int)ceil(strlen($this->fpTenFrequency()) / $max_lines)
+            + ($this->comments ? (int)ceil(strlen("Comment: $this->comments") / $max_lines) : 0);
 
         foreach ($this->tapers as $index => $taper) {
-            $taper_dose = 'Dose: ' . (is_numeric($taper->dose) ? ($taper->dose . ' ' . $this->drug->dose_unit) : $taper->dose)
-                . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
-            $taper_frequency = "Frequency: {$taper->frequency->long_name} for {$taper->duration->name}";
             $this->fpten_line_usage["taper{$index}_label"] = 1;
-            $this->fpten_line_usage["taper{$index}_dose"] = (int)ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS);
-            $this->fpten_line_usage["taper{$index}_frequency"] = (int)ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);
+            $this->fpten_line_usage["taper{$index}_dose"] = (int)ceil(strlen($taper->fpTenDose()) / $max_lines);
+            $this->fpten_line_usage["taper{$index}_frequency"] = (int)ceil(strlen($taper->fpTenFrequency()) / $max_lines);
             $item_lines_used += 1
-                + (int)ceil(strlen($taper_dose) / MAX_FPTEN_LINE_CHARS)
-                + (int)ceil(strlen($taper_frequency) / MAX_FPTEN_LINE_CHARS);
+                + (int)ceil(strlen($taper->fpTenDose()) / $max_lines)
+                + (int)ceil(strlen($taper->fpTenFrequency()) / $max_lines);
         }
 
         // Return the truncated number of lines.

@@ -45,15 +45,12 @@
 
                             if ($side === 'right') {
                                 // We only want to change the page counter and the base item index once the right side of the page has been rendered.
-                                $this->addPages();
                                 $this->current_item_index = $j;
                             }
                             // We want to do nothing if all conditions below are true as we want the LHS of the split item to render immediately.
                             // Otherwise, break the loop.
                             if (!($page_number === 0 && $j === 0 && $side === 'left' && $this->isSplitPrinting())) {
                                 break;
-                            } elseif ($this->isSplitPrinting() && $page_number === 0) {
-                                $this->resetSplitPageCount($this->getCurrentItem()->fpTenLinesUsed());
                             }
                         }
                         ?>
@@ -62,11 +59,12 @@
                         foreach (array('drug', 'dose', 'frequency') as $attr) {
                             if ($item->getAttrLength("item_$attr") > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used) {
                                 if ($side === 'right' && !$this->getCurrentItemAttr()) {
-                                    $this->addPages();
                                     $this->current_item_index = $j;
+                                    $this->current_taper_index = 0;
                                     $this->setCurrentAttr($attr);
                                 }
                                 $end_of_page = true;
+                                break;
                             }
                             if (!$this->getCurrentItemAttr() || $this->getCurrentItemAttr() === "item_$attr") {
                                 switch ($attr) {
@@ -81,6 +79,8 @@
                                         break;
                                 }
                                 $this->setCurrentAttr();
+                                $current_item_index = 0;
+                                $current_taper_index = 0;
                                 $prescription_lines_used += $item->getAttrLength("item_$attr");
                             }
                         }
@@ -90,7 +90,6 @@
                                 $lines_remaining = PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used;
                                 if ($item->getAttrLength("taper{$index}_$attr") > $lines_remaining) {
                                     if ($side === 'right' && !$this->getCurrentItemAttr()) {
-                                        $this->addPages();
                                         $this->current_item_index = $j;
                                         $this->current_taper_index = $index;
                                         $this->setCurrentAttr($attr, $index);
@@ -112,24 +111,29 @@
                                     }
 
                                     $this->setCurrentAttr();
+                                    $current_item_index = 0;
+                                    $current_taper_index = 0;
                                     $prescription_lines_used += $item->getAttrLength("taper{$index}_$attr");
                                 }
+                            }
+                            if ($end_of_page) {
+                                break;
                             }
                         }
                         if (!$end_of_page) {
                             if ($item->getAttrLength('item_comment') > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used) {
                                 if ($side === 'right' && !$this->getCurrentItemAttr()) {
-                                    $this->addPages();
                                     $this->current_item_index = $j;
+                                    $this->current_taper_index = 0;
                                     $this->setCurrentAttr('comment');
                                 }
                                 $end_of_page = true;
                             }
-                            if (!$this->getCurrentItemAttr() || $this->getCurrentItemAttr() === 'item_comment') {
-                                if ($item->comments) {
-                                    echo "<br/>Comment: $item->comments";
-                                }
+                            if ((!$this->getCurrentItemAttr() || $this->getCurrentItemAttr() === 'item_comment') && $item->comments) {
+                                echo "<br/>Comment: $item->comments";
                                 $this->setCurrentAttr();
+                                $this->current_item_index = 0;
+                                $this->current_taper_index = 0;
                                 $prescription_lines_used += $item->getAttrLength('item_comment');
                             }
                         }
@@ -141,16 +145,16 @@
                             $end_of_page = false;
                             break;
                         }
-                        if ($this->isSplitPrinting()) {
-                            if ($side === 'right') {
-                                $this->disableSplitPrint();
-                                $split_print_end = false;
-                            } elseif ($side === 'left' && $page_number !== 0) {
-                                // This will never apply for the first page, and should only apply for the left hand side.
-                                $this->disableSplitPrint();
-                                $split_print_end = true;
-                            }
-                        }
+                    }
+                }
+                if ($this->isSplitPrinting()) {
+                    if ($side === 'right') {
+                        $this->disableSplitPrint();
+                        $split_print_end = false;
+                    } elseif ($side === 'left' && $page_number > 0) {
+                        // This will never apply for the first page, and should only apply for the left hand side.
+                        $this->disableSplitPrint();
+                        $split_print_end = true;
                     }
                 }
                 ?>
@@ -161,14 +165,23 @@
                             }
                             echo ($side === 'left') ? PrescriptionFormPrinter::LHS_LINE_FILLER_TEXT : PrescriptionFormPrinter::RHS_LINE_FILLER_TEXT;
                         }
-                        if ($split_print_end && $side === 'left' && !$this->isSplitPrinting()) {
+                        if ($split_print_end && $side === 'left') {
                             $this->setCurrentAttrStr($current_attr_copy);
                             $this->current_item_index = $current_item_copy;
                             $this->current_taper_index = $current_taper_copy;
+                        }
+                        if (!$this->isSplitPrinting()) {
                             $this->enableSplitPrint();
                             $split_print_end = false;
                         } ?>
                 </div>
+                <p class="fpten-form-row fpten-page-counter">
+                    <?php
+                    echo "Page {$this->getPageNumber()} of {$this->getTotalPages()}";
+                    if ($side === 'right') {
+                        $this->addPages();
+                    }?>
+                </p>
             </div>
         </div>
     </div>

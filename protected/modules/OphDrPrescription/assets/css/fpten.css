@@ -195,8 +195,8 @@ body {
 
 .fpten-prescription-list {
     height: 78mm;
-    width: 57mm;
-    margin-left: 29mm;
+    width: 59mm;
+    margin-left: 27mm;
 }
 
 .right .fpten-prescription-list, .right .wpten-prescription-list {
@@ -234,4 +234,10 @@ body {
 
 .right .fpten-date {
     margin-left: 53mm; !important;
+}
+
+.fpten-page-counter {
+    font-size: 7.5pt;
+    font-weight: bold;
+    text-align: right;
 }

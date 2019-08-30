@@ -2,27 +2,13 @@
 
     /**
      * Class PrescriptionFormPrinter
-     * @property $items
-     * @property $patient
-     * @property $site
-     * @property $firm
-     * @property $user
-     * @property $print_mode string
-     * @property $page_count
-     * @property $split_print
-     * @property $current_item_index
-     * @property $current_taper_index
-     * @property $current_item_attr
-     * @property $current_item_copy
-     * @property $current_taper_copy
-     * @property $current_attr_copy
-     * @property $end_of_page
-     * @property $split_print_end
-     * @property $total_items
      */
 
 class PrescriptionFormPrinter extends CWidget
 {
+    /**
+     * @var $items OphDrPrescription_Item[]
+     */
     public $items;
     public $patient;
     public $site;
@@ -33,16 +19,14 @@ class PrescriptionFormPrinter extends CWidget
     public $current_taper_index = 0;
     private $current_item_attr; // If a single item is greater than 30 lines, this will capture the attribute that overflows.
     private $split_print = false;
+    private $total_pages;
 
     private $total_items;
     private $default_cost_code;
     private $print_mode;
     private $page_count = 1;
 
-    private $split_print_page = 1;
-    private $split_print_total_pages = 1;
-
-    const MAX_FPTEN_LINES = 24;
+    const MAX_FPTEN_LINES = 22;
     const LHS_LINE_FILLER_TEXT = 'x';
     const RHS_LINE_FILLER_TEXT = 'GP COPY';
 
@@ -52,6 +36,11 @@ class PrescriptionFormPrinter extends CWidget
      */
     public function init()
     {
+        $total_lines_used = 0;
+        foreach ($this->items as $item) {
+            $total_lines_used += $item->fpTenLinesUsed();
+        }
+        $this->total_pages = (int)ceil($total_lines_used / self::MAX_FPTEN_LINES);
         $settings = new SettingMetadata();
         $this->total_items = count($this->items);
         $this->print_mode = $settings->getSetting('prescription_form_format');
@@ -65,7 +54,7 @@ class PrescriptionFormPrinter extends CWidget
     public function run()
     {
         $this->total_items = count($this->items);
-        for ($page = 0; $page < $this->page_count; $page++) {
+        for ($page = 0; $page < $this->total_pages; $page++) {
             $this->render('form_print_container', array(
                 'form_css_class' => $this->print_mode === 'FP10' ? 'fpten' : 'wpten',
                 'page_number' => $page,
@@ -101,22 +90,19 @@ class PrescriptionFormPrinter extends CWidget
     }
 
     /**
-     * Add split-print pages to the widget.
-     * @param int $num_pages Number of pages to add.
-     */
-    public function addSplitPage($num_pages = 1)
-    {
-        // Only add another split page if there are more pages to print.
-        if ($this->split_print_total_pages > 1 && $this->split_print_page + $num_pages <= $this->split_print_total_pages) {
-            $this->split_print_page += $num_pages;
-        }
-    }
-
-    /**
      * Get the total number of pages to be rendered by the widget.
      * @return int Total pages
      */
     public function getTotalPages()
+    {
+        return $this->total_pages;
+    }
+
+    /**
+     * Get current page number.
+     * @return int Current page number
+     */
+    public function getPageNumber()
     {
         return $this->page_count;
     }
@@ -210,33 +196,5 @@ class PrescriptionFormPrinter extends CWidget
     public function isSplitPrinting()
     {
         return $this->split_print;
-    }
-
-    /**
-     * Gets the page number of a split-printed page.
-     * @return int The page number for the split printed item.
-     */
-    public function getSplitPageNumber()
-    {
-        return $this->split_print_page;
-    }
-
-    /**
-     * Get the total pages to be split-printed.
-     * @return int The total number of pages to be split-printed.
-     */
-    public function getTotalSplitPages()
-    {
-        return $this->split_print_total_pages;
-    }
-
-    /**
-     * Reset the split page count for the widget. This is used for each new item to be rendered by the widget.
-     * @param $total_lines int The number of lines the item will require. This is used to determine the total split-print pages for the item.
-     */
-    public function resetSplitPageCount($total_lines)
-    {
-        $this->split_print_page = 1;
-        $this->split_print_total_pages = (int)ceil($total_lines / self::MAX_FPTEN_LINES);
     }
 }
