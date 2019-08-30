@@ -28,173 +28,178 @@ namespace OEModule\OphCiExamination\models;
  */
 class MedicationManagementEntry extends \EventMedicationUse
 {
-	public $taper_support = true;
+    public $taper_support = true;
 
-	/** @var int Temporary flag to store locked (non-editable) status */
-	public $locked = 0;
+    /** @var int Temporary flag to store locked (non-editable) status */
+    public $locked = 0;
 
-	public static function getUsageType()
-	{
-		return "OphCiExamination";
-	}
+    public static function getUsageType()
+    {
+        return "OphCiExamination";
+    }
 
-	public static function getUsageSubtype()
-	{
-		return "Management";
-	}
+    public static function getUsageSubtype()
+    {
+        return "Management";
+    }
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 */
+    /**
+     * Returns the static model of the specified AR class.
+     */
 
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	public function rules()
-	{
-		return array_merge(
-			parent::rules(),
-			array(
-				array('start_date', 'validateStartDate'),
-				array('end_date', 'validateEndDate')
-			)
-		);
-	}
+    public function rules()
+    {
+        return array_merge(
+            parent::rules(),
+            array(
+                array('start_date', 'validateStartDate'),
+                array('end_date', 'validateEndDate')
+            )
+        );
+    }
 
-	public function validateStartDate()
-	{
-		if (!isset($this->start_date) && !$this->hidden && $this->getScenario() == "to_be_prescribed") {
-			$this->addError("start_date", "Start date must not be empty when prescribing");
-		} else {
-			$validator = new \OEFuzzyDateValidator();
-			$validator->validateAttribute($this, "start_date");
-		}
-	}
+    public function validateStartDate()
+    {
+        if (!isset($this->start_date) && !$this->hidden && $this->getScenario() == "to_be_prescribed") {
+            $this->addError("start_date", "Start date must not be empty when prescribing");
+        } else {
+            $validator = new \OEFuzzyDateValidator();
+            $validator->validateAttribute($this, "start_date");
+        }
+    }
 
-	public function validateEndDate()
-	{
-		$current_date = date("Y-m-d");
-		if ($this->end_date && $this->end_date < $current_date && !$this->hidden) {
-			$this->addError("end_date", "Stop date date cannot be in the past");
-		}
-	}
+    public function validateEndDate()
+    {
+        $current_date = date("Y-m-d");
+        if ($this->end_date && $this->end_date < $current_date && !$this->hidden) {
+            $this->addError("end_date", "Stop date date cannot be in the past");
+        }
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array_merge(parent::relations(), array(
-			'dispense_condition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'dispense_condition_id'),
-			'dispense_location' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'dispense_location_id'),
-			'tapers' => array(self::HAS_MANY, \OphDrPrescription_ItemTaper::class, "item_id"),
-		));
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array_merge(parent::relations(), array(
+            'dispense_condition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'dispense_condition_id'),
+            'dispense_location' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'dispense_location_id'),
+            'tapers' => array(self::HAS_MANY, \OphDrPrescription_ItemTaper::class, "item_id"),
+        ));
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array_merge(parent::attributeLabels(), array(
-			'prescribe' => 'Prescribe'
-		));
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array_merge(parent::attributeLabels(), array(
+            'prescribe' => 'Prescribe'
+        ));
+    }
 
-	private function explodeDate($date_str)
-	{
-		return substr($date_str, 0, 4) . "-" . substr($date_str, 4, 2) . "-" . substr($date_str, 6, 2);
-	}
+    private function explodeDate($date_str)
+    {
+        return substr($date_str, 0, 4) . "-" . substr($date_str, 4, 2) . "-" . substr($date_str, 6, 2);
+    }
 
-	/**
-	 * Check if menegement entry is different to its
-	 * linked prescription entry
-	 *
-	 * @return bool  true if identical, false otherwise
-	 */
+    /**
+     * Check if menegement entry is different to its
+     * linked prescription entry
+     *
+     * @return bool  true if identical, false otherwise
+     */
 
-	public function compareToPrescriptionItem()
-	{
-		$my_attributes = $this->getAttributes();
-		$their_attributes = $this->prescriptionItem->getAttributes();
+    public function compareToPrescriptionItem()
+    {
+        $my_attributes = $this->getAttributes();
+        $their_attributes = $this->prescriptionItem->getAttributes();
 
-		$attributes_to_check = array(
-			'medication_id',
-			'form_id',
-			'laterality',
-			'route_id',
-			'frequency_id',
-			'duration',
-			'dose',
-			'dispense_condition_id',
-			'dispense_location_id',
-		);
+        $attributes_to_check = array(
+            'medication_id',
+            'form_id',
+            'laterality',
+            'route_id',
+            'frequency_id',
+            'duration',
+            'dose',
+            'dispense_condition_id',
+            'dispense_location_id',
+        );
 
-		$identical = true;
-		foreach ($attributes_to_check as $attr) {
-			if ($my_attributes[$attr] != $their_attributes[$attr]) {
-				$identical = false;
-			}
-		}
+        $identical = true;
+        foreach ($attributes_to_check as $attr) {
+            if ($my_attributes[$attr] != $their_attributes[$attr]) {
+                $identical = false;
+            }
+        }
 
-		$prescription_tapers = $this->prescriptionItem->tapers;
-		if (count($this->tapers) != count($prescription_tapers)) {
-			$identical = false;
-		} else {
-			foreach ($this->tapers as $key => $taper) {
-				if (!$taper->compareTo($prescription_tapers[$key])) {
-					$identical = false;
-				}
-			}
-		}
+        $prescription_tapers = $this->prescriptionItem->tapers;
+        if (count($this->tapers) != count($prescription_tapers)) {
+            $identical = false;
+        } else {
+            foreach ($this->tapers as $key => $taper) {
+                if (!$taper->compareTo($prescription_tapers[$key])) {
+                    $identical = false;
+                }
+            }
+        }
 
-		return $identical;
-	}
+        return $identical;
+    }
 
-	public function afterValidate()
-	{
-		// validate Tapers
-		foreach ($this->tapers as $key => $taper) {
-			$taper->item_id = $this->id;
-			if (!$taper->validate()) {
-				foreach ($taper->getErrors() as $field => $error) {
-					$this->addError($field, "Taper " . ($key + 1) . ' - ' . implode(', ', $error));
-				}
-				return false;
-			}
-		}
+    public function afterValidate()
+    {
+        // validate Tapers
+        foreach ($this->tapers as $key => $taper) {
+            $taper->item_id = $this->id;
+            if (!$taper->validate()) {
+                foreach ($taper->getErrors() as $field => $error) {
+                    $this->addError($field, "Taper " . ($key + 1) . ' - ' . implode(', ', $error));
+                }
+                return false;
+            }
+        }
 
-		return parent::afterValidate();
-	}
+        return parent::afterValidate();
+    }
 
-	public function saveTapers()
-	{
-		// delete existing tapers
+    public function saveTapers()
+    {
+        // delete existing tapers
 
-		\Yii::app()->db->createCommand("DELETE FROM " . \OphDrPrescription_ItemTaper::model()->tableName() . " WHERE item_id = :item_id")->
-		bindValues(array(":item_id" => $this->id))->execute();
+        \Yii::app()->db->createCommand("DELETE FROM " . \OphDrPrescription_ItemTaper::model()->tableName() . " WHERE item_id = :item_id")->
+        bindValues(array(":item_id" => $this->id))->execute();
 
-		// add new ones
-		foreach ($this->tapers as $taper) {
-			$taper->item_id = $this->id;
-			if (!$taper->save()) {
-				foreach ($taper->getErrors() as $err) {
-					$this->addError("tapers", $err);
-				}
-				return false;
-			}
-		}
+        // add new ones
+        foreach ($this->tapers as $taper) {
+            $taper->item_id = $this->id;
+            if (!$taper->save()) {
+                foreach ($taper->getErrors() as $err) {
+                    $this->addError("tapers", $err);
+                }
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public function beforeDelete()
-	{
-		\Yii::app()->db->createCommand("DELETE FROM " . \OphDrPrescription_ItemTaper::model()->tableName() . " WHERE item_id = :item_id")->
-		bindValues(array(":item_id" => $this->id))->execute();
+    public function beforeDelete()
+    {
+        \Yii::app()->db->createCommand("DELETE FROM " . \OphDrPrescription_ItemTaper::model()->tableName() . " WHERE item_id = :item_id")->
+        bindValues(array(":item_id" => $this->id))->execute();
 
-		return parent::beforeDelete();
-	}
+        return parent::beforeDelete();
+    }
+
+    public function getPrescriptionLink()
+    {
+        return ($this->prescriptionItem ? "/OphDrPrescription/default/view/" . $this->prescriptionItem->event_id : "");
+    }
 }
