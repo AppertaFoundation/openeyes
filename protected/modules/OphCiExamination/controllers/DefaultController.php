@@ -1401,7 +1401,7 @@ class DefaultController extends \BaseEventTypeController
 
         // if there is any duplicate, add error message
         if ($duplicate_exists) {
-            $errors[$et_name][] = "You have 1 or more duplicate diagnoses. Each combo of diagnosis, eye side and date must be unique.";
+            $errors[$et_name][] = "You have 1 or more duplicate diagnoses. Each combination of diagnosis, eye side and date must be unique.";
         }
 
         return $errors;
