@@ -2192,6 +2192,9 @@ class Patient extends BaseActiveRecordVersioned
         ORDER BY c.first_name, c.last_name
         ';
 
+    //Note: The dates processed by this function will always be assumed to be in full ascending/descending order
+		//Ex: dd/mm/yyyy and yyyy/mm/dd will work, but mm/dd/yyyy or yyyy/dd/mm will not
+		//This is normally handled by php: '/' delimited dates are american, '-' delimited dates are european
     $mysqlDob = Helper::convertNHS2MySQL(date('d M Y', strtotime(str_replace('/', '-', $dob))));
 
     $validPatient = new Patient('manual');
