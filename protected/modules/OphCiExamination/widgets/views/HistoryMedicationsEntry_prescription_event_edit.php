@@ -91,8 +91,7 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
                 <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
 					<?php if(!is_null($entry->end_date)): ?>
 						<?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
-						<?php /* echo !is_null($entry->stop_reason_id) ?
-							' ('.$entry->stopReason->name.')' : ''; */?>
+
 					<?php else: ?>
                         stopped?
 					<?php endif; ?>
@@ -109,7 +108,12 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
         </div>
     </td>
 	<td>
-		<?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason', 'style' => is_null($entry->end_date) ? "display:none" : null)) ?>
+		<div class="js-stop-reason-select" style= "<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
+			<?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason')) ?>
+		</div>
+		<div class="js-stop-reason-text" style= "<?=$is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
+			<?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
+		</div>
 	</td>
 
 	<td class="text-center">

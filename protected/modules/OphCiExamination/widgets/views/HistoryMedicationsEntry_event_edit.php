@@ -144,8 +144,12 @@ $is_posting = Yii::app()->request->getIsPostRequest();
   </td>
 
     <td>
-        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'js-stop-reason', 'style' => $is_new || is_null($entry->end_date) ? "display:none" : null)) ?>
-        <?php /* <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a> */ ?>
+			<div class="js-stop-reason-select" style= "<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
+				<?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason')) ?>
+			</div>
+			<div class="js-stop-reason-text" style= "<?=$is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
+				<?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
+			</div>
     </td>
 
     <td class="edit-column">
