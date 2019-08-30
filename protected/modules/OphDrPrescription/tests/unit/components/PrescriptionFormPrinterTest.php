@@ -109,9 +109,10 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function getPageNumber()
+    public function testGetPageNumber()
     {
-        return $this->page_count;
+        $expected = 1;
+        $this->assertEquals($expected, $this->instance->getPageNumber());
     }
 
     /**
