@@ -636,7 +636,6 @@ $this->renderPartial('../patient/crud/create_contact_form',
         // enabling title, phone number and provider no on closing the popup.
         $("#extra-gp-form #Contact_title").prop("readonly", false);
         $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
-        $("#extra-gp-form #ContactPracticeAssociate_provider_no").prop("readonly", false);
         // remove data from hidden fields.
         $('.gp_data_retrieved').val("");
 
