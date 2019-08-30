@@ -76,6 +76,9 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
 				<input type="hidden" name="<?= $field_prefix ?>[binded_key]" class="js-binded-key" value="<?= $entry->binded_key ?>">
     </td>
+    <?php if (!empty($entry->errors) || !isset($entry->dose)) {
+        $direct_edit = true;
+    }?>
     <td class="dose-frequency-route">
         <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
             <div class="flex-layout">
