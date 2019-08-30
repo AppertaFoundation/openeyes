@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data">
+<div class="element-data full-width">
     <div class="data-group">
       <span class="large-text">
       <?php if ($element->status->name !== 'Follow-up') {
