@@ -2047,7 +2047,7 @@ class PatientController extends BaseController
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
 
-            if (empty($post_info->code) || empty($post_info->value))
+            if (empty($post_info->code))
                 continue;
 
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
