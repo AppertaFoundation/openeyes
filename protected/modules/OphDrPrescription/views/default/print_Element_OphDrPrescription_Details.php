@@ -44,7 +44,7 @@ $consultantName = $firm->consultant ? ($firm->consultant->getFullName() . $cost_
 $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 ?>
 
-<?php if ($header_text !== null): ?>
+<?php if ($header_text !== null) : ?>
     <div class="clearfix"><?= $header_text ?></div>
 <?php endif; ?>
 
@@ -146,7 +146,7 @@ foreach ($items_data as $group => $items) { ?>
                     <td class="prescriptionLabel">Comments:</td>
                     <td colspan="<?=strpos($group_name, "Hospital") !== false ? 7 : 4 ?>">
                         <i><?= \CHtml::encode($item->comments); ?></i></td>
-                </tr>	
+                </tr>   
             <?php }
         } ?>
         </tbody>
@@ -178,7 +178,9 @@ foreach ($items_data as $group => $items) { ?>
     <table class="borders done_bys">
         <tr>
             <th>Prescribed by</th>
-            <td><?=$element->usermodified->fullname ?><?php if ($element->usermodified->registration_code) echo ' (' . $element->usermodified->registration_code . ')' ?>
+            <td><?=$element->usermodified->fullname ?><?php if ($element->usermodified->registration_code) {
+                echo ' (' . $element->usermodified->registration_code . ')';
+                } ?>
             </td>
             <th>Date</th>
             <td><?=$element->NHSDate('last_modified_date') ?>
@@ -192,6 +194,6 @@ foreach ($items_data as $group => $items) { ?>
         </tr>
     </table>
 
-<?php if ($footer_text !== null): ?>
+<?php if ($footer_text !== null) : ?>
     <div><?= $footer_text ?></div>
 <?php endif; ?>
