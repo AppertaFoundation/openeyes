@@ -49,7 +49,7 @@ class OphInLabResults_Type extends BaseActiveRecordVersioned
             array('max_range', 'maxRangeValidation'),
             array('normal_min', 'normalMinValueValidation'),
             array('normal_max', 'normalMaxValueValidation'),
-            array('type, result_element_id, field_type_id, default_units, custom_warning_message, min_range, max_range,
+            array('type, result_element_id, field_type_id, show_units, allow_unit_change, default_units, custom_warning_message, min_range, max_range,
             normal_min, normal_max, show_on_whiteboard ', 'safe'),
         );
     }
