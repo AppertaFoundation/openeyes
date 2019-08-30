@@ -67,12 +67,15 @@
                             $criteria->condition = 'id in (' . implode(',', array_unique(${'lens_' . $side})) . ')';
                         }
                         $lenses = OphInBiometry_LensType_Lens::model()->findAll($criteria, array('order' => 'display_order'));
+                        foreach ($lenses as $lens_data_options) {
+                            $lens_options[$lens_data_options->id] = ['data-constant' => $lens_data_options->acon];
+                        }
                         echo $form->dropDownList(
                             $element, 'lens_id_' . $side,
                             CHtml::listData(
                                 $lenses, 'id', 'display_name'
                             ),
-                            array('empty' => 'Select', 'nowrapper' => true),
+                            array('empty' => 'Select', 'nowrapper' => true, 'class' => 'js-lens-manual-override-dropdown', 'options' => $lens_options),
                             null,
                             array('label' => 6, 'field' => 12)
                         );
@@ -109,7 +112,7 @@
                     Lens A constant:
                 </td>
                 <td>
-                    <?php echo $element->{'lens_' . $side} ? number_format($element->{'lens_' . $side}->acon, 1) : '' ?>
+                    <span class="js-lens-constant"><?php echo $element->{'lens_' . $side} ? number_format($element->{'lens_' . $side}->acon, 1) : '' ?></span>
                 </td>
             </tr>
             <?php

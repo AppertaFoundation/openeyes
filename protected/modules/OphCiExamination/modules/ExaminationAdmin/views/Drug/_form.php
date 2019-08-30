@@ -31,10 +31,19 @@
         <tr>
             <td>Name</td>
             <td class="cols-full">
-                <?=\CHtml::activeTelField(
+                <?=\CHtml::activeTextField(
                   $model,
                   'name',
                   ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Active</td>
+            <td class="cols-full">
+                <?=\CHtml::activeCheckbox(
+                  $model,
+                  'is_active'
                 ); ?>
             </td>
         </tr>
