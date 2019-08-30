@@ -18,6 +18,7 @@
 ?>
 
 <?=\CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/VisualAcuity.js", CClientScript::POS_HEAD); ?>
 
 <div class="element-data element-eyes">
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
