@@ -20,24 +20,24 @@ class SubspecialtySubsectionsController extends BaseAdminController {
     public function actionList()
     {
         $model = SubspecialtySubsection::model();
-        $id = Yii::app()->request->getParam('subspecialty_id');
-        $model_list = $id ? $model->findAll('subspecialty_id = :sid', [':sid' => $id]) : [];
+        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
+        $model_list = $subspecialty_id ? $model->findAll('subspecialty_id = :subspecialty_id', [':subspecialty_id' => $subspecialty_id]) : [];
 
         $this->render('/oeadmin/subspecialty_subsections/index', [
             'model' => $model,
             'model_list' => $model_list,
-            'subspecialty_id' => $id,
+            'subspecialty_id' => $subspecialty_id,
         ]);
     }
 
     public function actionEdit()
     {
         $request = Yii::app()->request;
-        $id = $request->getParam('id');
         $subspecialty_id = $request->getParam('subspecialty_id');
-        $model = SubspecialtySubsection::model()->findByPk($id);
+        $model = SubspecialtySubsection::model()->findByPk($request->getParam('id'));
 
         if (!$model) {
+            Yii::app()->user->setFlash('error', 'The Subspecialty Subsection could not be found.');
             $this->redirect(['list?subspecialty_id=' . $subspecialty_id]);
         }
 
@@ -96,7 +96,6 @@ class SubspecialtySubsectionsController extends BaseAdminController {
         $delete_ids = Yii::app()->request->getPost('select', []);
         $transaction = Yii::app()->db->beginTransaction();
         $success = true;
-        $exception_message = null;
 
         try {
             foreach ($delete_ids as $id) {
@@ -112,7 +111,6 @@ class SubspecialtySubsectionsController extends BaseAdminController {
             }
         } catch (Exception $e) {
             \OELog::log($e->getMessage());
-            $exception_message = $e->getMessage();
             $success = false;
         }
 
