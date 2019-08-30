@@ -88,7 +88,9 @@
                 serviceName: self.options.currentSubspecialties[i].service,
                 serviceId: self.options.currentSubspecialties[i].firm.id,
             });
-            currentSubspecialtyIds.push(self.options.currentSubspecialties[i].subspecialty.id);
+            if (!inArray(self.options.currentSubspecialties[i].subspecialty.id, currentSubspecialtyIds)) {
+                currentSubspecialtyIds.push(self.options.currentSubspecialties[i].subspecialty.id);
+            }
         }
 
         // subspecialties/services/contexts initialisation
@@ -98,7 +100,15 @@
         self.subspecialtiesById = {};
         for (var i in self.options.subspecialties) {
             var subspecialty = self.options.subspecialties[i];
-            if (!inArray(subspecialty.id, currentSubspecialtyIds)) {
+            self.options.currentSubspecialties.forEach(function (currentSub) {
+                subspecialty.services.forEach(function (service) {
+                    if (service.name === currentSub.service) {
+                        subspecialty.services.splice(subspecialty.services.indexOf(service), 1);
+                    }
+                });
+            });
+
+            if (subspecialty.services.length !== 0) {
                 self.selectableSubspecialties.push(subspecialty);
             }
             self.subspecialtiesById[subspecialty.id] = subspecialty;
