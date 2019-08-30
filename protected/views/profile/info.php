@@ -45,8 +45,7 @@
             array('autocomplete' => Yii::app()->params['html_autocomplete'],
                 'readonly' => (!Yii::app()->params['profile_user_can_edit']
                     || !Yii::app()->params['profile_user_show_menu'])),
-            null,
-            array('field' => 2)
+            null
         );?>
     </td>
   </tr>
@@ -96,7 +95,7 @@
   </tr>
   <tr>
     <td>
-      <div class="data-group flex-layout flex-left cols-full">
+      <div class="data-group flex-layout cols-full">
         <div class="cols-2">
           <label for="User_qualifications">Display Theme:</label>
         </div>
