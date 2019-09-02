@@ -41,6 +41,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 	public $tmp_attrs = [];
 	public $tmp_sets = [];
 	public $tmp_meds = [];
+	public $tmp_rules = [];
 
 	private static $_processed = [];
 
@@ -65,7 +66,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 			array('name', 'length', 'max'=>255),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('name, deleted_date, last_modified_date, created_date, automatic, hidden', 'safe'),
-			array('medicationSetRules', 'safe'), //autosave relation in admin drugSet page
+
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, name, hidden, automatic, antecedent_medication_set_id, deleted_date, display_order, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
@@ -122,9 +123,8 @@ class MedicationSet extends BaseActiveRecordVersioned
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
-            'adminListAction' => 'Action',
-            'itemsCount' => 'Items count',
-            'rulesString' => 'Rules',
+			'itemsCount' => 'Items count',
+			'rulesString' => 'Rules',
 			'hidden' => 'Hidden/system',
 			'automatic' => 'Automatic'
 		);
@@ -227,7 +227,7 @@ class MedicationSet extends BaseActiveRecordVersioned
         foreach ($this->medicationSetRules as $rule) {
             $ret_val[]= "Site: " . ($rule->site ? $rule->site->name : '-') .
                 ", SS: " . ($rule->subspecialty ? $rule->subspecialty->name : "-") .
-                ", Usage code: " . $rule->usage_code;
+                ", Usage code: " . ($rule->usageCode ? $rule->usageCode->name : '-');
         }
 
         return implode(" // ", $ret_val);
@@ -259,6 +259,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 			$this->_saveAutoAttrs();
 			$this->_saveAutoSets();
 			$this->_saveAutoMeds();
+			$this->_saveSetRules();
 		}
 
 		return parent::afterSave();
@@ -303,7 +304,8 @@ class MedicationSet extends BaseActiveRecordVersioned
 	private function _saveAutoSets()
 	{
 		$existing_ids = array_map(function($e){ return $e->id; }, $this->medicationSetAutoRuleSetMemberships);
-		$updated_ids = array();
+		$updated_ids = [];
+		$models = [];
 		foreach ($this->tmp_sets as $set) {
 			if($set['id'] == -1) {
 				$set_m = new MedicationSetAutoRuleSetMembership();
@@ -316,7 +318,13 @@ class MedicationSet extends BaseActiveRecordVersioned
 			$set_m->target_medication_set_id = $this->id;
 			$set_m->save();
 			$updated_ids[] = $set_m->id;
+
+            $models[] = $set_m;
 		}
+
+		// in case if there is an error on the page we can display what user set previously
+        $this->medicationSetAutoRuleSetMemberships = $models;
+
 		$ids_to_delete = array_diff($existing_ids, $updated_ids);
 		if(!empty($ids_to_delete)) {
             $criteria = new \CDbCriteria();
@@ -358,6 +366,31 @@ class MedicationSet extends BaseActiveRecordVersioned
 		}
 	}
 
+	private function _saveSetRules()
+    {
+        $existing_ids = array_map(function($rule){ return $rule->id; }, $this->medicationSetRules);
+        $updated_ids = [];
+
+        foreach ($this->tmp_rules as $rule) {
+            if( isset($rule['id']) && !$rule['id']) {
+                $rule_model = new MedicationSetRule();
+            } else {
+                $rule_model = MedicationSetRule::model()->findByPk($rule['id']);
+            }
+            $rule_model->attributes = $rule;
+            $rule_model->medication_set_id = $this->id;
+            $rule_model->save();
+            $updated_ids[] = $rule_model->id;
+        }
+
+        $ids_to_delete = array_diff($existing_ids, $updated_ids);
+        if(!empty($ids_to_delete)) {
+            $criteria = new \CDbCriteria();
+            $criteria->addInCondition('id', $ids_to_delete);
+            MedicationSetRule::model()->deleteAll($criteria);
+        }
+    }
+
 	/**
 	 * Populate the automatic set with
 	 * all the relevant medications
@@ -378,7 +411,6 @@ class MedicationSet extends BaseActiveRecordVersioned
 		Yii::log("Started processing ".$this->name);
 
 		$cmd = Yii::app()->db->createCommand();
-		/** @var CDbCommand $cmd */
 		$cmd->select('id', 'DISTINCT')->from('medication');
 		$attribute_option_ids = array_map(function ($e){ return $e->id; }, $this->autoRuleAttributes);
 
@@ -525,8 +557,20 @@ class MedicationSet extends BaseActiveRecordVersioned
             $assignment = new \MedicationSetItem();
             $assignment->medication_id = $medication_id;
             $assignment->medication_set_id = $this->id;
-            return $assignment->save();
+
+            if ($assignment->save()){
+                return $assignment->id;
+            }
         }
         return false;
+    }
+
+    public function removeUsageCode($usage_code)
+    {
+        if (!$this->id) {
+            return false;
+        }
+
+        return \MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $this->id, $usage_code]);
     }
 }

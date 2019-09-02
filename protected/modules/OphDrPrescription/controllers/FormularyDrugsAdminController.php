@@ -28,8 +28,8 @@ class FormularyDrugsAdminController extends BaseAdminController
         ));
 
         $admin->getSearch()->setItemsPerPage(30);
-        $admin->getSearch()->getCriteria()->join = "INNER JOIN medication_set_rule AS medSetRule ON medSetRule.medication_set_id = t.id";
-        $admin->getSearch()->getCriteria()->addCondition('medSetRule.usage_code = \'Formulary\'');
+        $admin->getSearch()->getCriteria()->join = "JOIN medication_set_rule AS medSetRule ON medSetRule.medication_set_id = t.id";
+        $admin->getSearch()->getCriteria()->addCondition('medSetRule.usageCode.usage_code = "Formulary"');
 
         $admin->setListFieldsAction('toList');
 
