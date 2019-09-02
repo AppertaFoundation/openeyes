@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -56,9 +56,9 @@ class Admin
      * @var array
      */
     protected $listFields = array();
-    
+
     /**
-     * @var type 
+     * @var type
      */
     protected $listFieldsAction = 'edit';
 
@@ -307,7 +307,7 @@ class Admin
     {
         $this->listFields = $listFields;
     }
-    
+
     /**
      * @return string
      */
@@ -624,13 +624,13 @@ class Admin
                 }
             }
         }
-        
+
         if($partial === false){
             $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
         } else {
             $this->controller->renderPartial($this->editTemplate, array('admin' => $this, 'errors' => $errors));
         }
-        
+
     }
 
     /**

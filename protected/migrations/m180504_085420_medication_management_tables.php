@@ -98,7 +98,7 @@ class m180504_085420_medication_management_tables extends OEMigration
         ), true);
 
         $this->createIndex('fk_ref_medications_idx', 'medication_set_item', 'medication_id');
-        $this->createIndex('fk_ref_set_idx', 'medication_set_item', 'medication_set_id');
+        $this->createIndex('fk_ref_set_item_idx', 'medication_set_item', 'medication_set_id');
         $this->createIndex('fk_default_route_idx', 'medication_set_item', 'default_route_id');
         $this->createIndex('fk_default_form_idx', 'medication_set_item', 'default_form_id');
         $this->createIndex('fk_default_frequency_idx', 'medication_set_item', 'default_frequency_id');
@@ -137,9 +137,8 @@ class m180504_085420_medication_management_tables extends OEMigration
             'duration'                      => 'INT(10) unsigned NULL',
             'dispense_location_id'          => 'INT NULL',
             'dispense_condition_id'         => 'INT NULL',
-            'start_date'    								=> 'date NOT NULL',
-            'end_date'      								=> 'date NULL',
-
+            'start_date'                    => 'date NOT NULL',
+            'end_date'      				=> 'date NULL',
         ), true);
 
         $this->createIndex('fk_ref_medication_idx', 'event_medication_use', 'medication_id');
@@ -159,19 +158,40 @@ class m180504_085420_medication_management_tables extends OEMigration
 
         $this->addForeignKey('fk_event_1', 'event_medication_use', 'event_id', 'event', 'id', 'NO ACTION' ,'NO ACTION');
         $this->addForeignKey('fk_event_2', 'event_medication_use', 'copied_from_med_use_id', 'event', 'id', 'NO ACTION' ,'NO ACTION');
-
-        $this->createOETable('medication_set_rule', array(
+        $this->createOETable('medication_set_rule', [
             'id'                => 'pk',
             'medication_set_id'        => 'INT NOT NULL',
             'subspecialty_id'   => 'INT NULL',
             'site_id'           => 'INT NULL',
             'usage_code'        => 'VARCHAR(255) NULL',
+            'usage_code_id'     => 'INT(11) DEFAULT NULL',
             'deleted_date'      => 'DATE NULL',
-        ), true);
+        ], true);
 
-        $this->createIndex('fk_ref_set_idx', 'medication_set_rule', 'medication_set_id');
+        $this->createIndex('fk_ref_set_rule_idx', 'medication_set_rule', 'medication_set_id');
         $this->addForeignKey('fk_ref_set_3', 'medication_set_rule', 'medication_set_id', 'medication_set', 'id', 'NO ACTION' ,'NO ACTION');
 
+        $this->createOETable('medication_usage_code', [
+            'id' => 'pk',
+            'usage_code' => 'VARCHAR(30)',
+            'name' => 'VARCHAR(50)',
+            'active' => 'TINYINT(1) NOT NULL DEFAULT 1',
+            'hidden' => 'TINYINT(1) UNSIGNED DEFAULT NULL',
+            'display_order' => 'TINYINT UNSIGNED DEFAULT NULL',
+        ]);
+
+        $this->addForeignKey('medication_set_rule_ibfk_1', 'medication_set_rule', 'usage_code_id', 'medication_usage_code', 'id');
+
+        $this->insertMultiple('medication_usage_code', [
+            ['usage_code' => 'COMMON_OPH', 'name' => 'Common Ophthalmic Drug Sets'],
+            ['usage_code' => 'COMMON_SYSTEMIC', 'name' => 'Common Systemic Drug  Sets'],
+            ['usage_code' => 'PRESCRIPTION_SET', 'name' => 'Prescription Drug Sets'],
+            ['usage_code' => 'Drug', 'name' => 'Drug'],
+            ['usage_code' => 'DrugTag', 'name' => 'Drug Tags'],
+            ['usage_code' => 'Formulary', 'name' => 'Formulary Drugs'],
+            ['usage_code' => 'MedicationDrug', 'name' => 'Medication Drug'],
+            ['usage_code' => 'Management', 'name' => 'Management'],
+        ]);
 	}
 
 	public function down()
@@ -221,7 +241,5 @@ class m180504_085420_medication_management_tables extends OEMigration
         $this->dropOETable('medication_search_index', true);
 
         $this->dropOETable('medication', true);
-
 	}
-
 }
