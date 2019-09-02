@@ -190,13 +190,15 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     {
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-        $params = array(':subspecialty_id' => $subspecialty_id);
 
-        return MedicationSet::model()->with("medicationSetRules")->findAll(array(
-            "condition" => "medicationSetRules.subspecialty_id = :subspecialty_id AND usage_code = 'Drug' AND medicationSetRules.deleted_date IS NULL",
-            "order" => "name",
-            "params" => $params
-        ));
+			  $criteria = new CDbCriteria();
+			  $criteria->join .= " JOIN medication_set_rule msr ON msr.medication_set_id = t.id " ;
+			  $criteria->join .= " JOIN medication_usage_code muc ON muc.id = msr.usage_code_id";
+			  $criteria->addCondition("msr.subspecialty_id = :subspecialty_id AND muc.usage_code = :usage_code AND msr.deleted_date IS NULL");
+			  $criteria->order = "name";
+			  $criteria->params = array(':subspecialty_id' => $subspecialty_id, ':usage_code' => 'PRESCRIPTION_SET');
+
+        return MedicationSet::model()->findAll($criteria);
     }
 
     /**
@@ -232,24 +234,24 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     }
 
     /*
-     * When a prescription event is created as the result of a medication 
-     * management element from an examination event,the prescription event 
+     * When a prescription event is created as the result of a medication
+     * management element from an examination event,the prescription event
      * should be locked for editing.
      * The only available action will be to save as final (or print final) or delete
-     * 
+     *
      * @return bool
      */
-    
+
     public function isEditableByMedication()
     {
         foreach ($this->items as $key => $item) {
             if($item->parent){
                 return false;
-            }  
+            }
         }
         return true;
     }
-    
+
 
     /**
      * Validate prescription items.
