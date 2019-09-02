@@ -251,7 +251,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         foreach ($this->entries as $key => $entry) {
             if(!$entry->validate()) {
                 foreach ($entry->getErrors() as $field=>$error) {
-                    if(in_array($field, ['dose', 'frequency_id', 'route_id', 'laterality'])) {
+                	if(in_array($field, ['dose', 'frequency_id', 'route_id', 'laterality', 'option_id'])) {
                         $attr = "entries_{$key}_dfrl_error";
                     }
                     else {
