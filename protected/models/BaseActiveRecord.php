@@ -82,11 +82,9 @@ class BaseActiveRecord extends CActiveRecord
         return $this;
     }
 
-    public function autoValidateAndSaveRelation($save = false)
+    public function autoValidateRelation($save = false)
     {
         $this->auto_validate_relations = $save;
-        $this->auto_update_relations = $save;
-
         return $this;
     }
 
@@ -806,7 +804,13 @@ class BaseActiveRecord extends CActiveRecord
     {
         foreach ($this->$rel_name as $i => $rel_obj) {
             $rel_obj->$fk = $this->id;
-            if (!$rel_obj->validate()) {
+
+            // if the model is a new record than there is no ID so we do not validate that fk field
+            $to_be_validated = array_keys($rel_obj->attributes);
+            if ($this->isNewRecord) {
+                $to_be_validated = array_filter($to_be_validated, function ($i) use ($fk) { return $i !== $fk; });
+            }
+            if (!$rel_obj->validate($to_be_validated)) {
                 foreach ($rel_obj->getErrors() as $fld => $err) {
                     $this->addError($rel_name, ($i + 1) . ' - '.implode(', ', $err));
                 }

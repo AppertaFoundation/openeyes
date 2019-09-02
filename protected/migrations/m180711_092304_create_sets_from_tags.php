@@ -13,11 +13,12 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
                 ->queryAll();
         
         if($tags){
+            $drug_tag_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'DrugTag'])->queryScalar();
             foreach($tags as $tag){
                 $command = Yii::app()->db;
                 $command->createCommand("INSERT INTO medication_set(name) values ('".$tag['name']."')")->execute();
                 $ref_set_id = $command->getLastInsertID(); 
-                Yii::app()->db->createCommand("INSERT INTO medication_set_rule (medication_set_id, usage_code) values (".$ref_set_id.", 'DrugTag' )")->execute();
+                Yii::app()->db->createCommand("INSERT INTO medication_set_rule (medication_set_id, usage_code_id) values (".$ref_set_id.", $drug_tag_id )")->execute();
                 
                 /*
                  * Update ophciexamination_risk_tag

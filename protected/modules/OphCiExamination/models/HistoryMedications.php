@@ -161,23 +161,23 @@ class HistoryMedications extends BaseMedicationElement
                 array('id' => 'event_id'),
                 'through' => 'event',
                 'on' => $usage_type_condition,
-                'order' => 'entries.start_date_string_YYYYMMDD DESC, entries.end_date_string_YYYYMMDD DESC, entries.last_modified_date'
+                'order' => 'entries.start_date DESC, entries.end_date DESC, entries.last_modified_date'
             ),
             'current_entries' => array(
                 self::HAS_MANY,
                 \EventMedicationUse::class,
                 array('id' => 'event_id'),
-                'on' => "$usage_type_condition AND (current_entries.end_date_string_YYYYMMDD > NOW() OR ( current_entries.end_date_string_YYYYMMDD is NULL OR current_entries.end_date_string_YYYYMMDD = ''))",
+                'on' => "$usage_type_condition AND (current_entries.end_date > NOW() OR ( current_entries.end_date is NULL OR current_entries.end_date = ''))",
                 'through' => 'event',
-                'order' => 'current_entries.start_date_string_YYYYMMDD DESC, current_entries.end_date_string_YYYYMMDD DESC, current_entries.last_modified_date'
+                'order' => 'current_entries.start_date DESC, current_entries.end_date DESC, current_entries.last_modified_date'
             ),
             'closed_entries' => array(
                 self::HAS_MANY,
                 \EventMedicationUse::class,
                 array('id' => 'event_id'),
-                'on' => "$usage_type_condition AND (closed_entries.end_date_string_YYYYMMDD < NOW() AND ( closed_entries.end_date_string_YYYYMMDD is NOT NULL OR closed_entries.end_date_string_YYYYMMDD != '') )",
+                'on' => "$usage_type_condition AND (closed_entries.end_date < NOW() AND ( closed_entries.end_date is NOT NULL OR closed_entries.end_date != '') )",
                 'through' => 'event',
-                'order' => 'closed_entries.start_date_string_YYYYMMDD ASC, closed_entries.end_date_string_YYYYMMDD ASC, closed_entries.last_modified_date'
+                'order' => 'closed_entries.start_date ASC, closed_entries.end_date ASC, closed_entries.last_modified_date'
             ),
             'prescribed_entries' => array(
                 self::HAS_MANY,
@@ -185,7 +185,7 @@ class HistoryMedications extends BaseMedicationElement
                 array('id' => 'event_id'),
                 'on' => $usage_type_condition,
                 'through' => 'event',
-                'order' => 'prescribed_entries.start_date_string_YYYYMMDD DESC, prescribed_entries.end_date_string_YYYYMMDD DESC, prescribed_entries.last_modified_date'
+                'order' => 'prescribed_entries.start_date DESC, prescribed_entries.end_date DESC, prescribed_entries.last_modified_date'
             )
         );
     }

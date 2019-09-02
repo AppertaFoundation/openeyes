@@ -13,8 +13,8 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                 $legacy_dose = explode(" ", $event['dose']);
                 $dose = '';
                 $dose_unit_term = '';
-                
-               
+
+
                 if(count($legacy_dose) == 1){
                     $array = str_split($legacy_dose[0]);
                     foreach ($array as $key => $char) {
@@ -28,17 +28,17 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     $dose = $legacy_dose[0];
                     $dose_unit_term = $legacy_dose[1];
                 }
-                
+
                 $event['ref_duration_id'] = (!isset($event['ref_duration_id'])) ? null : $event['ref_duration_id'];
                 $event['ref_medication_form_id'] = (!isset($event['ref_medication_form_id'])) ? 'NULL' : $event['ref_medication_form_id'];
                 $event['end_date'] = (!isset($event['end_date'])) ? $end_date_string = 'NULL' : $end_date_string = "'".$event['end_date']."'";
-                        
+
                 $ref_route_id = ($event['ref_route_id'] == null) ? 'NULL' : $event['ref_route_id'];
                 $ref_frequency_id = ($event['ref_frequency_id'] == null) ? 'NULL' : $event['ref_frequency_id'];
                 $ref_duration_id = ($event['ref_duration_id'] == null) ? 'NULL' : $event['ref_duration_id'];
                 $stop_reason_id = ($event['stop_reason_id'] == null) ? 'NULL' : $event['stop_reason_id'];
                 $prescription_item_id = ($event['prescription_item_id'] == null) ? 'NULL' : $event['prescription_item_id'];
-               
+
                 $command = Yii::app()->db
                 ->createCommand("
                     INSERT INTO event_medication_use (
@@ -55,8 +55,8 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                         duration, 
                         stop_reason_id,
                         prescription_item_id,
-                        start_date_string_YYYYMMDD,
-                        end_date_string_YYYYMMDD
+                        start_date,
+                        end_date
                     ) values(
                         ".$event['event_id'].",
                         '".$event['class_name']."',
@@ -79,13 +79,13 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
             }
         }
     }
-    
+
     public function up()
 	{
         echo "> The import may take a several seconds!\n";
 
         $this->execute("SET foreign_key_checks = 0");
-        
+
         /*
          * Get Examination events with Drugs
          */
@@ -128,9 +128,9 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     ORDER BY event.id ASC
                  ")
                 ->queryAll();
-        
+
         $this->insertExaminations($eventsDrugs);
-        
+
         echo "> The Examinations with Drug import was successfully!\n";
         /*
          * Get Examination events with Medication Drugs
@@ -167,7 +167,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     ORDER BY event.id ASC
                  ")
                 ->queryAll();
-        
+
         $this->insertExaminations($eventMedDrugs);
         echo "> The Examinations with Medication Drug import was successfully!\n";
         $this->execute("SET foreign_key_checks = 1");
@@ -175,7 +175,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
 
 	public function down()
 	{
-        $this->execute("SET foreign_key_checks = 0");    
+        $this->execute("SET foreign_key_checks = 0");
         $this->execute("DELETE FROM event_medication_use WHERE usage_type = 'OphCiExamination' ");
         $this->execute("SET foreign_key_checks = 1");
 	}

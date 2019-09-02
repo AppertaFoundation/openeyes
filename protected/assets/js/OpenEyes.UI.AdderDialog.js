@@ -236,6 +236,7 @@
         }
 
         this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
+        this.searchResultList.hide();
         this.searchResultList.appendTo($filterDiv);
     };
 
@@ -608,9 +609,9 @@
 
             if (dialog.options.enableCustomSearchEntries) {
                 dialog.appendCustomEntryOption(text, dialog);
-            } else {
-                dialog.searchResultList.toggle(!no_data);
             }
+
+            dialog.searchResultList.toggle(!no_data);
             dialog.searchingSpinnerWrapper.hide();
         });
     };

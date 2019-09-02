@@ -62,6 +62,7 @@
                 <?=$cataract? '<td class="text-left" style="vertical-align: center;">'.$item['eye_side'].'</td>':'';?>
                 <td class="text-left" style="vertical-align: center;" class="js-csv-procedures"><?= $cataract? $item['procedures']:$patient['procedures']; ?></td>
                 <?=$cataract? '<td style="vertical-align: center;">'.Helper::convertDate2NHS($item['event_date']).'</td>':'';?>
+
             </tr>
         <?php } ?>
         </tbody>

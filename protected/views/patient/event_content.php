@@ -44,9 +44,11 @@
               $(document).ready(function () {
                   var $date_input = $('.js-event-date-input');
                   $('.js-change-event-date').on('click', function () {
-                      $date_input.show();
-                      $('.js-event-date').hide();
-                      $('.js-change-event-date').hide();
+                      if(!$(this).hasClass('disabled')) {
+                          $date_input.show();
+                          $('.js-event-date').hide();
+                          $('.js-change-event-date').hide();
+                      }
                   });
 
                   $('.pickmeup.pmu-view-days').on('click', function () {

@@ -18,8 +18,8 @@
 <div class="row divider">
     <h2>Drug Sets</h2>
 </div>
-<?php $isSelected = function($usage_code) use ($search) {
-    if (isset($search['usage_codes']) && in_array($usage_code, $search['usage_codes'])) {
+<?php $isSelected = function($usage_code_id) use ($search) {
+    if (isset($search['usage_code_ids']) && in_array($usage_code_id, $search['usage_code_ids'])) {
         return 'green hint';
     }
 
@@ -31,27 +31,12 @@
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
 
         <div id="set-filters" class="flex-layout row">
-            <button
-                    data-usage_code=""
-                    type="button"
-                    class="large js-set-select js-all-sets<?= !isset($search['usage_codes']) || empty($search['usage_codes']) ? ' green hint' : '' ?>"
-            >All Sets</button>
-
-            <?php $codes = [
-                    'COMMON_OPH' => 'Common Ophthalmic Drug Sets',
-                    'COMMON_SYSTEMIC' => 'Common Systemic Drug  Sets',
-                    'PRESCRIPTION_SET' => 'Prescription Drug Sets',
-                    'Drug' => 'Drug',
-                    'DrugTag' => 'Drug Tags',
-                    'Formulary' => 'Formulary Drugs',
-                    'MedicationDrug' => 'Medication Drug',
-            ]; ?>
-            <?php foreach ($codes as $usage_code => $desc) :?>
+            <?php foreach (MedicationUsageCode::model()->findAll() as $usage_code) :?>
                 <button
-                        data-usage_code="<?=$usage_code;?>"
+                        data-usage_code_id="<?=$usage_code->id;?>"
                         type="button"
-                        class="large js-set-select <?=$isSelected($usage_code);?>"
-                ><?=$desc;?>
+                        class="large js-set-select <?=$isSelected($usage_code->id);?>"
+                ><?=$usage_code->name;?>
                 </button>
             <?php endforeach; ?>
         </div>
@@ -99,10 +84,11 @@
     <form id="admin_DrugSets">
         <table id="drugset-list" class="standard">
             <colgroup>
-                <col class="cols-1" style="width:3.33333%">
-                <col class="cols-1" style="width:3.33333%">
-                <col class="cols-2">
+                <col style="width:3.33333%;">
+                <col style="width:3.33333%">
+                <col class="cols-3">
                 <col class="cols-4">
+                <col class="cols-1">
                 <col class="cols-1">
                 <col class="cols-1">
             </colgroup>
@@ -114,6 +100,7 @@
                 <th>Rule</th>
                 <th>Count</th>
                 <th>Hidden/system</th>
+                <th>Automatic</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -132,11 +119,9 @@
                         'data-uri' => "/OphDrPrescription/admin/drugSet/edit",
                         'class' => 'button large'
                     ]); ?>
-                    <?= \CHtml::submitButton('Delete', [
-                        'id' => 'et_delete',
-                        'data-uri' => '/OphDrPrescription/admin/drugSet/delete',
+                    <?= \CHtml::button('Delete', [
+                        'id' => 'delete_sets',
                         'class' => 'button large',
-                        'data-object' => 'DrugSet'
                     ]); ?>
                 </td>
                 <td colspan="4">
@@ -155,8 +140,20 @@
         <td>{{name}}</td>
         <td>{{rules}}</td>
         <td>{{count}}</td>
-        <td>{{hidden}}</td>
-        <td><a href="/OphDrPrescription/admin/DrugSet/edit/{{id}}" class="button">Edit</a></td>
+        <td>
+            {{#hidden}}<i class="oe-i tick medium"></i>{{/hidden}}
+            {{^hidden}}<i class="oe-i remove medium"></i>{{/hidden}}
+        </td>
+        <td>
+            {{#automatic}}<i class="oe-i tick medium"></i>{{/automatic}}
+            {{^automatic}}<i class="oe-i remove medium"></i>{{/automatic}}
+        </td>
+            <td>
+                {{^automatic}}<a href="/OphDrPrescription/admin/DrugSet/edit/{{id}}" class="button">Edit</a>{{/automatic}}
+                {{#automatic}}<i class="oe-i info pad-left small js-has-tooltip"
+                                 data-tooltip-content="Automatic set cannot be edited here."></i>{{/automatic}}
+            </td>
+
     </tr>
 </script>
 
