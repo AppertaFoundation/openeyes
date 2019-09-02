@@ -168,6 +168,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $tapers.remove();
         controller.removeBoundEntry($row);
         $row.remove();
+        controller.displayTableHeader();
     });
 
     // removal button for tapers
@@ -185,7 +186,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     // adding entries
     controller.$popup.on('click', controller.options.addButtonSelector, function(e) {
       e.preventDefault();
-      controller.$table.find('thead').show();
       controller.addEntry();
     });
 
@@ -304,6 +304,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.addTaper($row);
           return false;
       });
+
+      if($row.find('.js-source-subtype').val() === "VTM") {
+      	$row.find('.js-medication-vtm-container').show();
+      	$row.find('.js-medication-non-vtm-container').hide();
+			}
 
       var med = $row.data("medication");
       if($row.find(".js-unit-dropdown").length > 0 && typeof med !== "undefined" &&
@@ -929,6 +934,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     prepended_markup: selectedItems[i].prepended_markup,
                     set_ids: selectedItems[i].set_ids,
                     allergy_ids: selectedItems[i].allergy_ids,
+										source_subtype: selectedItems[i].source_subtype
                 };
             }
             else {
@@ -959,6 +965,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $(this.options.medicationSearchInput).val('');
         $(this.options.medicationSearchResult).empty();
 
+        this.displayTableHeader();
         // return the last created row
         return $newrow;
     };
@@ -985,6 +992,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$element.find('.hide-stopped').hide();
     };
 
+    HistoryMedicationsController.prototype.displayTableHeader = function () {
+        let table_header = this.$table.find("thead");
+
+        if (this.$table.find("tbody tr").length > 0) {
+            table_header.show();
+        } else {
+            table_header.hide();
+        }
+    };
 
   exports.HistoryMedicationsController = HistoryMedicationsController;
 })(OpenEyes.OphCiExamination);
