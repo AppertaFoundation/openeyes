@@ -16,10 +16,10 @@
  */
 ?>
 <div class="row divider">
-    <h2>Drug Sets</h2>
+    <h2>Medications</h2>
 </div>
-<?php $isSelected = function($usage_code_id) use ($search) {
-    if (isset($search['usage_code_ids']) && in_array($usage_code_id, $search['usage_code_ids'])) {
+<?php $isSelected = function($source_type) use ($search) {
+    if (isset($search['source_type']) && in_array($source_type, $search['source_type'])) {
         return 'green hint';
     }
 
@@ -31,12 +31,22 @@
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
 
         <div id="set-filters" class="flex-layout row">
-            <?php foreach (MedicationUsageCode::model()->findAll() as $usage_code) :?>
+            <button
+                    data-usage_code=""
+                    type="button"
+                    class="large js-set-select js-all-sets<?= !isset($search['usage_codes']) || empty($search['usage_codes']) ? ' green hint' : '' ?>"
+            >All Sets</button>
+
+            <?php $source_types = [
+                    'LOCAL' => 'LOCAL',
+                    'DM+D' => 'DM + D',
+            ]; ?>
+            <?php foreach ($source_types as $source_type => $desc) :?>
                 <button
-                        data-usage_code_id="<?=$usage_code->id;?>"
+                        data-usage_code="<?=$source_type;?>"
                         type="button"
-                        class="large js-set-select <?=$isSelected($usage_code->id);?>"
-                ><?=$usage_code->name;?>
+                        class="large js-set-select <?=$isSelected($source_type);?>"
+                ><?=$desc;?>
                 </button>
             <?php endforeach; ?>
         </div>
@@ -61,16 +71,6 @@
                         ); ?>
                     </td>
 
-                    <td><?= \CHtml::dropDownList('search[subspecialty_id]', $search['subspecialty_id'],
-                            \CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
-                            ['empty' => '- Subspecialty -']
-                        ) ?>
-                    </td>
-                    <td><?= \CHtml::dropDownList('search[site_id]', $search['site_id'],
-                            \CHtml::listData(Site::model()->findAll(), 'id', 'name'),
-                            ['empty' => '- Site -']
-                        ) ?>
-                    </td>
                     <td>
                         <button class="blue hint" type="button" id="et_search">Search</button>
                     </td>
@@ -84,11 +84,10 @@
     <form id="admin_DrugSets">
         <table id="drugset-list" class="standard">
             <colgroup>
-                <col style="width:3.33333%;">
                 <col style="width:3.33333%">
-                <col class="cols-3">
+                <col style="width:3.33333%">
+                <col class="cols-2">
                 <col class="cols-4">
-                <col class="cols-1">
                 <col class="cols-1">
                 <col class="cols-1">
             </colgroup>
@@ -100,15 +99,14 @@
                 <th>Rule</th>
                 <th>Count</th>
                 <th>Hidden/system</th>
-                <th>Automatic</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
                 <?php
-                    foreach ($data_provider->getData() as $set) {
+                    /* foreach ($data_provider->getData() as $set) {
                         $this->renderPartial('/DrugSet/_row', ['set' => $set]);
-                    }
+                    } */
                 ?>
             </tbody>
             <tfoot class="pagination-container">
@@ -119,9 +117,11 @@
                         'data-uri' => "/OphDrPrescription/admin/drugSet/edit",
                         'class' => 'button large'
                     ]); ?>
-                    <?= \CHtml::button('Delete', [
-                        'id' => 'delete_sets',
+                    <?= \CHtml::submitButton('Delete', [
+                        'id' => 'et_delete',
+                        'data-uri' => '/OphDrPrescription/admin/drugSet/delete',
                         'class' => 'button large',
+                        'data-object' => 'DrugSet'
                     ]); ?>
                 </td>
                 <td colspan="4">
@@ -140,20 +140,8 @@
         <td>{{name}}</td>
         <td>{{rules}}</td>
         <td>{{count}}</td>
-        <td>
-            {{#hidden}}<i class="oe-i tick medium"></i>{{/hidden}}
-            {{^hidden}}<i class="oe-i remove medium"></i>{{/hidden}}
-        </td>
-        <td>
-            {{#automatic}}<i class="oe-i tick medium"></i>{{/automatic}}
-            {{^automatic}}<i class="oe-i remove medium"></i>{{/automatic}}
-        </td>
-            <td>
-                {{^automatic}}<a href="/OphDrPrescription/admin/DrugSet/edit/{{id}}" class="button">Edit</a>{{/automatic}}
-                {{#automatic}}<i class="oe-i info pad-left small js-has-tooltip"
-                                 data-tooltip-content="Automatic set cannot be edited here."></i>{{/automatic}}
-            </td>
-
+        <td>{{hidden}}</td>
+        <td><a href="/OphDrPrescription/admin/DrugSet/edit/{{id}}" class="button">Edit</a></td>
     </tr>
 </script>
 
