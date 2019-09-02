@@ -15,27 +15,30 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<h4>Current:</h4>
-<table class="borders">
-    <tbody>
-        <?php foreach ($element->currentOrderedEntries as $entry){ ?>
-        <tr>
-            <td><?= $entry->getMedicationDisplay() ?></td>
-            <th><?= $entry->getAdministrationDisplay() ? $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></th>
-        </tr>
-        <?php } ?>
-    </tbody>
-</table>
-
-<h4>Stopped:</h4>
-<table class="borders">
-    <tbody>
-        <?php foreach ($element->stoppedOrderedEntries as $entry){ ?>
-        <tr>
-            <td><?= $entry->getMedicationDisplay() ?></td>
-            <th><?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></th>
-        </tr>
-        <?php } ?>
-    </tbody>
-</table>
+<?php if (!empty($element->current_entries)) { ?>
+	<h4>Current:</h4>
+	<table class="borders">
+		<tbody>
+		<?php foreach ($element->current_entries as $entry) { ?>
+			<tr>
+				<td><?= $entry->getMedicationDisplay() ?></td>
+				<th><?= $entry->getAdministrationDisplay() ? $entry->getAdministrationDisplay() : '' ?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : '' ?></th>
+			</tr>
+		<?php } ?>
+		</tbody>
+	</table>
+<?php } ?>
+<?php if (!empty($element->closed_entries)) { ?>
+	<h4>Stopped:</h4>
+	<table class="borders">
+		<tbody>
+		<?php foreach ($element->closed_entries as $entry) { ?>
+			<tr>
+				<td><?= $entry->getMedicationDisplay() ?></td>
+				<th><?= $entry->getAdministrationDisplay() ? $entry->getAdministrationDisplay() : '' ?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : '' ?></th>
+			</tr>
+		<?php } ?>
+		</tbody>
+	</table>
+<?php } ?>
 
