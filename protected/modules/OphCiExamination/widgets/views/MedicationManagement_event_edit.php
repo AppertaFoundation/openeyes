@@ -24,7 +24,7 @@ $model_name = CHtml::modelName($element);
 
 $route_options = CHtml::listData($element->getRouteOptions(), 'id', 'term');
 $frequency_options = array();
-foreach ($element->getFrequencyOptions() as $k=>$v) {
+foreach ($element->getFrequencyOptions() as $k => $v) {
     $frequency_options[$v->id] = $v->term." (".$v->code.")";
 }
 $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
@@ -70,58 +70,57 @@ $element_errors = $element->getErrors();
             </tr>
             </thead>
             <tbody>
-                <?php if($this->isPostedEntries() || !empty($element->entries)) {
+                <?php if ($this->isPostedEntries() || !empty($element->entries)) {
                     $row_count = 0;
                     $total_count = count($element->entries);
-                    foreach ($element->entries as $key=>$entry) {
-
-                    				if($prescribe_access || $entry->prescribe == 0 ) {
-															$this->render(
-																'MedicationManagementEntry_event_edit',
-																array(
-																	'entry' => $entry,
-																	'form' => $form,
-																	'model_name' => $model_name,
-																	'field_prefix' => $model_name . '[entries][' . $row_count . ']',
-																	'row_count' => $row_count,
-																	'stop_reason_options' => $stop_reason_options,
-																	'laterality_options' => $laterality_options,
-																	'route_options' => $route_options,
-																	'frequency_options' => $frequency_options,
-																	'direct_edit' => false,
-																	'usage_type' => /* $entry->usage_type */ 'UTYPE',
-																	'row_type' => /*$entry->group */ 'group',
-																	'is_last' => ($row_count == $total_count - 1),
-																	'prescribe_access' => $prescribe_access,
-																	'patient' => $this->patient,
-																	'locked' => $entry->locked,
-																	'unit_options' => $unit_options,
-																)
-															);
-														} else {
-                    					$this->render(
-                    						'MedicationManagementEntry_event_edit_read_only',
-																array(
-																	'entry' => $entry,
-																	'form' => $form,
-																	'model_name' => $model_name,
-																	'field_prefix' => $model_name . '[entries][' . $row_count . ']',
-																	'row_count' => $row_count,
-																	'stop_reason_options' => $stop_reason_options,
-																	'laterality_options' => $laterality_options,
-																	'route_options' => $route_options,
-																	'frequency_options' => $frequency_options,
-																	'direct_edit' => false,
-																	'usage_type' => /* $entry->usage_type */ 'UTYPE',
-																	'row_type' => /*$entry->group */ 'group',
-																	'is_last' => ($row_count == $total_count - 1),
-																	'prescribe_access' => $prescribe_access,
-																	'patient' => $this->patient,
-																	'locked' => $entry->locked,
-																	'unit_options' => $unit_options,
-																)
-															);
-														}
+                    foreach ($element->entries as $key => $entry) {
+                        if ($prescribe_access || $entry->prescribe == 0 ) {
+                                                $this->render(
+                                                    'MedicationManagementEntry_event_edit',
+                                                    array(
+                                                        'entry' => $entry,
+                                                        'form' => $form,
+                                                        'model_name' => $model_name,
+                                                        'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                                                        'row_count' => $row_count,
+                                                        'stop_reason_options' => $stop_reason_options,
+                                                        'laterality_options' => $laterality_options,
+                                                        'route_options' => $route_options,
+                                                        'frequency_options' => $frequency_options,
+                                                        'direct_edit' => false,
+                                                        'usage_type' => /* $entry->usage_type */ 'UTYPE',
+                                                        'row_type' => /*$entry->group */ 'group',
+                                                        'is_last' => ($row_count == $total_count - 1),
+                                                        'prescribe_access' => $prescribe_access,
+                                                        'patient' => $this->patient,
+                                                        'locked' => $entry->locked,
+                                                        'unit_options' => $unit_options,
+                                                    )
+                                                );
+                        } else {
+                            $this->render(
+                            'MedicationManagementEntry_event_edit_read_only',
+                                array(
+                                    'entry' => $entry,
+                                    'form' => $form,
+                                    'model_name' => $model_name,
+                                    'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                                    'row_count' => $row_count,
+                                    'stop_reason_options' => $stop_reason_options,
+                                    'laterality_options' => $laterality_options,
+                                    'route_options' => $route_options,
+                                    'frequency_options' => $frequency_options,
+                                    'direct_edit' => false,
+                                    'usage_type' => /* $entry->usage_type */ 'UTYPE',
+                                    'row_type' => /*$entry->group */ 'group',
+                                    'is_last' => ($row_count == $total_count - 1),
+                                    'prescribe_access' => $prescribe_access,
+                                    'patient' => $this->patient,
+                                    'locked' => $entry->locked,
+                                    'unit_options' => $unit_options,
+                                )
+                            );
+                        }
                             $row_count++;
                     }
                 } ?>
@@ -161,7 +160,8 @@ $element_errors = $element->getErrors();
                 'prescribe_access' => $prescribe_access,
                 'patient' => $this->patient,
                 'locked' => '{{locked}}{{^locked}}0{{/locked}}',
-				'unit_options' => $unit_options,
+                                'source_subtype' => '{{source_subtype}}',
+                'unit_options' => $unit_options,
             )
         );
         ?>
@@ -180,7 +180,7 @@ $element_errors = $element->getErrors();
                     "field_prefix" => $model_name."[entries][{{row_count}}][taper][{{taper_count}}]"
                 )
             );
-        ?>
+            ?>
     </script>
 </div>
 <script type="text/javascript">
@@ -208,7 +208,7 @@ $element_errors = $element->getErrors();
             },
             initRowsFromHistoryElement: function() {
 
-                <?php if(!$this->isPostedEntries() && $this->element->getIsNewRecord()): ?>
+                <?php if (!$this->isPostedEntries() && $this->element->getIsNewRecord()) : ?>
                     $.each(window.HMController.$table.children("tbody").children("tr"), function(i, e){
                         var $newrow = window.HMController.copyRow($(e), window.MMController.$table.children("tbody"));
                         window.HMController.bindEntries($(e), $newrow);
@@ -219,14 +219,14 @@ $element_errors = $element->getErrors();
                             $newrow.find(".js-hidden").val("1");
                         }
                     });
-                <?php else: ?>
+                <?php else : ?>
                 $.each(window.HMController.$table.children("tbody").children("tr"), function(i, historyMedicationRow){
                     let medicationHistoryBindedKey = $(historyMedicationRow).find('.js-binded-key').val();
                     $.each(window.MMController.$table.children("tbody").children("tr"), function(index, medicationManagementRow) {
                         if($(medicationManagementRow).find('.js-binded-key').val() === medicationHistoryBindedKey) {
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
-												}
+                                                }
                     });
                 });
                 <?php endif; ?>
@@ -238,10 +238,10 @@ $element_errors = $element->getErrors();
 
         <?php
             $site_id = $this->getApp()->session->get('selected_site_id');
-            $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true, $site_id);
-            foreach ($medications as &$medication) {
-                $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
-            }
+            $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true, $site_id);
+        foreach ($medications as &$medication) {
+            $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+        }
         ?>
 
         new OpenEyes.UI.AdderDialog({

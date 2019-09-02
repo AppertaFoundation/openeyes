@@ -16,20 +16,25 @@
  */
 
 /**
- * This is the model class for table "anaesthetic_complication".
+ * This is the model class for table "medication_usage_code".
  *
- * The followings are the available columns in table 'anaesthetic_complication':
+ * The followings are the available columns in table 'medication_usage_code':
  *
  * @property int $id
- * @property string $name
- * @property int $display_order
+ * @property string $usage_code usage code
+ * @property string $name name of the usage code
+ * @property string $active if the usage_code is active
+ * @property string $hidden if the option is hidden (for legacy codes maybe)
+ * @property string $address1
+ * @property string $display_order display order
+ *
+ * The following are the available model relations:
+ * @property MedicationSetRule $medicationSetRule
  */
-class AnaestheticComplication extends BaseActiveRecordVersioned
+class MedicationUsageCode extends BaseActiveRecordVersioned
 {
     /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return AnaestheticComplication the static model class
+     * @inheritDoc
      */
     public static function model($className = __CLASS__)
     {
@@ -41,7 +46,7 @@ class AnaestheticComplication extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'anaesthetic_complication';
+        return 'medication_usage_code';
     }
 
     /**
@@ -49,10 +54,9 @@ class AnaestheticComplication extends BaseActiveRecordVersioned
      */
     public function rules()
     {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
-        return array(
-        );
+        return [
+            ['usage_code, name', 'required'],
+        ];
     }
 
     /**
@@ -60,6 +64,23 @@ class AnaestheticComplication extends BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array();
+        return [
+            'medicationSetRule' => [self::HAS_MANY, MedicationSetRule::class, 'usage_code_id'],
+        ];
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'usage_code' => 'Usage Code',
+            'name' => 'Name',
+            'active' => 'Active',
+            'hidden' => 'Hidden',
+            'display_order' => 'Display order'
+        ];
     }
 }

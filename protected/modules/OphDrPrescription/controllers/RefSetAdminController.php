@@ -96,27 +96,28 @@ class RefSetAdminController extends BaseAdminController
 			$existing_ids[] = $rule->id;
 		}
 
-		$ids = @Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['id'];
-		if(is_array($ids)) {
-			foreach ($ids as $key => $rid) {
-				if($rid == -1) {
-					$medSetRule = new MedicationSetRule();
-				}
-				else {
-					$medSetRule = MedicationSetRule::model()->findByPk($rid);
-					$updated_ids[] = $rid;
-				}
+		$medication_set = Yii::app()->request->getPost('MedicationSet');
+		$ids = isset($medication_set['medicationSetRules']['id']) ? $medication_set['medicationSetRules']['id'] : [];
 
-				$medSetRule->setAttributes(array(
-					'medication_set_id' => $model->id,
-					'site_id' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['site_id'][$key],
-					'subspecialty_id' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['subspecialty_id'][$key],
-					'usage_code' => Yii::app()->request->getPost('MedicationSet')['medicationSetRules']['usage_code'][$key],
-				));
+        foreach ($ids as $key => $rid) {
+            if($rid == -1) {
+                $medSetRule = new MedicationSetRule();
+            }
+            else {
+                $medSetRule = MedicationSetRule::model()->findByPk($rid);
+                $updated_ids[] = $rid;
+            }
 
-				$medSetRule->save();
-			}
-		}
+            $medSetRule->setAttributes(array(
+                'medication_set_id' => $model->id,
+                'site_id' => isset($medication_set['medicationSetRules']['site_id'][$key]) ? $medication_set['medicationSetRules']['site_id'][$key] : null,
+                'subspecialty_id' => isset($medication_set['medicationSetRules']['subspecialty_id'][$key]) ? $medication_set['medicationSetRules']['subspecialty_id'][$key] : null,
+                'usage_code_id' => isset($medication_set['medicationSetRules']['usage_code_id'][$key]) ? $medication_set['medicationSetRules']['usage_code_id'][$key] : null,
+            ));
+
+            $medSetRule->save();
+        }
+
 
 		$deleted_ids = array_diff($existing_ids, $updated_ids);
 		if(!empty($deleted_ids)) {

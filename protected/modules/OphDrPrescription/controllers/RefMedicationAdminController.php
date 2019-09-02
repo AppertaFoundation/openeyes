@@ -396,7 +396,7 @@ class RefMedicationAdminController extends BaseAdminController
             /** @var MedicationSet $e */
             $ruleString = [];
             foreach ($e->medicationSetRules as $rule) {
-                $ruleString[] = $rule->usage_code." (site=".(is_null($rule->site_id) ? "null" : $rule->site->name).", ss=".(is_null($rule->subspecialty_id) ? "null" : $rule->subspecialty->name).")";
+                $ruleString[] = ($rule->usageCode ? $rule->usageCode->usage_code : '') . " (site=".(is_null($rule->site_id) ? "null" : $rule->site->name).", ss=".(is_null($rule->subspecialty_id) ? "null" : $rule->subspecialty->name).")";
             }
 
             return implode(PHP_EOL, $ruleString);
