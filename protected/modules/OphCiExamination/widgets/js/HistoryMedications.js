@@ -257,6 +257,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var $input = $(this).closest(".toggle-switch").find("input");
         var checked = !$input.prop("checked");
         if(!checked) {
+        		let $data_key = $row.attr('data-key');
+						$(".js-taper-row[data-parent-key='" + $data_key + "']").remove();
             $row.find(".js-disppense-location option").empty();
             $row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
             $row.find(".js-add-taper").hide();
@@ -359,17 +361,19 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     HistoryMedicationsController.prototype.showStopControls = function($row)
     {
-        var $datepicker_wrapper = $row.find(".js-end-date-wrapper");
-        var $stop_reason_select = $row.find(".js-stop-reason");
-        var $datepicker_control = $datepicker_wrapper.find("input");
+        let $datepicker_wrapper = $row.find(".js-end-date-wrapper");
+			  let $stop_reason_select = $row.find(".js-stop-reason-select");
+			  let $stop_reason_text = $row.find(".js-stop-reason-text");
+			  let $datepicker_control = $datepicker_wrapper.find("input");
         $row.find(".js-meds-stop-btn").hide();
-        var default_date = $datepicker_control.attr("data-default");
+			  let default_date = $datepicker_control.attr("data-default");
         const currently_set_date = $datepicker_control.val();
         if(typeof default_date !== "undefined" && default_date !== false && !currently_set_date) {
             $datepicker_control.val(default_date);
         }
         $datepicker_wrapper.show();
         $stop_reason_select.show();
+				$stop_reason_text.hide();
 
         if(typeof $row.data("bound_entry") !== "undefined") {
             this.boundController.showStopControls($row.data("bound_entry"));
@@ -561,7 +565,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     HistoryMedicationsController.prototype.updateTextualDisplay = function ($row) {
-        $row.find(".js-textual-display-dose").text($row.find(".js-dose").val() + " " + $row.find(".js-dose-unit-term").text());
+    		let displayDoseText = "";
+    		if($row.find(".js-dose").val() !== '') {
+					displayDoseText = $row.find(".js-dose").val() + " " + $row.find(".js-dose-unit-term").text()
+				}
+        $row.find(".js-textual-display-dose").text(displayDoseText);
         $row.find(".js-textual-display-frequency").text($row.find(".js-frequency option:selected").text());
         var route_lat = "";
         var $lat_ctrl = $row.find(".admin-route-options");
@@ -630,7 +638,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryMedicationsController.prototype.bindController = function(controller, name) {
         this[name] = controller;
         this.boundController = controller;
-        this.options.onControllerBound(controller, name);
     };
 
     HistoryMedicationsController.prototype.disableRemoveButton = function ($row) {
