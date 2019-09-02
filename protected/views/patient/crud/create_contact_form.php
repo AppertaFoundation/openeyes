@@ -56,9 +56,6 @@
                         <?php echo $extra_gp_form->error($extra_gp_contact, 'primary_phone'); ?>
                     </td>
                 </tr>
-
-
-
                 <tr>
                     <td>
                         <?php echo $extra_gp_form->labelEx($extra_practice_associate, 'provider_no'); ?>
@@ -68,9 +65,6 @@
                         <?php echo $extra_gp_form->error($extra_practice_associate, 'provider_no'); ?>
                     </td>
                 </tr>
-
-
-
                 <tr>
                     <td>
                         <label><?php echo $extra_gp_contact->getAttributeLabel('Role'); ?> <span class="required">*</span></label>
@@ -211,7 +205,6 @@
                                 'type' => 'POST',
                                 'success' => 'js:function(event){
                                     let response = JSON.parse(event);
-                                    console.log(response);
                                     if ("error" in response){
                                         $("#extra-existing-practice-errors").html(response.error);
                                         $("#extra-existing-practice-alert-box").css("display","");
@@ -480,7 +473,6 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
         // Setting the title, phone no. and provider no. to read only if user has select an existing gp.
         $("#extra-gp-form #Contact_title").prop("readonly", true);
         $("#extra-gp-form #Contact_primary_phone").prop("readonly", true);
-        $("#extra-gp-form #ContactPracticeAssociate_provider_no").prop("readonly", true);
         $('#extra-gp-message').hide();
         // Setting the property gpId.
         gp.id = response.value;
@@ -518,7 +510,6 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
         gp.id = undefined;
         $("#extra-gp-form #Contact_title").prop("readonly", false);
         $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
-        $("#extra-gp-form #ContactPracticeAssociate_provider_no").prop("readonly", false);
         $('#extra-gp-message').hide();
         if($("#extra_gp_adding_title").text() === "Add Referring Practitioner"){
             notifyUserExistingorNewGpRecord(true, true);

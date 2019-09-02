@@ -255,6 +255,19 @@ class Patient extends BaseActiveRecordVersioned
             $length = strlen($medicareNo);
             if($length>0) {
                 if ($length==11) {
+
+                    // Unique check
+                    $query = Yii::app()->db->createCommand()
+                        ->select('p.id')
+                        ->from('patient p')
+                        ->where('LOWER(p.nhs_num) = LOWER(:nhs_num) and p.id != :patient_id',
+                            array(':nhs_num'=> $this->nhs_num, ':patient_id' => $this->id))
+                        ->queryAll();
+
+                    if(count($query) !== 0) {
+                        $this->addError($attribute, 'Duplicate Medicare Number entered.');
+                    }
+
                     // Test leading digit and checksum
                     if (preg_match("/^([2-6]\d{7})(\d)/", $medicareNo, $matches)) {
                         $base = $matches[1];
@@ -2189,6 +2202,7 @@ class Patient extends BaseActiveRecordVersioned
           AND (SOUNDEX(c.first_name) = SOUNDEX(:first_name) OR levenshtein_ratio(c.first_name, :first_name) >= 30)
           AND (SOUNDEX(c.last_name) = SOUNDEX(:last_name) OR levenshtein_ratio(c.last_name, :last_name) >= 30)
           AND (:id IS NULL OR p.id != :id)
+          AND p.deleted = 0
         ORDER BY c.first_name, c.last_name
         ';
 
@@ -2218,7 +2232,9 @@ class Patient extends BaseActiveRecordVersioned
               ON p.id = pid.patient_id
             WHERE pid.value = :identifier_value
               AND pid.code = :identifier_code
-              AND (:id IS NULL OR p.id != :id)';
+              AND (:id IS NULL OR p.id != :id)
+              AND p.deleted = 0
+              ';
 
       return Patient::model()->findAllBySql($sql, array(':identifier_code' => $identifier_code, ':identifier_value' => $identifier_value, ':id' => $id));
 

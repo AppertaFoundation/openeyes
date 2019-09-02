@@ -2047,7 +2047,7 @@ class PatientController extends BaseController
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
 
-            if (empty($post_info->code) || empty($post_info->value))
+            if (empty($post_info->code))
                 continue;
 
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
@@ -2234,16 +2234,17 @@ class PatientController extends BaseController
             foreach($practice_contact_associates as $practice_contact_associate) {
                 $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
                 if (isset($practice_contact_associate->practice)){
-                    $practiceId = $practice_contact_associate->practice->id;
                     $practice = $practice_contact_associate->practice;
+                    $practiceId = $practice->id;
                     $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+                    $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
                     $output[] = array(
                         'gpTitle' => $gp->contact->title,
                         'gpFirstName' => $gp->contact->first_name,
                         'gpLastName' => $gp->contact->last_name,
                         'gpPhoneno' => $gp->contact->primary_phone,
                         'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
-                        'label' => $gp->correspondenceName.$role.$practiceNameAddress,
+                        'label' => $gp->correspondenceName.$providerNo.$role.$practiceNameAddress,
                         'value' => $gp->id,
                         'practiceId' => $practiceId
                     );
