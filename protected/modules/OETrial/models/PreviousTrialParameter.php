@@ -283,10 +283,18 @@ WHERE $condition";
             $binds[":p_t_status_$this->id"] = $this->status;
         }
 
-        if ((!$this->trialType || $this->trialType->code !== TrialType::INTERVENTION_CODE)
-            && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
-        ) {
-            $binds[":p_t_treatment_type_id_$this->id"] = $this->treatmentTypeId;
+        if ($this->operation === '=') {
+            if ((!$this->trialType || $this->trialType->code !== TrialType::NON_INTERVENTION_CODE)
+                && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
+            ) {
+                $binds[":p_t_treatment_type_id_$this->id"] = $this->treatmentTypeId;
+            }
+        } else {
+            if ((!$this->trialType || $this->trialType->code !== TrialType::INTERVENTION_CODE)
+                && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
+            ) {
+                $binds[":p_t_treatment_type_id_$this->id"] = $this->treatmentTypeId;
+            }
         }
 
         return $binds;
