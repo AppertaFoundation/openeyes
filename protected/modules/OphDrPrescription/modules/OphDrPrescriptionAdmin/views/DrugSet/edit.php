@@ -10,8 +10,21 @@ $subspecialties = array_map(function ($e) {
 ?>
 <h2>Edit Medication set</h2>
 <div class="row divider"></div>
-
 <form id="drugset-admin-form" action="/OphDrPrescription/admin/DrugSet/edit/<?=$medication_set->id;?>" method="post">
+<?php if (isset($errors) && !empty($errors)) {?>
+    <div class="alert-box alert error with-icon">
+        <p>Please fix the following input errors:</p>
+        <ul>
+            <?php foreach ($errors as $field => $errs) {?>
+                <?php foreach ($errs as $err) {?>
+                    <li>
+                        <?php echo $err?>
+                    </li>
+                <?php }?>
+            <?php }?>
+        </ul>
+    </div>
+<?php }?>
     <div class="row flex-layout flex-top col-gap">
         <div class="cols-6">
             <table class="large">

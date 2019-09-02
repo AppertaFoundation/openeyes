@@ -61,6 +61,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
+			array('name', 'isUnique'),
 			array('antecedent_medication_set_id, display_order, hidden, automatic', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>255),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
@@ -529,4 +530,62 @@ class MedicationSet extends BaseActiveRecordVersioned
         }
         return false;
     }
+
+	/**
+	 * @param string $attribute the name of the attribute to be validated
+	 * @param array $params options specified in the validation rule
+	 */
+	public function isUnique($attribute,$params) 
+	{
+		$rules = \Yii::app()->request->getParam('MedicationSetRule', []);
+		$found_error = false;
+
+		if (count($rules))
+		{
+			foreach ($rules as $rule) {
+				$set_rules = MedicationSetRule::model()->findAllByAttributes(
+					[
+						'subspecialty_id' => (empty($rule['subspecialty_id']) ? NULL : $rule['subspecialty_id']),
+						'site_id' => (empty($rule['site_id']) ? NULL : $rule['site_id']),
+						'usage_code' => (empty($rule['usage_code']) ? NULL : $rule['usage_code'])
+					]
+				);
+
+				if ($set_rules)
+				{
+					foreach ($set_rules as $set_rule) {
+						if ($this->{$attribute} === $set_rule->medicationSet->{$attribute} && $set_rule->id !== $rule['id'])
+						{
+							$found_error = true;
+							$this->addError($attribute,'A medication set with the name '.$this->{$attribute}.' already exists with these rules');
+							break;
+						}
+					}
+				}
+
+				if ($found_error)
+				{
+					break;
+				}
+			}
+		} 
+		else 
+		{
+			## if name exists in medication_set table and id is not in medication_set_rule table then error
+			$set = Yii::app()->db->createCommand()
+            ->select('medication_set.id')
+            ->from('medication_set')
+            ->where('name = :name', [':name' => $this->{$attribute}])
+            ->queryAll();
+
+            if ($set)
+            {
+            	$set_ids = array_column($set, 'id');
+	            if (!in_array($this->id, $set_ids) && !MedicationSetRule::model()->count('medication_set_id = :medication_set_id',[':medication_set_id' => implode(",", array_column($set, 'id'))]))
+	            {
+	            	$this->addError($attribute,'A medication set with the name '.$this->{$attribute}.' already exists with these rules');
+	            }
+            }
+        }
+	}
 }
