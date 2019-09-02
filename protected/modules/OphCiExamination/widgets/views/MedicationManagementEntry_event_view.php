@@ -20,8 +20,10 @@
     <td>
         <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
         <?= $entry->getMedicationDisplay(true) ?>
-        <?php if($entry->prescribe): ?>
-        &nbsp;<i class="oe-i drug-rx small" title="Prescribed"></i>
+        <?php if($entry->prescribe && $entry->prescriptionItem): ?>
+					<a href="<?= $entry->getPrescriptionLink(); ?>">
+        		&nbsp;<i class="oe-i drug-rx small" title="Prescribed"></i>
+					</a>
         <?php endif; ?>
     </td>
     <td>

@@ -366,17 +366,19 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     HistoryMedicationsController.prototype.showStopControls = function($row)
     {
-        var $datepicker_wrapper = $row.find(".js-end-date-wrapper");
-        var $stop_reason_select = $row.find(".js-stop-reason");
-        var $datepicker_control = $datepicker_wrapper.find("input");
+        let $datepicker_wrapper = $row.find(".js-end-date-wrapper");
+			  let $stop_reason_select = $row.find(".js-stop-reason-select");
+			  let $stop_reason_text = $row.find(".js-stop-reason-text");
+			  let $datepicker_control = $datepicker_wrapper.find("input");
         $row.find(".js-meds-stop-btn").hide();
-        var default_date = $datepicker_control.attr("data-default");
+			  let default_date = $datepicker_control.attr("data-default");
         const currently_set_date = $datepicker_control.val();
         if(typeof default_date !== "undefined" && default_date !== false && !currently_set_date) {
             $datepicker_control.val(default_date);
         }
         $datepicker_wrapper.show();
         $stop_reason_select.show();
+				$stop_reason_text.hide();
 
         if(typeof $row.data("bound_entry") !== "undefined") {
             this.boundController.showStopControls($row.data("bound_entry"));
