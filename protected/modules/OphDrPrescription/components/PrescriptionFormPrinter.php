@@ -48,25 +48,22 @@ class PrescriptionFormPrinter extends CWidget
         $blank_lines = null;
         foreach ($this->items as $index => $item) {
             if ($this->isPrintable($item)) {
-                $lines_used = (int)ceil($total_lines_used % self::MAX_FPTEN_LINES);
-                if ($item->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES - $lines_used) {
-                    // Wrap to a new page.
+                $lines_used = $total_lines_used % self::MAX_FPTEN_LINES;
+                // Wrap to a new page.
+                if (isset($this->items[$index + 1])) {
                     if ($item->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES) {
-                        if (isset($this->items[$index + 1])) {
-                            $extra_item_lines = $this->items[$index + 1]->fpTenLinesUsed() + 1;
-                            $blank_lines = self::MAX_FPTEN_LINES - (($item->fpTenLinesUsed() + 1) % self::MAX_FPTEN_LINES);
-                            if ($extra_item_lines <= $blank_lines) {
-                                // No blank lines following the current item, meaning another item will be rendered on the same page.
-                                $blank_lines = 0;
-                            }
+                        $extra_item_lines = $this->items[$index + 1]->fpTenLinesUsed() + 1;
+                        $blank_lines = self::MAX_FPTEN_LINES - (($item->fpTenLinesUsed() + 1) % self::MAX_FPTEN_LINES);
+                        if ($extra_item_lines <= $blank_lines) {
+                            // No blank lines following the current item, meaning another item will be rendered on the same page.
+                            $blank_lines = 0;
                         }
-                    } else {
-                        $blank_lines = self::MAX_FPTEN_LINES - $total_lines_used;
+                        $total_lines_used += $blank_lines;
+                    } elseif ($this->items[$index + 1]->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES - $lines_used) {
+                        $total_lines_used += self::MAX_FPTEN_LINES - $total_lines_used;
                     }
-
-                    $total_lines_used += $blank_lines;
                 }
-                $total_lines_used += $item->fpTenLinesUsed() + 1;
+                $total_lines_used += ($item->fpTenLinesUsed() + 1);
             }
         }
         $this->total_pages = (int)ceil($total_lines_used / self::MAX_FPTEN_LINES);

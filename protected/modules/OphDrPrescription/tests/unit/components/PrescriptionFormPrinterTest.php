@@ -154,7 +154,7 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         ob_end_clean();
 
         // After output, ensure the page number has increased to 3.
-        $expected = 2;
+        $expected = 3;
         $this->assertEquals($expected, $this->instance->getPageNumber());
 
         // Rearrange the array so the split-print item is the first item in the list.
