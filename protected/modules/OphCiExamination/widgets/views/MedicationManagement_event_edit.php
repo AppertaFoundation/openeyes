@@ -40,7 +40,7 @@ $element_errors = $element->getErrors();
     <div class="field-row flex-layout full">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <table class="cols-full entries js-entry-table <?php echo $element_errors ? 'highlighted-error error' : '' ?>"
-							 id="<?= $model_name ?>_entry_table cols-full">
+                             id="<?= $model_name ?>_entry_table cols-full">
             <colgroup>
                 <col class="cols-2">
                 <col class="cols-2">
@@ -265,6 +265,6 @@ $element_errors = $element->getErrors();
             $('.js-event-date-input').hide();
             $changeEventDate.show();
             $('.js-event-date').show();
-				}
+                }
     });
 </script>
