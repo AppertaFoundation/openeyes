@@ -44,21 +44,15 @@ class MedicationInfoBox extends \BaseCWidget
 
         if ($this->type === self::TYPE_LIGHT) {
             if ($medication->isAMP()) {
-                $data['Generic'] = $medication->vmp_term;
-                $data['Moiety'] = $medication->vtm_term;
-                return $data;
+                $data['Generic'] = isset($medication->vmp_term) ? $medication->vmp_term : "N/A";
+                $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
             }
 
             if ($medication->isVMP()) {
-                $data['Moiety'] = $medication->vtm_term;
-                return $data;
+							  $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
             }
 
-            // VTMs : No tool-tip needed, these are self explanatory
-            if ($medication->isVTM()) {
-                return $data;
-            }
-
+						// VTMs : No tool-tip needed, these are self explanatory
             // for local no tooltip is needed
             return $data;
         }
