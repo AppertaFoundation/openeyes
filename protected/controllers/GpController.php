@@ -81,8 +81,17 @@ class GpController extends BaseController
      */
     public function actionView($id)
     {
+        $gp = $this->loadModel($id);
+
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('gp_id='.$id);
+        $dataProvider = new CActiveDataProvider('ContactPracticeAssociate', array(
+            'criteria' => $criteria,
+        ));
+
         $this->render('view', array(
-            'model' => $this->loadModel($id),
+            'model' => $gp,
+            'dataProvider' => $dataProvider,
         ));
     }
 
