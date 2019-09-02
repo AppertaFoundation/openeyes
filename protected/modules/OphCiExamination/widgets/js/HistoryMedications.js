@@ -305,6 +305,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           return false;
       });
 
+      if($row.find('.js-source-subtype').val() === "VTM") {
+      	$row.find('.js-medication-vtm-container').show();
+      	$row.find('.js-medication-non-vtm-container').hide();
+			}
+
       var med = $row.data("medication");
       if($row.find(".js-unit-dropdown").length > 0 && typeof med !== "undefined" &&
 				(typeof med.dose_unit_term === "undefined" || med.dose_unit_term === "" ||
@@ -929,6 +934,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     prepended_markup: selectedItems[i].prepended_markup,
                     set_ids: selectedItems[i].set_ids,
                     allergy_ids: selectedItems[i].allergy_ids,
+										source_subtype: selectedItems[i].source_subtype
                 };
             }
             else {
