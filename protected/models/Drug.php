@@ -90,6 +90,7 @@ class Drug extends BaseActiveRecordVersioned
             'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
             'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
             'subspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyDrug', 'drug_id'),
+            'tags' => array(self::MANY_MANY, 'Tag', 'drug_tag(drug_id, tag_id)'),
         );
     }
 
