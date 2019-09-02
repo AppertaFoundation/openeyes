@@ -30,7 +30,10 @@ class OphDrPrescription_ItemTaperTest extends CDbTestCase
      */
     public function testFpTenDose()
     {
-        $expected = 'Dose: ' . (is_numeric($this->instance->dose) ? "{$this->instance->dose} {$this->instance->item->drug->dose_unit}" : $this->instance->dose) . ', ' . $this->instance->item->route->name . ($this->instance->item->route_option ? ' (' . $this->instance->item->route_option->name . ')' : null);
+        $expected = 'Dose: '
+            . (is_numeric($this->instance->dose) ? "{$this->instance->dose} {$this->instance->item->drug->dose_unit}" : $this->instance->dose)
+            . ', ' . $this->instance->item->route->name
+            . ($this->instance->item->route_option ? ' (' . $this->instance->item->route_option->name . ')' : null);
         $actual = $this->instance->fpTenDose();
 
         $this->assertEquals($expected, $actual);

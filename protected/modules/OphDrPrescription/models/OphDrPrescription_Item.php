@@ -31,14 +31,15 @@
  * @property string $comments
  */
 
-// Maximum characters per line on FP10/WP10 form is roughly 36.
-// Assuming the space left of the white margin can be used for printing, this could be expanded further.
-const MAX_FPTEN_LINE_CHARS = 36;
-const MAX_WPTEN_LINE_CHARS = 32;
-
 class OphDrPrescription_Item extends BaseActiveRecordVersioned
 {
     private $fpten_line_usage = array();
+
+    // Maximum characters per line on FP10/WP10 form is roughly 36.
+    // Assuming the space left of the white margin can be used for printing, this could be expanded further.
+    const MAX_FPTEN_LINE_CHARS = 36;
+    const MAX_WPTEN_LINE_CHARS = 32;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -235,7 +236,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
     public function fpTenLinesUsed()
     {
         $settings = new SettingMetadata();
-        $max_lines = $settings->getSetting('prescription_form_format') === 'WP10' ? MAX_WPTEN_LINE_CHARS : MAX_FPTEN_LINE_CHARS;
+        $max_lines = $settings->getSetting('prescription_form_format') === 'WP10' ? self::MAX_WPTEN_LINE_CHARS : self::MAX_FPTEN_LINE_CHARS;
         $item_lines_used = 0;
         $drug_label = $this->drug->label;
 

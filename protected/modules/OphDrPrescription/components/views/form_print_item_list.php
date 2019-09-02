@@ -35,7 +35,7 @@
                         $current_taper_copy = $this->current_taper_index ?: $current_taper_copy;
 
                         // Work out how many lines are being used for this prescription item. If it exceeds the maximum lines - currently used lines, separate it onto its own script.
-                        // If the lines used is greater than the maximum, split the printout between multiple pages.
+                        // If the lines used is greater than the maximum, split the printout between multiple pages, starting on its own page.
                         if ($item->fpTenLinesUsed() + 1 > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used
                             && !$this->isSplitPrinting()) {
                             if ($item->fpTenLinesUsed() + 1 > PrescriptionFormPrinter::MAX_FPTEN_LINES) {
@@ -45,6 +45,7 @@
 
                             if ($side === 'right') {
                                 // We only want to change the page counter and the base item index once the right side of the page has been rendered.
+                                // Otherwise the right side will not print correctly.
                                 $this->current_item_index = $j;
                             }
                             // We want to do nothing if all conditions below are true as we want the LHS of the split item to render immediately.
@@ -141,22 +142,25 @@
                         $prescription_lines_used++; // Add 1 line for the horizontal rule.
                         ?>
                         </div>
-                        <?php if ($end_of_page) {
-                            $end_of_page = false;
-                            break;
+                        <?php
+                    }
+                    if ($this->isSplitPrinting()) {
+                        if ($side === 'left' && $page_number > 0) {
+                            // This will never apply for the first page, and should only apply for the left hand side.
+                            $this->disableSplitPrint();
+                            $split_print_end = true;
+                        } elseif ($side === 'right') {
+                            $this->disableSplitPrint();
+                            $split_print_end = false;
                         }
                     }
-                }
-                if ($this->isSplitPrinting()) {
-                    if ($side === 'right') {
-                        $this->disableSplitPrint();
-                        $split_print_end = false;
-                    } elseif ($side === 'left' && $page_number > 0) {
-                        // This will never apply for the first page, and should only apply for the left hand side.
-                        $this->disableSplitPrint();
-                        $split_print_end = true;
+
+                    if ($end_of_page) {
+                        $end_of_page = false;
+                        break;
                     }
                 }
+
                 ?>
                     <div class="fpten-prescription-list-filler fpten-form-row">
                         <?php for ($line = 0; $line < PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used; $line++) {
@@ -169,8 +173,12 @@
                             $this->setCurrentAttrStr($current_attr_copy);
                             $this->current_item_index = $current_item_copy;
                             $this->current_taper_index = $current_taper_copy;
+                            $current_item_copy = 0;
+                            $current_attr_copy = null;
+                            $current_taper_copy = 0;
                         }
                         if (!$this->isSplitPrinting()) {
+                            // Only run this code if the item is a split-print item.
                             $this->enableSplitPrint();
                             $split_print_end = false;
                         } ?>

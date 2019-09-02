@@ -36,15 +36,40 @@ class PrescriptionFormPrinter extends CWidget
      */
     public function init()
     {
-        $total_lines_used = 0;
-        foreach ($this->items as $item) {
-            $total_lines_used += $item->fpTenLinesUsed();
-        }
-        $this->total_pages = (int)ceil($total_lines_used / self::MAX_FPTEN_LINES);
         $settings = new SettingMetadata();
         $this->total_items = count($this->items);
         $this->print_mode = $settings->getSetting('prescription_form_format');
         $this->default_cost_code = $settings->getSetting('default_prescription_code_code');
+
+        $total_lines_used = 0;
+        $this->total_pages = 0;
+        $this->page_count = 1;
+        $previous_item = null;
+        $blank_lines = null;
+        foreach ($this->items as $index => $item) {
+            if ($this->isPrintable($item)) {
+                $lines_used = (int)ceil($total_lines_used % self::MAX_FPTEN_LINES);
+                if ($item->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES - $lines_used) {
+                    // Wrap to a new page.
+                    if ($item->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES) {
+                        if (isset($this->items[$index + 1])) {
+                            $extra_item_lines = $this->items[$index + 1]->fpTenLinesUsed() + 1;
+                            $blank_lines = self::MAX_FPTEN_LINES - (($item->fpTenLinesUsed() + 1) % self::MAX_FPTEN_LINES);
+                            if ($extra_item_lines <= $blank_lines) {
+                                // No blank lines following the current item, meaning another item will be rendered on the same page.
+                                $blank_lines = 0;
+                            }
+                        }
+                    } else {
+                        $blank_lines = self::MAX_FPTEN_LINES - $total_lines_used;
+                    }
+
+                    $total_lines_used += $blank_lines;
+                }
+                $total_lines_used += $item->fpTenLinesUsed() + 1;
+            }
+        }
+        $this->total_pages = (int)ceil($total_lines_used / self::MAX_FPTEN_LINES);
     }
 
     /**
@@ -54,6 +79,7 @@ class PrescriptionFormPrinter extends CWidget
     public function run()
     {
         $this->total_items = count($this->items);
+        $this->page_count = 1;
         for ($page = 0; $page < $this->total_pages; $page++) {
             $this->render('form_print_container', array(
                 'form_css_class' => $this->print_mode === 'FP10' ? 'fpten' : 'wpten',
@@ -86,7 +112,9 @@ class PrescriptionFormPrinter extends CWidget
      */
     public function addPages($num_pages = 1)
     {
-        $this->page_count += $num_pages;
+        if ($this->page_count + $num_pages <= $this->total_pages) {
+            $this->page_count += $num_pages;
+        }
     }
 
     /**
