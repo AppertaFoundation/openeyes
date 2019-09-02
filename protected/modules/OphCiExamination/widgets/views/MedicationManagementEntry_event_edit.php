@@ -26,7 +26,6 @@ if (isset($entry->start_date)) {
     $start_date = date('Y-m-d');
 }
 
-list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $start_date);
 
 if (isset($entry->end_date)) {
     list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
