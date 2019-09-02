@@ -16,32 +16,12 @@
  */
 ?>
 <div class="row divider">
-    <h2>Drug Sets</h2>
+    <h2>Automatic medication sets</h2>
 </div>
-<?php $isSelected = function($usage_code_id) use ($search) {
-    if (isset($search['usage_code_ids']) && in_array($usage_code_id, $search['usage_code_ids'])) {
-        return 'green hint';
-    }
-
-    return '';
-} ?>
 
 <div class="row divider">
     <form id="drug_set_search" method="post">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
-
-        <div id="set-filters" class="flex-layout row">
-            <?php foreach (MedicationUsageCode::model()->findAll() as $usage_code) :?>
-                <button
-                        data-usage_code_id="<?=$usage_code->id;?>"
-                        type="button"
-                        class="large js-set-select <?=$isSelected($usage_code->id);?>"
-                ><?=$usage_code->name;?>
-                </button>
-            <?php endforeach; ?>
-        </div>
-
-        <hr class="">
 
             <table class="cols-8">
                 <colgroup>
@@ -60,17 +40,6 @@
                             ['class' => 'cols-full', 'placeholder' => "Name"]
                         ); ?>
                     </td>
-
-                    <td><?= \CHtml::dropDownList('search[subspecialty_id]', $search['subspecialty_id'],
-                            \CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
-                            ['empty' => '- Subspecialty -']
-                        ) ?>
-                    </td>
-                    <td><?= \CHtml::dropDownList('search[site_id]', $search['site_id'],
-                            \CHtml::listData(Site::model()->findAll(), 'id', 'name'),
-                            ['empty' => '- Site -']
-                        ) ?>
-                    </td>
                     <td>
                         <button class="blue hint" type="button" id="et_search">Search</button>
                     </td>
@@ -82,32 +51,29 @@
 
 <div class="cols-12">
     <form id="admin_DrugSets">
-        <table id="drugset-list" class="standard">
+        <table id="drugset-list" class="standard last-right">
             <colgroup>
                 <col style="width:3.33333%;">
                 <col style="width:3.33333%">
                 <col class="cols-3">
+                <col class="cols-1">
                 <col class="cols-4">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
+
             </colgroup>
             <thead>
             <tr>
                 <th><?= \CHtml::checkBox('selectall'); ?></th>
                 <th>Id</th>
                 <th>Name</th>
-                <th>Rule</th>
-                <th>Count</th>
-                <th>Hidden/system</th>
-                <th>Automatic</th>
-                <th>Actions</th>
+                <th>Item Count</th>
+								<th></th>
+                <th style="text-align:unset;width:12.1%">Actions</th>
             </tr>
             </thead>
             <tbody>
                 <?php
                     foreach ($data_provider->getData() as $set) {
-                        $this->renderPartial('/DrugSet/_row', ['set' => $set]);
+                        $this->renderPartial('/AutoSetRule/_row', ['set' => $set]);
                     }
                 ?>
             </tbody>
@@ -123,6 +89,10 @@
                         'id' => 'delete_sets',
                         'class' => 'button large',
                     ]); ?>
+                    <?=\CHtml::linkButton('Rebuild all sets now',
+                        array('href' => '/OphDrPrescription/medicationSetAutoRulesAdmin/populateAll',
+                            'class' => 'button large')); ?>
+
                 </td>
                 <td colspan="4">
                     <?php $this->widget('LinkPager', ['pages' => $data_provider->pagination]); ?>
@@ -138,25 +108,19 @@
         <td><input type="checkbox" value="{{id}}" name="delete-ids[]" /></td>
         <td>{{id}}</td>
         <td>{{name}}</td>
-        <td>{{rules}}</td>
         <td>{{count}}</td>
-        <td>
-            {{#hidden}}<i class="oe-i tick medium"></i>{{/hidden}}
-            {{^hidden}}<i class="oe-i remove medium"></i>{{/hidden}}
-        </td>
-        <td>
-            {{#automatic}}<i class="oe-i tick medium"></i>{{/automatic}}
-            {{^automatic}}<i class="oe-i remove medium"></i>{{/automatic}}
-        </td>
-            <td>
-                {{^automatic}}<a href="/OphDrPrescription/admin/DrugSet/edit/{{id}}" class="button">Edit</a>{{/automatic}}
-                {{#automatic}}<i class="oe-i info pad-left small js-has-tooltip"
-                                 data-tooltip-content="Automatic set cannot be edited here."></i>{{/automatic}}
-            </td>
+				<td></td>
+				<td>
+					<a href="/OphDrPrescription/admin/autoSetRule/edit/{{id}}" class="button">Edit</a>
+					<a class="button js-list-medication" data-set_id="{{id}}">List medications</a>
+				</td>
 
     </tr>
 </script>
 
 <script>
-    var drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController();
+    let drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
+        searchUrl: '/OphDrPrescription/admin/autoSetRule/search',
+        deleteUrl: '/OphDrPrescription/admin/autoSetRule/delete'
+    });
 </script>
