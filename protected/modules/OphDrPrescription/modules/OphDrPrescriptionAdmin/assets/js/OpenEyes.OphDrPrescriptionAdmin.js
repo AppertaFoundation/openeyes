@@ -153,7 +153,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
     DrugSetController.prototype.deleteSets = function () {
         let controller = this;
         let data = {};
-        data['delete-ids'] = $.map($(controller.options.tableSelector + ' tbody tr'), function(tr, key) {
+        data['delete-ids'] = $.map($(controller.options.tableSelector + ' tbody tr'), function(tr) {
             return $(tr).find('input[type=checkbox]:checked').val();
         });
 

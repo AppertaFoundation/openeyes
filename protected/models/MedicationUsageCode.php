@@ -34,9 +34,7 @@
 class MedicationUsageCode extends BaseActiveRecordVersioned
 {
     /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return Address the static model class
+     * @inheritDoc
      */
     public static function model($className = __CLASS__)
     {

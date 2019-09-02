@@ -104,9 +104,9 @@
             </thead>
             <tbody>
                 <?php
-                    foreach ($data_provider->getData() as $set) {
-                      //  $this->renderPartial('/DrugSet/_row', ['set' => $set]);
-                    }
+                    /* foreach ($data_provider->getData() as $set) {
+                        $this->renderPartial('/DrugSet/_row', ['set' => $set]);
+                    } */
                 ?>
             </tbody>
             <tfoot class="pagination-container">

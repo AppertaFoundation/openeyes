@@ -307,16 +307,8 @@ class DrugSetController extends BaseAdminController
                         $this->redirect($is_new_record ? "/OphDrPrescription/admin/DrugSet/edit/{$set->id}" : "/OphDrPrescription/admin/DrugSet/index");
                     }
                 }
-            } else {
-
-                // if the set is an auto set we just managing site, subspecialty and usage_code
-
-
             }
-
-
-
-
+            //esle if the set is an auto set we just managing site, subspecialty and usage_code
         }
 
         $criteria = new \CDbCriteria();
