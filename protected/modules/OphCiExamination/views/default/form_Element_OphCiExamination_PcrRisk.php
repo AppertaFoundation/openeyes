@@ -103,7 +103,7 @@ if ($this->patient->getDiabetes()) {
     $opposite = ($side === 'right') ? 'left' : 'right';
         $pcrRisk = new PcrRisk();
         $activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive'; ?>
-      <div class="element-eye <?=$side?>-eye column <?=$opposite?>side<?=$activeClass?>" data-side="<?=$side?>" >
+      <div class="js-element-eye <?=$side?>-eye column <?=$opposite?> side<?=$activeClass?>" data-side="<?=$side?>" >
           <?php
           if($this->event){
               $patientId = $this->event->episode->patient->id;
@@ -111,11 +111,11 @@ if ($this->patient->getDiabetes()) {
               $patientId = Yii::app()->request->getQuery('patient_id');
           }
 
-            $pcr = $pcrRisk->getPCRData($patientId, $eye, $element);
+            $pcr = $pcrRisk->getPCRData($patientId, $side, $element);
             echo CHtml::hiddenField('age', $pcr['age_group']);
             echo CHtml::hiddenField('gender', $pcr['gender']);
             ?>
-            <div class="active-form js-pcr-<?= $eye ?>" style="display: <?= $display ?>;">
+            <div class="active-form js-pcr-<?= $side ?>" style="display: <?= !($element->{'has' . ucfirst($side)}()) ? 'none' : 'block'; ?>;">
                 <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 
                 <table class="cols-full last-left">
@@ -131,17 +131,17 @@ if ($this->patient->getDiabetes()) {
                                 <div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_pcr_doctor_grade"
                                      class="cols-full">
                                     <td class="cols-4 column">
-                                        <label for="<?= 'pcrrisk_' . $eye . '_doctor_grade_id' ?>">Surgeon
+                                        <label for="<?= 'pcrrisk_' . $side . '_doctor_grade_id' ?>">Surgeon
                                             Grade:</label>
                                     </td>
                                     <td class="cols-4 column">
-                                        <select id="<?= 'pcrrisk_' . $eye . '_doctor_grade_id' ?>"
+                                        <select id="<?= 'pcrrisk_' . $side . '_doctor_grade_id' ?>"
                                                 class="pcr_doctor_grade cols-full"
-                                                name="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk[<?= $eye ?>_doctor_grade_id]">
+                                                name="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk[<?= $side ?>_doctor_grade_id]">
                                             <?php if (is_array($grades)): ?>
                                                 <?php foreach ($grades as $grade): ?>
                                                     <?php
-                                                    if ($element->{$eye . '_doctor_grade_id'} === $grade->id):
+                                                    if ($element->{$side . '_doctor_grade_id'} === $grade->id):
                                                         $selected = 'selected';
                                                     else:
                                                         $selected = '';
@@ -167,10 +167,10 @@ if ($this->patient->getDiabetes()) {
                                     $element->{'left_alpha_receptor_blocker'} = $element->{'right_alpha_receptor_blocker'};
                                 } ?>
                                 <td>
-                                    <?= $element->getAttributeLabel($eye . '_' . $key) ?>
+                                    <?= $element->getAttributeLabel($side . '_' . $key) ?>
                                 </td>
                                 <td>
-                                    <?= CHtml::activeDropDownList($element, $eye . '_' . $key, $data['options'], ['class' => $data['class'] . ' cols-full']); ?>
+                                    <?= CHtml::activeDropDownList($element, $side . '_' . $key, $data['options'], ['class' => $data['class'] . ' cols-full']); ?>
                                 </td>
                             <?php endif; ?>
                         </tr>
@@ -181,12 +181,12 @@ if ($this->patient->getDiabetes()) {
                     <span class="pcr-risk-div">
                         <span class="highlighter large-text">
                             PCR Risk <span class="pcr-span">&nbsp;</span> %
-                            <?php $form->hiddenInput($element, $eye . '_pcr_risk', false, ['class' => 'pcr-input']); ?>
+                            <?php $form->hiddenInput($element, $side . '_pcr_risk', false, ['class' => 'pcr-input']); ?>
                         </span>
                     </span>
                     <span>
                         <label> Excess risk compared to average eye <span class="pcr-erisk highlighter">&nbsp;</span> times
-                            <?php $form->hiddenInput($element, $eye . '_excess_risk', false, ['class' => 'pcr-erisk-input']); ?>
+                            <?php $form->hiddenInput($element, $side . '_excess_risk', false, ['class' => 'pcr-erisk-input']); ?>
                         </label>
                         <a href="https://www.nature.com/articles/6703049" target="_blank">
                             <i class="oe-i info small pad js-has-tooltip"
@@ -196,20 +196,13 @@ if ($this->patient->getDiabetes()) {
                 </div>
             </div>
             <div class="inactive-form"
-                 style="display: <?= ($element->{'has' . ucfirst($eye)}()) ? 'none' : 'flex'; ?>;">
+                 style="display: <?= ($element->{'has' . ucfirst($side)}()) ? 'none' : 'flex'; ?>;">
                 <div class="add-side">
                     <a href="#">
-                        Add <?= $eye ?> side <span class="icon-add-side"></span>
+                        Add <?= $side ?> side <span class="icon-add-side"></span>
                     </a>
                 </div>
             </div>
         </div>
     <?php endforeach; ?>
-</div>
-<div class="large-6 column pcr-link">
-    Calculation data derived from
-    <a href="http://www.researchgate.net/publication/5525424_The_Cataract_National_Dataset_electronic_multicentre_audit_of_55_567_operations_Risk_stratification_for_posterior_capsule_rupture_and_vitreous_loss"
-       target="_blank">
-        Narendran et al. The Cataract National Dataset electronic multicentre audit of 55,567 operations
-    </a>
 </div>
