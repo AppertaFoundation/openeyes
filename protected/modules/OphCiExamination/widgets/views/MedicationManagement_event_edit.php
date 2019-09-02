@@ -269,6 +269,6 @@ $element_errors = $element->getErrors();
             $('.js-event-date-input').hide();
             $changeEventDate.show();
             $('.js-event-date').show();
-				}
+                }
     });
 </script>

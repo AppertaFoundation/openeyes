@@ -78,7 +78,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
-				<input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= !isset($entry->bound_key) && isset($is_template) && $is_template ? "{{bound_key}}" : $entry->bound_key ?>">
+                <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= !isset($entry->bound_key) && isset($is_template) && $is_template ? "{{bound_key}}" : $entry->bound_key ?>">
     </td>
     <td class="dose-frequency-route">
         <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
