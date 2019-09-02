@@ -74,28 +74,53 @@ $element_errors = $element->getErrors();
                     $total_count = count($element->entries);
                     foreach ($element->entries as $key=>$entry) {
 
-                            $this->render(
-                                'MedicationManagementEntry_event_edit',
-                                array(
-                                    'entry' => $entry,
-                                    'form' => $form,
-                                    'model_name' => $model_name,
-                                    'field_prefix' => $model_name . '[entries][' . $row_count . ']',
-                                    'row_count' => $row_count,
-                                    'stop_reason_options' => $stop_reason_options,
-                                    'laterality_options' => $laterality_options,
-                                    'route_options' => $route_options,
-                                    'frequency_options' => $frequency_options,
-                                    'direct_edit' => false,
-                                    'usage_type' => /* $entry->usage_type */ 'UTYPE',
-                                    'row_type' => /*$entry->group */ 'group',
-                                    'is_last' => ($row_count == $total_count - 1),
-                                    'prescribe_access' => $prescribe_access,
-                                    'patient' => $this->patient,
-                                    'locked' => $entry->locked,
-									'unit_options' => $unit_options,
-                                )
-                            );
+                    				if($prescribe_access || $entry->prescribe == 0 ) {
+															$this->render(
+																'MedicationManagementEntry_event_edit',
+																array(
+																	'entry' => $entry,
+																	'form' => $form,
+																	'model_name' => $model_name,
+																	'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+																	'row_count' => $row_count,
+																	'stop_reason_options' => $stop_reason_options,
+																	'laterality_options' => $laterality_options,
+																	'route_options' => $route_options,
+																	'frequency_options' => $frequency_options,
+																	'direct_edit' => false,
+																	'usage_type' => /* $entry->usage_type */ 'UTYPE',
+																	'row_type' => /*$entry->group */ 'group',
+																	'is_last' => ($row_count == $total_count - 1),
+																	'prescribe_access' => $prescribe_access,
+																	'patient' => $this->patient,
+																	'locked' => $entry->locked,
+																	'unit_options' => $unit_options,
+																)
+															);
+														} else {
+                    					$this->render(
+                    						'MedicationManagementEntry_event_edit_read_only',
+																array(
+																	'entry' => $entry,
+																	'form' => $form,
+																	'model_name' => $model_name,
+																	'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+																	'row_count' => $row_count,
+																	'stop_reason_options' => $stop_reason_options,
+																	'laterality_options' => $laterality_options,
+																	'route_options' => $route_options,
+																	'frequency_options' => $frequency_options,
+																	'direct_edit' => false,
+																	'usage_type' => /* $entry->usage_type */ 'UTYPE',
+																	'row_type' => /*$entry->group */ 'group',
+																	'is_last' => ($row_count == $total_count - 1),
+																	'prescribe_access' => $prescribe_access,
+																	'patient' => $this->patient,
+																	'locked' => $entry->locked,
+																	'unit_options' => $unit_options,
+																)
+															);
+														}
                             $row_count++;
                     }
                 } ?>
@@ -160,6 +185,11 @@ $element_errors = $element->getErrors();
 <script type="text/javascript">
 
     $(document).ready(function() {
+
+        $('#<?= $model_name ?>_element').closest('section').on('element_removed', function() {
+            $('.js-change-event-date').removeClass('disabled');
+        });
+
         window.MMController =new OpenEyes.OphCiExamination.HistoryMedicationsController({
             element: $('#<?=$model_name?>_element'),
             modelName: '<?=$model_name?>',
@@ -188,6 +218,16 @@ $element_errors = $element->getErrors();
                             $newrow.find(".js-hidden").val("1");
                         }
                     });
+                <?php else: ?>
+                $.each(window.HMController.$table.children("tbody").children("tr"), function(i, historyMedicationRow){
+                    let medicationHistoryBindedKey = $(historyMedicationRow).find('.js-binded-key').val();
+                    $.each(window.MMController.$table.children("tbody").children("tr"), function(index, medicationManagementRow) {
+                        if($(medicationManagementRow).find('.js-binded-key').val() === medicationHistoryBindedKey) {
+                            window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
+                            window.MMController.disableRemoveButton($(medicationManagementRow));
+												}
+                    });
+                });
                 <?php endif; ?>
 
                 window.HMController.setDoNotSaveEntries(true);
@@ -218,6 +258,12 @@ $element_errors = $element->getErrors();
             booleanSearchFilterURLparam: 'include_branded'
         });
 
-
+        let $changeEventDate = $('.js-change-event-date');
+        $changeEventDate.addClass('disabled');
+        if($changeEventDate.is(":hidden")) {
+            $('.js-event-date-input').hide();
+            $changeEventDate.show();
+            $('.js-event-date').show();
+				}
     });
 </script>
