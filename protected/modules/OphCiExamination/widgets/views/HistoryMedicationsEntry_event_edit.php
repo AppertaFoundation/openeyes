@@ -105,7 +105,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
             </div>
         </div>
     </td>
-    <td>
+    <td id="<?= $model_name."_entries_".$row_count."_start_date_error" ?>>
         <fieldset>
             <i class="oe-i start small pad"></i>
             <?php if ($is_new) : ?>
@@ -121,7 +121,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
             <?php endif; ?>
         </fieldset>
     </td>
-    <td class="end-date-column">
+    <td class="end-date-column" id="<?= $model_name."_entries_".$row_count."_end_date_error" ?>">
         <div class="alternative-display inline">
             <div class="alternative-display-element textual">
                 <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
@@ -145,7 +145,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         </div>
   </td>
 
-    <td>
+    <td id="<?= $model_name."_entries_".$row_count."_stop_reason_id_error" ?>">
             <div class="js-stop-reason-select" style= "<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
                 <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason')) ?>
             </div>
