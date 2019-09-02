@@ -59,13 +59,13 @@ class PrescriptionDrugSetsAdminController extends RefSetAdminController
                     'filterid' => array(
                         'medicationSetRules.site_id' => $default_site_id,
                         'medicationSetRules.subspecialty_id' => $default_subspecialty_id,
-                        'medicationSetRules.usage_code' => 'PRESCRIPTION_SET'
+                        'medicationSetRules.usageCode.usage_code' => 'PRESCRIPTION_SET'
                     ),
                 )
             );
         }
 
-        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \'PRESCRIPTION_SET\'');
+        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usageCode.usage_code = "PRESCRIPTION_SET"');
 
 
         $admin->setListFieldsAction('toList');
@@ -78,13 +78,13 @@ class PrescriptionDrugSetsAdminController extends RefSetAdminController
 
     public function actionToList($id)
     {
-        $this->redirect(['/OphDrPrescription/refSetAdmin/edit/'.$id.'?usage_code=PRESCRIPTION_SET']);
+        $this->redirect(['/OphDrPrescription/refSetAdmin/edit/' . $id . '?usage_code=PRESCRIPTION_SET']);
     }
 
     public function actionEdit()
     {
-        if (!empty($_GET['default']['name'])) {
-            $this->redirect(['/OphDrPrescription/refSetAdmin/edit?default[name]='.$_GET['default']['name'].'&usage_code=PRESCRIPTION_SET']);
+        if (!isset($_GET['default']['name']) && $_GET['default']['name']) {
+            $this->redirect(['/OphDrPrescription/refSetAdmin/edit?default[name]=' . $_GET['default']['name'] . '&usage_code=PRESCRIPTION_SET']);
         } else {
             $this->redirect(['/OphDrPrescription/refSetAdmin/edit', 'usage_code' => 'PRESCRIPTION_SET']);
         }

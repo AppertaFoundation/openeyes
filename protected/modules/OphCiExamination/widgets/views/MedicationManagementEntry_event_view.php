@@ -18,10 +18,14 @@
 <?php /** @var EventMedicationUse $entry */ ?>
 <tr>
     <td>
-        <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+        <?php if ($this->mode !== static::$EVENT_PRINT_MODE) {
+            $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
+        } ?>
         <?= $entry->getMedicationDisplay(true) ?>
-        <?php if($entry->prescribe): ?>
-        &nbsp;<i class="oe-i drug-rx small" title="Prescribed"></i>
+        <?php if($entry->prescribe && $entry->prescriptionItem): ?>
+					<a href="<?= $entry->getPrescriptionLink(); ?>">
+        		&nbsp;<i class="oe-i drug-rx small" title="Prescribed"></i>
+					</a>
         <?php endif; ?>
     </td>
     <td>
