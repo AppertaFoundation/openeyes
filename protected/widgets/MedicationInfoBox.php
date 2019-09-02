@@ -49,10 +49,10 @@ class MedicationInfoBox extends \BaseCWidget
             }
 
             if ($medication->isVMP()) {
-							  $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
+                              $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
             }
 
-						// VTMs : No tool-tip needed, these are self explanatory
+                        // VTMs : No tool-tip needed, these are self explanatory
             // for local no tooltip is needed
             return $data;
         }
@@ -62,7 +62,6 @@ class MedicationInfoBox extends \BaseCWidget
             $data = [];
             $this->error = true;
         } else {
-
             $data = [
                 'label' => $medication->getLabel(),
             ];
