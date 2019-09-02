@@ -75,50 +75,52 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
             </div>
         <?php endif; ?>
     </div>
-    <div class="oe-full-content oe-new-patient">
-        <h3 class="box-title">Associated Practices</h3>
-        <br />
-        <div>
-            <table id="practice-grid" class="standard">
-                <thead>
-                <tr>
-                    <th>Provider Number</th>
-                    <th>Practice Contact</th>
-                    <th>Practice Address</th>
-                    <th>Code</th>
-                    <th>Telephone</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($dataProvided as $cpa): ?>
-                    <tr id="r<?php echo $cpa->id; ?>" class="clickable">
-                        <td><?php echo CHtml::encode($cpa->provider_no); ?></td>
-                        <td><?php echo CHtml::encode($cpa->practice->contact->first_name); ?></td>
-                        <td><?php echo CHtml::encode($cpa->practice->getAddressLines()); ?></td>
-                        <td><?php echo CHtml::encode($cpa->practice->code); ?></td>
-                        <td><?php echo CHtml::encode($cpa->practice->phone); ?></td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-                <tfoot class="pagination-container">
+    <?php if($dataProvided): ?>
+        <div class="oe-full-content oe-new-patient">
+            <h3 class="box-title">Associated Practices</h3>
+            <br />
+            <div>
+                <table id="practice-grid" class="standard">
+                    <thead>
                     <tr>
-                        <td colspan="7">
-                            <?php
-                            $this->widget('LinkPager', array(
-                                'pages' => $dataProvider->getPagination(),
-                                'maxButtonCount' => 15,
-                                'cssFile' => false,
-                                'selectedPageCssClass' => 'current',
-                                'hiddenPageCssClass' => 'unavailable',
-                                'htmlOptions' => array(
-                                    'class' => 'pagination',
-                                ),
-                            ));
-                            ?>
-                        </td>
+                        <th>Provider Number</th>
+                        <th>Practice Contact</th>
+                        <th>Practice Address</th>
+                        <th>Code</th>
+                        <th>Telephone</th>
                     </tr>
-                </tfoot>
-            </table>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($dataProvided as $cpa): ?>
+                        <tr id="r<?php echo $cpa->id; ?>" class="clickable">
+                            <td><?php echo CHtml::encode($cpa->provider_no); ?></td>
+                            <td><?php echo CHtml::encode($cpa->practice->contact->first_name); ?></td>
+                            <td><?php echo CHtml::encode($cpa->practice->getAddressLines()); ?></td>
+                            <td><?php echo CHtml::encode($cpa->practice->code); ?></td>
+                            <td><?php echo CHtml::encode($cpa->practice->phone); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                    <tfoot class="pagination-container">
+                        <tr>
+                            <td colspan="7">
+                                <?php
+                                $this->widget('LinkPager', array(
+                                    'pages' => $dataProvider->getPagination(),
+                                    'maxButtonCount' => 15,
+                                    'cssFile' => false,
+                                    'selectedPageCssClass' => 'current',
+                                    'hiddenPageCssClass' => 'unavailable',
+                                    'htmlOptions' => array(
+                                        'class' => 'pagination',
+                                    ),
+                                ));
+                                ?>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
-    </div>
+    <?php endif; ?>
 </div>
