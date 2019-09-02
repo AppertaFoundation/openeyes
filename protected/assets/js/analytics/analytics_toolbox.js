@@ -19,6 +19,35 @@ var analytics_toolbox = (function () {
 			type: "bar"
 		}
 	}
+	function processDate(date){
+		return date.getFullYear().toString() + '-' 
+		+ (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1)
+		+ '-' + (date.getDate() < 10 ? '0' : '') + date.getDate();
+	}
+	function initDatePicker(def){
+		console.log(def)
+		var date_from = typeof(def) === 'undefined' ? false : new Date(def['date_from']);
+		var date_to = typeof(def) === 'undefined' ? false : new Date(def['date_to']);
+		if(date_from && date_to){
+			date_from = processDate(date_from);
+	
+			date_to = processDate(date_to);
+		}
+		
+		pickmeup('#analytics_datepicker_from', {
+			format: 'Y-m-d',
+			date: date_from,
+			hide_on_select: true,
+			default_date: date_from,
+		});
+
+		pickmeup('#analytics_datepicker_to', {
+			format: 'Y-m-d',
+			date: date_to,
+			hide_on_select: true,
+			default_date: date_to,
+		});
+	}
 	function getVATitle(){
 		var va_mode = $('#js-chart-filter-plot');
 		var va_title;
@@ -29,6 +58,7 @@ var analytics_toolbox = (function () {
 		}
 		return va_title;
 	}
+	var drillDown = $('.analytics-patient-list table').html();
 	function getCurrentSpecialty(){
 		return $('.analytics-options li a.selected').data('specialty');
 	}
@@ -53,6 +83,9 @@ var analytics_toolbox = (function () {
 	}
 	function getTypeData(){
 		return typeData;
+	}
+	function getCleanDrillDownList(){
+		return drillDown;
 	}
 	function processPlotData(type, datasource) {
 		// var typeData = getTypeData();
@@ -87,9 +120,9 @@ var analytics_toolbox = (function () {
 		return plot_id;
 	}
 
-	function getDataFilters(specialty, side_bar_user_list, common_disorders) {
+	function getDataFilters(specialty, side_bar_user_list, common_disorders, current_user) {
 		var specialty = specialty;
-		var side_bar_user_list = side_bar_user_list;
+		// var side_bar_user_list = user_list;
 		var service_common_disorders = common_disorders;
 		var mr_custom_diagnosis = ['AMD(wet)', 'BRVO', 'CRVO', 'DMO'];
 		var gl_custom_diagnosis = ['Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension'];
@@ -98,11 +131,19 @@ var analytics_toolbox = (function () {
 		// var filters = "&specialty=" + specialty;
 		var filters = '';
 		$('.js-hs-filters').each(function () {
+			// console.log($(this))
+			// console.log($(this).data('name'))
 			if ($(this).is('span')) {
 				if ($(this).html() !== 'All') {
 					if ($(this).hasClass('js-hs-surgeon')) {
 						if (side_bar_user_list !== null) {
+							// console.log(this)
+							// console.log($(this).html().trim())
+							// console.log(side_bar_user_list)
 							filters += '&' + $(this).data('name') + '=' + side_bar_user_list[$(this).html().trim()];
+						} else {
+							console.log(current_user)
+							filters += '&' + $(this).data('name') + '=' + current_user;
 						}
 					} else if ($(this).data('name') == "service_diagnosis") {
 						filters += '&' + $(this).data('name') + '=' + Object.keys(service_common_disorders).find(key => service_common_disorders[key] === $(this).html());
@@ -145,6 +186,7 @@ var analytics_toolbox = (function () {
 				filters += '&' + $(this).data('name') + '=' + $(this).val();
 			}
 		});
+		console.log(filters);
 		return filters;
 	}
 
@@ -155,58 +197,63 @@ var analytics_toolbox = (function () {
 			var service_type =  $('#js-charts-service .charts li a.selected').data('report');
 			var plot_data = processPlotData(service_type, data[1]['plot_data'])
 			loadPlot('update', plot_data['data'], plot_data['title']);
-			return;
-		}
-		
-		var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
-		var clinical_data = data[0];
-		// window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
-		clinical_chart.data[0]['x'] = clinical_data.x;
-		clinical_chart.data[0]['y'] = clinical_data.y;
-		clinical_chart.data[0]['customdata'] = clinical_data.customdata;
-		clinical_chart.data[0]['text'] = clinical_data.text;
-		clinical_chart.layout['yaxis']['tickvals'] = clinical_data['y'];
-		clinical_chart.layout['yaxis']['ticktext'] = clinical_data['text'];
-		clinical_chart.layout['hoverinfo'] = 'x+y';
-		Plotly.redraw(clinical_chart);
-		if (specialty !== 'All') {
-			var custom_charts = ['js-hs-chart-analytics-clinical-others-left', 'js-hs-chart-analytics-clinical-others-right'];
-			var custom_data = data[2];
-			for (var i = 0; i < custom_charts.length; i++) {
-				var chart = $('#' + custom_charts[i])[0];
-				chart.layout['title'] = (i) ? 'Clinical Section (Right Eye)' : 'Clinical Section (Left Eye)';
-				chart.layout['yaxis']['title'] = {
-					font: {
-						family: 'sans-serif',
-						size: 12,
-						color: '#fff',
-					},
-					text: getVATitle(),
-				};
-				//Set VA unit tick labels
-				var va_mode = $('#js-chart-filter-plot');
-				if (va_mode.html().includes('change')) {
-					chart.layout['yaxis']['tickmode'] = 'auto';
-				} else {
-					chart.layout['yaxis']['tickmode'] = 'array';
-					chart.layout['yaxis']['tickvals'] = JSON.parse($va_final_ticks['tick_position']);;
-					chart.layout['yaxis']['ticktext'] = JSON.parse($va_final_ticks['tick_labels']);
+			// return;
+		} else {
+			if($('#js-hs-clinical-diagnoses').hasClass('selected')){
+				var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
+				var clinical_data = data[0];
+				// window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
+				clinical_chart.data[0]['x'] = clinical_data.x;
+				clinical_chart.data[0]['y'] = clinical_data.y;
+				clinical_chart.data[0]['customdata'] = clinical_data.customdata;
+				clinical_chart.data[0]['text'] = clinical_data.text;
+				clinical_chart.layout['yaxis']['tickvals'] = clinical_data['y'];
+				clinical_chart.layout['yaxis']['ticktext'] = clinical_data['text'];
+				clinical_chart.layout['hoverinfo'] = 'x+y';
+				Plotly.redraw(clinical_chart);
+			}
+			if (specialty !== 'All') {
+				if($('#js-hs-clinical-custom').hasClass('selected')){
+					var custom_charts = ['js-hs-chart-analytics-clinical-others-left', 'js-hs-chart-analytics-clinical-others-right'];
+					var custom_data = data[2];
+					for (var i = 0; i < custom_charts.length; i++) {
+						var chart = $('#' + custom_charts[i])[0];
+						chart.layout['title'] = (i) ? 'Clinical Section (Right Eye)' : 'Clinical Section (Left Eye)';
+						chart.layout['yaxis']['title'] = {
+							font: {
+								family: 'sans-serif',
+								size: 12,
+								color: '#fff',
+							},
+							text: getVATitle(),
+						};
+						//Set VA unit tick labels
+						var va_mode = $('#js-chart-filter-plot');
+						if (va_mode.html().includes('change')) {
+							chart.layout['yaxis']['tickmode'] = 'auto';
+						} else {
+							chart.layout['yaxis']['tickmode'] = 'array';
+							chart.layout['yaxis']['tickvals'] = JSON.parse($va_final_ticks['tick_position']);;
+							chart.layout['yaxis']['ticktext'] = JSON.parse($va_final_ticks['tick_labels']);
+						}
+						chart.data[0]['x'] = custom_data[i][0]['x'];
+						chart.data[0]['y'] = custom_data[i][0]['y'];
+						chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
+						chart.data[0]['error_y'] = custom_data[i][0]['error_y'];
+						chart.data[0]['hoverinfo'] = custom_data[i][0]['hoverinfo'];
+						chart.data[0]['hovertext'] = custom_data[i][0]['hovertext'];
+						chart.data[1]['x'] = custom_data[i][1]['x'];
+						chart.data[1]['y'] = custom_data[i][1]['y'];
+						chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
+						chart.data[1]['error_y'] = custom_data[i][1]['error_y'];
+						chart.data[1]['hoverinfo'] = custom_data[i][1]['hoverinfo'];
+						chart.data[1]['hovertext'] = custom_data[i][1]['hovertext'];
+						Plotly.redraw(chart);
+					}
 				}
-				chart.data[0]['x'] = custom_data[i][0]['x'];
-				chart.data[0]['y'] = custom_data[i][0]['y'];
-				chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
-				chart.data[0]['error_y'] = custom_data[i][0]['error_y'];
-				chart.data[0]['hoverinfo'] = custom_data[i][0]['hoverinfo'];
-				chart.data[0]['hovertext'] = custom_data[i][0]['hovertext'];
-				chart.data[1]['x'] = custom_data[i][1]['x'];
-				chart.data[1]['y'] = custom_data[i][1]['y'];
-				chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
-				chart.data[1]['error_y'] = custom_data[i][1]['error_y'];
-				chart.data[1]['hoverinfo'] = custom_data[i][1]['hoverinfo'];
-				chart.data[1]['hovertext'] = custom_data[i][1]['hovertext'];
-				Plotly.redraw(chart);
 			}
 		}
+		
 
 	}
 
@@ -214,8 +261,10 @@ var analytics_toolbox = (function () {
 	// update UI to show how Filter works
 	// this is pretty basic but only to demo on IDG
 	function updateUI($optionGroup) {
+		console.log($optionGroup)
 		// get the ID of the IDG demo text element
 		var textID = $optionGroup.data('filter-ui-id');
+		console.log(textID)
 		var $allListElements = $('.btn-list li', $optionGroup);
 
 		$allListElements.click(function () {
@@ -254,5 +303,8 @@ var analytics_toolbox = (function () {
 		processPlotData: processPlotData,
 		getCurrentSpecialty: getCurrentSpecialty,
 		getVATitle: getVATitle,
+		getCleanDrillDownList: getCleanDrillDownList,
+		initDatePicker: initDatePicker,
+		processDate: processDate
 	}
 })()

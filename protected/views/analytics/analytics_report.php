@@ -24,6 +24,7 @@
 	</nav>
     <main class="oe-analytics flex-layout flex-top cols-full">
         <div class="cols-3" style="position:sticky;top:0;z-index:5;">
+            <p id="a" style="background:red;"><?=$specialty;?></p>
             <div class="analytics-options">
                 <div class="select-analytics flex-layout">
                     <h3>Select options</h3>
@@ -51,8 +52,7 @@
             <!-- <div class="mdl-layout__container"></div> -->
         </div>
         <!-- if $cataract condition in the div class -->
-        <div class="analytics-patient-list" style="display: none;">
-            <!-- drill down -->
+        <div class="analytics-patient-list" style="display: none;" >
             <div class="flex-layout">
                 <h3 id="js-list-title">Patient List</h3>
                 <button id="js-back-to-chart" class="selected js-plot-display-label" >Back to chart</button>
@@ -64,20 +64,17 @@
                     <col style="width: 200px;">
                     <col style="width: 100px;">
                     <col style="width: 50px;">
-                    <!-- if $cataract condition here -->
                 </colgroup>
                 <thead>
-                    <tr>
-                        <th class="drill_down_patient_list text-left" style="vertical-align: center;">Hospital No</th>
-                        <th class="drill_down_patient_list text-left" style="vertical-align: center;">Name</th>
-                        <th class="text-left" style="vertical-align: center;">DOB</th>
-                        <th class="text-left" style="vertical-align: center;">Age</th>
-                        <th class="text-left" style="vertical-align: center;">Gender</th>
-                        <th class="text-left" style="vertical-align: center;">Diagnoses</th>
-                        <!-- if $cataract condition here -->
-                        <th class="text-left" style="vertical-align: center;">Procedures</th>
-                        <!-- if $cataract condition here -->
-                    </tr>
+                <tr>
+                    <th class="drill_down_patient_list text-left" style="vertical-align: center;">Hospital No</th>
+                    <th class="drill_down_patient_list text-left" style="vertical-align: center;">Name</th>
+                    <th class="text-left" style="vertical-align: center;">DOB</th>
+                    <th class="text-left" style="vertical-align: center;">Age</th>
+                    <th class="text-left" style="vertical-align: center;">Gender</th>
+                    <th class="text-left" style="vertical-align: center;">Diagnoses</th>
+                    <th class="text-left patient_procedures" style="vertical-align: center;">Procedures</th>
+                </tr>
                 </thead>
                 <tbody id="p_list">
 
@@ -86,6 +83,7 @@
         </div>
         <div id="js-analytics-spinner" style="display: none;"><i class="spinner"></i></div>
     </main>analytics_custom
+    <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/jspdf/dist/jspdf.min.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/plotly.js-dist/plotly.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/dashboard/OpenEyes.Dash.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_toolbox.js')?>"></script>
@@ -95,6 +93,7 @@
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_service.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_clinical.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_csv.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_csv_cataract.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_cataract.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_drill_down.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/enhancedPopupFixed.js')?>"></script>
@@ -125,16 +124,11 @@
                     // console.log(data)
                     // var data = getPHPData;
                     // console.log(data);
-                    var php_data = (function(){
-                        var side_bar_user_list = JSON.parse(<?=json_encode($user_list);?>)
-                        return {
-                            // 'event_list': event_list,
-                            'sb_user_list': side_bar_user_list,
-                            // 'service_data': service_data,
-                            // 'clinical_data': clinical_data,
-                            // 'data_sum': data_sum,
-                        }
-                    })();
+                    var side_bar_user_list = JSON.parse(<?=json_encode($user_list);?>)
+                    var current_userid = JSON.parse(<?=json_encode($current_user);?>)
+                    console.log(current_userid);
+                    console.log(side_bar_user_list);
+                    // console.log(php_data)
                     // console.log(data);
                     $('#sidebar').html(data['dom']['sidebar']);
                     // $('#plot').html(dom['dom']['plot']['service']+dom['dom']['plot']['clinical']);
@@ -145,10 +139,11 @@
                     // analytics_drill_down(target);
                     if(specialty.toLowerCase() === 'cataract'){
                         $('#js-analytics-spinner').hide();
-                        analytics_cataract();
+                        console.log(data['data']);
+                        analytics_cataract(data['data'], side_bar_user_list);
                         return;  
                     }
-                    analytics_sidebar(data['data'], target, php_data['sb_user_list']);
+                    analytics_sidebar(data['data'], target, side_bar_user_list, current_userid);
                     // var csv_data = dom['data'] ? dom['data']
                     analytics_drill_down();
                     $('#js-analytics-spinner').hide();

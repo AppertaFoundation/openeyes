@@ -183,7 +183,11 @@
                                     <h3>Diagnosis</h3>
                                     <ul class="btn-list js-multi-list">
                                         <li class="selected">All</li>
-
+                                        <?php if(isset($analytics_diagnoses)){ ?>
+                                            <?php foreach ($analytics_diagnoses as $diagnosis) { ?>
+                                                <li><?= $diagnosis; ?></li>
+                                            <?php } ?>
+                                        <?php }?>
                                     </ul>
                                 </div><!-- options-group -->
                             <?php } ?>
@@ -225,6 +229,19 @@
                     <?php } ?>
                     <li>Eye: <span id="js-chart-filter-eye-side">Right</span></li>
                     <li id="js-chart-filter-age-all">Ages: <span id="js-chart-filter-age"  data-name="custom_age_all">All</span></li>
+                    <li id="js-chart-filter-age-range" style="display: none;">Ages:
+                                <select id="js-chart-filter-age-min" style="font-size: 1em; width: inherit" data-name="custom_age_min">
+                                    <?php for ($i = 1; $i <= 120; $i++) { ?>
+                                        <option value="<?= $i; ?>"><?= $i; ?></option>
+                                    <?php } ?>
+                                </select>
+                                to
+                                <select id="js-chart-filter-age-max" style="font-size: 1em; width: inherit" data-name="custom_age_max">
+                                    <?php for ($i = 1; $i <= 120; $i++) { ?>
+                                        <option value="<?= $i; ?>"><?= $i; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </li>
                     <?php if ($specialty == "Medical Retina") { ?>
                         <li>Treatment: <span id="js-chart-filter-treatment" class="js-hs-filters js-hs-custom-mr-treatment" data-name="custom_treatment">All</span></li>
                         <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-mr-diagnosis" data-name="custom_diagnosis">All</span></li>
@@ -291,19 +308,19 @@
         </div>
     </div>
 </div>
-<form id="search-form">
+<form id="search-form" autocomplete="off">
     <input type="hidden" name="specialty" value="<?= $specialty; ?>">
     <h3>Filter by Date</h3>
     <div class="flex-layout">
         <input name="from" type="text" class="pro-theme cols-5"
                 id="analytics_datepicker_from"
                 value=""
-                placeholder="from">
+                placeholder="from" autocomplete="off">
         <input type="text" class="pro-theme cols-5"
                 id="analytics_datepicker_to"
                 value=""
                 name="to"
-                placeholder="to">
+                placeholder="to" autocomplete="off">
     </div>
     <div class="row">
         <button id="js-clear-date-range" class="pro-theme" onclick="viewAllDates()" type="button">View all dates</button>

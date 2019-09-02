@@ -27,10 +27,11 @@ var analytics_drill_down = (function(){
       data: {
         drill: true,
         // ids: g_data.splice(start, limit),
-        ids: g_data.splice(start, limit),
+        YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+        ids: JSON.stringify(g_data.splice(start, limit)),
+        specialty: analytics_toolbox.getCurrentSpecialty(),
         // start: start,
         // limit: limit,
-        YII_CSRF_TOKEN: YII_CSRF_TOKEN
       },
       dataType: 'json',
       success: function (response) {
@@ -71,8 +72,8 @@ var analytics_drill_down = (function(){
   }
   
   var init = function(ele, clinical_data){
-    // console.log(clinical_data)
-    console.log(typeof ele);
+    console.log(clinical_data)
+    // console.log(typeof ele);
     // console.log($('.analytics-section.selected'));
     var ele = typeof(ele) === 'undefined' ? $('.analytics-section.selected').data('section') : ele;
     // console.log(typeof(ele) === 'undefined')
@@ -86,14 +87,29 @@ var analytics_drill_down = (function(){
     var custom_data = null;
     $(plot_patient).off('plotly_click');
     $(plot_patient).on('plotly_click', function (e, data) {
-      console.log(data);
+      // console.log(analytics_toolbox.getCleanDrillDownList())
+      // console.log(data);
       custom_data = data.points[0].customdata
-      console.log(custom_data);
       // console.log(custom_data);
+      // console.log(custom_data);
+      var specialty = analytics_toolbox.getCurrentSpecialty();
+      var patient_list_container = $('.analytics-patient-list');
+      $(patient_list_container).find('table').html(analytics_toolbox.getCleanDrillDownList());
+      var colGroup = $('.analytics-patient-list table colgroup')
       if(Array.isArray(custom_data)){
         $('#js-analytics-spinner').show();
         $('.analytics-charts').hide();
-        $('.analytics-patient-list').show();
+        patient_list_container.show();
+        if(specialty === 'Cataract'){
+          patient_list_container.addClass('analytics-event-list');
+          $('<th class="text-left" style="vertical-align: center;">Eye</th>').insertBefore('.analytics-patient-list .patient_procedures');
+          $('<th style="vertical-align: center;">Date</th>').insertAfter('.analytics-patient-list .patient_procedures');
+          // $('.analytics-patient-list .patient_procedures').insertBefore('<th class="text-left" style="vertical-align: center;">Eye</th>');
+          // $('.analytics-patient-list .patient_procedures').insertAfter('<th style="vertical-align: center;">Date</th>');
+          colGroup.append('<col style="width: 350px;"><col style="width: 50px;"><col style="width: 400px;"><col style="width: 100px;">')
+        } else {
+          colGroup.append('<col style="width: 450px;"><col style="width: 450px;">')
+        }
         $('.analytics-patient-list-row').hide();
         // console.log(customdata)
         // console.log(customdata)

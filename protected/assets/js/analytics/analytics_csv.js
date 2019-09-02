@@ -58,65 +58,65 @@ var analytics_csv_download = (function () {
 		var csv_file = "First Name, Last Name, Hos Num, DOB, Age, Diagnoses, VA-L, " + additional_type + "-L, VA-R," + additional_type + "-R\n";
 		if (anonymized) {
 			csv_file = "DOB, Age, Diagnoses, VA-L, " + additional_type + "-L, VA-R," + additional_type + "-R\n";
-        }
-		var file_name = "clinical_data";        
-        var data = Object.values(custom_data);
-        var patient_ids;
-        temp = data.slice().sort(function (a, b) {
-            return a['patient_id'] - b['patient_id']
-        });
-        patient_ids = temp.map(function (item) {
-            return item['patient_id']
-        })
-        $.ajax({
-            url: '/analytics/DownLoadCSV',
-            type: 'POST',
-            data: {
-                "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-                "csv_data": JSON.stringify(patient_ids),
-            },
-            success: function (response) {
-                console.log(JSON.parse(response))
-                // var report_type = $('#js-charts-service ul a.selected').data('report')
-                var patients = JSON.parse(response);
-                // var test = patients.map(function (item) {
-                // 	return item['id']
-                // })
-                // console.log(test.sort())
-                patients.map(function (curr, index) {
-                    curr['left'] = data[index]['left'];
-                    curr['right'] = data[index]['right'];
-                })
-                // console.log(patients)
-                // current_service_data_to_csv(anonymise_flag, patients, report_type)
-                patients.forEach(function(item){
-                    patient_name = item['name'].split(' ');
-                    item = {
-                        'left': item['left'],
-                        'right': item['right'],
-                        'diagnoses': item['diagnoses'] ? item['diagnoses'].replace(/,/g, '|') : 'N/A',
-                        'hos_num': item['hos_num'],
-                        'age': item['age'],
-                        'dob': item['dob'],
-                        'first_name': (patient_name[0] == undefined) ? '' : patient_name[0],
-                        'last_name': (patient_name[1] == undefined) ? '' : patient_name[1],
-                    }
-                    if (!anonymized) {
-                        csv_file += item['first_name'] + "," + item['last_name'] + "," + item['hos_num'] + ",";
-                    }
-                    csv_file += item['dob'] + "," + item['age'] + ",";
-                    csv_file += item['diagnoses'] + ",";
-                    csv_file = convert_array_to_string_in_csv(csv_file, item['left']['VA']);
-                    csv_file = convert_array_to_string_in_csv(csv_file, item['left'][additional_type]);
-                    csv_file = convert_array_to_string_in_csv(csv_file, item['right']['VA']);
-                    csv_file = convert_array_to_string_in_csv(csv_file, item['right'][additional_type]);
-                    csv_file = csv_file.replace(/.$/, "\n");
-                })
-            },
-            complete:function(){
-                csv_export(file_name, csv_file);
-            }
-        })
+		}
+		var file_name = "clinical_data";
+		var data = Object.values(custom_data);
+		var patient_ids;
+		temp = data.slice().sort(function (a, b) {
+			return a['patient_id'] - b['patient_id']
+		});
+		patient_ids = temp.map(function (item) {
+			return item['patient_id']
+		})
+		$.ajax({
+			url: '/analytics/DownLoadCSV',
+			type: 'POST',
+			data: {
+				"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+				"csv_data": JSON.stringify(patient_ids),
+			},
+			success: function (response) {
+				console.log(JSON.parse(response))
+				// var report_type = $('#js-charts-service ul a.selected').data('report')
+				var patients = JSON.parse(response);
+				// var test = patients.map(function (item) {
+				// 	return item['id']
+				// })
+				// console.log(test.sort())
+				patients.map(function (curr, index) {
+					curr['left'] = data[index]['left'];
+					curr['right'] = data[index]['right'];
+				})
+				// console.log(patients)
+				// current_service_data_to_csv(anonymise_flag, patients, report_type)
+				patients.forEach(function (item) {
+					patient_name = item['name'].split(' ');
+					item = {
+						'left': item['left'],
+						'right': item['right'],
+						'diagnoses': item['diagnoses'] ? item['diagnoses'].replace(/,/g, '|') : 'N/A',
+						'hos_num': item['hos_num'],
+						'age': item['age'],
+						'dob': item['dob'],
+						'first_name': (patient_name[0] == undefined) ? '' : patient_name[0],
+						'last_name': (patient_name[1] == undefined) ? '' : patient_name[1],
+					}
+					if (!anonymized) {
+						csv_file += item['first_name'] + "," + item['last_name'] + "," + item['hos_num'] + ",";
+					}
+					csv_file += item['dob'] + "," + item['age'] + ",";
+					csv_file += item['diagnoses'] + ",";
+					csv_file = convert_array_to_string_in_csv(csv_file, item['left']['VA']);
+					csv_file = convert_array_to_string_in_csv(csv_file, item['left'][additional_type]);
+					csv_file = convert_array_to_string_in_csv(csv_file, item['right']['VA']);
+					csv_file = convert_array_to_string_in_csv(csv_file, item['right'][additional_type]);
+					csv_file = csv_file.replace(/.$/, "\n");
+				})
+			},
+			complete: function () {
+				csv_export(file_name, csv_file);
+			}
+		})
 	}
 
 	function convert_array_to_string_in_csv(csv, item) {
@@ -168,13 +168,14 @@ var analytics_csv_download = (function () {
 				document.body.removeChild(link);
 			}
 		}
-    }
+	}
 
 	var init = function (data, custom_flag = false) {
 		// console.log(data)
 		$('.extra-actions button').off('click');
 		$('.extra-actions button').on('click', function () {
 			// console.log(data)
+			console.log('clicked')
 			var anonymise_flag = $(this).data('anonymised')
 			var selected_tab = $('.analytics-section.selected').data('options')
 			var temp, patient_ids, patient_weeks;
@@ -188,7 +189,7 @@ var analytics_csv_download = (function () {
 				patient_weeks = temp.map(function (item) {
 					return item['weeks']
 				})
-            }
+			}
 			// console.log(patient_ids)
 			// console.log(patient_ids.sort())
 			// console.log(patient_weeks)
@@ -221,15 +222,15 @@ var analytics_csv_download = (function () {
 					// }
 					break;
 				case 'clinical':
-                    if(custom_flag){
-                        if (analytics_toolbox.getCurrentSpecialty() === 'Medical Retina') {
-                            current_custom_data_to_csv("CRT", anonymise_flag, data);
-                        } else {
-                            current_custom_data_to_csv("IOP", anonymise_flag, data);
-                        }
-                    } else {
-                        current_clinical_data_to_csv(anonymise_flag, data)
-                    }
+					if (custom_flag) {
+						if (analytics_toolbox.getCurrentSpecialty() === 'Medical Retina') {
+							current_custom_data_to_csv("CRT", anonymise_flag, data);
+						} else {
+							current_custom_data_to_csv("IOP", anonymise_flag, data);
+						}
+					} else {
+						current_clinical_data_to_csv(anonymise_flag, data)
+					}
 					break;
 			}
 			return

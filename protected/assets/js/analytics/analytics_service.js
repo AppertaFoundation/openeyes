@@ -76,6 +76,10 @@ var analytics_service = (function () {
     analytics_toolbox.loadPlot('init', overdue_raw.data, overdue_raw.title)
     report_type_links.off('click')
 		report_type_links.on('click', function (e) {
+			var filter_group = $('.options-group');
+			$(filter_group.find('ul.btn-list li')[0]).click();
+			// console.log('about to execute updateUI')
+			// analytics_toolbox.updateUI($(filter_group));
       $('#js-analytics-spinner').show();
       if($('.analytics-patient-list').css('display') === 'block'){
         $('.analytics-patient-list').hide();

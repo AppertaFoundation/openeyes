@@ -1,5 +1,5 @@
 var analytics_sidebar = (function () {
-	var init = function (data, target, side_bar_user_list) {
+	var init = function (data, target, side_bar_user_list, current_user) {
 		console.log(data);
 		var common_disorders_dom = $('.btn-list li')
 		var common_disorders = common_disorders_dom.map(function (i, e) {
@@ -9,18 +9,7 @@ var analytics_sidebar = (function () {
 		analytics_service(data['service_data'], target);
 		// console.log(data);
 
-		// date filter
-		pickmeup('#analytics_datepicker_from', {
-			format: 'Y-m-d',
-			hide_on_select: true,
-			default_date: false,
-		});
-
-		pickmeup('#analytics_datepicker_to', {
-			format: 'Y-m-d',
-			hide_on_select: true,
-			default_date: false,
-		});
+		analytics_toolbox.initDatePicker();
 
 		var specialty = analytics_toolbox.getCurrentSpecialty();
 		// in case 
@@ -130,6 +119,8 @@ var analytics_sidebar = (function () {
 			// console.log($('#search-form').serialize());
 			// console.log($('#search-form').serialize() + analytics_toolbox.getDataFilters(specialty, side_bar_user_list, common_disorders));
 			// console.log(specialty, side_bar_user_list, common_disorders)
+			// console.log(e);
+			// console.log('fired');
 			e.preventDefault();
 			var selected_section = $('.analytics-section.selected').data('section')
 			// console.log(selected_section)
@@ -139,13 +130,13 @@ var analytics_sidebar = (function () {
 			$('#js-analytics-spinner').show();
 			$.ajax({
 				url: '/analytics/updateData',
-				data: $('#search-form').serialize() + analytics_toolbox.getDataFilters(specialty, side_bar_user_list, common_disorders),
+				data: $('#search-form').serialize() + analytics_toolbox.getDataFilters(specialty, side_bar_user_list, common_disorders, current_user),
 				dataType: 'json',
 				success: function (data, textStatus, jqXHR) {
-					console.log(data)
+					console.log(data[2])
 					$('#js-analytics-spinner').hide();
 					current_plot.show();
-					// console.log(data)
+					console.log(data)
 					if (selected_section.includes('clinical')) {
 						analytics_toolbox.plotUpdate(data, specialty, 'clinical');
 						analytics_csv_download(data[0]['csv_data']);
