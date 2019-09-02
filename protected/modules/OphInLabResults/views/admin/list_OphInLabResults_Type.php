@@ -31,7 +31,11 @@
                 <col class="cols-1">
                 <col class="cols-3">
                 <col class="cols-3">
-                <col class="cols-2">
+                <col class="cols-1">
+                <col class="cols-1">
+                <col class="cols-1">
+                <col class="cols-3">
+                <col class="cols-1">
             </colgroup>
             <thead>
             <tr>
@@ -39,6 +43,8 @@
                 <th>Type</th>
                 <th>Element Id</th>
                 <th>Field Type</th>
+                <th>Show Units</th>
+                <th>Units Editable</th>
                 <th>Default Units</th>
                 <th>Custom Warning Message</th>
                 <th>Show on Whiteboard</th>
@@ -52,6 +58,8 @@
                     <td><?= $model->type; ?></td>
                     <td><?= $model->result_element_type->name ?></td>
                     <td><?= $model->fieldType->name ?></td>
+                    <td><?= $model->show_units ?></td>
+                    <td><?= $model->allow_unit_change ?></td>
                     <td><?= $model->default_units ?></td>
                     <td><?= $model->custom_warning_message ?></td>
                     <td><?= $model->show_on_whiteboard ?></td>

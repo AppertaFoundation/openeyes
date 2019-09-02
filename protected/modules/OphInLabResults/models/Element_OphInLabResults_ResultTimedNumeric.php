@@ -116,4 +116,10 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
     {
         return 'print_' . $this->getDefaultView();
     }
+
+    public function beforeSave()
+    {
+        $this->setDefaultUnit();
+        return parent::beforeSave();
+    }
 }
