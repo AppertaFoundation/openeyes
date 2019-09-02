@@ -44,100 +44,96 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
     }
 
     /**
-     * @param BaseMedicationElement $element
-     * @param $data
-     * @throws \CException
-     */
-    protected function updateElementFromData($element, $data)
-    {
-        /*
-        if(array_key_exists("do_not_save_entries", $data)) {
-            $element->do_not_save_entries = (bool)$data['do_not_save_entries'];
-        }
-        */
+		 * @param BaseMedicationElement $element
+		 * @param $data
+		 * @throws \CException
+		 */
+	protected function updateElementFromData($element, $data)
+	{
+		/*
+		if(array_key_exists("do_not_save_entries", $data)) {
+				$element->do_not_save_entries = (bool)$data['do_not_save_entries'];
+		}
+		*/
 
-        if  (!is_a($element, static::$elementClass)) {
-            throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
-        }
+		if (!is_a($element, static::$elementClass)) {
+			throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
+		}
 
-        /** @var BaseMedicationElement $element */
+		/** @var BaseMedicationElement $element */
 
-        // pre-cache current entries so any entries that remain in place will use the same db row
-        $entries_by_id = array();
-        foreach ($element->entries as $entry) {
-            $entries_by_id[$entry->id] = $entry;
-        }
+		// pre-cache current entries so any entries that remain in place will use the same db row
+		$entries_by_id = array();
+		foreach ($element->entries as $entry) {
+			$entries_by_id[$entry->id] = $entry;
+		}
 
-        $entries = array();
-        $to_prescription = array();
+		$entries = array();
+		$to_prescription = array();
 
-        if (array_key_exists('entries', $data)) {
-            foreach ($data['entries'] as $i => $entry_data) {
-                $id = array_key_exists('id', $entry_data) ? $entry_data['id'] : null;
+		if (array_key_exists('entries', $data)) {
+			foreach ($data['entries'] as $i => $entry_data) {
+				$id = array_key_exists('id', $entry_data) ? $entry_data['id'] : null;
 
-                if($id && array_key_exists($id, $entries_by_id)) {
-                    $entry = $entries_by_id[$id];
-                }
-                else {
-                    $class = $element::$entry_class;
-                    $entry = new $class;
-                }
-
-                /** @var \EventMedicationUse $entry */
-
-                foreach (array_merge(
-                             $entry->attributeNames(),
-                             ['is_copied_from_previous_event', 'group'])
-                         as $k) {
-                    if(array_key_exists($k, $entry_data) && in_array($k, $entry->attributeNames())) {
-
-                        if(in_array($k, ['prescribe', 'stop'])) {
-                             continue;
-                        }
-                        $entry->setAttribute($k, $entry_data[$k]);
-                    }
-                }
-
-                $entry->medication_name = isset($entry_data['medication_name']) ? $entry_data['medication_name'] : null;
-
-                if(is_a($entry, MedicationManagementEntry::class)) {
-                    if(array_key_exists('prescribe', $entry_data)) {
-						$entry->prescribe = $entry_data['prescribe'];
-					}
-					else {
-						$entry->prescribe = 0;
-					}
-                }
-
-                if ($entry_data['start_date'] !== ''){
-                    $entry->start_date = $entry_data['start_date'];
-                }
-                else {
-                    $entry->start_date = null;
-                }
-
-                if (isset($entry_data['end_date']) && $entry_data['end_date'] !== ''){
-                    $entry->end_date = $entry_data['end_date'];
-                }
-                else {
-                    $entry->end_date = null;
-                }
-
-                if(in_array('prescribe', $entry->attributeNames()) && $entry->prescribe) {
-                    $entry->setScenario("to_be_prescribed");
-                }
-
-                $entry->originallyStopped = !array_key_exists("originallyStopped", $entry_data) ? false : (bool)$entry_data['originallyStopped'];
-
-                if(property_exists($entry, "locked") && array_key_exists("locked", $entry_data)) {
-                	$entry->locked = $entry_data['locked'];
+				if ($id && array_key_exists($id, $entries_by_id)) {
+					$entry = $entries_by_id[$id];
+				} else {
+					$class = $element::$entry_class;
+					$entry = new $class;
 				}
 
-                // add tapers
+				/** @var \EventMedicationUse $entry */
 
-				if($entry->taper_support) {
+				foreach (array_merge(
+									 $entry->attributeNames(),
+									 ['is_copied_from_previous_event', 'group'])
+								 as $k) {
+					if (array_key_exists($k, $entry_data) && in_array($k, $entry->attributeNames())) {
+
+						if (in_array($k, ['prescribe', 'stop'])) {
+							continue;
+						}
+						$entry->setAttribute($k, $entry_data[$k]);
+					}
+				}
+
+				$entry->medication_name = isset($entry_data['medication_name']) ? $entry_data['medication_name'] : null;
+
+				if (is_a($entry, MedicationManagementEntry::class)) {
+					if (array_key_exists('prescribe', $entry_data)) {
+						$entry->prescribe = $entry_data['prescribe'];
+					} else {
+						$entry->prescribe = 0;
+					}
+				}
+
+				if (isset($entry_data['start_date']) && $entry_data['start_date'] !== '') {
+					list($start_year, $start_month, $start_day) = array_pad(explode('-', $entry_data['start_date']), 3, null);
+					$entry->start_date = \Helper::padFuzzyDate($start_year, $start_month, $start_day);
+				}
+
+				if (isset($entry_data['end_date']) && $entry_data['end_date'] !== '') {
+					list($end_year, $end_month, $end_day) = array_pad(explode('-', $entry_data['end_date']), 3, null);
+					$entry->end_date = \Helper::padFuzzyDate($end_year, $end_month, $end_day);
+				} else {
+					$entry->end_date = null;
+				}
+
+				if (in_array('prescribe', $entry->attributeNames()) && $entry->prescribe) {
+					$entry->setScenario("to_be_prescribed");
+				}
+
+				$entry->originallyStopped = !array_key_exists("originallyStopped", $entry_data) ? false : (bool)$entry_data['originallyStopped'];
+
+				if (property_exists($entry, "locked") && array_key_exists("locked", $entry_data)) {
+					$entry->locked = $entry_data['locked'];
+				}
+
+				// add tapers
+
+				if ($entry->taper_support) {
 					$tapers = array();
-					if(array_key_exists("taper", $entry_data)) {
+					if (array_key_exists("taper", $entry_data)) {
 						foreach ($entry_data['taper'] as $taper_data) {
 							$taper = new \OphDrPrescription_ItemTaper();
 							$taper->setAttributes($taper_data);
@@ -148,23 +144,21 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 					$entry->tapers = $tapers;
 				}
 
-				if($entry->hidden) {
-                	$entry->setScenario("hidden");
-				}
-				elseif($entry->getScenario() !== "to_be_prescribed") {
+				if ($entry->hidden) {
+					$entry->setScenario("hidden");
+				} elseif ($entry->getScenario() !== "to_be_prescribed") {
 					$entry->setScenario("visible");
 				}
 
 				$entries[] = $entry;
-            }
+			}
 
-            $element->entries = $entries;
-        }
-        else {
-            $element->entries = array();
-        }
+			$element->entries = $entries;
+		} else {
+			$element->entries = array();
+		}
 
-    }
+	}
 
     /**
      * @return bool Whether entries have been posted

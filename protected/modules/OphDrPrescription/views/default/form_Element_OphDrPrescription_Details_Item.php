@@ -76,8 +76,19 @@
 
       <?=\CHtml::textField('Element_OphDrPrescription_Details[items][' . $key . '][dose]', $item->dose,
           array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)) ?>
-      <span><?php echo $item->dose_unit_term ?></span>
-      <input type="hidden" name="'Element_OphDrPrescription_Details[items]['<?=$key?>'][dose_unit_term]" value="<?php echo $item->dose_unit_term ?>" />
+
+      <?php if($item->dose_unit_term) { ?>
+          <span><?= $item->dose_unit_term ?></span>
+          <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][dose_unit_term]"
+                 value="<?= $item->dose_unit_term ?>" />
+      <?php } else {
+          echo CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][dose_unit_term]', null,
+              \CHtml::listData($unit_options, 'description', 'description'),
+              [
+                  'empty' => '-Unit-',
+                  'class' => 'cols-7',
+              ]);
+      } ?>
   </td>
   <td>
       <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][route_id]', $item->route_id,
@@ -88,7 +99,7 @@
     <?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
       <td class='route_option_cell'>
 
-          <?php if ($item->route && $options = $item->route->options /* TODO this is not going to work when we remove route.options */) {
+          <?php if ($item->route && $item->route->has_laterality && $options = $item->route->options /* TODO this is not going to work when we remove route.options */) {
               echo CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][laterality]', $item->laterality,
                   CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
           } else {
