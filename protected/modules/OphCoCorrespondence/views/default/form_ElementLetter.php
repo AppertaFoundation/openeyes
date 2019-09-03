@@ -273,13 +273,13 @@ $creating = isset($creating) ? $creating : false;
                 <tbody>
                 <tr>
                     <td>
-                        <h3>Letter Macro</h3>
+                        <h3>Letter Templates</h3>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <?= \CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros,
-                            array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')); ?>
+                            array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')); ?>
                     </td>
                 </tr>
                 <tr>
@@ -397,7 +397,7 @@ $creating = isset($creating) ? $creating : false;
               <td>From</td>
               <td>
                 <?php $this->widget('application.widgets.AutoCompleteSearch', ['html_options' => ['placeholder' => 'Search for users full title and details']]); ?>
-                <?php echo $form->textArea($element, 'footer', array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'correspondence-letter-text', 'style' => "overflow: hidden; overflow-wrap: break-word; height: 114px;")) ?>
+                <?php echo $form->textArea($element, 'footer', array('label' => false, 'nowrapper' => true), false, array('class' => 'correspondence-letter-text autosize', 'style' => "overflow: hidden; overflow-wrap: break-word; height: 54px;")) ?>
               </td>
             </tr>
             <tr>
