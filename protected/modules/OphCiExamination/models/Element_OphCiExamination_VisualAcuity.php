@@ -142,7 +142,6 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     {
         $model = str_replace('\\', '_', $this->elementType->class_name);
 
-        Yii::log(var_export($_POST, true));
         if(array_key_exists($model, $_POST)) {
 					$va = $_POST[$model];
 					foreach (array('left', 'right') as $side) {

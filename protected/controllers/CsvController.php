@@ -179,6 +179,7 @@ class CsvController extends BaseController
 
 					$status = $summary_import->import_status->status_value;
 
+					//A status of 8 indicates a successful patient import
 					if ($status != 8)
 						$import_log->status = "Failure";
 
@@ -682,7 +683,16 @@ class CsvController extends BaseController
 						$diagnosis_right = $patient_raw_data['diagnosis_side_r'] == 'Y';
 
 						//Derive affected eye by performing binary style operation on left and right booleans
-						$diagnosis_eye_id = ($diagnosis_left * 2 + $diagnosis_right * 1);
+						//This formula maps two booleans (One for each eye) to a number from 0-3 inclusive
+						//A value of 0 indicates no eye, 1, 2 and 3 indicate right, left, and both eyes respectively
+						//This is the fastest way to map two boolean values to an eye in the database
+						$diagnosis_eye_id = ($diagnosis_left * 1 + $diagnosis_right * 2);
+
+						//Check if no eye is affected by diagnosis
+						if ($diagnosis_eye_id == 0) {
+							$errors[] = "Cannot save diagnosis that does not affect an eye";
+							return $errors;
+						}
 
 						//Abusing soundex to strip commas and quotes and to more fuzzily match a potentially misspelled diagnosis
 						$found_disorder = Yii::app()->db->createCommand('select id from disorder WHERE SOUNDEX(term) = SOUNDEX(\'' . $patient_raw_data['diagnosis'] . '\')')->queryAll();
@@ -700,11 +710,6 @@ class CsvController extends BaseController
 						$diagnosis->eye_id = $diagnosis_eye_id;
 						$diagnosis->date = date("Y-m-d", strtotime(str_replace('/', '-', $patient_raw_data['diagnosis_date'])));
 						$diagnosis->principal = true;
-
-						if ($diagnosis->eye_id == 0) {
-							$errors[] = "Cannot save diagnosis that does not affect an eye";
-							return $errors;
-						}
 
 						if (!$diagnosis->save()) {
 							$errors[] = 'Could not save diagnosis';
@@ -737,7 +742,10 @@ class CsvController extends BaseController
 //						}
 //
 //						//Derive affected eye by performing binary style operation on left and right booleans
-//						$visual_eye_id = ($has_reading_left * 2 + $has_reading_right * 1);
+//						//This formula maps two booleans (One for each eye) to a number from 0-3 inclusive
+//						//A value of 0 indicates no eye, 1, 2 and 3 indicate right, left, and both eyes respectively
+//						//This is the fastest way to map two boolean values to an eye in the database
+//						$visual_eye_id = ($has_reading_left * 1 + $has_reading_right * 2);
 //
 //						$visual_element = new OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 //						$visual_element->event_id = $visual_event->id;
