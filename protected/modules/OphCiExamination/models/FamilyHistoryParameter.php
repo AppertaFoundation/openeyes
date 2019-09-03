@@ -115,17 +115,17 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         $query_relative = "";
         $query_condition = "";
 
-        if($this->side != null || $this->side !=''){
+        if($this->side !=''){
             $query_side = ":f_h_side_$this->id IS NULL OR fh.side_id = :f_h_side_$this->id)";
         }
-        if($this->relative != null || $this->relative != ''){
+        if($this->relative != ''){
             if($query_side == ""){
                 $query_relative = ":f_h_relative_$this->id IS NULL OR fh.relative_id = :f_h_relative_$this->id)";
             }else{
                 $query_relative = " AND (".":f_h_relative_$this->id IS NULL OR fh.relative_id = :f_h_relative_$this->id)";
             }
         }
-        if($this->condition != null || $this->condition != ''){
+        if( $this->condition != ''){
             if($query_side =="" && $query_relative==""){
                 $query_condition = ":f_h_condition_$this->id IS NULL OR fh.condition_id = :f_h_condition_$this->id)";
             }else{
