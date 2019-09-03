@@ -158,7 +158,7 @@ class PatientController extends BaseController
         $criteria->limit = 3;
         $events = Event::model()->findAll($criteria);
 
-        $no_episodes = count($episodes) < 1 && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
+        $no_episodes = (count($episodes) < 1 || count($events) < 1) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
 
         if ($no_episodes) {
             $this->layout = '//layouts/events_and_episodes_no_header';
