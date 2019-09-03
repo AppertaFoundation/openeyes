@@ -341,7 +341,7 @@ class CsvController extends BaseController
 					}
 				}else {
 					foreach($mandatory_diagnosis_fields as $diagnosis_field) {
-						if(array_key_exists($diagnosis_field, $patient_raw_data) || $patient_raw_data[$diagnosis_field] != '')
+						if($patient_raw_data[$diagnosis_field] == '')
 						{
 							$errors[] = "Cannot add diagnosis fields for diagnosis that does not exist: " . $diagnosis_field;
 						}
