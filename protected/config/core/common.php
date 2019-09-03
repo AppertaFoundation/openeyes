@@ -403,6 +403,12 @@ return array(
                   'uri' => '/worklist',
                   'position' => 3,
                 ),
+            'patient_import' => array(
+                'title' => 'Import Patients',
+                'uri' => 'csv/upload?context=patients',
+                'position' => 47,
+                'restricted' => array('admin'),
+            ),
         ),
         'admin_menu' => array(
         ),
