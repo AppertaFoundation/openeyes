@@ -32,7 +32,8 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,
-        'getInitMethodDataById' => self::ACTION_TYPE_FORM
+        'getInitMethodDataById' => self::ACTION_TYPE_FORM,
+        'savePrint'    => self::ACTION_TYPE_PRINT,
     );
 
     protected $show_element_sidebar = false;
@@ -474,17 +475,19 @@ class DefaultController extends BaseEventTypeController
         $recipients = array();
 
         // after "Save and Print" button clicked we only print out what the user checked
-        if( isset($_GET['OphCoCorrespondence_print_checked']) && $_GET['OphCoCorrespondence_print_checked'] == "1" ){
+        if (\Yii::app()->user->getState('correspondece_element_letter_saved', true) && (!isset($_GET['print_only_gp']) || $_GET['print_only_gp'] !== "1")) {
 
-            // check if the first recipient is GP
-            $docunemt_instance = $letter->document_instance[0];
-            $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
-                ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL', ));
+            if ($letter->document_instance) {
+                // check if the first recipient is GP
+                $docunemt_instance = $letter->document_instance[0];
+                $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
+                    ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL', ));
 
-            if($to_recipient_gp){
-                // print an extra copy to note
-                if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
-                    $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
+                if ($to_recipient_gp) {
+                    // print an extra copy to note
+                    if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
+                        $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
+                    }
                 }
             }
 
@@ -528,8 +531,14 @@ class DefaultController extends BaseEventTypeController
                     $recipients[] = $letter_address;
                 }
             }
-
         }
+
+        // This fix is for when there is no "print" recipient the first if block would return nothing
+        // but on the correspondence view page we still need to display
+        if (!$recipients) {
+            $recipients[] = $letter->getToAddress();
+        }
+
         return $recipients;
 
     }
@@ -589,6 +598,7 @@ class DefaultController extends BaseEventTypeController
             throw new Exception("Event not found: $id");
         }
 
+        $recipient = Yii::app()->request->getParam('recipient');
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
@@ -597,7 +607,7 @@ class DefaultController extends BaseEventTypeController
         if (Yii::app()->request->getQuery('all', false)) {
             $this->pdf_print_suffix = 'all';
         }
-        if (Yii::app()->request->getQuery('OphCoCorrespondence_print_checked', false)) {
+        if (\Yii::app()->user->getState('correspondece_element_letter_saved', false)) {
             $this->pdf_print_suffix = 'all';
         }
 
@@ -610,7 +620,7 @@ class DefaultController extends BaseEventTypeController
          */
         $this->pdf_print_documents = 1;
 
-        if( $print_outputs ){
+        if ($print_outputs) {
             foreach($print_outputs as $output){
                 $output->output_status = "COMPLETE";
                 $output->save();
@@ -974,7 +984,7 @@ class DefaultController extends BaseEventTypeController
     {
         // mimic print request so that the print style sheet is applied
         $assetManager = Yii::app()->assetManager;
-        $assetManager->isPrintRequest  =true;
+        $assetManager->isPrintRequest = true;
         try {
             $this->initActionView();
             $this->removeEventImages();
@@ -1003,5 +1013,17 @@ class DefaultController extends BaseEventTypeController
     {
         $letter = ElementLetter::model()->findByAttributes(['event_id' => $this->event->id]);
         return $letter->markDocumentRelationTreeDeleted();
+    }
+
+    public function actionSavePrint($event_id){
+        $cookies = Yii::app()->request->cookies;
+        $cookies['savePrint'] = new CHttpCookie('savePrint', $event_id, [
+            'expire' => strtotime('+20 seconds')
+        ]);
+        if ($cookies->contains('savePrint')) {
+            echo 'ok';
+        } else {
+            echo 'failed to created print cookie';
+        }
     }
 }
