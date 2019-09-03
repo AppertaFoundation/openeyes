@@ -68,7 +68,7 @@
                         }
                         $lenses = OphInBiometry_LensType_Lens::model()->findAll($criteria, array('order' => 'display_order'));
                         foreach ($lenses as $lens_data_options) {
-                            $lens_options[$lens_data_options->id] = ['data-constant' => number_format($lens_data_options->acon,2)];
+                            $lens_options[$lens_data_options->id] = ['data-constant' => number_format($lens_data_options->acon, 2)];
                         }
                         echo $form->dropDownList(
                             $element, 'lens_id_' . $side,
