@@ -25,7 +25,7 @@
                name="search"
                id="search_query"
                placeholder="Search medication in set..."
-               <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>
+                <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>
         >
         <small class="empty-set" <?= $medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>>Empty set</small>
     </div>
