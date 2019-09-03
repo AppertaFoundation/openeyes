@@ -75,6 +75,16 @@ $options = array_map(function ($e) {
 	</tfoot>
 </table>
 <script type="text/javascript">
+    function displayOptions($selected) {
+        let $tr = $selected.closest("tr");
+        if ($selected.attr("data-type") === "attr") {
+            let $all_options = $tr.children("td:eq(1)").find("ul.add-options li");
+            let $relevant_options = $tr.children("td:eq(1)").find("ul.add-options li[data-attr_id=" + $selected.attr("data-id") + "]");
+            $all_options.hide();
+            $relevant_options.show();
+        }
+    }
+
     new OpenEyes.UI.AdderDialog({
         openButton: $('.js-add-attribute'),
         itemSets: [
@@ -90,6 +100,11 @@ $options = array_map(function ($e) {
         onOpen: function (adderDialog) {
             let $items = adderDialog.$tr.children("td:eq(1)").find("ul.add-options li");
             $items.hide();
+
+            let $selected = $('ul li.selected');
+            if ($selected.length > 0) {
+                displayOptions($selected);
+            }
         },
         onReturn: function (adderDialog, selectedItems) {
             if (selectedItems.length < 2) {
@@ -122,13 +137,7 @@ $options = array_map(function ($e) {
         },
         onSelect: function (e) {
             let $item = $(e.target).is("span") ? $(e.target).closest("li") : $(e.target);
-            let $tr = $item.closest("tr");
-            if ($item.attr("data-type") === "attr") {
-                let $all_options = $tr.children("td:eq(1)").find("ul.add-options li");
-                let $relevant_options = $tr.children("td:eq(1)").find("ul.add-options li[data-attr_id=" + $item.attr("data-id") + "]");
-                $all_options.hide();
-                $relevant_options.show();
-            }
+            displayOptions($item);
         },
         enableCustomSearchEntries: true,
     });
