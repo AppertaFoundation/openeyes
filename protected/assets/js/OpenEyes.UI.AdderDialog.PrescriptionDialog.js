@@ -54,7 +54,7 @@
         let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
         let $list = dialog.generateItemList(itemSet);
         $list.addClass(itemSet.options.class);
-        let $listDiv = $('<div />').appendTo($listContainer);
+        let $listDiv = $('<div />', {class: 'has-filter'}).appendTo($listContainer);
 
         // add the search field only to the common_drugs section
         if (itemSet.options.class !== null && itemSet.options.class === "js-drug-list") {
@@ -79,12 +79,12 @@
     this.searchWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
     $td.prependTo(this.$tr);
 
-    let $filterDiv = $('<div />', {class: 'has-filter'}).appendTo(this.searchWrapper);
+    let $filterDiv = $('<div />').appendTo(this.searchWrapper);
 
     this.noSearchResultsWrapper = $('<span />').text('No results found').hide();
     this.noSearchResultsWrapper.insertAfter(this.popup.find('.js-drug-list'));
 
-    this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
+    this.searchResultList = $('<ul />', {class: 'add-options js-search-results', style: "display: none;"});
     this.searchResultList.insertAfter(this.popup.find('.js-drug-list'));
 
     let $drugTypes = $('<ul >', {class: 'add-options js-drug-types'});
@@ -129,7 +129,7 @@
         $(results).each(function (index, result) {
           let dataset = AdderDialog.prototype.constructDataset(result);
           let item = $("<li />", dataset)
-            .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
+            .append(dataset['data-prepended_markup'], $('<span />', {class: 'auto-width'}).text(dataset['data-label']));
           dialog.searchResultList.append(item);
         });
 
