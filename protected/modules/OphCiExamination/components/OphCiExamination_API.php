@@ -2977,10 +2977,10 @@ class OphCiExamination_API extends \BaseAPI
                             <td>
                             </td>
                             <td>
-                                <?= $taper->frequency_id ? \DrugFrequency::model()->findByPk($taper->frequency_id)->long_name : ''; ?>
+                                <?= $taper->frequency->long_name ?>
                             </td>
                             <td>
-                                <?= $taper->duration_id ? \DrugDuration::model()->findByPk($taper->duration_id)->name : '' ?>
+                                <?= $taper->duration->name ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
