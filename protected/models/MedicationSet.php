@@ -130,6 +130,17 @@ class MedicationSet extends BaseActiveRecordVersioned
 		);
 	}
 
+    /**
+     * Returns true if the set has a usage_code provided as parameter
+     *
+     * @param $usage_code
+     * @return bool
+     */
+    public function hasUsageCode($usage_code)
+    {
+        return (bool)$this->with('medicationSetRules.usageCode')->count('usageCode.usage_code = :code', [':code' => $usage_code]);
+    }
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 *
