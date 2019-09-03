@@ -1,4 +1,11 @@
 <?php
+
+use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
+use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method;
+use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading;
+use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit;
+use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue;
+
 \Yii::import('application.modules.OETrial.models.*');
 
 class CsvController extends BaseController
@@ -95,7 +102,9 @@ class CsvController extends BaseController
 
     public function actionImport($context, $csv)
     {
-    	$import_log = new ImportLog();
+			$errors = null;
+
+			$import_log = new ImportLog();
 			$import_log->import_user_id = Yii::app()->user->id;
 			$import_log->startdatetime = date('Y-m-d H:i:s');
 			$import_log->status = "Failure";
@@ -105,76 +114,82 @@ class CsvController extends BaseController
 
     	$csv_file_path = self::$file_path . $csv . ".csv";
 
-			$table = array();
-			$headers = array();
-			if (($handle = fopen($csv_file_path, "r")) !== false) {
-				if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-					foreach ($line as $header) {
-						// basic sanitization, remove non printable chars - This is required if the CSV file is
-						// exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
-						$header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
-						$headers[] = $header;
+			if(file_exists($csv_file_path)) {
+				$table = array();
+				$headers = array();
+				if (($handle = fopen($csv_file_path, "r")) !== false) {
+					if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+						foreach ($line as $header) {
+							// basic sanitization, remove non printable chars - This is required if the CSV file is
+							// exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
+							$header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
+							$headers[] = $header;
+						}
 					}
+
+					while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+						$row = array();
+						$header_count = 0;
+						foreach ($line as $cel) {
+							$row[$headers[$header_count++]] = $cel;
+						}
+						$table[] = $row;
+					}
+					fclose($handle);
 				}
 
-				while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-					$row = array();
-					$header_count = 0;
-					foreach ($line as $cel) {
-						$row[$headers[$header_count++]] = $cel;
-					}
-					$table[] = $row;
-				}
-				fclose($handle);
-			}
+				$row_num = 0;
+				$createAction = self::$contexts[$context]['createAction'];
 
-			$errors = null;
-			$row_num = 0;
-			$createAction = self::$contexts[$context]['createAction'];
-
-			foreach ($table as $row) {
+				foreach ($table as $row) {
 					$transaction = Yii::app()->db->beginTransaction();
 					$import = new Import();
 					$import->parent_log_id = $import_log->id;
 					$row_num++;
 					$errors = $this->$createAction($row, $import);
-					if(!empty($errors)) {
+					if (!empty($errors)) {
 						$transaction->rollback();
 						$import->import_status_id = 2;
 						$import->message = "Import failed on line " . $row_num . ": ";
 
 						$flattened_errors = array();
-						array_walk_recursive($errors, function($item) use (&$flattened_errors)  { $flattened_errors[] = $item; });
+						array_walk_recursive($errors, function ($item) use (&$flattened_errors) {
+							$flattened_errors[] = $item;
+						});
 
 						foreach ($flattened_errors as $error) {
 							$import->message .= "<br>" . $error;
 						}
-					}else {
+					} else {
 						$transaction->commit();
 						$import->import_status_id = 8;
 					}
 
-					if(!$import->save()) {
+					if (!$import->save()) {
 						\OELog::log("WARNING! FAILED TO SAVE IMPORT STATUS!");
 					}
-			}
+				}
 
-			$summary_table = array();
+				$summary_table = array();
 
-			$import_log->status = "Success";
+				$import_log->status = "Success";
 
-			foreach (Import::model()->findAllByAttributes(['parent_log_id' => $import_log->id]) as $summary_import) {
-				$summary = array();
+				foreach (Import::model()->findAllByAttributes(['parent_log_id' => $import_log->id]) as $summary_import) {
+					$summary = array();
 
-				$status = $summary_import->import_status->status_value;
+					$status = $summary_import->import_status->status_value;
 
-				if($status != 8)
-					$import_log->status = "Failure";
+					//A status of 8 indicates a successful patient import
+					if ($status != 8)
+						$import_log->status = "Failure";
 
-				$summary['Status'] = $status;
-				$summary['Details'] = $summary_import->message;
+					$summary['Status'] = $status;
+					$summary['Details'] = $summary_import->message;
 
-				$summary_table[] = $summary;
+					$summary_table[] = $summary;
+				}
+			}else {
+				$summary_table[] = ['Status' => "Failure", 'Details' => "File has expired"];
 			}
 
 			if(!$import_log->save()) {
@@ -251,6 +266,51 @@ class CsvController extends BaseController
     {
 				$errors = array();
 
+				$expected_fields = array(
+					'first_name',
+					'last_name',
+					'dob',
+					'patient_source',
+					'country',
+					'CERA_ID',
+					'gender',
+					'maiden_name',
+					'address_type',
+					'address1',
+					'address2',
+					'city',
+					'postcode',
+					'county',
+					'primary_phone',
+					'email',
+					'medicare_id',
+					'RVEEH_UR',
+					'date_of_death',
+					'referred_to',
+					'created_date',
+					'diagnosis',
+					'diagnosis_side_l',
+					'diagnosis_side_r',
+					'diagnosis_date',
+					'vision_reading_l',
+					'vision_reading_r',
+					'vision_date',
+					'vision_reading_scale',
+					'unable_to_assess_l',
+					'unable_to_assess_r',
+					'eye_missing_l',
+					'eye_missing_r',
+					'visual_method_l',
+					'visual_method_r'
+				);
+
+				//Check for unexpected fields
+				foreach (array_keys($patient_raw_data) as $field) {
+					if(!in_array($field, $expected_fields)) {
+						$errors[] = "Unexpected field: " . $field;
+					}
+				}
+
 				$mandatory_fields = array(
 					'first_name',
 					'last_name',
@@ -262,10 +322,9 @@ class CsvController extends BaseController
 				$mandatory_diagnosis_fields = array(
 					'diagnosis_side_l',
 					'diagnosis_side_r',
-					'diagnosis_principal',
 					'diagnosis_date');
 
-				//If a mandatory field is missing or empty, throw error
+				//Check if any mandatory field is blank
 				foreach ($mandatory_fields as $field) {
 					if(!array_key_exists($field, $patient_raw_data) || $patient_raw_data[$field] == ''){
 						$errors[] = "Mandatory field missing: " . $field;
@@ -290,8 +349,11 @@ class CsvController extends BaseController
 					}
 				}
 
-				//Throw errors if mandatory fields are missing or diagnosis fields are included that are not attached to a diagnosis
-				if(count($errors) > 0)
+				//Throw errors if any of the following are true
+				//-A mandatory field is missing
+				//-A diagnosis is included but other fields are blank
+				//-An unexpected field is included
+				if(!empty($errors))
 				{
 					return $errors;
 				}
@@ -398,8 +460,8 @@ class CsvController extends BaseController
         }
 
         //Set values that cannot be directly translated from csv
-				if(array_key_exists('medicare_ID', $patient_raw_data) && $patient_raw_data['medicare_ID']) {
-					$new_patient->nhs_num = $patient_raw_data['medicare_ID'];
+				if(array_key_exists('medicare_id', $patient_raw_data) && $patient_raw_data['medicare_id']) {
+					$new_patient->nhs_num = $patient_raw_data['medicare_id'];
 				}
 
         $new_patient->hos_num = !empty($patient_raw_data['CERA_ID']) ? $patient_raw_data['CERA_ID'] : Patient::autoCompleteHosNum();
@@ -426,29 +488,23 @@ class CsvController extends BaseController
         //patient contact assignments
 
         //referred to
-        if(!empty($patient['referred_to_first_name']) || !empty($patient['referred_to_last_name'])){
-            if(!empty($patient['referred_to_first_name']) && !empty($patient['referred_to_last_name'])) {
-                //Find if exists
-                $referred_to = User::model()->findByAttributes(array(
-                    'first_name' => $patient['referred_to_first_name'],
-                    'last_name' => $patient['referred_to_last_name'],
-                ));
-                if ($referred_to === null) {
-                    $errors[] = 'Cannot find referred to user';
-                    return $errors;
-                }
-                $pat_ref = new PatientUserReferral();
-                $pat_ref->user_id = $referred_to->id;
-                $pat_ref->patient_id = $new_patient->id;
-                if (!$pat_ref->save()) {
-                    $errors[] = 'Could not save referred to user';
-                    array_unshift($errors, $pat_ref->getErrors());
-                    return $errors;
-                }
-            } else {
-                $errors[] = 'Both names must be present to import referred_to for this patient';
-                return $errors;
-            }
+        if(!empty($patient['referred_to'])){
+					//Find if exists
+					$referred_to = User::model()->findByAttributes(array(
+							'username' => $patient_raw_data['referred_to']
+					));
+					if ($referred_to === null) {
+							$errors[] = 'Cannot find referred to user: ' . $patient_raw_data['referred_to'];
+							return $errors;
+					}
+					$pat_ref = new PatientUserReferral();
+					$pat_ref->user_id = $referred_to->id;
+					$pat_ref->patient_id = $new_patient->id;
+					if (!$pat_ref->save()) {
+							$errors[] = 'Could not save referred to user';
+							array_unshift($errors, $pat_ref->getErrors());
+							return $errors;
+					}
         }
 
         //optom
@@ -580,13 +636,15 @@ class CsvController extends BaseController
             }
         }
 
-				//Create events and elements for diagnosis and visual acuity
-				if(!empty($patient_raw_data['diagnosis'])) {
+				//Create events and elements for diagnosis
+				if(!empty($patient_raw_data['diagnosis']) || !empty($patient_raw_data['vision_l']) || !empty($patient_raw_data['vision_r'])) {
 					$context = Firm::model()->findByAttributes(array(
 							'name' => !empty($patient_raw_data['context']) ? $patient_raw_data['context'] :  'Medical Retinal firm'
 					));
+
+					//We need an episode to store patient exam data
 					$episode = new Episode();
-					$episode->firm = $context;
+					//$episode->firm = $context;
 					$episode->patient_id = $new_patient->id;
 					if(!$episode->save()){
 							$errors[] = 'Could not save new episode';
@@ -594,61 +652,177 @@ class CsvController extends BaseController
 							return $errors;
 					}
 
-					$event = new Event();
-					$event->event_type_id = EventType::model()->findByAttributes(['name' => 'Examination'])->id;
-					$event->episode_id = $episode->id;
+					//If the patient has a diagnosis, create an examination event to store it
+					if(!empty($patient_raw_data['diagnosis'])) {
+						$diagnosis_event = new Event();
+						$diagnosis_event->event_type_id = EventType::model()->findByAttributes(['name' => 'Examination'])->id;
+						$diagnosis_event->episode_id = $episode->id;
 
-					if(!$event->save()){
-							$errors[] = 'Could not save new event';
-							array_unshift($errors, $event->getErrors());
+						if (!$diagnosis_event->save()) {
+							$errors[] = 'Could not save new diagnosis event';
+							array_unshift($errors, $diagnosis_event->getErrors());
 							return $errors;
-					}
+						}
 
-					//create diagnoses element
-					$diagnoses_element = new \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses();
-					$diagnoses_element->event_id = $event->id;
+						//create diagnoses element
+						$diagnoses_element = new \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses();
+						$diagnoses_element->event_id = $diagnosis_event->id;
 
-					if(!$diagnoses_element->save()){
-							$errors[] = 'could not save diagnoses element';
+						if (!$diagnoses_element->save()) {
+							$errors[] = 'Could not save diagnoses element';
 							array_unshift($errors, $diagnoses_element->getErrors());
-					}
+						}
 
-					//Warning: This will accept any value that is not 'Y' as false
-					$left = $patient_raw_data['diagnosis_side_l'] == 'Y';
-					$right = $patient_raw_data['diagnosis_side_r'] == 'Y';
+						if($patient_raw_data['diagnosis_side_l'] != 'Y' && $patient_raw_data['diagnosis_side_l'] != 'N') {
+							$errors[] = 'Field diagnosis_side_l must be Y, N, or blank';
+						}
+						if($patient_raw_data['diagnosis_side_r'] != 'Y' && $patient_raw_data['diagnosis_side_r'] != 'N') {
+							$errors[] = 'Field diagnosis_side_r must be Y, N, or blank';
+						}
 
-					$eye_id = ($left * 2 + $right * 1);//This is terrible. Fix it.
+						$diagnosis_left = $patient_raw_data['diagnosis_side_l'] == 'Y';
+						$diagnosis_right = $patient_raw_data['diagnosis_side_r'] == 'Y';
 
-					//Abusing soundex to strip commas and quotes and to more fuzzily match a potentially misspelled diagnosis
-					$disorder_info = Yii::app()->db->createCommand('select id from disorder WHERE SOUNDEX(term) = SOUNDEX(\'' . $patient_raw_data['diagnosis'] . '\')')->queryAll();
+						//Derive affected eye by performing binary style operation on left and right booleans
+						//This formula maps two booleans (One for each eye) to a number from 0-3 inclusive
+						//A value of 0 indicates no eye, 1, 2 and 3 indicate right, left, and both eyes respectively
+						//This is the fastest way to map two boolean values to an eye in the database
+						$diagnosis_eye_id = ($diagnosis_left * 1 + $diagnosis_right * 2);
 
-					if(count($disorder_info) == 0) {
-						$errors[] = "Could not find disorder matching name: " . $patient_raw_data['diagnosis'];
-						return $errors;
-					}else {
-						$disorder = Disorder::model()->findByPk($disorder_info[0]['id']);
-					}
-//					if($disorder == null) {
-//						$errors[] = "Could not find disorder matching name: " . $patient['diagnosis'];
-//						return $errors;
-//					}
+						//Check if no eye is affected by diagnosis
+						if ($diagnosis_eye_id == 0) {
+							$errors[] = "Cannot save diagnosis that does not affect an eye";
+							return $errors;
+						}
 
-					$diagnosis = new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis();
-					$diagnosis->element_diagnoses_id = $diagnoses_element->id;
-					$diagnosis->disorder_id = $disorder->id;
-					$diagnosis->eye_id = $eye_id;
-					$diagnosis->date = date("Y-m-d", strtotime(str_replace('/', '-', $patient_raw_data['diagnosis_date'])));
-					$diagnosis->principal = $patient_raw_data['diagnosis_principal'];
+						//Abusing soundex to strip commas and quotes and to more fuzzily match a potentially misspelled diagnosis
+						$found_disorder = Yii::app()->db->createCommand('select id from disorder WHERE SOUNDEX(term) = SOUNDEX(\'' . $patient_raw_data['diagnosis'] . '\')')->queryAll();
 
-					if($diagnosis->eye_id == 0) {
-						$errors[] = "Cannot save diagnosis that does not affect an eye";
-						return $errors;
-					}
+						if (count($found_disorder) == 0) {
+							$errors[] = "Could not find disorder matching name: " . $patient_raw_data['diagnosis'];
+							return $errors;
+						} else {
+							$disorder = Disorder::model()->findByPk($found_disorder[0]['id']);
+						}
 
-					if(!$diagnosis->save()){
+						$diagnosis = new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis();
+						$diagnosis->element_diagnoses_id = $diagnoses_element->id;
+						$diagnosis->disorder_id = $disorder->id;
+						$diagnosis->eye_id = $diagnosis_eye_id;
+						$diagnosis->date = date("Y-m-d", strtotime(str_replace('/', '-', $patient_raw_data['diagnosis_date'])));
+						$diagnosis->principal = true;
+
+						if (!$diagnosis->save()) {
 							$errors[] = 'Could not save diagnosis';
 							$errors[] = $diagnosis->getErrors();
 							return $errors;
+						}
+
+						$episode->disorder_id = $disorder->id;
+					}
+
+					//Check whether we have readings for left and right
+					$has_reading_left = !empty($patient_raw_data['vision_reading_l']);
+					$has_reading_right = !empty($patient_raw_data['vision_reading_r']);
+
+					//If the patient has visual acuity reading(s), create an examination event to store them
+					if($has_reading_left || $has_reading_right) {
+						$errors[] = "Visual Acuity functionality not yet implemented.";
+						return $errors;
+
+						//Functionality commented until Visual Acuity functionality can be funded and confirmed.
+//						$visual_event = new Event();
+//						$visual_event->event_type_id = EventType::model()->findByAttributes(['name' => 'Examination'])->id;
+//						$visual_event->episode_id = $episode->id;
+//						$visual_event->event_date = date("Y-m-d", strtotime(str_replace('/', '-', $patient_raw_data['vision_reading_date'])));
+//
+//						if (!$visual_event->save()) {
+//							$errors[] = 'Could not save new visual acuity event';
+//							array_unshift($errors, $visual_event->getErrors());
+//							return $errors;
+//						}
+//
+//						//Derive affected eye by performing binary style operation on left and right booleans
+//						//This formula maps two booleans (One for each eye) to a number from 0-3 inclusive
+//						//A value of 0 indicates no eye, 1, 2 and 3 indicate right, left, and both eyes respectively
+//						//This is the fastest way to map two boolean values to an eye in the database
+//						$visual_eye_id = ($has_reading_left * 1 + $has_reading_right * 2);
+//
+//						$visual_element = new OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
+//						$visual_element->event_id = $visual_event->id;
+//						$visual_element->eye_id = $visual_eye_id;
+//
+//						$visual_element->left_unable_to_assess = $patient_raw_data['unable_to_assess_l'] == 'Y';
+//						$visual_element->right_unable_to_assess = $patient_raw_data['unable_to_assess_r'] == 'Y';
+//
+//						$visual_element->left_eye_missing = $patient_raw_data['eye_missing_l'] == 'Y';
+//						$visual_element->right_eye_missing = $patient_raw_data['eye_missing_r'] == 'Y';
+//
+//						$visual_measurement_unit = OphCiExamination_VisualAcuityUnit::model()->findByAttributes(['name' => $patient_raw_data['vision_reading_scale']]);
+//						$visual_element->unit_id = $visual_measurement_unit->id;
+//
+//						//Yii::log(var_export($visual_element, true));
+//						if (!$visual_element->save()) {
+//							$errors[] = 'Could not save new visual acuity element';
+//							array_unshift($errors, $visual_element->getErrors());
+//							return $errors;
+//						}
+//
+//						//If VA readings exist, add them
+//						if($has_reading_left) {
+//							if($visual_element->left_unable_to_assess) {
+//								$errors[] = "Left eye marked unable to assess, even though it has a VA reading.";
+//								return $errors;
+//							}
+//							if($visual_element->left_eye_missing) {
+//								$errors[] = "Left eye marked as missing, even though it has a VA reading.";
+//								return $errors;
+//							}
+//
+//							$left_reading = new OphCiExamination_VisualAcuity_Reading();
+//
+//							$left_reading->side = OphCiExamination_VisualAcuity_Reading::LEFT;
+//							$left_reading->method_id = OphCiExamination_VisualAcuity_Method::model()->findByAttributes(['name' => $patient_raw_data['visual_method_l']])->id;
+//							//Find a base reading value by referencing visualAcuityUnitValue table with VA measurement unit and corresponding value
+//							$left_reading->value =
+//								OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(
+//									['value' => $patient_raw_data['vision_reading_l'],
+//										'unit_id' => $visual_measurement_unit->id])->base_value;
+//
+//							$left_reading->element_id = $visual_element->id;
+//
+//							if(!$left_reading->save()) {
+//								$errors[] = $left_reading->getErrors();
+//								return $errors;
+//							}
+//						}
+//						if($has_reading_right) {
+//							if($visual_element->right_unable_to_assess) {
+//								$errors[] = "Right eye marked unable to assess, even though it has a VA reading.";
+//								return $errors;
+//							}
+//							if($visual_element->right_eye_missing) {
+//								$errors[] = "Right eye marked as missing, even though it has a VA reading.";
+//								return $errors;
+//							}
+//
+//							$right_reading = new OphCiExamination_VisualAcuity_Reading();
+//
+//							$right_reading->side = OphCiExamination_VisualAcuity_Reading::RIGHT;
+//							$right_reading->method_id = OphCiExamination_VisualAcuity_Method::model()->findByAttributes(['name' => $patient_raw_data['visual_method_r']])->id;
+//							//Find a base reading value by referencing visualAcuityUnitValue table with VA measurement unit and corresponding value
+//							$right_reading->value =
+//								OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(
+//									['value' => $patient_raw_data['vision_reading_r'],
+//										'unit_id' => $visual_measurement_unit->id])->base_value;
+//
+//							$right_reading->element_id = $visual_element->id;
+//
+//							if(!$right_reading->save()) {
+//								$errors[] = $right_reading->getErrors();
+//								return $errors;
+//							}
+//						}
 					}
         }
 
