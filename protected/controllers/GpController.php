@@ -182,19 +182,32 @@ class GpController extends BaseController
         Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
         $model = $this->loadModel($id);
         $contact = $model->contact;
+        $cpas = $model->contactPracticeAssociate;
         $contact->setScenario(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
 
         $this->performAjaxValidation($contact);
 
         if (isset($_POST['Contact'])) {
-
             $contact->attributes = $_POST['Contact'];
             $this->performAjaxValidation($contact);
-            list($contact, $model) = $this->performGpSave($contact, $model);
+            $index = 0;
+            foreach($_POST['ContactPracticeAssociate'] as $cpa) {
+                $cpas[$index]->provider_no = $cpa['provider_no'];
+                $index++;
+            }
+
+            if($contact->validate()) {
+                foreach($cpas as $cpa) {
+                    $update = Yii::app()->db->createCommand()
+                        ->update('contact_practice_associate', array('provider_no' => !empty($cpa->provider_no) ? $cpa->provider_no : null),'id=:id', array(':id'=>$cpa->id));
+                }
+                list($contact, $model) = $this->performGpSave($contact, $model);
+            }
         }
 
         $this->render('update', array(
             'model' => $contact,
+            'cpas' => $cpas,
         ));
     }
 
