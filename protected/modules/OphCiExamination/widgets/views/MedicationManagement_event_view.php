@@ -31,9 +31,12 @@
                                 <col class="cols-3" />
                                 <col class="cols-3"/>
                                 <col class="cols-1"/>
-                                <col class="cols-3"/>
+                                <col class="cols-2"/>
                                 <col class="cols-1" />
                                 <col class="cols-1"/>
+															<?php if($section === "Stopped") { ?>
+																<col class="cols-1"/>
+															<?php } ?>
                             </colgroup>
                             <thead>
                             <tr>
@@ -43,6 +46,9 @@
                                 <th></th>
                                 <th></th>
                                 <th></th>
+															<?php if($section === "Stopped") { ?>
+																<th></th>
+															<?php } ?>
                             </tr>
                             <tr>
                                 <th>Medication</th>
@@ -51,11 +57,18 @@
                                 <th>Dispense Condition/Location</th>
                                 <th>Laterality</th>
                                 <th>Start date</th>
+															<?php if($section === "Stopped") { ?>
+																<th>Stop date</th>
+															<?php } ?>
                             </tr>
                             </thead>
                             <tbody>
                             <?php foreach ($entries as $entry): ?>
-                                <?php echo $this->render('MedicationManagementEntry_event_view', ['entry' => $entry]); ?>
+                                <?php echo $this->render('MedicationManagementEntry_event_view',
+																[
+																	'entry' => $entry,
+																	'stopped' => $section === "Stopped"
+																	]); ?>
                             <?php endforeach; ?>
                             </tbody>
                         </table>
