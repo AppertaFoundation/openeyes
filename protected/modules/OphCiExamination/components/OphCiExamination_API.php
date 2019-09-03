@@ -2977,10 +2977,10 @@ class OphCiExamination_API extends \BaseAPI
                             <td>
                             </td>
                             <td>
-                                <?= $taper->frequency->long_name ?>
+                                <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
                             </td>
                             <td>
-                                <?= $taper->duration->name ?>
+                                <?= $taper->duration ? $taper->duration->name : '' ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
