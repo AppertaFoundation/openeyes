@@ -351,6 +351,7 @@ class CsvController extends BaseController
 				//Throw errors if any of the following are true
 				//-A mandatory field is missing
 				//-A diagnosis is included but other fields are blank
+				//-A diagnosis is not included but other fields are not blank
 				//-An unexpected field is included
 				if(!empty($errors))
 				{
@@ -431,7 +432,8 @@ class CsvController extends BaseController
         $address->contact_id = $contact->id;
 
         if(!$address->save()){
-            return $address->getErrors();
+        		$errors[] = $address->getErrors();
+            return $errors;
         }
 
         $new_patient = new Patient();
@@ -466,9 +468,17 @@ class CsvController extends BaseController
         $new_patient->hos_num = !empty($patient_raw_data['CERA_ID']) ? $patient_raw_data['CERA_ID'] : Patient::autoCompleteHosNum();
 				$new_patient->contact_id = $contact->id;
 
+				if($new_patient->dob > $new_patient->date_of_death) {
+					$errors[] = "Patient date of death cannot predate patient date of birth";
+				}
+				if($new_patient->dob > date("Y-m-d")) {
+					$errors[] = "Patient date of birth cannot postdate current date";
+				}
+
         $new_patient->setScenario('other_register');
         if(!$new_patient->save()){
-            return $new_patient->getErrors();
+            $errors[] = $new_patient->getErrors();
+            return $errors;
         }
 
         //Add a RVEEH_UR value for patient
@@ -673,10 +683,10 @@ class CsvController extends BaseController
 						}
 
 						if($patient_raw_data['diagnosis_side_l'] != 'Y' && $patient_raw_data['diagnosis_side_l'] != 'N') {
-							$errors[] = 'Field diagnosis_side_l must be Y, N, or blank';
+							$errors[] = 'Field diagnosis_side_l must be Y or N';
 						}
 						if($patient_raw_data['diagnosis_side_r'] != 'Y' && $patient_raw_data['diagnosis_side_r'] != 'N') {
-							$errors[] = 'Field diagnosis_side_r must be Y, N, or blank';
+							$errors[] = 'Field diagnosis_side_r must be Y or N';
 						}
 
 						$diagnosis_left = $patient_raw_data['diagnosis_side_l'] == 'Y';
@@ -695,7 +705,12 @@ class CsvController extends BaseController
 						}
 
 						//Abusing soundex to strip commas and quotes and to more fuzzily match a potentially misspelled diagnosis
-						$found_disorder = Yii::app()->db->createCommand('select id from disorder WHERE SOUNDEX(term) = SOUNDEX(\'' . $patient_raw_data['diagnosis'] . '\')')->queryAll();
+						$found_disorder =
+							Yii::app()->db->createCommand(
+								'SELECT term 
+									FROM  disorder 
+									WHERE REGEXP_REPLACE(disorder.term, \'[\W]\', \'\') = 
+									REGEXP_REPLACE('. $patient_raw_data['diagnosis'] . ', \'[\W]\', \'\')')->queryAll();
 
 						if (count($found_disorder) == 0) {
 							$errors[] = "Could not find disorder matching name: " . $patient_raw_data['diagnosis'];
@@ -710,6 +725,13 @@ class CsvController extends BaseController
 						$diagnosis->eye_id = $diagnosis_eye_id;
 						$diagnosis->date = date("Y-m-d", strtotime(str_replace('/', '-', $patient_raw_data['diagnosis_date'])));
 						$diagnosis->principal = true;
+
+						if($diagnosis->date < $new_patient->dob) {
+							$errors[] = "Diagnosis date cannot predate patient date of birth";
+						}
+						if($diagnosis->date > date("Y-m-d")) {
+							$errors[] = "Diagnosis date cannot postdate current date";
+						}
 
 						if (!$diagnosis->save()) {
 							$errors[] = 'Could not save diagnosis';
@@ -726,7 +748,7 @@ class CsvController extends BaseController
 
 					//If the patient has visual acuity reading(s), create an examination event to store them
 					if($has_reading_left || $has_reading_right) {
-						$errors[] = "Visual Acuity functionality not yet implemented.";
+						$errors[] = "Visual Acuity functionality not yet implemented";
 						return $errors;
 
 						//Functionality commented until Visual Acuity functionality can be funded and confirmed.
@@ -770,11 +792,11 @@ class CsvController extends BaseController
 //						//If VA readings exist, add them
 //						if($has_reading_left) {
 //							if($visual_element->left_unable_to_assess) {
-//								$errors[] = "Left eye marked unable to assess, even though it has a VA reading.";
+//								$errors[] = "Left eye marked unable to assess, even though it has a VA reading";
 //								return $errors;
 //							}
 //							if($visual_element->left_eye_missing) {
-//								$errors[] = "Left eye marked as missing, even though it has a VA reading.";
+//								$errors[] = "Left eye marked as missing, even though it has a VA reading";
 //								return $errors;
 //							}
 //
@@ -797,11 +819,11 @@ class CsvController extends BaseController
 //						}
 //						if($has_reading_right) {
 //							if($visual_element->right_unable_to_assess) {
-//								$errors[] = "Right eye marked unable to assess, even though it has a VA reading.";
+//								$errors[] = "Right eye marked unable to assess, even though it has a VA reading";
 //								return $errors;
 //							}
 //							if($visual_element->right_eye_missing) {
-//								$errors[] = "Right eye marked as missing, even though it has a VA reading.";
+//								$errors[] = "Right eye marked as missing, even though it has a VA reading";
 //								return $errors;
 //							}
 //
