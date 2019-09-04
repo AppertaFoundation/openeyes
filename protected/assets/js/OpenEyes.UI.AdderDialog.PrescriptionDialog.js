@@ -129,9 +129,6 @@
                 $(results).each(function (index, result) {
                     let dataset = AdderDialog.prototype.constructDataset(result);
                     let item = $("<li />", dataset);
-                    if (typeof result.prepended_markup !== "undefined") {
-                        $(result.prepended_markup).appendTo(item);
-                    }
                     item.append(dataset['data-prepended_markup'], $('<span />', {class: 'auto-width'}).text(dataset['data-label']));
 
                     dialog.searchResultList.append(item);
