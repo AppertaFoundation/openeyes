@@ -72,7 +72,6 @@ EOH;
 
         //delete any existing sets with the same name as the new sets
         if ($current_set) {
-
             try {
                 \MedicationSetAutoRuleAttribute::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
                 \MedicationSetAutoRuleMedication::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
@@ -91,7 +90,6 @@ EOH;
                     );
 
                 $current_set->delete();
-
             } catch (\Exception $exception) {
                 \OELog::log($exception->getMessage());
             }
@@ -102,7 +100,6 @@ EOH;
         $current_set->name = $set_name;
 
         foreach ($setRecords as $key => $row) {
-
             switch ($row["type"]) {
                 case "VTM":
                 case "VMP":
@@ -142,7 +139,6 @@ EOH;
                     }
                     break;
             }
-
         }
         $current_set->automatic = 1;
         $current_set->hidden = 1;
