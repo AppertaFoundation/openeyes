@@ -110,7 +110,7 @@ class PracticeController extends BaseController
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
 
-            if ($contactPractice->validate(array('first_name', 'primary_phone')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
+            if ($contactPractice->validate(array('first_name')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
 
                 $practice_contact_associate = new ContactPracticeAssociate();
                 $practice_contact_associate->provider_no = !empty($_POST['ContactPracticeAssociate']['provider_no']) ? $_POST['ContactPracticeAssociate']['provider_no'] : null;
@@ -273,6 +273,7 @@ class PracticeController extends BaseController
                     $transaction->rollback();
                 }
             } else {
+                $practice->validate();
                 $address->validate();
                 $address->clearErrors('contact_id');
                 if ($isAjax) {
