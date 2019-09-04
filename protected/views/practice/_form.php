@@ -85,7 +85,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
         <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
             <tr>
                 <td>
-                    <label><?php echo $gp->getAttributeLabel('Practitioner'); ?> <span class="required">*</span></label>
+                    <label><?php echo $gp->getAttributeLabel('Practitioner'); ?></label>
                 </td>
                 <td>
                     <?php echo $form->error($gp, 'id'); ?>
@@ -126,13 +126,28 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
         maxHeight: '200px',
         onSelect: function(){
             let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-            $('.js-selected_gps').append(
-                '<li>' +
-                    '<span class="js-name" style="text-align:justify">'+ AutoCompleteResponse.label +'</span>' +
-                    '<i id=js-remove-gp-'+AutoCompleteResponse.id  + ' class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>' +
-                    '<input type="hidden" name="Gp[id][]" class="js-gps" value="'+ AutoCompleteResponse.id +'">' +
-                '</li>'
-            );
+            let addGp = true;
+
+            // traversing the li's to make sure we don't have duplicates.
+            $.each($('.js-selected_gps li'), function() {
+                var gpId = $(this).find('.js-gps').val();
+
+                if (gpId === AutoCompleteResponse.id){
+                    addGp = false;
+                    return addGp;
+                }
+            });
+
+            // If the gpid does not already exist in the list then add it to the list.
+            if(addGp) {
+                $('.js-selected_gps').append(
+                    '<li>' +
+                    '<span class="js-name" style="text-align:justify">' + AutoCompleteResponse.label + '</span>' +
+                    '<i id=js-remove-gp-' + AutoCompleteResponse.id + ' class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>' +
+                    '<input type="hidden" name="Gp[id][]" class="js-gps" value="' + AutoCompleteResponse.id + '">' +
+                    '</li>'
+                );
+            }
         }
     });
 
@@ -140,6 +155,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
         $(this).parent('li').find('span').text('');
         $(this).parent('li').find('input').remove();
         $(this).parent('li').hide();
+        $(this).parent('li').remove();
     });
 
     $(document).ready(function ()
