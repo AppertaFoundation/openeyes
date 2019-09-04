@@ -65,6 +65,9 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    /**
+     * @return bool
+     */
     protected function initEdit()
     {
         if (!$this->checkPrintAccess()) {
@@ -79,15 +82,16 @@ class DefaultController extends BaseEventTypeController
 
         $this->setCommonDrugMetadata();
         $this->showAllergyWarning();
-        // Save and print clicked, stash print flag
-        if (isset($_POST['saveprint'])) {
-            Yii::app()->session['print_prescription'] = true;
-        }
-        // Save and print FP10 clicked, stash print form flag
+
         if (isset($_POST['saveprintform'])) {
+            // Save and print FP10 clicked, stash print form flag
             $form_format = strtolower(SettingMetadata::model()->getSetting('prescription_form_format'));
             Yii::app()->session["print_prescription_$form_format"] = true;
+        } elseif (isset($_POST['saveprint'])) {
+            // Save and print clicked, stash print flag
+            Yii::app()->session['print_prescription'] = true;
         }
+        return true;
     }
 
     public function printActions()
