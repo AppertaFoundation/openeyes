@@ -138,7 +138,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 </div>
             </div>
         </td>
-        <td>
+        <td id="<?= $model_name."_entries_".$row_count."_start_date_error" ?>">
             <fieldset>
                 <input type="hidden" name="<?= $field_prefix ?>[start_date]"
                        value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
@@ -154,7 +154,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 <?php endif; ?>
             </fieldset>
         </td>
-        <td class="end-date-column">
+        <td class="end-date-column"  id="<?= $model_name."_entries_".$row_count."_end_date_error" ?>">
             <div class="alternative-display inline">
                 <div class="alternative-display-element textual">
                     <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
@@ -176,7 +176,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 </fieldset>
             </div>
         </td>
-        <td>
+        <td id="<?= $model_name."_entries_".$row_count."_stop_reason_id_error" ?>">
             <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'js-stop-reason cols-11', 'style' => $is_new || is_null($entry->end_date) ? "display:none" : null)) ?>
             <?php /* <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a> */ ?>
         </td>
@@ -185,7 +185,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),
                 array('empty' => '- Select -', 'class' => 'cols-full js-duration', 'style' => $prescribe_hide_style)) ?>
         </td>
-        <td>
+        <td id="<?= $model_name."_entries_".$row_count."_dispense_condition_id_error" ?>">
             <?=\CHtml::dropDownList($field_prefix.'[dispense_condition_id]',
                 $entry->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
                     'condition' => "active or id='" . $entry->dispense_condition_id . "'",
@@ -193,7 +193,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 )), 'id', 'name'), array('class' => 'js-dispense-condition cols-11', 'empty' => '- Select -', 'style' => $prescribe_hide_style)); ?>
 
         </td>
-        <td>
+        <td id="<?= $model_name."_entries_".$row_count."_dispense_location_id_error" ?>">
             <?php
             $locations = $entry->dispense_condition ? $entry->dispense_condition->locations : array('');
             $style = $entry->dispense_condition ? '' : 'display: none;';
