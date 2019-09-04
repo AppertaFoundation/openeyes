@@ -24,9 +24,14 @@ truncate table audit_useragent;
 SELECT "TRUNCATE TABLE patient_user_referral" AS "";
 TRUNCATE TABLE patient_user_referral;
 
+/*As required, we need keep "admin" and "docman" user.
+Which means we need to keep the corresponding contact information as well*/
 SELECT "TRUNCATE TABLE contact" AS "";
 delete from contact
-where id not in (1, 576754);
+where id not in (
+    select contact_id from user
+    where user.username in ('admin', 'docman_user')
+);
 
 SELECT "TRUNCATE TABLE contact_location" AS "";
 truncate table contact_location;
