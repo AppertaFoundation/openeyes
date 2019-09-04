@@ -26,22 +26,58 @@ class MedicationController extends BaseAdminController
 
     public $assetPath;
 
+    public function actionIndex() {
+        $asset_manager = \Yii::app()->getAssetManager();
+        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $asset_manager->publish($base_assets_path);
+
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+
+        $model = new Medication();
+        $model->unsetAttributes();
+        if (isset($_GET['Medication'])) {
+            $model->attributes = $_GET['Medication'];
+        }
+
+        $criteria = $this->getSearchCriteria();
+        $filters = \Yii::app()->request->getParam('search');
+
+        $data_provider = new CActiveDataProvider('medication', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = $this->itemsPerPage;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        $this->render('/Medication/index', [
+            'data_provider' => $data_provider,
+            'search' => $filters
+        ]);
+    }
+
     private function getSearchCriteria()
     {
         $filters = \Yii::app()->request->getParam('search', []);
         $criteria = new \CDbCriteria();
 
-        if (isset($filters['set_id']) && $filters['set_id']) {
-            $criteria->together = true;
-            $criteria->with = ['medicationSetItems.medicationSet'];
+        $searchFields = [
+            'source_type',
+            'source_subtype',
+            'preferred_code',
+            'preferred_term'
+        ];
 
-            $criteria->addCondition('medicationSet.id = :set_id');
-            $criteria->params[':set_id'] = $filters['set_id'];
-        }
+        $addSearch = function ($field) use ($criteria, $filters) {
+            if (isset($filters[$field])) {
+                $criteria->addCondition($field . ' = :' . $field);
+                $criteria->params[':' . $field] = $filters[$field];
+            }
+        };
 
-        if (isset($filters['query']) && $filters['query']) {
-            $criteria->addSearchCondition('preferred_term', trim($filters['query']));
-        }
+        array_map($addSearch, $searchFields);
 
         return $criteria;
     }
