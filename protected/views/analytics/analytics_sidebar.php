@@ -323,7 +323,7 @@
                 placeholder="to" autocomplete="off">
     </div>
     <div class="row">
-        <button id="js-clear-date-range" class="pro-theme" onclick="viewAllDates()" type="button">View all dates</button>
+        <button id="js-clear-date-range" class="pro-theme" type="button">View all dates</button>
     </div>
     <button class="pro-theme green hint cols-full update-chart-btn" type="submit">Update Chart</button>
 </form>
@@ -333,4 +333,3 @@
     <button id="js-download-csv" data-anonymised="0" class="pro-theme cols-full">Download (CSV)</button>
     <button id="js-download-anonymized-csv" data-anonymised="1" class="pro-theme cols-full">Download (CSV - Anonymised)</button>
 </div>
-

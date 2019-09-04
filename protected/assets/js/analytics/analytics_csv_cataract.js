@@ -1,5 +1,4 @@
 var analytics_csv_cataract = (function(){
-
     function pcr_risk_to_csv(){
         var data = $('#PcrRiskReport')[0].data[0];
         var file_name = data.name;

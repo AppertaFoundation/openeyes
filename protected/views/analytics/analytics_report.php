@@ -10,7 +10,20 @@
 	<!--">-->
 	<link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('css/dashboard.css')?>">
 	<link rel="stylesheet"
-		href="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/themes/base/minified/jquery.ui.datepicker.min.css')?>">
+        href="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/themes/base/minified/jquery.ui.datepicker.min.css')?>">
+    <style>
+        #js-analytics-spinner{
+            position: absolute;
+            overflow:hidden;
+            background: rgba(0, 0, 0, .3);
+            z-index: 9999;
+            width: 100%;
+            height: 100%;
+        }
+        html{
+            overflow:hidden;
+        }
+    </style>
 </head>
 
 <body>
@@ -24,7 +37,6 @@
 	</nav>
     <main class="oe-analytics flex-layout flex-top cols-full">
         <div class="cols-3" style="position:sticky;top:0;z-index:5;">
-            <p id="a" style="background:red;"><?=$specialty;?></p>
             <div class="analytics-options">
                 <div class="select-analytics flex-layout">
                     <h3>Select options</h3>
@@ -82,11 +94,12 @@
             </table>
         </div>
         <div id="js-analytics-spinner" style="display: none;"><i class="spinner"></i></div>
-    </main>analytics_custom
+    </main>
     <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/jspdf/dist/jspdf.min.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/plotly.js-dist/plotly.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/dashboard/OpenEyes.Dash.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_toolbox.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_dataCenter.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_sidebar.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_custom.js')?>"></script>
@@ -96,62 +109,10 @@
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_csv_cataract.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_cataract.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_drill_down.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_init.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/enhancedPopupFixed.js')?>"></script>
     <script>
-        window.csv_data_for_report = {};
-    </script>
-    <script>
-        $('.oescape-icon-btns a').on('click', function(e){
-            // mute a tag default behavior
-            e.preventDefault();
-            $('#js-analytics-spinner').show();
-            $(this).addClass('selected');
-            $('.icon-btn a').not(this).removeClass('selected');
-            var target = this.href;
-            var specialty = analytics_toolbox.getCurrentSpecialty();
-            $('.specialty').html(specialty);
-            
-            $.ajax({
-                url: target,
-                type: "POST",
-                data: {
-                    "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-                    "specialty": specialty
-                },
-                // async: false,
-                success: function(response){
-                    var data = JSON.parse(response);
-                    // console.log(data)
-                    // var data = getPHPData;
-                    // console.log(data);
-                    var side_bar_user_list = JSON.parse(<?=json_encode($user_list);?>)
-                    var current_userid = JSON.parse(<?=json_encode($current_user);?>)
-                    console.log(current_userid);
-                    console.log(side_bar_user_list);
-                    // console.log(php_data)
-                    // console.log(data);
-                    $('#sidebar').html(data['dom']['sidebar']);
-                    // $('#plot').html(dom['dom']['plot']['service']+dom['dom']['plot']['clinical']);
-                    $('#plot').html(data['dom']['plot']);
-                    $('#plot').html(data['dom']['drill'])
-                    // analytics_service(data['service_data'], data['data_sum'], target);
-                    // analytics_clinical('', data['clinical_data'])
-                    // analytics_drill_down(target);
-                    if(specialty.toLowerCase() === 'cataract'){
-                        $('#js-analytics-spinner').hide();
-                        console.log(data['data']);
-                        analytics_cataract(data['data'], side_bar_user_list);
-                        return;  
-                    }
-                    analytics_sidebar(data['data'], target, side_bar_user_list, current_userid);
-                    // var csv_data = dom['data'] ? dom['data']
-                    analytics_drill_down();
-                    $('#js-analytics-spinner').hide();
-                }
-            });
-        })
-
-        $('#js-all-specialty-tab').click();
+        analytics_init();
     </script>
 </body>
 

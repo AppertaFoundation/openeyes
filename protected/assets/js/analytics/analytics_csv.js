@@ -1,35 +1,21 @@
 var analytics_csv_download = (function () {
 
+	var ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 1000;
+	var g_custom_flag = false;
+
 	function current_service_data_to_csv(anonymized = false, service_data, additional_file_name) {
-		// if ($('#js-hs-app-follow-up-overdue').hasClass('selected')){
-		//     var data = window.csv_data_for_report['service_data']['overdue'];
-		//     var file_name = "service_overdue_followups";
-		// }else if ($('#js-hs-app-follow-up-coming').hasClass('selected')){
-		//     var data = window.csv_data_for_report['service_data']['coming'];
-		//     var file_name = "service_coming_followups";
-		// } else{
-		//     var data = window.csv_data_for_report['service_data']['waiting'];
-		//     var file_name = "service_waiting_followups";
-		// }
 		var csv_file = 'First Name, Last Name, Hos Num, DOB, Age, Diagnoses, Weeks\n';
-		var file_name = 'service_' + additional_file_name + '_followups';
+		var file_name = analytics_toolbox.getCurrentSpecialty() + '_service_' + additional_file_name + '_followups';
+
 		var data = service_data
-		// console.log(data)
+
 		if (anonymized) {
 			file_name += ' - Anonymised';
 			csv_file = "DOB, Age, Diagnoses, Weeks\n";
 		}
 		data.forEach(function (item) {
-			//  console.log(Object.values(item));
 			var patient_name = item['name'].split(' ');
 			item = [
-				//  (patient_name[0] == undefined)? '': patient_name[0],
-				//  (patient_name[1] == undefined)? '': patient_name[1],
-				//  item_patient.find('.js-csv-hos_num').html(),
-				//  item_patient.find('.js-csv-dob').html(),
-				//  item_patient.find('.js-csv-age').html(),
-				//  item_patient.find('.js-csv-diagnoses').html().replace(/,/g,'|'),
-				//  item['weeks'],
 				(patient_name[0] == undefined) ? '' : patient_name[0],
 				(patient_name[1] == undefined) ? '' : patient_name[1],
 				item['hos_num'],
@@ -59,7 +45,7 @@ var analytics_csv_download = (function () {
 		if (anonymized) {
 			csv_file = "DOB, Age, Diagnoses, VA-L, " + additional_type + "-L, VA-R," + additional_type + "-R\n";
 		}
-		var file_name = "clinical_data";
+		var file_name = analytics_toolbox.getCurrentSpecialty() + "_clinical_data_" + additional_type;
 		var data = Object.values(custom_data);
 		var patient_ids;
 		temp = data.slice().sort(function (a, b) {
@@ -76,19 +62,11 @@ var analytics_csv_download = (function () {
 				"csv_data": JSON.stringify(patient_ids),
 			},
 			success: function (response) {
-				console.log(JSON.parse(response))
-				// var report_type = $('#js-charts-service ul a.selected').data('report')
 				var patients = JSON.parse(response);
-				// var test = patients.map(function (item) {
-				// 	return item['id']
-				// })
-				// console.log(test.sort())
 				patients.map(function (curr, index) {
 					curr['left'] = data[index]['left'];
 					curr['right'] = data[index]['right'];
 				})
-				// console.log(patients)
-				// current_service_data_to_csv(anonymise_flag, patients, report_type)
 				patients.forEach(function (item) {
 					patient_name = item['name'].split(' ');
 					item = {
@@ -131,14 +109,12 @@ var analytics_csv_download = (function () {
 
 	function current_clinical_data_to_csv(anonymized = false, clinical_data) {
 		var data = clinical_data;
-		console.log(data)
-		var file_name = "clinical_diagnoses";
+		var file_name = analytics_toolbox.getCurrentSpecialty() + "_clinical_diagnoses";
 		var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses\n";
 		if (anonymized) {
 			csv_file = "DOB, Age, Diagnoses\n";
 		}
 		data.forEach(function (item) {
-			// console.log(item)
 			if (anonymized) {
 				item = item.slice(3);
 			}
@@ -160,6 +136,7 @@ var analytics_csv_download = (function () {
 			var link = document.createElement("a");
 			if (link.download !== undefined) {
 				var url = URL.createObjectURL(blob);
+				console.log(url)
 				link.setAttribute("href", url);
 				link.setAttribute("download", filename + '.csv');
 				link.style.visibility = 'hidden';
@@ -168,73 +145,84 @@ var analytics_csv_download = (function () {
 				document.body.removeChild(link);
 			}
 		}
+		$('#js-analytics-spinner').hide();
 	}
 
-	var init = function (data, custom_flag = false) {
-		// console.log(data)
-		$('.extra-actions button').off('click');
-		$('.extra-actions button').on('click', function () {
-			// console.log(data)
-			console.log('clicked')
-			var anonymise_flag = $(this).data('anonymised')
-			var selected_tab = $('.analytics-section.selected').data('options')
-			var temp, patient_ids, patient_weeks;
-			if (selected_tab === 'service') {
-				temp = data.slice().sort(function (a, b) {
-					return a['patient_id'] - b['patient_id']
-				});
-				patient_ids = temp.map(function (item) {
-					return item['patient_id']
-				})
-				patient_weeks = temp.map(function (item) {
-					return item['weeks']
-				})
-			}
-			// console.log(patient_ids)
-			// console.log(patient_ids.sort())
-			// console.log(patient_weeks)
-			switch (selected_tab) {
-				case 'service':
-					// while(patient_ids.length > 0){
-					$.ajax({
-						url: '/analytics/DownLoadCSV',
-						type: 'POST',
-						data: {
-							"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-							"csv_data": JSON.stringify(patient_ids),
-						},
-						success: function (response) {
+	function downLoadClick(e) {
+		e.stopPropagation();
+		$('#js-analytics-spinner').show();
 
-							// console.log(JSON.parse(response))
-							var report_type = $('#js-charts-service ul a.selected').data('report')
-							var patients = JSON.parse(response);
-							// var test = patients.map(function (item) {
-							// 	return item['id']
-							// })
-							// console.log(test.sort())
-							patients.map(function (curr, index) {
-								curr['weeks'] = patient_weeks[index];
-							})
-							// console.log(patients)
-							current_service_data_to_csv(anonymise_flag, patients, report_type)
-						}
-					})
-					// }
-					break;
-				case 'clinical':
-					if (custom_flag) {
-						if (analytics_toolbox.getCurrentSpecialty() === 'Medical Retina') {
-							current_custom_data_to_csv("CRT", anonymise_flag, data);
-						} else {
-							current_custom_data_to_csv("IOP", anonymise_flag, data);
-						}
-					} else {
-						current_clinical_data_to_csv(anonymise_flag, data)
+		// anonymise_flag = 0 || 1
+		var anonymise_flag = $(this).data('anonymised')
+
+		// get current selected tab: service / clinical
+		var selected_tab = $('.analytics-section.selected').data('options')
+
+		// temp: deep copy from original csv_data
+		// patient_ids: store patient ids data extracted from csv_data array
+		// patient_weeks: store weeks data extracted from csv_data array
+		var temp, patient_ids, patient_weeks;
+
+		if (selected_tab === 'service') {
+			// sort array to align patient_ids and patient_weeks
+			temp = analytics_dataCenter.service.getServiceData()["csv_data"].slice().sort(function (a, b) {
+				return a['patient_id'] - b['patient_id']
+			});
+			patient_ids = temp.map(function (item) {
+				return item['patient_id']
+			})
+			patient_weeks = temp.map(function (item) {
+				return item['weeks']
+			})
+		}
+		switch (selected_tab) {
+			// if current tab is service, send out ajax call to request patient details list
+			// by using patient_ids above
+			case 'service':
+				$.ajax({
+					url: '/analytics/DownLoadCSV',
+					type: 'POST',
+					data: {
+						"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+						"csv_data": JSON.stringify(patient_ids),
+					},
+					success: function (response) {
+						// report_type for csv file name
+						var report_type = $('#js-charts-service ul a.selected').data('report')
+						// patients array
+						// {age, diagnoses, dob, gender, hos_num, id, name, nhs_num, procedures}
+						var patients = JSON.parse(response);
+
+						// put weeks into patients array
+						patients.map(function (curr, index) {
+							curr['weeks'] = patient_weeks[index];
+						})
+						// process data and export as csv
+						current_service_data_to_csv(anonymise_flag, patients, report_type);
+
+
 					}
-					break;
-			}
-			return
-		})
+				})
+				break;
+			case 'clinical':
+				// clinical data exists when the page load (May need to be changed)
+				if (g_custom_flag) {
+					// if change in vision is selected
+					// custom type depends on current selected specialty
+					var custom_type = analytics_toolbox.getCurrentSpecialty() === 'Medical Retina' ? "CRT" : "IOP";
+					current_custom_data_to_csv(custom_type, anonymise_flag, analytics_dataCenter.custom.getCustomData()['custom_data']['csv_data']);
+				} else {
+					// if diagnoses is selected
+					current_clinical_data_to_csv(anonymise_flag, analytics_dataCenter.clinical.getClinicalData()['csv_data'])
+				}
+				break;
+		}
+		return
+	}
+	var init = function (custom_flag = false) {
+		g_custom_flag = custom_flag
+		// bind click event on download (csv) and download (csv - anonymised)
+		$('.extra-actions button').off('click').on('click', _.throttle(downLoadClick, ajaxThrottleTime));
 	}
 	return init;
 })()

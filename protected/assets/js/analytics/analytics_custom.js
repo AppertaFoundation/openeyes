@@ -1,11 +1,13 @@
 var analytics_custom = (function () {
-	var init = function (data) {
-		var custom_layout = JSON.parse(JSON.stringify(analytics_layout));
+	var init = function () {
+        // get plot layout settings
+        var custom_layout = JSON.parse(JSON.stringify(analytics_layout));
+        // get custome data
+		var data = analytics_dataCenter.custom.getCustomData();
 		var custom_data = data['custom_data'];
-		// console.log(custom_data)
-		var va = data['va_final_ticks'];
+        var va = data['va_final_ticks'];
+        
 		var specialty = analytics_toolbox.getCurrentSpecialty();
-		// window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
 		custom_layout['xaxis']['title'] = "Time post procedure (weeks)";
 		custom_layout['xaxis']['rangeslider'] = {};
 		custom_layout['yaxis']['title'] = analytics_toolbox.getVATitle();
@@ -77,17 +79,6 @@ var analytics_custom = (function () {
 			);
 
 			analytics_drill_down(custom_plot, custom_data);
-			// custom_plot.on('plotly_click', function (data) {
-			//     for (var i = 0; i < data.points.length; i++) {
-			//         $('.analytics-charts').hide();
-			//         $('.analytics-patient-list').show();
-			//         $('.analytics-patient-list-row').hide();
-			//         var patient_show_list = data.points[i].customdata;
-			//         for (var j = 0; j < patient_show_list.length; j++) {
-			//             $('#' + patient_show_list[j]).show();
-			//         }
-			//     }
-			// });
 		}
 	}
 

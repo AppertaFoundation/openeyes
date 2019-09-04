@@ -1,4 +1,6 @@
 var analytics_cataract = (function () {
+    var ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 100;
+    var throttleTIme = analytics_toolbox.getThrottleTime() || 1000;
 	var dict = {
 		'/report/ajaxReport?report=PcrRisk&template=analytics': [
 			'PcrRiskReport',
@@ -51,23 +53,21 @@ var analytics_cataract = (function () {
 
     // the callback for download pdf click event
     var reportPlotToPDF = function(event_date, current_user){
+        var eventFromDate = analytics_toolbox.processDate(new Date(event_date['date_from']));
+        var eventToDate = analytics_toolbox.processDate(new Date(event_date['date_to']));
+        var from_date = $('#analytics_datepicker_from').val() ? $('#analytics_datepicker_from').val() : eventFromDate;
+        var to_date = $('#analytics_datepicker_to').val() ? $('#analytics_datepicker_to').val() : eventToDate;
+        // make sure the entry is logical
+        if(new Date(from_date) > new Date(to_date)){
+            alert('From date cannot be later than To date')
+            return;
+        }
         $('#js-analytics-spinner').show();
         var surgeon_name = current_user['name'];
         // grab dates
         // if from, to not filled, the max / min date from event data will be filled in
         var date = "";
-        var from_date = $('#analytics_datepicker_from').val() ? $('#analytics_datepicker_from').val() : analytics_toolbox.processDate(new Date(event_date['date_from']));
-        var to_date = $('#analytics_datepicker_to').val() ? " to " + $('#analytics_datepicker_to').val() : " to " + analytics_toolbox.processDate(new Date(event_date['date_to']));
-        // make sure the entry is logical
-        // if(new Date(from_date) > new Date(to_date)){
-        //     alert('From date cannot be later than To date')
-        //     return;
-        // }
-        // if(new Date(to_date) < new Date(from_date)){
-        //     alert('To date cannot be earlier than From date')
-        //     return;
-        // }
-        date = from_date + to_date
+        date = from_date + " to " + to_date
         // prevent click during downloading
         if($(this).text() === 'Downloading...'){
             return false;
@@ -169,7 +169,6 @@ var analytics_cataract = (function () {
                         
                         if(counter >= total){
                             doc.save('Cataract_Plots.pdf');
-                            $('#js-analytics-spinner').hide();
                             saved = true;
                             return saved;
                         } else {
@@ -193,6 +192,7 @@ var analytics_cataract = (function () {
                             // without doing so, previous requests will be captured
                             $(document).off('ajaxSuccess');
                             $('#js-download-pdf').text(originalText);
+                            $('#js-analytics-spinner').hide();
                         }
                     });
             }
@@ -203,9 +203,7 @@ var analytics_cataract = (function () {
 	function getSelectedReportURL(ele) {
 		var selected_ele = ele ? $(ele) : $('.js-cataract-report-type.selected');
 		currentPlot = selected_ele;
-		// console.log(ele)
 		var selected_container = selected_ele.data('container');
-		// console.log(selected_container)
 		var selected_report = selected_ele.data('report');
 		var report_url = '';
 		for (var key in dict) {
@@ -218,9 +216,56 @@ var analytics_cataract = (function () {
 				};
 			}
 		}
-	}
-	var init = function (data, side_bar_user_list) {
-        // console.log(data)
+    }
+    function cataractPlotType(e){
+        analytics_csv_cataract();
+        $('#js-analytics-spinner').show();
+        e.stopPropagation();
+        e.preventDefault();
+        if ($('.analytics-patient-list').css('display') === 'block') {
+            $('.analytics-patient-list').hide();
+        }
+        if ($('.analytics-charts').css('display') === 'none') {
+            $('.analytics-charts').show()
+        }
+        var selected_item = getSelectedReportURL(this);
+        var selected_container = selected_item['selected_container'];
+        var selected_url = selected_item['report_url'];
+        $(this).addClass("selected");
+        $('.js-cataract-report-type').not(this).removeClass("selected");
+        $('.analytics-cataract').not($(selected_container)).html("");
+        if($(selected_container).html()){
+            $(dict[selected_url][1]).html("");
+            OpenEyes.Dash.addBespokeReport(selected_url, null, 10);
+        } else {
+            OpenEyes.Dash.init(selected_container);
+            OpenEyes.Dash.addBespokeReport(selected_url, null, 10);
+        }
+    }
+
+    function updateChart(e){
+        e.preventDefault();
+        $('.report-search-form').trigger('submit');
+    }
+
+    function toggleAllSurgeonOpt(){
+        $(this).toggleClass('green hint');
+        if ($('#analytics_allsurgeons').val() == 'on') {
+            $('#analytics_allsurgeons').val('');
+        } else {
+            $('#analytics_allsurgeons').val('on');
+        }
+        $('#search-form').submit();
+    }
+
+    function clearDate(){
+        var date_from = analytics_toolbox.processDate(new Date(event_date['date_from']))
+        var date_to = analytics_toolbox.processDate(new Date(event_date['date_to']))
+        $('#analytics_datepicker_from').val(date_from);
+        $('#analytics_datepicker_to').val(date_to);
+    }
+	// var init = function (data, side_bar_user_list) {
+	var init = function (data) {
         var current_user = data['current_user'];
         var event_date = data['event_date'][0];
         analytics_toolbox.initDatePicker(event_date);
@@ -229,96 +274,30 @@ var analytics_cataract = (function () {
 			var selected_item = getSelectedReportURL();
 			var init_container = selected_item['selected_container'];
 			var init_url = selected_item['report_url'];
-			// console.log(init_container)
-			// console.log(init_url)
 			OpenEyes.Dash.init(init_container);
 			OpenEyes.Dash.addBespokeReport(init_url, null, 10);
 		}
-		$('.js-cataract-report-type').off('click')
-		$('.js-cataract-report-type').on('click', function (e) {
-            analytics_csv_cataract();
-			$('#js-analytics-spinner').show();
-			// currentPlot = this;
-			e.stopPropagation();
-			e.preventDefault();
-			if ($('.analytics-patient-list').css('display') === 'block') {
-				$('.analytics-patient-list').hide();
-			}
-			if ($('.analytics-charts').css('display') === 'none') {
-				$('.analytics-charts').show()
-			}
-			var selected_item = getSelectedReportURL(this);
-			var selected_container = selected_item['selected_container'];
-			var selected_url = selected_item['report_url'];
-			$(this).addClass("selected");
-			$('.js-cataract-report-type').not(this).removeClass("selected");
-            $('.analytics-cataract').not($(selected_container)).html("");
-            // console.log($(selected_container).html() ? 'not empty' : 'empty');
-            if($(selected_container).html()){
-                $(dict[selected_url][1]).html("");
-                OpenEyes.Dash.addBespokeReport(selected_url, null, 10);
-            } else {
-                OpenEyes.Dash.init(selected_container);
-                OpenEyes.Dash.addBespokeReport(selected_url, null, 10);
-            }
-			// console.log(currentPlot);
-			// $('#' + currentPlot).on('plotly_click', function(e, data){
-			//     console.log('clicked')
-			//     console.log(data);
-			// })
-        });
-        $('#js-clear-date-range').off('click').on('click', function(){
-            var date_from = analytics_toolbox.processDate(new Date(event_date['date_from']))
-            var date_to = analytics_toolbox.processDate(new Date(event_date['date_to']))
-            $('#analytics_datepicker_from').val(date_from);
-            $('#analytics_datepicker_to').val(date_to);
-        });
-        $('#js-all-surgeons').off('click').on('click', function(){
-            $(this).toggleClass('green hint');
-            if ($('#analytics_allsurgeons').val() == 'on') {
-                $('#analytics_allsurgeons').val('');
-            } else {
-                $('#analytics_allsurgeons').val('on');
-            }
-            $('#search-form').submit();
-        });
-        $('#search-form').off('submit').on('submit', function (e) {
-            e.preventDefault();
-            $('.report-search-form').trigger('submit');
-        });
-        // $('#js-download-pdf').off('click').on('click', _.throttle(reportPlotToPDF, 2000, {'trailing': false}));
+        $('.js-cataract-report-type').off('click').on('click', _.throttle(cataractPlotType, ajaxThrottleTime));
+        
+        $('#js-clear-date-range').off('click').on('click', _.throttle(clearDate, throttleTIme));
+
+        $('#js-all-surgeons').off('click').on('click', _.throttle(toggleAllSurgeonOpt, ajaxThrottleTime));
+
+        $('#search-form').off('submit').on('submit', _.throttle(updateChart, ajaxThrottleTime));
+
         var pdfDownloadBTN = document.getElementById('js-download-pdf');
-        pdfDownloadBTN.addEventListener('click', _.throttle(reportPlotToPDF.bind(pdfDownloadBTN, event_date, current_user), 2000, {'trailing': false}))
-		// $(document).off('ajaxComplete');
-		$(document).ajaxComplete(function (event, request, settings) {
-            // console.log($(document).ajaxComplete);
+
+        pdfDownloadBTN.addEventListener('click', _.throttle(reportPlotToPDF.bind(pdfDownloadBTN, event_date, current_user), 2000, {'trailing': false}));
+
+		$(document).off('ajaxComplete').on("ajaxComplete",function (event, request, settings) {
             settings.global = false;
-            console.log(settings)
-            console.log(event.target.activeElement)
 			$('#js-analytics-spinner').hide();
-			// flag for if the pdf is saved
-			// only the events triggered by js-download-pdf will be captured
             if (settings.url.includes(currentPlot.replace('Report', '').replace(/_/g, '\\'))
             && event.target.activeElement.id !== 'js-download-pdf') {
-                // event.target.activeElement.id && event.target.activeElement.id === 'js-download-pdf'
-				// console.log(settings.url)
-				// console.log('got it')
                 var report = document.getElementById(currentPlot);
-                console.log($(event.target.activeElement))
 				analytics_drill_down(report, null);
-				// report.on('plotly_click', function(data){
-				//     // console.log(data);
-				//     // console.log(data['points'][0]['customdata']);
-				//     analytics_drill_down(this)
-				// })
 			}
-			// console.log(request)
-			// console.log(event)
-			// report.on('plotly_click', function(data){
-			//     console.log(data);
-			// })
 		})
-		// console.log(currentPlot);
 	}
 	return init;
 })()

@@ -19,21 +19,30 @@ var analytics_toolbox = (function () {
 			type: "bar"
 		}
 	}
-	function processDate(date){
-		return date.getFullYear().toString() + '-' 
-		+ (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1)
-		+ '-' + (date.getDate() < 10 ? '0' : '') + date.getDate();
+
+	function getThrottleTime() {
+		return 100;
 	}
-	function initDatePicker(def){
-		console.log(def)
-		var date_from = typeof(def) === 'undefined' ? false : new Date(def['date_from']);
-		var date_to = typeof(def) === 'undefined' ? false : new Date(def['date_to']);
-		if(date_from && date_to){
+
+	function getAjaxThrottleTime() {
+		return 1000;
+	}
+
+	function processDate(date) {
+		return date.getFullYear().toString() + '-' +
+			(date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1) +
+			'-' + (date.getDate() < 10 ? '0' : '') + date.getDate();
+	}
+
+	function initDatePicker(def) {
+		var date_from = typeof (def) === 'undefined' ? false : new Date(def['date_from']);
+		var date_to = typeof (def) === 'undefined' ? false : new Date(def['date_to']);
+		if (date_from && date_to) {
 			date_from = processDate(date_from);
-	
+
 			date_to = processDate(date_to);
 		}
-		
+
 		pickmeup('#analytics_datepicker_from', {
 			format: 'Y-m-d',
 			date: date_from,
@@ -48,7 +57,8 @@ var analytics_toolbox = (function () {
 			default_date: date_to,
 		});
 	}
-	function getVATitle(){
+
+	function getVATitle() {
 		var va_mode = $('#js-chart-filter-plot');
 		var va_title;
 		if (va_mode.html().includes('change')) {
@@ -58,10 +68,13 @@ var analytics_toolbox = (function () {
 		}
 		return va_title;
 	}
+
 	var drillDown = $('.analytics-patient-list table').html();
-	function getCurrentSpecialty(){
+
+	function getCurrentSpecialty() {
 		return $('.analytics-options li a.selected').data('specialty');
 	}
+
 	function loadPlot(flag, data, title) {
 		var service_layout = JSON.parse(JSON.stringify(analytics_layout));
 		title = title || 'Patient count'
@@ -81,16 +94,16 @@ var analytics_toolbox = (function () {
 			);
 		}
 	}
-	function getTypeData(){
+
+	function getTypeData() {
 		return typeData;
 	}
-	function getCleanDrillDownList(){
+
+	function getCleanDrillDownList() {
 		return drillDown;
 	}
+
 	function processPlotData(type, datasource) {
-		// var typeData = getTypeData();
-		// console.log(typeData);
-		// console.log(type)
 		var res = {
 			name: typeData[type].name,
 			x: Object.keys(datasource),
@@ -108,7 +121,8 @@ var analytics_toolbox = (function () {
 			max: max,
 			title: typeData[type].title
 		}
-  }
+	}
+
 	function getCurrentShownPlotId() {
 		var plot_id;
 		$('.js-plotly-plot').each(function () {
@@ -122,27 +136,19 @@ var analytics_toolbox = (function () {
 
 	function getDataFilters(specialty, side_bar_user_list, common_disorders, current_user) {
 		var specialty = specialty;
-		// var side_bar_user_list = user_list;
 		var service_common_disorders = common_disorders;
 		var mr_custom_diagnosis = ['AMD(wet)', 'BRVO', 'CRVO', 'DMO'];
 		var gl_custom_diagnosis = ['Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension'];
 		var mr_custom_treatment = ['Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex'];
 		var gl_custom_procedure = ['Cataract Extraction', 'Trabeculectomy', 'Aqueous Shunt', 'Cypass', 'SLT', 'Cyclodiode'];
-		// var filters = "&specialty=" + specialty;
 		var filters = '';
 		$('.js-hs-filters').each(function () {
-			// console.log($(this))
-			// console.log($(this).data('name'))
 			if ($(this).is('span')) {
 				if ($(this).html() !== 'All') {
 					if ($(this).hasClass('js-hs-surgeon')) {
 						if (side_bar_user_list !== null) {
-							// console.log(this)
-							// console.log($(this).html().trim())
-							// console.log(side_bar_user_list)
 							filters += '&' + $(this).data('name') + '=' + side_bar_user_list[$(this).html().trim()];
 						} else {
-							console.log(current_user)
 							filters += '&' + $(this).data('name') + '=' + current_user;
 						}
 					} else if ($(this).data('name') == "service_diagnosis") {
@@ -179,30 +185,25 @@ var analytics_toolbox = (function () {
 						}
 					} else {
 						filters += '&' + $(this).data('name') + '=' + $(this).html();
-						
+
 					}
 				}
 			} else if ($(this).is('select')) {
 				filters += '&' + $(this).data('name') + '=' + $(this).val();
 			}
 		});
-		console.log(filters);
 		return filters;
 	}
 
 	function plotUpdate(data, specialty, flag) {
-		// console.log(data)
-		// console.log(specialty)
-		if(flag === 'service'){
-			var service_type =  $('#js-charts-service .charts li a.selected').data('report');
+		if (flag === 'service') {
+			var service_type = $('#js-charts-service .charts li a.selected').data('report');
 			var plot_data = processPlotData(service_type, data[1]['plot_data'])
 			loadPlot('update', plot_data['data'], plot_data['title']);
-			// return;
 		} else {
-			if($('#js-hs-clinical-diagnoses').hasClass('selected')){
+			if ($('#js-hs-clinical-diagnoses').hasClass('selected')) {
 				var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
 				var clinical_data = data[0];
-				// window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
 				clinical_chart.data[0]['x'] = clinical_data.x;
 				clinical_chart.data[0]['y'] = clinical_data.y;
 				clinical_chart.data[0]['customdata'] = clinical_data.customdata;
@@ -213,7 +214,7 @@ var analytics_toolbox = (function () {
 				Plotly.redraw(clinical_chart);
 			}
 			if (specialty !== 'All') {
-				if($('#js-hs-clinical-custom').hasClass('selected')){
+				if ($('#js-hs-clinical-custom').hasClass('selected')) {
 					var custom_charts = ['js-hs-chart-analytics-clinical-others-left', 'js-hs-chart-analytics-clinical-others-right'];
 					var custom_data = data[2];
 					for (var i = 0; i < custom_charts.length; i++) {
@@ -253,18 +254,14 @@ var analytics_toolbox = (function () {
 				}
 			}
 		}
-		
-
 	}
 
 
 	// update UI to show how Filter works
 	// this is pretty basic but only to demo on IDG
 	function updateUI($optionGroup) {
-		console.log($optionGroup)
 		// get the ID of the IDG demo text element
 		var textID = $optionGroup.data('filter-ui-id');
-		console.log(textID)
 		var $allListElements = $('.btn-list li', $optionGroup);
 
 		$allListElements.click(function () {
@@ -305,6 +302,8 @@ var analytics_toolbox = (function () {
 		getVATitle: getVATitle,
 		getCleanDrillDownList: getCleanDrillDownList,
 		initDatePicker: initDatePicker,
-		processDate: processDate
+		processDate: processDate,
+		getThrottleTime: getThrottleTime,
+		getAjaxThrottleTime: getAjaxThrottleTime,
 	}
 })()
