@@ -186,7 +186,6 @@ class m180504_085420_medication_management_tables extends OEMigration
             ['usage_code' => 'COMMON_OPH', 'name' => 'Common Ophthalmic Drug Sets'],
             ['usage_code' => 'COMMON_SYSTEMIC', 'name' => 'Common Systemic Drug  Sets'],
             ['usage_code' => 'PRESCRIPTION_SET', 'name' => 'Prescription Drug Sets'],
-            ['usage_code' => 'Drug', 'name' => 'Drug'],
             ['usage_code' => 'DrugTag', 'name' => 'Drug Tags'],
             ['usage_code' => 'Formulary', 'name' => 'Formulary Drugs'],
             ['usage_code' => 'MedicationDrug', 'name' => 'Medication Drug'],

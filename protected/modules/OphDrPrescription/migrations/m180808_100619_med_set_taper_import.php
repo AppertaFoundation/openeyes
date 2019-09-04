@@ -18,7 +18,7 @@ class m180808_100619_med_set_taper_import extends CDbMigration
               LEFT JOIN drug_set AS s ON i.drug_set_id = s.id
               ")->queryAll();
             if($tapers) {
-                $drug_usage_code_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'Drug'])->queryScalar();
+                $drug_usage_code_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'PRESCRIPTION_SET'])->queryScalar();
                 foreach ($tapers as $taper) {
 
                     Yii::app()->db->createCommand("INSERT INTO medication_set_item_taper (

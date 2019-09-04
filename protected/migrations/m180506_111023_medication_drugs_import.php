@@ -32,7 +32,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 $command = Yii::app()->db;
                 $command->createCommand("INSERT INTO medication_set(name) values ('".$set['name']."')")->execute();
                 $last_id = $command->getLastInsertID();
-                Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id, subspecialty_id) values (".$last_id.", {$usage_codes["Drug"]}, ".$set['subspecialty_id']." )")->execute();
+                Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id, subspecialty_id) values (".$last_id.", {$usage_codes["PRESCRIPTION_SET"]}, ".$set['subspecialty_id']." )")->execute();
             }
             
             $drug_sets = null;
@@ -48,7 +48,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
         Yii::app()->db->createCommand("INSERT INTO medication_set(name) values ('Medication Drugs')")->execute();
         $medication_drugs_id = $this->dbConnection->getLastInsertID();
 
-        Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$formulary_id.", {$usage_codes['Drug']})")->execute();
+        Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$formulary_id.", {$usage_codes['PRESCRIPTION_SET']})")->execute();
         Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$formulary_id.", {$usage_codes['Formulary']})")->execute();
         Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$medication_drugs_id.", {$usage_codes['MedicationDrug']})")->execute();
 
@@ -246,7 +246,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                         values (".$ref_medication_id." ,
                          
                          (SELECT id FROM medication_set WHERE `name` = :ref_set_name AND id IN 
-                            (SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code_id = {$usage_codes['Drug']})
+                            (SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code_id = {$usage_codes['PRESCRIPTION_SET']})
                          ),
                          
                          NULL,
