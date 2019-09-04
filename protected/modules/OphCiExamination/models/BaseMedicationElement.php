@@ -79,8 +79,8 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
      */
     protected function afterSave()
     {
-        if(!$this->do_not_save_entries) {
-        	$this->saveEntries();
+        if (!$this->do_not_save_entries) {
+            $this->saveEntries();
         }
         parent::afterSave();
     }
@@ -100,7 +100,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
             $entry->event_id = $this->event_id;
 
             /* Why do I have to do this? */
-            if(isset($entry->id) && $entry->id > 0) {
+            if (isset($entry->id) && $entry->id > 0) {
                 $entry->setIsNewRecord(false);
             }
 
@@ -108,7 +108,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
             $entry->usage_type = $class::getUsagetype();
             $entry->usage_subtype = $class::getUsageSubtype();
 
-            if(!$entry->save()) {
+            if (!$entry->save()) {
                 foreach ($entry->errors as $err) {
                     $this->addError('entries', implode(', ', $err));
                 }
@@ -117,7 +117,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
             $saved_ids[] = $entry->id;
         }
         foreach ($orig_entries as $entry) {
-            if(!in_array($entry->id, $saved_ids)) {
+            if (!in_array($entry->id, $saved_ids)) {
                 $entry->delete();
             }
         }
@@ -162,15 +162,13 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         $prescribed = array();
         /** @var \EventMedicationUse $entry */
         foreach ($this->entries as $entry) {
-            if($entry->usage_type == 'OphCiExamination') {
-                if(!is_null($entry->end_date) && $entry->end_date < date("Y-m-d")) {
+            if ($entry->usage_type == 'OphCiExamination') {
+                if (!is_null($entry->end_date) && $entry->end_date < date("Y-m-d")) {
                     $closed[] = $entry;
-                }
-                else {
+                } else {
                     $current[] = $entry;
                 }
-            }
-            elseif ($entry->usage_type == 'OphDrPrescription') {
+            } elseif ($entry->usage_type == 'OphDrPrescription') {
                 $prescribed[] = $entry;
             }
         }
@@ -183,7 +181,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
      */
     public function getPrescriptionEntries()
     {
-        return array_filter($this->entries, function($entry) {
+        return array_filter($this->entries, function ($entry) {
             return $entry->prescription_item_id !== null;
         });
     }
@@ -194,7 +192,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
      */
     public function getNewEntries()
     {
-        return array_filter($this->entries, function($entry) {
+        return array_filter($this->entries, function ($entry) {
             /** @var \EventMedicationUse $entry */
             return !$entry->is_copied_from_previous_event && $entry->usage_type == 'OphCiExamination' && $entry->getIsNewRecord();
         });
@@ -238,10 +236,9 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
      */
     public function getDisplayOrder($action)
     {
-        if ($action=='view'){
+        if ($action=='view') {
             return 25;
-        }
-        else{
+        } else {
             return parent::getDisplayOrder($action);
         }
     }
@@ -249,12 +246,11 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
     {
         // Validate entries
         foreach ($this->entries as $key => $entry) {
-            if(!$entry->validate()) {
-                foreach ($entry->getErrors() as $field=>$error) {
-                    if(in_array($field, ['dose', 'frequency_id', 'route_id', 'laterality'])) {
+            if (!$entry->validate()) {
+                foreach ($entry->getErrors() as $field => $error) {
+                    if (in_array($field, ['dose','dose_unit_term', 'frequency_id', 'route_id', 'laterality', 'option_id'])) {
                         $attr = "entries_{$key}_dfrl_error";
-                    }
-                    else {
+                    } else {
                         $attr = "entries_{$key}_{$field}_error";
                     }
                     $this->addError($attr, ($key+1).' - '.implode(', ', $error));

@@ -22,17 +22,17 @@
 /** @var EventMedicationUse $entry */
 
 if (isset($entry->start_date)) {
-	$start_date = $entry->start_date;
+    $start_date = $entry->start_date;
 } else {
-	$start_date = date('Y-m-d');
+    $start_date = date('Y-m-d');
 }
 
 if (isset($entry->end_date)) {
-	list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
+    list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
 } else {
-	$end_sel_day = date('d');
-	$end_sel_month = date('m');
-	$end_sel_year = date('Y');
+    $end_sel_day = date('d');
+    $end_sel_month = date('m');
+    $end_sel_year = date('Y');
 }
 
 $chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_type == "prescribed");
@@ -47,19 +47,23 @@ $is_posting = Yii::app()->request->getIsPostRequest();
 
 <tr data-key="<?=$row_count?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
-	<?php if(!is_null($entry->medication_id)): ?>data-allergy-ids="<?php echo implode(",", array_map(function($e){ return $e->id; }, $entry->medication->allergies)); ?>"<?php endif; ?>
+    <?php if (!is_null($entry->medication_id)) :
+        ?>data-allergy-ids="<?php echo implode(",", array_map(function ($e) {
+            return $e->id;
+
+        }, $entry->medication->allergies)); ?>"<?php
+    endif; ?>
     class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?= $row_type == 'closed' ? ' stopped' : '' ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
     <td>
         <div class="medication-display">
             <span class="js-prepended_markup">
-            <?php if(!is_null($entry->medication_id)) {
-				if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
-					echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to '.implode(',',$patient->getPatientDrugAllergy($entry->medication_id)).'"></i>';
-				}
+            <?php if (!is_null($entry->medication_id)) {
+                if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
+                    echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to '.implode(',', $patient->getPatientDrugAllergy($entry->medication_id)).'"></i>';
+                }
                 $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
-            }
-            else {
+            } else {
                 echo "{{& prepended_markup}}";
             }?>
             </span>
@@ -74,22 +78,30 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
-				<input type="hidden" name="<?= $field_prefix ?>[binded_key]" class="js-binded-key" value="<?= $entry->binded_key ?>">
+                <input type="hidden" name="<?= $field_prefix ?>[binded_key]" class="js-binded-key" value="<?= $entry->binded_key ?>">
     </td>
+    <?php if (!empty($entry->errors) || !isset($entry->dose)) {
+        $direct_edit = in_array(true, array_map(function ($i) { return strpos($i, 'dose') !== false;}, array_keys($entry->errors)));
+    }?>
     <td class="dose-frequency-route">
         <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
             <div class="flex-layout">
                 <div class="alternative-display inline">
-                    <div class="alternative-display-element textual" <?php if($direct_edit){ echo 'style="display: none;"'; }?>>
-                        <a class="textual-display-dose textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
-							<?= $entry->getAdministrationDisplay() ?>
+                    <div class="alternative-display-element textual" <?php if ($direct_edit) {
+                        echo 'style="display: none;"';
+                                                                     }?>>
+                        <a class="textual-display-dose textual-display hint" href="javascript:void(0);" onclick="switch_alternative(this);">
+                                                    <?php $entry_text_display = $entry->getAdministrationDisplay();
+                                                        echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         </a>
                     </div>
-                    <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
+                    <div class="alternative-display-element" <?php if (!$direct_edit) {
+                        echo 'style="display: none;"';
+                                                             }?>>
                         <input class="cols-1 js-dose" style="width: 14%; display: inline-block;" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
                         <span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
-                        <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
-                        <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=>'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:none')); ?>
+                        <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" <?= $direct_edit ? 'disabled' : '' ?> />
+                        <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=> $direct_edit ? '' : 'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:'. ($direct_edit ? '' : 'none'))); ?>
                         <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-3')) ?>
                         <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class'=>'js-route cols-2')) ?>
                         <?php echo CHtml::dropDownList($field_prefix . '[laterality]',
@@ -102,31 +114,31 @@ $is_posting = Yii::app()->request->getIsPostRequest();
             </div>
         </div>
     </td>
-    <td>
+    <td id="<?= $model_name."_entries_".$row_count."_start_date_error" ?>>
         <fieldset>
             <i class="oe-i start small pad"></i>
-            <?php if($is_new): ?>
+            <?php if ($is_new) : ?>
                 <input id="<?= $model_name ?>_datepicker_2_<?= $row_count ?>" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ? $entry->start_date : "" ?>"
                        style="width:80px" placeholder="yyyy-mm-dd" class="js-start-date"
                        autocomplete="off">
                 <i class="js-has-tooltip oe-i info small pad right"
                    data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
-            <?php else: ?>
+            <?php else : ?>
                 <input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
                        value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
-							<?= $entry->getStartDateDisplay() ?>
+                            <?= $entry->getStartDateDisplay() ?>
             <?php endif; ?>
         </fieldset>
     </td>
-    <td class="end-date-column">
+    <td class="end-date-column" id="<?= $model_name."_entries_".$row_count."_end_date_error" ?>">
         <div class="alternative-display inline">
             <div class="alternative-display-element textual">
                 <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
-                    <?php if(!is_null($entry->end_date)): ?>
+                    <?php if (!is_null($entry->end_date)) : ?>
                         <?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
                         <?php /* echo !is_null($entry->stop_reason_id) ?
                             ' ('.$entry->stopReason->name.')' : ''; */?>
-                    <?php else: ?>
+                    <?php else : ?>
                         stopped?
                     <?php endif; ?>
                 </a>
@@ -142,9 +154,13 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         </div>
   </td>
 
-    <td>
-        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'js-stop-reason', 'style' => $is_new || is_null($entry->end_date) ? "display:none" : null)) ?>
-        <?php /* <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a> */ ?>
+    <td id="<?= $model_name."_entries_".$row_count."_stop_reason_id_error" ?>">
+            <div class="js-stop-reason-select" style= "<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
+                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason')) ?>
+            </div>
+            <div class="js-stop-reason-text" style= "<?=$is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
+                <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
+            </div>
     </td>
 
     <td class="edit-column">

@@ -236,6 +236,7 @@
         }
 
         this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
+        this.searchResultList.hide();
         this.searchResultList.appendTo($filterDiv);
     };
 
@@ -564,34 +565,34 @@
 
         this.searchRequest = $.getJSON(this.options.searchOptions.searchSource,
             ajaxOptions, function (results) {
-            dialog.searchRequest = null;
-            let no_data = !$(results).length;
+                dialog.searchRequest = null;
+                let no_data = !$(results).length;
 
-            dialog.searchResultList.empty();
-            dialog.noSearchResultsWrapper.text('No results: "' + text + '"');
-            dialog.noSearchResultsWrapper.toggle(no_data);
+                dialog.searchResultList.empty();
+                dialog.noSearchResultsWrapper.text('No results: "' + text + '"');
+                dialog.noSearchResultsWrapper.toggle(no_data);
 
-            if (dialog.options.searchOptions.resultsFilter) {
-                results = dialog.options.searchOptions.resultsFilter(results);
-            }
-
-            $(results).each(function (index, result) {
-                var dataset = AdderDialog.prototype.constructDataset(result);
-                var $listItem = $("<li />", dataset);
-                if(typeof result.prepended_markup !== "undefined") {
-                    $(result.prepended_markup).appendTo($listItem);
+                if (dialog.options.searchOptions.resultsFilter) {
+                    results = dialog.options.searchOptions.resultsFilter(results);
                 }
-                $('<span />', {class: 'auto-width'}).text(dataset['data-label']).appendTo($listItem);
-                dialog.searchResultList.append($listItem);
-            });
+
+                $(results).each(function (index, result) {
+                    var dataset = AdderDialog.prototype.constructDataset(result);
+                    var $listItem = $("<li />", dataset);
+                    if(typeof result.prepended_markup !== "undefined") {
+                        $(result.prepended_markup).appendTo($listItem);
+                    }
+                    $('<span />', {class: 'auto-width'}).text(dataset['data-label']).appendTo($listItem);
+                    dialog.searchResultList.append($listItem);
+                });
 
             if (dialog.options.enableCustomSearchEntries) {
                 dialog.appendCustomEntryOption(text, dialog);
-            } else {
-                dialog.searchResultList.toggle(!no_data);
             }
+
+            dialog.searchResultList.toggle(!no_data);
             dialog.searchingSpinnerWrapper.hide();
-        });
+            });
     };
 
     AdderDialog.prototype.appendCustomEntryOption = function (text, dialog) {
