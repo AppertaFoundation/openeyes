@@ -194,7 +194,7 @@ class DefaultController extends BaseEventTypeController
             $subspecialty_id = $this->firm->getSubspecialtyID();
             $params = array(':subspecialty_id' => $subspecialty_id, ':status_name' => $status_name);
 
-            $set = MedicationSet::model()->with('medicationSetRules')->find(array(
+            $set = MedicationSet::model()->with(['medicationSetRules' => ['with' => 'usageCode']])->find(array(
                 'condition' => 'medicationSetRules.subspecialty_id = :subspecialty_id AND t.name = :status_name',
                 'params' => $params,
             ));
@@ -274,7 +274,9 @@ class DefaultController extends BaseEventTypeController
                 $criteria->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id = :type_id)");
                 $params[':type_id'] = $type_id;
             }
-            if (isset($_GET['preservative_free']) && $preservative_free = $_GET['preservative_free']) {
+
+            $preservative_free = \Yii::app()->request->getParam('preservative_free');
+            if ($preservative_free) {
                 $criteria->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE 
                                                 medication_set_id = (SELECT id FROM medication_set WHERE name = 'Preservative free'))");
             }
@@ -392,7 +394,7 @@ class DefaultController extends BaseEventTypeController
             foreach ($data['Element_OphDrPrescription_Details']['items'] as $item) {
                 $item_model = new OphDrPrescription_Item();
                 $item_model->attributes = $item;
-                if($item_model->start_date_string_YYYYMMDD == '') {
+                if(!$item_model->start_date) {
                     $item_model->start_date = substr($this->event->event_date, 0, 10);
                 }
                 if (isset($item['taper'])) {
@@ -570,7 +572,7 @@ class DefaultController extends BaseEventTypeController
 		$rule = MedicationSetRule::model()->findByAttributes(array(
 			'subspecialty_id' => $subspecialty_id,
 			'site_id' => $site_id,
-			'usage_code' => 'COMMON_OPH'
+			'usage_code_id' => \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar()
 		));
 		if($rule) {
 			return $rule->medicationSet;
@@ -670,12 +672,13 @@ class DefaultController extends BaseEventTypeController
                 }
             }
         }
+        $unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
         if (isset($this->patient)) {
             $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item, 'patient' => $this->patient));
+                array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options));
         } else {
             $output = $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item), true);
+                array('key' => $key, 'item' => $item, 'unit_options' => $unit_options), true);
 
             return $output;
         }

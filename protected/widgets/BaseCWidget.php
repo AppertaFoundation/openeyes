@@ -31,10 +31,13 @@ class BaseCWidget extends CWidget
             $this->value = $this->element->{$this->field};
         }
 
-        // if the widget has javascript, load it in
-        if (file_exists('protected/widgets/js/'.get_class($this).'.js')) {
-            $assetManager = Yii::app()->getAssetManager();
-            $assetManager->registerScriptFile('js/'.get_class($this).'.js', 'application.widgets', $this->scriptPriority);
+        $c = new ReflectionClass($this);
+        $dir = dirname($c->getFileName());
+
+        if (file_exists($dir . "/js/" .get_class($this).'.js')) {
+            $alias = str_replace('/', '.', substr($dir, strpos($dir, 'protected') + 10));
+            $asset_manager = Yii::app()->getAssetManager();
+            $asset_manager->registerScriptFile('js/' . get_class($this) . '.js', "application.{$alias}");
         }
 
         $this->htmlOptions['autocomplete'] = Yii::app()->params['html_autocomplete'];

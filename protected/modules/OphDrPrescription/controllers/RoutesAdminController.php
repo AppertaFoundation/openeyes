@@ -17,40 +17,41 @@
 
 class RoutesAdminController extends BaseAdminController
 {
+    public $group = 'Drugs';
 
-	public function actionList()
-	{
-		$admin = new Admin(MedicationRoute::model(), $this);
-		$admin->getSearch()->getCriteria()->addColumnCondition(['deleted_date' => null]);
-		$admin->setListFields(array(
-			'id',
-			'term',
-			'source_type',
-			'source_subtype',
-			'getHasLateralityIcon'
-		));
+    public function actionList()
+    {
+        $admin = new Admin(MedicationRoute::model(), $this);
+        $admin->getSearch()->getCriteria()->addColumnCondition(['deleted_date' => null]);
+        $admin->setListFields(array(
+            'id',
+            'term',
+            'source_type',
+            'source_subtype',
+            'getHasLateralityIcon'
+        ));
 
 
-		$admin->getSearch()->addSearchItem('term');
-		$admin->getSearch()->addSearchItem('source_type');
-		$admin->getSearch()->addSearchItem('source_subtype');
+        $admin->getSearch()->addSearchItem('term');
+        $admin->getSearch()->addSearchItem('source_type');
+        $admin->getSearch()->addSearchItem('source_subtype');
 
-		$admin->setModelDisplayName('Medication Routes');
+        $admin->setModelDisplayName('Medication Routes');
 
-		$admin->listModel();
-	}
+        $admin->listModel();
+    }
 
-	public function actionEdit($id)
-	{
-		$admin = new Admin(MedicationRoute::model(), $this);
-		$admin->setModelId($id);
-		$admin->setEditFields(array(
-			'term' => 'Term',
-			'source_type' => 'Source Type',
-			'source_subtype' => 'Source Subtype',
-			'has_laterality' => 'checkbox'
-		));
+    public function actionEdit($id)
+    {
+        $admin = new Admin(MedicationRoute::model(), $this);
+        $admin->setModelId($id);
+        $admin->setEditFields(array(
+            'term' => 'Term',
+            'source_type' => 'Source Type',
+            'source_subtype' => 'Source Subtype',
+            'has_laterality' => 'checkbox'
+        ));
 
-		$admin->editModel();
-	}
+        $admin->editModel();
+    }
 }

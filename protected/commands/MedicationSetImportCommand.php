@@ -51,15 +51,18 @@ EOH;
             $this->createAutomaticSet($worksheet->getTitle(), $this->processSheetCells($worksheet));
         }
 
+        $management_code_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'Management'])->queryScalar();
+
         // Add usage code to the management set
         $rule = new MedicationSetRule();
         $rule->medication_set_id = MedicationSet::model()->find("name = 'medication_management'")->id;
-        $rule->usage_code = 'Management';
+        $rule->usage_code_id = $management_code_id;
+
         $rule->save();
     }
 
     /**
-     * @param $set_name
+     * @param $setName
      * @param $setRecords
      */
     private function createAutomaticSet($set_name, $setRecords)
@@ -77,8 +80,7 @@ EOH;
                 \MedicationSetAutoRuleSetMembership::model()->deleteAllByAttributes(['target_medication_set_id' => $current_set->id]);
                 \MedicationSetItem::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
                 \MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
-                \OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => null], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
-                \OphCiExaminationRiskTag::model()->updateAll(['medication_set_id' => null], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
+                OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => null], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
 
                 // ophciexamination_risk_tag has no model
                 \Yii::app()->db->createCommand()
@@ -110,11 +112,11 @@ EOH;
                         $current_set->tmp_meds[] = array(
                             'id' => '-1',
                             'medication_id' => $medication->id,
-                            'include_parent' => 0,
-                            'include_children' => 0,
+                            'include_parent' => 1,
+                            'include_children' => 1,
                         );
                     } else {
-                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . "\n";
+                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . " || from medication table\n";
                     }
                     break;
                 case "SET":
@@ -125,7 +127,7 @@ EOH;
                             'medication_set_id' => $set->id
                         );
                     } else {
-                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . "\n";
+                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . " || from medication_set table\n";
                     }
                     break;
                 case "ROUTE":
@@ -136,7 +138,7 @@ EOH;
                             'medication_attribute_option_id' => $route_option->id
                         );
                     } else {
-                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . "\n";
+                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . " || from medication_attribute_option table\n";
                     }
                     break;
             }

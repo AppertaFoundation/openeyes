@@ -24,7 +24,6 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 		$admin = new Admin(MedicationSet::model(), $this);
 		$admin->setListFields(array(
 			'name',
-			'hiddenString',
 			'itemsCount',
 			'adminListAction'
 		));
