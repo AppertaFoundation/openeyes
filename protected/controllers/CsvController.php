@@ -704,19 +704,18 @@ class CsvController extends BaseController
 							return $errors;
 						}
 
-						//Abusing soundex to strip commas and quotes and to more fuzzily match a potentially misspelled diagnosis
-						$found_disorder =
+						$found_disorder_ids =
 							Yii::app()->db->createCommand(
-								'SELECT term 
+								'SELECT id 
 									FROM  disorder 
-									WHERE REGEXP_REPLACE(disorder.term, \'[\W]\', \'\') = 
-									REGEXP_REPLACE('. $patient_raw_data['diagnosis'] . ', \'[\W]\', \'\')')->queryAll();
+									WHERE REGEXP_REPLACE(term, \'[^A-Za-z0-9]\', \'\') = 
+									REGEXP_REPLACE(\''. $patient_raw_data['diagnosis'] . '\', \'[^A-Za-z0-9]\', \'\')')->queryAll();
 
-						if (count($found_disorder) == 0) {
+						if (count($found_disorder_ids) == 0) {
 							$errors[] = "Could not find disorder matching name: " . $patient_raw_data['diagnosis'];
 							return $errors;
 						} else {
-							$disorder = Disorder::model()->findByPk($found_disorder[0]['id']);
+							$disorder = Disorder::model()->findByPk($found_disorder_ids[0]);
 						}
 
 						$diagnosis = new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis();
