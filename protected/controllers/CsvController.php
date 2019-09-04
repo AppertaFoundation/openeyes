@@ -517,133 +517,133 @@ class CsvController extends BaseController
         }
 
         //optom
-        if(!empty($patient['optom_first_name']) || !empty($patient['optom_last_name'])){
-            if(!empty($patient['optom_first_name']) && !empty($patient['optom_last_name'])) {
-                $optom_label = ContactLabel::model()->findByAttributes(array('name' => 'Optometrist'));
-                $optom_contact = Contact::model()->findByAttributes(array(
-                    'id' => $optom_label->id,
-                    'first_name' => $patient['optom_first_name'],
-                    'last_name' => $patient['optom_last_name'],
-                ));
-                if ($optom_contact === null) {
-                    $optom_contact = new Contact();
-                    $optom_contact->first_name = $patient['optom_first_name'];
-                    $optom_contact->last_name = $patient['optom_last_name'];
-                    $optom_contact->contact_label_id = $optom_label->id;
-                    if (!$optom_contact->save()) {
-                        $errors[] = 'Could not save new optometrist contact';
-                        array_unshift($errors, $optom_contact->getErrors());
-                        return $errors;
-                    }
-                }
-                $pat_con = new PatientContactAssignment();
-                $pat_con->contact_id = $optom_contact->id;
-                $pat_con->patient_id = $new_patient->id;
-                if (!$pat_con->save()) {
-                    $errors[] = 'Could not save optometrist contact assignment';
-                    array_unshift($errors, $pat_con->getErrors());
-                    return $errors;
-                }
-                $new_gp = new Gp();
-                $new_gp->obj_prof = 0;
-                $new_gp->nat_id = 0;
-                $new_gp->contact = $pat_con;
-                if (!$new_gp->save()) {
-                    $errors[] = 'Could not save new practitioner contact';
-                    array_unshift($errors, $new_gp->getErrors());
-                    return $errors;
-                }
-            } else {
-                $errors[] = 'Both names must be present to import optom';
-                return $errors;
-            }
-        }
+//        if(!empty($patient['optom_first_name']) || !empty($patient['optom_last_name'])){
+//            if(!empty($patient['optom_first_name']) && !empty($patient['optom_last_name'])) {
+//                $optom_label = ContactLabel::model()->findByAttributes(array('name' => 'Optometrist'));
+//                $optom_contact = Contact::model()->findByAttributes(array(
+//                    'id' => $optom_label->id,
+//                    'first_name' => $patient['optom_first_name'],
+//                    'last_name' => $patient['optom_last_name'],
+//                ));
+//                if ($optom_contact === null) {
+//                    $optom_contact = new Contact();
+//                    $optom_contact->first_name = $patient['optom_first_name'];
+//                    $optom_contact->last_name = $patient['optom_last_name'];
+//                    $optom_contact->contact_label_id = $optom_label->id;
+//                    if (!$optom_contact->save()) {
+//                        $errors[] = 'Could not save new optometrist contact';
+//                        array_unshift($errors, $optom_contact->getErrors());
+//                        return $errors;
+//                    }
+//                }
+//                $pat_con = new PatientContactAssignment();
+//                $pat_con->contact_id = $optom_contact->id;
+//                $pat_con->patient_id = $new_patient->id;
+//                if (!$pat_con->save()) {
+//                    $errors[] = 'Could not save optometrist contact assignment';
+//                    array_unshift($errors, $pat_con->getErrors());
+//                    return $errors;
+//                }
+//                $new_gp = new Gp();
+//                $new_gp->obj_prof = 0;
+//                $new_gp->nat_id = 0;
+//                $new_gp->contact = $pat_con;
+//                if (!$new_gp->save()) {
+//                    $errors[] = 'Could not save new practitioner contact';
+//                    array_unshift($errors, $new_gp->getErrors());
+//                    return $errors;
+//                }
+//            } else {
+//                $errors[] = 'Both names must be present to import optom';
+//                return $errors;
+//            }
+//        }
 
         //opthal
-        if(!empty($patient['opthal_first_name']) || !empty($patient['opthal_last_name'])){
-            if(!empty($patient['opthal_first_name']) && !empty($patient['opthal_last_name'])) {
-                $opthal_label = ContactLabel::model()->findByAttributes(array('name' => 'Consultant Ophthalmologist'));
-                $opthal_contact = Contact::model()->findByAttributes(array(
-                    'id' => $opthal_label->id,
-                    'first_name' => $patient['opthal_first_name'],
-                    'last_name' => $patient['opthal_last_name'],
-                ));
-                if ($opthal_contact === null) {
-                    $opthal_contact = new Contact();
-                    $opthal_contact->first_name = $patient['opthal_first_name'];
-                    $opthal_contact->last_name = $patient['opthal_last_name'];
-                    $opthal_contact->contact_label_id = $opthal_label->id;
-                    if (!$opthal_contact->save()) {
-                        $errors[] = 'Could not save new ophthalmologist contact';
-                        array_unshift($errors, $opthal_contact->getErrors());
-                        return $errors;
-                    }
-                }
-                $pat_con = new PatientContactAssignment();
-                $pat_con->contact_id = $opthal_contact->id;
-                $pat_con->patient_id = $new_patient->id;
-                if (!$pat_con->save()) {
-                    $errors[] = 'Could not save ophthalmologist contact assignment';
-                    array_unshift($errors, $pat_con->getErrors());
-                    return $errors;
-                }
-                $new_gp = new Gp();
-                $new_gp->obj_prof = 0;
-                $new_gp->nat_id = 0;
-                $new_gp->contact_id = $opthal_contact->id;
-                if (!$new_gp->save()) {
-                    $errors[] = 'Could not save new opthal contact';
-                    array_unshift($errors, $new_gp->getErrors());
-                    return $errors;
-                }
-            } else {
-                $errors[] = 'Both names must be present to import ophthalmologist';
-                return $errors;
-            }
-        }
+//        if(!empty($patient['opthal_first_name']) || !empty($patient['opthal_last_name'])){
+//            if(!empty($patient['opthal_first_name']) && !empty($patient['opthal_last_name'])) {
+//                $opthal_label = ContactLabel::model()->findByAttributes(array('name' => 'Consultant Ophthalmologist'));
+//                $opthal_contact = Contact::model()->findByAttributes(array(
+//                    'id' => $opthal_label->id,
+//                    'first_name' => $patient['opthal_first_name'],
+//                    'last_name' => $patient['opthal_last_name'],
+//                ));
+//                if ($opthal_contact === null) {
+//                    $opthal_contact = new Contact();
+//                    $opthal_contact->first_name = $patient['opthal_first_name'];
+//                    $opthal_contact->last_name = $patient['opthal_last_name'];
+//                    $opthal_contact->contact_label_id = $opthal_label->id;
+//                    if (!$opthal_contact->save()) {
+//                        $errors[] = 'Could not save new ophthalmologist contact';
+//                        array_unshift($errors, $opthal_contact->getErrors());
+//                        return $errors;
+//                    }
+//                }
+//                $pat_con = new PatientContactAssignment();
+//                $pat_con->contact_id = $opthal_contact->id;
+//                $pat_con->patient_id = $new_patient->id;
+//                if (!$pat_con->save()) {
+//                    $errors[] = 'Could not save ophthalmologist contact assignment';
+//                    array_unshift($errors, $pat_con->getErrors());
+//                    return $errors;
+//                }
+//                $new_gp = new Gp();
+//                $new_gp->obj_prof = 0;
+//                $new_gp->nat_id = 0;
+//                $new_gp->contact_id = $opthal_contact->id;
+//                if (!$new_gp->save()) {
+//                    $errors[] = 'Could not save new opthal contact';
+//                    array_unshift($errors, $new_gp->getErrors());
+//                    return $errors;
+//                }
+//            } else {
+//                $errors[] = 'Both names must be present to import ophthalmologist';
+//                return $errors;
+//            }
+//        }
 
         //Gp
-        if(!empty($patient['gp_first_name']) || !empty($patient['gp_last_name'])){
-            if(!empty($patient['gp_first_name']) && !empty($patient['gp_last_name'])) {
-                $gp_label = ContactLabel::model()->findByAttributes(array('name' => 'General Practitioner'));
-                $gp_contact = Contact::model()->findByAttributes(array(
-                    'id' => $gp_label->id,
-                    'first_name' => $patient['gp_first_name'],
-                    'last_name' => $patient['gp_last_name'],
-                ));
-                if ($gp_contact === null) {
-                    $gp_contact = new Contact();
-                    $gp_contact->first_name = $patient['gp_first_name'];
-                    $gp_contact->last_name = $patient['gp_last_name'];
-                    $gp_contact->contact_label_id = $gp_label->id;
-                    if (!$gp_contact->save()) {
-                        $errors[] = 'Could not save new '.Yii::app()->params['gp_label'].' contact';
-                        array_unshift($errors, $gp_contact->getErrors());
-                        return $errors;
-                    }
-                    $new_gp = new Gp();
-                    $new_gp->obj_prof = 0;
-                    $new_gp->nat_id = 0;
-                    $new_gp->contact_id = $gp_contact->id;
-                    if (!$new_gp->save()) {
-                        $errors[] = 'Could not save new practitioner contact';
-                        array_unshift($errors, $new_gp->getErrors());
-                        return $errors;
-                    }
-                }
-                $pat_con = new PatientContactAssignment();
-                $pat_con->contact_id = $gp_contact->id;
-                $pat_con->patient_id = $new_patient->id;
-                if (!$pat_con->save()) {
-                    $errors[] = 'Could not save general practitioner contact';
-                    array_unshift($errors, $pat_con->getErrors());
-                    return $errors;
-                }
-            } else {
-                $errors[] = 'Both names are required to import '.Yii::app()->params['gp_label'];
-                return $errors;
-            }
-        }
+//        if(!empty($patient['gp_first_name']) || !empty($patient['gp_last_name'])){
+//            if(!empty($patient['gp_first_name']) && !empty($patient['gp_last_name'])) {
+//                $gp_label = ContactLabel::model()->findByAttributes(array('name' => 'General Practitioner'));
+//                $gp_contact = Contact::model()->findByAttributes(array(
+//                    'id' => $gp_label->id,
+//                    'first_name' => $patient['gp_first_name'],
+//                    'last_name' => $patient['gp_last_name'],
+//                ));
+//                if ($gp_contact === null) {
+//                    $gp_contact = new Contact();
+//                    $gp_contact->first_name = $patient['gp_first_name'];
+//                    $gp_contact->last_name = $patient['gp_last_name'];
+//                    $gp_contact->contact_label_id = $gp_label->id;
+//                    if (!$gp_contact->save()) {
+//                        $errors[] = 'Could not save new '.Yii::app()->params['gp_label'].' contact';
+//                        array_unshift($errors, $gp_contact->getErrors());
+//                        return $errors;
+//                    }
+//                    $new_gp = new Gp();
+//                    $new_gp->obj_prof = 0;
+//                    $new_gp->nat_id = 0;
+//                    $new_gp->contact_id = $gp_contact->id;
+//                    if (!$new_gp->save()) {
+//                        $errors[] = 'Could not save new practitioner contact';
+//                        array_unshift($errors, $new_gp->getErrors());
+//                        return $errors;
+//                    }
+//                }
+//                $pat_con = new PatientContactAssignment();
+//                $pat_con->contact_id = $gp_contact->id;
+//                $pat_con->patient_id = $new_patient->id;
+//                if (!$pat_con->save()) {
+//                    $errors[] = 'Could not save general practitioner contact';
+//                    array_unshift($errors, $pat_con->getErrors());
+//                    return $errors;
+//                }
+//            } else {
+//                $errors[] = 'Both names are required to import '.Yii::app()->params['gp_label'];
+//                return $errors;
+//            }
+//        }
 
 				//Create events and elements for diagnosis
 				if(!empty($patient_raw_data['diagnosis']) || !empty($patient_raw_data['vision_l']) || !empty($patient_raw_data['vision_r'])) {
