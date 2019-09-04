@@ -43,7 +43,6 @@ function fpTenPrintOption() {
     $('#prescription_items tbody tr').each(function(i, elem) {
         if ($(elem).find('.dispenseCondition').val() == $(elem).find('.dispenseCondition option:contains("Print to {form_type}")').val()) {
             exists = true;
-            console.log('Form print selected.')
         }
     });
 
