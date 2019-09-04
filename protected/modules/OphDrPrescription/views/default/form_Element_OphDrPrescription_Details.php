@@ -51,7 +51,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
         </thead>
         <tbody>
         <?php
-		$unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
+        $unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
         foreach ($element->items as $key => $item) {
             $this->renderPartial('form_Element_OphDrPrescription_Details_Item',
                 array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options));
@@ -125,20 +125,22 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
                 'label' => $drug['preferred_term'],
                 'id' => $drug['id'],
                 'prepended_markup' => $this->widget('MedicationInfoBox', array('medication_id' => $drug['id']), true),
-                'allergies' => array_map(function($e) { return $e->id; }, $drug['allergies']),
+                'allergies' => array_map(function ($e) {
+                    return $e->id;
+                }, $drug['allergies']),
             ];
         }, $element->commonDrugs())
     ) ?>;
 
     <?php
-            $drugTypes = [];
-        foreach ($element->drugTypes() as $key=>$drugType) {
-            $drugTypes[] = [
-                'label' => $drugType,
-                'id' => $key
-            ];
-        }
-        ?>
+        $drugTypes = [];
+    foreach ($element->drugTypes() as $key => $drugType) {
+        $drugTypes[] = [
+            'label' => $drugType,
+            'id' => $key
+        ];
+    }
+    ?>
 
     var prescriptionElementDrugTypes = <?= CJSON::encode($drugTypes) ?>;
 

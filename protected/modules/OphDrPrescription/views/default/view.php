@@ -23,18 +23,18 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
         $elementEditable = $Element->isEditableByMedication();
         if(($Element->draft ) && (!$elementEditable )){
             $this->event_actions[] = EventAction::button(
-                'Save as final', 
-                'save', 
-                array('level' => 'secondary'), 
+                'Save as final',
+                'save',
+                array('level' => 'secondary'),
                 array(
-                    'id' => 'et_save_final', 
-                    'class' => 'button small', 
+                    'id' => 'et_save_final',
+                    'class' => 'button small',
                     'type' => 'button',
                     'data-element' => $Element->id
                 )
             );
         }
-        
+
         if ($this->checkPrintAccess()) {
         	if(!$Element->draft || $this->checkEditAccess()){
         		$this->event_actions[] = EventAction::printButton();
@@ -56,7 +56,6 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
     <?php $this->renderOpenElements($this->action->id); ?>
     <?php $this->renderOptionalElements($this->action->id); ?>
 
-
 <?php
     if (isset(Yii::app()->session['print_prescription'])) :?>
         <?php unset(Yii::app()->session['print_prescription']); ?>
@@ -69,4 +68,3 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
 
 <?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>
-
