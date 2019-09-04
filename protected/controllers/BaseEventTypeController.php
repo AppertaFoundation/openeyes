@@ -421,7 +421,7 @@ class BaseEventTypeController extends BaseModuleController
                 Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js");
                 // disable buttons when clicking on save/save_draft/save_print
                 Yii::app()->assetManager->getClientScript()->registerScript('disableSaveAfterClick', '
-                      $(document).on("click", "#et_save, #et_save_draft, #et_save_print", function () {
+                      $(document).on("click", "#et_save, #et_save_draft, #et_save_print, #et_save_print_form", function () {
                           disableButtons();
                       });
                 ', CClientScript::POS_HEAD);
