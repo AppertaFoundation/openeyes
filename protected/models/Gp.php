@@ -27,6 +27,7 @@
  *
  * The followings are the available model relations:
  * @property Contact $contact
+ * @property ContactPracticeAssociate $contactPracticeAssociate
  */
 class Gp extends BaseActiveRecordVersioned
 {
@@ -101,7 +102,7 @@ class Gp extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-            'contactPracticeAssociate'=>array(self::HAS_ONE,'ContactPracticeAssociate','gp_id'),
+            'contactPracticeAssociate'=>array(self::HAS_MANY,'ContactPracticeAssociate','gp_id'),
         );
     }
 
@@ -247,57 +248,5 @@ class Gp extends BaseActiveRecordVersioned
             return $practiceDetails;
         }
         return '';
-    }
-
-    public function performGpSave(Contact $contact, Gp $gp, $isAjax = false)
-    {
-        $action = $gp->isNewRecord ? 'add' : 'edit';
-        $transaction = Yii::app()->db->beginTransaction();
-
-        try {
-            if ($contact->save()) {
-                // No need to re-set these values if they already exist.
-                if ($gp->contact_id === null) {
-                    $gp->contact_id = $contact->getPrimaryKey();
-                }
-
-                if ($gp->nat_id === null) {
-                    $gp->nat_id = 0;
-                }
-
-                if ($gp->obj_prof === null) {
-                    $gp->obj_prof = 0;
-                }
-
-                if ($gp->save()) {
-                    $transaction->commit();
-                    Audit::add('Gp', $action . '-gp', "Practitioner manually [id: $gp->id] {$action}ed.");
-                    if (!$isAjax) {
-                        Yii::app()->getController()->redirect(array('view','id'=>$gp->id));
-                    }
-                } else {
-                    if ($isAjax) {
-                        throw new CHttpException(400,"Unable to save Practitioner contact");
-                    }
-                    $transaction->rollback();
-                }
-            } else {
-                if ($isAjax) {
-                    throw new CHttpException(400,CHtml::errorSummary($contact));
-                }
-                $transaction->rollback();
-            }
-        } catch (Exception $ex) {
-            OELog::logException($ex);
-            $transaction->rollback();
-            if ($isAjax) {
-                if (strpos($ex->getMessage(),'errorSummary')){
-                    echo $ex->getMessage();
-                }else{
-                    echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
-                }
-            }
-        }
-        return array($contact, $gp);
     }
 }

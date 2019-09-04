@@ -29,7 +29,9 @@
             </colgroup>
             <tbody>
             <tr>
-                <td> Hospital No.</td>
+                <!--                Parameterized for CERA-519-->
+                <td> <?php echo (Yii::app()->params['hos_num_label']). ((Yii::app()->params['institution_code']=='CERA')?':':' No.:')?>
+                </td>
                 <td>
                     <span class="data-value hos_num"><?php echo $model->isNewRecord ? '' : $model->{"{$type}_hos_num"}; ?></span>
                     <?= \CHtml::activeHiddenField($model, "{$type}_hos_num", array('class' => 'hos_num-input')); ?>
@@ -39,7 +41,8 @@
                 <td>
                     <!-- NHS number -->
                     <span class="hide-text print-only">
-                        <?php echo Yii::app()->params['nhs_num_label'] ?> number:
+                                                <!--                Parameterized for CERA-519-->
+                        <?php echo Yii::app()->params['nhs_num_label']. ((Yii::app()->params['institution_code']=='CERA')?':':' Number:')?>
                     </span>
                 </td>
                 <td>

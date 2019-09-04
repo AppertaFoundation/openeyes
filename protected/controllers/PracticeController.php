@@ -62,88 +62,184 @@ class PracticeController extends BaseController
      */
     public function actionCreate($context = null)
     {
-
+        $duplicateCheckOutput = null;
         $contact = new Contact('manage_practice');
         $address = new Address('manage_practice');
         $practice = new Practice('manage_practice');
         $this->performAjaxValidation(array($practice, $contact, $address));
         if (isset($_POST['Contact'])) {
-            $contact->attributes = $_POST['Contact'];
+            $contact->first_name = $_POST['Contact']['first_name'];
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
-            list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address,
-                $context === 'AJAX');
-        }
-        if ($context === 'AJAX') {
-            if (isset($practice->contact)){
-                $displayText = ($practice->contact->first_name ? ($practice->contact->first_name . ', ') : '') . $practice->getAddressLines();
-                echo CJSON::encode(array(
-                    'label' => $displayText,
-                    'value' => $displayText,
-                    'id' => $practice->getPrimaryKey(),
-                ));
+            if ( $contact->validate(array('first_name')) and $address->validate(array('address1', 'city', 'postcode', 'country')) ) {
+
+                // If there is no validation error, check for the duplicate practice based on practice name, address1, city, postcode and country.
+                $duplicateCheckOutput = Yii::app()->db->createCommand()
+                    ->select('c1.first_name, a.address1, a.city, a.postcode, a.country_id')
+                    ->from('practice p')
+                    ->join('contact c1', 'c1.id = p.contact_id')
+                    ->join('address a', 'a.contact_id = c1.id')
+                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id',
+                        array(':first_name'=> $contact->first_name, ':address1'=>$address->address1,
+                            ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id))
+                    ->queryAll();
+
+                $isDuplicate = count($duplicateCheckOutput);
+
+                if($isDuplicate === 0) {
+                    list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address,
+                    false);
+                }
+            } else {
+                $contact->validate(array('first_name'));
+                $address->validate(array('address1', 'city', 'postcode', 'country'));
             }
-        } else {
-            $this->render('create', array(
-                'model' => $practice,
-                'address' => $address,
-                'contact' => $contact,
-            ));
         }
+
+        $this->render('create', array(
+            'model' => $practice,
+            'address' => $address,
+            'contact' => $contact,
+            'duplicateCheckOutput' => $duplicateCheckOutput,
+        ));
     }
 
     /**
      * This function is called at the final step of Add New Contact/Referring Practitioner when user wants to add new
-     * practice and saves all the data (i.e. Contact, Gp, Contact Practice Associate)
+     * practice (It uses Contact, Gp, Practice, Address and Contact Practice Associate models)
+     * @throws CException
+     * @throws Exception
      */
     public function actionCreateAssociate(){
-        if (isset($_POST['Contact'])) {
-            $gp = new Gp();
-            $contact = new Contact('manage_gp');
-
-            $contact->title = $_POST['Contact']['contact_title'];
-            $contact->first_name = $_POST['Contact']['contact_first_name'];
-            $contact->last_name = $_POST['Contact']['contact_last_name'];
-            $contact->primary_phone = $_POST['Contact']['contact_primary_phone'];
-            $contact->contact_label_id = $_POST['Contact']['contact_label_id'];
-
-            list($contact, $gp) = $gp->performGpSave($contact, $gp, true);
+        if (isset($_POST['Contact'], $_POST['gp_data_retrieved'])) {
 
             $contactPractice = new Contact('manage_practice');
             $address = new Address('manage_practice');
             $practice = new Practice('manage_practice');
-            $this->performAjaxValidation(array($practice, $contactPractice, $address));
 
-            if (isset($_POST['Contact'])) {
-                $contactPractice->first_name = $_POST['Contact']['first_name'];
-                $contactPractice->primary_phone = $_POST['Contact']['primary_phone'];
-                $address->attributes = $_POST['Address'];
-                $practice->attributes = $_POST['Practice'];
+            $contactPractice->first_name = $_POST['Contact']['first_name'];
+            $contactPractice->primary_phone = $_POST['Contact']['primary_phone'];
+            $address->attributes = $_POST['Address'];
+            $practice->attributes = $_POST['Practice'];
+
+            if ($contactPractice->validate(array('first_name')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
+
+                $practice_contact_associate = new ContactPracticeAssociate();
+                $practice_contact_associate->provider_no = !empty($_POST['ContactPracticeAssociate']['provider_no']) ? $_POST['ContactPracticeAssociate']['provider_no'] : null;
+
+                $gp = new Gp();
+                $contact = new Contact('manage_gp');
+
+                $contact->title = $_POST['Contact']['contact_title'];
+                $contact->first_name = $_POST['Contact']['contact_first_name'];
+                $contact->last_name = $_POST['Contact']['contact_last_name'];
+                $contact->primary_phone = $_POST['Contact']['contact_primary_phone'];
+                $contact->contact_label_id = $_POST['Contact']['contact_label_id'];
+
+                // If there is no validation error, check for the duplicate practice based on practice name, address1, city, postcode and country.
+                $dataProvider = Yii::app()->db->createCommand()
+                    ->select('c1.first_name, a.address1, a.city, a.postcode, a.country_id')
+                    ->from('practice p')
+                    ->join('contact c1', 'c1.id = p.contact_id')
+                    ->join('address a', 'a.contact_id = c1.id')
+                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and LOWER(a.postcode) = LOWER(:postcode) and LOWER(a.country_id) = LOWER(:country_id)',
+                        array(':first_name'=> $contactPractice->first_name, ':address1'=>$address->address1,
+                            ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id))
+                    ->queryAll();
+
+                $isDuplicate = count($dataProvider);
+
+                if($isDuplicate === 0) {
+                    // This variable stores the gp details that were entered in the pop-up (in first step)
+                    $gpDetails = json_decode($_POST['gp_data_retrieved']);
+                    if ($gpDetails->gpId != "-1") {
+                        $practice_contact_associate->gp_id = $gpDetails->gpId;
+                    } else {
+                        // User has selected one of the search results but modified the text in one of the fields.
+                        list($contact, $gp) = $this->performGpSave($contact, $gp, true);
+                        $practice_contact_associate->gp_id = $gp->getPrimaryKey();
+                    }
+                } else {
+                    echo CJSON::encode(array('error' => 'Duplicate Practice detected. <br/> A practice with the same practice name and address already exists. Please enter another practice or exit.'));
+                    Yii::app()->end();
+                }
+
                 list($contactPractice, $practice, $address) = $this->performPracticeSave($contactPractice, $practice, $address,
                     true);
-            }
 
-            if (isset($practice->contact)) {
-                $practice_contact_associate = new ContactPracticeAssociate();
-                $practice_contact_associate->gp_id = $gp->getPrimaryKey();
                 $practice_contact_associate->practice_id = $practice->id;
+
                 if ($practice_contact_associate->save()) {
                     echo CJSON::encode(array(
                         'gp_id' => $practice_contact_associate->gp->getPrimaryKey(),
+                        'practice_id' => $practice_contact_associate->practice_id,
                     ));
                 }
+            } else {
+                echo CJSON::encode(array('error' =>  CHtml::errorSummary(array($contactPractice, $address) ) ));
             }
         }
     }
 
+    public function performGpSave(Contact $contact, Gp $gp, $isAjax = false)
+    {
+        $action = $gp->isNewRecord ? 'add' : 'edit';
+        $transaction = Yii::app()->db->beginTransaction();
+
+        try {
+            if ($contact->save()) {
+                // No need to re-set these values if they already exist.
+                if ($gp->contact_id === null) {
+                    $gp->contact_id = $contact->getPrimaryKey();
+                }
+
+                if ($gp->nat_id === null) {
+                    $gp->nat_id = 0;
+                }
+
+                if ($gp->obj_prof === null) {
+                    $gp->obj_prof = 0;
+                }
+
+                if ($gp->save()) {
+                    $transaction->commit();
+                    Audit::add('Gp', $action . '-gp', "Practitioner manually [id: $gp->id] {$action}ed.");
+                    if (!$isAjax) {
+                        $this->redirect(array('view','id'=>$gp->id));
+                    }
+                } else {
+                    if ($isAjax) {
+                        throw new CHttpException(400,"Unable to save Practitioner contact");
+                    }
+                    $transaction->rollback();
+                }
+            } else {
+                if ($isAjax) {
+                    throw new CHttpException(400,CHtml::errorSummary($contact));
+                }
+                $transaction->rollback();
+            }
+        } catch (Exception $ex) {
+            OELog::logException($ex);
+            $transaction->rollback();
+            if ($isAjax) {
+                if (strpos($ex->getMessage(),'errorSummary')){
+                    echo $ex->getMessage();
+                }else{
+                    echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
+                }
+            }
+        }
+        return array($contact, $gp);
+    }
 
     /**
      * @param Contact $contact
      * @param Practice $practice
      * @param Address $address
      * @param bool $isAjax
-     * @throws CHttpException
      * @return array
+     * @throws CException
      */
     public function performPracticeSave(Contact $contact, Practice $practice, Address $address, $isAjax = false)
     {
@@ -214,6 +310,7 @@ class PracticeController extends BaseController
      */
     public function actionUpdate($id)
     {
+        $duplicateCheckOutput = null;
         $model = $this->loadModel($id);
         $contact = $model->contact;
         $address = isset($contact->address) ? $contact->address : new Address();
@@ -228,13 +325,31 @@ class PracticeController extends BaseController
             $contact->attributes = $_POST['Contact'];
             $address->attributes = $_POST['Address'];
             $model->attributes = $_POST['Practice'];
-            list($contact, $model, $address) = $this->performPracticeSave($contact, $model, $address);
+
+            // If there is no validation error, check for the duplicate practice based on practice name, address1, city, postcode and country.
+            $duplicateCheckOutput = Yii::app()->db->createCommand()
+                ->select('c1.first_name, a.address1, a.city, a.postcode, a.country_id')
+                ->from('practice p')
+                ->join('contact c1', 'c1.id = p.contact_id')
+                ->join('address a', 'a.contact_id = c1.id')
+                ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id and p.id != :id',
+                    array(':first_name'=> $contact->first_name, ':address1'=>$address->address1,
+                        ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id, ':id'=>$id ))
+                ->queryAll();
+
+            $isDuplicate = count($duplicateCheckOutput);
+
+            if($isDuplicate === 0) {
+                list($contact, $model, $address) = $this->performPracticeSave($contact, $model, $address);
+            }
+
         }
 
         $this->render('update', array(
             'model' => $model,
             'address' => $address,
             'contact' => $contact,
+            'duplicateCheckOutput' => $duplicateCheckOutput,
         ));
     }
 
