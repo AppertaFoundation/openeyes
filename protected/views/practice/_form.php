@@ -45,7 +45,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 <?php echo $form->labelEx($model, 'phone'); ?>
             </td>
             <td>
-                <?php echo $form->telField($model, 'phone', array('size' => 15, 'maxlength' => 20)); ?>
+                <?php echo $form->telField($model, 'phone', array('size' => 15, 'maxlength' => 20, 'class' => 'cols-10')); ?>
                 <?php echo $form->error($model, 'phone'); ?>
             </td>
         </tr>
