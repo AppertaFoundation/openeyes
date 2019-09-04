@@ -236,6 +236,7 @@
         }
 
         this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
+        this.searchResultList.hide();
         this.searchResultList.appendTo($filterDiv);
     };
 
@@ -585,12 +586,12 @@
                     dialog.searchResultList.append($listItem);
                 });
 
-                if (dialog.options.enableCustomSearchEntries) {
-                    dialog.appendCustomEntryOption(text, dialog);
-                } else {
-                    dialog.searchResultList.toggle(!no_data);
-                }
-                dialog.searchingSpinnerWrapper.hide();
+            if (dialog.options.enableCustomSearchEntries) {
+                dialog.appendCustomEntryOption(text, dialog);
+            }
+
+            dialog.searchResultList.toggle(!no_data);
+            dialog.searchingSpinnerWrapper.hide();
             });
     };
 
