@@ -18,7 +18,7 @@
             <table class="cols-11 large-text borders">
                 <colgroup>
                     <col class="cols-3">
-                    <col class="cols-2">
+                    <col class="cols-8">
                     <col class="cols-1">
                 </colgroup>
                 <tbody>
