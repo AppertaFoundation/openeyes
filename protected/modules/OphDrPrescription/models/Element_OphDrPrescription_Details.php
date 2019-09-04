@@ -50,13 +50,13 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         return 'et_ophdrprescription_details';
     }
 
-	public function behaviors()
-	{
-		return array(
-			"AllergicDrugEntriesBehavior" => array(
-				"class" => "application.behaviors.AllergicDrugEntriesBehavior",
-			),
-		);
+    public function behaviors()
+    {
+        return array(
+            "AllergicDrugEntriesBehavior" => array(
+                "class" => "application.behaviors.AllergicDrugEntriesBehavior",
+            ),
+        );
     }
 
     /**
@@ -232,20 +232,20 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     }
 
     /*
-     * When a prescription event is created as the result of a medication 
-     * management element from an examination event,the prescription event 
+     * When a prescription event is created as the result of a medication
+     * management element from an examination event,the prescription event
      * should be locked for editing.
      * The only available action will be to save as final (or print final) or delete
-     * 
+     *
      * @return bool
      */
     
     public function isEditableByMedication()
     {
         foreach ($this->items as $key => $item) {
-            if($item->parent){
+            if ($item->parent) {
                 return false;
-            }  
+            }
         }
         return true;
     }
@@ -270,9 +270,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
 
     protected function afterSave()
     {
-        if(($this->draft == 0) && ($this->printed == 0)){
+        if (($this->draft == 0) && ($this->printed == 0)) {
             $this->event->deleteIssue('Draft');
-        } else if($this->draft == 1) {
+        } else if ($this->draft == 1) {
             $this->event->addIssue('Draft');
         } else {
             $this->event->deleteIssue('Draft');
@@ -369,7 +369,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         if (!$this->draft) {
             $this->getApp()->event->dispatch('after_medications_save', array(
                 'patient' => $this->event->getPatient(),
-                'medications' => array_map(function($item) {return $item->medication; }, $this->items)
+                'medications' => array_map(function ($item) {
+                    return $item->medication;
+                }, $this->items)
             ));
         }
     }
@@ -381,7 +383,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      */
     public function getInfotext()
     {
-        if(($this->draft == 0) && ($this->printed == 0)){
+        if (($this->draft == 0) && ($this->printed == 0)) {
             return 'Saved';
         } else if (!$this->printed) {
             return 'Draft';
@@ -405,14 +407,14 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         return 'print_'.$this->getDefaultView();
     }
 
-	/**
-	 * @return OphDrPrescription_Item[]
-	 *
-	 * Compatibility function for AllergicDrugEntriesBehavior
-	 */
+    /**
+     * @return OphDrPrescription_Item[]
+     *
+     * Compatibility function for AllergicDrugEntriesBehavior
+     */
 
     public function getEntries()
-	{
-		return $this->items;
-	}
+    {
+        return $this->items;
+    }
 }
