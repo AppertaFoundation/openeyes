@@ -304,7 +304,6 @@ class PracticeController extends BaseController
         $contact->setScenario('manage_practice');
         $address->setScenario('manage_practice');
         $model->setScenario('manage_practice');
-        Yii::log(CVarDumper::dumpAsString($model));
         $this->performAjaxValidation($contact);
 
         if (isset($_POST['Address']) || isset($_POST['Contact'])) {
