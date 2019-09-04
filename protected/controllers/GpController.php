@@ -81,8 +81,17 @@ class GpController extends BaseController
      */
     public function actionView($id)
     {
+        $gp = $this->loadModel($id);
+
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('gp_id='.$id);
+        $dataProvider = new CActiveDataProvider('ContactPracticeAssociate', array(
+            'criteria' => $criteria,
+        ));
+
         $this->render('view', array(
-            'model' => $this->loadModel($id),
+            'model' => $gp,
+            'dataProvider' => $dataProvider,
         ));
     }
 
@@ -100,15 +109,39 @@ class GpController extends BaseController
             // manage_gp_role_req is used for CERA for validating roles as well.
             $contact = new Contact(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
 
+            $contactPracticeAssociate = new ContactPracticeAssociate();
+
             if (isset($_POST['Contact'])) {
                 $contact->attributes = $_POST['Contact'];
                 if ($contact->validate()) {
+
+                    // checking for the duplicate provider no.
+                    if(!empty($_POST['ContactPracticeAssociate']['provider_no'])) {
+
+                        $contactPracticeAssociate->provider_no = $_POST['ContactPracticeAssociate']['provider_no'];
+
+                        $query = Yii::app()->db->createCommand()
+                            ->select('cpa.id')
+                            ->from('contact_practice_associate cpa')
+                            ->where('LOWER(cpa.provider_no) = LOWER(:provider_no)',
+                                array(':provider_no' => $contactPracticeAssociate->provider_no))
+                            ->queryAll();
+
+                        $isDuplicate = count($query);
+
+                        if($isDuplicate !== 0) {
+                            echo CJSON::encode(array('error' => 'Duplicate Provider number detected. <br/> This provider number already exists.'));
+                            Yii::app()->end();
+                        }
+                    }
+
                     echo CJSON::encode(array(
                         'title' => $contact->title,
                         'firstName' => $contact->first_name,
                         'lastName' => $contact->last_name,
                         'primaryPhone' => $contact->primary_phone,
-                        'labelId' => isset($contact->label) ? $contact->label->id : ''
+                        'labelId' => isset($contact->label) ? $contact->label->id : '',
+                        'providerNo' => isset($contactPracticeAssociate->provider_no) ? $contactPracticeAssociate->provider_no : '',
                     ));
                 } else {
                     // get the error messages for the contact model.
@@ -149,19 +182,32 @@ class GpController extends BaseController
         Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
         $model = $this->loadModel($id);
         $contact = $model->contact;
+        $cpas = $model->contactPracticeAssociate;
         $contact->setScenario(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
 
         $this->performAjaxValidation($contact);
 
         if (isset($_POST['Contact'])) {
-
             $contact->attributes = $_POST['Contact'];
             $this->performAjaxValidation($contact);
-            list($contact, $model) = $this->performGpSave($contact, $model);
+            $index = 0;
+            foreach($_POST['ContactPracticeAssociate'] as $cpa) {
+                $cpas[$index]->provider_no = $cpa['provider_no'];
+                $index++;
+            }
+
+            if($contact->validate()) {
+                foreach($cpas as $cpa) {
+                    $update = Yii::app()->db->createCommand()
+                        ->update('contact_practice_associate', array('provider_no' => !empty($cpa->provider_no) ? $cpa->provider_no : null),'id=:id', array(':id'=>$cpa->id));
+                }
+                list($contact, $model) = $this->performGpSave($contact, $model);
+            }
         }
 
         $this->render('update', array(
             'model' => $contact,
+            'cpas' => $cpas,
         ));
     }
 

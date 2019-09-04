@@ -23,6 +23,35 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
     <?php echo $form->errorSummary($model); ?>
     <table class="standard">
         <tbody>
+        <?php if(isset($duplicateCheckOutput)): ?>
+            <tr id="conflicts" class="cols-full alert-box error" style="font-style: italic; font-size: small;">
+                <td class="row field-row">
+                    <p>Duplicate practice detected.</p>
+                </td>
+                <td>
+                    <table class="last-left">
+                        <thead>
+                        <tr>
+                            <th>Practice Name</th>
+                            <th>Address</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <?php for($i=0; $i<sizeof($duplicateCheckOutput); $i++): ?>
+                                <tr>
+                                    <td><?php echo $duplicateCheckOutput[$i]['first_name']; ?></td>
+                                    <td>
+                                        <?php echo $duplicateCheckOutput[$i]['address1'].', '.$duplicateCheckOutput[$i]['city'].', '.$duplicateCheckOutput[$i]['postcode'].', '. Country::model()->find('id = '.$duplicateCheckOutput[$i]['country_id'])->name.'.'?>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            <?php endfor; ?>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        <?php endif; ?>
         <tr>
             <td>
                 <?php echo $form->labelEx($contact, 'first_name'); ?>
