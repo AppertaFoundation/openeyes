@@ -82,7 +82,7 @@ class PracticeController extends BaseController
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
 
-            if ( $contact->validate(array('first_name')) and $address->validate(array('address1', 'city', 'postcode', 'country')) and (!isset($_POST['Gp']) ? $gp->validate(array('id')) : 1 == 1)) {
+            if ( $contact->validate(array('first_name')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
 
                 // If there is no validation error, check for the duplicate practice based on practice name, address1, city, postcode and country.
                 $duplicateCheckOutput = Yii::app()->db->createCommand()
@@ -98,16 +98,12 @@ class PracticeController extends BaseController
                 $isDuplicate = count($duplicateCheckOutput);
 
                 if($isDuplicate === 0) {
-                    list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address,
+                    list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address, $gpIdList,
                     false);
                 }
             } else {
                 $contact->validate(array('first_name'));
                 $address->validate(array('address1', 'city', 'postcode', 'country'));
-                 // Only validate Gp (i.e. Practitioner field) when user has not selected Gp
-                if (!isset($_POST['Gp'])) {
-                    $gp->validate(array('id'));
-                }
             }
         }
 
