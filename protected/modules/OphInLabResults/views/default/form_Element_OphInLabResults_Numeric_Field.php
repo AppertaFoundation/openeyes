@@ -18,7 +18,7 @@
                         <div class="data-group flex-layout cols-full">
                             <div class="cols-2">Result</div>
                             <div class="cols-10">
-                                <?php echo $form->numberField($element, 'result'); ?>
+                                <?php echo $form->numberField($element, 'result', ['step' => '0.01']); ?>
                                 <span class="large-text highlighter orange js-lab-result-warning"
                                       style="<?php
                                       if (isset($element->result)&& $element->resultType->normal_min && $element->resultType->normal_min &&
@@ -36,12 +36,14 @@
                         </div>
                     </td>
                 </tr>
+                <?php if ($element->resultType->show_units) { ?>
                 <tr>
                     <td>
                         <?php $element->setDefaultUnit();?>
-                        <?php echo $form->textField($element, 'unit'); ?>
+                        <?= $form->textField($element, 'unit', ['disabled' => ($element->resultType->allow_unit_change ? '' : 'disabled') ]); ?>
                     </td>
                 </tr>
+                <?php } ?>
                 <tr>
                     <td>
                         <?php echo $form->textArea($element, 'comment', $element->getHtmlOptionsForInput('comment'), array(), ['maxlength' => '250']); ?>

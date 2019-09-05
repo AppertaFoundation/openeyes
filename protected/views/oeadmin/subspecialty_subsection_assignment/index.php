@@ -64,7 +64,7 @@ if (isset($model)) {
                         'subsection',
                         $subsection_id,
                         CHtml::listData(
-                            SubspecialtySubsection::model()->findAll('subspecialty_id = :specid', [':specid' => $subspecialty_id]),
+                            SubspecialtySubsection::model()->findAll('subspecialty_id = :subspecialty_id', [':subspecialty_id' => $subspecialty_id]),
                             'id',
                             'name',
                             'subspecialtySubsection.name'
@@ -86,10 +86,10 @@ if (isset($model)) {
                 </tr>
             </thead>
             <tbody>
-            <?php foreach (ProcedureSubspecialtySubsectionAssignment::model()->findAll('subspecialty_subsection_id = :subid', [':subid' => $subsection_id]) as $model) { ?>
+            <?php foreach (ProcedureSubspecialtySubsectionAssignment::model()->findAll('subspecialty_subsection_id = :subsection_id', [':subsection_id' => $subsection_id]) as $model) { ?>
                 <tr>
                     <td><input type="checkbox" name="select[]" value="<?= $model->id ?>"/></td>
-                    <td><?= $model->getRelated('proc')->term ?></td>
+                    <td><?= isset($model->proc) ? $model->proc->term : "" ?></td>
                 </tr>
             <?php } ?>
             </tbody>

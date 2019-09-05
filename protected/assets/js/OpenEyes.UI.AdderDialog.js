@@ -128,7 +128,7 @@
                         if (!$(this).hasClass('selected')) {
                             listToFilter.find('li').show();
                         } else {
-                            listToFilter.find('li').hide();
+                            listToFilter.find('li').hide().removeClass('selected');
                             listToFilter.find('li[data-filter_value="' + filterValue +'"]').show();
                         }
                     }
@@ -252,6 +252,9 @@
         }
         if (itemSet.options.number) {
             additionalClasses += ' number';
+        }
+        if (dialog.options.listFilter && (itemSet.options.id === dialog.options.filterListId)) {
+            additionalClasses += ' category-filter ignore';
         }
         let $list = $('<ul />', {
             class: 'add-options cols-full' + additionalClasses,

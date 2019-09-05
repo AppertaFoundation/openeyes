@@ -17,7 +17,7 @@
 <h2><?= $model->id ? 'Edit' : 'Create'?> Subsection for the "<?= Subspecialty::model()->findByPk($subspecialty_id)->name ?>" Subspecialty</h2>
 <?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', [
-  'id' => 'subspecialtySubsection_adminform',
+  'id' => 'subspecialty_subsection_admin_form',
   'enableAjaxValidation' => false,
   'layoutColumns' => [
     'label' => 2,
