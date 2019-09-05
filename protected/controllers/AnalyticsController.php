@@ -41,33 +41,35 @@ class AnalyticsController extends BaseController
         ),
         );
     }
-    public function actionDownLoadCSV(){
+    public function actionDownLoadCSV()
+    {
         $ret = null;
-        if(Yii::app()->request->getParam('csv_data')){
+        if (Yii::app()->request->getParam('csv_data')) {
             $ids = json_decode(Yii::app()->request->getParam('csv_data'));
             $ret = $this->getPatientList($ids);
         }
         exit(json_encode($ret));
     }
-    public function actionGetDrillDown($specialty=null){
+    public function actionGetDrillDown($specialty = null)
+    {
         $ret = null;
         $event_list = array();
         $patient_list = array();
         $specialty = Yii::app()->request->getParam('specialty');
  
-        if(Yii::app()->request->getParam('drill') && Yii::app()->request->getParam('ids')){
+        if (Yii::app()->request->getParam('drill') && Yii::app()->request->getParam('ids')) {
             $ids = json_decode(Yii::app()->request->getParam('ids'));
-            if(count($ids) <= 0){
+            if (count($ids) <= 0) {
                 exit(json_encode('reachedMax'));
             }
-            if($specialty === 'Cataract'){
+            if ($specialty === 'Cataract') {
                 $event_list = $this->queryCataractEventList($ids);
             } else {
                 $patient_list = $this->getPatientList($ids);
             }
             $ret['event_list'] = $event_list;
             $ret['patient_list'] = $patient_list;
-            if(count($patient_list) > 0 || count($event_list) > 0){
+            if (count($patient_list) > 0 || count($event_list) > 0) {
                 $ret = $this->renderPartial('/analytics/analytics_drill_down_list', array(
                     'data' => $ret,
                 ), true);
@@ -82,12 +84,13 @@ class AnalyticsController extends BaseController
         
     }
 
-    private function reportDataDOM(){
+    private function reportDataDOM()
+    {
         $this->checkAuth();
         $specialty = Yii::app()->getRequest()->getParam("specialty");
         $subspecialty_id = $specialty === 'All' ? null : $this->getSubspecialtyID($specialty);
         $follow_patient_list = $this->getFollowUps($subspecialty_id);
-        if(Yii::app()->request->getParam('report')) {
+        if (Yii::app()->request->getParam('report')) {
             $this->renderJSON(array(
                 'plot_data'=>$follow_patient_list['plot_data'],
                 'csv_data'=>$follow_patient_list['csv_data'],
@@ -95,7 +98,7 @@ class AnalyticsController extends BaseController
             return;
         }
         $disorder_data = $this->getDisorders($subspecialty_id);
-        if(!isset($this->current_user)){
+        if (!isset($this->current_user)) {
             $this->current_user = User::model()->findByPk(Yii::app()->user->id);
         }
         $clinical_data = array(
@@ -138,7 +141,7 @@ class AnalyticsController extends BaseController
             'user_list'=>$user_list,
         ), true);
         $data['dom']['plot'] = $this->renderPartial('/analytics/analytics_plots', null, true);
-        if($specialty !== 'All'){
+        if ($specialty !== 'All') {
             $data['dom']['plot'] .= $this->renderPartial('/analytics/analytics_custom', null, true);
         }
         exit(json_encode($data));
@@ -158,7 +161,7 @@ class AnalyticsController extends BaseController
         $specialty = Yii::app()->getRequest()->getParam("specialty");
         $assetManager = Yii::app()->getAssetManager();
         $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
-        if(!isset($this->current_user)){
+        if (!isset($this->current_user)) {
             $this->current_user = User::model()->findByPk(Yii::app()->user->id);
         }
         $current_user = array(
@@ -178,12 +181,12 @@ class AnalyticsController extends BaseController
               'event_date'=>$event_dates,
             ),
         );
-        $data['dom']['sidebar'] = $this->renderPartial('/analytics/analytics_sidebar_cataract',array(
+        $data['dom']['sidebar'] = $this->renderPartial('/analytics/analytics_sidebar_cataract', array(
             'specialty'=>$specialty,
             'current_user'=>$this->current_user,
             'user_list'=>$user_list,
         ), true);
-        $data['dom']['plot'] = $this->renderPartial('/analytics/analytics_cataract',null, true);
+        $data['dom']['plot'] = $this->renderPartial('/analytics/analytics_cataract', null, true);
         exit(json_encode($data));
 
     }
@@ -195,7 +198,8 @@ class AnalyticsController extends BaseController
     {
         $this->reportDataDOM();
     }
-    public function actionGetCustomPlot(){
+    public function actionGetCustomPlot()
+    {
         $va_unit = VisualAcuityUnit::model()->getVAUnit(4);
         $va_init_ticks = VisualAcuityUnit::model()->getInitVaTicks($va_unit);
         $va_final_ticks = VisualAcuityUnit::model()->sliceVATicks($va_init_ticks, 20);
@@ -207,7 +211,8 @@ class AnalyticsController extends BaseController
         );
         exit(json_encode($data));
     }
-    private function getCustomData($sn){
+    private function getCustomData($sn)
+    {
         $second_list_name = '';
         $custom_data = array();
         $this->custom_csv_data = array();
@@ -290,7 +295,7 @@ class AnalyticsController extends BaseController
         $custom_data['csv_data'] = $this->custom_csv_data;
         return $custom_data;
     }
-    private function getPatientList($ids=null)
+    private function getPatientList($ids = null)
     {
         $paitent_list_command = Yii::app()->db->createCommand()->select('DISTINCT p.hos_num as hos_num,
       p.nhs_num as nhs_num,
@@ -328,14 +333,15 @@ class AnalyticsController extends BaseController
                          LEFT JOIN episode e2 ON e.episode_id = e2.id
                   WHERE p.short_format IS NOT NULL
                   GROUP BY e2.patient_id) patient_procedures', 'patient_procedures.patient_id = p.id');
-        if(isset($ids)&&count($ids)){
+        if (isset($ids)&&count($ids)) {
             $paitent_list_command->where('p.id IN (' . implode(', ', $ids) . ')');
         }
         $res = $paitent_list_command->queryAll();
         return $res;
     }
 
-    private function getEventDate(){
+    private function getEventDate()
+    {
         $event_date_command = Yii::app()->db->createCommand()
             ->select('
                 MAX(e.event_date) as date_to
@@ -558,7 +564,7 @@ class AnalyticsController extends BaseController
             ->select('t.patient_id as patient_id, t.event_date as event_date, t.'.$eye_side.'_value as value, t.t_name as name, r.reading as reading', 'DISTINCT')
             ->from('('.$command_va_values->union($extra_commands->getText())->getText().') as t')
             // to get best reading value, instead of getting it from model
-            ->leftJoin('(' . $bestReadingSQL->getText() . ') as r', 
+            ->leftJoin('(' . $bestReadingSQL->getText() . ') as r',
             't.'.$eye_side.'_value = r.eoi_id')
             ->where('t.patient_id in ('.$command_filtered_patients->getText().')')
             ->andWhere('t.'.$eye_side.'_value IS NOT NULL')
@@ -768,30 +774,30 @@ class AnalyticsController extends BaseController
                     // queryVANew and queryIOPNew has been optimised
                     $elements = $this->queryVANew($side, $subsepcialty, $extra_command, $basic_criteria);
                     break;
-                    case 'IOP':
+                case 'IOP':
                     $elements = $this->queryIOPNew($side, $extra_command, $basic_criteria);
                     break;
-                    case 'CRT':
+                case 'CRT':
                     $elements = $this->queryCRTNew($side, $extra_command, $basic_criteria);
                     break;
+            }
+            foreach ($elements as $element) {
+                if (!isset($element['value'])) {
+                    continue;
                 }
-                foreach ($elements as $element) {
-                    if (!isset($element['value'])) {
-                        continue;
-                    }
-                    if ($element['name'] === '1value') {
-                        switch ($type) {
-                            case 'VA':
+                if ($element['name'] === '1value') {
+                    switch ($type) {
+                        case 'VA':
                             // commented out code has performance issue
                             // $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element['value'])->getBestReading($side);
                             $reading = $element['reading'];
                             break;
-                            case 'IOP':
+                        case 'IOP':
                             // commented out code has performance issue
                             // $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure::model()->findByPk($element['value'])->getReading($side);
                             $reading = $element['reading'];
                             break;
-                            case 'CRT':
+                        case 'CRT':
                             $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_OCT::model()->findByPk($element['value']);
                             break;
                     }
@@ -938,7 +944,7 @@ class AnalyticsController extends BaseController
                  ) t2
                 GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id'
             );
-        if(isset($ids)&&count($ids > 0)){
+        if (isset($ids)&&count($ids > 0)) {
             $command->where('e.id IN (' . implode(', ', $ids) . ')');
         }
         $return_data = $command->queryAll();
@@ -1205,7 +1211,7 @@ class AnalyticsController extends BaseController
      * Get all filters from sidebar, used together with actionUpdateData()
      */
     public function obtainFilters()
-    {   
+    {
         $form_data = Yii::app()->request->getParam('form_data');
         $specialty = Yii::app()->request->getParam('specialty');
         $dateFrom = Yii::app()->request->getParam('from');
@@ -1463,7 +1469,7 @@ class AnalyticsController extends BaseController
                 , UNIX_TIMESTAMP(w.start) as start
             ")
             ->from("event e")
-            ->leftjoin("episode e2","e.episode_id = e2.id")
+            ->leftjoin("episode e2", "e.episode_id = e2.id")
             ->leftjoin("patient p", "p.id = e2.patient_id")
             ->leftjoin("event_type e3", "e3.id = e.event_type_id")
             ->leftjoin("firm f", "e2.firm_id = f.id")
@@ -1704,22 +1710,22 @@ class AnalyticsController extends BaseController
         ksort($followup_patient_list['coming']);
         // to get total number
         $data_summary = array();
-        $data_summary['waiting'] = array_reduce($followup_patient_list['waiting'], function($a, $b){
+        $data_summary['waiting'] = array_reduce($followup_patient_list['waiting'], function ($a, $b) {
             $a += count($b);
             return $a;
         }, 0);
-        $data_summary['overdue'] = array_reduce($followup_patient_list['overdue'], function($a, $b){
+        $data_summary['overdue'] = array_reduce($followup_patient_list['overdue'], function ($a, $b) {
             $a += count($b);
             return $a;
         }, 0);
-        $data_summary['coming'] = array_reduce($followup_patient_list['coming'], function($a, $b){
+        $data_summary['coming'] = array_reduce($followup_patient_list['coming'], function ($a, $b) {
             $a += count($b);
             return $a;
         }, 0);
         $report_type = null;
         $report_type = $report_type === null ? 'overdue' : $report_type;
         
-        if(Yii::app()->request->isAjaxRequest){
+        if (Yii::app()->request->isAjaxRequest) {
             $report_type = Yii::app()->request->getParam('report');
         }
         $report_type = $report_type === null ? 'overdue' : $report_type;
@@ -1831,7 +1837,7 @@ class AnalyticsController extends BaseController
         }
 
 
-        if(!isset($this->current_user)){
+        if (!isset($this->current_user)) {
             $this->current_user = User::model()->findByPk(Yii::app()->user->id);
         }
         if (isset($this->surgeon)) {

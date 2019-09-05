@@ -183,7 +183,7 @@
                                     <h3>Diagnosis</h3>
                                     <ul class="btn-list js-multi-list">
                                         <li class="selected">All</li>
-                                        <?php if(isset($analytics_diagnoses)){ ?>
+                                        <?php if (isset($analytics_diagnoses)) { ?>
                                             <?php foreach ($analytics_diagnoses as $diagnosis) { ?>
                                                 <li><?= $diagnosis; ?></li>
                                             <?php } ?>

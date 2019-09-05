@@ -234,7 +234,7 @@ var analytics_toolbox = (function () {
 							chart.layout['yaxis']['tickmode'] = 'auto';
 						} else {
 							chart.layout['yaxis']['tickmode'] = 'array';
-							chart.layout['yaxis']['tickvals'] = JSON.parse($va_final_ticks['tick_position']);;
+							chart.layout['yaxis']['tickvals'] = JSON.parse($va_final_ticks['tick_position']);
 							chart.layout['yaxis']['ticktext'] = JSON.parse($va_final_ticks['tick_labels']);
 						}
 						chart.data[0]['x'] = custom_data[i][0]['x'];
