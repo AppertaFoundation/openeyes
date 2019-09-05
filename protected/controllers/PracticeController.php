@@ -71,7 +71,7 @@ class PracticeController extends BaseController
             $contact->first_name = $_POST['Contact']['first_name'];
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
-            if ( $contact->validate(array('first_name')) and $address->validate(array('address1', 'city', 'postcode', 'country')) ) {
+            if ( $contact->validate(array('first_name','phone')) and $address->validate(array('address1', 'city', 'postcode', 'country')) ) {
 
                 // If there is no validation error, check for the duplicate practice based on practice name, address1, city, postcode and country.
                 $duplicateCheckOutput = Yii::app()->db->createCommand()
@@ -91,6 +91,7 @@ class PracticeController extends BaseController
                     false);
                 }
             } else {
+                $practice->validate(array('phone'));
                 $contact->validate(array('first_name'));
                 $address->validate(array('address1', 'city', 'postcode', 'country'));
             }
@@ -278,13 +279,14 @@ class PracticeController extends BaseController
                 } else {
                     $address->validate();
                     $address->clearErrors('contact_id');
-                    $practice->clearErrors('contact_id');
                     if ($isAjax) {
                         throw new CHttpException(400,CHtml::errorSummary(array($practice,$address)) );
                     }
                     $transaction->rollback();
                 }
             } else {
+                $practice->validate();
+                $practice->clearErrors('contact_id');
                 $address->validate();
                 $address->clearErrors('contact_id');
                 if ($isAjax) {
@@ -299,7 +301,6 @@ class PracticeController extends BaseController
                 echo $ex->getMessage();
             }
         }
-
         return array($contact, $practice, $address);
     }
 
@@ -317,7 +318,6 @@ class PracticeController extends BaseController
         $contact->setScenario('manage_practice');
         $address->setScenario('manage_practice');
         $model->setScenario('manage_practice');
-
         $this->performAjaxValidation($contact);
 
         if (isset($_POST['Address']) || isset($_POST['Contact'])) {
