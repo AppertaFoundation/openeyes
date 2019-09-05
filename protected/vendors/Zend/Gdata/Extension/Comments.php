@@ -84,11 +84,11 @@ class Zend_Gdata_Extension_Comments extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'rel':
-            $this->_rel = $attribute->nodeValue;
+            case 'rel':
+                $this->_rel = $attribute->nodeValue;
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 

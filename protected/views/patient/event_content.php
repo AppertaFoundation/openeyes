@@ -2,28 +2,28 @@
 
 
   <h2 class="event-title">
-      <?php echo $this->title ?>
-      <?php if ($this->event->is_automated) {
-          echo " - ";
-          $this->renderPartial('//patient/event_automated');
-      } ?>
-      <?php if ($this->action->id === 'view') { ?>
+        <?php echo $this->title ?>
+        <?php if ($this->event->is_automated) {
+            echo " - ";
+            $this->renderPartial('//patient/event_automated');
+        } ?>
+        <?php if ($this->action->id === 'view') { ?>
         <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
-      <?php } ?>
-      <?php $extra_info = $this->getExtraTitleInfo();
-      if ($extra_info && $extra_info !== ""): ?>
+        <?php } ?>
+        <?php $extra_info = $this->getExtraTitleInfo();
+        if ($extra_info && $extra_info !== "") : ?>
         <div class="event-title-extra-info">
-            <?= $extra_info ?>
+              <?= $extra_info ?>
         </div>
-      <?php endif; ?>
+        <?php endif; ?>
   </h2>
     <?php if ($this->title != 'Please select booking') { ?>
       <div class="event-title-extra-info flex-layout">
           <?php $errors = $this->event->getErrors();
-          $error_class = isset($errors['event_date']) ? 'error' : '';
-          ?>
+            $error_class = isset($errors['event_date']) ? 'error' : '';
+            ?>
           <?php
-          $this->widget('application.widgets.DatePicker', array(
+            $this->widget('application.widgets.DatePicker', array(
               'element' => $this->event,
               'name' => CHtml::modelName($this->event) . "[event_date]",
               'field' => 'event_date',
@@ -38,15 +38,17 @@
                   'label' => 2,
                   'field' => 2,
               ),
-          ));
-          ?>
+            ));
+            ?>
           <script>
               $(document).ready(function () {
                   var $date_input = $('.js-event-date-input');
                   $('.js-change-event-date').on('click', function () {
-                      $date_input.show();
-                      $('.js-event-date').hide();
-                      $('.js-change-event-date').hide();
+                      if(!$(this).hasClass('disabled')) {
+                          $date_input.show();
+                          $('.js-event-date').hide();
+                          $('.js-change-event-date').hide();
+                      }
                   });
 
                   $('.pickmeup.pmu-view-days').on('click', function () {
@@ -76,7 +78,7 @@
     } ?>
 </main>
 
-<?php if ($this->action->id === 'view'): ?>
+<?php if ($this->action->id === 'view') : ?>
   <script type="text/javascript">
     $(function () {
       // For every eyedraw element

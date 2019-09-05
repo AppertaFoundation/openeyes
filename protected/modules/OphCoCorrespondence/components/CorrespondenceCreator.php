@@ -88,7 +88,7 @@ class CorrespondenceCreator extends \EventCreator
                         'output_type' => strtolower($macro_target_data['to']['contact_type']) == strtolower(Yii::app()->params['gp_label']) ? 'Docman' : 'Print',
                     ]
                 ],
-            ],
+             ],
         ];
 
         $this->documents['macro_id'] = $macro_target_data['macro_id'];

@@ -310,12 +310,11 @@ class Zend_Gdata_HttpClient extends Zend_Http_Client
      */
     protected function _prepareBody()
     {
-        if($this->_streamingRequest) {
+        if ($this->_streamingRequest) {
             $this->setHeaders(self::CONTENT_LENGTH,
                 $this->raw_post_data->getTotalSize());
             return $this->raw_post_data;
-        }
-        else {
+        } else {
             return parent::_prepareBody();
         }
     }

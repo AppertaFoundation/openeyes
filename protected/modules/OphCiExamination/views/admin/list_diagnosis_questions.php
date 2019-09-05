@@ -76,15 +76,15 @@
                       array('id' => $model->id)) ?>"><?php echo $model->question ?></a></td>
                 <td>
                   <input type="checkbox" class="model_enabled" <?php if ($model->active) {
-                      echo 'checked';
-                  } ?> />
+                        echo 'checked';
+                                                               } ?> />
                 </td>
               </tr>
             <?php } ?>
             </tbody>
           </table>
         </div>
-        <?php } else { ?>
+    <?php } else { ?>
       <div class="alert-box">
         <strong>No questions set for this disorder</strong>
       </div>

@@ -15,14 +15,24 @@
 
 class OEHtml extends CHtml
 {
+    public static function __callStatic($name, $arguments)
+    {
+        if (substr($name, 0, 4 ) === "icon") {
+            $text = substr($name, 4);
+            // $arguments[0] will be the html_options
+            // this $arguments[0] might be wrong here but no time to implement properly
+            return self::icon(strtolower($text),isset( $arguments[0]) ?  $arguments[0] : []);
+        }
+    }
+
     public static function icon($text, $htmlOption = [])
     {
         return self::tag("i", array_merge($htmlOption, [
             "class" => "oe-i $text"  . (isset($htmlOption["class"]) ? " " . $htmlOption["class"] : ""),
-        ]),'', true);
+        ]), '', true);
     }
 
-    public static function button($text, $htmlOption = [])
+    public static function button($text = "button", $htmlOption = [])
     {
         return \CHtml::button(
             $text,

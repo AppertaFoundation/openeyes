@@ -1038,13 +1038,7 @@ $(document).ready(function() {
             new_principal = true;
         }
 
-        $(this).closest('tr').find('input[type="hidden"]').map(function() {
-            if ($(this).val() == disorder_id) {
-                $(this).remove();
-            }
-        });
-
-        $(this).parent().parent().remove();
+        $(this).closest('tr').remove();
 
         if (new_principal) {
             $('input[name="principal_diagnosis"]:first').attr('checked','checked');
@@ -1155,6 +1149,25 @@ $(document).ready(function() {
         }).on('click','.jsNoTreatment', function(){
             OphCiExamination_InjectionManagementComplex_init();
         });
+
+        let date = new Date();
+        let todayDate = date.getDate() + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
+
+        let medicationManagementValidationFunction = function() {
+					if($('.js-event-date-input').val() === todayDate) {
+						return true;
+					} else {
+						new OpenEyes.UI.Dialog.Alert({
+							content: "Medication Management cannot be added due to event date not being the current date"
+						}).open();
+						return false;
+					}
+				}
+
+				$('#episodes-and-events').on('sidebar_loaded', function() {
+					$('li#side-element-Medication-Management').find('a').data('validation-function', medicationManagementValidationFunction);
+				});
+
 
 });
     /** Post Operative Complication function **/
@@ -1990,8 +2003,7 @@ function OphCiExamination_ClinicOutcomes_updateFollowUpLabel() {
   }
 
   var dummy_text = $('#follow-up-dummy-input');
-  dummy_text.val(label_str);
-  dummy_text.trigger('oninput');
+  dummy_text.html(label_str);
 }
 
 function OphCiExamination_AddAllergy(){

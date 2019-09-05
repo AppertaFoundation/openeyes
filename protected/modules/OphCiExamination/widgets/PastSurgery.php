@@ -83,8 +83,8 @@ class PastSurgery extends \BaseEventElementWidget
                 $op_entry->operation = $operation['operation'];
                 $op_entry->side_id = $this->getEyeIdFromPost($operation);
                 $op_entry->had_operation = array_key_exists('had_operation', $operation) ? $operation['had_operation'] : null;
-                if ($operation['date']){
-                    list($year, $month, $day) = array_pad(explode('-', $operation['date']), 3,0);
+                if ($operation['date']) {
+                    list($year, $month, $day) = array_pad(explode('-', $operation['date']), 3, 0);
                     $op_entry->date = \Helper::padFuzzyDate($year, $month, $day);
                 }
 
@@ -136,8 +136,8 @@ class PastSurgery extends \BaseEventElementWidget
         // map the operations that have been recorded as entries in this element
         $operations = [];
 
-        foreach($this->element->operations as $_operation){
-            if($_operation->had_operation || $include_no){
+        foreach ($this->element->operations as $_operation) {
+            if ($_operation->had_operation || $include_no) {
                 $operations[] = array(
                     'date' => $_operation->date,
                     'object' => $_operation
@@ -165,7 +165,7 @@ class PastSurgery extends \BaseEventElementWidget
         $required_operation_list = $this->getRequiredOperation();
 
         foreach ($this->element->operations as $i => $op) {
-            if(in_array($op->operation, $required_operation_list)){
+            if (in_array($op->operation, $required_operation_list)) {
                 $operations[] = ['op' => $op, 'required' => true, ];
             } else {
                 $required[] = ['op' => $op, 'required' => false, ];

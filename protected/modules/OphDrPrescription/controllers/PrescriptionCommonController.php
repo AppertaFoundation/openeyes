@@ -124,8 +124,7 @@ class PrescriptionCommonController extends DefaultController
     public function actionGetDispenseLocation($condition_id)
     {
         $dispense_condition = OphDrPrescription_DispenseCondition::model()->with('locations')->findByPk($condition_id);
-        foreach ($dispense_condition->locations as $location)
-        {
+        foreach ($dispense_condition->locations as $location) {
             echo '<option value="'.$location->id.'">'.$location->name.'</option>';
         }
     }

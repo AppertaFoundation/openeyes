@@ -20,22 +20,20 @@
 <?php
 
 if (isset($entry->start_date) && strtotime($entry->start_date)) {
-	list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $entry->start_date);
+    list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $entry->start_date);
 } else {
-	$start_sel_day = $start_sel_month = null;
-	$start_sel_year = date('Y');
-	$entry->start_date = $start_sel_year . '-00-00'; // default to the year displayed in the select dropdowns
+    $start_sel_day = $start_sel_month = null;
+    $start_sel_year = date('Y');
+    $entry->start_date = $start_sel_year . '-00-00'; // default to the year displayed in the select dropdowns
 }
 if (isset($entry->end_date) && strtotime($entry->end_date)) {
-	list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
+    list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
 } else {
-	$end_sel_day = $end_sel_month = null;
-	$end_sel_year = date('Y');
+    $end_sel_day = $end_sel_month = null;
+    $end_sel_year = date('Y');
 }
 
 $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedIntoMedicationManagement();
-
-/** @var EventMedicationUse $entry */
 ?>
 
 <tr data-key="<?=$row_count?>"
@@ -91,8 +89,7 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
                 <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
 					<?php if(!is_null($entry->end_date)): ?>
 						<?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
-						<?php /* echo !is_null($entry->stop_reason_id) ?
-							' ('.$entry->stopReason->name.')' : ''; */?>
+
 					<?php else: ?>
                         stopped?
 					<?php endif; ?>
@@ -109,11 +106,15 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
         </div>
     </td>
 	<td>
-		<?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason', 'style' => is_null($entry->end_date) ? "display:none" : null)) ?>
+		<div class="js-stop-reason-select" style= "<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
+			<?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason')) ?>
+		</div>
+		<div class="js-stop-reason-text" style= "<?=$is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
+			<?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
+		</div>
 	</td>
-
-	<td class="text-center">
-		<i class="oe-i info small pad js-has-tooltip" data-tooltip-content=
-		"This medication was prescribed through OpenEyes.<?= $entry->prescriptionNotCurrent() ? ' The prescription has been altered since this entry was recorded.' : ''; ?>"></i>
-	</td>
+    <td class="text-center">
+        <i class="oe-i info small pad js-has-tooltip" data-tooltip-content=
+        "This medication was prescribed through OpenEyes.<?= $entry->prescriptionNotCurrent() ? ' The prescription has been altered since this entry was recorded.' : ''; ?>"></i>
+    </td>
 </tr>

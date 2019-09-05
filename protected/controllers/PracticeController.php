@@ -118,7 +118,6 @@ class PracticeController extends BaseController
                             if (!$isAjax) {
                                 $this->redirect(array('view', 'id' => $practice->id));
                             }
-
                         } else {
                             if ($isAjax) {
                                 throw new CHttpException(400, "Unable to save Practice contact");
@@ -173,7 +172,6 @@ class PracticeController extends BaseController
         $this->performAjaxValidation($contact);
 
         if (isset($_POST['Address']) || isset($_POST['Contact'])) {
-
             $contact->attributes = $_POST['Contact'];
             $address->attributes = $_POST['Address'];
             $model->attributes = $_POST['Practice'];
@@ -209,7 +207,6 @@ class PracticeController extends BaseController
             $criteria->addSearchCondition('LOWER(address2)', $search_term, true, 'OR');
             $criteria->addSearchCondition('LOWER(city)', $search_term, true, 'OR');
             $criteria->addSearchCondition('LOWER(postcode)', $search_term, true, 'OR');
-
         }
         $dataProvider = new CActiveDataProvider('Practice', array(
             'criteria' => $criteria,
@@ -244,7 +241,7 @@ class PracticeController extends BaseController
      */
     protected function performAjaxValidation($model)
     {
-            if (isset($_POST['ajax']) && $_POST['ajax'] === 'practice-form') {
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'practice-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }

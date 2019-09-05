@@ -150,6 +150,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     if (!this.$table.find('tr.originally-stopped').length) {
         this.$element.find('.show-stopped').hide();
         this.$element.find('.hide-stopped').hide();
+    } else {
+        this.$table.find('tr.originally-stopped').hide();
     }
   };
 
@@ -166,6 +168,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $tapers.remove();
         controller.removeBoundEntry($row);
         $row.remove();
+        controller.displayTableHeader();
     });
 
     // removal button for tapers
@@ -183,7 +186,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     // adding entries
     controller.$popup.on('click', controller.options.addButtonSelector, function(e) {
       e.preventDefault();
-      controller.$table.find('thead').show();
       controller.addEntry();
     });
 
@@ -303,6 +305,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           return false;
       });
 
+      if($row.find('.js-source-subtype').val() === "VTM") {
+      	$row.find('.js-medication-vtm-container').show();
+      	$row.find('.js-medication-non-vtm-container').hide();
+			}
+
       var med = $row.data("medication");
       if($row.find(".js-unit-dropdown").length > 0 && typeof med !== "undefined" &&
 				(typeof med.dose_unit_term === "undefined" || med.dose_unit_term === "" ||
@@ -361,17 +368,19 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     HistoryMedicationsController.prototype.showStopControls = function($row)
     {
-        var $datepicker_wrapper = $row.find(".js-end-date-wrapper");
-        var $stop_reason_select = $row.find(".js-stop-reason");
-        var $datepicker_control = $datepicker_wrapper.find("input");
+        let $datepicker_wrapper = $row.find(".js-end-date-wrapper");
+			  let $stop_reason_select = $row.find(".js-stop-reason-select");
+			  let $stop_reason_text = $row.find(".js-stop-reason-text");
+			  let $datepicker_control = $datepicker_wrapper.find("input");
         $row.find(".js-meds-stop-btn").hide();
-        var default_date = $datepicker_control.attr("data-default");
+			  let default_date = $datepicker_control.attr("data-default");
         const currently_set_date = $datepicker_control.val();
         if(typeof default_date !== "undefined" && default_date !== false && !currently_set_date) {
             $datepicker_control.val(default_date);
         }
         $datepicker_wrapper.show();
         $stop_reason_select.show();
+				$stop_reason_text.hide();
 
         if(typeof $row.data("bound_entry") !== "undefined") {
             this.boundController.showStopControls($row.data("bound_entry"));
@@ -563,12 +572,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     HistoryMedicationsController.prototype.updateTextualDisplay = function ($row) {
-    		let displayDoseText = "";
-    		if($row.find(".js-dose").val() !== '') {
-					displayDoseText = $row.find(".js-dose").val() + " " + $row.find(".js-dose-unit-term").text()
-				}
+        let displayDoseText = "";
+        if($row.find(".js-dose").val() !== '') {
+            displayDoseText = $row.find(".js-dose").val() + " " + $row.find(".js-dose-unit-term").text();
+        }
         $row.find(".js-textual-display-dose").text(displayDoseText);
-        $row.find(".js-textual-display-frequency").text($row.find(".js-frequency option:selected").text());
+        if($row.find(".js-frequency").val() !== ''){
+            $row.find(".js-textual-display-frequency").text($row.find(".js-frequency option:selected").text());
+        }
         var route_lat = "";
         var $lat_ctrl = $row.find(".admin-route-options");
         if($lat_ctrl.val() !== "") {
@@ -925,6 +936,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     prepended_markup: selectedItems[i].prepended_markup,
                     set_ids: selectedItems[i].set_ids,
                     allergy_ids: selectedItems[i].allergy_ids,
+										source_subtype: selectedItems[i].source_subtype
                 };
             }
             else {
@@ -955,6 +967,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $(this.options.medicationSearchInput).val('');
         $(this.options.medicationSearchResult).empty();
 
+        this.displayTableHeader();
         // return the last created row
         return $newrow;
     };
@@ -981,6 +994,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$element.find('.hide-stopped').hide();
     };
 
+    HistoryMedicationsController.prototype.displayTableHeader = function () {
+        let table_header = this.$table.find("thead");
+
+        if (this.$table.find("tbody tr").length > 0) {
+            table_header.show();
+        } else {
+            table_header.hide();
+        }
+    };
 
   exports.HistoryMedicationsController = HistoryMedicationsController;
 })(OpenEyes.OphCiExamination);

@@ -5,7 +5,7 @@
         <div class="alert-box">
           No audit logs match the search criteria.
         </div>
-      <?php } else { ?>
+        <?php } else { ?>
         <div class="pagination"></div>
         <table class="standard audit-logs">
           <thead>
@@ -17,12 +17,12 @@
           </tr>
           </thead>
           <tbody id="auditListData">
-          <?php foreach ($data as $i => $log) {
-              $this->renderPartial('/optom/audit_list_row', array('i' => $i, 'log' => $log));
-          } ?>
+            <?php foreach ($data as $i => $log) {
+                $this->renderPartial('/optom/audit_list_row', array('i' => $i, 'log' => $log));
+            } ?>
           </tbody>
         </table>
         <div class="pagination last"></div>
-      <?php } ?>
+        <?php } ?>
   </div>
 </div>

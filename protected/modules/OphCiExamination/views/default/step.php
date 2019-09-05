@@ -18,23 +18,23 @@
 ?>
 <?php
 $form_id = 'clinical-create';
-$this->beginContent('//patient/event_container',array('no_face'=>false , 'form_id' => $form_id)); ?>
-	<?php
+$this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id)); ?>
+    <?php
         $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'clinical-create'));
     ?>
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => $form_id
-,
+    ,
         'enableAjaxValidation' => false,
         'layoutColumns' => array(
             'label' => 4,
             'field' => 8,
         ),
     ));
-    ?>
-		<?php $this->displayErrors($errors)?>
-		<?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
-		<?php $this->displayErrors($errors, true)?>
+?>
+        <?php $this->displayErrors($errors)?>
+        <?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
+        <?php $this->displayErrors($errors, true)?>
 
 <?php $this->endWidget() ?>
 <?php $this->endContent(); ?>

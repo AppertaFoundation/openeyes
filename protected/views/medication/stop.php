@@ -16,24 +16,24 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 
 ?>
 <fieldset class="data-group">
-	<legend><strong>Stop Medication</strong></legend>
-	<input type="hidden" name="patient_id" value="<?= $this->patient->id ?>">
-	<input type="hidden" name="medication_id">
-	<input type="hidden" name="end_date">
-	<div class="data-group">
-		<div class="cols-<?= $form->columns('label') ?>"><label>Medication:</label></div>
-		<div class="cols-<?= $form->columns('field') ?> data-value drug_name"></div>
-	</div>
-	<?php
+    <legend><strong>Stop Medication</strong></legend>
+    <input type="hidden" name="patient_id" value="<?= $this->patient->id ?>">
+    <input type="hidden" name="medication_id">
+    <input type="hidden" name="end_date">
+    <div class="data-group">
+        <div class="cols-<?= $form->columns('label') ?>"><label>Medication:</label></div>
+        <div class="cols-<?= $form->columns('field') ?> data-value drug_name"></div>
+    </div>
+    <?php
 
     $this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => date('Y-m-d'), 'class' => 'medication_end_date', 'label' => 'Date stopped'));
     $this->renderPartial('/medication/stop_reason', array('form' => $form, 'medication' => new ArchiveMedication()));
 
     ?>
-	<div class="buttons">
-		<button type="button" class="medication_save secondary small">Stop</button>
-		<button type="button" class="medication_cancel warning small">Cancel</button>
-	</div>
+    <div class="buttons">
+        <button type="button" class="medication_save secondary small">Stop</button>
+        <button type="button" class="medication_cancel warning small">Cancel</button>
+    </div>
 </fieldset>
 <?php
 

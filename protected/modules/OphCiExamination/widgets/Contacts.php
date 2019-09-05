@@ -48,7 +48,7 @@ class Contacts extends \BaseEventElementWidget
             if (!empty($contact_ids)) {
                 foreach ($contact_ids as $contact_id) {
                     $patientContactAssignment = \PatientContactAssignment::model()->findByPk($contact_id);
-                    if($patientContactAssignment == null) {
+                    if ($patientContactAssignment == null) {
                         $patientContactAssignment = new \PatientContactAssignment();
                         $patientContactAssignment->patient_id = $this->patient->id;
                         $patientContactAssignment->contact_id = $contact_id;
@@ -60,7 +60,7 @@ class Contacts extends \BaseEventElementWidget
             $criteria = new \CDbCriteria();
             $gp = $this->patient->gp;
             $criteria->addCondition('t.patient_id = ' . $this->patient->id);
-            if(isset($gp)) {
+            if (isset($gp)) {
                 $criteria->addCondition('t.contact_id != ' . $gp->contact->id);
             }
             $this->contact_assignments = \PatientContactAssignment::model()->findAll($criteria);
@@ -68,7 +68,7 @@ class Contacts extends \BaseEventElementWidget
 
         $criteria = new \CDbCriteria();
         $gp = $this->patient->gp;
-        if(isset($gp)) {
+        if (isset($gp)) {
             $criteria->addCondition('t.patient_id = ' . $this->patient->id);
             $criteria->addCondition('t.contact_id = ' . $gp->contact->id);
             $this->gp_contact_assignment = \PatientContactAssignment::model()->findAll($criteria);
