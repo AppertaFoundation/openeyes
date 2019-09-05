@@ -271,5 +271,10 @@ $element_errors = $element->getErrors();
             $changeEventDate.show();
             $('.js-event-date').show();
                 }
+
+        let elementHasRisks = <?= $element->hasRisks(); ?>;
+        if(elementHasRisks) {
+            $('#episodes-and-events').data('patient-sidebar').addElementByTypeClass(OE_MODEL_PREFIX + 'HistoryRisks', undefined);
+        }
     });
 </script>

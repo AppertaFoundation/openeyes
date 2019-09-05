@@ -220,5 +220,10 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
             booleanSearchFilterLabel: 'Include branded',
             booleanSearchFilterURLparam: 'include_branded'
         });
+
+        let elementHasRisks = <?= $element->hasRisks(); ?>;
+        if(elementHasRisks) {
+            $('#episodes-and-events').data('patient-sidebar').addElementByTypeClass(OE_MODEL_PREFIX + 'HistoryRisks', undefined);
+				}
     });
 </script>
