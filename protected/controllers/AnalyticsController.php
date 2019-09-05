@@ -500,7 +500,7 @@ class AnalyticsController extends BaseController
     public function queryVANew($eye_side, $subspecialty, $extra_command, $basic_criteria = null)
     {
         $extra_commands = clone $extra_command;
-
+        $vaEyeId = $eye_side === 'right' ? 0 : 1;
         $command_va_values = Yii::app()->db->createCommand()
             ->select('ep.patient_id as patient_id, e.event_date as event_date,  IF(eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, IF(eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
             ->from('et_ophciexamination_visualacuity eov')
@@ -546,15 +546,39 @@ class AnalyticsController extends BaseController
             ->from('('.$this->queryDiagnosesFilteredPatientListCommand($eye_side)->getText().') AS dp')
             ->where('dp.patient_id in ('.$extra_command_patient->getText().')')
             ->andWhere('dp.patient_id in ('.$command_va_patients->getText().')');
-
+        $bestReadingSQL = Yii::app()->db->createCommand()
+            ->select('
+              eor.element_id as eoi_id
+            , MAX(eor.value) AS reading
+            ')
+            ->from('ophciexamination_visualacuity_reading eor')
+            ->where('eor.side = ' . $vaEyeId)
+            ->group('eor.element_id, eor.side');
         $command_final_table = Yii::app()->db->createCommand()
-            ->select('t.patient_id as patient_id, t.event_date as event_date, t.'.$eye_side.'_value as value, t.t_name as name', 'DISTINCT')
+            ->select('t.patient_id as patient_id, t.event_date as event_date, t.'.$eye_side.'_value as value, t.t_name as name, r.reading as reading', 'DISTINCT')
             ->from('('.$command_va_values->union($extra_commands->getText())->getText().') as t')
+            // to get best reading value, instead of getting it from model
+            ->leftJoin('(' . $bestReadingSQL->getText() . ') as r', 
+            't.'.$eye_side.'_value = r.eoi_id')
             ->where('t.patient_id in ('.$command_filtered_patients->getText().')')
             ->andWhere('t.'.$eye_side.'_value IS NOT NULL')
             ->order('t.patient_id, t.event_date', 'ASC');
-
-        return $command_final_table->queryAll();
+        // to get patient age, instead of getting it from model
+        $command_final_table_withAge = Yii::app()->db->createCommand()
+            ->select('
+                va_info.patient_id as patient_id
+            ,   va_info.event_date as event_date
+            ,   va_info.value as value
+            ,   va_info.name as name
+            ,   va_info.reading as reading
+            ,   IF(p.date_of_death IS NOT NULL,
+            YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
+            YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age
+            ')
+            ->from('(' . $command_final_table->getText() . ') AS va_info')
+            ->leftJoin('patient p', 'va_info.patient_id = p.id');
+        // return $command_final_table->queryAll();
+        return $command_final_table_withAge->queryAll();
     }
 
     public function queryIOPNew($eye_side, $extra_command, $basic_criteria = null)
@@ -591,14 +615,42 @@ class AnalyticsController extends BaseController
             ->from('('.$this->queryDiagnosesFilteredPatientListCommand($eye_side)->getText().') AS dp')
             ->where('dp.patient_id in ('.$extra_command_patient->getText().')')
             ->andWhere('dp.patient_id in ('.$command_iop_patients->getText().')');
+        // get iop reading data, instead of getting it from model
+        $readingSQL = Yii::app()->db->createCommand()
+            ->select('
+              eoi.id AS eoi_id
+            , e.name AS side
+            , eor.value AS reading
+            ')
+            ->from('et_ophciexamination_intraocularpressure eoi')
+            ->join('ophciexamination_intraocularpressure_value eov', 'eoi.id = eov.element_id')
+            ->join('eye e', 'e.id = eov.eye_id')
+            ->join('ophciexamination_intraocularpressure_reading eor', 'eov.reading_id = eor.id')
+            ->where('LOWER(e.name) = "' . $eye_side . '"');
         $command_final_table = Yii::app()->db->createCommand()
-            ->select('t.patient_id as patient_id, t.event_date as event_date, t.'.$eye_side.'_value as value, t.t_name as name', 'DISTINCT')
+            ->select('t.patient_id as patient_id, t.event_date as event_date, t.'.$eye_side.'_value as value, t.t_name as name, r.reading as reading', 'DISTINCT')
             ->from('('.$command_iop_values->union($extra_commands->getText())->getText().') as t')
+            // to get reading value
+            ->leftJoin('(' . $readingSQL->getText() . ') as r', 't.'.$eye_side.'_value = r.eoi_id')
             ->where('t.patient_id in ('.$command_filtered_patients->getText().')')
             ->andWhere('t.'.$eye_side.'_value IS NOT NULL')
             ->order('t.patient_id, t.event_date', 'ASC');
-
-        return $command_final_table->queryAll();
+        // to get age, instead of getting it from model
+        $command_final_table_withAge = Yii::app()->db->createCommand()
+            ->select('
+                iop_info.patient_id as patient_id
+            ,   iop_info.event_date as event_date
+            ,   iop_info.value as value
+            ,   iop_info.name as name
+            ,   iop_info.reading as reading
+            ,   IF(p.date_of_death IS NOT NULL,
+            YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
+            YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age
+            ')
+            ->from('(' . $command_final_table->getText() . ') AS iop_info')
+            ->leftJoin('patient p', 'iop_info.patient_id = p.id');
+        // return $command_final_table->queryAll();
+        return $command_final_table_withAge->queryAll();
     }
 
     public function queryCRTNew($eye_side, $extra_command, $basic_criteria = null)
@@ -644,8 +696,21 @@ class AnalyticsController extends BaseController
             ->where('t.patient_id in ('.$command_filtered_patients->getText().')')
             ->andWhere('t.'.$eye_side.'_value IS NOT NULL')
             ->order('t.patient_id, t.event_date', 'ASC');
-
-        return $command_final_table->queryAll();
+        // to get age, instead of getting it from model
+        $command_final_table_withAge = Yii::app()->db->createCommand()
+            ->select('
+                crt_new.patient_id as patient_id
+            ,   crt_new.event_date as event_date
+            ,   crt_new.value as value
+            ,   crt_new.name as name
+            ,   IF(p.date_of_death IS NOT NULL,
+            YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
+            YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age
+            ')
+            ->from('(' . $command_final_table->getText() . ') AS crt_new')
+            ->leftJoin('patient p', 'crt_new.patient_id = p.id');
+        // return $command_final_table->queryAll();
+        return $command_final_table_withAge->queryAll();
     }
 
     public function queryDiagnosesFilteredPatientListCommand($eye_side, $caller = 'custom')
@@ -700,38 +765,38 @@ class AnalyticsController extends BaseController
             $initial_reading = array();
             switch ($type) {
                 case 'VA':
+                    // queryVANew and queryIOPNew has been optimised
                     $elements = $this->queryVANew($side, $subsepcialty, $extra_command, $basic_criteria);
                     break;
-                case 'IOP':
+                    case 'IOP':
                     $elements = $this->queryIOPNew($side, $extra_command, $basic_criteria);
                     break;
-                case 'CRT':
+                    case 'CRT':
                     $elements = $this->queryCRTNew($side, $extra_command, $basic_criteria);
                     break;
-            }
-            foreach ($elements as $element) {
-                if (!isset($element['value'])) {
-                    continue;
                 }
-
-                if ($element['name'] === '1value') {
-                    switch ($type) {
-                        case 'VA':
-                            $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element['value'])->getBestReading($side)
-                            ;
+                foreach ($elements as $element) {
+                    if (!isset($element['value'])) {
+                        continue;
+                    }
+                    if ($element['name'] === '1value') {
+                        switch ($type) {
+                            case 'VA':
+                            // commented out code has performance issue
+                            // $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findByPk($element['value'])->getBestReading($side);
+                            $reading = $element['reading'];
                             break;
-                        case 'IOP':
-                            $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure::model()->findByPk($element['value'])->getReading($side);
+                            case 'IOP':
+                            // commented out code has performance issue
+                            // $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure::model()->findByPk($element['value'])->getReading($side);
+                            $reading = $element['reading'];
                             break;
-                        case 'CRT':
+                            case 'CRT':
                             $reading = \OEModule\OphCiExamination\models\Element_OphCiExamination_OCT::model()->findByPk($element['value']);
                             break;
                     }
 
                     if (isset($reading)) {
-                        if ($type === 'VA') {
-                            $reading = $reading->value;
-                        }
                         if ($type === 'CRT') {
                             $reading = $reading->{$side.'_sft'};
                         }
@@ -751,25 +816,23 @@ class AnalyticsController extends BaseController
                     $initial_reading[$element['patient_id']]['event_date'] = $current_time;
                     continue;
                 }
-
-                $current_patient = Patient::model()->findByPk($element['patient_id']);
                 
                 /* Add patient in this->patient_list if not exist, prepare for drill down list,
                 Get each patient's left and right eye readings as well as event time */
-                if ($this->validateAgeAndDateFilters( $current_patient->getAge(), $current_time) && isset($reading) && isset($current_time)) {
+                if ($this->validateAgeAndDateFilters( $element['age'], $current_time) && isset($reading) && isset($current_time)) {
                     if (!isset($initial_reading[$element['patient_id']]['value']) || !isset($initial_reading[$element['patient_id']]['event_date'])) {
                         $initial_reading[$element['patient_id']]['value'] = $reading;
                         $initial_reading[$element['patient_id']]['event_date'] = $current_time;
                     }
 
-                    if (!array_key_exists($current_patient->id, $patient_list)) {
-                        $patient_list[$current_patient->id] = array();
+                    if (!array_key_exists($element['patient_id'], $patient_list)) {
+                        $patient_list[$element['patient_id']] = array();
                     }
 
 
-                    if (!array_key_exists($current_patient->id, $this->custom_csv_data) && (isset($reading))) {
-                        $this->custom_csv_data[$current_patient->id] = array(
-                            'patient_id'=>$current_patient->id,
+                    if (!array_key_exists($element['patient_id'], $this->custom_csv_data) && (isset($reading))) {
+                        $this->custom_csv_data[$element['patient_id']] = array(
+                            'patient_id'=>$element['patient_id'],
                             'left'=>array(
                                 "VA"=>array(),
                                 "CRT"=>array(),
@@ -783,7 +846,7 @@ class AnalyticsController extends BaseController
                         );
                     }
                     if (isset($reading)) {
-                        $this->custom_csv_data[$current_patient->id][$side][$type][] = $reading;
+                        $this->custom_csv_data[$element['patient_id']][$side][$type][] = $reading;
                     }
 
                     $current_week = floor((($current_time) - ($initial_reading[$element['patient_id']]['event_date'])) / self::WEEKTIME);
@@ -794,7 +857,7 @@ class AnalyticsController extends BaseController
                         ${$side.'_list'}[$current_week]['square_sum']+= $reading ** 2;
                         ${$side.'_list'}[$current_week]['average'] = round( ${$side.'_list'}[$current_week]['sum']/ ${$side.'_list'}[$current_week]['count']);
                         ${$side.'_list'}[$current_week]['SD'] = $this->calculateStandardDeviationByDataSet(${$side.'_list'}[$current_week]);
-                        ${$side.'_list'}[$current_week]['patients'][] =  $current_patient->id;
+                        ${$side.'_list'}[$current_week]['patients'][] =  $element['patient_id'];
                     } else {
                         ${$side.'_list'}[$current_week] = array(
                             'count'=> 1,
@@ -802,7 +865,7 @@ class AnalyticsController extends BaseController
                             'square_sum'=> $reading ** 2,
                             'average'=>$reading,
                             'SD'=>0,
-                            'patients' => array($current_patient->id),
+                            'patients' => array($element['patient_id']),
                         );
                     }
                 }
