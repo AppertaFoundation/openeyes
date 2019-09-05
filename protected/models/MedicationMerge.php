@@ -26,57 +26,57 @@
  */
 class MedicationMerge extends BaseActiveRecord
 {
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'medication_merge';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'medication_merge';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('entry_date_time, source_drug_id, source_medication_id, source_code, source_name, target_id, target_code, target_name, status, merge_date', 'safe'),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, entry_date_time, source_drug_id, source_medication_id, source_code, source_name, target_id, target_code, target_name', 'safe', 'on'=>'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('entry_date_time, source_drug_id, source_medication_id, source_code, source_name, target_id, target_code, target_name, status, merge_date', 'safe'),
+            // The following rule is used by search().
+            // @todo Please remove those attributes that should not be searched.
+            array('id, entry_date_time, source_drug_id, source_medication_id, source_code, source_name, target_id, target_code, target_name', 'safe', 'on'=>'search'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
             'eventMedicationUsesDrug' => array(self::HAS_MANY, EventMedicationUse::class, 'source_drug_id'),
             'eventMedicationUses' => array(self::HAS_MANY, EventMedicationUse::class, 'source_medication_id'),
-			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'medicationsSource' => array(self::MANY_MANY, Medication::class, array('source_medication_id' => 'id')),
             'medicationsTarget' => array(self::MANY_MANY, Medication::class, array('target_medication_id' => 'id')),
-		);
-	}
+        );
+    }
 
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return MedicationRoute the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return MedicationRoute the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
     /*
     * Return all entries where status = 1
@@ -92,59 +92,48 @@ class MedicationMerge extends BaseActiveRecord
     */
     public function mergeAll()
     {
-        foreach($this->getAllPending() as $merge_row)
-        {
+        foreach ($this->getAllPending() as $merge_row) {
             // several cases need to be handled here:
             // 1. source_drug_id set / target_medication_id not set -> search by target_code
             // 2. source_medication_id set / target_medication_id set
-            if(!$merge_row->source_medication_id || $merge_row->source_medication_id == '')
-            {
-                if($merge_row->source_drug_id > 0)
-                {
+            if (!$merge_row->source_medication_id || $merge_row->source_medication_id == '') {
+                if ($merge_row->source_drug_id > 0) {
                     $source_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LOCAL' AND source_subtype='drug'", array(":old_id"=>$merge_row->source_drug_id));
                     $merge_row->source_medication_id = $source_medication->id;
-                }else
-                {
+                } else {
                     continue;
                 }
-            }else
-            {
+            } else {
                 $source_medication = Medication::model()->findByPk($merge_row->source_medication_id);
             }
 
-            if(!$merge_row->target_id || $merge_row->target_id == '')
-            {
+            if (!$merge_row->target_id || $merge_row->target_id == '') {
                 $target_medication = Medication::model()->find("preferred_code = :national_code AND source_type='DM+D'", array(":national_code"=>$merge_row->target_code));
-                if($target_medication){
+                if ($target_medication) {
                     $merge_row->target_id = $target_medication->id;
-                }else
-                {
+                } else {
                     // we cannot merge without ID!
                     continue;
                 }
             }
 
 
-            foreach(['event_medication_use', 'medication_allergy_assignment', 'medication_attribute_assignment','medication_common',
-											'medication_search_index', 'medication_set_auto_rule_medication', 'medication_set_item'] as $table_with_medication_id) {
-            	try {
-								Yii::app()->db->createCommand("UPDATE {$table_with_medication_id} SET medication_id = {$merge_row->target_id} WHERE medication_id = {$merge_row->source_medication_id}")->execute();
-							} catch (Exception $exception) {
-								echo "Cannot remap foreign keys for medication: " . $merge_row->target_code . "\n";
-            		echo $exception->getMessage();
-
-							}
-
-						}
+            foreach (['event_medication_use', 'medication_allergy_assignment', 'medication_attribute_assignment','medication_common',
+                                            'medication_search_index', 'medication_set_auto_rule_medication', 'medication_set_item'] as $table_with_medication_id) {
+                try {
+                                Yii::app()->db->createCommand("UPDATE {$table_with_medication_id} SET medication_id = {$merge_row->target_id} WHERE medication_id = {$merge_row->source_medication_id}")->execute();
+                } catch (Exception $exception) {
+                    echo "Cannot remap foreign keys for medication: " . $merge_row->target_code . "\n";
+                    echo $exception->getMessage();
+                }
+            }
             $source_medication->deleted_date = date("Y-m-d");
-            if(!$source_medication->save(false))
-            {
+            if (!$source_medication->save(false)) {
                 echo "Cannot deactivate medication: ".$source_medication->id."\n";
             }
             $merge_row->merge_date = date("Y-m-d H:i:s");
             $merge_row->status = 0;
-            if(!$merge_row->save(false))
-            {
+            if (!$merge_row->save(false)) {
                 echo "Cannot close merge ".$merge_row->id."\n";
             }
         }
