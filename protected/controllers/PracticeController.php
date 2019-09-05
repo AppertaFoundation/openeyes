@@ -62,34 +62,46 @@ class PracticeController extends BaseController
      */
     public function actionCreate($context = null)
     {
-
+        $duplicateCheckOutput = null;
         $contact = new Contact('manage_practice');
         $address = new Address('manage_practice');
         $practice = new Practice('manage_practice');
         $this->performAjaxValidation(array($practice, $contact, $address));
         if (isset($_POST['Contact'])) {
-            $contact->attributes = $_POST['Contact'];
+            $contact->first_name = $_POST['Contact']['first_name'];
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
-            list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address,
-                $context === 'AJAX');
-        }
-        if ($context === 'AJAX') {
-            if (isset($practice->contact)){
-                $displayText = ($practice->contact->first_name ? ($practice->contact->first_name . ', ') : '') . $practice->getAddressLines();
-                echo CJSON::encode(array(
-                    'label' => $displayText,
-                    'value' => $displayText,
-                    'id' => $practice->getPrimaryKey(),
-                ));
+            if ( $contact->validate(array('first_name')) and $address->validate(array('address1', 'city', 'postcode', 'country')) ) {
+
+                // If there is no validation error, check for the duplicate practice based on practice name, address1, city, postcode and country.
+                $duplicateCheckOutput = Yii::app()->db->createCommand()
+                    ->select('c1.first_name, a.address1, a.city, a.postcode, a.country_id')
+                    ->from('practice p')
+                    ->join('contact c1', 'c1.id = p.contact_id')
+                    ->join('address a', 'a.contact_id = c1.id')
+                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id',
+                        array(':first_name'=> $contact->first_name, ':address1'=>$address->address1,
+                            ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id))
+                    ->queryAll();
+
+                $isDuplicate = count($duplicateCheckOutput);
+
+                if($isDuplicate === 0) {
+                    list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address,
+                    false);
+                }
+            } else {
+                $contact->validate(array('first_name'));
+                $address->validate(array('address1', 'city', 'postcode', 'country'));
             }
-        } else {
-            $this->render('create', array(
-                'model' => $practice,
-                'address' => $address,
-                'contact' => $contact,
-            ));
         }
+
+        $this->render('create', array(
+            'model' => $practice,
+            'address' => $address,
+            'contact' => $contact,
+            'duplicateCheckOutput' => $duplicateCheckOutput,
+        ));
     }
 
     /**
@@ -299,6 +311,7 @@ class PracticeController extends BaseController
      */
     public function actionUpdate($id)
     {
+        $duplicateCheckOutput = null;
         $model = $this->loadModel($id);
         $contact = $model->contact;
         $address = isset($contact->address) ? $contact->address : new Address();
@@ -312,13 +325,31 @@ class PracticeController extends BaseController
             $contact->attributes = $_POST['Contact'];
             $address->attributes = $_POST['Address'];
             $model->attributes = $_POST['Practice'];
-            list($contact, $model, $address) = $this->performPracticeSave($contact, $model, $address);
+
+            // If there is no validation error, check for the duplicate practice based on practice name, address1, city, postcode and country.
+            $duplicateCheckOutput = Yii::app()->db->createCommand()
+                ->select('c1.first_name, a.address1, a.city, a.postcode, a.country_id')
+                ->from('practice p')
+                ->join('contact c1', 'c1.id = p.contact_id')
+                ->join('address a', 'a.contact_id = c1.id')
+                ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id and p.id != :id',
+                    array(':first_name'=> $contact->first_name, ':address1'=>$address->address1,
+                        ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id, ':id'=>$id ))
+                ->queryAll();
+
+            $isDuplicate = count($duplicateCheckOutput);
+
+            if($isDuplicate === 0) {
+                list($contact, $model, $address) = $this->performPracticeSave($contact, $model, $address);
+            }
+
         }
 
         $this->render('update', array(
             'model' => $model,
             'address' => $address,
             'contact' => $contact,
+            'duplicateCheckOutput' => $duplicateCheckOutput,
         ));
     }
 

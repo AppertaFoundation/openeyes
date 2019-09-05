@@ -166,7 +166,7 @@ class CsvController extends BaseController
 					}
 
 					if (!$import->save()) {
-						\OELog::log("WARNING! FAILED TO SAVE IMPORT STATUS!");
+						\OELog::log("Failed to save import status: " . var_export( $import->getErrors(), true));
 					}
 				}
 
@@ -342,7 +342,7 @@ class CsvController extends BaseController
 					}
 				}else {
 					foreach($mandatory_diagnosis_fields as $diagnosis_field) {
-						if(array_key_exists($diagnosis_field, $patient_raw_data) || $patient_raw_data[$diagnosis_field] != '')
+						if($patient_raw_data[$diagnosis_field] == '')
 						{
 							$errors[] = "Cannot add diagnosis fields for diagnosis that does not exist: " . $diagnosis_field;
 						}
@@ -352,6 +352,7 @@ class CsvController extends BaseController
 				//Throw errors if any of the following are true
 				//-A mandatory field is missing
 				//-A diagnosis is included but other fields are blank
+				//-A diagnosis is not included but other fields are not blank
 				//-An unexpected field is included
 				if(!empty($errors))
 				{
@@ -432,7 +433,8 @@ class CsvController extends BaseController
         $address->contact_id = $contact->id;
 
         if(!$address->save()){
-            return $address->getErrors();
+        		$errors[] = $address->getErrors();
+            return $errors;
         }
 
         $new_patient = new Patient();
@@ -467,9 +469,17 @@ class CsvController extends BaseController
         $new_patient->hos_num = !empty($patient_raw_data['CERA_ID']) ? $patient_raw_data['CERA_ID'] : Patient::autoCompleteHosNum();
 				$new_patient->contact_id = $contact->id;
 
+				if($new_patient->dob > $new_patient->date_of_death) {
+					$errors[] = "Patient date of death cannot predate patient date of birth";
+				}
+				if($new_patient->dob > date("Y-m-d")) {
+					$errors[] = "Patient date of birth cannot postdate current date";
+				}
+
         $new_patient->setScenario('other_register');
         if(!$new_patient->save()){
-            return $new_patient->getErrors();
+            $errors[] = $new_patient->getErrors();
+            return $errors;
         }
 
         //Add a RVEEH_UR value for patient
@@ -505,135 +515,6 @@ class CsvController extends BaseController
 							array_unshift($errors, $pat_ref->getErrors());
 							return $errors;
 					}
-        }
-
-        //optom
-        if(!empty($patient['optom_first_name']) || !empty($patient['optom_last_name'])){
-            if(!empty($patient['optom_first_name']) && !empty($patient['optom_last_name'])) {
-                $optom_label = ContactLabel::model()->findByAttributes(array('name' => 'Optometrist'));
-                $optom_contact = Contact::model()->findByAttributes(array(
-                    'id' => $optom_label->id,
-                    'first_name' => $patient['optom_first_name'],
-                    'last_name' => $patient['optom_last_name'],
-                ));
-                if ($optom_contact === null) {
-                    $optom_contact = new Contact();
-                    $optom_contact->first_name = $patient['optom_first_name'];
-                    $optom_contact->last_name = $patient['optom_last_name'];
-                    $optom_contact->contact_label_id = $optom_label->id;
-                    if (!$optom_contact->save()) {
-                        $errors[] = 'Could not save new optometrist contact';
-                        array_unshift($errors, $optom_contact->getErrors());
-                        return $errors;
-                    }
-                }
-                $pat_con = new PatientContactAssignment();
-                $pat_con->contact_id = $optom_contact->id;
-                $pat_con->patient_id = $new_patient->id;
-                if (!$pat_con->save()) {
-                    $errors[] = 'Could not save optometrist contact assignment';
-                    array_unshift($errors, $pat_con->getErrors());
-                    return $errors;
-                }
-                $new_gp = new Gp();
-                $new_gp->obj_prof = 0;
-                $new_gp->nat_id = 0;
-                $new_gp->contact = $pat_con;
-                if (!$new_gp->save()) {
-                    $errors[] = 'Could not save new practitioner contact';
-                    array_unshift($errors, $new_gp->getErrors());
-                    return $errors;
-                }
-            } else {
-                $errors[] = 'Both names must be present to import optom';
-                return $errors;
-            }
-        }
-
-        //opthal
-        if(!empty($patient['opthal_first_name']) || !empty($patient['opthal_last_name'])){
-            if(!empty($patient['opthal_first_name']) && !empty($patient['opthal_last_name'])) {
-                $opthal_label = ContactLabel::model()->findByAttributes(array('name' => 'Consultant Ophthalmologist'));
-                $opthal_contact = Contact::model()->findByAttributes(array(
-                    'id' => $opthal_label->id,
-                    'first_name' => $patient['opthal_first_name'],
-                    'last_name' => $patient['opthal_last_name'],
-                ));
-                if ($opthal_contact === null) {
-                    $opthal_contact = new Contact();
-                    $opthal_contact->first_name = $patient['opthal_first_name'];
-                    $opthal_contact->last_name = $patient['opthal_last_name'];
-                    $opthal_contact->contact_label_id = $opthal_label->id;
-                    if (!$opthal_contact->save()) {
-                        $errors[] = 'Could not save new ophthalmologist contact';
-                        array_unshift($errors, $opthal_contact->getErrors());
-                        return $errors;
-                    }
-                }
-                $pat_con = new PatientContactAssignment();
-                $pat_con->contact_id = $opthal_contact->id;
-                $pat_con->patient_id = $new_patient->id;
-                if (!$pat_con->save()) {
-                    $errors[] = 'Could not save ophthalmologist contact assignment';
-                    array_unshift($errors, $pat_con->getErrors());
-                    return $errors;
-                }
-                $new_gp = new Gp();
-                $new_gp->obj_prof = 0;
-                $new_gp->nat_id = 0;
-                $new_gp->contact_id = $opthal_contact->id;
-                if (!$new_gp->save()) {
-                    $errors[] = 'Could not save new opthal contact';
-                    array_unshift($errors, $new_gp->getErrors());
-                    return $errors;
-                }
-            } else {
-                $errors[] = 'Both names must be present to import ophthalmologist';
-                return $errors;
-            }
-        }
-
-        //Gp
-        if(!empty($patient['gp_first_name']) || !empty($patient['gp_last_name'])){
-            if(!empty($patient['gp_first_name']) && !empty($patient['gp_last_name'])) {
-                $gp_label = ContactLabel::model()->findByAttributes(array('name' => 'General Practitioner'));
-                $gp_contact = Contact::model()->findByAttributes(array(
-                    'id' => $gp_label->id,
-                    'first_name' => $patient['gp_first_name'],
-                    'last_name' => $patient['gp_last_name'],
-                ));
-                if ($gp_contact === null) {
-                    $gp_contact = new Contact();
-                    $gp_contact->first_name = $patient['gp_first_name'];
-                    $gp_contact->last_name = $patient['gp_last_name'];
-                    $gp_contact->contact_label_id = $gp_label->id;
-                    if (!$gp_contact->save()) {
-                        $errors[] = 'Could not save new '.Yii::app()->params['gp_label'].' contact';
-                        array_unshift($errors, $gp_contact->getErrors());
-                        return $errors;
-                    }
-                    $new_gp = new Gp();
-                    $new_gp->obj_prof = 0;
-                    $new_gp->nat_id = 0;
-                    $new_gp->contact_id = $gp_contact->id;
-                    if (!$new_gp->save()) {
-                        $errors[] = 'Could not save new practitioner contact';
-                        array_unshift($errors, $new_gp->getErrors());
-                        return $errors;
-                    }
-                }
-                $pat_con = new PatientContactAssignment();
-                $pat_con->contact_id = $gp_contact->id;
-                $pat_con->patient_id = $new_patient->id;
-                if (!$pat_con->save()) {
-                    $errors[] = 'Could not save general practitioner contact';
-                    array_unshift($errors, $pat_con->getErrors());
-                    return $errors;
-                }
-            } else {
-                $errors[] = 'Both names are required to import '.Yii::app()->params['gp_label'];
-                return $errors;
-            }
         }
 
 				//Create events and elements for diagnosis
@@ -674,10 +555,10 @@ class CsvController extends BaseController
 						}
 
 						if($patient_raw_data['diagnosis_side_l'] != 'Y' && $patient_raw_data['diagnosis_side_l'] != 'N') {
-							$errors[] = 'Field diagnosis_side_l must be Y, N, or blank';
+							$errors[] = 'Field diagnosis_side_l must be Y or N';
 						}
 						if($patient_raw_data['diagnosis_side_r'] != 'Y' && $patient_raw_data['diagnosis_side_r'] != 'N') {
-							$errors[] = 'Field diagnosis_side_r must be Y, N, or blank';
+							$errors[] = 'Field diagnosis_side_r must be Y or N';
 						}
 
 						$diagnosis_left = $patient_raw_data['diagnosis_side_l'] == 'Y';
@@ -695,14 +576,18 @@ class CsvController extends BaseController
 							return $errors;
 						}
 
-						//Abusing soundex to strip commas and quotes and to more fuzzily match a potentially misspelled diagnosis
-						$found_disorder = Yii::app()->db->createCommand('select id from disorder WHERE SOUNDEX(term) = SOUNDEX(\'' . $patient_raw_data['diagnosis'] . '\')')->queryAll();
+						$found_disorder_ids =
+							Yii::app()->db->createCommand(
+								'SELECT id 
+									FROM  disorder 
+									WHERE REGEXP_REPLACE(term, \'[^A-Za-z0-9]\', \'\') = 
+									REGEXP_REPLACE(\''. $patient_raw_data['diagnosis'] . '\', \'[^A-Za-z0-9]\', \'\')')->queryAll();
 
-						if (count($found_disorder) == 0) {
+						if (count($found_disorder_ids) == 0) {
 							$errors[] = "Could not find disorder matching name: " . $patient_raw_data['diagnosis'];
 							return $errors;
 						} else {
-							$disorder = Disorder::model()->findByPk($found_disorder[0]['id']);
+							$disorder = Disorder::model()->findByPk($found_disorder_ids[0]);
 						}
 
 						$diagnosis = new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis();
@@ -711,6 +596,13 @@ class CsvController extends BaseController
 						$diagnosis->eye_id = $diagnosis_eye_id;
 						$diagnosis->date = date("Y-m-d", strtotime(str_replace('/', '-', $patient_raw_data['diagnosis_date'])));
 						$diagnosis->principal = true;
+
+						if($diagnosis->date < $new_patient->dob) {
+							$errors[] = "Diagnosis date cannot predate patient date of birth";
+						}
+						if($diagnosis->date > date("Y-m-d")) {
+							$errors[] = "Diagnosis date cannot postdate current date";
+						}
 
 						if (!$diagnosis->save()) {
 							$errors[] = 'Could not save diagnosis';
@@ -727,7 +619,7 @@ class CsvController extends BaseController
 
 					//If the patient has visual acuity reading(s), create an examination event to store them
 					if($has_reading_left || $has_reading_right) {
-						$errors[] = "Visual Acuity functionality not yet implemented.";
+						$errors[] = "Visual Acuity functionality not yet implemented";
 						return $errors;
 
 						//Functionality commented until Visual Acuity functionality can be funded and confirmed.
@@ -771,11 +663,11 @@ class CsvController extends BaseController
 //						//If VA readings exist, add them
 //						if($has_reading_left) {
 //							if($visual_element->left_unable_to_assess) {
-//								$errors[] = "Left eye marked unable to assess, even though it has a VA reading.";
+//								$errors[] = "Left eye marked unable to assess, even though it has a VA reading";
 //								return $errors;
 //							}
 //							if($visual_element->left_eye_missing) {
-//								$errors[] = "Left eye marked as missing, even though it has a VA reading.";
+//								$errors[] = "Left eye marked as missing, even though it has a VA reading";
 //								return $errors;
 //							}
 //
@@ -798,11 +690,11 @@ class CsvController extends BaseController
 //						}
 //						if($has_reading_right) {
 //							if($visual_element->right_unable_to_assess) {
-//								$errors[] = "Right eye marked unable to assess, even though it has a VA reading.";
+//								$errors[] = "Right eye marked unable to assess, even though it has a VA reading";
 //								return $errors;
 //							}
 //							if($visual_element->right_eye_missing) {
-//								$errors[] = "Right eye marked as missing, even though it has a VA reading.";
+//								$errors[] = "Right eye marked as missing, even though it has a VA reading";
 //								return $errors;
 //							}
 //

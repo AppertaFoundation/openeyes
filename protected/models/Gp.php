@@ -27,6 +27,7 @@
  *
  * The followings are the available model relations:
  * @property Contact $contact
+ * @property ContactPracticeAssociate $contactPracticeAssociate
  */
 class Gp extends BaseActiveRecordVersioned
 {
@@ -101,7 +102,7 @@ class Gp extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-            'contactPracticeAssociate'=>array(self::HAS_ONE,'ContactPracticeAssociate','gp_id'),
+            'contactPracticeAssociate'=>array(self::HAS_MANY,'ContactPracticeAssociate','gp_id'),
         );
     }
 
