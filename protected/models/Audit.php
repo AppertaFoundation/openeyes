@@ -201,7 +201,8 @@ class Audit extends BaseActiveRecord
                     break;
                 case 'login-failed':
                 case 'search-error':
-                    return 'Red';
+                case 'create-failed': // This would be better as a warning when OE-8954 is complete
+                    return 'red';
                     break;
             }
         }

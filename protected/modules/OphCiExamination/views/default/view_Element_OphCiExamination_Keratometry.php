@@ -17,7 +17,7 @@
  */
 ?>
 
-<div class="element-data">
+<div class="element-data full-width">
   <div class="data-group">
         <?php echo $element->getAttributeLabel('tomographer_id') ?>:
         <?php echo OEModule\OphCiExamination\models\OphCiExamination_Tomographer_Device::model()->getName($element->tomographer_id); ?>

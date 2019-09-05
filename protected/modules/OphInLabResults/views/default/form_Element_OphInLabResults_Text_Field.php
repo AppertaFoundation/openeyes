@@ -14,12 +14,14 @@
                         <?php echo $form->textArea($element, 'result');?>
                     </td>
                 </tr>
+                <?php if ($element->resultType->show_units) { ?>
                 <tr>
                     <td>
-                        <?php $element->setDefaultUnit()?>
-                        <?php echo $form->textField($element, 'unit'); ?>
+                        <?php $element->setDefaultUnit();?>
+                        <?= $form->textField($element, 'unit', ['disabled' => ($element->resultType->allow_unit_change ? '' : 'disabled') ]); ?>
                     </td>
                 </tr>
+                <?php } ?>
                 <tr>
                     <td>
                     <?php echo $form->textArea($element, 'comment', $element->getHtmlOptionsForInput('comment'), array(), ['maxlength'=>'250']);?>
