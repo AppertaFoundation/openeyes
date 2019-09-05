@@ -662,11 +662,11 @@ truncate table worklist_patient;
 SELECT "TRUNCATE TABLE user_hotlist_item" AS "";
 truncate table user_hotlist_item;
 
-SELECT "TRUNCATE TABLE archive_patient_allergy_assignment" AS "";
-truncate table archive_patient_allergy_assignment;
+-- SELECT "TRUNCATE TABLE archive_patient_allergy_assignment" AS "";
+-- truncate table archive_patient_allergy_assignment;
 
-SELECT "TRUNCATE TABLE archive_patient_risk_assignment" AS "";
-truncate table archive_patient_risk_assignment;
+-- SELECT "TRUNCATE TABLE archive_patient_risk_assignment" AS "";
+-- truncate table archive_patient_risk_assignment;
 
 SELECT "TRUNCATE TABLE commissioning_body_patient_assignment" AS "";
 truncate table commissioning_body_patient_assignment;
