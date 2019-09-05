@@ -14,7 +14,7 @@ class m190904_110852_add_med_stop_reason extends CDbMigration
 
     public function down()
     {
-        $this->delete('ophciexamination_medication_stop_reason', 'name=:name', [':name' => 'Other']);
+        $this->delete('ophciexamination_medication_stop_reason', 'name=:name', [':name' => 'Medication parameters changed']);
         $this->update('ophciexamination_medication_stop_reason', ['display_order' => 22], 'name=:name', [':name' => 'Other']);
     }
 }

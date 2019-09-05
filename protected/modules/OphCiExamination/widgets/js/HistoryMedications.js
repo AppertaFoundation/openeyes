@@ -287,10 +287,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                   $row.data('bound_entry').find('.js-stop-reason').attr('value', $row.find('.js-stop-reason').attr('value'));
               } else {
                   let $bound_entry = $row.data('bound_entry');
+                  let stop_reason = $("option:contains('Medication parameters changed')").attr("value");
                   $bound_entry.removeData('bound_entry');
                   $bound_entry.find('.js-binded-key').attr('value', '');
                   $bound_entry.find('.js-meds-stop-btn').trigger('click');
-                  $bound_entry.find('.js-stop-reason').attr('value', 23);
+                  $bound_entry.find('.js-stop-reason').attr('value', stop_reason);
                   $row.find('.js-binded-key').attr('value', '');
                   $row.removeData('bound_entry');
               }
