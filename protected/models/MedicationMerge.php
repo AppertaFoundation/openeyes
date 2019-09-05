@@ -98,10 +98,10 @@ class MedicationMerge extends BaseActiveRecord
             // 1. source_drug_id set / target_medication_id not set -> search by target_code
             // 2. source_medication_id set / target_medication_id set
             if(!$merge_row->source_medication_id || $merge_row->source_medication_id == '')
-            {   
+            {
                 if($merge_row->source_drug_id > 0)
                 {
-                    $source_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LEGACY' AND source_subtype='drug'", array(":old_id"=>$merge_row->source_drug_id));
+                    $source_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LOCAL' AND source_subtype='drug'", array(":old_id"=>$merge_row->source_drug_id));
                     $merge_row->source_medication_id = $source_medication->id;
                 }else
                 {
@@ -111,7 +111,7 @@ class MedicationMerge extends BaseActiveRecord
             {
                 $source_medication = Medication::model()->findByPk($merge_row->source_medication_id);
             }
-            
+
             if(!$merge_row->target_id || $merge_row->target_id == '')
             {
                 $target_medication = Medication::model()->find("preferred_code = :national_code AND source_type='DM+D'", array(":national_code"=>$merge_row->target_code));
@@ -124,16 +124,18 @@ class MedicationMerge extends BaseActiveRecord
                 }
             }
 
-            $all_event_uses = EventMedicationUse::model()->findAllByAttributes(array("medication_id"=>$merge_row->source_medication_id));
 
-            foreach($all_event_uses as $event_use)
-            {
-                $event_use->medication_id = $merge_row->target_id;
-                if(!$event_use->save(false))
-                {
-                    echo "Cannot save event use: ".$event_use->id." for medication: ".$merge_row->target_code."\n";
-                }
-            }
+            foreach(['event_medication_use', 'medication_allergy_assignment', 'medication_attribute_assignment','medication_common',
+											'medication_search_index', 'medication_set_auto_rule_medication', 'medication_set_item'] as $table_with_medication_id) {
+            	try {
+								Yii::app()->db->createCommand("UPDATE {$table_with_medication_id} SET medication_id = {$merge_row->target_id} WHERE medication_id = {$merge_row->source_medication_id}")->execute();
+							} catch (Exception $exception) {
+								echo "Cannot remap foreign keys for medication: " . $merge_row->target_code . "\n";
+            		echo $exception->getMessage();
+
+							}
+
+						}
             $source_medication->deleted_date = date("Y-m-d");
             if(!$source_medication->save(false))
             {
