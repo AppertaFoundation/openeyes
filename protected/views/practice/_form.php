@@ -16,10 +16,13 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
         // There is a call to performAjaxValidation() commented in generated controller code.
         // See class documentation of CActiveForm for details on this.
         'enableAjaxValidation' => true,
+        'clientOptions' => array(
+            'hideErrorMessage' => false,
+        )
     )); ?>
 
     <p class="note text-right">Fields with <span class="required">*</span> are required.</p>
-    <?php echo $form->errorSummary($model); ?>
+    <?php echo $form->errorSummary(array($contact,$model,$address)); ?>
     <table class="standard">
         <tbody>
         <?php if(isset($duplicateCheckOutput)): ?>
