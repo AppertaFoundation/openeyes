@@ -18,12 +18,6 @@
 class OphInLabResults_API extends BaseAPI
 {
 
-    public function getEventIcon($type)
-    {
-        return '<i class="oe-i-e ' . ($type === 'small' ? 'small' : 'large') . ' i-InLabRequest"></i>';
-    }
-
-
     public function getEventName($event)
     {
         $element = Element_OphInLabResults_Details::model()->findByAttributes(array('event_id' => $event->id));
