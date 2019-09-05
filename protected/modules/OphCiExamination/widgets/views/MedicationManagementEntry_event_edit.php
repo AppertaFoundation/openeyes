@@ -166,7 +166,6 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <div class="js-stop-reason-select"
                  style="<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
                 <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'js-stop-reason cols-11')) ?>
-                <?php /* <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a> */ ?>
             </div>
         </td>
 
