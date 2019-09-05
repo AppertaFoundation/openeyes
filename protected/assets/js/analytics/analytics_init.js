@@ -5,8 +5,11 @@ var analytics_init = (function () {
             e.preventDefault();
 
 			// display spinner
-			$('#js-analytics-spinner').show();
+            $('#js-analytics-spinner').show();
 
+            $('.analytics-charts').show();
+            $('.analytics-patient-list').hide();
+            
 			$(this).addClass('selected');
 
 			$('.icon-btn a').not(this).removeClass('selected');
