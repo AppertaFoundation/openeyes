@@ -11,15 +11,4 @@ class m190904_043756_increase_import_message_size extends CDbMigration
 	{
 		$this->alterColumn('import', 'message', 'string NOT NULL');
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }

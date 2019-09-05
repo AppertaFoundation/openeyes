@@ -522,9 +522,6 @@ class CsvController extends BaseController
 
 				//Create events and elements for diagnosis
 				if(!empty($patient_raw_data['diagnosis']) || !empty($patient_raw_data['vision_l']) || !empty($patient_raw_data['vision_r'])) {
-//					$context = Firm::model()->findByAttributes(array(
-//							'name' => !empty($patient_raw_data['context']) ? $patient_raw_data['context'] :  'Medical Retinal firm'
-//					));
 
 					//We need an episode to store patient exam data
 					$episode = new Episode();
