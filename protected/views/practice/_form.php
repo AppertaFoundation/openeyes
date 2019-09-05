@@ -6,7 +6,6 @@
 <?php
 $countries = CHtml::listData(Country::model()->findAll(), 'id', 'name');
 $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name');
-//$gp = new Gp();
 ?>
 
 <div class="form">
@@ -52,6 +51,18 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 </td>
             </tr>
         <?php endif; ?>
+        <?php foreach ($gpIdProviderNoList as $gpIdProviderNo){ ?>
+            <?php if($gpIdProviderNo[2] >= 1): ?>
+                <tr id="conflicts" class="cols-full alert-box error" style="font-style: italic; font-size: small;">
+                    <td class="row field-row">
+                        <p>Duplicate provider number detected.</p>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <?php break; ?>
+            <?php endif; ?>
+        <?php } ?>
         <tr>
             <td>
                 <?php echo $form->labelEx($contact, 'first_name'); ?>
@@ -89,19 +100,18 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 </td>
                 <td>
                     <?php echo $form->error($gp, 'id'); ?>
-
                     <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'gp_autocomplete_id']); ?>
                     <div id="gp_selected_wrapper">
                         <ul class="oe-multi-select js-selected_gps">
-                            <?php if(!empty($gpIdList)): ?>
-                                <?php foreach ($gpIdList as $gpId){ ?>
-                                    <?php if(!empty($gpId)): ?>
-                                    <li>
-                                        <span class="js-name" style="text-align:justify"><?php echo $gp->findByPk($gpId)->getCorrespondenceName().' - '.$gp->findByPk($gpId)->getGPROle() ?></span>
-                                        <i id=js-remove-gp-<?php echo $gpId ?> class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>
-                                        <input type="hidden" name="Gp[id][]" class="js-gps" value=<?php echo $gpId ?>>
+                            <?php if(!empty($gpIdProviderNoList)): ?>
+                                <?php foreach ($gpIdProviderNoList as $gpIdProviderNo){ ?>
+                                    <li style="<?php echo $gpIdProviderNo[2] >= 1 ? 'background-color: #cd0000; color: #fff': '' ?>">
+                                        <span class="js-name" style="text-align:justify"><?php echo $gp->findByPk($gpIdProviderNo[0])->getCorrespondenceName().' - '.$gp->findByPk($gpIdProviderNo[0])->getGPROle() ?></span>
+                                        <input name="ContactPracticeAssociate[provider_no][]" id=js-gp-provider-no-<?php echo $gpIdProviderNo[1] ?> value=<?php echo $gpIdProviderNo[1] ?>>
+                                        <i id=js-remove-gp-<?php echo $gpIdProviderNo[0] ?> class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>
+                                        <input type="hidden" name="Gp[id][]" class="js-gps" value=<?php echo $gpIdProviderNo[0] ?>>
                                     </li>
-                                    <?php endif; ?>
+                                    <?php echo $gpIdProviderNo[2] >= 1 ? '<div class="errorMessage">Duplicate Provider Number.</div>': ''?>
                                 <?php } ?>
                             <?php endif; ?>
                         </ul>
@@ -143,7 +153,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 $('.js-selected_gps').append(
                     '<li>' +
                     '<span class="js-name" style="text-align:justify">' + AutoCompleteResponse.label + '</span>' +
-                    '<input id=js-gp-provider-no' + AutoCompleteResponse.id + ' value="" style="display: block">' +
+                    '<input name="ContactPracticeAssociate[provider_no][]" id=js-gp-provider-no' + AutoCompleteResponse.id + ' value="">' +
                     '<i id=js-remove-gp-' + AutoCompleteResponse.id + ' class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>' +
                     '<input type="hidden" name="Gp[id][]" class="js-gps" value="' + AutoCompleteResponse.id + '">' +
                     '</li>'

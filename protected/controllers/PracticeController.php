@@ -70,16 +70,24 @@ class PracticeController extends BaseController
     public function actionCreate($context = null)
     {
         $duplicateCheckOutput = null;
+        $isDuplicateProviderNo = false;
         $contact = new Contact('manage_practice');
         $address = new Address('manage_practice');
         $practice = new Practice('manage_practice');
 
         $gp = new Gp('manage_practice');
-
-        $gpIdList = array();
+        $gpIdProviderNoList = array();
         if (isset($_POST['Gp'])) {
-            foreach ($_POST['Gp'] as $gpId) {
-                $gpIdList = $gpId;
+            // Assuming the Gp id and ContactPracticeAssociate Provider_no arrays have the same length.
+            for($i=0; $i<sizeof($_POST['Gp']['id']); $i++) {
+                $gpId = $_POST['Gp']['id'][$i];
+                $providerNo = $_POST['ContactPracticeAssociate']['provider_no'][$i];
+                //$gpIdProviderNoList[$gpId] = $providerNo;
+                $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo));
+                $gpIdProviderNoList[] = array($gpId, $providerNo, count($providerNoDuplicateCheck));
+                if(count($providerNoDuplicateCheck) >=1 ) {
+                    $isDuplicateProviderNo = true;
+                }
             }
         }
 
@@ -104,8 +112,8 @@ class PracticeController extends BaseController
 
                 $isDuplicate = count($duplicateCheckOutput);
 
-                if($isDuplicate === 0) {
-                    list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address, $gpIdList,
+                if($isDuplicate === 0 && !$isDuplicateProviderNo) {
+                    list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address, $gpIdProviderNoList,
                     false);
                 }
             } else {
@@ -119,8 +127,8 @@ class PracticeController extends BaseController
             'address' => $address,
             'contact' => $contact,
             'gp' => $gp,
-            'gpIdList' => $gpIdList,
             'duplicateCheckOutput' => $duplicateCheckOutput,
+            'gpIdProviderNoList' => $gpIdProviderNoList,
         ));
     }
 
@@ -261,7 +269,7 @@ class PracticeController extends BaseController
      * @return array
      * @throws CException
      */
-    public function performPracticeSave(Contact $contact, Practice $practice, Address $address, $gpIdList, $isAjax = false)
+    public function performPracticeSave(Contact $contact, Practice $practice, Address $address, $gpIdProviderNoList, $isAjax = false)
     {
         $action = $practice->isNewRecord ? 'add' : 'edit';
         $transaction = Yii::app()->db->beginTransaction();
@@ -276,16 +284,17 @@ class PracticeController extends BaseController
                             Audit::add('Practice', $action . '-practice',
                                 "Practice manually [id: $practice->id] {$action}ed.");
                             if (!$isAjax) {
-                                if(count($gpIdList) === 0) {
+                                if(count($gpIdProviderNoList) === 0) {
                                     $this->redirect(array('view', 'id' => $practice->id));
                                 }
                                 $isLastAssociate = false;
-                                for ($i = 0; $i < count($gpIdList); $i++) {
+                                for ($i = 0; $i < count($gpIdProviderNoList); $i++) {
                                     $practice_contact_associate = new ContactPracticeAssociate();
-                                    $practice_contact_associate->gp_id = $gpIdList[$i];
+                                    $practice_contact_associate->gp_id = $gpIdProviderNoList[$i][0];
+                                    $practice_contact_associate->provider_no = $gpIdProviderNoList[$i][1];
                                     $practice_contact_associate->practice_id = $practice->id;
                                     $practice_contact_associate->save();
-                                    if ($i == (count($gpIdList)-1)) {
+                                    if ($i == (count($gpIdProviderNoList)-1)) {
                                         $isLastAssociate = true;
                                     }
                                     if($isLastAssociate) {
