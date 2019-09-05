@@ -17,7 +17,7 @@
 ?>
 <div class="print-letter-div" >
 
-    <?php if($element->draft && Yii::app()->params['OphCoCorrespondence_printout_draft_background'] == true) :?>
+    <?php if ($element->draft && Yii::app()->params['OphCoCorrespondence_printout_draft_background'] == true) :?>
         <img style="position: absolute; z-index: -1000;width:100%" src="<?php echo Yii::app()->assetManager->createUrl('img/bg_draft.png', 'application.modules.OphCoCorrespondence.assets') ?>" />
     <?php endif; ?>
     <?php $letter_address = isset($letter_address) ? $letter_address : null; ?>

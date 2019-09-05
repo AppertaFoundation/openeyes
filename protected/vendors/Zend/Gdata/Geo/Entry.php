@@ -71,13 +71,13 @@ class Zend_Gdata_Geo_Entry extends Zend_Gdata_Entry
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('georss') . ':' . 'where':
-            $where = new Zend_Gdata_Geo_Extension_GeoRssWhere();
-            $where->transferFromDOM($child);
-            $this->_where = $where;
+            case $this->lookupNamespace('georss') . ':' . 'where':
+                $where = new Zend_Gdata_Geo_Extension_GeoRssWhere();
+                $where->transferFromDOM($child);
+                $this->_where = $where;
             break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }

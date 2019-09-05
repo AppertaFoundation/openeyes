@@ -30,12 +30,12 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 ));
 
 $actions = array('savedraft' => 'Save draft', 'saveprint' => 'Save and print');
-if( isset(Yii::app()->params['OphCoCorrespondence_event_actions']['create']) ){
+if ( isset(Yii::app()->params['OphCoCorrespondence_event_actions']['create']) ) {
     $actions = Yii::app()->params['OphCoCorrespondence_event_actions']['create'];
 }
 
-foreach($actions as $action_id => $action){
-    if($action){
+foreach ($actions as $action_id => $action) {
+    if ($action) {
         $this->event_actions[] = EventAction::button(
             $action,
             $action_id,

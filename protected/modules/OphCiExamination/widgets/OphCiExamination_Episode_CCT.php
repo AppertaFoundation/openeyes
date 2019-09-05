@@ -19,7 +19,7 @@ class OphCiExamination_Episode_CCT extends \EpisodeSummaryWidget
         if ($cct = $this->event_type->api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
             $this->episode->patient,
             false)
-        ){
+        ) {
             $this->render('OphCiExamination_Episode_CCT', array('cct' => $cct));
         }
     }

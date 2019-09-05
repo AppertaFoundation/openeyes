@@ -114,7 +114,7 @@ class AuditTest extends CDbTestCase
         $audit = new Audit();
         $audit->action = ComponentStubGenerator::generate('AuditAction', array('name' => 'search-error'));
         $result = $audit->getColour();
-        $expected = 'Red';
+        $expected = 'red';
 
         $this->assertEquals($expected, $result);
     }

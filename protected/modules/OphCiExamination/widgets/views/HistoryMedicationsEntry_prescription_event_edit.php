@@ -34,8 +34,6 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 }
 
 $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedIntoMedicationManagement();
-
-/** @var EventMedicationUse $entry */
 ?>
 
 <tr data-key="<?=$row_count?>"
@@ -122,7 +120,7 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
             <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
         </div>
     </td>
-
+	</td>
     <td class="text-center">
         <i class="oe-i info small pad js-has-tooltip" data-tooltip-content=
         "This medication was prescribed through OpenEyes.<?= $entry->prescriptionNotCurrent() ? ' The prescription has been altered since this entry was recorded.' : ''; ?>"></i>

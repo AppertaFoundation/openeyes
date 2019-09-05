@@ -81,7 +81,7 @@ class WorklistDefinitionDisplayContext extends BaseActiveRecord
         if (!$found) {
             $this->addError(null, 'At least one of '.implode(', ', array_map(function ($attr) {
                     return $this->getAttributeLabel($attr);
-                }, $one_of)).' must be set.');
+            }, $one_of)).' must be set.');
         }
 
         parent::afterValidate();

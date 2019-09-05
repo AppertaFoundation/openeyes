@@ -196,9 +196,7 @@ class ProfileController extends BaseController
         $user = User::model()->findByPk(Yii::app()->user->id);
         $firm_transaction = Yii::app()->db->beginTransaction();
         if (!empty($_POST['firms'])) {
-
             foreach ($_POST['firms'] as $firm_id) {
-
                 if ($uf = UserFirm::model()->find('user_id=? and firm_id=?', array($user->id, $firm_id))) {
                     if (!$uf->delete()) {
                         throw new Exception('Unable to delete UserFirm: ' . print_r($uf->getErrors(), true));
@@ -286,8 +284,6 @@ class ProfileController extends BaseController
                     }
                 }
             }
-
-
         }
         echo false;
 
@@ -310,7 +306,6 @@ class ProfileController extends BaseController
     public function actionGenerateSignatureQR()
     {
         if (Yii::app()->user->id) {
-
             $QRSignature = new SignatureQRCodeGenerator();
             // TODO: need to get a unique code for the user and add a key here!
 
@@ -329,7 +324,6 @@ class ProfileController extends BaseController
 
             imagejpeg($QRimage);
             imagedestroy($QRimage);
-
         }
     }
 

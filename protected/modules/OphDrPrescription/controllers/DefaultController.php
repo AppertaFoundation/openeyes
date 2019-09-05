@@ -1,20 +1,19 @@
 <?php
 /**
- * OpenEyes.
-*
-* (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
-* (C) OpenEyes Foundation, 2011-2013
-* This file is part of OpenEyes.
-* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
-* You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
-*
-* @link http://www.openeyes.org.uk
-*
-* @author OpenEyes <info@openeyes.org.uk>
-* @copyright Copyright (c) 2011-2013, OpenEyes Foundation
-* @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
-*/
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 class DefaultController extends BaseEventTypeController
 {
     protected $show_element_sidebar = false;
@@ -292,8 +291,6 @@ class DefaultController extends BaseEventTypeController
 
 
                 foreach ($drugs as $drug) {
-
-                    /** @var Medication $drug */
                     $infoBox = new MedicationInfoBox();
                     $infoBox->medication_id = $drug->id;
                     $infoBox->init();
@@ -389,7 +386,7 @@ class DefaultController extends BaseEventTypeController
      */
     protected function setElementComplexAttributesFromData($element, $data, $index = null)
     {
-        if (get_class($element) == 'Element_OphDrPrescription_Details' && @$data['Element_OphDrPrescription_Details']['items']) {
+        if (get_class($element) == 'Element_OphDrPrescription_Details' && isset($data['Element_OphDrPrescription_Details']['items']) && $data['Element_OphDrPrescription_Details']['items']) {
             // Form has been posted, so we should return the submitted values instead
             $items = array();
             foreach ($data['Element_OphDrPrescription_Details']['items'] as $item) {
@@ -623,8 +620,6 @@ class DefaultController extends BaseEventTypeController
             }
         } else {
             if (is_a($source, MedicationSetItem::class)) {
-
-                /** @var MedicationSetItem $source */
                 $item->medication_id = $source->medication_id;
                 $item->frequency_id = $source->default_frequency_id;
                 $item->form_id = $source->default_form_id ? $source->default_form_id : $source->medication->default_form_id;
@@ -632,7 +627,6 @@ class DefaultController extends BaseEventTypeController
                 $item->dose_unit_term = $source->default_dose_unit_term ? $source->default_dose_unit_term : $source->medication->default_dose_unit_term;
                 $item->route_id = $source->default_route_id ? $source->default_route_id : $source->medication->default_route_id;
                 $item->duration = $source->default_duration_id;
-
 
                 if ($source->tapers) {
                     $tapers = array();

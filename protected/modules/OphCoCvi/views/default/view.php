@@ -22,8 +22,8 @@ if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::printButton();
 }
 
-if($this->checkLabelPrintAccess()){
-   $this->event_actions[] = EventAction::button('Print Labels', 'print_labels', null, array('class' => 'small button')); 
+if ($this->checkLabelPrintAccess()) {
+    $this->event_actions[] = EventAction::button('Print Labels', 'print_labels', null, array('class' => 'small button'));
 }
 
 if ($this->canIssue()) {

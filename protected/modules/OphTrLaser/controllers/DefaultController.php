@@ -62,7 +62,11 @@ class DefaultController extends BaseEventTypeController
      */
     public function initActionCreate()
     {
-        $site_id = Yii::app()->session['selected_site_id'];
+        if (isset($_POST['Element_OphTrLaser_Site']['site_id'])) {
+            $site_id = $_POST['Element_OphTrLaser_Site']['site_id'];
+        } else {
+            $site_id = Yii::app()->session['selected_site_id'];
+        }
         $this->jsVars['site_id'] = $site_id;
         $this->jsVars['lasers_available'] = count(OphTrLaser_Site_Laser::model()->findAllByAttributes(['site_id' => $site_id])) > 0;
         parent::initActionCreate();
@@ -147,7 +151,7 @@ class DefaultController extends BaseEventTypeController
         }
 
         foreach ($this->getElements($element->elementType) as $child) {
-            if(!is_subclass_of($child, 'SplitEventTypeElement')) {
+            if (!is_subclass_of($child, 'SplitEventTypeElement')) {
                 continue;
             }
 

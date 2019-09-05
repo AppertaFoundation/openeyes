@@ -1,12 +1,12 @@
 <div class="analytics-options">
 
-    <?php $this->renderPartial('analytics_sidebar_header',array('specialty'=>$specialty));?>
+    <?php $this->renderPartial('analytics_sidebar_header', array('specialty'=>$specialty));?>
 
     <div class="specialty"><?= $specialty ?></div>
     <div class="specialty-options">
             <div class="view-mode flex-layout">
                 <?php $clinical_button_disable = true;
-                if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
+                if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
                     $clinical_button_disable = false;
                 }?>
                 <button class="analytics-section pro-theme cols-6 <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
@@ -32,7 +32,7 @@
                             Diagnoses
                         </a>
                     </li>
-                    <?php if ($specialty !== "All"){?>
+                    <?php if ($specialty !== "All") {?>
                         <li>
                             <a href="#"
                                id="js-hs-clinical-custom"
@@ -50,7 +50,7 @@
                     <div class="clinical-filters custom-filters flex-layout">
                         <div class="clinical-filters flex-layout cols-9">
                             <ul class="filters-selected cols-9">
-                                <?php if(isset($user_list)){?>
+                                <?php if (isset($user_list)) {?>
                                     <li>User:
                                         <span class="service-selected js-hs-filters js-hs-surgeon"
                                               id="js-chart-filter-clinical-surgeon-diagnosis"
@@ -104,7 +104,7 @@
                         <?php } ?>
                     </div>
                 </div>
-            <?php if($specialty !== 'All'){?>
+            <?php if ($specialty !== 'All') {?>
                 <div id="js-clinical-data-filter-custom"
                      class="js-hs-filter-analytics-clinical"
                      style="display: none; ">
@@ -215,13 +215,13 @@
                     <h3>Filters</h3>
                     <div class="custom-filters">
                         <ul class="filters-selected cols-9">
-                            <?php if(isset($user_list)){?>
+                            <?php if (isset($user_list)) {?>
                                 <li>User:
                                     <span class="service-selected js-hs-filters js-hs-surgeon"
                                           id="js-chart-filter-clinical-surgeon-custom"
                                           data-name="custom_surgeon">All</span>
                                 </li>
-                            <?php }else{?>
+                            <?php } else {?>
                                 <li>User:
                                     <span class="service-selected js-hs-filters js-hs-surgeon"
                                           id="js-chart-filter-clinical-surgeon-custom"
@@ -286,8 +286,8 @@
                                         <h3>Diagnosis</h3>
                                         <ul class="btn-list">
                                             <li class="selected">All</li>
-                                            <?php foreach ($common_disorders as $id => $diagnosis) { ?>
-                                                <li><?= $diagnosis; ?></li>
+                                            <?php foreach ($common_disorders as $diagnosis => $term) { ?>
+                                                <li><?= $term['term']; ?></li>
                                             <?php } ?>
                                         </ul>
                                     </div><!-- options-group -->
@@ -342,13 +342,13 @@
 <script type="text/javascript">
     <?php
         $side_bar_user_list = array();
-        if (isset($user_list)){
-            foreach ($user_list as $user){
-                $side_bar_user_list[$user->getFullName()] = $user->id;
-            }
-        }else{
-            $side_bar_user_list = null;
+    if (isset($user_list)) {
+        foreach ($user_list as $user) {
+            $side_bar_user_list[$user->getFullName()] = $user->id;
         }
+    } else {
+        $side_bar_user_list = null;
+    }
     ?>
 
     $('#js-btn-selected-eye').click(function(e){
@@ -406,7 +406,7 @@
     function getDataFilters(){
         var specialty = "<?=$specialty;?>";
         var side_bar_user_list = <?=CJavaScript::encode($side_bar_user_list);?>;
-        var service_common_disorders = <?=CJavaScript::encode($common_disorders);?>;
+        var service_common_disorders = JSON.parse(<?=json_encode(json_encode($common_disorders));?>);
         var mr_custom_diagnosis = ['AMD(wet)', 'BRVO', 'CRVO', 'DMO'];
         var gl_custom_diagnosis = ['Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension'];
         var mr_custom_treatment = ['Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex'];
@@ -464,7 +464,7 @@
     }
     function plotUpdate(data){
         <?php
-            if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){ ?>
+        if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) { ?>
                 var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
                 var clinical_data = data[0];
                 window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
@@ -476,8 +476,8 @@
                 clinical_chart.layout['yaxis']['ticktext'] = clinical_data['text'];
                 clinical_chart.layout['hoverinfo'] = 'x+y';
                 Plotly.redraw(clinical_chart);
-        <?php
-            if ($specialty !== 'All'){?>
+            <?php
+            if ($specialty !== 'All') {?>
         var custom_charts = ['js-hs-chart-analytics-clinical-others-left','js-hs-chart-analytics-clinical-others-right'];
         var custom_data = data[2];
         window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
@@ -505,13 +505,18 @@
             chart.data[0]['y'] = custom_data[i][0]['y'];
             chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
             chart.data[0]['error_y'] = custom_data[i][0]['error_y'];
+            chart.data[0]['hoverinfo'] = custom_data[i][0]['hoverinfo'];
+            chart.data[0]['hovertext'] = custom_data[i][0]['hovertext'];
             chart.data[1]['x'] = custom_data[i][1]['x'];
             chart.data[1]['y'] = custom_data[i][1]['y'];
             chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
             chart.data[1]['error_y'] = custom_data[i][1]['error_y'];
+            chart.data[1]['hoverinfo'] = custom_data[i][1]['hoverinfo'];
+            chart.data[1]['hovertext'] = custom_data[i][1]['hovertext'];
             Plotly.redraw(chart);
         }
-        <?php }}?>
+            <?php }
+        }?>
         //update the service data
         constructPlotlyData(data[1]['plot_data']);
         window.csv_data_for_report['service_data'] = data[1]['csv_data'];

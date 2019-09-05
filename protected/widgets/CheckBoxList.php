@@ -27,23 +27,19 @@ class CheckBoxList extends SelectionWidget
     {
         parent::init();
 
-        if( \Yii::app()->request->isPostRequest ){
-
+        if ( \Yii::app()->request->isPostRequest ) {
             $this->selected_items = \Yii::app()->request->getPost($this->name, $this->selected_items);
         }
 
-        if($this->selected_items && !is_array($this->selected_items) && isset($this->element->{$this->selected_items}) ){
-
+        if ($this->selected_items && !is_array($this->selected_items) && isset($this->element->{$this->selected_items}) ) {
             $selected_items = $this->element->{$this->selected_items};
 
             $this->selected_items = array();
 
-            foreach($selected_items as $selected_item){
+            foreach ($selected_items as $selected_item) {
                 $this->selected_items[] = $selected_item->id;
             }
-
-        } else if( !is_array($this->selected_items)  ){
-
+        } else if ( !is_array($this->selected_items)  ) {
             // End of the day $this->selected_items must be an array
             // here $this->selected_items is neither an array nor a relation of the element, -> means we have no selected data
 

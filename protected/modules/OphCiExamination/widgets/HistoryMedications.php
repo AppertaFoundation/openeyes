@@ -14,7 +14,9 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 namespace OEModule\OphCiExamination\widgets;
+
 use OEModule\OphCiExamination\models\HistoryMedications as HistoryMedicationsElement;
 use OEModule\OphCiExamination\models\MedicationManagement as MedicationManagementElement;
 
@@ -25,19 +27,9 @@ use OEModule\OphCiExamination\models\MedicationManagement as MedicationManagemen
  */
 class HistoryMedications extends BaseMedicationWidget
 {
+    protected static $elementClass = HistoryMedicationsElement::class;
     protected $print_view = 'HistoryMedications_event_print';
 
-    protected static $elementClass = HistoryMedicationsElement::class;
-    /**
-     * @param $mode
-     * @return bool
-     * @inheritdoc
-     */
-    protected function validateMode($mode)
-    {
-        return in_array($mode,
-            array(static::$PRESCRIPTION_PRINT_VIEW, static::$INLINE_EVENT_VIEW), true) || parent::validateMode($mode);
-    }
     /**
      * @return bool
      */
@@ -45,6 +37,21 @@ class HistoryMedications extends BaseMedicationWidget
     {
         return $this->mode === static::$EVENT_VIEW_MODE;
     }
+
+	/**
+	 * @throws \CHttpException
+	 */
+	public function init()
+	{
+		parent::init();
+
+		// add OpenEyes.UI.RestrictedData js
+		$assetManager = \Yii::app()->getAssetManager();
+		$baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+		$assetManager->publish($baseAssetsPath);
+
+		\Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
+	}
 
     /**
      * @return bool
@@ -134,7 +141,7 @@ class HistoryMedications extends BaseMedicationWidget
      */
     protected function setElementFromDefaults()
     {
-        if(!$this->isPostedEntries()) {
+        if (!$this->isPostedEntries()) {
 
             /*  If there has never been a Management element added, the last
             History element should be taken into account */
@@ -224,6 +231,7 @@ class HistoryMedications extends BaseMedicationWidget
     {
         return '/OphDrPrescription/Default/view/' . $entry->prescriptionItem->event_id;
     }
+
     /**
      * @return string
      */
@@ -231,6 +239,7 @@ class HistoryMedications extends BaseMedicationWidget
     {
         return $this->render($this->getView(), $this->getViewData());
     }
+
     /**
      * @return string
      * @inheritdoc
@@ -239,9 +248,9 @@ class HistoryMedications extends BaseMedicationWidget
     {
         // custom mode for rendering in the patient popup because the data is more complex
         // for this history element than others which just provide a list.
-        $short_name = substr(strrchr(get_class($this), '\\'),1);
+        $short_name = substr(strrchr(get_class($this), '\\'), 1);
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
-            return  $short_name . '_patient_popup';
+            return $short_name . '_patient_popup';
         }
         if ($this->mode === static::$INLINE_EVENT_VIEW) {
             return $short_name . '_inline_event_view';
@@ -251,12 +260,13 @@ class HistoryMedications extends BaseMedicationWidget
         }
         return parent::getView();
     }
+
     /**
      * @return array
      */
     public function getViewData()
     {
-        if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE)) ) {
+        if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE))) {
             return array_merge(parent::getViewData(), $this->getMergedManagementEntries());
         }
         return parent::getViewData();
@@ -292,5 +302,24 @@ class HistoryMedications extends BaseMedicationWidget
             $this->updateElementFromData($this->element, $this->data);
         }
         $this->element->widget = $this;
+    }
+
+	/**
+	 * @param $mode
+	 * @return bool
+	 * @inheritdoc
+	 */
+	protected function validateMode($mode)
+	{
+		return in_array($mode,
+				array(static::$PRESCRIPTION_PRINT_VIEW, static::$INLINE_EVENT_VIEW), true) || parent::validateMode($mode);
+	}
+
+    /**
+     * @return HistoryMedicationsElement
+     */
+    protected function getNewElement()
+    {
+        return new HistoryMedicationsElement();
     }
 }
