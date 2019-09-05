@@ -42,6 +42,9 @@
   		<?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
   	to the html
 
+    To change placeholder
+        <?php $this->widget('application.widgets.AutoCompleteSearch', ['html_options' => ['placeholder' => <PLACEHOLDER TEXT>]]); ?>
+
  */
 var OpenEyes = OpenEyes || {};
 
@@ -61,9 +64,10 @@ OpenEyes.UI = OpenEyes.UI || {};
     var onSelect = [];
     var timeout_id = null;
     
-    function initAutocomplete(input, autocomplete_url) {
-    	input.on('input',function(){
-    		inputbox = input;
+    function initAutocomplete(options) {
+    	let input = options.input;
+    	input.on('input',function() {
+    		inputbox = options.input;
     		inputbox.parent().find('.alert-box').addClass('hidden');
     		search_term = this.value.trim();
 
@@ -87,11 +91,20 @@ OpenEyes.UI = OpenEyes.UI || {};
 					timeout_id = null;
 				}
 
-				xhr = $.getJSON(autocomplete_url, {
-				    term: search_term,
-				    ajax: 'ajax'
-				}, function(data,status){
-					if(status === 'success'){
+				let data = {
+					term: search_term
+				};
+				data = $.extend(true, {}, data, (options.extra_params || {}));
+
+				let params = {};
+				if (options.search_data_prefix) {
+					params[options.search_data_prefix] = data;
+				}
+
+				params.ajax = 'ajax';
+
+				xhr = $.getJSON(options.url, params, function(data, status) {
+					if (status === 'success') {
 						response = data;
 						if(response.length > 0){
 							successResponse(response);
@@ -196,7 +209,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     	init: function (options) {
     		if(options.input){
                 set_onSelect(options.input, options.onSelect);
-	    		initAutocomplete(options.input, options.url);
+	    		initAutocomplete(options);
 	    		return exports.AutoCompleteSearch;
     		}
     	},

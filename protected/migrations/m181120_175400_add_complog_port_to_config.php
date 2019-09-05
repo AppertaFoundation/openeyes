@@ -2,8 +2,8 @@
 
 class m181120_175400_add_complog_port_to_config extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $settings = array(
             array(
                 'key' => 'COMPLog_port',
@@ -20,5 +20,5 @@ class m181120_175400_add_complog_port_to_config extends CDbMigration
             }
         }
         $this->insert('setting_installation', array('key' => 'COMPLog_port', 'value' => '0'));
-	}
+    }
 }

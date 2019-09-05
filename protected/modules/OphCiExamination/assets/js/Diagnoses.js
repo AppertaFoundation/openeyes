@@ -70,9 +70,34 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var controller = this;
 
         // removal button for table entries
-        controller.$table.on('click', '.button.remove', function (e) {
+        controller.$table.on('click', '.removeDiagnosis', function (e) {
+            let glaucomaDiagnosisRemoved = false;
+            let tableRow = $(e.target).parents('tr');
+            let glaucomaDiagnosisSelectedEyes = [];
+
+            if (tableRow.find('input[name^="glaucoma_diagnoses"]').filter('[value=true],[value="1"]').length) {
+                let side_checked = tableRow.find('.oe-eye-lat-icons :checked');
+                glaucomaDiagnosisRemoved = true;
+                switch (side_checked.length) {
+                    case 2:
+                        glaucomaDiagnosisSelectedEyes['right-eye'] = true;
+                        glaucomaDiagnosisSelectedEyes['left-eye'] = true;
+                        break;
+                    case 1:
+                        glaucomaDiagnosisSelectedEyes[side_checked.data('eye-side') + '-eye'] = true;
+                        break;
+                }
+            }
             e.preventDefault();
-            $(e.target).parents('tr').remove();
+            tableRow.remove();
+
+
+            $(":input[name^='glaucoma_diagnoses']").trigger('change', [
+                '.pcrrisk_glaucoma',
+                glaucomaDiagnosisRemoved,
+                glaucomaDiagnosisSelectedEyes
+            ]);
+
         });
 
         controller.$element.on('click', '#ophthalmic-diagnoses-search-btn', function () {
@@ -250,7 +275,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             this.selectEye(this.$table.find('tbody tr:last'), selectedItems[i].eye_id);
             this.setDatepicker();
         }
-        $(":input[name^='glaucoma_diagnoses']").trigger('change');
+        $(":input[name^='glaucoma_diagnoses']").trigger('change', ['bybys']);
     };
 
     DiagnosesController.prototype.appendSecondaryDiagnoses = function(secondary_diagnoses , $tr, alternate_diagnoses){

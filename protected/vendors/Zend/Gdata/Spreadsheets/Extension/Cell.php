@@ -106,20 +106,20 @@ class Zend_Gdata_Spreadsheets_Extension_Cell extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'row':
-            $this->_row = $attribute->nodeValue;
+            case 'row':
+                $this->_row = $attribute->nodeValue;
             break;
-        case 'col':
-            $this->_col = $attribute->nodeValue;
+            case 'col':
+                $this->_col = $attribute->nodeValue;
             break;
-        case 'inputValue':
-            $this->_inputValue = $attribute->nodeValue;
+            case 'inputValue':
+                $this->_inputValue = $attribute->nodeValue;
             break;
-        case 'numericValue':
-            $this->_numericValue = $attribute->nodeValue;
+            case 'numericValue':
+                $this->_numericValue = $attribute->nodeValue;
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 

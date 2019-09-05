@@ -16,7 +16,7 @@
                 Exit
                 <i class="material-icons">close</i>
             </button>
-            <?php if ($this->isRefreshable() ):?>
+            <?php if ($this->isRefreshable() ) :?>
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
                     id="refresh-button"
                     formaction="/OphTrOperationbooking/whiteboard/reload/<?=$this->getWhiteboard()->event_id?>"

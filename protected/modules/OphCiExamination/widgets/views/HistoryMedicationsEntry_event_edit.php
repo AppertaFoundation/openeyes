@@ -15,12 +15,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-?>
-
-<?php
-
-/** @var EventMedicationUse $entry */
-
 if (isset($entry->start_date)) {
     $start_date = $entry->start_date;
 } else {
@@ -80,6 +74,9 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
                 <input type="hidden" name="<?= $field_prefix ?>[binded_key]" class="js-binded-key" value="<?= $entry->binded_key ?>">
     </td>
+    <?php if (!empty($entry->errors) || !isset($entry->dose)) {
+        $direct_edit = in_array(true, array_map(function ($i) { return strpos($i, 'dose') !== false;}, array_keys($entry->errors)));
+    }?>
     <td class="dose-frequency-route">
         <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
             <div class="flex-layout">
@@ -97,8 +94,8 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                                                              }?>>
                         <input class="cols-1 js-dose" style="width: 14%; display: inline-block;" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
                         <span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
-                        <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
-                        <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=>'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:none')); ?>
+                        <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" <?= $direct_edit ? 'disabled' : '' ?> />
+                        <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=> $direct_edit ? '' : 'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:'. ($direct_edit ? '' : 'none'))); ?>
                         <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-3')) ?>
                         <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class'=>'js-route cols-2')) ?>
                         <?php echo CHtml::dropDownList($field_prefix . '[laterality]',
@@ -111,7 +108,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
             </div>
         </div>
     </td>
-    <td>
+    <td id="<?= $model_name."_entries_".$row_count."_start_date_error" ?>>
         <fieldset>
             <i class="oe-i start small pad"></i>
             <?php if ($is_new) : ?>
@@ -127,7 +124,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
             <?php endif; ?>
         </fieldset>
     </td>
-    <td class="end-date-column">
+    <td class="end-date-column" id="<?= $model_name."_entries_".$row_count."_end_date_error" ?>">
         <div class="alternative-display inline">
             <div class="alternative-display-element textual">
                 <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
@@ -151,7 +148,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         </div>
   </td>
 
-    <td>
+    <td id="<?= $model_name."_entries_".$row_count."_stop_reason_id_error" ?>">
             <div class="js-stop-reason-select" style= "<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
                 <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason')) ?>
             </div>
@@ -166,5 +163,3 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         <?php } ?>
     </td>
 </tr>
-
-

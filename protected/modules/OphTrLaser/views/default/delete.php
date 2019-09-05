@@ -20,7 +20,7 @@
 
 <section class="element">
   <section class="element-fields full-width">
-      <?=\CHtml::form(array('Default/delete/' . $this->event->id), 'post', array('id' => 'deleteForm')) ?>
+        <?=\CHtml::form(array('Default/delete/' . $this->event->id), 'post', array('id' => 'deleteForm')) ?>
     <div id="delete_event">
       <h3>Delete event</h3>
       <div class="alert-box alert with-icon">
@@ -30,7 +30,7 @@
         <?php $this->displayErrors(@$errors) ?>
       <div style="width:300px; margin-bottom: 0.6em;">
         <p>Reason for deletion:</p>
-          <?=\CHtml::textArea('delete_reason', '', array('cols' => 40)) ?>
+            <?=\CHtml::textArea('delete_reason', '', array('cols' => 40)) ?>
       </div>
       <p>
         <strong>Are you sure you want to proceed?</strong>

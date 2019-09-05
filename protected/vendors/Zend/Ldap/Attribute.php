@@ -48,27 +48,20 @@ class Zend_Ldap_Attribute
     {
         $attribName = strtolower($attribName);
         $valArray = array();
-        if (is_array($value) || ($value instanceof Traversable))
-        {
-            foreach ($value as $v)
-            {
+        if (is_array($value) || ($value instanceof Traversable)) {
+            foreach ($value as $v) {
                 $v = self::_valueToLdap($v);
                 if (!is_null($v)) $valArray[] = $v;
             }
-        }
-        else if (!is_null($value))
-        {
+        } else if (!is_null($value)) {
             $value = self::_valueToLdap($value);
             if (!is_null($value)) $valArray[] = $value;
         }
 
-        if ($append === true && isset($data[$attribName]))
-        {
+        if ($append === true && isset($data[$attribName])) {
             if (is_string($data[$attribName])) $data[$attribName] = array($data[$attribName]);
             $data[$attribName] = array_merge($data[$attribName], $valArray);
-        }
-        else
-        {
+        } else {
             $data[$attribName] = $valArray;
         }
     }
@@ -87,8 +80,7 @@ class Zend_Ldap_Attribute
         if (is_null($index)) {
             if (!isset($data[$attribName])) return array();
             $retArray = array();
-            foreach ($data[$attribName] as $v)
-            {
+            foreach ($data[$attribName] as $v) {
                 $retArray[] = self::_valueFromLdap($v);
             }
             return $retArray;
@@ -162,8 +154,7 @@ class Zend_Ldap_Attribute
         }
 
         $valArray = array();
-        foreach ($value as $v)
-        {
+        foreach ($value as $v) {
             $v = self::_valueToLdap($v);
             if ($v !== null) $valArray[] = $v;
         }
@@ -297,7 +288,7 @@ class Zend_Ldap_Attribute
                 } else {
                     $len = strlen($password);
                     $new = '';
-                    for($i=0; $i < $len; $i++) {
+                    for ($i=0; $i < $len; $i++) {
                         $new .= $password[$i] . "\x00";
                     }
                     $password = $new;
@@ -340,14 +331,12 @@ class Zend_Ldap_Attribute
         $append = false)
     {
         $convertedValues = array();
-        if (is_array($value) || ($value instanceof Traversable))
-        {
+        if (is_array($value) || ($value instanceof Traversable)) {
             foreach ($value as $v) {
                 $v = self::_valueToLdapDateTime($v, $utc);
                 if (!is_null($v)) $convertedValues[] = $v;
             }
-        }
-        else if (!is_null($value)) {
+        } else if (!is_null($value)) {
             $value = self::_valueToLdapDateTime($value, $utc);
             if (!is_null($value)) $convertedValues[] = $value;
         }
@@ -364,8 +353,7 @@ class Zend_Ldap_Attribute
         if (is_int($value)) {
             if ($utc === true) return gmdate('YmdHis', $value) . 'Z';
             else return date('YmdHisO', $value);
-        }
-        else return null;
+        } else return null;
     }
 
     /**
@@ -384,8 +372,7 @@ class Zend_Ldap_Attribute
                 $newVal = self::_valueFromLdapDateTime($values[$i]);
                 if (!is_null($newVal)) $values[$i] = $newVal;
             }
-        }
-        else $values = self::_valueFromLdapDateTime($values);
+        } else $values = self::_valueFromLdapDateTime($values);
         return $values;
     }
 
@@ -414,7 +401,6 @@ class Zend_Ldap_Attribute
                 else if ($tzDirection == '-') $date += $tzOffset;
             }
             return $date;
-        }
-        else return null;
+        } else return null;
     }
 }

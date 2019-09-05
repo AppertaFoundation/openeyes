@@ -17,19 +17,19 @@
  */
 ?>
 <?php
-    if (!isset($id) && isset($this->event_type)) {
-        $id = $this->event_type->class_name.'_print';
-    }
+if (!isset($id) && isset($this->event_type)) {
+    $id = $this->event_type->class_name.'_print';
+}
 ?>
 
 <?php $this->renderPartial('//print/patient_overview'); ?>
 
-<?php foreach($this->getElements() as $element):  ?>
-    <b><?php if($element->sub_type) echo $element->sub_type->name; ?></b>
-    <?php if($element->single_document): ?>
+<?php foreach ($this->getElements() as $element) :  ?>
+    <b><?php if ($element->sub_type) echo $element->sub_type->name; ?></b>
+    <?php if ($element->single_document) : ?>
         <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->single_document->mimetype), array('element'=>$element, 'index'=>'single_document')); ?>
     <?php endif; ?>
-    <?php if(($element->right_document_id) || ($element->left_document_id)): ?>
+    <?php if (($element->right_document_id) || ($element->left_document_id)) : ?>
         <div>
             <?php if ($element->right_document_id) {
                 ?>
@@ -47,7 +47,7 @@
             <?php } ?>
         </div>
     <?php endif; ?>
-    <?php if($element->comment) echo "<br/><b>Comments: </b><br>".nl2br($element->comment); ?>
+    <?php if ($element->comment) echo "<br/><b>Comments: </b><br>".nl2br($element->comment); ?>
 <?php endforeach; ?>
 
 

@@ -19,8 +19,7 @@ class MergeLensDataController extends BaseAdminController
     public function actionIndex()
     {
         // we need to run only if operation note module is installed
-        if(isset(Yii::app()->modules["OphTrOperationnote"]))
-        {
+        if (isset(Yii::app()->modules["OphTrOperationnote"])) {
             // get all iol_type_ids from existing cataract elements
             $existing_cataract = $this->dbConnection->createCommand('SELECT distinct iol_type_id FROM et_ophtroperationnote_cataract WHERE iol_type_id IS NOT NULL')->queryAll();
             // we need to drop the old foreign key
@@ -49,18 +48,15 @@ class MergeLensDataController extends BaseAdminController
                     $current_operations = Element_OphTrOperationnote_Cataract::model()->findAllByAttributes(array('iol_type_id'=>$existing['iol_type_id']));
                     $complications_none = OphTrOperationnote_CataractComplications::model()->findByAttributes(array('name'=>'None'));
 
-                    foreach($current_operations as $operation)
-                    {
+                    foreach ($current_operations as $operation) {
     //                    var_dump($operation);
-                        if(!count($operation->complications))
-                        {
+                        if (!count($operation->complications)) {
                             $operation->updateComplications(array($complications_none->id));
                             $operation->refresh();
                         }
 
                         $operation->iol_type_id = $new_IOL->id;
-                        if(!$operation->save())
-                        {
+                        if (!$operation->save()) {
                             throw new Exception('Error saving cataract element data!');
                         }
                     }

@@ -256,7 +256,6 @@ class Zend_Http_Response
 
         // Decode the body if it was transfer-encoded
         switch (strtolower($this->getHeader('transfer-encoding'))) {
-
             // Handle chunked body
             case 'chunked':
                 $body = self::decodeChunkedBody($this->body);
@@ -271,7 +270,6 @@ class Zend_Http_Response
 
         // Decode any content-encoding (gzip or deflate) if needed
         switch (strtolower($this->getHeader('content-encoding'))) {
-
             // Handle gzip encoding
             case 'gzip':
                 $body = self::decodeGzip($body);
@@ -373,8 +371,7 @@ class Zend_Http_Response
         }
 
         // Iterate over the headers and stringify them
-        foreach ($this->headers as $name => $value)
-        {
+        foreach ($this->headers as $name => $value) {
             if (is_string($value))
                 $str .= "{$name}: {$value}{$br}";
 
@@ -505,7 +502,7 @@ class Zend_Http_Response
         unset($parts);
         $last_header = null;
 
-        foreach($lines as $line) {
+        foreach ($lines as $line) {
             $line = trim($line, "\r\n");
             if ($line == "") break;
 
@@ -568,7 +565,6 @@ class Zend_Http_Response
         // override it's internal encoding
         if (function_exists('mb_internal_encoding') &&
            ((int) ini_get('mbstring.func_overload')) & 2) {
-
             $mbIntEnc = mb_internal_encoding();
             mb_internal_encoding('ASCII');
         }

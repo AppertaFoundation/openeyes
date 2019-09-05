@@ -1,14 +1,19 @@
 <?php
-/** @var MedicationSet $medication_set */
-$rowkey = 0;
-$sites = array_map(function ($e) {
-    return ['id' => $e->id, 'label' => $e->name];
-}, Site::model()->findAll());
-$subspecialties = array_map(function ($e) {
-    return ['id' => $e->id, 'label' => $e->name];
-}, Subspecialty::model()->findAll());
+/**
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 ?>
-<h2>Edit Medication set</h2>
+<h2><?= $medication_set->isNewRecord ? 'Create' : 'Edit';?> Medication set</h2>
 <div class="row divider"></div>
 <form id="drugset-admin-form" action="/OphDrPrescription/admin/DrugSet/edit/<?=$medication_set->id;?>" method="post">
 <?php if (isset($errors) && !empty($errors)) {?>
@@ -28,68 +33,32 @@ $subspecialties = array_map(function ($e) {
     <div class="row flex-layout flex-top col-gap">
         <div class="cols-6">
             <table class="large">
+                <colgroup>
+                    <col class="cols-3">
+                    <col class="cols-6">
+                    <col class="cols-1">
+                </colgroup>
                 <tbody>
                 <tr>
                     <td>Name</td>
                     <td>
-                        <?= \CHtml::activeTextField($medication_set, 'name', ['class' => 'cols-full']); ?>
                         <?= \CHtml::activeHiddenField($medication_set, 'id');?>
+                        <?= \CHtml::activeTextField($medication_set, 'name', [
+                                    'class' => 'cols-full',
+                                    'placeholder' => 'Name of the set'
+                            ]);
+                        ?>
                     </td>
-                    <td></td>
+                    <td>
+                        <div class="js-spinner-as-icon" style="display:none"><i class="spinner as-icon"></i></div>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-
     </div>
 
-    <div class="row">
-        <div class="cols-12">
-            <h3>Usage Rules</h3>
-            <table class="standard" id="rule_tbl">
-                <thead>
-                <tr>
-                    <th>Site</th>
-                    <th>Subspecialty</th>
-                    <th>Usage Code</th>
-                    <th width="5%">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($medication_set->medicationSetRules as $k => $rule): ?>
-                    <tr data-key="<?= $rowkey++ ?>">
-                        <td>
-                            <?= \CHtml::activeHiddenField($rule, "[{$k}]id"); ?>
-                            <?= \CHtml::activeHiddenField($rule, "[{$k}]site_id"); ?>
-                            <?= ($rule->site_id ? CHtml::encode($rule->site->name) : "") ?>
-                        </td>
-                        <td>
-                            <?= \CHtml::activeHiddenField($rule, "[{$k}]subspecialty_id"); ?>
-                            <?= ($rule->subspecialty_id ? CHtml::encode($rule->subspecialty->name) : "") ?>
-                        </td>
-                        <td>
-                            <?= CHtml::activeTextField($rule, "[{$k}]usage_code"); ?>
-                        </td>
-                        <td>
-                            <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-                <tfoot class="pagination-container">
-                <tr>
-                    <td colspan="4">
-                        <div class="flex-layout flex-right">
-                            <button class="button hint green js-add-set" type="button"><i
-                                        class="oe-i plus pro-theme"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-    </div>
+    <?= $this->renderPartial('_usage_rules', ['medication_set' => $medication_set]); ?>
 
 <?=\CHtml::submitButton(
     'Save',
@@ -109,95 +78,29 @@ $subspecialties = array_map(function ($e) {
     ]
 ); ?>
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken?>" />
-    <input type="hidden" class="js-search-data" data-name="set_id" value="<?=$medication_set->id;?>" />
+    <input type="hidden" class="js-search-data js-update-row-data" data-name="set_id" value="<?=$medication_set->id;?>" />
 
-    <?php if (!$medication_set->isNewRecord) :?>
-    <div class="row divider"></div>
-
-    <?php $this->renderPartial('/DrugSet/_meds_in_set', ['medication_set' => $medication_set, 'medication_data_provider' => $medication_data_provider]); ?>
-
+    <?php if (!$medication_set->isNewRecord && !$medication_set->automatic) :?>
+        <div class="row divider"></div>
+        <?php $this->renderPartial('/DrugSet/_meds_in_set', ['medication_set' => $medication_set, 'medication_data_provider' => $medication_data_provider]); ?>
     <?php endif; ?>
 
 </form>
-
-<script type="x-tmpl-mustache" id="rule_row_template" style="display:none">
-<tr data-key="{{key}}">
-    <td>
-        <input type="hidden" name="MedicationSetRule[{{key}}][id]" />
-        <input type="hidden" name="MedicationSetRule[{{key}}][site_id]" value="{{site.id}}" />
-        {{site.label}}
-    </td>
-    <td>
-        <input type="hidden" name="MedicationSetRule[{{key}}][subspecialty_id]" value="{{subspecialty.id}}" />
-        {{subspecialty.label}}
-    </td>
-    <td>
-        <?= CHtml::textField('MedicationSetRule[{{key}}][usage_code]', ""); ?>
-    </td>
-    <td>
-        <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
-    </td>
-</tr>
-</script>
-<script type="x-tmpl-mustache" id="medication_template" style="display:none">
-    <tr>
-        <td>{{preferred_term}}</td>
-        <td style="text-align:center"><a data-med_id="{{id}}" class="js-delete-set-medication"><i class="oe-i trash"></i></a></td>
-    </tr>
-</script>
 <script>
-    var drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
+    let drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
         tableSelector: '#meds-list',
-        searchUrl: '/OphDrPrescription/admin/Medication/search',
+        searchUrl: '/OphDrPrescription/admin/DrugSet/searchmedication',
         templateSelector: '#medication_template'
     });
+    $('#meds-list').data('drugSetController', drugSetController);
 
-    $(function () {
-        $(document).on("click", ".js-delete-rule", function (e) {
-            $(e.target).closest("tr").remove();
-        });
+    let tableInlineEditController = new OpenEyes.TableInlineEdit({
+        tableSelector: '#meds-list',
+        templateSelector: '#medication_template',
+        onAjaxError: function() {
+            drugSetController.refreshResult();
+        }
     });
 
-    new OpenEyes.UI.AdderDialog({
-        openButton: $('.js-add-set'),
-        itemSets: [
-            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($sites) ?>, {
-                'id': 'site',
-                'multiSelect': false,
-                header: "Site"
-            }),
-            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($subspecialties) ?>, {
-                'id': 'subspecialty',
-                'multiSelect': false,
-                header: "Subspecialty"
-            }),
-        ],
-        onReturn: function (adderDialog, selectedItems) {
-
-            var selObj = {};
-
-            $.each(selectedItems, function (i, e) {
-                selObj[e.itemSet.options.id] = {
-                    id: e.id,
-                    label: e.label
-                };
-            });
-
-            var lastkey = $("#rule_tbl > tbody > tr:last").attr("data-key");
-            if (isNaN(lastkey)) {
-                lastkey = 0;
-            }
-            var key = parseInt(lastkey) + 1;
-            var template = $('#rule_row_template').html();
-            Mustache.parse(template);
-
-            selObj.key = key;
-
-            var rendered = Mustache.render(template, selObj);
-            $("#rule_tbl > tbody").append(rendered);
-            return true;
-        },
-        enableCustomSearchEntries: true,
-    });
-
+    $('#meds-list').data('tableInlineEditController', tableInlineEditController);
 </script>
