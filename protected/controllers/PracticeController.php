@@ -82,8 +82,7 @@ class PracticeController extends BaseController
             for($i=0; $i<sizeof($_POST['Gp']['id']); $i++) {
                 $gpId = $_POST['Gp']['id'][$i];
                 $providerNo = $_POST['ContactPracticeAssociate']['provider_no'][$i];
-                //$gpIdProviderNoList[$gpId] = $providerNo;
-                $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo));
+                $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo),"provider_no IS NOT NULL AND provider_no != ''");
                 $gpIdProviderNoList[] = array($gpId, $providerNo, count($providerNoDuplicateCheck));
                 if(count($providerNoDuplicateCheck) >=1 ) {
                     $isDuplicateProviderNo = true;
