@@ -483,6 +483,9 @@ class CsvController extends BaseController
         $new_patient->hos_num = !empty($patient_raw_data['CERA_ID']) ? $patient_raw_data['CERA_ID'] : Patient::autoCompleteHosNum();
 				$new_patient->contact_id = $contact->id;
 
+				if(!empty($patient_raw_data['date_of_death']) && $new_patient->date_of_death > date("Y-m-d")) {
+					$errors[] = "Patient date of death cannot postdate current date";
+				}
 				if(!empty($patient_raw_data['date_of_death']) && $new_patient->dob > $new_patient->date_of_death) {
 					$errors[] = "Patient date of death cannot predate patient date of birth";
 				}

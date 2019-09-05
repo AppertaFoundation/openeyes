@@ -25,7 +25,9 @@
         );
 
         if(empty($csv_id)) {
-					echo "Please select a file to upload.";
+        	?>
+					<div id="import-file-upload-error"> No CSV file found. Please select a file to upload </div>
+					<?php
 				}
 
         if (!empty($table) && !empty($csv_id)): ?>
