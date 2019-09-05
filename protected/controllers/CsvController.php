@@ -336,7 +336,7 @@ class CsvController extends BaseController
 
 				//If a diagnosis exists and is not empty, the rest of the diagnosis fields are mandatory.
 				//If a diagnosis does not exist, do not accept any diagnosis related fields
-				if(array_key_exists('diagnosis', $patient_raw_data) && $patient_raw_data['diagnosis'] != '') {
+				if(array_key_exists('diagnosis', $patient_raw_data) && !empty($patient_raw_data['diagnosis'])) {
 					foreach($mandatory_diagnosis_fields as $diagnosis_field) {
 						if(!array_key_exists($diagnosis_field, $patient_raw_data) || $patient_raw_data[$diagnosis_field] == '')
 						{
@@ -345,11 +345,18 @@ class CsvController extends BaseController
 					}
 				}else {
 					foreach($mandatory_diagnosis_fields as $diagnosis_field) {
-						if($patient_raw_data[$diagnosis_field] == '')
+						if($patient_raw_data[$diagnosis_field] != '')
 						{
 							$errors[] = "Cannot add diagnosis fields for diagnosis that does not exist: " . $diagnosis_field;
 						}
 					}
+				}
+
+				if((!empty($patient_raw_data['dob']) && strtotime($patient_raw_data['dob']) == false)
+				|| (!empty($patient_raw_data['date_of_death']) && strtotime($patient_raw_data['date_of_death']) == false)
+				|| (!empty($patient_raw_data['diagnosis_date']) && strtotime($patient_raw_data['diagnosis_date']) == false)) {
+					$errors[] = "Dates must be in a valid format (dd-mm-yyyy)";
+					return $errors;
 				}
 
 				//Throw errors if any of the following are true
@@ -380,9 +387,13 @@ class CsvController extends BaseController
 				$patient_duplicates = Patient::findDuplicates($dupecheck_last_name, $dupecheck_first_name, $dupecheck_dob, null);
 
 				if(count($patient_duplicates) > 0) {
-					$errors[] = "Patient duplicate found for patient: " . $dupecheck_first_name . " " . $dupecheck_last_name . " with DOB " . $dupecheck_dob;
+					$errors[] = "Validation error(s) for patient: " . $dupecheck_first_name . " " . $dupecheck_last_name . " with DOB " . $dupecheck_dob;
 					foreach ($patient_duplicates as $duplicate) {
-						$errors[] = "Duplicate: " . $duplicate->contact->first_name . " " . $duplicate->contact->last_name . " with DOB " . $duplicate->dob;
+						if(is_array($duplicate)) {
+							$errors[] = $duplicate;
+						}else{
+							$errors[] = "Duplicate found: " . $duplicate->contact->first_name . " " . $duplicate->contact->last_name . " with DOB " . $duplicate->dob;
+						}
 					}
 					return $errors;
 				}
@@ -472,7 +483,7 @@ class CsvController extends BaseController
         $new_patient->hos_num = !empty($patient_raw_data['CERA_ID']) ? $patient_raw_data['CERA_ID'] : Patient::autoCompleteHosNum();
 				$new_patient->contact_id = $contact->id;
 
-				if($new_patient->dob > $new_patient->date_of_death) {
+				if(!empty($patient_raw_data['date_of_death']) && $new_patient->dob > $new_patient->date_of_death) {
 					$errors[] = "Patient date of death cannot predate patient date of birth";
 				}
 				if($new_patient->dob > date("Y-m-d")) {
@@ -494,6 +505,7 @@ class CsvController extends BaseController
 					$patient_RVEEH_UR->value = $patient_raw_data['RVEEH_UR'];
 
 					if(!$patient_RVEEH_UR->save()) {
+						$errors[] = "Failed to validate RHEEV_UR:";
 						$errors[] = $patient_RVEEH_UR->getErrors();
 						return $errors;
 					}
