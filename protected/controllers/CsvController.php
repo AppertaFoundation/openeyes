@@ -112,7 +112,7 @@ class CsvController extends BaseController
 			$import_log->startdatetime = date('Y-m-d H:i:s');
 			$import_log->status = "Failure";
 			if(!$import_log->save()) {
-				\OELog::log("WARNING! FAILED TO SAVE IMPORT LOG!");
+				\OELog::log("Failed to save import log: " . var_export($import_log->getErrors(), true));
 			}
 
     	$csv_file_path = self::$file_path . $csv . ".csv";
@@ -541,9 +541,6 @@ class CsvController extends BaseController
 						}
 
 						$subspecialty_assignment = ServiceSubspecialtyAssignment::model()->findByAttributes(['subspecialty_id' => $subspecialty->id]);
-
-						Yii::log(var_export($subspecialty, true));
-						Yii::log(var_export($subspecialty_assignment, true));
 
 						if(!isset($subspecialty_assignment)) {
 							$errors[] = "Could not find subspecialty assignment for " . $subspecialty->name;
