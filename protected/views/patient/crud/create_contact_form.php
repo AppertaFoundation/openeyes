@@ -316,11 +316,11 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                 </tr>
                 <tr>
                     <td>
-                        <?php echo $extra_practice_form->labelEx($extra_practice_contact, 'primary_phone'); ?>
-                        <?php echo $extra_practice_form->error($extra_practice_contact, 'primary_phone'); ?>
+                        <?php echo $extra_practice_form->labelEx($extra_practice, 'phone'); ?>
+                        <?php echo $extra_practice_form->error($extra_practice, 'phone'); ?>
                     </td>
                     <td>
-                        <?php echo $extra_practice_form->telField($extra_practice_contact, 'primary_phone', array('size' => 15, 'maxlength' => 20, 'class' => 'cols-10')); ?>
+                        <?php echo $extra_practice_form->telField($extra_practice, 'phone', array('size' => 15, 'maxlength' => 20, 'class' => 'cols-10')); ?>
                     </td>
                 </tr>
                 <tr>

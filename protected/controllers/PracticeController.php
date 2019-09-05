@@ -119,11 +119,10 @@ class PracticeController extends BaseController
             $practice = new Practice('manage_practice');
 
             $contactPractice->first_name = $_POST['Contact']['first_name'];
-            $contactPractice->primary_phone = $_POST['Contact']['primary_phone'];
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
 
-            if ($contactPractice->validate(array('first_name')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
+            if ($contactPractice->validate(array('first_name')) and $practice->validate('phone') and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
 
                 $practice_contact_associate = new ContactPracticeAssociate();
                 $practice_contact_associate->provider_no = !empty($_POST['ContactPracticeAssociate']['provider_no']) ? $_POST['ContactPracticeAssociate']['provider_no'] : null;
@@ -177,7 +176,7 @@ class PracticeController extends BaseController
                     ));
                 }
             } else {
-                echo CJSON::encode(array('error' =>  CHtml::errorSummary(array($contactPractice, $address) ) ));
+                echo CJSON::encode(array('error' =>  CHtml::errorSummary(array($contactPractice, $practice, $address) ) ));
             }
         }
     }
