@@ -219,7 +219,7 @@
             })
         }
 
-        this.noSearchResultsWrapper = $('<span />').text('No results found');
+        this.noSearchResultsWrapper = $('<span />', {style: 'display: inherit'}).text('No results found');
         this.noSearchResultsWrapper.appendTo($filterDiv);
 
         this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
@@ -578,7 +578,7 @@
             $(results).each(function (index, result) {
                 var dataset = AdderDialog.prototype.constructDataset(result);
                 var item = $("<li />", dataset)
-                    .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
+                    .append($('<span />', {class: dialog.options.liClass}).text(dataset['data-label']));
                 dialog.searchResultList.append(item);
             });
 
