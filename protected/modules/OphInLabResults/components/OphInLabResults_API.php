@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * OpenEyes.
  *
@@ -30,7 +28,7 @@ class OphInLabResults_API extends BaseAPI
     {
         $element = Element_OphInLabResults_Details::model()->findByAttributes(array('event_id' => $event->id));
 
-        return $element->type->type;
+        return isset($element->type) ? $element->type->type : null;
     }
 
 }
