@@ -90,6 +90,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <input type="hidden" name="<?= $field_prefix ?>[hidden]" class="js-hidden" value="<?=$entry->hidden ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[locked]" value="<?= $locked ?>" class="js-locked" />
+            <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
                         <input type="hidden" name="<?= $field_prefix ?>[binded_key]" class="js-binded-key" value="<?= $entry->binded_key ?>">
                         <input type="hidden" name="<?= $field_prefix ?>[source_subtype]" class="js-source-subtype" value="{{source_subtype}}" disabled="disabled">
                 </td>
@@ -138,22 +139,6 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 </div>
             </div>
         </td>
-        <td id="<?= $model_name."_entries_".$row_count."_start_date_error" ?>">
-            <fieldset>
-                <input type="hidden" name="<?= $field_prefix ?>[start_date]"
-                       value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
-                <i class="oe-i start small pad"></i>
-                <?php if ($is_new || $this->isPostedEntries()) : ?>
-                    <input id="<?= $model_name ?>_datepicker_2_<?= $row_count ?>" name="<?= $field_prefix ?>[start_date]" value="<?= $this->isPostedEntries() ? $entry->start_date : date('Y-m-d') ?>"
-                           style="width:80px" placeholder="yyyy-mm-dd"
-                           autocomplete="off">
-                    <i class="js-has-tooltip oe-i info small pad right"
-                       data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
-                <?php else : ?>
-                    <?= $entry->getStartDateDisplay() ?>
-                <?php endif; ?>
-            </fieldset>
-        </td>
         <td class="end-date-column"  id="<?= $model_name."_entries_".$row_count."_end_date_error" ?>">
             <div class="alternative-display inline">
                 <div class="alternative-display-element textual">
@@ -169,17 +154,22 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 </div>
                 <fieldset style="display: none;" class="js-datepicker-wrapper js-end-date-wrapper">
                     <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?=date('Y-m-d') ?>"
-                           style="width:80px" placeholder="yyyy-mm-dd"
+                           style="width:80px" placeholder="yyyy-mm-dd" class="js-end-date"
                            autocomplete="off">
                     <i class="js-has-tooltip oe-i info small pad right"
                        data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
                 </fieldset>
             </div>
         </td>
-        <td id="<?= $model_name."_entries_".$row_count."_stop_reason_id_error" ?>">
-            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'js-stop-reason cols-11', 'style' => $is_new || is_null($entry->end_date) ? "display:none" : null)) ?>
-            <?php /* <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a> */ ?>
+
+        <td id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>">
+            <div class="js-stop-reason-select"
+                 style="<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
+                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'js-stop-reason cols-11')) ?>
+                <?php /* <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a> */ ?>
+            </div>
         </td>
+
         <td>
             <?=\CHtml::dropDownList($field_prefix.'[duration]', $entry->duration,
                 CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),
