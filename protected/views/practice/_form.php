@@ -23,7 +23,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
     <?php echo $form->errorSummary($model); ?>
     <table class="standard">
         <tbody>
-        <?php if(isset($duplicateCheckOutput)): ?>
+        <?php if(isset($duplicateCheckOutput) && count($duplicateCheckOutput) > 0): ?>
             <tr id="conflicts" class="cols-full alert-box error" style="font-style: italic; font-size: small;">
                 <td class="row field-row">
                     <p>Duplicate practice detected.</p>
