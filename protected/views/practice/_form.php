@@ -143,19 +143,20 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 $('.js-selected_gps').append(
                     '<li>' +
                     '<span class="js-name" style="text-align:justify">' + AutoCompleteResponse.label + '</span>' +
+                    '<input id=js-gp-provider-no' + AutoCompleteResponse.id + ' value="" style="display: block">' +
                     '<i id=js-remove-gp-' + AutoCompleteResponse.id + ' class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>' +
                     '<input type="hidden" name="Gp[id][]" class="js-gps" value="' + AutoCompleteResponse.id + '">' +
                     '</li>'
                 );
             }
-        }
-    });
 
-    $('.js-remove-gps').click(function() {
-        $(this).parent('li').find('span').text('');
-        $(this).parent('li').find('input').remove();
-        $(this).parent('li').hide();
-        $(this).parent('li').remove();
+            $('.js-remove-gps').click(function(event) {
+                $(this).parent('li').find('span').text('');
+                $(this).parent('li').find('input').remove();
+                $(this).parent('li').hide();
+                $(this).parent('li').remove();
+            });
+        }
     });
 
     $(document).ready(function ()

@@ -50,8 +50,15 @@ class PracticeController extends BaseController
      */
     public function actionView($id)
     {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('practice_id = '.$id);
+        $dataProvider = new CActiveDataProvider('ContactPracticeAssociate', array(
+            'criteria' => $criteria,
+        ));
+
         $this->render('view', array(
             'model' => $this->loadModel($id),
+            'dataProvider' => $dataProvider,
         ));
     }
 

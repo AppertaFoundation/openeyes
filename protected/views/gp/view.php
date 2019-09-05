@@ -88,6 +88,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                         <th>Practice Address</th>
                         <th>Code</th>
                         <th>Telephone</th>
+                        <th/>
                     </tr>
                     </thead>
                     <tbody>
@@ -98,6 +99,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                             <td><?php echo CHtml::encode($cpa->practice->getAddressLines()); ?></td>
                             <td><?php echo CHtml::encode($cpa->practice->code); ?></td>
                             <td><?php echo CHtml::encode($cpa->practice->phone); ?></td>
+                            <td/>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
