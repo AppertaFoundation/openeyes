@@ -141,11 +141,12 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
             // If the gpid does not already exist in the list then add it to the list.
             if(addGp) {
                 $('.js-selected_gps').append(
-                    '<li>' +
-                    '<span class="js-name" style="text-align:justify">' + AutoCompleteResponse.label + '</span>' +
-                    '<input id=js-gp-provider-no' + AutoCompleteResponse.id + ' value="" style="display: block">' +
-                    '<i id=js-remove-gp-' + AutoCompleteResponse.id + ' class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>' +
-                    '<input type="hidden" name="Gp[id][]" class="js-gps" value="' + AutoCompleteResponse.id + '">' +
+                    '<li>' +  '<div style="width: 100%">' +
+                    '<span class="js-name" style="text-align:justify; float: left; padding: 5px">' + AutoCompleteResponse.label  + '</span>' +
+                    '<i id=js-remove-gp-' + AutoCompleteResponse.id + ' class="oe-i remove-circle small-icon pad-left js-remove-gps" style="float: right"></i>' +
+                    '<div>' + '<input id=js-gp-provider-no' + AutoCompleteResponse.id + ' value="" style="float: right">' + '</div>' +
+
+                    '<input type="hidden" name="Gp[id][]" class="js-gps" value="' + AutoCompleteResponse.id + '">' + '</div>' +
                     '</li>'
                 );
             }
