@@ -19,11 +19,15 @@
 
 <?php $this->beginWidget('CondenseHtmlWidget') ?>
 
-<?php if ($this->event): ?>
+<?php if ($this->event) : ?>
     <?php echo $this->event->getEventIcon('medium'); ?>
 <?php endif; ?>
 <?php foreach ($this->event_tabs as $tab) { ?>
-    <a href="<?php echo isset($tab['href']) ? $tab['href'] : '#' ?>" class="button header-tab <?php if (isset($tab['class'])) { echo $tab['class']; } ?> <?php if (isset($tab['active'])) { ?>selected<?php } ?>">
+    <a href="<?php echo isset($tab['href']) ? $tab['href'] : '#' ?>" class="button header-tab <?php if (isset($tab['class'])) {
+        echo $tab['class'];
+             } ?> <?php if (isset($tab['active'])) {
+    ?>selected<?php
+             } ?>">
         <?php echo $tab['label'] ?>
     </a>
 <?php } ?>

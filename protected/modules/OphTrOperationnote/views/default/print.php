@@ -47,4 +47,4 @@
     $this->renderPartial('//print/event_metadata', array(
         'hide_modified' => @$hide_modified,
     ));
-?>
+    ?>

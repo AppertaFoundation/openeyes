@@ -17,26 +17,26 @@ if (empty($patient)) {
             <tbody>
             </tbody>
         </table>
-				<div class="add-data-actions flex-item-bottom" id="correspondence-attachment-popup">
-					<button class="button hint green js-add-select-search" id="add-attachment-btn" type="button">
-						<i class="oe-i plus pro-theme"></i>
-					</button>
-				</div>
+                <div class="add-data-actions flex-item-bottom" id="correspondence-attachment-popup">
+                    <button class="button hint green js-add-select-search" id="add-attachment-btn" type="button">
+                        <i class="oe-i plus pro-theme"></i>
+                    </button>
+                </div>
 </div>
 <script>
-	<?php  $events = $this->getAttachableEvents($patient); ?>
-	new OpenEyes.UI.AdderDialog({
-		openButton: $('#add-attachment-btn'),
-		itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-			array_map(function ($attachments) {
-				return ['label' => $this->getEventSubType($attachments) . ' - ' . Helper::convertDate2NHS($attachments->event_date) ,
-					'id' => $attachments->id];
-			}, $events)
-		) ?>, {'multiSelect': true})],
-		onReturn: function (adderDialog, selectedItems) {
-			OphCoCorrespondence_addAttachments(selectedItems);
-			return true;
-		},
+    <?php  $events = $this->getAttachableEvents($patient); ?>
+    new OpenEyes.UI.AdderDialog({
+        openButton: $('#add-attachment-btn'),
+        itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($attachments) {
+                return ['label' => $this->getEventSubType($attachments) . ' - ' . Helper::convertDate2NHS($attachments->event_date) ,
+                    'id' => $attachments->id];
+            }, $events)
+        ) ?>, {'multiSelect': true})],
+        onReturn: function (adderDialog, selectedItems) {
+            OphCoCorrespondence_addAttachments(selectedItems);
+            return true;
+        },
         onOpen: function () {
             $('table.select-options').find('li').each(function () {
                 var attachmentId = $(this).data('id');
@@ -45,5 +45,5 @@ if (empty($patient)) {
                 $(this).toggle(!alreadyUsed);
             });
         }
-	});
+    });
 </script>

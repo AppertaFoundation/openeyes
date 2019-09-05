@@ -26,7 +26,7 @@ if (!$reschedule) {
         if ($session->isProcedureCountLimited()) {
             echo ', ' . $session->getAvailableProcedureCount() . '/' . $session->getMaxProcedureCount() . ' procedures left';
         }
-        if($session->isComplexBookingCountLimited()) {
+        if ($session->isComplexBookingCountLimited()) {
             echo ', ' . $session->getAvailableComplexBookingCount() . '/' . $session->getMaxComplexBookingCount() . ' complex bookings left';
         } ?>)
     </h3>

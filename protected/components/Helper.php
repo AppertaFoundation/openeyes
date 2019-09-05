@@ -138,12 +138,12 @@ class Helper
      */
     public static function convertFuzzyDate2HTML($value)
     {
-        $year = (integer)substr($value, 0, 4);
+        $year = (integer)substr($value, 0, 4) ?: '';
         $monthIndex = (integer)substr($value, 5, 2);
         $mon = $monthIndex !== 0 ? DateTime::createFromFormat('!m', $monthIndex)->format('M') : '';
         $day = (integer)substr($value, 8, 2) ?: '';
 
-        return "<span class='day'>$day</span><span class='mth'>$mon</span><span class='yr'>$year</span>";
+        return "<span class='day'>$day </span><span class='mth'>$mon </span><span class='yr'>$year</span>";
     }
 
     /**

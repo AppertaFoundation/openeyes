@@ -34,11 +34,11 @@ $episodes = $this->episode->patient->episodes
           <col width="85px">
         </colgroup>
         <tbody>
-        <?php
-        $principal = OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
+            <?php
+            $principal = OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
             ->find('element_diagnoses_id=? and principal=1', array($element->id));
-        if ($principal) {
-            ?>
+            if ($principal) {
+                ?>
           <tr>
             <td>
               <strong>
@@ -50,10 +50,10 @@ $episodes = $this->episode->patient->episodes
             </td>
             <td><span class="oe-date"><?= $principal->getHTMLformatedDate() ?></span></td>
           </tr>
-        <?php }
-        foreach ($episodes as $episode) {
-            if ($episode->id != $this->episode->id && $episode->diagnosis ) {
-                ?>
+            <?php }
+            foreach ($episodes as $episode) {
+                if ($episode->id != $this->episode->id && $episode->diagnosis ) {
+                    ?>
               <tr>
                 <td>
                     <?= $episode->diagnosis->term ?>
@@ -63,32 +63,32 @@ $episodes = $this->episode->patient->episodes
                 <td>
                     <?php $this->widget('EyeLateralityWidget', array('eye' => $episode->eye)) ?>
                 </td>
-                  <?php $date = $episode->getDisplayDate(); ?>
-                  <?php if($date){ ?>
+                    <?php $date = $episode->getDisplayDate(); ?>
+                    <?php if ($date) { ?>
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($date) ?></span></td>
                     <?php } else { ?>
                     <td></td>
-                  <?php } ?>
+                    <?php } ?>
               </tr>
-            <?php }
-        }
-        $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
+                <?php }
+            }
+            $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
             ->findAll('element_diagnoses_id=? and principal=0 ', array($element->id));
-        foreach ($diagnoses as $diagnosis) { ?>
+            foreach ($diagnoses as $diagnosis) { ?>
           <tr>
             <td>
-                <?php echo $diagnosis->disorder->term ?>
+                    <?php echo $diagnosis->disorder->term ?>
             </td>
             <td>
-                <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
+                    <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
             </td>
             <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
           </tr>
-        <?php } ?>
+            <?php } ?>
         </tbody>
       </table>
     </div>
   </div>
-      <?php } ?>
+        <?php } ?>
 </div>
 

@@ -24,7 +24,7 @@
             <div class="mdl-selectfield">
                 <h3>Rendering mode</h3>
                 <select name="mode" id="pcr-risk-mode" style="font-size: 1em; width: inherit" >
-                    <?php foreach ($modes as $mode):?>
+                    <?php foreach ($modes as $mode) :?>
                         <option value="<?=$mode['id']?>"><?=$mode['name']?></option>
                     <?php endforeach;?>
                 </select>

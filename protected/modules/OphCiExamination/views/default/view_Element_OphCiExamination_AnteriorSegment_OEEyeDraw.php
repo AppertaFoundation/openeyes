@@ -44,32 +44,32 @@
 </div>
 
 <div class="eyedraw-data stack">
-    <?php if ($report = $element->{$side . '_ed_report'}): ?>
+    <?php if ($report = $element->{$side . '_ed_report'}) : ?>
       <div class="data-value"><?php echo nl2br($report) ?></div>
     <?php endif; ?>
 
-    <?php if ($description = $element->{$side . '_description'}): ?>
+    <?php if ($description = $element->{$side . '_description'}) : ?>
       <div class="data-label"><?php echo $element->getAttributeLabel($side . '_description') ?>:</div>
       <div class="data-value"><?=\CHtml::encode($description) ?></div>
     <?php endif; ?>
 
     <?php /* See OE-4283 */ ?>
-    <?php if ($element->{$side . '_pupil'}): ?>
+    <?php if ($element->{$side . '_pupil'}) : ?>
       <div class="data-label"><?php echo $element->getAttributeLabel($side . '_pupil_id') ?>:</div>
       <div class="data-value"><?php echo $element->{$side . '_pupil'}->name ?></div>
     <?php endif; ?>
 
-    <?php if ($element->{$side . '_nuclear'}): ?>
+    <?php if ($element->{$side . '_nuclear'}) : ?>
       <div class="data-label hidden"><?php echo $element->getAttributeLabel($side . '_nuclear_id') ?>:</div>
       <div class="data-value hidden"><?php echo $element->{$side . '_nuclear'}->name ?></div>
     <?php endif; ?>
 
-    <?php if ($element->{$side . '_cortical'}): ?>
+    <?php if ($element->{$side . '_cortical'}) : ?>
       <div class="data-label hidden"><?php echo $element->getAttributeLabel($side . '_cortical_id') ?>:</div>
       <div class="data-value hidden"><?php echo $element->{$side . '_cortical'}->name ?></div>
     <?php endif; ?>
 
-    <?php if ($element->{$side . '_phako'}): ?>
+    <?php if ($element->{$side . '_phako'}) : ?>
       <div class="data-label"><?php echo $element->getAttributeLabel($side . '_phako') ?>:</div>
       <div class="data-value"><?php echo $element->{$side . '_phako'} ? 'Yes' : 'No' ?></div>
     <?php endif; ?>

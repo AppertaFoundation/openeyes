@@ -32,14 +32,14 @@ class m180508_094400_add_stat_frequency extends CDbMigration
         $this->update('drug_duration', array('display_order' => $other_display_order - 1), 'name = "Other"');
     }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

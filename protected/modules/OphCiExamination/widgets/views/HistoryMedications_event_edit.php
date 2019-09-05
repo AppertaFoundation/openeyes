@@ -17,7 +17,6 @@
 ?>
 
 <?php
-/** @var \OEModule\OphCiExamination\models\HistoryMedications $element */
 $model_name = CHtml::modelName($element);
 $route_options = CHtml::listData($element->getRouteOptions(), 'id', 'term');
 $frequency_options = array();
@@ -189,7 +188,6 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
             /** @var Firm $firm */
             $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
             $subspecialty_id = $firm->getSubspecialtyID();
-
             $common_ophthalmic = Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id);
             foreach ($common_ophthalmic as &$medication) {
                 $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
@@ -197,7 +195,6 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
         } else {
             $common_ophthalmic = array();
         }
-
 
         ?>
         new OpenEyes.UI.AdderDialog({

@@ -121,7 +121,7 @@ class Zend_Gdata extends Zend_Gdata_App
      *                                    useObjectMapping() function.
      */
     public static function import($uri, $client = null,
-        $className='Zend_Gdata_Feed')
+        $className = 'Zend_Gdata_Feed')
     {
         $app = new Zend_Gdata($client);
         $requestData = $app->decodeRequest('GET', $uri);
@@ -147,7 +147,7 @@ class Zend_Gdata extends Zend_Gdata_App
      *                                    by passing false to the
      *                                    useObjectMapping() function.
      */
-    public function getFeed($location, $className='Zend_Gdata_Feed')
+    public function getFeed($location, $className = 'Zend_Gdata_Feed')
     {
         if (is_string($location)) {
             $uri = $location;
@@ -172,7 +172,7 @@ class Zend_Gdata extends Zend_Gdata_App
      *                                     by passing false to the
      *                                     useObjectMapping() function.
      */
-    public function getEntry($location, $className='Zend_Gdata_Entry')
+    public function getEntry($location, $className = 'Zend_Gdata_Entry')
     {
         if (is_string($location)) {
             $uri = $location;
