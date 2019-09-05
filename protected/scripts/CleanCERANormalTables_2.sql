@@ -33,6 +33,10 @@ where id not in (
     where user.username in ('admin', 'docman_user')
 );
 
+SELECT "TRUNCATE TABLE element_type" AS "";
+delete from element_type
+where name in ('Contacts', 'IOP History');
+
 SELECT "TRUNCATE TABLE contact_location" AS "";
 truncate table contact_location;
 
