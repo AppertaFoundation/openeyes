@@ -283,7 +283,7 @@ class DefaultController extends BaseEventTypeController
 
             if (!empty($criteria->condition)) {
                 $criteria->order = 'preferred_term';
-                $criteria->limit = 10;
+                $criteria->limit = 50;
                 $criteria->select = 'id, preferred_term';
                 $criteria->params = $params;
 
