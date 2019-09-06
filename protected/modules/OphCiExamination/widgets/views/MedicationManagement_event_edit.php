@@ -215,7 +215,7 @@ $element_errors = $element->getErrors();
                     let $medicationManagementRow;
 
                     $.each(window.MMController.$table.children("tbody").children("tr"), function (index, medicationManagementRow) {
-                        if ($(medicationManagementRow).find('.js-bound-key').val() === medicationHistoryBoundKey) {
+                        if (medicationHistoryBoundKey && $(medicationManagementRow).find('.js-bound-key').val() === medicationHistoryBoundKey) {
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
                             rowNeedsCopying = false;
@@ -229,7 +229,7 @@ $element_errors = $element->getErrors();
                         window.HMController.bindEntries($(historyMedicationRow), $medicationManagementRow);
                     }
 
-                    let hidden = ($(historyMedicationRow).find(".js-to-be-copied").val() === "false");
+                    let hidden = ($(historyMedicationRow).find(".js-to-be-copied").val() === "0");
                     if(hidden) {
                         $medicationManagementRow.addClass("hidden");
                         $medicationManagementRow.find(".js-hidden").val("1");
