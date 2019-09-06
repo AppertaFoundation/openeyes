@@ -22,7 +22,7 @@ SELECT "TRUNCATE TABLE audit_useragent" AS "";
 truncate table audit_useragent;
 
 SELECT "TRUNCATE TABLE patient_user_referral" AS "";
-TRUNCATE TABLE patient_user_referral;
+truncate table patient_user_referral;
 
 /*As required, we need keep "admin" and "docman" user.
 Which means we need to keep the corresponding contact information as well*/
@@ -33,6 +33,7 @@ where id not in (
     where user.username in ('admin', 'docman_user')
 );
 
+/*Examination_iop-history and examination_contacts is something new for develop and not merged in for CERA yet*/
 SELECT "TRUNCATE TABLE element_type" AS "";
 delete from element_type
 where name in ('Contacts', 'IOP History');
@@ -665,12 +666,6 @@ truncate table worklist_patient;
 
 SELECT "TRUNCATE TABLE user_hotlist_item" AS "";
 truncate table user_hotlist_item;
-
--- SELECT "TRUNCATE TABLE archive_patient_allergy_assignment" AS "";
--- truncate table archive_patient_allergy_assignment;
-
--- SELECT "TRUNCATE TABLE archive_patient_risk_assignment" AS "";
--- truncate table archive_patient_risk_assignment;
 
 SELECT "TRUNCATE TABLE commissioning_body_patient_assignment" AS "";
 truncate table commissioning_body_patient_assignment;
