@@ -377,6 +377,14 @@ class CsvController extends BaseController
             }
         }
 
+				if(!empty($patient_raw_data['medicare_id'])){
+					$duplicate_patient = Patient::model()->findByAttributes(array('nhs_num' => $patient_raw_data['medicare_id']));
+					if ($duplicate_patient !== null){
+						$errors[] = "Duplicate Medicare ID (" . $patient_raw_data['medicare_id'] . ") found for patient: " . $patient_raw_data['first_name'] . " " . $patient_raw_data['last_name'];
+						return $errors;
+					}
+				}
+
 				$dupecheck_first_name = $patient_raw_data['first_name'];
 				$dupecheck_last_name = $patient_raw_data['last_name'];
 
