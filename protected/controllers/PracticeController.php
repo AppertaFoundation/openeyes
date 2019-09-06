@@ -100,6 +100,7 @@ class PracticeController extends BaseController
                             $count = 0;
                         } else {
                             $count = 1;
+                            $isDuplicateProviderNo = true;
                             break;
                         }
                     }
@@ -425,6 +426,7 @@ class PracticeController extends BaseController
                                 $count = 0;
                             } else {
                                 $count = 1;
+                                $isDuplicateProviderNo = true;
                                 break;
                             }
                         }

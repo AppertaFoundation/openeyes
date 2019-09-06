@@ -186,6 +186,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
             $(this).parents('li').find('span').text('');
             $(this).parents('li').find('input').remove();
             $(this).parents('li').hide();
+            $(this).parents('li').next('.errorMessage').remove();
             $(this).parents('li').remove();
         });
     }
