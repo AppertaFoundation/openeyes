@@ -65,23 +65,41 @@ EOH;
      * @param $setName
      * @param $setRecords
      */
-    private function createAutomaticSet($setName, $setRecords)
+    private function createAutomaticSet($set_name, $setRecords)
     {
         // search for existing set in this name, create if not exists
-        $current_set = MedicationSet::model()->find('name = :set_name and automatic=1', array(':set_name' => $setName));
-        if (!$current_set) {
-            $current_set = new MedicationSet();
-        } else {
-            $set_m = MedicationSetAutoRuleSetMembership::model()->findByPk($current_set->id);
-            if ($set_m) {
-                // this should be a command line parameter to delete all entries or just update
-                $set_m->delete();
+        $current_set = MedicationSet::model()->find('name = :set_name', [':set_name' => $set_name]);
+
+        //delete any existing sets with the same name as the new sets
+        if ($current_set) {
+            try {
+                \MedicationSetAutoRuleAttribute::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
+                \MedicationSetAutoRuleMedication::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
+                \MedicationSetAutoRuleSetMembership::model()->deleteAllByAttributes(['source_medication_set_id' => $current_set->id]);
+                \MedicationSetAutoRuleSetMembership::model()->deleteAllByAttributes(['target_medication_set_id' => $current_set->id]);
+                \MedicationSetItem::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
+                \MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
+                OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => null], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
+
+                // ophciexamination_risk_tag has no model
+                \Yii::app()->db->createCommand()
+                    ->update('ophciexamination_risk_tag',
+                        ['medication_set_id' => null],
+                        'medication_set_id = :set_id',
+                        [':set_id' => $current_set->id]
+                    );
+
+                $current_set->delete();
+            } catch (\Exception $exception) {
+                \OELog::log($exception->getMessage());
             }
         }
-        $current_set->name = $setName;
+
+        $current_set = new MedicationSet();
+
+        $current_set->name = $set_name;
 
         foreach ($setRecords as $key => $row) {
-
             switch ($row["type"]) {
                 case "VTM":
                 case "VMP":
@@ -95,7 +113,7 @@ EOH;
                             'include_children' => 1,
                         );
                     } else {
-                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . "\n";
+                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . " || from medication table\n";
                     }
                     break;
                 case "SET":
@@ -106,7 +124,7 @@ EOH;
                             'medication_set_id' => $set->id
                         );
                     } else {
-                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . "\n";
+                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . " || from medication_set table\n";
                     }
                     break;
                 case "ROUTE":
@@ -117,12 +135,10 @@ EOH;
                             'medication_attribute_option_id' => $route_option->id
                         );
                     } else {
-                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . "\n";
+                        echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . " || from medication_attribute_option table\n";
                     }
                     break;
-                //var_dump($row);
             }
-
         }
         $current_set->automatic = 1;
         $current_set->hidden = 1;
@@ -131,7 +147,7 @@ EOH;
 
         if (!$current_set->validate() || !$current_set->save(false)) {
             $trans->rollback();
-            echo "ERROR: unable to save set " . $setName . "!\n";
+            echo "ERROR: unable to save set " . $set_name . "!\n";
         } else {
             $trans->commit();
         }
