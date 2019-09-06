@@ -14,6 +14,13 @@
  */
 
 ?>
+<?php
+    if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) {
+        $default_dispense_location = \CHtml::listData(\OphDrPrescription_DispenseLocation::model()->findAll(), 'id', 'name');
+        $default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondition::model()->findAll(), 'id', 'name');
+    }
+?>
+
 
 <h2>Medications in set</h2>
 <div class="row flex-layout flex-top col-gap">
@@ -118,10 +125,6 @@
                     </td>
 
                     <?php if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) : ?>
-                        <?php
-                            $default_dispense_location = \CHtml::listData(\OphDrPrescription_DispenseLocation::model()->findAll(), 'id', 'name');
-                            $default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondition::model()->findAll(), 'id', 'name');
-                        ?>
                         <td>
                             <span data-type="default_dispense_condition" data-id="<?= $set_item->defaultDispenseCondition ? $set_item->default_dispense_condition_id : ''; ?>" class="js-text"><?= $set_item->defaultDispenseCondition ? $set_item->defaultDispenseCondition->name : '-'; ?></span>
                             <?= \CHtml::activeDropDownList($set_item, 'default_dispense_condition_id',
@@ -180,6 +183,18 @@
             <span data-id="{{#default_duration_id}}{{default_duration_id}}{{/default_duration_id}}" data-type="default_duration" class="js-text" style="display: inline;">{{^default_duration}}-{{/default_duration}}{{#default_duration}}{{default_duration}}{{/default_duration}}</span>
             <?=\CHtml::dropDownList('MedicationSetItem[default_duration_id]', null, $duration_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
         </td>
+
+        <?php if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) : ?>
+        <td>
+            <span data-id="{{#default_dispense_condition_id}}{{default_dispense_condition_id}}{{/default_dispense_condition_id}}" data-type="default_dispense_condition" class="js-text">{{^default_dispense_condition}}-{{/default_dispense_condition}}{{#default_dispense_condition}}{{default_dispense_condition}}{{/default_dispense_condition}}</span>
+            <?= \CHtml::dropDownList('MedicationSetItem[default_dispense_condition_id]', null, $default_dispense_condition, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+        </td>
+        <td>
+            <span data-id="{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}" data-type="default_dispense_location" class="js-text">{{^default_dispense_location_id}}-{{/default_dispense_location_id}}{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}</span>
+            <?= \CHtml::dropDownList('MedicationSetItem[default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+        </td>
+        <?php endif; ?>
+
         <td class="actions" style="text-align:center">
             <a data-action_type="edit" class="js-edit-set-medication"><i class="oe-i pencil"></i></a>
             <a data-action_type="delete" class="js-delete-set-medication"><i class="oe-i trash"></i></a>
