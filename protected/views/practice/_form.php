@@ -106,10 +106,12 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                             <?php if(!empty($gpIdProviderNoList)): ?>
                                 <?php foreach ($gpIdProviderNoList as $gpIdProviderNo){ ?>
                                     <li style="<?php echo isset($gpIdProviderNo[2]) && $gpIdProviderNo[2] >= 1 ? 'background-color: #cd0000; color: #fff': '' ?>">
-                                        <span class="js-name" style="text-align:justify"><?php echo $gp->findByPk($gpIdProviderNo[0])->getCorrespondenceName().' - '.$gp->findByPk($gpIdProviderNo[0])->getGPROle() ?></span>
-                                        <input name="ContactPracticeAssociate[provider_no][]" id=js-gp-provider-no-<?php echo $gpIdProviderNo[1] ?> value=<?php echo $gpIdProviderNo[1] ?>>
-                                        <i id=js-remove-gp-<?php echo $gpIdProviderNo[0] ?> class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>
-                                        <input type="hidden" name="Gp[id][]" class="js-gps" value=<?php echo $gpIdProviderNo[0] ?>>
+                                        <div style="width: 100%">
+                                            <span class="js-name" style="text-align:justify; float: left; padding: 5px"><?php echo $gp->findByPk($gpIdProviderNo[0])->getCorrespondenceName().' - '.$gp->findByPk($gpIdProviderNo[0])->getGPROle() ?></span>
+                                            <i id=js-remove-gp-<?php echo $gpIdProviderNo[0] ?> class="oe-i remove-circle small-icon pad-left js-remove-gps" style="float: right"></i>
+                                            <div><input name="ContactPracticeAssociate[provider_no][]" style="float: right" id=js-gp-provider-no-<?php echo $gpIdProviderNo[1] ?> placeholder="Enter provider number" value=<?php echo $gpIdProviderNo[1] ?>></div>
+                                            <input type="hidden" name="Gp[id][]" class="js-gps" value=<?php echo $gpIdProviderNo[0] ?>>
+                                        </div>
                                     </li>
                                     <?php echo isset($gpIdProviderNo[2]) && $gpIdProviderNo[2] >= 1 ? '<div class="errorMessage">Duplicate Provider Number.</div>': ''?>
                                 <?php } ?>
@@ -151,11 +153,11 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
             // If the gpid does not already exist in the list then add it to the list.
             if(addGp) {
                 $('.js-selected_gps').append(
-                    '<li>' +
-                    '<span class="js-name" style="text-align:justify">' + AutoCompleteResponse.label + '</span>' +
-                    '<input name="ContactPracticeAssociate[provider_no][]" id=js-gp-provider-no' + AutoCompleteResponse.id + ' value="">' +
-                    '<i id=js-remove-gp-' + AutoCompleteResponse.id + ' class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>' +
-                    '<input type="hidden" name="Gp[id][]" class="js-gps" value="' + AutoCompleteResponse.id + '">' +
+                    '<li>' +  '<div style="width: 100%">' +
+                    '<span class="js-name" style="text-align:justify; float: left; padding: 5px">' + AutoCompleteResponse.label  + '</span>' +
+                    '<i id=js-remove-gp-' + AutoCompleteResponse.id + ' class="oe-i remove-circle small-icon pad-left js-remove-gps" style="float: right"></i>' +
+                    '<div>' + '<input id=js-gp-provider-no' + AutoCompleteResponse.id + ' value="" style="float: right" placeholder="Enter provider number">' + '</div>' +
+                    '<input type="hidden" name="Gp[id][]" class="js-gps" value="' + AutoCompleteResponse.id + '">' + '</div>' +
                     '</li>'
                 );
             }
