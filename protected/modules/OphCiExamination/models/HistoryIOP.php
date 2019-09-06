@@ -103,23 +103,30 @@ class HistoryIOP extends \SplitEventTypeElement
         foreach (['left_values', 'right_values'] as $side_values) {
             if (isset($this->$attribute) && $this->$attribute) {
                 $side_attributes = $this->$attribute;
-                if(isset($side_attributes[$side_values])) {
-                  foreach ($side_attributes[$side_values] as $index => $date) {
-                    if (!isset($date) || !$date) {
-                        $this->addError($side_values . '_' . $index . '_examination_date', 'there must be a date set for the iop value');
-                    } else {
-                        $dateTime = \DateTime::createFromFormat('d-m-Y', $date);
-                        $errorsDate = \DateTime::getLastErrors();
-                        if (!$dateTime || !empty($errorsDate['warning_count'])) {
-                            $this->addError($side_values . '_' . $index . '_examination_date', 'Date is wrongly formated: format accepted: d-m-Y');
+                if (isset($side_attributes[$side_values])) {
+                    foreach ($side_attributes[$side_values] as $index => $date) {
+                        if (!isset($date) || !$date) {
+                            $this->addError($side_values . '_' . $index . '_examination_date', 'there must be a date set for the iop value');
                         } else {
-                            // don't accept event dates set in the future
-                            if (\DateTime::createFromFormat('d-m-Y', $date)->getTimestamp() > time()) {
-                                $this->addError($side_values . '_' . $index . '_examination_date', 'Event Date cannot be in the future.');
+                            $error_eye_side = $side_values . '_' . $index . '_examination_date';
+                            $error_message = 'Date is wrongly formated: format accepted: dd-mm-yyyy';
+                            if (preg_match('/^(\d{2}-\d{2}-\d{4})$/', $date)) {
+                                $dateTime = \DateTime::createFromFormat('d-m-Y', $date);
+                                $errorsDate = \DateTime::getLastErrors();
+
+                                if (!$dateTime || !empty($errorsDate['warning_count'])) {
+                                    $this->addError($error_eye_side, $error_message);
+                                } else {
+                                    // don't accept event dates set in the future
+                                    if (\DateTime::createFromFormat('d-m-Y', $date)->getTimestamp() > time()) {
+                                        $this->addError($error_eye_side, 'Event Date cannot be in the future.');
+                                    }
+                                }
+                            } else {
+                                $this->addError($error_eye_side, $error_message);
                             }
                         }
                     }
-                  }
                 }
             }
         }
@@ -157,13 +164,13 @@ class HistoryIOP extends \SplitEventTypeElement
     {
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('event_id',$this->event_id,true);
-        $criteria->compare('eye_id',$this->eye_id,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('eye_id', $this->eye_id, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, [
             'criteria'=>$criteria,

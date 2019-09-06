@@ -10,12 +10,12 @@
         <tr>
           <th colspan="4">
               <?php if ($side == 'right') { ?>
-                  <?php echo $element->getAttributeLabel($side . 'Eye') ?>
-              <?php } ?>
-              <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
-              <?php if ($side == 'left') { ?>
-                  <?php echo $element->getAttributeLabel($side . 'Eye') ?>
-              <?php } ?>
+                    <?php echo $element->getAttributeLabel($side . 'Eye') ?>
+                <?php } ?>
+                <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+                <?php if ($side == 'left') { ?>
+                    <?php echo $element->getAttributeLabel($side . 'Eye') ?>
+                <?php } ?>
           </th>
         </tr>
         </thead>
@@ -34,7 +34,6 @@
                            placeholder='0.00'
                            value="<?php echo $element->{"axial_length_$side"} ?>">mm</input>
                     <?php
-
                 }
                 ?>
             </td>
@@ -81,7 +80,6 @@
                            placeholder='0.00' class="cols-6"
                            value="<?php echo $element->{"k1_$side"} ?>">D</input>
                     <?php
-
                 }
                 ?>
 
@@ -112,7 +110,6 @@
                            placeholder='0.00' class="cols-6"
                            value="<?php echo $element->{"axis_k1_$side"} ?>">&deg;
                     <?php
-
                 }
                 ?>
             </td>
@@ -139,7 +136,6 @@
                            placeholder='0.00' class="cols-6"
                            value="<?php echo $element->{"delta_k_$side"} ?>">
                     <?php
-
                 }
                 ?>
             </td>
@@ -233,7 +229,6 @@
                            placeholder='0.00' class="cols-6"
                            value="<?php echo $element->{"acd_$side"} ?>"><span class="field-info">mm</span>
                     <?php
-
                 }
                 ?>
             </td>

@@ -80,10 +80,10 @@ $element_Type = $element->getElementType();
                 <?php } ?>
                 <!-- remove MUST be last element -->
                 <span class="<?= ($this->isRequiredInUI($element)) ? 'disabled' : 'js-remove-element' ?>"
-                      title="<?= ($this->isRequiredInUI($element)) ? 'This is a mandatory element and cannot be closed,' : '' ?>">
-                    <?php if(!isset($no_bin) || $no_bin == false) { ?>
+                      title="<?= ($this->isRequiredInUI($element)) ? 'This is a mandatory element and cannot be closed.' : '' ?>">
+                    <?php if (!isset($no_bin) || $no_bin == false) { ?>
                         <i class="oe-i trash-blue <?= ($this->isRequiredInUI($element)) ? 'disabled' : '' ?>"></i>
-                     <?php } ?>
+                    <?php } ?>
           </span>
             </div>
         <?php } ?>

@@ -17,8 +17,8 @@
 
 /**
  * This is the model class for table "<?php if (isset($lookup_table)) {
-    echo $lookup_table['name'];
-}?>".
+        echo $lookup_table['name'];
+                                      }?>".
  *
  * The followings are the available columns in table:
  * @property string $id
@@ -35,7 +35,7 @@
 
 class <?php if (isset($lookup_table)) {
     echo $lookup_table['class'];
-}?> extends BaseActiveRecordVersioned
+      }?> extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -52,8 +52,8 @@ class <?php if (isset($lookup_table)) {
     public function tableName()
     {
         return '<?php if (isset($lookup_table)) {
-    echo $lookup_table['name'];
-} ?>';
+            echo $lookup_table['name'];
+                } ?>';
     }
 
     /**

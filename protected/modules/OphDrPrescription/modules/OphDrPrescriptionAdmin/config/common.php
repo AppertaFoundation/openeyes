@@ -24,6 +24,10 @@ $config = [
                 'OphDrPrescription/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => '/OphDrPrescription/OphDrPrescriptionAdmin/<controller>/<action>',
             ]
         ]
+    ],
+
+    'import' => [
+        'application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.widgets.*',
     ]
 ];
 

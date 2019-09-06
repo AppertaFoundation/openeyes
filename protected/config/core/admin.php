@@ -40,7 +40,8 @@ return array(
                 'Custom episode summaries' => '/admin/episodeSummaries',
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
-                'Patient Shortcodes' => '/admin/patientshortcodes'
+                'Patient Shortcodes' => '/admin/patientshortcodes',
+                'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/list'
             ),
             'Worklist' => array(
                 'Automatic Worklists Definitions' => '/Admin/worklist/definitions',
@@ -50,29 +51,11 @@ return array(
                 'Benefits' => '/oeadmin/benefit/list',
                 'Complications' => '/oeadmin/complication/list',
                 'OPCS Codes' => '/oeadmin/opcsCode/list',
-                'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit'
+                'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit',
+                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list'
             ),
             'Drugs' => array(
-                'DEPRICATED All Sets' => '/OphDrPrescription/refSetAdmin/list',
-                'All Sets' => '/OphDrPrescription/admin/DrugSet/index',
-                'All Medications' => '/OphDrPrescription/refMedicationAdmin/list',
-                'DEPRICATED Common Ophthalmic Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonOphthalmicDrugSetsAdmin/list'),
-                'DEPRICATED Common Systemic Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonSystemicDrugSetsAdmin/list'),
-                'DEPRICATED Common Prescription Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonPrescriptionDrugSetsAdmin/list'),
-                'DEPRICATED Prescription Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/prescriptionDrugSetsAdmin/list'),
-                'DEPRICATED Formulary Drugs' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/formularyDrugsAdmin/list'),
-                'Local Drugs' => '/OphDrPrescription/localDrugsAdmin/list',
-                'DM+D Drugs' => '/OphDrPrescription/dmdDrugsAdmin/list',
-                'Export' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/RefMedicationAdmin/exportForm'),
-                'Auto set rules' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/medicationSetAutoRulesAdmin/list'),
-				'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
-                'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
-                'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/PrescriptionEditOptions'),
-                /*
-                'Tags' => '/TagsAdmin/list',
-                'Drug types' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/drugType'),
-                */
-                'Routes' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/routesAdmin/list'),
+            		// Hidden for now
                 'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
                 'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
                 'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',

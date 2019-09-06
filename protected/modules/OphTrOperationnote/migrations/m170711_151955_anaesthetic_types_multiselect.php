@@ -2,22 +2,22 @@
 
 class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
-        $this->createOETable('ophtroperationnote_anaesthetic_anaesthetic_type',array(
+        $this->createOETable('ophtroperationnote_anaesthetic_anaesthetic_type', array(
             'id' => 'pk',
             'et_ophtroperationnote_anaesthetic_id' => 'int(10) unsigned NOT NULL',
             'anaesthetic_type_id' => 'int(10) unsigned NOT NULL',
         ), true);
 
-        $this->addForeignKey('ophtroperationnote_anaesthetic_type_to_anaest_type', 'ophtroperationnote_anaesthetic_anaesthetic_type','anaesthetic_type_id',
-            'anaesthetic_type','id');
+        $this->addForeignKey('ophtroperationnote_anaesthetic_type_to_anaest_type', 'ophtroperationnote_anaesthetic_anaesthetic_type', 'anaesthetic_type_id',
+            'anaesthetic_type', 'id');
 
         $this->addForeignKey('ophtroperationnote_anaesthetic_type_to_el', 'ophtroperationnote_anaesthetic_anaesthetic_type', 'et_ophtroperationnote_anaesthetic_id',
             'et_ophtroperationnote_anaesthetic', 'id');
 
-        $this->createOETable('ophtroperationnote_anaesthetic_anaesthetic_delivery',array(
+        $this->createOETable('ophtroperationnote_anaesthetic_anaesthetic_delivery', array(
             'id' => 'pk',
             'et_ophtroperationnote_anaesthetic_id' => 'int(10) unsigned NOT NULL',
             'anaesthetic_delivery_id' => 'int(10) unsigned NOT NULL',
@@ -35,10 +35,9 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
         // moving the data
         $transaction = $this->getDbConnection()->beginTransaction();
         try {
-
-            $this->insert('anaesthetic_type',array(
+            $this->insert('anaesthetic_type', array(
                 'name' => 'Sedation','code' => 'Sed', 'created_user_id' => 1, 'active' => 1, 'last_modified_user_id' => 1));
-            $this->insert('anaesthetic_type',array(
+            $this->insert('anaesthetic_type', array(
                 'name' => 'No Anaesthetic', 'code' => 'NoAn', 'created_user_id' => 1, 'active' => 1, 'last_modified_user_id' => 1));
 
             $this->update('anaesthetic_delivery', array('display_order' => 1), 'name = "Subtenons"');
@@ -69,15 +68,14 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
             var_dump("Migrating Anaesthetic options...");
             foreach ($iterator as $element) {
-
                 // if event was deleted
-                if(!$event = $element->event) {
+                if (!$event = $element->event) {
                     $event = Event::model()->disableDefaultScope()->findByPk($element->event_id);
                 } else {
                     $event = $element->event;
                 }
 
-                if(!$episode = $event->episode) {
+                if (!$episode = $event->episode) {
                     $episode = Episode::model()->disableDefaultScope()->findByPk($event->episode_id);
                 } else {
                     $episode = $event->episode;
@@ -85,7 +83,6 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
                 //update any existing records with anaesthetic type "Topical" to type "LA" + delivery type of "Topical"
                 if ($element->anaesthetic_type_id == $anaesthetic_topical_id) {
-
                     // adding LA
                     $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticType', array(
                         'et_ophtroperationnote_anaesthetic_id' => $element->id,
@@ -127,7 +124,7 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                         'text' => "Anaesthetic type Topical became Anaesthetic type LA, Delivery type: " . $anaesthetic_delivery_name .
                             ( $element->anaesthetic_delivery_id != $delivery_topical_id ? ', added extra Delivery type Topical' : '' ),
                     );
-                    if($element->anaesthetic_delivery_id != $delivery_topical_id){
+                    if ($element->anaesthetic_delivery_id != $delivery_topical_id) {
                         $data['new_attributes']['OphTrOperationnote_OperationAnaestheticDelivery'][] = array(
                             'et_ophtroperationnote_anaesthetic_id' => $element->id,
                             'anaesthetic_delivery_id' => $delivery_topical_id
@@ -141,7 +138,6 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
                        //When option GA is selected, set delivery method to (only) Other, set given by to Anaesthetist
                 } else if ($element->anaesthetic_type_id == $anaesthetic_GA_id) {
-
                     $original_anaesthetist_name = $this->dbConnection->createCommand()->select('name')->from('anaesthetist')->where('id=:id', array(':id' => $element->anaesthetist_id))->queryScalar();
                     $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticType', array(
                         'et_ophtroperationnote_anaesthetic_id' => $element->id,
@@ -156,7 +152,7 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                     $anaesthetist_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetist')->where('name=:name', array(':name' => 'Anaesthetist'))->queryScalar();
                     $element->anaesthetist_id = $anaesthetist_id;
 
-                    if( !$element->save(false) ){
+                    if ( !$element->save(false) ) {
                         throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($element->getErrors(), true));
                     }
                     $anaesthetic_delivery_name = $this->dbConnection->createCommand()->select('name')->from('anaesthetic_delivery')->where('id=:id', array(':id' => $element->anaesthetic_delivery_id))->queryScalar();
@@ -189,9 +185,7 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                         array('module' => 'OphTrOperationnote', 'model' => 'Element_OphTrOperationnote_Anaesthetic', 'event_id' => $element->event_id,
                             'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id)
                     );
-
                 } else {
-
                     $data = array(
                         'original_attributes' => array(
                             'Element_OphTrOperationnote_Anaesthetic' => $element->attributes,
@@ -201,7 +195,6 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
                     // Adding type
                     switch ($element->anaesthetic_type_id) {
-
                         // migrate existing Op Note with "LAC" to "LA"
                         case $anaesthetic_LAC_id:
                             $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticType', array(
@@ -253,15 +246,14 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             $dataProvider = new CActiveDataProvider('Element_OphTrIntravitrealinjection_Anaesthetic');
             $iterator = new CDataProviderIterator($dataProvider);
             foreach ($iterator as $element) {
-
                 // if event was deleted
-                if(!$event = $element->event) {
+                if (!$event = $element->event) {
                     $event = Event::model()->disableDefaultScope()->findByPk($element->event_id);
                 } else {
                     $event = $element->event;
                 }
 
-                if(!$episode = $event->episode) {
+                if (!$episode = $event->episode) {
                     $episode = Episode::model()->disableDefaultScope()->findByPk($event->episode_id);
                 } else {
                     $episode = $event->episode;
@@ -273,12 +265,12 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                     ),
                     'new_attributes' => array(),
                 );
-                if($element->left_anaesthetictype_id == $anaesthetic_topical_id){
+                if ($element->left_anaesthetictype_id == $anaesthetic_topical_id) {
                     $element->left_anaesthetictype_id = $anaesthetic_LA_id;
                     $element->left_anaestheticdelivery_id = $delivery_topical_id;
                 }
 
-                if($element->right_anaesthetictype_id == $anaesthetic_topical_id){
+                if ($element->right_anaesthetictype_id == $anaesthetic_topical_id) {
                     $element->right_anaesthetictype_id = $anaesthetic_LA_id;
                     $element->right_anaestheticdelivery_id = $delivery_topical_id;
                 }
@@ -297,7 +289,6 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             }
 
             $transaction->commit();
-
         } catch (Exception $e) {
             $transaction->rollback();
             \OELog::log($e->getMessage());
@@ -334,15 +325,15 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 //        $this->delete("anaesthetic_type", "name = 'LAC'");
 //        $this->delete("anaesthetic_type", "name = 'LAS'");
 
-	}
+    }
 
-	private function createOrUpdate($model_name, $attributes)
+    private function createOrUpdate($model_name, $attributes)
     {
-        if(!$model = $model_name::model()->findByAttributes($attributes)){
+        if (!$model = $model_name::model()->findByAttributes($attributes)) {
             $model = new $model_name;
         }
 
-        foreach($attributes as $attribute => $value){
+        foreach ($attributes as $attribute => $value) {
             $model->{$attribute} = $value;
         }
 
@@ -351,11 +342,11 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
         }
     }
 
-	public function down()
-	{
-	      /** We will NOT support the migration down() here  */
+    public function down()
+    {
+          /** We will NOT support the migration down() here  */
 
         echo "m170711_151955_anaesthetic_types_multiselect does not support migration down.\n";
         return false;
-	}
+    }
 }

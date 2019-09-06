@@ -32,7 +32,7 @@ class DrugSetController extends BaseAdminController
             'query' => null,
             'subspecialty_id' => null,
             'site_id' => null,
-            'usage_codes' => [],
+            'usage_code_ids' => [MedicationUsageCode::model()->find()->id], // default to start with
         ];
 
         $filters = \Yii::app()->request->getParam('search');
@@ -51,8 +51,8 @@ class DrugSetController extends BaseAdminController
             }
         }
 
-        if (!isset($filters['usage_codes']) || !is_array($filters['usage_codes'])) {
-            $filters['usage_codes'] = [];
+        if (!isset($filters['usage_code_ids']) || !is_array($filters['usage_code_ids'])) {
+            $filters['usage_code_ids'] = [];
         }
 
         return $filters;
@@ -60,11 +60,11 @@ class DrugSetController extends BaseAdminController
 
     public function actionIndex()
     {
-        $assetManager = \Yii::app()->getAssetManager();
-        $baseAssetsPath = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
-        $assetManager->publish($baseAssetsPath);
+        $asset_manager = \Yii::app()->getAssetManager();
+        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $asset_manager->publish($base_assets_path);
 
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
 
         $model = new MedicationSet();
         $model->unsetAttributes();
@@ -98,8 +98,12 @@ class DrugSetController extends BaseAdminController
         $criteria->with = ['medicationSetRules'];
         $criteria->together = true;
 
-        if (isset($filters['usage_codes']) && $filters['usage_codes'] ) {
-            $criteria->addInCondition('usage_code', $filters['usage_codes']);
+        if (isset($filters['usage_code_ids']) && $filters['usage_code_ids'] ) {
+            $criteria->addInCondition('usage_code_id', $filters['usage_code_ids']);
+        }
+
+        if (isset($filters['automatic'])) {
+            $criteria->addCondition('automatic', $filters['automatic']);
         }
 
         if (isset($filters['query']) && $filters['query']) {
@@ -112,8 +116,10 @@ class DrugSetController extends BaseAdminController
                 $criteria->params[":$search_key"] = $filters[$search_key];
             }
         }
-        if (!isset($filters['usage_codes']) || !is_array($filters['usage_codes'])) {
-            $filters['usage_codes'] = [];
+
+        // just make sure usage_code_ids is set every time
+        if (!isset($filters['usage_code_ids']) || !is_array($filters['usage_code_ids'])) {
+            $filters['usage_code_ids'] = [];
         }
 
         return $criteria;
@@ -122,7 +128,6 @@ class DrugSetController extends BaseAdminController
     public function actionSearch()
     {
         $filters = $this->getFilters();
-
         $criteria = $this->getSearchCriteria($filters);
         $data['items'] = [];
 
@@ -147,17 +152,17 @@ class DrugSetController extends BaseAdminController
         $data_provider->pagination = $pagination;
 
         foreach ($data_provider->getData() as $set) {
-
             $set_attributes = $set->attributes;
             $set_attributes['count'] = $set->itemsCount();
-            $set_attributes['hidden'] = $set->attributes['hidden'] ? 'Yes' : 'No';
+            $set_attributes['hidden'] = $set->attributes['hidden'] ? $set->attributes['hidden'] : null;
+            $set_attributes['automatic'] = $set->attributes['automatic'] ? $set->attributes['automatic'] : null;
             $rules = MedicationSetRule::model()->findAllByAttributes(['medication_set_id' => $set->id]);
             $ret_val = [];
 
             foreach ($rules as $rule) {
-                $ret_val[]= "Site: ".(!$rule->site ? "-" : $rule->site->name).
-                    ", SS: ".(!$rule->subspecialty ? "-" : $rule->subspecialty->name).
-                    ", Usage code: ".$rule->usage_code;
+                $ret_val[]= "Site: " . (!$rule->site ? "-" : $rule->site->name) .
+                    ", SS: " . (!$rule->subspecialty ? "-" : $rule->subspecialty->name) .
+                    ", Usage code: " . ($rule->usageCode ? $rule->usageCode->name : '-');
             }
 
             $set_attributes['rules'] = implode(" // ", $ret_val);
@@ -174,41 +179,100 @@ class DrugSetController extends BaseAdminController
         \Yii::app()->end();
     }
 
+    public function actionSearchMedication()
+    {
+        $search = \Yii::app()->request->getParam('search');
+        $set_id = isset($search['set_id']) ? $search['set_id'] : null;
+        $data['items'] = [];
+
+        $filters = \Yii::app()->request->getParam('search', []);
+        $criteria = new \CDbCriteria();
+
+        if (isset($filters['set_id']) && $filters['set_id']) {
+            $criteria->together = true;
+            $criteria->with = ['medication', 'medicationSet'];
+
+            $criteria->addCondition('medication_set_id = :set_id');
+            $criteria->params[':set_id'] = $filters['set_id'];
+        }
+
+        if (isset($filters['query']) && $filters['query']) {
+            $criteria->addSearchCondition('preferred_term', trim($filters['query']));
+        }
+
+        $data_provider = new CActiveDataProvider('MedicationSetItem', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new \CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = 20;
+        //$pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        foreach ($data_provider->getData() as $set_item) {
+            $item = $set_item->attributes;
+            $item['default_route'] = $set_item->defaultRoute ? $set_item->defaultRoute->term : null;
+            $item['default_duration'] = $set_item->defaultDuration ? $set_item->defaultDuration->name : null;
+            $item['default_frequency'] = $set_item->defaultFrequency ? $set_item->defaultFrequency->term : null;
+            $item['preferred_term'] = $set_item->medication ? $set_item->medication->preferred_term : null;
+            $item['medication_id'] = $set_item->medication ? $set_item->medication->id : null;
+
+            $data['items'][] = $item;
+        }
+
+        ob_start();
+        $this->widget('LinkPager', ['pages' => $pagination]);
+        $pagination = ob_get_clean();
+        $data['pagination'] = $pagination;
+
+        header('Content-type: application/json');
+        echo CJSON::encode($data);
+        \Yii::app()->end();
+    }
+
     /**
      * Edits or adds drug sets.
      *
      * @param bool $id
      * @throws Exception
      */
-    public function actionEdit($id = false)
+    public function actionEdit($id = null)
     {
-        $assetManager = \Yii::app()->getAssetManager();
-        $baseAssetsPath = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
-        $assetManager->publish($baseAssetsPath);
+        $asset_manager = \Yii::app()->getAssetManager();
+        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $asset_manager->publish($base_assets_path);
 
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlieEdit.js', \CClientScript::POS_HEAD);
 
-        $set = new MedicationSet;
         $data = \Yii::app()->request->getParam('MedicationSet');
         $filters = \Yii::app()->request->getParam('search', []);
 
-        if ($id) {
-            $set = MedicationSet::model()->findByPk($id);
+        $set = MedicationSet::model()->findByPk($id);
+
+        if (!$set) {
+            $set = new MedicationSet;
+        }
+
+        // automatic sets cannot be edited here
+        if ($set->automatic) {
+            $this->redirect("/OphDrPrescription/admin/DrugSet/index");
         }
 
         $is_new_record = $set->isNewRecord;
 
         if (\Yii::app()->request->isPostRequest) {
-
-            if ($set) {
+            if (!$set->automatic) {
                 $set->name = $data['name'];
 
                 // set relation
                 $relation = [];
                 $rules = \Yii::app()->request->getParam('MedicationSetRule', []);
-
+                $keep_rule_ids = [];
                 foreach ($rules as $rule) {
                     if (isset($rule['id']) && $rule['id']) {
+                        $keep_rule_ids[] = $rule['id'];
                         $rule_model = MedicationSetRule::model()->findByPk($rule['id']);
                         if ($rule_model) {
                             $rule_model->attributes = $rule;
@@ -223,15 +287,25 @@ class DrugSetController extends BaseAdminController
                     }
                 }
 
-                // nice, before we could save all the relations we need to save the set itself because the relations validation will fail
-                // for missing a FK key
-                if($set->save()) {
-                    $set->medicationSetRules = $relation;
-                    if ($set->autoValidateAndSaveRelation(true)->validate() && $set->save()) {
+                $set->medicationSetRules = $relation;
+                $criteria = new \CDbCriteria();
+                $criteria->addNotInCondition('id', $keep_rule_ids);
+                $criteria->addCondition('medication_set_id = :set_id');
+                $criteria->params['set_id'] = $set->id;
+                \MedicationSetRule::model()->deleteAll($criteria);
+
+                if ($set->autoValidateRelation(true)->validate() && !$set->getErrors()) {
+                    if ($set->save()) {
+                        foreach ($set->medicationSetRules as $rule_model) {
+                            $rule_model->medication_set_id = $set->id;
+                            $rule_model->save();
+                        }
+
                         $this->redirect($is_new_record ? "/OphDrPrescription/admin/DrugSet/edit/{$set->id}" : "/OphDrPrescription/admin/DrugSet/index");
                     }
                 }
             }
+            //esle if the set is an auto set we just managing site, subspecialty and usage_code
         }
 
         $criteria = new \CDbCriteria();
@@ -260,17 +334,26 @@ class DrugSetController extends BaseAdminController
     public function actionDelete()
     {
         $ids = \Yii::app()->request->getParam('delete-ids', []);
+        $usage_code = \Yii::app()->request->getParam('usage-code');
         $response['message'] = '';
 
         foreach ($ids as $id) {
             $set = \MedicationSet::model()->findByPk($id);
-            $count = $set->itemsCount();
-            if (!$count) {
-                if (\MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $id])) {
-                    $set->delete();
+
+            if ($set && $usage_code) {
+                // if the set is automatic we just remove the usage code
+                if ($set->automatic) {
+                    $deleted_rows = $set->removeUsageCode($usage_code);
+                } else {
+                    $count = $set->itemsCount();
+                    if (!$count) {
+                        if (\MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $id])) {
+                            $set->delete();
+                        }
+                    } else {
+                        $response['message'] .= "Set '{$set->name}' is not empty. Please delete the medications first.<br>";
+                    }
                 }
-            } else {
-                $response['message'] .= "Set '{$set->name}' is not empty. ";
             }
         }
 
@@ -283,7 +366,35 @@ class DrugSetController extends BaseAdminController
         }
 
         \Yii::app()->end();
+    }
 
+    public function actionUpdateMedicationDefaults()
+    {
+        $result['success'] = false;
+        if (\Yii::app()->request->isPostRequest) {
+            $set_id = \Yii::app()->request->getParam('set_id');
+            $item_data = \Yii::app()->request->getParam('MedicationSetItem', []);
+            $medication_data = \Yii::app()->request->getParam('Medication', []);
+
+            if ($set_id && isset($medication_data['id']) && $medication_data['id'] && isset($item_data['id'])) {
+                $item = \MedicationSetItem::model()->findByPk($item_data['id']);
+
+                if ($item) {
+                    $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
+                    $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
+                    $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
+                    $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
+                    $item->default_dispense_condition_id = isset($item_data['default_dispense_condition_id']) ? $item_data['default_dispense_condition_id'] : $item->default_duration_id;
+                    $item->default_dispense_location_id = isset($item_data['default_dispense_location_id']) ? $item_data['default_dispense_location_id'] : $item->default_dispense_location_id;
+
+                    $result['success'] = $item->save();
+                    $result['errors'] = $item->getErrors();
+                }
+            }
+        }
+
+        echo \CJSON::encode($result);
+        \Yii::app()->end();
     }
 
     public function actionAddMedicationToSet()
@@ -294,8 +405,10 @@ class DrugSetController extends BaseAdminController
             $set = \MedicationSet::model()->findByPk($set_id);
             $medication_id = \Yii::app()->request->getParam('medication_id');
 
-            if($set && $medication_id) {
-                $result['success'] = $set->addMedication($medication_id);
+            if ($set && $medication_id) {
+                $id = $set->addMedication($medication_id);
+                $result['success'] = (bool)$id;
+                $result['id'] = $id;
             }
         }
 
@@ -307,15 +420,14 @@ class DrugSetController extends BaseAdminController
     {
         $result['success'] = false;
         if (\Yii::app()->request->isPostRequest) {
-            $set_id = \Yii::app()->request->getParam('set_id');
-            $medication_id = \Yii::app()->request->getParam('medication_id');
+            $item = \Yii::app()->request->getParam('MedicationSetItem');
 
-            if($set_id && $medication_id) {
-                $affected_rows = \MedicationSetItem::model()->deleteAllByAttributes(['medication_id' => $medication_id, 'medication_set_id' => $set_id]);
+            if (isset($item['id'])) {
+                $affected_rows = \MedicationSetItem::model()->deleteByPk($item['id']);
                 $result['success'] = (bool)$affected_rows;
             } else {
                 $result['success'] = false;
-                $result['error'] = "Missing parameter.";
+                $result['error'] = "Missing ID.";
             }
         }
 

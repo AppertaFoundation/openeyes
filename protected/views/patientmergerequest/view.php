@@ -38,11 +38,11 @@
         action="<?php echo Yii::app()->createUrl('/patientMergeRequest/merge', array('id' => $model->id)) ?>"
         method="post">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-      <?=\CHtml::activeHiddenField($model, 'id') ?>
+        <?=\CHtml::activeHiddenField($model, 'id') ?>
     <div class="data-group">
       <div class="cols-5 column">
         <h2 class="secondaryPatient">Secondary</h2>
-          <?php $this->renderPartial('//patientmergerequest/_patient_details',
+            <?php $this->renderPartial('//patientmergerequest/_patient_details',
               array('model' => $model, 'type' => 'secondary')) ?>
       </div>
 
@@ -55,7 +55,7 @@
 
       <div class="cols-5 column">
         <h2 class="primaryPatient">Primary</h2>
-          <?php $this->renderPartial('//patientmergerequest/_patient_details',
+            <?php $this->renderPartial('//patientmergerequest/_patient_details',
               array('model' => $model, 'type' => 'primary')) ?>
       </div>
     </div>

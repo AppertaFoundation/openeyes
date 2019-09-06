@@ -56,7 +56,7 @@
                     $contactlabel,
                     'is_private',
                     []);
-                ?>
+?>
             </td>
         </tr>
         <tr>

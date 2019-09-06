@@ -134,7 +134,7 @@ foreach ($readings as $reading) {
 <script type="text/javascript">
     $(function () {
         let side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
-        let readings = JSON.parse('<?= print_r(json_encode($reading_values),1) ?>');
+        let readings = JSON.parse('<?= print_r(json_encode($reading_values), 1) ?>');
         let previouslySelectedColumn = null;
         let readingsValueNumberColumns = 2;
 
@@ -145,7 +145,7 @@ foreach ($readings as $reading) {
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                     array_map(function ($instrument) {
                         return ['label' => $instrument->name, 'id' => $instrument->id, 'scale' => isset($instrument->scale->values) ? true : false];
-                    },OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
+                    }, OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
                 ) ?>, {'id': 'instrument', 'header': 'Instrument'}),
                 new OpenEyes.UI.AdderDialog.ItemSet([], {'id': 'reading_value', 'header': 'mm Hg',
                     'splitIntegerNumberColumns': [{'min': 0, 'max': 9},{'min': 0, 'max': 9}],

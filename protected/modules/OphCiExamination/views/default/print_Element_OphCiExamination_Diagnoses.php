@@ -28,15 +28,15 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
                     <strong>
                         <?php echo $principal->getDisplayDate() ?>
                         <?php echo $principal->eye->adjective ?>
-    <?php echo $principal->disorder->term ?>
+            <?php echo $principal->disorder->term ?>
                     </strong>
                 </div>
             </div>
-            <?php } foreach ($right_principals as $disorder) {
+        <?php } foreach ($right_principals as $disorder) {
             ?>
             <div class="data-group">
                 <div class="data-value">
-    <?= ($disorder[0]->term) ?><sup>*</sup></span>
+            <?= ($disorder[0]->term) ?><sup>*</sup></span>
                 </div>
             </div>
             <?php
@@ -45,9 +45,9 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
             ?>
             <div class="data-group">
                 <div class="data-value">
-                    <?php echo $diagnosis->getDisplayDate() ?>
-                    <?php echo $diagnosis->eye->adjective ?>
-    <?php echo $diagnosis->disorder->term ?>
+                <?php echo $diagnosis->getDisplayDate() ?>
+                <?php echo $diagnosis->eye->adjective ?>
+                <?php echo $diagnosis->disorder->term ?>
                 </div>
             </div>
             <?php }
@@ -61,7 +61,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
                     <strong>
                         <?php echo $principal->getDisplayDate() ?>
                         <?php echo $principal->eye->adjective ?>
-    <?php echo $principal->disorder->term ?>
+            <?php echo $principal->disorder->term ?>
                     </strong>
                 </div>
             </div>
@@ -80,12 +80,12 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
             <div class="data-group">
                 <div class="data-value">
                     <?php echo $diagnosis->getDisplayDate() ?>
-    <?php echo $diagnosis->eye->adjective ?>
+            <?php echo $diagnosis->eye->adjective ?>
             <?php echo $diagnosis->disorder->term ?>
                 </div>
             </div>
-    <?php }
-?>
+        <?php }
+        ?>
     </div>
 </div>
 <?php if (count($left_principals) || count($right_principals)) { ?>

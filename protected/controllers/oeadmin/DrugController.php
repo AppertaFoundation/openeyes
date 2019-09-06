@@ -55,22 +55,16 @@ class DrugController extends BaseAdminController
 
         $criteria = new CDbCriteria();
 
-        foreach (array('name', 'name, aliases', 'active') as $field)
-        {
-            if(isset($_GET['search'][$field]) && $_GET['search'][$field] != '')
-            {
-                if(strpos($field, ', ') === false)
-                {
+        foreach (array('name', 'name, aliases', 'active') as $field) {
+            if (isset($_GET['search'][$field]) && $_GET['search'][$field] != '') {
+                if (strpos($field, ', ') === false) {
                     // Single column fields
                     $criteria->compare('t.' . $field, $_GET['search'][$field], ($field != 'active'));
-                }
-                else
-                {
+                } else {
                     // Combined fields
                     $crit2 = new CDbCriteria();
 
-                    foreach (explode(', ', $field) as $column)
-                    {
+                    foreach (explode(', ', $field) as $column) {
                         $crit2->compare('LOWER(t.'.$column.')', strtolower($_GET['search'][$field]), true, 'OR');
                     }
 
@@ -79,8 +73,7 @@ class DrugController extends BaseAdminController
             }
         }
 
-        if(isset($_GET['search']['tags.name']) && $_GET['search']['tags.name'] != '')
-        {
+        if (isset($_GET['search']['tags.name']) && $_GET['search']['tags.name'] != '') {
             $command = Yii::app()->db->createCommand("SELECT drug_id FROM drug_tag WHERE tag_id IN (SELECT id FROM tag WHERE name LIKE CONCAT('%', :tagname ,'%'))");
             $matching_ids = $command->queryColumn(array(':tagname' => $_GET['search']['tags.name']));
             $criteria->addInCondition('t.id', $matching_ids, 'AND');
@@ -115,10 +108,10 @@ class DrugController extends BaseAdminController
             $drug->allergies = isset($_POST['Drug']['allergies']) ? $_POST['Drug']['allergies'] : [];
 
             if (!$drug->save()) {
-              $errors = $drug->getErrors();
+                $errors = $drug->getErrors();
             } else {
-              Audit::add('admin-Drug', 'edit', $drug->id);
-              $this->redirect('/oeadmin/drug/list');
+                Audit::add('admin-Drug', 'edit', $drug->id);
+                $this->redirect('/oeadmin/drug/list');
             }
         }
 
@@ -147,8 +140,7 @@ class DrugController extends BaseAdminController
     {
         $tags = Tag::model()->findAllBySql("SELECT * FROM tag WHERE name LIKE CONCAT('%', :term, '%')", array(':term'=>$term));
         $tnames = array();
-        foreach ($tags as $tag)
-        {
+        foreach ($tags as $tag) {
             $tnames[] = $tag->name;
         }
 

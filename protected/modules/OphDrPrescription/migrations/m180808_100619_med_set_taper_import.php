@@ -2,8 +2,8 @@
 
 class m180808_100619_med_set_taper_import extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $transaction=$this->getDbConnection()->beginTransaction();
         try {
             $tapers = Yii::app()->db->createCommand(
@@ -17,9 +17,9 @@ class m180808_100619_med_set_taper_import extends CDbMigration
               LEFT JOIN drug_set_item AS i ON i.id = t.item_id
               LEFT JOIN drug_set AS s ON i.drug_set_id = s.id
               ")->queryAll();
-            if($tapers) {
+            if ($tapers) {
+                $drug_usage_code_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'PRESCRIPTION_SET'])->queryScalar();
                 foreach ($tapers as $taper) {
-
                     Yii::app()->db->createCommand("INSERT INTO medication_set_item_taper (
                                       medication_set_item_id,
                                       dose,
@@ -33,7 +33,7 @@ class m180808_100619_med_set_taper_import extends CDbMigration
                                             medication_id = ( SELECT id FROM medication WHERE source_old_id = :drug_id AND source_subtype = 'drug' )
                                             AND medication_set_id =
                                               ( SELECT id FROM medication_set WHERE `name` LIKE CONCAT('%', :ref_set_name) AND id IN 
-                                                ( SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code = 'Drug')
+                                                ( SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code_id = $drug_usage_code_id)
                                               )
                                           ),
                                           
@@ -51,8 +51,7 @@ class m180808_100619_med_set_taper_import extends CDbMigration
                     ))->execute();
                 }
             }
-        }
-        catch(Exception $e) {
+        } catch (Exception $e) {
             echo "Exception: ".$e->getMessage()."\n";
             $transaction->rollback();
             return false;
@@ -61,10 +60,10 @@ class m180808_100619_med_set_taper_import extends CDbMigration
         $transaction->commit();
 
         return true;
-	}
+    }
 
-	public function down()
-	{
-		$this->execute("DELETE FROM medication_set_item_taper WHERE 1=1");
-	}
+    public function down()
+    {
+        $this->execute("DELETE FROM medication_set_item_taper WHERE 1=1");
+    }
 }

@@ -82,11 +82,9 @@ class BaseActiveRecord extends CActiveRecord
         return $this;
     }
 
-    public function autoValidateAndSaveRelation($save = false)
+    public function autoValidateRelation($save = false)
     {
         $this->auto_validate_relations = $save;
-        $this->auto_update_relations = $save;
-
         return $this;
     }
 
@@ -430,7 +428,7 @@ class BaseActiveRecord extends CActiveRecord
     {
         $saved_ids = array();
         if ($new_objs) {
-            $reverse_relation = $this->getReverseRelation($new_objs[0],$rel);
+            $reverse_relation = $this->getReverseRelation($new_objs[0], $rel);
 
             foreach ($new_objs as $i => $new) {
                 $new->{$rel->foreignKey} = $this->getPrimaryKey();
@@ -612,21 +610,21 @@ class BaseActiveRecord extends CActiveRecord
          *
          * @return bool true if the model dirty
          */
-        public function isModelDirty()
+    public function isModelDirty()
         {
-            $exclude = array(
-                'last_modified_user_id',
-                'last_modified_date',
-            );
+        $exclude = array(
+            'last_modified_user_id',
+            'last_modified_date',
+        );
 
-            foreach ($this->getAttributes() as $attrName => $attribute) {
-                if (!in_array($attrName, $exclude) && $this->isAttributeDirty($attrName)) {
-                    return true;
-                }
+        foreach ($this->getAttributes() as $attrName => $attribute) {
+            if (!in_array($attrName, $exclude) && $this->isAttributeDirty($attrName)) {
+                return true;
             }
-
-            return false;
         }
+
+        return false;
+    }
 
     /**
      * Gets the clean version of an attribute, returns empty string if there was no clean version.
@@ -674,8 +672,8 @@ class BaseActiveRecord extends CActiveRecord
      */
     public function NHSDateAsHTML($attribute, $empty_string = '-')
     {
-      $value = $this->getAttribute($attribute);
-      if ($value) {
+        $value = $this->getAttribute($attribute);
+        if ($value) {
             return Helper::convertMySQL2HTML($value, $empty_string);
         }
     }
@@ -806,7 +804,13 @@ class BaseActiveRecord extends CActiveRecord
     {
         foreach ($this->$rel_name as $i => $rel_obj) {
             $rel_obj->$fk = $this->id;
-            if (!$rel_obj->validate()) {
+
+            // if the model is a new record than there is no ID so we do not validate that fk field
+            $to_be_validated = array_keys($rel_obj->attributes);
+            if ($this->isNewRecord) {
+                $to_be_validated = array_filter($to_be_validated, function ($i) use ($fk) { return $i !== $fk; });
+            }
+            if (!$rel_obj->validate($to_be_validated)) {
                 foreach ($rel_obj->getErrors() as $fld => $err) {
                     $this->addError($rel_name, ($i + 1) . ' - '.implode(', ', $err));
                 }

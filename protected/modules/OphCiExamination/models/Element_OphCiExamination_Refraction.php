@@ -18,8 +18,6 @@
 
 namespace OEModule\OphCiExamination\models;
 
-use Yii;
-
 /**
  * This is the model class for table "et_ophciexamination_refraction".
  *
@@ -75,14 +73,14 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
             array('left_cylinder', 'requiredIfSide', 'side' => 'left'),
             array('left_cylinder', 'numerical'),
             array('left_axis', 'requiredIfSide', 'side' => 'left'),
-            array('left_axis', 'numerical', 'integerOnly' => true),
+            array('left_axis', 'numerical','min' => -180, 'max'=>180, 'integerOnly' => true),
             array('left_type_other', 'requiredIfRefractionTypeOther', 'side' => 'left'),
             array('right_sphere', 'requiredIfSide', 'side' => 'right'),
             array('right_sphere', 'numerical'),
             array('right_cylinder', 'requiredIfSide', 'side' => 'right'),
             array('right_cylinder', 'numerical'),
             array('right_axis', 'requiredIfSide', 'side' => 'right'),
-            array('right_axis', 'numerical', 'integerOnly' => true),
+            array('right_axis', 'numerical', 'min' => -180, 'max'=>180, 'integerOnly' => true),
             array('right_type_other', 'requiredIfRefractionTypeOther', 'side' => 'right'),
             array('id, event_id, left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, eye_id', 'safe', 'on' => 'search'),
         );

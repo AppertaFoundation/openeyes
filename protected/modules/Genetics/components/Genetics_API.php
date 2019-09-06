@@ -50,7 +50,7 @@ class Genetics_API extends BaseAPI
             $json = json_decode($data, true);
 
             // false means the external service failed to validate the gene, eg. cURL wasn't able to access the internet
-            if( isset($json['valid']) && $json['valid'] === 'failed' ){
+            if ( isset($json['valid']) && $json['valid'] === 'failed' ) {
                 // return value already set - default value
             } else {
                 // external service returned valid json

@@ -165,7 +165,7 @@ class AllergyEntry extends \BaseElement
      * @return bool true if entry is 'Other' (ie not in the standard list so needs editable field)
      */
     public function isOther(){
-        if(!$this->isNewRecord){
+        if (!$this->isNewRecord) {
             return $this->allergy_id == AllergyEntry::$OTHER_VAL;
         } else {
             throw new Exception('Cannot check if new allergy entry is other without proposed allergy id, 
