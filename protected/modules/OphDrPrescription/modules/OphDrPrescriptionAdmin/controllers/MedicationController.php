@@ -26,21 +26,24 @@ class MedicationController extends BaseAdminController
 
     public $assetPath;
 
+    private $searchFields = [
+        'source_type',
+        'source_subtype',
+        'preferred_code',
+        'preferred_term'
+    ];
+
+
     public function actionIndex() {
         $asset_manager = \Yii::app()->getAssetManager();
         $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
         $asset_manager->publish($base_assets_path);
 
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdminMedication.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScript('OphDrPrescriptionAdminMedication', "medicationController.addOption('{ \"searchFields\": " . json_encode($this->searchFields)."}');");
 
-        $model = new Medication();
-        $model->unsetAttributes();
-        if (isset($_GET['Medication'])) {
-            $model->attributes = $_GET['Medication'];
-        }
-
-        $criteria = $this->getSearchCriteria();
         $filters = \Yii::app()->request->getParam('search');
+        $criteria = $this->getSearchCriteria($filters);
 
         $data_provider = new CActiveDataProvider('medication', [
             'criteria' => $criteria,
@@ -58,63 +61,46 @@ class MedicationController extends BaseAdminController
         ]);
     }
 
-    private function getSearchCriteria()
+    private function getSearchCriteria($filters = [])
     {
-        $filters = \Yii::app()->request->getParam('search', []);
         $criteria = new \CDbCriteria();
 
-        $searchFields = [
-            'source_type',
-            'source_subtype',
-            'preferred_code',
-            'preferred_term'
-        ];
-
         $addSearch = function ($field) use ($criteria, $filters) {
-            if (isset($filters[$field])) {
+            if (isset($filters[$field]) && !empty($filters[$field])) {
                 $criteria->addCondition($field . ' = :' . $field);
                 $criteria->params[':' . $field] = $filters[$field];
             }
         };
 
-        array_map($addSearch, $searchFields);
+        array_map($addSearch, $this->searchFields);
 
         return $criteria;
     }
 
     public function actionSearch()
     {
+        $model = new Medication();
+        $model->unsetAttributes();
+        if (isset($_GET['Medication'])) {
+            $model->attributes = $_GET['Medication'];
+        }
+
         $search = \Yii::app()->request->getParam('search');
-        $set_id = isset($search['set_id']) ? $search['set_id'] : null;
-        $criteria = $this->getSearchCriteria();
+        $criteria = $this->getSearchCriteria($search);
         $data['items'] = [];
 
-        $data_provider = new CActiveDataProvider('Medication', [
+        $data_provider = new CActiveDataProvider('medication', [
             'criteria' => $criteria,
         ]);
 
         $pagination = new \CPagination($data_provider->totalItemCount);
         $pagination->pageSize = 20;
-        //$pagination->applyLimit($criteria);
-
         $data_provider->pagination = $pagination;
 
         foreach ($data_provider->getData() as $med) {
-
             $item = $med->attributes;
-            $link = \MedicationSetItem::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $set_id]);
-            if ($link) {
-                foreach (['default_dose', 'default_route_id', 'default_frequency_id', 'default_duration_id', 'default_dose_unit_term'] as $key) {
-                    $item[$key] = $link->{$key};
-                }
-
-                $item['default_route'] = $link->defaultRoute ? $link->defaultRoute->term : null;
-                $item['default_duration'] = $link->defaultDuration ? $link->defaultDuration->name : null;
-                $item['default_frequency'] = $link->defaultFrequency ? $link->defaultFrequency->term : null;
-                $item['set_item_id'] = $link->id;
-                $data['items'][] = $item;
-                $item = null;
-            }
+            $data['items'][] = $item;
+            $item = null;
         }
 
         ob_start();
@@ -127,5 +113,107 @@ class MedicationController extends BaseAdminController
         \Yii::app()->end();
     }
 
+    public function actionEdit($id = null) {
+        if (!\Yii::app()->request->isPostRequest) {
+            $model;
+            if (isset($id)) {
+                $model = Medication::model()->findByPk($id);
+            } else {
+                $model = Medication::model();
+                $model->isNewRecord = true;
+            }
 
+            $this->render('/Medication/edit', [
+                'model' => $model
+            ]);
+            return;
+        }
+
+        $data = \Yii::app()->request->getParam('Medication');
+        $filters = \Yii::app()->request->getParam('search', []);
+
+        $medication = Medication::model()->findByPk($id);
+
+        if(!$medication) {
+            $medication = new Medication;
+        }
+
+        $is_new_record = $medication->isNewRecord;
+
+        $transpose = function ($arr) {
+            $out = [];
+            foreach ($arr as $key => $all_vals) {
+                foreach ($all_vals as $val_key => $val) {
+                    if (!array_key_exists($val_key, $out)) {
+                        $out[$val_key] = [];
+                    }
+                    $out[$val_key][$key] = $val;
+                }
+            }
+            return $out;
+        };
+
+        $updateRelation = function ($relation_name, $relation_type, &$data) use ($transpose, $medication) {
+            $transposed_relations = array_key_exists($relation_name, $data) ?
+                $transpose($data[$relation_name]) : [];
+
+            $data[$relation_name] = [];
+
+            foreach ($transposed_relations as $relation) {
+                $relation_model = $relation['id'] == '-1' ?
+                    new $relation_type() :
+                    $relation_type::model()->findByPk($relation['id']);
+
+                $relation['medication_id'] = $medication->id;
+                $relation_model->setAttributes($relation);
+                if ($relation_model->save()) {
+                    array_push($data[$relation_name], $relation_model);
+                } else {
+                    return;
+                }
+            }
+        };
+
+        $updateRelation('medicationAttributeAssignments', 'MedicationAttributeAssignment', $data);
+        $updateRelation('medicationSetItems', 'MedicationSetItem', $data);
+        $updateRelation('medicationSearchIndexes', 'MedicationSearchIndex', $data);
+
+        $medication->setAttributes($data);
+
+        if ($medication->autoValidateRelation(true)->validate() && !$medication->getErrors()) {
+            if ($medication->save()) {
+                $this->redirect("/OphDrPrescription/admin/Medication/index");
+            }
+        }
+    }
+
+    public function actionDelete() {
+        $ids = \Yii::app()->request->getParam('delete-ids', []);
+
+        try {
+            foreach ($ids as $id) {
+                $medication = \Medication::model()->findByPk($id);
+
+                if (!$medication)
+                    break;
+
+                $to_delete = array_merge(
+                    $medication->medicationSearchIndexes,
+                    $medication->medicationSetItems,
+                    $medication->medicationAttributeAssignments
+                );
+                foreach ($to_delete as $relation) {
+                    $relation->delete();
+                }
+                $medication->delete();
+            }
+        } catch (Exception $e) {
+            echo '0';
+            return;
+        }
+
+        echo "1";
+
+        \Yii::app()->end();
+    }
 }

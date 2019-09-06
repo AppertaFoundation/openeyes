@@ -19,6 +19,60 @@
     <h2>Medications</h2>
 </div>
 
+<div class="row divider">
+    <form id="medical_set_search" method="post">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+
+        <hr class="">
+
+        <table class="cols-8">
+            <colgroup>
+                <col class="cols-3">
+                <col class="cols-3">
+                <col class="cols-3">
+                <col class="cols-3">
+            </colgroup>
+
+            <tbody>
+            <tr class="col-gap">
+                <td>
+                    <?= \CHtml::textField(
+                        'search[source_type]',
+                        $search['source_type'],
+                        ['class' => 'cols-full', 'placeholder' => "Source Type"]
+                    ); ?>
+                </td>
+                <td>
+                    <?= \CHtml::textField(
+                        'search[source_subtype]',
+                        $search['source_subtype'],
+                        ['class' => 'cols-full', 'placeholder' => "Source Subtype"]
+                    ); ?>
+                </td>
+                <td>
+                    <?= \CHtml::textField(
+                        'search[preferred_code]',
+                        $search['preferred_code'],
+                        ['class' => 'cols-full', 'placeholder' => "Preferred Code"]
+                    ); ?>
+                </td>
+                <td>
+                    <?= \CHtml::textField(
+                        'search[preferred_term]',
+                        $search['preferred_term'],
+                        ['class' => 'cols-full', 'placeholder' => "Preferred Term"]
+                    ); ?>
+                </td>
+
+                <td>
+                    <button class="blue hint" type="button" id="et_search">Search</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+
 <div class="cols-12">
     <form id="admin_medication_sets">
         <table id="medication-list" class="standard">
@@ -28,6 +82,7 @@
                 <col class="cols-2">
                 <col class="cols-2">
                 <col class="cols-2">
+                <col class="cols-3">
                 <col class="cols-3">
                 <col class="cols-1">
                 <col class="cols-1">
@@ -42,6 +97,7 @@
                 <th>Source Subtype</th>
                 <th>Preferred Code</th>
                 <th>Preferred Term</th>
+                <th>Alternative Terms</th>
                 <th>VTM Terms</th>
                 <th>VMP Terms</th>
                 <th>AMP Terms</th>
@@ -64,7 +120,7 @@
                         'class' => 'button large'
                     ]); ?>
                     <?= \CHtml::submitButton('Delete', [
-                        'id' => 'et_delete',
+                        'id' => 'delete_medication',
                         'data-uri' => '/OphDrPrescription/admin/medication/delete',
                         'class' => 'button large',
                         'data-object' => 'Medication'
@@ -96,5 +152,5 @@
 </script>
 
 <script>
-    var medicationController = new OpenEyes.OphDrPrescriptionAdmin.medicationController();
+    var medicationController = new OpenEyes.OphDrPrescriptionAdminMedication.MedicationController();
 </script>
