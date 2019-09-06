@@ -61,7 +61,8 @@ class MedicationSet extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
+            array('name', 'required'),
+			array('name', 'isUnique'),
 			array('antecedent_medication_set_id, display_order, hidden, automatic', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>255),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
@@ -572,5 +573,20 @@ class MedicationSet extends BaseActiveRecordVersioned
         }
 
         return \MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $this->id, $usage_code]);
+    }
+
+    public function isUnique($attribute, $params)
+    {
+        if (!$this->medicationSetRules) {
+            ## if name exists in medication_set table and id is not in medication_set_rule table then error
+            $set = self::model()->findAll('name = :name', [':name' => $this->{$attribute}]);
+
+            if ($set) {
+                $set_ids = array_column($set, 'id');
+                if (!in_array($this->id, $set_ids) && !MedicationSetRule::model()->count('medication_set_id = :medication_set_id', [':medication_set_id' => implode(",", array_column($set, 'id'))])) {
+                    $this->addError($attribute, 'A medication set with the name '.$this->{$attribute}.' already exists with no rules');
+                }
+            }
+        }
     }
 }

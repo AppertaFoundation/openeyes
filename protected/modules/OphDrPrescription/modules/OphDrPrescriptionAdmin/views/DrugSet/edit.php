@@ -16,7 +16,7 @@
 <h2><?= $medication_set->isNewRecord ? 'Create' : 'Edit';?> Medication set</h2>
 <div class="row divider"></div>
 <form id="drugset-admin-form" action="/OphDrPrescription/admin/DrugSet/edit/<?=$medication_set->id;?>" method="post">
-<?php if (isset($errors) && !empty($errors)) {?>
+<?php if (!empty($errors)) {?>
     <div class="alert-box alert error with-icon">
         <p>Please fix the following input errors:</p>
         <ul>

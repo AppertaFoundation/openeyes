@@ -57,6 +57,7 @@ class MedicationSetRule extends BaseActiveRecordVersioned
 		return [
 			['medication_set_id', 'required'],
 			['medication_set_id', 'numerical', 'integerOnly'=>true],
+			['medication_set_id', 'isNameAndRelatedRulesUnique'],
             ['subspecialty_id, site_id', 'numerical', 'integerOnly' => true, 'allowEmpty' => true],
 			['usage_code', 'length', 'max'=>255],
 			['last_modified_user_id, created_user_id', 'length', 'max'=>10],
@@ -148,5 +149,30 @@ class MedicationSetRule extends BaseActiveRecordVersioned
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+    /**
+     * @param string $attribute the name of the attribute to be validated
+     * @param array $params options specified in the validation rule
+     */
+	public function isNameAndRelatedRulesUnique($attribute, $params)
+	{
+		$set_rules = self::model()->findAllByAttributes(
+            [
+                'subspecialty_id' => ($this->subspecialty_id ? $this->subspecialty_id : null),
+                'site_id' => ($this->site_id ? $this->site_id : null),
+                'usage_code_id' => ($this->usage_code_id ? $this->usage_code_id : null),
+            ]
+        );
+
+        if ($set_rules) {
+            foreach ($set_rules as $set_rule) {
+            	// Check that the rule hasn't already been set for this medication set and check ids incase it is an update
+                if ($this->medicationSet->name === $set_rule->medicationSet->name && $this->id !== $set_rule->id) {
+                    $this->addError($attribute, 'A medication set with the name '.$this->medicationSet->name.' already exists with these rules ('.($this->site ? $this->site->name.', ' : '').($this->subspecialty ? $this->subspecialty->name.', ' : '').($this->usageCode ? $this->usageCode->name.')' : ''));
+                    break;
+                }
+            }
+        }
 	}
 }
