@@ -141,7 +141,6 @@ class MedicationManagement extends BaseMedicationElement
     {
         return array_filter($this->visible_entries, function ($e) {
             return !is_null($e->end_date) && $e->end_date <= date('Y-m-d');
-            ;
         });
     }
 
