@@ -43,4 +43,11 @@
             'frequency_id' => 1,
             'duration_id' => 1,
         ),
+        'prescription_item_taper7' => array(
+            'id' => 7,
+            'item_id' => 4,
+            'dose' => '10mL',
+            'frequency_id' => 1,
+            'duration_id' => 1,
+        ),
     );

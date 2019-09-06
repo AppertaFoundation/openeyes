@@ -77,7 +77,7 @@ class OphDrPrescription_ItemTest extends CDbTestCase
      */
     public function testFpTenLinesUsed()
     {
-        $length_list = array(9, 6, 25);
+        $length_list = array(7, 5, 22);
         foreach ($this->items as $index => $item) {
             $actual = $item->fpTenLinesUsed();
             $this->assertEquals($length_list[$index], $actual, "Item has $actual lines, expected {$length_list[$index]}.");
