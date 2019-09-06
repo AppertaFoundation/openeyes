@@ -22,6 +22,16 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
     )); ?>
 
     <p class="note text-right">Fields with <span class="required">*</span> are required.</p>
+    <?php foreach ($gpIdProviderNoList as $gpIdProviderNo){ ?>
+        <?php if(isset($gpIdProviderNo[2]) && $gpIdProviderNo[2] >= 1): ?>
+            <div id="conflicts" class="cols-full alert-box error" style="font-style: italic; font-size: small;">
+                <div class="row field-row">
+                    <p>Duplicate provider number detected.</p>
+                </div>
+            </div>
+            <?php break; ?>
+        <?php endif; ?>
+    <?php } ?>
     <?php echo $form->errorSummary(array($contact,$model,$address)); ?>
     <table class="standard">
         <tbody>
@@ -54,18 +64,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 </td>
             </tr>
         <?php endif; ?>
-        <?php foreach ($gpIdProviderNoList as $gpIdProviderNo){ ?>
-            <?php if(isset($gpIdProviderNo[2]) && $gpIdProviderNo[2] >= 1): ?>
-                <tr id="conflicts" class="cols-full alert-box error" style="font-style: italic; font-size: small;">
-                    <td class="row field-row">
-                        <p>Duplicate provider number detected.</p>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-                <?php break; ?>
-            <?php endif; ?>
-        <?php } ?>
+
         <tr>
             <td>
                 <?php echo $form->labelEx($contact, 'first_name'); ?>
