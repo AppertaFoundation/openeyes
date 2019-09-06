@@ -30,7 +30,7 @@ class MedicationController extends BaseAdminController
         'source_type',
         'source_subtype',
         'preferred_code',
-        'preferred_term'
+        // 'preferred_term' will be search differently
     ];
 
 
@@ -39,9 +39,7 @@ class MedicationController extends BaseAdminController
         $asset_manager = \Yii::app()->getAssetManager();
         $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
         $asset_manager->publish($base_assets_path);
-
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdminMedication.js', \CClientScript::POS_HEAD);
-        Yii::app()->clientScript->registerScript('OphDrPrescriptionAdminMedication', "medicationController.addOption('{ \"searchFields\": " . json_encode($this->searchFields)."}');");
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
 
         $filters = \Yii::app()->request->getParam('search');
         $criteria = $this->getSearchCriteria($filters);
@@ -74,6 +72,10 @@ class MedicationController extends BaseAdminController
         };
 
         array_map($addSearch, $this->searchFields);
+
+        if (isset($filters['preferred_term']) && $filters['preferred_term']) {
+            $criteria->addSearchCondition('preferred_term', $filters['preferred_term']);
+        }
 
         return $criteria;
     }
@@ -117,12 +119,10 @@ class MedicationController extends BaseAdminController
     public function actionEdit($id = null)
     {
         if (!\Yii::app()->request->isPostRequest) {
-            $model;
             if (isset($id)) {
                 $model = Medication::model()->findByPk($id);
             } else {
-                $model = Medication::model();
-                $model->isNewRecord = true;
+                $model = new Medication();
             }
 
             $this->render('/Medication/edit', [
@@ -132,15 +132,12 @@ class MedicationController extends BaseAdminController
         }
 
         $data = \Yii::app()->request->getParam('Medication');
-        $filters = \Yii::app()->request->getParam('search', []);
 
         $medication = Medication::model()->findByPk($id);
 
         if (!$medication) {
             $medication = new Medication;
         }
-
-        $is_new_record = $medication->isNewRecord;
 
         $transpose = function ($arr) {
             $out = [];

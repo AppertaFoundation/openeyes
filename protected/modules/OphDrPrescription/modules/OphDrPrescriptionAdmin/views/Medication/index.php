@@ -39,28 +39,44 @@
                     <?= \CHtml::textField(
                         'search[source_type]',
                         $search['source_type'],
-                        ['class' => 'cols-full', 'placeholder' => "Source Type"]
+                        [
+                            'class' => 'cols-full js-search-data',
+                            'placeholder' => 'Source Type',
+                            'data-name' => 'source_type'
+                        ]
                     ); ?>
                 </td>
                 <td>
                     <?= \CHtml::textField(
                         'search[source_subtype]',
                         $search['source_subtype'],
-                        ['class' => 'cols-full', 'placeholder' => "Source Subtype"]
+                        [
+                            'class' => 'cols-full js-search-data',
+                            'placeholder' => 'Source Subtype',
+                            'data-name' => 'source_subtype'
+                        ]
                     ); ?>
                 </td>
                 <td>
                     <?= \CHtml::textField(
                         'search[preferred_code]',
                         $search['preferred_code'],
-                        ['class' => 'cols-full', 'placeholder' => "Preferred Code"]
+                        [
+                            'class' => 'cols-full js-search-data',
+                            'placeholder' => 'Preferred Code',
+                            'data-name' => 'preferred_code'
+                        ]
                     ); ?>
                 </td>
                 <td>
                     <?= \CHtml::textField(
                         'search[preferred_term]',
                         $search['preferred_term'],
-                        ['class' => 'cols-full', 'placeholder' => "Preferred Term"]
+                        [
+                            'class' => 'cols-full js-search-data',
+                            'placeholder' => 'Preferred Term',
+                            'data-name' => 'preferred_term'
+                        ]
                     ); ?>
                 </td>
 
@@ -77,17 +93,16 @@
     <form id="admin_medication_sets">
         <table id="medication-list" class="standard">
             <colgroup>
-                <col class="cols-1">
-                <col class="cols-1">
+                <col style="width:1%">
+                <col style="width:4%">
+                <col style="width:8%">
+                <col style="width:8%">
+                <col style="width:10%">
+                <col class="cols-2">
+                <col style="width:10%">
                 <col class="cols-2">
                 <col class="cols-2">
-                <col class="cols-2">
-                <col class="cols-3">
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
+                <col style="width:1%">
             </colgroup>
             <thead>
             <tr>
@@ -97,7 +112,6 @@
                 <th>Source Subtype</th>
                 <th>Preferred Code</th>
                 <th>Preferred Term</th>
-                <th>Alternative Terms</th>
                 <th>VTM Terms</th>
                 <th>VMP Terms</th>
                 <th>AMP Terms</th>
@@ -113,7 +127,7 @@
             </tbody>
             <tfoot class="pagination-container">
             <tr>
-                <td colspan="4">
+                <td colspan="7">
                     <?= \CHtml::submitButton('Add', [
                         'id' => 'et_add',
                         'data-uri' => "/OphDrPrescription/admin/medication/edit",
@@ -143,14 +157,19 @@
         <td>{{source_subtype}}</td>
         <td>{{preferred_code}}</td>
         <td>{{preferred_term}}</td>
-        <td>{{vtm_terms}}</td>
-        <td>{{vmp_terms}}</td>
-        <td>{{amp_terms}}</td>
-        <td>{{action}}</td>
+        <td>{{vtm_term}}</td>
+        <td>{{vmp_term}}</td>
+        <td>{{amp_term}}</td>
         <td><a href="/OphDrPrescription/admin/Medication/edit/{{id}}" class="button">Edit</a></td>
     </tr>
 </script>
 
 <script>
-    var medicationController = new OpenEyes.OphDrPrescriptionAdminMedication.MedicationController();
+    let medsController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
+        tableSelector: '#medication-list',
+        searchUrl: '/OphDrPrescription/admin/Medication/search',
+        templateSelector: '#medication_template',
+        deleteButtonSelector: '#delete_medication'
+    });
+    $('#admin_medication_sets').data('medsController', medsController);
 </script>
