@@ -16,7 +16,7 @@
  */
 ?>
 <div class="element-data element-eyes">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <div class="<?= $eye_side ?>-eye">
             <?php if ($element->hasEye($eye_side)) { ?>
                 <table class="borders">
@@ -33,7 +33,9 @@
                                     <i class="oe-i time small no-click pad"></i>
                                     <?php echo date('H:i', strtotime($treatment->treatment_time)) ?>
                                 </td>
-                                <td><?php echo $treatment->drops ?> drop<?php if ($treatment->drops != 1) { ?>s<?php } ?>
+                                <td><?php echo $treatment->drops ?> drop<?php if ($treatment->drops != 1) {
+                                    ?>s<?php
+                                    } ?>
                                 </td>
                             </tr>
                         <?php } ?>

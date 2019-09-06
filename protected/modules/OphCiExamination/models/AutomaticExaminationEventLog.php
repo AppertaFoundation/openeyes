@@ -114,7 +114,7 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
      * Optometrist feedback manager filter handle function
      * @param array        $filter
      */
-    protected function buildOptomFilterCriteria( $filter = array())
+    protected function buildOptomFilterCriteria($filter = array())
     {
         $criteria = new \CDbCriteria();
         $criteria->with = array('event.episode.patient');
@@ -166,7 +166,7 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
      * @param \CDbCriteria $criteria
      * @param array        $filter
      */
-    private function invoiceStatusSearch(\CDbCriteria $criteria, $filter )
+    private function invoiceStatusSearch(\CDbCriteria $criteria, $filter)
     {
         if (array_key_exists('status_id', $filter) && $filter['status_id'] !== '') {
             $criteria->addCondition('invoice_status_id = :invoice_status_id');
@@ -179,7 +179,7 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
      * @param \CDbCriteria $criteria
      * @param array        $filter
      */
-    private function patientNumberSearch(\CDbCriteria $criteria, $filter )
+    private function patientNumberSearch(\CDbCriteria $criteria, $filter)
     {
         if (array_key_exists('patient_number', $filter) && $filter['patient_number'] !== '') {
             $patient_search = new PatientSearch();
@@ -193,7 +193,7 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
      * @param \CDbCriteria $criteria
      * @param array        $filter
      */
-    private function optomNameSearch( \CDbCriteria $criteria, $filter  )
+    private function optomNameSearch(\CDbCriteria $criteria, $filter)
     {
         if (array_key_exists('optometrist', $filter) && $filter['optometrist'] !== '') {
             //$criteria->addCondition('optometrist = :optometrist');
@@ -219,13 +219,13 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
      * Generate invoice status dropdown to optometrist feedback manager view
      * @param integer        $default
      */
-    public function invoiceStatusSelect( $default )
+    public function invoiceStatusSelect($default)
     {
         $status = \OEModule\OphCiExamination\models\InvoiceStatus::model();
         return CHtml::dropDownList(
             'invoice_status_id',
-            $default ,
-            CHtml::listData($status->findAll(),'id','name'),
+            $default,
+            CHtml::listData($status->findAll(), 'id', 'name'),
             array(
                 'empty'=>' - '
             )

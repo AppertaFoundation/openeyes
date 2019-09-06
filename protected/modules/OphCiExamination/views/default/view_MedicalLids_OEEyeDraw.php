@@ -31,7 +31,7 @@
 
   <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?></div>
 
-    <?php if ($element->{$side . '_comments'}): ?>
+    <?php if ($element->{$side . '_comments'}) : ?>
       <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_comments'}) ?></div>
     <?php endif; ?>
 </div>

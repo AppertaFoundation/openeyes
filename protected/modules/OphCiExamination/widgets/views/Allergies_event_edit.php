@@ -27,7 +27,7 @@ $required_allergy_ids = array_map(function ($r) {
 ?>
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
-
+    <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_entry_table" class="cols-10">
         <colgroup>
             <col class="cols-3">
@@ -40,6 +40,7 @@ $required_allergy_ids = array_map(function ($r) {
             id="<?= $model_name ?>_no_allergies_wrapper">
             <td colspan="5" class="align-left">
                 <label class="inline highlight" for="<?= $model_name ?>_no_allergies">
+                    <input type="hidden" name="<?=$model_name?>[no_allergies]" value="off">
                     <?=\CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false)?>
                     Confirm patient has no allergies
                 </label>
@@ -47,42 +48,42 @@ $required_allergy_ids = array_map(function ($r) {
         </tr>
         <?php
             $row_count = 0;
-            foreach ($missing_req_allergies as $entry) {
-                $this->render(
-                    'AllergyEntry_event_edit',
-                    array(
-                        'entry' => $entry,
-                        'form' => $form,
-                        'model_name' => $model_name,
-                        'removable' => false,
-                        'allergies' => $element->getAllergyOptions(),
-                        'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
-                        'row_count' => $row_count,
-                        'posted_not_checked' => $element->widget->postedNotChecked($row_count),
-                        'has_allergy' => $entry->has_allergy,
-                    )
-                );
-                $row_count++;
-            }
+        foreach ($missing_req_allergies as $entry) {
+            $this->render(
+                'AllergyEntry_event_edit',
+                array(
+                    'entry' => $entry,
+                    'form' => $form,
+                    'model_name' => $model_name,
+                    'removable' => false,
+                    'allergies' => $element->getAllergyOptions(),
+                    'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
+                    'row_count' => $row_count,
+                    'posted_not_checked' => $element->widget->postedNotChecked($row_count),
+                    'has_allergy' => $entry->has_allergy,
+                )
+            );
+            $row_count++;
+        }
 
-            foreach ($element->entries as $i => $entry) {
-                $this->render(
-                    'AllergyEntry_event_edit',
-                    array(
-                        'entry' => $entry,
-                        'form' => $form,
-                        'model_name' => $model_name,
-                        'removable' => !in_array($entry->allergy_id, $required_allergy_ids),
-                        'allergies' => $element->getAllergyOptions(),
-                        'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
-                        'row_count' => $row_count,
-                        'posted_not_checked' => $element->widget->postedNotChecked($row_count),
-                        'has_allergy' => $entry->has_allergy,
-                    )
-                );
-                $row_count++;
-            }
-            ?>
+        foreach ($element->entries as $i => $entry) {
+            $this->render(
+                'AllergyEntry_event_edit',
+                array(
+                    'entry' => $entry,
+                    'form' => $form,
+                    'model_name' => $model_name,
+                    'removable' => !in_array($entry->allergy_id, $required_allergy_ids),
+                    'allergies' => $element->getAllergyOptions(),
+                    'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
+                    'row_count' => $row_count,
+                    'posted_not_checked' => $element->widget->postedNotChecked($row_count),
+                    'has_allergy' => $entry->has_allergy,
+                )
+            );
+            $row_count++;
+        }
+        ?>
             </tbody>
         </table>
 

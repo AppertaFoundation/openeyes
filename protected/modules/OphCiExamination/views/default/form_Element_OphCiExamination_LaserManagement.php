@@ -41,8 +41,8 @@ foreach ($lasertypes as $lt) {
     id="div_<?=\CHtml::modelName($element)?>_treatment_fields"
     class="element-eyes sub-element-fields jsTreatmentFields"
 >
-	<?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-  <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):?>
+    <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :?>
       <div
           class="js-element-eye <?= $eye ?>-eye column <?= $side ?> <?= (!$element->{'has' . ucfirst($eye)}()) ? 'inactive' : '' ?>"
           data-side="<?= $eye ?>"
@@ -59,14 +59,14 @@ foreach ($lasertypes as $lt) {
                     'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options,
                 )
             ); ?>
-		</div>
-		<div class="inactive-form" style="<?=($element->{'has'.ucfirst($eye)}()) ? 'display: none': ''?>">
-			<div class="add-side">
-				<a href="#">
-					Add <?=$eye?> side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-  <?php endforeach;?>
+        </div>
+        <div class="inactive-form" style="<?=($element->{'has'.ucfirst($eye)}()) ? 'display: none': ''?>">
+            <div class="add-side">
+                <a href="#">
+                    Add <?=$eye?> side <span class="icon-add-side"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <?php endforeach;?>
 </div>

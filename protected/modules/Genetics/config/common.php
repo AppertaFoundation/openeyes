@@ -49,11 +49,11 @@ return array(
             curl_setopt($ch, CURLOPT_TIMEOUT, 2); //timeout in seconds
 
             // The number of seconds to wait while trying to connect. Use 0 to wait indefinitely.
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,2);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
             $result = curl_exec ($ch);
 
             $message = '';
-            if(curl_error($ch)){
+            if (curl_error($ch)) {
                 $message = curl_error($ch);
             }
 

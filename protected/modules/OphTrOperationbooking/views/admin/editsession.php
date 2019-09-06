@@ -17,8 +17,8 @@
  */
 ?>
 <div class="box admin cols-5">
-	<h2><?php echo $session->id ? 'Edit' : 'Add'?> session</h2>
-	<?php
+    <h2><?php echo $session->id ? 'Edit' : 'Add'?> session</h2>
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm',
         [
             'id' => 'adminform',
@@ -26,7 +26,7 @@
             'focus' => '#username',
         ]
     )?>
-	<?php echo $form->errorSummary($session); ?>
+    <?php echo $form->errorSummary($session); ?>
 
     <table class="standard cols-full">
         <tbody>
@@ -88,14 +88,14 @@
                 <td><?= $form->textField($session, 'max_complex_bookings', ['nowrapper' => true]); ?></td>
             </tr>
             <?php $current = $session->getBookedProcedureCount();
-                if($current) { ?>
+            if ($current) { ?>
                     <tr class = "<?= $session->isProcedureCountLimited() && $current > $session->getMaxProcedureCount() ? "alert-box alert" : "" ?>">
                         <td>Current Booked Procedures</td>
                         <td>
                             <div class="field-value" id="current-proc-count"><?= $current ?></div>
                         </td>
                     </tr>
-                <?php }
+            <?php }
             ?>
 
             <?php $boolean_fields = ['consultant', 'paediatric', 'anaesthetist', 'general_anaesthetic', 'available'];
@@ -106,7 +106,9 @@
                 </tr>
             <?php endforeach; ?>
 
-            <tr id="unavailablereason_id_wrapper" <?php if ($session->available) {?> style="display: none;"<?php } ?> >
+            <tr id="unavailablereason_id_wrapper" <?php if ($session->available) {
+                ?> style="display: none;"<?php
+                                                  } ?> >
                 <td>
                     <label for="OphTrOperationbooking_Operation_Session_unavailablereason_id"><?= $session->getAttributeLabel('unavailablereason_id'); ?>:</label>
                 </td>
@@ -116,118 +118,118 @@
             </tr>
         </tbody>
     </table>
-	<?php echo $form->errorSummary($session); ?>
-	<?php echo $form->formActions(array(
+    <?php echo $form->errorSummary($session); ?>
+    <?php echo $form->formActions(array(
         'delete' => $session->id ? 'Delete' : false,
     ));?>
-	<?php $this->endWidget()?>
+    <?php $this->endWidget()?>
 </div>
 
 <div id="confirm_delete_session" title="Confirm delete session" style="display: none;">
-	<div id="delete_session">
-		<div class="alert-box alert with-icon">
-			<strong>WARNING: This will remove the session from the system.<br/>This action cannot be undone.</strong>
-		</div>
-		<p>
-			<strong>Are you sure you want to proceed?</strong>
-		</p>
-		<div class="buttons">
-			<input type="hidden" id="medication_id" value="" />
-			<button type="submit" class="warning btn_remove_session">Remove session</button>
-			<button type="submit" class="secondary btn_cancel_remove_session">Cancel</button>
-			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-		</div>
-	</div>
+    <div id="delete_session">
+        <div class="alert-box alert with-icon">
+            <strong>WARNING: This will remove the session from the system.<br/>This action cannot be undone.</strong>
+        </div>
+        <p>
+            <strong>Are you sure you want to proceed?</strong>
+        </p>
+        <div class="buttons">
+            <input type="hidden" id="medication_id" value="" />
+            <button type="submit" class="warning btn_remove_session">Remove session</button>
+            <button type="submit" class="secondary btn_cancel_remove_session">Cancel</button>
+            <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
-	$('input[name="OphTrOperationbooking_Operation_Session[available]"]').live('change', function() {
-		if ($(this).val() == '1') {
-			$('#unavailablereason_id_wrapper').hide();
-			$('#OphTrOperationbooking_Operation_Session_unavailablereason_id').data('orig', $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val());
-			$('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val('');
-		}
-		else {
-			$('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val($('#OphTrOperationbooking_Operation_Session_unavailablereason_id').data('orig'));
-			$('#unavailablereason_id_wrapper').show();
-		}
-	});
+    $('input[name="OphTrOperationbooking_Operation_Session[available]"]').live('change', function() {
+        if ($(this).val() == '1') {
+            $('#unavailablereason_id_wrapper').hide();
+            $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').data('orig', $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val());
+            $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val('');
+        }
+        else {
+            $('#OphTrOperationbooking_Operation_Session_unavailablereason_id').val($('#OphTrOperationbooking_Operation_Session_unavailablereason_id').data('orig'));
+            $('#unavailablereason_id_wrapper').show();
+        }
+    });
 
-	handleButton($('#et_cancel'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessions';
-	});
+    handleButton($('#et_cancel'),function(e) {
+        e.preventDefault();
+        window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessions';
+    });
 
-	handleButton($('#et_save'),function(e) {
-		$('#adminform').submit();
-	});
+    handleButton($('#et_save'),function(e) {
+        $('#adminform').submit();
+    });
 
-	handleButton($('#et_delete'),function(e) {
-		e.preventDefault();
-		$.ajax({
-			'type': 'POST',
-			'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteSessions',
-			'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'success': function(resp) {
-				if (resp == "1") {
-					enableButtons();
+    handleButton($('#et_delete'),function(e) {
+        e.preventDefault();
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteSessions',
+            'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+            'success': function(resp) {
+                if (resp == "1") {
+                    enableButtons();
 
-					$('#confirm_delete_session').dialog({
-						resizable: false,
-						modal: true,
-						width: 560
-					});
-				} else {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "This session has one or more active bookings and so cannot be deleted."
-					}).open();
-					enableButtons();
-				}
-			}
-		});
-	});
+                    $('#confirm_delete_session').dialog({
+                        resizable: false,
+                        modal: true,
+                        width: 560
+                    });
+                } else {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "This session has one or more active bookings and so cannot be deleted."
+                    }).open();
+                    enableButtons();
+                }
+            }
+        });
+    });
 
-	handleButton($('.btn_remove_session'),function(e) {
-		e.preventDefault();
+    handleButton($('.btn_remove_session'),function(e) {
+        e.preventDefault();
 
-		$.ajax({
-			'type': 'POST',
-			'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteSessions',
-			'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'success': function(resp) {
-				if (resp == "1") {
-					$.ajax({
-						'type': 'POST',
-						'url': baseUrl+'/OphTrOperationbooking/admin/deleteSessions',
-						'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-						'success': function(resp) {
-							if (resp == "1") {
-								window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessions';
-							} else {
-								new OpenEyes.UI.Dialog.Alert({
-									content: "There was an unexpected error deleting the session, please try again or contact support for assistance",
-									onClose: function() {
-										enableButtons();
-										$('#confirm_delete_sessions').dialog('close');
-									}
-								}).open();
-							}
-						}
-					});
-				} else {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "This session has one or more active bookings and so cannot be deleted.",
-						onClose: function() {
-							enableButtons();
-							$('#confirm_delete_sessions').dialog('close');
-						}
-					}).open();
-				}
-			}
-		});
-	});
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteSessions',
+            'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+            'success': function(resp) {
+                if (resp == "1") {
+                    $.ajax({
+                        'type': 'POST',
+                        'url': baseUrl+'/OphTrOperationbooking/admin/deleteSessions',
+                        'data': "session[]=<?php echo $session->id?>&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+                        'success': function(resp) {
+                            if (resp == "1") {
+                                window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessions';
+                            } else {
+                                new OpenEyes.UI.Dialog.Alert({
+                                    content: "There was an unexpected error deleting the session, please try again or contact support for assistance",
+                                    onClose: function() {
+                                        enableButtons();
+                                        $('#confirm_delete_sessions').dialog('close');
+                                    }
+                                }).open();
+                            }
+                        }
+                    });
+                } else {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "This session has one or more active bookings and so cannot be deleted.",
+                        onClose: function() {
+                            enableButtons();
+                            $('#confirm_delete_sessions').dialog('close');
+                        }
+                    }).open();
+                }
+            }
+        });
+    });
 
-	$('.btn_cancel_remove_session').click(function(e) {
-		e.preventDefault();
-		$('#confirm_delete_session').dialog('close');
-	});
+    $('.btn_cancel_remove_session').click(function(e) {
+        e.preventDefault();
+        $('#confirm_delete_session').dialog('close');
+    });
 </script>

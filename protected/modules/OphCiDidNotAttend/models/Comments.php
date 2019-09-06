@@ -39,7 +39,7 @@ class Comments extends \BaseEventTypeElement
      * Returns the static model of the specified AR class.
      * @return Comments the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -84,7 +84,7 @@ class Comments extends \BaseEventTypeElement
     {
         $criteria=new CDbCriteria;
 
-		$criteria->compare('comment',$this->comment,true);
+        $criteria->compare('comment', $this->comment, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria'=>$criteria,

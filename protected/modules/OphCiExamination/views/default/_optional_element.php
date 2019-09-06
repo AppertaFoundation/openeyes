@@ -19,5 +19,5 @@
     data-element-type-id="<?=$element->elementType->id ?>"
     data-element-type-name="<?=$element->elementType->name ?>"
     data-element-display-order="<?=$element->elementType->display_order ?>">
-	<a href="#"><?=$element->elementType->name?></a>
+    <a href="#"><?=$element->elementType->name?></a>
 </li>

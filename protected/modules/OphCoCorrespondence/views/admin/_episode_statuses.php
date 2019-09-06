@@ -17,6 +17,6 @@
 ?><option value="">- Episode status -</option><?php
 if (!empty($statuses)) {
     foreach ($statuses as $id => $name) {?>
-		<option value="<?php echo $id?>"><?php echo $name?></option>
-	<?php }
+        <option value="<?php echo $id?>"><?php echo $name?></option>
+    <?php }
 }?>

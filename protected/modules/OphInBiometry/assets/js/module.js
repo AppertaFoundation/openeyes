@@ -158,6 +158,11 @@ $(document).ready(function() {
 	$('#Element_OphInBiometry_Selection_lens_id_left').on('change', () => onChangeLensType('left'));
 	$('#Element_OphInBiometry_Selection_lens_id_right').on('change', () => onChangeLensType('right'));
 
+	$('.js-lens-manual-override-dropdown').on('change', function() {
+		let option_selected = $(this).find("option:selected").data('constant');
+		$(this).closest('tbody').find('.js-lens-constant').text(option_selected);
+	});
+
 	function onChangeLensType(side){
 		clearIolSelection(side);
 		updateClosest (side);

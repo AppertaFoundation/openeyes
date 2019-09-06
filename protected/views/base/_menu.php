@@ -15,31 +15,31 @@
             ?>
           <li>
               <?php
-              $link = $item['uri'];
-              if ($item['uri'] !== '#' && strpos($item['uri'], ':') === false) {
-                  $link = Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/');
-              }
-              $options = array();
-              if (array_key_exists('options', $item)) {
-                  $options = $item['options'];
-              }
-              echo CHtml::link($item['title'], $link, $options)
-              ?>
-              <?php if ($hasSub): ?>
+                $link = $item['uri'];
+                if ($item['uri'] !== '#' && strpos($item['uri'], ':') === false) {
+                    $link = Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/');
+                }
+                $options = array();
+                if (array_key_exists('options', $item)) {
+                    $options = $item['options'];
+                }
+                echo CHtml::link($item['title'], $link, $options)
+                ?>
+              <?php if ($hasSub) : ?>
                 <ul class="<?= $subClass ?>" id="<?= $menuKey ?>-sub" class="f-dropdown" data-dropdown-content>
-                    <?php foreach ($item['sub'] as $subKey => $subItem): ?>
+                    <?php foreach ($item['sub'] as $subKey => $subItem) : ?>
                       <li>
                           <?php
-                          $subOptions = array();
-                          if (array_key_exists('options', $subItem)) {
-                              $subOptions = $subItem['options'];
-                          }
-                          $subLink = ($subItem['uri'] !== '#' && strpos($subItem['uri'], ':') === false) ? Yii::app()->getBaseUrl() . '/' . ltrim($subItem['uri'], '/') : $subItem['uri'];
-                          echo CHtml::link($subItem['title'], $subLink, $subOptions) ?>
+                            $subOptions = array();
+                            if (array_key_exists('options', $subItem)) {
+                                $subOptions = $subItem['options'];
+                            }
+                            $subLink = ($subItem['uri'] !== '#' && strpos($subItem['uri'], ':') === false) ? Yii::app()->getBaseUrl() . '/' . ltrim($subItem['uri'], '/') : $subItem['uri'];
+                            echo CHtml::link($subItem['title'], $subLink, $subOptions) ?>
                       </li>
                     <?php endforeach; ?>
                 </ul>
-              <?php endif; ?>
+                <?php endif; ?>
           </li>
         <?php } ?>
     </ul>

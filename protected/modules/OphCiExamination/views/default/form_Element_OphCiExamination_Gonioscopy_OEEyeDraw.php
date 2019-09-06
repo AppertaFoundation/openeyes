@@ -19,8 +19,8 @@
 <?php
 $mode = 'Basic';
 $settings = new SettingMetadata();
-$expert = $settings->getSetting('expert',$element->elementType);
-if($expert){
+$expert = $settings->getSetting('expert', $element->elementType);
+if ($expert) {
     $mode = 'Expert';
 }
 $doodleToolBarArray = array('AngleNV', 'AntSynech', 'AngleRecession');
