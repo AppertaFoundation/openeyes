@@ -239,12 +239,12 @@ class DrugSetController extends BaseAdminController
      */
     public function actionEdit($id = null)
     {
-        $assetManager = \Yii::app()->getAssetManager();
-        $baseAssetsPath = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
-        $assetManager->publish($baseAssetsPath);
+        $asset_manager = \Yii::app()->getAssetManager();
+        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $asset_manager->publish($base_assets_path);
 
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.TableInlieEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlieEdit.js', \CClientScript::POS_HEAD);
 
         $data = \Yii::app()->request->getParam('MedicationSet');
         $filters = \Yii::app()->request->getParam('search', []);
@@ -384,6 +384,8 @@ class DrugSetController extends BaseAdminController
                     $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
                     $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
                     $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
+                    $item->default_dispense_condition_id = isset($item_data['default_dispense_condition_id']) ? $item_data['default_dispense_condition_id'] : $item->default_duration_id;
+                    $item->default_dispense_location_id = isset($item_data['default_dispense_location_id']) ? $item_data['default_dispense_location_id'] : $item->default_dispense_location_id;
 
                     $result['success'] = $item->save();
                     $result['errors'] = $item->getErrors();

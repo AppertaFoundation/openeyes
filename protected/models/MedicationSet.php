@@ -132,6 +132,27 @@ class MedicationSet extends BaseActiveRecordVersioned
     }
 
     /**
+     * Returns true if the set has a usage_code provided as parameter
+     *
+     * @param $usage_code
+     * @return bool
+     */
+    public function hasUsageCode($usage_code)
+    {
+
+        $criteria = new \CDbCriteria();
+        $criteria->join = "JOIN medication_set_rule r ON t.id = r.medication_set_id ";
+        $criteria->join .= "JOIN medication_usage_code c ON r.usage_code_id = c.id";
+        $criteria->addCondition("t.id = :id");
+        $criteria->addCondition("c.usage_code = :usage_code");
+        $criteria->params = [
+            ':id' => $this->id,
+            ':usage_code' => $usage_code
+        ];
+        return (bool)$this->count($criteria);
+    }
+
+    /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
      * Typical usecase:

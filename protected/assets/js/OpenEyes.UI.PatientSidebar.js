@@ -177,6 +177,7 @@
 					let newCallback = function () {
 						$item.addClass('selected');
 						$item.removeClass('loading');
+            $item.trigger('loaded');
 						if (typeof callback === "function")
 							callback();
 					};
@@ -246,16 +247,25 @@
      */
     PatientSidebar.prototype.addElementByTypeClass = function(elementTypeClass, data, callback)
     {
-        var self = this;
-        var $menuLi = self.findMenuItemForElementClass(elementTypeClass);
+			var self = this;
+			var $menuLi = self.findMenuItemForElementClass(elementTypeClass);
 
-        if ($menuLi) {
-            $href = $menuLi.find('a');
-            $href.removeClass('selected').removeClass('error');
-            self.loadClickedItem($href, data, callback);
-        } else {
-            self.error('Cannot find menu entry for given elementTypeClass '+elementTypeClass);
-        }
+			if ($menuLi) {
+				$href = $menuLi.find('a');
+
+				if ($href.hasClass('loading')) {
+					$href.on('loaded', function () {
+						if (typeof callback === "function") {
+							callback();
+						}
+					});
+				} else {
+					$href.removeClass('selected').removeClass('error');
+					self.loadClickedItem($href, data, callback);
+				}
+			} else {
+				self.error('Cannot find menu entry for given elementTypeClass ' + elementTypeClass);
+			}
 
     };
 
