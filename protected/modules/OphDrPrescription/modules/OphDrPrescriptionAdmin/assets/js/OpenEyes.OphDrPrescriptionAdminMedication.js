@@ -8,7 +8,7 @@ OpenEyes.OphDrPrescriptionAdminMedication = OpenEyes.OphDrPrescriptionAdminMedic
 
         this.initSearch();
         this.initTable();
-    };
+    }
 
     MedicationController.prototype.addOption = function (extraOptions) {
         let optionsToAdd = JSON.parse(extraOptions);

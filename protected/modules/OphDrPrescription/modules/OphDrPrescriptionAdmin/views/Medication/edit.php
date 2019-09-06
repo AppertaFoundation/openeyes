@@ -25,12 +25,12 @@
     
     $source_types = [];
     $source_subtypes = [];
-    foreach ($source_types_raw as $k => $v) {
-        $source_types[$v] = $v;
-    }
-    foreach ($source_subtypes_raw as $k => $v) {
-        $source_subtypes[$v] = $v;
-    }
+foreach ($source_types_raw as $k => $v) {
+    $source_types[$v] = $v;
+}
+foreach ($source_subtypes_raw as $k => $v) {
+    $source_subtypes[$v] = $v;
+}
 ?>
 
 <form id="prescription-admin-medication-form" action="/OphDrPrescription/admin/Medication/edit/<?=$model->id?>" method="post">
@@ -181,7 +181,7 @@
                         <div class="cols-2"><label>Default Form</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeDropDownList($model, 'default_form_id',
-                                $data = CHtml::listData(MedicationForm::model()->findAll(), 'id','term'),
+                                $data = CHtml::listData(MedicationForm::model()->findAll(), 'id', 'term'),
                             [
                                 'class' => 'cols-full',
                                 'empty' => '-- None --'
@@ -229,7 +229,7 @@
             'name' => 'save',
             'id' => 'et_save'
         ])
-    ?>
+?>
     <?=\CHtml::submitButton(
         'Cancel',
         [
@@ -238,5 +238,5 @@
             'name' => 'cancel',
             'id' => 'et_cancel'
         ])
-    ?>
+?>
 </form>

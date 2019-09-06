@@ -1,15 +1,15 @@
 <?php
     /** @var Medication $medication */
 
-	$attributes = array_map(function($e) {
-	    return ['id' => $e->id, 'label' => $e->name, 'type' => 'attr'];
-	    }, MedicationAttribute::model()->findAll(array("order" => "name")));
-    $options = array_map(function($e){
+    $attributes = array_map(function ($e) {
+        return ['id' => $e->id, 'label' => $e->name, 'type' => 'attr'];
+    }, MedicationAttribute::model()->findAll(array("order" => "name")));
+    $options = array_map(function ($e) {
         return ['id' => $e->id, 'label' => $e->description." - ".$e->value, 'attr_id' => $e->medication_attribute_id];
     }, MedicationAttributeOption::model()->findAll(array("select"=>array("id","medication_attribute_id","value","description"), "order" => "value")));
 
     $rowkey = 0;
-?>
+    ?>
 <script id="row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
         <td>
@@ -43,15 +43,15 @@
         </tr>
     </thead>
     <tbody>
-    <?php foreach ($medication->medicationAttributeAssignments as $assignment): ?>
-		<?php
+    <?php foreach ($medication->medicationAttributeAssignments as $assignment) : ?>
+        <?php
             $attr_id = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->medication_attribute_id : null;
             $attr_name = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->medicationAttribute->name : "";
             $option_id = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->id : null;
             $option_name = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->description." - ".$assignment->medicationAttributeOption->value : null;
             $id = is_null($assignment->id) ? -1 : $assignment->id;
             $rowkey++;
-		?>
+        ?>
         <tr data-key="<?=$rowkey?>">
             <td>
                 <input type="hidden" name="Medication[medicationAttributeAssignment][id][]" value="<?=$id?>" />

@@ -34,7 +34,8 @@ class MedicationController extends BaseAdminController
     ];
 
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $asset_manager = \Yii::app()->getAssetManager();
         $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
         $asset_manager->publish($base_assets_path);
@@ -113,7 +114,8 @@ class MedicationController extends BaseAdminController
         \Yii::app()->end();
     }
 
-    public function actionEdit($id = null) {
+    public function actionEdit($id = null)
+    {
         if (!\Yii::app()->request->isPostRequest) {
             $model;
             if (isset($id)) {
@@ -134,7 +136,7 @@ class MedicationController extends BaseAdminController
 
         $medication = Medication::model()->findByPk($id);
 
-        if(!$medication) {
+        if (!$medication) {
             $medication = new Medication;
         }
 
@@ -187,15 +189,17 @@ class MedicationController extends BaseAdminController
         }
     }
 
-    public function actionDelete() {
+    public function actionDelete()
+    {
         $ids = \Yii::app()->request->getParam('delete-ids', []);
 
         try {
             foreach ($ids as $id) {
                 $medication = \Medication::model()->findByPk($id);
 
-                if (!$medication)
+                if (!$medication) {
                     break;
+                }
 
                 $to_delete = array_merge(
                     $medication->medicationSearchIndexes,

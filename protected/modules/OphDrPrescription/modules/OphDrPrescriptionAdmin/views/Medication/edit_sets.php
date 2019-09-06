@@ -2,23 +2,34 @@
     /** @var Medication $medication */
 
     $rowkey = 0;
-    $sets = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name];}, MedicationSet::model()->findAllByAttributes(['hidden' => 0, 'deleted_date' => null]));
+    $sets = array_map(function ($e) {
+        return ['id' => $e->id, 'label' => $e->name];
+
+    }, MedicationSet::model()->findAllByAttributes(['hidden' => 0, 'deleted_date' => null]));
     $units = [];
-    if($unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
-		$units = array_map(function($e){
-		    return ['id' => $e->id, 'label' => $e->description];
+    if ($unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
+        $units = array_map(function ($e) {
+            return ['id' => $e->id, 'label' => $e->description];
         }, $unit_attr->medicationAttributeOptions);
-	}
-	else {
+    } else {
         $units = array();
     }
-    $routes = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationRoute::model()->findAllByAttributes(['deleted_date' => null]));
-    $freqs = array_map(function($e){ return ['id' => $e->id, 'label' => $e->term];},MedicationFrequency::model()->findAllByAttributes(['deleted_date' => null]));
-    $durations = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name];},MedicationDuration::model()->findAllByAttributes(['deleted_date' => null]));
+    $routes = array_map(function ($e) {
+        return ['id' => $e->id, 'label' => $e->term];
+
+    }, MedicationRoute::model()->findAllByAttributes(['deleted_date' => null]));
+    $freqs = array_map(function ($e) {
+        return ['id' => $e->id, 'label' => $e->term];
+
+    }, MedicationFrequency::model()->findAllByAttributes(['deleted_date' => null]));
+    $durations = array_map(function ($e) {
+        return ['id' => $e->id, 'label' => $e->name];
+
+    }, MedicationDuration::model()->findAllByAttributes(['deleted_date' => null]));
 
     $medicationSetItems = $medication->medicationSetItems;
 
-?>
+    ?>
 <script id="set_row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
         <td>
@@ -70,35 +81,37 @@
         </tr>
     </thead>
     <tbody>
-    <?php foreach ($medicationSetItems as $assignment): ?>
-		<?php
+    <?php foreach ($medicationSetItems as $assignment) : ?>
+        <?php
             $set_id = $assignment->medication_set_id;
             $id = is_null($assignment->id) ? -1 : $assignment->id;
-		    $rowkey++
+            $rowkey++
         ?>
-        <tr data-key="<?=$rowkey?>" <?php if($assignment->medicationSet->hidden): ?>style="display:none;" <?php endif; ?>>
+        <tr data-key="<?=$rowkey?>" <?php if ($assignment->medicationSet->hidden) :
+            ?>style="display:none;" <?php
+                      endif; ?>>
             <td>
                 <input type="hidden" name="Medication[medicationSetItems][id][]" value="<?=$id?>" />
                 <input type="hidden" name="Medication[medicationSetItems][medication_set_id][]" value="<?=$assignment->medication_set_id?>" />
                 <?=CHtml::encode($assignment->medicationSet->name)?>
             </td>
             <td>
-				<?php echo CHtml::textField('Medication[medicationSetItems][default_dose][]', $assignment->default_dose); ?>
+                <?php echo CHtml::textField('Medication[medicationSetItems][default_dose][]', $assignment->default_dose); ?>
             </td>
             <td>
-				<?php echo CHtml::textField('Medication[medicationSetItems][default_dose_unit_term][]', $assignment->default_dose_unit_term); ?>
+                <?php echo CHtml::textField('Medication[medicationSetItems][default_dose_unit_term][]', $assignment->default_dose_unit_term); ?>
             </td>
             <td>
                 <input type="hidden" name="Medication[medicationSetItems][default_route_id][]" value="<?=$assignment->default_route_id?>" />
-				<?=$assignment->default_route_id ? CHtml::encode($assignment->defaultRoute->term) : ""?>
+                <?=$assignment->default_route_id ? CHtml::encode($assignment->defaultRoute->term) : ""?>
             </td>
             <td>
                 <input type="hidden" name="Medication[medicationSetItems][default_frequency_id][]" value="<?=$assignment->default_frequency_id?>" />
-				<?=$assignment->default_frequency_id ? CHtml::encode($assignment->defaultFrequency->term) : ""?>
+                <?=$assignment->default_frequency_id ? CHtml::encode($assignment->defaultFrequency->term) : ""?>
             </td>
             <td>
                 <input type="hidden" name="Medication[medicationSetItems][default_duration_id][]" value="<?=$assignment->default_duration_id?>" />
-				<?=$assignment->default_duration_id ? CHtml::encode($assignment->defaultDuration->name) : ""?>
+                <?=$assignment->default_duration_id ? CHtml::encode($assignment->defaultDuration->name) : ""?>
             </td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-attribute"><i class="oe-i trash"></i></a>
