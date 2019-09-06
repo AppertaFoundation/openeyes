@@ -33,10 +33,10 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
       <div class="element-data">
           <?php
           $filter_eye_medication = function ($med) {
-              return $med->option !== null;
+              return $med->laterality !== null;
           };
-          $current_eye_medications = array_filter($medicationsElement->currentOrderedEntries, $filter_eye_medication);
-          $stopped_eye_medications = array_filter($medicationsElement->stoppedOrderedEntries, $filter_eye_medication);
+          $current_eye_medications = array_filter($medicationsElement->current_entries, $filter_eye_medication);
+          $stopped_eye_medications = array_filter($medicationsElement->closed_entries, $filter_eye_medication);
           ?>
           <?php if (!$current_eye_medications && !$stopped_eye_medications) { ?>
               <div class="data-value not-recorded">
