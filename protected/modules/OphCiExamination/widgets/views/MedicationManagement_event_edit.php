@@ -272,8 +272,8 @@ $element_errors = $element->getErrors();
             $('.js-event-date').show();
                 }
 
-        let elementHasRisks = <?= $element->hasRisks(); ?>;
-        if(elementHasRisks) {
+        let elementHasRisks = <?= $element->hasRisks() ? 1 : 0 ?>;
+        if(elementHasRisks && !$('.' + OE_MODEL_PREFIX + 'HistoryRisks').length) {
             $('#episodes-and-events').data('patient-sidebar').addElementByTypeClass(OE_MODEL_PREFIX + 'HistoryRisks', undefined);
         }
     });
