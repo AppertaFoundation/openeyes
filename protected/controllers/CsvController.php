@@ -377,6 +377,14 @@ class CsvController extends BaseController
             }
         }
 
+				if(!empty($patient_raw_data['medicare_id'])){
+					$duplicate_patient = Patient::model()->findByAttributes(array('nhs_num' => $patient_raw_data['medicare_id']));
+					if ($duplicate_patient !== null){
+						$errors[] = "Duplicate Medicare ID (" . $patient_raw_data['medicare_id'] . ") found for patient: " . $patient_raw_data['first_name'] . " " . $patient_raw_data['last_name'];
+						return $errors;
+					}
+				}
+
 				$dupecheck_first_name = $patient_raw_data['first_name'];
 				$dupecheck_last_name = $patient_raw_data['last_name'];
 
@@ -384,10 +392,10 @@ class CsvController extends BaseController
 				$dupecheck_dob = date("Y-m-d", strtotime(str_replace('/', '-', $patient_raw_data['dob'])));
 
 				//To find duplicates, the dob must be in the form yyyy-mm-dd
-				$patient_duplicates = Patient::findDuplicates($dupecheck_last_name, $dupecheck_first_name, $dupecheck_dob, null);
+				$patient_duplicates = Patient::findDuplicates($dupecheck_first_name, $dupecheck_last_name, $dupecheck_dob, null);
 
 				if(count($patient_duplicates) > 0) {
-					$errors[] = "Validation error(s) for patient: " . $dupecheck_first_name . " " . $dupecheck_last_name . " with DOB " . $dupecheck_dob;
+					$errors[] = "Validation error(s) for patient: " . $dupecheck_first_name . " " . $dupecheck_last_name;
 					foreach ($patient_duplicates as $duplicate) {
 						if(is_array($duplicate)) {
 							$errors[] = $duplicate;
