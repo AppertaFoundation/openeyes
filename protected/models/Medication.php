@@ -62,6 +62,7 @@ class Medication extends BaseActiveRecordVersioned
     const SOURCE_TYPE_DMD = "DM+D";
 
     protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
 
     /**
      * @return string the associated database table name

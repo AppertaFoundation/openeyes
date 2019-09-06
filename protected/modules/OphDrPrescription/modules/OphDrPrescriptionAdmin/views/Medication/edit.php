@@ -19,20 +19,6 @@
     <h2><?= $model->isNewRecord ? 'Create' : 'Edit'; ?> Medication</h2>
 </div>
 
-<?php
-    $source_types_raw = Yii::app()->db->createCommand("SELECT DISTINCT source_type FROM ".Medication::model()->tableName())->queryColumn();
-    $source_subtypes_raw = Yii::app()->db->createCommand("SELECT DISTINCT source_subtype FROM ".Medication::model()->tableName())->queryColumn();
-    
-    $source_types = [];
-    $source_subtypes = [];
-foreach ($source_types_raw as $k => $v) {
-    $source_types[$v] = $v;
-}
-foreach ($source_subtypes_raw as $k => $v) {
-    $source_subtypes[$v] = $v;
-}
-?>
-
 <form id="prescription-admin-medication-form" action="/OphDrPrescription/admin/Medication/edit/<?=$model->id?>" method="post">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
     <table class="standard">
@@ -79,7 +65,11 @@ foreach ($source_subtypes_raw as $k => $v) {
                         <div class="cols-2"><label>Source Type</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeDropDownList($model, 'source_type',
-                            $source_types,
+                            CHtml::listData(
+                                Medication::model()->findAll(),
+                                'source_type',
+                                'source_type'
+                            ),
                             [
                                 'class' => 'cols-full',
                                 'empty' => '-- None --'
@@ -94,7 +84,11 @@ foreach ($source_subtypes_raw as $k => $v) {
                         <div class="cols-2"><label>Source Subtype</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeDropDownList($model, 'source_subtype',
-                            $source_subtypes,
+                            CHtml::listData(
+                                Medication::model()->findAll(),
+                                'source_subtype',
+                                'source_subtype'
+                            ),
                             [
                                 'class' => 'cols-full',
                                 'empty' => '-- None --'

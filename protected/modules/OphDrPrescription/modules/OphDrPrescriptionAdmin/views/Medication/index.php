@@ -152,5 +152,5 @@
 </script>
 
 <script>
-    var medicationController = new OpenEyes.OphDrPrescriptionAdminMedication.MedicationController();
+    var medicationController = new OpenEyes.OphDrPrescriptionAdmin.MedicationController();
 </script>
