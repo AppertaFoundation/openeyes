@@ -82,12 +82,28 @@ class PracticeController extends BaseController
         if (isset($_POST['Gp'])) {
             // Assuming the Gp id and ContactPracticeAssociate Provider_no arrays have the same length.
             for($i=0; $i<sizeof($_POST['Gp']['id']); $i++) {
+                $count=0;
                 $gpId = $_POST['Gp']['id'][$i];
                 $providerNo = $_POST['ContactPracticeAssociate']['provider_no'][$i];
                 $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo),"provider_no IS NOT NULL AND provider_no != ''");
-                $gpIdProviderNoList[] = array($gpId, $providerNo, count($providerNoDuplicateCheck));
+
+                // If condition is executed when the provider no exists in the db
                 if(count($providerNoDuplicateCheck) >=1 ) {
                     $isDuplicateProviderNo = true;
+                    $count = count($providerNoDuplicateCheck);
+                    $gpIdProviderNoList[] = array($gpId, $providerNo, $count);
+                }
+                // else condition makes sure that there is no duplicate within the form itself. (it excludes empty values).
+                else {
+                    for($j=0; $j<count($gpIdProviderNoList); $j++) {
+                        if($gpIdProviderNoList[$j][1] != $providerNo || $providerNo == '' ) {
+                            $count = 0;
+                        } else {
+                            $count = 1;
+                            break;
+                        }
+                    }
+                    $gpIdProviderNoList[] = array($gpId, $providerNo, $count);
                 }
             }
         }
@@ -392,12 +408,27 @@ class PracticeController extends BaseController
             if (isset($_POST['Gp'])) {
                 // Assuming the Gp id and ContactPracticeAssociate Provider_no arrays have the same length.
                 for($i=0; $i<sizeof($_POST['Gp']['id']); $i++) {
+                    $count=0;
                     $gpId = $_POST['Gp']['id'][$i];
                     $providerNo = $_POST['ContactPracticeAssociate']['provider_no'][$i];
                     $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo),"provider_no IS NOT NULL AND provider_no != '' AND practice_id !=".$id);
-                    $gpIdProviderNoList[] = array($gpId, $providerNo, count($providerNoDuplicateCheck));
+                    // If condition is executed when the provider no exists in the db
                     if(count($providerNoDuplicateCheck) >=1 ) {
                         $isDuplicateProviderNo = true;
+                        $count = count($providerNoDuplicateCheck);
+                        $gpIdProviderNoList[] = array($gpId, $providerNo, $count);
+                    }
+                    // else condition makes sure that there is no duplicate within the form itself. (it excludes empty values).
+                    else {
+                        for($j=0; $j<count($gpIdProviderNoList); $j++) {
+                            if($gpIdProviderNoList[$j][1] != $providerNo || $providerNo == '' ) {
+                                $count = 0;
+                            } else {
+                                $count = 1;
+                                break;
+                            }
+                        }
+                        $gpIdProviderNoList[] = array($gpId, $providerNo, $count);
                     }
                 }
             }
