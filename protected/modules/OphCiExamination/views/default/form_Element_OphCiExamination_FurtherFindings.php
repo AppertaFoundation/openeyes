@@ -18,9 +18,9 @@
 ?>
 <div class="element-fields flex-layout full-width ">
   <div class="furtherfindings-multi-select">
-      <?php
-      $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
-      echo $form->multiSelectListFreeText(
+        <?php
+        $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
+        echo $form->multiSelectListFreeText(
           $element,
           CHtml::modelName($element) . '[further_findings_assignment]',
           'further_findings_assignment',

@@ -26,12 +26,12 @@ $this->renderPartial('_menu_main');
 
 <div class="OphCoTherapyapplication_DecisionTree box admin">
 
-	<?php if ($node) {?>
-		<?php
+    <?php if ($node) {?>
+        <?php
         $this->renderPartial('view_decision_tree_node', array(
                 'model' => $node,
         ));
     } else {?>
-		<a href="#" class="add_node button small" data-dt_id="<?php echo $model->id ?>">Add root</a>
-	<?php } ?>
+        <a href="#" class="add_node button small" data-dt_id="<?php echo $model->id ?>">Add root</a>
+    <?php } ?>
 </div>

@@ -221,16 +221,16 @@ class Address extends BaseActiveRecordVersioned
 
     public function getDefaultCountryId(){
         $default_country_setting = SettingMetadata::model()->getSetting('default_country');
-        return Country::model()->find('name = ?' , [$default_country_setting])->id;
+        return Country::model()->find('name = ?', [$default_country_setting])->id;
     }
 
     public function beforeValidate()
     {
-        if($this->date_start == ""){
+        if ($this->date_start == "") {
             $this->date_start = null;
         }
 
-        if($this->date_end == ""){
+        if ($this->date_end == "") {
             $this->date_end = null;
         }
         $this->date_start = Helper::convertNHS2MySQL($this->date_start);

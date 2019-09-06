@@ -13,7 +13,7 @@
         'href' => '#',
         'active' => true
     );
-?>
+    ?>
 
 
 <section class="element">
@@ -24,11 +24,11 @@
 
     <?php
         $text = '';
-        if(($draft == 0) && ($printed == 0)){
-            $text = 'finalised';
-        } else {
-            $text = 'printed';
-        }
+    if (($draft == 0) && ($printed == 0)) {
+        $text = 'finalised';
+    } else {
+        $text = 'printed';
+    }
     ?>
     This prescription has been <?php echo $text; ?>. Changes to <?php echo $text; ?> prescriptions must
     only be made under specific circumstances. Please select a reason from the list below:
@@ -44,7 +44,7 @@ $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'displa
     <input type="hidden" name="reason" id="reason" />
 
 
-    <?php foreach ($reasons as $key=>$reason): ?>
+    <?php foreach ($reasons as $key=>$reason) : ?>
         <div>
             <button class="hint blue submit" data-value="<?php echo $reason->id; ?>" id="reason_<?php echo $reason->id; ?>" style="margin-bottom: 15px;"><?php echo htmlentities($reason->caption); ?></button>
         </div>

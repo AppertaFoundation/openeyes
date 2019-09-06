@@ -65,8 +65,7 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
      */
     public function query($searchProvider)
     {
-        switch ($this->operation)
-        {
+        switch ($this->operation) {
             case '0':
                 return 'SELECT id FROM patient WHERE NOT(is_deceased)';
                 break;

@@ -56,45 +56,45 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
         <input id="checkall" value="" type="checkbox">
       </label>
     </th>
-      <?php if ($this->module->isTheatreDiaryDisabled()): ?>
+        <?php if ($this->module->isTheatreDiaryDisabled()) : ?>
         <th></th>
-      <?php endif; ?>
+        <?php endif; ?>
   </tr>
   </thead>
   <tbody>
-  <?php if (empty($operations)) { ?>
+    <?php if (empty($operations)) { ?>
     <tr>
       <td>
         There are no patients who match the specified criteria.
       </td>
     </tr>
-  <?php } else { ?>
-      <?php foreach ($operations as $eo) {
-          $patient = $eo->event->episode->patient;
-          $contact = $patient->contact;
-          ?>
+    <?php } else { ?>
+        <?php foreach ($operations as $eo) {
+            $patient = $eo->event->episode->patient;
+            $contact = $patient->contact;
+            ?>
 
-          <?php
-          switch ($eo->getWaitingListStatus()) {
-              case Element_OphTrOperationbooking_Operation::STATUS_PURPLE:
-                  $letterStatusClass = 'send-invitation-letter';
-                  break;
-              case Element_OphTrOperationbooking_Operation::STATUS_GREEN1:
-                  $letterStatusClass = 'send-another-reminder';
-                  break;
-              case Element_OphTrOperationbooking_Operation::STATUS_GREEN2:
-                  $letterStatusClass = 'send-another-reminder';
-                  break;
-              case Element_OphTrOperationbooking_Operation::STATUS_ORANGE:
-                  $letterStatusClass = 'send-gp-removal-letter';
-                  break;
-              case Element_OphTrOperationbooking_Operation::STATUS_RED:
-                  $letterStatusClass = 'patient-due-removed';
-                  break;
-              default:
-                  $letterStatusClass = '';
-                  break;
-          } ?>
+            <?php
+            switch ($eo->getWaitingListStatus()) {
+                case Element_OphTrOperationbooking_Operation::STATUS_PURPLE:
+                    $letterStatusClass = 'send-invitation-letter';
+                    break;
+                case Element_OphTrOperationbooking_Operation::STATUS_GREEN1:
+                    $letterStatusClass = 'send-another-reminder';
+                    break;
+                case Element_OphTrOperationbooking_Operation::STATUS_GREEN2:
+                    $letterStatusClass = 'send-another-reminder';
+                    break;
+                case Element_OphTrOperationbooking_Operation::STATUS_ORANGE:
+                    $letterStatusClass = 'send-gp-removal-letter';
+                    break;
+                case Element_OphTrOperationbooking_Operation::STATUS_RED:
+                    $letterStatusClass = 'patient-due-removed';
+                    break;
+                default:
+                    $letterStatusClass = '';
+                    break;
+            } ?>
       <tr>
         <td class="letter-status <?php echo $letterStatusClass ?>">
             <?php if ($eo->sentInvitation()) { ?>
@@ -107,7 +107,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
               <i class="oe-i letter-2 small js-has-tooltip" data-tooltip-content="2nd Reminder"></i>
             <?php } ?>
             <?php if ($eo->sentGPLetter()) { ?>
-              <i class="oe-i letter-GP small js-has-tooltip" data-tooltip-content= \Yii::app()->params['gp_label']." Removal"></i>
+                <i class="oe-i letter-GP small js-has-tooltip" data-tooltip-content= "<?=\Yii::app()->params['gp_label']." Removal"?>"></i>
             <?php } ?>
         </td>
 
@@ -128,7 +128,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
           (<?php echo $eo->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name ?>)
         </td>
         <td class="right"><span class="oe-date">
-        <?php echo Helper::convertDate2HTML($eo->NHSDate('decision_date')) ?>
+            <?php echo Helper::convertDate2HTML($eo->NHSDate('decision_date')) ?>
         </td>
 
         <td><?php echo $eo->priority->name ?></td>
@@ -136,7 +136,9 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
         <td><?php echo ucfirst(preg_replace('/^Requires /', '', $eo->status->name)) ?></td>
 
 
-        <td<?php if ($letterStatusClass == '' && Yii::app()->user->checkAccess('admin')) { ?> class="admin-td"<?php } ?>>
+        <td<?php if ($letterStatusClass == '' && Yii::app()->user->checkAccess('admin')) {
+            ?> class="admin-td"<?php
+           } ?>>
 
             <?php if (($patient && $patient->contact->correspondAddress)
                 && $eo->id
@@ -144,7 +146,9 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
                     || ($eo->getDueLetter() == Element_OphTrOperationbooking_Operation::LETTER_GP && $patient->practice && $patient->practice->contact->address)
                 )) { ?>
               <div>
-                <input<?php if ($letterStatusClass == '' && !Yii::app()->user->checkAccess('admin')) { ?> disabled="disabled"<?php } ?>
+                <input<?php if ($letterStatusClass == '' && !Yii::app()->user->checkAccess('admin')) {
+                    ?> disabled="disabled"<?php
+                      } ?>
                     type="checkbox" id="operation<?php echo $eo->id ?>" value="1"/>
               </div>
             <?php } ?>
@@ -165,18 +169,18 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
               <span class="no-address error">No Address</span>
             <?php } ?>
         </td>
-          <?php if ($this->module->isTheatreDiaryDisabled()): ?>
+            <?php if ($this->module->isTheatreDiaryDisabled()) : ?>
             <td>
               <a href="/OphTrOperationbooking/default/update/<?php echo $eo->event_id; ?>?waiting-list=1" class="button blue hint">Edit Booking</a>
             </td>
-          <?php else: ?>
+            <?php else : ?>
             <td>
               <a href="/OphTrOperationbooking/booking/schedule/<?php echo $eo->event_id; ?>?waiting-list=1" class="button blue hint">Schedule Operation</a>
             </td>
-          <?php endif; ?>
+            <?php endif; ?>
       </tr>
-      <?php } ?>
-  <?php } ?>
+        <?php } ?>
+    <?php } ?>
   </tbody>
   <tfoot>
   <tr>

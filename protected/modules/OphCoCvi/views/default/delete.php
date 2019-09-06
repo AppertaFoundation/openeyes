@@ -31,7 +31,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
         } ?>
       <div style="width:300px; margin-bottom: 0.6em;">
         <p>Reason for deletion:</p>
-          <?=\CHtml::textArea('delete_reason', '') ?>
+            <?=\CHtml::textArea('delete_reason', '') ?>
       </div>
       <p>
         <strong>Are you sure you want to proceed?</strong>

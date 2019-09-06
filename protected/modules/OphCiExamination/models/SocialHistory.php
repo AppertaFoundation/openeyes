@@ -168,7 +168,8 @@ class SocialHistory extends \BaseEventTypeElement
                 if (is_a($relation, self::BELONGS_TO)) {
                     $pk = $this->{$relation_name . '_id'};
                 } else {
-                    $pk = array_map(function($i) { return $i->id;}, ($this->getRelated($relation_name) ? : array()));
+                    $pk = array_map(function($i) { return $i->id;
+                    }, ($this->getRelated($relation_name) ? : array()));
                 }
                 return $cls::model()->activeOrPk($pk)->findAll(array('order' => 'display_order asc'));
             }
@@ -233,12 +234,12 @@ class SocialHistory extends \BaseEventTypeElement
 
     public function beforeValidate()
     {
-      if (!parent::beforeValidate()) {
-        return false;
-      }
-      if ($this->alcohol_intake == "")
+        if (!parent::beforeValidate()) {
+            return false;
+        }
+        if ($this->alcohol_intake == "")
         $this->alcohol_intake = null;
-      return true;
+        return true;
     }
 
     /**

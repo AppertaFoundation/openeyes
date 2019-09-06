@@ -65,11 +65,11 @@
 </div>
 
 <script type="text/javascript">
-	handleButton($('#et_cancel'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewPatientUnavailableReasons';
-	});
-	handleButton($('#et_save'),function(e) {
-		$('#adminform').submit();
-	});
+    handleButton($('#et_cancel'),function(e) {
+        e.preventDefault();
+        window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewPatientUnavailableReasons';
+    });
+    handleButton($('#et_save'),function(e) {
+        $('#adminform').submit();
+    });
 </script>

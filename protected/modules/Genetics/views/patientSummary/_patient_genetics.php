@@ -25,7 +25,7 @@
   </a>
   <div class="js-toggle-body">
     <?php $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));?>
-      <?php if ($subject) { ?>
+        <?php if ($subject) { ?>
             <div class="data-group">
                 <div class="cols-4 column">
                     <div class="data-label">Genetic database ID:</div>
@@ -37,8 +37,8 @@
                      </div>
                 </div>
             </div>
-          <?php if ($subject->pedigrees) {
-            foreach($subject->pedigrees as $pedigree) {  ?>
+            <?php if ($subject->pedigrees) {
+                foreach ($subject->pedigrees as $pedigree) {  ?>
             <div class="data-group">
                 <div class="cols-4 column">
                     <div class="data-label">Pedigree ID:</div>
@@ -46,19 +46,21 @@
                 <div class="cols-8 column">
                     <div class="data-value">
 
-                        <?php echo $pedigree->id ?>
-                        <?php if ($pedigree->gene) { echo '(Gene: '.$pedigree->gene->name.')'; } ?>
-                        <?php
-                        $status = GeneticsPatientPedigree::model()->findByAttributes(array('patient_id' => $subject->id, 'pedigree_id' => $pedigree->id));
-                        if($status->status !== NULL){
-                            echo $status->status->name;
-                        }
-                        ?>
+                            <?php echo $pedigree->id ?>
+                            <?php if ($pedigree->gene) {
+                                echo '(Gene: '.$pedigree->gene->name.')';
+                            } ?>
+                            <?php
+                            $status = GeneticsPatientPedigree::model()->findByAttributes(array('patient_id' => $subject->id, 'pedigree_id' => $pedigree->id));
+                            if ($status->status !== NULL) {
+                                echo $status->status->name;
+                            }
+                            ?>
                         ( <?=\CHtml::link('View', Yii::app()->createUrl('/Genetics/pedigree/view/' . $pedigree->id)); ?> )
                     </div>
                 </div>
             </div>
-          <?php }
+                <?php }
             } ?>
            
             <div class="data-group">
@@ -69,11 +71,11 @@
                     <div class="data-value">
                         <?php
                             
-                            if($subject->diagnoses !== NULL){
-                                foreach($subject->diagnoses as $diagnose){
-                                    echo $diagnose->term."<br>";
-                                }
-                            } 
+                        if ($subject->diagnoses !== NULL) {
+                            foreach ($subject->diagnoses as $diagnose) {
+                                echo $diagnose->term."<br>";
+                            }
+                        }
                         ?>
                     </div>
                 </div>
@@ -86,91 +88,91 @@
                      <div class="data-value"><?php echo Yii::app()->format->ntext($subject->comments) ?></div>
                 </div>
             </div>
-      <?php } else { ?>
+        <?php } else { ?>
         <div class="data-group">
             
             <div class="data-label column" style="margin-bottom:10px;">
                 <?=\CHtml::link('Assign Patient to Genetics', Yii::app()->createUrl('Genetics/subject/edit?patient='.$patient->id)) ?>
             </div>
         </div>
-      <?php } ?>
-      <?php
-      $api = Yii::app()->moduleAPI->get('OphInDnasample');
-      if ($api) {
-          $events = $api->getEventsByPatient($patient);
-          if ($events) { ?>
+        <?php } ?>
+        <?php
+        $api = Yii::app()->moduleAPI->get('OphInDnasample');
+        if ($api) {
+            $events = $api->getEventsByPatient($patient);
+            if ($events) { ?>
             <div class="data-group">
               <div class="cols-4 column">
                 <div class="data-label">DNA Sample Events:</div>
               </div>
               <div class="cols-8 column">
                 <div class="data-value">
-                    <?php foreach ($events as $event) {
-                        echo EventNavigation::SmallIcon($event, '( View )');
-                        echo ' ' . Helper::convertMySQL2NHS($event->event_date);
-                        ?>
+                      <?php foreach ($events as $event) {
+                            echo EventNavigation::SmallIcon($event, '( View )');
+                            echo ' ' . Helper::convertMySQL2NHS($event->event_date);
+                            ?>
                       <br/>
-                        <?php
-                    }
-                    ?>
+                            <?php
+                      }
+                        ?>
                 </div>
               </div>
             </div>
-              <?php
-          }
-      }
-      ?>
-      <?php
-      $api = Yii::app()->moduleAPI->get('OphInDnaextraction');
-      if ($api) {
-          $events = $api->getEventsByPatient($patient);
-          if ($events) { ?>
+                <?php
+            }
+        }
+        ?>
+        <?php
+        $api = Yii::app()->moduleAPI->get('OphInDnaextraction');
+        if ($api) {
+            $events = $api->getEventsByPatient($patient);
+            if ($events) { ?>
             <div class="data-group">
               <div class="cols-4 column">
                 <div class="data-label">DNA Extraction Events:</div>
               </div>
               <div class="cols-8 column">
                 <div class="data-value">
-                    <?php foreach ($events as $event) {
-                        echo EventNavigation::SmallIcon($event, '( View )');
-                        echo ' ' . Helper::convertMySQL2NHS($event->event_date);
-                        ?>
+                      <?php foreach ($events as $event) {
+                            echo EventNavigation::SmallIcon($event, '( View )');
+                            echo ' ' . Helper::convertMySQL2NHS($event->event_date);
+                            ?>
                       <br/>
-                        <?php
-                    }
-                    ?>
+                            <?php
+                      }
+                        ?>
                 </div>
               </div>
             </div>
-              <?php
-          }
-      }
-      ?>
-      <?php
-      $api = Yii::app()->moduleAPI->get('OphInGeneticresults');
-      if ($api) {
-          $events = $api->getEventsByPatient($patient);
-          if ($events) { ?>
+                <?php
+            }
+        }
+        ?>
+        <?php
+        $api = Yii::app()->moduleAPI->get('OphInGeneticresults');
+        if ($api) {
+            $events = $api->getEventsByPatient($patient);
+            if ($events) { ?>
             <div class="data-group">
               <div class="cols-4 column">
                 <div class="data-label">Genetic Result Events:</div>
               </div>
               <div class="cols-8 column">
                 <div class="data-value">
-                    <?php foreach ($events as $event) {
-                        echo EventNavigation::SmallIcon($event,'( View )');
-                        echo ' ' . Helper::convertMySQL2NHS($event->event_date);
-                        ?>
+                      <?php foreach ($events as $event) {
+                            echo EventNavigation::SmallIcon($event, '( View )');
+                            echo ' ' . Helper::convertMySQL2NHS($event->event_date);
+                            ?>
                       <br/>
-                        <?php
-                    }
-                    ?>
+                            <?php
+                      }
+                        ?>
                 </div>
               </div>
             </div>
-              <?php
-          }
-      }
-      ?>
+                <?php
+            }
+        }
+        ?>
   </div>
 </section>

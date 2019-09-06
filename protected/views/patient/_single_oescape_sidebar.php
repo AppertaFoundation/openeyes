@@ -45,20 +45,20 @@ $episodes_list = array();
 if (is_array($ordered_episodes)) { ?>
     <ul class="oescape-icon-btns" style="font-size: 0;">
         <?php foreach ($ordered_episodes as $specialty_episodes) {
-              foreach ($specialty_episodes['episodes'] as $i => $episode) {
-                  $id = $episode->getSubspecialtyID();
-                  $subspecialty_name = $episode->getSubspecialtyText();
-                  if ($id) {
-                      $tag = $episode->subspecialty->ref_spec;
-                  }
+            foreach ($specialty_episodes['episodes'] as $i => $episode) {
+                $id = $episode->getSubspecialtyID();
+                $subspecialty_name = $episode->getSubspecialtyText();
+                if ($id) {
+                    $tag = $episode->subspecialty->ref_spec;
+                }
 
-                  if (!array_key_exists($id, $subspecialty_labels)) {
-                      $subspecialty_labels[$id] = $subspecialty_name;
-                  }
-                  if (!array_key_exists($id, $episodes_list)) {
-                      $episodes_list[$id] = $episode;
-                  }
-              }
+                if (!array_key_exists($id, $subspecialty_labels)) {
+                    $subspecialty_labels[$id] = $subspecialty_name;
+                }
+                if (!array_key_exists($id, $episodes_list)) {
+                    $episodes_list[$id] = $episode;
+                }
+            }
         }
 
         $subspecialties = Subspecialty::model()->findAllByAttributes(

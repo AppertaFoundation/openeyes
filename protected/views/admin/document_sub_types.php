@@ -18,7 +18,7 @@
     <h2>Document sub types</h2>
   </div>
   <div class="cols-4 column end">
-      <?=\CHtml::htmlButton('Add sub type', array('class' => 'button large addSubType'))?>
+        <?=\CHtml::htmlButton('Add sub type', array('class' => 'button large addSubType'))?>
   </div>
 <b> i say yes</b>
 </div>

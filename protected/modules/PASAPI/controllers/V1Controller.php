@@ -92,7 +92,7 @@ class V1Controller extends \CController
         }
 
         if (!in_array($this->output_format, static::$supported_formats)) {
-            $this->sendResponse(406, 'PASAPI only supports '.implode(',',  static::$supported_formats));
+            $this->sendResponse(406, 'PASAPI only supports '.implode(',', static::$supported_formats));
         }
 
         if (!isset($_SERVER['PHP_AUTH_USER'])) {

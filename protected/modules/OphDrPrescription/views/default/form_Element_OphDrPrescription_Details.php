@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -54,7 +51,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
         </thead>
         <tbody>
         <?php
-		$unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
+        $unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
         foreach ($element->items as $key => $item) {
             $this->renderPartial('form_Element_OphDrPrescription_Details_Item',
                 array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options));
@@ -70,15 +67,15 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
           Clear all
         </button>
 
-          <?php
+            <?php
           // we need to separate the public and admin view
-          if (is_a(Yii::app()->getController(), 'DefaultController') &&
-              $this->getPreviousPrescription($element->id)): ?>
+            if (is_a(Yii::app()->getController(), 'DefaultController') &&
+              $this->getPreviousPrescription($element->id)) : ?>
             <button type="button" class="button hint blue"
                     id="repeat_prescription" name="repeat_prescription">
               Add repeat prescription
             </button>
-          <?php endif; ?>
+            <?php endif; ?>
       </div>
 
       <div>
@@ -107,9 +104,9 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
 <script type="text/javascript">
     <?php
     // we need to separate the public and admin view
-    if (is_a(Yii::app()->getController(), 'DefaultController')): ?>
+    if (is_a(Yii::app()->getController(), 'DefaultController')) : ?>
     var searchListUrl = '<?= $this->createUrl('DrugList') ?>';
-    <?php else: ?>
+    <?php else : ?>
     var searchListUrl = '<?='/' . Yii::app()->getModule('OphDrPrescription')->id . '/' . Yii::app()->getModule('OphDrPrescription')->defaultController . '/DrugList'; ?>';
     <?php endif; ?>
 
@@ -128,26 +125,28 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
                 'label' => $drug['preferred_term'],
                 'id' => $drug['id'],
                 'prepended_markup' => $this->widget('MedicationInfoBox', array('medication_id' => $drug['id']), true),
-                'allergies' => array_map(function($e) { return $e->id; }, $drug['allergies']),
+                'allergies' => array_map(function ($e) {
+                    return $e->id;
+                }, $drug['allergies']),
             ];
         }, $element->commonDrugs())
     ) ?>;
 
     <?php
-            $drugTypes = [];
-        foreach ($element->drugTypes() as $key=>$drugType) {
-            $drugTypes[] = [
-                'label' => $drugType,
-                'id' => $key
-            ];
-        }
-        ?>
+        $drugTypes = [];
+    foreach ($element->drugTypes() as $key => $drugType) {
+        $drugTypes[] = [
+            'label' => $drugType,
+            'id' => $key
+        ];
+    }
+    ?>
 
     var prescriptionElementDrugTypes = <?= CJSON::encode($drugTypes) ?>;
 
-	<?php if(isset($this->patient)){ ?>
-    var patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
-	<?php } ?>
+	<?php if (isset($this->patient)) : ?>
+    let patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
+	<?php endif; ?>
 
 </script>
 

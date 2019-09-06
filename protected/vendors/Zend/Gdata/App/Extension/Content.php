@@ -59,11 +59,11 @@ class Zend_Gdata_App_Extension_Content extends Zend_Gdata_App_Extension_Text
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'src':
-            $this->_src = $attribute->nodeValue;
+            case 'src':
+                $this->_src = $attribute->nodeValue;
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
