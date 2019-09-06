@@ -165,17 +165,13 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 );
             }
 
-            $('.js-remove-gps').click(function(event) {
-                $(this).parent('li').find('span').text('');
-                $(this).parent('li').find('input').remove();
-                $(this).parent('li').hide();
-                $(this).parent('li').remove();
-            });
+            removeGpClickEvent();
         }
     });
 
     $(document).ready(function ()
     {
+        removeGpClickEvent();
         highLightError("Gp_id_em_","Please select at least one",'#gp_autocomplete_id');
     });
 
@@ -183,6 +179,15 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
         if(document.getElementById(elementId) !== null && document.getElementById(elementId).innerHTML.includes(containText)){
             $(highLightFiled).addClass("error");
         }
+    }
+
+    function removeGpClickEvent() {
+        $('.js-remove-gps').click(function(event) {
+            $(this).parents('li').find('span').text('');
+            $(this).parents('li').find('input').remove();
+            $(this).parents('li').hide();
+            $(this).parents('li').remove();
+        });
     }
 
 </script>
