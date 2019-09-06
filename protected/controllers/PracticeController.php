@@ -310,7 +310,7 @@ class PracticeController extends BaseController
                                 for ($i = 0; $i < count($gpIdProviderNoList); $i++) {
                                     $practice_contact_associate = new ContactPracticeAssociate();
                                     $practice_contact_associate->gp_id = $gpIdProviderNoList[$i][0];
-                                    $practice_contact_associate->provider_no = $gpIdProviderNoList[$i][1];
+                                    $practice_contact_associate->provider_no = !empty($gpIdProviderNoList[$i][1]) ? $gpIdProviderNoList[$i][1] : null;
                                     $practice_contact_associate->practice_id = $practice->id;
                                     $practice_contact_associate->save();
                                     if ($i == (count($gpIdProviderNoList)-1)) {

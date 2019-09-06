@@ -181,6 +181,9 @@ class GpController extends BaseController
     {
         Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
         $model = $this->loadModel($id);
+
+        $valid=true;
+
         $contact = $model->contact;
         $cpas = $model->contactPracticeAssociate;
         $contact->setScenario(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
@@ -193,10 +196,17 @@ class GpController extends BaseController
             $index = 0;
             foreach($_POST['ContactPracticeAssociate'] as $cpa) {
                 $cpas[$index]->provider_no = $cpa['provider_no'];
+                $valid=$cpas[$index]->validate() && $valid;
+                for($i=0;$i<$index;$i++) {
+                    if($cpas[$index]->provider_no == $cpas[$i]->provider_no && $cpas[$index]->provider_no != '') {
+                        $valid = false;
+                        $cpas[$index]->addError('provider_no', 'Duplicate provider number.');
+                    }
+                }
                 $index++;
             }
 
-            if($contact->validate()) {
+            if($contact->validate() && $valid) {
                 foreach($cpas as $cpa) {
                     $update = Yii::app()->db->createCommand()
                         ->update('contact_practice_associate', array('provider_no' => !empty($cpa->provider_no) ? $cpa->provider_no : null),'id=:id', array(':id'=>$cpa->id));

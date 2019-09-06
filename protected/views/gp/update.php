@@ -137,7 +137,9 @@ $this->pageTitle = 'Update Practitioner';
                                                         'name' => 'ContactPracticeAssociate['.$i.'][provider_no]',
                                                         ));
                                                     ?>
+                                                    <?php echo $form->error($cpa, 'provider_no'); ?>
                                                 </td>
+
                                                 <td><?php echo CHtml::encode($cpa->practice->contact->first_name); ?></td>
                                                 <td><?php echo CHtml::encode($cpa->practice->getAddressLines()); ?></td>
                                                 <td><?php echo CHtml::encode($cpa->practice->code); ?></td>
