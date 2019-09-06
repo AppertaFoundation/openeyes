@@ -591,7 +591,7 @@ class DefaultController extends BaseEventTypeController
     public function renderPrescriptionItem($key, $source)
     {
         $item = new OphDrPrescription_Item();
-                $item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
+                $item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
         if (is_a($source, 'OphDrPrescription_Item')) {
             // Source is a prescription item, so we should clone it
             foreach (array(
