@@ -116,6 +116,42 @@ class MedicationController extends BaseAdminController
         \Yii::app()->end();
     }
 
+    private function transpose($arr)
+    {
+        $out = [];
+        foreach ($arr as $key => $all_vals) {
+            foreach ($all_vals as $val_key => $val) {
+                if (!array_key_exists($val_key, $out)) {
+                    $out[$val_key] = [];
+                }
+                $out[$val_key][$key] = $val;
+            }
+        }
+        return $out;
+    }
+
+    private function updateRelated($relation_name, $relation_type, $medication, &$data)
+    {
+        $transposed_relations = array_key_exists($relation_name, $data) ?
+            $this->transpose($data[$relation_name]) : [];
+
+        $data[$relation_name] = [];
+
+        foreach ($transposed_relations as $relation) {
+            $relation_model = $relation['id'] == '-1' ?
+                new $relation_type() :
+                $relation_type::model()->findByPk($relation['id']);
+
+            $relation['medication_id'] = $medication->id;
+            $relation_model->setAttributes($relation);
+            if ($relation_model->save()) {
+                array_push($data[$relation_name], $relation_model);
+            } else {
+                return;
+            }
+        }
+    }
+
     public function actionEdit($id = null)
     {
         if (!\Yii::app()->request->isPostRequest) {
@@ -139,50 +175,14 @@ class MedicationController extends BaseAdminController
             $medication = new Medication;
         }
 
-        $transpose = function ($arr) {
-            $out = [];
-            foreach ($arr as $key => $all_vals) {
-                foreach ($all_vals as $val_key => $val) {
-                    if (!array_key_exists($val_key, $out)) {
-                        $out[$val_key] = [];
-                    }
-                    $out[$val_key][$key] = $val;
-                }
-            }
-            return $out;
-        };
-
-        $updateRelation = function ($relation_name, $relation_type, &$data) use ($transpose, $medication) {
-            $transposed_relations = array_key_exists($relation_name, $data) ?
-                $transpose($data[$relation_name]) : [];
-
-            $data[$relation_name] = [];
-
-            foreach ($transposed_relations as $relation) {
-                $relation_model = $relation['id'] == '-1' ?
-                    new $relation_type() :
-                    $relation_type::model()->findByPk($relation['id']);
-
-                $relation['medication_id'] = $medication->id;
-                $relation_model->setAttributes($relation);
-                if ($relation_model->save()) {
-                    array_push($data[$relation_name], $relation_model);
-                } else {
-                    return;
-                }
-            }
-        };
-
-        $updateRelation('medicationAttributeAssignments', 'MedicationAttributeAssignment', $data);
-        $updateRelation('medicationSetItems', 'MedicationSetItem', $data);
-        $updateRelation('medicationSearchIndexes', 'MedicationSearchIndex', $data);
+        $this->updateRelated('medicationAttributeAssignments', 'MedicationAttributeAssignment', $medication, $data);
+        $this->updateRelated('medicationSetItems', 'MedicationSetItem', $medication, $data);
+        $this->updateRelated('medicationSearchIndexes', 'MedicationSearchIndex', $medication, $data);
 
         $medication->setAttributes($data);
 
-        if ($medication->autoValidateRelation(true)->validate() && !$medication->getErrors()) {
-            if ($medication->save()) {
-                $this->redirect("/OphDrPrescription/admin/Medication/index");
-            }
+        if ($medication->save()) {
+            $this->redirect("/OphDrPrescription/admin/Medication/index");
         }
     }
 
