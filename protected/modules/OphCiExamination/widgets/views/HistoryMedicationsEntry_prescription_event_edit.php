@@ -113,14 +113,13 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
         </div>
     </td>
     <td>
-        <div class="js-stop-reason-select" style= "<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
+        <div class="js-stop-reason-select" style= "<?= is_null($entry->end_date) ? "display:none" : "" ?>">
             <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason')) ?>
         </div>
-        <div class="js-stop-reason-text" style= "<?=$is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
+        <div class="js-stop-reason-text" style= "<?= is_null($entry->end_date) ? "" : "display:none" ?>">
             <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
         </div>
     </td>
-	</td>
     <td class="text-center">
         <i class="oe-i info small pad js-has-tooltip" data-tooltip-content=
         "This medication was prescribed through OpenEyes.<?= $entry->prescriptionNotCurrent() ? ' The prescription has been altered since this entry was recorded.' : ''; ?>"></i>
