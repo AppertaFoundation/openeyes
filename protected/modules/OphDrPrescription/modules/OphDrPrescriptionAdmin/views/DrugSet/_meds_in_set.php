@@ -15,10 +15,10 @@
 
 ?>
 <?php
-    if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) {
-        $default_dispense_location = \CHtml::listData(\OphDrPrescription_DispenseLocation::model()->findAll(), 'id', 'name');
-        $default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondition::model()->findAll(), 'id', 'name');
-    }
+if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) {
+    $default_dispense_location = \CHtml::listData(\OphDrPrescription_DispenseLocation::model()->findAll(), 'id', 'name');
+    $default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondition::model()->findAll(), 'id', 'name');
+}
 ?>
 
 
