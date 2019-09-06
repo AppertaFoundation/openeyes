@@ -1,5 +1,18 @@
-<?php
-
+<?php /**
+* OpenEyes
+*
+* (C) OpenEyes Foundation, 2019
+* This file is part of OpenEyes.
+* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+* You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+*
+* @package OpenEyes
+* @link http://www.openeyes.org.uk
+* @author OpenEyes <info@openeyes.org.uk>
+* @copyright Copyright (c) 2019, OpenEyes Foundation
+* @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+*/
 
 class LocalMedicationToDmdMedicationCommand extends CConsoleCommand
 {
@@ -39,6 +52,7 @@ EOH;
             $current_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LOCAL' AND source_subtype='drug'", array(":old_id" => $drug->id));
             $target_medication = Medication::model()->find("preferred_code = :national_code AND source_type='DM+D' AND deleted_date is NULL", array(":national_code" => $drug->national_code));
 
+						$transaction = Yii::app()->db->beginTransaction();
             if ($current_medication && $target_medication) {
                 if ($target_medication->source_old_id) {
                     // Only drug medication has source_old_id if target medication has one it means one drug with
@@ -53,22 +67,25 @@ EOH;
                         $new_merge->target_id = $target_medication->id;
                     }
 
-                    $transaction = Yii::app()->db->beginTransaction();
-
-                    if (!$new_merge->save(false)) {
+                    if (!$new_merge->save()) {
                         $transaction->rollback();
-                        echo "ERROR: unable to save drug ".$drug->name."!\n";
+                        Yii::log( "ERROR: unable to save drug ".$drug->name."!\n");
                     } else {
                         $transaction->commit();
                     }
                 } else {
+										$transaction = Yii::app()->db->beginTransaction();
                     $source_old_id = $current_medication->source_old_id;
                     $current_medication->attributes = $target_medication->attributes;
                     $current_medication->source_old_id = $source_old_id;
-                    $current_medication->save();
+										$target_medication->deleted_date = date("Y-m-d H:i:s");
 
-                    $target_medication->deleted_date = date("Y-m-d H:i:s");
-                    $target_medication->save();
+                    if($current_medication->save() && $target_medication->save()) {
+                    	$transaction->commit();
+										} else {
+                    	Yii::log('Unable to update Medication with id :' . $current_medication->id .
+												" with Medication id: " . $target_medication->id . " attributes");
+										}
                 }
             }
         }
