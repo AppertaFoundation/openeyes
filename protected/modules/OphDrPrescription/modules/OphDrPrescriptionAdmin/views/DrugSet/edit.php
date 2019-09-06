@@ -47,7 +47,7 @@
                                     'class' => 'cols-full',
                                     'placeholder' => 'Name of the set'
                             ]);
-                        ?>
+?>
                     </td>
                     <td>
                         <div class="js-spinner-as-icon" style="display:none"><i class="spinner as-icon"></i></div>
@@ -68,7 +68,7 @@
         'id' => 'et_save'
     ]
 ); ?>
- <?=\CHtml::submitButton(
+    <?=\CHtml::submitButton(
     'Cancel',
     [
         'class' => 'button large red hint',

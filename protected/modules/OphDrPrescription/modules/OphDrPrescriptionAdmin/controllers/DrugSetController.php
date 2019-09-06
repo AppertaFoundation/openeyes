@@ -152,7 +152,6 @@ class DrugSetController extends BaseAdminController
         $data_provider->pagination = $pagination;
 
         foreach ($data_provider->getData() as $set) {
-
             $set_attributes = $set->attributes;
             $set_attributes['count'] = $set->itemsCount();
             $set_attributes['hidden'] = $set->attributes['hidden'] ? $set->attributes['hidden'] : null;
@@ -212,7 +211,6 @@ class DrugSetController extends BaseAdminController
         $data_provider->pagination = $pagination;
 
         foreach ($data_provider->getData() as $set_item) {
-
             $item = $set_item->attributes;
             $item['default_route'] = $set_item->defaultRoute ? $set_item->defaultRoute->term : null;
             $item['default_duration'] = $set_item->defaultDuration ? $set_item->defaultDuration->name : null;
@@ -253,7 +251,7 @@ class DrugSetController extends BaseAdminController
 
         $set = MedicationSet::model()->findByPk($id);
 
-        if(!$set) {
+        if (!$set) {
             $set = new MedicationSet;
         }
 
@@ -265,7 +263,6 @@ class DrugSetController extends BaseAdminController
         $is_new_record = $set->isNewRecord;
 
         if (\Yii::app()->request->isPostRequest) {
-
             if (!$set->automatic) {
                 $set->name = $data['name'];
 
@@ -344,11 +341,9 @@ class DrugSetController extends BaseAdminController
             $set = \MedicationSet::model()->findByPk($id);
 
             if ($set && $usage_code) {
-
                 // if the set is automatic we just remove the usage code
                 if ($set->automatic) {
                     $deleted_rows = $set->removeUsageCode($usage_code);
-
                 } else {
                     $count = $set->itemsCount();
                     if (!$count) {
@@ -382,10 +377,9 @@ class DrugSetController extends BaseAdminController
             $medication_data = \Yii::app()->request->getParam('Medication', []);
 
             if ($set_id && isset($medication_data['id']) && $medication_data['id'] && isset($item_data['id'])) {
-
                 $item = \MedicationSetItem::model()->findByPk($item_data['id']);
 
-                if($item) {
+                if ($item) {
                     $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
                     $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
                     $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
@@ -409,7 +403,7 @@ class DrugSetController extends BaseAdminController
             $set = \MedicationSet::model()->findByPk($set_id);
             $medication_id = \Yii::app()->request->getParam('medication_id');
 
-            if($set && $medication_id) {
+            if ($set && $medication_id) {
                 $id = $set->addMedication($medication_id);
                 $result['success'] = (bool)$id;
                 $result['id'] = $id;
@@ -426,7 +420,7 @@ class DrugSetController extends BaseAdminController
         if (\Yii::app()->request->isPostRequest) {
             $item = \Yii::app()->request->getParam('MedicationSetItem');
 
-            if(isset($item['id'])) {
+            if (isset($item['id'])) {
                 $affected_rows = \MedicationSetItem::model()->deleteByPk($item['id']);
                 $result['success'] = (bool)$affected_rows;
             } else {
