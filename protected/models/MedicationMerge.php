@@ -82,7 +82,9 @@ class MedicationMerge extends BaseActiveRecord
 	 */
 	private function getAllPending()
 	{
-		return new CActiveDataProvider('medicationMerge', ['condition' => 'status = 1']);
+		$criteria = new \CDbCriteria();
+		$criteria->addCondition('status = 1');
+		return new CActiveDataProvider('medicationMerge', ['criteria' => $criteria]);
 	}
 
 	/*
