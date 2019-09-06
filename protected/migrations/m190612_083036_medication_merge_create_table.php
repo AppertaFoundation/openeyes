@@ -5,8 +5,8 @@ class m190612_083036_medication_merge_create_table extends OEMigration
     public function up()
     {
         $this->createOETable('medication_merge', array(
-            'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
-            'entry_date_time' => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
+            'id' => 'pk',
+            'entry_timestamp' => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
             'source_drug_id' => 'int(10)',
             'source_medication_id' => 'int(11)',
             'source_code' => 'varchar(255)',
@@ -23,15 +23,4 @@ class m190612_083036_medication_merge_create_table extends OEMigration
     {
         $this->dropTable('medication_merge');
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }
