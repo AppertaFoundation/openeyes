@@ -52,7 +52,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
             </tr>
         <?php endif; ?>
         <?php foreach ($gpIdProviderNoList as $gpIdProviderNo){ ?>
-            <?php if($gpIdProviderNo[2] >= 1): ?>
+            <?php if(isset($gpIdProviderNo[2]) && $gpIdProviderNo[2] >= 1): ?>
                 <tr id="conflicts" class="cols-full alert-box error" style="font-style: italic; font-size: small;">
                     <td class="row field-row">
                         <p>Duplicate provider number detected.</p>
@@ -105,13 +105,13 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                         <ul class="oe-multi-select js-selected_gps">
                             <?php if(!empty($gpIdProviderNoList)): ?>
                                 <?php foreach ($gpIdProviderNoList as $gpIdProviderNo){ ?>
-                                    <li style="<?php echo $gpIdProviderNo[2] >= 1 ? 'background-color: #cd0000; color: #fff': '' ?>">
+                                    <li style="<?php echo isset($gpIdProviderNo[2]) && $gpIdProviderNo[2] >= 1 ? 'background-color: #cd0000; color: #fff': '' ?>">
                                         <span class="js-name" style="text-align:justify"><?php echo $gp->findByPk($gpIdProviderNo[0])->getCorrespondenceName().' - '.$gp->findByPk($gpIdProviderNo[0])->getGPROle() ?></span>
                                         <input name="ContactPracticeAssociate[provider_no][]" id=js-gp-provider-no-<?php echo $gpIdProviderNo[1] ?> value=<?php echo $gpIdProviderNo[1] ?>>
                                         <i id=js-remove-gp-<?php echo $gpIdProviderNo[0] ?> class="oe-i remove-circle small-icon pad-left js-remove-gps"></i>
                                         <input type="hidden" name="Gp[id][]" class="js-gps" value=<?php echo $gpIdProviderNo[0] ?>>
                                     </li>
-                                    <?php echo $gpIdProviderNo[2] >= 1 ? '<div class="errorMessage">Duplicate Provider Number.</div>': ''?>
+                                    <?php echo isset($gpIdProviderNo[2]) && $gpIdProviderNo[2] >= 1 ? '<div class="errorMessage">Duplicate Provider Number.</div>': ''?>
                                 <?php } ?>
                             <?php endif; ?>
                         </ul>
