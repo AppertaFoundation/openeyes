@@ -16,10 +16,13 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
         // There is a call to performAjaxValidation() commented in generated controller code.
         // See class documentation of CActiveForm for details on this.
         'enableAjaxValidation' => true,
+        'clientOptions' => array(
+            'hideErrorMessage' => false,
+        )
     )); ?>
 
     <p class="note text-right">Fields with <span class="required">*</span> are required.</p>
-    <?php echo $form->errorSummary($model); ?>
+    <?php echo $form->errorSummary(array($contact,$model,$address)); ?>
     <table class="standard">
         <tbody>
         <?php if(isset($duplicateCheckOutput) && count($duplicateCheckOutput) > 0): ?>
@@ -86,7 +89,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 <?php echo $form->labelEx($model, 'phone'); ?>
             </td>
             <td>
-                <?php echo $form->telField($model, 'phone', array('size' => 15, 'maxlength' => 20)); ?>
+                <?php echo $form->telField($model, 'phone', array('size' => 15, 'maxlength' => 20, 'class' => 'cols-10')); ?>
                 <?php echo $form->error($model, 'phone'); ?>
             </td>
         </tr>
