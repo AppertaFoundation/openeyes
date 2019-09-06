@@ -159,7 +159,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                     '<li>' +  '<div style="width: 100%">' +
                     '<span class="js-name" style="text-align:justify; float: left; padding: 5px">' + AutoCompleteResponse.label  + '</span>' +
                     '<i id=js-remove-gp-' + AutoCompleteResponse.id + ' class="oe-i remove-circle small-icon pad-left js-remove-gps" style="float: right"></i>' +
-                    '<div>' + '<input id=js-gp-provider-no' + AutoCompleteResponse.id + ' value="" style="float: right" placeholder="Enter provider number">' + '</div>' +
+                    '<div>' + '<input id=js-gp-provider-no' + AutoCompleteResponse.id + ' value="" name="ContactPracticeAssociate[provider_no][]" style="float: right" placeholder="Enter provider number">' + '</div>' +
                     '<input type="hidden" name="Gp[id][]" class="js-gps" value="' + AutoCompleteResponse.id + '">' + '</div>' +
                     '</li>'
                 );
