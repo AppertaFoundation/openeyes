@@ -1,3 +1,8 @@
+use openeyes;
+
+/* disable foreigh key check*/
+SET FOREIGN_KEY_CHECKS = 0;
+
 TRUNCATE TABLE audit_module;
 TRUNCATE TABLE audit_server;
 TRUNCATE TABLE automatic_examination_event_log;
@@ -143,3 +148,8 @@ TRUNCATE TABLE worklist_definition_mapping;
 TRUNCATE TABLE worklist_definition_mapping_value;
 TRUNCATE TABLE worklist_display_context;
 TRUNCATE TABLE worklist_display_order;
+
+
+
+/*enable foreign key check again*/
+SET FOREIGN_KEY_CHECKS = 1;
