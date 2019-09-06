@@ -22,12 +22,12 @@
 
 $model_name = CHtml::modelName($element);
 
-$systemic_filter = function ($entry) {
-    return $entry['route_id'] != 1;
+$systemic_filter = function ($med) {
+    return $med->laterality === null;
 };
 
-$eye_filter = function ($entry) {
-    return $entry['route_id'] == 1;
+$eye_filter = function ($med) {
+    return $med->laterality !== null;
 };
 
 $current_systemic_meds = array_filter($current, $systemic_filter);
