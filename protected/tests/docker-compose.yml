@@ -12,7 +12,7 @@ version: '3.4'
 
 services:
   phpunit:
-    image: appertaopeneyes/ci:latest
+    image: appertaopeneyes/ci:php7
     environment:
       TESTS_TO_RUN: "PHPUNIT"
     secrets:
@@ -23,7 +23,7 @@ services:
       - "../..:/var/www/openeyes"
 
   behat:
-    image: appertaopeneyes/ci:latest
+    image: appertaopeneyes/ci:php7
     environment:
       SELENIUM_BASE_URL: "http://behat"
       SELENIUM_WD_HOST: http://selenium:4444/wd/hub
