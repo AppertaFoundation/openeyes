@@ -81,7 +81,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201908301647',
+            'time' => '201909031652',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -303,11 +303,11 @@ return array(
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
         'tinymce_default_options' => array(
-            'plugins' => 'lists table paste code',
+            'plugins' => 'lists table paste code pagebreak',
             'branding' => false,
             'visual' => false,
             'min_height' => 400,
-            'toolbar' => "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | subtitle | labelitem | label-r-l | code",
+            'toolbar' => "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | subtitle | labelitem | label-r-l | pagebreak code",
             'valid_children' => '+body[style]',
             'custom_undo_redo_levels' => 10,
             'object_resizing' => false,
@@ -317,6 +317,7 @@ return array(
             'browser_spellcheck' => true,
             'extended_valid_elements' => 'i[*]',
             'valid_elements' => '*[*]',
+            'pagebreak_separator' => '<div class="pageBreak" />',
         ),
         'menu_bar_items' => array(
                 'admin' => array(
@@ -598,7 +599,7 @@ return array(
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.3-rc4',
+      'oe_version' => '3.3-rc5',
       'gp_label' => 'GP',
       // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
       'worklist_dashboard_future_days' => 0,

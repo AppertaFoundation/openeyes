@@ -162,7 +162,7 @@
         // if from, to not filled, the max / min date from event data will be filled in
         var date = "";
         var from_date = $('#analytics_datepicker_from').val() ? $('#analytics_datepicker_from').val() : "<?php echo $min_event_date?>";
-        var to_date = $('#analytics_datepicker_to').val() ? " to " + $('#analytics_datepicker_to').val() : " to " + "<?php echo $max_event_date?>";
+        var to_date = $('#analytics_datepicker_to').val() ? $('#analytics_datepicker_to').val() : "<?php echo $max_event_date?>";
         // make sure the entry is logical
         if(new Date(from_date) > new Date(to_date)){
             alert('From date cannot be later than To date')
@@ -172,7 +172,7 @@
             alert('To date cannot be earlier than From date')
             return;
         }
-        date = from_date + to_date
+        date = format_date(new Date(from_date)) + " to " + format_date(new Date(to_date));
         // prevent click during downloading
         if($(this).text() === 'Downloading...'){
             return false;
