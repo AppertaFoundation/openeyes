@@ -121,6 +121,7 @@ $this->pageTitle = 'Update Practitioner';
                                             <th>Practice Address</th>
                                             <th>Code</th>
                                             <th>Telephone</th>
+                                            <th/>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -131,16 +132,19 @@ $this->pageTitle = 'Update Practitioner';
                                                 <td>
                                                     <?php
                                                         echo $form->textField($cpa,'provider_no',array(
-                                                        'placeholder' => 'Provider No',
+                                                        'placeholder' => 'Enter provider number',
                                                         'maxlength' => 255,
                                                         'name' => 'ContactPracticeAssociate['.$i.'][provider_no]',
                                                         ));
                                                     ?>
+                                                    <?php echo $form->error($cpa, 'provider_no'); ?>
                                                 </td>
+
                                                 <td><?php echo CHtml::encode($cpa->practice->contact->first_name); ?></td>
                                                 <td><?php echo CHtml::encode($cpa->practice->getAddressLines()); ?></td>
                                                 <td><?php echo CHtml::encode($cpa->practice->code); ?></td>
                                                 <td><?php echo CHtml::encode($cpa->practice->phone); ?></td>
+                                                <td/>
                                             </tr>
                                         <?php $i++; ?>
                                         <?php endforeach; ?>
