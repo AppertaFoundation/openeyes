@@ -24,7 +24,13 @@
             )
         );
 
-        if (!empty($table)): ?>
+        if(empty($csv_id)) {
+        	?>
+					<div id="import-file-upload-error"> No CSV file found. Please select a file to upload </div>
+					<?php
+				}
+
+        if (!empty($table) && !empty($csv_id)): ?>
             <div style="overflow: auto">
                 <table class="standard highlight-rows">
                     <tr>
@@ -45,8 +51,9 @@
                     <?php endforeach; ?>
                 </table>
             </div>
-        <?php endif;
+        <?php
         echo CHtml::submitButton('Import');
+				endif;
         $this->endWidget();
         ?>
     </div>
