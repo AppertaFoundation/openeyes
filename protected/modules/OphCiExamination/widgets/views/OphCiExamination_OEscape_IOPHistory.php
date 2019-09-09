@@ -156,16 +156,16 @@
 
 						//calculate max displayed value
 						iop_plotly_data = <?= CJavaScript::encode(OphCiExamination_Episode_IOPHistory::getDrillthroughIOPDataForEvent($this->patient)); ?>;
-						max_visible = '';
+						max_visible = 0;
 						max_id = '';
-						if (showlist.length>1){
+						if (showlist.length > 1){
 							for (let i = 0; i < iop_plotly_data.length; i++){
 								if (showlist.includes(iop_plotly_data[i]["event_id"]))
 								{
 									if(iop_plotly_data[i]["eye"]===side){
-										if (max_visible < iop_plotly_data[i]["raw_value"]){
-											max_visible = iop_plotly_data[i]["raw_value"];
-											max_id= iop_plotly_data[i]["event_id"];
+										if (max_visible < parseInt(iop_plotly_data[i]["raw_value"])){
+											max_visible = parseInt(iop_plotly_data[i]["raw_value"]);
+											max_id = iop_plotly_data[i]["event_id"];
 										}
 									}
 								}
