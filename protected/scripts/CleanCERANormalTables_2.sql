@@ -21,6 +21,13 @@ truncate table audit_server;
 SELECT "TRUNCATE TABLE audit_useragent" AS "";
 truncate table audit_useragent;
 
+SELECT "TRUNCATE TABLE authassignment" AS "";
+delete from authassignment
+where userid not in (
+    select id from user
+where user.username in ('admin', 'docman_user')
+    );
+
 SELECT "TRUNCATE TABLE patient_user_referral" AS "";
 truncate table patient_user_referral;
 
@@ -68,6 +75,9 @@ truncate table document_set;
 
 SELECT "TRUNCATE TABLE document_target" AS "";
 truncate table document_target;
+
+SELECT "TRUNCATE TABLE episode" AS "";
+truncate table episode;
 
 SELECT "TRUNCATE TABLE et_ophciexamination_adnexalcomorbidity" AS "";
 truncate table et_ophciexamination_adnexalcomorbidity;
@@ -258,13 +268,14 @@ truncate table et_ophtrconsent_leaflets;
 SELECT "TRUNCATE TABLE et_ophtrconsent_other" AS "";
 truncate table et_ophtrconsent_other;
 
-
 SELECT "TRUNCATE TABLE et_ophtrconsent_permissions" AS "";
 truncate table et_ophtrconsent_permissions;
 
 SELECT "TRUNCATE TABLE et_ophtrconsent_procedure" AS "";
 truncate table et_ophtrconsent_procedure;
 
+SELECT "TRUNCATE TABLE et_ophtrconsent_type" AS "";
+truncate table et_ophtrconsent_type;
 
 SELECT "TRUNCATE TABLE et_ophtrintravitinjection_anaesthetic" AS "";
 truncate table et_ophtrintravitinjection_anaesthetic;
@@ -381,6 +392,8 @@ truncate table et_ophtroperationnote_vitrectomy;
 SELECT "TRUNCATE TABLE event" AS "";
 truncate table event;
 
+SELECT "TRUNCATE TABLE event_associated_content" AS "";
+truncate table event_associated_content;
 
 SELECT "TRUNCATE TABLE event_image" AS "";
 truncate table event_image;
@@ -401,6 +414,9 @@ where remote_id not in ('CERA');
 
 SELECT "TRUNCATE TABLE measurement_reference" AS "";
 truncate table measurement_reference;
+
+SELECT "TRUNCATE TABLE mview_datapoint_node" AS "";
+truncate table mview_datapoint_node;
 
 SELECT "TRUNCATE TABLE ophciexamination_allergy_entry" AS "";
 truncate table ophciexamination_allergy_entry;
@@ -482,14 +498,26 @@ truncate table ophtrconsent_procedure_procedures_procedures;
 SELECT "TRUNCATE TABLE ophtrintravitinjection_complicat_assignment" AS "";
 truncate table ophtrintravitinjection_complicat_assignment;
 
+SELECT "TRUNCATE TABLE ophtrintravitinjection_injectionuser" AS "";
+truncate table ophtrintravitinjection_injectionuser;
 
 SELECT "TRUNCATE TABLE ophtrintravitinjection_ioplowering_assign" AS "";
 truncate table ophtrintravitinjection_ioplowering_assign;
 
+SELECT "TRUNCATE TABLE ophtrlaser_laserprocedure_assignment" AS "";
+truncate table ophtrlaser_laserprocedure_assignment;
+
+SELECT "TRUNCATE TABLE ophtrlaser_laser_operator" AS "";
+truncate table ophtrlaser_laser_operator;
+
+SELECT "TRUNCATE TABLE ophtroperationbooking_anaesthetic_anaesthetic_type" AS "";
+truncate table ophtroperationbooking_anaesthetic_anaesthetic_type;
+
+SELECT "TRUNCATE TABLE ophtroperationbooking_letter_contact_rule" AS "";
+truncate table ophtroperationbooking_letter_contact_rule;
 
 SELECT "TRUNCATE TABLE ophtroperationbooking_operation_booking" AS "";
 truncate table ophtroperationbooking_operation_booking;
-
 
 SELECT "TRUNCATE TABLE ophtroperationbooking_operation_date_letter_sent" AS "";
 truncate table ophtroperationbooking_operation_date_letter_sent;
@@ -501,6 +529,14 @@ truncate table ophtroperationbooking_operation_procedures_procedures;
 SELECT "TRUNCATE TABLE ophtroperationbooking_operation_sequence" AS "";
 truncate table ophtroperationbooking_operation_sequence;
 
+SELECT "TRUNCATE TABLE ophtroperationbooking_operation_session" AS "";
+truncate table ophtroperationbooking_operation_session;
+
+SELECT "TRUNCATE TABLE ophtroperationbooking_operation_theatre" AS "";
+truncate table ophtroperationbooking_operation_theatre;
+
+SELECT "TRUNCATE TABLE ophtroperationbooking_operation_ward" AS "";
+truncate table ophtroperationbooking_operation_ward;
 
 SELECT "TRUNCATE TABLE ophtroperationbooking_scheduleope_patientunavail" AS "";
 truncate table ophtroperationbooking_scheduleope_patientunavail;
@@ -556,6 +592,8 @@ truncate table patient_identifier;
 SELECT "TRUNCATE TABLE patient_measurement" AS "";
 truncate table patient_measurement;
 
+SELECT "TRUNCATE TABLE patientticketing_clinic_location" AS "";
+truncate table patientticketing_clinic_location;
 
 SELECT "TRUNCATE TABLE patientticketing_queuesetuser" AS "";
 truncate table patientticketing_queuesetuser;
@@ -684,7 +722,6 @@ truncate table patient_referral;
 
 SELECT "TRUNCATE TABLE worklist_patient_attribute" AS "";
 truncate table worklist_patient_attribute;
-
 
 
 
