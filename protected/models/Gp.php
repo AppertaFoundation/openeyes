@@ -85,6 +85,7 @@ class Gp extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('id', 'required', 'on' => array('manage_practice'), 'message'=>'Please select at least one practitioner.'),
             array('obj_prof, nat_id', 'required'),
             array('obj_prof, nat_id', 'length', 'max' => 20),
             // The following rule is used by search().
