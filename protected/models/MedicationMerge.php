@@ -17,7 +17,7 @@
  * @property date $merge_date
  *
  * The followings are the available model relations:
- * @property eventMedicationUses[] $eventMedicationUses
+ * @property eventMedicationUse[] $eventMedicationUses
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property Medication[] $medicationsSource
@@ -25,6 +25,8 @@
  */
 class MedicationMerge extends BaseActiveRecord
 {
+
+	public static $ACTIVE_STATUS = 1;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -64,7 +66,6 @@ class MedicationMerge extends BaseActiveRecord
 		);
 	}
 
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
@@ -83,8 +84,9 @@ class MedicationMerge extends BaseActiveRecord
 	private function getAllPending()
 	{
 		$criteria = new \CDbCriteria();
-		$criteria->addCondition('status = 1');
-		return new CActiveDataProvider('medicationMerge', ['criteria' => $criteria]);
+		$criteria->addCondition('status = ' . MedicationMerge::$ACTIVE_STATUS);
+		return new CActiveDataProvider('medicationMerge', ['criteria' => $criteria,
+			'pagination' => false]);
 	}
 
 	/*
@@ -101,6 +103,7 @@ class MedicationMerge extends BaseActiveRecord
 					$source_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LOCAL' AND source_subtype='drug'", array(":old_id" => $merge_row->source_drug_id));
 					$merge_row->source_medication_id = $source_medication->id;
 				} else {
+					Yii::log('Source medication cannot be found without a source drug id or a source medication id');
 					continue;
 				}
 			} else {
@@ -112,11 +115,11 @@ class MedicationMerge extends BaseActiveRecord
 				if ($target_medication) {
 					$merge_row->target_id = $target_medication->id;
 				} else {
+					Yii::log('No target medication was found , cannot be merged');
 					// we cannot merge without ID!
 					continue;
 				}
 			}
-
 
 			foreach (['event_medication_use', 'medication_allergy_assignment', 'medication_attribute_assignment', 'medication_common',
 								 'medication_search_index', 'medication_set_auto_rule_medication', 'medication_set_item'] as $table_with_medication_id) {
@@ -130,12 +133,14 @@ class MedicationMerge extends BaseActiveRecord
 				}
 			}
 			$source_medication->deleted_date = date("Y-m-d");
-			if (!$source_medication->save(false)) {
+
+			if (!$source_medication->save()) {
 				Yii::log("Cannot deactivate medication: " . $source_medication->id . "\n");
 			}
+
 			$merge_row->merge_date = date("Y-m-d H:i:s");
 			$merge_row->status = 0;
-			if (!$merge_row->save(false)) {
+			if (!$merge_row->save()) {
 				Yii::log("Cannot close merge " . $merge_row->id . "\n");
 			}
 		}
