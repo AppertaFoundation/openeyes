@@ -22,7 +22,7 @@ namespace OEModule\OphCiExamination\models;
  * This is the model class for table "ophciexamination_allergy".
  *
  * Could not be named Allergy due to conflicts with core class (that is left in place as a view on this model)
- * 
+ *
  * @property int $id
  * @property string $name
  * @property int $display_order

@@ -24,7 +24,7 @@
             <div class="cols-10">
                 <table class="priority-text last-left">
                     <tbody>
-                    <?php foreach ($element->procedures as $procedure): ?>
+                    <?php foreach ($element->procedures as $procedure) : ?>
                         <tr>
                             <td>
                                 <span class="priority-text">
@@ -79,7 +79,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <?php if (!is_null($element->senior_fellow_to_do)): ?>
+                        <?php if (!is_null($element->senior_fellow_to_do)) : ?>
                             <td>
                                 <div class="data-label">
                                     <?= CHtml::encode($element->getAttributeLabel('senior_fellow_to_do')) ?>
@@ -90,7 +90,7 @@
                             </td>
                         <?php endif; ?>
                     </tr>
-                    <?php if(isset($element->any_grade_of_doctor)) { ?>
+                    <?php if (isset($element->any_grade_of_doctor)) { ?>
                     <tr>
                         <td>
                             <div class="data-label">
@@ -115,7 +115,7 @@
                         </td>
                     </tr>
 
-                    <?php if ($element->anaesthetic_choice): ?>
+                    <?php if ($element->anaesthetic_choice) : ?>
                         <tr>
                             <td>
                                 <div class="data-label">
@@ -127,14 +127,14 @@
                             </td>
                         </tr>
                     <?php endif ?>
-                    <?php if (!is_null($element->stop_medication)): ?>
+                    <?php if (!is_null($element->stop_medication)) : ?>
                         <tr>
                             <td>
                                 <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('stop_medication')) ?></div>
                             </td>
                             <td>
                                 <div class="data-value"><?= $element->stop_medication ? 'Yes' : 'No' ?></div>
-                                <?php if ($element->stop_medication): ?>
+                                <?php if ($element->stop_medication) : ?>
                                     <div
                                             class="data-value panel comments"><?= Yii::app()->format->nText($element->stop_medication_details) ?></div>
                                 <?php endif ?>
@@ -205,14 +205,14 @@
                             </div>
                         </td>
                     </tr>
-                    <?php if (!is_null($element->special_equipment)): ?>
+                    <?php if (!is_null($element->special_equipment)) : ?>
                         <tr>
                             <td>
                                 <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('special_equipment')) ?></div>
                             </td>
                             <td>
                                 <div class="data-value"><?= $element->special_equipment ? 'Yes' : 'No' ?></div>
-                                <?php if ($element->special_equipment): ?>
+                                <?php if ($element->special_equipment) : ?>
                                     <div class="data-value panel comments">
                                         <?= Yii::app()->format->nText($element->special_equipment_details) ?>
                                     </div>
@@ -221,7 +221,7 @@
                         </tr>
                     <?php endif ?>
 
-                    <?php if (!is_null($element->preassessment_booking_required)): ?>
+                    <?php if (!is_null($element->preassessment_booking_required)) : ?>
                         <tr>
                             <td>
                                 <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('preassessment_booking_required')) ?></div>
@@ -282,7 +282,7 @@
                     <td></td>
                 </tr>
             <?php } ?>
-            <?php if ($element->organising_admission_user): ?>
+            <?php if ($element->organising_admission_user) : ?>
                 <tr>
                     <td>
                         <?= CHtml::encode($element->getAttributeLabel('organising_admission_user_id')) ?>
@@ -295,7 +295,7 @@
                     <td></td>
                 </tr>
             <?php endif; ?>
-            <?php if (!$this->module->isTheatreDiaryDisabled() && !$this->module->isGoldenPatientDisabled()): ?>
+            <?php if (!$this->module->isTheatreDiaryDisabled() && !$this->module->isGoldenPatientDisabled()) : ?>
                 <tr>
                     <td>
                         <h3 class="data-title">
@@ -376,18 +376,18 @@
     <div class="data-group">
         <div class="cols-12 column">
             <div class="metadata">
-				<span class="info">
-					Operation scheduling created by
-					<span class="user"><?php echo $element->booking->user->fullname ?></span>
-					on <?php echo $element->booking->NHSDate('created_date') ?>
-                    at <?php echo date('H:i', strtotime($element->booking->created_date)) ?>
-				</span>
                 <span class="info">
-					Operation scheduling last modified by
+                    Operation scheduling created by
+                    <span class="user"><?php echo $element->booking->user->fullname ?></span>
+                    on <?php echo $element->booking->NHSDate('created_date') ?>
+                    at <?php echo date('H:i', strtotime($element->booking->created_date)) ?>
+                </span>
+                <span class="info">
+                    Operation scheduling last modified by
                            <span class="user"><?php echo $element->booking->usermodified->fullname ?></span>
-					on <?php echo $element->booking->NHSDate('last_modified_date') ?>
+                    on <?php echo $element->booking->NHSDate('last_modified_date') ?>
                     at <?php echo date('H:i', strtotime($element->booking->last_modified_date)) ?>
-				</span>
+                </span>
             </div>
         </div>
     </div>
@@ -453,7 +453,7 @@ if ($element->isEditable()) {
 
     $status = strtolower($element->status->name);
 
-    if($status === "on-hold"){
+    if ($status === "on-hold") {
         $this->event_actions[] = EventAction::link(
             'Take off hold',
             Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/default/putOffHold/' . $element->event_id),

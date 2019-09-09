@@ -29,23 +29,22 @@ if (!isset($selected_data) && isset($reading) && isset($reading->value) && isset
 
 ?>
 <?php if (isset($selected_data['reading_display'])) { ?>
-
 <tr class="nearvisualAcuityReading near-visual-acuity-reading js-reading-record" data-key="<?php echo $key?>">
-	<td class="cols-3">
-		<?php if (isset($reading) && $reading->id) { ?>
-        <?=\CHtml::hiddenField( $name_stub .'['. $key.'][id]', @$reading->id)?>
-    <?php } ?>
+    <td class="cols-3">
+        <?php if (isset($reading) && $reading->id) { ?>
+            <?=\CHtml::hiddenField( $name_stub .'['. $key.'][id]', @$reading->id)?>
+        <?php } ?>
       <?=\CHtml::hiddenField( $name_stub .'['. $key.'][value]', @$selected_data['reading_value'], array('class' => 'va-selector'))?>
       <?= @$selected_data['reading_display']?>
-	</td>
+    </td>
   <td class="cols-1">
     <i class="oe-i info small pad js-has-tooltip va-info-icon" data-tooltip='<?= @$selected_data['tooltip'] ?>' data-tooltip-content="Please select a VA value"></i>
   </td>
-	<td>
+    <td>
       <?=\CHtml::hiddenField( $name_stub .'['. $key.'][method_id]', @$selected_data['method_id'], array('class' => 'method_id'))?>
       <?= @$selected_data['method_display'] ?>
-	</td>
-	<td class="cols-2 readingActions">
+    </td>
+    <td class="cols-2 readingActions">
     <i class="oe-i trash removeReading"></i>
   </td>
 </tr>

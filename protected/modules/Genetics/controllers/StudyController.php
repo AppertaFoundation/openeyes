@@ -61,7 +61,7 @@ class StudyController extends BaseAdminController
                 'label' => 'Investigator',
                 'options' => CHtml::encodeArray(CHtml::listData(
                     // because of performance issues we need to list all the required roles even if they are in parent-child
-                    User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'],true),
+                    User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'], true),
                     'id',
                     function ($model) {
                         return $model->fullName;
@@ -74,10 +74,10 @@ class StudyController extends BaseAdminController
 
         $valid = $admin->editModel(false);
 
-        if (Yii::app()->request->isPostRequest) {        
+        if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Study Saved");
-                $url = str_replace('/edit','/view',(Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
+                $url = str_replace('/edit', '/view', (Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
                 $this->redirect($url);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));

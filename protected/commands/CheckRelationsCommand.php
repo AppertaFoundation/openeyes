@@ -91,7 +91,7 @@ class CheckRelationsCommand extends CConsoleCommand
             $this->saveFile($saveString);
         }
         //else{
-        //	echo $saveString;
+        //  echo $saveString;
         //}
     }
 

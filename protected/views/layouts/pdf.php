@@ -27,37 +27,37 @@ Yii::app()->assetManager->reset();
 <style>
 
 h1 {
-	font-size: 1.5em;
+    font-size: 1.5em;
 }
 
 h2 {
-	font-size: 1.2em;
+    font-size: 1.2em;
 }
 
 table {
-	padding: 2px 4px 3px 4px;
+    padding: 2px 4px 3px 4px;
 }
 
 th {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 li {
-	line-height: 1.5em;
+    line-height: 1.5em;
 }
 
 table.borders td,
 table.borders th {
-	border: 1px solid #999;
+    border: 1px solid #999;
 }
 
 .accessible {
-	font-size: 16pt;
+    font-size: 16pt;
 }
 
 </style>
 </head>
 <body>
-	<?php echo $content; ?>
+    <?php echo $content; ?>
 </body>
 </html>

@@ -132,7 +132,7 @@
                         if (!$(this).hasClass('selected')) {
                             listToFilter.find('li').show();
                         } else {
-                            listToFilter.find('li').hide();
+                            listToFilter.find('li').hide().removeClass('selected');
                             listToFilter.find('li[data-filter_value="' + filterValue +'"]').show();
                         }
                     }
@@ -267,6 +267,9 @@
         if (itemSet.options.number) {
             additionalClasses += ' number';
         }
+        if (dialog.options.listFilter && (itemSet.options.id === dialog.options.filterListId)) {
+            additionalClasses += ' category-filter ignore';
+        }
         let $list = $('<ul />', {
             class: 'add-options cols-full' + additionalClasses,
             'data-multiselect': itemSet.options.multiSelect,
@@ -341,8 +344,9 @@
         let $integerColumnsContainer = $('<div class="lists-layout"/>');
         for (let i = 0; i < itemSet.options.splitIntegerNumberColumns.length; i++) {
             let $divList = $('<div />', {class: "list-wrap"}).appendTo($integerColumnsContainer);
-            let $list = $('<ul />', {class: 'number'}).appendTo($divList);
-            for (let digit = itemSet.options.splitIntegerNumberColumns[i].min; digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
+            let $list = $('<ul />', {class: 'number', id: 'number-digit-' + i}).appendTo($divList);
+            for (let digit = itemSet.options.splitIntegerNumberColumns[i].min;
+								 digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
                 let $listItem = $('<li data-'+itemSet.options.id+'="'+digit+'"/>');
                 $listItem.append(digit);
                 $listItem.appendTo($list);
@@ -493,29 +497,42 @@
 
     AdderDialog.prototype.return = function () {
         let shouldClose = true;
-        if (this.options.onReturn) {
+        let dialog = this;
+        if (dialog.options.onReturn) {
             let selectedValues = [];
             let selectedAdditions = [];
-            this.getSelectedItems().forEach(selectedItem => {
+            dialog.getSelectedItems().forEach(selectedItem => {
                 if (selectedItem.addition) {
                     selectedAdditions.push(selectedItem);
                 } else {
                     selectedValues.push(selectedItem);
                 }
             });
-            shouldClose = this.options.onReturn(this, selectedValues, selectedAdditions) !== false;
+            shouldClose = dialog.options.onReturn(dialog, selectedValues, selectedAdditions) !== false;
         }
 
         if (shouldClose) {
-            if (this.options.deselectOnReturn) {
-                let itemSets = this.popup.find('ul');
+            if (dialog.options.deselectOnReturn) {
+                let itemSets = dialog.popup.find('ul');
                 itemSets.each(function () {
-                    let deselect = $(this).data('deselectonreturn');
+                    let deselect = $(dialog).data('deselectonreturn');
                     if (typeof deselect === "undefined" || deselect) {
-                        $(this).find('li').removeClass('selected');
+                        $(dialog).find('li').removeClass('selected');
                     }
                 });
             }
+
+            // deselect options when closing the adderDialog
+            dialog.popup.find('.selected').removeClass('selected');
+
+            const $input = dialog.popup.find('.js-search-autocomplete.search');
+            // reset search list when adding an item
+            if ($input.length) {
+                $input.val("");
+                // run item search with empty text so AdderDialogs that extend this class run their custom settings
+                this.runItemSearch('');
+            }
+
             this.close();
         }
     };
@@ -548,6 +565,13 @@
             let selectedFilter = this.popup.find('ul[data-id="' + this.options.filterDataId + '"]').find('li.selected');
             filterValue = selectedFilter.data('id');
         }
+        // reset results lists if there is no text searched
+        if (!text.length) {
+            dialog.searchResultList.empty();
+            dialog.noSearchResultsWrapper.text('No results found');
+            dialog.noSearchResultsWrapper.toggle(true);
+            return;
+        }
 
         dialog.searchingSpinnerWrapper.show();
 
@@ -565,26 +589,26 @@
 
         this.searchRequest = $.getJSON(this.options.searchOptions.searchSource,
             ajaxOptions, function (results) {
-            dialog.searchRequest = null;
-            let no_data = !$(results).length;
+                dialog.searchRequest = null;
+                let no_data = !$(results).length;
 
-            dialog.searchResultList.empty();
-            dialog.noSearchResultsWrapper.text('No results: "' + text + '"');
-            dialog.noSearchResultsWrapper.toggle(no_data);
+                dialog.searchResultList.empty();
+                dialog.noSearchResultsWrapper.text('No results: "' + text + '"');
+                dialog.noSearchResultsWrapper.toggle(no_data);
 
-            if (dialog.options.searchOptions.resultsFilter) {
-                results = dialog.options.searchOptions.resultsFilter(results);
-            }
-
-            $(results).each(function (index, result) {
-                var dataset = AdderDialog.prototype.constructDataset(result);
-                var $listItem = $("<li />", dataset);
-                if(typeof result.prepended_markup !== "undefined") {
-                    $(result.prepended_markup).appendTo($listItem);
+                if (dialog.options.searchOptions.resultsFilter) {
+                    results = dialog.options.searchOptions.resultsFilter(results);
                 }
-                $('<span />', {class: 'auto-width'}).text(dataset['data-label']).appendTo($listItem);
-                dialog.searchResultList.append($listItem);
-            });
+
+                $(results).each(function (index, result) {
+                    var dataset = AdderDialog.prototype.constructDataset(result);
+                    var $listItem = $("<li />", dataset);
+                    if(typeof result.prepended_markup !== "undefined") {
+                        $(result.prepended_markup).appendTo($listItem);
+                    }
+                    $('<span />', {class: 'auto-width'}).text(dataset['data-label']).appendTo($listItem);
+                    dialog.searchResultList.append($listItem);
+                });
 
             if (dialog.options.enableCustomSearchEntries) {
                 dialog.appendCustomEntryOption(text, dialog);
@@ -592,7 +616,7 @@
 
             dialog.searchResultList.toggle(!no_data);
             dialog.searchingSpinnerWrapper.hide();
-        });
+            });
     };
 
     AdderDialog.prototype.appendCustomEntryOption = function (text, dialog) {

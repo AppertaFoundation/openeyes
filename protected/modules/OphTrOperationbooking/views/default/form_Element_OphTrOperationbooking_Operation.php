@@ -34,7 +34,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                         CHtml::listData(Eye::model()->findAll(array(
                         'condition' => 'name != "Both"',
                         'order' => 'display_order asc',
-                    )), 'id', 'name'),
+                        )), 'id', 'name'),
                         $element->eye_id, '', '', '', '',
                         array(
                             'nowrapper' => true,
@@ -279,10 +279,10 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                                 null,
                                 false, false, false, false, array('nowrapper' => true)
                             );
-                            ?>
+?>
                         </td>
                     </tr>
-                    <?php if (!$this->module->isTheatreDiaryDisabled() && !$this->module->isGoldenPatientDisabled()): ?>
+                    <?php if (!$this->module->isTheatreDiaryDisabled() && !$this->module->isGoldenPatientDisabled()) : ?>
                         <tr>
                             <td><?= $element->getAttributeLabel('is_golden_patient'); ?> </td>
                             <td>
@@ -305,7 +305,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                 </td>
                 <td>
                     <?php echo $form->textArea($element, 'comments', array('rows' => 1, 'nowrapper' => true), '', array('placeholder' =>
-                        'Scheduling guidance for admissions team', 'class' => 'cols-full')) ?>
+                        'Scheduling guidance for admissions team', 'class' => 'cols-full autosize')) ?>
                 </td>
             </tr>
             <tr>
@@ -313,7 +313,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                     Add RTT comments:
                 </td>
                 <td>
-                    <?php echo $form->textArea($element, 'comments_rtt', array('rows' => 1, 'nowrapper' => true), '', array(),
+                    <?php echo $form->textArea($element, 'comments_rtt', array('rows' => 1, 'nowrapper' => true), '', array('class' => 'autosize'),
                         array_merge($form->layoutColumns, array('field' => 4))) ?>
                 </td>
             </tr>

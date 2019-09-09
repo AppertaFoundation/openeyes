@@ -2,9 +2,9 @@
 
 class m170719_102032_object_persistence_core extends OEMigration
 {
-	public function up()
-	{
-	    $this->createTable('eyedraw_doodle', array(
+    public function up()
+    {
+        $this->createTable('eyedraw_doodle', array(
             'eyedraw_class_mnemonic' => 'varchar(80) NOT NULL',
             'init_doodle_json' => 'text',
             'processed_canvas_intersection_tuple' => 'varchar(2000)' // automatically generated internally
@@ -51,13 +51,13 @@ class m170719_102032_object_persistence_core extends OEMigration
             'event', 'id');
         $this->addForeignKey('mview_datapoint_node_ecmn_fk', 'mview_datapoint_node', 'eyedraw_class_mnemonic, canvas_mnemonic',
             'eyedraw_canvas_doodle', 'eyedraw_class_mnemonic, canvas_mnemonic');
-	}
+    }
 
-	public function down()
-	{
-	    $this->dropTable('mview_datapoint_node');
-	    $this->dropTable('eyedraw_canvas_doodle');
-	    $this->dropTable('eyedraw_canvas');
-		$this->dropTable('eyedraw_doodle');
-	}
+    public function down()
+    {
+        $this->dropTable('mview_datapoint_node');
+        $this->dropTable('eyedraw_canvas_doodle');
+        $this->dropTable('eyedraw_canvas');
+        $this->dropTable('eyedraw_doodle');
+    }
 }

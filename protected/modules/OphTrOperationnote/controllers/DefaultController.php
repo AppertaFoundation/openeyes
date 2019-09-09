@@ -361,12 +361,13 @@ class DefaultController extends BaseEventTypeController
                                 $transaction->rollback();
 
                                 $log = print_r($result['errors'], true);
-                                \Audit::add('event', 'create', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
+                                \Audit::add('event', 'create-failed', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
                                     'module' => 'OphDrPrescription',
                                     'episode_id' => $this->event->episode->id,
                                     'patient_id' => $this->patient->id,
                                     'model' => 'Element_OphDrPrescription_Details'
                                 ]);
+                                \OELog::log($log);
                             }
                         }
 
@@ -380,7 +381,7 @@ class DefaultController extends BaseEventTypeController
                             } else {
                                 $transaction->rollback();
                                 $log = print_r($result['errors'], true);
-                                \Audit::add('event', 'create', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
+                                \Audit::add('event', 'create-failed', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
                                     'module' => 'OphCoCorrespondence',
                                     'episode_id' => $this->event->episode->id,
                                     'patient_id' => $this->patient->id,
@@ -401,20 +402,24 @@ class DefaultController extends BaseEventTypeController
                                 $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
                                 $correspondence_creator->save();
 
-                                if ($correspondence_creator->save()) {
+                                if ($correspondence_creator->save() && !$correspondence_creator->hasErrors()) {
                                     $transaction->commit();
                                 } else {
                                     $transaction->rollback();
                                     $log = print_r($result['errors'], true);
-                                    \Audit::add('event', 'create', 'Event creation Failed <pre>' . $log . '</pre>', $log, [
+                                    \Audit::add('event', 'create-failed', 'Event creation Failed <pre>' . $log . '</pre>', $log, [
                                         'module' => 'OphCoCorrespondence',
                                         'episode_id' => $this->event->episode->id,
                                         'patient_id' => $this->patient->id,
                                         'model' => 'ElementLetter'
                                     ]);
+
+                                    \Yii::app()->user->setFlash('issue.correspondence', "Unable to create default Optom Letter. Please see audit for details.");
                                 }
                             } else {
-                                \OELog::log("No macro found: {$macro_name}, default setting (macro name) was : {$macro_name}");
+                                $msg = "Unable to create default Optom Letter because: No macro named '$macro_name' was found.";
+                                \OELog::log($msg);
+                                \Yii::app()->user->setFlash('issue.correspondence', $msg);
                             }
                         }
 
@@ -425,7 +430,6 @@ class DefaultController extends BaseEventTypeController
                         }
                     } else {
                         throw new Exception('could not save event');
-
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
@@ -1081,14 +1085,12 @@ class DefaultController extends BaseEventTypeController
         //AnaestheticType
         $type_assessments = array();
         if (isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])) {
-
             $type_assessments_by_id = array();
             foreach ($element->anaesthetic_type_assignments as $type_assignments) {
                 $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
             }
 
             foreach ($data['AnaestheticType'] as $anaesthetic_type_id) {
-
                 if (!array_key_exists($anaesthetic_type_id, $type_assessments_by_id)) {
                     $anaesthetic_type_assesment = new OphTrOperationnote_OperationAnaestheticType();
                 } else {
@@ -1122,14 +1124,12 @@ class DefaultController extends BaseEventTypeController
         //AnaestheticDelivery
         $delivery_assessments = array();
         if (isset($data['AnaestheticDelivery']) && is_array($data['AnaestheticDelivery'])) {
-
             $delivery_assessments_by_id = array();
             foreach ($element->anaesthetic_delivery_assignments as $delivery_assignments) {
                 $delivery_assessments_by_id[$delivery_assignments->anaesthetic_delivery_id] = $delivery_assignments;
             }
 
             foreach ($data['AnaestheticDelivery'] as $anaesthetic_delivery_id) {
-
                 if (!array_key_exists($anaesthetic_delivery_id, $delivery_assessments_by_id)) {
                     $anaesthetic_delivery_assesment = new OphTrOperationnote_OperationAnaestheticDelivery();
                 } else {
@@ -1210,14 +1210,28 @@ class DefaultController extends BaseEventTypeController
     {
         $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $macro_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_letter");
         $macro = $correspondence_api->getDefaultMacroByEpisodeStatus($this->event->episode, $firm, Yii::app()->session['selected_site_id']);
 
-        $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
-        $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
-        $correspondence_creator->save();
+        $success = false;
+
+        if ($macro) {
+            $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
+            $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
+            $correspondence_creator->save();
+
+            $success = !$correspondence_creator->hasErrors();
+            $errors = $correspondence_creator->getErrors();
+        } else {
+            $msg = "Unable to create default GP Letter because: No macro named '{$macro_name}' was found";
+            $errors[] = [$msg];
+
+            \Yii::app()->user->setFlash('issue.correspondence', $msg);
+        }
+
         return [
-            'success' => !$correspondence_creator->hasErrors(),
-            'errors' => $correspondence_creator->getErrors(),
+            'success' => $success,
+            'errors' => $errors
         ];
     }
 
@@ -1232,14 +1246,27 @@ class DefaultController extends BaseEventTypeController
             'params' => $params,
         ]);
 
-        $prescription_creator = new PrescriptionCreator($this->event->episode);
-        $prescription_creator->patient = $this->patient;
-        $prescription_creator->addDrugSet($set->id);
-        $prescription_creator->save();
+        $success = false;
+
+        if ($set) {
+            $prescription_creator = new PrescriptionCreator($this->event->episode);
+            $prescription_creator->patient = $this->patient;
+            $prescription_creator->addDrugSet($set->id);
+            $prescription_creator->save();
+
+            $success = !$prescription_creator->hasErrors();
+            $errors = $prescription_creator->getErrors();
+        } else {
+            $msg = "Unable to create default Prescription because: No drug set named '{$drug_set_name}' was found";
+            $errors[] = [$msg];
+            $errors[] = $params; // these are only going to the logs and audit, not displayed to the user
+
+            \Yii::app()->user->setFlash('issue.prescription', $msg);
+        }
 
         return [
-            'success' => !$prescription_creator->hasErrors(),
-            'errors' => $prescription_creator->getErrors()
+            'success' => $success,
+            'errors' => $errors
         ];
     }
 
@@ -1315,6 +1342,19 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
+        //event date
+        if (isset($data['Event']['event_date'])) {
+            $event = $this->event;
+            $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            if (!$event->validate()) {
+                foreach ($event->getErrors() as $errormsgs) {
+                    foreach ($errormsgs as $error) {
+                        $errors[$this->event_type->name][] = $error;
+                    }
+                }
+            }
+        }
+
         return $errors;
     }
 
@@ -1338,5 +1378,22 @@ class DefaultController extends BaseEventTypeController
                 '<span class="extra-info">' . Helper::convertDate2NHS($this->event->event_date) . '</span>';
         }
         return null;
+    }
+
+    /**
+     * @param $proc_id
+     * @return OphTrOperationnote_Attribute[]
+     *
+     * Returns attributes that belong
+     * to the given procedure
+     */
+
+    protected function getAttributesForProcedure($proc_id)
+    {
+        $crit = new CDbCriteria();
+        $crit->compare('proc_id', $proc_id);
+        $crit->order = "display_order";
+
+        return OphTrOperationnote_Attribute::model()->findAll($crit);
     }
 }

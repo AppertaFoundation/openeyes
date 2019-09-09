@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -23,7 +20,9 @@
 ?>
 
 <tr data-key="<?php echo $key ?>" class="prescription-item prescriptionItem
-  <?php if ($item->getErrors()): ?>errors<?php endif; ?>">
+    <?php if ($item->getErrors()) :
+        ?>errors<?php
+    endif; ?>">
   <td>
       <button class="js-add-taper">
           <i class="oe-i child-arrow small"></i>
@@ -46,24 +45,22 @@
        <?php } else { ?>
         <i class="oe-i comments medium-icon pad js-add-comments" style=""></i>
        <?php } ?>
-
       <div id="comments-<?=$key?>" class="cols-full prescription-comments" style="display:none" data-key="<?php echo $key; ?>">
           <!-- comment-group, textarea + icon -->
           <div class="comment-group flex-layout flex-left" style="padding-top:5px">
-              <?php
+                <?php
                 $htmlOptions = [
                         'placeholder'=>'Comments' , 'autocomplete'=>'off',
                     'rows'=>'1', 'class'=>'js-input-comments cols-full ' ,
                     'style'=>'overflow-x: hidden;word-wrap: break-word;'
                 ];
-              echo CHtml::textArea('Element_OphDrPrescription_Details[items][' . $key . '][comments]' ,CHtml::encode($item->comments) ,$htmlOptions) ?>
+                echo CHtml::textArea('Element_OphDrPrescription_Details[items][' . $key . '][comments]' ,CHtml::encode($item->comments) ,$htmlOptions) ?>
               <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
           </div>
       </div>
 
   </td>
   <td class="prescriptionItemDose">
-
       <?php
           $css_class = 'cols-4 inline';
           if ($item->dose === null || is_numeric($item->dose) || $item->dose === '') {
@@ -98,8 +95,8 @@
 
     <?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
       <td class='route_option_cell'>
-
           <?php if ($item->route && $item->route->has_laterality && $options = $item->route->options /* TODO this is not going to work when we remove route.options */) {
+
               echo CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][laterality]', $item->laterality,
                   CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
           } else {
@@ -132,7 +129,7 @@
       $style = $item->dispense_condition ? '' : 'display: none;';
       echo CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][dispense_location_id]', $item->dispense_location_id,
           CHtml::listData($locations, 'id', 'name'), array('class' => 'dispenseLocation cols-11', 'style' => $style));
-      ?>
+        ?>
   </td>
   <td>
     <i class="oe-i trash removeItem"></i>
@@ -141,7 +138,7 @@
 
 <?php
 $count = 0;
-foreach ($item->tapers as $taper): ?>
+foreach ($item->tapers as $taper) : ?>
   <tr data-key="<?php echo $key ?>" data-taper="<?php echo $count ?>"
       class="prescription-tapier <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
     <td></td>
@@ -171,7 +168,7 @@ foreach ($item->tapers as $taper): ?>
     <td></td>
       <?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
         <td></td>
-      <?php } ?>
+        <?php } ?>
     <td>
         <?=\CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][frequency_id]',
             $taper->frequency_id,

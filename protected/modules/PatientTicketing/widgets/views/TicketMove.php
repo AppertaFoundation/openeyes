@@ -37,7 +37,7 @@ if ($flash_message) {
 
   <h3><?= $t_svc->getTicketActionLabel($this->ticket) ?></h3>
   <div class="row-divider">
-      <?php if (count($this->outcome_options) > 1) { ?>
+        <?php if (count($this->outcome_options) > 1) { ?>
         <fieldset class="data-group">
           <div class="cols-2 column">
             <label for="to_queue_id">To:</label>
@@ -51,27 +51,27 @@ if ($flash_message) {
 
           <i class="loader spinner" style="display: none;"></i>
         </fieldset>
-      <?php } else { ?>
+        <?php } else { ?>
         <input type="hidden" name="to_queue_id" value="<?= $this->outcome_queue_id ?>"/>
-      <?php } ?>
+        <?php } ?>
   </div>
   <span id="PatientTicketing-queue-assignment" data-queue="<?= $this->ticket->current_queue->id ?>">
-      <?php $buttons = '<div class="row flex-layout flex-right">
+        <?php $buttons = '<div class="row flex-layout flex-right">
                           <button class="green hint ok" type="button" data-queue="' . $this->ticket->current_queue->id . '">Next step</button>
                           <button class="red hint cancel" type="button" data-queue="' . $this->ticket->current_queue->queueset->id . '" data-category="' . $this->ticket->current_queue->queueset->category_id . '">Exit</button>
                         </div>';
 
-      $buttons_drawn = false;
-      if ($this->outcome_queue_id) {
-          $this->widget(OEModule\PatientTicketing\widgets\QueueAssign::class, array(
+        $buttons_drawn = false;
+        if ($this->outcome_queue_id) {
+            $this->widget(OEModule\PatientTicketing\widgets\QueueAssign::class, array(
               'queue_id' => $this->outcome_queue_id,
               'patient_id' => $this->ticket->patient_id,
               'current_queue_id' => $this->ticket->current_queue->id,
               'ticket' => $this->ticket,
               'extra_view_data' => array('buttons' => $buttons),
-          ));
-          $buttons_drawn = true;
-      } ?>
+            ));
+            $buttons_drawn = true;
+        } ?>
   </span>
   <div class="alert-box warning alert hidden"></div>
     <?php if (!$buttons_drawn) {

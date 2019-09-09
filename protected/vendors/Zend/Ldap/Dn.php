@@ -186,8 +186,7 @@ class Zend_Ldap_Dn implements ArrayAccess
         }
         if ($length === 1) {
             return self::_caseFoldRdn($this->_dn[$index], $caseFold);
-        }
-        else {
+        } else {
             return self::_caseFoldDn(array_slice($this->_dn, $index, $length, false), $caseFold);
         }
     }
@@ -434,10 +433,10 @@ class Zend_Ldap_Dn implements ArrayAccess
      * @param  int $offset
      * @return array
      */
-     public function offsetGet($offset)
+    public function offsetGet($offset)
      {
-         return $this->get($offset, 1, null);
-     }
+        return $this->get($offset, 1, null);
+    }
 
      /**
       * Proxy to {@see set()}
@@ -446,10 +445,10 @@ class Zend_Ldap_Dn implements ArrayAccess
       * @param int   $offset
       * @param array $value
       */
-     public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value)
      {
-         $this->set($offset, $value);
-     }
+        $this->set($offset, $value);
+    }
 
      /**
       * Proxy to {@see remove()}
@@ -457,10 +456,10 @@ class Zend_Ldap_Dn implements ArrayAccess
       *
       * @param int $offset
       */
-     public function offsetUnset($offset)
+    public function offsetUnset($offset)
      {
-         $this->remove($offset, 1);
-     }
+        $this->remove($offset, 1);
+    }
 
     /**
      * Sets the default case fold
@@ -779,8 +778,7 @@ class Zend_Ldap_Dn implements ArrayAccess
             } else {
                 $pdn = self::explodeDn($parentDn, $keys, $vals, Zend_Ldap_Dn::ATTR_CASEFOLD_LOWER);
             }
-        }
-        catch (Zend_Ldap_Exception $e) {
+        } catch (Zend_Ldap_Exception $e) {
             return false;
         }
 
