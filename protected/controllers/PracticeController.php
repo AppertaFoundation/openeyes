@@ -165,7 +165,6 @@ class PracticeController extends BaseController
             $practice = new Practice('manage_practice');
 
             $contactPractice->first_name = $_POST['Contact']['first_name'];
-            $contactPractice->primary_phone = $_POST['Contact']['primary_phone'];
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
 
