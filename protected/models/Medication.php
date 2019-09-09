@@ -173,6 +173,17 @@ class Medication extends BaseActiveRecordVersioned
         return $this->amp_term != '';
     }
 
+    public function afterDelete() {
+        $to_delete = array_merge(
+            $medication->medicationSearchIndexes,
+            $medication->medicationSetItems,
+            $medication->medicationAttributeAssignments
+        );
+        foreach ($to_delete as $relation) {
+            $relation->delete();
+        }
+    }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *

@@ -102,6 +102,7 @@
                 <col style="width:10%">
                 <col class="cols-2">
                 <col class="cols-2">
+                <col style="cols-2">
                 <col style="width:1%">
             </colgroup>
             <thead>
@@ -112,6 +113,7 @@
                 <th>Source Subtype</th>
                 <th>Preferred Code</th>
                 <th>Preferred Term</th>
+                <th>Alternative Terms</th>
                 <th>VTM Terms</th>
                 <th>VMP Terms</th>
                 <th>AMP Terms</th>
@@ -157,6 +159,7 @@
         <td>{{source_subtype}}</td>
         <td>{{preferred_code}}</td>
         <td>{{preferred_term}}</td>
+        <td>{{alternativeTerms}}</td>
         <td>{{vtm_term}}</td>
         <td>{{vmp_term}}</td>
         <td>{{amp_term}}</td>

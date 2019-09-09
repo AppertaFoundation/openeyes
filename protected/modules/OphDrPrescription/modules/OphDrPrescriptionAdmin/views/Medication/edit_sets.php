@@ -18,7 +18,7 @@
         return ['id' => $e->id, 'label' => $e->term];
 
     }, MedicationRoute::model()->findAllByAttributes(['deleted_date' => null]));
-    $freqs = array_map(function ($e) {
+    $frequencies = array_map(function ($e) {
         return ['id' => $e->id, 'label' => $e->term];
 
     }, MedicationFrequency::model()->findAllByAttributes(['deleted_date' => null]));
@@ -33,26 +33,25 @@
 <script id="set_row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
         <td>
-        <input type="hidden" name="Medication[medicationSetItems][id][]" value="-1" />
-        <input type="hidden" name="Medication[medicationSetItems][medication_set_id][]" value="{{set.id}}" />
+        <input type="hidden" name="Medication[medicationSetItems][{{key}}][medication_set_id]" value="{{set.id}}" />
         {{set.label}}
         </td>
        <td>
-            <?php echo CHtml::textField('Medication[medicationSetItems][default_dose][]', "1"); ?>
+            <?php echo CHtml::textField('Medication[medicationSetItems][{{key}}][default_dose]', "1"); ?>
         </td>
         <td>
-            <?php echo CHtml::textField('Medication[medicationSetItems][default_dose_unit_term][]', '{{unit.label}}'); ?>
+            <?php echo CHtml::textField('Medication[medicationSetItems][{{key}}][default_dose_unit_term]', '{{unit.label}}'); ?>
         </td>
         <td>
-            <input type="hidden" name="Medication[medicationSetItems][default_route_id][]" value="{{route.id}}" />
+            <input type="hidden" name="Medication[medicationSetItems][{{key}}][default_route_id]" value="{{route.id}}" />
             {{route.label}}
         </td>
         <td>
-            <input type="hidden" name="Medication[medicationSetItems][default_frequency_id][]" value="{{frequency.id}}" />
+            <input type="hidden" name="Medication[medicationSetItems][{{key}}][default_frequency_id]" value="{{frequency.id}}" />
             {{frequency.label}}
         </td>
         <td>
-            <input type="hidden" name="Medication[medicationSetItems][default_duration_id][]" value="{{duration.id}}" />
+            <input type="hidden" name="Medication[medicationSetItems][{{key}}][default_duration_id]" value="{{duration.id}}" />
             {{duration.label}}
         </td>
         <td>
@@ -91,26 +90,26 @@
             ?>style="display:none;" <?php
                       endif; ?>>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][id][]" value="<?=$id?>" />
-                <input type="hidden" name="Medication[medicationSetItems][medication_set_id][]" value="<?=$assignment->medication_set_id?>" />
+                <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][id]" value="<?=$id?>" />
+                <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][medication_set_id]" value="<?=$assignment->medication_set_id?>" />
                 <?=CHtml::encode($assignment->medicationSet->name)?>
             </td>
             <td>
-                <?php echo CHtml::textField('Medication[medicationSetItems][default_dose][]', $assignment->default_dose); ?>
+                <?php echo CHtml::textField("Medication[medicationSetItems][$rowkey][default_dose]", $assignment->default_dose); ?>
             </td>
             <td>
-                <?php echo CHtml::textField('Medication[medicationSetItems][default_dose_unit_term][]', $assignment->default_dose_unit_term); ?>
+                <?php echo CHtml::textField("Medication[medicationSetItems][$rowkey][default_dose_unit_term]", $assignment->default_dose_unit_term); ?>
             </td>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][default_route_id][]" value="<?=$assignment->default_route_id?>" />
+                <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][default_route_id]" value="<?=$assignment->default_route_id?>" />
                 <?=$assignment->default_route_id ? CHtml::encode($assignment->defaultRoute->term) : ""?>
             </td>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][default_frequency_id][]" value="<?=$assignment->default_frequency_id?>" />
+                <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][default_frequency_id]" value="<?=$assignment->default_frequency_id?>" />
                 <?=$assignment->default_frequency_id ? CHtml::encode($assignment->defaultFrequency->term) : ""?>
             </td>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][default_duration_id][]" value="<?=$assignment->default_duration_id?>" />
+                <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][default_duration_id]" value="<?=$assignment->default_duration_id?>" />
                 <?=$assignment->default_duration_id ? CHtml::encode($assignment->defaultDuration->name) : ""?>
             </td>
             <td>
@@ -131,7 +130,7 @@
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($sets) ?>, {'id': 'set', 'multiSelect': false, header: "Set"}),
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($units) ?>, {'id': 'unit','multiSelect': false, header: "Default unit"}),
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($routes) ?>, {'id': 'route', 'multiSelect': false, header: "Default route"}),
-                                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($freqs) ?>, {'id': 'frequency', 'multiSelect': false, header: "Default frequency"}),
+                                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($frequencies) ?>, {'id': 'frequency', 'multiSelect': false, header: "Default frequency"}),
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($durations) ?>, {'id': 'duration', 'multiSelect': false, header: "Default duration"})
                             ],
                             onReturn: function (adderDialog, selectedItems) {
