@@ -18,7 +18,7 @@
 ?>
 
 <div class="hidden" id="add-new-form" style="margin-bottom: 10px">
-	<?php
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'clinical-create',
             'enableAjaxValidation' => false,
@@ -30,28 +30,28 @@
 </div>
 
 <div class="cols-3">
-	<?php $this->renderPartial('//base/_messages')?>
-	<form id="admin_file_collections">
-		<table class="standard">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>Name</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ($model_list as $i => $model) {?>
-					<tr class="clickable" data-id="<?php echo $model->id?>" data-uri="OphCoTherapyapplication/admin/editFileCollection/<?php echo $model->id?>">
-						<td><input type="checkbox" name="file_collections[]" value="<?php echo $model->id?>" /></td>
-						<td>
-							<?php echo $model->name?>
-						</td>
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="2">
+    <?php $this->renderPartial('//base/_messages')?>
+    <form id="admin_file_collections">
+        <table class="standard">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="selectall" id="selectall" /></th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($model_list as $i => $model) {?>
+                    <tr class="clickable" data-id="<?php echo $model->id?>" data-uri="OphCoTherapyapplication/admin/editFileCollection/<?php echo $model->id?>">
+                        <td><input type="checkbox" name="file_collections[]" value="<?php echo $model->id?>" /></td>
+                        <td>
+                            <?php echo $model->name?>
+                        </td>
+                    </tr>
+                <?php }?>
+            </tbody>
+            <tfoot class="pagination-container">
+                <tr>
+                    <td colspan="2">
                         <?=\CHtml::button(
                             'Add',
                             [
@@ -73,9 +73,9 @@
                                 'id' => 'et_delete'
                             ]
                         ); ?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

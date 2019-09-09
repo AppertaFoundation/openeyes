@@ -17,7 +17,7 @@
 ?>
 
 <div class="element-data data-group">
-	<div class="cols-4 column">
+    <div class="cols-4 column">
         
         <div class="cols-7 column">
             <label>

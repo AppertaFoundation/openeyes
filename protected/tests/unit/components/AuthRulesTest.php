@@ -155,7 +155,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanDeleteEvent_WrongUser()
     {
         $event = $this->getEvent(array('created_user_id' => 1, 'created_date' => date('Y-m-d H:i:s')));
-        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(2),$event));
+        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(2), $event));
     }
 
 

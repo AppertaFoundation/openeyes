@@ -67,7 +67,7 @@
                     $attr,
                     $data,
                     ['empty' => '- Not set -', 'class' => 'cols-full']
-                ); ?>
+                    ); ?>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -105,14 +105,14 @@
 </div>
 
 <script type="text/javascript">
-	handleButton($('#et_cancel'),function() {
-		window.location.href = baseUrl+'/OphTrOperationbooking/admin/view'+OE_rule_model+'s';
-	});
-	handleButton($('#et_save'),function() {
-		$('#adminform').submit();
-	});
-	handleButton($('#et_delete'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/OphTrOperationbooking/admin/delete'+OE_rule_model+'/<?php echo $rule->id?>';
-	});
+    handleButton($('#et_cancel'),function() {
+        window.location.href = baseUrl+'/OphTrOperationbooking/admin/view'+OE_rule_model+'s';
+    });
+    handleButton($('#et_save'),function() {
+        $('#adminform').submit();
+    });
+    handleButton($('#et_delete'),function(e) {
+        e.preventDefault();
+        window.location.href = baseUrl+'/OphTrOperationbooking/admin/delete'+OE_rule_model+'/<?php echo $rule->id?>';
+    });
 </script>

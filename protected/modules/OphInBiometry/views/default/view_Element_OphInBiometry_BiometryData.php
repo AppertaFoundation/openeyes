@@ -18,22 +18,22 @@
 ?>
 
 <section class="element">
-	<div class="element-data element-eyes">
-		<div class="js-element-eye right-eye column">
-			<?php if ($element->hasRight()) {
+    <div class="element-data element-eyes">
+        <div class="js-element-eye right-eye column">
+            <?php if ($element->hasRight()) {
                 $this->renderPartial('view_Element_OphInBiometry_BiometryData_fields',
                         array('side' => 'right', 'element' => $element));
             } else { ?>
-				<div class="data-value not-recorded">Not recorded</div>
-			<?php } ?>
-		</div>
-		<div class="js-element-eye left-eye column">
-			<?php if ($element->hasLeft()) {
-    $this->renderPartial('view_Element_OphInBiometry_BiometryData_fields',
+                <div class="data-value not-recorded">Not recorded</div>
+            <?php } ?>
+        </div>
+        <div class="js-element-eye left-eye column">
+            <?php if ($element->hasLeft()) {
+                $this->renderPartial('view_Element_OphInBiometry_BiometryData_fields',
                         array('side' => 'left', 'element' => $element));
             } else { ?>
-				<div class="data-value not-recorded">Not recorded</div>
-			<?php } ?>
-		</div>
-	</div>
+                <div class="data-value not-recorded">Not recorded</div>
+            <?php } ?>
+        </div>
+    </div>
 </section>

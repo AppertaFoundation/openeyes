@@ -76,15 +76,15 @@ class Zend_Gdata_AuthSub
       * @param string $request_uri (optional) URI to which to direct the
       *                            authentication request.
       */
-     public static function getAuthSubTokenUri($next, $scope, $secure=0, $session=0,
+    public static function getAuthSubTokenUri($next, $scope, $secure = 0, $session = 0,
                                                $request_uri = self::AUTHSUB_REQUEST_URI)
      {
-         $querystring = '?next=' . urlencode($next)
-             . '&scope=' . urldecode($scope)
-             . '&secure=' . urlencode($secure)
-             . '&session=' . urlencode($session);
-         return $request_uri . $querystring;
-     }
+        $querystring = '?next=' . urlencode($next)
+            . '&scope=' . urldecode($scope)
+            . '&secure=' . urlencode($secure)
+            . '&session=' . urlencode($session);
+        return $request_uri . $querystring;
+    }
 
 
     /**

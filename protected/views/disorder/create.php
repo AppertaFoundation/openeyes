@@ -3,13 +3,13 @@
 /* @var $model Disorder */
 
 $this->breadcrumbs=array(
-	'Disorders'=>array('index'),
-	'Create',
+    'Disorders'=>array('index'),
+    'Create',
 );
 
 $this->menu=array(
-	array('label'=>'List Disorder', 'url'=>array('index')),
-	array('label'=>'Manage Disorder', 'url'=>array('admin')),
+    array('label'=>'List Disorder', 'url'=>array('index')),
+    array('label'=>'Manage Disorder', 'url'=>array('admin')),
 );
 ?>
 

@@ -1,0 +1,55 @@
+version: '3.4'
+
+# NOTE is is recommended to run `docker-compose down` before `docker-compose up` This will ensure that the database is refreshed on each run.
+# E.g, docker-compose down && docker-compose up
+#
+# To see individual logs - use docker-compose logs [phpunit | behat ]
+#
+# To run only a single test suite, use `docker-compose up [phpunit | selenium behat ]
+## Note that the selenium service is needed for the behat service
+#
+# If you want to view the selenium tests runing, connect a vnv viewer to localhost
+
+services:
+  phpunit:
+    image: appertaopeneyes/ci:latest
+    environment:
+      TESTS_TO_RUN: "PHPUNIT"
+    secrets:
+      - source: SSH_PRIVATE_KEY
+    stdin_open: true
+    tty: true
+    volumes:
+      - "../..:/var/www/openeyes"
+
+  behat:
+    image: appertaopeneyes/ci:latest
+    environment:
+      SELENIUM_BASE_URL: "http://behat"
+      SELENIUM_WD_HOST: http://selenium:4444/wd/hub
+      TESTS_TO_RUN: "BEHAT"
+    secrets:
+      - source: SSH_PRIVATE_KEY
+    stdin_open: true
+    tty: true
+    depends_on:
+      - selenium
+    volumes:
+      - "../..:/var/www/openeyes"
+
+  selenium:
+    image: selenium/standalone-chrome-debug:3.14
+    ports:
+      - "4444:4444"
+      - "5900:5900"
+      - "9515:9515"
+    environment:
+      VNC_NO_PASSWORD: "1"
+      SCREEN_WIDTH: "1920"
+      SCREEN_HEIGHT: "1080"
+    volumes:
+      - /dev/shm:/dev/shm
+
+secrets:
+  SSH_PRIVATE_KEY:
+    file: ~/.ssh/id_rsa

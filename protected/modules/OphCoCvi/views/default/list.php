@@ -76,8 +76,7 @@ $cols = array(
         'value' => function ($data) {
             if ($data->event->info) {
                 return $data->event->info;
-            }
-            else {
+            } else {
                 // TODO: possibly don't need this, or this method should handle the above conditional
                 return $data->getIssueStatusForDisplay();
             }

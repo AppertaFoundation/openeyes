@@ -21,7 +21,6 @@
 $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] : '';
 ?>
 <?php if (@$htmlOptions['nowrapper']) { ?>
-
     <?php if (!$no_element) { ?>
     <input type="hidden" value="" name="<?=\CHtml::modelName($element) ?>[<?php echo $field ?>]">
     <?php } ?>
@@ -43,20 +42,22 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
     <?php } ?>
 
 <?php } else { ?>
-
   <fieldset id="<?=\CHtml::modelName($element) . '_' . $field ?>"
             class="cols-full flex-layout flex-left<?= $fieldset_class ?> <?php echo $hidden ? 'hidden' : '' ?>">
       <?php // Added hidden input below to enforce posting of current form element name.
       // When using radio or checkboxes if no value is selected then nothing is posted
       // not triggereing server side validation.
-      ?>
+        ?>
     <label class="cols-<?php echo $layoutColumns['label']; ?> column">
-        <?php if ($field_value) { ?><?=\CHtml::encode($element->getAttributeLabel($field_value)); ?>
-        <?php } elseif (!$label_above) { ?><?=\CHtml::encode($element->getAttributeLabel($field)); ?>:<?php } ?>
+        <?php if ($field_value) {
+            ?><?=\CHtml::encode($element->getAttributeLabel($field_value)); ?>
+        <?php } elseif (!$label_above) {
+            ?><?=\CHtml::encode($element->getAttributeLabel($field)); ?>:<?php
+        } ?>
     </label>
       <?php if (!$no_element) { ?>
         <input type="hidden" value="" name="<?=\CHtml::modelName($element) ?>[<?php echo $field ?>]">
-      <?php } ?>
+        <?php } ?>
     <div class="cols-<?php echo $layoutColumns['field']; ?> column">
         <?php $i = 0; ?>
         <?php if ($label_above) { ?>
@@ -73,18 +74,18 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
           <label class="inline highlight <?= $label_class ?>" <?= $label_style; ?>>
               <?php $options = array('value' => $id, 'id' => CHtml::modelName($element) . '_' . $field . '_' . $id);
 
-              if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
-                  foreach ($htmlOptions['options'][$id] as $k => $v) {
-                      $options[$k] = $v;
-                  }
-              }
+                if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
+                    foreach ($htmlOptions['options'][$id] as $k => $v) {
+                        $options[$k] = $v;
+                    }
+                }
 
-              $class = isset($options['class']) ? ($options['class'] . " ") : '';
-              $options['class'] = $class . str_replace(' ', '', $data_value);
+                $class = isset($options['class']) ? ($options['class'] . " ") : '';
+                $options['class'] = $class . str_replace(' ', '', $data_value);
 
-              echo CHtml::radioButton($name,
+                echo CHtml::radioButton($name,
                   (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options);
-              ?>
+                ?>
             <span><?=\CHtml::encode($data_value) ?></span>
           </label>
         <?php } ?>
