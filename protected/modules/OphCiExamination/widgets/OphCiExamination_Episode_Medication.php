@@ -31,6 +31,13 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
         $events = $this->event_type->api->getEvents($this->patient, false);
         $earlist_date = time() * 1000;
         $latest_date = time() * 1000;
+        $criteria = new CDbCriteria();
+        $criteria->condition = "has_laterality = '1'";
+        $routes = MedicationRoute::model()->findAll($criteria);
+        $lateral_routes = array_map(function ($e) {
+            return $e->id;
+        }, $routes);
+
         foreach ($events as $event) {
             if ($meds = $event->getElementByClass('OEModule\OphCiExamination\models\HistoryMedications')) {
                 $widget = $this->createWidget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
@@ -46,13 +53,13 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                     }
 
                     $meds_tag = array();
-                    if ($entry->medication_id){
-                        foreach($entry->medication->getTypes() as $item) {
+                    if ($entry->medication_id) {
+                        foreach ($entry->medication->getTypes() as $item) {
                             $meds_tag[] = $item->name;
                         }
                     }
 
-                    if ($entry['route_id'] != 1 || !$meds_tag || !in_array('Glaucoma', $meds_tag)) {
+                    if ( !in_array($entry['route_id'], $lateral_routes) || !$meds_tag || !in_array('Glaucoma', $meds_tag)) {
                         continue;
                     }
 
