@@ -92,6 +92,23 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
             'key' => 'auto_generate_optopm_post_op_letter_after_surgery',
             'value' => 'on'
         ));
+
+        foreach (\Subspecialty::model()->findAll() as $subspecialty) {
+            if ($subspecialty->name !== 'Cataract') {
+                foreach (['default_optop_post_op_letter', 'auto_generate_optopm_post_op_letter_after_surgery'] as $key) {
+                    $this->insert('setting_subspecialty', [
+                        'subspecialty_id' => $subspecialty->id,
+                        'element_type_id' => null,
+                        'key' => $key,
+                        'value' => 'off',
+                        'last_modified_user_id' => '1',
+                        'last_modified_date' => date('Y-m-d H:i:s'),
+                        'created_user_id' => '1',
+                        'created_date' => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }
+        }
     }
 
     public function safeDown()
@@ -105,5 +122,9 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
 
         $this->dropColumn('episode_status', 'key');
         $this->dropColumn('episode_status_version', 'key');
+
+        foreach (['default_optop_post_op_letter', 'auto_generate_optopm_post_op_letter_after_surgery'] as $key) {
+            $this->delete('setting_subspecialty', '`key` = :key', [':key' => $key]);
+        }
     }
 }
