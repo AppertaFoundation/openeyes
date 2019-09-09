@@ -53,7 +53,7 @@ var analytics_init = (function () {
 					$('#js-analytics-spinner').hide();
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
-                    analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
+					analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
 				}
 			});
 		}

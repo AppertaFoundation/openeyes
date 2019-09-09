@@ -92,13 +92,13 @@ var analytics_sidebar = (function () {
 						// the parameter indicate if the csv download is for 
 						// custom data or not
 						analytics_csv_download(true)
-                    },
-                    complete: function(){
-                        $('#js-analytics-spinner').hide();
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
-                    }
+					},
+					complete: function () {
+						$('#js-analytics-spinner').hide();
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
+					}
 				});
 			}
 		}
@@ -141,21 +141,21 @@ var analytics_sidebar = (function () {
 					analytics_dataCenter.service.setServiceData(data[1]);
 
 					current_plot.show();
-                    
+
 					// update plot and refresh csv download
 					if (selected_options === 'clinical') {
-                        analytics_toolbox.plotUpdate(data, specialty, 'clinical');
+						analytics_toolbox.plotUpdate(data, specialty, 'clinical');
 						analytics_csv_download();
 					} else {
-                        analytics_toolbox.plotUpdate(data, specialty, 'service');
+						analytics_toolbox.plotUpdate(data, specialty, 'service');
 						analytics_csv_download();
 					}
-                },
-                complete: function(){
-                    $('#js-analytics-spinner').hide();
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
+				},
+				complete: function () {
+					$('#js-analytics-spinner').hide();
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
 				}
 			});
 		}

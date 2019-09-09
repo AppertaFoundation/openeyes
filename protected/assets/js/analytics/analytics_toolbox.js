@@ -30,8 +30,8 @@ var analytics_toolbox = (function () {
 
 		var msg = 'HTTP status code ' + statusCode + ': ' + errorMsg + '. Please contact your admin or support and try again.';
 
-        div.innerText = msg;
-        
+		div.innerText = msg;
+
 		main.appendChild(div);
 	}
 

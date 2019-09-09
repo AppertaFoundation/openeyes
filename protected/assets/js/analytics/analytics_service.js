@@ -70,13 +70,12 @@ var analytics_service = (function () {
 						$('.analytics-charts').show()
 					}
 					$('#js-hs-chart-analytics-service').show();
-
-                },
-                complete: function(){
-                    $('#js-analytics-spinner').hide();
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
+				},
+				complete: function () {
+					$('#js-analytics-spinner').hide();
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
 				}
 			})
 		});

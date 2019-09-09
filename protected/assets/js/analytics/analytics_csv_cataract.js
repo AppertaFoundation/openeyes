@@ -47,7 +47,7 @@ var analytics_csv_cataract = (function () {
 			type: 'text/csv;charset=utf-8;'
 		});
 		if (navigator.msSaveBlob) {
-            navigator.msSaveBlob(blob, filename);
+			navigator.msSaveBlob(blob, filename);
 		} else {
 			var link = document.getElementById('js-download-csv');
 			var url = URL.createObjectURL(blob);
