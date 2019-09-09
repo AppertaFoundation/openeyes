@@ -13,7 +13,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     }
 
     SocialHistoryController._defaultOptions = {
-        modelName: 'OEModule_OphCiExamination_models_SocialHistory'
+        modelName: 'OEModule_OphCiExamination_models_SocialHistory',
+        nothing_selected_text: "Nothing selected.",
     };
 
 
@@ -38,10 +39,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     SocialHistoryController.prototype.addEntry = function (selectedItems) {
-        // reset textField input for driving statuses
-        $('#textField_driving_statuses').html('');
-        this.$tableSelector.find('.js-driving-status-item').remove();
-
+        this.resetForm();
         for (let i in selectedItems) {
             let item = selectedItems[i];
             let itemSetId = item.itemSet.options.id;
@@ -53,6 +51,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $field.change();
 
             if (itemSetId === "driving_statuses") {
+                // reset textField input for driving statuses
+                $('#textField_driving_statuses').html('');
                 let $hidden = $("<input>",{"type":"hidden", "class":"js-driving-status-item", "name": this.options.modelName + "[driving_statuses][]"}).val(item.id);
                 $td.append($hidden);
                 // insert first driving status
@@ -73,6 +73,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$popupSelector.find('.selected').removeClass('selected');
 
     };
+
+    SocialHistoryController.prototype.resetForm = function () {
+        this.$tableSelector.find('[id*="textField"]').html(this.options.nothing_selected_text);
+        this.$tableSelector.find('.js-driving-status-item').remove();
+        this.$tableSelector.find('#textField_alcohol_intake').addClass('hidden').parent().find('.field-info').html(this.options.nothing_selected_text);
+    }
 
     exports.SocialHistoryController = SocialHistoryController;
 })(OpenEyes.OphCiExamination);
