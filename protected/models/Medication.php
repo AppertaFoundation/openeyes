@@ -175,9 +175,9 @@ class Medication extends BaseActiveRecordVersioned
 
     public function afterDelete() {
         $to_delete = array_merge(
-            $medication->medicationSearchIndexes,
-            $medication->medicationSetItems,
-            $medication->medicationAttributeAssignments
+            $this->medicationSearchIndexes,
+            $this->medicationSetItems,
+            $this->medicationAttributeAssignments
         );
         foreach ($to_delete as $relation) {
             $relation->delete();
