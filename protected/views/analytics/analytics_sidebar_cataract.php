@@ -1,4 +1,19 @@
 <?PHP Yii::app()->getAssetManager()->registerScriptFile('../../../node_modules/jspdf/dist/jspdf.min.js') ?>
+<style>
+    .download-csv-container{
+        position: relative;
+        padding: 0;
+    }
+    #js-download-csv, #js-download-anonymized-csv{
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        line-height: 24px;
+    }
+    #js-download-csv:hover, #js-download-anonymized-csv:hover{
+        color: white;
+    }
+</style>
 <div class="view-mode flex-layout">
     <?php $clinical_button_disable = true;
     if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
@@ -57,7 +72,9 @@
     </form>
 </div>
 <div class="extra-actions">
-    <button id="js-download-csv" class="pro-theme cols-full">Download (CSV)</button>
+    <button class="pro-theme cols-full download-csv-container">
+        <a id="js-download-csv">Download (CSV)</a>
+    </button>
 </div>
 <div class="extra-actions">
     <button id="js-download-pdf" class="pro-theme cols-full">Download All Plots as PDF</button>

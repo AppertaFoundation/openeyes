@@ -136,7 +136,6 @@ var analytics_csv_download = (function () {
 			var link = document.createElement("a");
 			if (link.download !== undefined) {
 				var url = URL.createObjectURL(blob);
-				console.log(url)
 				link.setAttribute("href", url);
 				link.setAttribute("download", filename + '.csv');
 				link.style.visibility = 'hidden';

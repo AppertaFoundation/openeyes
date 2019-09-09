@@ -270,7 +270,7 @@ var analytics_cataract = (function () {
 		var current_user = data['current_user'];
 		var event_date = data['event_date'][0];
 		analytics_toolbox.initDatePicker(event_date);
-		analytics_csv_cataract();
+		
 		if (!$('.analytics-cataract').html()) {
 			var selected_item = getSelectedReportURL();
 			var init_container = selected_item['selected_container'];
@@ -298,7 +298,8 @@ var analytics_cataract = (function () {
 			if (settings.url.includes(currentPlot.replace('Report', '').replace(/_/g, '\\')) &&
 				event.target.activeElement.id !== 'js-download-pdf') {
 				var report = document.getElementById(currentPlot);
-				analytics_drill_down(report, null);
+                analytics_drill_down(report, null);
+                analytics_csv_cataract();
 			}
 		})
 	}
