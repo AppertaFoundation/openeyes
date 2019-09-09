@@ -210,8 +210,7 @@ class PracticeController extends BaseController
                     Yii::app()->end();
                 }
 
-                list($contactPractice, $practice, $address) = $this->performPracticeSave($contactPractice, $practice, $address,
-                    true);
+                list($contactPractice, $practice, $address) = $this->performPracticeSave($contactPractice, $practice, $address, '',true);
 
                 $practice_contact_associate->practice_id = $practice->id;
 
