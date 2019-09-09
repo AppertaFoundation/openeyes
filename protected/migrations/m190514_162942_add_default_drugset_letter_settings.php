@@ -43,7 +43,7 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
         }
         $this->addSetting(
             $field_type_id,
-            "default_optop_post_op_letter",
+            "default_optom_post_op_letter",
             "Default Optom Post-op Letter name",
             'Community Optom'
         );

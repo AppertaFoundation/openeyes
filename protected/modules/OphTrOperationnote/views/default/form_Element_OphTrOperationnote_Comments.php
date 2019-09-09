@@ -76,7 +76,7 @@
             <?=\CHtml::checkBox('auto_generate_gp_letter_after_surgery', $gp_letter_setting);?>Generate standard GP letter
         </label>
 
-        <?php if (\SettingMetadata::model()->getSetting('default_optop_post_op_letter')) :?>
+        <?php if (\SettingMetadata::model()->getSetting('default_optom_post_op_letter')) :?>
             <label class="inline highlight">
                 <?=\CHtml::hiddenField('auto_generate_optopm_post_op_letter_after_surgery', 0);?>
                 <?=\CHtml::checkBox('auto_generate_optopm_post_op_letter_after_surgery', $optom_setting);?>Generate standard Optom letter
