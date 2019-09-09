@@ -117,14 +117,14 @@ class PracticeController extends BaseController
 
             if ( $contact->validate(array('first_name')) and $practice->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country')) ) {
 
-                // If there is no validation error, check for the duplicate practice based on practice name, address1, city, postcode and country.
+                // If there is no validation error, check for the duplicate practice based on practice name, phone, address1, city, postcode and country.
                 $duplicateCheckOutput = Yii::app()->db->createCommand()
-                    ->select('c1.first_name, a.address1, a.city, a.postcode, a.country_id')
+                    ->select('c1.first_name, p.phone, a.address1, a.city, a.postcode, a.country_id')
                     ->from('practice p')
                     ->join('contact c1', 'c1.id = p.contact_id')
                     ->join('address a', 'a.contact_id = c1.id')
-                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id',
-                        array(':first_name'=> $contact->first_name, ':address1'=>$address->address1,
+                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id',
+                        array(':first_name'=> $contact->first_name, ':phone'=> $practice->phone,':address1'=>$address->address1,
                             ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id))
                     ->queryAll();
 
@@ -135,8 +135,8 @@ class PracticeController extends BaseController
                     false);
                 }
             } else {
-                $practice->validate(array('phone'));
                 $contact->validate(array('first_name'));
+                $practice->validate(array('phone'));
                 $address->validate(array('address1', 'city', 'postcode', 'country'));
             }
         }
@@ -182,14 +182,14 @@ class PracticeController extends BaseController
                 $contact->primary_phone = $_POST['Contact']['contact_primary_phone'];
                 $contact->contact_label_id = $_POST['Contact']['contact_label_id'];
 
-                // If there is no validation error, check for the duplicate practice based on practice name, address1, city, postcode and country.
+                // If there is no validation error, check for the duplicate practice based on practice name, phone, address1, city, postcode and country.
                 $dataProvider = Yii::app()->db->createCommand()
-                    ->select('c1.first_name, a.address1, a.city, a.postcode, a.country_id')
+                    ->select('c1.first_name, p.phone, a.address1, a.city, a.postcode, a.country_id')
                     ->from('practice p')
                     ->join('contact c1', 'c1.id = p.contact_id')
                     ->join('address a', 'a.contact_id = c1.id')
-                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and LOWER(a.postcode) = LOWER(:postcode) and LOWER(a.country_id) = LOWER(:country_id)',
-                        array(':first_name'=> $contactPractice->first_name, ':address1'=>$address->address1,
+                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and LOWER(a.postcode) = LOWER(:postcode) and LOWER(a.country_id) = LOWER(:country_id)',
+                        array(':first_name'=> $contactPractice->first_name, ':phone'=> $practice->phone,':address1'=>$address->address1,
                             ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id))
                     ->queryAll();
 
@@ -206,7 +206,7 @@ class PracticeController extends BaseController
                         $practice_contact_associate->gp_id = $gp->getPrimaryKey();
                     }
                 } else {
-                    echo CJSON::encode(array('error' => 'Duplicate Practice detected. <br/> A practice with the same practice name and address already exists. Please enter another practice or exit.'));
+                    echo CJSON::encode(array('error' => 'Duplicate Practice detected. <br/> A practice with the same practice name, phone and address already exists. Please enter another practice or exit.'));
                     Yii::app()->end();
                 }
 
@@ -435,14 +435,14 @@ class PracticeController extends BaseController
 
             if ( $contact->validate(array('first_name')) and $model->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
 
-                // If there is no validation error, check for the duplicate practice based on practice name, address1, city, postcode and country.
+                // If there is no validation error, check for the duplicate practice based on practice name, phone, address1, city, postcode and country.
                 $duplicateCheckOutput = Yii::app()->db->createCommand()
-                    ->select('c1.first_name, a.address1, a.city, a.postcode, a.country_id')
+                    ->select('c1.first_name, p.phone, a.address1, a.city, a.postcode, a.country_id')
                     ->from('practice p')
                     ->join('contact c1', 'c1.id = p.contact_id')
                     ->join('address a', 'a.contact_id = c1.id')
-                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id and p.id != :id',
-                        array(':first_name'=> $contact->first_name, ':address1'=>$address->address1,
+                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id and p.id != :id',
+                        array(':first_name'=> $contact->first_name, ':phone'=> $model->phone, ':address1'=>$address->address1,
                             ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id, ':id'=>$id))
                     ->queryAll();
 
