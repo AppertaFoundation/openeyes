@@ -16,7 +16,7 @@ class <?php echo $this->className; ?>ParameterTest extends CDbTestCase
         parent::setUp();
         $this->searchProviders = array();
         $this->parameter = new <?php echo $this->className; ?>Parameter();
-<?php foreach (explode(',', $this->searchProviders) as $provider):?>
+<?php foreach (explode(',', $this->searchProviders) as $provider) :?>
         $this->searchProviders[] = new <?php echo $provider; ?>('provider<?php echo $counter++;?>')
 <?php endforeach;?>
         $this->parameter->id = 0;

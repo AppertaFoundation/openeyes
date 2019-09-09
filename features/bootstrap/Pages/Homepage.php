@@ -19,7 +19,7 @@ class Homepage extends OpenEyesPage {
 					'xpath' => "//input[@id='query']"
 			),
 			'searchSubmit' => array (
-					'xpath' => "//button[@type='submit']"
+					'xpath' => "//button[@id='js-find-patient']"
 			),
 			'changeFirmHeaderLink' => array (
 					'xpath' => "//*[@id='change-firm']"

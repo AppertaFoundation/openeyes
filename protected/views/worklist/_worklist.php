@@ -32,12 +32,11 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
         <h2 id="worklist_<?= $worklist->id ?>"><?=$worklist->name ?> : <?= $worklist->getDisplayDate() ?></h2>
     </div>
 
-    <?php if ($data_provider->totalItemCount <= 0): ?>
+    <?php if ($data_provider->totalItemCount <= 0) : ?>
         <div class="alert-box info">
             No patients in this worklist.
         </div>
-    <?php else: ?>
-
+    <?php else : ?>
     <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows last-right js-table-controller">
         <colgroup>
             <col class="cols-1"><!--Time-->

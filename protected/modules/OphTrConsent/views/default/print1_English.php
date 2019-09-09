@@ -93,7 +93,7 @@
     </table>
     <h2 class="pageBreak">To be retained in patient's notes</h2>
     <?php for ($i = 0; $i < 2; ++$i) { ?>
-            <?php if($i == 1){ ?>
+            <?php if ($i == 1) { ?>
                 <div class="break"></div>
             <?php } ?>
        
@@ -144,15 +144,15 @@
                 <p>
                     I have interpreted the information above to the patient to the best of my ability and in a way in which I believe s/he can understand.
                 </p>
-                <?php echo $this->renderPartial('signature_table3', array('vi' => ($css_class == 'impaired'), 'name' => $elements['Element_OphTrConsent_Other']->interpreter_name)) ?>
+                    <?php echo $this->renderPartial('signature_table3', array('vi' => ($css_class == 'impaired'), 'name' => $elements['Element_OphTrConsent_Other']->interpreter_name)) ?>
                 <div class="spacer"></div>
-            <?php } ?>
-<?php } ?>
+                <?php } ?>
+    <?php } ?>
         <div class="break"></div>
         <p>Top copy accepted by patient: yes/no (please ring)</p>
         <h3>Statement of patient</h3>
         <p>
-            Please read this form carefully.	If your treatment has been planned in advance, you should already have your own copy of the page which describes the benefits and risks of the proposed treatment. If not, you will be offered a copy now. If you have any questions, do ask - we are here to help you. You have the right to change your mind at any time, including after you have signed this form.
+            Please read this form carefully.    If your treatment has been planned in advance, you should already have your own copy of the page which describes the benefits and risks of the proposed treatment. If not, you will be offered a copy now. If you have any questions, do ask - we are here to help you. You have the right to change your mind at any time, including after you have signed this form.
         </p>
         <p>
             <strong>I agree</strong> to the procedure or course of treatment described on this form.<br/>

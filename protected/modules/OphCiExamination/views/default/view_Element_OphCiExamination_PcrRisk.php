@@ -160,9 +160,9 @@
                   </div>
                 <?php } ?>
             </div>
-          <?php } else { ?>
+            <?php } else { ?>
             Not recorded
-          <?php } ?>
+            <?php } ?>
       </div>
     <?php } ?>
 </div>

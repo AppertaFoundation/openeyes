@@ -27,8 +27,12 @@
                 Medications
             </div>
             <div class="cols-10 column data">
-                <i>Current:</i> <?php if ($stopped) {?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="oe-i history small" aria-hidden="true"></i></a><?php } ?>
-                <?php if (!$current) {?>No current medications.<?php } ?>
+                <i>Current:</i> <?php if ($stopped) {
+                    ?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="oe-i history small" aria-hidden="true"></i></a><?php
+                                } ?>
+                <?php if (!$current) {
+                    ?>No current medications.<?php
+                } ?>
             </div>
 
             <table class="plain valign-top summary-data-table">

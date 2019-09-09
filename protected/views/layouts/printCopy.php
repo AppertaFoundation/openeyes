@@ -30,6 +30,6 @@
 }
 </style>
 <body class="open-eyes print">
-	<?php echo $content; ?>
+    <?php echo $content; ?>
 </body>
 </html>

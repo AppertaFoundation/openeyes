@@ -18,9 +18,13 @@
 ?>
 <section
     class="element edit full
-    <?php if (is_subclass_of($element, 'SplitEventTypeElement')) { echo 'eye-divider'; } ?>
+    <?php if (is_subclass_of($element, 'SplitEventTypeElement')) {
+        echo 'eye-divider';
+    } ?>
     <?php echo $element->elementType->class_name ?>
-    <?php if (@$ondemand) { ?>hidden<?php } ?>"
+    <?php if (@$ondemand) {
+        ?>hidden<?php
+    } ?>"
     data-element-type-id="<?php echo $element->elementType->id ?>"
     data-element-type-class="<?php echo $element->elementType->class_name ?>"
     data-element-type-name="<?php echo $element->elementType->name ?>"

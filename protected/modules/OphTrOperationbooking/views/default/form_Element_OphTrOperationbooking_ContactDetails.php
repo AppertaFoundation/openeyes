@@ -25,11 +25,10 @@
             </td>
             <td>
                 <?php
-                if($element->patient_booking_contact_number == "")
-                {
+                if ($element->patient_booking_contact_number == "") {
                     $element->patient_booking_contact_number = $this->patient->primary_phone;
                 }
-                $form->textField($element, 'patient_booking_contact_number', array("placeholder"=>"Contact number", 'nowrapper' => true), array(),  array_merge($form->layoutColumns, array('label'=>0,'field' => 4)));
+                $form->textField($element, 'patient_booking_contact_number', array("placeholder"=>"Contact number", 'nowrapper' => true), array(), array_merge($form->layoutColumns, array('label'=>0,'field' => 4)));
                 ?>
             </td>
         </tr>
@@ -38,8 +37,8 @@
                 Who will collect the patient after surgery?
             </td>
             <td>
-                <?php $form->textField($element, 'collector_name', array("placeholder"=>"Name", 'nowrapper' => true), array(),  array_merge($form->layoutColumns, array('label'=>0,'field' => 6)))?>
-                <?php $form->textField($element, 'collector_contact_number', array("placeholder"=>"Contact number", 'nowrapper' => true), array(),  array_merge($form->layoutColumns, array('label'=>0,'field' => 4)))?>
+                <?php $form->textField($element, 'collector_name', array("placeholder"=>"Name", 'nowrapper' => true), array(), array_merge($form->layoutColumns, array('label'=>0,'field' => 6)))?>
+                <?php $form->textField($element, 'collector_contact_number', array("placeholder"=>"Contact number", 'nowrapper' => true), array(), array_merge($form->layoutColumns, array('label'=>0,'field' => 4)))?>
             </td>
         </tr>
         </tbody>

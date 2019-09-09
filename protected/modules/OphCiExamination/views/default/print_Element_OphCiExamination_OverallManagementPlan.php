@@ -44,7 +44,7 @@
                 </table>
             </div>
         </div>
-        <?php if ($element->comments !== ''): ?>
+        <?php if ($element->comments !== '') : ?>
             <div class="flex-layout">
                 <div class="data-label cols-3"><?= \CHtml::encode($element->getAttributeLabel('comments')) ?>:</div>
                 <div class="data-value cols-9"><?php echo $element->textWithLineBreaks('comments') ?></div>
@@ -52,10 +52,10 @@
         <?php endif; ?>
     </div>
     <div class="element-eyes flex-layout">
-        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
             <div class="js-element-eye cols-6  <?= $eye_side ?>-eye">
                 <div class="data-group">
-                    <?php if ($element->hasEye($eye_side)): ?>
+                    <?php if ($element->hasEye($eye_side)) : ?>
                         <table class="large-text last-left">
                             <tbody>
                                 <tr>
@@ -65,7 +65,7 @@
                             </tbody>
                         </table>
 
-                    <?php else: ?>
+                    <?php else : ?>
                         Not recorded
                     <?php endif; ?>
                 </div>

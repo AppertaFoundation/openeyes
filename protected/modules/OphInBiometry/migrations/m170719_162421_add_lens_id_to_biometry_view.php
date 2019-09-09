@@ -2,8 +2,8 @@
 
 class m170719_162421_add_lens_id_to_biometry_view extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->execute('CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
                              eol.id AS id,eol.eye_id AS eye_id,eol.last_modified_date AS last_modified_date,
                              eoc.target_refraction_left AS target_refraction_left,
@@ -55,10 +55,10 @@ class m170719_162421_add_lens_id_to_biometry_view extends CDbMigration
                                  join event ev on((ev.id = eol.event_id))) 
                                  join episode ep on((ep.id = ev.episode_id))) 
                                  order by eol.last_modified_date;');
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->execute('CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
                              eol.id AS id,eol.eye_id AS eye_id,eol.last_modified_date AS last_modified_date,
                              eoc.target_refraction_left AS target_refraction_left,
@@ -108,16 +108,16 @@ class m170719_162421_add_lens_id_to_biometry_view extends CDbMigration
                                  join event ev on((ev.id = eol.event_id))) 
                                  join episode ep on((ep.id = ev.episode_id))) 
                                  order by eol.last_modified_date;');
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

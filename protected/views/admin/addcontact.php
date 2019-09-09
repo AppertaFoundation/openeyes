@@ -18,8 +18,8 @@
     <div class="row divider">
         <h2>Add contact</h2>
     </div>
-	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
-	<?php
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
         'enableAjaxValidation' => false,
@@ -83,10 +83,10 @@
         </tfoot>
     </table>
 
-		<?php $this->endWidget()?>
+        <?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('#Contact_title').focus();
-	});
+    $(document).ready(function() {
+        $('#Contact_title').focus();
+    });
 </script>

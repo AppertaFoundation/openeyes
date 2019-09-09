@@ -21,14 +21,14 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $targetIOP = $exam_api->getTargetIOP($this->patient);
 ?>
 <div class="element-data element-eyes flex-layout">
-	<script type="text/javascript">
-		var previous_iop = <?php echo json_encode($iop);?>;
-	</script>
-  <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
-    $hasEyeFunc = "has".ucfirst($eye);
-  ?>
+    <script type="text/javascript">
+        var previous_iop = <?php echo json_encode($iop);?>;
+    </script>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :
+        $hasEyeFunc = "has".ucfirst($eye);
+        ?>
     <section class="js-element-eye cols-6 <?=$side?> <?=$eye?>-eye">
-    <?php if ($element->$hasEyeFunc()):?>
+        <?php if ($element->$hasEyeFunc()) :?>
     <div class="data-group">
       <table>
         <tbody>
@@ -37,9 +37,9 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
           <td class="cols-7 column end"
               id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop">
               <?= ($iop == null) ? 'N/A' : $iop[$eye.'IOP'].' mmHg';?>
-              <?php if (isset($targetIOP[$eye]) && !is_null($targetIOP[$eye]) && $iop[$eye.'IOP'] > $targetIOP[$eye]):?>
+              <?php if (isset($targetIOP[$eye]) && !is_null($targetIOP[$eye]) && $iop[$eye.'IOP'] > $targetIOP[$eye]) :?>
                 <span class="iop_notification error">*** IOP above target ***</span>
-              <?php endif?>
+                <?php endif?>
           </td>
         </tr>
         <tr>
@@ -99,9 +99,9 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
         </tbody>
       </table>
     </div>
-    <?php else:?>
+        <?php else :?>
       Not recorded
-    <?php endif;?>
+        <?php endif;?>
     </section>
-  <?php endforeach; ?>
+    <?php endforeach; ?>
 </div>

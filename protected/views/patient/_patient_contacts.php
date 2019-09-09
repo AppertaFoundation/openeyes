@@ -27,19 +27,19 @@
         <th>Name</th>
         <th>Location</th>
         <th>Type</th>
-          <?php if ($this->checkAccess('OprnEditContact')) { ?>
-            <th></th><?php } ?>
+            <?php if ($this->checkAccess('OprnEditContact')) { ?>
+            <?php } ?>
       </tr>
       </thead>
       <tbody id="patient_contacts">
-      <?php
-      foreach ($this->patient->contactAssignments as $pca) {
-          $this->renderPartial('_patient_contact_row', array('pca' => $pca));
-      }
-      ?>
+        <?php
+        foreach ($this->patient->contactAssignments as $pca) {
+            $this->renderPartial('_patient_contact_row', array('pca' => $pca));
+        }
+        ?>
       </tbody>
     </table>
-      <?php if ($this->checkAccess('OprnEditContact')) { ?>
+        <?php if ($this->checkAccess('OprnEditContact')) { ?>
         <div class="data-group">
           <div class="cols-2 column">
             <label for="contactname" class="align">Add contact:</label>
@@ -47,7 +47,7 @@
 
           <div class="cols-4 column">
               <?php
-              $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                   'name' => 'contactname',
                   'id' => 'contactname',
                   'value' => '',
@@ -130,8 +130,8 @@
                   'htmlOptions' => array(
                       'placeholder' => 'search for contacts',
                   ),
-              ));
-              ?>
+                ));
+                ?>
           </div>
 
           <div class="cols-4 column">
@@ -386,7 +386,7 @@
             <button type="submit" class="warning small btn_add_site_cancel">Cancel</button>
           </div>
         </div>
-      <?php } ?>
+        <?php } ?>
   </div>
 </section>
 <script type="text/javascript">

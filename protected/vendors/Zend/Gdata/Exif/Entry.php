@@ -102,13 +102,13 @@ class Zend_Gdata_Exif_Entry extends Zend_Gdata_Entry
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('exif') . ':' . 'tags':
-            $tags = new Zend_Gdata_Exif_Extension_Tags();
-            $tags->transferFromDOM($child);
-            $this->_tags = $tags;
+            case $this->lookupNamespace('exif') . ':' . 'tags':
+                $tags = new Zend_Gdata_Exif_Extension_Tags();
+                $tags->transferFromDOM($child);
+                $this->_tags = $tags;
             break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }

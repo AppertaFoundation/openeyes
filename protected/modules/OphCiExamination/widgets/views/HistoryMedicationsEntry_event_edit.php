@@ -15,12 +15,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-?>
-
-<?php
-
-/** @var EventMedicationUse $entry */
-
 if (isset($entry->start_date)) {
     $start_date = $entry->start_date;
 } else {
@@ -169,5 +163,3 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         <?php } ?>
     </td>
 </tr>
-
-

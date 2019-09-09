@@ -12,8 +12,8 @@ class m170918_004954_family_history_assignment_view extends OEMigration
         $this->dbConnection->createCommand('drop view ' . $view_name)->execute();
     }
 
-	public function up()
-	{
+    public function up()
+    {
         $this->createView('familyhist_examination_events', <<<EOSQL
 select event_date, event.created_date, event_id, patient_id from et_ophciexamination_familyhistory et
 join event on et.event_id = event.id
@@ -38,12 +38,12 @@ aa.created_date from ophciexamination_familyhistory_entry as aa
 	join latest_familyhist_examination_events latest on element.event_id = latest.event_id
 EOSQL
         );
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropView('patient_family_history');
         $this->dropView('latest_familyhist_examination_events');
         $this->dropView('familyhist_examination_events');
-	}
+    }
 }

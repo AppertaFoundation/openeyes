@@ -563,7 +563,7 @@ class AdminController extends ModuleAdminController
             // if we've got this far, something is amiss
             $transaction->rollback();
         } catch (Exception $e) {
-            Yii::log('OphCoTherapyapplication_FileCollection creation error: '.$e->getMessage(),    'error');
+            Yii::log('OphCoTherapyapplication_FileCollection creation error: '.$e->getMessage(), 'error');
             Yii::app()->user->setFlash('error', 'An unexpected error has occurred');
 
             // clear out any protected files that might have been created.

@@ -123,16 +123,17 @@ class UserHotlistItem extends BaseActiveRecordVersioned
     public function getHotlistItems($is_open, $date = null)
     {
         $criteria = new CDbCriteria();
-        $criteria->condition = 'created_user_id = :user_id AND is_open = :is_open';
+        $criteria->condition = 't.created_user_id = :user_id AND t.is_open = :is_open';
         $criteria->params = array(':user_id' => Yii::app()->user->id, ':is_open' => $is_open);
 
         if ($date) {
-            $criteria->condition .= ' AND DATE(last_modified_date) = DATE(:date)';
+            $criteria->condition .= ' AND DATE(t.last_modified_date) = DATE(:date)';
             $criteria->params[':date'] = $date;
         }
 
-        $criteria->order = 'last_modified_date DESC';
+        $criteria->order = 't.last_modified_date DESC';
 
-        return $this->findAll($criteria);
+        // Eager loading of the patient data and the patient's contact data will boost performance when rendering each hotlist items.
+        return $this->with('patient', 'patient.contact')->findAll($criteria);
     }
 }
