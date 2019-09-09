@@ -168,6 +168,7 @@
     let medsController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
         tableSelector: '#medication-list',
         searchUrl: '/OphDrPrescription/admin/Medication/search',
+        deleteUrl: '/OphDrPrescription/admin/Medication/delete',
         templateSelector: '#medication_template',
         deleteButtonSelector: '#delete_medication'
     });

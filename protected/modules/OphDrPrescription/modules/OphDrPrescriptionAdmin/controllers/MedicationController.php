@@ -137,6 +137,8 @@ class MedicationController extends BaseAdminController
 
         if (!$medication) {
             $medication = new Medication();
+            //User created medications must be local
+            $data['source_type'] = 'local';
         }
 
         $medication->setAttributes($data);
@@ -150,26 +152,31 @@ class MedicationController extends BaseAdminController
     {
         $ids = \Yii::app()->request->getParam('delete-ids', []);
         $transaction = Yii::app()->db->beginTransaction();
+        $success = false;
 
         try {
             foreach ($ids as $id) {
                 $medication = \Medication::model()->findByPk($id);
 
                 if (!$medication) {
-                    $transaction->rollback();
+                    $success = false;
                     break;
                 }
 
                 $medication->delete();
+                $success = true;
             }
         } catch (Exception $e) {
-            $transaction->rollback();
-            echo '0';
-            return;
+            $success = false;
         }
 
-        $transaction->commit();
-        echo "1";
+        if ($success) {
+            $transaction->commit();
+            echo "1";
+        } else {
+            $transaction->rollback();
+            echo "0";
+        }
 
         \Yii::app()->end();
     }

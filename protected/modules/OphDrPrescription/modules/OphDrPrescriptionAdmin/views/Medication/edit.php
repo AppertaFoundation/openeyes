@@ -72,7 +72,8 @@
                             ),
                             [
                                 'class' => 'cols-full',
-                                'empty' => '-- None --'
+                                'default' => 'local',
+                                'disabled' => 'disabled'
                             ])?>
                         </div>
                     </div>
@@ -91,7 +92,8 @@
                             ),
                             [
                                 'class' => 'cols-full',
-                                'empty' => '-- None --'
+                                'empty' => '-- None --',
+                                'disabled' => 'disabled'
                             ])?>
                         </div>
                     </div>
