@@ -1,7 +1,7 @@
 <?php
 /** @var Medication $medication */
 
-$rowkey = 0;
+$row_key = 0;
 
 ?>
 <h3>Alternative Terms</h3>
@@ -16,12 +16,12 @@ $rowkey = 0;
     <?php foreach ($medication->medicationSearchIndexes as $medicationSearchIndex) : ?>
         <?php
         $id = is_null($medicationSearchIndex->id) ? -1 : $medicationSearchIndex->id;
-        $rowkey++;
+        $row_key++;
         ?>
-        <tr data-key="<?=$rowkey?>">
+        <tr data-key="<?=$row_key?>">
             <td>
-                <input type="hidden" name="Medication[medicationSearchIndexes][<?=$rowkey?>][id]" value="<?=$id?>" />
-                <?php echo CHtml::textField("Medication[medicationSearchIndexes][".$rowkey."][alternative_term]", $medicationSearchIndex->alternative_term, array('class' => 'cols-full')); ?>
+                <input type="hidden" name="Medication[medicationSearchIndexes][<?=$row_key?>][id]" value="<?=$id?>" />
+                <?php echo CHtml::textField("Medication[medicationSearchIndexes][".$row_key."][alternative_term]", $medicationSearchIndex->alternative_term, array('class' => 'cols-full')); ?>
             </td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-alt-term"><i class="oe-i trash"></i></a>
@@ -53,12 +53,11 @@ $rowkey = 0;
 <script type="text/javascript">
     $(function(){
         $(document).on("click", ".js-add-alt-term", function (e) {
-            let lastkey = $("#medication_alternative_terms_tbl tbody tr:last").attr("data-key");
-            if(isNaN(lastkey)) {
-                lastkey = 0;
+            let lastKey = $("#medication_alternative_terms_tbl tbody tr:last").attr("data-key");
+            if(isNaN(lastKey)) {
+                lastKey = 0;
             }
-            let key = parseInt(lastkey) + 1;
-            console.log(key);
+            let key = parseInt(lastKey) + 1;
             let template = $('#alt_terms_row_template').html();
             Mustache.parse(template);
             let rendered = Mustache.render(template, {"key": key});
