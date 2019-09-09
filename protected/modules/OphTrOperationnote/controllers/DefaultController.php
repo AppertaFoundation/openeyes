@@ -390,7 +390,7 @@ class DefaultController extends BaseEventTypeController
                             }
                         }
 
-                        $create_optopm_correspondence = \Yii::app()->request->getParam('auto_generate_optopm_post_op_letter_after_surgery');
+                        $create_optopm_correspondence = \Yii::app()->request->getParam('auto_generate_optom_post_op_letter_after_surgery');
                         $macro_name = \SettingMetadata::model()->getSetting('default_optom_post_op_letter');
                         $macro = LetterMacro::model()->find('name = ?', [$macro_name]);
 
