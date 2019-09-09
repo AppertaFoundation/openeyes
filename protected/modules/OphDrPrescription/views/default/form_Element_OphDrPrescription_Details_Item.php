@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -21,65 +18,60 @@
 /** @var Patient $patient */
 /** @var OphDrPrescription_Item $item */
 ?>
+<tr data-key="<?=$key ?>" class="prescription-item prescriptionItem
+    <?php if ($item->getErrors()) :
+        ?>errors<?php
+    endif; ?>">
+  <td>
+      <button class="js-add-taper">
+          <i class="oe-i child-arrow small"></i>
+      </button>
+  </td>
+  <td>
+      <input type="hidden" name="Element_OphDrPrescription_Details[items][<?=$key ?>][usage_type]" value="<?=OphDrPrescription_Item::getUsageType(); ?>" />
+      <input type="hidden" name="Element_OphDrPrescription_Details[items][<?=$key ?>][usage_subtype]" value="<?=OphDrPrescription_Item::getUsageSubType(); ?>" />
+      <?php if (isset($patient) && $patient->hasDrugAllergy($item->medication_id)): ?>
+      <i class="oe-i warning small pad js-has-tooltip" data-tooltip-content="Allergic to <?= implode(',',$patient->getPatientDrugAllergy($item->medication_id))?>"></i>
+      <?php endif; ?>
+      <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
+      <?=$item->medication->preferred_term; ?>
+      <?php if ($item->id) { ?>
+        <input type="hidden" name="Element_OphDrPrescription_Details[items][<?=$key ?>][id]" value="<?=$item->id ?>" /><?php
+      } ?>
+    <input type="hidden" name="Element_OphDrPrescription_Details[items][<?=$key ?>][medication_id]" value="<?=$item->medication_id ?>"/>
+      <?php if($item->comments){ ?>
+        <i class="oe-i comments-added active medium-icon pad js-add-comments js-has-tooltip" style="" data-tooltip-content="<?=\CHtml::encode($item->comments);?>"></i>
+       <?php } else { ?>
+        <i class="oe-i comments medium-icon pad js-add-comments" style=""></i>
+       <?php } ?>
+      <div id="comments-<?=$key?>" class="cols-full prescription-comments" style="display:none" data-key="<?=$key; ?>">
+          <!-- comment-group, textarea + icon -->
+          <div class="comment-group flex-layout flex-left" style="padding-top:5px">
+                <?php
+                $htmlOptions = [
+                        'placeholder'=>'Comments' , 'autocomplete'=>'off',
+                    'rows'=>'1', 'class'=>'js-input-comments cols-full ' ,
+                    'style'=>'overflow-x: hidden;word-wrap: break-word;'
+                ];
+                echo CHtml::textArea('Element_OphDrPrescription_Details[items][' . $key . '][comments]' ,CHtml::encode($item->comments) ,$htmlOptions) ?>
+              <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
+          </div>
+      </div>
 
-    <tr data-key="<?php echo $key ?>" class="prescription-item prescriptionItem
-  <?php if ($item->getErrors()): ?>errors<?php endif; ?>">
-        <td>
-            <button class="js-add-taper">
-                <i class="oe-i child-arrow small"></i>
-            </button>
-        </td>
-        <td>
-            <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][usage_type]"
-                   value="<?php echo OphDrPrescription_Item::getUsageType(); ?>"/>
-            <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][usage_subtype]"
-                   value="<?php echo OphDrPrescription_Item::getUsageSubType(); ?>"/>
-            <?php if (isset($patient) && $patient->hasDrugAllergy($item->medication_id)): ?>
-                <i class="oe-i warning small pad js-has-tooltip"
-                   data-tooltip-content="Allergic to <?= implode(',', $patient->getPatientDrugAllergy($item->medication_id)) ?>"></i>
-            <?php endif; ?>
-            <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
-            <?php echo $item->medication->preferred_term; ?>
-            <?php if ($item->id) { ?>
-                <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][id]"
-                       value="<?php echo $item->id ?>" /><?php
-            } ?>
-            <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][medication_id]"
-                   value="<?php echo $item->medication_id ?>"/>
-            <?php if ($item->comments) { ?>
-                <i class="oe-i comments-added active medium-icon pad js-add-comments js-has-tooltip" style=""
-                   data-tooltip-content="<?= \CHtml::encode($item->comments); ?>"></i>
-            <?php } else { ?>
-                <i class="oe-i comments medium-icon pad js-add-comments" style=""></i>
-            <?php } ?>
+  </td>
+  <td class="prescriptionItemDose">
+      <?php
+          $css_class = 'cols-4 inline';
+          if ($item->dose === null || is_numeric($item->dose) || $item->dose === '') {
+              $css_class.= " input-validate numbers-only";
+              if ($item->dose_unit_term === 'mg') {
+                  $css_class .= ' decimal';
+              }
+          }
+      ?>
 
-            <div id="comments-<?= $key ?>" class="cols-full prescription-comments" style="display:none"
-                 data-key="<?php echo $key; ?>">
-                <!-- comment-group, textarea + icon -->
-                <div class="comment-group flex-layout flex-left" style="padding-top:5px">
-                    <?php
-                    $htmlOptions = [
-                        'placeholder' => 'Comments', 'autocomplete' => 'off',
-                        'rows' => '1', 'class' => 'js-input-comments cols-full ',
-                        'style' => 'overflow-x: hidden;word-wrap: break-word;'
-                    ];
-                    echo CHtml::textArea('Element_OphDrPrescription_Details[items][' . $key . '][comments]', CHtml::encode($item->comments), $htmlOptions) ?>
-                    <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
-                </div>
-            </div>
-
-        </td>
-        <td class="prescriptionItemDose">
-
-            <?php
-            $css_class = 'cols-4 inline';
-            if ($item->dose === null || is_numeric($item->dose) || $item->dose === '') {
-                $css_class .= " input-validate numbers-only";
-                if ($item->dose_unit_term === 'mg') {
-                    $css_class .= ' decimal';
-                }
-            }
-            ?>
+      <?=\CHtml::textField('Element_OphDrPrescription_Details[items][' . $key . '][dose]', $item->dose,
+          array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)) ?>
 
             <?= \CHtml::textField('Element_OphDrPrescription_Details[items][' . $key . '][dose]', $item->dose,
                 array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)) ?>
@@ -130,7 +122,6 @@
                     'condition' => "active or id='" . $item->dispense_condition_id . "'",
                     'order' => 'display_order',
                 )), 'id', 'name'), array('class' => 'dispenseCondition cols-11', 'empty' => 'Select')); ?>
-
         </td>
         <td>
             <?php
@@ -145,22 +136,19 @@
         </td>
     </tr>
 
-<?php
-$count = 0;
-foreach ($item->tapers as $taper): ?>
-    <tr data-key="<?php echo $key ?>" data-taper="<?php echo $count ?>"
-        class="prescription-tapier <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
+<?php foreach ($item->tapers as $count => $taper): ?>
+    <tr data-key="<?=$key ?>" data-taper="<?=$count ?>"
+        class="prescription-tapier <?=($key % 2) ? 'odd' : 'even'; ?>">
         <td></td>
         <td>
             <i class="oe-i child-arrow small no-click pad"></i>
             <em class="fade">then</em>
             <?php if ($taper->id) { ?>
                 <input type="hidden"
-                       name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][taper][<?php echo $count ?>][id]"
-                       value="<?php echo $taper->id ?>"/>
+                       name="Element_OphDrPrescription_Details[items][<?=$key ?>][taper][<?=$count ?>][id]"
+                       value="<?=$taper->id ?>"/>
             <?php } ?>
         </td>
-
         <td>
             <?php
 
@@ -198,6 +186,4 @@ foreach ($item->tapers as $taper): ?>
             <i class="oe-i trash removeTaper"></i>
         </td>
     </tr>
-    <?php
-    ++$count;
-endforeach; ?>
+<?php endforeach; ?>

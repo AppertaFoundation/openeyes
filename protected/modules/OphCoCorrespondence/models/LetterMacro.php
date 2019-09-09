@@ -153,13 +153,11 @@ class LetterMacro extends BaseActiveRecordVersioned
     public function afterSave()
     {
         if (isset($_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent']) && isset($_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'])) {
-
             $post_associated_content = $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'];
             $post_init_method = $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'];
 
             $order = 1;
             foreach ($post_associated_content as $key => $pac) {
-
                 if (isset($pac['id']) && ($pac['id'] > 0)) {
                     $criteria = new \CDbCriteria();
                     $criteria->addCondition('id = ' . $pac['id']);

@@ -76,7 +76,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->andWhere('event.created_date <= :end_date', array(':end_date' => date('Y-m-d', strtotime($this->end_date)).' 23:59:59'))
             ->andWhere('episode.deleted = 0');
 
-        if( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
+        if ( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ) {
             $this->user_id = Yii::app()->user->id;
         }
 

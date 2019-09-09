@@ -13,7 +13,7 @@
     <tbody>
     <tr>
       <td>
-          <?=\CHtml::label('Date From', 'date_from') ?>
+            <?=\CHtml::label('Date From', 'date_from') ?>
       </td>
       <td>
         <input id="date_from"
@@ -25,7 +25,7 @@
         >
       </td>
       <td>
-          <?=\CHtml::label('Date To', 'date_to') ?>
+            <?=\CHtml::label('Date To', 'date_to') ?>
       </td>
       <td>
         <input id="date_to"
@@ -39,33 +39,33 @@
     </tr>
     <tr>
       <td>
-          <?=\CHtml::label('Given by', 'given_by_id') ?>
+            <?=\CHtml::label('Given by', 'given_by_id') ?>
       </td>
       <td>
-          <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
-              <?=\CHtml::dropDownList('given_by_id', '',
+            <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)) : ?>
+                <?=\CHtml::dropDownList('given_by_id', '',
                   CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')), 'id',
                       'fullName'), array('empty' => 'Select')) ?>
-          <?php else: ?>
-              <?php
-              $user = User::model()->findByPk(Yii::app()->user->id);
-              echo CHtml::dropDownList(null, '',
+            <?php else : ?>
+                <?php
+                $user = User::model()->findByPk(Yii::app()->user->id);
+                echo CHtml::dropDownList(null, '',
                   array(Yii::app()->user->id => $user->fullName),
                   array(
                       'disabled' => 'disabled',
                       'readonly' => 'readonly',
                       'style' => 'background-color:#D3D3D3;',
                   ) //for some reason the chrome doesn't gray out
-              );
-              echo CHtml::hiddenField('given_by_id', Yii::app()->user->id);
-              ?>
-          <?php endif ?>
+                );
+                echo CHtml::hiddenField('given_by_id', Yii::app()->user->id);
+                ?>
+            <?php endif ?>
       </td>
       <td>
-          <?=\CHtml::label('Drugs', 'drug_id') ?>
+            <?=\CHtml::label('Drugs', 'drug_id') ?>
       </td>
       <td>
-          <?=\CHtml::dropDownList(
+            <?=\CHtml::dropDownList(
               'drug_id',
               '',
               CHtml::listData(
@@ -76,10 +76,10 @@
     </tr>
     <tr>
       <td>
-          <?=\CHtml::label('Pre Injection Antiseptic', 'pre_antisept_drug_id') ?>
+            <?=\CHtml::label('Pre Injection Antiseptic', 'pre_antisept_drug_id') ?>
       </td>
       <td>
-          <?=\CHtml::dropDownList(
+            <?=\CHtml::dropDownList(
               'pre_antisept_drug_id',
               '',
               CHtml::listData(
@@ -90,8 +90,8 @@
       </td>
       <td>
         <input type="hidden" name="summary" value="0"/>
-          <?=\CHtml::checkBox('summary'); ?>
-          <?=\CHtml::label('Summarise patient data', 'summary') ?>
+            <?=\CHtml::checkBox('summary'); ?>
+            <?=\CHtml::label('Summarise patient data', 'summary') ?>
       </td>
     </tr>
     </tbody>
@@ -106,13 +106,13 @@
     <tr>
       <td>
         <input type="hidden" name="pre_va" value="0"/>
-          <?=\CHtml::checkBox('pre_va'); ?>
-          <?=\CHtml::label('Pre injection VA', 'pre_va') ?>
+            <?=\CHtml::checkBox('pre_va'); ?>
+            <?=\CHtml::label('Pre injection VA', 'pre_va') ?>
       </td>
       <td>
         <input type="hidden" name="post_va" value="0"/>
-          <?=\CHtml::checkBox('post_va'); ?>
-          <?=\CHtml::label('Post injection VA', 'post_va') ?>
+            <?=\CHtml::checkBox('post_va'); ?>
+            <?=\CHtml::label('Post injection VA', 'post_va') ?>
       </td>
     </tr>
     </tbody>

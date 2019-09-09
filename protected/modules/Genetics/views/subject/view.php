@@ -20,7 +20,7 @@
     <div class="data-group">
         <div class="cols-10 column"><h2>View Genetics Patient</h2></div>
         <div class="cols-2 column right">
-            <?php if( $this->checkAccess('OprnEditGeneticPatient') ): ?>
+            <?php if ( $this->checkAccess('OprnEditGeneticPatient') ) : ?>
                 <a href="/Genetics/subject/edit/<?php echo $model->id . '?patient=' . $model->patient_id; ?>&returnUri=<?php echo urlencode('/Genetics/subject/view/').$model->id; ?>" class="button small right" id="subject_edit">Edit</a>
             <?php endif; ?>
         </div>
@@ -49,7 +49,7 @@
                 'label' => $model->patient->getAttributeLabel('dob'),
                 'type' => 'raw',
                 'value' => function() use ($model){
-                    if($model->patient->dob) {
+                    if ($model->patient->dob) {
                         $date = new DateTime($model->patient->dob);
                         return $date->format('d M Y');
                     }
@@ -73,13 +73,13 @@
                 'type' => 'raw',
                 'value' => function() use ($model){
                     $html = '<ul>';
-                    foreach($model->relationships as $relationship){
+                    foreach ($model->relationships as $relationship) {
                         $html .= '<li>';
                         $html .= '<a href="/patient/view/' . $relationship->relation->patient->id . '">'.$relationship->relation->patient->fullName.' </a>';
                         $html .= ' is a ' . $relationship->relationship->relationship . ' to the patient.';
                         $html .= '</li>';
                     }
-                    return $html .= '<ul>';                    
+                    return $html .= '<ul>';
                 }
             ),
              array(
@@ -87,7 +87,7 @@
                 'type' => 'raw',
                 'value' => function() use ($model){
                     $html = '<ul>';
-                    foreach($model->diagnoses as $diagnosis){
+                    foreach ($model->diagnoses as $diagnosis) {
                         $html .= '<li>' . $diagnosis->term;
                         $html .= '</li>';
                     }
@@ -99,9 +99,9 @@
                 'label' => 'Pedigree',
                 'type' => 'raw',
                 'value' => function() use ($model){
-                    if($model->pedigrees){
+                    if ($model->pedigrees) {
                         $html = '<ul>';
-                        foreach($model->pedigrees as $pedigree){
+                        foreach ($model->pedigrees as $pedigree) {
                             $gene = isset($pedigree->gene) ? ' (Gene: ' . $pedigree->gene->name . ')' : '';
                             $html .= '<li><a href="/Genetics/pedigree/view/' . $pedigree->id . '">' . $pedigree->id . $gene . '</a>';
                             $html .= " - " . $model->statusForPedigree($pedigree->id);
@@ -118,12 +118,11 @@
                 'label' => 'Previous Studies',
                 'type' => 'raw',
                 'value' => function() use ($model){
-                    if($model->previous_studies){
+                    if ($model->previous_studies) {
                         $html = '<ul>';
-                        foreach($model->previous_studies as $previous_study){
-
+                        foreach ($model->previous_studies as $previous_study) {
                             $end_date = '-';
-                            if( Helper::isValidDateTime($previous_study->end_date) ){
+                            if ( Helper::isValidDateTime($previous_study->end_date) ) {
                                 $end_date_object = new DateTime($previous_study->end_date);
                                 $end_date = $end_date_object->format(Helper::NHS_DATE_FORMAT);
                             }
@@ -144,9 +143,9 @@
                 'label' => 'Rejected Studies',
                 'type' => 'raw',
                 'value' => function() use ($model){
-                    if($model->rejected_studies){
+                    if ($model->rejected_studies) {
                         $html = '<ul>';
-                        foreach($model->rejected_studies as $rejected_study){
+                        foreach ($model->rejected_studies as $rejected_study) {
                             $html .= '<li>';
                             $html .= $rejected_study->name;
                             $html .= '</li>';
@@ -163,9 +162,9 @@
                 'label' => 'Current Studies',
                 'type' => 'raw',
                 'value' => function() use ($model){
-                    if($model->current_studies){
+                    if ($model->current_studies) {
                         $html = '<ul>';
-                        foreach($model->current_studies as $current_study){
+                        foreach ($model->current_studies as $current_study) {
                             $html .= '<li>';
                             $html .= $current_study->name;
                             $html .= '</li>';

@@ -23,9 +23,9 @@
 
     <?php
         // Event actions
-        if ($this->checkPrintAccess()) {
-            $this->event_actions[] = EventAction::printButton();
-        }
+    if ($this->checkPrintAccess()) {
+        $this->event_actions[] = EventAction::printButton();
+    }
     ?>
 
     <?php if ($this->event->delete_pending) {?>

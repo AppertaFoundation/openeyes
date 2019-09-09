@@ -130,10 +130,9 @@ class Element_OphCiExamination_FurtherFindings extends \BaseEventTypeElement
     }
 
     public function isChild($action){
-        if ($action=='view'){
+        if ($action=='view') {
             return false;
-        }
-        else{
+        } else {
             return parent::isChild($action);
         }
     }

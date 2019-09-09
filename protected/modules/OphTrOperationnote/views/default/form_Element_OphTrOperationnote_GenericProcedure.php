@@ -26,13 +26,33 @@ $layoutColumns = array(
 // of form control id's, so we generate a number hash of the element name to ensure
 // the ids are unique.
 $numHash = crc32($element->getElementTypeName());
+
+/** @var OphTrOperationnote_Attribute[] $attributes */
+$attributes = $this->getAttributesForProcedure($element->proc_id);
+$itemSets = [];
+foreach ($attributes as $attribute) {
+    $items = array();
+
+    foreach ($attribute->options as $option) {
+        $items[] = ['label' => (string)$option->value.", "];
+    }
+
+    $itemSets[] = ['items' => $items ,
+        'header' => $attribute->label ,
+        'multiSelect' => $attribute->is_multiselect
+    ];
+}
 ?>
 
 <section
     class="edit element full on-demand sub-element
-      <?php echo $element->elementType->class_name ?>
-      <?php if (@$ondemand) { ?>hidden<?php } ?>
-      <?php if ($this->action->id === 'update' && !$element->event_id) { ?>missing<?php } ?>"
+        <?php echo $element->elementType->class_name ?>
+        <?php if (@$ondemand) {
+            ?>hidden<?php
+        } ?>
+        <?php if ($this->action->id === 'update' && !$element->event_id) {
+            ?>missing<?php
+        } ?>"
     data-element-type-id="<?php echo $element->elementType->id ?>"
     data-element-type-class="<?php echo $element->elementType->class_name ?>"
     data-element-type-name="<?php echo $element->elementType->name ?>"
@@ -69,9 +89,38 @@ $numHash = crc32($element->getElementTypeName());
       </tbody>
     </table>
 
+        <?php if (!empty($attributes)) : ?>
+      <div class="add-data-actions flex-item-bottom">
+          <button class="button hint green js-add-select-search" type="button" id="add_attribute_<?=$numHash?>">
+              <i class="oe-i plus pro-theme"></i>
+          </button>
+      </div>
+        <?php endif; ?>
+
   </div>
   <input type="hidden" name="<?php echo get_class($element) ?>[<?php echo $element->proc_id ?>][proc_id]"
          value="<?=\CHtml::encode($element->proc_id) ?>"/>
   <input type="hidden" name="<?php echo get_class($element) ?>[<?php echo $element->proc_id ?>][id]"
          value="<?=\CHtml::encode($element->id) ?>"/>
 </section>
+<script type="text/javascript" id="history-add-to-dialog">
+    $(function () {
+        var inputText = $('#Element_OphTrOperationnote_GenericProcedure_comments_<?=$numHash?>');
+
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#add_attribute_<?=$numHash?>'),
+            itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($itemSet) {
+                return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {'header': $itemSet.header,'multiSelect': $itemSet.multiSelect });
+            }),
+            liClass: 'restrict-width',
+            onReturn: function (adderDialog, selectedItems) {
+                inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
+                autosize.update(inputText);
+                inputText.trigger('oninput');
+                return true;
+            }
+        });
+
+    });
+
+</script>

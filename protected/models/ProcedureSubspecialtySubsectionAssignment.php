@@ -62,6 +62,7 @@ class ProcedureSubspecialtySubsectionAssignment extends BaseActiveRecordVersione
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, proc_id, subspecialty_subsection_id', 'safe', 'on' => 'search'),
+            array('proc_id, subspecialty_subsection_id', 'safe'),
         );
     }
 

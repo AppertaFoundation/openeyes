@@ -1,6 +1,6 @@
 <?php $current_uri = '/' . $this->module->id . '/' . $this->id . '/' . $this->action->id; ?>
 
-<?php if($this->checkAccess('Genetics Admin')): ?>
+<?php if ($this->checkAccess('Genetics Admin')) : ?>
 <div class="box genetics panel">
     <h2>Admin</h2>
     <ul class="navigation">
@@ -16,14 +16,16 @@
         );
 
         foreach ($sidebarLinks as $title => $uri) { ?>
-            <li<?php if ($current_uri == $uri) { ?> class="selected"<?php } ?>>
+            <li<?php if ($current_uri == $uri) {
+                ?> class="selected"<?php
+               } ?>>
                 <?php if ($current_uri == $uri) { ?>
                     <?=\CHtml::link($title, array($uri), array('class' => 'selected')) ?>
                 <?php } else { ?>
                     <?=\CHtml::link($title, array($uri)) ?>
                 <?php } ?>
             </li>
-    <?php } ?>
+        <?php } ?>
     </ul>
 </div>
 
@@ -42,14 +44,16 @@
 
         $current_uri = '/' . $this->module->id . '/' . $this->id . '/' . $this->action->id;
 
-        foreach ($sidebarLinks as $title => $uri) { ?>
-            <li<?php if ($current_uri == $uri) { ?> class="selected"<?php } ?>>
+foreach ($sidebarLinks as $title => $uri) { ?>
+            <li<?php if ($current_uri == $uri) {
+                ?> class="selected"<?php
+               } ?>>
                 <?php if ($current_uri == $uri) { ?>
                     <?=\CHtml::link($title, array($uri), array('class' => 'selected')) ?>
                 <?php } else { ?>
                     <?=\CHtml::link($title, array($uri)) ?>
                 <?php } ?>
             </li>
-        <?php } ?>
+<?php } ?>
     </ul>
 </div>

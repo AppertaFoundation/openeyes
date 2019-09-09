@@ -248,7 +248,7 @@
                     <ul style="display: inline-block">
                         <?php foreach ($element->{$side . '_filecollections'} as $filecoll) { ?>
                             <li><a href="<?php echo $filecoll->getDownloadURL() ?>"><?php echo $filecoll->name ?></a></li>
-                    <?php } ?>
+                        <?php } ?>
                     </ul>
                 </td>
             </tr>

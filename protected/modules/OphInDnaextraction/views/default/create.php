@@ -18,11 +18,11 @@
 $form_id = 'clinical-create';
 $this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
 $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class' => 'button small', 'form' => $form_id));
-    ?>
+?>
 
-	<?php $this->renderPartial('//base/_messages'); ?>
+    <?php $this->renderPartial('//base/_messages'); ?>
 
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => $form_id,
         'enableAjaxValidation' => false,
         'layoutColumns' => array(
@@ -30,12 +30,12 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 's
             'field' => 9,
         ),
     ));
-    ?>
-		<?php $this->displayErrors($errors)?>
-		<?php $this->renderOpenElements($this->action->id, $form)?>
-		<?php $this->renderOptionalElements($this->action->id, $form)?>
-		<?=\CHtml::hiddenField('Event[parent_id]', CHtml::encode(isset($_GET['parent_event_id']) ? $_GET['parent_event_id'] : null))?>
-		<?php $this->displayErrors($errors, true)?>
+?>
+        <?php $this->displayErrors($errors)?>
+        <?php $this->renderOpenElements($this->action->id, $form)?>
+        <?php $this->renderOptionalElements($this->action->id, $form)?>
+        <?=\CHtml::hiddenField('Event[parent_id]', CHtml::encode(isset($_GET['parent_event_id']) ? $_GET['parent_event_id'] : null))?>
+        <?php $this->displayErrors($errors, true)?>
 
-	<?php $this->endWidget()?>
+    <?php $this->endWidget()?>
 <?php $this->endContent()?>

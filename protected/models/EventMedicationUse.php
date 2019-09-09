@@ -181,9 +181,8 @@ class EventMedicationUse extends BaseElement
     public function copiedFields()
     {
         return ['usage_type', 'usage_subtype', 'medication_id', 'start_date', 'end_date', 'first_prescribed_med_use_id',
-            'form_id', 'laterality', 'route_id', 'frequency_id', 'duration', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
-            'dose', 'copied_from_med_use_id', 'dose_unit_term'
-        ];
+                'form_id', 'laterality', 'route_id', 'frequency_id', 'duration', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
+                'dose', 'copied_from_med_use_id', 'dose_unit_term', 'comments'];
     }
 
     /**
@@ -211,6 +210,9 @@ class EventMedicationUse extends BaseElement
         );
     }
 
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
     public function attributeLabels()
     {
         return array(
@@ -256,7 +258,6 @@ class EventMedicationUse extends BaseElement
         // @todo Please modify the following code to remove attributes that should not be searched.
 
         $criteria = new CDbCriteria;
-
         $criteria->compare('id', $this->id);
         $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('copied_from_med_use_id', $this->copied_from_med_use_id, true);
@@ -357,7 +358,9 @@ class EventMedicationUse extends BaseElement
         $res = array();
         foreach (array('dose', 'dose_unit_term', 'medicationLaterality', 'route', 'frequency') as $k) {
             if ($this->$k) {
-                $res[] = $this->$k;
+                if ($k !== "dose_unit_term" || $this->dose) {
+                                $res[] = $this->$k;
+                }
             }
         }
         return implode(' ', $res);
@@ -509,7 +512,7 @@ class EventMedicationUse extends BaseElement
     private function clonefromPrescriptionItem($item)
     {
         $attrs = ['medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
-            'dose', 'frequency_id', 'frequency', 'start_date'];
+                  'dose','dose_unit_term', 'frequency_id', 'frequency', 'start_date'];
         foreach ($attrs as $attr) {
             $this->$attr = $item->$attr;
         }

@@ -3,8 +3,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,7 +12,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class DefaultController extends BaseEventTypeController
@@ -215,7 +214,6 @@ class DefaultController extends BaseEventTypeController
                         }
                     } else {
                         throw new Exception('could not save event');
-
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
@@ -1298,14 +1296,12 @@ class DefaultController extends BaseEventTypeController
         //AnaestheticType
         $type_assessments = array();
         if (isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])) {
-
             $type_assessments_by_id = array();
             foreach ($element->anaesthetic_type_assignments as $type_assignments) {
                 $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
             }
 
             foreach ($data['AnaestheticType'] as $anaesthetic_type_id) {
-
                 if (!array_key_exists($anaesthetic_type_id, $type_assessments_by_id)) {
                     $anaesthetic_type_assesment = new OphTrOperationnote_OperationAnaestheticType();
                 } else {
@@ -1339,14 +1335,12 @@ class DefaultController extends BaseEventTypeController
         //AnaestheticDelivery
         $delivery_assessments = array();
         if (isset($data['AnaestheticDelivery']) && is_array($data['AnaestheticDelivery'])) {
-
             $delivery_assessments_by_id = array();
             foreach ($element->anaesthetic_delivery_assignments as $delivery_assignments) {
                 $delivery_assessments_by_id[$delivery_assignments->anaesthetic_delivery_id] = $delivery_assignments;
             }
 
             foreach ($data['AnaestheticDelivery'] as $anaesthetic_delivery_id) {
-
                 if (!array_key_exists($anaesthetic_delivery_id, $delivery_assessments_by_id)) {
                     $anaesthetic_delivery_assesment = new OphTrOperationnote_OperationAnaestheticDelivery();
                 } else {
@@ -1376,13 +1370,12 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * @param $proc_id
-     * @return OphTrOperationnote_Attribute[]
-     *
      * Returns attributes that belong
      * to the given procedure
+     *
+     * @param $proc_id
+     * @return mixed
      */
-
     protected function getAttributesForProcedure($proc_id)
     {
         $crit = new CDbCriteria();

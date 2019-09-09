@@ -14,24 +14,22 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 
-testtorun="$WROOT/protected/tests/unit"
+testtorun=""
 phpunitconfigxml="$WROOT/protected/tests/phpunit.xml"
-phpunitpath="$WROOT/vendor/phpunit/phpunit/phpunit.php"
+phpunitpath="$WROOT/vendor/phpunit/phpunit/phpunit"
 
 while [[ $# -gt 0 ]]
 do
     p="$1"
 
     case $p in
-	    --test-file)
-        testtorun="$2"
-        shift
-	      ;;
-      --configuration)
+      --configuration|-config)
         phpunitconfigxml="$2"
         shift
         ;;
-	    *)  [ ! -z $p ] && echo "Unknown command line: $p" || :
+	    *)  
+        testtorun="$testtorun $p"
+        # pass all remaining commands to phpunit
         ;;
     esac
 
