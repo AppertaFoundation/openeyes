@@ -93,6 +93,9 @@ var analytics_csv_download = (function () {
 			},
 			complete: function () {
 				csv_export(file_name, csv_file);
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
 			}
 		})
 	}
@@ -198,8 +201,9 @@ var analytics_csv_download = (function () {
 						})
 						// process data and export as csv
 						current_service_data_to_csv(anonymise_flag, patients, report_type);
-
-
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
 					}
 				})
 				break;

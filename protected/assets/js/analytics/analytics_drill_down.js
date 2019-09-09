@@ -40,7 +40,12 @@ var analytics_drill_down = (function () {
 					$("#p_list").append(response);
 				}
 				$('#p_list tr.analytics-patient-list-row.clickable').on("click", _.throttle(patientDetails, ajaxThrottleTime))
+			},
+			complete: function () {
 				$('#js-analytics-spinner').hide();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
 			}
 		});
 	}

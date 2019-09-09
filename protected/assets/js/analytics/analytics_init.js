@@ -48,7 +48,12 @@ var analytics_init = (function () {
 					analytics_toolbox.initDatePicker();
 					// load drill down
 					analytics_drill_down();
+				},
+				complete: function () {
 					$('#js-analytics-spinner').hide();
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+                    analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
 				}
 			});
 		}

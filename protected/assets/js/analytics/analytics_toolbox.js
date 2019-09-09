@@ -20,6 +20,21 @@ var analytics_toolbox = (function () {
 		}
 	}
 
+	function ajaxErrorHandling(statusCode, errorMsg) {
+		var main = document.querySelector('.oe-analytics');
+		var div = document.createElement('div');
+
+		main.innerHTML = '';
+
+		div.setAttribute('class', 'oe-err-msg');
+
+		var msg = 'HTTP status code ' + statusCode + ': ' + errorMsg + '. Please contact your admin or support and try again.';
+
+        div.innerText = msg;
+        
+		main.appendChild(div);
+	}
+
 	function getThrottleTime() {
 		return 100;
 	}
@@ -305,5 +320,6 @@ var analytics_toolbox = (function () {
 		processDate: processDate,
 		getThrottleTime: getThrottleTime,
 		getAjaxThrottleTime: getAjaxThrottleTime,
+		ajaxErrorHandling: ajaxErrorHandling,
 	}
 })()

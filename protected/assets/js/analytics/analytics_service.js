@@ -71,7 +71,12 @@ var analytics_service = (function () {
 					}
 					$('#js-hs-chart-analytics-service').show();
 
-					$('#js-analytics-spinner').hide();
+                },
+                complete: function(){
+                    $('#js-analytics-spinner').hide();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    analytics_toolbox.ajaxErrorHandling(jqXHR.status, errorThrown)
 				}
 			})
 		});
