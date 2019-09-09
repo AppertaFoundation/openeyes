@@ -1,4 +1,19 @@
 <?php
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
 /**
  * This is the model class for table "medication_merge".
@@ -78,15 +93,12 @@ class MedicationMerge extends BaseActiveRecord
     }
 
     /**
-     * Return all entries where status = 1
-     * @return CActiveDataProvider
+	 * Return all entries
+	 * @return CDataProviderIterator
      */
-    private function getAllPending()
+	private function getAll()
     {
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition('status = ' . MedicationMerge::$ACTIVE_STATUS);
-        return new CActiveDataProvider('medicationMerge', ['criteria' => $criteria,
-            'pagination' => false]);
+		return new CDataProviderIterator(new CActiveDataProvider('medicationMerge'));
     }
 
     /*
@@ -94,55 +106,58 @@ class MedicationMerge extends BaseActiveRecord
     */
     public function mergeAll()
     {
-        foreach ($this->getAllPending()->getData() as $merge_row) {
-            // several cases need to be handled here:
-            // 1. source_drug_id set / target_medication_id not set -> search by target_code
-            // 2. source_medication_id set / target_medication_id set
-            if (!$merge_row->source_medication_id || $merge_row->source_medication_id == '') {
-                if ($merge_row->source_drug_id > 0) {
-                    $source_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LOCAL' AND source_subtype='drug'", array(":old_id" => $merge_row->source_drug_id));
-                    $merge_row->source_medication_id = $source_medication->id;
-                } else {
-                    Yii::log('Source medication cannot be found without a source drug id or a source medication id');
-                    continue;
-                }
-            } else {
-                $source_medication = Medication::model()->findByPk($merge_row->source_medication_id);
-            }
 
-            if (!$merge_row->target_id || $merge_row->target_id == '') {
-                $target_medication = Medication::model()->find("preferred_code = :national_code AND source_type='DM+D'", array(":national_code" => $merge_row->target_code));
-                if ($target_medication) {
-                    $merge_row->target_id = $target_medication->id;
-                } else {
-                    Yii::log('No target medication was found , cannot be merged');
-                    // we cannot merge without ID!
-                    continue;
-                }
-            }
+		foreach ($this->getAll() as $merge_row) {
+			if ($merge_row->status == "1") {
+				// several cases need to be handled here:
+				// 1. source_drug_id set / target_medication_id not set -> search by target_code
+				// 2. source_medication_id set / target_medication_id set
+				if (!$merge_row->source_medication_id || $merge_row->source_medication_id == '') {
+					if ($merge_row->source_drug_id > 0) {
+						$source_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LOCAL' AND source_subtype='drug'", array(":old_id" => $merge_row->source_drug_id));
+						$merge_row->source_medication_id = $source_medication->id;
+					} else {
+						Yii::log('Source medication cannot be found without a source drug id or a source medication id');
+						continue;
+					}
+				} else {
+					$source_medication = Medication::model()->findByPk($merge_row->source_medication_id);
+				}
 
-            foreach (['event_medication_use', 'medication_allergy_assignment', 'medication_attribute_assignment', 'medication_common',
-                                 'medication_search_index', 'medication_set_auto_rule_medication', 'medication_set_item'] as $table_with_medication_id) {
-                try {
-                    Yii::app()->db->createCommand("UPDATE {$table_with_medication_id} 
+				if (!$merge_row->target_id || $merge_row->target_id == '') {
+					$target_medication = Medication::model()->find("preferred_code = :national_code AND source_type='DM+D'", array(":national_code" => $merge_row->target_code));
+					if ($target_medication) {
+						$merge_row->target_id = $target_medication->id;
+					} else {
+						Yii::log('No target medication was found , cannot be merged');
+						// we cannot merge without ID!
+						continue;
+					}
+				}
+
+				foreach (['event_medication_use', 'medication_allergy_assignment', 'medication_attribute_assignment', 'medication_common',
+									 'medication_search_index', 'medication_set_auto_rule_medication', 'medication_set_item'] as $table_with_medication_id) {
+					try {
+						Yii::app()->db->createCommand("UPDATE {$table_with_medication_id} 
                                          SET medication_id = {$merge_row->target_id} 
                                          WHERE medication_id = {$merge_row->source_medication_id}")->execute();
-                } catch (Exception $exception) {
-                    Yii::log("Cannot remap foreign keys for medication: " . $merge_row->target_code . "\n");
-                    Yii::log($exception->getMessage());
-                }
-            }
-            $source_medication->deleted_date = date("Y-m-d");
+					} catch (Exception $exception) {
+						Yii::log("Cannot remap foreign keys for medication: " . $merge_row->target_code . "\n");
+						Yii::log($exception->getMessage());
+					}
+				}
+				$source_medication->deleted_date = date("Y-m-d");
 
-            if (!$source_medication->save()) {
-                Yii::log("Cannot deactivate medication: " . $source_medication->id . "\n");
-            }
+				if (!$source_medication->save()) {
+					Yii::log("Cannot deactivate medication: " . $source_medication->id . "\n");
+				}
 
-            $merge_row->merge_date = date("Y-m-d H:i:s");
-            $merge_row->status = 0;
-            if (!$merge_row->save()) {
-                Yii::log("Cannot close merge " . $merge_row->id . "\n");
-            }
-        }
-    }
+				$merge_row->merge_date = date("Y-m-d H:i:s");
+				$merge_row->status = 0;
+				if (!$merge_row->save()) {
+					Yii::log("Cannot close merge " . $merge_row->id . "\n");
+				}
+			}
+		}
+	}
 }
