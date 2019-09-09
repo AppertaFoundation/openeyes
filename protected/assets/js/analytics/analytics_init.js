@@ -1,15 +1,15 @@
 var analytics_init = (function () {
-    var ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 1000;
+	var ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 1000;
 	var init = function () {
-        function selectSpecialty(e){
-            e.preventDefault();
+		function selectSpecialty(e) {
+			e.preventDefault();
 
 			// display spinner
-            $('#js-analytics-spinner').show();
+			$('#js-analytics-spinner').show();
 
-            $('.analytics-charts').show();
-            $('.analytics-patient-list').hide();
-            
+			$('.analytics-charts').show();
+			$('.analytics-patient-list').hide();
+
 			$(this).addClass('selected');
 
 			$('.icon-btn a').not(this).removeClass('selected');
@@ -39,19 +39,19 @@ var analytics_init = (function () {
 						$('#js-analytics-spinner').hide();
 						analytics_cataract(data['data']);
 						return;
-                    }
-                    // load Sidebar
-                    analytics_sidebar();
-                    // defaultly load Service screen
-                    analytics_service();
-                    // initialize datePicker
-                    analytics_toolbox.initDatePicker();
-                    // load drill down
-                    analytics_drill_down();
+					}
+					// load Sidebar
+					analytics_sidebar();
+					// defaultly load Service screen
+					analytics_service();
+					// initialize datePicker
+					analytics_toolbox.initDatePicker();
+					// load drill down
+					analytics_drill_down();
 					$('#js-analytics-spinner').hide();
 				}
 			});
-        }
+		}
 		// specialty options buttons: All CA GL MR
 		$('.select-analytics .oescape-icon-btns a').on('click', _.throttle(selectSpecialty, ajaxThrottleTime));
 

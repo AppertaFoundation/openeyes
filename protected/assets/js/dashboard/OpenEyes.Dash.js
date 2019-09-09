@@ -100,13 +100,6 @@
             }
         });
 
-        // $('#search-form').on('submit', function(e){
-        //     e.preventDefault();
-
-        //     $('.report-search-form').trigger('submit');
-
-        // });
-
         Dash.$container.on('submit', '.report-search-form', function(e){
             e.preventDefault();
             var chart,
@@ -336,8 +329,6 @@
                   Plotly.redraw(chart);
                 }
             });
-
-        //   Plotly.redraw(chart);
 
         },
         'OEModule_OphCiExamination_components_VisualOutcomeReport':function(data){

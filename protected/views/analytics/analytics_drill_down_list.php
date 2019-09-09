@@ -4,12 +4,6 @@ $operation_API = new OphTrOperationnote_API();
 $cataract = isset($data['event_list']) && $data['event_list'] ? true : false;
 $base_patient_url = Yii::app()->createUrl('/patient/summary');
 foreach (($cataract ? $data['event_list'] : $data['patient_list']) as $item) {
-    // if ($cataract) {
-    //     $row = array_search($item['patient_id'], array_column($patient_list, 'id'));
-    //     $patient = $patient_list[$row];
-    // } else {
-    //     $patient = $item;
-    // }
     $item['id'] = $cataract ? $item['event_id'] : $item['id'];
     ?>
     <tr id="<?= $item['id']; ?>" class="analytics-patient-list-row <?=$cataract? 'analytics-event-list-row':'';?> clickable"
