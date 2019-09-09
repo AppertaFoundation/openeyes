@@ -38,7 +38,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
     // Maximum characters per line on FP10 form is roughly 38.
     // Maximum characters per line on WP10 form is roughly 32.
     // Assuming the space left of the white margin can be used for printing, this could be expanded further.
-    const MAX_FPTEN_LINE_CHARS = 38;
+    const MAX_FPTEN_LINE_CHARS = 36;
     const MAX_WPTEN_LINE_CHARS = 32;
 
     /**
@@ -241,25 +241,36 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         $item_lines_used = 0;
         $drug_label = $this->drug->label;
 
-        $this->fpten_line_usage['item_drug'] = (int)ceil(strlen($drug_label) / $max_lines);
-        $this->fpten_line_usage['item_dose'] = (int)ceil(strlen($this->fpTenDose()) / $max_lines);
-        $this->fpten_line_usage['item_frequency'] = (int)ceil(strlen($this->fpTenFrequency()) / $max_lines);
-        $this->fpten_line_usage['item_comment'] = $this->comments ? (int)ceil(strlen("Comment: $this->comments") / $max_lines) : 0;
-
-        // Work out how many print lines will be used for this prescription item. This will also include lines used by tapers.
-        // We get the ceiling value because any decimal value indicates one extra line in use.
-        $item_lines_used += (int)ceil(strlen($drug_label) / $max_lines)
-            + (int)ceil(strlen($this->fpTenDose()) / $max_lines)
-            + (int)ceil(strlen($this->fpTenFrequency()) / $max_lines)
-            + ($this->comments ? (int)ceil(strlen("Comment: $this->comments") / $max_lines) : 0);
+        foreach (array(
+            'item_drug' => $drug_label,
+            'item_dose' => $this->fpTenDose(),
+            'item_frequency' => $this->fpTenFrequency(),
+            'item_comment' => "Comment: $this->comments"
+                 ) as $key => $value) {
+            if ($value) {
+                $this->fpten_line_usage[$key] =  substr_count(wordwrap($value, $max_lines, '/newline/'), '/newline/') + 1;
+            } else {
+                $this->fpten_line_usage[$key] = 0;
+            }
+        }
 
         foreach ($this->tapers as $index => $taper) {
-            $this->fpten_line_usage["taper{$index}_label"] = 1;
-            $this->fpten_line_usage["taper{$index}_dose"] = (int)ceil(strlen($taper->fpTenDose()) / $max_lines);
-            $this->fpten_line_usage["taper{$index}_frequency"] = (int)ceil(strlen($taper->fpTenFrequency()) / $max_lines);
-            $item_lines_used += 1
-                + (int)ceil(strlen($taper->fpTenDose()) / $max_lines)
-                + (int)ceil(strlen($taper->fpTenFrequency()) / $max_lines);
+            foreach (array(
+                         "taper{$index}_label" => 'then',
+                         "taper{$index}_dose" => $taper->fpTenDose(),
+                         "taper{$index}_frequency" => $taper->fpTenFrequency(),
+                     ) as $key => $value) {
+                $this->fpten_line_usage[$key] =  substr_count(wordwrap($value, $max_lines, '/newline/'), '/newline/') + 1;
+            }
+        }
+
+        foreach ($this->fpten_line_usage as $line) {
+            $item_lines_used += $line;
+        }
+
+        if ($item_lines_used > PrescriptionFormPrinter::MAX_FPTEN_LINES) {
+            // Add the extra horizontal rule at the bottom of each split print page to the line count.
+            $item_lines_used += (int)floor($item_lines_used / PrescriptionFormPrinter::MAX_FPTEN_LINES);
         }
 
         // Return the truncated number of lines.

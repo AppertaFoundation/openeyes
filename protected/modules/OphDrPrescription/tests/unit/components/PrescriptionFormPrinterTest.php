@@ -174,8 +174,8 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $this->instance->run();
         ob_end_clean();
 
-        // After output, ensure the page number has increased to 2.
-        $expected = 2;
+        // After output, ensure the page number has increased to 3.
+        $expected = 3;
         $this->assertEquals($expected, $this->instance->getPageNumber());
 
         // Before output, ensure the page number has been reset to 1.

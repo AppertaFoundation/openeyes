@@ -58,9 +58,10 @@ class PrescriptionFormPrinter extends CWidget
                             // No blank lines following the current item, meaning another item will be rendered on the same page.
                             $blank_lines = 0;
                         }
-                        $total_lines_used += $blank_lines;
-                    } elseif ($this->items[$index + 1]->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES - $lines_used) {
-                        $total_lines_used += self::MAX_FPTEN_LINES - $total_lines_used;
+                        $total_lines_used += $blank_lines + (int)floor($item->fpTenLinesUsed() / self::MAX_FPTEN_LINES);
+                    } elseif ($item->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES - $lines_used) {
+                        //echo $total_lines_used;
+                        $total_lines_used += self::MAX_FPTEN_LINES - $lines_used;
                     }
                 }
                 $total_lines_used += ($item->fpTenLinesUsed() + 1);
@@ -221,5 +222,13 @@ class PrescriptionFormPrinter extends CWidget
     public function isSplitPrinting()
     {
         return $this->split_print;
+    }
+
+    public function getLineLength()
+    {
+        if ($this->print_mode === 'FP10') {
+            return OphDrPrescription_Item::MAX_FPTEN_LINE_CHARS;
+        }
+        return OphDrPrescription_Item::MAX_WPTEN_LINE_CHARS;
     }
 }

@@ -58,7 +58,7 @@
                 <div class="fpten-prescription-item fpten-form-row">
                         <?php
                         foreach (array('drug', 'dose', 'frequency') as $attr) {
-                            if ($item->getAttrLength("item_$attr") > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used) {
+                            if ($item->getAttrLength("item_$attr") + 1 > PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used) {
                                 if ($side === 'right' && !$this->getCurrentItemAttr()) {
                                     $this->current_item_index = $j;
                                     $this->current_taper_index = 0;
@@ -70,13 +70,13 @@
                             if (!$this->getCurrentItemAttr() || $this->getCurrentItemAttr() === "item_$attr") {
                                 switch ($attr) {
                                     case 'drug':
-                                        echo "$drug_label<br/>";
+                                        echo wordwrap($drug_label, $this->getLineLength(), '<br/>') . '<br/>';
                                         break;
                                     case 'dose':
-                                        echo "{$item->fpTenDose()}<br/>";
+                                        echo wordwrap($item->fpTenDose(), $this->getLineLength(), '<br/>') . '<br/>';
                                         break;
                                     case 'frequency':
-                                        echo $item->fpTenFrequency();
+                                        echo wordwrap($item->fpTenFrequency(), $this->getLineLength(), '<br/>');
                                         break;
                                 }
                                 $this->setCurrentAttr();
@@ -89,7 +89,7 @@
                             $taper = $item->tapers[$index];
                             foreach (array('label', 'dose', 'frequency') as $attr) {
                                 $lines_remaining = PrescriptionFormPrinter::MAX_FPTEN_LINES - $prescription_lines_used;
-                                if ($item->getAttrLength("taper{$index}_$attr") > $lines_remaining) {
+                                if ($item->getAttrLength("taper{$index}_$attr") + 1 > $lines_remaining) {
                                     if ($side === 'right' && !$this->getCurrentItemAttr()) {
                                         $this->current_item_index = $j;
                                         $this->current_taper_index = $index;
@@ -104,10 +104,10 @@
                                             echo '<br/>then<br/>';
                                             break;
                                         case 'dose':
-                                            echo "{$taper->fpTenDose()}<br/>";
+                                            echo wordwrap($taper->fpTenDose(), $this->getLineLength(), '<br/>') . '<br/>';
                                             break;
                                         case 'frequency':
-                                            echo $taper->fpTenFrequency();
+                                            echo wordwrap($taper->fpTenFrequency(), $this->getLineLength(), '<br/>');
                                             break;
                                     }
 
@@ -131,7 +131,7 @@
                                 $end_of_page = true;
                             }
                             if ((!$this->getCurrentItemAttr() || $this->getCurrentItemAttr() === 'item_comment') && $item->comments) {
-                                echo "<br/>Comment: $item->comments";
+                                echo '<br/>' . wordwrap("Comment: $item->comments", $this->getLineLength(), '<br/>');
                                 $this->setCurrentAttr();
                                 $this->current_item_index = 0;
                                 $this->current_taper_index = 0;
