@@ -108,6 +108,8 @@ class MedicationMerge extends BaseActiveRecord
     {
 
         foreach ($this->getAll() as $merge_row) {
+					  // $merge_row->status == 1 cannot be added to the criteriabecause status is modified during this iteration and CDataProviderIterator
+					  // can't handle
             if ($merge_row->status == "1") {
                 // several cases need to be handled here:
                 // 1. source_drug_id set / target_medication_id not set -> search by target_code
