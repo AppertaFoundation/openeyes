@@ -197,12 +197,15 @@ class Audit extends BaseActiveRecord
         if ($this->action) {
             switch ($this->action->name) {
                 case 'login-successful':
-                    return 'Green';
+                case 'delete-approved':
+                    return 'success';
+                    break;
+                case 'create-failed':
+                    return 'warn';
                     break;
                 case 'login-failed':
                 case 'search-error':
-                case 'create-failed': // This would be better as a warning when OE-8954 is complete
-                    return 'red';
+                    return 'fail';
                     break;
             }
         }
