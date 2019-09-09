@@ -5,7 +5,6 @@
     <td><?=$set->source_subtype?></td>
     <td><?=$set->preferred_code?></td>
     <td><?=$set->preferred_term?></td>
-    <td><?=$set->alternativeTerms()?></td>
     <td><?=$set->vtm_term?></td>
     <td><?=$set->vmp_term?></td>
     <td><?=$set->amp_term?></td>
