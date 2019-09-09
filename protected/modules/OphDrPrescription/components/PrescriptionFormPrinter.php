@@ -50,19 +50,23 @@ class PrescriptionFormPrinter extends CWidget
             if ($this->isPrintable($item)) {
                 $lines_used = $total_lines_used % self::MAX_FPTEN_LINES;
                 // Wrap to a new page.
-                if (isset($this->items[$index + 1])) {
-                    if ($item->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES) {
-                        $extra_item_lines = $this->items[$index + 1]->fpTenLinesUsed() + 1;
-                        $blank_lines = self::MAX_FPTEN_LINES - (($item->fpTenLinesUsed() + 1) % self::MAX_FPTEN_LINES);
-                        if ($extra_item_lines <= $blank_lines) {
-                            // No blank lines following the current item, meaning another item will be rendered on the same page.
-                            $blank_lines = 0;
-                        }
-                        $total_lines_used += $blank_lines + (int)floor($item->fpTenLinesUsed() / self::MAX_FPTEN_LINES);
-                    } elseif ($item->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES - $lines_used) {
-                        //echo $total_lines_used;
+                if ($item->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES) {
+                    // Item is larger than 1 page
+                    if ($index - 1 >= 0) {
+                        // Get blank space after previous item
                         $total_lines_used += self::MAX_FPTEN_LINES - $lines_used;
                     }
+                    // If there is an item after this one, determine how many lines it will use.
+                    $extra_item_lines = isset($this->items[$index + 1]) ? $this->items[$index + 1]->fpTenLinesUsed() + 1 : 0;
+                    $blank_lines = self::MAX_FPTEN_LINES - (($item->fpTenLinesUsed() + 1) % self::MAX_FPTEN_LINES);
+                    if ($extra_item_lines <= $blank_lines) {
+                        // No blank lines following the current item, meaning another item will be rendered on the same page.
+                        $blank_lines = 0;
+                    }
+                    $total_lines_used += $blank_lines + (int)floor($item->fpTenLinesUsed() / self::MAX_FPTEN_LINES);
+                } elseif ($item->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES - $lines_used) {
+                    //echo $total_lines_used;
+                    $total_lines_used += self::MAX_FPTEN_LINES - $lines_used;
                 }
                 $total_lines_used += ($item->fpTenLinesUsed() + 1);
             }

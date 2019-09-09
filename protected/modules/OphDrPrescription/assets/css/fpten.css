@@ -156,8 +156,8 @@ body {
 /*Prescriber initiative appears at top of main box in the center*/
 .fpten-prescriber {
     height: 10mm;
-    width: 59mm;
-    margin-left: 25mm;
+    width: 63mm;
+    margin-left: 21mm;
     text-align: center;
     font-size: 8pt;
     line-height: 10mm;
@@ -195,8 +195,8 @@ body {
 
 .fpten-prescription-list {
     height: 78mm;
-    width: 59mm;
-    margin-left: 25mm;
+    width: 63mm;
+    margin-left: 21mm;
 }
 
 .right .fpten-prescription-list, .right .wpten-prescription-list {
