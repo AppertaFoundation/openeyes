@@ -117,27 +117,25 @@ class MedicationController extends BaseAdminController
             $medication = new Medication();
         }
 
-        if (!\Yii::app()->request->isPostRequest) {
-            $this->render('/Medication/edit', [
-                'model' => $medication
-            ]);
+        if (\Yii::app()->request->isPostRequest) {
+
+            $data = \Yii::app()->request->getParam('Medication');
+
+            if ($medication->isNewRecord) {
+                //User created medications must be local
+                $data['source_type'] = 'local';
+            }
+
+            $medication->setAttributes($data);
+
+            if ($medication->save()) {
+                $this->redirect("/OphDrPrescription/admin/Medication/index");
+            }
         }
 
-        $data = \Yii::app()->request->getParam('Medication');
-
-        if ($medication->isNewRecord) {
-            //User created medications must be local
-            $data['source_type'] = 'local';
-        }
-
-        $medication->setAttributes($data);
-
-        if ($medication->save()) {
-            $this->redirect("/OphDrPrescription/admin/Medication/index");
-        }
-
-// if medication fails to save there is no output
-// please add proper error handling
+        $this->render('/Medication/edit', [
+            'model' => $medication
+        ]);
     }
 
     public function actionDelete()

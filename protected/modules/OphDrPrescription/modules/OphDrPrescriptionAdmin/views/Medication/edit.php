@@ -15,6 +15,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
+<?=\CHtml::errorSummary(
+    $model,
+    null,
+    null,
+    [ "class" => "alert-box alert with-icon" ]
+); ?>
+
 <div class="row divider">
     <h2><?= $model->isNewRecord ? 'Create' : 'Edit'; ?> Medication</h2>
 </div>
