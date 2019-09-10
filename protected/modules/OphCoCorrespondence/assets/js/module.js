@@ -88,7 +88,7 @@ function resetInternalReferralFields(){
 }
 
 function setRecipientToInternalReferral(){
-	$('#docman_recipient_0').attr('disabled', true).css({'background-color':'lightgray'});
+	$('#docman_recipient_0').attr('disabled', true);
 	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', true).val('Internal Referral');
 	$('#Document_Target_Address_0').prop('readonly', true).val(internal_referral_booking_address);
 
