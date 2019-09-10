@@ -91,6 +91,8 @@ class CsvController extends BaseController
                 }
                 fclose($handle);
             }
+
+          //We use an md5 hash of the csv file to obscure any sensitive data
 					$csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
 
 					if(!file_exists(self::$file_path)) {
