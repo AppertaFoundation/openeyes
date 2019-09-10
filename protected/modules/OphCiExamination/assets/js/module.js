@@ -1151,7 +1151,7 @@ $(document).ready(function() {
         });
 
         let date = new Date();
-        let todayDate = date.getDate() -1 + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
+        let todayDate = date.getDate() + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
         let todayDateWithLeadingZero = "0" + todayDate;
 
         let medicationManagementValidationFunction = function() {
