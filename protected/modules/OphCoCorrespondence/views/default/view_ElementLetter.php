@@ -87,7 +87,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
         <?php if($is_mobile_or_tablet){?>
             <div class="js-correspondence-image-overlay" style="position: relative;"></div>
         <?php } else {?>
-            <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=<?= $element->checkPrint() ?>" style="width: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>px; height: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>px; border: 0; position: relative;"></iframe>
+            <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=<?= $element->checkPrint() ?>&is_view=1" style="width: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>px; height: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>px; border: 0; position: relative;"></iframe>
         <?php } ?>
     </div>
 </div>

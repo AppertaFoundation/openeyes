@@ -468,14 +468,14 @@ class DefaultController extends BaseEventTypeController
      * @param $id
      * @return array
      */
-    private function getRecipients($id)
+    private function getRecipients($id, $is_view = false)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
         $recipients = array();
 
         // after "Save and Print" button clicked we only print out what the user checked
-        if (\Yii::app()->user->getState('correspondece_element_letter_saved', true) && (!isset($_GET['print_only_gp']) || $_GET['print_only_gp'] !== "1")) {
+        if (!$is_view && \Yii::app()->user->getState('correspondece_element_letter_saved', true) && (!isset($_GET['print_only_gp']) || $_GET['print_only_gp'] !== "1")) {
 
             if ($letter->document_instance) {
                 // check if the first recipient is GP
@@ -484,7 +484,6 @@ class DefaultController extends BaseEventTypeController
                     ':id' => $document_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL', ));
 
                 if ($to_recipient_gp) {
-                    $recipients[] = ($to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address);
                     // print an extra copy to note
                     if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
                         $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
@@ -601,6 +600,7 @@ class DefaultController extends BaseEventTypeController
 
         $recipient = Yii::app()->request->getParam('recipient');
         $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $is_view = Yii::app()->request->getParam('is_view', false);
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
         $print_outputs = $letter->getOutputByType("Print");
@@ -630,7 +630,7 @@ class DefaultController extends BaseEventTypeController
         // render 1 recipient's letter + attachments at once...
         // we need the letter as PDF
         $attachments = $letter->getAllAttachments();
-        $recipients = $this->getRecipients($id);
+        $recipients = $this->getRecipients($id, $is_view);
 
         // check if printing is necessary
         if(count($recipients) == 0)
