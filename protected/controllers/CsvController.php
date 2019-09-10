@@ -70,27 +70,47 @@ class CsvController extends BaseController
 
         $table = array();
         $headers = array();
+        $errors = array();
         if (isset($_FILES['Csv']['tmp_name']['csvFile']) && $_FILES['Csv']['tmp_name']['csvFile'] !== "") {
-            if (($handle = fopen($_FILES['Csv']['tmp_name']['csvFile'], "r")) !== false) {
-                if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-                    foreach ($line as $header) {
-                        // basic sanitization, remove non printable chars - This is required if the CSV file is
-                        // exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
-                        $header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
-                        $headers[] = $header;
-                    }
-                }
 
-                while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-                    $row = array();
-                    $header_count = 0;
-                    foreach ($line as $cel) {
-                        $row[$headers[$header_count++]] = $cel;
-                    }
-                    $table[] = $row;
-                }
-                fclose($handle);
+//            check the file name extension and type
+            $allowed = array('csv','application/vnd.ms-excel');
+            $fileName = $_FILES['Csv']['name']['csvFile'];
+            $fileType = $_FILES['Csv']['type']['csvFile'];
+            $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+            if(!in_array($extension,$allowed) || !in_array($fileType,$allowed)){
+                $errors[] = 'Only the csv file can be uploaded.';
+                $this->render('upload', array('context' => $context, 'errors' => $errors));
             }
+            else {
+                if (($handle = fopen($_FILES['Csv']['tmp_name']['csvFile'], "r")) !== false) {
+                    if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+                        foreach ($line as $header) {
+                            // basic sanitization, remove non printable chars - This is required if the CSV file is
+                            // exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
+                            $header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
+                            $headers[] = $header;
+                        }
+                    }
+
+                    while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+                        $row = array();
+                        $header_count = 0;
+                        foreach ($line as $cel) {
+                            if($header_count+1<=count($headers)){
+                                $row[$headers[$header_count++]] = $cel;
+                            }
+                        }
+                        $table[] = $row;
+                    }
+                    fclose($handle);
+
+                }
+                $_SESSION['table_data'] = $table;
+                $this->render('preview', array('table' => $table, 'context' => $context));
+            }
+          
 					$csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
 
 					if(!file_exists(self::$file_path)) {
@@ -99,8 +119,11 @@ class CsvController extends BaseController
 
 					copy($_FILES['Csv']['tmp_name']['csvFile'], self::$file_path . $csv_id . ".csv");
         }
-
-        $this->render('preview', array('table' => $table, 'csv_id' => $csv_id, 'context' => $context));
+      
+        } else { // no file uploaded
+            $errors[] = 'No csv file selected. Please choose a csv file to upload.';
+            $this->render('upload', array('context' => $context, 'errors' => $errors));
+        }
     }
 
     public function actionImport($context, $csv)
@@ -336,7 +359,7 @@ class CsvController extends BaseController
 
 				//If a diagnosis exists and is not empty, the rest of the diagnosis fields are mandatory.
 				//If a diagnosis does not exist, do not accept any diagnosis related fields
-				if(array_key_exists('diagnosis', $patient_raw_data) && $patient_raw_data['diagnosis'] != '') {
+				if(array_key_exists('diagnosis', $patient_raw_data) && !empty($patient_raw_data['diagnosis'])) {
 					foreach($mandatory_diagnosis_fields as $diagnosis_field) {
 						if(!array_key_exists($diagnosis_field, $patient_raw_data) || $patient_raw_data[$diagnosis_field] == '')
 						{
@@ -345,11 +368,18 @@ class CsvController extends BaseController
 					}
 				}else {
 					foreach($mandatory_diagnosis_fields as $diagnosis_field) {
-						if($patient_raw_data[$diagnosis_field] == '')
+						if($patient_raw_data[$diagnosis_field] != '')
 						{
 							$errors[] = "Cannot add diagnosis fields for diagnosis that does not exist: " . $diagnosis_field;
 						}
 					}
+				}
+
+				if((!empty($patient_raw_data['dob']) && strtotime($patient_raw_data['dob']) == false)
+				|| (!empty($patient_raw_data['date_of_death']) && strtotime($patient_raw_data['date_of_death']) == false)
+				|| (!empty($patient_raw_data['diagnosis_date']) && strtotime($patient_raw_data['diagnosis_date']) == false)) {
+					$errors[] = "Dates must be in a valid format (dd-mm-yyyy)";
+					return $errors;
 				}
 
 				//Throw errors if any of the following are true
@@ -370,6 +400,14 @@ class CsvController extends BaseController
             }
         }
 
+				if(!empty($patient_raw_data['medicare_id'])){
+					$duplicate_patient = Patient::model()->findByAttributes(array('nhs_num' => $patient_raw_data['medicare_id']));
+					if ($duplicate_patient !== null){
+						$errors[] = "Duplicate Medicare ID (" . $patient_raw_data['medicare_id'] . ") found for patient: " . $patient_raw_data['first_name'] . " " . $patient_raw_data['last_name'];
+						return $errors;
+					}
+				}
+
 				$dupecheck_first_name = $patient_raw_data['first_name'];
 				$dupecheck_last_name = $patient_raw_data['last_name'];
 
@@ -377,12 +415,16 @@ class CsvController extends BaseController
 				$dupecheck_dob = date("Y-m-d", strtotime(str_replace('/', '-', $patient_raw_data['dob'])));
 
 				//To find duplicates, the dob must be in the form yyyy-mm-dd
-				$patient_duplicates = Patient::findDuplicates($dupecheck_last_name, $dupecheck_first_name, $dupecheck_dob, null);
+				$patient_duplicates = Patient::findDuplicates($dupecheck_first_name, $dupecheck_last_name, $dupecheck_dob, null);
 
 				if(count($patient_duplicates) > 0) {
-					$errors[] = "Patient duplicate found for patient: " . $dupecheck_first_name . " " . $dupecheck_last_name . " with DOB " . $dupecheck_dob;
+					$errors[] = "Validation error(s) for patient: " . $dupecheck_first_name . " " . $dupecheck_last_name;
 					foreach ($patient_duplicates as $duplicate) {
-						$errors[] = "Duplicate: " . $duplicate->contact->first_name . " " . $duplicate->contact->last_name . " with DOB " . $duplicate->dob;
+						if(is_array($duplicate)) {
+							$errors[] = $duplicate;
+						}else{
+							$errors[] = "Duplicate found: " . $duplicate->contact->first_name . " " . $duplicate->contact->last_name . " with DOB " . $duplicate->dob;
+						}
 					}
 					return $errors;
 				}
@@ -426,8 +468,8 @@ class CsvController extends BaseController
         }
 
         //Added separately because these fields are parsed from text instead of ids
-        if(array_key_exists('address_type', $patient_raw_data) && $patient_raw_data['address_type']) {
-					$address->type = $patient_raw_data['address_type'];
+        if(array_key_exists('address_type', $patient_raw_data) && !empty($patient_raw_data['address_type'])) {
+					$address->address_type_id = AddressType::model()->findByAttributes(['name' => $patient_raw_data['address_type']])->id;
 				}
 				if(array_key_exists('country', $patient_raw_data) && $patient_raw_data['country']) {
 					$address->country = $patient_raw_data['country'];
@@ -472,7 +514,10 @@ class CsvController extends BaseController
         $new_patient->hos_num = !empty($patient_raw_data['CERA_ID']) ? $patient_raw_data['CERA_ID'] : Patient::autoCompleteHosNum();
 				$new_patient->contact_id = $contact->id;
 
-				if($new_patient->dob > $new_patient->date_of_death) {
+				if(!empty($patient_raw_data['date_of_death']) && $new_patient->date_of_death > date("Y-m-d")) {
+					$errors[] = "Patient date of death cannot postdate current date";
+				}
+				if(!empty($patient_raw_data['date_of_death']) && $new_patient->dob > $new_patient->date_of_death) {
 					$errors[] = "Patient date of death cannot predate patient date of birth";
 				}
 				if($new_patient->dob > date("Y-m-d")) {
@@ -494,6 +539,7 @@ class CsvController extends BaseController
 					$patient_RVEEH_UR->value = $patient_raw_data['RVEEH_UR'];
 
 					if(!$patient_RVEEH_UR->save()) {
+						$errors[] = "Failed to validate RHEEV_UR:";
 						$errors[] = $patient_RVEEH_UR->getErrors();
 						return $errors;
 					}
@@ -501,7 +547,7 @@ class CsvController extends BaseController
         //patient contact assignments
 
         //referred to
-        if(!empty($patient['referred_to'])){
+        if(!empty($patient_raw_data['referred_to'])){
 					//Find if exists
 					$referred_to = User::model()->findByAttributes(array(
 							'username' => $patient_raw_data['referred_to']
@@ -513,6 +559,7 @@ class CsvController extends BaseController
 					$pat_ref = new PatientUserReferral();
 					$pat_ref->user_id = $referred_to->id;
 					$pat_ref->patient_id = $new_patient->id;
+
 					if (!$pat_ref->save()) {
 							$errors[] = 'Could not save referred to user';
 							array_unshift($errors, $pat_ref->getErrors());
