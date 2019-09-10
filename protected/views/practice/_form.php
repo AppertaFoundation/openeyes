@@ -45,6 +45,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                         <thead>
                         <tr>
                             <th>Practice Name</th>
+                            <th>Phone</th>
                             <th>Address</th>
                             <th></th>
                         </tr>
@@ -53,6 +54,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                             <?php for($i=0; $i<sizeof($duplicateCheckOutput); $i++): ?>
                                 <tr>
                                     <td><?php echo $duplicateCheckOutput[$i]['first_name']; ?></td>
+                                    <td><?php echo $duplicateCheckOutput[$i]['phone'].''?></td>
                                     <td>
                                         <?php echo $duplicateCheckOutput[$i]['address1'].', '.$duplicateCheckOutput[$i]['city'].', '.$duplicateCheckOutput[$i]['postcode'].', '. Country::model()->find('id = '.$duplicateCheckOutput[$i]['country_id'])->name.'.'?>
                                     </td>
