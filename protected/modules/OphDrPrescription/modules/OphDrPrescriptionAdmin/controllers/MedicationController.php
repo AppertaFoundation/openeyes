@@ -118,7 +118,6 @@ class MedicationController extends BaseAdminController
         }
 
         if (!\Yii::app()->request->isPostRequest) {
-
             $this->render('/Medication/edit', [
                 'model' => $medication
             ]);
