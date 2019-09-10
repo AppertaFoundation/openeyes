@@ -33,7 +33,7 @@ $chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_ty
 $chk_stop = isset($entry->chk_stop) ? $entry->chk_stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;
 
-$to_be_copied = !$is_new && !$entry->originallyStopped && $entry->medication->getToBeCopiedIntoMedicationManagement();
+$to_be_copied = !$entry->originallyStopped && isset($entry->medication) && $entry->medication->getToBeCopiedIntoMedicationManagement();
 
 $is_posting = Yii::app()->request->getIsPostRequest();
 
@@ -72,7 +72,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
-                <input type="hidden" name="<?= $field_prefix ?>[binded_key]" class="js-binded-key" value="<?= $entry->binded_key ?>">
+                <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= !isset($entry->bound_key) && isset($is_template) && $is_template ? "{{bound_key}}" : $entry->bound_key ?>">
     </td>
     <?php if (!empty($entry->errors) || !isset($entry->dose)) {
         $direct_edit = in_array(true, array_map(function ($i) { return strpos($i, 'dose') !== false;}, array_keys($entry->errors)));
