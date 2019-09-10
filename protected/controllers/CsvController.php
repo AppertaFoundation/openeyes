@@ -445,8 +445,8 @@ class CsvController extends BaseController
         }
 
         //Added separately because these fields are parsed from text instead of ids
-        if(array_key_exists('address_type', $patient_raw_data) && $patient_raw_data['address_type']) {
-					$address->type = $patient_raw_data['address_type'];
+        if(array_key_exists('address_type', $patient_raw_data) && !empty($patient_raw_data['address_type'])) {
+					$address->address_type_id = AddressType::model()->findByAttributes(['name' => $patient_raw_data['address_type']])->id;
 				}
 				if(array_key_exists('country', $patient_raw_data) && $patient_raw_data['country']) {
 					$address->country = $patient_raw_data['country'];
@@ -524,7 +524,7 @@ class CsvController extends BaseController
         //patient contact assignments
 
         //referred to
-        if(!empty($patient['referred_to'])){
+        if(!empty($patient_raw_data['referred_to'])){
 					//Find if exists
 					$referred_to = User::model()->findByAttributes(array(
 							'username' => $patient_raw_data['referred_to']
@@ -536,6 +536,7 @@ class CsvController extends BaseController
 					$pat_ref = new PatientUserReferral();
 					$pat_ref->user_id = $referred_to->id;
 					$pat_ref->patient_id = $new_patient->id;
+
 					if (!$pat_ref->save()) {
 							$errors[] = 'Could not save referred to user';
 							array_unshift($errors, $pat_ref->getErrors());
