@@ -195,6 +195,8 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         $criteria->addCondition("msr.subspecialty_id = :subspecialty_id AND muc.usage_code = :usage_code AND msr.deleted_date IS NULL");
         $criteria->order = "name";
         $criteria->params = array(':subspecialty_id' => $subspecialty_id, ':usage_code' => 'PRESCRIPTION_SET');
+
+			  return MedicationSet::model()->findAll($criteria);
     }
 
     /**
@@ -237,7 +239,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @return bool
      */
-    
+
     public function isEditableByMedication()
     {
         foreach ($this->items as $key => $item) {
