@@ -193,17 +193,19 @@ class GpController extends BaseController
         if (isset($_POST['Contact'])) {
             $contact->attributes = $_POST['Contact'];
             $this->performAjaxValidation($contact);
-            $index = 0;
-            foreach($_POST['ContactPracticeAssociate'] as $cpa) {
-                $cpas[$index]->provider_no = $cpa['provider_no'];
-                $valid=$cpas[$index]->validate() && $valid;
-                for($i=0;$i<$index;$i++) {
-                    if($cpas[$index]->provider_no == $cpas[$i]->provider_no && $cpas[$index]->provider_no != '') {
-                        $valid = false;
-                        $cpas[$index]->addError('provider_no', 'Duplicate provider number.');
+            if(isset($_POST['ContactPracticeAssociate'])) {
+                $index = 0;
+                foreach($_POST['ContactPracticeAssociate'] as $cpa) {
+                    $cpas[$index]->provider_no = $cpa['provider_no'];
+                    $valid=$cpas[$index]->validate() && $valid;
+                    for($i=0;$i<$index;$i++) {
+                        if($cpas[$index]->provider_no == $cpas[$i]->provider_no && $cpas[$index]->provider_no != '') {
+                            $valid = false;
+                            $cpas[$index]->addError('provider_no', 'Duplicate provider number.');
+                        }
                     }
+                    $index++;
                 }
-                $index++;
             }
 
             if($contact->validate() && $valid) {
