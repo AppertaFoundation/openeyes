@@ -118,7 +118,6 @@ class MedicationController extends BaseAdminController
         }
 
         if (\Yii::app()->request->isPostRequest) {
-
             $data = \Yii::app()->request->getParam('Medication');
 
             if ($medication->isNewRecord) {
