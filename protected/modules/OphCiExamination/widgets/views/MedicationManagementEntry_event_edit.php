@@ -91,9 +91,9 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[locked]" value="<?= $locked ?>" class="js-locked" />
             <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
-                        <input type="hidden" name="<?= $field_prefix ?>[binded_key]" class="js-binded-key" value="<?= $entry->binded_key ?>">
-                        <input type="hidden" name="<?= $field_prefix ?>[source_subtype]" class="js-source-subtype" value="{{source_subtype}}" disabled="disabled">
-                </td>
+            <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= $entry->bound_key ?>">
+            <input type="hidden" name="<?= $field_prefix ?>[source_subtype]" class="js-source-subtype" value="{{source_subtype}}" disabled="disabled">
+        </td>
         <td class="dose-frequency-route">
             <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
                 <?php
@@ -168,7 +168,6 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'js-stop-reason cols-11')) ?>
             </div>
         </td>
-
         <td>
             <?=\CHtml::dropDownList($field_prefix.'[duration]', $entry->duration,
                 CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),

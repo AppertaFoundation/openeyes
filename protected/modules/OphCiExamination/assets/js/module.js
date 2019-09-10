@@ -1152,9 +1152,10 @@ $(document).ready(function() {
 
         let date = new Date();
         let todayDate = date.getDate() + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
+        let todayDateWithLeadingZero = "0" + todayDate;
 
         let medicationManagementValidationFunction = function() {
-					if($('.js-event-date-input').val() === todayDate) {
+					if($('.js-event-date-input').val() === todayDate || $('.js-event-date-input').val() === todayDateWithLeadingZero) {
 						return true;
 					} else {
 						new OpenEyes.UI.Dialog.Alert({

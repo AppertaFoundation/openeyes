@@ -20,7 +20,7 @@
 $model_name = CHtml::modelName($element);
 $route_options = CHtml::listData($element->getRouteOptions(), 'id', 'term');
 $frequency_options = array();
-foreach ($element->getFrequencyOptions() as $k=>$v) {
+foreach ($element->getFrequencyOptions() as $k => $v) {
     $frequency_options[$v->id] = $v->term." (".$v->code.")";
 }
 $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
@@ -73,7 +73,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                         'row_count' => $row_count,
                         'stop_reason_options' => $stop_reason_options,
                         'usage_type' => 'OphCiExamination',
-						'patient' => $this->patient
+                        'patient' => $this->patient
                     )
                 );
             } else {
@@ -95,7 +95,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                         'row_type' => '',
                         'is_last' => ($row_count == $total_count - 1),
                         'is_new' => $entry->getIsNewRecord(),
-						'patient' => $this->patient,
+                        'patient' => $this->patient,
                         'unit_options' => $unit_options,
                     )
                 );
@@ -135,7 +135,8 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                 'is_last' => false,
                 'is_new' => true,
                 'patient' => $this->patient,
-				'unit_options' => $unit_options
+                                'unit_options' => $unit_options,
+                                'is_template' => true,
             )
         );
         ?>
@@ -221,5 +222,10 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
             booleanSearchFilterLabel: 'Include branded',
             booleanSearchFilterURLparam: 'include_branded'
         });
+
+        let elementHasRisks = <?= $element->hasRisks() ? 1 : 0 ?>;
+        if(elementHasRisks && !$('.' + OE_MODEL_PREFIX + 'HistoryRisks').length) {
+                $('#episodes-and-events').data('patient-sidebar').addElementByTypeClass(OE_MODEL_PREFIX + 'HistoryRisks', undefined);
+        }
     });
 </script>

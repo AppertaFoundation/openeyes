@@ -64,7 +64,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           'to_be_copied',
           'prepended_markup',
           'set_ids',
-          'locked'
+          'locked',
+					'bound_key'
       ];
 
     this.initialiseFilters();
@@ -704,14 +705,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return $row;
     };
 
-    HistoryMedicationsController.prototype.getRandomBindedKey = function() {
+    HistoryMedicationsController.prototype.getRandomBoundKey = function() {
 			let uniqueKeyFound = false;
 			let randomKey;
 			while(!uniqueKeyFound) {
 				randomKey = generateId();
 				uniqueKeyFound = true;
-				$.each($(window).find('.js-binded-key'), function(index, $bindedKey){
-					if(randomKey === $bindedKey.val()){
+				$.each($(window).find('.js-bound-key'), function(index, $boundKey){
+					if(randomKey === $boundKey.val()){
 						uniqueKeyFound = false;
 					}
 				});
@@ -726,10 +727,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 	  	}
 
 	  	if (generateRandomKey) {
-	  		let randomBindedKey = this.getRandomBindedKey();
+	  		let randomBoundKey = $row1.find('.js-bound-key').val();
 
-	  		$row1.find('.js-binded-key').val(randomBindedKey);
-	  		$row2.find('.js-binded-key').val(randomBindedKey);
+	  		if(!randomBoundKey) {
+					randomBoundKey = this.getRandomBoundKey();
+				}
+
+	  		$row1.find('.js-bound-key').val(randomBoundKey);
+	  		$row2.find('.js-bound-key').val(randomBoundKey);
 	  	}
 	  	$row1.data("bound_entry", $row2);
 	  	$row2.data("bound_entry", $row1);
@@ -882,6 +887,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
       this.processRisks(medications[i]['set_ids'.split(",")], medications[i]['medication_name']);
       data['allergy_warning'] = this.getAllergyWarning(medications[i]);
+      data['bound_key'] = this.getRandomBoundKey();
+
       newRows.push(Mustache.render(
           template,
           data ));
