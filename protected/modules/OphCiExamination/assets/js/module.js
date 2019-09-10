@@ -1151,10 +1151,11 @@ $(document).ready(function() {
         });
 
         let date = new Date();
-        let todayDate = (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
+        let todayDate = date.getDate() -1 + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
+        let todayDateWithLeadingZero = "0" + todayDate;
 
         let medicationManagementValidationFunction = function() {
-					if($('.js-event-date-input').val() === todayDate) {
+					if($('.js-event-date-input').val() === todayDate || $('.js-event-date-input').val() === todayDateWithLeadingZero) {
 						return true;
 					} else {
 						new OpenEyes.UI.Dialog.Alert({
