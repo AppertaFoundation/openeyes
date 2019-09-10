@@ -3,8 +3,22 @@ use openeyes;
 /* disable foreigh key check*/
 SET FOREIGN_KEY_CHECKS = 0;
 
+/*Clean up site table but keep 1 and change the site name to "CERA" */
+SELECT "TRUNCATE TABLE site" AS "";
+UPDATE site SET name='CERA'
+WHERE id LIMIT 1;
+delete from site
+where name not like "CERA";
+
 SELECT "TRUNCATE TABLE address" AS "";
-truncate table address;
+delete from address
+where contact_id not in (
+    select contact_id from user
+    where user.username in ('admin', 'docman_user')
+) and contact_id not in (
+    select contact_id from site
+    where site.name = "CERA"
+);
 
 SELECT "TRUNCATE TABLE patient" AS "";
 truncate table patient;
