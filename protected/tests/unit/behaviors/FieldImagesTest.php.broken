@@ -38,7 +38,7 @@ class FieldImagesTest extends CDbTestCase
             array('findFiles') // list of methods to mock
         );
 
-        $this->assetManagerMock = $this->getMock('AssetManager');
+        $this->assetManagerMock = $this->createMock('AssetManager');
         // Configure the stub.
         $this->assetManagerMock->expects($this->any())
             ->method('getPublishedPathOfAlias')
@@ -63,12 +63,9 @@ class FieldImagesTest extends CDbTestCase
     public function testGetFieldImagesNotPresent()
     {
         $yiiMock = $this->yiiMock;
-        $yiiMock::staticExpects($this->any())
-            ->method('findFiles')
-            ->will($this->returnValue(array()));
+        $yiiMock->staticExpects($this->any())->method('findFiles')->will($this->returnValue(array()));
 
-        $results = FiledImagesTest_TestClass::model()
-            ->getFieldImages($yiiMock, $this->assetManagerMock);
+        $results = FiledImagesTest_TestClass::model()->getFieldImages($yiiMock, $this->assetManagerMock);
         $this->assertEmpty($results);
     }
 
