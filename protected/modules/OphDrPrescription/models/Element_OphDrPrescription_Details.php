@@ -196,7 +196,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         $criteria->order = "name";
         $criteria->params = array(':subspecialty_id' => $subspecialty_id, ':usage_code' => 'PRESCRIPTION_SET');
 
-			  return MedicationSet::model()->findAll($criteria);
+              return MedicationSet::model()->findAll($criteria);
     }
 
     /**
