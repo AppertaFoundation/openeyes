@@ -12,6 +12,6 @@ $this->pageTitle = 'Update Practice';
     </div>
 
     <div class="oe-full-content oe-new-patient flex-layout flex-top">
-        <?php $this->renderPartial('_form', array('model' => $model, 'address' => $address,'contact' => $contact)); ?>
+        <?php $this->renderPartial('_form', array('model' => $model, 'address' => $address,'contact' => $contact, 'duplicateCheckOutput' => $duplicateCheckOutput, 'gp' => $gp,'gpIdProviderNoList' => $gpIdProviderNoList)); ?>
     </div>
 </div>

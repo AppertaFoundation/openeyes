@@ -8,10 +8,6 @@
 
 class Csv
 {
-    public $csvFile;
-
-    public $dataTable;
-
     public function hasErrors()
     {
 
