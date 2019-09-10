@@ -38,20 +38,20 @@ class HistoryMedications extends BaseMedicationWidget
         return $this->mode === static::$EVENT_VIEW_MODE;
     }
 
-	/**
-	 * @throws \CHttpException
-	 */
-	public function init()
-	{
-		parent::init();
+    /**
+     * @throws \CHttpException
+     */
+    public function init()
+    {
+        parent::init();
 
-		// add OpenEyes.UI.RestrictedData js
-		$assetManager = \Yii::app()->getAssetManager();
-		$baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
-		$assetManager->publish($baseAssetsPath);
+        // add OpenEyes.UI.RestrictedData js
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath);
 
-		\Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
-	}
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
+    }
 
     /**
      * @return bool
@@ -83,33 +83,33 @@ class HistoryMedications extends BaseMedicationWidget
     {
         $entries = [];
         $element = $this->element->getModuleApi()->getLatestElement(MedicationManagementElement::class, $this->patient);
-        if(!is_null($element)) {
+        if (!is_null($element)) {
             /** @var MedicationManagementElement $element*/
             foreach ($element->entries as $entry) {
-            		if(!$entry->prescribe) {
-									/** @var \EventMedicationUse $new_entry */
-									$new_entry = clone $entry;
-									$new_entry->id = null;
-									$new_entry->setIsNewRecord(true);
-									$entries[] = $new_entry;
-								}
+                if (!$entry->prescribe) {
+                                /** @var \EventMedicationUse $new_entry */
+                                $new_entry = clone $entry;
+                                $new_entry->id = null;
+                                $new_entry->setIsNewRecord(true);
+                                $entries[] = $new_entry;
+                }
             }
         }
 
         return $entries;
     }
 
-	private function getEntriesFromPreviousHistory()
-	{
-		$entries = [];
-		$element = $this->element->getModuleApi()->getLatestElement(HistoryMedicationsElement::class, $this->patient);
-		if(!is_null($element)) {
-			/** @var HistoryMedicationsElement $element*/
-			$entries = $element->entries;
-		}
+    private function getEntriesFromPreviousHistory()
+    {
+        $entries = [];
+        $element = $this->element->getModuleApi()->getLatestElement(HistoryMedicationsElement::class, $this->patient);
+        if (!is_null($element)) {
+            /** @var HistoryMedicationsElement $element*/
+            $entries = $element->entries;
+        }
 
-		return $entries;
-	}
+        return $entries;
+    }
 
     /**
      * @return bool whether any entries were set
@@ -117,21 +117,21 @@ class HistoryMedications extends BaseMedicationWidget
 
     private function setEntriesWithPreviousManagement()
     {
-				$entries = $this->getEntriesFromPreviousManagement();
+                $entries = $this->getEntriesFromPreviousManagement();
         $history_entries = $this->getEntriesFromPreviousHistory();
-        foreach($history_entries as $history_entry) {
-        	$duplicate = false;
-        	foreach($entries as $entry) {
-        		if($entry->bound_key === $history_entry->bound_key) {
-        			$duplicate = true;
-        			break;
-						}
-					}
+        foreach ($history_entries as $history_entry) {
+            $duplicate = false;
+            foreach ($entries as $entry) {
+                if ($entry->bound_key === $history_entry->bound_key) {
+                    $duplicate = true;
+                    break;
+                }
+            }
 
-        	if(!$duplicate) {
-        		$entries[] = $history_entry;
-					}
-				}
+            if (!$duplicate) {
+                $entries[] = $history_entry;
+            }
+        }
         $this->element->entries = array_merge($entries, $this->element->getEntriesForUntrackedPrescriptionItems($this->patient));
         return !empty($entries);
     }
@@ -142,10 +142,9 @@ class HistoryMedications extends BaseMedicationWidget
     protected function setElementFromDefaults()
     {
         if (!$this->isPostedEntries()) {
-
             /*  If there has never been a Management element added, the last
             History element should be taken into account */
-            if(!$this->setEntriesWithPreviousManagement()) {
+            if (!$this->setEntriesWithPreviousManagement()) {
                 parent::setElementFromDefaults();
             }
         }
@@ -163,7 +162,7 @@ class HistoryMedications extends BaseMedicationWidget
             }
             $entries[] = $entry;
         }
-			$untracked = $this->element->getEntriesForUntrackedPrescriptionItems($this->patient);
+            $untracked = $this->element->getEntriesForUntrackedPrescriptionItems($this->patient);
         if ($untracked) {
             // tracking prescription items.
             $this->element->entries = array_merge(
@@ -178,7 +177,7 @@ class HistoryMedications extends BaseMedicationWidget
 
     public function getMergedManagementEntries()
     {
-        if(empty($this->element->entries)) {
+        if (empty($this->element->entries)) {
             $this->setEntriesWithPreviousManagement();
         }
 
@@ -210,7 +209,7 @@ class HistoryMedications extends BaseMedicationWidget
 
         // now remove any that are no longer relevant because the prescription item
         // has been deleted
-        $filter = function($entry) {
+        $filter = function ($entry) {
             return !($entry->prescription_item_deleted || $entry->prescription_event_deleted);
         };
 
@@ -304,16 +303,16 @@ class HistoryMedications extends BaseMedicationWidget
         $this->element->widget = $this;
     }
 
-	/**
-	 * @param $mode
-	 * @return bool
-	 * @inheritdoc
-	 */
-	protected function validateMode($mode)
-	{
-		return in_array($mode,
-				array(static::$PRESCRIPTION_PRINT_VIEW, static::$INLINE_EVENT_VIEW), true) || parent::validateMode($mode);
-	}
+    /**
+     * @param $mode
+     * @return bool
+     * @inheritdoc
+     */
+    protected function validateMode($mode)
+    {
+        return in_array($mode,
+                array(static::$PRESCRIPTION_PRINT_VIEW, static::$INLINE_EVENT_VIEW), true) || parent::validateMode($mode);
+    }
 
     /**
      * @return HistoryMedicationsElement
