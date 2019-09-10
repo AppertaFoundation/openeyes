@@ -479,11 +479,12 @@ class DefaultController extends BaseEventTypeController
 
             if ($letter->document_instance) {
                 // check if the first recipient is GP
-                $docunemt_instance = $letter->document_instance[0];
+                $document_instance = $letter->document_instance[0];
                 $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
-                    ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL', ));
+                    ':id' => $document_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL', ));
 
                 if ($to_recipient_gp) {
+                    $recipients[] = ($to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address);
                     // print an extra copy to note
                     if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
                         $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
