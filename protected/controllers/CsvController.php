@@ -118,8 +118,6 @@ class CsvController extends BaseController
 					}
 
 					copy($_FILES['Csv']['tmp_name']['csvFile'], self::$file_path . $csv_id . ".csv");
-        }
-      
         } else { // no file uploaded
             $errors[] = 'No csv file selected. Please choose a csv file to upload.';
             $this->render('upload', array('context' => $context, 'errors' => $errors));
