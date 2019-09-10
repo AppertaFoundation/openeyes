@@ -55,11 +55,11 @@
             <td>
                 <input type="hidden" name="Medication[medicationAttributeAssignment][<?=$rowkey?>][id]" value="<?=$id?>" />
                 <input type="hidden" name="Medication[medicationAttributeAssignment][<?=$rowkey?>][medication_attribute_id]" value="<?=$attr_id?>" />
-                <?php echo CHtml::encode($attr_name); ?>
+                <?= CHtml::encode($attr_name); ?>
             </td>
             <td>
                 <input type="hidden" name="Medication[medicationAttributeAssignment][<?=$rowkey?>][medication_attribute_option_id]" value="<?=$option_id?>" />
-                <?php echo CHtml::encode($option_name); ?>
+                <?= CHtml::encode($option_name); ?>
             </td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-attribute"><i class="oe-i trash"></i></a>
@@ -80,29 +80,29 @@
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($options) ?>, {'multiSelect': false, header: "Options"})
                             ],
                             onOpen: function(adderDialog) {
-                                var $items = adderDialog.$tr.children("td:eq(1)").find("ul.add-options li");
+                                let $items = adderDialog.$tr.children("td:eq(1)").find("ul.add-options li");
                                 $items.hide();
                             },
                             onReturn: function (adderDialog, selectedItems) {
                                 if(selectedItems.length < 2) {
-                                    var alert = new OpenEyes.UI.Dialog.Alert({
+                                    let alert = new OpenEyes.UI.Dialog.Alert({
                                         content: "Please select an attribute and an option"
                                     });
 
                                     alert.open();
                                     return false;
                                 }
-                                var attr = selectedItems[0];
-                                var opt  = selectedItems[1];
+                                let attr = selectedItems[0];
+                                let opt  = selectedItems[1];
 
-                                var lastkey = $("#medication_attribute_assignment_tbl > tbody > tr:last").attr("data-key");
+                                let lastkey = $("#medication_attribute_assignment_tbl > tbody > tr:last").attr("data-key");
                                 if(isNaN(lastkey)) {
                                     lastkey = 0;
                                 }
-                                var key = parseInt(lastkey) + 1;
-                                var template = $('#row_template').html();
+                                let key = parseInt(lastkey) + 1;
+                                let template = $('#row_template').html();
                                 Mustache.parse(template);
-                                var rendered = Mustache.render(template, {
+                                let rendered = Mustache.render(template, {
                                     "key": key,
                                     "attribute_id": attr.id,
                                     "attribute_name": attr.label,
@@ -113,11 +113,11 @@
                                 return true;
                             },
                             onSelect: function(e) {
-                                var $item = $(e.target).is("span") ? $(e.target).closest("li") : $(e.target);
-                                var $tr = $item.closest("tr");
+                                let $item = $(e.target).is("span") ? $(e.target).closest("li") : $(e.target);
+                                let $tr = $item.closest("tr");
                                 if($item.attr("data-type") === "attr") {
-                                    var $all_options = $tr.children("td:eq(1)").find("ul.add-options li");
-                                    var $relevant_options = $tr.children("td:eq(1)").find("ul.add-options li[data-attr_id="+$item.attr("data-id")+"]");
+                                    let $all_options = $tr.children("td:eq(1)").find("ul.add-options li");
+                                    let $relevant_options = $tr.children("td:eq(1)").find("ul.add-options li[data-attr_id="+$item.attr("data-id")+"]");
                                     $all_options.hide();
                                     $relevant_options.show();
                                 }

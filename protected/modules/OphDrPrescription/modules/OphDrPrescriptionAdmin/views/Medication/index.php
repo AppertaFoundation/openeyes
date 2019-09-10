@@ -23,7 +23,7 @@
     <form id="medical_set_search" method="post">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
 
-        <hr class="">
+        <hr>
 
         <table class="cols-8">
             <colgroup>
@@ -79,7 +79,6 @@
                         ]
                     ); ?>
                 </td>
-
                 <td>
                     <button class="blue hint" type="button" id="et_search">Search</button>
                 </td>
@@ -120,8 +119,8 @@
             </thead>
             <tbody>
                 <?php
-                foreach ($data_provider->getData() as $set) {
-                    $this->renderPartial('/Medication/_row', ['set' => $set]);
+                foreach ($data_provider->getData() as $medication) {
+                    $this->renderPartial('/Medication/_row', ['medication' => $medication]);
                 }
                 ?>
             </tbody>

@@ -1,8 +1,5 @@
 <?php
 /** @var Medication $medication */
-
-$row_key = 0;
-
 ?>
 <h3>Alternative Terms</h3>
 <table class="standard" id="medication_alternative_terms_tbl">
@@ -13,10 +10,9 @@ $row_key = 0;
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($medication->medicationSearchIndexes as $medicationSearchIndex) : ?>
+    <?php foreach ($medication->medicationSearchIndexes as $row_key => $medicationSearchIndex) : ?>
         <?php
         $id = is_null($medicationSearchIndex->id) ? -1 : $medicationSearchIndex->id;
-        $row_key++;
         ?>
         <tr data-key="<?=$row_key?>">
             <td>

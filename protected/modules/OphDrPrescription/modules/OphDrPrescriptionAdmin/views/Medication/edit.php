@@ -25,7 +25,7 @@
         <tbody>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Preferred Term</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'preferred_term', [
@@ -37,7 +37,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Short Term</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'short_term', [
@@ -49,7 +49,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Preferred Code</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'preferred_code', [
@@ -61,7 +61,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Source Type</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeDropDownList($model, 'source_type',
@@ -81,7 +81,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Source Subtype</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeDropDownList($model, 'source_subtype',
@@ -101,7 +101,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>VTM Term</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'vtm_term', [
@@ -113,7 +113,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>VTM Code</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'vtm_code', [
@@ -125,7 +125,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>VMP Term</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'vmp_term', [
@@ -137,7 +137,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>VMP Code</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'vmp_code', [
@@ -149,7 +149,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>AMP Term</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'amp_term', [
@@ -161,7 +161,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>AMP Code</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'amp_code', [
@@ -173,7 +173,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Default Form</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeDropDownList($model, 'default_form_id',
@@ -188,7 +188,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Default Route</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeDropDownList($model, 'default_route_id',
@@ -203,7 +203,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="" class="data-group flex-layout cols-full">
+                    <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Default Dose Unit</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'default_dose_unit_term', [

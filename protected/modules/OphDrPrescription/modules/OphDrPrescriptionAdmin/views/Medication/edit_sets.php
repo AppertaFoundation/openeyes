@@ -37,10 +37,10 @@
         {{set.label}}
         </td>
        <td>
-            <?php echo CHtml::textField('Medication[medicationSetItems][{{key}}][default_dose]', "1"); ?>
+            <?= CHtml::textField('Medication[medicationSetItems][{{key}}][default_dose]', "1"); ?>
         </td>
         <td>
-            <?php echo CHtml::textField('Medication[medicationSetItems][{{key}}][default_dose_unit_term]', '{{unit.label}}'); ?>
+            <?= CHtml::textField('Medication[medicationSetItems][{{key}}][default_dose_unit_term]', '{{unit.label}}'); ?>
         </td>
         <td>
             <input type="hidden" name="Medication[medicationSetItems][{{key}}][default_route_id]" value="{{route.id}}" />
@@ -95,10 +95,10 @@
                 <?=CHtml::encode($assignment->medicationSet->name)?>
             </td>
             <td>
-                <?php echo CHtml::textField("Medication[medicationSetItems][$rowkey][default_dose]", $assignment->default_dose); ?>
+                <?= CHtml::textField("Medication[medicationSetItems][$rowkey][default_dose]", $assignment->default_dose); ?>
             </td>
             <td>
-                <?php echo CHtml::textField("Medication[medicationSetItems][$rowkey][default_dose_unit_term]", $assignment->default_dose_unit_term); ?>
+                <?= CHtml::textField("Medication[medicationSetItems][$rowkey][default_dose_unit_term]", $assignment->default_dose_unit_term); ?>
             </td>
             <td>
                 <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][default_route_id]" value="<?=$assignment->default_route_id?>" />

@@ -1,14 +1,14 @@
 <tr>
-    <td><?= \CHtml::checkBox("delete-ids[{$set->id}]", false, ['value' => $set->id]); ?></td>
-    <td><?=$set->id?></td>
-    <td><?=$set->source_type?></td>
-    <td><?=$set->source_subtype?></td>
-    <td><?=$set->preferred_code?></td>
-    <td><?=$set->preferred_term?></td>
-    <td><?=$set->vtm_term?></td>
-    <td><?=$set->vmp_term?></td>
-    <td><?=$set->amp_term?></td>
+    <td><?= \CHtml::checkBox("delete-ids[{$medication->id}]", false, ['value' => $medication->id]); ?></td>
+    <td><?=$medication->id?></td>
+    <td><?=$medication->source_type?></td>
+    <td><?=$medication->source_subtype?></td>
+    <td><?=$medication->preferred_code?></td>
+    <td><?=$medication->preferred_term?></td>
+    <td><?=$medication->vtm_term?></td>
+    <td><?=$medication->vmp_term?></td>
+    <td><?=$medication->amp_term?></td>
     <td>
-        <a href="/OphDrPrescription/admin/Medication/edit/<?=$set->id?>" class="button">Edit</a>
+        <a href="/OphDrPrescription/admin/Medication/edit/<?=$medication->id?>" class="button">Edit</a>
     </td>
 </tr>

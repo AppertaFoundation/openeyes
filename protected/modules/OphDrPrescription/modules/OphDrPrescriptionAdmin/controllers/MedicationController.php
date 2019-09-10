@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -64,14 +63,14 @@ class MedicationController extends BaseAdminController
     {
         $criteria = new \CDbCriteria();
 
-        $addSearch = function ($field) use ($criteria, $filters) {
+        $add_search = function ($field) use ($criteria, $filters) {
             if (isset($filters[$field]) && !empty($filters[$field])) {
                 $criteria->addCondition($field . ' = :' . $field);
                 $criteria->params[':' . $field] = $filters[$field];
             }
         };
 
-        array_map($addSearch, $this->searchFields);
+        array_map($add_search, $this->searchFields);
 
         if (isset($filters['preferred_term']) && $filters['preferred_term']) {
             $criteria->addSearchCondition('preferred_term', $filters['preferred_term']);
@@ -82,12 +81,6 @@ class MedicationController extends BaseAdminController
 
     public function actionSearch()
     {
-        $model = new Medication();
-        $model->unsetAttributes();
-        if (isset($_GET['Medication'])) {
-            $model->attributes = $_GET['Medication'];
-        }
-
         $search = \Yii::app()->request->getParam('search');
         $criteria = $this->getSearchCriteria($search);
         $data['items'] = [];
@@ -118,25 +111,22 @@ class MedicationController extends BaseAdminController
 
     public function actionEdit($id = null)
     {
+        $medication = Medication::model()->findByPk($id);
+
+        if (!isset($medication)) {
+            $medication = new Medication();
+        }
+
         if (!\Yii::app()->request->isPostRequest) {
-            if (isset($id)) {
-                $model = Medication::model()->findByPk($id);
-            } else {
-                $model = new Medication();
-            }
 
             $this->render('/Medication/edit', [
-                'model' => $model
+                'model' => $medication
             ]);
-            return;
         }
 
         $data = \Yii::app()->request->getParam('Medication');
 
-        $medication = Medication::model()->findByPk($id);
-
-        if (!$medication) {
-            $medication = new Medication();
+        if ($medication->isNewRecord) {
             //User created medications must be local
             $data['source_type'] = 'local';
         }
@@ -146,36 +136,24 @@ class MedicationController extends BaseAdminController
         if ($medication->save()) {
             $this->redirect("/OphDrPrescription/admin/Medication/index");
         }
+
+// if medication fails to save there is no output
+// please add proper error handling
     }
 
     public function actionDelete()
     {
         $ids = \Yii::app()->request->getParam('delete-ids', []);
         $transaction = Yii::app()->db->beginTransaction();
-        $success = false;
 
         try {
-            foreach ($ids as $id) {
-                $medication = \Medication::model()->findByPk($id);
-
-                if (!$medication) {
-                    $success = false;
-                    break;
-                }
-
-                $medication->delete();
-                $success = true;
-            }
-        } catch (Exception $e) {
-            $success = false;
-        }
-
-        if ($success) {
+            \Medication::model()->deleteAll('id IN (:ids)', [':ids' => implode(',', $ids)]);
             $transaction->commit();
             echo "1";
-        } else {
+        } catch (Exception $e) {
             $transaction->rollback();
             echo "0";
+            \OELog::log($e->getMessage());
         }
 
         \Yii::app()->end();
