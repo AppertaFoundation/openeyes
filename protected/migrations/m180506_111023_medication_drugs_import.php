@@ -3,7 +3,7 @@
 class m180506_111023_medication_drugs_import extends CDbMigration
 {
     public function up()
-	{
+    {
         /*
          * table fixes
          */
@@ -13,7 +13,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
         
         $this->createIndex('fk_ref_medication_frequency_oidx', 'medication_frequency', 'original_id');
         
-        /* 
+        /*
          * set medication_set and medication_set_rule tables
          */
 
@@ -27,12 +27,12 @@ class m180506_111023_medication_drugs_import extends CDbMigration
         $drug_sets = Yii::app()->db
                 ->createCommand('SELECT id, name, subspecialty_id FROM drug_set ORDER BY id ASC')
                 ->queryAll();
-        if($drug_sets){
-            foreach($drug_sets as $set){
+        if ($drug_sets) {
+            foreach ($drug_sets as $set) {
                 $command = Yii::app()->db;
                 $command->createCommand("INSERT INTO medication_set(name) values ('".$set['name']."')")->execute();
-                $last_id = $command->getLastInsertID(); 
-                Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id, subspecialty_id) values (".$last_id.", {$usage_codes["Drug"]}, ".$set['subspecialty_id']." )")->execute();
+                $last_id = $command->getLastInsertID();
+                Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id, subspecialty_id) values (".$last_id.", {$usage_codes["PRESCRIPTION_SET"]}, ".$set['subspecialty_id']." )")->execute();
             }
             
             $drug_sets = null;
@@ -48,11 +48,11 @@ class m180506_111023_medication_drugs_import extends CDbMigration
         Yii::app()->db->createCommand("INSERT INTO medication_set(name) values ('Medication Drugs')")->execute();
         $medication_drugs_id = $this->dbConnection->getLastInsertID();
 
-        Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$formulary_id.", {$usage_codes['Drug']})")->execute();
+        Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$formulary_id.", {$usage_codes['PRESCRIPTION_SET']})")->execute();
         Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$formulary_id.", {$usage_codes['Formulary']})")->execute();
         Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$medication_drugs_id.", {$usage_codes['MedicationDrug']})")->execute();
 
-        /* 
+        /*
          * set medication_route table by drug_route table
          */
         
@@ -61,8 +61,8 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 ->createCommand("SELECT CONCAT(id,'_drug_route') AS code, name FROM ".$drugRoutesTable." ORDER BY id ASC")
                 ->queryAll();
         
-        if($drugRoutes){
-            foreach($drugRoutes as $route){
+        if ($drugRoutes) {
+            foreach ($drugRoutes as $route) {
                 $command = Yii::app()->db
                 ->createCommand("
                     INSERT INTO medication_route( term, code, source_type, source_subtype) 
@@ -74,7 +74,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
         }
         
         
-        /* 
+        /*
          * set medication_form table by drug_form table
          */
         
@@ -83,8 +83,8 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 ->createCommand("SELECT CONCAT(id,'_drug_form') AS code, name FROM ".$drugFormTable." ORDER BY id ASC")
                 ->queryAll();
         
-        if($drugForms){
-            foreach($drugForms as $form){
+        if ($drugForms) {
+            foreach ($drugForms as $form) {
                 $command = Yii::app()->db
                 ->createCommand("
                     INSERT INTO medication_form( term, code, unit_term, default_dose_unit_term, source_type, source_subtype) 
@@ -95,7 +95,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
             }
         }
         
-        /* 
+        /*
          * set medication_frequency table by drug_frequency table
          */
         
@@ -104,8 +104,8 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 ->createCommand("SELECT id AS original_id, name, CONCAT(id,'_drug_frequency') AS code, long_name FROM ".$drugFrequencyTable." ORDER BY original_id ASC")
                 ->queryAll();
         
-        if($drugFrequencies){
-            foreach($drugFrequencies as $frequency){
+        if ($drugFrequencies) {
+            foreach ($drugFrequencies as $frequency) {
                 $command = Yii::app()->db
                 ->createCommand("
                     INSERT INTO medication_frequency( term, code , original_id ) 
@@ -116,8 +116,8 @@ class m180506_111023_medication_drugs_import extends CDbMigration
             }
         }
         
-        /* 
-         * get and set medication_drug table data 
+        /*
+         * get and set medication_drug table data
          */
       
         $medication_drug_table = 'medication_drug';
@@ -125,8 +125,8 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 ->createCommand("SELECT id AS original_id, `name`, external_code FROM ".$medication_drug_table." ORDER BY original_id ASC")
                 ->queryAll();
         
-        if($medication_drugs){
-            foreach($medication_drugs as $drug){   
+        if ($medication_drugs) {
+            foreach ($medication_drugs as $drug) {
                 $command = Yii::app()->db;
                 $command->createCommand("
                          INSERT INTO medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id) 
@@ -137,7 +137,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                     ->bindValue(':original_id', $drug['original_id'])
                 ->execute();
                 
-                $ref_medication_id = $command->getLastInsertID(); 
+                $ref_medication_id = $command->getLastInsertID();
                 
                 Yii::app()->db->createCommand("
                     INSERT INTO medication_set_item( medication_id , medication_set_id )
@@ -150,8 +150,8 @@ class m180506_111023_medication_drugs_import extends CDbMigration
             $ref_medication_id = null;
         }
         
-        /* 
-         * get and set drug table data 
+        /*
+         * get and set drug table data
          */
          
         $drugs_table = 'drug';
@@ -184,10 +184,8 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 ->queryAll();
         
         
-        if($drugs){
-           
-            foreach($drugs as $drug){
-        
+        if ($drugs) {
+            foreach ($drugs as $drug) {
                 $command = Yii::app()->db;
                 $command->createCommand("
                           INSERT INTO medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id, default_form_id, default_route_id, default_dose_unit_term) 
@@ -205,13 +203,13 @@ class m180506_111023_medication_drugs_import extends CDbMigration
 
                 $tallman = trim($drug['tallman']);
 
-                if(!is_null($tallman) && $tallman != "" && strcasecmp($tallman, $drug['name']) !== 0) {
+                if (!is_null($tallman) && $tallman != "" && strcasecmp($tallman, $drug['name']) !== 0) {
                     $alternative_terms[]=$tallman;
                 }
 
                 foreach (explode(",", $drug['aliases']) as $alias) {
                     $alias = trim($alias);
-                    if($alias != "" && strcasecmp($alias, $drug['name']) !== 0) {
+                    if ($alias != "" && strcasecmp($alias, $drug['name']) !== 0) {
                         $alternative_terms[]=$alias;
                     }
                 }
@@ -236,22 +234,28 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 ")->execute();
 
                 /* Add medication to their respective sets */
-                $drug_sets = Yii::app()->db->createCommand("SELECT id, `name`, subspecialty_id FROM drug_set WHERE id IN (SELECT drug_set_id FROM drug_set_item WHERE drug_id = :drug_id)")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
-                if($drug_sets) {
+                $drug_sets = Yii::app()->db->createCommand("SELECT drug_set.id, `name`, subspecialty_id, dispense_condition_id, dispense_location_id
+                                                            FROM drug_set
+                                                            JOIN drug_set_item ON drug_set.id = drug_set_item.drug_set_id
+                                                            WHERE drug_set_item.drug_id = :drug_id")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
+
+                if ($drug_sets) {
                     foreach ($drug_sets as $drug_set) {
                         Yii::app()->db->createCommand("
-                    INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id)
+                    INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id, default_dispense_condition_id, default_dispense_location_id)
                         values (".$ref_medication_id." ,
                          
                          (SELECT id FROM medication_set WHERE `name` = :ref_set_name AND id IN 
-                            (SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code_id = {$usage_codes['Drug']})
+                            (SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code_id = {$usage_codes['PRESCRIPTION_SET']})
                          ),
                          
                          NULL,
-                         ".$drug_route_id.",
-                         ".$drug_freq_id." ,
-                         '".$default_dose_unit."',
-                          ".$default_duration_id."
+                         " . $drug_route_id . ",
+                         " . $drug_freq_id . ",
+                         '" . $default_dose_unit . "',
+                          " . $default_duration_id . ",
+                          " . ($drug_set['dispense_condition_id'] ? $drug_set['dispense_condition_id'] : "NULL") . ",
+                          " . ($drug_set['dispense_location_id'] ? $drug_set['dispense_location_id'] : "NULL") . "
                           )
                 ")
                             ->bindValue(':ref_set_name', $drug_set['name'])
@@ -266,13 +270,13 @@ class m180506_111023_medication_drugs_import extends CDbMigration
             $ref_medication_id = null;
         }
         
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropIndex('fk_ref_medication_frequency_oidx', 'medication_frequency');
         
         $this->execute("ALTER TABLE medication_frequency DROP COLUMN original_id");
         $this->execute("ALTER TABLE medication_frequency_version DROP COLUMN original_id");
-	}
+    }
 }
