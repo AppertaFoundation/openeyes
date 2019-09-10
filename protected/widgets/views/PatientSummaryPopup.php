@@ -155,8 +155,8 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                   <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
                               </div>
                               <?php
-                              if (isset($gp->contactPracticeAssociate)) {
-                                  $practice = $gp->contactPracticeAssociate->practice;
+                              if (isset($pca->practice)) {
+                                  $practice = $pca->practice;
                                   if (isset($practice)) {
                                       $address = $practice->contact->address;
                                       ?>
