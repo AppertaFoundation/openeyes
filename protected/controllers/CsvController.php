@@ -70,27 +70,47 @@ class CsvController extends BaseController
 
         $table = array();
         $headers = array();
+        $errors = array();
         if (isset($_FILES['Csv']['tmp_name']['csvFile']) && $_FILES['Csv']['tmp_name']['csvFile'] !== "") {
-            if (($handle = fopen($_FILES['Csv']['tmp_name']['csvFile'], "r")) !== false) {
-                if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-                    foreach ($line as $header) {
-                        // basic sanitization, remove non printable chars - This is required if the CSV file is
-                        // exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
-                        $header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
-                        $headers[] = $header;
-                    }
-                }
 
-                while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-                    $row = array();
-                    $header_count = 0;
-                    foreach ($line as $cel) {
-                        $row[$headers[$header_count++]] = $cel;
-                    }
-                    $table[] = $row;
-                }
-                fclose($handle);
+//            check the file name extension and type
+            $allowed = array('csv','application/vnd.ms-excel');
+            $fileName = $_FILES['Csv']['name']['csvFile'];
+            $fileType = $_FILES['Csv']['type']['csvFile'];
+            $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+            if(!in_array($extension,$allowed) || !in_array($fileType,$allowed)){
+                $errors[] = 'Only the csv file can be uploaded.';
+                $this->render('upload', array('context' => $context, 'errors' => $errors));
             }
+            else {
+                if (($handle = fopen($_FILES['Csv']['tmp_name']['csvFile'], "r")) !== false) {
+                    if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+                        foreach ($line as $header) {
+                            // basic sanitization, remove non printable chars - This is required if the CSV file is
+                            // exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
+                            $header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
+                            $headers[] = $header;
+                        }
+                    }
+
+                    while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+                        $row = array();
+                        $header_count = 0;
+                        foreach ($line as $cel) {
+                            if($header_count+1<=count($headers)){
+                                $row[$headers[$header_count++]] = $cel;
+                            }
+                        }
+                        $table[] = $row;
+                    }
+                    fclose($handle);
+
+                }
+                $_SESSION['table_data'] = $table;
+                $this->render('preview', array('table' => $table, 'context' => $context));
+            }
+          
 					$csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
 
 					if(!file_exists(self::$file_path)) {
@@ -99,8 +119,11 @@ class CsvController extends BaseController
 
 					copy($_FILES['Csv']['tmp_name']['csvFile'], self::$file_path . $csv_id . ".csv");
         }
-
-        $this->render('preview', array('table' => $table, 'csv_id' => $csv_id, 'context' => $context));
+      
+        } else { // no file uploaded
+            $errors[] = 'No csv file selected. Please choose a csv file to upload.';
+            $this->render('upload', array('context' => $context, 'errors' => $errors));
+        }
     }
 
     public function actionImport($context, $csv)
