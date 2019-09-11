@@ -190,8 +190,8 @@ $element_errors = $element->getErrors();
 
         $('#<?= $model_name ?>_element').closest('section').on('element_removed', function() {
             $('.js-change-event-date').removeClass('disabled');
-            if ($('js-active-elements').find('section.OEModule_OphCiExamination_models_HistoryMedications') !== 'undefined') {
-                $('#OEModule_OphCiExamination_models_HistoryMedications_entry_table tr').each(function () {
+            if (typeof window.HMController !== "undefined") {
+                window.HMController.$table.find('tr').each(function () {
                     if (typeof $(this).data('bound_entry') !== 'undefined') {
                         $(this).removeData('bound_entry');
                     }

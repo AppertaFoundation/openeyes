@@ -177,8 +177,8 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
         });
 
         $('#<?= $model_name ?>_element').closest('section').on('element_removed', function () {
-            if ($('js-active-elements').find('section.OEModule_OphCiExamination_models_HistoryMedications_entry_table') !== 'undefined') {
-                $('#OEModule_OphCiExamination_models_MedicationManagement_entry_table tr').each(function () {
+            if (typeof window.MMController !== "undefined") {
+                window.MMController.$table.find('tr').each(function () {
                     if (typeof $(this).data('bound_entry') !== 'undefined') {
                         $(this).removeData('bound_entry');
                     }
