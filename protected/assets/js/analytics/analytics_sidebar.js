@@ -1,6 +1,11 @@
 var analytics_sidebar = (function(){
-    var init = function(data, target){
-        analytics_service(data['service_data'], data['data_sum'], target);
+    var init = function(data, target, side_bar_user_list){
+        var common_disorders_dom = $('.btn-list li')
+        var common_disorders = common_disorders_dom.map(function(i, e){
+            return $(e).html()
+        })
+        // console.log(common_disorders)
+        analytics_service(data['service_data'], target);
         // console.log(data);
         
         // date filter
@@ -16,7 +21,7 @@ var analytics_sidebar = (function(){
             default_date: false,
         });
         
-        
+        var specialty = $('.oescape-icon-btns a').data('specialty');
         // in case 
         $('.analytics-section').off('click')
         //select tag between clinic, custom and service
@@ -42,9 +47,8 @@ var analytics_sidebar = (function(){
             // console.log(selected_section)
             if(selected_section.includes('clinical')){
                 analytics_clinical('', data['clinical_data']);
-                console.log(data['clinical_data']);
             } else {
-                analytics_service(data['service_data'], data['data_sum'], target);
+                analytics_service(data['service_data'], target);
             }
             analytics_drill_down(selected_section, data['clinical_data']);
         });
@@ -67,7 +71,7 @@ var analytics_sidebar = (function(){
             var $allOptionGroups =  $('#filter-options-popup-'+id).find('.options-group');
             $allOptionGroups.each( function(){
                 // listen to filter changes in the groups
-                updateUI( $(this) );
+                analytics_toolbox.updateUI( $(this) );
             });
         
         });
@@ -80,40 +84,8 @@ var analytics_sidebar = (function(){
             }
         });
         
-        // update UI to show how Filter works
-        // this is pretty basic but only to demo on IDG
-        function updateUI( $optionGroup ){
-            // get the ID of the IDG demo text element
-            var textID = $optionGroup.data('filter-ui-id');
-            var $allListElements = $('.btn-list li',$optionGroup);
-        
-            $allListElements.click( function(){
-                if ($(this).parent().hasClass('js-multi-list') && $(this).text() !== "All"){
-                    if ($(this).hasClass('selected')){
-                        if ($('#'+textID).text().includes(',')){
-                            $(this).removeClass('selected');
-                            $('#'+textID).text($('#'+textID).text().replace($(this).text()+",",""));
-                            $('#'+textID).text($('#'+textID).text().replace(","+$(this).text(),""));
-                        }
-                    } else{
-                        $(this).addClass('selected');
-                        $allListElements.filter(function () {
-                            return $(this).text() == "All";
-                        }).removeClass('selected');
-                        if ($('#'+textID).text() == "All"){
-                            $('#'+textID).text($(this).text() );
-                        } else{
-                            $('#'+textID).text($('#'+textID).text() + ','+$(this).text() );
-                        }
-                    }
-                } else {
-                    $('#'+textID).text( $(this).text() );
-                    $allListElements.removeClass('selected');
-                    $(this).addClass('selected');
-                }
-            });
-        }
-        
+
+        $('.clinical-plot-button').off('click');
         $('.clinical-plot-button').on('click',function () {
            $(this).addClass('selected');
            $('.clinical-plot-button').not(this).removeClass('selected');
@@ -123,10 +95,39 @@ var analytics_sidebar = (function(){
            $($(this).data('plotid')).show();
             $.ajax({
                 url: '/analytics/updateData',
-                data:$('#search-form').serialize() + getDataFilters(),
+                // specialty, side_bar_user_list, common_disorders
+                data:{
+                    YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+                    form_data:$('#search-form').serialize() + analytics_toolbox.getDataFilters(specialty, side_bar_user_list, common_disorders),
+                    specialty: specialty
+                },
                 dataType:'json',
                 success: function (data, textStatus, jqXHR) {
-                    plotUpdate(data);
+                    console.log(data)
+                    analytics_toolbox.plotUpdate(data, specialty, analytics_layout);
+                }
+            });
+        });
+        $('#search-form').off('submit')
+        $('#search-form').on('submit', function (e) {
+            console.log($('#search-form').serialize());
+            // console.log($('#search-form').serialize() + analytics_toolbox.getDataFilters(specialty, side_bar_user_list, common_disorders));
+            // console.log(specialty, side_bar_user_list, common_disorders)
+            e.preventDefault();
+            let current_plot = $("#" + analytics_toolbox.getCurrentShownPlotId());
+            current_plot.hide();
+            // console.log(current_plot)
+            $('#js-analytics-spinner').show();
+            $.ajax({
+                url: '/analytics/updateData',
+                data:$('#search-form').serialize() + analytics_toolbox.getDataFilters(specialty, side_bar_user_list, common_disorders),
+                dataType:'json',
+                success: function (data, textStatus, jqXHR) {
+                    // console.log(data)
+                    $('#js-analytics-spinner').hide();
+                    current_plot.show();
+                    
+                    analytics_toolbox.plotUpdate(data, specialty, analytics_layout);
                 }
             });
         });

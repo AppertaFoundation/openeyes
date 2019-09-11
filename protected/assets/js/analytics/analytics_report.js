@@ -113,61 +113,57 @@
         });
         return filters;
     }
-    function plotUpdate(data){
-        <?php
-        if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) { ?>
-                var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
-                var clinical_data = data[0];
-                window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
-                clinical_chart.data[0]['x'] = clinical_data.x;
-                clinical_chart.data[0]['y'] = clinical_data.y;
-                clinical_chart.data[0]['customdata'] = clinical_data.customdata;
-                clinical_chart.data[0]['text'] = clinical_data.text;
-                clinical_chart.layout['yaxis']['tickvals'] = clinical_data['y'];
-                clinical_chart.layout['yaxis']['ticktext'] = clinical_data['text'];
-                clinical_chart.layout['hoverinfo'] = 'x+y';
-                Plotly.redraw(clinical_chart);
-            <?php
-            if ($specialty !== 'All') {?>
-        var custom_charts = ['js-hs-chart-analytics-clinical-others-left','js-hs-chart-analytics-clinical-others-right'];
-        var custom_data = data[2];
-        window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
-        for (var i = 0; i < custom_charts.length; i++) {
-            var chart = $('#'+custom_charts[i])[0];
-            chart.layout['title'] = (i)? 'Clinical Section (Right Eye)': 'Clinical Section (Left Eye)';
-            chart.layout['yaxis']['title'] = {
-              font: {
-                family: 'sans-serif',
-                size: 12,
-                color: '#fff',
-              },
-              text: getVATitle(),
-            };
-          //Set VA unit tick labels
-          var va_mode = $('#js-chart-filter-plot');
-          if (va_mode.html().includes('change')) {
-            chart.layout['yaxis']['tickmode'] = 'auto';
-          } else {
-            chart.layout['yaxis']['tickmode'] = 'array';
-            chart.layout['yaxis']['tickvals'] = <?= CJavaScript::encode($va_final_ticks['tick_position']); ?>;
-            chart.layout['yaxis']['ticktext'] = <?= CJavaScript::encode($va_final_ticks['tick_labels']); ?>;
-          }
-            chart.data[0]['x'] = custom_data[i][0]['x'];
-            chart.data[0]['y'] = custom_data[i][0]['y'];
-            chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
-            chart.data[0]['error_y'] = custom_data[i][0]['error_y'];
-            chart.data[0]['hoverinfo'] = custom_data[i][0]['hoverinfo'];
-            chart.data[0]['hovertext'] = custom_data[i][0]['hovertext'];
-            chart.data[1]['x'] = custom_data[i][1]['x'];
-            chart.data[1]['y'] = custom_data[i][1]['y'];
-            chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
-            chart.data[1]['error_y'] = custom_data[i][1]['error_y'];
-            chart.data[1]['hoverinfo'] = custom_data[i][1]['hoverinfo'];
-            chart.data[1]['hovertext'] = custom_data[i][1]['hovertext'];
-            Plotly.redraw(chart);
+    function plotUpdate(data, specialty){
+        var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
+        var clinical_data = data[0];
+        window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
+        clinical_chart.data[0]['x'] = clinical_data.x;
+        clinical_chart.data[0]['y'] = clinical_data.y;
+        clinical_chart.data[0]['customdata'] = clinical_data.customdata;
+        clinical_chart.data[0]['text'] = clinical_data.text;
+        clinical_chart.layout['yaxis']['tickvals'] = clinical_data['y'];
+        clinical_chart.layout['yaxis']['ticktext'] = clinical_data['text'];
+        clinical_chart.layout['hoverinfo'] = 'x+y';
+        Plotly.redraw(clinical_chart);
+        if (specialty !== 'All'){
+            var custom_charts = ['js-hs-chart-analytics-clinical-others-left','js-hs-chart-analytics-clinical-others-right'];
+            var custom_data = data[2];
+            window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
+            for (var i = 0; i < custom_charts.length; i++) {
+                var chart = $('#'+custom_charts[i])[0];
+                chart.layout['title'] = (i)? 'Clinical Section (Right Eye)': 'Clinical Section (Left Eye)';
+                chart.layout['yaxis']['title'] = {
+                  font: {
+                    family: 'sans-serif',
+                    size: 12,
+                    color: '#fff',
+                  },
+                  text: getVATitle(),
+                };
+              //Set VA unit tick labels
+              var va_mode = $('#js-chart-filter-plot');
+              if (va_mode.html().includes('change')) {
+                chart.layout['yaxis']['tickmode'] = 'auto';
+              } else {
+                chart.layout['yaxis']['tickmode'] = 'array';
+                chart.layout['yaxis']['tickvals'] = JSON.parse($va_final_ticks['tick_position']);;
+                chart.layout['yaxis']['ticktext'] = JSON.parse($va_final_ticks['tick_labels']);
+              }
+                chart.data[0]['x'] = custom_data[i][0]['x'];
+                chart.data[0]['y'] = custom_data[i][0]['y'];
+                chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
+                chart.data[0]['error_y'] = custom_data[i][0]['error_y'];
+                chart.data[0]['hoverinfo'] = custom_data[i][0]['hoverinfo'];
+                chart.data[0]['hovertext'] = custom_data[i][0]['hovertext'];
+                chart.data[1]['x'] = custom_data[i][1]['x'];
+                chart.data[1]['y'] = custom_data[i][1]['y'];
+                chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
+                chart.data[1]['error_y'] = custom_data[i][1]['error_y'];
+                chart.data[1]['hoverinfo'] = custom_data[i][1]['hoverinfo'];
+                chart.data[1]['hovertext'] = custom_data[i][1]['hovertext'];
+                Plotly.redraw(chart);
+            }
         }
-            <?php }
-        }?>
         //update the service data
         constructPlotlyData(data[1]['plot_data']);
         window.csv_data_for_report['service_data'] = data[1]['csv_data'];

@@ -22,6 +22,7 @@ var analytics_service = (function () {
 
 	function loadPlot(flag, data, title) {
 		var service_layout = JSON.parse(JSON.stringify(analytics_layout));
+		title = title || 'Patient count'
 		service_layout['xaxis']['rangemode'] = 'nonnegative';
 		service_layout['yaxis']['title'] = 'Patient count';
 		service_layout['yaxis']['tickformat'] = 'd';
@@ -40,6 +41,7 @@ var analytics_service = (function () {
 	}
 
 	function processPlotData(template, type, datasource) {
+		// console.log(datasource)
 		var res = {
 			name: template[type].name,
 			x: Object.keys(datasource),
@@ -59,16 +61,17 @@ var analytics_service = (function () {
 		}
   }
   
-	var init = function (service_data, data_sum, url) {
-    var service_data = service_data;
+	var init = function (service_data, url) {
+		var service_data = service_data;
+		// console.log(service_data)
     analytics_csv_download(service_data['csv_data']);
-		var data_summary = data_sum;
 		// window.csv_data_for_report['service_data'] = service_data['csv_data'];
 		var report_type_links = $('#js-charts-service .charts li a')
 		report_type_links.each(function () {
 			var type = $(this).data('report')
-			$(this).text(typeData[type].htmlText + '(' + data_summary[type] + ')')
+			$(this).text(typeData[type].htmlText + '(' + service_data['data_sum'][type] + ')')
 		})
+		
 		var overdue_raw = processPlotData(typeData, 'overdue', service_data['plot_data']);
     loadPlot('init', overdue_raw.data, overdue_raw.title)
     report_type_links.off('click')

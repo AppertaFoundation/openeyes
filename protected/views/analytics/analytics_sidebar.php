@@ -1,3 +1,10 @@
+<?php
+    use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit as VisualAcuityUnit;
+    use OEModule\OphCiExamination\widgets\OphCiExamination_Episode_VisualAcuityHistory;
+    $va_unit = VisualAcuityUnit::model()->getVAUnit(4);
+    $va_init_ticks = VisualAcuityUnit::model()->getInitVaTicks($va_unit);
+    $va_final_ticks = json_encode(VisualAcuityUnit::model()->sliceVATicks($va_init_ticks, 20));
+?>
             <div class="view-mode flex-layout">
                 <?php $clinical_button_disable = true;
                 if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {

@@ -84,33 +84,38 @@ class AnalyticsController extends BaseController
         // for testing
         $specialty = Yii::app()->getRequest()->getParam("specialty");
         $subspecialty_id = null;
-        $disorder_data = $this->getDisorders($subspecialty_id);
-        $user_list = User::model()->findAll();
+        // $disorder_data = $this->getDisorders($subspecialty_id);
+        // $user_list = User::model()->findAll();
         $side_bar_user_list = array();
-        $follow_patient_list = $this->getFollowUps($subspecialty_id);
-        if (isset($user_list)) {
+        // $follow_patient_list = $this->getFollowUps($subspecialty_id);
+        // if (isset($user_list)) {
+        // } else {
+        //     $side_bar_user_list = null;
+        // }
+        if (isset($this->surgeon)) {
+            $user_list = null;
+        } else {
+            $user_list = User::model()->findAll();
             foreach ($user_list as $user) {
                 $side_bar_user_list[$user->getFullName()] = $user->id;
             }
-        } else {
-            $side_bar_user_list = null;
         }
-        $clinical_data = array(
-            'title' => 'Disorders Section',
-            'x' => $disorder_data['x'],
-            'y' => $disorder_data['y'],
-            'text' => $disorder_data['text'],
-            'customdata' =>$disorder_data['customdata'],
-            'csv_data'=>$disorder_data['csv_data'],
-        );
-        $event_list = $this->queryCataractEventList();
+        // $clinical_data = array(
+        //     'title' => 'Disorders Section',
+        //     'x' => $disorder_data['x'],
+        //     'y' => $disorder_data['y'],
+        //     'text' => $disorder_data['text'],
+        //     'customdata' =>$disorder_data['customdata'],
+        //     'csv_data'=>$disorder_data['csv_data'],
+        // );
+        // $event_list = $this->queryCataractEventList();
         $this->render('/analytics/analytics_report', array(
             'current_user'=>json_encode($this->current_user),
-            'event_list'=>json_encode($event_list),
+            // 'event_list'=>json_encode($event_list),
             'user_list'=>json_encode($side_bar_user_list),
-            'service_data'=> json_encode($follow_patient_list),
-            'data_summary' => json_encode($follow_patient_list['data_sum']),
-            'clinical_data' => json_encode($clinical_data),
+            // 'service_data'=> json_encode($follow_patient_list),
+            // 'data_summary' => json_encode($follow_patient_list['data_sum']),
+            // 'clinical_data' => json_encode($clinical_data),
         ));
         
         // switch ($subspecialty) {
@@ -138,21 +143,38 @@ class AnalyticsController extends BaseController
         // moved to actionanalyticsreport
         // $specialty = Yii::app()->getRequest()->getParam("specialty");
         // $subspecialty_id = null;
-
+        $this->checkAuth();
         $specialty = Yii::app()->getRequest()->getParam("specialty");
         $subspecialty_id = null;
-
-        $this->checkAuth();
+        $follow_patient_list = $this->getFollowUps($subspecialty_id);
+        if(Yii::app()->request->getParam('report')) {
+            $this->renderJSON(array(
+                'plot_data'=>$follow_patient_list['plot_data'],
+                'csv_data'=>$follow_patient_list['csv_data'],
+            ));
+            return;
+        }
+        $disorder_data = $this->getDisorders($subspecialty_id);
+        // Yii::log(var_export(array_keys($disorder_data), true));
+        // Yii::log(var_export($disorder_data['text'], true));
         $this->current_user = User::model()->findByPk(Yii::app()->user->id);
-
+        $clinical_data = array(
+            'title' => 'Disorders Section',
+            'x' => $disorder_data['x'],
+            'y' => $disorder_data['y'],
+            'text' => $disorder_data['text'],
+            'customdata' =>$disorder_data['customdata'],
+            'csv_data'=>$disorder_data['csv_data'],
+        );
         // moved to actionanalyticsreport
         // $disorder_data = $this->getDisorders($subspecialty_id);
         $this->filters = array(
             'date_from' => 0,
-            'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
+            'date_to' => strtotime(date("Y-m-d h:i:s")),
         );
-        $follow_patient_list = $this->getFollowUps($subspecialty_id);
+        // $follow_patient_list = $this->getFollowUps($subspecialty_id);
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
+        // Yii::log(var_export($common_ophthalmic_disorders, true));
         // moved to actionanalyticsreport
         // $clinical_data = array(
         //     'title' => 'Disorders Section',
@@ -163,56 +185,28 @@ class AnalyticsController extends BaseController
         //     'csv_data'=>$disorder_data['csv_data'],
         // );
 
-        $current_user = User::model()->findByPk(Yii::app()->user->id);
+        // $current_user = User::model()->findByPk(Yii::app()->user->id);
         if (isset($this->surgeon)) {
             $user_list = null;
         } else {
             $user_list = User::model()->findAll();
         }
-        if(Yii::app()->request->getParam('report')) {
-            $this->renderJSON(array(
-                'plot_data'=>$follow_patient_list['plot_data'],
-                'csv_data'=>$follow_patient_list['csv_data'],
-            ));
-            return;
-        }
-        // $patient_list = array();
-        // if(Yii::app()->request->getParam('ids')) {
-        //     // Yii::log(var_export($this->offset, true));
-        //     $ids = Yii::app()->request->getParam('ids');
-        //     $limit = Yii::app()->request->getParam('limit');
-        //     $start = Yii::app()->request->getParam('start');
-        //     $patient_list = $this->getPatientList($ids, $limit, $start);
-        // }
+
         $data = array(
             'dom'=>array(),
             'data'=>array(),
+        );
+        $data['data'] = array(
+            'service_data'=> $follow_patient_list,
+            'clinical_data' => $clinical_data,
         );
         $data['dom']['sidebar'] = $this->renderPartial('/analytics/analytics_sidebar', array(
             'specialty'=>$specialty,
             'current_user'=>$this->current_user,
             'common_disorders'=>$common_ophthalmic_disorders,
-            // 'patient_list' => $this->patient_list,
+            'user_list'=>$user_list,
         ), true);
-        // $data['dom']['plot']['service'] = $this->renderPartial('/analytics/analytics_service', array(
-        //     // 'service_data'=> json_encode($follow_patient_list),
-        // ), true);
-        // $data['dom']['plot']['clinical'] = $this->renderPartial('/analytics/analytics_clinical', array(
-        //     // 'clinical_data' => json_encode($clinical_data),
-        // ), true);
         $data['dom']['plot'] = $this->renderPartial('/analytics/analytics_plots', null, true);
-        // if(Yii::app()->request->getParam('drill')){
-        //     if(count($patient_list) > 0){
-        //         $data['dom']['drill'] = $this->renderPartial('/analytics/analytics_drill_down_list', array(
-        //             'patient_list' => $patient_list,
-        //         ), true);
-        //         Yii::log(var_export('in the dom rendering', true));
-        //         exit(json_encode($data['dom']['drill']));
-        //     } else {
-        //         Yii::log(var_export('exporting reach to max flag', true));
-        //         exit(json_encode('reachedMax'));
-        //     }
-        // }
         exit(json_encode($data));
     }
     public function actionCataract()
@@ -346,7 +340,7 @@ class AnalyticsController extends BaseController
             $paitent_list_command->where('p.id IN (' . implode(', ', $ids) . ')');
             // $paitent_list_command->limit($limit)->offset($offset);
         }
-        Yii::log(var_export($paitent_list_command->getText(), true));
+        // Yii::log(var_export($paitent_list_command->getText(), true));
         $res = $paitent_list_command->queryAll();
         return $res;
     }
@@ -990,15 +984,21 @@ class AnalyticsController extends BaseController
             $command_secondary->andWhere('sd.created_user_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
         }
         if (isset($start_date) && $start_date !== 0) {
-            $command_principal->andWhere('e.created_date > TIMESTAMP("'.$start_date.'")');
-            $command_secondary->andWhere('sd.created_date > TIMESTAMP("'.$start_date.'")');
+            $command_principal->andWhere('UNIX_TIMESTAMP(e.created_date) > '.$start_date);
+            $command_secondary->andWhere('UNIX_TIMESTAMP(sd.created_date) > '.$start_date);
         }
         if (isset($end_date)) {
-            $command_principal->andWhere('e.created_date < TIMESTAMP("'.$end_date.'")');
-            $command_secondary->andWhere('sd.created_date < TIMESTAMP("'.$end_date.'")');
+            // Yii::log(var_export($end_date, true));
+            $command_principal->andWhere('UNIX_TIMESTAMP(e.created_date) < '.$end_date);
+            $command_secondary->andWhere('UNIX_TIMESTAMP(sd.created_date) < '.$end_date);
         }
+        Yii::log(var_export($surgeon_id, true));
         $principal_diagnoses = $command_principal->queryAll();
+        // Yii::log(var_export($principal_diagnoses, true));
         $secondary_diagnoses = $command_secondary->queryAll();
+        // Yii::log(var_export($command_secondary->getText(), true));
+        // Yii::log(var_export($secondary_diagnoses, true));
+        // Yii::log(var_export(array_merge_recursive($principal_diagnoses, $secondary_diagnoses), true));
         return array_merge_recursive($principal_diagnoses, $secondary_diagnoses);
     }
 
@@ -1011,18 +1011,21 @@ class AnalyticsController extends BaseController
             ->where('episode.disorder_id IS NOT NULL');
         $patient_with_disorder = $command_disorder_patient->queryAll();
 
+        // Yii::log(var_export($command_disorder_patient->getText(), true));
+
         $command_secondary_disorder_patient = Yii::app()->db->createCommand()
             ->select('patient_id', 'DISTINCT')
             ->from('secondary_diagnosis')
             ->where(array('not in', 'patient_id', array_column($patient_with_disorder, 'id')));
         $patient_with_secondary_disorder = $command_secondary_disorder_patient->queryAll();
 
+        // Yii::log(var_export($command_secondary_disorder_patient->getText(), true));
 
         $command_no_disorder_patient = Yii::app()->db->createCommand()
             ->select('id', 'DISTINCT')
             ->from('patient')
             ->where(array('not in', 'id', array_merge_recursive(array_column($patient_with_secondary_disorder, 'patient_id'), array_column($patient_with_disorder, 'id'))));
-
+        // Yii::log(var_export($command_no_disorder_patient->getText(), true));
         return $command_no_disorder_patient->queryAll();
     }
 
@@ -1041,6 +1044,7 @@ class AnalyticsController extends BaseController
           'customdata' => array(),
         );
         $patient_without_disorder = array_column($this->getPatientWithoutDisorders(), 'id');
+        // Yii::log(var_export(count($patient_without_disorder), true));
         $disorder_patient_list = array();
         $other_patient_list = array();
         $other_disorder_list = array();
@@ -1055,7 +1059,7 @@ class AnalyticsController extends BaseController
             array_push($disorder_id_list, $disorder['disorder_id']);
         }
         $disorder_list_command = "SELECT * FROM disorder WHERE id IN (" . implode(', ', $disorder_id_list) . ') ORDER BY id';
-
+        // Yii::log(var_export($disorder_list_command, true));
         $disorder_list = Disorder::model()->findAllBySql($disorder_list_command);
         foreach ($disorder_list as $disorder) {
             $disorder_patient_list[$disorder['id']]= array(
@@ -1063,8 +1067,10 @@ class AnalyticsController extends BaseController
                 'short_name' => $disorder['term'],
                 'patient_list' => array(),
             );
+
+            // Yii::log(var_export($disorder['id'], true));
+            // Yii::log(var_export($disorder_patient_list[$disorder['id']], true));
         }
-    
         $diagnoses = $this->queryDiagnosis($subspecialty_id, $surgeon_id, $start_date, $end_date);
         foreach ($diagnoses as $current_diagnosis) {
             $disorder_id = $current_diagnosis['disorder_id'];
@@ -1133,7 +1139,8 @@ class AnalyticsController extends BaseController
      * Get all filters from sidebar, used together with actionUpdateData()
      */
     public function obtainFilters()
-    {
+    {   
+        $form_data = Yii::app()->request->getParam('form_data');
         $specialty = Yii::app()->request->getParam('specialty');
         $dateFrom = Yii::app()->request->getParam('from');
         $dateTo = Yii::app()->request->getParam('to');
@@ -1178,14 +1185,15 @@ class AnalyticsController extends BaseController
         } else {
             $plot_va_change = false;
         }
-
+        // Yii::log(var_export('dateTo (before): '.$dateTo, true));
         if ($dateTo) {
-            $dateTo = Helper::mysqlDate2JsTimestamp($dateTo);
+            $dateTo = strtotime($dateTo);
         } else {
-            $dateTo = Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s"));
+            $dateTo = strtotime(date("Y-m-d h:i:s"));
         }
+        // Yii::log(var_export('dateTo (after): '.$dateTo, true));
         if ($dateFrom) {
-            $dateFrom = Helper::mysqlDate2JsTimestamp($dateFrom);
+            $dateFrom = strtotime($dateFrom);
         } else {
             $dateFrom = 0;
         }
@@ -1231,7 +1239,10 @@ class AnalyticsController extends BaseController
     {
         $this->checkAuth();
         $this->obtainFilters(); // get current filters. Question: why not call validateFilters() in this function.
+        // foreach($this->filters as $filter=>$val){
 
+        //     Yii::log(var_export($filter.'=>'.$val, true));
+        // }
         $specialty = $this->filters['specialty'];
 
         if (!isset($this->surgeon)&&isset($surgeon_id)) {
@@ -1327,7 +1338,19 @@ class AnalyticsController extends BaseController
             }
             $custom_data['csv_data']=$this->custom_csv_data;
         }
+        // Yii::log(var_export($subspecialty_id, true));
+        // Yii::log(var_export($this->filters['clinical_surgeon_id'], true));
+        // Yii::log(var_export($this->filters['date_from'], true));
+        // Yii::log(var_export($this->filters['date_to'], true));
         $disorder_data = $this->getDisorders($subspecialty_id, $this->filters['clinical_surgeon_id'], $this->filters['date_from'], $this->filters['date_to']);
+        // Yii::log(var_export($disorder_data['text'], true));
+        // Yii::log(var_export(get_object_vars($disorder_data), true));
+        // Yii::log(var_export(array_keys($disorder_data), true));
+        // foreach($disorder_data as $disorder){
+            // foreach($disorder as $val=>$v){
+            //     Yii::log(var_export($val . '=>' . $v, true));
+            // }
+        // }
         $clinical_data = array(
           'x' => $disorder_data['x'],
           'y' => $disorder_data['y'],

@@ -117,39 +117,37 @@
                     "specialty": specialty
                 },
                 // async: false,
-                success: function(data){
-                    var dom = JSON.parse(data);
-                    // console.log(dom)
+                success: function(response){
+                    var data = JSON.parse(response);
+                    // console.log(data)
                     // var data = getPHPData;
+                    
                     var php_data = (function(){
-                        var event_list = JSON.parse(<?=json_encode($event_list);?>);
                         var side_bar_user_list = JSON.parse(<?=json_encode($user_list);?>)
-                        var service_data = JSON.parse(<?=json_encode($service_data)?>)
-                        var clinical_data = JSON.parse(<?=json_encode($clinical_data)?>)
-                        var data_sum = JSON.parse(<?=json_encode($data_summary)?>)
                         return {
-                            'event_list': event_list,
+                            // 'event_list': event_list,
                             'sb_user_list': side_bar_user_list,
-                            'service_data': service_data,
-                            'clinical_data': clinical_data,
-                            'data_sum': data_sum,
+                            // 'service_data': service_data,
+                            // 'clinical_data': clinical_data,
+                            // 'data_sum': data_sum,
                         }
                     })();
                     // console.log(data);
-                    $('#sidebar').html(dom['dom']['sidebar']);
+                    $('#sidebar').html(data['dom']['sidebar']);
                     // $('#plot').html(dom['dom']['plot']['service']+dom['dom']['plot']['clinical']);
-                    $('#plot').html(dom['dom']['plot']);
-                    $('#plot').html(dom['dom']['drill'])
+                    $('#plot').html(data['dom']['plot']);
+                    $('#plot').html(data['dom']['drill'])
                     // analytics_service(data['service_data'], data['data_sum'], target);
                     // analytics_clinical('', data['clinical_data'])
                     // analytics_drill_down(target);
-                    analytics_sidebar(php_data, target);
+                    analytics_sidebar(data['data'], target, php_data['sb_user_list']);
                     // var csv_data = dom['data'] ? dom['data']
                     analytics_drill_down();
                     $('#js-analytics-spinner').hide();
                 }
             });
         })
+
         $('#js-all-specialty-tab').click();
     </script>
 </body>
