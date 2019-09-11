@@ -18,7 +18,20 @@ var analytics_toolbox = (function () {
 			htmlText: 'Followups coming due',
 			type: "bar"
 		}
-  }
+	}
+	function getVATitle(){
+		var va_mode = $('#js-chart-filter-plot');
+		var va_title;
+		if (va_mode.html().includes('change')) {
+			va_title = "Visual acuity change from baseline (LogMAR)";
+		} else {
+			va_title = "Visual acuity (LogMAR)";
+		}
+		return va_title;
+	}
+	function getCurrentSpecialty(){
+		return $('.analytics-options li a.selected').data('specialty');
+	}
 	function loadPlot(flag, data, title) {
 		var service_layout = JSON.parse(JSON.stringify(analytics_layout));
 		title = title || 'Patient count'
@@ -38,16 +51,21 @@ var analytics_toolbox = (function () {
 			);
 		}
 	}
-
-	function processPlotData(template, type, datasource) {
+	function getTypeData(){
+		return typeData;
+	}
+	function processPlotData(type, datasource) {
+		// var typeData = getTypeData();
+		// console.log(typeData);
+		// console.log(type)
 		var res = {
-			name: template[type].name,
+			name: typeData[type].name,
 			x: Object.keys(datasource),
 			y: Object.values(datasource).map(function (item, index) {
 				return item.length;
 			}),
 			customdata: Object.values(datasource),
-			type: template[type].type,
+			type: typeData[type].type,
 		};
 		var max = Math.max(...res['y']) + 5 > 20 ? Math.max(...res['y']) + 5 : 20;
 		var count = res['y'].reduce((a, b) => a + b, 0);
@@ -55,7 +73,7 @@ var analytics_toolbox = (function () {
 			data: res,
 			count: count,
 			max: max,
-			title: template[type].title
+			title: typeData[type].title
 		}
   }
 	function getCurrentShownPlotId() {
@@ -77,15 +95,14 @@ var analytics_toolbox = (function () {
 		var gl_custom_diagnosis = ['Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension'];
 		var mr_custom_treatment = ['Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex'];
 		var gl_custom_procedure = ['Cataract Extraction', 'Trabeculectomy', 'Aqueous Shunt', 'Cypass', 'SLT', 'Cyclodiode'];
-		var filters = "&specialty=" + specialty;
+		// var filters = "&specialty=" + specialty;
+		var filters = '';
 		$('.js-hs-filters').each(function () {
-			console.log(this)
 			if ($(this).is('span')) {
 				if ($(this).html() !== 'All') {
 					if ($(this).hasClass('js-hs-surgeon')) {
 						if (side_bar_user_list !== null) {
 							filters += '&' + $(this).data('name') + '=' + side_bar_user_list[$(this).html().trim()];
-							console.log(filters);
 						}
 					} else if ($(this).data('name') == "service_diagnosis") {
 						filters += '&' + $(this).data('name') + '=' + Object.keys(service_common_disorders).find(key => service_common_disorders[key] === $(this).html());
@@ -126,18 +143,23 @@ var analytics_toolbox = (function () {
 				}
 			} else if ($(this).is('select')) {
 				filters += '&' + $(this).data('name') + '=' + $(this).val();
-				// console.log(filters);
 			}
 		});
 		return filters;
 	}
 
-	function plotUpdate(data, specialty, layout) {
+	function plotUpdate(data, specialty, flag) {
+		console.log(data)
+		console.log(specialty)
+		if(flag === 'service'){
+			var service_type =  $('#js-charts-service .charts li a.selected').data('report');
+			var plot_data = processPlotData(service_type, data[1]['plot_data'])
+			loadPlot('update', plot_data['data'], plot_data['title']);
+			return;
+		}
+		
 		var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
-		console.log(clinical_chart.data)
-		console.log($('#js-hs-chart-analytics-clinical')[0].data)
 		var clinical_data = data[0];
-		console.log(clinical_data)
 		// window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
 		clinical_chart.data[0]['x'] = clinical_data.x;
 		clinical_chart.data[0]['y'] = clinical_data.y;
@@ -150,7 +172,6 @@ var analytics_toolbox = (function () {
 		if (specialty !== 'All') {
 			var custom_charts = ['js-hs-chart-analytics-clinical-others-left', 'js-hs-chart-analytics-clinical-others-right'];
 			var custom_data = data[2];
-			// window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
 			for (var i = 0; i < custom_charts.length; i++) {
 				var chart = $('#' + custom_charts[i])[0];
 				chart.layout['title'] = (i) ? 'Clinical Section (Right Eye)' : 'Clinical Section (Left Eye)';
@@ -186,12 +207,7 @@ var analytics_toolbox = (function () {
 				Plotly.redraw(chart);
 			}
 		}
-		var service_type =  $('#js-charts-service .charts li a.selected').data('report');
-		var plot_data = processPlotData(typeData, service_type, data[1]['plot_data'])
-		// console.log(plot_data)
-		loadPlot('update', plot_data, plot_data['title']);
-		//update the service data
-		// constructPlotlyData(data[1]['plot_data']);
+
 	}
 
 
@@ -232,6 +248,11 @@ var analytics_toolbox = (function () {
 		getCurrentShownPlotId: getCurrentShownPlotId,
 		getDataFilters: getDataFilters,
 		plotUpdate: plotUpdate,
-		updateUI: updateUI
+		updateUI: updateUI,
+		getTypeData: getTypeData,
+		loadPlot: loadPlot,
+		processPlotData: processPlotData,
+		getCurrentSpecialty: getCurrentSpecialty,
+		getVATitle: getVATitle,
 	}
 })()

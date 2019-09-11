@@ -1,8 +1,7 @@
 var analytics_clinical = (function(){
   var init = function(flag, clinical_data, custom_data){
+    console.log(clinical_data);
     analytics_csv_download(clinical_data)
-    console.log(clinical_data)
-    // console.log(clinical_data)
     var clinical_layout = JSON.parse(JSON.stringify(analytics_layout));
     var clinical_data = clinical_data;
     
@@ -28,8 +27,6 @@ var analytics_clinical = (function(){
     clinical_layout['yaxis']['ticktext'] = clinical_data['text'];
     clinical_layout['clickmode'] = 'event';
     if(flag === 'update'){
-      // console.log(custom_data)
-      // console.log(clinical_data)
       if ('text' in custom_data && 'customdata' in custom_data){
           clinical_data['y'] = $('#js-hs-chart-analytics-clinical')[0].layout['yaxis']['tickvals'];
           clinical_data['text'] = $('#js-hs-chart-analytics-clinical')[0].layout['yaxis']['ticktext'];
@@ -50,10 +47,8 @@ var analytics_clinical = (function(){
         'js-hs-chart-analytics-clinical', data ,clinical_layout, analytics_options
       );
     }
-    // console.log($('#js-back-to-common-disorder'))
-    // $('#js-back-to-common-disorder').off('click') 
+    $('#js-back-to-common-disorder').off('click') 
     $('#js-back-to-common-disorder').on('click',function () {
-      // console.log('clicked');
       $(this).hide();
       clinical_layout['yaxis']['tickvals'] = clinical_data['y'];
       clinical_layout['yaxis']['ticktext'] = clinical_data['text'];

@@ -112,7 +112,7 @@ var analytics_csv_download = (function(){
             csv_file = "DOB, Age, Diagnoses\n";
         }
         data.forEach(function (item) {
-            console.log(item)
+            // console.log(item)
             if (anonymized){
                 item = item.slice(3);
             }

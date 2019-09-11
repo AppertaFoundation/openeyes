@@ -72,7 +72,7 @@ var analytics_drill_down = (function(){
   
   var init = function(ele, clinical_data){
     // console.log(clinical_data)
-    // console.log(ele);
+    console.log(typeof ele);
     // console.log($('.analytics-section.selected'));
     var ele = typeof(ele) === 'undefined' ? $('.analytics-section.selected').data('section') : ele;
     // console.log(typeof(ele) === 'undefined')
@@ -80,13 +80,15 @@ var analytics_drill_down = (function(){
     // console.log(ele);
     // var plot_patient = document.getElementById('js-hs-chart-analytics-service');
     // var plot_patient = document.getElementById('js-hs-chart-analytics-service');
-    var plot_patient = document.getElementById(ele.replace('#', ''));
+    var plot_patient = typeof(ele) === 'object' ? ele : document.getElementById(ele.replace('#', ''));
 
     // avoid multiple binding
     var custom_data = null;
     $(plot_patient).off('plotly_click');
     $(plot_patient).on('plotly_click', function (e, data) {
+      console.log(data);
       custom_data = data.points[0].customdata
+      console.log(custom_data);
       // console.log(custom_data);
       if(Array.isArray(custom_data)){
         $('#js-analytics-spinner').show();

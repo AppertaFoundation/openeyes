@@ -2,29 +2,7 @@
 
 // analytics_sidebar scripts
 
-    $('#js-btn-selected-eye').click(function(e){
-        $('#js-chart-filter-eye-side').trigger( "changeEyeSide" );
-    });
-    $('#js-chart-filter-eye-side').bind( "changeEyeSide", function(){
-        var side = $('#js-chart-filter-eye-side').text().toLowerCase();
-        var opposite_side = side == 'left' ? 'right' : 'left';
-        $('#js-hs-chart-analytics-clinical-others-' + side).show();
-        $('#js-hs-chart-analytics-clinical-others-' + opposite_side).hide();
-    });
 
-    $('#js-chart-filter-age').on('DOMSubtreeModified', function () {
-        if ($('#js-chart-filter-age').html() == "Range") {
-            $('#js-chart-filter-age-all').hide();
-            $('#js-chart-filter-age-min').addClass('js-hs-filters');
-            $('#js-chart-filter-age-max').addClass('js-hs-filters');
-            $('#js-chart-filter-age-range').show();
-        } else {
-            $('#js-chart-filter-age-range').hide();
-            $('#js-chart-filter-age-min').removeClass('js-hs-filters');
-            $('#js-chart-filter-age-max').removeClass('js-hs-filters');
-            $('#js-chart-filter-age-all').show();
-        }
-    });
 
     function getCurrentShownPlotId(){
         var plot_id;
