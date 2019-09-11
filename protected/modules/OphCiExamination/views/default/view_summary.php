@@ -40,19 +40,19 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
       <h3 class="element-title">Eye Medications</h3>
     </header>
       <div class="element-data">
-          <?php
-          $filter_eye_medication = function ($med) {
-              return $med->option !== null;
-          };
-          $current_eye_medications = array_filter($medicationsElement->currentOrderedEntries, $filter_eye_medication);
-          $stopped_eye_medications = array_filter($medicationsElement->stoppedOrderedEntries, $filter_eye_medication);
-          ?>
-          <?php if (!$current_eye_medications && !$stopped_eye_medications) { ?>
+            <?php
+            $filter_eye_medication = function ($med) {
+                return $med->option !== null;
+            };
+            $current_eye_medications = array_filter($medicationsElement->currentOrderedEntries, $filter_eye_medication);
+            $stopped_eye_medications = array_filter($medicationsElement->stoppedOrderedEntries, $filter_eye_medication);
+            ?>
+            <?php if (!$current_eye_medications && !$stopped_eye_medications) { ?>
               <div class="data-value not-recorded">
                   No medications recorded during this encounter
               </div>
-          <?php } else { ?>
-              <?php if ($current_eye_medications) { ?>
+            <?php } else { ?>
+                <?php if ($current_eye_medications) { ?>
                   <div class="data-value">
                       <div class="tile-data-overflow">
                           <table>
@@ -78,18 +78,18 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                       </td>
                                       <td><?= $entry->getStartDateDisplay() ?></td>
                                   </tr>
-                              <?php } ?>
+                                <?php } ?>
                               </tbody>
                           </table>
                       </div>
                   </div>
-              <?php } else { ?>
+                <?php } else { ?>
                   <div class="data-value none">
                       No current Eye Medications
                   </div>
-              <?php } ?>
+                <?php } ?>
 
-        <?php if ($stopped_eye_medications) { ?>
+                <?php if ($stopped_eye_medications) { ?>
           <div class="collapse-data">
               <div class="collapse-data-header-icon expand">
                   Stopped
@@ -116,17 +116,17 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                       <i class="oe-i info small pro-theme js-has-tooltip"
                                          data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                       </i>
-                                    <?php } ?>
+                                  <?php } ?>
                               </td>
                               <td><?= $entry->getStartDateDisplay() ?></td>
                           </tr>
-                        <?php } ?>
+                      <?php } ?>
                       </tbody>
                   </table>
               </div>
           </div>
-          <?php } ?>
-          <?php } ?>
+                <?php } ?>
+            <?php } ?>
       </div>
   </section>
 
@@ -205,7 +205,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                     <tr>
                                         <td><?= $entry->getMedicationDisplay() ?></td>
                                         <td>
-                                            <?php if($entry->getDoseAndFrequency()) {?>
+                                            <?php if ($entry->getDoseAndFrequency()) {?>
                                                 <i class="oe-i info small pro-theme js-has-tooltip"
                                                    data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                                 </i>
