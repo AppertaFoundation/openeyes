@@ -32,6 +32,9 @@
  */
 class MedicationSetItem extends BaseActiveRecordVersioned
 {
+
+    public $auto_update_relations = true;
+
 	/**
 	 * @return string the associated database table name
 	 */

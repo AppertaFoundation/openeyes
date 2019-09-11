@@ -27,7 +27,58 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             event.preventDefault();
             controller.deleteSets();
         });
+
+        $(this.options.tableSelector).find('tbody tr').each(function() {
+            controller.initialiseRow($(this));
+        });
+
+
     };
+
+    DrugSetController.prototype.initialiseRow = function($row) {
+        let controller = this;
+
+        $row.on("click", ".js-add-taper", function() {
+            controller.addTaper($row);
+            return false;
+        });
+
+    };
+
+    DrugSetController.prototype.addTaper = function($row) {
+        var data_med_id = $row.attr('data-med_id');
+        var next_taper_count = 0;
+        var last_taper_count;
+
+        var $tapers = $('#meds-list tr[data-parent-med-id="' + data_med_id + '"]');
+        if($tapers.length > 0) {
+            last_taper_count = parseInt($tapers.last().attr("data-taper"));
+            next_taper_count = last_taper_count + 1;
+        }
+
+        var markup = Mustache.render(
+            $('#medication_item_taper_template').text(),
+            {
+                'data_med_id' : data_med_id,
+                'taper_count' : next_taper_count
+            });
+
+        var $lastrow;
+
+
+        if($tapers.length>0) {
+            $lastrow = $tapers.last();
+        }
+        else {
+            $lastrow = $row;
+        }
+
+        $(markup).insertAfter($lastrow);
+
+        return false;
+
+    };
+
 
     DrugSetController.prototype.initFilters = function () {
         let controller = this;

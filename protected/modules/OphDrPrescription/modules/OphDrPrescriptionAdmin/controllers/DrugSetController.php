@@ -241,12 +241,13 @@ class DrugSetController extends BaseAdminController
      */
     public function actionEdit($id = null)
     {
-        $assetManager = \Yii::app()->getAssetManager();
-        $baseAssetsPath = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
-        $assetManager->publish($baseAssetsPath);
+        $asset_manager = \Yii::app()->getAssetManager();
+        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $asset_manager->publish($base_assets_path);
 
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.TableInlieEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlineEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlineEdit.PrescriptionAdminMedicationSet.js', \CClientScript::POS_HEAD);
 
         $data = \Yii::app()->request->getParam('MedicationSet');
         $filters = \Yii::app()->request->getParam('search', []);
@@ -380,8 +381,9 @@ class DrugSetController extends BaseAdminController
             $set_id = \Yii::app()->request->getParam('set_id');
             $item_data = \Yii::app()->request->getParam('MedicationSetItem', []);
             $medication_data = \Yii::app()->request->getParam('Medication', []);
+            $tapers = json_decode(\Yii::app()->request->getParam('tapers', []), true);
 
-            if ($set_id && isset($medication_data['id']) && $medication_data['id'] && isset($item_data['id'])) {
+            if ($set_id && $medication_data['id'] && isset($item_data['id'])) {
 
                 $item = \MedicationSetItem::model()->findByPk($item_data['id']);
 
@@ -390,6 +392,24 @@ class DrugSetController extends BaseAdminController
                     $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
                     $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
                     $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
+
+                    if($tapers) {
+                        foreach ($tapers as $taper) {
+                            $taper = json_decode($taper, true);
+                            $new_taper = new MedicationSetItemTaper();
+                            if (isset($taper['MedicationSetItemTaper[id]']) && $taper['MedicationSetItemTaper[id]'] !== "") {
+                                $new_taper->id = $taper['MedicationSetItemTaper[id]'];
+                                $new_taper->setIsNewRecord(false);
+                            }
+                            $new_taper->medication_set_item_id = $item_data['id'];
+                            $new_taper->dose = $taper['MedicationSetItemTaper[dose]'];
+                            $new_taper->duration_id = $taper['MedicationSetItemTaper[duration_id]'];
+                            $new_taper->frequency_id = $taper['MedicationSetItemTaper[frequency_id]'];
+
+                            $new_taper->save();
+
+                        }
+                    }
 
                     $result['success'] = $item->save();
                     $result['errors'] = $item->getErrors();

@@ -41,6 +41,11 @@ OpenEyes.UI = OpenEyes.UI || {};
             controller.saveRow($tr);
         });
 
+        $(this.options.tableSelector).on('click', 'td.actions a[data-action_type="remove"]', function () {
+            const $tr = $(this).closest('tr');
+            $tr.remove();
+        });
+
         $(this.options.tableSelector).on('click', 'td.actions a[data-action_type="delete"]', function() {
             const $tr = $(this).closest('tr');
             const text = '<button class="red hint js-delete-row" data-row_med_id="' + $tr.data('med_id') + '">Delete</button> <button class="green js-delete-row-cancel">Cancel</button>';
@@ -128,6 +133,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     {
         let controller = this;
         let data = {};
+        let tapers = {};
         const $actionsTd = $tr.find('td.actions');
         $.each( $tr.find('.js-input'), function(i, input) {
             const $input = $(input);
@@ -141,6 +147,16 @@ OpenEyes.UI = OpenEyes.UI || {};
             const value = $(input).val();
             data[name] = value;
         });
+
+        $.each($('#meds-list tr[data-parent-med-id="' + data['Medication[id]'] + '"]'), function (i, taper) {
+            let taper_data = {};
+            $.each( $(taper).find('.js-input'), function(j, input) {
+                taper_data[$(input).attr('name')] = $(input).val();
+            });
+            tapers[i] = JSON.stringify(taper_data);
+        });
+
+        data['tapers'] = JSON.stringify(tapers);
 
         $.ajax({
             'type': 'POST',
