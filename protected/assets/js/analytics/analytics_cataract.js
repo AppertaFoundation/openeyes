@@ -67,7 +67,6 @@ var analytics_cataract = (function () {
 		// grab dates
 		// if from, to not filled, the max / min date from event data will be filled in
 		var date = "";
-		// date = from_date + " to " + to_date
 		date = format_date(new Date(from_date)) + " to " + format_date(new Date(to_date));
 		// prevent click during downloading
 		if ($(this).text() === 'Downloading...') {
@@ -192,8 +191,6 @@ var analytics_cataract = (function () {
 						// the search form will be affected by initializing all the plots
 						// bring it back at this stage
 						if (flag) {
-							// clear the dictionary
-							delete dict;
 							// to reset the search form
 							$('.js-cataract-report-type.selected').click();
 							// without doing so, previous requests will be captured
