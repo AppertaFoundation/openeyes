@@ -91,7 +91,9 @@ class CsvController extends BaseController
                 }
                 fclose($handle);
             }
-            $csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
+
+          //We use an md5 hash of the csv file to obscure any sensitive data
+					$csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
 
             if(!file_exists(self::$file_path)) {
                 mkdir(self::$file_path);
@@ -105,164 +107,178 @@ class CsvController extends BaseController
 
     public function actionImport($context, $csv)
     {
-        $errors = null;
+			$errors = null;
 
-        $import_log = new ImportLog();
-        $import_log->import_user_id = Yii::app()->user->id;
-        $import_log->startdatetime = date('Y-m-d H:i:s');
-        $import_log->status = "Failure";
-        if(!$import_log->save()) {
-            \OELog::log("Failed to save import log: " . var_export($import_log->getErrors(), true));
-        }
+			$import_log = new ImportLog();
+			$import_log->import_user_id = Yii::app()->user->id;
+			$import_log->startdatetime = date('Y-m-d H:i:s');
+			$import_log->status = "Failure";
+			if(!$import_log->save()) {
+				\OELog::log("Failed to save import log: " . var_export($import_log->getErrors(), true));
+			}
 
-        $csv_file_path = self::$file_path . $csv . ".csv";
+    	$csv_file_path = self::$file_path . $csv . ".csv";
 
-        if(file_exists($csv_file_path)) {
-            $table = array();
-            $headers = array();
-            if (($handle = fopen($csv_file_path, "r")) !== false) {
-                if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-                    foreach ($line as $header) {
-                        // basic sanitization, remove non printable chars - This is required if the CSV file is
-                        // exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
-                        $header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
-                        $headers[] = $header;
-                    }
-                }
+			if(file_exists($csv_file_path)) {
+				$table = array();
+				$headers = array();
+				if (($handle = fopen($csv_file_path, "r")) !== false) {
+					if (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+						foreach ($line as $header) {
+							// basic sanitization, remove non printable chars - This is required if the CSV file is
+							// exported from the excel (as UTF8 CSV) as excel appends \ufeff to the beginning of CSV file.
+							$header = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $header);
+							$headers[] = $header;
+						}
+					}
 
-                while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
-                    $row = array();
-                    $header_count = 0;
-                    foreach ($line as $cel) {
-                        $row[$headers[$header_count++]] = $cel;
-                    }
-                    $table[] = $row;
-                }
-                fclose($handle);
-            }
+					while (($line = fgetcsv($handle, 0, ",")) !== FALSE) {
+						$row = array();
+						$header_count = 0;
+						foreach ($line as $cel) {
+							$row[$headers[$header_count++]] = $cel;
+						}
+						$table[] = $row;
+					}
+					fclose($handle);
+				}
 
-            $row_num = 0;
-            $createAction = self::$contexts[$context]['createAction'];
+				$row_num = 0;
+				$createAction = self::$contexts[$context]['createAction'];
 
-            foreach ($table as $row) {
-                $transaction = Yii::app()->db->beginTransaction();
-                $import = new Import();
-                $import->parent_log_id = $import_log->id;
-                $row_num++;
-                $errors = $this->$createAction($row, $import);
-                if (!empty($errors)) {
-                    $transaction->rollback();
-                    $import->import_status_id = 2;
-                    $import->message = "Import failed on line " . $row_num . ": ";
+				foreach ($table as $row) {
+					$transaction = Yii::app()->db->beginTransaction();
+					$import = new Import();
+					$import->parent_log_id = $import_log->id;
+					$row_num++;
+					$errors = $this->$createAction($row, $import);
+					if (!empty($errors)) {
+						$transaction->rollback();
+						$import->import_status_id = 2;
+						$import->message = "Import failed on line " . $row_num . ": ";
 
-                    $flattened_errors = array();
-                    array_walk_recursive($errors, function ($item) use (&$flattened_errors) {
-                        $flattened_errors[] = $item;
-                    });
+						$flattened_errors = array();
+						array_walk_recursive($errors, function ($item) use (&$flattened_errors) {
+							$flattened_errors[] = $item;
+						});
 
-                    foreach ($flattened_errors as $error) {
-                        $import->message .= "<br>" . $error;
-                    }
-                } else {
-                    $transaction->commit();
-                    $import->import_status_id = 8;
-                }
+						foreach ($flattened_errors as $error) {
+							$import->message .= "<br>" . $error;
+						}
+					} else {
+						$transaction->commit();
+						$import->import_status_id = 8;
+					}
 
-                if (!$import->save()) {
-                    \OELog::log("Failed to save import status: " . var_export( $import->getErrors(), true));
-                }
-            }
+					if (!$import->save()) {
+						\OELog::log("Failed to save import status: " . var_export( $import->getErrors(), true));
+					}
+				}
 
-            $summary_table = array();
+				$summary_table = array();
 
-            $import_log->status = "Success";
+				$import_log->status = "Success";
 
-            foreach (Import::model()->findAllByAttributes(['parent_log_id' => $import_log->id]) as $summary_import) {
-                $summary = array();
+				foreach (Import::model()->findAllByAttributes(['parent_log_id' => $import_log->id]) as $summary_import) {
+					$summary = array();
 
-                $status = $summary_import->import_status->status_value;
+					$status = $summary_import->import_status->status_value;
 
-                //A status of 8 indicates a successful patient import
-                if ($status != 8)
-                    $import_log->status = "Failure";
+					//A status of 8 indicates a successful patient import
+					if ($status != 8)
+						$import_log->status = "Failure";
 
-                $summary['Status'] = $status;
-                $summary['Details'] = $summary_import->message;
+					$summary['Status'] = $status;
+					$summary['Details'] = $summary_import->message;
 
-                $summary_table[] = $summary;
-            }
-        }else {
-            $summary_table[] = ['Status' => "Failure", 'Details' => "File has expired"];
-        }
+					$summary_table[] = $summary;
+				}
+			}else {
+				$summary_table[] = ['Status' => "Failure", 'Details' => "File has expired"];
+			}
 
-        if(!$import_log->save()) {
-            \OELog::log("Failed to save import log: " . var_export($import_log->getErrors(), true));
-        }
+			if(!$import_log->save()) {
+				\OELog::log("Failed to save import log: " . var_export($import_log->getErrors(), true));
+			}
 
-        //Remove uploaded files
-        if(file_exists(self::$file_path)) {
-            $file_list = glob(self::$file_path . "*");
-            foreach ($file_list as $file) {
-                unlink($file);
-            }
-            rmdir(self::$file_path);
-        }
+			//Remove uploaded files
+			if(file_exists(self::$file_path)) {
+				$file_list = glob(self::$file_path . "*");
+				foreach ($file_list as $file) {
+					unlink($file);
+				}
+				rmdir(self::$file_path);
+			}
 
-        $this->render(
-            'summary',
-            array(
-                'errors' => $errors,
-                'context' => $context,
-                'table' => $summary_table,
-            )
-        );
+			switch ($context) {
+				case 'trials':
+				case 'trialPatients':
+					$this->redirect( "/" . self::$contexts[$context]['successAction']);
+					break;
+				case 'patients':
+					$this->render(
+						'summary',
+						array(
+							'errors' => $errors,
+							'context' => $context,
+							'table' => $summary_table,
+						)
+					);
+					break;
+			}
     }
 
-    private function createNewTrial($trial, $import)
+    private function createNewTrial($trial_raw_data, $import)
     {
         $errors = array();
-        if (empty($trial['name'])) {
+
+        if (empty($trial_raw_data['name'])) {
             $errors[] = 'Trial has no name';
             return $errors;
         }
         //check that trial does not exist
-        $new_trial = Trial::model()->findByAttributes(array('name' => $trial['name']));
+        $new_trial = Trial::model()->findByAttributes(array('name' => $trial_raw_data['name']));
         if ($new_trial !== null) {
+        		$errors[] = "Trial already exists named: " . $new_trial->name;
             return $errors;
         }
 
         //check that principal investigator's user name exists in the system
-        if(!empty($trial['principal_investigator'])) {
-//            CERA-523 CERA-524 only active users can be made principal investigators
-            $principal_investigator = User::model()->find('username = ? AND active = 1', array($trial['principal_investigator']));
+        if(!empty($trial_raw_data['principal_investigator'])) {
+//          CERA-523 CERA-524 only active users can be made principal investigators
+            $principal_investigator = User::model()->find('username = ? AND active = 1', array($trial_raw_data['principal_investigator']));
             if(!isset($principal_investigator)) {
-                $errors[] = 'The entered Principal Investigator does not exist in the system or is inactive.';
-                return $errors;
+							$errors[] = 'The entered Principal Investigator does not exist in the system or is inactive.';
+							return $errors;
             } else {
-                $_SESSION['principal_investigator'] = $principal_investigator->id;
+							$_SESSION['principal_investigator'] = $principal_investigator->id;
             }
         }
 
         //create new trial
         $new_trial = new Trial();
-        $new_trial->name = $trial['name'];
-        if (empty($trial['trial_type'])) {
-            $trial['trial_type'] = TrialType::INTERVENTION_CODE;
+        $new_trial->name = $trial_raw_data['name'];
+        if (empty($trial_raw_data['trial_type'])) {
+            $trial_raw_data['trial_type'] = TrialType::INTERVENTION_CODE;
         }
-        $new_trial->trial_type_id = TrialType::model()->find('code = ?', array($trial['trial_type']))->id;
-        $new_trial->description = !empty($trial['description']) ? $trial['description'] : null;
+        $new_trial->trial_type_id = TrialType::model()->find('code = ?', array($trial_raw_data['trial_type']))->id;
+        $new_trial->description = !empty($trial_raw_data['description']) ? $trial_raw_data['description'] : null;
         $new_trial->owner_user_id =  Yii::app()->user->id;
-        $new_trial->is_open = isset($trial['is_open']) && $trial['is_open'] !== '' ? $trial['is_open'] : false;
-        $new_trial->started_date = !empty($trial['started_date']) ? $trial['started_date'] : null;
-        $new_trial->closed_date = !empty($trial['closed_date']) ? $trial['closed_date'] : null;
-        $new_trial->external_data_link = !empty($trial['external_data_link']) ? $trial['external_data_link'] : null;
-        $new_trial->ethics_number = !empty($trial['ethics_number']) ? $trial['ethics_number'] : null;
+        $new_trial->is_open = isset($trial_raw_data['is_open']) && $trial_raw_data['is_open'] !== '' ? $trial_raw_data['is_open'] : false;
+        $new_trial->started_date = !empty($trial_raw_data['started_date']) ? $trial_raw_data['started_date'] : null;
+        $new_trial->closed_date = !empty($trial_raw_data['closed_date']) ? $trial_raw_data['closed_date'] : null;
+        $new_trial->external_data_link = !empty($trial_raw_data['external_data_link']) ? $trial_raw_data['external_data_link'] : null;
+        $new_trial->ethics_number = !empty($trial_raw_data['ethics_number']) ? $trial_raw_data['ethics_number'] : null;
 
         if (!$new_trial->save()) {
-            $errors = $new_trial->getErrors();
+            $errors[] = $new_trial->getErrors();
         }
 
-        return $errors;
+				if(empty($errors)) {
+					$import->message = "Import successful for trial";
+				}
+
+				return $errors;
     }
 
     private function createNewPatient($patient_raw_data, $import)
@@ -727,6 +743,12 @@ class CsvController extends BaseController
         if(!$new_trial_pat->save()){
             return $new_trial_pat->getErrors();
         }
+
+				if(empty($errors)) {
+					$import->message = "Import successful for trial patient";
+				}
+
+        return $errors;
     }
 
 }
