@@ -5,7 +5,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 /*Clean up site table but keep 1 and change the site name to "CERA" */
 SELECT "TRUNCATE TABLE site" AS "";
-UPDATE site SET name='CERA'
+UPDATE site SET name='CERA', short_name='CERA', remote_id='', telephone=''
 WHERE id LIMIT 1;
 delete from site
 where name not like "CERA";
@@ -19,6 +19,18 @@ where contact_id not in (
     select contact_id from site
     where site.name = "CERA"
 );
+
+update address set address1="Peter Howson Wing",
+                   address2='Level 7, 32 Gisborne Street',
+                   city='East Melbourne',
+                   postcode='3002',
+                   country_id=15
+where contact_id = (
+    select contact_id from user
+    where user.username='admin'
+    );
+
+
 
 SELECT "TRUNCATE TABLE patient" AS "";
 truncate table patient;
@@ -424,6 +436,8 @@ truncate table gp;
 SELECT "TRUNCATE TABLE institution" AS "";
 delete from institution
 where remote_id not in ('CERA');
+update institution set name='Centre for Eye Research Australia'
+where remote_id='CERA';
 
 
 SELECT "TRUNCATE TABLE measurement_reference" AS "";
@@ -523,6 +537,10 @@ truncate table ophtrlaser_laserprocedure_assignment;
 
 SELECT "TRUNCATE TABLE ophtrlaser_laser_operator" AS "";
 truncate table ophtrlaser_laser_operator;
+
+SELECT "TRUNCATE TABLE ophtrlaser_site_laser" AS "";
+delete from ophtrlaser_site_laser
+where site_id != 1 or site_id is null;
 
 SELECT "TRUNCATE TABLE ophtroperationbooking_anaesthetic_anaesthetic_type" AS "";
 truncate table ophtroperationbooking_anaesthetic_anaesthetic_type;
