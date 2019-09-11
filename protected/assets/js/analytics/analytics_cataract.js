@@ -67,7 +67,8 @@ var analytics_cataract = (function () {
 		// grab dates
 		// if from, to not filled, the max / min date from event data will be filled in
 		var date = "";
-		date = from_date + " to " + to_date
+		// date = from_date + " to " + to_date
+		date = format_date(new Date(from_date)) + " to " + format_date(new Date(to_date));
 		// prevent click during downloading
 		if ($(this).text() === 'Downloading...') {
 			return false;
@@ -94,7 +95,13 @@ var analytics_cataract = (function () {
 		};
 
 		// instantiate jsPDF
-		var doc = new jsPDF('l', 'pt', 'A4');
+		// var doc = new jsPDF('l', 'pt', 'A4');
+		var doc = new jsPDF({
+			orientation: "landscape",
+			unit: "pt",
+			format: "a4",
+			compress: true
+		});
 		// get page size
 		var pageW = doc.internal.pageSize.width;
 		var pageH = doc.internal.pageSize.height;
@@ -132,7 +139,7 @@ var analytics_cataract = (function () {
 					.then((dataURL) => {
 						pageStampDetails(doc, date, surgeon_name);
 
-						doc.addImage(dataURL, 'PNG', marginL, marginT, plotWidth, plotHeight);
+						doc.addImage(dataURL, 'PNG', marginL, marginT, plotWidth, plotHeight, '', 'FAST');
 						counter++;
 					});
 				// put the color back for update chart function
@@ -219,7 +226,6 @@ var analytics_cataract = (function () {
 	}
 
 	function cataractPlotType(e) {
-		analytics_csv_cataract();
 		$('#js-analytics-spinner').show();
 		e.stopPropagation();
 		e.preventDefault();
@@ -265,12 +271,12 @@ var analytics_cataract = (function () {
 		$('#analytics_datepicker_from').val(date_from);
 		$('#analytics_datepicker_to').val(date_to);
 	}
-	// var init = function (data, side_bar_user_list) {
+
 	var init = function (data) {
 		var current_user = data['current_user'];
 		var event_date = data['event_date'][0];
 		analytics_toolbox.initDatePicker(event_date);
-		
+
 		if (!$('.analytics-cataract').html()) {
 			var selected_item = getSelectedReportURL();
 			var init_container = selected_item['selected_container'];
@@ -294,12 +300,12 @@ var analytics_cataract = (function () {
 
 		$(document).off('ajaxComplete').on("ajaxComplete", function (event, request, settings) {
 			settings.global = false;
-			$('#js-analytics-spinner').hide();
 			if (settings.url.includes(currentPlot.replace('Report', '').replace(/_/g, '\\')) &&
-				event.target.activeElement.id !== 'js-download-pdf') {
+			event.target.activeElement.id !== 'js-download-pdf') {
 				var report = document.getElementById(currentPlot);
-                analytics_drill_down(report, null);
-                analytics_csv_cataract();
+				analytics_drill_down(report, null);
+				analytics_csv_cataract();
+				$('#js-analytics-spinner').hide();
 			}
 		})
 	}
