@@ -527,8 +527,10 @@ class DefaultController extends BaseEventTypeController
                 if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
                     $recipients[] = $letter->getToAddress();
                 }
-                foreach ($letter->getCcTargets() as $letter_address) {
-                    $recipients[] = $letter_address;
+                if (!$is_view) {
+                    foreach ($letter->getCcTargets() as $letter_address) {
+                        $recipients[] = $letter_address;
+                    }
                 }
             }
         }
