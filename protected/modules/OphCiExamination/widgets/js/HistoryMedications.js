@@ -229,6 +229,26 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     $(controller.options.medicationSearchInput).on('keyup', function () {
       controller.popupSearch();
     });
+
+    $('.js-remove-element').on('click', function() {
+        if($(this).parents('section').attr('data-element-type-name') === 'Medication Management') {
+            if ($('js-active-elements').find('section.OEModule_OphCiExamination_models_HistoryMedications') !== 'undefined') {
+                $('#OEModule_OphCiExamination_models_HistoryMedications_entry_table tr').each(function () {
+                    if(typeof $(this).data('bound_entry') !== 'undefined'){
+                        $(this).removeData('bound_entry');
+                    }
+                });
+            }
+        } else {
+            if ($('js-active-elements').find('section.OEModule_OphCiExamination_models_HistoryMedications_entry_table') !== 'undefined') {
+                $('#OEModule_OphCiExamination_models_MedicationManagement_entry_table tr').each(function () {
+                    if(typeof $(this).data('bound_entry') !== 'undefined'){
+                        $(this).removeData('bound_entry');
+                    }
+                });
+            }
+        }
+    });
   };
 
   HistoryMedicationsController.prototype.initialiseRow = function($row, data)
