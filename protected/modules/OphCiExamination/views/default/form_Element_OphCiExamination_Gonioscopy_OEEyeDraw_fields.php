@@ -82,26 +82,26 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
       $html_options = array('1' => array('data-value' => 'Yes'), '0' => array('data-value' => 'No'));
       ?>
     <div class="gonio-cross">
-      <div class="gonio-sup">
-          <?=\CHtml::dropDownList($side . '_gonio_sup_basic',
-              ($element->{$side . '_gonio_sup'}) ? $element->{$side . '_gonio_sup'}->seen : true, $basic_options,
-              array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'sup', 'options' => $html_options)) ?>
-      </div>
-      <div class="gonio-tem">
-          <?=\CHtml::dropDownList($side . '_gonio_tem_basic',
-              ($element->{$side . '_gonio_tem'}) ? $element->{$side . '_gonio_tem'}->seen : true, $basic_options,
-              array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'tem', 'options' => $html_options)) ?>
-      </div>
-      <div class="gonio-nas">
-          <?=\CHtml::dropDownList($side . '_gonio_nas_basic',
-              ($element->{$side . '_gonio_nas'}) ? $element->{$side . '_gonio_nas'}->seen : true, $basic_options,
-              array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'nas', 'options' => $html_options)) ?>
-      </div>
-      <div class="gonio-inf">
-          <?=\CHtml::dropDownList($side . '_gonio_inf_basic',
-              ($element->{$side . '_gonio_inf'}) ? $element->{$side . '_gonio_inf'}->seen : true, $basic_options,
-              array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'inf', 'options' => $html_options)) ?>
-      </div>
+        <div class="gonio-sup">
+            <?=\CHtml::dropDownList($side . '_gonio_sup_basic',
+                ($element->{$side . '_gonio_sup_id'} <= 4) ? 1 : 0, $basic_options,
+                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'sup', 'options' => $html_options)) ?>
+        </div>
+        <div class="gonio-tem">
+            <?=\CHtml::dropDownList($side . '_gonio_tem_basic',
+                ($element->{$side . '_gonio_tem_id'} <= 4) ? 1 : 0, $basic_options,
+                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'tem', 'options' => $html_options)) ?>
+        </div>
+        <div class="gonio-nas">
+            <?=\CHtml::dropDownList($side . '_gonio_nas_basic',
+                ($element->{$side . '_gonio_nas_id'} <= 4) ? 1 : 0, $basic_options,
+                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'nas', 'options' => $html_options)) ?>
+        </div>
+        <div class="gonio-inf">
+            <?=\CHtml::dropDownList($side . '_gonio_inf_basic',
+                ($element->{$side . '_gonio_inf_id'} <= 4) ? 1 : 0, $basic_options,
+                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'inf', 'options' => $html_options)) ?>
+        </div>
     </div>
   </div>
     <?=\CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
