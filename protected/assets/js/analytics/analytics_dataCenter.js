@@ -73,11 +73,11 @@ var analytics_dataCenter = (function(){
     return current_user;
   }
   return {
-    specialtyData:{
+    specialtyData: {
       setResponseData: setResponseData,
       getResponseData: getResponseData,
     },
-    clinical:{
+    clinical: {
       setClinicalData: setClinicalData,
       getClinicalData: getClinicalData,
     },

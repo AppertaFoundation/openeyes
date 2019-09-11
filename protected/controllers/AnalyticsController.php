@@ -35,10 +35,10 @@ class AnalyticsController extends BaseController
     public function accessRules()
     {
         return array(
-        array('allow',
-        'actions' => array('analyticsReports','cataract', 'medicalRetina', 'glaucoma', 'updateData','allSubspecialties', 'GetDrillDown', 'DownLoadCSV', 'getCustomPlot'),
-        'users'=> array('@')
-        ),
+            array('allow',
+                'actions' => array('analyticsReports','cataract', 'medicalRetina', 'glaucoma', 'updateData','allSubspecialties', 'GetDrillDown', 'DownLoadCSV', 'getCustomPlot'),
+                'users'=> array('@')
+            ),
         );
     }
     public function actionDownLoadCSV()
@@ -48,7 +48,8 @@ class AnalyticsController extends BaseController
             $ids = json_decode(Yii::app()->request->getParam('csv_data'));
             $ret = $this->getPatientList($ids);
         }
-        exit(json_encode($ret));
+        echo (json_encode($ret));
+        Yii::app()->end();
     }
     public function actionGetDrillDown($specialty = null)
     {
@@ -60,7 +61,8 @@ class AnalyticsController extends BaseController
         if (Yii::app()->request->getParam('drill') && Yii::app()->request->getParam('ids')) {
             $ids = json_decode(Yii::app()->request->getParam('ids'));
             if (count($ids) <= 0) {
-                exit(json_encode('reachedMax'));
+                echo (json_encode('reachedMax'));
+                Yii::app()->end();
             }
             if ($specialty === 'Cataract') {
                 $event_list = $this->queryCataractEventList($ids);
@@ -73,7 +75,8 @@ class AnalyticsController extends BaseController
                 $ret = $this->renderPartial('/analytics/analytics_drill_down_list', array(
                     'data' => $ret,
                 ), true);
-                exit(json_encode($ret));
+                echo (json_encode($ret));
+                Yii::app()->end();
             }
         }
     }
@@ -144,7 +147,8 @@ class AnalyticsController extends BaseController
         if ($specialty !== 'All') {
             $data['dom']['plot'] .= $this->renderPartial('/analytics/analytics_custom', null, true);
         }
-        exit(json_encode($data));
+        echo (json_encode($data));
+        Yii::app()->end();
     }
 
     /**
@@ -187,7 +191,8 @@ class AnalyticsController extends BaseController
             'user_list'=>$user_list,
         ), true);
         $data['dom']['plot'] = $this->renderPartial('/analytics/analytics_cataract', null, true);
-        exit(json_encode($data));
+        echo (json_encode($data));
+        Yii::app()->end();
 
     }
     public function actionMedicalRetina()
@@ -209,7 +214,8 @@ class AnalyticsController extends BaseController
             'custom_data'=>$custom_data,
             'va_final_ticks'=>$va_final_ticks,
         );
-        exit(json_encode($data));
+        echo (json_encode($data));
+        Yii::app()->end();
     }
     private function getCustomData($sn)
     {
