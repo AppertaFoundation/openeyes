@@ -91,6 +91,7 @@ TRUNCATE TABLE ophcocorrespondence_firm_letter_string;
 TRUNCATE TABLE ophcocorrespondence_firm_site_secretary;
 TRUNCATE TABLE ophcocorrespondence_internal_referral_to_location;
 TRUNCATE TABLE ophcocorrespondence_letter_enclosure;
+TRUNCATE TABLE ophcocorrespondence_letter_macro;
 TRUNCATE TABLE ophcocorrespondence_letter_setting_value;
 TRUNCATE TABLE ophcocorrespondence_letter_settings;
 TRUNCATE TABLE ophcocorrespondence_subspecialty_letter_string;
