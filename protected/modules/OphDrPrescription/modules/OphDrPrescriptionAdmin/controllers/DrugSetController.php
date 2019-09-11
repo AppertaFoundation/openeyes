@@ -395,6 +395,7 @@ class DrugSetController extends BaseAdminController
 
                     if($tapers) {
                         foreach ($tapers as $taper) {
+                            $taper_array = array();
                             $taper = json_decode($taper, true);
                             $new_taper = new MedicationSetItemTaper();
                             if (isset($taper['MedicationSetItemTaper[id]']) && $taper['MedicationSetItemTaper[id]'] !== "") {
@@ -406,9 +407,13 @@ class DrugSetController extends BaseAdminController
                             $new_taper->duration_id = $taper['MedicationSetItemTaper[duration_id]'];
                             $new_taper->frequency_id = $taper['MedicationSetItemTaper[frequency_id]'];
 
-                            $new_taper->save();
+                            $taper_array[] = $new_taper;
+
+                            //$new_taper->save();
 
                         }
+                        $item->tapers = $taper_array;
+
                     }
 
                     $result['success'] = $item->save();
@@ -447,7 +452,8 @@ class DrugSetController extends BaseAdminController
             $item = \Yii::app()->request->getParam('MedicationSetItem');
 
             if(isset($item['id'])) {
-                $affected_rows = \MedicationSetItem::model()->deleteByPk($item['id']);
+                $affected_rows = \MedicationSetItem::model()->findByPk($item['id']);
+                $affected_rows->delete();
                 $result['success'] = (bool)$affected_rows;
             } else {
                 $result['success'] = false;
