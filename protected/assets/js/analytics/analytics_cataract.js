@@ -138,7 +138,7 @@ var analytics_cataract = (function () {
 					.then((dataURL) => {
 						pageStampDetails(doc, date, surgeon_name);
 
-						doc.addImage(dataURL, 'PNG', marginL, marginT, plotWidth, plotHeight, '', 'FAST');
+						doc.addImage(dataURL, 'PNG', marginL, marginT, plotWidth, plotHeight);
 						counter++;
 					});
 				// put the color back for update chart function
