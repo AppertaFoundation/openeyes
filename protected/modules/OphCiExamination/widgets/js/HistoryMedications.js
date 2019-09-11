@@ -320,10 +320,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 						$row.find(".dose_unit_term").attr("disabled", "disabled");
 						$row.find("span.js-dose-unit-term").hide();
       }
-
-      if($row.hasClass('new')){
-          $row.find('.textual-display-dose').trigger('click');
-      }
   };
 
   HistoryMedicationsController.prototype.getDispenseLocation = function($dispense_condition)
