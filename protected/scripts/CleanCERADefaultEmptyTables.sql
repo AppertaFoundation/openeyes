@@ -66,7 +66,11 @@ TRUNCATE TABLE findings_subspec_assignment;
 TRUNCATE TABLE firm_user_assignment;
 TRUNCATE TABLE import;
 TRUNCATE TABLE import_log;
-TRUNCATE TABLE import_source;
+update import_source
+set name='CERA'
+where id = 1;
+delete from import_source
+where id != 1;
 TRUNCATE TABLE measurement_reference;
 TRUNCATE TABLE measurement_type;
 TRUNCATE TABLE media_data;
