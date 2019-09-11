@@ -14,5 +14,19 @@
             <a id="js-mr-specialty-tab" href="/analytics/medicalRetina"
                class="active <?= $specialty == 'Medical Retina' ? 'selected' : '' ?>">MR</a>
         </li>
+        <li class="icon-btn" data-specialty="Medical Retina">
+            <?php 
+                echo CHtml::ajaxLink(
+                    "MR", 
+                    CController::createUrl('/analytics/medicalRetina'), 
+                    array('update'=> '#data'),
+                    array(
+                        'id'=>'js-mr-specialty-tab', 
+                        'class'=>'active', 
+                        // 'cssClassExpression'=> $specialty == 'Medical Retina' ? 'selected' : '',
+                    )
+                );
+            ?>
+        </li>
     </ul>
 </div>

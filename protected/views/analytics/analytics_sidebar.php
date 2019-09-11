@@ -1,9 +1,3 @@
-<div class="analytics-options">
-
-    <?php $this->renderPartial('analytics_sidebar_header', array('specialty'=>$specialty));?>
-
-    <div class="specialty"><?= $specialty ?></div>
-    <div class="specialty-options">
             <div class="view-mode flex-layout">
                 <?php $clinical_button_disable = true;
                 if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
@@ -11,16 +5,17 @@
                 }?>
                 <button class="analytics-section pro-theme cols-6 <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
                         data-section="#js-hs-chart-analytics-clinical-main"
-                        data-tab="#js-charts-clinical">
+                        data-tab="#js-charts-clinical"
+                        data-options="clinical">
                             Clinical
                 </button>
                 <button class="analytics-section pro-theme cols-6 selected" id="js-btn-service"
                         data-section="#js-hs-chart-analytics-service"
-                        data-tab="#js-charts-service">
+                        data-tab="#js-charts-service"
+                        data-options="service">
                     Service
                 </button>
             </div>
-            <input type="hidden" id="side-bar-subspecialty-id" value="<?= $specialty == 'Glaucoma'? 1:0; ?>">
             <div id="js-charts-clinical" style="display: none;">
                 <ul class="charts">
                     <li>
@@ -188,9 +183,7 @@
                                             <h3>Diagnosis</h3>
                                             <ul class="btn-list js-multi-list">
                                                 <li class="selected">All</li>
-                                                <?php foreach ($analytics_diagnoses as $diagnosis) { ?>
-                                                    <li><?= $diagnosis; ?></li>
-                                                <?php } ?>
+
                                             </ul>
                                         </div><!-- options-group -->
                                     <?php } ?>
@@ -232,19 +225,6 @@
                             <?php } ?>
                             <li>Eye: <span id="js-chart-filter-eye-side">Right</span></li>
                             <li id="js-chart-filter-age-all">Ages: <span id="js-chart-filter-age"  data-name="custom_age_all">All</span></li>
-                            <li id="js-chart-filter-age-range" style="display: none;">Ages:
-                                <select id="js-chart-filter-age-min" style="font-size: 1em; width: inherit" data-name="custom_age_min">
-                                    <?php for ($i = 0; $i < 120; $i++) { ?>
-                                        <option value="<?= $i; ?>"><?= $i; ?></option>
-                                    <?php } ?>
-                                </select>
-                                to
-                                <select id="js-chart-filter-age-max" style="font-size: 1em; width: inherit" data-name="custom_age_max">
-                                    <?php for ($i = 0; $i < 120; $i++) { ?>
-                                        <option value="<?= $i; ?>"><?= $i; ?></option>
-                                    <?php } ?>
-                                </select>
-                            </li>
                             <?php if ($specialty == "Medical Retina") { ?>
                                 <li>Treatment: <span id="js-chart-filter-treatment" class="js-hs-filters js-hs-custom-mr-treatment" data-name="custom_treatment">All</span></li>
                                 <li>Diagnosis: <span id="js-chart-filter-diagnosis" class="js-hs-filters js-hs-custom-mr-diagnosis" data-name="custom_diagnosis">All</span></li>
@@ -262,13 +242,13 @@
             </div>
         <div id="js-charts-service">
             <ul class="charts">
-                <li><a href="#" id="js-hs-app-follow-up-coming" class="js-plot-display-label">Followups coming due</a></li>
-                <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected js-plot-display-label">Overdue followups</a></li>
-                <li><a href="#" id="js-hs-app-follow-up-waiting" class="js-plot-display-label">Waiting time for new patients</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-coming" class="js-plot-display-label" data-report="coming">Followups coming due</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected js-plot-display-label" data-report="overdue">Overdue followups</a></li>
+                <li><a href="#" id="js-hs-app-follow-up-waiting" class="js-plot-display-label" data-report="waiting">Waiting time for new patients</a></li>
             </ul>
             <div id="js-service-data-filter" class="" style="display: block">
                 <div class="service-filters custom-filters">
-                    <div class="flex-item" style="position: relative; top: -25px; left: 200px;"><!-- OE UI Filter options (id: service-filters) -->
+                    <div class="flex-item" style="position: relative; top: -25px; left: 250px;"><!-- OE UI Filter options (id: service-filters) -->
                         <div class="oe-filter-options" id="oe-filter-options-service-filters"
                              data-filter-id="service-filters"><!-- simple button to popup filter options -->
                             <button class="oe-filter-btn green hint" id="oe-filter-btn-service-filters">
@@ -333,207 +313,7 @@
 
 
         <div class="extra-actions">
-            <button id="js-download-csv" data-value="aaa" class="pro-theme cols-full">Download (CSV)</button>
-            <button id="js-download-anonymized-csv" class="pro-theme cols-full">Download (CSV - Anonymised)</button>
+            <button id="js-download-csv" data-anonymised="0" class="pro-theme cols-full">Download (CSV)</button>
+            <button id="js-download-anonymized-csv" data-anonymised="1" class="pro-theme cols-full">Download (CSV - Anonymised)</button>
         </div>
 
-    </div><!-- .specialty-options -->
-</div>
-<script type="text/javascript">
-    <?php
-        $side_bar_user_list = array();
-    if (isset($user_list)) {
-        foreach ($user_list as $user) {
-            $side_bar_user_list[$user->getFullName()] = $user->id;
-        }
-    } else {
-        $side_bar_user_list = null;
-    }
-    ?>
-
-    $('#js-btn-selected-eye').click(function(e){
-        $('#js-chart-filter-eye-side').trigger( "changeEyeSide" );
-    });
-    $('#js-chart-filter-eye-side').bind( "changeEyeSide", function(){
-        var side = $('#js-chart-filter-eye-side').text().toLowerCase();
-        var opposite_side = side == 'left' ? 'right' : 'left';
-        $('#js-hs-chart-analytics-clinical-others-' + side).show();
-        $('#js-hs-chart-analytics-clinical-others-' + opposite_side).hide();
-    });
-
-    $('#js-chart-filter-age').on('DOMSubtreeModified', function () {
-        if ($('#js-chart-filter-age').html() == "Range") {
-            $('#js-chart-filter-age-all').hide();
-            $('#js-chart-filter-age-min').addClass('js-hs-filters');
-            $('#js-chart-filter-age-max').addClass('js-hs-filters');
-            $('#js-chart-filter-age-range').show();
-        } else {
-            $('#js-chart-filter-age-range').hide();
-            $('#js-chart-filter-age-min').removeClass('js-hs-filters');
-            $('#js-chart-filter-age-max').removeClass('js-hs-filters');
-            $('#js-chart-filter-age-all').show();
-        }
-    });
-
-    function getCurrentShownPlotId(){
-        var plot_id;
-        $('.js-plotly-plot').each(function () {
-            if($(this).is(':visible')){
-                plot_id =  $(this)[0].id;
-                return false;
-            }
-        });
-        return plot_id;
-    }
-
-    $('#search-form').on('submit', function (e) {
-        e.preventDefault();
-        let current_plot = $("#"+getCurrentShownPlotId());
-        current_plot.hide();
-        $('#js-analytics-spinner').show();
-        $.ajax({
-            url: '/analytics/updateData',
-            data:$('#search-form').serialize() + getDataFilters(),
-            dataType:'json',
-            success: function (data, textStatus, jqXHR) {
-                $('#js-analytics-spinner').hide();
-                current_plot.show();
-                plotUpdate(data);
-            }
-        });
-    });
-
-    function getDataFilters(){
-        var specialty = "<?=$specialty;?>";
-        var side_bar_user_list = <?=CJavaScript::encode($side_bar_user_list);?>;
-        var service_common_disorders = JSON.parse(<?=json_encode(json_encode($common_disorders));?>);
-        var mr_custom_diagnosis = ['AMD(wet)', 'BRVO', 'CRVO', 'DMO'];
-        var gl_custom_diagnosis = ['Glaucoma', 'Open Angle Glaucoma', 'Angle Closure Glaucoma', 'Low Tension Glaucoma', 'Ocular Hypertension'];
-        var mr_custom_treatment = ['Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex'];
-        var gl_custom_procedure = ['Cataract Extraction','Trabeculectomy', 'Aqueous Shunt','Cypass','SLT','Cyclodiode'];
-        var filters ="specialty="+specialty;
-        $('.js-hs-filters').each(function () {
-            if($(this).is('span')){
-                if ($(this).html() !== 'All'){
-                    if ($(this).hasClass('js-hs-surgeon')){
-                        if(side_bar_user_list !== null){
-                            filters += '&'+$(this).data('name')+'='+side_bar_user_list[$(this).html()];
-                        }
-                    }else if($(this).data('name') == "service_diagnosis"){
-                        filters += '&'+$(this).data('name')+'='+Object.keys(service_common_disorders).find(key => service_common_disorders[key] ===$(this).html());
-                    }else if($(this).hasClass('js-hs-custom-mr-diagnosis')){
-                        var diagnosis_array = $(this).html().split(",");
-                        var diagnoses = "";
-                        diagnosis_array.forEach(
-                            function (item) {
-                                diagnoses += mr_custom_diagnosis.indexOf(item) + ',';
-                            }
-                        );
-                        diagnoses = diagnoses.slice(0,-1);
-                        filters += '&'+$(this).data('name')+'='+diagnoses;
-                    }else if($(this).hasClass('js-hs-custom-mr-treatment')){
-                        var treatment = mr_custom_treatment.indexOf($(this).html());
-                        filters += '&'+$(this).data('name')+'='+treatment;
-                    }else if($(this).hasClass('js-hs-custom-gl-procedure')){
-                        var procedure = gl_custom_procedure.indexOf($(this).html());
-                        filters += '&'+$(this).data('name')+'='+procedure;
-                    }else if($(this).hasClass('js-hs-custom-gl-diagnosis')){
-                        var diagnosis_array = $(this).html().split(",");
-                        var diagnoses = "";
-                        diagnosis_array.forEach(
-                            function (item) {
-                                diagnoses += gl_custom_diagnosis.indexOf(item) + ',';
-                            }
-                        );
-                        diagnoses = diagnoses.slice(0,-1);
-                        filters += '&'+$(this).data('name')+'='+diagnoses;
-                    }else if($(this).hasClass('js-hs-custom-mr-plot-type')){
-                        if ($(this).html().includes('change')){
-                            filters += '&'+$(this).data('name')+'=change';
-                        }
-                    }
-                    else{
-                        filters += '&'+$(this).data('name')+'='+$(this).html();
-                    }
-                }
-            }else if($(this).is('select')){
-                filters += '&'+$(this).data('name')+'='+$(this).val();
-            }
-        });
-        return filters;
-    }
-    function plotUpdate(data){
-        <?php
-        if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) { ?>
-                var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
-                var clinical_data = data[0];
-                window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
-                clinical_chart.data[0]['x'] = clinical_data.x;
-                clinical_chart.data[0]['y'] = clinical_data.y;
-                clinical_chart.data[0]['customdata'] = clinical_data.customdata;
-                clinical_chart.data[0]['text'] = clinical_data.text;
-                clinical_chart.layout['yaxis']['tickvals'] = clinical_data['y'];
-                clinical_chart.layout['yaxis']['ticktext'] = clinical_data['text'];
-                clinical_chart.layout['hoverinfo'] = 'x+y';
-                Plotly.redraw(clinical_chart);
-            <?php
-            if ($specialty !== 'All') {?>
-        var custom_charts = ['js-hs-chart-analytics-clinical-others-left','js-hs-chart-analytics-clinical-others-right'];
-        var custom_data = data[2];
-        window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
-        for (var i = 0; i < custom_charts.length; i++) {
-            var chart = $('#'+custom_charts[i])[0];
-            chart.layout['title'] = (i)? 'Clinical Section (Right Eye)': 'Clinical Section (Left Eye)';
-            chart.layout['yaxis']['title'] = {
-              font: {
-                family: 'sans-serif',
-                size: 12,
-                color: '#fff',
-              },
-              text: getVATitle(),
-            };
-          //Set VA unit tick labels
-          var va_mode = $('#js-chart-filter-plot');
-          if (va_mode.html().includes('change')) {
-            chart.layout['yaxis']['tickmode'] = 'auto';
-          } else {
-            chart.layout['yaxis']['tickmode'] = 'array';
-            chart.layout['yaxis']['tickvals'] = <?= CJavaScript::encode($va_final_ticks['tick_position']); ?>;
-            chart.layout['yaxis']['ticktext'] = <?= CJavaScript::encode($va_final_ticks['tick_labels']); ?>;
-          }
-            chart.data[0]['x'] = custom_data[i][0]['x'];
-            chart.data[0]['y'] = custom_data[i][0]['y'];
-            chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
-            chart.data[0]['error_y'] = custom_data[i][0]['error_y'];
-            chart.data[0]['hoverinfo'] = custom_data[i][0]['hoverinfo'];
-            chart.data[0]['hovertext'] = custom_data[i][0]['hovertext'];
-            chart.data[1]['x'] = custom_data[i][1]['x'];
-            chart.data[1]['y'] = custom_data[i][1]['y'];
-            chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
-            chart.data[1]['error_y'] = custom_data[i][1]['error_y'];
-            chart.data[1]['hoverinfo'] = custom_data[i][1]['hoverinfo'];
-            chart.data[1]['hovertext'] = custom_data[i][1]['hovertext'];
-            Plotly.redraw(chart);
-        }
-            <?php }
-        }?>
-        //update the service data
-        constructPlotlyData(data[1]['plot_data']);
-        window.csv_data_for_report['service_data'] = data[1]['csv_data'];
-    }
-    function viewAllDates() {
-        $('#analytics_datepicker_from').val("");
-        $('#analytics_datepicker_to').val("");
-    }
-    
-    function getVATitle(){
-      var va_mode = $('#js-chart-filter-plot');
-      var va_title;
-      if (va_mode.html().includes('change')) {
-        va_title = "Visual acuity change from baseline (LogMAR)";
-      } else {
-        va_title = "Visual acuity (LogMAR)";
-      }
-      return va_title;
-    }
-</script>

@@ -33,11 +33,46 @@ class AnalyticsController extends BaseController
     {
         return array(
         array('allow',
-        'actions' => array('analyticsReports','cataract', 'medicalRetina', 'glaucoma', 'updateData','allSubspecialties'),
+        'actions' => array('analyticsReports','cataract', 'medicalRetina', 'glaucoma', 'updateData','allSubspecialties', 'GetDrillDown', 'DownLoadCSV'),
         'users'=> array('@')
         ),
         );
     }
+    public function actionDownLoadCSV(){
+        $ret = null;
+        if(Yii::app()->request->getParam('csv_data')){
+            $ids = json_decode(Yii::app()->request->getParam('csv_data'));
+            // Yii::log(var_export($ids, true));
+            // Yii::log(var_export($ids, true));
+            $ret = $this->getPatientList($ids);
+            // Yii::log(var_export('###########################################################', true));
+        }
+        exit(json_encode($ret));
+    }
+    public function actionGetDrillDown(){
+        $ret = null;
+        $patient_list = array();
+        if(Yii::app()->request->getParam('ids')) {
+            // Yii::log(var_export($this->offset, true));
+            $ids = Yii::app()->request->getParam('ids');
+            // $limit = Yii::app()->request->getParam('limit');
+            // $start = Yii::app()->request->getParam('start');
+            // $patient_list = $this->getPatientList($ids, $limit, $start);
+            $patient_list = $this->getPatientList($ids);
+        }
+ 
+        if(Yii::app()->request->getParam('drill')){
+            if(count($patient_list) > 0){
+                $ret = $this->renderPartial('/analytics/analytics_drill_down_list', array(
+                    'patient_list' => $patient_list,
+                ), true);
+                exit(json_encode($ret));
+            } else {
+                exit(json_encode('reachedMax'));
+            }
+        }
+    }
+
     public function actionAnalyticsReports()
     {
         $this->current_user = User::model()->findByPk(Yii::app()->user->id);
@@ -46,40 +81,20 @@ class AnalyticsController extends BaseController
         if (isset(Firm::model()->findAllByPk($firm_id)->serviceSubspecialtyAssignment)) {
             $subspecialty = Firm::model()->findByPk($firm_id)->serviceSubspecialtyAssignment->subspecialty->name;
         }
-
-        switch ($subspecialty) {
-            case "Glaucoma":
-                $this->actionGlaucoma();
-                break;
-            case "Cataract":
-                $this->actionCataract();
-                break;
-            case "Medical Retina":
-                $this->actionMedicalRetina();
-                break;
-            default:
-                $this->actionAllSubspecialties();
-                break;
-        }
-    }
-
-    /**
-     * Function actionCataract(), actionMedicalRetina(), actionGlaucoma() are the main function for those three subspecialties
-     * The function grab data for all the plots.
-     */
-    public function actionAllSubspecialties()
-    {
-        $this->getPatientList();
-        $this->checkAuth();
+        // for testing
+        $specialty = Yii::app()->getRequest()->getParam("specialty");
         $subspecialty_id = null;
-        $this->current_user = User::model()->findByPk(Yii::app()->user->id);
         $disorder_data = $this->getDisorders($subspecialty_id);
-        $this->filters = array(
-            'date_from' => 0,
-            'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
-        );
+        $user_list = User::model()->findAll();
+        $side_bar_user_list = array();
         $follow_patient_list = $this->getFollowUps($subspecialty_id);
-        $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
+        if (isset($user_list)) {
+            foreach ($user_list as $user) {
+                $side_bar_user_list[$user->getFullName()] = $user->id;
+            }
+        } else {
+            $side_bar_user_list = null;
+        }
         $clinical_data = array(
             'title' => 'Disorders Section',
             'x' => $disorder_data['x'],
@@ -88,6 +103,65 @@ class AnalyticsController extends BaseController
             'customdata' =>$disorder_data['customdata'],
             'csv_data'=>$disorder_data['csv_data'],
         );
+        $event_list = $this->queryCataractEventList();
+        $this->render('/analytics/analytics_report', array(
+            'current_user'=>json_encode($this->current_user),
+            'event_list'=>json_encode($event_list),
+            'user_list'=>json_encode($side_bar_user_list),
+            'service_data'=> json_encode($follow_patient_list),
+            'data_summary' => json_encode($follow_patient_list['data_sum']),
+            'clinical_data' => json_encode($clinical_data),
+        ));
+        
+        // switch ($subspecialty) {
+        //     case "Glaucoma":
+        //         $this->actionGlaucoma();
+        //         break;
+        //     case "Cataract":
+        //         $this->actionCataract();
+        //         break;
+        //     case "Medical Retina":
+        //         $this->actionMedicalRetina();
+        //         break;
+        //     default:
+        //         $this->actionAllSubspecialties();
+        //         break;
+        // }
+    }
+
+    /**
+     * Function actionCataract(), actionMedicalRetina(), actionGlaucoma() are the main function for those three subspecialties
+     * The function grab data for all the plots.
+     */
+    public function actionAllSubspecialties()
+    {
+        // moved to actionanalyticsreport
+        // $specialty = Yii::app()->getRequest()->getParam("specialty");
+        // $subspecialty_id = null;
+
+        $specialty = Yii::app()->getRequest()->getParam("specialty");
+        $subspecialty_id = null;
+
+        $this->checkAuth();
+        $this->current_user = User::model()->findByPk(Yii::app()->user->id);
+
+        // moved to actionanalyticsreport
+        // $disorder_data = $this->getDisorders($subspecialty_id);
+        $this->filters = array(
+            'date_from' => 0,
+            'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
+        );
+        $follow_patient_list = $this->getFollowUps($subspecialty_id);
+        $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
+        // moved to actionanalyticsreport
+        // $clinical_data = array(
+        //     'title' => 'Disorders Section',
+        //     'x' => $disorder_data['x'],
+        //     'y' => $disorder_data['y'],
+        //     'text' => $disorder_data['text'],
+        //     'customdata' =>$disorder_data['customdata'],
+        //     'csv_data'=>$disorder_data['csv_data'],
+        // );
 
         $current_user = User::model()->findByPk(Yii::app()->user->id);
         if (isset($this->surgeon)) {
@@ -95,18 +169,51 @@ class AnalyticsController extends BaseController
         } else {
             $user_list = User::model()->findAll();
         }
-
-        $this->render('/analytics/analytics_container',
-            array(
-                'specialty'=>'All',
-                'service_data'=> json_encode($follow_patient_list),
-                'clinical_data' => json_encode($clinical_data),
-                'patient_list' => $this->patient_list,
-                'user_list' => $user_list,
-                'current_user'=> $current_user,
-                'common_disorders'=> $common_ophthalmic_disorders,
-            )
+        if(Yii::app()->request->getParam('report')) {
+            $this->renderJSON(array(
+                'plot_data'=>$follow_patient_list['plot_data'],
+                'csv_data'=>$follow_patient_list['csv_data'],
+            ));
+            return;
+        }
+        // $patient_list = array();
+        // if(Yii::app()->request->getParam('ids')) {
+        //     // Yii::log(var_export($this->offset, true));
+        //     $ids = Yii::app()->request->getParam('ids');
+        //     $limit = Yii::app()->request->getParam('limit');
+        //     $start = Yii::app()->request->getParam('start');
+        //     $patient_list = $this->getPatientList($ids, $limit, $start);
+        // }
+        $data = array(
+            'dom'=>array(),
+            'data'=>array(),
         );
+        $data['dom']['sidebar'] = $this->renderPartial('/analytics/analytics_sidebar', array(
+            'specialty'=>$specialty,
+            'current_user'=>$this->current_user,
+            'common_disorders'=>$common_ophthalmic_disorders,
+            // 'patient_list' => $this->patient_list,
+        ), true);
+        // $data['dom']['plot']['service'] = $this->renderPartial('/analytics/analytics_service', array(
+        //     // 'service_data'=> json_encode($follow_patient_list),
+        // ), true);
+        // $data['dom']['plot']['clinical'] = $this->renderPartial('/analytics/analytics_clinical', array(
+        //     // 'clinical_data' => json_encode($clinical_data),
+        // ), true);
+        $data['dom']['plot'] = $this->renderPartial('/analytics/analytics_plots', null, true);
+        // if(Yii::app()->request->getParam('drill')){
+        //     if(count($patient_list) > 0){
+        //         $data['dom']['drill'] = $this->renderPartial('/analytics/analytics_drill_down_list', array(
+        //             'patient_list' => $patient_list,
+        //         ), true);
+        //         Yii::log(var_export('in the dom rendering', true));
+        //         exit(json_encode($data['dom']['drill']));
+        //     } else {
+        //         Yii::log(var_export('exporting reach to max flag', true));
+        //         exit(json_encode('reachedMax'));
+        //     }
+        // }
+        exit(json_encode($data));
     }
     public function actionCataract()
     {
@@ -125,9 +232,23 @@ class AnalyticsController extends BaseController
         } else {
             $user_list = User::model()->findAll();
         }
-        $this->render('/analytics/analytics_container',
-          array(
-              'specialty'=>'Cataract',
+        // $this->render('/analytics/analytics_container',
+        //   array(
+        //       'specialty'=>'Cataract',
+        //       'clinical_data'=> array(),
+        //       'service_data'=> array(),
+        //       'custom_data' => array(),
+        //       'event_list' => $event_list,
+        //       'min_event_date'=>date('Y-m-d', strtotime($event_dates[0])),
+        //       'max_event_date'=>date('Y-m-d', strtotime($event_dates[count($event_dates) - 1])),
+        //       'patient_list' => $this->patient_list,
+        //       'user_list' => $user_list,
+        //       'current_user'=>$current_user,
+        //   )
+        // );
+        $data = array(
+            'dom'=>array(),
+            'data'=>array(
               'clinical_data'=> array(),
               'service_data'=> array(),
               'custom_data' => array(),
@@ -135,27 +256,35 @@ class AnalyticsController extends BaseController
               'min_event_date'=>date('Y-m-d', strtotime($event_dates[0])),
               'max_event_date'=>date('Y-m-d', strtotime($event_dates[count($event_dates) - 1])),
               'patient_list' => $this->patient_list,
+              'data_summary' => json_encode($follow_patient_list['data_sum']),
               'user_list' => $user_list,
-              'current_user'=>$current_user,
-          )
+              'current_user'=>json_encode($current_user),
+            ),
         );
+        $data['dom']['sidebar'] = $this->renderPartial('/analytics/analytics_sidebar_cataract',null, true);
+        $data['dom']['plot'] = $this->renderPartial('/analytics/analytics_cataract',null, true);
+        exit(json_encode($data));
+
     }
     public function actionMedicalRetina()
     {
         $this->getPatientList();
         list($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data,$clinical_data) = $this->getClinicalSpecialityData('Medical Retina');
-        $this->render('/analytics/analytics_container',
-          array(
-              'specialty' => 'Medical Retina',
-              'service_data' => json_encode($follow_patient_list),
-              'custom_data' => $custom_data,
-              'patient_list' => $this->patient_list,
-              'user_list' => $user_list,
-              'current_user' => $current_user,
-              'common_disorders' => $common_ophthalmic_disorders,
-              'clinical_data'=> json_encode($clinical_data),
-          )
+        
+        $data = array(
+            'dom'=>array(),
+            'data'=>array(
+                'specialty' => 'Medical Retina',
+                'service_data' => $follow_patient_list,
+                'custom_data' => $custom_data,
+                'patient_list' => $this->patient_list,
+                'user_list' => $user_list,
+                'current_user' => $current_user,
+                'common_disorders' => $common_ophthalmic_disorders,
+                'clinical_data'=>$clinical_data,
+            )
         );
+        exit(json_encode($data));
     }
     public function actionGlaucoma()
     {
@@ -175,7 +304,7 @@ class AnalyticsController extends BaseController
         );
     }
 
-    private function getPatientList()
+    private function getPatientList($ids=null)
     {
         $paitent_list_command = Yii::app()->db->createCommand()->select('DISTINCT p.hos_num as hos_num,
       p.nhs_num as nhs_num,
@@ -203,7 +332,8 @@ class AnalyticsController extends BaseController
                          WHERE d.term IS NOT NULL
                          GROUP BY sd.patient_id
                        ) t2
-                  GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id')->leftJoin('(SELECT e2.patient_id, GROUP_CONCAT(p.short_format) AS procedures
+                  GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id')
+            ->leftJoin('(SELECT e2.patient_id, GROUP_CONCAT(p.short_format) AS procedures
                   FROM et_ophtroperationnote_procedurelist eop
                          LEFT JOIN ophtroperationnote_procedurelist_procedure_assignment oppa
                                    ON eop.id = oppa.procedurelist_id
@@ -212,7 +342,13 @@ class AnalyticsController extends BaseController
                          LEFT JOIN episode e2 ON e.episode_id = e2.id
                   WHERE p.short_format IS NOT NULL
                   GROUP BY e2.patient_id) patient_procedures', 'patient_procedures.patient_id = p.id');
-        $this->patient_list = $paitent_list_command->queryAll();
+        if(isset($ids)){
+            $paitent_list_command->where('p.id IN (' . implode(', ', $ids) . ')');
+            // $paitent_list_command->limit($limit)->offset($offset);
+        }
+        Yii::log(var_export($paitent_list_command->getText(), true));
+        $res = $paitent_list_command->queryAll();
+        return $res;
     }
 
 
@@ -739,7 +875,7 @@ class AnalyticsController extends BaseController
         if (!array_key_exists($current_patient->id, $this->custom_csv_data) && (isset($right_reading) || isset($left_reading))) {
             $this->custom_csv_data[$current_patient->id] = array(
                 'first_name'=>$current_patient->getFirst_name(),
-                'second_name'=>$current_patient->getLast_name(),
+                'last_name'=>$current_patient->getLast_name(),
                 'hos_num'=>$current_patient->hos_num,
                 'dob'=>$current_patient->dob,
                 'age'=>$current_patient->getAge(),
@@ -1496,9 +1632,31 @@ class AnalyticsController extends BaseController
         ksort($followup_patient_list['waiting']);
         ksort($followup_patient_list['overdue']);
         ksort($followup_patient_list['coming']);
+        // to get total number
+        $data_summary = array();
+        $data_summary['waiting'] = array_reduce($followup_patient_list['waiting'], function($a, $b){
+            $a += count($b);
+            return $a;
+        }, 0);
+        $data_summary['overdue'] = array_reduce($followup_patient_list['overdue'], function($a, $b){
+            $a += count($b);
+            return $a;
+        }, 0);
+        $data_summary['coming'] = array_reduce($followup_patient_list['coming'], function($a, $b){
+            $a += count($b);
+            return $a;
+        }, 0);
+        $report_type = null;
+        $report_type = $report_type === null ? 'overdue' : $report_type;
+        
+        if(Yii::app()->request->isAjaxRequest){
+            $report_type = Yii::app()->request->getParam('report');
+        }
+        $report_type = $report_type === null ? 'overdue' : $report_type;
         return array(
-            'plot_data'=>$followup_patient_list,
-            'csv_data'=>$followup_csv_data,
+            'plot_data'=>$followup_patient_list[$report_type],
+            'csv_data'=>$followup_csv_data[$report_type],
+            'data_sum'=> $data_summary,
         );
     }
 
