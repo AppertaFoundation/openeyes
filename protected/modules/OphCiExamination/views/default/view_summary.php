@@ -126,7 +126,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
               </div>
           </div>
           <?php } ?>
-          <!-- <?php } ?> -->
+          <?php } ?>
       </div>
   </section>
 
