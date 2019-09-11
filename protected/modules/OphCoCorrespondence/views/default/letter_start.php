@@ -65,5 +65,5 @@ $logoHelper = new LogoHelper();
             </div>
         </div>
     </div>
-    <br/>
+    <br/><br/>
 </main>
