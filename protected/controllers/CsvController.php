@@ -210,14 +210,22 @@ class CsvController extends BaseController
 				rmdir(self::$file_path);
 			}
 
-			$this->render(
-				'summary',
-				array(
-					'errors' => $errors,
-					'context' => $context,
-					'table' => $summary_table,
-					)
-			);
+			switch ($context) {
+				case 'trials':
+				case 'trialPatients':
+					$this->redirect( "/" . self::$contexts[$context]['successAction']);
+					break;
+				case 'patients':
+					$this->render(
+						'summary',
+						array(
+							'errors' => $errors,
+							'context' => $context,
+							'table' => $summary_table,
+						)
+					);
+					break;
+			}
     }
 
     private function createNewTrial($trial_raw_data, $import)
