@@ -31,6 +31,7 @@
  * @property string $vmp_code
  * @property string $amp_term
  * @property string $amp_code
+ * @property int $source_old_id
  * @property string $deleted_date
  * @property string $last_modified_user_id
  * @property string $last_modified_date
@@ -93,7 +94,7 @@ class Medication extends BaseActiveRecordVersioned
             ['source_type, last_modified_user_id, created_user_id', 'length', 'max'=>10],
             ['source_subtype', 'length', 'max' => 45],
             ['preferred_term, short_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code', 'length', 'max'=>255],
-            ['deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems, default_route_id, default_form_id, default_dose_unit_term', 'safe'],
+            ['deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems, default_route_id, default_form_id, default_dose_unit_term, source_old_id, is_prescribable', 'safe'],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             ['id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code, 
