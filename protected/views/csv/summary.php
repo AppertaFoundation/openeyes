@@ -4,26 +4,8 @@
 	</div>
 	<div class="oe-full-content">
 		<div class="errorSummary">
-			<?php
-//			if (isset($errors) and $errors !== null) {
-//				echo '<pre>';
-//				echo ArrayHelper::array_dump_html($errors);
-//				echo '</pre>';
-//			}
-			?>
 		</div>
 		<?php
-//		$form = $this->beginWidget(
-//			'CActiveForm',
-//			array(
-//				'id' => 'summary_form',
-//				'action' => Yii::app()->createURL('csv/import', array('context' => $context)),
-//				'enableAjaxValidation' => false,
-//				'htmlOptions' => array('enctype' => 'multipart/form-data',
-//					'class' => 'oe-full-main',
-//				),
-//			)
-//		);
 
 		if (!empty($table)): ?>
 			<div style="overflow: auto">
@@ -46,9 +28,6 @@
 					<?php endforeach; ?>
 				</table>
 			</div>
-		<?php endif;
-		//echo CHtml::submitButton('Import');
-		//$this->endWidget();
-		?>
+		<?php endif; ?>
 	</div>
 </main>
