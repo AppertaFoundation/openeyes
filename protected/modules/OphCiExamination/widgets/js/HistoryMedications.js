@@ -272,6 +272,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
       var controls_onchange = function (e) {
+          let classes_that_dont_break_bound = ['js-end-date', 'js-stop-reason'];
+
           if (controller.options['modelName'] === "OEModule_OphCiExamination_models_HistoryMedications") {
               controller.updateBoundEntry($row);
               controller.updateTextualDisplay($row);
@@ -282,21 +284,24 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                   }
               }
           } else {
-              if ($(e.target).hasClass('js-end-date')) {
-                  $row.data('bound_entry').find('.js-end-date').attr('value', $row.find('.js-end-date').attr('value'));
-              } else if ($(e.target).hasClass('js-stop-reason')) {
-                  $row.data('bound_entry').find('.js-stop-reason').attr('value', $row.find('.js-stop-reason').attr('value'));
-              } else {
-                  let $bound_entry = $row.data('bound_entry');
-                  let stop_reason = $("option:contains('Medication parameters changed')").attr("value");
-                  let $trash = $row.find('.trash');
-                  $bound_entry.removeData('bound_entry');
-                  $bound_entry.find('.js-meds-stop-btn').trigger('click');
-                  $bound_entry.find('.js-stop-reason').attr('value', stop_reason);
-                  $row.find('.js-bound-key').val(controller.getRandomBoundKey());
-                  $row.removeData('bound_entry');
-                  $trash.removeClass('disabled');
-                  $trash.parent().removeClass('js-has-tooltip');
+              if (typeof $row.data('bound_entry') !== 'undefined') {
+                  let row_needs_bond_removed = true;
+
+                  classes_that_dont_break_bound.forEach(function (class_name) {
+                      if ($(e.target).hasClass(class_name)) {
+                          row_needs_bond_removed = false;
+                          $row.data('bound_entry').find('.' + class_name).attr('value', $row.find('.' + class_name).attr('value'));
+                      }
+                  });
+
+                  if (row_needs_bond_removed) {
+                      let $bound_entry = $row.data('bound_entry');
+                      $bound_entry.removeData('bound_entry');
+                      controller.setBoundEntryStop($bound_entry);
+                      $row.find('.js-bound-key').val(controller.getRandomBoundKey());
+                      $row.removeData('bound_entry');
+                      controller.enablingManualDeletion($row);
+                  }
               }
           }
       };
@@ -1029,6 +1034,18 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         } else {
             table_header.hide();
         }
+    };
+
+    HistoryMedicationsController.prototype.setBoundEntryStop = function ($bound_entry) {
+        let stop_reason = $("option:contains('Medication parameters changed')").attr("value");
+        this.showStopControls($bound_entry);
+        $bound_entry.find('.js-stop-reason').attr('value', stop_reason);
+    };
+
+    HistoryMedicationsController.prototype.enablingManualDeletion = function ($row) {
+        let $trash = $row.find('.trash');
+        $trash.removeClass('disabled');
+        $trash.parent().removeClass('js-has-tooltip');
     };
 
   exports.HistoryMedicationsController = HistoryMedicationsController;
