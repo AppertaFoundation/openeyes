@@ -226,12 +226,13 @@ var analytics_cataract = (function () {
 		$('#js-analytics-spinner').show();
 		e.stopPropagation();
 		e.preventDefault();
-		if ($('.analytics-patient-list').css('display') === 'block') {
-			$('.analytics-patient-list').hide();
-		}
-		if ($('.analytics-charts').css('display') === 'none') {
-			$('.analytics-charts').show()
-		}
+
+		// reset all surgeons filter
+		$('#analytics_allsurgeons').val('');
+		$('#js-all-surgeons').removeClass('green hint');
+
+		analytics_toolbox.hideDrillDownShowChart();
+
 		var selected_item = getSelectedReportURL(this);
 		var selected_container = selected_item['selected_container'];
 		var selected_url = selected_item['report_url'];

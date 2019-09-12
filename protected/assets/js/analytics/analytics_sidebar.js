@@ -39,9 +39,7 @@ var analytics_sidebar = (function () {
 
 			// force display when come back from other screen, like drill down
 			// and hide drill down
-			$('.analytics-charts').show();
-			$('.analytics-patient-list').hide();
-			$('.analytics-patient-list-row').hide();
+			analytics_toolbox.hideDrillDownShowChart();
 
 			// execute related function according to selected tab
 			if (selected_option === 'clinical') {
@@ -68,6 +66,11 @@ var analytics_sidebar = (function () {
 			$('.clinical-plot-button').not(this).removeClass('selected');
 			$('.js-hs-chart-analytics-clinical').hide();
 			$('.js-hs-filter-analytics-clinical').hide();
+
+			// force display when come back from other screen, like drill down
+			// and hide drill down
+			analytics_toolbox.hideDrillDownShowChart()
+
 			$($(this).data('filterid')).show();
 			$($(this).data('plotid')).show();
 

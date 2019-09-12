@@ -66,9 +66,7 @@ var analytics_service = (function () {
 					analytics_csv_download();
 
 					// bring back hidden plot
-					if ($('.analytics-charts').css('display') === 'none') {
-						$('.analytics-charts').show()
-					}
+					analytics_toolbox.hideDrillDownShowChart();
 					$('#js-hs-chart-analytics-service').show();
 				},
 				complete: function () {

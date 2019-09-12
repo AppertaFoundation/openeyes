@@ -20,6 +20,24 @@ var analytics_toolbox = (function () {
 		}
 	}
 
+	function hideDrillDownShowChart() {
+		// hide drill down patient list
+		if ($('.analytics-patient-list').css('display') !== 'none') {
+			$('.analytics-patient-list').hide();
+			// clear out patient list
+			$('.analytics-patient-list').find('table').html(analytics_toolbox.getCleanDrillDownList());
+		}
+		// hide back to common disorders
+		if ($('#js-back-to-common-disorder').css('display') !== 'none' &&
+			$('.analytics-section.selected').data('options') !== 'clinical') {
+			$('#js-back-to-common-disorder').hide();
+		}
+		// bring up chart(s)
+		if ($('.analytics-charts').css('display') === 'none') {
+			$('.analytics-charts').show();
+		}
+	}
+
 	function ajaxErrorHandling(statusCode, errorMsg) {
 		var main = document.querySelector('.oe-analytics');
 		var div = document.createElement('div');
@@ -321,5 +339,6 @@ var analytics_toolbox = (function () {
 		getThrottleTime: getThrottleTime,
 		getAjaxThrottleTime: getAjaxThrottleTime,
 		ajaxErrorHandling: ajaxErrorHandling,
+		hideDrillDownShowChart: hideDrillDownShowChart,
 	}
 })()

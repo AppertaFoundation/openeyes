@@ -125,9 +125,8 @@ var analytics_drill_down = (function () {
 			// reset
 			reachedMax = false;
 			start = 0;
-			$('.analytics-charts').show();
-			$('.analytics-patient-list').hide();
-			$('.analytics-patient-list-row').hide();
+			
+			analytics_toolbox.hideDrillDownShowChart();
 		})
 
 	}

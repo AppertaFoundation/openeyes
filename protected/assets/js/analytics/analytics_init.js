@@ -7,8 +7,7 @@ var analytics_init = (function () {
 			// display spinner
 			$('#js-analytics-spinner').show();
 
-			$('.analytics-charts').show();
-			$('.analytics-patient-list').hide();
+			analytics_toolbox.hideDrillDownShowChart();
 
 			$(this).addClass('selected');
 
