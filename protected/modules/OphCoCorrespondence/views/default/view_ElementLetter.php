@@ -98,7 +98,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
         options['disableAjaxCall'] = <?= ($is_mobile_or_tablet ? 'false' : 'true'); ?>;
         new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id , options);
 
-        if ($('iframe').data('doprint').charAt(0) == 1) {
+        if ($('iframe').data('doprint').charAt(0) === 1) {
             let eventId = $('iframe').data('eventid');
             $.ajax({
                 'type': 'GET',
