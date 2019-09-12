@@ -1811,7 +1811,6 @@ class PatientController extends BaseController
                 // Return the same page to the user without saving
                 // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
                 $patient->beforeValidate();
-                $patient->beforeSave();
             }
         }
         // Only auto increment hos no. when the set_auto_increment is on
