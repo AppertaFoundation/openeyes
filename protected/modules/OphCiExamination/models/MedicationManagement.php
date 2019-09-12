@@ -141,8 +141,8 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getStoppedEntries()
     {
-        return array_filter($this->visible_entries, function($e){
-            return !is_null($e->end_date) && $e->end_date <= date('Y-m-d');;
+        return array_filter($this->visible_entries, function ($e) {
+            return !is_null($e->end_date) && $e->end_date <= date('Y-m-d');
         });
     }
 
@@ -245,7 +245,7 @@ class MedicationManagement extends BaseMedicationElement
                 return false;
             }
 
-            if($is_new) {
+            if ($is_new) {
                 $id = \Yii::app()->db->getLastInsertID();
                 $entry->id = $id;
             }
@@ -320,6 +320,8 @@ class MedicationManagement extends BaseMedicationElement
                 if(!in_array($entry->id, $existing_mgment_items)) {
                     $prescription_Item = new \OphDrPrescription_Item();
                     $prescription_Item->event_id =$prescription->event_id;
+                    $prescription_Item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
+
                     $prescription_Item->setAttributes(array(
                         'usage_type' => \OphDrPrescription_Item::getUsageType(),
                         'usage_subtype' => \OphDrPrescription_Item::getUsageSubtype(),
@@ -467,5 +469,24 @@ class MedicationManagement extends BaseMedicationElement
     public function getEntries()
     {
         return $this->entries;
+    }
+
+    public function afterDelete()
+    {
+        foreach ($this->entries as $entry) {
+            $entry->delete();
+        }
+
+        parent::afterDelete();
+    }
+
+    public function softDelete()
+    {
+        foreach ($this->entries as $entry) {
+            $entry->prescription_item_id = null;
+            $entry->save();
+        }
+
+        parent::afterDelete();
     }
 }

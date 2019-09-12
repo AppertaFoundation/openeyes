@@ -44,7 +44,7 @@ class DefaultController extends BaseEventTypeController
         $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
 
         $this->editable = $model->isEditableByMedication();
-        if( $this->editable == true ){
+        if ( $this->editable == true ) {
             $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
         }
         return parent::actionView($id);
@@ -58,7 +58,9 @@ class DefaultController extends BaseEventTypeController
         $this->jsVars['common_drug_metadata'] = array();
         foreach (Element_OphDrPrescription_Details::model()->commonDrugs() as $medication) {
             $this->jsVars['common_drug_metadata'][$medication->id] = array(
-                    'medication_set_id' => array_map(function($e){ return $e->id; }, $medication->getTypes()),
+                    'medication_set_id' => array_map(function ($e) {
+                        return $e->id;
+                    }, $medication->getTypes()),
                     'preservative_free' => (int)$medication->isPreservativeFree(),
             );
         }
@@ -279,9 +281,9 @@ class DefaultController extends BaseEventTypeController
                                                 medication_set_id = (SELECT id FROM medication_set WHERE name = 'Preservative free'))");
             }
 
-            if(!empty($criteria->condition)){
+            if (!empty($criteria->condition)) {
                 $criteria->order = 'preferred_term';
-                $criteria->limit = 10;
+                $criteria->limit = 50;
                 $criteria->select = 'id, preferred_term';
                 $criteria->params = $params;
 
@@ -299,7 +301,9 @@ class DefaultController extends BaseEventTypeController
                         'value' => $drug->preferred_term,
                         'id' => $drug->id,
                         'prepended_markup' => $tooltip,
-						'allergies' => array_map(function($e){ return $e->id; }, $drug->allergies),
+                        'allergies' => array_map(function ($e) {
+                            return $e->id;
+                        }, $drug->allergies),
                     );
                 }
             }
@@ -365,11 +369,10 @@ class DefaultController extends BaseEventTypeController
     public function actionRouteOptions($key, $route_id)
     {
         $route = MedicationRoute::model()->findByPk($route_id);
-        if($route->has_laterality) {
+        if ($route->has_laterality) {
             $options = MedicationLaterality::model()->findAll('deleted_date IS NULL');
             echo CHtml::dropDownList('Element_OphDrPrescription_Details[items]['.$key.'][laterality]', null, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
-        }
-        else {
+        } else {
             echo '-';
         }
     }
@@ -389,7 +392,7 @@ class DefaultController extends BaseEventTypeController
             foreach ($data['Element_OphDrPrescription_Details']['items'] as $item) {
                 $item_model = new OphDrPrescription_Item();
                 $item_model->attributes = $item;
-                if(!$item_model->start_date) {
+                if (!$item_model->start_date) {
                     $item_model->start_date = substr($this->event->event_date, 0, 10);
                 }
                 if (isset($item['taper'])) {
@@ -607,17 +610,16 @@ class DefaultController extends BaseEventTypeController
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
-		$rule = MedicationSetRule::model()->findByAttributes(array(
-			'subspecialty_id' => $subspecialty_id,
-			'site_id' => $site_id,
-			'usage_code_id' => \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar()
-		));
-		if($rule) {
-			return $rule->medicationSet;
-		}
-		else {
-			return null;
-		}
+        $rule = MedicationSetRule::model()->findByAttributes(array(
+            'subspecialty_id' => $subspecialty_id,
+            'site_id' => $site_id,
+            'usage_code_id' => \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar()
+        ));
+        if ($rule) {
+            return $rule->medicationSet;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -627,10 +629,12 @@ class DefaultController extends BaseEventTypeController
      * @param OphDrPrescription_Item|DrugSetItem|int $source
      *
      * @throws CException
+     * @throws Exception
      */
     public function renderPrescriptionItem($key, $source)
     {
         $item = new OphDrPrescription_Item();
+                $item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
         if (is_a($source, 'OphDrPrescription_Item')) {
             // Source is a prescription item, so we should clone it
             foreach (array(
@@ -645,6 +649,7 @@ class DefaultController extends BaseEventTypeController
                      ) as $field) {
                 $item->$field = $source->$field;
             }
+
             if ($source->tapers) {
                 $tapers = array();
                 foreach ($source->tapers as $taper) {
@@ -754,7 +759,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionFinalize()
     {
-        if( Yii::app()->request->isPostRequest ){
+        if ( Yii::app()->request->isPostRequest ) {
             $eventID =  Yii::app()->request->getPost('event');
             $elementID = Yii::app()->request->getPost('element');
 
@@ -764,7 +769,7 @@ class DefaultController extends BaseEventTypeController
                 [':event_id'=>$eventID , ':id' => $elementID]
             );
 
-            if($model){
+            if ($model) {
                 $model->draft = 0;
                 $model->update();
                 $result = [

@@ -49,32 +49,29 @@
           <div class="comment-group flex-layout flex-left" style="padding-top:5px">
                 <?php
                 $htmlOptions = [
-                        'placeholder'=>'Comments' , 'autocomplete'=>'off',
-                    'rows'=>'1', 'class'=>'js-input-comments cols-full ' ,
-                    'style'=>'overflow-x: hidden;word-wrap: break-word;'
+                    'placeholder' => 'Comments' , 'autocomplete'=>'off',
+                    'rows'=>'1', 'class'=>'js-input-comments cols-full ',
+                    'style' => 'overflow-x: hidden;word-wrap: break-word;'
                 ];
                 echo CHtml::textArea('Element_OphDrPrescription_Details[items][' . $key . '][comments]' ,CHtml::encode($item->comments) ,$htmlOptions) ?>
               <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
           </div>
       </div>
-
-  </td>
-  <td class="prescriptionItemDose">
-      <?php
-          $css_class = 'cols-4 inline';
-          if ($item->dose === null || is_numeric($item->dose) || $item->dose === '') {
-              $css_class.= " input-validate numbers-only";
-              if ($item->dose_unit_term === 'mg') {
-                  $css_class .= ' decimal';
-              }
-          }
-      ?>
-
-      <?=\CHtml::textField('Element_OphDrPrescription_Details[items][' . $key . '][dose]', $item->dose,
-          array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)) ?>
+        </td>
+        <td class="prescriptionItemDose">
+            <?php
+            $css_class = 'cols-4 inline';
+            if ($item->dose === null || is_numeric($item->dose) || $item->dose === '') {
+                $css_class .= " input-validate numbers-only";
+                if ($item->dose_unit_term === 'mg') {
+                    $css_class .= ' decimal';
+                }
+            }
+            ?>
 
             <?= \CHtml::textField('Element_OphDrPrescription_Details[items][' . $key . '][dose]', $item->dose,
-                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)) ?>
+                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class))
+            ?>
             <?php if ($item->dose_unit_term) { ?>
                 <span><?= $item->dose_unit_term ?></span>
                 <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][dose_unit_term]"
