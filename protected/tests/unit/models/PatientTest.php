@@ -104,7 +104,7 @@ class PatientTest extends CDbTestCase
         $patient = $this->patients('patient9');
 
         $age = date('Y') - 1979;
-        if (date('md') < '0908') {
+        if (date('md') > '0908') {
             --$age; // have not had a birthday yet
         }
 

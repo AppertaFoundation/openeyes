@@ -79,5 +79,3 @@
 <div class="extra-actions">
     <button id="js-download-pdf" class="pro-theme cols-full">Download All Plots as PDF</button>
 </div>
-
-
