@@ -24,20 +24,23 @@
         <input class="js-input" name="Medication[id]" id="Medication_id" type="hidden" value="<?= $data_med_id ?>">
     <?php endif; ?>
     <td>
-        <?= \CHtml::activeTextField($taper, 'dose', ['class' => 'js-input cols-full', 'id' => null]); ?>
+        <span data-type="dose" data-id="<?= $taper->dose ? $taper->dose : ''; ?>" class="js-text"><?= $taper->dose ? $taper->dose : '-'; ?></span>
+        <?= \CHtml::activeTextField($taper, 'dose', ['class' => 'js-input cols-full', 'style' => 'display:none', 'id' => null]); ?>
     </td>
     <td colspan="2"></td>
     <td>
+        <span data-type="frequency_id" data-id="<?= $taper->frequency ? $taper->frequency_id : ''; ?>" class="js-text"><?= $taper->frequency ? $taper->frequency->term : '-'; ?></span>
         <?= \CHtml::activeDropDownList($taper, 'frequency_id',
             $frequency_options,
-            ['class' => 'js-input cols-full', 'empty' => '-- select --', 'id' => null]); ?>
+            ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
     </td>
     <td>
+        <span data-type="duration_id" data-id="<?= $taper->duration ? $taper->duration_id : ''; ?>" class="js-text"><?= $taper->duration ? $taper->duration->name : '-'; ?></span>
         <?= \CHtml::activeDropDownList($taper, 'duration_id',
             $duration_options,
-            ['class' => 'js-input', 'empty' => '-- select --', 'id' => null]); ?>
+            ['class' => 'js-input', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
     </td>
     <td class="actions" style="text-align:end">
-        <a data-action_type="remove" class="js-remove-taper"><i class="oe-i trash"></i></a>
+        <a data-action_type="remove" style="display: none" class="js-remove-taper"><i class="oe-i trash"></i></a>
     </td>
 </tr>

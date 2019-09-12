@@ -34,6 +34,7 @@ class MedicationSetItem extends BaseActiveRecordVersioned
 {
 
     public $auto_update_relations = true;
+    public $auto_validate_relations = true;
 
 	/**
 	 * @return string the associated database table name
@@ -56,7 +57,7 @@ class MedicationSetItem extends BaseActiveRecordVersioned
 			array('default_dose', 'numerical'),
 			array('default_dose_unit_term', 'length', 'max'=>45),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
-			array('deleted_date, last_modified_date, created_date', 'safe'),
+			array('deleted_date, last_modified_date, created_date, tapers', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, medication_id, medication_set_id, default_form_id, default_dose, default_route_id, default_frequency_id, default_dose_unit_term, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
@@ -78,7 +79,7 @@ class MedicationSetItem extends BaseActiveRecordVersioned
 			'medicationSet' => array(self::BELONGS_TO, MedicationSet::class, 'medication_set_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'tapers' => array(self::HAS_MANY, "MedicationSetItemTaper", 'medication_set_item_id'),
+            'tapers' => array(self::HAS_MANY, MedicationSetItemTaper::class, 'medication_set_item_id'),
             'defaultDuration' => array(self::BELONGS_TO, MedicationDuration::class, 'default_duration_id')
 		);
 	}

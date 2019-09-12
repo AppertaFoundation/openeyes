@@ -392,10 +392,11 @@ class DrugSetController extends BaseAdminController
                     $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
                     $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
                     $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
+                    $item->tapers = array();
 
                     if($tapers) {
+                        $taper_array = array();
                         foreach ($tapers as $taper) {
-                            $taper_array = array();
                             $taper = json_decode($taper, true);
                             $new_taper = new MedicationSetItemTaper();
                             if (isset($taper['MedicationSetItemTaper[id]']) && $taper['MedicationSetItemTaper[id]'] !== "") {
@@ -408,12 +409,8 @@ class DrugSetController extends BaseAdminController
                             $new_taper->frequency_id = $taper['MedicationSetItemTaper[frequency_id]'];
 
                             $taper_array[] = $new_taper;
-
-                            //$new_taper->save();
-
                         }
                         $item->tapers = $taper_array;
-
                     }
 
                     $result['success'] = $item->save();

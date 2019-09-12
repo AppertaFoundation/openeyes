@@ -40,10 +40,41 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
 
         $row.on("click", ".js-add-taper", function() {
             controller.addTaper($row);
+            const $tapers = $('#meds-list tr[data-parent-med-id="' + $row.attr('data-med_id') + '"]');
+            controller.showEditControls($row, $tapers);
+            controller.hideGeneralControls($row);
+            $row.find('.js-text').hide();
+            controller.showEditFields($row, $tapers);
             return false;
         });
 
     };
+
+    DrugSetController.prototype.showEditFields = function($row, $tapers) {
+        $row.find('.js-input').show();
+        $tapers.find('.js-input').show();
+        $tapers.find('.js-text').hide();
+
+        $.each($row.find('.js-text'), function(i, element) {
+            const $text = $(element);
+            const $td = $text.closest('td');
+            const $input = $td.find('.js-input');
+            if ($input.length && $input.prop('tagName') === 'SELECT') {
+                $input.val($text.data('id'));
+            }
+        });
+    };
+
+    DrugSetController.prototype.showEditControls = function($row, $tapers) {
+        $row.find('td.actions').find('a[data-action_type="save"], a[data-action_type="cancel"]').show();
+        $tapers.find('td.actions').find('a[data-action_type="remove"]').show();
+    };
+
+    DrugSetController.prototype.hideGeneralControls = function($row) {
+        $row.find('td.actions').find('a[data-action_type="edit"], a[data-action_type="delete"]').hide();
+    };
+
+
 
     DrugSetController.prototype.addTaper = function($row) {
         var data_med_id = $row.attr('data-med_id');
