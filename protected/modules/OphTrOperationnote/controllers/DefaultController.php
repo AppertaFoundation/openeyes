@@ -375,7 +375,7 @@ class DefaultController extends BaseEventTypeController
                             }
                         } else {
                             $this->event->addIssue("GP letter could not be created because the patient has no GP");
-                            $this->logEventCreationFail(['gp_id' => $this->patient->gp_id, 'practice_id' => $this->patient->practice_id], 'OphCoCorrespondence', 'Patient');
+                            $this->logEventCreationFail(['Error Message' => 'GP letter could not be created because the patient has no GP', 'gp_id' => $this->patient->gp_id, 'practice_id' => $this->patient->practice_id], 'OphCoCorrespondence', 'Patient');
                         }
 
                         $create_optom_correspondence = \Yii::app()->request->getParam('auto_generate_optom_post_op_letter_after_surgery');
@@ -1373,7 +1373,7 @@ class DefaultController extends BaseEventTypeController
     protected function logEventCreationFail($errors, $module, $model)
     {
         $log = print_r($errors, true);
-        \Audit::add('event', 'create-failed', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
+        \Audit::add('event', 'create-failed', 'Automatic Event creation Failed<pre>' . $log . '</pre>', $log, [
             'module' => $module,
             'episode_id' => $this->event->episode->id,
             'patient_id' => $this->patient->id,
