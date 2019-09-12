@@ -381,7 +381,6 @@ class DrugSetController extends BaseAdminController
 
 
             if ($set_id && $medication_data['id'] && isset($item_data['id'])) {
-
                 $item = \MedicationSetItem::model()->findByPk($item_data['id']);
 
                 if ($item) {
@@ -447,7 +446,6 @@ class DrugSetController extends BaseAdminController
             $item = \Yii::app()->request->getParam('MedicationSetItem');
 
             if (isset($item['id'])) {
-
                 $affected_rows = \MedicationSetItem::model()->findByPk($item['id']);
                 $affected_rows->delete();
 
