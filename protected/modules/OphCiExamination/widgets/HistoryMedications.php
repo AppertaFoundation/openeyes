@@ -37,7 +37,24 @@ class HistoryMedications extends \BaseEventElementWidget
 
     protected $print_view = 'HistoryMedications_event_print';
 
-    /**
+
+  /**
+   * @throws \CHttpException
+   */
+  public function init()
+  {
+    parent::init();
+
+    // add OpenEyes.UI.RestrictedData js
+    $assetManager = \Yii::app()->getAssetManager();
+    $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+    $assetManager->publish($baseAssetsPath);
+
+    \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
+  }
+
+
+  /**
      * @return HistoryMedicationsElement
      */
     protected function getNewElement()
@@ -150,7 +167,7 @@ class HistoryMedications extends \BaseEventElementWidget
      */
     protected function updateElementFromData($element, $data)
     {
-        if  (!is_a($element, 'OEModule\OphCiExamination\models\HistoryMedications')) {
+        if (!is_a($element, 'OEModule\OphCiExamination\models\HistoryMedications')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
@@ -173,11 +190,11 @@ class HistoryMedications extends \BaseEventElementWidget
                              'stop_reason_id', 'prescription_item_id') as $k) {
                     $entry->$k = array_key_exists($k, $entry_data) ? $entry_data[$k] : null;
                 }
-                if ($entry_data['start_date']){
+                if ($entry_data['start_date']) {
                     list($start_year, $start_month, $start_day) = array_pad(explode('-', $entry_data['start_date']), 3, null);
                     $entry->start_date = \Helper::padFuzzyDate($start_year, $start_month, $start_day);
                 }
-                if ($entry_data['end_date']){
+                if ($entry_data['end_date']) {
                     list($end_year, $end_month, $end_day) = array_pad(explode('-', $entry_data['end_date']), 3, null);
                     $entry->end_date = \Helper::padFuzzyDate($end_year, $end_month, $end_day);
                 }
@@ -279,7 +296,7 @@ class HistoryMedications extends \BaseEventElementWidget
     {
         // custom mode for rendering in the patient popup because the data is more complex
         // for this history element than others which just provide a list.
-        $short_name = substr(strrchr(get_class($this), '\\'),1);
+        $short_name = substr(strrchr(get_class($this), '\\'), 1);
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
             return  $short_name . '_patient_popup';
         }
@@ -295,7 +312,7 @@ class HistoryMedications extends \BaseEventElementWidget
     /**
      * @return array
      */
-    public  function getViewData()
+    public function getViewData()
     {
         if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE)) ) {
             return array_merge(parent::getViewData(), $this->getMergedEntries());

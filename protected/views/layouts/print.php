@@ -17,7 +17,6 @@
  */
 ?>
 <?php
-
     $printHelperClass = '';
     switch(Yii::app()->controller->module->id){
         case 'OphCoCorrespondence':
@@ -30,7 +29,6 @@
             $printHelperClass = 'OphTrConsent '.(isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
             break;
     }
-
 ?>
 <!doctype html>
 <html lang="en">
@@ -40,25 +38,27 @@
 <?php Yii::app()->clientScript->registerCoreScript('jquery')?>
 </head>
 <body class="open-eyes print <?= $printHelperClass ?>" <?= isset($printHelperStyles) ? 'style="'.$printHelperStyles.'"' : '' ?>>
-	<?php echo $content; ?>
-	<script type="text/javascript">
-		$(document).ready(function() {
+    <?php echo $content; ?>
+    <script type="text/javascript">
+        $(document).ready(function() {
 
-			// function for printing
-			printFn = function() {
-				window.print();
-			};
+            // function for printing
+            printFn = function() {
+                <?php if (Yii::app()->request->getParam('auto_print', true)) {?>
+                window.print();
+                <?php } ?>
+            };
 
-			// check to see if the eyedraw libraries are loaded (which implies that we have eyedraws
-			// on the page) If they are, then use that to call the print function when ready, otherwise
-			// we can just call it straight off
-			if (typeof(getOEEyeDrawChecker) === 'function') {
-				edChecker = getOEEyeDrawChecker();
-				edChecker.registerForReady(printFn);
-			} else {
-				printFn();
-			}
-		});
-	</script>
+            // check to see if the eyedraw libraries are loaded (which implies that we have eyedraws
+            // on the page) If they are, then use that to call the print function when ready, otherwise
+            // we can just call it straight off
+            if (typeof(getOEEyeDrawChecker) === 'function') {
+                edChecker = getOEEyeDrawChecker();
+                edChecker.registerForReady(printFn);
+            } else {
+                printFn();
+            }
+        });
+    </script>
 </body>
 </html>

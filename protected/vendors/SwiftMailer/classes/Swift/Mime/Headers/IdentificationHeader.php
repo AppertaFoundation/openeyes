@@ -173,8 +173,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
             '/^' . $this->getGrammar()->getDefinition('id-left') . '@' .
             $this->getGrammar()->getDefinition('id-right') . '$/D',
             $id
-            ))
-        {
+            )) {
             throw new Swift_RfcComplianceException(
                 'Invalid ID given <' . $id . '>'
                 );

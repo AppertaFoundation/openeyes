@@ -68,27 +68,27 @@ class NodExportController extends BaseController
         $startDateTime = null;
         $endDateTime = null;
         
-        if($startDate){
+        if ($startDate) {
             $startDateTime = new DateTime($startDate);
         }
         
-        if($endDate){
+        if ($endDate) {
             $endDateTime = new DateTime($endDate);
         }
 
         // if start date is greater than end date we exchange the two dates
-        if(($startDateTime instanceof DateTime && $endDateTime instanceof DateTime) && $endDateTime < $startDateTime){
+        if (($startDateTime instanceof DateTime && $endDateTime instanceof DateTime) && $endDateTime < $startDateTime) {
             $tempDate = $endDateTime;
             $endDateTime = $startDateTime;
             $startDateTime = $tempDate;
             $tempDate = null;
         }
         
-        if($startDate){
+        if ($startDate) {
             $this->startDate = $startDateTime->format('Y-m-d');
         }
         
-        if($endDate){
+        if ($endDate) {
             $this->endDate = $endDateTime->format('Y-m-d');
         }
         
@@ -110,7 +110,7 @@ class NodExportController extends BaseController
     
     
      /**
-     * Generates CSV and zip files then sends to the browser 
+     * Generates CSV and zip files then sends to the browser
      */
     public function actionGenerate()
     {
@@ -134,7 +134,7 @@ class NodExportController extends BaseController
         $query = $this->createAllTempTables();
         $query .= $this->populateAllTempTables();
 
-        // Execute all statements to create and populate working tables 
+        // Execute all statements to create and populate working tables
         Yii::app()->db->createCommand($query)->execute();
 
         // Extract results from tables into csv files
@@ -191,7 +191,7 @@ class NodExportController extends BaseController
 
             $data = $dataCmd->queryAll();
 
-            if($offset == 0){
+            if ($offset == 0) {
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', ((implode(',', $dataQuery['header'])) . "\n"), FILE_APPEND);
             }
 
@@ -695,7 +695,7 @@ EOL;
     
     private function getEpisodeDiabeticDiagnosis()
     {
-       $query = <<<EOL
+        $query = <<<EOL
                 SELECT c.nod_episode_id as EpisodeId, d.IsDiabetic, d.DiabetesTypeId, d.DiabetesRegimeId, d.AgeAtDiagnosis
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN tmp_rco_nod_EpisodeDiabeticDiagnosis_{$this->extractIdentifier} d ON c.oe_event_id = d.oe_event_id
@@ -862,7 +862,7 @@ EOL;
         }
 
         return $query;
-    }       
+    }
     
     private function getPatientCviStatus()
     {
@@ -936,15 +936,15 @@ WHERE et.class_name = 'OphTrOperationnote'
 
 EOL;
 
-    if( $this->startDate ){
-        $query .= " AND DATE(ev.event_date) >= STR_TO_DATE('{$this->startDate}', '%Y-%m-%d') ";
-    }
+        if ( $this->startDate ) {
+            $query .= " AND DATE(ev.event_date) >= STR_TO_DATE('{$this->startDate}', '%Y-%m-%d') ";
+        }
 
-    if( $this->endDate ){
-        $query .= " AND DATE(ev.event_date) <= STR_TO_DATE('{$this->endDate}', '%Y-%m-%d') ";
-    }
+        if ( $this->endDate ) {
+            $query .= " AND DATE(ev.event_date) <= STR_TO_DATE('{$this->endDate}', '%Y-%m-%d') ";
+        }
 
-    $query .= <<<EOL
+        $query .= <<<EOL
 
 AND ev.deleted = 0;
 
@@ -2315,7 +2315,7 @@ WHERE (right_cortical_id = 4 OR right_nuclear_id = 4)
 AND c.nod_date <= op.ListedDate
 ;
 EOL;
-        return $query;    
+        return $query;
     }
     
     
@@ -2633,7 +2633,7 @@ FROM   ( SELECT    a.event_id oe_event_id
         return $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia');
     }
 
-    /********* end of EpisodeOperationAnaesthesia***********/  
+    /********* end of EpisodeOperationAnaesthesia***********/
     
     
     
@@ -3255,7 +3255,7 @@ EOL;
     }
     
     private function getEpisodeVisualAcuity()
-    {        
+    {
         $query = <<<EOL
                 SELECT c.nod_episode_id as EpisodeId, va.Eye, va.NotationRecordedId, va.BestMeasure, va.Unaided, va.Pinhole, va.BestCorrected
                 FROM tmp_rco_nod_EpisodeVisualAcuity_{$this->extractIdentifier} va

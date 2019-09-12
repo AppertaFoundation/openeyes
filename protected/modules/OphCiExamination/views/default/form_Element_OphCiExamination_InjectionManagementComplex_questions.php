@@ -27,13 +27,13 @@
             <?php echo $question->question ?>
         </label>
           <?php
-          $name = $name_stub . '[' . $question->id . ']';
-          $value = $element->getQuestionAnswer($side, $question->id);
+            $name = $name_stub . '[' . $question->id . ']';
+            $value = $element->getQuestionAnswer($side, $question->id);
           // update with POST values if available
-          if (isset($_POST[CHtml::modelName($element)][$side . '_Answer'][$question->id])) {
-              $value = $_POST[CHtml::modelName($element)][$side . '_Answer'][$question->id];
-          }
-          ?>
+            if (isset($_POST[CHtml::modelName($element)][$side . '_Answer'][$question->id])) {
+                $value = $_POST[CHtml::modelName($element)][$side . '_Answer'][$question->id];
+            }
+            ?>
         <div class="cols-3 column">
           <label class="inline highlight">
               <?=\CHtml::radioButton($name, $value, array('id' => CHtml::modelName($element) . '_' . $side . '_Answer_' . $question->id . '_1', 'value' => 1)) ?>

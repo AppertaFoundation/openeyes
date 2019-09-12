@@ -25,14 +25,14 @@
         </tr>
     </thead>
     <tbody>
-        <?php if (empty($report->items)): ?>
+        <?php if (empty($report->items)) : ?>
         <tr>
             <td colspan="6">
                 No records were found.
             </td>
         </tr>
-        <?php else: ?>
-            <?php foreach($report->items as $item): ?>
+        <?php else : ?>
+            <?php foreach ($report->items as $item) : ?>
             <tr>
                 <td><?php echo date('j M Y', strtotime($item['event_date'])); ?></td>
                 <td><?php echo htmlentities($item['hos_num']); ?></td>

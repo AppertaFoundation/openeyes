@@ -299,14 +299,14 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function getComplexBookingCount()
     {
-      $total = 0;
+        $total = 0;
 
-      foreach ($this->activeBookings as $booking) {
-        if($booking->isComplex()) {
-          $total++;
+        foreach ($this->activeBookings as $booking) {
+            if ($booking->isComplex()) {
+                $total++;
+            }
         }
-      }
-      return $total;
+        return $total;
     }
 
     /**
@@ -366,7 +366,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function getAvailableComplexBookingCount()
     {
-      return $this->getMaxComplexBookingCount() - $this->getComplexBookingCount();
+        return $this->getMaxComplexBookingCount() - $this->getComplexBookingCount();
     }
 
 
@@ -381,7 +381,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         if ($this->isComplexBookingCountLimited() &&
           $this->getComplexBookingCount() >= $this->getMaxComplexBookingCount() &&
           $operation->isComplex()) {
-          return false;
+            return false;
         }
         return true;
     }
@@ -647,7 +647,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     protected function validateNewSessionConflict()
     {
         if ($this->isNewRecord) {
-
             $criteria = new CDbCriteria();
 
             $criteria->addCondition('theatre_id = :theatre_id');

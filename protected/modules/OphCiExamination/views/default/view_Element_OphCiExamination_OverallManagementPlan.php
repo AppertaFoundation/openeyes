@@ -72,18 +72,18 @@
         </div>
 
       </div>
-      <?php if ($element->comments !== ''): ?>
+        <?php if ($element->comments !== '') : ?>
         <div class="flex-layout">
           <div class="data-label cols-1"><?=\CHtml::encode($element->getAttributeLabel('comments')) ?>:</div>
           <div class="data-value cols-11"><?php echo $element->textWithLineBreaks('comments') ?></div>
         </div>
-      <?php endif; ?>
+        <?php endif; ?>
   </div>
   <div class="element-eyes">
-      <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <div class="js-element-eye <?= $eye_side ?>-eye">
           <div class="data-group">
-              <?php if ($element->hasEye($eye_side)): ?>
+              <?php if ($element->hasEye($eye_side)) : ?>
                 <table class="cols-11 large-text last-left">
                   <colgroup>
                     <col class="cols-3">
@@ -96,12 +96,12 @@
                   </tbody>
                 </table>
 
-              <?php else: ?>
+                <?php else : ?>
                 Not recorded
-              <?php endif; ?>
+                <?php endif; ?>
           </div>
         </div>
-      <?php endforeach; ?>
+        <?php endforeach; ?>
   </div>
 </div>
 

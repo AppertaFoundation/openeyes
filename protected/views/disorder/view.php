@@ -3,8 +3,8 @@
 /* @var $model Disorder */
 
 $this->breadcrumbs=array(
-	'Disorders'=>array('index'),
-	$model->id,
+    'Disorders'=>array('index'),
+    $model->id,
 );
 
 ?>

@@ -1,11 +1,13 @@
 <?php
     use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit as VisualAcuityUnit;
     use OEModule\OphCiExamination\widgets\OphCiExamination_Episode_VisualAcuityHistory;
+    
     $va_unit = VisualAcuityUnit::model()->getVAUnit(4);
     $va_init_ticks = VisualAcuityUnit::model()->getInitVaTicks($va_unit);
     $va_final_ticks = VisualAcuityUnit::model()->sliceVATicks($va_init_ticks, 20);
 ?>
 
+<script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/plotly.js-dist/plotly.js');?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
 <?php $this->renderPartial('//analytics/analytics_header', array());?>
 <script>
@@ -14,16 +16,20 @@
 <main class="oe-analytics flex-layout flex-top cols-full">
     <div class="cols-3">
         <?php
-        if ($specialty === 'Cataract'){
-            $this->renderPartial('//analytics/analytics_sidebar_cataract',
+        if ($specialty === 'Cataract') {
+            $this->renderPartial(
+                '//analytics/analytics_sidebar_cataract',
                 array(
                     'specialty'=>$specialty,
                     'user_list'=>$user_list,
                     'current_user'=>$current_user,
+                    'min_event_date'=>$min_event_date, // minimum event date
+                    'max_event_date'=>$max_event_date, // maxium event date
                 )
             );
-        }else{
-            $this->renderPartial('//analytics/analytics_sidebar',
+        } else {
+            $this->renderPartial(
+                '//analytics/analytics_sidebar',
                 array(
                     'specialty'=>$specialty,
                     'user_list'=>$user_list,
@@ -38,43 +44,47 @@
 
     <div class="analytics-charts cols-9">
         <?php
-            if ($specialty !== 'Cataract'){
-                $this->renderPartial('//analytics/analytics_service',
-                    array(
-                        'service_data'=>$service_data,
-                        'common_disorders'=>$common_disorders,
-                    ));
-            }
-            if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
-                if ($specialty === 'Cataract'){ ?>
+        if ($specialty !== 'Cataract') {
+            $this->renderPartial(
+                '//analytics/analytics_service',
+                array(
+                    'service_data'=>$service_data,
+                    'common_disorders'=>$common_disorders,
+                )
+            );
+        }
+        if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
+            if ($specialty === 'Cataract') { ?>
                     <div class="mdl-layout__container">
                     <?php  $this->renderPartial('//analytics/analytics_cataract'); ?>
                     </div>
-                <?php } else { ?>
+            <?php } else { ?>
                     <div id="js-hs-chart-analytics-clinical-main" style="display: none;">
                      <?php
-                     $this->renderPartial('//analytics/analytics_clinical',
-                         array('clinical_data'=>$clinical_data)
-                     );
-                     if ($specialty !== "All"){
-                            $this->renderPartial('//analytics/analytics_custom',
+                        $this->renderPartial(
+                            '//analytics/analytics_clinical',
+                            array('clinical_data'=>$clinical_data)
+                        );
+                     if ($specialty !== "All") {
+                            $this->renderPartial(
+                                '//analytics/analytics_custom',
                                 array(
                                     'custom_data'=>$custom_data,
                                     'specialty' => $specialty,
                                     'va_final_ticks'=>$va_final_ticks
                                 )
                             );
-                        }
-                     ?>
+                     }
+                        ?>
                     </div>
                 <?php
-                }
             }
+        }
         ?>
         <div id="js-analytics-spinner" style="display: none;"><i class="spinner"></i></div>
     </div>
         <?php
-        if ($specialty !== 'Cataract'){
+        if ($specialty !== 'Cataract') {
             $this->renderPartial('//analytics/analytics_drill_down_list', array(
                 'patient_list' => $patient_list
             ));
@@ -96,7 +106,7 @@
     analytics_layout['width'] = layout_width;
     analytics_layout['height'] = layout_height;
 
-    <?php if($specialty === 'Cataract'){?>
+    <?php if ($specialty === 'Cataract') {?>
         $( document ).ready(function () {
             OpenEyes.Dash.init('#pcr-risk-grid');
             OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk&template=analytics', null, 10);

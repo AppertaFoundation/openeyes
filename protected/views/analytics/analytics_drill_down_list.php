@@ -1,7 +1,8 @@
 <?php $coreAPI = new CoreAPI();
       $operation_API = new OphTrOperationnote_API();
       $cataract = isset($event_list);
-      ?>
+      $base_patient_url = Yii::app()->createUrl('/patient/summary');
+?>
 <div class="analytics-patient-list <?=$cataract? 'analytics-event-list':'';?>" style="display: none;" >
     <div class="flex-layout">
         <h3 id="js-list-title">Patient List</h3>
@@ -14,7 +15,7 @@
             <col style="width: 200px;">
             <col style="width: 100px;">
             <col style="width: 50px;">
-           <?= $cataract?
+            <?= $cataract?
                ' <col style="width: 350px;">
                  <col style="width: 50px;">
                  <col style="width: 400px;">
@@ -38,15 +39,15 @@
         <tbody>
         <?php
         foreach (($cataract? $event_list : $patient_list) as $item) {
-              if ($cataract){
+            if ($cataract) {
                 $row = array_search($item['patient_id'], array_column($patient_list, 'id'));
                 $patient = $patient_list[$row];
-              }else{
+            } else {
                 $patient = $item;
-              }
+            }
             ?>
             <tr id="<?= $cataract? $item['event_id']: $patient['id']; ?>" class="analytics-patient-list-row <?=$cataract? 'analytics-event-list-row':'';?> clickable"
-                data-link="<?php echo Yii::app()->createUrl("/patient/summary/" . $patient['id']); ?>"
+                data-link="<?php echo "$base_patient_url/" . $patient['id']; ?>"
                 style="display: none">
                 <td class="drill_down_patient_list js-csv-data js-csv-hos_num"
                     style="vertical-align: center;"><?= $patient['hos_num']; ?></td>
@@ -57,9 +58,9 @@
                     style="vertical-align: center;"><?= $patient['age']; ?></td>
                 <td class="js-anonymise js-csv-gender"
                     style="vertical-align: center;"><?= $patient['gender']; ?></td>
-                <td class="text-left" style="vertical-align: center;" class="js-csv-diagnoses"><?= $patient['diagnoses']; ?></td>
+                <td class="text-left js-csv-diagnoses" style="vertical-align: center;"><?= $patient['diagnoses']; ?></td>
                 <?=$cataract? '<td class="text-left" style="vertical-align: center;">'.$item['eye_side'].'</td>':'';?>
-                <td class="text-left" style="vertical-align: center;" class="js-csv-procedures"><?= $cataract? $item['procedures']:$patient['procedures']; ?></td>
+                <td class="text-left js-csv-procedures" style="vertical-align: center;"><?= $cataract? $item['procedures']:$patient['procedures']; ?></td>
                 <?=$cataract? '<td style="vertical-align: center;">'.Helper::convertDate2NHS($item['event_date']).'</td>':'';?>
             </tr>
         <?php } ?>

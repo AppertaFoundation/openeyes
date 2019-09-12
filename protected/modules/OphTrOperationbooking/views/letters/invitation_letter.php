@@ -17,41 +17,45 @@
  */
 ?>
 <div class="booking-letter">
-	<header>
-		<?php $this->renderPartial('../default/letter_start', array(
+    <header>
+        <?php $this->renderPartial('../default/letter_start', array(
             'toAddress' => $toAddress,
             'patient' => $patient,
             'date' => date('Y-m-d'),
             'site' => $site,
         ))?>
-	</header>
+    </header>
 
-	<?php $this->renderPartial('../letters/letter_introduction', array(
+    <?php $this->renderPartial('../letters/letter_introduction', array(
             'to' => $to,
             'accessible' => true,
             'patient' => $patient,
     ))?>
 
-	<p class="accessible">
-		I have been asked to arrange your <?php	if ($patient->isChild()) {?>child's <?php }?> admission for surgery under the care of
-		<?=\CHtml::encode($consultantName) ?>. This is currently anticipated to be
-		<?php
+    <p class="accessible">
+        I have been asked to arrange your <?php	if ($patient->isChild()) {
+            ?>child's <?php
+                                          }?> admission for surgery under the care of
+        <?=\CHtml::encode($consultantName) ?>. This is currently anticipated to be
+        <?php
         if ($overnightStay) {
             echo 'an overnight stay';
         } else {
             echo 'a day case';
         }
         ?>
-		procedure.
-	</p>
+        procedure.
+    </p>
 
-	<p class="accessible">
-		Please will you telephone <?php echo $changeContact ?> within 2 weeks of the date of this letter to discuss and agree a convenient date for this operation. If there is no reply, please leave a message and contact number on the answer phone.
-	</p>
+    <p class="accessible">
+        Please will you telephone <?php echo $changeContact ?> within 2 weeks of the date of this letter to discuss and agree a convenient date for this operation. If there is no reply, please leave a message and contact number on the answer phone.
+    </p>
 
-	<p class="accessible">
-		Should you<?php if ($patient->isChild()) {?>r child<?php }?> no longer require treatment please let me know as soon as possible.
-	</p>
+    <p class="accessible">
+        Should you<?php if ($patient->isChild()) {
+            ?>r child<?php
+                  }?> no longer require treatment please let me know as soon as possible.
+    </p>
 
-	<?php echo $this->renderPartial('../letters/letter_end', array('accessible' => true))?>
+    <?php echo $this->renderPartial('../letters/letter_end', array('accessible' => true))?>
 </div>
