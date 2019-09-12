@@ -103,6 +103,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     routeOptionWrapperSelector: '.admin-route-options',
     patientAllergies: [],
       allAllergies: {},
+      classes_that_dont_break_bound: ['js-end-date', 'js-stop-reason'],
 
       // Customizable callbacks
 
@@ -272,35 +273,34 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
       var controls_onchange = function (e) {
-          let classes_that_dont_break_bound = ['js-end-date', 'js-stop-reason'];
+          let $bound_entry = $row.data('bound_entry');
 
           if (controller.options['modelName'] === "OEModule_OphCiExamination_models_HistoryMedications") {
               controller.updateBoundEntry($row);
               controller.updateTextualDisplay($row);
-              if (typeof $row.data('bound_entry') !== 'undefined') {
-                  controller.updateTextualDisplay($row.data('bound_entry'));
+              if (typeof $bound_entry !== 'undefined') {
+                  controller.updateTextualDisplay($bound_entry);
                   if ($(e.target).hasClass('js-route')) {
-                      controller.updateRowRouteOptions($row.data('bound_entry'));
+                      controller.updateRowRouteOptions($bound_entry);
                   }
               }
           } else {
-              if (typeof $row.data('bound_entry') !== 'undefined') {
+              if (typeof $bound_entry !== 'undefined') {
                   let row_needs_bond_removed = true;
 
-                  classes_that_dont_break_bound.forEach(function (class_name) {
+                  controller.options.classes_that_dont_break_bound.forEach(function (class_name) {
                       if ($(e.target).hasClass(class_name)) {
                           row_needs_bond_removed = false;
-                          $row.data('bound_entry').find('.' + class_name).attr('value', $row.find('.' + class_name).attr('value'));
+                          $bound_entry.find('.' + class_name).attr('value', $row.find('.' + class_name).attr('value'));
                       }
                   });
 
                   if (row_needs_bond_removed) {
-                      let $bound_entry = $row.data('bound_entry');
                       $bound_entry.removeData('bound_entry');
                       controller.setBoundEntryStop($bound_entry);
                       $row.find('.js-bound-key').val(controller.getRandomBoundKey());
                       $row.removeData('bound_entry');
-                      controller.enablingManualDeletion($row);
+                      controller.enableManualRowDeletion($row);
                   }
               }
           }
@@ -1042,7 +1042,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $bound_entry.find('.js-stop-reason').attr('value', stop_reason);
     };
 
-    HistoryMedicationsController.prototype.enablingManualDeletion = function ($row) {
+    HistoryMedicationsController.prototype.enableManualRowDeletion = function ($row) {
         let $trash = $row.find('.trash');
         $trash.removeClass('disabled');
         $trash.parent().removeClass('js-has-tooltip');
