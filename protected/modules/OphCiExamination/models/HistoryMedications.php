@@ -145,7 +145,7 @@ class HistoryMedications extends BaseMedicationElement
      * @param string $className active record class name.
      * @return MedicationManagement the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -188,6 +188,31 @@ class HistoryMedications extends BaseMedicationElement
                 'order' => 'prescribed_entries.start_date DESC, prescribed_entries.end_date DESC, prescribed_entries.last_modified_date'
             )
         );
+    }
+
+    public function getEntriesForUntrackedPrescriptionItems($patient)
+    {
+        $untracked = array();
+        $api = \Yii::app()->moduleAPI->get('OphDrPrescription');
+        if ($api) {
+            $tracked_prescr_item_ids = array_map(
+                function ($entry) {
+                    return $entry->prescription_item_id;
+                },
+                $this->getPrescriptionEntries()
+            );
+            $untracked_prescription_items = $api->getPrescriptionItemsForPatient($patient, $tracked_prescr_item_ids);
+            if ($untracked_prescription_items) {
+                foreach ($untracked_prescription_items as $item) {
+                    $entry = new \EventMedicationUse();
+                    $entry->loadFromPrescriptionItem($item);
+                    $entry->usage_type = 'OphDrPrescription';
+                    $untracked[] = $entry;
+                }
+            }
+        }
+
+        return $untracked;
     }
 
 }

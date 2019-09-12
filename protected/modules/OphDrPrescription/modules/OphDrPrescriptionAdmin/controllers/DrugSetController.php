@@ -247,6 +247,7 @@ class DrugSetController extends BaseAdminController
         Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlineEdit.js', \CClientScript::POS_HEAD);
         Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlineEdit.PrescriptionAdminMedicationSet.js', \CClientScript::POS_HEAD);
 
+
         $data = \Yii::app()->request->getParam('MedicationSet');
         $filters = \Yii::app()->request->getParam('search', []);
 
@@ -378,7 +379,9 @@ class DrugSetController extends BaseAdminController
             $medication_data = \Yii::app()->request->getParam('Medication', []);
             $tapers = json_decode(\Yii::app()->request->getParam('tapers', []), true);
 
+
             if ($set_id && $medication_data['id'] && isset($item_data['id'])) {
+
                 $item = \MedicationSetItem::model()->findByPk($item_data['id']);
 
                 if ($item) {
@@ -386,6 +389,7 @@ class DrugSetController extends BaseAdminController
                     $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
                     $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
                     $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
+
                     $item->tapers = array();
 
                     if ($tapers) {
@@ -443,8 +447,10 @@ class DrugSetController extends BaseAdminController
             $item = \Yii::app()->request->getParam('MedicationSetItem');
 
             if (isset($item['id'])) {
+
                 $affected_rows = \MedicationSetItem::model()->findByPk($item['id']);
                 $affected_rows->delete();
+
                 $result['success'] = (bool)$affected_rows;
             } else {
                 $result['success'] = false;

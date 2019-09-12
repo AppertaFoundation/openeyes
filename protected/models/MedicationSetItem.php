@@ -65,6 +65,7 @@ class MedicationSetItem extends BaseActiveRecordVersioned
     }
 
     /**
+
      * @return array relational rules.
      */
     public function relations()
@@ -81,6 +82,7 @@ class MedicationSetItem extends BaseActiveRecordVersioned
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'tapers' => array(self::HAS_MANY, MedicationSetItemTaper::class, 'medication_set_item_id'),
             'defaultDuration' => array(self::BELONGS_TO, MedicationDuration::class, 'default_duration_id')
+
         );
     }
 
