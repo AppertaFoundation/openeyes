@@ -374,7 +374,7 @@ class DefaultController extends BaseEventTypeController
                                 $this->logEventCreationFail($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
                             }
                         } else {
-                            $this->event->addIssue("GP letter could not be created because the patient has no GP");
+                            Yii::app()->user->setFlash('error', "GP letter could not be created because the patient has no GP");
                             $this->logEventCreationFail(['Error Message' => 'GP letter could not be created because the patient has no GP', 'gp_id' => $this->patient->gp_id, 'practice_id' => $this->patient->practice_id], 'OphCoCorrespondence', 'Patient');
                         }
 
