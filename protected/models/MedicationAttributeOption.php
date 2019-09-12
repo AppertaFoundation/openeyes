@@ -42,7 +42,7 @@ class MedicationAttributeOption extends BaseActiveRecordVersioned
 			array('value', 'length', 'max'=>64),
 			array('description', 'length', 'max'=>256),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
-			array('last_modified_date, created_date', 'safe'),
+			array('last_modified_date, created_date, medication_attribute_id', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, medication_attribute_id, value, description, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
