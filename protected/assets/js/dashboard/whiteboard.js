@@ -20,6 +20,23 @@ document.addEventListener("DOMContentLoaded", function () {
     'This will update the record to match the current status of the patient. If you are unsure do not continue.'
   );
 
+  $('#js-wb3-openclose-actions').on('click', function() {
+      let actions = $('.wb3-actions');
+      if ($(actions).hasClass('down')) {
+          // Show the actions bar.
+          $(actions).removeClass('down');
+          $(actions).addClass('up');
+          $(this).removeClass('up');
+          $(this).addClass('close');
+      } else {
+          // Hide the actions bar.
+          $(actions).removeClass('up');
+          $(actions).addClass('down');
+          $(this).removeClass('close');
+          $(this).addClass('up');
+      }
+  });
+
   $('#exit-button').on('click', function (event) {
     event.preventDefault();
     window.close();

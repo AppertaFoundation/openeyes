@@ -1,138 +1,147 @@
-
-<div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand patient">
-                <h2 class="mdl-card__title-text">Patient Details</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->patient_name?> <br />
-                <?=date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y')?> <br />
-                <?=$data->hos_num?>
+<header class="oe-header">
+    <?php $this->renderPartial($this->getHeaderTemplate(), array(
+        'data' => $data
+    ));?>
+</header>
+<main class="oe-whiteboard">
+    <div class="wb3">
+        <div class="oe-wb-widget data-list">
+            <h3>Patient</h3>
+            <div class="wb-data">
+                <ul>
+                    <li><?=$data->patient_name?></li>
+                    <li><?=date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y')?></li>
+                    <li><?=$data->hos_num?></li>
+                </ul>
             </div>
         </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand patient">
-                <h2 class="mdl-card__title-text">Operation Side</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
+        <div class="oe-wb-widget data-single-extra green">
+            <h3>Procedure</h3>
+            <div class="wb-data">
                 <?= $data->eye->name ?>
+                <div class="extra-data">
+                    <?=$data->procedure?>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand patient">
-                <h2 class="mdl-card__title-text">Operation Type</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->procedure?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand biometry">
-                <h2 class="mdl-card__title-text">IOL Model &amp; Formula</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->iol_model?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand biometry">
-                <h2 class="mdl-card__title-text">IOL Power</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
+        <div class="oe-wb-widget data-single-extra">
+            <h3>Lens</h3>
+            <div class="wb-data">
                 <?=$data->iol_power?>
+                <div class="extra-data">
+                    <?=$data->iol_model?>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand biometry">
-                <h2 class="mdl-card__title-text">Predicted refractive outcome</h2>
+        <div class="oe-wb-widget data-single">
+            <h3>Anaesthesia</h3>
+            <div class="wb-data">
+                <?php foreach ($data->booking->anaesthetic_type as $type) {
+                    if ($type->name === 'LA') {
+                        echo 'Local';
+                    } elseif ($type->name === 'GA') {
+                        echo 'General';
+                    } else {
+                        echo $type;
+                    }
+                }?>
             </div>
-            <div class="mdl-card__supporting-text">
+        </div>
+        <div class="oe-wb-widget data-double-extra">
+            <h3>Biometry</h3>
+            <div class="wb-data">
+                <!-- Add biometry readings here.-->
+            </div>
+        </div>
+        <div class="oe-wb-widget data-single-extra">
+            <h3>Predicted Outcome</h3>
+            <div class="wb-data">
                 <?=$data->predicted_refractive_outcome?>
+                <div class="extra-data">
+                    <!--Add model here.-->
+                </div>
             </div>
         </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand risk">
-                <h2 class="mdl-card__title-text">Allergies</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=nl2br($data->allergies)?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand risk">
-                <h2 class="mdl-card__title-text">Alpha-blockers</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->alpha_blocker_name?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand risk">
-                <h2 class="mdl-card__title-text">Anticoagulants</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->anticoagulant_name?> <br>
-                INR: <?=$data->inr?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand risk">
-                <h2 class="mdl-card__title-text">Alerts/Risks</h2>
-            </div>
-            <div class="mdl-card__supporting-text" id="comments">
-                <?php echo $this->getWhiteboard()->getPatientRisksDisplay(); ?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet editable">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand comment">
-                <h2 class="mdl-card__title-text">Predicted additional equipment</h2>
+        <div class="oe-wb-widget data-list">
+            <h3>
+                Equipment
                 <?php if ($this->getWhiteboard()->isEditable()) :?>
-                    <div class="mdl-layout-spacer"></div>
-                    <i class="material-icons right" data-whiteboard-event-id="<?=$data->event_id?>">create</i>
+                <div class="edit-widget-btn">
+                    <i class="oe-i pencil medium pro-theme"></i>
+                </div>
                 <?php endif; ?>
-            </div>
-            <div class="mdl-card__supporting-text" id="predicted_additional_equipment">
-                <?php if ($data->predicted_additional_equipment) : ?>
-                    <?=nl2br($data->predicted_additional_equipment)?>
-                <?php else :?>
-                    None
-                <?php endif;?>
+            </h3>
+            <div class="wb-data">
+                <ul>
+                    <?php if ($data->predicted_additional_equipment) : ?>
+                        <li><?=nl2br($data->predicted_additional_equipment)?></li>
+                    <?php else :?>
+                        <li>None</li>
+                    <?php endif;?>
+                </ul>
             </div>
         </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col editable">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand comment">
-                <h2 class="mdl-card__title-text">Comments</h2>
+        <div class="oe-wb-widget data-list">
+            <h3>
+                Comments
                 <?php if ($this->getWhiteboard()->isEditable()) :?>
-                    <div class="mdl-layout-spacer"></div>
-                    <i class="material-icons right" data-whiteboard-event-id="<?=$data->event_id?>">create</i>
+                    <div class="edit-widget-btn">
+                        <i class="oe-i pencil medium pro-theme"></i>
+                    </div>
                 <?php endif; ?>
-            </div>
-            <div class="mdl-card__supporting-text" id="comments">
-                <?=nl2br($data->comments)?>
+            </h3>
+            <div class="wb-data">
+                <ul>
+                    <li><?=nl2br($data->comments)?></li>
+                </ul>
             </div>
         </div>
+        <div class="oe-wb-widget data-image">
+            <h3>Axis</h3>
+            <div class="wb-data image-fill">
+                <!--Add image here.-->
+            </div>
+        </div>
+        <div class="oe-wb-special risks">
+            <h3>Allergies</h3>
+            <?php if ($data->allergies === 'None') :?>
+                <div class="alert-box success">No Allergies</div>
+            <?php else :?>
+                <?php foreach (explode(', ', $data->allergies) as $allergy) :?>
+                    <div class="alert-box warning">
+                        <?= $allergy ?>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            <hr class="divider"/>
+            <h3>Risks</h3>
+            <?php if ($data->alpha_blocker_name !== 'Not checked') : ?>
+                <div class="alert-box warning">
+                    Alphablocker - <?=$data->alpha_blocker_name?>
+                </div>
+            <?php endif; ?>
+            <?php if ($data->anticoagulant_name !== 'Not checked') : ?>
+                <div class="alert-box warning">
+                    Anticoagulants - <?=$data->anticoagulant_name?>
+                </div>
+            <?php endif; ?>
+            <?php if ($data->inr !== 'None') :?>
+            <div class="alert-box warning">INR: <?=$data->inr?></div>
+            <?php endif; ?>
+            <?php echo $this->getWhiteboard()->getPatientRisksDisplay(); ?>
+            <?php if ($data->anticoagulant_name === 'No') : ?>
+                <div class="alert-box success">
+                    No Anticoagulants
+                </div>
+            <?php endif; ?>
+            <?php if ($data->alpha_blocker_name === 'No') : ?>
+                <div class="alert-box success">
+                    No Alpha Blockers
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
-</div>
+    <footer class="wb3-actions down">
+        <?php $this->renderPartial('footer'); ?>
+    </footer>
+</main>

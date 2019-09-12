@@ -291,19 +291,19 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         // Exclude anti-coags and alpha-blockers as they've been called out in their respective sections already
 
-        $risks = array_filter($risks, function($risk){
-            return !in_array($risk->name, ["Anticoagulants", "Alpha blockers"]);
+        $risks = array_filter($risks, static function ($risk) {
+            return !in_array($risk->name, ['Anticoagulants', 'Alpha blockers']);
         });
 
-        $lines = array_merge($lines, array_map(function($risk){
-            if ($risk->comments != "") {
+        $lines = array_merge($lines, array_map(static function ($risk) {
+            if ($risk->comments !== '') {
                 return '<span class="has-tooltip" data-tooltip-content="'.$risk->comments.'">'.$risk->name.'</span>';
             }
             return $risk->name;
         }, $risks));
 
-        $display = implode('<br/>', $lines);
+        $display = implode('</div><div class="alert-box warning">', $lines);
 
-        return $display === "" ? "None" : $display;
+        return $display === '' ? '<div class="alert-box success">No Risks</div>' : ('<div class="alert-box warning">' . $display . '</div>');
     }
 }

@@ -19,6 +19,7 @@
 class WhiteboardController extends BaseDashboardController
 {
     protected $headerTemplate = 'header';
+    public $layout = '//layouts/whiteboard';
 
     protected $whiteboard;
 
@@ -85,6 +86,7 @@ class WhiteboardController extends BaseDashboardController
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), false, -1);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/components/dialog-polyfill/dialog-polyfill.js');
         Yii::app()->clientScript->registerScriptFile($assetPath.'/components/mustache/mustache.js');
+        Yii::app()->clientScript->registerCssFile($assetPath.'/newblue/css/style_oe3.0_classic.min.css');
 
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/OpenEyes.UI.js');
         Yii::app()->clientScript->registerScriptFile($assetPath.'/components/eventemitter2/lib/eventemitter2.js');
@@ -92,9 +94,6 @@ class WhiteboardController extends BaseDashboardController
 
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dashboard/OpenEyes.Dialog.js');
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dashboard/whiteboard.js');
-
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
-        Yii::app()->clientScript->registerCssFile($assetPath.'/css/whiteboard.css');
 
         return $before;
     }
