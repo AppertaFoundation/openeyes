@@ -176,6 +176,16 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
             $(e.target).prev(".alternative-display").find(".textual-display").trigger("click");
         });
 
+        $('#<?= $model_name ?>_element').closest('section').on('element_removed', function () {
+            if (typeof window.MMController !== "undefined") {
+                window.MMController.$table.find('tr').each(function () {
+                    if (typeof $(this).data('bound_entry') !== 'undefined') {
+                        $(this).removeData('bound_entry');
+                    }
+                });
+            }
+        });
+
         <?php
 
         $common_systemic = Medication::model()->listCommonSystemicMedications(true);
