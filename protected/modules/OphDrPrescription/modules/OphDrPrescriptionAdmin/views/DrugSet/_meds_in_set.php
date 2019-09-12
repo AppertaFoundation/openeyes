@@ -25,7 +25,7 @@
                name="search"
                id="search_query"
                placeholder="Search medication in set..."
-               <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>
+                <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>
         >
         <small class="empty-set" <?= $medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>>Empty set</small>
     </div>
@@ -109,21 +109,21 @@
                     </td>
                 </tr>
                 <?php
-                    if(!empty($set_item->tapers)){
-                        $tcount = 0;
-                        foreach ($set_item->tapers as $taper){
-                            $this->renderPartial('MedicationSetItemTaper_edit', array(
-                                "taper" => $taper,
-                                "data_med_id" => $med->id,
-                                "data_med" => $med,
-                                "taper_count" => $tcount,
-                                "frequency_options" => $frequency_options,
-                                "duration_options" => $duration_options,
-                                "field_prefix" => "MedicationSetItem[entries][$med->id][taper][$tcount]"
-                            ));
-                            $tcount++;
-                        }
+                if (!empty($set_item->tapers)) {
+                    $tcount = 0;
+                    foreach ($set_item->tapers as $taper) {
+                        $this->renderPartial('MedicationSetItemTaper_edit', array(
+                            "taper" => $taper,
+                            "data_med_id" => $med->id,
+                            "data_med" => $med,
+                            "taper_count" => $tcount,
+                            "frequency_options" => $frequency_options,
+                            "duration_options" => $duration_options,
+                            "field_prefix" => "MedicationSetItem[entries][$med->id][taper][$tcount]"
+                        ));
+                        $tcount++;
                     }
+                }
                 ?>
             <?php endforeach; ?>
             </tbody>
@@ -143,14 +143,14 @@
         $this->renderPartial('MedicationSetItemTaper_edit', array(
             "taper" => $empty_entry,
             "data_med_id" => "{{data_med_id}}",
-            "data_med" => NULL,
+            "data_med" => null,
             "taper_count" => "{{taper_count}}",
             "frequency_options" => $frequency_options,
             "duration_options" => $duration_options,
             "field_prefix" => "MedicationSetItem[entries][{{data_med_id}}][taper][{{taper_count}}]"
         ));
 
-    ?>
+        ?>
 </script>
 
 <script type="x-tmpl-mustache" id="medication_template" style="display:none">

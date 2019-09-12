@@ -18,9 +18,9 @@
 <tr data-parent-med-id="<?=$data_med_id?>" data-taper="<?= $taper_count ?>" class="prescription-tapier">
     <td style="padding-left: 4%"><i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em></td>
     <?= \CHtml::activeHiddenField($taper, 'id', ['class' => 'js-input']); ?>
-    <?php if (!is_null($data_med)): ?>
+    <?php if (!is_null($data_med)) : ?>
         <?= \CHtml::activeHiddenField($data_med, 'id', ['class' => 'js-input']); ?>
-    <?php else: ?>
+    <?php else : ?>
         <input class="js-input" name="Medication[id]" id="Medication_id" type="hidden" value="<?= $data_med_id ?>">
     <?php endif; ?>
     <td>
