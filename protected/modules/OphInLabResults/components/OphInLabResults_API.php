@@ -22,7 +22,7 @@ class OphInLabResults_API extends BaseAPI
     {
         $element = Element_OphInLabResults_Details::model()->findByAttributes(array('event_id' => $event->id));
 
-        return isset($element->type) ? $element->type->type : null;
+        return isset($element->type) ? "Lab Result:<br/>" . $element->type->type : null;
     }
 
 }
