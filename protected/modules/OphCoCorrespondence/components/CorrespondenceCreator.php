@@ -72,7 +72,7 @@ class CorrespondenceCreator extends \EventCreator
             }
         }
 
-        if(isset($macro_target_data['to'])) {
+        if (isset($macro_target_data['to'])) {
             $this->documents['DocumentTarget'] = [
                  [
                     'attributes' => [
