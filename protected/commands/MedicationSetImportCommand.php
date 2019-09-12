@@ -66,10 +66,13 @@ EOH;
     private function createAutomaticSet($set_name, $setRecords)
     {
         // search for existing set in this name, create if not exists
-        $current_set = MedicationSet::model()->find('name = :set_name', [':set_name' => $set_name]);
+			$existing_set = MedicationSet::model()->find('name = :set_name', [':set_name' => $set_name]);
+
+			$existing_set_exists = false;
 
         //delete any existing sets with the same name as the new sets
         if ($existing_set) {
+					$existing_set_exists = true;
             try {
                 \MedicationSetAutoRuleAttribute::model()->deleteAllByAttributes(['medication_set_id' => $existing_set->id]);
                 \MedicationSetAutoRuleMedication::model()->deleteAllByAttributes(['medication_set_id' => $existing_set->id]);
@@ -79,6 +82,15 @@ EOH;
                 \MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $existing_set->id]);
                 OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => null], 'medication_set_id = :set_id', [':set_id' => $existing_set->id]);
 
+							// ophciexamination_risk_tag has no model
+							\Yii::app()->db->createCommand()
+								->update('ophciexamination_risk_tag',
+									['medication_set_id' => null],
+									'medication_set_id = :set_id',
+									[':set_id' => $existing_set->id]
+								);
+
+							$existing_set->delete();
 
             } catch (\Exception $exception) {
                 \OELog::log($exception->getMessage());
@@ -142,15 +154,14 @@ EOH;
             $trans->commit();
 
 					try {
-            if($existing_set !== null) {
+            if($existing_set_exists) {
 							\Yii::app()->db->createCommand()
 								->update('ophciexamination_risk_tag',
 									['medication_set_id' => $current_set->id],
-									'medication_set_id = :set_id',
-									[':set_id' => $existing_set->id]
+									'medication_set_id = :current_set',
+									[':current_set' => null]
 								);
 
-							$existing_set->delete();
 						}
 					} catch (\Exception $exception) {
 						\OELog::log($exception->getMessage());
