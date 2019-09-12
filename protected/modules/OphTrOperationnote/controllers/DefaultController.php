@@ -360,7 +360,7 @@ class DefaultController extends BaseEventTypeController
                             } else {
                                 $transaction->rollback();
 
-                                $this->eventCreationFailed($result['errors'], 'OphDrPrescription', 'Element_OphDrPrescription_Details');
+                                $this->logEventCreationFail($result['errors'], 'OphDrPrescription', 'Element_OphDrPrescription_Details');
                                 \OELog::log($log);
                             }
                         }
@@ -375,11 +375,11 @@ class DefaultController extends BaseEventTypeController
                                 $transaction->commit();
                             } else {
                                 $transaction->rollback();
-                                $this->eventCreationFailed($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
+                                $this->logEventCreationFail($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
                             }
                         } else {
                             $this->event->addIssue("GP letter could not be created because the patient has no GP");
-                            $this->eventCreationFailed(['gp_id' => $this->patient->gp_id, 'practice_id' => $this->patient->practice_id], 'OphCoCorrespondence', 'Patient');
+                            $this->logEventCreationFail(['gp_id' => $this->patient->gp_id, 'practice_id' => $this->patient->practice_id], 'OphCoCorrespondence', 'Patient');
                         }
 
                         $create_optom_correspondence = \Yii::app()->request->getParam('auto_generate_optom_post_op_letter_after_surgery');
@@ -394,7 +394,7 @@ class DefaultController extends BaseEventTypeController
                                 $transaction->commit();
                             } else {
                                 $transaction->rollback();
-                                $this->eventCreationFailed($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
+                                $this->logEventCreationFail($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
                             }
                         }
 
@@ -1374,7 +1374,7 @@ class DefaultController extends BaseEventTypeController
         return OphTrOperationnote_Attribute::model()->findAll($crit);
     }
 
-    protected function eventCreationFailed($errors, $module, $model)
+    protected function logEventCreationFail($errors, $module, $model)
     {
         $log = print_r($errors, true);
         \Audit::add('event', 'create-failed', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
