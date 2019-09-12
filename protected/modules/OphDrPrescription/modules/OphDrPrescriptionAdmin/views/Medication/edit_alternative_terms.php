@@ -46,16 +46,11 @@
         </td>
     </tr>
 </script>
-<script type="text/javascript">
+<script>
     $(function(){
         $(document).on("click", ".js-add-alt-term", function (e) {
-            let lastKey = $("#medication_alternative_terms_tbl tbody tr:last").attr("data-key");
-            if(isNaN(lastKey)) {
-                lastKey = 0;
-            }
-            let key = parseInt(lastKey) + 1;
+            let key = OpenEyes.Util.getNextDataKey('#medication_alternative_terms_tbl tbody tr:last', 'key') || 1;
             let template = $('#alt_terms_row_template').html();
-            Mustache.parse(template);
             let rendered = Mustache.render(template, {"key": key});
             $("#medication_alternative_terms_tbl tbody").append(rendered);
         });
