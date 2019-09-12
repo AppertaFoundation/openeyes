@@ -947,9 +947,11 @@ class OphCoCorrespondence_API extends BaseAPI
         return;
     }
 
-    public function getDefaultMacroByEpisodeStatus(\Episode $episode, $firm = null, $site_id = null)
+    public function getDefaultMacroByEpisodeStatus(\Episode $episode, $firm = null, $site_id = null, $macro_name = null)
     {
-        $macro_name = \SettingMetadata::model()->getSetting("default_{$episode->status->key}_letter");
+        if (empty($macro_name)) {
+            $macro_name = \SettingMetadata::model()->getSetting("default_{$episode->status->key}_letter");
+        }
         $macro = LetterMacro::model()->find('name = ? AND firm_id = ?', [$macro_name, $firm->id]);
 
         if (!$macro) {
