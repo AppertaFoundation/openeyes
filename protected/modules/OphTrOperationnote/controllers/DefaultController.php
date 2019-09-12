@@ -283,11 +283,7 @@ class DefaultController extends BaseEventTypeController
 
             /** @var OphTrOperationbooking_API $api */
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                if ($theatre_diary_disabled) {
-                    $operations = $api->getOpenOperations($this->patient);
-                } else {
-                    $operations = $api->getScheduledOpenOperations($this->patient);
-                }
+                $operations = $api->getOpenOperations($this->patient);
             }
 
 
