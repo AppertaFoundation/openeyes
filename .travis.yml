@@ -16,11 +16,11 @@ jobs:
       script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH phpunit
       name: "PHPUnit"
     - # Branch builds - behat
-      if: type = push
+      if: type = push AND (branch in (master, develop) OR branch =~ /^release\/v\S*$/ OR branch =~ /^bugfix\/\S*$/)
       script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_BRANCH behat
       name: "Behat (branch)"
     - # Branch builds - phpunit
-      if: type = push
+      if: type = push AND (branch in (master, develop) OR branch =~ /^release\/v\S*$/ OR branch =~ /^bugfix\/\S*$/)
       script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_BRANCH phpunit
       name: "PHPUnit (branch)"
 
