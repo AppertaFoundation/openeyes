@@ -108,7 +108,7 @@ return array(
         'title' => 'Mrs',
         'first_name' => 'Carla',
         'last_name' => 'Bruni',
-        'dob' => '1977-01-01',
+        'dob' => '1977-03-04',
         'gender' => 'F',
         'hos_num' => 34322,
         'nhs_num' => 76568,
