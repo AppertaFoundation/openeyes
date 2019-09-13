@@ -474,16 +474,15 @@ class DefaultController extends BaseEventTypeController
 
         // after "Save and Print" button clicked we only print out what the user checked
         if (\Yii::app()->user->getState('correspondece_element_letter_saved', true) && (!isset($_GET['print_only_gp']) || $_GET['print_only_gp'] !== "1")) {
-
             if ($letter->document_instance) {
                 // check if the first recipient is GP
                 $docunemt_instance = $letter->document_instance[0];
-                $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
+                $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)', array(
                     ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL', ));
 
                 if ($to_recipient_gp) {
                     // print an extra copy to note
-                    if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
+                    if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
                         $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
                     }
                 }
@@ -618,7 +617,7 @@ class DefaultController extends BaseEventTypeController
         $this->pdf_print_documents = 1;
 
         if ($print_outputs) {
-            foreach($print_outputs as $output){
+            foreach ($print_outputs as $output) {
                 $output->output_status = "COMPLETE";
                 $output->save();
             }
@@ -957,7 +956,8 @@ class DefaultController extends BaseEventTypeController
      * Return document sub type if the name is Document if not return the event type name
      * @param $event
      */
-    public function getEventSubType($event){
+    public function getEventSubType($event)
+    {
         if ($event->eventType->name === 'Document') {
             $document_model = Element_OphCoDocument_Document::model()->findByAttributes(["event_id" => $event->id]);
             return isset($document_model->sub_type) ? $document_model->sub_type->name : '';
@@ -1094,7 +1094,8 @@ class DefaultController extends BaseEventTypeController
         $document->createNewDocSet($data);
     }
 
-    public function actionSavePrint($event_id) {
+    public function actionSavePrint($event_id)
+    {
         $cookies = Yii::app()->request->cookies;
         $cookies['savePrint'] = new CHttpCookie('savePrint', $event_id, [
             'expire' => strtotime('+20 seconds')

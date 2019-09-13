@@ -356,7 +356,6 @@ class DefaultController extends BaseEventTypeController
                             } else {
                                 $transaction->rollback();
                                 $this->logEventCreationFail($result['errors'], 'OphDrPrescription', 'Element_OphDrPrescription_Details');
-                                
                             }
                         }
 
