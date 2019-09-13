@@ -400,15 +400,19 @@ class Medication extends BaseActiveRecordVersioned
             $sets = [];
             foreach ($this->medicationSets as $set) {
                 $relevant = false;
-                foreach ($set->medicationSetRules as $rule) {
-                    if ($rule->subspecialty_id === null && $rule->site_id === null) {
-                        $relevant = true;
-                    }
+                if(empty($set->medicationSetRules)) {
+                	$relevant = true;
+								} else {
+									foreach ($set->medicationSetRules as $rule) {
+										if ($rule->subspecialty_id === null && $rule->site_id === null) {
+											$relevant = true;
+										}
 
-                    if ($rule->subspecialty_id == $firm->subspecialty_id && $rule->site_id == $site_id) {
-                        $relevant = true;
-                    }
-                }
+										if ($rule->subspecialty_id == $firm->subspecialty_id && $rule->site_id == $site_id) {
+											$relevant = true;
+										}
+									}
+								}
 
                 if ($relevant) {
                     $sets[] = $set;
