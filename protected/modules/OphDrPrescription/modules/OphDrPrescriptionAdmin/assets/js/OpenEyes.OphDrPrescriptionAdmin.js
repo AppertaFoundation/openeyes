@@ -32,7 +32,6 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             controller.initialiseRow($(this));
         });
 
-
     };
 
     DrugSetController.prototype.initialiseRow = function($row) {

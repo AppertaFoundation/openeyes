@@ -104,25 +104,20 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     TableInlineEdit.prototype.showEditFields = function($tr, $tapers) {
         $tr.find('.js-input').show();
-        $tapers.find('.js-input').show();
-
-        $($tr.find('.js-input'), $tapers.find('.js-input')).each(function(i, element) {
-            const $text = $(element);
-            const $td = $text.closest('td');
-            const $input = $td.find('.js-input');
-            if ($input.length && $input.prop('tagName') === 'SELECT') {
-                $input.val($text.data('id'));
-            }
-        });
+        if ($tapers !== undefined) {
+					$tapers.find('.js-input').show();
+				}
     };
 
-    TableInlineEdit.prototype.showEditControls = function($tr, $tapers = [])
+    TableInlineEdit.prototype.showEditControls = function($tr, $tapers)
     {
         $tr.find('td.actions').find('a[data-action_type="save"], a[data-action_type="cancel"]').show();
-        $tapers.find('td.actions').find('a[data-action_type="remove"]').show();
+        if ($tapers !== undefined) {
+					$tapers.find('td.actions').find('a[data-action_type="remove"]').show();
+				}
     };
 
-    TableInlineEdit.prototype.hideEditControls = function($tr, $tapers = [])
+    TableInlineEdit.prototype.hideEditControls = function($tr, $tapers)
     {
         $tr.find('td.actions').find('a[data-action_type="save"], a[data-action_type="cancel"]').hide();
         $tapers.find('td.actions').find('a[data-action_type="remove"]').hide();
@@ -142,7 +137,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     {
         let controller = this;
         let data = {};
-        let new_tapers = {};
+        let json_tapers = {};
         const $actionsTd = $tr.find('td.actions');
         $.each( $tr.find('.js-input'), function(i, input) {
             const $input = $(input);
@@ -159,15 +154,15 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         const $tapers = $('#meds-list tr[data-parent-med-id="' + data['Medication[id]'] + '"]');
 
-        $.each($tapers, function (i, taper) {
+        $.each($tapers, function (taperIndex, taper) {
             let taper_data = {};
-            $.each( $(taper).find('.js-input'), function(j, input) {
+            $.each( $(taper).find('.js-input'), function(inputIndex, input) {
                 taper_data[$(input).attr('name')] = $(input).val();
             });
-            new_tapers[i] = JSON.stringify(taper_data);
+            json_tapers[taperIndex] = JSON.stringify(taper_data);
         });
 
-        data['tapers'] = JSON.stringify(new_tapers);
+        data['tapers'] = JSON.stringify(json_tapers);
 
         $.ajax({
             'type': 'POST',
@@ -183,7 +178,10 @@ OpenEyes.UI = OpenEyes.UI || {};
             'success': function (resp) {
                 if (resp.success === true) {
                     $actionsTd.append("<small style='color:red'>Saved.</small>");
-                    controller.updateRowValuesAfterSave($tr, $tapers);
+                    controller.updateRowValuesAfterSave($tr);
+                    if ($tapers !== undefined) {
+											controller.updateRowValuesAfterSave($tapers);
+										}
                     setTimeout(() => {
                         $actionsTd.find('small').remove();
                         controller.showGeneralControls($tr);
@@ -240,8 +238,8 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
     };
 
-    TableInlineEdit.prototype.updateRowValuesAfterSave = function($tr, $tapers) {
-        $($tr.find('.js-input'), $tapers.find('.js-input')).each( function(i, input){
+    TableInlineEdit.prototype.updateRowValuesAfterSave = function($tr) {
+        $($tr.find('.js-input')).each(function(inputIndex, input){
             const $text = $(input).parent().find('.js-text');
             const $input = $(input);
             let selectedText = '-';

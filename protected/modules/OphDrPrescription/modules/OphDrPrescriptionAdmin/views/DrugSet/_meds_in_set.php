@@ -156,12 +156,11 @@ if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) {
                     foreach ($set_item->tapers as $taper) {
                         $this->renderPartial('MedicationSetItemTaper_edit', array(
                             "taper" => $taper,
-                            "data_med_id" => $med->id,
-                            "data_med" => $med,
+                            "set_item_medication_id" => $med->id,
+                            "set_item_medication" => $med,
                             "taper_count" => $tcount,
                             "frequency_options" => $frequency_options,
-                            "duration_options" => $duration_options,
-                            "field_prefix" => "MedicationSetItem[entries][$med->id][taper][$tcount]"
+                            "duration_options" => $duration_options
                         ));
                         $tcount++;
                     }
@@ -184,12 +183,11 @@ if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) {
 
         $this->renderPartial('MedicationSetItemTaper_edit', array(
             "taper" => $empty_entry,
-            "data_med_id" => "{{data_med_id}}",
-            "data_med" => null,
+            "set_item_medication_id" => "{{data_med_id}}",
+            "set_item_medication" => null,
             "taper_count" => "{{taper_count}}",
             "frequency_options" => $frequency_options,
-            "duration_options" => $duration_options,
-            "field_prefix" => "MedicationSetItem[entries][{{data_med_id}}][taper][{{taper_count}}]"
+            "duration_options" => $duration_options
         ));
 
         ?>
