@@ -75,27 +75,25 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                 <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= !isset($entry->bound_key) && isset($is_template) && $is_template ? "{{bound_key}}" : $entry->bound_key ?>">
     </td>
     <?php if (!empty($entry->errors) || !isset($entry->dose)) {
-        $direct_edit = in_array(true, array_map(function ($i) { return strpos($i, 'dose') !== false;}, array_keys($entry->errors)));
+        $show_unit = in_array(true, array_map(function ($i) { return strpos($i, 'dose') !== false;}, array_keys($entry->errors)));
+    } else {
+        $show_unit = $direct_edit;
     }?>
     <td class="dose-frequency-route">
         <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
             <div class="flex-layout">
                 <div class="alternative-display inline">
-                    <div class="alternative-display-element textual" <?php if ($direct_edit) {
-                        echo 'style="display: none;"';
-                                                                     }?>>
+                    <div class="alternative-display-element textual" <?= $direct_edit || !empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <a class="textual-display-dose textual-display hint" href="javascript:void(0);" onclick="switch_alternative(this);">
                                                     <?php $entry_text_display = $entry->getAdministrationDisplay();
                                                         echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         </a>
                     </div>
-                    <div class="alternative-display-element" <?php if (!$direct_edit) {
-                        echo 'style="display: none;"';
-                                                             }?>>
+                    <div class="alternative-display-element" <?= !$direct_edit && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <input class="cols-1 js-dose" style="width: 14%; display: inline-block;" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
                         <span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
-                        <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" <?= $direct_edit ? 'disabled' : '' ?> />
-                        <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=> $direct_edit ? '' : 'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:'. ($direct_edit ? '' : 'none'))); ?>
+                        <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" <?=  $show_unit ? 'disabled' : '' ?> />
+                        <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=> $show_unit ? '' : 'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:'. ($show_unit ? '' : 'none'))); ?>
                         <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-3')) ?>
                         <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class'=>'js-route cols-2')) ?>
                         <?php echo CHtml::dropDownList($field_prefix . '[laterality]',
