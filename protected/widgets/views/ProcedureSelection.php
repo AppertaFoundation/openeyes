@@ -346,7 +346,7 @@
             return false;
         });
 
-        <?php if ($durations): ?>
+        <?php if ($durations) : ?>
         $(document).ready(function () {
             if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
                 $('#projected_duration_<?php echo $identifier?> span').html(parseInt($('#projected_duration_<?php echo $identifier?> span').html()));

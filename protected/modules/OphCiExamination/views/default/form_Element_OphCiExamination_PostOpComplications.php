@@ -45,8 +45,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 
 ?>
 
-<?php if ($operationNoteList): ?>
-
+<?php if ($operationNoteList) : ?>
     <div id="div_Element_OphTrOperationnote_ProcedureList_id">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <div class="cols-5 column end">
@@ -109,7 +108,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                     </a>
                   </td>
                 </tr>
-                <?php endforeach; ?>
+              <?php endforeach; ?>
               </tbody>
             </table>
           </div>
@@ -122,10 +121,10 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
             </div>
           </div>
         </div>
-        <?php endforeach; ?>
+      <?php endforeach; ?>
   </div>
 
-<?php else: ?>
+<?php else : ?>
     <div id="div_Element_OphTrOperationnote_ProcedureList_id">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <div class="cols-12 column text-center">
