@@ -11,7 +11,7 @@ class m190912_091418_migrate_tags_to_medication_sets extends OEMigration
 
 		$this->dropForeignKey('ophciexamination_risk_tag_tag_fk', 'ophciexamination_risk_tag');
 		$this->dropColumn('ophciexamination_risk_tag', 'tag_id');
-
+		$this->addColumn('ophciexamination_risk_tag', 'id' , 'pk');
 
 		$this->dropForeignKey('drug_tags_ti_fk', 'drug_tag');
 		$this->dropForeignKey('drug_type_tags_fk', 'drug_type');
@@ -24,6 +24,7 @@ class m190912_091418_migrate_tags_to_medication_sets extends OEMigration
 		$this->dropOETable('drug_type', true);
 		$this->dropOETable('medication_drug_tag', true);
 		$this->dropOETable('drug_tag', true);
+		$this->dropOETable('tag', true);
 	}
 
 	public function down()
