@@ -31,13 +31,15 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
             };
         </script>
         <?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField')) ?>
-        <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+        <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
             <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> " data-side="<?= $eye_side ?>">
                 <div class="active-form flex-layout" style="<?= $element->hasEye($eye_side) ? '' : 'display: none;' ?>">
 
                     <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
                     <div class="cols-9">
-                        <table class="cols-full standard colourvision_table_<?= $eye_side ?>"<?php if (!$element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?>>
+                        <table class="cols-full standard colourvision_table_<?= $eye_side ?>"<?php if (!$element->{$eye_side . '_readings'}) {
+                            ?> style="display: none;" <?php
+                                                                            } ?>>
                             <thead>
                             <tr>
                                 <th>Method</th>
@@ -68,7 +70,8 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                     </div>
                 </div>
                 <div class="inactive-form" style="display: <?php if ($element->hasEye($eye_side)) {
-                    ?> none <?php } ?>">
+                    ?> none <?php
+                                                           } ?>">
                     <div class="add-side">
                         <a href="#">Add <?= $eye_side ?> side <span class="icon-add-side"></span></a>
                     </div>

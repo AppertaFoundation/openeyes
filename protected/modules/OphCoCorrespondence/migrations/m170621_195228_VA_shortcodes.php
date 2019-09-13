@@ -2,8 +2,8 @@
 
 class m170621_195228_VA_shortcodes extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
         $event_type_id = $this->dbConnection->createCommand()
             ->select('id')
@@ -46,13 +46,13 @@ class m170621_195228_VA_shortcodes extends CDbMigration
             'description' => 'Best visual acuity in the right eye with date (Latest recorded within the last 3 weeks)',
             'last_modified_user_id' => '1',
         ));
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->delete('patient_shortcode', '`default_code`="bvd"');
         $this->delete('patient_shortcode', '`default_code`="lvd"');
         $this->delete('patient_shortcode', '`default_code`="pvd"');
         $this->delete('patient_shortcode', '`default_code`="rvd"');
-	}
+    }
 }

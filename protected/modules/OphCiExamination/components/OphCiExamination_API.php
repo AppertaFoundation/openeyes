@@ -1079,7 +1079,7 @@ class OphCiExamination_API extends \BaseAPI
             $managment_summaries = [];
             foreach ($management_summaries as $summaries) {
                 $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->short_name;
-                $user = \User::model()->findByPk($summaries->event->episode->last_modified_user_id);
+                $user = \User::model()->findByPk($summaries->event->last_modified_user_id);
                 $user_name = $user->first_name . ' ' . $user->last_name;
                 $summary_obj = new \stdClass();
                 $created_date = \Helper::convertDate2NHS($summaries->event->event_date);
@@ -1477,12 +1477,10 @@ class OphCiExamination_API extends \BaseAPI
             $criteria->order = 'display_order';
 
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
-
                 $class = $element_type->class_name;
 
                 $element = $class::model()->find('event_id=?', array($event->id));
                 if ($element) {
-
                     // need to check for element behaviour for eyedraw elements
                     if (method_exists($element, 'getLetter_string') || $element->asa('EyedrawElementBehavior')) {
                         $element_types[] = $element_type;
@@ -2376,10 +2374,7 @@ class OphCiExamination_API extends \BaseAPI
         if ($element) {
             $str = $element->status->name;
             if ($element->status->followup) {
-                $str .= " in {$element->followup_quantity} {$element->followup_period} by {$element->role->name}";
-                if ($element->role_comments != '') {
-                    $str .= " ({$element->role_comments})";
-                }
+                $str .= " in {$element->followup_quantity} {$element->followup_period}";
             }
         }
         return $str;
@@ -2531,7 +2526,6 @@ class OphCiExamination_API extends \BaseAPI
                     if (isset($allergy) && isset($allergy->id)) {
                         $required[$allergy->id] = $allergy;
                     }
-
                 }
             }
         }
@@ -2636,7 +2630,6 @@ class OphCiExamination_API extends \BaseAPI
         );
 
         if ($el) {
-
             $result .= 'Clinic Interval: ' . ($el->clinic_interval ?: 'NR') . "\n";
             $result .= 'Photo: ' . ($el->photo ?: 'NR') . "\n";
             $result .= 'OCT: ' . ($el->oct ?: 'NR') . "\n";
@@ -2655,8 +2648,6 @@ class OphCiExamination_API extends \BaseAPI
             if (isset($el->left_target_iop->name)) {
                 $result .= 'Target IOP Left Eye: ' . $el->left_target_iop->name . " mmHg\n";
             }
-
-
         }
         return $result;
     }

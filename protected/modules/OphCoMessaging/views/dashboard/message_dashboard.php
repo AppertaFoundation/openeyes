@@ -62,18 +62,18 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
       </form>
     </div>
   </div>
-  <?php
-	$messages = ${$message_type}; // $message_type holds a string that matches the variable name to be passed to $messages
+    <?php
+    $messages = ${$message_type}; // $message_type holds a string that matches the variable name to be passed to $messages
 
-  echo $this->renderPartial('OphCoMessaging.views.inbox.grid', array(
+    echo $this->renderPartial('OphCoMessaging.views.inbox.grid', array(
     'module_class' => 'OphCoMessaging',
     'messages' => $messages->getData(),
     'dp' => $messages,
     'read_check' => true,
     'message_type' => $message_type,
-		),
-		true);
-  ?>
+        ),
+        true);
+    ?>
 </div>
 
 <script>

@@ -10,7 +10,7 @@
               </div>
           </header>
               <div class="element-data element-eyes" id="subgroup-disorders-<?=$disorder_section->name?>">
-                    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
+                    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) { ?>
                       <div class="js-element-eye <?= $eye_side; ?>-eye column">
                           <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
                               'side' => $eye_side,
