@@ -76,6 +76,8 @@ $is_posting = Yii::app()->request->getIsPostRequest();
     </td>
     <?php if (!empty($entry->errors) || !isset($entry->dose)) {
         $show_unit = in_array(true, array_map(function ($i) { return strpos($i, 'dose') !== false;}, array_keys($entry->errors)));
+    } else {
+        $show_unit = $direct_edit;
     }?>
     <td class="dose-frequency-route">
         <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
