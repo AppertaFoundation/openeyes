@@ -585,6 +585,11 @@ class Patient extends BaseActiveRecordVersioned
         return $this->is_local && ( Yii::app()->user->checkAccess('TaskAddPatient'));
     }
 
+    public function isDeleted()
+    {
+        return $this->deleted;
+    }
+
     /*
      * will group episodes by specialty, ordered by the configuration key of specialty sort,
      * and alphanumeric for any specialties not configured.

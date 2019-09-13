@@ -107,8 +107,8 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
     </td>
     <td> <!-- Accept/Reject/Shortlist actions -->
       <?php if ($permission->can_edit && $data->trial->is_open): ?>
-
-          <?php if ($data->status->code === TrialPatientStatus::SHORTLISTED_CODE): ?>
+<!--          disable the button if the patient is deleted so that it cannot be accepted into the trial.-->
+          <?php if ($data->status->code === TrialPatientStatus::SHORTLISTED_CODE && !$data->patient->isDeleted()): ?>
 
             <button href="javascript:void(0)"
                onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::ACCEPTED_CODE ?>')"
@@ -127,12 +127,15 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
           <?php endif; ?>
 
           <?php if ($data->status->code === TrialPatientStatus::REJECTED_CODE): ?>
-          <span>
-            <button href="javascript:void(0)"
-               onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::SHORTLISTED_CODE ?>')"
-               class="accept-patient-button button hint blue">Re-Shortlist
-            </button>
-          </span>
+
+              <?php if(!$data->patient->isDeleted()) : ?>
+                <span>
+                    <button href="javascript:void(0)"
+                       onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::SHORTLISTED_CODE ?>')"
+                       class="accept-patient-button button hint blue">Re-Shortlist
+                    </button>
+                </span>
+              <?php endif; ?>
 
             <button href="javascript:void(0)"
                     class="accept-patient-button button hint red"
