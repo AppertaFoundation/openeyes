@@ -8,7 +8,7 @@
     <h3>
         <?= $this->title ?>
         <?php if ($this->editable) : ?>
-            <div class="edit-widget-btn">
+            <div class="edit-widget-btn" data-whiteboard-event-id="<?=$this->event_id?>">
                 <i class="oe-i pencil medium pro-theme"></i>
             </div>
         <?php endif; ?>

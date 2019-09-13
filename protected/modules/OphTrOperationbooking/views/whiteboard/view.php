@@ -39,7 +39,9 @@
         ),
         'Biometry' =>array(
             'data' => array(
-                'Element 1',
+                array(
+                    'content' => 'Element 1',
+                ),
                 array(
                     'content' => 'Element 2',
                     'small_data' => 'units',
@@ -51,11 +53,11 @@
             'data' => $data->predicted_refractive_outcome,
         ),
         'Equipment' => array(
-            'data' => $data->predicted_additional_equipment ? array(nl2br($data->predicted_additional_equipment)) : array('None'),
+            'data' => $data->predicted_additional_equipment ? explode("\n", $data->predicted_additional_equipment) : array('None'),
             'editable' => true,
         ),
         'Comments' => array(
-            'data' => array(nl2br($data->comments)),
+            'data' => explode("\n", $data->comments),
             'editable' => true,
         )
     );
@@ -74,6 +76,7 @@
                 'data' => $card['data'],
                 'colour' => isset($card['colour']) ? $card['colour'] : null,
                 'editable' => isset($card['editable']) ? $card['editable'] : false,
+                'event_id' => $data->event_id,
             ));
         }
         ?>

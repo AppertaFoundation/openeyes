@@ -42,6 +42,51 @@ document.addEventListener("DOMContentLoaded", function () {
     window.close();
   });
 
+  function toggleEdit(card) {
+      $(card).find('.edit-widget-btn i').toggleClass('pencil tick');
+      let wbData = $(card).children('.wb-data');
+      wbData.find('ul').toggle();
+      wbData.find('.edit-widget').toggle();
+  }
+
+  $('.edit-widget-btn').on('click', function() {
+      var card = $(this).parent().parent();
+      if ($('.oe-i',this).hasClass('tick')) {
+          var icon = this;
+          var cardTitle = $(this).parent().text().trim();
+          var $cardContent = $(this).parent().parent().find('.wb-data');
+          var whiteboardEventId = icon.dataset.whiteboardEventId;
+          var data = {};
+          var contentId;
+          var text;
+
+          contentId = (cardTitle === 'Equipment') ? 'predicted_additional_equipment' : cardTitle.toLowerCase();
+          text = $cardContent.find('textarea').val();
+          data[contentId] = text;
+          data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
+          // Save the changes made.
+          $.ajax({
+              'type': 'POST',
+              'url': '/OphTrOperationbooking/whiteboard/saveComment/' + whiteboardEventId,
+              'data': data,
+              'success': function () {
+                  let newContent = text.split("\n");
+                  $cardContent.find('ul').empty();
+                  newContent.forEach(function(item) {
+                      $cardContent.find('ul').append('<li>' + item + '</li>');
+                  });
+                  toggleEdit(card);
+                  window.onbeforeunload = null;
+              },
+              'error': function () {
+                  alert('Something went wrong, please try again.');
+              }
+          });
+      } else {
+          toggleEdit(card);
+      }
+  });
+
   $('.editable').find('.material-icons').on('click', function () {
     var icon = this;
     var $cardContent = $(icon).parents('.editable').find('.mdl-card__supporting-text');

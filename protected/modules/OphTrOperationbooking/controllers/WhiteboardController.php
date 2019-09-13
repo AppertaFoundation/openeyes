@@ -20,6 +20,7 @@ class WhiteboardController extends BaseDashboardController
 {
     protected $headerTemplate = 'header';
     public $layout = '//layouts/whiteboard';
+    public $pageTitle = 'Whiteboard';
 
     protected $whiteboard;
 
@@ -229,7 +230,7 @@ class WhiteboardController extends BaseDashboardController
 
         $savable = array('comments', 'predicted_additional_equipment');
         foreach ($savable as $toSave) {
-            if ( isset($_POST[$toSave])) {
+            if (isset($_POST[$toSave])) {
                 $whiteboard->$toSave = $_POST[$toSave];
             }
         }

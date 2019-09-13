@@ -19,38 +19,8 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <script type="text/javascript">var OpenEyes = OpenEyes || {};</script>
-        <link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/themes/base/minified/jquery.ui.datepicker.min.css')?>">
-
-        <script src="<?= Yii::app()->assetManager->createUrl('components/jquery/jquery.min.js')?>"></script>
-        <script src="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/ui/jquery.ui.core.js')?>"></script>
-        <script src="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/ui/jquery.ui.datepicker.js')?>"></script>
-        <script src="<?= Yii::app()->assetManager->createUrl('components/material-design-lite/material.min.js')?>"></script>
-
+        <?php $this->renderPartial('//base/head/_meta'); ?>
         <?php $this->renderPartial('//base/head/_assets'); ?>
-
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="format-detection" content="telephone=no">
-        <?php
-        if (Yii::app()->controller->id === 'whiteboard') { ?>
-            <title>Whiteboard</title>
-        <?php } else { ?>
-            <title>OpenEyes Analytics</title>
-        <?php } ?>
-
-        <!-- Tile icon for Win8 (144x144 + tile color) -->
-        <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
-        <meta name="msapplication-TileColor" content="#3372DF">
-
-        <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
-        <!--
-        <link rel="canonical" href="http://www.example.com/">
-        -->
-
-
     </head>
     <body class="open-eyes oe-grid">
         <!-- Minimum screed width warning -->

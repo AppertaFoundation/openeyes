@@ -7,6 +7,7 @@
      * @property $editable bool
      * @property $data string|array
      * @property $highlight_colour string
+     * @property $event_id int
      */
 class WBCard extends CWidget
 {
@@ -15,6 +16,7 @@ class WBCard extends CWidget
     public $editable = false;
     public $data;
     public $highlight_colour;
+    public $event_id;
     protected $css_class;
     protected $data_view;
     protected $baseViewFile = 'wbcard';
@@ -35,7 +37,7 @@ class WBCard extends CWidget
                 $this->css_class = 'data_image';
                 $this->data_view = 'data/image_data';
             } elseif (isset($this->data[0])) {
-                if (count($this->data) === 2) {
+                if (count($this->data) === 2 && is_array($this->data[0])) {
                     // Double card
                     $this->css_class = 'data-double-extra';
                     $this->data_view = 'data/double_data';
