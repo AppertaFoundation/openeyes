@@ -260,7 +260,7 @@ class Patient extends BaseActiveRecordVersioned
                     $query = Yii::app()->db->createCommand()
                         ->select('p.id')
                         ->from('patient p')
-                        ->where('LOWER(p.nhs_num) = LOWER(:nhs_num) and p.id != :patient_id',
+                        ->where('LOWER(p.nhs_num) = LOWER(:nhs_num) and p.id != COALESCE(:patient_id, "")',
                             array(':nhs_num'=> $this->nhs_num, ':patient_id' => $this->id))
                         ->queryAll();
 
