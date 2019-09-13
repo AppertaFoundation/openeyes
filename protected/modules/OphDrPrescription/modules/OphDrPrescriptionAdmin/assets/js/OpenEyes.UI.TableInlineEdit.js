@@ -35,9 +35,9 @@ OpenEyes.UI = OpenEyes.UI || {};
                 controller.hideEditControls($tr, $tapers);
                 controller.showGeneralControls($tr);
                 $tr.find('.js-text').show();
-                $tr.find('.js-input').hide();
+                $tr.find(':input').hide();
                 $tapers.find('.js-text').show();
-                $tapers.find('.js-input').hide();
+                $tapers.find(':input').hide();
             }
         });
 
@@ -47,7 +47,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
 
         $(this.options.tableSelector).on('click', 'td.actions a[data-action_type="remove"]', function () {
-            const $tr = $(this).closest('tr');
+            let $tr = $(this).closest('tr');
             $tr.remove();
         });
 
@@ -103,9 +103,9 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     TableInlineEdit.prototype.showEditFields = function($tr, $tapers) {
-        $tr.find('.js-input').show();
+        $tr.find(':input').show();
         if ($tapers !== undefined) {
-					$tapers.find('.js-input').show();
+					$tapers.find(':input').show();
 				}
     };
 
@@ -139,7 +139,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         let data = {};
         let json_tapers = {};
         const $actionsTd = $tr.find('td.actions');
-        $.each( $tr.find('.js-input'), function(i, input) {
+        $.each( $tr.find(':input'), function(i, input) {
             const $input = $(input);
             data[$input.attr('name')] = $input.val();
         });
@@ -156,7 +156,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $.each($tapers, function (taperIndex, taper) {
             let taper_data = {};
-            $.each( $(taper).find('.js-input'), function(inputIndex, input) {
+            $.each( $(taper).find(':input'), function(inputIndex, input) {
                 taper_data[$(input).attr('name')] = $(input).val();
             });
             json_tapers[taperIndex] = JSON.stringify(taper_data);
@@ -207,17 +207,17 @@ OpenEyes.UI = OpenEyes.UI || {};
 
                 if (result.success && result.success === true) {
                     $tr.find('.js-text').show();
-                    $tr.find('.js-input').hide();
+                    $tr.find(':input').hide();
                     $tapers.find('.js-text').show();
-                    $tapers.find('.js-input').hide();
+                    $tapers.find(':input').hide();
                     if (typeof controller.options.onAjaxComplete === 'function') {
                         controller.options.onAjaxComplete();
                     }
                 } else if(result.errors) {
                     $tr.find('.js-text').hide();
-                    $tr.find('.js-input').show();
+                    $tr.find(':input').show();
                     $tapers.find('.js-text').show();
-                    $tapers.find('.js-input').hide();
+                    $tapers.find(':input').hide();
                     controller.showEditControls($tr);
                     let content = '';
                     Object.keys(result.errors).forEach(function(key) {
@@ -239,7 +239,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     TableInlineEdit.prototype.updateRowValuesAfterSave = function($tr) {
-        $($tr.find('.js-input')).each(function(inputIndex, input){
+        $($tr.find(':input')).each(function(inputIndex, input){
             const $text = $(input).parent().find('.js-text');
             const $input = $(input);
             let selectedText = '-';
@@ -265,7 +265,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
 
-        $.each( $tr.find('.js-input'), function(i, input) {
+        $.each( $tr.find(':input'), function(i, input) {
             const $input = $(input);
             data[$input.attr('name')] = $input.val();
         });

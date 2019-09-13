@@ -152,17 +152,17 @@ if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) {
                 </tr>
                 <?php
                 if (!empty($set_item->tapers)) {
-                    $tcount = 0;
+                    $taper_count = 0;
                     foreach ($set_item->tapers as $taper) {
                         $this->renderPartial('MedicationSetItemTaper_edit', array(
                             "taper" => $taper,
                             "set_item_medication_id" => $med->id,
                             "set_item_medication" => $med,
-                            "taper_count" => $tcount,
+                            "taper_count" => $taper_count,
                             "frequency_options" => $frequency_options,
                             "duration_options" => $duration_options
                         ));
-                        $tcount++;
+											$taper_count++;
                     }
                 }
                 ?>

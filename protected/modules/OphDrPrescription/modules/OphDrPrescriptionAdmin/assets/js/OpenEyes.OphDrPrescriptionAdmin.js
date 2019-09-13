@@ -50,14 +50,14 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
     };
 
     DrugSetController.prototype.showEditFields = function($row, $tapers) {
-        $row.find('.js-input').show();
-        $tapers.find('.js-input').show();
+        $row.find(':input').show();
+        $tapers.find(':input').show();
         $tapers.find('.js-text').hide();
 
         $.each($row.find('.js-text'), function(i, element) {
             const $text = $(element);
             const $td = $text.closest('td');
-            const $input = $td.find('.js-input');
+            const $input = $td.find(':input');
             if ($input.length && $input.prop('tagName') === 'SELECT') {
                 $input.val($text.data('id'));
             }
@@ -76,11 +76,11 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
 
 
     DrugSetController.prototype.addTaper = function($row) {
-        var data_med_id = $row.attr('data-med_id');
-        var next_taper_count = 0;
-        var last_taper_count;
+        let data_med_id = $row.attr('data-med_id');
+				let next_taper_count = 0;
+				let last_taper_count;
 
-        var $tapers = $('#meds-list tr[data-parent-med-id="' + data_med_id + '"]');
+				let $tapers = $('#meds-list tr[data-parent-med-id="' + data_med_id + '"]');
         if($tapers.length > 0) {
             last_taper_count = parseInt($tapers.last().attr("data-taper"));
             next_taper_count = last_taper_count + 1;
@@ -93,14 +93,10 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
                 'taper_count' : next_taper_count
             });
 
-        var $lastrow;
-
+        let $lastrow = $row;
 
         if($tapers.length>0) {
             $lastrow = $tapers.last();
-        }
-        else {
-            $lastrow = $row;
         }
 
         $(markup).insertAfter($lastrow);

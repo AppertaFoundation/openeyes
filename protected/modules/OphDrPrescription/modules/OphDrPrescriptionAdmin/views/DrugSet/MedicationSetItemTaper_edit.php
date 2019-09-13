@@ -17,28 +17,28 @@
 ?>
 <tr data-parent-med-id="<?=$set_item_medication_id?>" data-taper="<?= $taper_count ?>" class="prescription-tapier">
     <td style="padding-left: 4%"><i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em></td>
-    <?= \CHtml::activeHiddenField($taper, 'id', ['class' => 'js-input']); ?>
+    <?= \CHtml::activeHiddenField($taper, 'id'); ?>
     <?php if (!is_null($set_item_medication)) : ?>
-        <?= \CHtml::activeHiddenField($set_item_medication, 'id', ['class' => 'js-input']); ?>
+        <?= \CHtml::activeHiddenField($set_item_medication, 'id'); ?>
     <?php else : ?>
-        <input class="js-input" name="Medication[id]" id="Medication_id" type="hidden" value="<?= $set_item_medication_id ?>">
+        <input name="Medication[id]" id="Medication_id" type="hidden" value="<?= $set_item_medication_id ?>">
     <?php endif; ?>
     <td>
         <span data-type="dose" data-id="<?= $taper->dose ? $taper->dose : ''; ?>" class="js-text"><?= $taper->dose ? $taper->dose : '-'; ?></span>
-        <?= \CHtml::activeTextField($taper, 'dose', ['class' => 'js-input cols-full', 'style' => 'display:none', 'id' => null]); ?>
+        <?= \CHtml::activeTextField($taper, 'dose', ['class' => 'cols-full', 'style' => 'display:none', 'id' => null]); ?>
     </td>
     <td colspan="2"></td>
     <td>
         <span data-type="frequency_id" data-id="<?= $taper->frequency ? $taper->frequency_id : ''; ?>" class="js-text"><?= $taper->frequency ? $taper->frequency->term : '-'; ?></span>
         <?= \CHtml::activeDropDownList($taper, 'frequency_id',
             $frequency_options,
-            ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            ['class' => 'cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
     </td>
     <td>
         <span data-type="duration_id" data-id="<?= $taper->duration ? $taper->duration_id : ''; ?>" class="js-text"><?= $taper->duration ? $taper->duration->name : '-'; ?></span>
         <?= \CHtml::activeDropDownList($taper, 'duration_id',
             $duration_options,
-            ['class' => 'js-input', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            ['class' => 'cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
     </td>
     <td class="actions" style="text-align:end">
         <a data-action_type="remove" style="display: none" class="js-remove-taper"><i class="oe-i trash"></i></a>
