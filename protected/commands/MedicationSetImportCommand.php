@@ -88,7 +88,6 @@ EOH;
 						  	$risk_tag->update();
 							}
 
-
 							$current_set->delete();
 
             } catch (\Exception $exception) {
