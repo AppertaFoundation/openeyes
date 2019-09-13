@@ -158,8 +158,7 @@ EOH;
 							\Yii::app()->db->createCommand()
 								->update('ophciexamination_risk_tag',
 									['medication_set_id' => $current_set->id],
-									'medication_set_id = :current_set',
-									[':current_set' => null]
+									'medication_set_id is null'
 								);
 
 						}
