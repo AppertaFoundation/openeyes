@@ -213,7 +213,18 @@ class CsvController extends BaseController
 			switch ($context) {
 				case 'trials':
 				case 'trialPatients':
-					$this->redirect( "/" . self::$contexts[$context]['successAction']);
+				    if(!empty($errors)) {
+                        array_unshift($errors, self::$contexts[$context]['errorMsg'].$row_num);
+                        $this->render(
+                            'upload',
+                            array(
+                                'errors' => $errors,
+                                'context' => $context,
+                            )
+                        );
+                    } else {
+                        $this->redirect( "/" . self::$contexts[$context]['successAction']);
+                    }
 					break;
 				case 'patients':
 					$this->render(
