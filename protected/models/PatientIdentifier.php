@@ -107,6 +107,11 @@ class PatientIdentifier extends BaseActiveRecordVersioned
     {
         return $this->getConfigOption('required') === true;
     }
+//Currently used for RVEEh UR number  - to check if validation is to be performed on null or empty values from patient identifier in common.php
+    public function nullCheck()
+    {
+        return $this->getConfigOption('allow_null_check');
+    }
 
     public function isEditable()
     {
