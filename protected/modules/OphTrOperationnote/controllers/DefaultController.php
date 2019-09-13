@@ -355,9 +355,8 @@ class DefaultController extends BaseEventTypeController
                                 $transaction->commit();
                             } else {
                                 $transaction->rollback();
-
                                 $this->logEventCreationFail($result['errors'], 'OphDrPrescription', 'Element_OphDrPrescription_Details');
-                                \OELog::log($log);
+                                
                             }
                         }
 
