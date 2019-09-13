@@ -73,7 +73,6 @@
     $(document).ready(function(){
         $('.stop-reason-name').each(function () {
             if($(this).html().includes('Medication parameters changed')){
-                console.log($(this).html());
                $(this).parent('tr').removeClass('clickable');
                $(this).prepend('<i class="js-has-tooltip oe-i info small pad right"\n' +
                    '                           data-tooltip-content="This element cannot be edited."></i>')

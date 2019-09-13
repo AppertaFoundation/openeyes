@@ -103,7 +103,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     routeOptionWrapperSelector: '.admin-route-options',
     patientAllergies: [],
       allAllergies: {},
-      classes_that_dont_break_bound: ['js-end-date', 'js-stop-reason'],
+      classes_that_dont_break_binding: ['js-end-date', 'js-stop-reason'],
 
       // Customizable callbacks
 
@@ -288,7 +288,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
               if (typeof $bound_entry !== 'undefined') {
                   let row_needs_bond_removed = true;
 
-                  controller.options.classes_that_dont_break_bound.forEach(function (class_name) {
+                  controller.options.classes_that_dont_break_binding.forEach(function (class_name) {
                       if ($(e.target).hasClass(class_name)) {
                           row_needs_bond_removed = false;
                           $bound_entry.find('.' + class_name).attr('value', $row.find('.' + class_name).attr('value'));
