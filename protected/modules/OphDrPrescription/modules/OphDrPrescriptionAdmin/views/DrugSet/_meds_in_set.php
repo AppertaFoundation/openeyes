@@ -162,7 +162,7 @@ if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) {
                             "frequency_options" => $frequency_options,
                             "duration_options" => $duration_options
                         ));
-											$taper_count++;
+                                            $taper_count++;
                     }
                 }
                 ?>
