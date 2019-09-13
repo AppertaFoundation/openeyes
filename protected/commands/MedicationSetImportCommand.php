@@ -66,31 +66,30 @@ EOH;
     private function createAutomaticSet($set_name, $setRecords)
     {
         // search for existing set in this name, create if not exists
-			$existing_set = MedicationSet::model()->find('name = :set_name', [':set_name' => $set_name]);
+			$current_set = MedicationSet::model()->find('name = :set_name', [':set_name' => $set_name]);
 
-			$existing_set_exists = false;
+			$risk_tags = null;
 
         //delete any existing sets with the same name as the new sets
-        if ($existing_set) {
-					$existing_set_exists = true;
+        if ($current_set) {
             try {
-                \MedicationSetAutoRuleAttribute::model()->deleteAllByAttributes(['medication_set_id' => $existing_set->id]);
-                \MedicationSetAutoRuleMedication::model()->deleteAllByAttributes(['medication_set_id' => $existing_set->id]);
-                \MedicationSetAutoRuleSetMembership::model()->deleteAllByAttributes(['source_medication_set_id' => $existing_set->id]);
-                \MedicationSetAutoRuleSetMembership::model()->deleteAllByAttributes(['target_medication_set_id' => $existing_set->id]);
-                \MedicationSetItem::model()->deleteAllByAttributes(['medication_set_id' => $existing_set->id]);
-                \MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $existing_set->id]);
-                OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => null], 'medication_set_id = :set_id', [':set_id' => $existing_set->id]);
+                \MedicationSetAutoRuleAttribute::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
+                \MedicationSetAutoRuleMedication::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
+                \MedicationSetAutoRuleSetMembership::model()->deleteAllByAttributes(['source_medication_set_id' => $current_set->id]);
+                \MedicationSetAutoRuleSetMembership::model()->deleteAllByAttributes(['target_medication_set_id' => $current_set->id]);
+                \MedicationSetItem::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
+                \MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
+                OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => null], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
 
-							// ophciexamination_risk_tag has no model
-							\Yii::app()->db->createCommand()
-								->update('ophciexamination_risk_tag',
-									['medication_set_id' => null],
-									'medication_set_id = :set_id',
-									[':set_id' => $existing_set->id]
-								);
+						  $risk_tags = \OphCiExaminationRiskTag::model()->findAllByAttributes(['medication_set_id' => $current_set->id]);
 
-							$existing_set->delete();
+						  foreach($risk_tags as $risk_tag) {
+						  	$risk_tag->medication_set_id = null;
+						  	$risk_tag->update();
+							}
+
+
+							$current_set->delete();
 
             } catch (\Exception $exception) {
                 \OELog::log($exception->getMessage());
@@ -154,13 +153,11 @@ EOH;
             $trans->commit();
 
 					try {
-            if($existing_set_exists) {
-							\Yii::app()->db->createCommand()
-								->update('ophciexamination_risk_tag',
-									['medication_set_id' => $current_set->id],
-									'medication_set_id is null'
-								);
-
+            if(isset($risk_tags)) {
+            	foreach ($risk_tags as $risk_tag) {
+            		$risk_tag->medication_set_id = $current_set->id;
+								$risk_tag->update();
+							}
 						}
 					} catch (\Exception $exception) {
 						\OELog::log($exception->getMessage());
