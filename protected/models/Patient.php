@@ -698,11 +698,11 @@ class Patient extends BaseActiveRecordVersioned
     {
         $allergies = [];
 
-		if($this->allergies && $medication = Medication::model()->findByPk($medication_id)) {
+		if ($this->allergies && $medication = Medication::model()->findByPk($medication_id)) {
 			/** @var Medication $medication */
 			foreach ($medication->allergies as $med_allergy) {
 				foreach ($this->allergies as $patient_allergy) {
-					if($patient_allergy->id == $med_allergy->id) {
+					if ($patient_allergy->id == $med_allergy->id) {
 						$allergies[] = clone $med_allergy;
 					}
 				}

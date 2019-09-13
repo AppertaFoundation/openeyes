@@ -4,7 +4,7 @@
     $rowkey = 0;
     $sets = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name];}, MedicationSet::model()->findAllByAttributes(['hidden' => 0, 'deleted_date' => null]));
     $units = [];
-    if($unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
+    if ($unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
 		$units = array_map(function($e){
 		    return ['id' => $e->id, 'label' => $e->description];
         }, $unit_attr->medicationAttributeOptions);
@@ -76,7 +76,7 @@
             $id = is_null($assignment->id) ? -1 : $assignment->id;
 		    $rowkey++
         ?>
-        <tr data-key="<?=$rowkey?>" <?php if($assignment->medicationSet->hidden): ?>style="display:none;" <?php endif; ?>>
+        <tr data-key="<?=$rowkey?>" <?php if ($assignment->medicationSet->hidden): ?>style="display:none;" <?php endif; ?>>
             <td>
                 <input type="hidden" name="Medication[medicationSetItems][id][]" value="<?=$id?>" />
                 <input type="hidden" name="Medication[medicationSetItems][medication_set_id][]" value="<?=$assignment->medication_set_id?>" />
@@ -133,7 +133,7 @@
                                 });
 
                                 var lastkey = $("#medication_set_assignment_tbl > tbody > tr:last").attr("data-key");
-                                if(isNaN(lastkey)) {
+                                if (isNaN(lastkey)) {
                                     lastkey = 0;
                                 }
                                 var key = parseInt(lastkey) + 1;

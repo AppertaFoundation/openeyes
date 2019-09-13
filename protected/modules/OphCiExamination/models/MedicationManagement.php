@@ -179,7 +179,7 @@ class MedicationManagement extends BaseMedicationElement
         $exclude = array_merge($continued, $stopped, $prescribed);
         $other = array();
         foreach ($this->visible_entries as $entry) {
-            if(!in_array($entry->id, $exclude)) {
+            if (!in_array($entry->id, $exclude)) {
                 $other[] = $entry;
             }
         }
@@ -193,7 +193,7 @@ class MedicationManagement extends BaseMedicationElement
      * @param string $className active record class name.
      * @return MedicationManagement the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -226,11 +226,10 @@ class MedicationManagement extends BaseMedicationElement
             $entry->event_id = $this->event->id;
 
             /* Why do I have to do this? */
-            if(isset($entry->id) && $entry->id > 0) {
+            if (isset($entry->id) && $entry->id > 0) {
                 $entry->setIsNewRecord(false);
                 $is_new = false;
-            }
-            else {
+            } else {
                 $is_new = true;
             }
 
@@ -238,7 +237,7 @@ class MedicationManagement extends BaseMedicationElement
             $entry->usage_type = $class::getUsagetype();
             $entry->usage_subtype = $class::getUsageSubtype();
 
-            if(!$entry->save()) {
+            if (!$entry->save()) {
                 foreach ($entry->errors as $err) {
                     $this->addError('entries', implode(', ', $err));
                 }
@@ -250,7 +249,7 @@ class MedicationManagement extends BaseMedicationElement
                 $entry->id = $id;
             }
 
-            if(!$entry->saveTapers()) {
+            if (!$entry->saveTapers()) {
                 foreach ($entry->errors as $err) {
                     $this->addError('entries', implode(', ', $err));
                 }
@@ -259,13 +258,13 @@ class MedicationManagement extends BaseMedicationElement
 
             $saved_ids[] = $entry->id;
 
-            if($entry->prescribe) {
+            if ($entry->prescribe) {
                 $this->entries_to_prescribe[] = $entry;
             }
         }
 
         foreach ($orig_entries as $orig_entry) {
-            if(!in_array($orig_entry->id, $saved_ids)) {
+            if (!in_array($orig_entry->id, $saved_ids)) {
                 $orig_entry->delete();
             }
         }
@@ -277,7 +276,7 @@ class MedicationManagement extends BaseMedicationElement
 
     private function createOrUpdatePrescriptionEvent()
     {
-        if(!is_null($this->prescription_id)) {
+        if (!is_null($this->prescription_id)) {
             // prescription exists
 
             /** @var \Element_OphDrPrescription_Details $prescription */
@@ -287,11 +286,11 @@ class MedicationManagement extends BaseMedicationElement
             /* items to update or remove */
             $existing_mgment_items = array();
             foreach ($prescription->items as $prescription_Item) {
-                if($mgment_item = MedicationManagementEntry::model()->find("prescription_item_id=".$prescription_Item->id)) {
+                if ($mgment_item = MedicationManagementEntry::model()->find("prescription_item_id=".$prescription_Item->id)) {
                     /** @var MedicationManagementEntry $mgment_item */
                     $existing_mgment_items[] = $mgment_item->id;
 
-                    if($mgment_item->prescribe == 0) {
+                    if ($mgment_item->prescribe == 0) {
                         //manaemenet item was updated as not prescribed
                         $pitem = \EventMedicationUse::model()->findAllByAttributes(['prescription_item_id' => $prescription_Item->id]);
                         foreach ($pitem as $p) {
@@ -301,14 +300,12 @@ class MedicationManagement extends BaseMedicationElement
                         }
                         $prescription_Item->delete();
                         $changed = true;
-                    }
-                    else if(!$mgment_item->compareToPrescriptionItem()) {
+                    } else if (!$mgment_item->compareToPrescriptionItem()) {
                         //manaemenet item was updated
                         $prescription_Item->updateFromManagementItem();
                         $changed = true;
                     }
-                }
-                else {
+                } else {
                     // management item was deleted
                     $prescription_Item->delete();
                     $changed = true;
@@ -317,7 +314,7 @@ class MedicationManagement extends BaseMedicationElement
 
             /* items to add */
             foreach ($this->entries_to_prescribe as $entry) {
-                if(!in_array($entry->id, $existing_mgment_items)) {
+                if (!in_array($entry->id, $existing_mgment_items)) {
                     $prescription_Item = new \OphDrPrescription_Item();
                     $prescription_Item->event_id =$prescription->event_id;
                     $prescription_Item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
@@ -346,7 +343,7 @@ class MedicationManagement extends BaseMedicationElement
                         $p_tapers[] = $new_taper;
                     }
                     $prescription_Item->tapers = $p_tapers;
-                    if(!$prescription_Item->save()) {
+                    if (!$prescription_Item->save()) {
                         throw new \Exception("Error while saving prescription item: ".print_r($prescription_Item->errors, true));
                     }
                     $prescription_Item->saveTapers();
@@ -356,14 +353,13 @@ class MedicationManagement extends BaseMedicationElement
                 }
             }
 
-            if($changed) {
-                if(empty(\OphDrPrescription_Item::model()->findAllByAttributes(['event_id' => $prescription->event_id]))) {
+            if ($changed) {
+                if (empty(\OphDrPrescription_Item::model()->findAllByAttributes(['event_id' => $prescription->event_id]))) {
                     // if no more items on the prescription, delete it
                     \Yii::app()->db->createCommand("UPDATE ".$this->tableName()." SET prescription_id=NULL WHERE id=".$this->id)->execute();
                     $prescription->delete();
                     $prescription->event->softDelete("Deleted via examination clinical management");
-                }
-                else {
+                } else {
                     // update prescription with message
                     $edit_reason = "Updated via examination clinical management";
                     $prescription->edit_reason_other = $edit_reason;
@@ -371,10 +367,9 @@ class MedicationManagement extends BaseMedicationElement
                     $prescription->save();
                 }
             }
-        }
-        else {
+        } else {
             // prescription does not exist yet
-            if(!empty($this->entries_to_prescribe)) {
+            if (!empty($this->entries_to_prescribe)) {
                 $this->generatePrescriptionEvent();
             }
         }
@@ -387,7 +382,7 @@ class MedicationManagement extends BaseMedicationElement
 
         $entries = $this->entries_to_prescribe;
         $items = [];
-        foreach($entries as $entry) {
+        foreach ($entries as $entry) {
             $item = $this->getPrescriptionItem($entry);
             $item->original_item_id = $entry->id;
             $items[] = $item;
@@ -434,7 +429,7 @@ class MedicationManagement extends BaseMedicationElement
         $item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();
 
         $item_tapers = array();
-        if(!empty($entry->tapers)) {
+        if (!empty($entry->tapers)) {
             foreach ($entry->tapers as $taper) {
                 $new_taper = new \OphDrPrescription_ItemTaper();
                 $new_taper->item_id = null;

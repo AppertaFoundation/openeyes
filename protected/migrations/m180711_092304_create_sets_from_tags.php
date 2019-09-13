@@ -12,7 +12,7 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
                 ->createCommand('SELECT id, name FROM tag ORDER BY name ASC')
                 ->queryAll();
         
-        if($tags){
+        if ($tags){
             $drug_tag_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'DrugTag'])->queryScalar();
             foreach($tags as $tag){
                 $command = Yii::app()->db;
@@ -29,13 +29,13 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
                     ->createCommand('SELECT drug_id FROM drug_tag WHERE tag_id = '.$tag['id'])
                     ->queryAll();
               
-                if($drugTags){
+                if ($drugTags){
                     foreach($drugTags as $drugTag){
                         $ref_medication_id = Yii::app()->db
                         ->createCommand("SELECT id FROM medication WHERE source_old_id = '".$drugTag['drug_id']."' AND source_subtype = 'drug'")
                         ->queryRow();
 
-                        if($ref_medication_id['id']){
+                        if ($ref_medication_id['id']){
                             Yii::app()->db->createCommand("INSERT INTO medication_set_item(medication_id, medication_set_id) values (".$ref_medication_id['id'].", ".$ref_set_id." )")->execute();
                         }
                     }
@@ -47,13 +47,13 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
                     ->createCommand('SELECT medication_drug_id FROM medication_drug_tag WHERE tag_id = '.$tag['id'])
                     ->queryAll();
 
-                if($medicationDrugTags){
+                if ($medicationDrugTags){
                     foreach($medicationDrugTags as $medicationDrugTag){
                         $ref_medication_id = Yii::app()->db
                         ->createCommand("SELECT id FROM medication WHERE source_old_id = '".$medicationDrugTag['medication_drug_id']."' AND source_subtype='medication_drug';")
                         ->queryRow();
                        
-                        if($ref_medication_id['id']){
+                        if ($ref_medication_id['id']){
                             Yii::app()->db->createCommand("INSERT INTO medication_set_item (medication_id, medication_set_id) values (".$ref_medication_id['id'].", ".$ref_set_id." )")->execute();
                         }
                     }

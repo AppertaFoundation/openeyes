@@ -53,12 +53,7 @@ class MedicationAttribute extends BaseActiveRecordVersioned
 		return array(
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'medicationAttributeOptions' => array(
-				self::HAS_MANY,
-				'MedicationAttributeOption',
-				'medication_attribute_id',
-				'order'=>'description asc'
-			),
+			'medicationAttributeOptions' => array(self::HAS_MANY, 'MedicationAttributeOption', 'medication_attribute_id', 'order'=>'description asc'),
 		);
 	}
 

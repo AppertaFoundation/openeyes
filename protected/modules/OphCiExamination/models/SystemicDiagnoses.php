@@ -331,7 +331,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 		/** @var \Patient $patient */
 		$patient = $event->getPatient();
 		$et = $api->getLatestElement(SystemicDiagnoses::class, $patient);
-		if($et) {
+		if ($et) {
 			// There is an earlier element: revert diagnoses
 			/** @var SystemicDiagnoses $et */
 			$et->updatePatientLevelSystemicDiagnoses();

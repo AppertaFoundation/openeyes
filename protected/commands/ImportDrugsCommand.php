@@ -139,7 +139,7 @@ EOD;
 
     public function run($params)
     {
-        if(empty($params)) {
+        if (empty($params)) {
             $this->halt('Parameter problem.');
         }
 
@@ -161,15 +161,15 @@ EOD;
         $version = 0;
         $structure = array();
 
-        if(isset($XMLdata['complexType'])){
+        if (isset($XMLdata['complexType'])){
             $version = 1;
-        } elseif($XMLdata['element']['complexType']['sequence']['element']) {
+        } elseif ($XMLdata['element']['complexType']['sequence']['element']) {
             $version = 2;
         } else {
             $this->halt('Unknown version.',false);
         }
 
-        if($version==1){
+        if ($version==1){
             $parentNode = $XMLdata['complexType'];
             foreach($parentNode as $tables){
                 $tableName = strtolower($this->tablePrefix.$fileType.'_'.$tables['@attributes']['name']);
@@ -181,7 +181,7 @@ EOD;
                 }
             }
 
-            if(isset($XMLdata['element']['complexType']['sequence']['element'])){
+            if (isset($XMLdata['element']['complexType']['sequence']['element'])){
                 $parentNode = $XMLdata['element']['complexType']['sequence']['element'];
                 foreach($parentNode as $table){
                     $tableName = strtolower($this->tablePrefix.$fileType.'_'.$table['@attributes']['name']);
@@ -192,7 +192,7 @@ EOD;
                 }
             }
 
-        } elseif($version==2){
+        } elseif ($version==2){
             $parentNode = $XMLdata['element']['complexType']['sequence']['element'];
             $tableName = strtolower($this->tablePrefix.$fileType.'_'.$parentNode['@attributes']['name']);
             $structure[$tableName] = [];
@@ -245,7 +245,7 @@ EOD;
     public function createTableData()
     {
         // return cached if possible
-        if(!empty($this->tableData)) {
+        if (!empty($this->tableData)) {
             return $this->tableData;
         }
 
@@ -320,7 +320,7 @@ EOD;
 
         $sqlCommands = [];
 
-        if(!$nodeIinfo = $this->getXmlNodeInfo($type)) {
+        if (!$nodeIinfo = $this->getXmlNodeInfo($type)) {
         	return false;
 		}
 
@@ -332,9 +332,9 @@ EOD;
             $fullTableName = $this->tablePrefix.$type.'_'.strtolower($tableName);
             $fields = '`'.implode('`,`',array_keys($tablesData[$fullTableName])).'`';
 
-            if(isset( $tablesData[$fullTableName] )){
+            if (isset( $tablesData[$fullTableName] )){
                 $i = 0;
-                if($subNode){
+                if ($subNode){
                     $rows = $datas[$subNode];
                 } else {
                     $rows = $datas;
@@ -342,7 +342,7 @@ EOD;
 
                 $k = array_keys($rows);
 
-                if($k[0]=='0'){
+                if ($k[0]=='0'){
                     $subsubnode = $rows;
                 } else {
                     $subsubnode = $rows[$k[0]];
@@ -353,19 +353,19 @@ EOD;
                 $multipleValuesCurrentCount = 0;
                 $rowCount = sizeof($subsubnode);
                 foreach($subsubnode as $rowIndex => $oneRow){
-                    if( $limit<=$i++ && $limit != 0 ){ break; }
+                    if ( $limit<=$i++ && $limit != 0 ){ break; }
                     $values = '';
                     foreach($tablesData[$fullTableName] as $key => $filedType){
-                        if(isset($oneRow[strtoupper($key)])){
+                        if (isset($oneRow[strtoupper($key)])){
                             $value = $oneRow[strtoupper($key)];
                         } else {
-                            if($filedType=='date'){
+                            if ($filedType=='date'){
                                 $value = '0000-00-00';
                             } else {
                                 $value = '';
                             }
                         }
-                        if(getType($value)=='array' && empty($value)){
+                        if (getType($value)=='array' && empty($value)){
                             $value = '';
                         }
                         $value = str_replace('"',"'",$value);
@@ -374,7 +374,7 @@ EOD;
                     $values = "(" . trim($values,',') . ")";
                     $multipleValues = empty($multipleValues) ? $values : $multipleValues . "," . $values;
                     $multipleValuesCurrentCount++;
-                    if($rowIndex === ($rowCount - 1) || $multipleValuesCurrentCount === $multipleValuesMaxCount) {
+                    if ($rowIndex === ($rowCount - 1) || $multipleValuesCurrentCount === $multipleValuesMaxCount) {
                         $insertMultipleCommand = sprintf($this->insertMultipleTemplate,
                             $fullTableName, $fields, $multipleValues);
                         $sqlCommands[] = $insertMultipleCommand;
@@ -397,7 +397,7 @@ EOD;
         $xmlArray = $parser->getOutput();
         unset($parser);
 
-        if($sqlCommands = $this->createInsertSqlCommands($xmlArray,$type,$tablesData)) {
+        if ($sqlCommands = $this->createInsertSqlCommands($xmlArray,$type,$tablesData)) {
 			foreach ($sqlCommands as $sqlQuery) {
 				$sqlCommand = Yii::app()->db->createCommand($sqlQuery);
 				$sqlCommand->execute();
@@ -477,7 +477,7 @@ EOD;
             $sqlQuery = sprintf("SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '%s'",$tableName);
             $sqlCommand = Yii::app()->db->createCommand($sqlQuery);
             $result = $sqlCommand->execute();
-            if($result==1) {
+            if ($result==1) {
                 $sqlQuery = sprintf($this->truncateTableTemplate, $tableName);
                 $sqlCommand = Yii::app()->db->createCommand($sqlQuery);
                 $sqlCommand->execute();
@@ -504,7 +504,7 @@ EOD;
     public function copyToOE()
     {
 
-        if(file_exists('/tmp/medication_set.csv') && !unlink('/tmp/medication_set.csv')) {
+        if (file_exists('/tmp/medication_set.csv') && !unlink('/tmp/medication_set.csv')) {
         	die("Error while attepting to delete /tmp/medication_set.csv, please delete manually and re-run.".PHP_EOL);
 		}
 
@@ -694,7 +694,7 @@ EOD;
                     $attr_name_parts = explode(".", $attrib);
                     $attr_name = $attr_name_parts[0];
                     $attr_key = strtolower($attr_key);
-                    if(array_key_exists($attr_key, $row) && !empty($row[$attr_key])) {
+                    if (array_key_exists($attr_key, $row) && !empty($row[$attr_key])) {
                         $attr_value = $row[$attr_key];
                         $values[] = "(
 								{$medicationId},

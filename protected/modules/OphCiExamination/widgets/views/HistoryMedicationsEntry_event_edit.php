@@ -37,13 +37,14 @@ $to_be_copied = !$entry->originallyStopped && isset($entry->medication) && $entr
 
 $is_posting = Yii::app()->request->getIsPostRequest();
 
+$allergy_ids = implode(",", array_map(function ($e) {
+    return $e->id;
+}, $entry->medication->allergies));
 ?>
 
 <tr data-key="<?= $row_count ?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
-    <?php if (!is_null($entry->medication_id)): ?>data-allergy-ids="<?php echo implode(",", array_map(function ($e) {
-        return $e->id;
-    }, $entry->medication->allergies)); ?>"<?php endif; ?>
+    <?php if (!is_null($entry->medication_id)) : ?>data-allergy-ids="<?= $allergy_ids ?>"<?php endif; ?>
     class="<?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?><?= $row_type == 'closed' ? ' stopped' : '' ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
     <td>
@@ -105,7 +106,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                             array('empty' => '-Laterality-', 'class' => 'admin-route-options js-laterality cols-2', 'style' => $entry->routeOptions() ? '' : 'display:none')); ?>
                     </div>
                 </div>
-                <?php /* if(!$is_new): ?><button type="button" class="alt-display-trigger small">Change</button><?php endif; */ ?>
+                <?php /* if (!$is_new): ?><button type="button" class="alt-display-trigger small">Change</button><?php endif; */ ?>
             </div>
         </div>
     </td>
@@ -129,9 +130,9 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         <div class="alternative-display inline">
             <div class="alternative-display-element textual">
                 <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
-                    <?php if (!is_null($entry->end_date)): ?>
+                    <?php if (!is_null($entry->end_date)) : ?>
                         <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
-                    <?php else: ?>
+                    <?php else : ?>
                         stopped?
                     <?php endif; ?>
                 </a>

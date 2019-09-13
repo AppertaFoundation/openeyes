@@ -156,7 +156,7 @@ class HistoryRisksManager
             $entries[] = $entry;
         }
 
-        if($element->save()) {
+        if ($element->save()) {
             foreach ($entries as $entry) {
                 $entry->element_id = $element->id;
                 $entry->element = $element;

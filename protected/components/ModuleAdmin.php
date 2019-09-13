@@ -39,21 +39,21 @@ class ModuleAdmin
                         }
                     }
                 }
-                elseif(is_array($uri) && isset($uri['requires_setting'])) {
+                elseif (is_array($uri) && isset($uri['requires_setting'])) {
 
                     $setting_key = $uri['requires_setting']['setting_key'];
                     $required_value = $uri['requires_setting']['required_value'];
                     $item_enabled = Yii::app()->params[$setting_key];
                     
                     if (isset($item_enabled) && $item_enabled == $required_value) {
-                        if(preg_match('/^\/' . $event_type->class_name . '\//', $uri['uri']))
+                        if (preg_match('/^\/' . $event_type->class_name . '\//', $uri['uri']))
                         {
                             $module_admin[$event_type->name][$item] = $uri['uri'];
                         }
                     }
                 }
                 else{
-                    if(preg_match('/^\/' . $event_type->class_name . '\//', $uri))
+                    if (preg_match('/^\/' . $event_type->class_name . '\//', $uri))
                     {
                         $module_admin[$event_type->name][$item] = $uri;
                     }

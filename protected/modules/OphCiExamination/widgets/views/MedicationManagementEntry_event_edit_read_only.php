@@ -47,7 +47,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 	<tr
 		data-key="<?=$row_count?>"
 		data-event-medication-use-id="<?php echo $entry->id; ?>"
-		data-allergy-ids="<?php if(!is_null($entry->medication_id)){
+		data-allergy-ids="<?php if (!is_null($entry->medication_id)){
 			echo implode(",", array_map(function($e){ return $e->id; }, $entry->medication->allergies));
 		}
 		else {
@@ -59,7 +59,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 		<td>
 			<span class="js-prepended_markup">
             <?php
-						if(!is_null($entry->medication_id)) {
+						if (!is_null($entry->medication_id)) {
 							if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
 								echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to '.implode(',',$patient->getPatientDrugAllergy($entry->medication_id)).'"></i>';
 							}
@@ -123,7 +123,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 				<input type="hidden" name="<?= $field_prefix ?>[start_date]"
 							 value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
 				<i class="oe-i start small pad"></i>
-				<?php if($entry->start_date) {
+				<?php if ($entry->start_date) {
 					echo $entry->getStartDateDisplay();
 				} ?>
 			</fieldset>
@@ -131,14 +131,14 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 		<td class="end-date-column">
 			<div class="alternative-display inline">
 				<div class="alternative-display-element textual">
-						<?php if(!is_null($entry->end_date)) {?>
+						<?php if (!is_null($entry->end_date)) {?>
 							<input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date?>"/>
 							<?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
 						<?php } ?>
 			</div>
 		</td>
 		<td>
-			<?php if(isset($entry->stop_reason_id)) {
+			<?php if (isset($entry->stop_reason_id)) {
 				$stop_reason = HistoryMedicationsStopReason::model()->findByPk($entry->stop_reason_id);
 				echo isset($stop_reason) ? $stop_reason->name : "";
 			} ?>
@@ -166,7 +166,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 	</tr>
 <?php
 
-if(!empty($entry->tapers)) {
+if (!empty($entry->tapers)) {
 	$tcount = 0;
 	foreach ($entry->tapers as $taper) {
 		$this->render(

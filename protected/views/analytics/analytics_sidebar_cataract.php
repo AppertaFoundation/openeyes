@@ -111,7 +111,7 @@
     $('.js-cataract-report-type').on('click',function () {
         // everytime switching between cataract report type will bind a submit event on #search-form
         // clear that out at beginning, as plot initialization will bind submit event
-        if($._data(document.getElementById('search-form'), "events").hasOwnProperty('submit')){
+        if ($._data(document.getElementById('search-form'), "events").hasOwnProperty('submit')){
             $('#search-form').off('submit')
         }
         $(this).addClass("selected");
@@ -164,17 +164,17 @@
         var from_date = $('#analytics_datepicker_from').val() ? $('#analytics_datepicker_from').val() : "<?php echo $min_event_date?>";
         var to_date = $('#analytics_datepicker_to').val() ? " to " + $('#analytics_datepicker_to').val() : " to " + "<?php echo $max_event_date?>";
         // make sure the entry is logical
-        if(new Date(from_date) > new Date(to_date)){
+        if (new Date(from_date) > new Date(to_date)){
             alert('From date cannot be later than To date')
             return;
         }
-        if(new Date(to_date) < new Date(from_date)){
+        if (new Date(to_date) < new Date(from_date)){
             alert('To date cannot be earlier than From date')
             return;
         }
         date = from_date + to_date
         // prevent click during downloading
-        if($(this).text() === 'Downloading...'){
+        if ($(this).text() === 'Downloading...'){
             return false;
         }
 
@@ -256,7 +256,7 @@
 
         for(var key in dict){
             // whichever plot is initialized will be put into pdf first
-            if(dict[key][2] === selected){
+            if (dict[key][2] === selected){
                 // get the plot and set required color
                 var currentPlot = document.getElementById(dict[key][0]);
                 // set plot color in pdf
@@ -285,7 +285,7 @@
             // flag for if the pdf is saved
             var saved = false;
             // only the events triggered by js-download-pdf will be captured
-            if(event.target.activeElement.id && event.target.activeElement.id === 'js-download-pdf') {
+            if (event.target.activeElement.id && event.target.activeElement.id === 'js-download-pdf') {
                 // get plot
                 var plot = document.getElementById(dict[settings.url][0]);
                 // set plot color
@@ -299,7 +299,7 @@
                         // put the image into pdf
                         doc.addImage(dataURL, 'PNG', marginL, marginT, plotWidth, plotHeight);
                         
-                        if(counter >= total){
+                        if (counter >= total){
                             doc.save('Cataract_Plots.pdf');
                             saved = true;
                             return saved;
@@ -316,7 +316,7 @@
 
                         // the search form will be affected by initializing all the plots
                         // bring it back at this stage
-                        if(flag){
+                        if (flag){
                             // clear the dictionary
                             delete dict;
                             // to reset the search form
@@ -335,7 +335,7 @@
     // or the analytics_layout from analytics_plotly.js
     function configPlotPDF(plot, config){
         // in case the plot is not passed in
-        if(plot){
+        if (plot){
             plot.layout.paper_bgcolor = config.paper_bgcolor;
             plot.layout.plot_bgcolor = config.plot_bgcolor;
             plot.layout.font.color = config.font === undefined ? 'white' : config.font.color;

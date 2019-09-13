@@ -34,7 +34,7 @@
     </tr>
     </thead>
     <tbody>
-	<?php if(!is_null($set)): ?>
+	<?php if (!is_null($set)): ?>
         <?php foreach ($set->medicationSetAutoRuleMedications as $row_key => $assignment): ?>
             <tr data-key="<?=$row_key?>">
                 <td>
@@ -74,25 +74,25 @@
 
                         let row = {};
                         $.each(selectedItems, function(i,e){
-                            if(typeof e.itemSet === "undefined") {
+                            if (typeof e.itemSet === "undefined") {
                                 row.medication = Object.assign({}, e);
                                 return;
                             }
-                            if(e.itemSet.options.id == "inc_parents") {
+                            if (e.itemSet.options.id == "inc_parents") {
                                 row.include_parents = e.id
                             }
-                            else if(e.itemSet.options.id == "inc_children") {
+                            else if (e.itemSet.options.id == "inc_children") {
                                 row.include_children = e.id;
                             }
                         });
 
-                        if(typeof row.medication === "undefined") {
+                        if (typeof row.medication === "undefined") {
                             return false;
                         }
 
                         let $body = $("#individual_medications_tbl > tbody");
                         let lastkey = $body.find("tr:last").attr("data-key");
-                        if(isNaN(lastkey)) {
+                        if (isNaN(lastkey)) {
                             lastkey = 0;
                         }
                         let key = parseInt(lastkey) + 1;

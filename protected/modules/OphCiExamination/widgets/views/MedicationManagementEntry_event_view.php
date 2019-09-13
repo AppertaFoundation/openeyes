@@ -22,7 +22,7 @@
             $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
         } ?>
         <?= $entry->getMedicationDisplay(true) ?>
-        <?php if($entry->prescribe && $entry->prescriptionItem): ?>
+        <?php if ($entry->prescribe && $entry->prescriptionItem): ?>
 					<a href="<?= $entry->getPrescriptionLink(); ?>">
         		&nbsp;<i class="oe-i drug-rx small" title="Prescribed"></i>
 					</a>
@@ -33,18 +33,18 @@
     </td>
     <td><?php echo $entry->duration ? $entry->drugDuration->name : '' ?></td>
     <td>
-        <?php if($entry->dispense_condition_id) { echo $entry->dispense_condition->name . " / " . $entry->dispense_location->name; } ?>
+        <?php if ($entry->dispense_condition_id) { echo $entry->dispense_condition->name . " / " . $entry->dispense_location->name; } ?>
     </td>
     <td><?php $laterality = $entry->getLateralityDisplay(); ?>
         <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
         <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
     </td>
     <td><?= $entry->getStartDateDisplay() ?></td>
-		<?php if(isset($stopped) && $stopped) { ?>
+		<?php if (isset($stopped) && $stopped) { ?>
 				<td><?= $entry->getEndDateDisplay() ?></td>
 		<?php } ?>
 </tr>
-<?php if($entry->taper_support): ?>
+<?php if ($entry->taper_support): ?>
     <?php foreach ($entry->tapers as $taper): ?>
 <tr>
     <td>

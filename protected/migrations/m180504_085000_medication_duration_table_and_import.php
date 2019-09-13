@@ -14,7 +14,7 @@ class m180504_085000_medication_duration_table_and_import extends OEMigration
         $drug_durations = Yii::app()->db
                 ->createCommand('SELECT id, name, display_order FROM drug_duration ORDER BY id ASC')
                 ->queryAll();
-        if($drug_durations){
+        if ($drug_durations){
             foreach($drug_durations as $duration){
                 $command = Yii::app()->db
                 ->createCommand("

@@ -45,7 +45,7 @@ function fileEntryExists($fullfilename, $filedata, $mysqli)
     /*
 
     $checkQuery = $mysqli->query("SELECT id FROM dicom_files WHERE filename='".$fullfilename."' AND filesize ='".$filedata["size"]."' AND filedate='".date("Y-m-d H:i:s",$filedata["mtime"])."'");
-    if($isFileEntryExists = $checkQuery->fetch_row()){
+    if ($isFileEntryExists = $checkQuery->fetch_row()){
         return $isFileEntryExists[0];
     }else{
         return false;

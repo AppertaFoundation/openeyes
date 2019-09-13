@@ -142,7 +142,7 @@ class PatientSearch
             'last_name' => CHtml::decode($search_terms['last_name']),
         );
 
-        if( $this->use_pas == false ){
+        if ( $this->use_pas == false ){
             $patient->use_pas = false;
         }
 

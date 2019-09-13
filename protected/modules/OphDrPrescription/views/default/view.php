@@ -21,7 +21,7 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
     <?php
         // Event actions
         $elementEditable = $Element->isEditableByMedication();
-        if(($Element->draft ) && (!$elementEditable )){
+        if (($Element->draft ) && (!$elementEditable )){
             $this->event_actions[] = EventAction::button(
                 'Save as final',
                 'save',
@@ -36,7 +36,7 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
         }
 
         if ($this->checkPrintAccess()) {
-        	if(!$Element->draft || $this->checkEditAccess()){
+        	if (!$Element->draft || $this->checkEditAccess()){
         		$this->event_actions[] = EventAction::printButton();
         	}
         }

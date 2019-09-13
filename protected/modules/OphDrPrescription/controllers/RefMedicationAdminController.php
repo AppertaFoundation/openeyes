@@ -47,11 +47,11 @@ class RefMedicationAdminController extends BaseAdminController
             'amp_term',
         ));
 
-        if(!is_null($this->source_type)) {
+        if (!is_null($this->source_type)) {
             $admin->getSearch()->getCriteria()->addColumnCondition(['source_type' => $this->source_type]);
         }
 
-		if(is_null($this->source_type)) {
+		if (is_null($this->source_type)) {
 			$admin->getSearch()->addSearchItem('source_type');
 		}
 
@@ -67,14 +67,14 @@ class RefMedicationAdminController extends BaseAdminController
 
     public function actionEdit($id = null)
     {
-    	if(is_null($id)) {
+    	if (is_null($id)) {
 			$model = new Medication();
-			if(isset($this->source_type)) {
+			if (isset($this->source_type)) {
 				$model->source_type = $this->source_type;
 			}
 		}
 		else {
-			if(!$model = Medication::model()->findByPk($id)) {
+			if (!$model = Medication::model()->findByPk($id)) {
 				throw new CHttpException(404);
 			}
 		}
@@ -181,11 +181,11 @@ class RefMedicationAdminController extends BaseAdminController
 
     public function actionSave($id = null)
     {
-		if(is_null($id)) {
+		if (is_null($id)) {
 			$model = new Medication();
 		}
 		else {
-			if(!$model = Medication::model()->findByPk($id)) {
+			if (!$model = Medication::model()->findByPk($id)) {
 				throw new CHttpException(404);
 			}
 		}
@@ -194,7 +194,7 @@ class RefMedicationAdminController extends BaseAdminController
         $data = Yii::app()->request->getPost('Medication');
         $this->_setModelData($model, $data);
 
-		if($model->hasErrors()) {
+		if ($model->hasErrors()) {
 			$admin = $this->_getEditAdmin($model);
 			$this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors() ));
 			exit;
@@ -204,7 +204,7 @@ class RefMedicationAdminController extends BaseAdminController
 		$trans = Yii::app()->db->beginTransaction();
 
 
-		if($model->save(false)) {
+		if ($model->save(false)) {
 			$trans->commit();
 		}
 
@@ -214,15 +214,15 @@ class RefMedicationAdminController extends BaseAdminController
 			$medicationSet = MedicationSet::model()->findByPk($item->medication_set_id);
 
 			/** @var MedicationSet $medicationSet */
-			if($medicationSet->automatic) {
+			if ($medicationSet->automatic) {
 				$has_medication_in_list = false;
 				foreach ($medicationSet->medicationSetAutoRuleMedications as $m) {
-					if($m->medication_id == $item->medication_id) {
+					if ($m->medication_id == $item->medication_id) {
 						$has_medication_in_list = true;
 					}
 				}
 
-				if(!$has_medication_in_list) {
+				if (!$has_medication_in_list) {
 					$assignment = new MedicationSetAutoRuleMedication();
 					$assignment->medication_id = $item->medication_id;
 					$assignment->medication_set_id = $medicationSet->id;
@@ -239,16 +239,16 @@ class RefMedicationAdminController extends BaseAdminController
 	{
 		$model->setAttributes($data);
 
-		if(!array_key_exists('source_type', $data)) {
+		if (!array_key_exists('source_type', $data)) {
 			$model->source_type = $this->source_type;
 		}
 
 		$model->validate();
 
 		$alt_terms = array();
-		if(array_key_exists('medicationSearchIndexes', $data)) {
+		if (array_key_exists('medicationSearchIndexes', $data)) {
 			foreach ($data['medicationSearchIndexes']['id'] as $key => $rid) {
-				if($rid == -1) {
+				if ($rid == -1) {
 					$alt_term = new MedicationSearchIndex();
 				}
 				else {
@@ -260,7 +260,7 @@ class RefMedicationAdminController extends BaseAdminController
 					'alternative_term' => $data['medicationSearchIndexes']['alternative_term'][$key],
 				));
 
-				if(!$alt_term->validate()) {
+				if (!$alt_term->validate()) {
 					$model->addErrors($alt_term->getErrors());
 				}
 
@@ -273,12 +273,12 @@ class RefMedicationAdminController extends BaseAdminController
 
 		$pref_term_exists = false;
 		foreach ($model->medicationSearchIndexes as $si) {
-			if($si->alternative_term == $model->preferred_term) {
+			if ($si->alternative_term == $model->preferred_term) {
 				$pref_term_exists = true;
 			}
 		}
 
-		if(!$pref_term_exists) {
+		if (!$pref_term_exists) {
 			$alt_term = new MedicationSearchIndex();
 			$alt_term->setAttributes(array(
 				'medication_id' => $model->id,
@@ -290,9 +290,9 @@ class RefMedicationAdminController extends BaseAdminController
 		// update attribute assignments
 
 		$attr_assignments = [];
-		if(array_key_exists('medicationAttributeAssignment', $data)) {
+		if (array_key_exists('medicationAttributeAssignment', $data)) {
 			foreach ($data['medicationAttributeAssignment']['id'] as $key=>$assignment_id) {
-				if($assignment_id == -1) {
+				if ($assignment_id == -1) {
 					$assignment = new MedicationAttributeAssignment();
 					$assignment->medication_id = $model->id;
 					$assignment->medication_attribute_option_id = $data['medicationAttributeAssignment']['medication_attribute_option_id'][$key];
@@ -303,7 +303,7 @@ class RefMedicationAdminController extends BaseAdminController
 				}
 				$attr_assignments[] = $assignment;
 
-				if(!$assignment->validate()) {
+				if (!$assignment->validate()) {
 					$model->addErrors($assignment->getErrors());
 				}
 			}
@@ -312,17 +312,17 @@ class RefMedicationAdminController extends BaseAdminController
 
 		// update set memberships
 		$medicationSetItems = array();
-		if(array_key_exists('medicationSetItems', $data)) {
+		if (array_key_exists('medicationSetItems', $data)) {
 			foreach ($data['medicationSetItems']['id'] as $key => $medicationSetItem_id) {
 				$attributes = array();
 
 				foreach (MedicationSetItem::model()->attributeNames() as $attr_name) {
-					if(array_key_exists($attr_name, $data['medicationSetItems'])) {
+					if (array_key_exists($attr_name, $data['medicationSetItems'])) {
 						$attributes[$attr_name] = array_key_exists($key, $data['medicationSetItems'][$attr_name]) ? $data['medicationSetItems'][$attr_name][$key] : null;
 					}
 				}
 
-				if($medicationSetItem_id == -1) {
+				if ($medicationSetItem_id == -1) {
 					$medicationSetItem = new MedicationSetItem();
 				}
 				else {
@@ -332,7 +332,7 @@ class RefMedicationAdminController extends BaseAdminController
 				$medicationSetItem->setAttributes($attributes);
 				$medicationSetItem->medication_id = $model->id;
 
-				if(!$medicationSetItem->validate(array('medication_set_id', 'default_form_id', 'default_route_id', 'default_frequency_id', 'default_duration_id'))) {
+				if (!$medicationSetItem->validate(array('medication_set_id', 'default_form_id', 'default_route_id', 'default_frequency_id', 'default_duration_id'))) {
 					$model->addErrors($medicationSetItem->getErrors());
 				}
 
@@ -347,9 +347,9 @@ class RefMedicationAdminController extends BaseAdminController
     {
         $data = array();
 
-        if(Yii::app()->request->isPostRequest) {
+        if (Yii::app()->request->isPostRequest) {
             $med_set_ids = Yii::app()->request->getPost('MedicationSet');
-            if(!empty($med_set_ids)) {
+            if (!empty($med_set_ids)) {
                 return $this->actionExport($med_set_ids);
             }
             else {
@@ -417,7 +417,7 @@ class RefMedicationAdminController extends BaseAdminController
             ];
 
             foreach ($sets as $set) {
-                if($ref_medication_set = MedicationSetItem::model()->find("medication_id = {$med->id} AND medication_set_id = {$set->id}")) {
+                if ($ref_medication_set = MedicationSetItem::model()->find("medication_id = {$med->id} AND medication_set_id = {$set->id}")) {
                     $repr = new stdClass();
                     $repr->dose = $ref_medication_set->default_dose;
                     $repr->dose_unit = $ref_medication_set->default_dose_unit_term;
@@ -425,7 +425,7 @@ class RefMedicationAdminController extends BaseAdminController
                     $repr->frequency = is_null($ref_medication_set->default_frequency) ? null: $ref_medication_set->defaultFrequency->term;
                     $repr->duration = is_null($ref_medication_set->default_duration) ? null : $ref_medication_set->defaultDuration->name;
 
-                    if(!empty($ref_medication_set->tapers)) {
+                    if (!empty($ref_medication_set->tapers)) {
                         $repr->tapers = array();
                         foreach ($ref_medication_set->tapers as $taper) {
                             $t = new stdClass();

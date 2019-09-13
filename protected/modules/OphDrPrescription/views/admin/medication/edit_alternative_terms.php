@@ -19,7 +19,7 @@ $rowkey = 0;
     $(function(){
         $(document).on("click", ".js-add-alt-term", function (e) {
             var lastkey = $("#medication_alternative_terms_tbl tbody tr:last").attr("data-key");
-            if(isNaN(lastkey)) {
+            if (isNaN(lastkey)) {
                 lastkey = 0;
             }
             var key = parseInt(lastkey) + 1;

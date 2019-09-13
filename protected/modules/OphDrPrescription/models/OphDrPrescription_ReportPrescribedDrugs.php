@@ -54,7 +54,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
         $command = Yii::app()->db->createCommand()
             ->select(
                 'patient.hos_num, contact.last_name, contact.first_name, patient.dob, address.postcode, d.created_date, medication.preferred_term, 
-                 IF(medication.id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id = (SELECT id FROM medication_set WHERE name = \'Preservative free\')),1,0) AS preservative_free,
+                 if (medication.id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id = (SELECT id FROM medication_set WHERE name = \'Preservative free\')),1,0) AS preservative_free,
                 user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date'
             )
             ->from('episode')

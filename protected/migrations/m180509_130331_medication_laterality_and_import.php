@@ -15,7 +15,7 @@ class m180509_130331_medication_laterality_and_import extends OEMigration
                 ->createCommand('SELECT name FROM drug_route_option GROUP BY name ORDER BY id  ASC')
                 ->queryAll();
         
-        if($drug_route_options){
+        if ($drug_route_options){
             foreach($drug_route_options as $option){
                 $command = Yii::app()->db
                 ->createCommand("

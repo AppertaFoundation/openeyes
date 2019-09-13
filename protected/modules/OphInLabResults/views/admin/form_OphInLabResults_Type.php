@@ -198,7 +198,7 @@
             if (selectedOption === "Numeric Field") {
                 $('.js-field-type-numeric-fields').show();
                 $('.js-drop-down-fields').hide();
-            } else if(selectedOption === "Drop-down Field"){
+            } else if (selectedOption === "Drop-down Field"){
                $('.js-drop-down-fields').show();
                 $('.js-field-type-numeric-fields').hide();
             } else {

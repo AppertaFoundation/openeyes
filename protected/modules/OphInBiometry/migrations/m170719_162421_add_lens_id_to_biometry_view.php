@@ -13,7 +13,7 @@ class m170719_162421_add_lens_id_to_biometry_view extends CDbMigration
                             
                             (
                                 select 
-                                    COALESCE(NULLIF(oll.display_name, "" ) ,oll.description )
+                                    COALESCE(NULLif (oll.display_name, "" ) ,oll.description )
                                 from 
                                     ophinbiometry_lenstype_lens oll 
                                 where (oll.id = eos.lens_id_left)
@@ -26,7 +26,7 @@ class m170719_162421_add_lens_id_to_biometry_view extends CDbMigration
                             
                             (
                                 select 
-                                    COALESCE(NULLIF(oll.display_name, "" ) ,oll.description )
+                                    COALESCE(NULLif (oll.display_name, "" ) ,oll.description )
                                 from 
                                     ophinbiometry_lenstype_lens oll 
                                 where (oll.id = eos.lens_id_right)
@@ -67,7 +67,7 @@ class m170719_162421_add_lens_id_to_biometry_view extends CDbMigration
                             
                             (
                                 select 
-                                    COALESCE(NULLIF(oll.display_name, "" ) ,oll.description )
+                                    COALESCE(NULLif (oll.display_name, "" ) ,oll.description )
                                 from 
                                     ophinbiometry_lenstype_lens oll 
                                 where (oll.id = eos.lens_id_left)
@@ -79,7 +79,7 @@ class m170719_162421_add_lens_id_to_biometry_view extends CDbMigration
                             
                             (
                                 select 
-                                    COALESCE(NULLIF(oll.display_name, "" ) ,oll.description )
+                                    COALESCE(NULLif (oll.display_name, "" ) ,oll.description )
                                 from 
                                     ophinbiometry_lenstype_lens oll 
                                 where (oll.id = eos.lens_id_right)

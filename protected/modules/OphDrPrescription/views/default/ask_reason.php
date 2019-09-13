@@ -83,7 +83,7 @@ $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'displa
         $(document).on("click","button.submit", function(e){
             e.preventDefault();
             var value = $(this).data('value');
-            if(value=='1')
+            if (value=='1')
             {
                 $('#reason').val(1);
                 $('#reason_other_text').removeAttr("readonly").focus();

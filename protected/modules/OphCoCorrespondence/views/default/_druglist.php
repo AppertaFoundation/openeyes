@@ -38,7 +38,7 @@
             <td><?=$entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '')?></td>
             <td>
 				<?php
-				if($laterality = $entry->getLateralityDisplay()) {
+				if ($laterality = $entry->getLateralityDisplay()) {
 					\Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
 				}
 				else {

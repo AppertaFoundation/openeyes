@@ -13,7 +13,7 @@
     <td><?=$set->hidden ? \OEHtml::iconTick() : \OEHtml::iconRemove(['class' => 'medium']);?></td>
     <td><?=$set->automatic ? \OEHtml::iconTick() : \OEHtml::iconRemove(['class' => 'medium']);?></td>
     <td>
-        <?php if(!$set->automatic): ?>
+        <?php if (!$set->automatic): ?>
             <a href="/OphDrPrescription/admin/DrugSet/edit/<?=$set->id?>" class="button">Edit</a>
         <?php else: ?>
             <i class="oe-i info pad-left small js-has-tooltip"

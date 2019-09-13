@@ -44,7 +44,7 @@
               $(document).ready(function () {
                   var $date_input = $('.js-event-date-input');
                   $('.js-change-event-date').on('click', function () {
-                      if(!$(this).hasClass('disabled')) {
+                      if (!$(this).hasClass('disabled')) {
                           $date_input.show();
                           $('.js-event-date').hide();
                           $('.js-change-event-date').hide();

@@ -30,7 +30,7 @@
   <td>
       <input type="hidden" name="Element_OphDrPrescription_Details[items][<?=$key ?>][usage_type]" value="<?=OphDrPrescription_Item::getUsageType(); ?>" />
       <input type="hidden" name="Element_OphDrPrescription_Details[items][<?=$key ?>][usage_subtype]" value="<?=OphDrPrescription_Item::getUsageSubType(); ?>" />
-      <?php if (isset($patient) && $patient->hasDrugAllergy($item->medication_id)): ?>
+      <?php if (isset($patient) && $patient->hasDrugAllergy($item->medication_id)) : ?>
       <i class="oe-i warning small pad js-has-tooltip" data-tooltip-content="Allergic to <?= implode(',',$patient->getPatientDrugAllergy($item->medication_id))?>"></i>
       <?php endif; ?>
       <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
@@ -39,7 +39,7 @@
         <input type="hidden" name="Element_OphDrPrescription_Details[items][<?=$key ?>][id]" value="<?=$item->id ?>" /><?php
       } ?>
     <input type="hidden" name="Element_OphDrPrescription_Details[items][<?=$key ?>][medication_id]" value="<?=$item->medication_id ?>"/>
-      <?php if($item->comments){ ?>
+      <?php if ($item->comments) { ?>
         <i class="oe-i comments-added active medium-icon pad js-add-comments js-has-tooltip" style="" data-tooltip-content="<?=\CHtml::encode($item->comments);?>"></i>
        <?php } else { ?>
         <i class="oe-i comments medium-icon pad js-add-comments" style=""></i>
@@ -53,7 +53,7 @@
                     'rows'=>'1', 'class'=>'js-input-comments cols-full ',
                     'style' => 'overflow-x: hidden;word-wrap: break-word;'
                 ];
-                echo CHtml::textArea('Element_OphDrPrescription_Details[items][' . $key . '][comments]' ,CHtml::encode($item->comments) ,$htmlOptions) ?>
+                echo CHtml::textArea('Element_OphDrPrescription_Details[items][' . $key . '][comments]', \CHtml::encode($item->comments) ,$htmlOptions) ?>
               <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
           </div>
       </div>
@@ -133,7 +133,7 @@
         </td>
     </tr>
 
-<?php foreach ($item->tapers as $count => $taper): ?>
+<?php foreach ($item->tapers as $count => $taper) : ?>
     <tr data-key="<?=$key ?>" data-taper="<?=$count ?>"
         class="prescription-tapier <?=($key % 2) ? 'odd' : 'even'; ?>">
         <td></td>

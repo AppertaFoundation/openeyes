@@ -238,7 +238,7 @@ $element_errors = $element->getErrors();
                     }
 
                     let hidden = ($(historyMedicationRow).find(".js-to-be-copied").val() === "0");
-                    if(hidden) {
+                    if (hidden) {
                         $medicationManagementRow.addClass("hidden");
                         $medicationManagementRow.find(".js-hidden").val("1");
                     }
@@ -274,14 +274,14 @@ $element_errors = $element->getErrors();
 
         let $changeEventDate = $('.js-change-event-date');
         $changeEventDate.addClass('disabled');
-        if($changeEventDate.is(":hidden")) {
+        if ($changeEventDate.is(":hidden")) {
             $('.js-event-date-input').hide();
             $changeEventDate.show();
             $('.js-event-date').show();
                 }
 
         let elementHasRisks = <?= $element->hasRisks() ? 1 : 0 ?>;
-        if(elementHasRisks && !$('.' + OE_MODEL_PREFIX + 'HistoryRisks').length) {
+        if (elementHasRisks && !$('.' + OE_MODEL_PREFIX + 'HistoryRisks').length) {
             $('#episodes-and-events').data('patient-sidebar').addElementByTypeClass(OE_MODEL_PREFIX + 'HistoryRisks', undefined);
         }
     });

@@ -92,7 +92,7 @@ class Swift_Mime_Headers_UnstructuredHeader extends Swift_Mime_Headers_AbstractH
      */
     public function setValue($value)
     {
-        $this->clearCachedValueIf($this->_value != $value);
+        $this->clearCachedValueif ($this->_value != $value);
         $this->_value = $value;
     }
 

@@ -5,7 +5,7 @@
 </header>
 <?php foreach ($visible_sections as $key=>$section_name): ?>
     <?php $entries = array_filter($element->$key, function($e){ return in_array($e->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL )); }); ?>
-        <?php if(!empty($entries)): ?>
+        <?php if (!empty($entries)): ?>
         <div class="label"><?php echo $section_name; ?>:</div>
         <div class="element-data">
             <div class="data-value">
@@ -33,7 +33,7 @@
 </header>
   <?php foreach ($visible_sections as $key=>$section_name): ?>
       <?php $entries = array_filter($element->$key, function($e){ return !in_array($e->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL )); }); ?>
-      <?php if(!empty($entries)): ?>
+      <?php if (!empty($entries)): ?>
           <div class="label"><?php echo $section_name; ?>:</div>
           <div class="element-data">
               <div class="data-value">

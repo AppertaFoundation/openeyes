@@ -93,14 +93,14 @@ class OphDrPrescription_Item extends EventMedicationUse
 
         	$defaults = false;
 
-        	if(!is_null($set)) {
+        	if (!is_null($set)) {
 				$defaults = MedicationSetItem::model()->find(array(
 					'condition' => 'medication_set_id = :med_set_id AND medication_id = :medication_id',
 					'params' => array(':med_set_id' => $set->id, ':medication_id' => $this->medication_id)
 				));
 			}
 
-            if($defaults) {
+            if ($defaults) {
                 /** @var MedicationSetItem $defaults */
                 $this->frequency_id = $defaults->default_frequency_id;
                 $this->route_id = $defaults->default_route_id ? $defaults->default_route_id : $this->medication->default_route_id;
@@ -188,7 +188,7 @@ class OphDrPrescription_Item extends EventMedicationUse
 			'dispense_location_id',
 		);
 
-		if(!$mgment_item = \OEModule\OphCiExamination\models\MedicationManagementEntry::model()->findByAttributes(array("prescription_item_id" =>$this->id))) {
+		if (!$mgment_item = \OEModule\OphCiExamination\models\MedicationManagementEntry::model()->findByAttributes(array("prescription_item_id" =>$this->id))) {
 			return false;
 		}
 		/** @var \OEModule\OphCiExamination\models\MedicationManagementEntry $mgment_item */

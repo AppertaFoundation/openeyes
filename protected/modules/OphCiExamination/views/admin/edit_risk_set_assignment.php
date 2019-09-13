@@ -12,7 +12,7 @@
 		<td>
             <label for="chk_risk_set_<?=$set->id?>">
 			<?php echo CHtml::encode($set->name); ?>
-			<?php if($set->rulesString()) { echo "(".$set->rulesString().")"; } ?>
+			<?php if ($set->rulesString()) { echo "(".$set->rulesString().")"; } ?>
             </label>
 		</td>
         <td>
@@ -85,7 +85,7 @@
         var $medicationsets__table = $('#medication-sets-list');
 
         var $active_form = $medicationsets__table.closest('.active-form');
-        if( $medicationsets__table.find('tbody').find('tr').length === 0  ){
+        if ( $medicationsets__table.find('tbody').find('tr').length === 0  ){
             $active_form.find('.recorded').hide();
             $active_form.find('.no-recorded').show();
             $medicationsets__table.hide();

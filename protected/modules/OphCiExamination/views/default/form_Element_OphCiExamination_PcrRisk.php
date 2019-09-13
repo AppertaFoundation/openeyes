@@ -97,7 +97,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
         $activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive'; ?>
       <div class="js-element-eye <?=$side?>-eye column <?=$opposite?> side<?=$activeClass?>" data-side="<?=$side?>" >
           <?php
-          if($this->event){
+          if ($this->event){
               $patientId = $this->event->episode->patient->id;
           } else {
               $patientId = Yii::app()->request->getQuery('patient_id');

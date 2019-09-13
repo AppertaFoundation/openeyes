@@ -80,10 +80,10 @@ $assetManager = Yii::app()->getAssetManager();
                         <?php
                         $through = array();
                         $link = '';
-                        if(array_key_exists('through', $type) && is_array($type['through'])){
+                        if (array_key_exists('through', $type) && is_array($type['through'])){
                             $through = $type['through'];
                         }
-                        if(array_key_exists('link', $type) && $type['link']){
+                        if (array_key_exists('link', $type) && $type['link']){
                             $link = $type['link'];
                         }
                         echo $form->multiSelectList(

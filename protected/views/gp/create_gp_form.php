@@ -82,7 +82,7 @@
                                 return false;
                                 }",
                                 'response' => 'js:function(event, ui){
-                          if(ui.content.length === 0){
+                          if (ui.content.length === 0){
                             $("#no_contact_label_result").show();
                           } else {
                             $("#no_contact_label_result").hide();

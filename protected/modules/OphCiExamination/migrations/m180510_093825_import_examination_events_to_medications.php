@@ -8,17 +8,17 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
      */
     private function insertExaminations( $events )
     {
-        if($events){
+        if ($events){
             foreach($events as $event){
                 $legacy_dose = explode(" ", $event['dose']);
                 $dose = '';
                 $dose_unit_term = '';
 
 
-                if(count($legacy_dose) == 1){
+                if (count($legacy_dose) == 1){
                     $array = str_split($legacy_dose[0]);
                     foreach ($array as $key => $char) {
-                        if(($char == '.') || ($char == '/') || (is_numeric($char))) {
+                        if (($char == '.') || ($char == '/') || (is_numeric($char))) {
                             $dose .=  $char;
                         } else {
                             $dose_unit_term .=  $char;

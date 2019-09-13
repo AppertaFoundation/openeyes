@@ -85,7 +85,7 @@
                                 $items.hide();
                             },
                             onReturn: function (adderDialog, selectedItems) {
-                                if(selectedItems.length < 2) {
+                                if (selectedItems.length < 2) {
                                     var alert = new OpenEyes.UI.Dialog.Alert({
                                         content: "Please select an attribute and an option"
                                     });
@@ -97,7 +97,7 @@
                                 var opt  = selectedItems[1];
 
                                 var lastkey = $("#medication_attribute_assignment_tbl > tbody > tr:last").attr("data-key");
-                                if(isNaN(lastkey)) {
+                                if (isNaN(lastkey)) {
                                     lastkey = 0;
                                 }
                                 var key = parseInt(lastkey) + 1;
@@ -116,7 +116,7 @@
                             onSelect: function(e) {
                                 var $item = $(e.target).is("span") ? $(e.target).closest("li") : $(e.target);
                                 var $tr = $item.closest("tr");
-                                if($item.attr("data-type") === "attr") {
+                                if ($item.attr("data-type") === "attr") {
                                     var $all_options = $tr.children("td:eq(1)").find("ul.add-options li");
                                     var $relevant_options = $tr.children("td:eq(1)").find("ul.add-options li[data-attr_id="+$item.attr("data-id")+"]");
                                     $all_options.hide();

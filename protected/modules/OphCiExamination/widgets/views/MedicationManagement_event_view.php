@@ -34,7 +34,7 @@
                                 <col class="cols-2"/>
                                 <col class="cols-1" />
                                 <col class="cols-1"/>
-															<?php if($section === "Stopped") { ?>
+															<?php if ($section === "Stopped") { ?>
 																<col class="cols-1"/>
 															<?php } ?>
                             </colgroup>
@@ -46,7 +46,7 @@
                                 <th></th>
                                 <th></th>
                                 <th></th>
-															<?php if($section === "Stopped") { ?>
+															<?php if ($section === "Stopped") { ?>
 																<th></th>
 															<?php } ?>
                             </tr>
@@ -57,7 +57,7 @@
                                 <th>Dispense Condition/Location</th>
                                 <th>Laterality</th>
                                 <th>Start date</th>
-															<?php if($section === "Stopped") { ?>
+															<?php if ($section === "Stopped") { ?>
 																<th>Stop date</th>
 															<?php } ?>
                             </tr>

@@ -1348,7 +1348,7 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidatePatientTicketingFromData($data, $errors, $api);
         }
 
-        if(isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])){
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])){
             $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
         }
 

@@ -378,7 +378,7 @@
     function getCurrentShownPlotId(){
         var plot_id;
         $('.js-plotly-plot').each(function () {
-            if($(this).is(':visible')){
+            if ($(this).is(':visible')){
                 plot_id =  $(this)[0].id;
                 return false;
             }
@@ -413,15 +413,15 @@
         var gl_custom_procedure = ['Cataract Extraction','Trabeculectomy', 'Aqueous Shunt','Cypass','SLT','Cyclodiode'];
         var filters ="specialty="+specialty;
         $('.js-hs-filters').each(function () {
-            if($(this).is('span')){
+            if ($(this).is('span')){
                 if ($(this).html() !== 'All'){
                     if ($(this).hasClass('js-hs-surgeon')){
-                        if(side_bar_user_list !== null){
+                        if (side_bar_user_list !== null){
                             filters += '&'+$(this).data('name')+'='+side_bar_user_list[$(this).html()];
                         }
-                    }else if($(this).data('name') == "service_diagnosis"){
+                    }else if ($(this).data('name') == "service_diagnosis"){
                         filters += '&'+$(this).data('name')+'='+Object.keys(service_common_disorders).find(key => service_common_disorders[key] ===$(this).html());
-                    }else if($(this).hasClass('js-hs-custom-mr-diagnosis')){
+                    }else if ($(this).hasClass('js-hs-custom-mr-diagnosis')){
                         var diagnosis_array = $(this).html().split(",");
                         var diagnoses = "";
                         diagnosis_array.forEach(
@@ -431,13 +431,13 @@
                         );
                         diagnoses = diagnoses.slice(0,-1);
                         filters += '&'+$(this).data('name')+'='+diagnoses;
-                    }else if($(this).hasClass('js-hs-custom-mr-treatment')){
+                    }else if ($(this).hasClass('js-hs-custom-mr-treatment')){
                         var treatment = mr_custom_treatment.indexOf($(this).html());
                         filters += '&'+$(this).data('name')+'='+treatment;
-                    }else if($(this).hasClass('js-hs-custom-gl-procedure')){
+                    }else if ($(this).hasClass('js-hs-custom-gl-procedure')){
                         var procedure = gl_custom_procedure.indexOf($(this).html());
                         filters += '&'+$(this).data('name')+'='+procedure;
-                    }else if($(this).hasClass('js-hs-custom-gl-diagnosis')){
+                    }else if ($(this).hasClass('js-hs-custom-gl-diagnosis')){
                         var diagnosis_array = $(this).html().split(",");
                         var diagnoses = "";
                         diagnosis_array.forEach(
@@ -447,7 +447,7 @@
                         );
                         diagnoses = diagnoses.slice(0,-1);
                         filters += '&'+$(this).data('name')+'='+diagnoses;
-                    }else if($(this).hasClass('js-hs-custom-mr-plot-type')){
+                    }else if ($(this).hasClass('js-hs-custom-mr-plot-type')){
                         if ($(this).html().includes('change')){
                             filters += '&'+$(this).data('name')+'=change';
                         }
@@ -456,7 +456,7 @@
                         filters += '&'+$(this).data('name')+'='+$(this).html();
                     }
                 }
-            }else if($(this).is('select')){
+            }else if ($(this).is('select')){
                 filters += '&'+$(this).data('name')+'='+$(this).val();
             }
         });

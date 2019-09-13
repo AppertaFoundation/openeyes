@@ -29,7 +29,7 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
 	{
 		$this->_pid = getmypid();
 
-		if($this->_isRunning()) {
+		if ($this->_isRunning()) {
 			echo "Another process is already being run.".PHP_EOL;
 			exit(1);
 		}
@@ -46,7 +46,7 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
 
 	private function _isRunning()
 	{
-		if(file_exists($this->_pidfile)) {
+		if (file_exists($this->_pidfile)) {
 			$pid = filter_var(file_get_contents($this->_pidfile), FILTER_SANITIZE_NUMBER_INT);
 			return file_exists("/proc/$pid");
 		}

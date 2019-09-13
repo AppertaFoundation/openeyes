@@ -96,7 +96,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $select = array(
             'c.first_name', 'c.last_name', 'p.dob', 'p.gender', 'p.hos_num', 'cons.first_name as cons_first_name',
             'cons.last_name as cons_last_name', 'e.created_date', 'ep.patient_id',
-            'IF(output_status IS NULL,IF(l.draft=0," - ","Draft"), LOWER(output_status)) as status');
+            'if (output_status IS NULL,if (l.draft=0," - ","Draft"), LOWER(output_status)) as status');
 
         $data = $this->getDbCommand();
 

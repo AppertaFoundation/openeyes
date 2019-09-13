@@ -143,9 +143,9 @@ class OphCoMessaging_API extends \BaseAPI
         $criteria = new \CDbCriteria();
         $criteria->select = array(
             '*',
-            new \CDbExpression('IF(last_comment.created_user_id = :uid, t.message_text, IF(last_comment.marked_as_read = 0, last_comment.comment_text, t.message_text))  as message_text'),
-            new \CDbExpression('IF(last_comment.created_user_id = :uid, t.created_date, IF(last_comment.marked_as_read = 0, last_comment.created_date, t.created_date))  as created_date'),
-            new \CDbExpression('IF(last_comment.created_user_id = :uid, t.created_user_id, IF(last_comment.marked_as_read = 0, last_comment.created_user_id, t.created_user_id)) as created_user_id'),
+            new \CDbExpression('if (last_comment.created_user_id = :uid, t.message_text, if (last_comment.marked_as_read = 0, last_comment.comment_text, t.message_text))  as message_text'),
+            new \CDbExpression('if (last_comment.created_user_id = :uid, t.created_date, if (last_comment.marked_as_read = 0, last_comment.created_date, t.created_date))  as created_date'),
+            new \CDbExpression('if (last_comment.created_user_id = :uid, t.created_user_id, if (last_comment.marked_as_read = 0, last_comment.created_user_id, t.created_user_id)) as created_user_id'),
         );
 
         $criteria->addCondition('t.for_the_attention_of_user_id = :uid OR t.created_user_id = :uid');

@@ -171,7 +171,7 @@ class Pedigree extends BaseActiveRecord
      */
     public function getAllIdAndText()
     {
-        $sql = "SELECT pedigree.id, IF(pedigree_gene.name IS NULL, pedigree.id, CONCAT_WS(' ', pedigree.id, '(Gene: ', pedigree_gene.name, ')') )  AS text
+        $sql = "SELECT pedigree.id, if (pedigree_gene.name IS NULL, pedigree.id, CONCAT_WS(' ', pedigree.id, '(Gene: ', pedigree_gene.name, ')') )  AS text
                 FROM pedigree
                 LEFT JOIN pedigree_gene on pedigree_gene.id = pedigree.gene_id";
 

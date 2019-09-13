@@ -64,7 +64,7 @@ class RefSetAdminController extends BaseAdminController
 
 		));
 		$admin->setModelDisplayName("Medication set");
-		if($id) {
+		if ($id) {
 			$admin->setModelId($id);
 		}
 		$admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id);
@@ -74,11 +74,11 @@ class RefSetAdminController extends BaseAdminController
 
 	public function actionSave($id = null)
 	{
-		if(is_null($id)) {
+		if (is_null($id)) {
 			$model = new MedicationSet();
 		}
 		else {
-			if(!$model = MedicationSet::model()->findByPk($id)) {
+			if (!$model = MedicationSet::model()->findByPk($id)) {
 				throw new CHttpException(404, 'Page not found');
 			}
 		}
@@ -100,7 +100,7 @@ class RefSetAdminController extends BaseAdminController
 		$ids = isset($medication_set['medicationSetRules']['id']) ? $medication_set['medicationSetRules']['id'] : [];
 
         foreach ($ids as $key => $rid) {
-            if($rid == -1) {
+            if ($rid == -1) {
                 $medSetRule = new MedicationSetRule();
             }
             else {
@@ -120,7 +120,7 @@ class RefSetAdminController extends BaseAdminController
 
 
 		$deleted_ids = array_diff($existing_ids, $updated_ids);
-		if(!empty($deleted_ids)) {
+		if (!empty($deleted_ids)) {
 			MedicationSetRule::model()->deleteByPk($deleted_ids);
 		}
 
@@ -130,7 +130,7 @@ class RefSetAdminController extends BaseAdminController
 	public function actionDelete()
 	{
 		$ids_to_delete = Yii::app()->request->getPost('MedicationSet')['id'];
-		if(is_array($ids_to_delete)) {
+		if (is_array($ids_to_delete)) {
 			foreach ($ids_to_delete as $id) {
 				$model = MedicationSet::model()->findByPk($id);
 				/** @var MedicationSet $model */

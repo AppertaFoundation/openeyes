@@ -110,7 +110,7 @@ class m131024_142538_email_rework extends CDbMigration
             '                                    and le.created_date = (select max(created_date) from ophcotherapya_email where event_id = le.event_id and eye_id = 1) '.
             'left join ophcotherapya_email re on re.event_id = e.event_id and re.eye_id = 2 '.
             '                                    and re.created_date = (select max(created_date) from ophcotherapya_email where event_id = re.event_id and eye_id = 2) '.
-            'set e.eye_id = if (le.id is not null and re.id is not null, 3, if(le.id is not null, 1, 2)), '.
+            'set e.eye_id = if (le.id is not null and re.id is not null, 3, if (le.id is not null, 1, 2)), '.
             '    e.left_email_text = le.email_text, '.
             '    e.right_email_text = re.email_text'
         );

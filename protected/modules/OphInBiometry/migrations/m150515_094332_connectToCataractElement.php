@@ -71,7 +71,7 @@ class m150515_094332_connectToCataractElement extends CDbMigration
                         array(':cataract_element_type_id' => $cataractElementType['id'])
                     )->queryAll();
                 // we check if there are any new procedures
-                //if( is_array($cataractElementProcedures) && is_array($proceduresData) ) {
+                //if ( is_array($cataractElementProcedures) && is_array($proceduresData) ) {
                 //  $difference = array_diff_assoc($cataractElementProcedures, $proceduresData);
                 //}
 

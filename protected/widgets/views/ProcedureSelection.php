@@ -458,7 +458,7 @@
         $("input[id*='_complexity_']").on('click', function() {
             let $estimated = $('#Element_OphTrOperationbooking_Operation_total_duration_procs');
             if ($estimated) {
-                if(typeof updateTotalDuration === "function"){
+                if (typeof updateTotalDuration === "function"){
                     updateTotalDuration('procs');
                 }
             }

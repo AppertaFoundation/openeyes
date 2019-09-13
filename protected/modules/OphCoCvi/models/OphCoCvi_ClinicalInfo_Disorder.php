@@ -174,7 +174,7 @@ class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
         $disorder_list = $this->getAllDisorderForSection($disorder_section);
         $disorder_ids_for_eye = $this->getAllPatientDisorderIds($side);
         foreach ($disorder_list as $disorder) {
-            if(\Yii::app()->controller->action->id === 'create' )
+            if (\Yii::app()->controller->action->id === 'create' )
             {
                 $disorders[$index_key]['status'] = 0;
                 if (in_array($disorder->disorder_id, $disorder_ids_for_eye)) {

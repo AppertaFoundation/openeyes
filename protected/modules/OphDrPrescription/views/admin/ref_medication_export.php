@@ -20,7 +20,7 @@
     <h2>Export Medications</h2>
     <p>Please select Ref Sets to export:</p>
     <div>
-        <?php if(isset($form_error)): ?>
+        <?php if (isset($form_error)): ?>
             <div class="alert-box alert with-icon">
                 <p><?php echo $form_error; ?></p>
             </div>

@@ -90,25 +90,25 @@ class m180510_093824_prescription_events_import extends CDbMigration
                  ")
             ->queryAll();
 
-        if($events){
+        if ($events){
             foreach($events as $event){
 
                 $legacy_dose = explode(" ", $event['legacy_dose']);
                 $dose = '';
                 $dose_unit_term = '';
 
-                if(count($legacy_dose) == 1){
+                if (count($legacy_dose) == 1){
 
                     $array = str_split($legacy_dose[0]);
                     foreach ($array as $key => $char) {
-                        if(($char == '.') || ($char == '/') || (is_numeric($char))) {
+                        if (($char == '.') || ($char == '/') || (is_numeric($char))) {
                             $dose .=  $char;
                         } else {
                             $dose_unit_term .=  $char;
                         }
                     }
                     //var_dump($dose.' : '.$dose_unit_term);
-                } else if(count($legacy_dose) == 2) {
+                } else if (count($legacy_dose) == 2) {
                     $dose = $legacy_dose[0];
                     $dose_unit_term = $legacy_dose[1];
 
@@ -119,7 +119,7 @@ class m180510_093824_prescription_events_import extends CDbMigration
                     }
                 }
 
-                if((strtolower($dose) == 'half') || ($dose == '1/2')) {
+                if ((strtolower($dose) == 'half') || ($dose == '1/2')) {
                     $dose = '0.5';
                 }
 

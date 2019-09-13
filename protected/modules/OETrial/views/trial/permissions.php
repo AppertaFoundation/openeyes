@@ -100,7 +100,7 @@
                                         return false;
                         }",
                               'response' => 'js:function(event, ui){
-                            if(ui.content.length === 0){
+                            if (ui.content.length === 0){
                                 $("#no-user-result").show();
                             } else {
                                 $("#no-user-result").hide();

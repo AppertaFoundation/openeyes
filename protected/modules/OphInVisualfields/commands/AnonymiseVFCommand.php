@@ -139,11 +139,11 @@ class AnonymiseVFCommand extends CConsoleCommand
      * @param type $inDir
      * @param type $outDir
      */
-    public function actionRedactTif($inDir, $outDir)
+    public function actionRedactTif ($inDir, $outDir)
     {
         if ($entries = glob($inDir.'/*.tif')) {
             foreach ($entries as $entry) {
-                $this->anonymiseTif($inDir.'/'.basename($entry), $outDir);
+                $this->anonymiseTif ($inDir.'/'.basename($entry), $outDir);
             }
         }
     }
@@ -172,7 +172,7 @@ class AnonymiseVFCommand extends CConsoleCommand
         if ($files) {
             foreach ($files as $file) {
                 if (file_exists($file->getPath())) {
-                    $this->anonymiseTif($file->getPath());
+                    $this->anonymiseTif ($file->getPath());
                 } else {
                     echo 'Could not transform file; '.$file->getPathName()
                         .' does not exist.'.PHP_EOL;
@@ -188,7 +188,7 @@ class AnonymiseVFCommand extends CConsoleCommand
      *                   and the image must be the correct size.
      * @param type $out  the directory to place the anonymised file.
      */
-    private function anonymiseTif($file, $out)
+    private function anonymiseTif ($file, $out)
     {
         $image = new Imagick($file);
         $geo = $image->getImageGeometry();

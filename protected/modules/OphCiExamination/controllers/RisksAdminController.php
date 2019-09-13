@@ -47,11 +47,11 @@ class RisksAdminController extends \ModuleAdminController
 
 	public function actionSave($id = null)
 	{
-		if(is_null($id)) {
+		if (is_null($id)) {
 			$model = new OphCiExaminationRisk();
 		}
 		else {
-			if(!$model = OphCiExaminationRisk::model()->findByPk($id)) {
+			if (!$model = OphCiExaminationRisk::model()->findByPk($id)) {
 				throw new \CHttpException(404);
 			}
 		}
@@ -60,7 +60,7 @@ class RisksAdminController extends \ModuleAdminController
 		$data = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRisk');
 		$this->_setModelData($model, $data);
 
-		if($model->hasErrors()) {
+		if ($model->hasErrors()) {
 			$admin = $this->_getEditAdmin($model);
 			$this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors() ));
 			exit;
@@ -69,9 +69,9 @@ class RisksAdminController extends \ModuleAdminController
 		/** @var CDbTransaction $trans */
 		$trans = \Yii::app()->db->beginTransaction();
 
-		if($model->save(false)) {
+		if ($model->save(false)) {
 			\Yii::app()->db->createCommand("DELETE FROM ophciexamination_risk_tag WHERE risk_id = {$model->id}")->execute();
-			if(array_key_exists('medicationSets', $data) && !empty($data['medicationSets'])) {
+			if (array_key_exists('medicationSets', $data) && !empty($data['medicationSets'])) {
 				foreach ($data['medicationSets'] as $id) {
 					$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
 					\Yii::app()->db->createCommand("INSERT INTO ophciexamination_risk_tag (risk_id, medication_set_id) VALUES ({$model->id}, $id)")->execute();
@@ -90,7 +90,7 @@ class RisksAdminController extends \ModuleAdminController
 	{
 		foreach ($_POST['OEModule\OphCiExamination\models\OphCiExaminationRisk'] as $item) {
 			foreach ($item as $id) {
-				if(!$model = OphCiExaminationRisk::model()->findByPk($id)) {
+				if (!$model = OphCiExaminationRisk::model()->findByPk($id)) {
 					throw new \CHttpException(404);
 				}
 				
@@ -107,7 +107,7 @@ class RisksAdminController extends \ModuleAdminController
 
 	private function _getAdmin($id = null)
 	{
-		if(is_null($id)) {
+		if (is_null($id)) {
 			$model = OphCiExaminationRisk::model();
 		}
 		else {

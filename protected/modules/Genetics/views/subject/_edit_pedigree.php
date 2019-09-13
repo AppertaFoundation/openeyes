@@ -49,7 +49,7 @@
                                             }
                                         }",
                   'select' => "js:function(event, ui) {
-                                            if(ui.item.value){
+                                            if (ui.item.value){
                                                 $('ul.pedigree-list').append(
                                                     Mustache.render(pedigree_status_template, {
                                                         pedigreeId: ui.item.value,

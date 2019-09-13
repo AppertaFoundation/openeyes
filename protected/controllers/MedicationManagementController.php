@@ -35,12 +35,12 @@ class MedicationManagementController extends BaseController
         $ret_data = [];
         $criteria = new \CDbCriteria();
 
-        if($term !== '') {
+        if ($term !== '') {
             $criteria->addCondition("preferred_term LIKE :term OR medicationSearchIndexes.alternative_term LIKE :term");
             $criteria->params['term'] = "%$term%";
         }
 
-        if($include_branded == 0) {
+        if ($include_branded == 0) {
             $criteria->addCondition("source_subtype != 'AMP'");
         }
 
@@ -102,7 +102,7 @@ class MedicationManagementController extends BaseController
             'site_id' => $site_id,
             'usage_code' => 'COMMON_OPH'
         ));
-        if($rule) {
+        if ($rule) {
             return $rule->medicationSet;
         }
         else {
@@ -114,7 +114,7 @@ class MedicationManagementController extends BaseController
     {
         $defaults = false;
 
-        if(!is_null($set)) {
+        if (!is_null($set)) {
             $defaults = MedicationSetItem::model()->find(array(
                 'condition' => 'medication_set_id = :med_set_id AND medication_id = :medication_id',
                 'params' => array(':med_set_id' => $set->id, ':medication_id' => $medication->id)

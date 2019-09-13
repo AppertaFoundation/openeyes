@@ -248,7 +248,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     {
         $position_none = $this->getNoneIolPosition();
 
-        //if(!isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+        //if (!isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
         if (! $this->iol_position_id || $this->iol_position_id == $position_none->id) {
             $this->iol_power = null;
             $this->iol_type_id = null;

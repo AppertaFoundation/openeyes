@@ -14,8 +14,8 @@ class m190812_122500_update_view_v_patient_details extends CDbMigration
             `p`.`dob` AS `dob`,
             IF (
                 p.date_of_death IS NOT NULL,
-                YEAR(p.date_of_death) - YEAR(p.dob) - IF(DATE_FORMAT(p.date_of_death,'%m-%d') < DATE_FORMAT(p.dob,'%m-%d'), 1, 0),
-                YEAR(CURRENT_DATE()) - YEAR(p.dob) - IF(DATE_FORMAT(CURRENT_DATE(),'%m-%d') < DATE_FORMAT(p.dob,'%m-%d'), 1, 0)
+                YEAR(p.date_of_death) - YEAR(p.dob) - if (DATE_FORMAT(p.date_of_death,'%m-%d') < DATE_FORMAT(p.dob,'%m-%d'), 1, 0),
+                YEAR(CURRENT_DATE()) - YEAR(p.dob) - if (DATE_FORMAT(CURRENT_DATE(),'%m-%d') < DATE_FORMAT(p.dob,'%m-%d'), 1, 0)
                ) AS age,
             `c`.`title` AS `title`,
             `c`.`first_name` AS `first_name`,

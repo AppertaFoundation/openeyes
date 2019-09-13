@@ -16,7 +16,7 @@ class m190325_113630_rename_common_subspecialty_meds extends CDbMigration
 				$subspec = $rule->subspecialty->name;
 
 				$set->name = "Common $site $subspec medications";
-				if(!$set->save()) {
+				if (!$set->save()) {
 					$transaction->rollback();
 					return false;
 				}
@@ -41,7 +41,7 @@ class m190325_113630_rename_common_subspecialty_meds extends CDbMigration
 			foreach ($rules as $rule) {
 				$set = $rule->medicationSet;
 				$set->name = "Common subspecialty medications";
-				if(!$set->save()) {
+				if (!$set->save()) {
 					$transaction->rollback();
 					return false;
 				}

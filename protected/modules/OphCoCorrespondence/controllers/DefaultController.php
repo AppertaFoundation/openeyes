@@ -483,7 +483,7 @@ class DefaultController extends BaseEventTypeController
 
                 if ($to_recipient_gp) {
                     // print an extra copy to note
-                    if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
+                    if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
                         $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
                     }
                 }
@@ -1013,10 +1013,10 @@ class DefaultController extends BaseEventTypeController
                     $errors['Letter'][] = 'To Address: Address cannot be empty!';
                 }
 
-                /*if($target['attributes']['contact_type'] === 'PATIENT'){
+                /*if ($target['attributes']['contact_type'] === 'PATIENT'){
                     $patient_found = true;
                 }
-                if($target['attributes']['contact_type'] === Yii::app()->params['gp_label']){
+                if ($target['attributes']['contact_type'] === Yii::app()->params['gp_label']){
                     $gp_found = true;
                 }*/
             }
@@ -1030,8 +1030,8 @@ class DefaultController extends BaseEventTypeController
              * awaiting for requirements... ...
              */
 
-            /*if($this->letter_type_id == $internalreferral_letter_type->id ){
-                if( !$gp_found || !$patient_found ){
+            /*if ($this->letter_type_id == $internalreferral_letter_type->id ){
+                if ( !$gp_found || !$patient_found ){
                     $this->addError('letter_type_id', 'GP and Patient must copied into when letter type is Internal Referral!');
                 }
             }*/

@@ -86,7 +86,7 @@
 
                 $('#dicom-file-list tbody').html();
 
-                if(files.data) {
+                if (files.data) {
                     for (let i = 0; i < files.data.length; i++) {
                         let file = files.data[i];
                         let last_slash = file.filename.lastIndexOf("/")+1;

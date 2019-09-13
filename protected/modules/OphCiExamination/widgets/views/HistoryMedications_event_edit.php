@@ -152,17 +152,17 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
             onInit: function (controller) {
                 registerElementController(controller, "HMController", "MMController");
                 /* Don't add automatically
-                if(typeof controller.MMController === "undefined" && $("#OEModule_OphCiExamination_models_MedicationManagement_element").length === 0)  {
+                if (typeof controller.MMController === "undefined" && $("#OEModule_OphCiExamination_models_MedicationManagement_element").length === 0)  {
                     var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
                     sidebar.addElementByTypeClass('OEModule_OphCiExamination_models_MedicationManagement');
                 }
                 */
             },
             onAddedEntry: function ($row, controller) {
-                if(typeof controller.MMController !== "undefined") {
+                if (typeof controller.MMController !== "undefined") {
                     var data = $row.data("medication");
                     data.locked = 1;
-                    if(data.will_copy) {
+                    if (data.will_copy) {
                         $new_row = controller.MMController.addEntry([data], false);
                         controller.disableRemoveButton($new_row);
                         controller.bindEntries($row, $new_row);
@@ -232,7 +232,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
         });
 
         let elementHasRisks = <?= $element->hasRisks() ? 1 : 0 ?>;
-        if(elementHasRisks && !$('.' + OE_MODEL_PREFIX + 'HistoryRisks').length) {
+        if (elementHasRisks && !$('.' + OE_MODEL_PREFIX + 'HistoryRisks').length) {
                 $('#episodes-and-events').data('patient-sidebar').addElementByTypeClass(OE_MODEL_PREFIX + 'HistoryRisks', undefined);
         }
     });

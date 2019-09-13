@@ -7,23 +7,23 @@ $('#{$class}_modelClass').change(function(){
 $('#{$class}_tableName').bind('keyup change', function(){
 	var model=$('#{$class}_modelClass');
 	var tableName=$(this).val();
-	if(tableName.substring(tableName.length-1)!='*') {
+	if (tableName.substring(tableName.length-1)!='*') {
 		$('.form .row.model-class').show();
 	}
 	else {
 		$('#{$class}_modelClass').val('');
 		$('.form .row.model-class').hide();
 	}
-	if(!model.data('changed')) {
+	if (!model.data('changed')) {
 		var i=tableName.lastIndexOf('.');
-		if(i>=0)
+		if (i>=0)
 			tableName=tableName.substring(i+1);
 		var tablePrefix=$('#{$class}_tablePrefix').val();
-		if(tablePrefix!='' && tableName.indexOf(tablePrefix)==0)
+		if (tablePrefix!='' && tableName.indexOf(tablePrefix)==0)
 			tableName=tableName.substring(tablePrefix.length);
 		var modelClass='';
 		$.each(tableName.split('_'), function() {
-			if(this.length>0)
+			if (this.length>0)
 				modelClass+=this.substring(0,1).toUpperCase()+this.substring(1);
 		});
 		model.val(modelClass);

@@ -2823,10 +2823,10 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterDrugsStartedToday($patient, $use_context = false)
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
-        if(!is_null($element)) {
+        if (!is_null($element)) {
             /** @var models\MedicationManagement $element */
             $entries = $element->getEntriesStartedToday();
-            if($entries) {
+            if ($entries) {
             $viewparams = array(
                 'entries' => $entries,
                 'table_class' => 'drugs-stopped-today'
@@ -2849,10 +2849,10 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterDrugsStoppedToday($patient, $use_context = false)
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
-        if(!is_null($element)) {
+        if (!is_null($element)) {
 			/** @var models\MedicationManagement $element */
             $entries = $element->getEntriesStoppedToday();
-            if($entries) {
+            if ($entries) {
                 $viewparams = array(
                     'entries' => $entries,
                     'table_class' => 'drugs-stopped-today'
@@ -2875,10 +2875,10 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterDrugsContinuedToday($patient, $use_context = false)
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
-		if(!is_null($element)) {
+		if (!is_null($element)) {
 		    /** @var models\MedicationManagement $element */
 			$entries = $element->getContinuedEntries();
-			if($entries) {
+			if ($entries) {
 				$viewparams = array(
 					'entries' => $entries,
 					'table_class' => 'drugs-continued-today'
@@ -2901,7 +2901,7 @@ class OphCiExamination_API extends \BaseAPI
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
 
-        if(!is_null($element)) {
+        if (!is_null($element)) {
             /** @var models\MedicationManagement $element */
 			$viewparams = array(
 				'started' => $element->getEntriesStartedToday(),

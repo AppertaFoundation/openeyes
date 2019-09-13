@@ -58,12 +58,12 @@
             first_plot_data = [overdue_data];
             service_layout['xaxis']['title'] = "Overdue followups (weeks)";
             service_layout['yaxis']['range'] = [0, overdue_max];
-        }else if($('#js-hs-app-follow-up-coming').hasClass("selected")){
+        }else if ($('#js-hs-app-follow-up-coming').hasClass("selected")){
             first_plot_data=[coming_data];
             service_layout['xaxis']['title'] = "Followups coming due (weeks)";
             service_layout['yaxis']['range'] = [0, coming_max];
 
-        }else if($('#js-hs-app-follow-up-waiting').hasClass("selected")){
+        }else if ($('#js-hs-app-follow-up-waiting').hasClass("selected")){
             first_plot_data=[waiting_data];
             service_layout['xaxis']['title'] = "Waiting time for new patients (weeks)";
             service_layout['yaxis']['range'] = [0, waiting_max];

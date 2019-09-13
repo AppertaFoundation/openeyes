@@ -271,7 +271,7 @@
         $('#Element_OphTrOperationnote_Cataract_report').css('overflow', '');
 
         $("#Element_OphTrOperationnote_Cataract_iol_type_id option").each(function() {
-            if($(this).text() === '-') {
+            if ($(this).text() === '-') {
                 $(this).hide();
             }
         });

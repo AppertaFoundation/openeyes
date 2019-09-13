@@ -232,7 +232,7 @@ class BaseAPI
 
             ## Seeing as the events are in chronological order, same date events should be next to each other
             foreach($events AS $event){
-                if($event->event_date === $latest_event->event_date){
+                if ($event->event_date === $latest_event->event_date){
                     $event_ids[] = $event->id;
                 } else {                
                     ## therefore once the array index has moved passed relevant matches, all other events are irrelevant
@@ -347,7 +347,7 @@ class BaseAPI
             $criteria->compare('event_id', $event->id);
             $criteria->order = 'event.created_date desc';
 
-            if($later_than && strtotime($later_than)){
+            if ($later_than && strtotime($later_than)){
 
                 $later_than_date = date('Y-m-d H:i:s', strtotime("-3 weeks"));
                 $criteria->addCondition('event.event_date >= :later_than');
@@ -373,7 +373,7 @@ class BaseAPI
     {
         $event_type = $this->getEventType();
 
-        if($events = $episode->getAllEventsByType($event_type->id))
+        if ($events = $episode->getAllEventsByType($event_type->id))
         {
             foreach($events as $event)
             {

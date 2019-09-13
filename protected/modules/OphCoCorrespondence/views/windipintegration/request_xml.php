@@ -31,7 +31,7 @@
     <primarylink>
         <process>2</process>
         <uniquereference type="I"><?=$event_id?></uniquereference>
-        <?php if(!$is_new_event): ?>
+        <?php if (!$is_new_event): ?>
             <uniquereference2></uniquereference2>
             <typeid></typeid>
         <?php else: ?>

@@ -48,7 +48,7 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 		$admin = new Admin(MedicationSet::model(), $this);
 
 		$admin->setModelDisplayName("Automatic Set Rules");
-		if($id) {
+		if ($id) {
 			$admin->setModelId($id);
 		}
 
@@ -91,7 +91,7 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 
 	public function actionSave($id = -1)
 	{
-		if($id > 0) {
+		if ($id > 0) {
 			$model = MedicationSet::model()->findByPk($id);
 		}
 		else {
@@ -106,7 +106,7 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 		$model->automatic = 1;
 
 		$model->tmp_attrs = array();
-		if(isset($data['attribute']['id']) && !empty($data['attribute']['id'])) {
+		if (isset($data['attribute']['id']) && !empty($data['attribute']['id'])) {
 			foreach ($data['attribute']['id'] as $key=>$attr_id) {
 				$model->tmp_attrs[] = array(
 					'id' => $attr_id,
@@ -116,7 +116,7 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 		}
 
 		$model->tmp_sets = array();
-		if(isset($data['sets']['id']) && !empty($data['sets']['id'])) {
+		if (isset($data['sets']['id']) && !empty($data['sets']['id'])) {
 			foreach ($data['sets']['id'] as $key=>$s_id) {
 				$model->tmp_sets[] = array(
 					'id' => $s_id,
@@ -126,7 +126,7 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 		}
 
 		$model->tmp_meds = array();
-		if(isset($data['medications']['id']) && !empty($data['medications']['id'])) {
+		if (isset($data['medications']['id']) && !empty($data['medications']['id'])) {
 			foreach ($data['medications']['id'] as $key=>$m_id) {
 				$model->tmp_meds[] = array(
 					'id' => $m_id,
@@ -139,7 +139,7 @@ class MedicationSetAutoRulesAdminController extends BaseAdminController
 
 		$trans = Yii::app()->db->beginTransaction();
 
-		if(!$model->validate() || !$model->save(false)) {
+		if (!$model->validate() || !$model->save(false)) {
 			$trans->rollback();
 			$admin = $this->_getAdmin($id);
 			$admin->setModel($model);

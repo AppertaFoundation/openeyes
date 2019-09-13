@@ -102,7 +102,7 @@ if (!isset($uniqueid)) {
                                         else:
                                             ?><i class="oe-i remove small"></i><?php
                                         endif;
-                                    elseif(gettype($attr_val) === 'array'):
+                                    elseif (gettype($attr_val) === 'array'):
                                         echo implode(',', $admin->attributeValue($row, $listItem));
                                     elseif ($listItem === 'display_order'):
                                         ?>
@@ -177,7 +177,7 @@ if (!isset($uniqueid)) {
                             'hide_links' => (!$admin->getSearch()->isDefaultResults() && !$admin->getSearch()->isSearching())
                         )) ?>
                         <?php
-                            if( !empty($_GET) && count($retrieveResults) < 1 ){
+                            if ( !empty($_GET) && count($retrieveResults) < 1 ){
                                 echo "No results found. Total of " . $admin->getModel()->count() . " items.";
                             }
                         ?>

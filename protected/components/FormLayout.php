@@ -66,11 +66,11 @@ class FormLayout extends CActiveForm
         //override form layoutColumns with any properties set by the form controls
         $properties['layoutColumns'] = array_merge($this->layoutColumns, isset($properties['layoutColumns']) ? $properties['layoutColumns'] : array());
 
-        if(!(substr($className, 0, 19) === 'application.widgets')) {
+        if (!(substr($className, 0, 19) === 'application.widgets')) {
             $className = 'application.widgets.'.$className;
         }
 
-        if((array_key_exists('element',$properties) && array_key_exists('field',$properties)) && !array_key_exists('name',$properties)) {
+        if ((array_key_exists('element',$properties) && array_key_exists('field',$properties)) && !array_key_exists('name',$properties)) {
             $field = $properties['field'];
             $properties['name'] = CHtml::modelName($properties['element'])."[$field]";
         }
