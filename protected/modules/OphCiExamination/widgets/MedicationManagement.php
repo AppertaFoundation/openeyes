@@ -52,18 +52,17 @@ class MedicationManagement extends BaseMedicationWidget
 
                 if ($medication_management_entry) {
                     $new_entry = new MedicationManagementEntry();
-                    if($entry->prescription_item_id) {
-											$new_entry->attributes = $entry->getAttributes();
-											$new_entry->prescription_item_id = null;
-											$new_entry->bound_key = $entry->bound_key;
-											$new_entry->usage_type = 'OphDrPrescription';
-
-										} else {
-											$new_entry->attributes = $entry->getOriginalAttributes();
-											$new_entry->bound_key = $entry->bound_key;
-											$new_entry->id = null;
-											$new_entry->setIsNewRecord(true);
-										}
+                    if ($entry->prescription_item_id) {
+                                            $new_entry->attributes = $entry->getAttributes();
+                                            $new_entry->prescription_item_id = null;
+                                            $new_entry->bound_key = $entry->bound_key;
+                                            $new_entry->usage_type = 'OphDrPrescription';
+                    } else {
+                        $new_entry->attributes = $entry->getOriginalAttributes();
+                        $new_entry->bound_key = $entry->bound_key;
+                        $new_entry->id = null;
+                        $new_entry->setIsNewRecord(true);
+                    }
                     $new_entries[] = $new_entry;
                 }
             }
