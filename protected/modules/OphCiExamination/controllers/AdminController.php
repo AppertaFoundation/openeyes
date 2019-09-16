@@ -18,11 +18,11 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
-use OEModule\OphCiExamination\components\ExaminationHelper;
-use Yii;
 use Audit;
 use CDbCriteria;
+use OEModule\OphCiExamination\components\ExaminationHelper;
 use OEModule\OphCiExamination\models;
+use Yii;
 
 class AdminController extends \ModuleAdminController
 {
@@ -968,12 +968,6 @@ class AdminController extends \ModuleAdminController
     {
         $this->genericAdmin(models\FamilyHistory_Entry::model()->getAttributeLabel('condition_id'),
             'OEModule\OphCiExamination\models\FamilyHistoryCondition');
-    }
-
-    public function actionHistoryMedicationsStopReason()
-    {
-        $this->genericAdmin('Medication Stop Reason',
-            'OEModule\OphCiExamination\models\HistoryMedicationsStopReason', ['div_wrapper_class' => 'cols-4']);
     }
 
     public function actionMedicationManagementSets()
