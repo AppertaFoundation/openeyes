@@ -52,10 +52,18 @@ class MedicationManagement extends BaseMedicationWidget
 
                 if ($medication_management_entry) {
                     $new_entry = new MedicationManagementEntry();
-                    $new_entry->attributes = $entry->getOriginalAttributes();
-                    $new_entry->bound_key = $entry->bound_key;
-                    $new_entry->id = null;
-                    $new_entry->setIsNewRecord(true);
+                    if($entry->prescription_item_id) {
+											$new_entry->attributes = $entry->getAttributes();
+											$new_entry->prescription_item_id = null;
+											$new_entry->bound_key = $entry->bound_key;
+											$new_entry->usage_type = 'OphDrPrescription';
+
+										} else {
+											$new_entry->attributes = $entry->getOriginalAttributes();
+											$new_entry->bound_key = $entry->bound_key;
+											$new_entry->id = null;
+											$new_entry->setIsNewRecord(true);
+										}
                     $new_entries[] = $new_entry;
                 }
             }
@@ -74,9 +82,7 @@ class MedicationManagement extends BaseMedicationWidget
                 if ($medication_management_entry) {
                     $entry = new MedicationManagementEntry();
                     $entry->loadFromPrescriptionItem($item);
-                    $entry->bound_key = $item->bound_key;
                     $entry->usage_type = 'OphDrPrescription';
-
 
                     $new_entries[] = $entry;
                 }
