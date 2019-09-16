@@ -194,7 +194,7 @@ if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) {
 </script>
 
 <script type="x-tmpl-mustache" id="medication_template" style="display:none">
-    <tr data-med_id="{{id}}">
+    <tr data-med_id="{{medication_id}}">
         <td>
             <button class="js-add-taper" type="button" title="Add taper">
                 <i class="oe-i child-arrow small"></i>

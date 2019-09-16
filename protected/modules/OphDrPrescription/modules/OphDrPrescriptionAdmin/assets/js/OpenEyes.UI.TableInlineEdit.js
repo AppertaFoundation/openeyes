@@ -35,9 +35,9 @@ OpenEyes.UI = OpenEyes.UI || {};
                 controller.hideEditControls($tr, $tapers);
                 controller.showGeneralControls($tr);
                 $tr.find('.js-text').show();
-                $tr.find(':input').hide();
+                $tr.find('.js-input').hide();
                 $tapers.find('.js-text').show();
-                $tapers.find(':input').hide();
+                $tapers.find('.js-input').hide();
             }
         });
 
@@ -103,9 +103,9 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     TableInlineEdit.prototype.showEditFields = function($tr, $tapers) {
-        $tr.find(':input').show();
+        $tr.find('.js-input').show();
         if ($tapers !== undefined) {
-					$tapers.find(':input').show();
+					$tapers.find('.js-input').show();
 				}
     };
 
@@ -139,7 +139,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         let data = {};
         let json_tapers = {};
         const $actionsTd = $tr.find('td.actions');
-        $.each( $tr.find(':input'), function(i, input) {
+        $.each( $tr.find('.js-input'), function(i, input) {
             const $input = $(input);
             data[$input.attr('name')] = $input.val();
         });
@@ -156,7 +156,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $.each($tapers, function (taperIndex, taper) {
             let taper_data = {};
-            $.each( $(taper).find(':input'), function(inputIndex, input) {
+            $.each( $(taper).find('.js-input'), function(inputIndex, input) {
                 taper_data[$(input).attr('name')] = $(input).val();
             });
             json_tapers[taperIndex] = JSON.stringify(taper_data);
@@ -186,10 +186,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                         $actionsTd.find('small').remove();
                         controller.showGeneralControls($tr);
                     }, 2000);
-                } else {
-                    console.error(resp);
                 }
-
             },
             'error': function(resp){
                 alert('Saving medication defaults FAILED. Please try again.');
@@ -207,18 +204,18 @@ OpenEyes.UI = OpenEyes.UI || {};
 
                 if (result.success && result.success === true) {
                     $tr.find('.js-text').show();
-                    $tr.find(':input').hide();
+                    $tr.find('.js-input').hide();
                     $tapers.find('.js-text').show();
-                    $tapers.find(':input').hide();
+                    $tapers.find('.js-input').hide();
                     if (typeof controller.options.onAjaxComplete === 'function') {
                         controller.options.onAjaxComplete();
                     }
                 } else if(result.errors) {
                     $tr.find('.js-text').hide();
-                    $tr.find(':input').show();
-                    $tapers.find('.js-text').show();
-                    $tapers.find(':input').hide();
-                    controller.showEditControls($tr);
+                    $tr.find('.js-input').show();
+                    $tapers.find('.js-text').hide();
+                    $tapers.find('.js-input').show();
+                    controller.showEditControls($tr, $tapers);
                     let content = '';
                     Object.keys(result.errors).forEach(function(key) {
                         $input = $tr.find('input[name*="' + key + '"]').addClass('error');
@@ -239,7 +236,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     TableInlineEdit.prototype.updateRowValuesAfterSave = function($tr) {
-        $($tr.find(':input')).each(function(inputIndex, input){
+        $($tr.find('.js-input')).each(function(inputIndex, input){
             const $text = $(input).parent().find('.js-text');
             const $input = $(input);
             let selectedText = '-';
@@ -265,7 +262,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
 
-        $.each( $tr.find(':input'), function(i, input) {
+        $.each( $tr.find('.js-input'), function(i, input) {
             const $input = $(input);
             data[$input.attr('name')] = $input.val();
         });

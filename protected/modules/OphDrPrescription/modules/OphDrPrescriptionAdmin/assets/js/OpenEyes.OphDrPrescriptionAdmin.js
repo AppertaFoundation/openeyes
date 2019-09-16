@@ -28,36 +28,28 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             controller.deleteSets();
         });
 
-        $(this.options.tableSelector).find('tbody tr').each(function() {
-            controller.initialiseRow($(this));
-        });
-
-    };
-
-    DrugSetController.prototype.initialiseRow = function($row) {
-        let controller = this;
-
-        $row.on("click", ".js-add-taper", function() {
-            controller.addTaper($row);
-            const $tapers = $('#meds-list tr[data-parent-med-id="' + $row.attr('data-med_id') + '"]');
-            controller.showEditControls($row, $tapers);
-            controller.hideGeneralControls($row);
-            $row.find('.js-text').hide();
-            controller.showEditFields($row, $tapers);
-            return false;
-        });
+        $(this.options.tableSelector).on('click', '.js-add-taper', function () {
+						const $row = $(this).closest('tr');
+						controller.addTaper($row);
+						const $tapers = $('#meds-list tr[data-parent-med-id="' + $row.attr('data-med_id') + '"]');
+						controller.showEditControls($row, $tapers);
+						controller.hideGeneralControls($row);
+						$row.find('.js-text').hide();
+						controller.showEditFields($row, $tapers);
+						return false;
+				});
 
     };
 
     DrugSetController.prototype.showEditFields = function($row, $tapers) {
-        $row.find(':input').show();
-        $tapers.find(':input').show();
+        $row.find('.js-input').show();
+        $tapers.find('.js-input').show();
         $tapers.find('.js-text').hide();
 
         $.each($row.find('.js-text'), function(i, element) {
             const $text = $(element);
             const $td = $text.closest('td');
-            const $input = $td.find(':input');
+            const $input = $td.find('.js-input');
             if ($input.length && $input.prop('tagName') === 'SELECT') {
                 $input.val($text.data('id'));
             }
