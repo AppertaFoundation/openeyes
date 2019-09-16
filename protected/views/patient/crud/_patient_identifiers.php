@@ -38,6 +38,7 @@
             ));
             echo CHtml::hiddenField('PatientIdentifier[' . $index . '][id]', $patient_identifier->id);
             echo CHtml::hiddenField('PatientIdentifier[' . $index . '][code]', $patient_identifier->code);
+            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][null_check]', $patient_identifier->nullCheck());
             ?>
         </td>
       </tr>
@@ -46,9 +47,10 @@
 <script>
     function findDuplicatesByPatientIdentifier( id ) {
         var identifier_value = $('#PatientIdentifier_<?= $index ?>_value').val();
+        var null_check = $('#PatientIdentifier_<?= $index ?>_null_check').val();
         $.ajax({
             url: "<?php echo Yii::app()->controller->createUrl('patient/findDuplicatesByIdentifier');?>",
-            data: {identifier_code: '<?= $identifier_code ?>',identifier_value: identifier_value, id: id},
+            data: {identifier_code: '<?= $identifier_code ?>',identifier_value: identifier_value, id: id, null_check: null_check},
             type: 'GET',
             success: function (response) {
                 $('#conflicts').remove();
