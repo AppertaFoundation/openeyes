@@ -1,13 +1,12 @@
 <?php
 foreach ($this->data as $elem) {
-    echo $elem['content'];
     if (isset($elem['small_data'])) : ?>
-        <small><?= $elem['small_data'] ?></small>
+        <?=$elem['content'] ?><small><?= $elem['small_data'] ?></small>
+    <?php else : ?>
+        <?=$elem['content'] ?>
     <?php endif ?>
     <?php if (isset($elem['extra_data'])) : ?>
-        <div class="extra-small-data">
-            <?= $elem['extra_data'] ?>
-        </div>
+        <div class="extra-small-data"><?= $elem['extra_data'] ?></div>
     <?php endif;
 }
 

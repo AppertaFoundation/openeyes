@@ -92,13 +92,20 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         $this->iol_model = 'Unknown';
         $this->iol_power = 'None';
+        $this->axial_length = 'Unknown';
+        $this->acd = 'Unknown';
         $this->predicted_refractive_outcome = 'Unknown';
+        $this->formula = 'Unknown';
 
         if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, \EYE::BOTH])) {
             if ($biometry->attributes['lens_display_name_' . $eyeLabel]) {
-                $this->iol_model = $biometry->attributes['lens_display_name_' . $eyeLabel] . ' <br> ' . $biometry->attributes['formula_' . $eyeLabel];
-                $this->iol_power = $biometry->attributes['iol_power_' . $eyeLabel];
-                $this->predicted_refractive_outcome = $biometry->attributes['predicted_refraction_' . $eyeLabel];
+                $this->iol_model = $biometry->attributes["lens_display_name_$eyeLabel"] . ' <br> ' . $biometry->attributes["formula_$eyeLabel"];
+                $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
+                $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];
+                $this->acd = $biometry->attributes["acd_$eyeLabel"];
+                $this->predicted_refractive_outcome = $biometry->attributes["predicted_refraction_$eyeLabel"];
+                $this->formula = $biometry->attributes["formula_$eyeLabel"];
+                $this->aconst = $biometry->attributes["lens_acon_$eyeLabel"];
             }
         }
 

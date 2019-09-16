@@ -2,10 +2,6 @@
 
 class WBCardTest extends CDbTestCase
 {
-    protected $fixtures = array(
-        'ophtroperationbooking_whiteboards' => OphTrOperationbooking_Whiteboard::class
-    );
-
     protected $widget;
 
     public static function setupBeforeClass()
@@ -71,6 +67,13 @@ class WBCardTest extends CDbTestCase
                 ),
                 'colour' => null,
                 'type' => 'Double',
+                'editable' => false,
+            ),
+            'Empty card' => array(
+                'title' => 'Predicted Outcome',
+                'data' => null,
+                'colour' => null,
+                'type' => 'Empty',
                 'editable' => false,
             ),
         );

@@ -8,6 +8,7 @@ class RiskCard extends WBCard
 {
     public $whiteboard;
     protected $baseViewFile = 'wb_allergies_and_risks';
+    protected $type = 'Special';
 
     public function init()
     {

@@ -5,7 +5,7 @@
      * @property $title string
      * @property $colour string
      * @property $editable bool
-     * @property $data string|array
+     * @property $data string|array|null
      * @property $highlight_colour string
      * @property $event_id int
      */
@@ -20,7 +20,7 @@ class WBCard extends CWidget
     protected $css_class;
     protected $data_view;
     protected $baseViewFile = 'wbcard';
-    private $type;
+    protected $type;
 
     public function init()
     {
@@ -53,6 +53,11 @@ class WBCard extends CWidget
                     $this->data_view = 'data/list_data';
                 }
             }
+        } elseif (!$this->data) {
+            $this->title = null;
+            $this->type = 'Empty';
+            $this->css_class = null;
+            $this->data_view = null;
         }
     }
 
