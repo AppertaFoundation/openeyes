@@ -50,10 +50,6 @@ class AllergiesController extends \ModuleAdminController
         $id = $request->getParam('id');
         $model = OphCiExaminationAllergy::model()->findByPk($id);
 
-        if (!$model) {
-            $this->redirect(['dilationDrugs']);
-        }
-
         $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergy');
         if ($new_attributes) {
             $model->setAttributes($new_attributes);
@@ -61,48 +57,8 @@ class AllergiesController extends \ModuleAdminController
             if ($model->save()) {
                 Audit::add('admin', 'edit', serialize($model->attributes), false,
                 ['model' => 'OEModule_OphCiExamination_models_OphCiExaminationAllergy']);
-                Yii::app()->user->setFlash('success', 'Drop edited');
-                $this->redirect(['dilationDrugs']);
+                Yii::app()->user->setFlash('success', 'Allergy edited');
             }
-        }
-        $this->render('/Drug/edit', [
-          'model' => $model,
-          'errors' => $model->getErrors(),
-        ]);
-    }
-
-    /**
-    * Deletes the selected models
-    */
-    public function actionDelete()
-    {
-
-        $delete_ids = Yii::app()->request->getPost('select', []);
-        $transaction = Yii::app()->db->beginTransaction();
-        $success = true;
-        try {
-            foreach ($delete_ids as $drug_id) {
-                $drug = OphCiExaminationAllergy::model()->findByPk($drug_id);
-                if ($drug) {
-                    if (!$drug->delete()) {
-                        $success = false;
-                        break;
-                    } else {
-                        Audit::add('admin-dilation-drugs', 'delete', serialize($drug));
-                    }
-                }
-            }
-        } catch (Exception $e) {
-            \OELog::log($e->getMessage());
-            $success = false;
-        }
-
-        if ($success) {
-            $transaction->commit();
-            echo '1';
-        } else {
-            $transaction->rollback();
-            echo '0';
         }
     }
 
@@ -121,13 +77,8 @@ class AllergiesController extends \ModuleAdminController
             if ($model->save()) {
                 Audit::add('admin', 'create', serialize($model->attributes), false,
                 ['model' => 'OEModule_OphCiExamination_models_OphCiExaminationAllergy']);
-                Yii::app()->user->setFlash('success', 'Drop created');
-                $this->redirect(['dilationDrugs']);
+                Yii::app()->user->setFlash('success', 'Allergy created');
             }
         }
-        $this->render('/Drug/edit', [
-          'model' => $model,
-          'errors' => $model->getErrors(),
-        ]);
     }
 }
