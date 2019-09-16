@@ -307,10 +307,16 @@ $(document).ready(function () {
 			toolCSS = "oe-tooltip";
 		}
 
+		// check if tooltip is in a popup(oe-popup, oe-popup-wrap)
+		let z_index;
+		if ($('body > .oe-popup-wrap > .oe-popup').length > 0) {
+			z_index = parseInt($('body > .oe-popup-wrap').css('z-index')) + 5;
+		}
+
 		// add, calculate height then show (remove 'hidden')
 		var tip = $( "<div></div>", {
 			"class": toolCSS,
-			"style":"left:"+leftPos+"px; top:0;"
+			"style":"left:"+leftPos+"px; top:0;"+(z_index !== "undefined" ? "z-index:"+z_index+";" : "")
 		});
 		// add the tip (HTML as <br> could be in the string)
 		tip.html(text);
