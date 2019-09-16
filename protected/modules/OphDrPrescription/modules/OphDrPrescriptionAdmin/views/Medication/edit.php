@@ -72,13 +72,7 @@
                     <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Source Type</label></div>
                         <div class="cols-5">
-                            <?=CHtml::activeDropDownList($model, 'source_type',
-                            CHtml::listData(
-                                Medication::model()->findAll(),
-                                'source_type',
-                                'source_type'
-                            ),
-                            [
+                            <?=CHtml::activeTextField($model, 'source_type', [
                                 'class' => 'cols-full',
                                 'default' => 'local',
                                 'disabled' => 'disabled'
@@ -92,15 +86,9 @@
                     <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Source Subtype</label></div>
                         <div class="cols-5">
-                            <?=CHtml::activeDropDownList($model, 'source_subtype',
-                            CHtml::listData(
-                                Medication::model()->findAll(),
-                                'source_subtype',
-                                'source_subtype'
-                            ),
-                            [
+                            <?=CHtml::activeTextField($model, 'source_subtype', [
                                 'class' => 'cols-full',
-                                'empty' => '-- None --',
+                                'default' => 'local',
                                 'disabled' => 'disabled'
                             ])?>
                         </div>
