@@ -46,7 +46,7 @@
 
     $medicationSetItems = $medication->medicationSetItems;
 
-?>
+    ?>
 <script id="set_row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
         <td>
