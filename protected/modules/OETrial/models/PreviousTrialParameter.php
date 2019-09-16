@@ -139,26 +139,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 return DOMStrings;
             }
 
-            // Execute the function on loading the page.
-            jQuery(document).ready(function(){
-                // If user has selected Any Trial as Trial type then hide the trial list
-                var DOM = getDOM();
-                var parameterNode = $(DOM.parameterClass + '#' + <?= $this->id ?>);
-                var trialList = parameterNode.find(DOM.trialList);
-
-                var trialType = $($(DOM.trialType).children()).val();
-
-                var treatmentTypeContainer = parameterNode.find(DOM.treatmentType);
-
-                toggleTreatmentTypeTrialListContainer(treatmentTypeContainer, trialType);
-
-                if (!trialType) {
-                    trialList.empty();
-                    trialList.hide();
-                }
-            });
-
-            function getTrialList(target) {
+            function init(target) {
                 let DOM = getDOM();
                 var parameterNode = $(DOM.parameterClass + '#' + <?= $this->id ?>);
 
@@ -166,36 +147,40 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 var trialList = parameterNode.find(DOM.trialList);
                 var treatmentTypeContainer = parameterNode.find(DOM.treatmentType);
 
-                toggleTreatmentTypeTrialListContainer(treatmentTypeContainer, trialType);
+                // If user has selected Any Trial as Trial type then hide the trial list
+                treatmentTypeContainer.toggle(
+                    !trialType ||
+                    trialType === '<?= TrialType::model()->find('code = "INTERVENTION"')->id ?>'
+                );
 
                 if (!trialType) {
                     trialList.empty();
                     trialList.hide();
                 } else {
-                    getAjaxTrialList(trialType, trialList);
+                    $.ajax({
+                        url: '<?php echo Yii::app()->createUrl('/OETrial/trial/getTrialList'); ?>',
+                        type: 'GET',
+                        data: {type: trialType},
+                        success: function (response) {
+                            trialList.empty();
+                            trialList.append(response);
+                            trialList.show();
+                        }
+                    });
                 }
             }
 
-            function toggleTreatmentTypeTrialListContainer(treatmentTypeContainer, trialType) {
-                // Only show the treatment type if the trial type is set to "Any" or "Intervention"
-                treatmentTypeContainer.toggle(
-                    !trialType ||
-                    trialType === '<?= TrialType::model()->find('code = "INTERVENTION"')->id ?>'
-                );
+            // Execute the function on loading the page.
+            jQuery(document).ready(function(){
+                var DOM = getDOM();
+
+                init($(DOM.trialType).children());
+            });
+
+            function getTrialList(target) {
+                init(target);
             }
 
-            function getAjaxTrialList(trialType, trialList) {
-                $.ajax({
-                    url: '<?php echo Yii::app()->createUrl('/OETrial/trial/getTrialList'); ?>',
-                    type: 'GET',
-                    data: {type: trialType},
-                    success: function (response) {
-                        trialList.empty();
-                        trialList.append(response);
-                        trialList.show();
-                    }
-                });
-            }
         </script>
 
         <?php
