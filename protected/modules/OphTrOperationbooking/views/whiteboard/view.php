@@ -17,7 +17,9 @@
         'Lens' => array(
             'data' => array(
                 'content' => ((float) $data->iol_power > 0.0 ? '+' : '-') . $data->iol_power,
-                'extra_data' => $data->iol_model . ' ' . $data->aconst,
+                'extra_data' => $data->iol_model
+                    . ' '
+                    . ((float)$data->aconst === (int)$data->aconst ? (float)$data->aconst . '.0' : (float)$data->aconst),
             )
         ),
         'Anaesthesia' => array(
