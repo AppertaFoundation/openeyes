@@ -199,15 +199,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         </script>
 
         <?php
-        Yii::app()->clientScript->registerScript('GetTrials', '
-          $(".js-previous_trial").each(function() {
-            var typeElem = $(this).find(".js-trial-type select");
-            if (typeElem.val() !== "") {
-              var trialElem = $(this).find(".js-trial-list select");
-              trialElem.show();
-            }
-          });
-        ', CClientScript::POS_READY); // Put this in $(document).ready() so it runs on every page churn from a search.
     }
 
     /**
