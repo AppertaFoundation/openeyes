@@ -407,6 +407,7 @@ class MedicationManagement extends BaseMedicationElement
         }
         foreach ($prescription_details->items as $item) {
             $item->event_id = $prescription->id;
+						$item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
             if (!$item->save(false)) {
                 \Yii::trace(print_r($item->errors, true));
                 throw new \Exception("An error occured during saving");
