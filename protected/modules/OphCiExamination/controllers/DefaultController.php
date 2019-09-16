@@ -1351,7 +1351,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
         $diagnoses = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses');
-			  $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'] : [];
+              $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'] : [];
         $duplicate_exists = false;
 
         $concat_occurrences = [];
@@ -1363,8 +1363,8 @@ class DefaultController extends \BaseEventTypeController
             } else if (isset($entry['left_eye'])) {
                 $eye_id =  \Eye::LEFT;
             } else {
-							continue;
-						}
+                            continue;
+            }
 
             // create a string with concatenation of  the columns that must be unique
             $concat_data = $eye_id.$entry['disorder_id'].$entry['date'];
