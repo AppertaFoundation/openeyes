@@ -171,14 +171,7 @@
                 <td>
                     <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Default Form</label></div>
-                        <div class="cols-5">
-                            <?=CHtml::activeDropDownList($model, 'default_form_id',
-                                $data = CHtml::listData(MedicationForm::model()->findAll(), 'id', 'term'),
-                            [
-                                'class' => 'cols-full',
-                                'empty' => '-- None --'
-                            ])?>
-                        </div>
+                        <div id="default-form" class="cols-5"></div>
                     </div>
                 </td>
             </tr>
@@ -186,14 +179,7 @@
                 <td>
                     <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Default Route</label></div>
-                        <div class="cols-5">
-                            <?=CHtml::activeDropDownList($model, 'default_route_id',
-                                $data = CHtml::listData(MedicationRoute::model()->findAll(), 'id', 'term'),
-                            [
-                                'class' => 'cols-full',
-                                'empty' => '-- None --'
-                            ])?>
-                        </div>
+                        <div id="default-route" class="cols-5"></div>
                     </div>
                 </td>
             </tr>
@@ -232,3 +218,20 @@
         ])
 ?>
 </form>
+<script>
+    let loadDropDown = (id, table, term) => {
+        $('#et_save').attr('disabled', true);
+        $('#'+id).addClass('spinner as-icon');
+        $.ajax({
+            'url': '/OphDrPrescription/admin/Medication/getAttributeTerm?table='+table+'&attribute='+term,
+            'type': 'GET',
+            'success': data => {
+                $('#'+id).html(data);
+                $('#'+id).removeClass('spinner as-icon');
+                $('#et_save').attr('disabled', false);
+            }
+        });
+    };
+    loadDropDown('default-form', 'MedicationForm', 'term');
+    loadDropDown('default-route', 'MedicationRoute', 'term');
+</script>

@@ -137,6 +137,23 @@ class MedicationController extends BaseAdminController
         ]);
     }
 
+    public function actionGetAttributeTerm() {
+        $table_name = \Yii::app()->request->getParam('table');
+        $attribute = \Yii::app()->request->getParam('attribute');
+
+        $model = class_exists($table_name) ? $table_name::model() : null;
+        if ($model) {
+            echo CHtml::activeDropDownList($model, $attribute,
+                $data = CHtml::listData($model->findAll(), 'id', $attribute),
+                [
+                    'class' => 'cols-full',
+                    'empty' => '-- None --'
+                ]);
+        } else {
+            echo "Unable to load $table_name terms";
+        }
+    }
+
     public function actionDelete()
     {
         $ids = \Yii::app()->request->getParam('delete-ids', []);
