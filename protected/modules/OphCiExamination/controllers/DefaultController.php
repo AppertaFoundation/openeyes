@@ -1351,7 +1351,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
         $diagnoses = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses');
-        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'];
+              $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'] : [];
         $duplicate_exists = false;
 
         $concat_occurrences = [];
@@ -1362,6 +1362,8 @@ class DefaultController extends \BaseEventTypeController
                 $eye_id =  \Eye::RIGHT;
             } else if (isset($entry['left_eye'])) {
                 $eye_id =  \Eye::LEFT;
+            } else {
+                            continue;
             }
 
             // create a string with concatenation of  the columns that must be unique
@@ -1627,7 +1629,7 @@ class DefaultController extends \BaseEventTypeController
         if (!$element_assignment && $this->event) {
             \OELog::log("Assignment not found for event id: {$this->event->id}");
         }
-      
+
         if ($this->action->id == 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
             $this->step = $this->getCurrentStep();
         }
