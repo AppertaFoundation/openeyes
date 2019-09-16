@@ -88,7 +88,7 @@ class MedicationManagement extends BaseMedicationWidget
 
     public function getViewData()
     {
-        if (!\Yii::app()->request->isPostRequest) {
+        if (empty($this->element->entries) && !\Yii::app()->request->isPostRequest) {
             $this->setEntries();
         }
 
