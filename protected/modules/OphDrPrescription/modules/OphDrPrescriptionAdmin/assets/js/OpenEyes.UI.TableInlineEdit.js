@@ -21,24 +21,34 @@ OpenEyes.UI = OpenEyes.UI || {};
         const controller = this;
         $(this.options.tableSelector).on('click', 'td.actions a', function() {
             const $tr = $(this).closest('tr');
+            const $tapers = $(controller.options.tableSelector).find('tr[data-parent-med-id="' + $tr.attr('data-med_id') + '"]');
+
             const action = $(this).data('action_type');
 
             if (action === 'edit') {
-                controller.showEditControls($tr);
                 controller.hideGeneralControls($tr);
+                controller.showEditControls($tr, $tapers);
                 $tr.find('.js-text').hide();
-                controller.showEditFields($tr);
+                $tapers.find('.js-text').hide();
+                controller.showEditFields($tr, $tapers);
             } else if (action === 'cancel') {
-                controller.hideEditControls($tr);
+                controller.hideEditControls($tr, $tapers);
                 controller.showGeneralControls($tr);
                 $tr.find('.js-text').show();
                 $tr.find('.js-input').hide();
+                $tapers.find('.js-text').show();
+                $tapers.find('.js-input').hide();
             }
         });
 
         $(this.options.tableSelector).on('click', 'td.actions a[data-action_type="save"]', function() {
             const $tr = $(this).closest('tr');
             controller.saveRow($tr);
+        });
+
+        $(this.options.tableSelector).on('click', 'td.actions a[data-action_type="remove"]', function () {
+            let $tr = $(this).closest('tr');
+            $tr.remove();
         });
 
         $(this.options.tableSelector).on('click', 'td.actions a[data-action_type="delete"]', function() {
@@ -81,7 +91,9 @@ OpenEyes.UI = OpenEyes.UI || {};
             const id = $(this).data('row_med_id');
 
             const $tr = $(controller.options.tableSelector).find('tr[data-med_id="' + id + '"]');
-            controller.deleteRow($tr);
+            const $tapers = $(controller.options.tableSelector).find('tr[data-parent-med-id="' + id + '"]');
+
+            controller.deleteRow($tr, $tapers);
             $('.oe-tooltip-confirm').remove();
         });
 
@@ -90,28 +102,25 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
     };
 
-    TableInlineEdit.prototype.showEditFields = function($tr) {
+    TableInlineEdit.prototype.showEditFields = function($tr, $tapers) {
         $tr.find('.js-input').show();
-
-        $.each($tr.find('.js-text'), function(i, element) {
-            const $text = $(element);
-            const $td = $text.closest('td');
-            const $input = $td.find('.js-input');
-            if ($input.length && $input.prop('tagName') === 'SELECT') {
-                $input.val($text.data('id'));
-            }
-        });
+        if ($tapers !== undefined) {
+					$tapers.find('.js-input').show();
+				}
     };
 
-    TableInlineEdit.prototype.showEditControls = function($tr)
+    TableInlineEdit.prototype.showEditControls = function($tr, $tapers)
     {
         $tr.find('td.actions').find('a[data-action_type="save"], a[data-action_type="cancel"]').show();
+        if ($tapers !== undefined) {
+					$tapers.find('td.actions').find('a[data-action_type="remove"]').show();
+				}
     };
 
-    TableInlineEdit.prototype.hideEditControls = function($tr)
+    TableInlineEdit.prototype.hideEditControls = function($tr, $tapers)
     {
-        const $actionTd = $tr.find('td.actions');
-        $actionTd.find('a[data-action_type="save"], a[data-action_type="cancel"]').hide();
+        $tr.find('td.actions').find('a[data-action_type="save"], a[data-action_type="cancel"]').hide();
+        $tapers.find('td.actions').find('a[data-action_type="remove"]').hide();
     };
 
     TableInlineEdit.prototype.hideGeneralControls = function($tr)
@@ -128,6 +137,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     {
         let controller = this;
         let data = {};
+        let json_tapers = {};
         const $actionsTd = $tr.find('td.actions');
         $.each( $tr.find('.js-input'), function(i, input) {
             const $input = $(input);
@@ -142,13 +152,25 @@ OpenEyes.UI = OpenEyes.UI || {};
             data[name] = value;
         });
 
+        const $tapers = $('#meds-list tr[data-parent-med-id="' + data['Medication[id]'] + '"]');
+
+        $.each($tapers, function (taperIndex, taper) {
+            let taper_data = {};
+            $.each( $(taper).find('.js-input'), function(inputIndex, input) {
+                taper_data[$(input).attr('name')] = $(input).val();
+            });
+            json_tapers[taperIndex] = JSON.stringify(taper_data);
+        });
+
+        data['tapers'] = JSON.stringify(json_tapers);
+
         $.ajax({
             'type': 'POST',
             'data': data,
             'url': controller.options.updateUrl,
             'dataType': 'json',
             'beforeSend': function() {
-                controller.hideEditControls($tr);
+                controller.hideEditControls($tr, $tapers);
 
                 const $spinner = '<div class="js-spinner-as-icon"><i class="spinner as-icon"></i></div>';
                 $actionsTd.append($spinner);
@@ -157,14 +179,14 @@ OpenEyes.UI = OpenEyes.UI || {};
                 if (resp.success === true) {
                     $actionsTd.append("<small style='color:red'>Saved.</small>");
                     controller.updateRowValuesAfterSave($tr);
+                    if ($tapers !== undefined) {
+											controller.updateRowValuesAfterSave($tapers);
+										}
                     setTimeout(() => {
                         $actionsTd.find('small').remove();
                         controller.showGeneralControls($tr);
                     }, 2000);
-                } else {
-                    console.error(resp);
                 }
-
             },
             'error': function(resp){
                 alert('Saving medication defaults FAILED. Please try again.');
@@ -183,13 +205,17 @@ OpenEyes.UI = OpenEyes.UI || {};
                 if (result.success && result.success === true) {
                     $tr.find('.js-text').show();
                     $tr.find('.js-input').hide();
+                    $tapers.find('.js-text').show();
+                    $tapers.find('.js-input').hide();
                     if (typeof controller.options.onAjaxComplete === 'function') {
                         controller.options.onAjaxComplete();
                     }
                 } else if(result.errors) {
                     $tr.find('.js-text').hide();
                     $tr.find('.js-input').show();
-                    controller.showEditControls($tr);
+                    $tapers.find('.js-text').hide();
+                    $tapers.find('.js-input').show();
+                    controller.showEditControls($tr, $tapers);
                     let content = '';
                     Object.keys(result.errors).forEach(function(key) {
                         $input = $tr.find('input[name*="' + key + '"]').addClass('error');
@@ -210,7 +236,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     TableInlineEdit.prototype.updateRowValuesAfterSave = function($tr) {
-        $.each($tr.find('.js-input'), function(i, input){
+        $($tr.find('.js-input')).each(function(inputIndex, input){
             const $text = $(input).parent().find('.js-text');
             const $input = $(input);
             let selectedText = '-';
@@ -228,7 +254,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
     };
 
-    TableInlineEdit.prototype.deleteRow = function($tr)
+    TableInlineEdit.prototype.deleteRow = function($tr, $tapers)
     {
         const $actionsTd = $tr.find('td.actions');
         const controller = this;
@@ -247,7 +273,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             'url': controller.options.deleteUrl,
             'dataType': 'json',
             'beforeSend': function() {
-                controller.hideEditControls($tr);
+                controller.hideEditControls($tr, $tapers);
                 controller.hideGeneralControls($tr);
 
                 const $spinner = '<div class="js-spinner-as-icon"><i class="spinner as-icon"></i></div>';
@@ -257,6 +283,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                 if (resp.success === true) {
                     $actionsTd.append("<small style='color:red'>Deleted.</small>");
                     $tr.fadeOut(1000, function(){ $(this).remove(); });
+                    $tapers.fadeOut(1000, function () { $(this).remove();});
                 }
             },
             'error': function(resp){
