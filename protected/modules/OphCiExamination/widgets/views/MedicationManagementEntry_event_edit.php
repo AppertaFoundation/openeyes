@@ -53,7 +53,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                               } else {
                                   echo "{{& allergy_ids}}";
                               }?>"
-            class="<?=$field_prefix ?>_row <?= ($is_new || /*$entry->group*/ "new" == 'new') ? " new" : ""?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
+            class="<?=$field_prefix ?>_row <?= $is_new ? " new" : ""?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
     >
 
         <td>
