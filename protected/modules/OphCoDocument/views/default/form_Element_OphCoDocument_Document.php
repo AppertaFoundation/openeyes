@@ -17,6 +17,7 @@
  */
 ?>
 <div class="element-fields full-width flex-layout">
+    <input type="hidden" id="js-removed-docs" name="removed-docs" value="">
     <div class="cols-11">
         <table class="cols-6 last-left">
             <tbody>
@@ -37,17 +38,17 @@
                 <td>Upload</td>
                 <td>
                     <label class="inline highlight ">
-                        <input type="radio" value="single"
+                        <input type="radio" value="single" id="upload_single"
                                name="upload_mode"
                             <?= $element->single_document_id || (!$element->right_document_id && !$element->left_document_id) ? "checked" : ""; ?>
-                            <?= ($element->left_document_id || $element->right_document_id ? ' disabled' : '') ?>
-                               } ?> Single file
+                            <?= ($element->left_document_id || $element->right_document_id ? ' disabled' : '') ?>>
+                               Single file
                     </label> <label class="inline highlight ">
                         <input type="radio" name="upload_mode"
                                value="double"
                             <?= ($element->left_document_id || $element->right_document_id ? "checked" : ""); ?>
-                            <?= ($element->single_document_id ? " disabled" : ""); ?>
-                               } ?> Right/Left sides
+                            <?= ($element->single_document_id ? " disabled" : ""); ?>>
+                               Right/Left sides
                     </label></td>
             </tr>
             </tbody>
@@ -121,6 +122,9 @@
                         <?php $this->generateFileField($element, 'single_document'); ?>
 
                         <div class="flex-layout flex-right js-remove-document-wrapper" <?= (!$element->single_document_id ? 'style="display:none"' : ''); ?>>
+                            <?php if($element->single_document_id): ?>
+                            <input type="hidden" id="js-edit-doc" name="js-edit-doc" value="<?= $element->single_document_id ?>">
+                            <?php endif; ?>
                             <button class="hint red" data-side="single">remove uploaded file</button>
                         </div>
 
@@ -169,6 +173,9 @@
 
                         <div class="flex-layout flex-right js-remove-document-wrapper"
                             <?= ($element->right_document_id ? '' : 'style="display:none"'); ?> >
+                            <?php if($element->right_document_id): ?>
+                                <input type="hidden" id="js-edit-right-doc" name="js-edit-doc" value="<?= $element->single_document_id ?>">
+                            <?php endif; ?>
                             <button class="hint red" data-side="right">remove uploaded file</button>
                         </div>
                         <?= CHtml::activeHiddenField($element, 'right_document_id', ['class' => 'js-document-id']); ?>
@@ -194,6 +201,9 @@
 
                         <div class="flex-layout flex-right js-remove-document-wrapper"
                             <?= ($element->left_document_id ? '' : 'style="display:none"'); ?> >
+                            <?php if($element->left_document_id): ?>
+                                <input type="hidden" id="js-edit-left-doc" name="js-edit-doc" value="<?= $element->single_document_id ?>">
+                            <?php endif; ?>
                             <button class="hint red" data-side="left">remove uploaded file</button>
                         </div>
                         <?= CHtml::activeHiddenField($element, 'left_document_id', ['class' => 'js-document-id']); ?>
@@ -231,4 +241,41 @@
             </tbody>
         </table>
     </script>
+    <script type="text/javascript">
 
+            window.addEventListener("unload", function () {
+                let controller = this.OpenEyes.OphCoDocument.DocumentUploadController;
+                let removed_docs = '';
+
+                if (controller._defaultOptions.action === 'cancel' || controller._defaultOptions.action === '') {
+
+                    $('.js-document-id').each(function () {
+                        if ($(this).val() !== "") {
+                            $(controller._defaultOptions.removeButtonSelector).trigger('click');
+                        }
+                    });
+
+                    removed_docs = $('#js-removed-docs').val();
+
+                    if (window.location.href.includes('update')) {
+                        if ($('#upload_single').prop('checked')) {
+                            let original_doc = $('#js-edit-doc').val();
+                            removed_docs = removed_docs.replace(original_doc + ';', '');
+                        } else {
+                            let left_original_doc = $('#js-edit-left-doc').val();
+                            let right_original_doc = $('#js-edit-right-doc').val();
+                            removed_docs = removed_docs.replace(left_original_doc + ';', '');
+                            removed_docs = removed_docs.replace(right_original_doc + ';', '');
+                        }
+                    }
+                }
+
+                if (removed_docs !== "") {
+                    $.post('/OphCoDocument/Default/removeDocuments', {
+                        doc_ids: removed_docs,
+                        YII_CSRF_TOKEN: YII_CSRF_TOKEN
+                    });
+                }
+            });
+
+    </script>

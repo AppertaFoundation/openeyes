@@ -34,6 +34,7 @@ class DefaultController extends BaseEventTypeController
     protected static $action_types = array(
         'fileUpload' => self::ACTION_TYPE_FORM,
         'fileRemove' => self::ACTION_TYPE_FORM,
+        'removeDocuments' => self::ACTION_TYPE_FORM,
     );
 
     protected $pdf_output;
@@ -165,6 +166,18 @@ class DefaultController extends BaseEventTypeController
         }else{
             unlink($tmp_name);
             return false;
+        }
+    }
+
+    public function actionRemoveDocuments()
+    {
+        $doc_ids = explode(';', $_POST['doc_ids']);
+
+        foreach ($doc_ids as $doc_id) {
+            $doc = ProtectedFile::model()->findByPk($doc_id);
+            if ($doc) {
+                $doc->delete();
+            }
         }
     }
 

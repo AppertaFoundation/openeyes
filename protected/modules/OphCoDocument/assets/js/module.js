@@ -34,7 +34,9 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         "singleUploadSelector": "#single_document_uploader",
         "doubleUploadSelector": "#double_document_uploader",
         "dropAreaSelector": ".upload-label",
-        "uploadModeSelector": "input[name='upload_mode']"
+        "uploadModeSelector": "input[name='upload_mode']",
+        "action": "",
+        "removedDocuments": "#js-removed-docs"
     };
 
     DocumentUploadController.prototype.initialiseTriggers = function () {
@@ -119,10 +121,18 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
             } else {
                 new OpenEyes.UI.Dialog.Alert({
-                    content: "No image data was found in your clipboard , copy an image (or take a screesnhot)."
+                    content: "No image data was found in your clipboard , copy an image (or take a screenshot)."
                 }).open();
             }
         }, false);
+
+        $("a.button.header-tab.red").on('click', function () {
+           controller.options.action = 'cancel';
+        });
+
+        $("#et_save").on('click', function () {
+           controller.options.action = 'save';
+        });
     };
 
     DocumentUploadController.prototype.removeDocument = function (side) {
@@ -138,7 +148,10 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         //$td.find(controller.options.fileInputSelector).prop('files', null);
         //$file_input.replaceWith($file_input.val("").clone(true));
 
+        let deleted_doc = $td.find('.js-document-id').val();
         $td.find('.js-document-id').val("");
+        let $removedDocs = $(controller.options.removedDocuments);
+        $removedDocs.val(deleted_doc + ';' + $removedDocs.val());
     };
 
     DocumentUploadController.prototype.paste = function (side, files) {
