@@ -1,7 +1,6 @@
 <?php
     /** @var Medication $medication */
 
-    $rowkey = 0;
     $sets = array_map(function($e){ return ['id' => $e->id, 'label' => $e->name];}, MedicationSet::model()->findAllByAttributes(['hidden' => 0, 'deleted_date' => null]));
     $units = [];
     if($unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
@@ -70,11 +69,10 @@
         </tr>
     </thead>
     <tbody>
-    <?php foreach ($medicationSetItems as $assignment): ?>
-		<?php
+    <?php foreach ($medicationSetItems as $rowkey => $assignment): ?>
+        <?php
             $set_id = $assignment->medication_set_id;
             $id = is_null($assignment->id) ? -1 : $assignment->id;
-		    $rowkey++
         ?>
         <tr data-key="<?=$rowkey?>" <?php if($assignment->medicationSet->hidden): ?>style="display:none;" <?php endif; ?>>
             <td>
@@ -115,7 +113,7 @@
                         new OpenEyes.UI.AdderDialog({
                             openButton: $('.js-add-set'),
                             itemSets: [
-                                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($sets) ?>, {'id': 'set', 'multiSelect': false, header: "Set"}),
+                                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($sets) ?>, {'id': 'set', 'multiSelect': false, header: "Set", 'mandatory': true}),
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($units) ?>, {'id': 'unit','multiSelect': false, header: "Default unit"}),
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($routes) ?>, {'id': 'route', 'multiSelect': false, header: "Default route"}),
                                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($freqs) ?>, {'id': 'frequency', 'multiSelect': false, header: "Default frequency"}),

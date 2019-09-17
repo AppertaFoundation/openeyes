@@ -498,7 +498,18 @@
     AdderDialog.prototype.return = function () {
         let shouldClose = true;
         let dialog = this;
-        if (dialog.options.onReturn) {
+
+        for (let item of this.options.itemSets) {
+            let optionCount = $('.add-options[data-id="' + item.options.id + '"]').find('li.selected').length;
+            if (item.options.mandatory && optionCount === 0) {
+                shouldClose = false;
+                new OpenEyes.UI.Dialog.Alert({
+                    content: item.options.header + " must have an option selected."
+                }).open();
+            }
+        }
+
+        if (shouldClose && dialog.options.onReturn) {
             let selectedValues = [];
             let selectedAdditions = [];
             dialog.getSelectedItems().forEach(selectedItem => {
