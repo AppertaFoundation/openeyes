@@ -21,6 +21,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications;
 ?>
 <?php
 
+$model_name = CHtml::modelName($element);
 $operationNoteList = $element->getOperationNoteList();
 $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id',
     (is_array($operationNoteList) ? key($operationNoteList) : null));
@@ -45,18 +46,19 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 ?>
 
 <?php if ($operationNoteList) : ?>
-  <div id="div_Element_OphTrOperationnote_ProcedureList_id">
-    <div class="cols-5 column end">
-        <?=\CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
-            $operationNoteList,
-            array(
-                'id' => 'OphCiExamination_postop_complication_operation_note_id-select',
-                'name' => 'OphCiExamination_postop_complication_operation_note_id',
-                'nolabel' => true,
-            )
-        ); ?>
+    <div id="div_Element_OphTrOperationnote_ProcedureList_id">
+        <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+        <div class="cols-5 column end">
+            <?= \CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
+                $operationNoteList,
+                array(
+                    'id' => 'OphCiExamination_postop_complication_operation_note_id-select',
+                    'name' => 'OphCiExamination_postop_complication_operation_note_id',
+                    'nolabel' => true,
+                )
+            ); ?>
+        </div>
     </div>
-  </div>
   <div class="element-fields element-eyes">
       <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
       <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :
@@ -106,7 +108,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                     </a>
                   </td>
                 </tr>
-                <?php endforeach; ?>
+              <?php endforeach; ?>
               </tbody>
             </table>
           </div>
@@ -119,15 +121,16 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
             </div>
           </div>
         </div>
-        <?php endforeach; ?>
+      <?php endforeach; ?>
   </div>
 
 <?php else : ?>
-  <div id="div_Element_OphTrOperationnote_ProcedureList_id">
-    <div class="cols-12 column text-center">
-      There are no recorded operations for this patient
+    <div id="div_Element_OphTrOperationnote_ProcedureList_id">
+        <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+        <div class="cols-12 column text-center">
+            There are no recorded operations for this patient
+        </div>
     </div>
-  </div>
 
 <?php endif; ?>
 <script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', false, -1); ?>"></script>

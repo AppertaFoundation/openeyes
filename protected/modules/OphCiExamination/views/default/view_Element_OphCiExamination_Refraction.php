@@ -33,12 +33,12 @@
                         <td>SE: <?=$SE > 0 ? '+' : ''?><?= number_format($SE, 2) ?></td>
                         <td><?= Yii::app()->format->text($element->getType($eye_side)) ?></td>
                     </tr>
-                    <?php if ($element->{$eye_side . '_notes'}): ?>
+                    <?php if ($element->{$eye_side . '_notes'}) : ?>
                     <tr>
                         <td colspan="3"><?php echo $element->textWithLineBreaks($eye_side . '_notes') ?></td>
                     </tr>
                     <?php endif; ?>
-                <?php else: ?>
+                <?php else : ?>
                     <tr>
                         <td colspan="3">
                             <div class="data-value not-recorded">Not recorded</div>

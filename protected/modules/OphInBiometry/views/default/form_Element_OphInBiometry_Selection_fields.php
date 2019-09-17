@@ -67,12 +67,19 @@
                             $criteria->condition = 'id in (' . implode(',', array_unique(${'lens_' . $side})) . ')';
                         }
                         $lenses = OphInBiometry_LensType_Lens::model()->findAll($criteria, array('order' => 'display_order'));
+                        foreach ($lenses as $lens_data_options) {
+                            $lens_options[$lens_data_options->id] = ['data-constant' => number_format($lens_data_options->acon, 2)];
+                        }
+                        $htmlOptions = array('empty' => 'Select', 'nowrapper' => true, 'class' => 'js-lens-manual-override-dropdown dd1', 'options' => $lens_options);
+                        if ($disable) {
+                            $htmlOptions['disabled'] = 'disabled';
+                        }
                         echo $form->dropDownList(
                             $element, 'lens_id_' . $side,
                             CHtml::listData(
                                 $lenses, 'id', 'display_name'
                             ),
-                            array('empty' => 'Select', 'nowrapper' => true),
+                            $htmlOptions,
                             null,
                             array('label' => 6, 'field' => 12)
                         );
@@ -96,7 +103,11 @@
                         $element->lens_id_left = null;
                         $element->lens_id_right = null;
                     }
-                    echo $form->dropDownList($element, 'lens_id_' . $side, CHtml::listData(OphInBiometry_LensType_Lens::model()->activeOrPk($element->{'lens_id_' . $side})->findAll(array('order' => 'display_order asc')), 'id', 'display_name'), array('empty' => 'Select', 'nowrapper' => true), null, array('label' => 6, 'field' => 12))
+                    $htmlOptions = array('empty' => 'Select', 'nowrapper' => true);
+                    if ($disable) {
+                        $htmlOptions['disabled'] = 'disabled';
+                    }
+                    echo $form->dropDownList($element, 'lens_id_' . $side, CHtml::listData(OphInBiometry_LensType_Lens::model()->activeOrPk($element->{'lens_id_' . $side})->findAll(array('order' => 'display_order asc')), 'id', 'display_name'), $htmlOptions, null, array('label' => 6, 'field' => 12))
                     ?>
                 </td>
             </tr>
@@ -109,7 +120,7 @@
                     Lens A constant:
                 </td>
                 <td>
-                    <?php echo $element->{'lens_' . $side} ? number_format($element->{'lens_' . $side}->acon, 1) : '' ?>
+                    <span class="js-lens-constant"><?php echo $element->{'lens_' . $side} ? number_format($element->{'lens_' . $side}->acon, 1) : '' ?></span>
                 </td>
             </tr>
             <?php
