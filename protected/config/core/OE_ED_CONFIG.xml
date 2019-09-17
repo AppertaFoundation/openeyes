@@ -2265,8 +2265,8 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
             <TERM>RAPD</TERM>
             <TERM>Relative Afferent Pupillary Defect</TERM>
           </SECONDARY_TERM_LIST>
-          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities</OPEN_ELEMENT_CLASS_NAME>
-          <GOTO_ID>div_OEModule_OphCiExamination_models_Element_OphCiExamination_PupillaryAbnormalities_%position_abnormality_id</GOTO_ID>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\PupillaryAbnormalities</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>div_PupillaryAbnormalities_%position_no_pupillaryabnormalities</GOTO_ID>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Bleb Assessment</PRIMARY_TERM>

@@ -136,6 +136,8 @@ class m190730_084706_upgrade_pupil_element extends OEMigration
         $this->insert('ophciexamination_pupillaryabnormalities_abnormality', ['name' => 'Fixed', 'display_order' => '70', 'active' => 1]);
         $this->insert('ophciexamination_pupillaryabnormalities_abnormality', ['name' => 'Fixed-dilated', 'display_order' => '80', 'active' => 1]);
         $this->insert('ophciexamination_pupillaryabnormalities_abnormality', ['name' => 'Dilated', 'display_order' => '90', 'active' => 1]);
+
+        $this->dropOETable('et_ophciexamination_pupillaryabnormalities', true);
     }
 
     public function safeDown()
