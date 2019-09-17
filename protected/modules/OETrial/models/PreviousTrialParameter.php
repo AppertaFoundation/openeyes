@@ -139,7 +139,8 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 return DOMStrings;
             }
 
-            function init(target) {
+            // populateTrialList argument receives a boolean to specify whether we need to get the trial list or not.
+            function init(target, populateTrialList = true) {
                 let DOM = getDOM();
                 var parameterNode = $(DOM.parameterClass + '#' + <?= $this->id ?>);
 
@@ -157,24 +158,25 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     trialList.empty();
                     trialList.hide();
                 } else {
-                    $.ajax({
-                        url: '<?php echo Yii::app()->createUrl('/OETrial/trial/getTrialList'); ?>',
-                        type: 'GET',
-                        data: {type: trialType},
-                        success: function (response) {
-                            trialList.empty();
-                            trialList.append(response);
-                            trialList.show();
-                        }
-                    });
+                    if(populateTrialList) {
+                        $.ajax({
+                            url: '<?php echo Yii::app()->createUrl('/OETrial/trial/getTrialList'); ?>',
+                            type: 'GET',
+                            data: {type: trialType},
+                            success: function (response) {
+                                trialList.empty();
+                                trialList.append(response);
+                                trialList.show();
+                            }
+                        });
+                    }
                 }
             }
 
             // Execute the function on loading the page.
             jQuery(document).ready(function(){
                 var DOM = getDOM();
-
-                init($(DOM.trialType).children());
+                init($(DOM.trialType).children(), false);
             });
 
             function getTrialList(target) {
