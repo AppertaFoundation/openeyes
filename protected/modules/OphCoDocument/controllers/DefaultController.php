@@ -174,9 +174,12 @@ class DefaultController extends BaseEventTypeController
         $doc_ids = explode(';', $_POST['doc_ids']);
 
         foreach ($doc_ids as $doc_id) {
-            $doc = ProtectedFile::model()->findByPk($doc_id);
-            if ($doc) {
+            try{
+                $doc = ProtectedFile::model()->findByPk($doc_id);
+                unlink($doc->getFilePath() . '/' . $doc->uid);
                 $doc->delete();
+            }catch (Exception $e){
+                OELog::log("Failed to delete the ProtectedFile with id = " . $doc_id);
             }
         }
     }

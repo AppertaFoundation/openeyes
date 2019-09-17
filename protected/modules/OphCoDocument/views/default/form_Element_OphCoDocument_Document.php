@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-fields full-width flex-layout">
-    <input type="hidden" id="js-removed-docs" name="removed-docs" value="">
+    <input type="hidden" id="removed-docs" name="removed-docs" value="">
     <div class="cols-11">
         <table class="cols-6 last-left">
             <tbody>
@@ -123,7 +123,7 @@
 
                         <div class="flex-layout flex-right js-remove-document-wrapper" <?= (!$element->single_document_id ? 'style="display:none"' : ''); ?>>
                             <?php if($element->single_document_id): ?>
-                            <input type="hidden" id="js-edit-doc" name="js-edit-doc" value="<?= $element->single_document_id ?>">
+                            <input type="hidden" id="original-doc" name="original-doc" value="<?= $element->single_document_id ?>">
                             <?php endif; ?>
                             <button class="hint red" data-side="single">remove uploaded file</button>
                         </div>
@@ -174,7 +174,7 @@
                         <div class="flex-layout flex-right js-remove-document-wrapper"
                             <?= ($element->right_document_id ? '' : 'style="display:none"'); ?> >
                             <?php if($element->right_document_id): ?>
-                                <input type="hidden" id="js-edit-right-doc" name="js-edit-doc" value="<?= $element->single_document_id ?>">
+                                <input type="hidden" id="original-right-doc" value="<?= $element->single_document_id ?>">
                             <?php endif; ?>
                             <button class="hint red" data-side="right">remove uploaded file</button>
                         </div>
@@ -202,7 +202,7 @@
                         <div class="flex-layout flex-right js-remove-document-wrapper"
                             <?= ($element->left_document_id ? '' : 'style="display:none"'); ?> >
                             <?php if($element->left_document_id): ?>
-                                <input type="hidden" id="js-edit-left-doc" name="js-edit-doc" value="<?= $element->single_document_id ?>">
+                                <input type="hidden" id="original-left-doc" value="<?= $element->single_document_id ?>">
                             <?php endif; ?>
                             <button class="hint red" data-side="left">remove uploaded file</button>
                         </div>
@@ -241,31 +241,29 @@
             </tbody>
         </table>
     </script>
-    <script type="text/javascript">
-
+    <script>
             window.addEventListener("unload", function () {
-                let controller = this.OpenEyes.OphCoDocument.DocumentUploadController;
-                let removed_docs = '';
+                let controller = $('.js-document-upload-wrapper').data('controller');
+                let removed_docs = $('#removed-docs').val();
 
-                if (controller._defaultOptions.action === 'cancel' || controller._defaultOptions.action === '') {
+                if (controller.options.action === 'cancel' || controller.options.action === '') {
 
                     $('.js-document-id').each(function () {
                         if ($(this).val() !== "") {
-                            $(controller._defaultOptions.removeButtonSelector).trigger('click');
+                            $(this).parents('td').find(controller.options.removeButtonSelector).trigger('click');
                         }
                     });
 
-                    removed_docs = $('#js-removed-docs').val();
+                    removed_docs = $('#removed-docs').val();
 
                     if (window.location.href.includes('update')) {
                         if ($('#upload_single').prop('checked')) {
-                            let original_doc = $('#js-edit-doc').val();
+                            let original_doc = $('#original-doc').val();
                             removed_docs = removed_docs.replace(original_doc + ';', '');
                         } else {
-                            let left_original_doc = $('#js-edit-left-doc').val();
-                            let right_original_doc = $('#js-edit-right-doc').val();
-                            removed_docs = removed_docs.replace(left_original_doc + ';', '');
-                            removed_docs = removed_docs.replace(right_original_doc + ';', '');
+                            for (let side of ['left', 'right']) {
+                                removed_docs = removed_docs.replace($('#original-' + side + '-doc').val() + ';', '');
+                            }
                         }
                     }
                 }
@@ -274,8 +272,10 @@
                     $.post('/OphCoDocument/Default/removeDocuments', {
                         doc_ids: removed_docs,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
-                    });
+                    })
+                        .fail(function () {
+                            alert("Something went wrong while deleting the file");
+                        });
                 }
             });
-
     </script>
