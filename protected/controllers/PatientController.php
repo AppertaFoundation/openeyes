@@ -2329,7 +2329,7 @@ class PatientController extends BaseController
         }
     }
 
-  public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null){
+  public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null, $null_check){
 
         $patients = Patient::findDuplicatesByIdentifier($identifier_code, $identifier_value, $id);
 
@@ -2338,7 +2338,7 @@ class PatientController extends BaseController
                 'errors' => $patients['error'],
             ));
         } else {
-            if (count($patients) !== 0) {
+            if (count($patients) !== 0 && !empty($null_check)) {
                 $this->renderPartial('crud/_conflicts_identifier', array(
                     'patients' => $patients,
                     'identifier_code' => $identifier_code,
