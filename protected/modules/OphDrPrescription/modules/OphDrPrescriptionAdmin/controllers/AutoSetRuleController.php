@@ -229,7 +229,7 @@ class AutoSetRuleController extends BaseAdminController
         $asset_manager->publish($base_assets_path);
 
         Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.UI.TableInlieEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.UI.TableInlineEdit.js', \CClientScript::POS_HEAD);
 
         $data = \Yii::app()->request->getParam('MedicationSet');
 

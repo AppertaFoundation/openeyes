@@ -139,7 +139,7 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getStoppedEntries()
     {
-        return array_filter($this->visible_entries, function($e){
+        return array_filter($this->visible_entries, function ($e) {
             return !is_null($e->end_date) && $e->end_date <= date('Y-m-d');
         });
     }
@@ -252,7 +252,7 @@ class MedicationManagement extends BaseMedicationElement
                 return false;
             }
 
-            if($is_new) {
+            if ($is_new) {
                 $id = \Yii::app()->db->getLastInsertID();
                 $entry->id = $id;
             }
@@ -325,6 +325,8 @@ class MedicationManagement extends BaseMedicationElement
                 if (!in_array($entry->id, $existing_mgment_items)) {
                     $prescription_Item = new \OphDrPrescription_Item();
                     $prescription_Item->event_id =$prescription->event_id;
+                    $prescription_Item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
+
                     $prescription_Item->setAttributes(array(
                         'usage_type' => \OphDrPrescription_Item::getUsageType(),
                         'usage_subtype' => \OphDrPrescription_Item::getUsageSubtype(),
@@ -405,6 +407,7 @@ class MedicationManagement extends BaseMedicationElement
         }
         foreach ($prescription_details->items as $item) {
             $item->event_id = $prescription->id;
+                        $item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
             if (!$item->save(false)) {
                 \Yii::trace(print_r($item->errors, true));
                 throw new \Exception("An error occured during saving");
@@ -496,22 +499,22 @@ class MedicationManagement extends BaseMedicationElement
         return $this->entries;
     }
 
-	public function afterDelete()
-	{
-		foreach ($this->entries as $entry) {
-			$entry->delete();
-		}
+    public function afterDelete()
+    {
+        foreach ($this->entries as $entry) {
+            $entry->delete();
+        }
 
-		parent::afterDelete();
-	}
+        parent::afterDelete();
+    }
 
-	public function softDelete()
-	{
-		foreach ($this->entries as $entry) {
-			$entry->prescription_item_id = null;
-			$entry->save();
-		}
+    public function softDelete()
+    {
+        foreach ($this->entries as $entry) {
+            $entry->prescription_item_id = null;
+            $entry->save();
+        }
 
-		parent::afterDelete();
-	}
+        parent::afterDelete();
+    }
 }
