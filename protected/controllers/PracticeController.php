@@ -359,6 +359,7 @@ class PracticeController extends BaseController
     public function actionUpdate($id)
     {
         $duplicateCheckOutput = null;
+        $valid=true;
 
         $model = $this->loadModel($id);
         $contact = $model->contact;
@@ -368,55 +369,30 @@ class PracticeController extends BaseController
         $model->setScenario('manage_practice');
 
         $gp = new Gp('manage_practice');
-        // this array contains the arrays of gp id, provider_no and count of
-        // the rows in the contact_practice_associate table with that provider no
-        $gpIdProviderNoList = array();
-        $cpas = ContactPracticeAssociate::model()->findAllByAttributes(array('practice_id' => $id));
 
-        foreach ($cpas as $cpa) {
-            $gpId = $cpa['gp_id'];
-            $providerNo = $cpa['provider_no'];
-            $gpIdProviderNoList[] = array($gpId, $providerNo);
-        }
+        $cpas = $model->contactPracticeAssociate;
 
         $this->performAjaxValidation(array($model, $contact, $address, $gp));
 
         if (isset($_POST['Address']) || isset($_POST['Contact'])) {
 
-            $isDuplicateProviderNo = false;
-
             $contact->attributes = $_POST['Contact'];
             $address->attributes = $_POST['Address'];
             $model->attributes = $_POST['Practice'];
 
-            // this array contains the arrays of gp id, provider_no and count of
-            // the rows in the contact_practice_associate table with that provider no
-            $gpIdProviderNoList = array();
-            if (isset($_POST['Gp'])) {
-                // Assuming the Gp id and ContactPracticeAssociate Provider_no arrays have the same length.
-                for($i=0; $i<sizeof($_POST['Gp']['id']); $i++) {
-                    $count=0;
-                    $gpId = $_POST['Gp']['id'][$i];
-                    $providerNo = $_POST['ContactPracticeAssociate']['provider_no'][$i];
-                    $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo),"provider_no IS NOT NULL AND provider_no != '' AND practice_id !=".$id);
-                    // If condition is executed when the provider no exists in the db
-                    if(count($providerNoDuplicateCheck) >=1 ) {
-                        $isDuplicateProviderNo = true;
-                        $count = count($providerNoDuplicateCheck);
-                        $gpIdProviderNoList[] = array($gpId, $providerNo, $count);
-                    }
-                    // else condition makes sure that there is no duplicate within the form itself. (it excludes empty values).
-                    else {
-                        for($j=0; $j<count($gpIdProviderNoList); $j++) {
-                            if($gpIdProviderNoList[$j][1] != $providerNo || $providerNo == '' ) {
-                                $count = 0;
-                            } else {
-                                $count = 1;
-                                $isDuplicateProviderNo = true;
-                                break;
+            if(isset($_POST['ContactPracticeAssociate'], $_POST['Gp'])) {
+                if(sizeof($_POST['ContactPracticeAssociate']) == sizeof($_POST['Gp'])) {
+                    for($i=0; $i<sizeof($_POST['ContactPracticeAssociate']); $i++) {
+                        $cpas[$i]->provider_no = $_POST['ContactPracticeAssociate'][$i]['provider_no'];
+                        $cpas[$i]->gp_id = $_POST['Gp'][$i]['id'];
+                        $valid=$cpas[$i]->validate('provider_no') && $valid;
+
+                        for($j=0;$j<$i;$j++) {
+                            if($cpas[$i]->provider_no == $cpas[$j]->provider_no) {
+                                $valid = false;
+                                $cpas[$i]->addError('provider_no', 'Duplicate provider number.');
                             }
                         }
-                        $gpIdProviderNoList[] = array($gpId, $providerNo, $count);
                     }
                 }
             }
@@ -436,12 +412,12 @@ class PracticeController extends BaseController
 
                 $isDuplicate = count($duplicateCheckOutput);
 
-                if($isDuplicate === 0 && !$isDuplicateProviderNo) {
+                if($isDuplicate === 0 && $valid) {
                     // If a single record exists for a practice in contact_practice_associate table,
                     // delete all the records from the contact_practice_associate table before populating.
                     ContactPracticeAssociate::model()->deleteAllByAttributes(array('practice_id'=>$id));
 
-                    list($contact, $model, $address) = $this->performPracticeSave($contact, $model, $address, $gpIdProviderNoList,
+                    list($contact, $model, $address) = $this->performPracticeSave($contact, $model, $address, $cpas,
                         false);
                 }
             } else {
@@ -458,7 +434,7 @@ class PracticeController extends BaseController
             'contact' => $contact,
             'gp' => $gp,
             'duplicateCheckOutput' => $duplicateCheckOutput,
-            'gpIdProviderNoList' => $gpIdProviderNoList,
+            'cpas' => $cpas,
         ));
     }
 
