@@ -25,58 +25,58 @@
  */
 class OphCiExaminationRiskTag extends \BaseActiveRecord
 {
-	protected $auto_update_relations = true;
+    protected $auto_update_relations = true;
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 *
-	 * @return static
-	 */
-	public static function model($className = __CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return static
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'ophciexamination_risk_tag';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'ophciexamination_risk_tag';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('id, risk_id, medication_set_id', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('risk_id, medication_set_id', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('id, risk_id, medication_set_id', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('risk_id, medication_set_id', 'safe', 'on' => 'search'),
+        );
+    }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
 
-		$criteria = new CDbCriteria();
+        $criteria = new CDbCriteria();
 
-		$criteria->compare('risk_id', $this->risk_id, true);
-		$criteria->compare('medication_set_id', $this->medication_set_id, true);
+        $criteria->compare('risk_id', $this->risk_id, true);
+        $criteria->compare('medication_set_id', $this->medication_set_id, true);
 
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria' => $criteria,
-		));
-	}
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
+    }
 }
