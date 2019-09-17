@@ -690,15 +690,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         data.show_dose_units = !($origin.find('select.js-unit-dropdown').attr('disabled') === "disabled");
         data.usage_type = $target.attr("data-usage-type");
 
-        /*
-        when a drug that comes from history is missing the values that are required for prescription
-        the row should be editable
-        currently required fields: 'dose, route_id, frequency_id, dose_unit_term'
-         */
-        if(data.dose != "" && data.route_id != "" && data.frequency_id != "" && data.dose_unit_term != "") {
-            data.locked = 1;
-        }
-
         this.boundController.setRowData($row, data);
         this.boundController.initialiseRow($row, data);
         if(data.end_date !== "") {
