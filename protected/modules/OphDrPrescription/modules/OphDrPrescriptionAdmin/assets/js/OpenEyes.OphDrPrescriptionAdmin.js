@@ -27,7 +27,76 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             event.preventDefault();
             controller.deleteSets();
         });
+
+        $(this.options.tableSelector).on('click', '.js-add-taper', function () {
+						const $row = $(this).closest('tr');
+						controller.addTaper($row);
+						const $tapers = $('#meds-list tr[data-parent-med-id="' + $row.attr('data-med_id') + '"]');
+						controller.showEditControls($row, $tapers);
+						controller.hideGeneralControls($row);
+						$row.find('.js-text').hide();
+						controller.showEditFields($row, $tapers);
+						return false;
+				});
+
     };
+
+    DrugSetController.prototype.showEditFields = function($row, $tapers) {
+        $row.find('.js-input').show();
+        $tapers.find('.js-input').show();
+        $tapers.find('.js-text').hide();
+
+        $.each($row.find('.js-text'), function(i, element) {
+            const $text = $(element);
+            const $td = $text.closest('td');
+            const $input = $td.find('.js-input');
+            if ($input.length && $input.prop('tagName') === 'SELECT') {
+                $input.val($text.data('id'));
+            }
+        });
+    };
+
+    DrugSetController.prototype.showEditControls = function($row, $tapers) {
+        $row.find('td.actions').find('a[data-action_type="save"], a[data-action_type="cancel"]').show();
+        $tapers.find('td.actions').find('a[data-action_type="remove"]').show();
+    };
+
+    DrugSetController.prototype.hideGeneralControls = function($row) {
+        $row.find('td.actions').find('a[data-action_type="edit"], a[data-action_type="delete"]').hide();
+    };
+
+
+
+    DrugSetController.prototype.addTaper = function($row) {
+        let data_med_id = $row.attr('data-med_id');
+				let next_taper_count = 0;
+				let last_taper_count;
+
+				let $tapers = $('#meds-list tr[data-parent-med-id="' + data_med_id + '"]');
+        if($tapers.length > 0) {
+            last_taper_count = parseInt($tapers.last().attr("data-taper"));
+            next_taper_count = last_taper_count + 1;
+        }
+
+        var markup = Mustache.render(
+            $('#medication_item_taper_template').text(),
+            {
+                'data_med_id' : data_med_id,
+                'taper_count' : next_taper_count
+            });
+
+        let $lastrow = $row;
+
+        if($tapers.length>0) {
+            $lastrow = $tapers.last();
+        }
+
+        $(markup).insertAfter($lastrow);
+
+        return false;
+
+    };
+
 
     DrugSetController.prototype.initFilters = function () {
         let controller = this;
