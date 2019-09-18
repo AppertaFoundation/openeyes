@@ -110,8 +110,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                                                         'placeholder' => 'Enter provider number',
                                                         'maxlength' => 255,
                                                         'name' => 'ContactPracticeAssociate['.$i.'][provider_no]',
-                                                        'style' => 'float: right',
-                                                        'type' => ''
+                                                        'style' => 'float: right; width: 150px;',
                                                     ));
                                                 ?>
                                             </div>
