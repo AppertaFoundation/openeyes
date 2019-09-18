@@ -63,12 +63,7 @@ class m190730_084706_upgrade_pupil_element extends OEMigration
         $this->addForeignKey('ophciexamination_pupillary_abnormality_set_entry_ab_fk', 'ophciexamination_pupillary_abnormality_set_entry', 'ophciexamination_abnormality_id', 'ophciexamination_pupillaryabnormalities_abnormality', 'id');
         $this->addForeignKey('ophciexamination_pupillary_abnormality_set_entry_set_fk', 'ophciexamination_pupillary_abnormality_set_entry', 'set_id', 'ophciexamination_pupillary_abnormality_set', 'id');
 
-        $this->createElementType('OphCiExamination', 'Pupils', [
-            'class_name' => 'OEModule\OphCiExamination\models\PupillaryAbnormalities',
-            'group_name' => 'Visual Function',
-            'display_order' => '130',
-        ]);
-
+        $this->update('element_type', ["class_name" => "OEModule\OphCiExamination\models\PupillaryAbnormalities"], "name = 'Pupils'");
 
         // Data migration
         $data_provider = new CActiveDataProvider('OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities');
@@ -163,7 +158,7 @@ class m190730_084706_upgrade_pupil_element extends OEMigration
 
         $this->dropOETable('ophciexamination_pupillary_abnormality_set', true);
 
-        $this->delete('element_type', "class_name = :class_name", [':class_name' => 'OEModule\OphCiExamination\models\PupillaryAbnormalities']);
+        $this->update('element_type', ["class_name" => "OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities"], "name = 'Pupils'");
 
         $this->delete('ophciexamination_pupillaryabnormalities_abnormality', "name = :name", [':name' => 'Fixed']);
         $this->delete('ophciexamination_pupillaryabnormalities_abnormality', "name = :name", [':name' => 'Fixed-dilated']);
