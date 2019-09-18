@@ -20,11 +20,11 @@ class m190918_012016_add_recent_context_firm_limit_setting extends OEMigration
 			$this->insert('setting_installation', ['key' => 'recent_context_firm_limit', 'value' => '6']);
 		}
 
-	public function safeDown()
-	{
-		//delete the metadata row
+    public function safeDown()
+    {
+        //delete the metadata row
         $this->delete('setting_metadata', '`key` = ?', ["recent_context_firm_limit"]);
-		//delete the value row
+        //delete the value row
         $this->delete('setting_installation', '`key` = ?', ["recent_context_firm_limit"]);
 
     }
