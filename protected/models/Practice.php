@@ -95,7 +95,6 @@ class Practice extends BaseActiveRecordVersioned
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
             'commissioningbodyassigments' => array(self::HAS_MANY, 'CommissioningBodyPracticeAssignment', 'practice_id'),
             'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioning_body_practice_assignment(practice_id, commissioning_body_id)'),
-            'contactPracticeAssociate'=>array(self::HAS_MANY,'ContactPracticeAssociate','practice_id'),
         );
     }
 

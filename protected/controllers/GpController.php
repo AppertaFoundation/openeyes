@@ -111,10 +111,29 @@ class GpController extends BaseController
 
             $contactPracticeAssociate = new ContactPracticeAssociate();
 
-            if (isset($_POST['Contact'], $_POST['ContactPracticeAssociate'])) {
+            if (isset($_POST['Contact'])) {
                 $contact->attributes = $_POST['Contact'];
-                $contactPracticeAssociate->provider_no = $_POST['ContactPracticeAssociate']['provider_no'];
-                if ($contact->validate() && $contactPracticeAssociate->validate(array('provider_no'))) {
+                if ($contact->validate()) {
+
+                    // checking for the duplicate provider no.
+                    if(!empty($_POST['ContactPracticeAssociate']['provider_no'])) {
+
+                        $contactPracticeAssociate->provider_no = $_POST['ContactPracticeAssociate']['provider_no'];
+
+                        $query = Yii::app()->db->createCommand()
+                            ->select('cpa.id')
+                            ->from('contact_practice_associate cpa')
+                            ->where('LOWER(cpa.provider_no) = LOWER(:provider_no)',
+                                array(':provider_no' => $contactPracticeAssociate->provider_no))
+                            ->queryAll();
+
+                        $isDuplicate = count($query);
+
+                        if($isDuplicate !== 0) {
+                            echo CJSON::encode(array('error' => 'Duplicate Provider number detected. <br/> This provider number already exists.'));
+                            Yii::app()->end();
+                        }
+                    }
 
                     echo CJSON::encode(array(
                         'title' => $contact->title,
@@ -126,7 +145,7 @@ class GpController extends BaseController
                     ));
                 } else {
                     // get the error messages for the contact model.
-                    echo CJSON::encode(array('error' =>  CHtml::errorSummary(array($contact, $contactPracticeAssociate))));
+                    echo CJSON::encode(array('error' =>  CHtml::errorSummary($contact)));
                 }
             }
         } else {

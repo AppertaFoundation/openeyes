@@ -33,7 +33,7 @@ class ContactPracticeAssociate extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('gp_id, practice_id, provider_no', 'required'),
+			array('gp_id, practice_id', 'required'),
 			array('provider_no', 'unique', 'message'=>'Duplicate provider number.'),
 			array('gp_id, practice_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('last_modified_date, created_date', 'safe'),
