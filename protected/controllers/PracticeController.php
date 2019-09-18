@@ -383,12 +383,18 @@ class PracticeController extends BaseController
             if(isset($_POST['ContactPracticeAssociate'], $_POST['Gp'])) {
                 if(sizeof($_POST['ContactPracticeAssociate']) == sizeof($_POST['Gp'])) {
                     for($i=0; $i<sizeof($_POST['ContactPracticeAssociate']); $i++) {
+                        // when new gp and provider number is added, create an instance of the model and add it to the model array.
+                        if (count($cpas) <= $i) {
+                            $cpa = new ContactPracticeAssociate();
+                            $cpas[] = $cpa;
+                        }
                         $cpas[$i]->provider_no = $_POST['ContactPracticeAssociate'][$i]['provider_no'];
                         $cpas[$i]->gp_id = $_POST['Gp'][$i]['id'];
+                        $cpas[$i]->practice_id = $id;
                         $valid=$cpas[$i]->validate('provider_no') && $valid;
-
                         for($j=0;$j<$i;$j++) {
                             if($cpas[$i]->provider_no == $cpas[$j]->provider_no) {
+
                                 $valid = false;
                                 $cpas[$i]->addError('provider_no', 'Duplicate provider number.');
                             }
@@ -411,7 +417,6 @@ class PracticeController extends BaseController
                     ->queryAll();
 
                 $isDuplicate = count($duplicateCheckOutput);
-
                 if($isDuplicate === 0 && $valid) {
                     // If a single record exists for a practice in contact_practice_associate table,
                     // delete all the records from the contact_practice_associate table before populating.
@@ -425,7 +430,6 @@ class PracticeController extends BaseController
                 $model->validate(array('phone'));
                 $address->validate(array('address1', 'city', 'postcode', 'country'));
             }
-
         }
 
         $this->render('update', array(
