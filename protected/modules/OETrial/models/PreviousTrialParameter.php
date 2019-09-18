@@ -108,11 +108,11 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             </div>
             <div class="js-trial-type parameter-option">
             <?php echo CHtml::activeDropDownList($this, "[$id]trialTypeId", TrialType::getOptions(),
-                    array('empty' => 'Any Trial', 'onchange' => "getTrialList(this, $this->id)")); ?>
+                    array('empty' => 'Any Trial', 'onchange' => "getTrialList(this)")); ?>
             </div>
             <div class="js-trial-list parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]trial", $trials,
-                    array('empty' => 'Any', 'style' => 'display: none;')); ?>
+                    array('empty' => 'Any')); ?>
             </div>
             <span class="js-treatment-type-container flex-layout flex-left"
                 style="<?= $this->trialType && $this->trialType->code = TrialType::NON_INTERVENTION_CODE ? 'display:none;':''?>"
@@ -127,14 +127,28 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         </div>
 
         <script type="text/javascript">
-            function getTrialList(target, parameter_id) {
-                var parameterNode = $('.parameter#' + parameter_id);
+
+            let DOMStrings = {
+                parameterClass: '.parameter',
+                trialType: '.js-trial-type',
+                trialList: '.js-trial-list select',
+                treatmentType: '.js-treatment-type-container'
+            };
+
+            function getDOM() {
+                return DOMStrings;
+            }
+
+            // populateTrialList argument receives a boolean to specify whether we need to get the trial list or not.
+            function init(target, populateTrialList = true) {
+                let DOM = getDOM();
+                var parameterNode = $(DOM.parameterClass + '#' + <?= $this->id ?>);
 
                 var trialType = $(target).val();
-                var trialList = parameterNode.find('.js-trial-list select');
-                var treatmentTypeContainer = parameterNode.find('.js-treatment-type-container');
+                var trialList = parameterNode.find(DOM.trialList);
+                var treatmentTypeContainer = parameterNode.find(DOM.treatmentType);
 
-                // Only show the treatment type if the trial type is set to "Any" or "Intervention"
+                // If user has selected Any Trial as Trial type then hide the trial list
                 treatmentTypeContainer.toggle(
                     !trialType ||
                     trialType === '<?= TrialType::model()->find('code = "INTERVENTION"')->id ?>'
@@ -144,30 +158,34 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     trialList.empty();
                     trialList.hide();
                 } else {
-                    $.ajax({
-                        url: '<?php echo Yii::app()->createUrl('/OETrial/trial/getTrialList'); ?>',
-                        type: 'GET',
-                        data: {type: trialType},
-                        success: function (response) {
-                            trialList.empty();
-                            trialList.append(response);
-                            trialList.show();
-                        }
-                    });
+                    if(populateTrialList) {
+                        $.ajax({
+                            url: '<?php echo Yii::app()->createUrl('/OETrial/trial/getTrialList'); ?>',
+                            type: 'GET',
+                            data: {type: trialType},
+                            success: function (response) {
+                                trialList.empty();
+                                trialList.append(response);
+                                trialList.show();
+                            }
+                        });
+                    }
                 }
             }
+
+            // Execute the function on loading the page.
+            jQuery(document).ready(function(){
+                var DOM = getDOM();
+                init($(DOM.trialType).children(), false);
+            });
+
+            function getTrialList(target) {
+                init(target);
+            }
+
         </script>
 
         <?php
-        Yii::app()->clientScript->registerScript('GetTrials', '
-          $(".js-previous_trial").each(function() {
-            var typeElem = $(this).find(".js-trial-type select");
-            if (typeElem.val() !== "") {
-              var trialElem = $(this).find(".js-trial-list select");
-              trialElem.show();
-            }
-          });
-        ', CClientScript::POS_READY); // Put this in $(document).ready() so it runs on every page churn from a search.
     }
 
     /**

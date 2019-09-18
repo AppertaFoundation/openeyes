@@ -756,6 +756,20 @@ SELECT "TRUNCATE TABLE worklist_patient_attribute" AS "";
 truncate table worklist_patient_attribute;
 
 
+SELECT "TRUNCATE TABLE episode_summary" AS "";
+truncate table episode_summary;
+
+SELECT "TRUNCATE TABLE ophdrprescription_item" AS "";
+truncate table ophdrprescription_item;
+
+SELECT "TRUNCATE TABLE ophdrprescription_item_taper" AS "";
+truncate table ophdrprescription_item_taper;
+
+SELECT "TRUNCATE TABLE ophtrconsent_procedure_anaesthetic_type" AS "";
+truncate table ophtrconsent_procedure_anaesthetic_type;
+
+SELECT "TRUNCATE TABLE ophtroperationnote_anaesthetic_anaesthetic_type" AS "";
+truncate table ophtroperationnote_anaesthetic_anaesthetic_type;
 
 /*enable foreign key check again*/
 SET FOREIGN_KEY_CHECKS = 1;

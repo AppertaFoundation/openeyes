@@ -240,7 +240,7 @@ class PatientMerge
                 $secondary_patient->deleted = 1;
 
                 if ($secondary_patient->save()) {
-                    $msg = 'Patient hos_num: '.$this->secondary_patient->hos_num.' flagged as deleted.';
+                    $msg = 'Patient '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$this->secondary_patient->hos_num.' flagged as deleted.';
                     $this->addLog($msg);
                     Audit::add('Patient Merge', 'Patient flagged as deleted', $msg);
                     $is_merged = $is_merged && true;
