@@ -32,7 +32,9 @@
         ?>
         <tr data-key="<?=$row_key?>">
             <td>
+                <?php if ($id != -1) { ?>
                 <input type="hidden" name="Medication[medicationSearchIndexes][<?=$row_key?>][id]" value="<?=$id?>" />
+                <?php } ?>
                 <?php echo CHtml::textField("Medication[medicationSearchIndexes][".$row_key."][alternative_term]", $medicationSearchIndex->alternative_term, array('class' => 'cols-full')); ?>
             </td>
             <td>

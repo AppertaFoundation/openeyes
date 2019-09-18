@@ -105,7 +105,9 @@
             ?>style="display:none;" <?php
                       endif; ?>>
             <td>
+                <?php if ($id != -1) { ?>
                 <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][id]" value="<?=$id?>" />
+                <?php } ?>
                 <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][medication_set_id]" value="<?=$assignment->medication_set_id?>" />
                 <?=CHtml::encode($assignment->medicationSet->name)?>
             </td>
