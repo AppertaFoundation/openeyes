@@ -47,7 +47,7 @@
 <script type="text/html" id="previous-management-template">
   <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span
         class="js-has-tooltip fa oe-i info small"
-        data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
+        data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments}}
 </script>
 
 <?php
