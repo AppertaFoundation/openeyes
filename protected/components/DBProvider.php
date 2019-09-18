@@ -27,6 +27,8 @@ class DBProvider extends \SearchProvider
             }
         }
 
+        $queryStr .= "AND p.deleted != 1";
+
         $command = Yii::app()->db->createCommand($queryStr)->bindValues($bindValues);
         $command->prepare();
 
