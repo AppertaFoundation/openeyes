@@ -16,8 +16,6 @@
  *
  */
 
-use OEModule\OphCiExamination\models;
-
 class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 {
     public function run_oescape($widgets_no = 1)
@@ -44,7 +42,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                     'patient' => $this->patient,
                 ));
 
-                $untracked = $widget->getEntriesForUntrackedPrescriptionItems();
+                $untracked = $widget->element->getEntriesForUntrackedPrescriptionItems($this->patient);
                 $meds_entries = array_merge($meds->entries, $untracked);
 
                 foreach ($meds_entries as $entry) {

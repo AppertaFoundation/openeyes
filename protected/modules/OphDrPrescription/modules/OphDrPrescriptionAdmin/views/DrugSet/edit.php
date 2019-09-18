@@ -94,7 +94,7 @@
     });
     $('#meds-list').data('drugSetController', drugSetController);
 
-    let tableInlineEditController = new OpenEyes.TableInlineEdit({
+    let tableInlineEditController = new OpenEyes.PrescriptionAdminMedicationSet({
         tableSelector: '#meds-list',
         templateSelector: '#medication_template',
         onAjaxError: function() {

@@ -17,8 +17,8 @@
      * @copyright Copyright (c) 2018, OpenEyes Foundation
      * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
      */
-    
-    
+
+
 class MedicationManagementController extends BaseController
 {
     public function accessRules()
@@ -47,6 +47,7 @@ class MedicationManagementController extends BaseController
         $criteria->limit = $limit > 1000 ? 1000 : $limit;
         $criteria->order = "preferred_term";
         $criteria->with = array('medicationSearchIndexes');
+        $criteria->addCondition("deleted_date IS NULL");
         $criteria->together = true;
 
         // use Medication::model()->prescribable()->findAll() to find only prescribable medications

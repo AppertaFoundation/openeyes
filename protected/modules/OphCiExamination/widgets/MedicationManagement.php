@@ -19,6 +19,7 @@
 namespace OEModule\OphCiExamination\widgets;
 
 use OEModule\OphCiExamination\models\MedicationManagement as MedicationManagementElement;
+use OEModule\OphCiExamination\models\MedicationManagementEntry;
 
 class MedicationManagement extends BaseMedicationWidget
 {
@@ -27,5 +28,75 @@ class MedicationManagement extends BaseMedicationWidget
     protected function isAtTip()
     {
         return true; //TODO idk
+    }
+
+    private function setEntries()
+    {
+            $new_entries = [];
+            $element = $this->element->getModuleApi()->getLatestElement(\OEModule\OphCiExamination\models\HistoryMedications::class, $this->patient);
+        if (!is_null($element)) {
+            $entries = array_merge($element->current_entries, $element->getEntriesForUntrackedPrescriptionItems($this->patient));
+            /** @var MedicationManagementElement $element */
+            foreach ($entries as $entry) {
+                /** @var \EventMedicationUse $new_entry */
+                $medication_management_entry = false;
+
+                if ($entry->medication) {
+                    foreach ($entry->medication->medicationSets as $medSet) {
+                        if ($medSet->name === "medication_management") {
+                            $medication_management_entry = true;
+                            break;
+                        }
+                    }
+                }
+
+                if ($medication_management_entry) {
+                    $new_entry = new MedicationManagementEntry();
+                    if ($entry->prescription_item_id) {
+                                            $new_entry->attributes = $entry->getAttributes();
+                                            $new_entry->prescription_item_id = null;
+                                            $new_entry->bound_key = $entry->bound_key;
+                                            $new_entry->usage_type = 'OphDrPrescription';
+                    } else {
+                        $new_entry->attributes = $entry->getOriginalAttributes();
+                        $new_entry->bound_key = $entry->bound_key;
+                        $new_entry->id = null;
+                        $new_entry->setIsNewRecord(true);
+                    }
+                    $new_entries[] = $new_entry;
+                }
+            }
+        } else {
+            $api = \Yii::app()->moduleAPI->get('OphDrPrescription');
+            $untracked_prescription_items = $api->getPrescriptionItemsForPatient($this->patient);
+            foreach ($untracked_prescription_items as $item) {
+                $medication_management_entry = false;
+                // Check if it's meds management set
+                foreach ($item->medication->medicationSets as $medSet) {
+                    if ($medSet->name === "medication_management") {
+                        $medication_management_entry = true;
+                        break;
+                    }
+                }
+                if ($medication_management_entry) {
+                    $entry = new MedicationManagementEntry();
+                    $entry->loadFromPrescriptionItem($item);
+                    $entry->usage_type = 'OphDrPrescription';
+
+                    $new_entries[] = $entry;
+                }
+            }
+        }
+
+            $this->element->entries = $new_entries;
+    }
+
+    public function getViewData()
+    {
+        if (empty($this->element->entries) && !\Yii::app()->request->isPostRequest) {
+            $this->setEntries();
+        }
+
+        return parent::getViewData();
     }
 }
