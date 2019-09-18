@@ -31,47 +31,37 @@ class AllergiesController extends \ModuleAdminController
         ]);
     }
 
-    public function actions() {
-        return [
-          'sortAllergies' => [
-            'class' => 'SaveDisplayOrderAction',
-            'model' => OphCiExaminationAllergy::model(),
-            'modelName' => 'OphCiExamination_Allergy',
-          ],
-        ];
-    }
-
-    /**
-     * Updates the selected Model
-     */
     public function actionUpdate()
     {
         $request = Yii::app()->getRequest();
-        $id = $request->getParam('id');
-        $model = OphCiExaminationAllergy::model()->findByPk($id);
-
-        $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergy');
-        if ($new_attributes) {
-            $model->setAttributes($new_attributes);
-
-            if ($model->save()) {
-                Audit::add('admin', 'edit', serialize($model->attributes), false,
-                ['model' => 'OEModule_OphCiExamination_models_OphCiExaminationAllergy']);
-                Yii::app()->user->setFlash('success', 'Allergy edited');
+        $post = $request->getPost('OphCiExamination_Allergy');
+        $display_order = 1;
+        foreach ($post as $attributes) {
+            if (isset($attributes['id'])) {
+                $attributes['display_order'] = $display_order;
+                $attributes['active'] = isset($attributes['active']);
+                $allergy = OphCiExaminationAllergy::model()->findByPk($attributes['id']);
+                if ($allergy) {
+                    $allergy->setAttributes($attributes);
+                    if ($allergy->save()) {
+                        Audit::add('admin', 'edit', serialize($allergy->attributes), false,
+                        ['model' => 'OEModule_OphCiExamination_models_OphCiExaminationAllergy']);
+                        Yii::app()->user->setFlash('success', 'Allergies updated');
+                    }
+                } else {
+                    $this->createAllergy($attributes);
+                }
+                $display_order++;
             }
         }
+        $this->redirect(['Allergies/index']);
     }
 
-    /**
-    * Creates a new model.
-    * If creation is successful, the browser will be redirected to the 'view' page.
-    */
-    public function actionCreate()
+    private function createAllergy($new_attributes)
     {
         $model = new OphCiExaminationAllergy();
-        $request = Yii::app()->getRequest();
-        $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergy');
-        if ($new_attributes) {
+        if ($new_attributes['id'] === 'new') {
+            unset($new_attributes['id']);
             $model->setAttributes($new_attributes);
 
             if ($model->save()) {

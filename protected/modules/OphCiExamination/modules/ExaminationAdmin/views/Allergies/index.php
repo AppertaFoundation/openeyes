@@ -18,10 +18,10 @@
 </div>
 <?php $this->renderPartial('//base/_messages') ?>
 <div class="cols-6">
-    <form id="admin_Drugs">
+    <form id="admin_Allergies" method="post" action="/OphCiExamination/admin/Allergies/update">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <input type="hidden" name="page" value="1">
-        <table class="standard generic-admin sortable" id="et_sort" data-uri = "/OphCiExamination/admin/Allergies/sortAllergies">
+        <table class="standard generic-admin sortable">
             <thead>
                 <tr>
                     <th>Order</th>
@@ -35,19 +35,34 @@
                 <tr data-id="<?= $model->id ?>" >
                     <td class="reorder">
                         <span>&uarr;&darr;</span>
-                        <?= CHtml::hiddenField("OphCiExamination_Allergy[display_order][]", $model->id); ?>
+                        <?= CHtml::hiddenField("OphCiExamination_Allergy[{$i}][id]", $model->id); ?>
                     </td>
                     <td>
-                        <?= CHtml::textField("name[{$i}]", $model->name); ?>
+                        <?= CHtml::textField("OphCiExamination_Allergy[{$i}][name]", $model->name); ?>
                     </td>
                     <td>
-                        <?= CHtml::dropDownList("medication_set_id[{$i}]", $model->medication_set_id, ['0' => '- Please Select -']+CHtml::listData($medication_set_list_options, 'id', 'name')); ?>
+                        <?= CHtml::dropDownList("OphCiExamination_Allergy[{$i}][medication_set_id]", $model->medication_set_id, ['0' => '- Please Select -']+CHtml::listData($medication_set_list_options, 'id', 'name')); ?>
                     </td>
                     <td>
-                        <?= CHtml::checkBox("active[{$i}]", $model->active); ?>
+                        <?= CHtml::checkBox("OphCiExamination_Allergy[{$i}][active]", $model->active); ?>
                     </td>
                 </tr>
             <?php } ?>
+                <tr data-id="" style="display: none;">
+                    <td class="reorder">
+                        <span>&uarr;&darr;</span>
+                        <?= CHtml::hiddenField("OphCiExamination_Allergy[{new}][id]", "new", ["disabled" => "disabled"]); ?>
+                    </td>
+                    <td>
+                        <?= CHtml::textField("OphCiExamination_Allergy[{new}][name]", "", ["disabled" => "disabled"]); ?>
+                    </td>
+                    <td>
+                        <?= CHtml::dropDownList("OphCiExamination_Allergy[{new}][medication_set_id]", '0', ['0' => '- Please Select -']+CHtml::listData($medication_set_list_options, 'id', 'name'), ["disabled" => "disabled"]); ?>
+                    </td>
+                    <td>
+                        <?= CHtml::checkBox("OphCiExamination_Allergy[{new}][active]", "", ["disabled" => "disabled"]); ?>
+                    </td>
+                </tr>            
             </tbody>
             <tfoot>
                 <tr>
@@ -58,8 +73,7 @@
                                 'class' => 'button large',
                                 'type' => 'button',
                                 'name' => 'add',
-                                'data-uri' => '/OphCiExamination/admin/Drug/create',
-                                'id' => 'et_add'
+                                'id' => 'add_new_row'
                             ]
                         ); ?>
                         <?= \CHtml::button(
@@ -79,7 +93,16 @@
 </div>
 
 <script>
-    $('.generic-admin.sortable tbody').sortable({
-        stop: OpenEyes.Admin.saveSorted
+    $(document).ready(function(){
+        $('#add_new_row').click(function(){
+            $table_rows = $('#admin_Allergies table tbody tr');
+            $last_table_row = $table_rows.filter('tr:last-child');
+            $new_row = $last_table_row.clone();
+            $($last_table_row).before($new_row);
+            $new_row.show().find('input, select').attr('name', function(){
+                return $(this).prop('name').replace('{new}', ($table_rows.length - 1));
+            }).removeAttr('disabled');
+        });
     });
+    $('.generic-admin.sortable tbody').sortable();
 </script>
