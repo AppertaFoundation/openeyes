@@ -748,6 +748,24 @@ class CsvController extends BaseController
                 !empty($new_trial_pat[$col['var_name']]) ? $new_trial_pat[$col['var_name']] : $col['default'];
         }
 
+//      trial patient started_date is from the created_date column in imported csv file.
+//      If it is null, the date will be the started_date in trial.
+//      If the trial started_date is null, then the date will be current date.  The format is yyyy-mm-dd.
+
+        $current_date = new DateTime();
+
+        if (!empty($trial_patient['created_date'])){
+            $trial_patient_started_date = $trial_patient['created_date'];
+        } else{
+            if (!empty($trial -> started_date)){
+                $trial_patient_started_date = $trial -> started_date;
+            }
+            else{
+                $trial_patient_started_date = $current_date->format('yyyy-mm-dd');
+            }
+        }
+        $new_trial_pat->started_date = $trial_patient_started_date;
+
         $new_trial_pat->patient_id = $patient->id;
         $new_trial_pat->trial_id = $trial->id;
 
