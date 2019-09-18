@@ -1,5 +1,7 @@
 <?php
 
+use MongoDB\Driver\Query;
+
 /**
  * This is the model class for table "cat_prom5_event_result".
  *
@@ -10,10 +12,11 @@
  * @property string $event_id
  *
  * The followings are the available model relations:
- * @property CatProm5AnswerResults[] $catProm5AnswerResults
+ * @property CatProm5AnswerResult[] $catProm5AnswerResults
  */
 class CatProm5EventResult extends \BaseEventTypeElement
 {
+
     /**
      * @return string the associated database table name
      */
@@ -47,7 +50,8 @@ class CatProm5EventResult extends \BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'catProm5AnswerResults' => array(self::HAS_MANY, 'CatProm5AnswerResults', 'event_result_id'),
+          'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+          'catProm5AnswerResults' => array(self::HAS_MANY, 'CatProm5AnswerResult', 'element_id'),
         );
     }
 
@@ -64,7 +68,32 @@ class CatProm5EventResult extends \BaseEventTypeElement
         );
     }
 
-    /**
+    public function rowScoreToRaschMeasure($rawScore){
+        $row = Yii::app()->db->createCommand('select rasch_measure from cat_prom5_score_map where raw_score=:raw_score')
+          ->bindValue('raw_score', $rawScore)->queryRow();
+        return $row['rasch_measure'];
+    }
+
+    public function setDefaultOptions(Patient $patient = null)
+    {
+      $catProm5Answers = array();
+      $rows = CatProm5Questions::model()->findAll();
+      foreach ($rows as $row) {
+        $new_answer_result = new CatProm5AnswerResult();
+        $new_answer_result->question_id = $row->id;
+        $catProm5Answers[] = $new_answer_result;
+      }
+      $this->catProm5AnswerResults = $catProm5Answers;
+      parent::setDefaultOptions($patient);
+    }
+
+    public function setUpdateOptions()
+    {
+
+      parent::setUpdateOptions();
+    }
+
+  /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
      * Typical usecase:

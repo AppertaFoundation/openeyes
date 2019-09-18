@@ -1352,7 +1352,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function saveEvent($data)
     {
-
         if (!$this->event->isNewRecord) {
             // this is an edit, so need to work out what we are deleting
             $oe_ids = array();

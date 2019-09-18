@@ -30,6 +30,10 @@
  */
 class Element_OphDrPrescription_Details extends BaseEventTypeElement
 {
+
+  protected $errorExceptions = array(
+    'Element_OphDrPrescription_Details_items' => 'prescription_items',
+  );
     /**
      * Returns the static model of the specified AR class.
      *

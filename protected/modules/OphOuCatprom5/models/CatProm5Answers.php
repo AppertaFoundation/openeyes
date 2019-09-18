@@ -10,7 +10,7 @@
  * @property string $score
  *
  * The followings are the available model relations:
- * @property CatProm5AnswerResults[] $catProm5AnswerResults
+ * @property CatProm5AnswerResult[] $catProm5AnswerResults
  * @property CatProm5Questions $question
  */
 class CatProm5Answers extends CActiveRecord

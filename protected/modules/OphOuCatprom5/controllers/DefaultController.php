@@ -8,40 +8,35 @@ use OEModule\OphOuCatprom5\models;
 class DefaultController extends \BaseEventTypeController
 {
 
-    public function actionCreate()
+  public function actionView($id)
+  {
+    parent::actionView($id);
+  }
+
+  public function actionCreate()
     {
-        $errors = array();
-//			parent::actionCreate();
-
-        if (!empty($_POST)) {
-          // form has been submitted
-          if (isset($_POST['cancel'])) {
-            $this->redirectToPatientLandingPage();
-          }
-
-          if (empty($errors)) {
-            $transaction = Yii::app()->db->beginTransaction();
-
-            try {
-            	$success = $this->saveEvent($_POST);
-            	if ($success) {
-
-							}
-            } catch (Exception $e) {
-              $transaction->rollback();
-              throw $e;
-            }
-          }
-
-
-          \Yii::log(var_export($_POST, true));
-        } else {
-          parent::actionCreate();
-        }
+      if (!empty($_POST)){
+        $raw_score = $_POST['CatProm5EventResult']['total_raw_score'];
+        $rasch_measure = \CatProm5EventResult::model()->rowScoreToRaschMeasure($raw_score);
+        $_POST['CatProm5EventResult']['total_rasch_measure'] = $rasch_measure;
+      }
+      parent::actionCreate();
     }
 
-    public function actionIndex()
+    public function actionUpdate($id)
+    {
+      if (!empty($_POST)){
+        $raw_score = $_POST['CatProm5EventResult']['total_raw_score'];
+        $rasch_measure = \CatProm5EventResult::model()->rowScoreToRaschMeasure($raw_score);
+        $_POST['CatProm5EventResult']['total_rasch_measure'] = $rasch_measure;
+      }
+
+      parent::actionUpdate($id);
+    }
+
+  public function actionIndex()
     {
         $this->render('index');
     }
+
 }

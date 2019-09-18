@@ -39,6 +39,9 @@
 class Element_OphTrConsent_Procedure extends BaseEventTypeElement
 {
     public $service;
+  protected $errorExceptions = array(
+    'Element_OphTrConsent_Procedure_procedures' => 'typeProcedure',
+  );
 
     /**
      * Returns the static model of the specified AR class.

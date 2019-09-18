@@ -15,7 +15,6 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 's
 
 <?php $this->displayErrors($errors) ?>
 <?php $this->renderOpenElements($this->action->id, $form); ?>
-<?php $this->renderPartial('form_QuestionnareScore'); ?>
 <?php $this->displayErrors($errors, true) ?>
 
 <?php $this->endWidget(); ?>
