@@ -76,7 +76,9 @@
                                 'class' => 'cols-full disabled',
                                 'default' => 'local',
                                 'disabled' => 'disabled',
-                                'style' => 'background-color:#f0f0f0'
+                                'style' => 'background-color:#f0f0f0',
+                                /* new entries are always 'local', the value is set in the controller */
+                                'placeholder' => 'local'
                             ])?>
                         </div>
                     </div>
@@ -90,7 +92,8 @@
                             <?=CHtml::activeTextField($model, 'source_subtype', [
                                 'class' => 'cols-full',
                                 'default' => 'local',
-                                'disabled' => 'disabled'
+                                'disabled' => 'disabled',
+                                'style' => 'background-color:#f0f0f0'
                             ])?>
                         </div>
                     </div>
