@@ -272,10 +272,7 @@
                     $.post('/OphCoDocument/Default/removeDocuments', {
                         doc_ids: removed_docs,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
-                    })
-                        .fail(function () {
-                            alert("Something went wrong while deleting the file");
-                        });
+                    });
                 }
             });
     </script>
