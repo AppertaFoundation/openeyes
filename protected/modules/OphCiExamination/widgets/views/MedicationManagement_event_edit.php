@@ -44,9 +44,8 @@ $element_errors = $element->getErrors();
                              id="<?= $model_name ?>_entry_table cols-full">
             <colgroup>
                 <col class="cols-2">
+                <col class="cols-3">
                 <col class="cols-2">
-                <col class="cols-2">
-                <col class="cols-1">
                 <col class="cols-1">
                 <col class="cols-1">
                 <col class="cols-1">
@@ -58,7 +57,6 @@ $element_errors = $element->getErrors();
             <tr>
                 <th>Drug</th>
                 <th>Dose/frequency/route</th>
-                <th>Started</th>
                 <th>Stopped</th>
                 <th>Reason</th>
                 <th>Duration</th>

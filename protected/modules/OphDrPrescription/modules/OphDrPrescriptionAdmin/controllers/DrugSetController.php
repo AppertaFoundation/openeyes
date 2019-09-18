@@ -244,7 +244,9 @@ class DrugSetController extends BaseAdminController
         $asset_manager->publish($base_assets_path);
 
         Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlieEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlineEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlineEdit.PrescriptionAdminMedicationSet.js', \CClientScript::POS_HEAD);
+
 
         $data = \Yii::app()->request->getParam('MedicationSet');
         $filters = \Yii::app()->request->getParam('search', []);
@@ -371,30 +373,61 @@ class DrugSetController extends BaseAdminController
     public function actionUpdateMedicationDefaults()
     {
         $result['success'] = false;
-        if (\Yii::app()->request->isPostRequest) {
-            $set_id = \Yii::app()->request->getParam('set_id');
-            $item_data = \Yii::app()->request->getParam('MedicationSetItem', []);
-            $medication_data = \Yii::app()->request->getParam('Medication', []);
+                $transaction = Yii::app()->db->beginTransaction();
+        try {
+            if (\Yii::app()->request->isPostRequest) {
+                        $set_id = \Yii::app()->request->getParam('set_id');
+                        $item_data = \Yii::app()->request->getParam('MedicationSetItem', []);
+                        $medication_data = \Yii::app()->request->getParam('Medication', []);
+                        $tapers = json_decode(\Yii::app()->request->getParam('tapers', []), true);
 
-            if ($set_id && isset($medication_data['id']) && $medication_data['id'] && isset($item_data['id'])) {
-                $item = \MedicationSetItem::model()->findByPk($item_data['id']);
+                if ($set_id && $medication_data['id'] && isset($item_data['id'])) {
+                    $item = \MedicationSetItem::model()->findByPk($item_data['id']);
 
-                if ($item) {
-                    $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
-                    $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
-                    $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
-                    $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
-                    $item->default_dispense_condition_id = isset($item_data['default_dispense_condition_id']) ? $item_data['default_dispense_condition_id'] : $item->default_duration_id;
-                    $item->default_dispense_location_id = isset($item_data['default_dispense_location_id']) ? $item_data['default_dispense_location_id'] : $item->default_dispense_location_id;
+                    if ($item) {
+                                $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
+                                $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
+                                $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
+                                $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
 
-                    $result['success'] = $item->save();
-                    $result['errors'] = $item->getErrors();
+                                $item->tapers = array();
+
+                        if ($tapers) {
+                            $taper_array = array();
+                            foreach ($tapers as $taper) {
+                                                $taper = json_decode($taper, true);
+                                                $new_taper = new MedicationSetItemTaper();
+                                if (isset($taper['MedicationSetItemTaper[id]']) && $taper['MedicationSetItemTaper[id]'] !== "") {
+                                    $new_taper->id = $taper['MedicationSetItemTaper[id]'];
+                                    $new_taper->setIsNewRecord(false);
+                                }
+                                                $new_taper->medication_set_item_id = $item_data['id'];
+                                                $new_taper->dose = $taper['MedicationSetItemTaper[dose]'];
+                                                $new_taper->duration_id = $taper['MedicationSetItemTaper[duration_id]'];
+                                                $new_taper->frequency_id = $taper['MedicationSetItemTaper[frequency_id]'];
+
+                                                $taper_array[] = $new_taper;
+                            }
+                                    $item->tapers = $taper_array;
+                        }
+
+                                $result['success'] = $item->save();
+                                $result['errors'] = $item->getErrors();
+
+                        if ($result['success'] === true) {
+                                $transaction->commit();
+                        } else {
+                                $transaction->rollback();
+                        }
+                    }
                 }
             }
+        } catch (Exception $e) {
+                $transaction->rollback();
+        } finally {
+                echo \CJSON::encode($result);
+                \Yii::app()->end();
         }
-
-        echo \CJSON::encode($result);
-        \Yii::app()->end();
     }
 
     public function actionAddMedicationToSet()
@@ -423,7 +456,9 @@ class DrugSetController extends BaseAdminController
             $item = \Yii::app()->request->getParam('MedicationSetItem');
 
             if (isset($item['id'])) {
-                $affected_rows = \MedicationSetItem::model()->deleteByPk($item['id']);
+                $affected_rows = \MedicationSetItem::model()->findByPk($item['id']);
+                $affected_rows->delete();
+
                 $result['success'] = (bool)$affected_rows;
             } else {
                 $result['success'] = false;

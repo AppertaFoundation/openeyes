@@ -59,9 +59,8 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
         </thead>
         <tbody>
         <?php
-        $row_count = 0;
         $total_count = count($element->entries);
-        foreach ($element->entries as $entry) {
+        foreach ($element->entries as $row_count => $entry) {
             if ($entry->prescription_item_id) {
                 $this->render(
                     'HistoryMedicationsEntry_prescription_event_edit',
@@ -100,7 +99,6 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                     )
                 );
             }
-            $row_count++;
         }
         ?>
         </tbody>
@@ -161,8 +159,10 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
             onAddedEntry: function ($row, controller) {
                 if (typeof controller.MMController !== "undefined") {
                     var data = $row.data("medication");
-                    data.locked = 1;
-                    if (data.will_copy) {
+                    if(!$row.hasClass("new")){
+                        data.locked = 1;
+                    }
+                    if(data.will_copy) {
                         $new_row = controller.MMController.addEntry([data], false);
                         controller.disableRemoveButton($new_row);
                         controller.bindEntries($row, $new_row);

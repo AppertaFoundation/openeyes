@@ -94,6 +94,9 @@ if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) {
                 <?php $set_item = \MedicationSetItem::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $medication_set->id]);?>
                 <tr data-med_id="<?=$med->id?>">
                     <td>
+                        <button class="js-add-taper" type="button" title="Add taper">
+                            <i class="oe-i child-arrow small"></i>
+                        </button>
                         <?= $med->preferred_term; ?>
                         <?= \CHtml::activeHiddenField($set_item, 'id', ['class' => 'js-input']); ?>
                         <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input']); ?>
@@ -147,6 +150,22 @@ if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) {
                         <a data-action_type="cancel" class="js-cross-set-medication" style="display:none"><i class="oe-i cross-red"></i></a>
                     </td>
                 </tr>
+                <?php
+                if (!empty($set_item->tapers)) {
+                    $taper_count = 0;
+                    foreach ($set_item->tapers as $taper) {
+                        $this->renderPartial('MedicationSetItemTaper_edit', array(
+                            "taper" => $taper,
+                            "set_item_medication_id" => $med->id,
+                            "set_item_medication" => $med,
+                            "taper_count" => $taper_count,
+                            "frequency_options" => $frequency_options,
+                            "duration_options" => $duration_options
+                        ));
+											$taper_count++;
+                    }
+                }
+                ?>
             <?php endforeach; ?>
             </tbody>
             <tfoot class="pagination-container">
@@ -157,9 +176,29 @@ if ($medication_set->hasUsageCode("PRESCRIPTION_SET")) {
         </table>
     </div>
 </div>
+
+<script type="text/template" id="medication_item_taper_template">
+    <?php
+        $empty_entry = new MedicationSetItemTaper();
+
+        $this->renderPartial('MedicationSetItemTaper_edit', array(
+            "taper" => $empty_entry,
+            "set_item_medication_id" => "{{data_med_id}}",
+            "set_item_medication" => null,
+            "taper_count" => "{{taper_count}}",
+            "frequency_options" => $frequency_options,
+            "duration_options" => $duration_options
+        ));
+
+        ?>
+</script>
+
 <script type="x-tmpl-mustache" id="medication_template" style="display:none">
-    <tr data-med_id="{{id}}">
+    <tr data-med_id="{{medication_id}}">
         <td>
+            <button class="js-add-taper" type="button" title="Add taper">
+                <i class="oe-i child-arrow small"></i>
+            </button>
             {{preferred_term}}
             <input class="js-input" name="MedicationSetItem[id]" type="hidden" value="{{id}}">
             <input class="js-input" name="Medication[id]" type="hidden" value="{{medication_id}}">
