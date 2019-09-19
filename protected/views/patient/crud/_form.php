@@ -752,5 +752,20 @@ $this->renderPartial('../patient/crud/create_contact_form',
         $('#extra_practice_adding_new_form').css('display','none');
         $("#extra_practice_adding_existing_form");
     }
+    $("#Contact_first_name, #Contact_last_name").keypress(
+        function(event){
+            if (event.which == '13') {
+                event.preventDefault();
+            }
+        });
+
+    $("#Patient_dob").keypress(
+        function(event){
+            if (event.which == '13') {
+                event.preventDefault();
+                $("#Patient_dob").blur();
+                $(".pickmeup").addClass("pmu-hidden");
+            }
+        });
 
 </script>
