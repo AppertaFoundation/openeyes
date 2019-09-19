@@ -80,10 +80,9 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
     public function actionCreate()
     {
         $model = new OphCiExamination_PupillaryAbnormalities_Abnormality();
-        $request = Yii::app()->getRequest();
-        if ($request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality')) {
-            $model->attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality');
-//            $model->display_order = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality')['display_order'];
+        $values = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality',[]);
+        if (!empty($values)) {
+            $model->attributes = $values;
 
             if ($model->save()) {
                 Audit::add('admin', 'create', serialize($model->attributes), false,
@@ -106,8 +105,8 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
      */
     public function actionDelete()
     {
-        $delete_ids = isset($_POST['select']) ? $_POST['select'] : [];
-        $transaction = Yii::app()->db->beginTransaction();
+        $delete_ids = \Yii::app()->request->getPost('select',[]);
+        $transaction = \Yii::app()->db->beginTransaction();
         $success = true;
         $result = [];
         $result['status'] = 1;
