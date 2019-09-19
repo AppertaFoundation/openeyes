@@ -207,8 +207,7 @@
         let $table = $('table.generic-admin');
 
         $('#add_new_abnormality').on('click', function (e) {
-            let data = {}, $row
-            $table = $('table.generic-admin');
+            let data = {}, $row;
 
             data['row'] = OpenEyes.Util.getNextDataKey($table.find('tbody tr'), 'row');
             $row = Mustache.render(
