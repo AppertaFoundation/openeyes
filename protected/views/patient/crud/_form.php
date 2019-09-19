@@ -757,6 +757,7 @@ $this->renderPartial('../patient/crud/create_contact_form',
         function(event){
             if (event.which == '13') {
                 event.preventDefault();
+                $(this).blur();
             }
         });
 
