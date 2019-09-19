@@ -22,15 +22,6 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
 }, $this->getRequiredAbnormalities());
 ?>
 
-<script type="text/javascript">
-    var pupillaryAbnormalityController;
-    $(document).ready(function () {
-        pupillaryAbnormalityController = new OpenEyes.OphCiExamination.PupillaryAbnormalitiesController({
-            element: $('#<?=$model_name?>_element')
-        });
-    });
-</script>
-
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
@@ -123,7 +114,8 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
                 </div>
             </div>
         </div>
-        <script type="text/javascript">
+        <script>
+            let pupillaryAbnormalityController = $('.OEModule_OphCiExamination_models_PupillaryAbnormalities').data('controller');
 
             $(function () {
                 new OpenEyes.UI.AdderDialog({

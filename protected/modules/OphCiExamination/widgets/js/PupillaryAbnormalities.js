@@ -180,3 +180,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     exports.PupillaryAbnormalitiesController = PupillaryAbnormalitiesController;
 
 })(OpenEyes.OphCiExamination);
+
+$(document).ready(function () {
+    let controller = new OpenEyes.OphCiExamination.PupillaryAbnormalitiesController();
+    $('.OEModule_OphCiExamination_models_PupillaryAbnormalities').data('controller', controller);
+});
