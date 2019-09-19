@@ -166,8 +166,21 @@ class CsvController extends BaseController
 							$import->message .= "<br>" . $error;
 						}
 					} else {
+						switch ($context) {
+							case 'trials':
+								$import->import_status_id = 12;
+								break;
+							case 'trialPatients':
+								$import->import_status_id = 13;
+								break;
+							case 'patients':
+								$import->import_status_id = 8;
+								break;
+							default:
+								break;
+						}
+
 						$transaction->commit();
-						$import->import_status_id = 8;
 					}
 
 					if (!$import->save()) {
@@ -177,16 +190,28 @@ class CsvController extends BaseController
 
 				$summary_table = array();
 
-				$import_log->status = "Success";
-
 				foreach (Import::model()->findAllByAttributes(['parent_log_id' => $import_log->id]) as $summary_import) {
 					$summary = array();
 
 					$status = $summary_import->import_status->status_value;
 
-					//A status of 8 indicates a successful patient import
-					if ($status != 8)
-						$import_log->status = "Failure";
+					switch ($context) {
+						case 'trials':
+							//If status is "Import Trial Success"
+							$import_log->status = ($status == 12) ? "Success" : "Failure";
+							break;
+						case 'trialPatients':
+							//If status is "Import Trial Patient Success"
+							$import_log->status = ($status == 13) ? "Success" : "Failure";
+							break;
+						case 'patients':
+							//If status is "Import Patient Success"
+							$import_log->status = ($status == 8) ? "Success" : "Failure";
+							break;
+						default:
+							$import_log->status = "Unknown upload context";
+							break;
+					}
 
 					$summary['Status'] = $status;
 					$summary['Details'] = $summary_import->message;
