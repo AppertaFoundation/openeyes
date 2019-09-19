@@ -35,7 +35,6 @@ namespace OEModule\OphCiExamination\models;
 class PupillaryAbnormalities extends \SplitEventTypeElement
 {
     protected $auto_update_relations = true;
-    protected $auto_validate_relations = true;
 
     public $widgetClass = 'OEModule\OphCiExamination\widgets\PupillaryAbnormalities';
     protected $default_from_previous = true;
@@ -127,29 +126,6 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
             }
         }
         return parent::beforeSave();
-    }
-
-    /**
-     * check either confirmation of no abnormalities or at least one abnormality entry for each side
-     */
-    public function afterValidate()
-    {
-        $model = str_replace('\\', '_', $this->elementType->class_name);
-        $pa = $_POST[$model];
-
-        foreach (array('left', 'right') as $side) {
-            if (!$this->eyeHasSide($side, $pa['eye_id'])) {
-                continue;
-            }
-            $has_entries = array_key_exists('entries_' . $side, $pa);
-            $no_abnormalities = (array_key_exists($side . '_no_pupillaryabnormalities', $pa) && $pa[$side . '_no_pupillaryabnormalities'] === '1');
-
-            if (!$has_entries && !$no_abnormalities) {
-                $this->addError($side, ucfirst($side) . ' side has no data.');
-            }
-        }
-
-        return parent::afterValidate();
     }
 
     /**

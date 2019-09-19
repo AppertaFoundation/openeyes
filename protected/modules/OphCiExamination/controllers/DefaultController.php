@@ -1329,14 +1329,18 @@ class DefaultController extends \BaseEventTypeController
                         foreach ($entryErrors as $entryErrorAttributeName => $entryErrorMessages) {
                             foreach ($entryErrorMessages as $entryErrorMessage) {
                                 $pupillary_abnormalities->addError("entries_{$side}_" . $index . '_' . $entryErrorAttributeName, $entryErrorMessage);
+                                $errors[$et_name][] = ucfirst($side) . ' ' . $entry->getDisplayAbnormality() . " - " . $entryErrorMessage;
                             }
                         }
                     }
                 }
                 $pupillary_abnormalities->{'entries_' . $side} = $entries;
             } else {
-                if (isset($data[$side . '_no_pupillaryabnormalities'])) {
-                    $pupillary_abnormalities->{'no_pupillaryabnormalities_date_' . $side} = $data[$side . '_no_pupillaryabnormalities'];
+                if (isset($data[$side . '_no_pupillaryabnormalities']) && $data[$side . '_no_pupillaryabnormalities'] === '1') {
+                    $pupillary_abnormalities->{'no_pupillaryabnormalities_date_' . $side} = date("Y-m-d H:i:s");
+                } else {
+                    $pupillary_abnormalities->addError("{$side}_no_pa_label", ucfirst($side) . ' side has no data.');
+                    $errors[$et_name][] = ucfirst($side) . ' side has no data.';
                 }
             }
         }
