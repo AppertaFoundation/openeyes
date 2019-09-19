@@ -16,6 +16,7 @@
  * @property string $created_date
  * @property string $comment
  * @property string $status_update_date
+ * @property string $started_date
  *
  * The followings are the available model relations:
  * @property Patient $patient

@@ -372,6 +372,7 @@ class Trial extends BaseActiveRecordVersioned
       $trialPatient->patient_id = $patient->id;
       $trialPatient->status_id = $patient_status->id;
       $trialPatient->treatment_type_id = TreatmentType::model()->find('code = "UNKNOWN"')->id;
+      $trialPatient->started_date = date('Y-m-d');
 
       if (!$trialPatient->save()) {
         throw new Exception(
