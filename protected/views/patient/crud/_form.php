@@ -752,5 +752,22 @@ $this->renderPartial('../patient/crud/create_contact_form',
         $('#extra_practice_adding_new_form').css('display','none');
         $("#extra_practice_adding_existing_form");
     }
+    //CERA-564 Ensuring pressing Enter key on First name, last name or dob does not submit the form and instead gives a chance for any duplicate patient warning messages to appear
+    $("#Contact_first_name, #Contact_last_name").keypress(
+        function(event){
+            if (event.which == '13') {
+                event.preventDefault();
+                $(this).blur();
+            }
+        });
+
+    $("#Patient_dob").keypress(
+        function(event){
+            if (event.which == '13') {
+                event.preventDefault();
+                $("#Patient_dob").blur();
+                $(".pickmeup").addClass("pmu-hidden");
+            }
+        });
 
 </script>
