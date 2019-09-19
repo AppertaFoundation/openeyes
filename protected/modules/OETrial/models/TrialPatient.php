@@ -16,7 +16,6 @@
  * @property string $created_date
  * @property string $comment
  * @property string $status_update_date
- * @property string $started_date
  *
  * The followings are the available model relations:
  * @property Patient $patient
@@ -146,7 +145,7 @@ class TrialPatient extends BaseActiveRecordVersioned
                     ),
                 ),
             ),
-            array('last_modified_date, created_date, status_update_date, comment, started_date', 'safe'),
+            array('last_modified_date, created_date, status_update_date, comment', 'safe'),
         );
     }
 
@@ -184,7 +183,6 @@ class TrialPatient extends BaseActiveRecordVersioned
             'last_modified_date' => 'Last Modified Date',
             'created_user_id' => 'Created User',
             'created_date' => 'Created Date',
-            'started_date' => 'Started Date',
             'comment'=>'Comments',
         );
     }
@@ -278,16 +276,5 @@ class TrialPatient extends BaseActiveRecordVersioned
 
         $this->audit('trial-patient', 'update-treatment-type');
     }
-
-    /**
-     * Returns the date this trial patient was started as a string: The data source of the trial patient started date is created_date column from csv import.
-     *
-     * @return string The started date as a string
-     */
-    public function getStartedDateForDisplay()
-    {
-        return $this->created_date !== null ? Helper::formatFuzzyDate($this->started_date) : 'Pending';
-    }
-
 
 }

@@ -57,7 +57,7 @@
                           echo Helper::formatFuzzyDate($trialPatient->status_update_date);
                       } ?></td>
                   <td><?= $trialPatient->trial->trialType->name; ?></td>
-                  <td><?= $trialPatient->getStartedDateForDisplay(); ?></td>
+                  <td><?= $trialPatient->trial->getStartedDateForDisplay(); ?></td>
                   <td><?= $trialPatient->trial->getClosedDateForDisplay(); ?></td>
                 </tr>
               <?php endforeach; ?>
