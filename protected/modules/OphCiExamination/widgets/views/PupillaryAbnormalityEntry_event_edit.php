@@ -37,9 +37,9 @@ if (!isset($values)) {
         <input type="hidden" name="<?= $field_prefix ?>[eye_id]" value="<?= $eye_id ?>"/>
     </td>
     <td id="<?= $model_name ?>_entries_<?= $side . '_' . $row_count ?>_has_abnormality" class="nowrap">
-        <?php if($removable){
+        <?php if ($removable) {
             echo CHtml::hiddenField($field_prefix . '[has_abnormality]', (string)PupillaryAbnormalityEntry::$PRESENT);
-        }else{ ?>
+        } else { ?>
             <label class="inline highlight">
                 <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
                      $posted_not_checked,
@@ -65,8 +65,8 @@ if (!isset($values)) {
             <div class="js-comment-container flex-layout flex-left"
                  id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
                  style="<?php if (!$values['comments']) :
-                     ?>display: none;<?php
-                 endif; ?>"
+                        ?>display: none;<?php
+                        endif; ?>"
                  data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
                 <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
                     'class' => 'js-comment-field autosize cols-full',
@@ -83,7 +83,7 @@ if (!isset($values)) {
                     data-hide-method="display"
                     style="<?php if ($values['comments']) :
                         ?>display: none;<?php
-                    endif; ?>"
+                           endif; ?>"
             >
                 <i class="oe-i comments small-icon"></i>
             </button>
