@@ -15,7 +15,7 @@ class m190919_014602_add_more_import_statuses extends CDbMigration
 
 	public function down()
 	{
-		$this->delete('import_status', 'status_value="Import Trial Success"');
-		$this->delete('import_status', 'status_value="Import Trial Patient Success"');
+		$this->delete('import_status', 'id=12 AND status_value="Import Trial Success"');
+		$this->delete('import_status', 'id=13 AND status_value="Import Trial Patient Success"');
 	}
 }
