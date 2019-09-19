@@ -40,7 +40,7 @@
                         $new_display_order
                     );
                 } ?>
-                <?=\CHtml::activeTelField(
+                <?=\CHtml::activeTextField(
                     $model,
                     'name',
                     ['class' => 'cols-full']
