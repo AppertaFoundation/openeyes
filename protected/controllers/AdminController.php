@@ -1896,7 +1896,7 @@ class AdminController extends BaseAdminController
 			}
 		}
 
-		$this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors, 'class_array' => ['SettingInstallation']));
+		$this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors, 'allowed_classes' => ['SettingInstallation']));
 	}
 
 	/**

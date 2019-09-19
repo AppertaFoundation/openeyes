@@ -132,7 +132,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         return $model::model()->find($criteria);
     }
 
-    public function getSetting($key = null, $element_type = null, $return_object = false, $class_array = null)
+    public function getSetting($key = null, $element_type = null, $return_object = false, $allowed_classes = null)
     {
         if (!$key) {
             $key = $this->key;
@@ -167,7 +167,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
             'SettingInstallation' => null,
             ) as $class => $field) {
 
-        		if($class_array && !in_array($class, $class_array)) {
+        		if($allowed_classes && !in_array($class, $allowed_classes)) {
         			continue;
 						}
             if ($field) {
@@ -198,13 +198,13 @@ class SettingMetadata extends BaseActiveRecordVersioned
         return $metadata->default_value;
     }
 
-    public function getSettingName($key = null, $class_array = null)
+    public function getSettingName($key = null, $allowed_classes = null)
     {
         if (!$key) {
             $key = $this->key;
         }
 
-        $value = $this->getSetting($key, null , false, $class_array);
+        $value = $this->getSetting($key, null , false, $allowed_classes);
 
         if ($value == '') {
             $value = $this->default_value;
