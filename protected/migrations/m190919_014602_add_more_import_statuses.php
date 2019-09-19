@@ -18,15 +18,4 @@ class m190919_014602_add_more_import_statuses extends CDbMigration
 		$this->delete('import_status', 'status_value="Import Trial Success"');
 		$this->delete('import_status', 'status_value="Import Trial Patient Success"');
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }

@@ -190,8 +190,6 @@ class CsvController extends BaseController
 
 				$summary_table = array();
 
-//				$import_log->status = "Success";
-
 				foreach (Import::model()->findAllByAttributes(['parent_log_id' => $import_log->id]) as $summary_import) {
 					$summary = array();
 
@@ -214,9 +212,6 @@ class CsvController extends BaseController
 							$import_log->status = "Unknown upload context";
 							break;
 					}
-
-//					if ($status != 8)
-//						$import_log->status = "Failure";
 
 					$summary['Status'] = $status;
 					$summary['Details'] = $summary_import->message;
