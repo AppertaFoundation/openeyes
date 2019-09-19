@@ -19,7 +19,6 @@ $config = [
             'Element Attributes' => ['OphCiExamination' => '/oeadmin/ExaminationElementAttributes/list'],
             'Workflows' => '/OphCiExamination/admin/viewWorkflows',
             'Workflow rules' => '/OphCiExamination/admin/viewWorkflowRules',
-            // 'Allergies' => '/OphCiExamination/admin/Allergies',
             'Allergies' => '/OphCiExamination/admin/Allergies/index',
             'Required Allergy Assignment' => '/OphCiExamination/admin/AllergyAssignment/index',
             'Risks' => '/OphCiExamination/risksAdmin/list',

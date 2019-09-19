@@ -38,12 +38,13 @@ class AllergiesController extends \ModuleAdminController
         $display_order = 1;
         foreach ($post as $attributes) {
             if (isset($attributes['id'])) {
-                $attributes['display_order'] = $display_order;
+                $attributes['display_order'] = (string)$display_order; // Changing display_order type to string so that isModelDirty() doesn't pick it up as a new change
+                $attributes['medication_set_id'] = ($attributes['medication_set_id'] === '0' ? NULL : $attributes['medication_set_id']);
                 $attributes['active'] = isset($attributes['active']);
                 $allergy = OphCiExaminationAllergy::model()->findByPk($attributes['id']);
                 if ($allergy) {
                     $allergy->setAttributes($attributes);
-                    if ($allergy->save()) {
+                    if ($allergy->isModelDirty() && $allergy->save()) {
                         Audit::add('admin', 'edit', serialize($allergy->attributes), false,
                         ['model' => 'OEModule_OphCiExamination_models_OphCiExaminationAllergy']);
                         Yii::app()->user->setFlash('success', 'Allergies updated');
