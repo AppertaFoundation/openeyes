@@ -632,6 +632,41 @@ class CsvController extends BaseController
             }
 
             $episode->patient_id = $new_patient->id;
+
+            $found_disorder_ids =
+                Yii::app()->db->createCommand(
+                    'SELECT id 
+								FROM  disorder 
+								WHERE REGEXP_REPLACE(term, \'[^A-Za-z0-9]\', \'\') = 
+								REGEXP_REPLACE(\''. $patient_raw_data['diagnosis'] . '\', \'[^A-Za-z0-9]\', \'\')')->queryAll();
+
+            if (count($found_disorder_ids) == 0) {
+                $errors[] = "Could not find disorder matching name: " . $patient_raw_data['diagnosis'];
+                return $errors;
+            } else {
+                $disorder = Disorder::model()->findByPk($found_disorder_ids[0]);
+            }
+
+            $episode->disorder_id = $disorder->id;
+
+            $diagnosis_left = $patient_raw_data['diagnosis_side_l'] == 'Y';
+            $diagnosis_right = $patient_raw_data['diagnosis_side_r'] == 'Y';
+
+            //Derive affected eye by performing binary style operation on left and right booleans
+            //This formula maps two booleans (One for each eye) to a number from 0-3 inclusive
+            //A value of 0 indicates no eye, 1, 2 and 3 indicate right, left, and both eyes respectively
+            //This is the fastest way to map two boolean values to an eye in the database
+            $diagnosis_eye_id = ($diagnosis_left * 1 + $diagnosis_right * 2);
+
+            //Check if no eye is affected by diagnosis
+            if ($diagnosis_eye_id == 0) {
+                $errors[] = "Cannot save diagnosis that does not affect an eye";
+                return $errors;
+            }
+
+            $episode->eye_id = $diagnosis_eye_id;
+            $episode->disorder_date = date("Y-m-d", strtotime(str_replace('/', '-', $patient_raw_data['diagnosis_date'])));
+
             if(!$episode->save()){
                 $errors[] = 'Could not save new episode';
                 array_unshift($errors, $episode->getErrors());
@@ -667,35 +702,6 @@ class CsvController extends BaseController
                     $errors[] = 'Field diagnosis_side_r must be Y or N';
                 }
 
-                $diagnosis_left = $patient_raw_data['diagnosis_side_l'] == 'Y';
-                $diagnosis_right = $patient_raw_data['diagnosis_side_r'] == 'Y';
-
-                //Derive affected eye by performing binary style operation on left and right booleans
-                //This formula maps two booleans (One for each eye) to a number from 0-3 inclusive
-                //A value of 0 indicates no eye, 1, 2 and 3 indicate right, left, and both eyes respectively
-                //This is the fastest way to map two boolean values to an eye in the database
-                $diagnosis_eye_id = ($diagnosis_left * 1 + $diagnosis_right * 2);
-
-                //Check if no eye is affected by diagnosis
-                if ($diagnosis_eye_id == 0) {
-                    $errors[] = "Cannot save diagnosis that does not affect an eye";
-                    return $errors;
-                }
-
-                $found_disorder_ids =
-                    Yii::app()->db->createCommand(
-                        'SELECT id 
-								FROM  disorder 
-								WHERE REGEXP_REPLACE(term, \'[^A-Za-z0-9]\', \'\') = 
-								REGEXP_REPLACE(\''. $patient_raw_data['diagnosis'] . '\', \'[^A-Za-z0-9]\', \'\')')->queryAll();
-
-                if (count($found_disorder_ids) == 0) {
-                    $errors[] = "Could not find disorder matching name: " . $patient_raw_data['diagnosis'];
-                    return $errors;
-                } else {
-                    $disorder = Disorder::model()->findByPk($found_disorder_ids[0]);
-                }
-
                 $diagnosis = new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis();
                 $diagnosis->element_diagnoses_id = $diagnoses_element->id;
                 $diagnosis->disorder_id = $disorder->id;
@@ -715,8 +721,6 @@ class CsvController extends BaseController
                     $errors[] = $diagnosis->getErrors();
                     return $errors;
                 }
-
-                $episode->disorder_id = $disorder->id;
             }
 
             //Check whether we have readings for left and right
@@ -729,7 +733,6 @@ class CsvController extends BaseController
                 return $errors;
             }
         }
-
         if(empty($errors)) {
             $import->message = "Import successful for patient: " . $contact->first_name . " " . $contact->last_name;
         }
