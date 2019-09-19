@@ -36,7 +36,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         "dropAreaSelector": ".upload-label",
         "uploadModeSelector": "input[name='upload_mode']",
         "action": "",
-        "removedDocuments": "#removed-docs"
+        "removedDocumentsSelector": "#removed-docs"
     };
 
     DocumentUploadController.prototype.initialiseTriggers = function () {
@@ -150,7 +150,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
         let deleted_doc = $td.find('.js-document-id').val();
         $td.find('.js-document-id').val("");
-        let $removed_docs = $(controller.options.removedDocuments);
+        let $removed_docs = $(controller.options.removedDocumentsSelector);
         $removed_docs.val(deleted_doc + ';' + $removed_docs.val());
     };
 
