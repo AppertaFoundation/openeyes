@@ -283,11 +283,7 @@ class DefaultController extends BaseEventTypeController
 
             /** @var OphTrOperationbooking_API $api */
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                if ($theatre_diary_disabled) {
-                    $operations = $api->getOpenOperations($this->patient);
-                } else {
-                    $operations = $api->getScheduledOpenOperations($this->patient);
-                }
+                $operations = $api->getOpenOperations($this->patient);
             }
 
 
@@ -359,67 +355,40 @@ class DefaultController extends BaseEventTypeController
                                 $transaction->commit();
                             } else {
                                 $transaction->rollback();
-
-                                $log = print_r($result['errors'], true);
-                                \Audit::add('event', 'create-failed', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
-                                    'module' => 'OphDrPrescription',
-                                    'episode_id' => $this->event->episode->id,
-                                    'patient_id' => $this->patient->id,
-                                    'model' => 'Element_OphDrPrescription_Details'
-                                ]);
-                                \OELog::log($log);
+                                $this->logEventCreationFail($result['errors'], 'OphDrPrescription', 'Element_OphDrPrescription_Details');
                             }
                         }
 
                         $create_correspondence = \Yii::app()->request->getParam('auto_generate_gp_letter_after_surgery');
-                        if ($create_correspondence) {
+                        if ($create_correspondence && ($this->patient->gp_id && $this->patient->practice_id)) {
+                            $macro_name = \SettingMetadata::model()->getSetting('default_post_op_letter');
                             $transaction = Yii::app()->db->beginTransaction();
                             // create 'post-op' letter
-                            $result = $this->createCorrespondenceEvent();
+                            $result = $this->createCorrespondenceEvent($macro_name);
                             if ($result['success'] === true) {
                                 $transaction->commit();
                             } else {
                                 $transaction->rollback();
-                                $log = print_r($result['errors'], true);
-                                \Audit::add('event', 'create-failed', 'Event creation Failed<pre>' . $log . '</pre>', $log, [
-                                    'module' => 'OphCoCorrespondence',
-                                    'episode_id' => $this->event->episode->id,
-                                    'patient_id' => $this->patient->id,
-                                    'model' => 'ElementLetter'
-                                ]);
+                                $this->logEventCreationFail($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
                             }
+                        } else {
+                            Yii::app()->user->setFlash('error', "GP letter could not be created because the patient has no GP");
+                            $this->logEventCreationFail(['Error Message' => 'GP letter could not be created because the patient has no GP', 'gp_id' => $this->patient->gp_id, 'practice_id' => $this->patient->practice_id], 'OphCoCorrespondence', 'Patient');
                         }
 
-                        $create_optopm_correspondence = \Yii::app()->request->getParam('auto_generate_optopm_post_op_letter_after_surgery');
-                        $macro_name = \SettingMetadata::model()->getSetting('default_optop_post_op_letter');
-                        $macro = LetterMacro::model()->find('name = ?', [$macro_name]);
+                        $create_optom_correspondence = \Yii::app()->request->getParam('auto_generate_optom_post_op_letter_after_surgery');
+                        
 
-                        if ($create_optopm_correspondence) {
-                            // create 'optopm-post-op' letter
-                            if ($macro) {
-                                $transaction = Yii::app()->db->beginTransaction();
-                                $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
-                                $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
-                                $correspondence_creator->save();
-
-                                if ($correspondence_creator->save() && !$correspondence_creator->hasErrors()) {
-                                    $transaction->commit();
-                                } else {
-                                    $transaction->rollback();
-                                    $log = print_r($result['errors'], true);
-                                    \Audit::add('event', 'create-failed', 'Event creation Failed <pre>' . $log . '</pre>', $log, [
-                                        'module' => 'OphCoCorrespondence',
-                                        'episode_id' => $this->event->episode->id,
-                                        'patient_id' => $this->patient->id,
-                                        'model' => 'ElementLetter'
-                                    ]);
-
-                                    \Yii::app()->user->setFlash('issue.correspondence', "Unable to create default Optom Letter. Please see audit for details.");
-                                }
+                        if ($create_optom_correspondence) {
+                            $macro_name = \SettingMetadata::model()->getSetting('default_optom_post_op_letter');
+                            $transaction = Yii::app()->db->beginTransaction();
+                            // create optometrist 'post-op' letter
+                            $result = $this->createCorrespondenceEvent($macro_name);
+                            if ($result['success'] === true) {
+                                $transaction->commit();
                             } else {
-                                $msg = "Unable to create default Optom Letter because: No macro named '$macro_name' was found.";
-                                \OELog::log($msg);
-                                \Yii::app()->user->setFlash('issue.correspondence', $msg);
+                                $transaction->rollback();
+                                $this->logEventCreationFail($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
                             }
                         }
 
@@ -1206,13 +1175,15 @@ class DefaultController extends BaseEventTypeController
         $this->persistPcrRisk();
     }
 
-    private function createCorrespondenceEvent()
+    private function createCorrespondenceEvent($macro_name = null)
     {
         $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-        $macro_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_letter");
-        $macro = $correspondence_api->getDefaultMacroByEpisodeStatus($this->event->episode, $firm, Yii::app()->session['selected_site_id']);
-
+        if (empty($macro_name)) {
+            $macro_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_letter");
+        }
+        $macro = $correspondence_api->getDefaultMacroByEpisodeStatus($this->event->episode, $firm, Yii::app()->session['selected_site_id'], $macro_name);
+        
         $success = false;
 
         if ($macro) {
@@ -1223,7 +1194,7 @@ class DefaultController extends BaseEventTypeController
             $success = !$correspondence_creator->hasErrors();
             $errors = $correspondence_creator->getErrors();
         } else {
-            $msg = "Unable to create default GP Letter because: No macro named '{$macro_name}' was found";
+            $msg = "Unable to create default Letter because: No macro named '{$macro_name}' was found";
             $errors[] = [$msg];
 
             \Yii::app()->user->setFlash('issue.correspondence', $msg);
@@ -1237,7 +1208,7 @@ class DefaultController extends BaseEventTypeController
 
     private function createPrescriptionEvent()
     {
-        $drug_set_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_drug_set");
+        $drug_set_name = \SettingMetadata::model()->getSetting("default_post_op_drug_set");
         $subspecialty_id = $this->firm->getSubspecialtyID();
         $params = [':subspecialty_id' => $subspecialty_id, ':name' => $drug_set_name];
 
@@ -1395,5 +1366,16 @@ class DefaultController extends BaseEventTypeController
         $crit->order = "display_order";
 
         return OphTrOperationnote_Attribute::model()->findAll($crit);
+    }
+
+    protected function logEventCreationFail($errors, $module, $model)
+    {
+        $log = print_r($errors, true);
+        \Audit::add('event', 'create-failed', 'Automatic Event creation Failed<pre>' . $log . '</pre>', $log, [
+            'module' => $module,
+            'episode_id' => $this->event->episode->id,
+            'patient_id' => $this->patient->id,
+            'model' => $model
+        ]);
     }
 }

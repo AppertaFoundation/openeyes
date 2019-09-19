@@ -74,24 +74,24 @@ $creating = isset($creating) ? $creating : false;
             </tbody>
           </table>
         </div>
-		  <?php if ($element->isInternalReferralEnabled()): ?>
+            <?php if ($element->isInternalReferralEnabled()) : ?>
               <div class="internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?> ">
-				  <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
+                  <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
               </div>
-		  <?php endif; ?>
+            <?php endif; ?>
         <div class="data-group">
           <table class="cols-full">
-						<colgroup>
-							<col class="cols-3">
-							<col class="cols-7">
-						</colgroup>
+                        <colgroup>
+                            <col class="cols-3">
+                            <col class="cols-7">
+                        </colgroup>
             <tbody>
             <tr>
               <td>
                 Site
               </td>
               <td>
-                  <?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(),
+                    <?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(),
                       array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')) ?>
               </td>
             </tr>
@@ -100,7 +100,7 @@ $creating = isset($creating) ? $creating : false;
                 Date
               </td>
               <td>
-                  <?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'),
+                    <?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'),
                       array('nowrapper' => true, 'class' => 'cols-7')) ?>
               </td>
             </tr>
@@ -109,7 +109,7 @@ $creating = isset($creating) ? $creating : false;
                 Letter type
               </td>
               <td>
-                  <?php echo $form->dropDownList($element, 'letter_type_id',
+                    <?php echo $form->dropDownList($element, 'letter_type_id',
                       CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
                       array('empty' => 'Select', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')) ?>
               </td>
@@ -120,7 +120,7 @@ $creating = isset($creating) ? $creating : false;
                 Clinic Date
               </td>
               <td>
-                  <?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'),
+                    <?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'),
                       array('nowrapper' => true, 'null' => true, 'class' => 'cols-7')) ?>
               </td>
             </tr>
@@ -130,7 +130,7 @@ $creating = isset($creating) ? $creating : false;
                 Direct Line
               </td>
               <td>
-                  <?php echo $form->textField($element, 'direct_line', array('nowrapper' => true, 'class' => 'cols-full'), array(),
+                    <?php echo $form->textField($element, 'direct_line', array('nowrapper' => true, 'class' => 'cols-full'), array(),
                       array_merge($layoutColumns, array('field' => 2))) ?>
               </td>
             </tr>
@@ -140,7 +140,7 @@ $creating = isset($creating) ? $creating : false;
                 Fax
               </td>
               <td>
-                  <?php echo $form->textField($element, 'fax', array('nowrapper' => true, 'class' => 'cols-full'), array(),
+                    <?php echo $form->textField($element, 'fax', array('nowrapper' => true, 'class' => 'cols-full'), array(),
                       array_merge($layoutColumns, array('field' => 2))) ?>
               </td>
             </tr>
@@ -273,13 +273,13 @@ $creating = isset($creating) ? $creating : false;
                 <tbody>
                 <tr>
                     <td>
-                        <h3>Letter Macro</h3>
+                        <h3>Letter Templates</h3>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <?= \CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros,
-                            array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')); ?>
+                            array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')); ?>
                     </td>
                 </tr>
                 <tr>
@@ -397,7 +397,7 @@ $creating = isset($creating) ? $creating : false;
               <td>From</td>
               <td>
                 <?php $this->widget('application.widgets.AutoCompleteSearch', ['html_options' => ['placeholder' => 'Search for users full title and details']]); ?>
-                <?php echo $form->textArea($element, 'footer', array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'correspondence-letter-text', 'style' => "overflow: hidden; overflow-wrap: break-word; height: 114px;")) ?>
+                <?php echo $form->textArea($element, 'footer', array('label' => false, 'nowrapper' => true), false, array('class' => 'correspondence-letter-text autosize', 'style' => "overflow: hidden; overflow-wrap: break-word; height: 54px;")) ?>
               </td>
             </tr>
             <tr>
