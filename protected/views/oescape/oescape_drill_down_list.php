@@ -23,6 +23,7 @@
                 <th class="text-left" style="vertical-align: center;">Instrument</th><!-- Instrument -->
                 <th class="text-left" style="vertical-align: center;">Dilated</th><!-- Dilated -->
                 <th class="text-left" style="vertical-align: center;">IOP (mmHg)</th><!-- Value -->
+                <th class="text-left" style="vertical-align: center;">Date</th><!-- Time -->
                 <th class="text-left" style="vertical-align: center;">Time</th><!-- Time -->
                 <th class="text-left" style="vertical-align: center;">Comments</th><!-- Comments -->
             </tr>
@@ -76,6 +77,7 @@
             data_row += "<td class='event_instrument' style='vertical-align: center;'>"+iop_plotly_data[i]["instrument_name"]+"</td>";
             data_row += "<td class='event_dilated' style='vertical-align: center;'>"+iop_plotly_data[i]["dilated"]+"</td>";
             data_row += "<td class='event_value' style='vertical-align: center;'>"+iop_plotly_data[i]["raw_value"]+"</td>";
+            data_row += "<td class='event_value' style='vertical-align: center;'>"+iop_plotly_data[i]["reading_date"]+"</td>";
             data_row += "<td class='event_value' style='vertical-align: center;'>"+iop_plotly_data[i]["reading_time"]+"</td>";
             data_row += "<td class='event_comments' style='vertical-align: center;'>"+iop_plotly_data[i]["comments"]+"</td>";
             data_row += "</tr>";

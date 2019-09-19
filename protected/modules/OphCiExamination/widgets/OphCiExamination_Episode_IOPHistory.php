@@ -281,6 +281,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                                     'eye' => $side,
                                     'instrument_name' => $reading->instrument->name,
                                     'dilated' => 'N/A',
+                                    'reading_date' => date('j M Y', strtotime($reading->reading_time)),
                                     'reading_time' => date('G:i', strtotime($reading->reading_time)),
                                     'raw_value' => $reading->reading->value,
                                     'comments' => $iop_element->{$side . '_comments'}
@@ -308,6 +309,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                         'eye' => $side,
                         'instrument_name' => $iop_element->{$side . '_instrument'}->name,
                         'dilated' => $iop_element->{$side . '_dilated'} === 1 ? 'Yes' : 'No',
+                        'reading_date' => date('j M Y', strtotime($reading->measurement_timestamp)),
                         'reading_time' => date('G:i', strtotime($reading->measurement_timestamp)),
                         'raw_value' => $reading->value,
                         'comments' => $iop_element->{$side . '_comments'}
