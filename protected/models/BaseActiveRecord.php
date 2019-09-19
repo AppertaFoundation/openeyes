@@ -835,4 +835,9 @@ class BaseActiveRecord extends CActiveRecord
         }
         parent::afterValidate();
     }
+
+    public function validateSingleRelation($rel_name, $fk)
+    {
+        $this->validateRelation($rel_name, $fk);
+    }
 }
