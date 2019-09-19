@@ -14,7 +14,7 @@
  */
 ?>
 
-<?php $selectedKey = $metadata->getSetting($metadata->key); ?>
+<?php $selectedKey = $metadata->getSetting($metadata->key, null, false,$class_array); ?>
 <select name="<?= $metadata->key ?>" id="<?= $metadata->key ?>">
     <?php foreach (unserialize($metadata->data) as $key => $value) {?>
     <option

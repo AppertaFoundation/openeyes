@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $currentValue = $metadata->getSettingName();
+<?php $currentValue = $metadata->getSettingName(null, $class_array);
 if (!isset($currentValue) || $currentValue == null) {
     // we need this to prevent HTML value without =
       $currentValue = '';
