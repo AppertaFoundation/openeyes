@@ -18,6 +18,8 @@ var OpenEyes = OpenEyes || {};
 
 OpenEyes.UI = OpenEyes.UI || {};
 
+$(document).ready(function(){
+
 (function (exports) {
 
     'use strict';
@@ -80,9 +82,6 @@ OpenEyes.UI = OpenEyes.UI || {};
     exports.MultiSelectDropDownListController = MultiSelectDropDownListController;
 
 }(OpenEyes.UI));
-
-$(document).ready(function(){
-    'use strict';
 
     window.dropDownController = new OpenEyes.UI.MultiSelectDropDownListController();
 });
