@@ -10,7 +10,7 @@ $this->pageTitle = 'Create Practice';
         </div>
     </div>
     <div class="oe-full-content oe-new-patient flex-layout flex-top">
-        <?php $this->renderPartial('_form', array('model' => $model, 'address' => $address,'contact' => $contact,'duplicateCheckOutput' => $duplicateCheckOutput,'gp' => $gp,'cpas' => $cpas)); ?>
+        <?php $this->renderPartial('_form', array('model' => $model, 'address' => $address,'contact' => $contact,'duplicateCheckOutput' => $duplicateCheckOutput,'gp' => $gp,'gpIdProviderNoList' => $gpIdProviderNoList)); ?>
     </div>
 </div>
 

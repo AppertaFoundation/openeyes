@@ -741,7 +741,7 @@ class CsvController extends BaseController
         $new_trial_pat = new TrialPatient();
         $trial_pat_cols = array(
             array('var_name' => 'external_trial_identifier', 'default' => null,),
-            array('var_name' => 'status_id'                , 'default' => TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id),
+            array('var_name' => 'status_id'                , 'default' => TrialPatientStatus::model()->find('code = "ACCEPTED"')->id),
             array('var_name' => 'treatment_type_id'        , 'default' => TreatmentType::model()->find('code = "UNKNOWN"')->id),
             array('var_name' => 'created_date'             , 'default' => null,),
         );
@@ -751,23 +751,13 @@ class CsvController extends BaseController
                 !empty($new_trial_pat[$col['var_name']]) ? $new_trial_pat[$col['var_name']] : $col['default'];
         }
 
-//      trial patient started_date is from the created_date column in imported csv file.
-//      If it is null, the date will be the started_date in trial.
-//      If the trial started_date is null, then the date will be current date.  The format is yyyy-mm-dd.
-
-        $current_date = new DateTime();
-
-        if (!empty($trial_patient['created_date'])){
-            $trial_patient_started_date = $trial_patient['created_date'];
-        } else{
-            if (!empty($trial -> started_date)){
-                $trial_patient_started_date = $trial -> started_date;
-            }
-            else{
-                $trial_patient_started_date = $current_date->format('yyyy-mm-dd');
-            }
+        if(strlen($trial_patient['study_identifier'] > 100)) {
+            $errors[] = 'Study Identifier accepts maximum of 100 characters.';
+            return $errors;
         }
-        $new_trial_pat->started_date = $trial_patient_started_date;
+
+        $new_trial_pat->status_update_date = $trial_patient['created_date'];
+        $new_trial_pat->external_trial_identifier = $trial_patient['study_identifier'];
 
         $new_trial_pat->patient_id = $patient->id;
         $new_trial_pat->trial_id = $trial->id;
