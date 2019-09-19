@@ -108,6 +108,41 @@ $(document).ready(function() {
 		}
 	});
 
+    let workflow_editable = false;
+
+    $('#et_edit_workflow').live('click', e => {
+        e.preventDefault();
+        workflow_editable = !workflow_editable;
+        let sortable_status = workflow_editable ? 'enable' : 'disable';
+        let edit_button_label = (workflow_editable ? 'Save' : 'Edit') + ' workflow';
+        
+        $('#step_element_types tbody').sortable(sortable_status);
+        $('#et_edit_workflow').text(edit_button_label);
+
+        if (!workflow_editable) {
+            $('#et_edit_workflow').attr('disabled','true');
+            $('.spinner').css('display', 'block');
+            let $form = $('#et_sort').closest('form');
+            $.ajax({
+                'type': 'POST',
+                'url': $('#et_sort').data('uri'),
+                'data': $form.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                'success': function(){
+                    $('#workflow-flash').fadeIn();
+                    $('#workflow-edit-controls').fadeOut();
+                    $('.spinner').css('display', 'none');
+                    $('#et_edit_workflow').attr('disabled','false');
+                    setTimeout(()=>$('#workflow-flash').fadeOut(), 3000);
+                },
+                'error': function (jqXHR, status) {
+                    alert(jqXHR.responseText);
+                }
+            });
+        } else {
+            $('#workflow-edit-controls').fadeIn();
+        }
+    });
+
 	$('#et_add_element_type').live('click',function(e) {
 		e.preventDefault();
 

@@ -24,8 +24,10 @@
 		<div class="column cols-2 end">
 			<?php echo EventAction::button('Save', 'save_step_name', null, array('class' => 'small'))->toHtml()?>
 		</div>
-	</div>
-	<form id="admin_workflow_steps">
+    </div>
+    <div id="workflow-flash" class="alert-box info" style="display: none">Workflow saved</div>
+    <i class="spinner loader" style="display: none;"></i>
+    <form id="admin_workflow_steps">
     <div class="data-group">
       <table class="standard"  id="et_sort" data-uri = "/OphCiExamination/admin/sortWorkflowElementSetItem">
         <thead>
@@ -55,13 +57,16 @@
         <tr>
           <td colspan="3">
             <div class="grid-view">
-              <div class="data-group">
+              <div id="workflow-edit-controls" class="data-group" style="display: none">
                 <div class="cols-3 column">
                     <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
                 </div>
                 <div class="cols-3 column end">
                     <?php echo EventAction::button('Add element type', 'add_element_type', null, array('class' => 'small'))->toHtml()?>
                 </div>
+              </div>
+              <div>
+                  <?php echo EventAction::button('Edit workflow', 'edit_workflow', null, array('class' => 'small'))->toHtml()?>
               </div>
             </div>
           </td>
@@ -74,20 +79,8 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#step_element_types tbody').sortable({
-            stop:  function(event, ui){
-                let $form = ui.item.closest('form');
-                $.ajax({
-                    'type': 'POST',
-                    'url': $('#et_sort').data('uri'),
-                    'data': $form.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-                    'success': function(){
-                    },
-                    'error': function (jqXHR, status) {
-                        alert(jqXHR.responseText);
-                    }
-                });
-        }
-    })
+        //Add sortable then disable then have it disabled by default.
+        $('#step_element_types tbody').sortable();
+        $('#step_element_types tbody').sortable('disable');
     });
 </script>
