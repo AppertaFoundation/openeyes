@@ -32,7 +32,7 @@
         <tr>
             <td>Name</td>
             <td class="cols-full">
-                <?=\CHtml::activeTelField(
+                <?=\CHtml::activeTextField(
                     $model,
                     'name',
                     ['class' => 'cols-full']

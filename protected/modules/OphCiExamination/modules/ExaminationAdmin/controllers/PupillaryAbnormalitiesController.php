@@ -54,10 +54,10 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
         $request = Yii::app()->getRequest();
         $model = OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findByPk((int)$request->getParam('id'));
         if (!$model) {
-            throw new Exception('OphCiExamination_PupillaryAbnormalities_Abnormality not found with id ' . $request->getParam('id'));
+            throw new Exception('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality not found with id ' . $request->getParam('id'));
         }
-        if ($request->getPost('OphCiExamination_PupillaryAbnormalities_Abnormality')) {
-            $model->attributes = $request->getPost('OphCiExamination_PupillaryAbnormalities_Abnormality');
+        if ($request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality')) {
+            $model->attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality');
             if ($model->save()) {
                 Yii::app()->user->setFlash('success', 'Pupillary Abnormality saved');
                 $this->redirect(['index']);
@@ -69,6 +69,7 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
         $this->render('/pupillaryabnormalities/edit', [
             'model' => $model,
             'errors' => isset($errors) ? $errors : null,
+            'is_new' => false,
         ]);
     }
 
@@ -82,6 +83,7 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
         $request = Yii::app()->getRequest();
         if ($request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality')) {
             $model->attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality');
+//            $model->display_order = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality')['display_order'];
 
             if ($model->save()) {
                 Audit::add('admin', 'create', serialize($model->attributes), false,
@@ -95,6 +97,7 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
         $this->render('/pupillaryabnormalities/edit', [
             'model' => $model,
             'errors' => isset($errors) ? $errors : null,
+            'is_new' => true,
         ]);
     }
 

@@ -31,7 +31,17 @@
         <tr>
             <td>Name</td>
             <td class="cols-full">
-                <?=\CHtml::activeTelField(
+                <?php
+                if ($is_new) {
+                    $max_display_order = $model::model()->find(['order'=>'display_order DESC'])->display_order;
+                    $new_display_order = $max_display_order + 1;
+                    echo \CHtml::hiddenField(
+                        'OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality[display_order]',
+                        $new_display_order
+                    );
+                }
+                ?>
+                <?=\CHtml::activeTextField(
                     $model,
                     'name',
                     ['class' => 'cols-full']

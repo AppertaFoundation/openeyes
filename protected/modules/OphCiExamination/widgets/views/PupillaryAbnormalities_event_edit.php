@@ -115,9 +115,9 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
             </div>
         </div>
         <script>
-            let pupillaryAbnormalityController = $('.OEModule_OphCiExamination_models_PupillaryAbnormalities').data('controller');
-
             $(function () {
+                let pupillaryAbnormalityController = $('.OEModule_OphCiExamination_models_PupillaryAbnormalities').data('controller');
+
                 new OpenEyes.UI.AdderDialog({
                     openButton: $('#add-abnormality-btn-<?= $eye_side ?>'),
                     itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(

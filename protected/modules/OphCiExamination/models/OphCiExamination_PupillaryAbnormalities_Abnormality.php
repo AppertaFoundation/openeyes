@@ -63,8 +63,9 @@ class OphCiExamination_PupillaryAbnormalities_Abnormality extends \BaseActiveRec
     public function rules()
     {
         return array(
-                array('name', 'required'),
-                array('id, name', 'safe', 'on' => 'search'),
+            array('name', 'required'),
+            array('id, name', 'safe', 'on' => 'search'),
+            array('display_order', 'safe'),
         );
     }
 

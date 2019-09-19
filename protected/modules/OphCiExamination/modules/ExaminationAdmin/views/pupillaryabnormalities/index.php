@@ -25,11 +25,10 @@
     <form id="admin_pupillaryabnormalities">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <input type="hidden" name="page" value="1">
-        <table class="standard generic-admin sortable" id="et_sort" data-uri = "/OphCiExamination/admin/PupillaryAbnormalities/sortPupillaryAbnormalities">
+        <table class="standard generic-admin">
             <thead>
             <tr>
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
-                <th>Display order</th>
                 <th>Name</th>
                 <th>Active</th>
             </tr>
@@ -39,10 +38,6 @@
                 <tr class="clickable" data-id="<?= $model->id ?>"
                     data-uri="OphCiExamination/admin/PupillaryAbnormalities/update/<?= $model->id ?>" >
                     <td><input type="checkbox" name="select[]" value="<?= $model->id ?>"/></td>
-                    <td class="reorder">
-                        <span>&uarr;&darr;</span>
-                        <input type="hidden" name="OphCiExamination_Pupillary_Abnormality[display_order][]" value="<?= $model->id ?>">
-                    </td>
                     <td>
                         <?= $model->name ?>
                     </td>
@@ -84,9 +79,3 @@
         </table>
     </form>
 </div>
-
-<script>
-    $('.generic-admin.sortable tbody').sortable({
-        stop: OpenEyes.Admin.saveSorted
-    });
-</script>
