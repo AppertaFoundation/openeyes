@@ -738,7 +738,7 @@ class CsvController extends BaseController
         $new_trial_pat = new TrialPatient();
         $trial_pat_cols = array(
             array('var_name' => 'external_trial_identifier', 'default' => null,),
-            array('var_name' => 'status_id'                , 'default' => TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id),
+            array('var_name' => 'status_id'                , 'default' => TrialPatientStatus::model()->find('code = "ACCEPTED"')->id),
             array('var_name' => 'treatment_type_id'        , 'default' => TreatmentType::model()->find('code = "UNKNOWN"')->id),
             array('var_name' => 'created_date'             , 'default' => null,),
         );
@@ -765,6 +765,14 @@ class CsvController extends BaseController
             }
         }
         $new_trial_pat->started_date = $trial_patient_started_date;
+
+        if(strlen($trial_patient['study_identifier'] > 100)) {
+            $errors[] = 'Study Identifier accepts maximum of 100 characters.';
+            return $errors;
+        }
+
+        $new_trial_pat->status_update_date = date('Y-m-d H:i:s');
+        $new_trial_pat->external_trial_identifier = $trial_patient['study_identifier'];
 
         $new_trial_pat->patient_id = $patient->id;
         $new_trial_pat->trial_id = $trial->id;
