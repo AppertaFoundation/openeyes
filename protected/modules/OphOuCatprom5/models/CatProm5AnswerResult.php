@@ -30,6 +30,7 @@ class CatProm5AnswerResult extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+        		array('id, question_id, answer_id', 'safe'),
             array('element_id', 'required'),
             array('element_id', 'numerical', 'integerOnly'=>true),
             array('question_id, answer_id', 'length', 'max'=>10),

@@ -16,7 +16,10 @@ use MongoDB\Driver\Query;
  */
 class CatProm5EventResult extends \BaseEventTypeElement
 {
-
+  protected $auto_update_relations = true;
+  protected $relation_defaults = array(
+    'catProm5AnswerResults' => array(),
+  );
     /**
      * @return string the associated database table name
      */
@@ -36,7 +39,7 @@ class CatProm5EventResult extends \BaseEventTypeElement
             array('total_raw_score', 'numerical', 'integerOnly'=>true),
             array('total_rasch_measure', 'length', 'max'=>5),
             array('event_id', 'length', 'max'=>10),
-            array('last_modified_date, created_date', 'safe'),
+            array('catProm5AnswerResults', 'safe'),
             // The following rule is used by search().
             array('id, total_raw_score, total_rasch_measure, event_id', 'safe', 'on'=>'search'),
         );
@@ -78,6 +81,7 @@ class CatProm5EventResult extends \BaseEventTypeElement
     {
       $catProm5Answers = array();
       $rows = CatProm5Questions::model()->findAll();
+
       foreach ($rows as $row) {
         $new_answer_result = new CatProm5AnswerResult();
         $new_answer_result->question_id = $row->id;

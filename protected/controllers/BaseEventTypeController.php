@@ -1145,7 +1145,6 @@ class BaseEventTypeController extends BaseModuleController
     {
         $model_name = \CHtml::modelName($element);
         $el_data = is_null($index) ? $data[$model_name] : $data[$model_name][$index];
-
         if ($element->widgetClass) {
             $widget = $this->createWidget($element->widgetClass, array(
                 'patient' => $this->patient,

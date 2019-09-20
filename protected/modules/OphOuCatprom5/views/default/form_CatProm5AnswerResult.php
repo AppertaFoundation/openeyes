@@ -1,11 +1,18 @@
 
-<?php $answerResults = $element->catProm5AnswerResults; ?>
+<?php $questions = CatProm5Questions::model()->findAll(array('order'=>'display_order'));
+      $answerResults = $element->catProm5AnswerResults;
+?>
 
 <table class="cols-full">
   <tbody>
-  <?php foreach ($answerResults as $answerResult_item) {
-    $ques = $answerResult_item->question;
+  <?php foreach ($questions as $ques) {
+    $index = $ques->id - 1;
     $answers = $ques->answers;
+    foreach ($answerResults as $anr_item) {
+      if ($anr_item->question_id == $ques->id){
+        $answerResult_item = $anr_item;
+      }
+    }
     ?>
     <tr>
       <td>
@@ -14,22 +21,24 @@
     </tr>
     <tr>
       <td>
-        <input id="CatProm5EventResult<?= $ques->id?>" value="<?= $ques->id ?>"
-               type="hidden" name="CatProm5EventResult[catProm5AnswerResults][<?=$ques->id?>][question_id]">
-        <fieldset>
-          <?php  foreach ($answers as $answer_item ){ ?>
+        <?php if (isset($answerResult_item)  && isset($answerResult_item->id)) { ?>
+          <?=\CHtml::hiddenField( $name_stub .'['. $index .'][id]', @$answerResult_item->id)?>
+        <?php } ?>
+        <?php if (isset($element)  && $element->id) { ?>
+          <?=\CHtml::hiddenField( $name_stub .'['. $index .'][element_id]', @$element->id)?>
+        <?php } ?>
+          <?=\CHtml::hiddenField( $name_stub .'['. $index .'][question_id]', $ques->id)?>
+
+        <?php  foreach ($answers as $answer_item ){?>
             <label class="inline highlight cols-full">
-            <?php if (isset($answerResult_item->answer_id)&&$answer_item->id == $answerResult_item->answer_id) {?>
-              <input id="CatProm5AnswerResult_<?= $answer_item->id?>" value="<?= $answer_item->id ?>"
-                     type="hidden" name="CatProm5EventResult[catProm5AnswerResults][<?=$ques->id?>][answer_id]">
-              <input id="CatProm5AnswerResult_<?= $answer_item->id?>" value="<?= $answer_item->score ?>"
-                     type="radio" name="CatProm5AnswerResult[<?=$ques->id?>]" checked>
-            <?php } else { ?>
-              <input id="CatProm5AnswerResult_<?= $answer_item->id?>" value="<?= $answer_item->id ?>"
-                     type="hidden" name="CatProm5EventResult[catProm5AnswerResults][<?=$ques->id?>][answer_id]">
-              <input id="CatProm5AnswerResult_<?= $answer_item->id?>" value="<?= $answer_item->score ?>"
-                     type="radio" name="CatProm5AnswerResult[<?=$ques->id?>]">
-            <?php } ?>
+              <input class="cat_prom5_answer_score"
+                     id="CatProm5AnswerResult_<?= $answer_item->id?>"
+                     value="<?= $answer_item->id ?>"
+                     data-score="<?= $answer_item->score?>"
+                     type="radio"
+                     name="<?= $name_stub .'['. $index .'][answer_id]'?>"
+                     <?= isset($answerResult_item->answer_id)&& @$answerResult_item->answer_id===$answer_item->id ?'checked':''?>
+              >
               <span><?= $answer_item->answer ?></span>
             </label>
           <?php } ?>

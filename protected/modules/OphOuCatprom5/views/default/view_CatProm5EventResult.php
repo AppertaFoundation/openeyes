@@ -1,5 +1,4 @@
 <?php
-Yii::log(var_export($element, true));
 $this->renderPartial('view_CatProm5AnswerResult', array(
   'element'=>$element,
 ));
