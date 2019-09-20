@@ -53,13 +53,13 @@
                         <span>&uarr;&darr;</span>
                     </td>
                     <td>
-                        <?= CHtml::textField("OphCiExamination_Allergy[{new}][name]", "", ["disabled" => "disabled"]); ?>
+                        <?= CHtml::textField("OphCiExamination_Allergy[{{new}}][name]", "", ["disabled" => "disabled"]); ?>
                     </td>
                     <td>
-                        <?= CHtml::dropDownList("OphCiExamination_Allergy[{new}][medication_set_id]", '0', CHtml::listData($medication_set_list_options, 'id', 'name'), ["disabled" => "disabled", "empty" => "- Please Select -"]); ?>
+                        <?= CHtml::dropDownList("OphCiExamination_Allergy[{{new}}][medication_set_id]", '0', CHtml::listData($medication_set_list_options, 'id', 'name'), ["disabled" => "disabled", "empty" => "- Please Select -"]); ?>
                     </td>
                     <td>
-                        <?= CHtml::checkBox("OphCiExamination_Allergy[{new}][active]", "", ["disabled" => "disabled"]); ?>
+                        <?= CHtml::checkBox("OphCiExamination_Allergy[{{new}}][active]", "", ["disabled" => "disabled"]); ?>
                     </td>
                 </tr>            
             </tbody>
@@ -99,7 +99,7 @@
             let $new_row = $last_table_row.clone();
             $($last_table_row).before($new_row);
             $new_row.show().find('input, select').attr('name', function(){
-                return $(this).prop('name').replace('{new}', ($table_rows.length - 1));
+                return $(this).prop('name').replace('{{new}}', ($table_rows.length - 1));
             }).removeAttr('disabled');
         });
     });
