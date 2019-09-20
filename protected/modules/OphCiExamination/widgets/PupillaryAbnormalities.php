@@ -39,9 +39,9 @@ class PupillaryAbnormalities extends \BaseEventElementWidget
     protected function updateElementFromData($element, $data)
     {
         $sides = array(strtolower($data['eye_id']));
-        if ($sides[0] === '3') {
+        if ($sides[0] == \Eye::BOTH) {
             $sides = array('left', 'right');
-        } elseif ($sides[0] === '2') {
+        } elseif ($sides[0] == \Eye::RIGHT) {
             $sides = array('right');
         } else {
             $sides = array('left');
