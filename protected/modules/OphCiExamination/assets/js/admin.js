@@ -108,6 +108,42 @@ $(document).ready(function() {
 		}
 	});
 
+    let workflowFlash = (message='Workflow saved.', duration=3000) => {
+        $('#workflow-flash').html(message);
+        $('#workflow-flash').fadeIn();
+        setTimeout(()=>$('#workflow-flash').fadeOut(), duration);
+    };
+
+    $('#et_reset_workflow').live('click', e => {
+        e.preventDefault();
+        $('.spinner').css('display', 'block');
+
+        $.ajax({
+            'type': 'GET',
+            'url' : baseUrl + '/OphCiExamination/admin/setWorkflowToDefault?element_set_id=' + e.target.dataset['element_set_id'],
+            'success': function() {
+                workflowFlash('Worflow reset.');
+
+                
+                $.ajax({
+                    'type': 'GET',
+                    'url' : baseUrl + '/OphCiExamination/admin/editWorkflowStep?step_id=' + e.target.dataset['element_set_id'],
+                    'success': function (html) {
+                        $('#step_element_types').html(html);
+                        $('.spinner').css('display', 'none');
+                    },
+                    'error': function () {
+                        workflowFlash('Workflow reset, please refresh.');
+                    }
+                });
+            },
+            'error': function (jqXHR, status) {
+                workflowFlash('Failed to reset workflow.');
+                alert(jqXHR.responseText);
+            }
+        });
+    });
+
     let workflow_editable = false;
 
     $('#et_edit_workflow').live('click', e => {
@@ -128,13 +164,13 @@ $(document).ready(function() {
                 'url': $('#et_sort').data('uri'),
                 'data': $form.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
                 'success': function(){
-                    $('#workflow-flash').fadeIn();
+                    workflowFlash();
                     $('#workflow-edit-controls').fadeOut();
                     $('.spinner').css('display', 'none');
                     $('#et_edit_workflow').attr('disabled','false');
-                    setTimeout(()=>$('#workflow-flash').fadeOut(), 3000);
                 },
                 'error': function (jqXHR, status) {
+                    workflowFlash('Failed to save workflow.');
                     alert(jqXHR.responseText);
                 }
             });

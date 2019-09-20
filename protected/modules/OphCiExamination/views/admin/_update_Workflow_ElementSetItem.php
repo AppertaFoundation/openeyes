@@ -67,6 +67,7 @@
               </div>
               <div>
                   <?php echo EventAction::button('Edit workflow', 'edit_workflow', null, array('class' => 'small'))->toHtml()?>
+                  <?php echo EventAction::button('Reset workflow', 'reset_workflow', null, array('class' => 'small', 'data-element_set_id'=>$step->id))->toHtml()?>
               </div>
             </div>
           </td>

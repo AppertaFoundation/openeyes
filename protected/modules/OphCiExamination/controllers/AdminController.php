@@ -406,6 +406,33 @@ class AdminController extends \ModuleAdminController
         ));
     }
 
+    public function actionSetWorkflowToDefault() {
+        $element_set_id = Yii::app()->request->getParam('element_set_id');
+        if (!$element_set_id) {
+            echo 0;
+        }
+
+        $transaction = Yii::app()->db->beginTransaction();
+
+        $default_types = \ElementType::model()->findAll();
+        foreach ($default_types as $type) {
+            $items_to_edit = models\OphCiExamination_ElementSet::model()->findByPk($element_set_id)->items;
+            $items_to_edit = array_filter($items_to_edit, function ($item) use($type) { return $item->element_type_id == $type->id; });
+
+            if (count($items_to_edit) == 1) {
+                $item = array_pop($items_to_edit);
+                $item->display_order = $type->display_order;
+                if (!$item->save()) {
+                    $transaction->rollback();
+                    echo 0;
+                    return;
+                }
+            }
+        }
+        $transaction->commit();
+        echo 1;
+    }
+
     public function actionReorderWorkflowSteps()
     {
         foreach ($_POST as $id => $position) {
