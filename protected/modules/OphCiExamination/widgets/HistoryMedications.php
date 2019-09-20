@@ -117,23 +117,23 @@ class HistoryMedications extends BaseMedicationWidget
 
     private function setEntriesWithPreviousManagement()
     {
-                $entries = $this->getEntriesFromPreviousManagement();
+        $management_entries = $this->getEntriesFromPreviousManagement();
         $history_entries = $this->getEntriesFromPreviousHistory();
-        foreach ($history_entries as $history_entry) {
+        foreach ($management_entries as $management_entry) {
             $duplicate = false;
-            foreach ($entries as $entry) {
-                if ($entry->bound_key === $history_entry->bound_key) {
+            foreach ($history_entries as $entry) {
+                if ($entry->bound_key === $management_entry->bound_key) {
                     $duplicate = true;
                     break;
                 }
             }
 
             if (!$duplicate) {
-                $entries[] = $history_entry;
+                $history_entries[] = $management_entry;
             }
         }
-        $this->element->entries = array_merge($entries, $this->element->getEntriesForUntrackedPrescriptionItems($this->patient));
-        return !empty($entries);
+        $this->element->entries = array_merge($history_entries, $this->element->getEntriesForUntrackedPrescriptionItems($this->patient));
+        return !empty($management_entries);
     }
 
     /**

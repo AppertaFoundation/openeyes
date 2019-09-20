@@ -103,6 +103,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     routeOptionWrapperSelector: '.admin-route-options',
     patientAllergies: [],
       allAllergies: {},
+      classes_that_dont_break_binding: ['js-end-date', 'js-stop-reason'],
 
       // Customizable callbacks
 
@@ -272,12 +273,35 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
       var controls_onchange = function (e) {
-          controller.updateBoundEntry($row);
-          controller.updateTextualDisplay($row);
-          if(typeof $row.data('bound_entry') !== 'undefined') {
-              controller.updateTextualDisplay($row.data('bound_entry'));
-              if($(e.target).hasClass("js-route")) {
-                  controller.updateRowRouteOptions($row.data('bound_entry'));
+          let $bound_entry = $row.data('bound_entry');
+
+          if (controller.options['modelName'] === "OEModule_OphCiExamination_models_HistoryMedications") {
+              controller.updateBoundEntry($row);
+              controller.updateTextualDisplay($row);
+              if (typeof $bound_entry !== 'undefined') {
+                  controller.updateTextualDisplay($bound_entry);
+                  if ($(e.target).hasClass('js-route')) {
+                      controller.updateRowRouteOptions($bound_entry);
+                  }
+              }
+          } else {
+              if (typeof $bound_entry !== 'undefined') {
+                  let row_needs_bond_removed = true;
+
+                  controller.options.classes_that_dont_break_binding.forEach(function (class_name) {
+                      if ($(e.target).hasClass(class_name)) {
+                          row_needs_bond_removed = false;
+                          $bound_entry.find('.' + class_name).attr('value', $row.find('.' + class_name).attr('value'));
+                      }
+                  });
+
+                  if (row_needs_bond_removed) {
+                      $bound_entry.removeData('bound_entry');
+                      controller.setBoundEntryStop($bound_entry);
+                      $row.find('.js-bound-key').val(controller.getRandomBoundKey());
+                      $row.removeData('bound_entry');
+                      controller.enableManualRowDeletion($row);
+                  }
               }
           }
       };
@@ -383,7 +407,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $stop_reason_select.show();
 				$stop_reason_text.hide();
 
-        if(typeof $row.data("bound_entry") !== "undefined") {
+        if(typeof $row.data("bound_entry") !== "undefined" && $row.data("bound_entry").find('.js-meds-stop-btn').attr('style') !== "display: none;") {
             this.boundController.showStopControls($row.data("bound_entry"));
         }
     };
@@ -666,15 +690,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         data.show_dose_units = !($origin.find('select.js-unit-dropdown').attr('disabled') === "disabled");
         data.usage_type = $target.attr("data-usage-type");
 
-        /*
-        when a drug that comes from history is missing the values that are required for prescription
-        the row should be editable
-        currently required fields: 'dose, route_id, frequency_id, dose_unit_term'
-         */
-        if(data.dose != "" && data.route_id != "" && data.frequency_id != "" && data.dose_unit_term != "") {
-            data.locked = 1;
-        }
-
         this.boundController.setRowData($row, data);
         this.boundController.initialiseRow($row, data);
         if(data.end_date !== "") {
@@ -720,6 +735,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 	  		$row2.find('.js-bound-key').val(randomBoundKey);
 	  	}
 	  	$row1.data("bound_entry", $row2);
+	  	$row2.data("bound_entry", $row1);
 	  };
 
     HistoryMedicationsController.prototype.updateBoundEntry = function ($row, callback)
@@ -1009,6 +1025,18 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         } else {
             table_header.hide();
         }
+    };
+
+    HistoryMedicationsController.prototype.setBoundEntryStop = function ($bound_entry) {
+        let stop_reason = $("option:contains('Medication parameters changed')").attr("value");
+        this.showStopControls($bound_entry);
+        $bound_entry.find('.js-stop-reason').attr('value', stop_reason);
+    };
+
+    HistoryMedicationsController.prototype.enableManualRowDeletion = function ($row) {
+        let $trash = $row.find('.trash');
+        $trash.removeClass('disabled');
+        $trash.parent().removeClass('js-has-tooltip');
     };
 
   exports.HistoryMedicationsController = HistoryMedicationsController;

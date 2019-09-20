@@ -161,7 +161,9 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
             onAddedEntry: function ($row, controller) {
                 if(typeof controller.MMController !== "undefined") {
                     var data = $row.data("medication");
-                    data.locked = 1;
+                    if(!$row.hasClass("new")){
+                        data.locked = 1;
+                    }
                     if(data.will_copy) {
                         $new_row = controller.MMController.addEntry([data], false);
                         controller.disableRemoveButton($new_row);
@@ -174,6 +176,16 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
         $(document).on("click", ".alt-display-trigger", function (e) {
             e.preventDefault();
             $(e.target).prev(".alternative-display").find(".textual-display").trigger("click");
+        });
+
+        $('#<?= $model_name ?>_element').closest('section').on('element_removed', function () {
+            if (typeof window.MMController !== "undefined") {
+                window.MMController.$table.find('tr').each(function () {
+                    if (typeof $(this).data('bound_entry') !== 'undefined') {
+                        $(this).removeData('bound_entry');
+                    }
+                });
+            }
         });
 
         <?php
