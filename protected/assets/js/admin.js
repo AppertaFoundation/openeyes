@@ -163,8 +163,8 @@ $(document).ready(function () {
             'type': 'POST',
             'url': baseUrl + '/OphCiExamination/admin/PupillaryAbnormalities/delete',
             'data': $checked.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+            'dataType': 'JSON',
             'success': function (response) {
-                response = JSON.parse(response);
                 if (response['status'] === 1) {
                     window.location.reload();
                 } else {
