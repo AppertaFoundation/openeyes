@@ -41,7 +41,7 @@
                         <?= CHtml::textField("OphCiExamination_Allergy[{$i}][name]", $model->name); ?>
                     </td>
                     <td>
-                        <?= CHtml::dropDownList("OphCiExamination_Allergy[{$i}][medication_set_id]", $model->medication_set_id, ['0' => '- Please Select -']+CHtml::listData($medication_set_list_options, 'id', 'name')); ?>
+                        <?= CHtml::dropDownList("OphCiExamination_Allergy[{$i}][medication_set_id]", $model->medication_set_id, CHtml::listData($medication_set_list_options, 'id', 'name'), ["empty" => "- Please Select -"]); ?>
                     </td>
                     <td>
                         <?= CHtml::checkBox("OphCiExamination_Allergy[{$i}][active]", $model->active); ?>
@@ -51,13 +51,12 @@
                 <tr data-id="" style="display: none;">
                     <td class="reorder">
                         <span>&uarr;&darr;</span>
-                        <?= CHtml::hiddenField("OphCiExamination_Allergy[{new}][id]", "new", ["disabled" => "disabled"]); ?>
                     </td>
                     <td>
                         <?= CHtml::textField("OphCiExamination_Allergy[{new}][name]", "", ["disabled" => "disabled"]); ?>
                     </td>
                     <td>
-                        <?= CHtml::dropDownList("OphCiExamination_Allergy[{new}][medication_set_id]", '0', ['0' => '- Please Select -']+CHtml::listData($medication_set_list_options, 'id', 'name'), ["disabled" => "disabled"]); ?>
+                        <?= CHtml::dropDownList("OphCiExamination_Allergy[{new}][medication_set_id]", '0', CHtml::listData($medication_set_list_options, 'id', 'name'), ["disabled" => "disabled", "empty" => "- Please Select -"]); ?>
                     </td>
                     <td>
                         <?= CHtml::checkBox("OphCiExamination_Allergy[{new}][active]", "", ["disabled" => "disabled"]); ?>
@@ -95,9 +94,9 @@
 <script>
     $(document).ready(function(){
         $('#add_new_row').click(function(){
-            $table_rows = $('#admin_Allergies table tbody tr');
-            $last_table_row = $table_rows.filter('tr:last-child');
-            $new_row = $last_table_row.clone();
+            let $table_rows = $('#admin_Allergies table tbody tr');
+            let $last_table_row = $table_rows.filter('tr:last-child');
+            let $new_row = $last_table_row.clone();
             $($last_table_row).before($new_row);
             $new_row.show().find('input, select').attr('name', function(){
                 return $(this).prop('name').replace('{new}', ($table_rows.length - 1));

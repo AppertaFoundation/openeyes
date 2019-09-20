@@ -301,7 +301,7 @@ class DrugSetController extends BaseAdminController
                     if ($set->save()) {
                         $can_continue_save = true;
                         if ($is_new_record) {
-                            $set->validateSingleRelation('medicationSetRules', 'medication_set_id');
+                            $set->validateRelation('medicationSetRules', 'medication_set_id');
                             if ($set->getErrors()) {
                                 $can_continue_save = false;
                             }
