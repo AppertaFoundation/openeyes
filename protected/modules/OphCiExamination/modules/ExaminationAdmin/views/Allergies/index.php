@@ -47,21 +47,7 @@
                         <?= CHtml::checkBox("OphCiExamination_Allergy[{$i}][active]", $model->active); ?>
                     </td>
                 </tr>
-            <?php } ?>
-                <tr data-id="" style="display: none;">
-                    <td class="reorder">
-                        <span>&uarr;&darr;</span>
-                    </td>
-                    <td>
-                        <?= CHtml::textField("OphCiExamination_Allergy[{{new}}][name]", "", ["disabled" => "disabled"]); ?>
-                    </td>
-                    <td>
-                        <?= CHtml::dropDownList("OphCiExamination_Allergy[{{new}}][medication_set_id]", '0', CHtml::listData($medication_set_list_options, 'id', 'name'), ["disabled" => "disabled", "empty" => "- Please Select -"]); ?>
-                    </td>
-                    <td>
-                        <?= CHtml::checkBox("OphCiExamination_Allergy[{{new}}][active]", "", ["disabled" => "disabled"]); ?>
-                    </td>
-                </tr>            
+            <?php } ?>           
             </tbody>
             <tfoot>
                 <tr>
@@ -90,17 +76,30 @@
         </table>
     </form>
 </div>
-
+<script id="allergy_row" type="x-tmpl-mustache">
+<tr>
+    <td class="reorder">
+        <span>&uarr;&darr;</span>
+    </td>
+    <td>
+        <?= CHtml::textField("OphCiExamination_Allergy[{{ new }}][name]"); ?>
+    </td>
+    <td>
+        <?= CHtml::dropDownList("OphCiExamination_Allergy[{{ new }}][medication_set_id]", '0', CHtml::listData($medication_set_list_options, 'id', 'name'), ["empty" => "- Please Select -"]); ?>
+    </td>
+    <td>
+        <?= CHtml::checkBox("OphCiExamination_Allergy[{{ new }}][active]"); ?>
+    </td>
+</tr>
+</script>
 <script>
     $(document).ready(function(){
         $('#add_new_row').click(function(){
-            let $table_rows = $('#admin_Allergies table tbody tr');
-            let $last_table_row = $table_rows.filter('tr:last-child');
-            let $new_row = $last_table_row.clone();
-            $($last_table_row).before($new_row);
-            $new_row.show().find('input, select').attr('name', function(){
-                return $(this).prop('name').replace('{{new}}', ($table_rows.length - 1));
-            }).removeAttr('disabled');
+            let $table = $('#admin_Allergies table tbody');
+            let template = $('#allergy_row').html();
+            Mustache.parse(template);
+            let $rendered = Mustache.render(template, {new: $table.find('tr').length});
+            $table.append($rendered);
         });
     });
     $('.generic-admin.sortable tbody').sortable();
