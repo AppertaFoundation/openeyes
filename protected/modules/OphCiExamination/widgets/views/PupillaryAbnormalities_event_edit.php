@@ -116,7 +116,7 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
         </div>
         <script>
             $(function () {
-                let pupillaryAbnormalityController = $('.OEModule_OphCiExamination_models_PupillaryAbnormalities').data('controller');
+                let pupillary_abnormality_controller = $('.OEModule_OphCiExamination_models_PupillaryAbnormalities').data('controller');
 
                 new OpenEyes.UI.AdderDialog({
                     openButton: $('#add-abnormality-btn-<?= $eye_side ?>'),
@@ -125,9 +125,9 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
                             return ['label' => $abnormality->name, 'id' => $abnormality->id];
                         }, $element->getAbnormalityOptions())
                     )?>, {'multiSelect': true})],
-                    onReturn: function (adderDialog, selectedItems) {
-                        let tableSelector = '.<?= $eye_side ?>-eye .pa-entry-table';
-                        pupillaryAbnormalityController.addEntry(tableSelector, selectedItems);
+                    onReturn: function (adder_dialog, selected_items) {
+                        let table_selector = '.<?= $eye_side ?>-eye .pa-entry-table';
+                        pupillary_abnormality_controller.addEntry(table_selector, selected_items);
                         return true;
                     }
                 });
