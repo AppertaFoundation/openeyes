@@ -18,7 +18,8 @@ use OEModule\OphCiExamination\models\OphCiExamination_PupillaryAbnormalities_Abn
 
 class PupillaryAbnormalitiesController extends \ModuleAdminController
 {
-    public function actions() {
+    public function actions()
+    {
         return [
             'sortPupillaryAbnormalities' => [
                 'class' => 'SaveDisplayOrderAction',
@@ -80,7 +81,7 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
     public function actionCreate()
     {
         $model = new OphCiExamination_PupillaryAbnormalities_Abnormality();
-        $values = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality',[]);
+        $values = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality', []);
         if (!empty($values)) {
             $model->attributes = $values;
 
@@ -105,7 +106,7 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
      */
     public function actionDelete()
     {
-        $delete_ids = \Yii::app()->request->getPost('select',[]);
+        $delete_ids = \Yii::app()->request->getPost('select', []);
         $transaction = \Yii::app()->db->beginTransaction();
         $success = true;
         $result = [];
