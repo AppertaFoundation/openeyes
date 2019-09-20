@@ -155,7 +155,9 @@ $(document).ready(function () {
 
         let $checked = $('input[name="select[]"]:checked');
         if ($checked.length === 0) {
-            alert('Please select one or more generic procedure data to delete.');
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Please select one or more generic procedure data to delete."
+            }).open();
             return;
         }
 
