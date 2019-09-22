@@ -419,7 +419,7 @@ return array(
         'wkhtmltopdf_path' => '/usr/local/bin/wkhtmltopdf',
         'wkhtmltopdf_footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
         'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
-        'wkhtmltopdf_footer_right' => 'OpenEyes',
+        'wkhtmltopdf_footer_right' => 'Supported by Medexton<br />http://www.medexton.com',
         'wkhtmltopdf_top_margin' => '10mm',
         'wkhtmltopdf_bottom_margin' => '20mm',
         'wkhtmltopdf_left_margin' => '5mm',

@@ -23,7 +23,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
   </svg>
 </div>
 
-<div class="oe-product-info" id="js-openeyes-info" style="display: none;">
+<!--<div class="oe-product-info" id="js-openeyes-info" style="display: none;">
   <h3>OpenEyes <?=Yii::App()->params['oe_version']?></h3>
 
   <div class="group">
@@ -112,4 +112,4 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
     });
 
   });
-</script>
+</script>-->

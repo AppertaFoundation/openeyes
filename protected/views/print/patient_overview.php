@@ -18,7 +18,16 @@
 ?>
 
 <table class="borders prescription_header">
-    <tbody><tr>
+    <tbody>
+    <tr>
+        <th colspan="4">
+        <?php 
+                $site = Site::model()->findByPk($this->selectedSiteId); 
+                echo "<h3><strong>$site->name</strong></h3>"; ?>
+                <strong><?php echo $site->contact->address->getLetterLine();?></strong>
+        </th>
+    </tr>
+    <tr>
         <th>Patient Name</th>
         <td><?php echo $this->patient->contact->fullName?></td>
         <th>Hospital Number</th>
@@ -51,7 +60,7 @@
     <tr>
         <th>Patient's address</th>
         <td colspan="3"><?php echo $this->patient->getLetterAddress(array(
-                'delimiter' => '<br/>',
+                'delimiter' => ', ',
             ))?></td>
     </tr>
     </tbody>
