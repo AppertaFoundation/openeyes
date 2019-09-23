@@ -485,7 +485,7 @@ class DefaultController extends BaseEventTypeController
         // FIXME: this should be using the info method
         $event->info = 'Printed';
 
-        if (!$event->update(['info'])) {
+        if (!$event->save()) {
             throw new Exception('Unable to save event: '.print_r($event->getErrors(), true));
         }
 
