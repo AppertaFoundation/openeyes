@@ -41,10 +41,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td>Text size</td>
-                    <td>Large Font</td>
-                </tr>
+                <?php } ?>
                 <tr>
                     <td colspan="2">
                         <small class="fade">To</small><br>
@@ -74,7 +71,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                         ?>
                     </td>
                 </tr>
-                <?php } ?>
+                
             </tbody>
         </table>
     </div>
