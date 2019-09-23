@@ -26,7 +26,7 @@ class PrescriptionCreator extends \EventCreator
         $this->elements['Element_OphDrPrescription_Details'] = new \Element_OphDrPrescription_Details();
     }
 
-    public function addMedicationSet(int $medication_set_id)
+    public function addMedicationSet(int $medication_set_id, $laterality = null)
     {
         $set = \MedicationSet::model()->findByPk($medication_set_id);
         foreach ($set->medicationSetItems as $medication_set_item) {
@@ -43,6 +43,8 @@ class PrescriptionCreator extends \EventCreator
             $item->start_date = date('Y-m-d');
             $item->usage_type = \OphDrPrescription_Item::getUsageType();
             $item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();
+
+            $item->laterality = $laterality; // If default route is Eye or Ocular or ....
 
             $item_tapers = array();
             if ($medication_set_item->tapers) {

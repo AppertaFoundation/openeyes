@@ -40,6 +40,13 @@
             $duration_options,
             ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
     </td>
+
+    <?php if ($is_prescription_set) : ?>
+    <!-- tapers are using their parent settings -->
+    <td></td>
+    <td></td>
+    <?php endif; ?>
+
     <td class="actions" style="text-align:end">
         <a data-action_type="remove" style="display: none" class="js-remove-taper"><i class="oe-i trash"></i></a>
     </td>

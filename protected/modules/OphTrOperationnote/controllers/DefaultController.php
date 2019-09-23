@@ -317,9 +317,11 @@ class DefaultController extends BaseEventTypeController
         $success = false;
 
         if ($set) {
+            $procedure_list = Element_OphTrOperationnote_ProcedureList::model()->findByAttributes(['event_id' => $this->event->id]);
+
             $prescription_creator = new PrescriptionCreator($this->event->episode);
             $prescription_creator->patient = $this->patient;
-            $prescription_creator->addMedicationSet($set->id);
+            $prescription_creator->addMedicationSet($set->id, $procedure_list->eye_id);
             $prescription_creator->save();
 
             $success = !$prescription_creator->hasErrors();
