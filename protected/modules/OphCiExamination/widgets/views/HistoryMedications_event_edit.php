@@ -37,26 +37,22 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
       <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
       <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="js-do-not-save-entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>
       <table id="<?= $model_name ?>_entry_table" class="js-entry-table cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
-      <colgroup>
-        <col class="cols-2">
-        <col class="cols-4">
-        <col>
-        <col>
-        <col class="cols-1">
-      </colgroup>
+          <colgroup>
+              <col class="cols-2">
+              <col class="cols-6">
+              <col class="cols-3">
+              <col class="cols-icon" colspan="2">
+              <!-- actions auto-->
+          </colgroup>
         <thead style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >
-        <tr>
-            <th>
-              <button class="button small show-stopped" type="button">Show stopped</button>
-              <button class="button small hide-stopped" type="button" style="display: none;">Hide stopped</button>
-            </th>
-            <th></th>
-            <th>Start</th>
-            <th>Stopped (Optional)</th>
-            <th>Reason</th>
-            <th></th>
-        </tr>
-        </thead>
+          <tr>
+              <th>Drug</th>
+              <th>Dose/frequency/route/start/stop</th>
+              <th>Duration/dispense/comments</th>
+              <th><i class="oe-i drug-rx small no-click"></i></th>
+              <th></th><!-- actions -->
+          </tr>
+          </thead>
         <tbody>
         <?php
         $row_count = 0;
