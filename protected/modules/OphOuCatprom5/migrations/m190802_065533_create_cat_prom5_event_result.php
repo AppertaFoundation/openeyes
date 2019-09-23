@@ -9,12 +9,12 @@ class m190802_065533_create_cat_prom5_event_result extends OEMigration
             'total_raw_score' => 'int(3)',
             'total_rasch_measure' => 'DECIMAL(5,2)',
             'event_id' => 'int(10) unsigned'
-        ),true);
+        ), true);
 
     }
 
     public function safeDown()
     {
-        $this->dropOETable('cat_prom5_event_result',true);
+        $this->dropOETable('cat_prom5_event_result', true);
     }
 }

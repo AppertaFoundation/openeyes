@@ -7,10 +7,10 @@
         <col class="cols-6">
       </colgroup>
       <tbody>
-      <?php foreach ($answerResults as $answerResult_item) {
-        $ques = $answerResult_item->question;
-        $answer = $answerResult_item->answer;
-        ?>
+        <?php foreach ($answerResults as $answerResult_item) {
+            $ques = $answerResult_item->question;
+            $answer = $answerResult_item->answer;
+            ?>
         <tr>
           <td>
             <?php echo $ques->id.'.'. $ques->question; ?>
@@ -19,7 +19,7 @@
             <span><?= $answer->answer ?></span>
           </td>
         </tr>
-      <?php } ?>
+        <?php } ?>
       </tbody>
     </table>
   </div>

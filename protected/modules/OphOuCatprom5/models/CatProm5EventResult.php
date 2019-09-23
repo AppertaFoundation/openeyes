@@ -16,10 +16,10 @@ use MongoDB\Driver\Query;
  */
 class CatProm5EventResult extends \BaseEventTypeElement
 {
-  protected $auto_update_relations = true;
-  protected $relation_defaults = array(
+    protected $auto_update_relations = true;
+    protected $relation_defaults = array(
     'catProm5AnswerResults' => array(),
-  );
+    );
     /**
      * @return string the associated database table name
      */
@@ -71,7 +71,8 @@ class CatProm5EventResult extends \BaseEventTypeElement
         );
     }
 
-    public function rowScoreToRaschMeasure($rawScore){
+    public function rowScoreToRaschMeasure($rawScore)
+    {
         $row = Yii::app()->db->createCommand('select rasch_measure from cat_prom5_score_map where raw_score=:raw_score')
           ->bindValue('raw_score', $rawScore)->queryRow();
         return $row['rasch_measure'];
@@ -79,22 +80,22 @@ class CatProm5EventResult extends \BaseEventTypeElement
 
     public function setDefaultOptions(Patient $patient = null)
     {
-      $catProm5Answers = array();
-      $rows = CatProm5Questions::model()->findAll();
+        $catProm5Answers = array();
+        $rows = CatProm5Questions::model()->findAll();
 
-      foreach ($rows as $row) {
-        $new_answer_result = new CatProm5AnswerResult();
-        $new_answer_result->question_id = $row->id;
-        $catProm5Answers[] = $new_answer_result;
-      }
-      $this->catProm5AnswerResults = $catProm5Answers;
-      parent::setDefaultOptions($patient);
+        foreach ($rows as $row) {
+            $new_answer_result = new CatProm5AnswerResult();
+            $new_answer_result->question_id = $row->id;
+            $catProm5Answers[] = $new_answer_result;
+        }
+        $this->catProm5AnswerResults = $catProm5Answers;
+        parent::setDefaultOptions($patient);
     }
 
     public function setUpdateOptions()
     {
 
-      parent::setUpdateOptions();
+        parent::setUpdateOptions();
     }
 
   /**
@@ -114,10 +115,10 @@ class CatProm5EventResult extends \BaseEventTypeElement
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('total_raw_score',$this->total_raw_score);
-        $criteria->compare('total_rasch_measure',$this->total_rasch_measure,true);
-        $criteria->compare('event_id',$this->event_id,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('total_raw_score', $this->total_raw_score);
+        $criteria->compare('total_rasch_measure', $this->total_rasch_measure, true);
+        $criteria->compare('event_id', $this->event_id, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -130,7 +131,7 @@ class CatProm5EventResult extends \BaseEventTypeElement
      * @param string $className active record class name.
      * @return CatProm5EventResult the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

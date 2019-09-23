@@ -81,10 +81,10 @@ class CatProm5Questions extends CActiveRecord
     {
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id,true);
-        $criteria->compare('question',$this->question,true);
-        $criteria->compare('mandatory',$this->mandatory);
-        $criteria->compare('display_order',$this->display_order,true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('question', $this->question, true);
+        $criteria->compare('mandatory', $this->mandatory);
+        $criteria->compare('display_order', $this->display_order, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -97,7 +97,7 @@ class CatProm5Questions extends CActiveRecord
      * @param string $className active record class name.
      * @return CatProm5Questions the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

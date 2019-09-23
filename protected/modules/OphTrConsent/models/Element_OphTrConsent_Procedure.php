@@ -39,9 +39,9 @@
 class Element_OphTrConsent_Procedure extends BaseEventTypeElement
 {
     public $service;
-  protected $errorExceptions = array(
+    protected $errorExceptions = array(
     'Element_OphTrConsent_Procedure_procedures' => 'typeProcedure',
-  );
+    );
 
     /**
      * Returns the static model of the specified AR class.
@@ -207,12 +207,14 @@ class Element_OphTrConsent_Procedure extends BaseEventTypeElement
      * @param string|array $code
      * @return bool
      */
-    public function hasAnaestheticTypeByCode($code) {
+    public function hasAnaestheticTypeByCode($code)
+    {
         if (!is_array($code)) {
             $code = array($code);
         }
         return count(array_filter($this->anaesthetic_type,
-                    function($a_type) use ($code) { return in_array((string)$a_type, $code);
+                    function ($a_type) use ($code) {
+                        return in_array((string)$a_type, $code);
                     })
             ) > 0;
     }

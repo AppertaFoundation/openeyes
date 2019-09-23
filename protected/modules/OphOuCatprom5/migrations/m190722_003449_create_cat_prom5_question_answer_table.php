@@ -11,7 +11,7 @@ class m190722_003449_create_cat_prom5_question_answer_table extends OEMigration
             'answer' => 'varchar(65535) NOT NULL',
             'score' => 'int unsigned NOT NULL DEFAULT 0',
         ));
-        $this->addForeignKey('cat_prom5_answers_qid_fk','cat_prom5_answers','question_id','cat_prom5_questions','id');
+        $this->addForeignKey('cat_prom5_answers_qid_fk', 'cat_prom5_answers', 'question_id', 'cat_prom5_questions', 'id');
 
         // Question 1
         $this->insert('cat_prom5_answers', array('question_id' => 1, 'answer' => 'No, never', 'score' => 0));
@@ -85,7 +85,7 @@ class m190722_003449_create_cat_prom5_question_answer_table extends OEMigration
 
     public function safeDown()
     {
-        $this->dropForeignKey('cat_prom5_answers_qid_fk','cat_prom5_answers');
+        $this->dropForeignKey('cat_prom5_answers_qid_fk', 'cat_prom5_answers');
 
         $this->dropOETable('cat_prom5_answers');
     }

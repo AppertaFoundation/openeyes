@@ -34,7 +34,8 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 's
 ));
 ?>
 <?php
-if (!empty($errors)) {;
+if (!empty($errors)) {
+    ;
 }  ?>
   <script type='text/javascript'>
     $(document).ready( function(){

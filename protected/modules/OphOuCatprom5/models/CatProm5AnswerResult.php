@@ -30,7 +30,7 @@ class CatProm5AnswerResult extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-        		array('id, question_id, answer_id', 'safe'),
+                array('id, question_id, answer_id', 'safe'),
             array('element_id', 'required'),
             array('element_id', 'numerical', 'integerOnly'=>true),
             array('question_id, answer_id', 'length', 'max'=>10),
@@ -83,9 +83,9 @@ class CatProm5AnswerResult extends \BaseEventTypeElement
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('element_id',$this->event_id);
-        $criteria->compare('answer_id',$this->answer_id,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('element_id', $this->event_id);
+        $criteria->compare('answer_id', $this->answer_id, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -98,7 +98,7 @@ class CatProm5AnswerResult extends \BaseEventTypeElement
      * @param string $className active record class name.
      * @return CatProm5AnswerResult the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

@@ -39,10 +39,10 @@ class Element_OphTrLaser_Treatment extends SplitEventTypeElement
     const RIGHT_EYE_ID = 2;
     const LEFT_EYE_ID = 1;
 
-  protected $errorExceptions = array(
+    protected $errorExceptions = array(
     'Element_OphTrLaser_Treatment_left_procedures' => 'treatment_left_procedures',
     'Element_OphTrLaser_Treatment_right_procedures' => 'treatment_right_procedures',
-  );
+    );
     /**
      * Returns the static model of the specified AR class.
      *
