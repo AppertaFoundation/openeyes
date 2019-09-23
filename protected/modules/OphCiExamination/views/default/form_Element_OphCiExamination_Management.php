@@ -70,6 +70,7 @@ foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->su
         }).join(' ');
 
         inputText.val(inputText.val() ? inputText.val() + text : text);
+        autosize.update(inputText);
         inputText.trigger('oninput');
         return true;
       },
