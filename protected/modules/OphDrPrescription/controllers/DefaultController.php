@@ -169,7 +169,7 @@ class DefaultController extends BaseEventTypeController
             throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
         }
         $this->event->info = $prescription->infotext;
-        if (!$this->event->save()) {
+        if (!$this->event->update(["info"])) {
             throw new Exception('Unable to save event: '.print_r($this->event->getErrors(), true));
         }
     }
@@ -485,7 +485,7 @@ class DefaultController extends BaseEventTypeController
         // FIXME: this should be using the info method
         $event->info = 'Printed';
 
-        if (!$event->save()) {
+        if (!$event->update(['info'])) {
             throw new Exception('Unable to save event: '.print_r($event->getErrors(), true));
         }
 
