@@ -165,11 +165,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     controller.$table.on('click', controller.options.removeButtonSelector, function(e) {
         e.preventDefault();
         var $row = $(e.target).closest("tr");
+
         var key = $row.attr("data-key");
         var $tapers = controller.$table.find("tr[data-parent-key="+key+"]");
         $tapers.remove();
         controller.removeBoundEntry($row);
-        $row.remove();
+        controller.$table.find('tr[data-key=' + key + ']').remove();
         controller.displayTableHeader();
     });
 
@@ -181,7 +182,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
     // setup current table row behaviours
-    controller.$table.find('tbody tr').each(function() {
+    controller.$table.find('tbody tr.js-first-row').each(function() {
       controller.initialiseRow($(this));
     });
 
@@ -235,7 +236,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.initialiseRow = function($row, data)
   {
       var controller = this;
-
+      let key = $row.data('key');
+      let $full_row = controller.$table.find('tr[data-key=' + key + ']');
+      let $second_part_of_row = controller.$table.find('tr[data-key=' + key + '].js-second-row');
       controller.updateTextualDisplay($row);
       if($row.find(".js-locked").val() === "1") {
           var $txt_display = $row.find(".dose-frequency-route .textual-display");
@@ -244,17 +247,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           $row.find(".dose-frequency-route .alternative-display-element.textual").show();
       }
 
-      $row.on('click', '.medication-rename', function(e) {
-          e.preventDefault();
-          controller.resetSearchRow($row, true);
-      });
-
       $row.on('change', controller.options.routeFieldSelector, function(e) {
           controller.updateRowRouteOptions($row);
       });
 
-      $row.on("click", ".js-meds-stop-btn", function(){
-          controller.showStopControls($row);
+			$second_part_of_row.on("click", ".js-meds-stop-btn", function(){
+          controller.showStopControls($second_part_of_row);
       });
 
       $row.on("click", ".js-btn-prescribe", function () {
@@ -274,6 +272,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       var controls_onchange = function (e) {
           let $bound_entry = $row.data('bound_entry');
+          let bound_entry_key = $row.data('key');
+
 
           if (controller.options['modelName'] === "OEModule_OphCiExamination_models_HistoryMedications") {
               controller.updateBoundEntry($row);
@@ -291,7 +291,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                   controller.options.classes_that_dont_break_binding.forEach(function (class_name) {
                       if ($(e.target).hasClass(class_name)) {
                           row_needs_bond_removed = false;
-                          $bound_entry.find('.' + class_name).attr('value', $row.find('.' + class_name).attr('value'));
+
+												$bound_entry.parent().find("tr[data-key=" + bound_entry_key + "]").find('.' + class_name).attr('value', $full_row.find('.' + class_name).attr('value'));
                       }
                   });
 
@@ -976,7 +977,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
             $newrow.appendTo(this.$table.children('tbody'));
             this.setRowData($newrow, medication[i]);
-            let $lastRow = this.$table.find('tbody tr:last');
+            let $lastRow = this.$table.find('tbody tr.js-first-row:last');
 
             this.initialiseRow($lastRow);
             this.loadDrugDefaults($lastRow, medication[i]);
@@ -1028,9 +1029,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     HistoryMedicationsController.prototype.setBoundEntryStop = function ($bound_entry) {
+    		let key = $bound_entry.data('key');
+    		let $second_part_of_bound_entry = $bound_entry.parent().find('tr[data-key=' + key + '].js-last-row');
         let stop_reason = $("option:contains('Medication parameters changed')").attr("value");
-        this.showStopControls($bound_entry);
-        $bound_entry.find('.js-stop-reason').attr('value', stop_reason);
+        this.showStopControls($second_part_of_bound_entry);
+			$second_part_of_bound_entry.find('.js-stop-reason').attr('value', stop_reason);
     };
 
     HistoryMedicationsController.prototype.enableManualRowDeletion = function ($row) {
