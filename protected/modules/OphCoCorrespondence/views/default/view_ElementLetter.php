@@ -41,40 +41,6 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td>Text size</td>
-                    <td>Large Font</td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <small class="fade">To</small><br>
-                        <?php
-                            $ccString = "";
-                            $toAddress = "";
-                            if($element->document_instance) {
-                                 foreach ($element->document_instance as $instance) {
-                                    foreach ($instance->document_target as $target) {
-                                        if($target->ToCc == 'To'){
-                                            $toAddress = $target->contact_name . "\n" . $target->address;
-                                        } else {
-                                            $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                                             $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
-                                        }
-                                    }
-                                }
-                            } else
-                            {
-                                $toAddress = $element->address;
-                                foreach (explode("\n", trim($element->cc)) as $line) {
-                                    if (trim($line)) {
-                                        $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
-                                    }
-                                }
-                            }
-                            echo str_replace("\n", '<br/>', CHtml::encode($toAddress))."<br/>".$ccString;
-                        ?>
-                    </td>
-                </tr>
                 <?php } ?>
             </tbody>
         </table>
