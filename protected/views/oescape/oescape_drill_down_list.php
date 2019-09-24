@@ -14,6 +14,7 @@
             <col style="width: 100px;"><!-- Dilated -->
             <col style="width: 100px;"><!-- Value -->
             <col style="width: 100px;"><!-- time -->
+            <col style="width: 100px;"><!-- Date -->
             <col style="width: 200px;"><!-- Comments -->
         </colgroup>
         <thead>
@@ -23,7 +24,7 @@
                 <th class="text-left" style="vertical-align: center;">Instrument</th><!-- Instrument -->
                 <th class="text-left" style="vertical-align: center;">Dilated</th><!-- Dilated -->
                 <th class="text-left" style="vertical-align: center;">IOP (mmHg)</th><!-- Value -->
-                <th class="text-left" style="vertical-align: center;">Date</th><!-- Time -->
+                <th class="text-left" style="vertical-align: center;">Date</th><!-- Date -->
                 <th class="text-left" style="vertical-align: center;">Time</th><!-- Time -->
                 <th class="text-left" style="vertical-align: center;">Comments</th><!-- Comments -->
             </tr>
