@@ -75,8 +75,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     SocialHistoryController.prototype.resetForm = function () {
+        this.$tableSelector.find('select').filter('[id*="'+this.options.modelName+'"]').find('option').removeAttr('selected');
         this.$tableSelector.find('[id*="textField"]').html(this.options.nothing_selected_text);
         this.$tableSelector.find('.js-driving-status-item').remove();
+        this.$tableSelector.find('[id*="'+this.options.modelName+'"] input').val('');
         this.$tableSelector.find('#textField_alcohol_intake').addClass('hidden').parent().find('.field-info').html(this.options.nothing_selected_text);
     }
 
