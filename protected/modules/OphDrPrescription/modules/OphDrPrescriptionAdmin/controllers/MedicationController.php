@@ -36,9 +36,10 @@ class MedicationController extends BaseAdminController
     public function actionIndex()
     {
         $asset_manager = \Yii::app()->getAssetManager();
-        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
-        $asset_manager->publish($base_assets_path);
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        $assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $url = $asset_manager->publish($assets_path . '/OpenEyes.OphDrPrescriptionAdmin.js');
+
+        \Yii::app()->clientScript->registerScriptFile($url, \CClientScript::POS_HEAD);
 
         $filters = \Yii::app()->request->getParam('search');
         $criteria = $this->getSearchCriteria($filters);

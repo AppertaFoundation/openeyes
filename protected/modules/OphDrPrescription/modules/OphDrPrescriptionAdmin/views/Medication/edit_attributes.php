@@ -24,8 +24,6 @@
     $options = array_map(function ($e) {
         return ['id' => $e->id, 'label' => $e->description." - ".$e->value, 'attr_id' => $e->medication_attribute_id];
     }, MedicationAttributeOption::model()->findAll(array("select"=>array("id","medication_attribute_id","value","description"), "order" => "value")));
-
-    $rowkey = 0;
     ?>
 <script id="row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
@@ -42,13 +40,6 @@
         </td>
     </tr>
 </script>
-<script type="text/javascript">
-    $(function(){
-        $(document).on("click", ".js-delete-attribute", function (e) {
-            $(e.target).closest("tr").remove();
-        });
-    });
-</script>
 <h3>Attributes</h3>
 <table class="standard" id="medication_attribute_assignment_tbl">
     <thead>
@@ -59,20 +50,16 @@
         </tr>
     </thead>
     <tbody>
-    <?php foreach ($medication->medicationAttributeAssignments as $assignment) : ?>
+    <?php foreach ($medication->medicationAttributeAssignments as $rowkey => $assignment) : ?>
         <?php
             $attr_id = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->medication_attribute_id : null;
             $attr_name = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->medicationAttribute->name : "";
             $option_id = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->id : null;
             $option_name = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->description." - ".$assignment->medicationAttributeOption->value : null;
-            $id = is_null($assignment->id) ? -1 : $assignment->id;
-            $rowkey++;
         ?>
         <tr data-key="<?=$rowkey?>">
             <td>
-                <?php if ($id != -1) { ?>
-                <input type="hidden" name="Medication[medicationAttributeAssignments][<?=$rowkey?>][id]" value="<?=$id?>" />
-                <?php } ?>
+                <input type="hidden" name="Medication[medicationAttributeAssignments][<?=$rowkey?>][id]" value="<?=$assignment->id?>" />
                 <input type="hidden" name="Medication[medicationAttributeAssignments][<?=$rowkey?>][medication_id]" value="<?=$attr_id?>" />
                 <?= CHtml::encode($attr_name); ?>
             </td>
@@ -113,12 +100,8 @@
                                 }
                                 let attr = selectedItems[0];
                                 let opt  = selectedItems[1];
+                                let key = OpenEyes.Util.getNextDataKey('#medication_attribute_assignment_tbl tbody tr', 'key');
 
-                                let lastkey = $("#medication_attribute_assignment_tbl > tbody > tr:last").attr("data-key");
-                                if(isNaN(lastkey)) {
-                                    lastkey = 0;
-                                }
-                                let key = parseInt(lastkey) + 1;
                                 let template = $('#row_template').html();
                                 Mustache.parse(template);
                                 let rendered = Mustache.render(template, {
@@ -134,9 +117,9 @@
                             onSelect: function(e) {
                                 let $item = $(e.target).is("span") ? $(e.target).closest("li") : $(e.target);
                                 let $tr = $item.closest("tr");
-                                if($item.attr("data-type") === "attr") {
+                                if($item.data('type') === "attr") {
                                     let $all_options = $tr.children("td:eq(1)").find("ul.add-options li");
-                                    let $relevant_options = $tr.children("td:eq(1)").find("ul.add-options li[data-attr_id="+$item.attr("data-id")+"]");
+                                    let $relevant_options = $tr.children("td:eq(1)").find("ul.add-options li[data-attr_id=" + $item.data('id') + "]");
                                     $all_options.hide();
                                     $relevant_options.show();
                                 }
@@ -149,3 +132,10 @@
         </tr>
     </tfoot>
 </table>
+<script>
+    $(document).ready(function(){
+        $("#medication_attribute_assignment_tbl").on("click", ".js-delete-attribute", function (e) {
+            $(this).closest("tr").remove();
+        });
+    });
+</script>

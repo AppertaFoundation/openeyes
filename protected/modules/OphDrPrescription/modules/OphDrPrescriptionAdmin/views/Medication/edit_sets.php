@@ -23,7 +23,8 @@
 
     }, MedicationSet::model()->findAllByAttributes(['hidden' => 0, 'deleted_date' => null]));
     $units = [];
-    if ($unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
+    $unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'");
+    if ($unit_attr) {
         $units = array_map(function ($e) {
             return ['id' => $e->id, 'label' => $e->description];
         }, $unit_attr->medicationAttributeOptions);

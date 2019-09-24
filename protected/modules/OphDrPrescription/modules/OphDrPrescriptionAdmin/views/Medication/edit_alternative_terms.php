@@ -66,14 +66,15 @@
 </script>
 <script>
     $(function(){
-        $(document).on("click", ".js-add-alt-term", function (e) {
-            let key = OpenEyes.Util.getNextDataKey('#medication_alternative_terms_tbl tbody tr:last', 'key') || 1;
+        let $table = $('#medication_alternative_terms_tbl');
+        $table.on("click", ".js-add-alt-term", function (e) {
+            let key = OpenEyes.Util.getNextDataKey('#medication_alternative_terms_tbl tbody tr', 'key');
             let template = $('#alt_terms_row_template').html();
             let rendered = Mustache.render(template, {"key": key});
-            $("#medication_alternative_terms_tbl tbody").append(rendered);
+            $table.find('tbody').append(rendered);
         });
 
-        $(document).on("click", ".js-delete-alt-term", function (e) {
+        $table.on("click", ".js-delete-alt-term", function (e) {
             $(e.target).closest("tr").remove();
         });
     });
