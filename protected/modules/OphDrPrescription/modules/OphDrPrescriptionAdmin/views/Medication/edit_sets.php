@@ -50,38 +50,31 @@
 <script id="set_row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
         <td>
-        <input type="hidden" name="Medication[medicationSetItems][{{key}}][medication_set_id]" value="{{set.id}}" />
+        <input type="hidden" name="MedicationSetItem[{{key}}][medication_set_id]" value="{{set.id}}" />
         {{set.label}}
         </td>
        <td>
-            <?= CHtml::textField('Medication[medicationSetItems][{{key}}][default_dose]', "1"); ?>
+            <?= CHtml::textField('MedicationSetItem[{{key}}][default_dose]', "1"); ?>
         </td>
         <td>
-            <?= CHtml::textField('Medication[medicationSetItems][{{key}}][default_dose_unit_term]', '{{unit.label}}'); ?>
+            <?= CHtml::textField('MedicationSetItem[{{key}}][default_dose_unit_term]', '{{unit.label}}'); ?>
         </td>
         <td>
-            <input type="hidden" name="Medication[medicationSetItems][{{key}}][default_route_id]" value="{{route.id}}" />
+            <input type="hidden" name="MedicationSetItem[{{key}}][default_route_id]" value="{{route.id}}" />
             {{route.label}}
         </td>
         <td>
-            <input type="hidden" name="Medication[medicationSetItems][{{key}}][default_frequency_id]" value="{{frequency.id}}" />
+            <input type="hidden" name="MedicationSetItem[{{key}}][default_frequency_id]" value="{{frequency.id}}" />
             {{frequency.label}}
         </td>
         <td>
-            <input type="hidden" name="Medication[medicationSetItems][{{key}}][default_duration_id]" value="{{duration.id}}" />
+            <input type="hidden" name="MedicationSetItem[{{key}}][default_duration_id]" value="{{duration.id}}" />
             {{duration.label}}
         </td>
         <td>
             <a href="javascript:void(0);" class="js-delete-set"><i class="oe-i trash"></i></a>
         </td>
     </tr>
-</script>
-<script type="text/javascript">
-    $(function(){
-        $(document).on("click", ".js-delete-set", function (e) {
-            $(e.target).closest("tr").remove();
-        });
-    });
 </script>
 <h3>Medication is member of the following sets</h3>
 <table class="standard" id="medication_set_assignment_tbl">
@@ -107,31 +100,31 @@
                       endif; ?>>
             <td>
                 <?php if ($id != -1) { ?>
-                <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][id]" value="<?=$id?>" />
+                <input type="hidden" name="MedicationSetItem[<?=$rowkey?>][id]" value="<?=$id?>" />
                 <?php } ?>
-                <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][medication_set_id]" value="<?=$assignment->medication_set_id?>" />
+                <input type="hidden" name="MedicationSetItem[<?=$rowkey?>][medication_set_id]" value="<?=$assignment->medication_set_id?>" />
                 <?=CHtml::encode($assignment->medicationSet->name)?>
             </td>
             <td>
-                <?= CHtml::textField("Medication[medicationSetItems][$rowkey][default_dose]", $assignment->default_dose); ?>
+                <?= CHtml::textField("MedicationSetItem[$rowkey][default_dose]", $assignment->default_dose); ?>
             </td>
             <td>
-                <?= CHtml::textField("Medication[medicationSetItems][$rowkey][default_dose_unit_term]", $assignment->default_dose_unit_term); ?>
+                <?= CHtml::textField("MedicationSetItem[$rowkey][default_dose_unit_term]", $assignment->default_dose_unit_term); ?>
             </td>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][default_route_id]" value="<?=$assignment->default_route_id?>" />
+                <input type="hidden" name="MedicationSetItem[<?=$rowkey?>][default_route_id]" value="<?=$assignment->default_route_id?>" />
                 <?=$assignment->default_route_id ? CHtml::encode($assignment->defaultRoute->term) : ""?>
             </td>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][default_frequency_id]" value="<?=$assignment->default_frequency_id?>" />
+                <input type="hidden" name="MedicationSetItem[<?=$rowkey?>][default_frequency_id]" value="<?=$assignment->default_frequency_id?>" />
                 <?=$assignment->default_frequency_id ? CHtml::encode($assignment->defaultFrequency->term) : ""?>
             </td>
             <td>
-                <input type="hidden" name="Medication[medicationSetItems][<?=$rowkey?>][default_duration_id]" value="<?=$assignment->default_duration_id?>" />
+                <input type="hidden" name="MedicationSetItem[<?=$rowkey?>][default_duration_id]" value="<?=$assignment->default_duration_id?>" />
                 <?=$assignment->default_duration_id ? CHtml::encode($assignment->defaultDuration->name) : ""?>
             </td>
             <td>
-                <a href="javascript:void(0);" class="js-delete-attribute"><i class="oe-i trash"></i></a>
+                <a class="js-delete-set"><i class="oe-i trash"></i></a>
             </td>
         </tr>
     <?php endforeach; ?>
@@ -184,3 +177,11 @@
         </tr>
     </tfoot>
 </table>
+<script>
+    $(document).ready(function() {
+        $('#medication_set_assignment_tbl').on("click", ".js-delete-set", function (e) {
+            $(this).closest("tr").remove();
+        });
+    });
+
+</script>

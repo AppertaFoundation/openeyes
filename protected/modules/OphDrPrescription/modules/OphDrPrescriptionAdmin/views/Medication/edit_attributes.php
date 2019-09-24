@@ -28,11 +28,11 @@
 <script id="row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
         <td>
-            <input class="js-attribute" type="hidden" name="Medication[medicationAttributeAssignments][{{key}}][medication_id]" value="{{attribute_id}}" />
+            <input class="js-attribute" type="hidden" name="MedicationAttributeAssignment[{{key}}][medication_id]" value="{{attribute_id}}" />
             {{attribute_name}}
         </td>
         <td>
-            <input class="js-option" type="hidden" name="Medication[medicationAttributeAssignments][{{key}}][medication_attribute_option_id]" value={{option_id}} />
+            <input class="js-option" type="hidden" name="MedicationAttributeAssignment[{{key}}][medication_attribute_option_id]" value={{option_id}} />
             {{option_name}}
         </td>
         <td>
@@ -59,12 +59,12 @@
         ?>
         <tr data-key="<?=$rowkey?>">
             <td>
-                <input type="hidden" name="Medication[medicationAttributeAssignments][<?=$rowkey?>][id]" value="<?=$assignment->id?>" />
-                <input type="hidden" name="Medication[medicationAttributeAssignments][<?=$rowkey?>][medication_id]" value="<?=$attr_id?>" />
+                <input type="hidden" name="MedicationAttributeAssignment[<?=$rowkey?>][id]" value="<?=$assignment->id?>" />
+                <input type="hidden" name="MedicationAttributeAssignment[<?=$rowkey?>][medication_id]" value="<?=$attr_id?>" />
                 <?= CHtml::encode($attr_name); ?>
             </td>
             <td>
-                <input type="hidden" name="Medication[medicationAttributeAssignments][<?=$rowkey?>][medication_attribute_option_id]" value="<?=$option_id?>" />
+                <input type="hidden" name="MedicationAttributeAssignment[<?=$rowkey?>][medication_attribute_option_id]" value="<?=$option_id?>" />
                 <?= CHtml::encode($option_name); ?>
             </td>
             <td>

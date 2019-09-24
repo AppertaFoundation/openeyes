@@ -33,9 +33,9 @@
         <tr data-key="<?=$row_key?>">
             <td>
                 <?php if ($id != -1) { ?>
-                <input type="hidden" name="Medication[medicationSearchIndexes][<?=$row_key?>][id]" value="<?=$id?>" />
+                <input type="hidden" name="MedicationSearchIndex[<?=$row_key?>][id]" value="<?=$id?>" />
                 <?php } ?>
-                <?php echo CHtml::textField("Medication[medicationSearchIndexes][".$row_key."][alternative_term]", $medicationSearchIndex->alternative_term, array('class' => 'cols-full')); ?>
+                <?php echo CHtml::textField("MedicationSearchIndex[".$row_key."][alternative_term]", $medicationSearchIndex->alternative_term, array('class' => 'cols-full')); ?>
             </td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-alt-term"><i class="oe-i trash"></i></a>
@@ -57,7 +57,7 @@
 <script id="alt_terms_row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
         <td>
-            <?php echo CHtml::textField('Medication[medicationSearchIndexes][{{key}}][alternative_term]', null, array('class' => 'cols-full')); ?>
+            <?php echo CHtml::textField('MedicationSearchIndex[{{key}}][alternative_term]', null, array('class' => 'cols-full')); ?>
         </td>
         <td>
             <a href="javascript:void(0);" class="js-delete-alt-term"><i class="oe-i trash"></i></a>
