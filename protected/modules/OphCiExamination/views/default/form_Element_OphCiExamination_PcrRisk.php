@@ -35,7 +35,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
             var $pcrAlphaRight = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_alpha_receptor_blocker").prop('selectedIndex');
             $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_alpha_receptor_blocker").prop('selectedIndex', $pcrAlphaRight);
         });
-  });
+  }
 </script>
 <div class="element-eyes element-fields flex-layout full-width">
     <?php
@@ -93,6 +93,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
     echo $form->hiddenInput($element, 'eye_id', false, ['class' => 'sideField']);
 
     foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :
+        $opposite = ($side === 'right') ? 'left' : 'right';
         $pcrRisk = new PcrRisk();
         $activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive'; ?>
       <div class="js-element-eye <?=$side?>-eye column <?=$opposite?> side<?=$activeClass?>" data-side="<?=$side?>" >
