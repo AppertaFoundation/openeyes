@@ -48,9 +48,9 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
           <tr>
               <th>Drug</th>
               <th>Dose/frequency/route/start/stop</th>
-              <th>Duration/dispense/comments</th>
-              <th><i class="oe-i drug-rx small no-click"></i></th>
-              <th></th><!-- actions -->
+              <th>Comments</th>
+              <th></th>
+              <th></th>
           </tr>
           </thead>
         <tbody>
