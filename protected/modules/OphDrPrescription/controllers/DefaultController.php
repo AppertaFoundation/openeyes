@@ -444,7 +444,6 @@ class DefaultController extends BaseEventTypeController
                         } else {
                             // Taper is new
                             $taper_model = new OphDrPrescription_ItemTaper();
-                            $taper_model->item_id = $item_model->id;
                         }
 
                         $taper_model->dose = $taper['dose'];
