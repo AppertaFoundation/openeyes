@@ -119,7 +119,6 @@ class MedicationController extends BaseAdminController
         }
 
         if (\Yii::app()->request->isPostRequest) {
-
             if ($medication->isNewRecord) {
                 //User created medications must be local
                 $data['source_type'] = 'local';
