@@ -44,17 +44,16 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
 
         }, $entry->medication->allergies)); ?>"<?php
     endif; ?>
-    class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>" >
-    <td>
+    class="divider col-gap js-first-row <?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>" >
+    <td class="drug-details" rowspan="2">
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?= (int)$entry->originallyStopped ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?=$entry->usage_type ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
                 <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= $entry->bound_key ?>">
-      <span class="medication-display">
-        <span class="medication-name">
             <span class="js-prepended_markup">
+							<?= $entry->getMedicationDisplay() ?>
             <?php if (!is_null($entry->medication_id)) {
                 if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
                     echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to '.implode(',', $patient->getPatientDrugAllergy($entry->medication_id)).'"></i>';
@@ -62,16 +61,12 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
                 $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
             } ?>
             </span>
-            <?= $entry->getMedicationDisplay() ?>
-        </span>
-      </span>
+
         <input type="hidden" name="<?= $field_prefix ?>[medication_id]" value="<?= $entry->medication_id ?>"/>
-        <?php if ($entry->originallyStopped) { ?>
-            <i class="oe-i stop small pad"></i>
-        <?php } ?>
+
     </td>
-    <td>
-        <div class="data-group">
+    <td class="dose-frequency-route">
+			<div class="flex-meds-inputs">
             <input type="hidden" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[frequency_id]" value="<?= $entry->frequency_id ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[route_id]" value="<?= $entry->route_id ?>"/>
@@ -82,46 +77,83 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
             <?= $entry->getAdministrationDisplay() ?>
         </div>
     </td>
-    <td>
-        <fieldset class="data-group fuzzy-date">
+		<td>
+			<div class="js-comment-container flex-layout flex-left"
+					 id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+					 style="<?php if (!$entry->comments) :
+						 ?>display: none;<?php
+					 endif; ?>"
+					 data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
+				<?= CHtml::textArea($field_prefix . '[comments]', $entry->comments, [
+					'class' => 'js-comment-field autosize cols-full',
+					'rows' => '1',
+					'placeholder' => 'Comments',
+					'autocomplete' => 'off',
+				]) ?>
+				<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+			</div>
+			<button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
+							class="button js-add-comments"
+							data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+							type="button"
+							data-hide-method = "display"
+							style="<?php if ($entry->comments) :
+								?>display: none;<?php
+							endif; ?>"
+			>
+				<i class="oe-i comments small-icon"></i>
+			</button>
+		</td>
+		<td></td>
+	<td class="text-center">
+		<i class="oe-i info small pad js-has-tooltip" data-tooltip-content=
+		"This medication was prescribed through OpenEyes.<?= $entry->prescriptionNotCurrent() ? ' The prescription has been altered since this entry was recorded.' : ''; ?>"></i>
+	</td>
+</tr>
+	<tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row">
+    <td class="nowrap">
+			<div class="flex-meds-inputs">
+				<span>
             <input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
                          value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
             <i class="oe-i start small pad"></i>
-            <?= Helper::convertMySQL2NHS($entry->start_date) ?>
-        </fieldset>
-    </td>
-    <td class="end-date-column">
-        <div class="alternative-display inline">
+            <span class="oe-date"><?= Helper::convertMySQL2NHS($entry->start_date) ?>
+						</span>
+					</span>
+
+			<span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
+                    <i class="oe-i stop small pad"></i>
+                    <div class="alternative-display inline">
             <div class="alternative-display-element textual">
                 <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
                     <?php if (!is_null($entry->end_date)) : ?>
-                        <?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
-
-                    <?php else : ?>
-                        stopped?
-                    <?php endif; ?>
+											<?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
+											<?php /* echo !is_null($entry->stop_reason_id) ?
+                            ' ('.$entry->stopReason->name.')' : ''; */ ?>
+										<?php else : ?>
+											stopped?
+										<?php endif; ?>
                 </a>
             </div>
             <fieldset style="display: none;" class="js-datepicker-wrapper js-end-date-wrapper">
                 <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" class="js-end-date"
-                       name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?=date('Y-m-d') ?>"
-                       style="width:80px" placeholder="yyyy-mm-dd"
-                       autocomplete="off">
-                <i class="js-has-tooltip oe-i info small pad right"
-                   data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
+											 name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
+											 data-default="<?= date('Y-m-d') ?>"
+											 style="width:80px" placeholder="yyyy-mm-dd"
+											 autocomplete="off">
             </fieldset>
         </div>
+                </span>
+
+
+			<span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select"
+						style="<?=  is_null($entry->end_date) ? "display:none" : "" ?>">
+            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-5 js-stop-reason')) ?>
+        </span>
+			<div class="js-stop-reason-text" style="<?= is_null($entry->end_date) ? "" : "display:none" ?>">
+				<?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
+			</div>
+			</div>
     </td>
-    <td>
-        <div class="js-stop-reason-select" style= "<?= is_null($entry->end_date) ? "display:none" : "" ?>">
-            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason')) ?>
-        </div>
-        <div class="js-stop-reason-text" style= "<?= is_null($entry->end_date) ? "" : "display:none" ?>">
-            <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
-        </div>
-    </td>
-    <td class="text-center">
-        <i class="oe-i info small pad js-has-tooltip" data-tooltip-content=
-        "This medication was prescribed through OpenEyes.<?= $entry->prescriptionNotCurrent() ? ' The prescription has been altered since this entry was recorded.' : ''; ?>"></i>
-    </td>
+
 </tr>
