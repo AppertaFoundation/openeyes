@@ -30,7 +30,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                     <td>
                         <div class="data-value" style="text-align: right">
                             <?php
-                            if ($element->is_signed_off == NULL) {
+                            if ($element->is_signed_off == null) {
                                 echo 'N/A';
                             } else if ((int)$element->is_signed_off == 1) {
                                 echo 'Yes';
@@ -83,7 +83,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
             <p style="margin-bottom: 100px;">Generating PDFs</p>
             <i class="spinner"></i>
         </div>
-        <?php if($is_mobile_or_tablet){?>
+        <?php if ($is_mobile_or_tablet) {?>
             <div class="js-correspondence-image-overlay" style="position: relative;"></div>
         <?php } else {?>
             <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=<?= $element->checkPrint() ?>" style="width: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>px; height: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>px; border: 0; position: relative;"></iframe>

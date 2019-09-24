@@ -19,30 +19,32 @@
 <div class="element-data full-width">
     <div class="data-group">
       <span class="large-text">
-      <?php if ($element->status->name !== 'Follow-up') {
-          echo $element->status;
-      } ?>
+        <?php if ($element->status->name !== 'Follow-up') {
+            echo $element->status;
+        } ?>
 
-          <?php if ($element->status && $element->status->followup) { ?>
-              <?php if ($element->status->name !== 'Follow-up'): ?>in<?php endif; ?>
-              <?php echo $element->getFollowUp() ?>
+            <?php if ($element->status && $element->status->followup) { ?>
+                <?php if ($element->status->name !== 'Follow-up') :
+                    ?>in<?php
+                endif; ?>
+                <?php echo $element->getFollowUp() ?>
               with
-              <?php echo $element->role->name ?>
-              <?php if ($element->role_comments) { ?>
+                <?php echo $element->role->name ?>
+                <?php if ($element->role_comments) { ?>
                   (<?= Yii::app()->format->Ntext($element->role_comments) ?>)
-              <?php } ?>
-          <?php } ?>
-          <?php if ($api = Yii::app()->moduleAPI->get('PatientTicketing')) {
-              if ($element->status && $element->status->patientticket &&
+                <?php } ?>
+            <?php } ?>
+            <?php if ($api = Yii::app()->moduleAPI->get('PatientTicketing')) {
+                if ($element->status && $element->status->patientticket &&
                   $ticket = $api->getTicketForEvent($this->event)
-              ) {
-                  ?>
+                ) {
+                    ?>
                   <div class="cols-7">
-                <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
+                    <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
             </div>
-                  <?php
-              }
-          } ?>
+                    <?php
+                }
+            } ?>
       </span>
     </div>
     <?php if ($element->description) { ?>

@@ -100,7 +100,7 @@ class OphTrOperationbooking_API extends BaseAPI
         $criteria = new CDbCriteria();
                 $criteria->addInCondition('status_id', Yii::app()->db->createCommand()->select('id')
                     ->from('ophtroperationbooking_operation_status')
-                    ->where(['in','name', ['Scheduled', 'Rescheduled', 'Requires rescheduling', ]])->queryColumn());
+                    ->where(['in','name', ['Scheduled', 'Rescheduled', ]])->queryColumn());
 
         return $this->getElements(
             'Element_OphTrOperationbooking_Operation',
