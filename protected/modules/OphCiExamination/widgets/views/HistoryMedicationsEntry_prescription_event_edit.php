@@ -122,20 +122,22 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
 					</span>
 
 			<span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
-                    <i class="oe-i stop small pad"></i>
+
                     <div class="alternative-display inline">
             <div class="alternative-display-element textual">
                 <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
                     <?php if (!is_null($entry->end_date)) : ?>
+											<i class="oe-i stop small pad"></i>
 											<?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
 											<?php /* echo !is_null($entry->stop_reason_id) ?
                             ' ('.$entry->stopReason->name.')' : ''; */ ?>
 										<?php else : ?>
-											stopped?
+											<span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
 										<?php endif; ?>
                 </a>
             </div>
             <fieldset style="display: none;" class="js-datepicker-wrapper js-end-date-wrapper">
+							<i class="oe-i stop small pad"></i>
                 <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" class="js-end-date"
 											 name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
 											 data-default="<?= date('Y-m-d') ?>"
@@ -146,9 +148,9 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
                 </span>
 
 
-			<span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select"
+			<span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5 "
 						style="<?=  is_null($entry->end_date) ? "display:none" : "" ?>">
-            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-5 js-stop-reason')) ?>
+            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'js-stop-reason')) ?>
         </span>
 			<div class="js-stop-reason-text" style="<?= is_null($entry->end_date) ? "" : "display:none" ?>">
 				<?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
