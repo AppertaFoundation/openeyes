@@ -171,7 +171,7 @@ class DefaultController extends BaseEventTypeController
 
     public function actionRemoveDocuments()
     {
-        $doc_ids = \Yii::app()->request()->getPost('doc_ids', []);
+        $doc_ids = \Yii::app()->request->getPost('doc_ids', []);
         foreach ($doc_ids as $doc_id) {
             try{
                 $doc = ProtectedFile::model()->findByPk($doc_id);
