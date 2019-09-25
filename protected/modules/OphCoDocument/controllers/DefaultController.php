@@ -178,7 +178,7 @@ class DefaultController extends BaseEventTypeController
                 if ($doc && file_exists($doc->getFilePath() . '/' . $doc->uid)) {
                     $doc->delete();
                 } else {
-                    OELog::log("Failed to delete the document from " . $doc->getFilePath());
+                    OELog::log(($doc ? "Failed to delete the document from " . $doc->getFilePath() : "Failed to find document"));
                 }
             }catch (Exception $e){
                 OELog::log("Failed to delete the ProtectedFile with id = " . $doc_id);
