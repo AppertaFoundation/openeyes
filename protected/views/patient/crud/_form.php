@@ -78,7 +78,10 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($contact, 'title') ?>
         </td>
         <td>
-            <?= $form->textField($contact, 'title', array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Title', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+            <?= $form->textField($contact, 'title', array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Title',
+                'pattern' => '[A-Za-z]+', 'title'=> 'Title only allows alphabet letters',
+                'autocomplete' => Yii::app()->params['html_autocomplete']))
+            ?>
         </td>
       </tr>
       <tr>
@@ -89,8 +92,10 @@ foreach ($ethnic_list as $key=>$item){
         </td>
         <td>
             <?= $form->textField($contact, 'first_name',
-                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
-                  'placeholder' => 'First name', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);", 'placeholder' => 'First name',
+                    'pattern' => '[A-Za-z]+', 'title'=> 'First name only allows alphabet letters',
+                    'autocomplete' => Yii::app()->params['html_autocomplete']))
+            ?>
         </td>
       </tr>
       <tr>
@@ -101,8 +106,10 @@ foreach ($ethnic_list as $key=>$item){
         </td>
         <td>
             <?= $form->textField($contact, 'last_name',
-                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
-                  'placeholder' => 'Last name', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);", 'placeholder' => 'Last name',
+                    'pattern' => '[A-Za-z]+', 'title'=> 'Last name only allows alphabet letters',
+                    'autocomplete' => Yii::app()->params['html_autocomplete']))
+            ?>
         </td>
       </tr>
       <tr>
@@ -113,7 +120,10 @@ foreach ($ethnic_list as $key=>$item){
         </td>
         <td>
             <?= $form->textField($contact, 'maiden_name',
-                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name',
+                    'pattern' => '[A-Za-z]+', 'title'=> 'Maiden name only allows alphabet letters',
+                    'autocomplete' => Yii::app()->params['html_autocomplete']))
+            ?>
         </td>
       </tr>
       <tr class="patient-duplicate-check">
