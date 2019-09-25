@@ -150,8 +150,14 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
         let deleted_doc = $td.find('.js-document-id').val();
         $td.find('.js-document-id').val("");
+
         let $removed_docs = $(controller.options.removedDocumentsSelector);
-        $removed_docs.val(deleted_doc + ';' + $removed_docs.val());
+        if (typeof $removed_docs.data('documents') === 'undefined') {
+            $removed_docs.data('documents', []);
+        }
+        let documents = $removed_docs.data('documents');
+        documents.push(deleted_doc);
+        $removed_docs.data('documents', documents);
     };
 
     DocumentUploadController.prototype.paste = function (side, files) {

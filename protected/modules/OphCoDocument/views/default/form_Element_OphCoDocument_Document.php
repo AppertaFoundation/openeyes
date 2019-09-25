@@ -242,37 +242,45 @@
         </table>
     </script>
     <script>
-            window.addEventListener("unload", function () {
-                let controller = $('.js-document-upload-wrapper').data('controller');
-                let removed_docs = $('#removed-docs').val();
+        window.addEventListener("beforeunload", function (e) {
+            let documents = [];
+            let controller = $('.js-document-upload-wrapper').data('controller');
+            let removed_docs = $('#removed-docs');
 
-                if (controller.options.action === 'cancel' || controller.options.action === '') {
+            if (controller.options.action === 'cancel' || controller.options.action === '') {
+                $('.js-document-id').each(function () {
+                    if ($(this).val() !== "") {
+                        $(this).parents('td').find(controller.options.removeButtonSelector).trigger('click');
+                    }
+                });
 
-                    $('.js-document-id').each(function () {
-                        if ($(this).val() !== "") {
-                            $(this).parents('td').find(controller.options.removeButtonSelector).trigger('click');
-                        }
-                    });
+                documents = removed_docs.data('documents');
 
-                    removed_docs = $('#removed-docs').val();
-
-                    if (window.location.href.includes('update')) {
-                        if ($('#upload_single').prop('checked')) {
-                            let original_doc = $('#original-doc').val();
-                            removed_docs = removed_docs.replace(original_doc + ';', '');
-                        } else {
-                            for (let side of ['left', 'right']) {
-                                removed_docs = removed_docs.replace($('#original-' + side + '-doc').val() + ';', '');
-                            }
+                if (window.location.href.includes('update')) {
+                    if ($('#upload_single').prop('checked')) {
+                        let original_doc = $('#original-doc').val();
+                        documents = documents.filter(function (document) {
+                            return document !== original_doc;
+                        });
+                        removed_docs.data('documents', documents);
+                    } else {
+                        for (let side of ['left', 'right']) {
+                            documents = documents.filter(function (document) {
+                                return document !== $('#original-' + side + '-doc').val();
+                            });
+                            removed_docs.data('documents', documents);
                         }
                     }
                 }
+            }
 
-                if (removed_docs !== "") {
-                    $.post('/OphCoDocument/Default/removeDocuments', {
-                        doc_ids: removed_docs,
-                        YII_CSRF_TOKEN: YII_CSRF_TOKEN
-                    });
-                }
-            });
+            documents = removed_docs.data('documents');
+
+            if (documents.length !== 0) {
+                $.post('/OphCoDocument/Default/removeDocuments', {
+                    doc_ids: documents,
+                    YII_CSRF_TOKEN: YII_CSRF_TOKEN
+                });
+            }
+        });
     </script>

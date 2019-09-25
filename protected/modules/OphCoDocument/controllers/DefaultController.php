@@ -171,12 +171,10 @@ class DefaultController extends BaseEventTypeController
 
     public function actionRemoveDocuments()
     {
-        $doc_ids = explode(';', $_POST['doc_ids']);
-
-        foreach ($doc_ids as $doc_id) {
+        foreach ($_POST['doc_ids'] as $doc_id) {
             try{
                 $doc = ProtectedFile::model()->findByPk($doc_id);
-                if (unlink($doc->getFilePath() . '/' . $doc->uid)) {
+                if (file_exists($doc->getFilePath() . '/' . $doc->uid)) {
                     $doc->delete();
                 } else {
                     OELog::log("Failed to delete the document from " . $doc->getFilePath());
