@@ -37,7 +37,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             $('.problems-plans').on('click', 'ul li .remove-circle', function () {
                 // create popup dialog to ask user if he is sure he wants to remove the plan
                 $currentDialog = new OpenEyes.UI.Dialog({
-                    content: '<button class="button hint green" data-plan-id="'+ $(this).data('plan-id')+'">YES</button>&nbsp;&nbsp;' +
+                    content: '<button class="button hint green" data-widget="PlansProblems" data-plan-id="'+ $(this).data('plan-id')+'">YES</button>&nbsp;&nbsp;' +
                              '<button class="button hint red">NO</button>',
                     title: "Are you sure you want to remove this plan?",
                 });
@@ -47,6 +47,9 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             // handle popup dialog buttons
             $(document).on('click', '.oe-popup button', function () {
+                if ($(this).data('widget') !== 'PlansProblems')
+                    return;
+
                 if ($(this).text() === "YES") {
                     $.ajax({
                         'url': '/patient/deactivatePlansProblems',
