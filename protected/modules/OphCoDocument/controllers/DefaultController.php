@@ -171,10 +171,11 @@ class DefaultController extends BaseEventTypeController
 
     public function actionRemoveDocuments()
     {
-        foreach ($_POST['doc_ids'] as $doc_id) {
+        $doc_ids = \Yii::app()->request()->getPost('doc_ids', []);
+        foreach ($doc_ids as $doc_id) {
             try{
                 $doc = ProtectedFile::model()->findByPk($doc_id);
-                if (file_exists($doc->getFilePath() . '/' . $doc->uid)) {
+                if ($doc && file_exists($doc->getFilePath() . '/' . $doc->uid)) {
                     $doc->delete();
                 } else {
                     OELog::log("Failed to delete the document from " . $doc->getFilePath());
