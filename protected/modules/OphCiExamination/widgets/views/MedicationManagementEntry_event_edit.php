@@ -53,13 +53,19 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                               } else {
                                   echo "{{& allergy_ids}}";
                               }?>"
-            class="<?=$field_prefix ?>_row <?= $is_new ? " new" : ""?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
+            class="divider col-gap <?=$field_prefix ?>_row <?= $is_new ? " new" : ""?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
     >
 
-        <td>
+        <td class="drug-details" rowspan="2">
             <button class="js-add-taper" type="button" title="Add taper" style="<?=$prescribe_hide_style?>">
                 <i class="oe-i child-arrow small"></i>
             </button>
+					<?php if ($entry->originallyStopped) { ?>
+						<i class="oe-i stop small pad"></i>
+					<?php } ?>
+					<span class="js-medication-display">
+            <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
+      		</span>
             <span class="js-prepended_markup">
             <?php
             if (!is_null($entry->medication_id)) {
@@ -74,12 +80,8 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             }
             ?>
           </span>
-            <span class="js-medication-display">
-            <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
-      </span>
-            <?php if ($entry->originallyStopped) { ?>
-                <i class="oe-i stop small pad"></i>
-            <?php } ?>
+
+
 
             <?php /* <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" /> */ ?>
             <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
@@ -95,12 +97,13 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <input type="hidden" name="<?= $field_prefix ?>[source_subtype]" class="js-source-subtype" value="{{source_subtype}}" disabled="disabled">
         </td>
         <td class="dose-frequency-route">
-            <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
+            <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>" class="dose-frequency-route">
                 <?php
                 $dfrl_validation_error = array_intersect(
                     array("dose", "frequency_id", "route_id", "laterality"),
                     array_keys($entry->errors));
                 ?>
+							<div class="flex-meds-inputs">
                 <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
                 <div class="flex-layout">
                     <div class="alternative-display inline">
@@ -138,9 +141,66 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                     </div>
                 </div>
             </div>
+						</div>
         </td>
-        <td class="end-date-column"  id="<?= $model_name."_entries_".$row_count."_end_date_error" ?>">
-            <div class="alternative-display inline">
+				<td>
+<!--					Duration/dispense/comments-->
+				<?=\CHtml::dropDownList($field_prefix.'[duration]', $entry->duration,
+					CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),
+					array('empty' => '- Select -', 'class' => 'cols-full js-duration', 'style' => $prescribe_hide_style)) ?>
+				<span id="<?= $model_name."_entries_".$row_count."_dispense_condition_id_error" ?>">
+				<?=\CHtml::dropDownList($field_prefix.'[dispense_condition_id]',
+					$entry->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
+						'condition' => "active or id='" . $entry->dispense_condition_id . "'",
+						'order' => 'display_order',
+					)), 'id', 'name'), array('class' => 'js-dispense-condition cols-11', 'empty' => '- Select -', 'style' => $prescribe_hide_style)); ?>
+</span>
+
+				<span id="<?= $model_name."_entries_".$row_count."_dispense_location_id_error" ?>">
+				<?php
+				$locations = $entry->dispense_condition ? $entry->dispense_condition->locations : array('');
+				$style = $entry->dispense_condition ? '' : 'display: none;';
+				echo CHtml::dropDownList($field_prefix.'[dispense_location_id]', $entry->dispense_location_id,
+					CHtml::listData($locations, 'id', 'name'), array('class' => 'js-dispense-location cols-11', 'style' => $prescribe_hide_style));
+				?>
+					</span>
+			</td>
+				</td>
+			<td>
+<!--				PRESCRIBE-->
+				<?php $medication_is_vtm =  $entry->medication && $entry->medication->source_subtype === "VTM"; ?>
+				<div class="js-medication-vtm-container" style="display:<?= $medication_is_vtm ? "block" : "none";?>">
+					<i class="oe-i no-permissions medium-icon js-has-tooltip"
+						 data-tooltip-content="This is a Vitual Theraputic Moeity and therefore cannot be prescribed"></i>
+				</div>
+				<div class="js-medication-non-vtm-container" style="display:<?= $medication_is_vtm ? "none" : "block";?>">
+					<?php if ($prescribe_access) { ?>
+						<label class="toggle-switch">
+							<input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
+								echo "checked";
+							} ?> />
+							<span class="toggle-btn js-btn-prescribe"></span>
+						</label>
+					<?php } else { ?>
+						<i class="oe-i no-permissions medium-icon js-has-tooltip"
+							 data-tooltip-content="You do not have permissions"></i>
+						<input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>"/>
+					<?php } ?>
+				</div>
+			</td>
+			<td>
+<!--				Actions-->
+				<?php $tooltip_content_comes_from_history = "This item comes from medication history. " .
+					"If you wish to delete it, it must be deleted from the Medication History element. " .
+					"Alternatively, mark this item as stopped."; ?>
+				<span data-tooltip-content-comes-from-history="<?= $tooltip_content_comes_from_history ?>">
+                <i class="oe-i trash js-remove"></i>
+            </span>
+			</td>
+		</tr>
+		<tr class="no-line col-gap">
+        <td class="nowrap">
+            <div class="alternative-display inline" id="<?= $model_name."_entries_".$row_count."_end_date_error" ?>">
                 <div class="alternative-display-element textual">
                     <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
                         <?php if (!is_null($entry->end_date)) : ?>
@@ -160,63 +220,19 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                        data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
                 </fieldset>
             </div>
-        </td>
 
-        <td id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>">
-            <div class="js-stop-reason-select"
+            <div class="js-stop-reason-select" id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>"
                  style="<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
                 <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'js-stop-reason cols-11')) ?>
             </div>
         </td>
+
+
         <td>
-            <?=\CHtml::dropDownList($field_prefix.'[duration]', $entry->duration,
-                CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),
-                array('empty' => '- Select -', 'class' => 'cols-full js-duration', 'style' => $prescribe_hide_style)) ?>
-        </td>
-        <td id="<?= $model_name."_entries_".$row_count."_dispense_condition_id_error" ?>">
-            <?=\CHtml::dropDownList($field_prefix.'[dispense_condition_id]',
-                $entry->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
-                    'condition' => "active or id='" . $entry->dispense_condition_id . "'",
-                    'order' => 'display_order',
-                )), 'id', 'name'), array('class' => 'js-dispense-condition cols-11', 'empty' => '- Select -', 'style' => $prescribe_hide_style)); ?>
 
         </td>
-        <td id="<?= $model_name."_entries_".$row_count."_dispense_location_id_error" ?>">
-            <?php
-            $locations = $entry->dispense_condition ? $entry->dispense_condition->locations : array('');
-            $style = $entry->dispense_condition ? '' : 'display: none;';
-            echo CHtml::dropDownList($field_prefix.'[dispense_location_id]', $entry->dispense_location_id,
-                CHtml::listData($locations, 'id', 'name'), array('class' => 'js-dispense-location cols-11', 'style' => $prescribe_hide_style));
-            ?>
-        </td>
         <td>
-                    <?php $medication_is_vtm =  $entry->medication && $entry->medication->source_subtype === "VTM"; ?>
-                    <div class="js-medication-vtm-container" style="display:<?= $medication_is_vtm ? "block" : "none";?>">
-                        <i class="oe-i no-permissions medium-icon js-has-tooltip"
-                             data-tooltip-content="This is a Vitual Theraputic Moeity and therefore cannot be prescribed"></i>
-                        </div>
-                    <div class="js-medication-non-vtm-container" style="display:<?= $medication_is_vtm ? "none" : "block";?>">
-                    <?php if ($prescribe_access) { ?>
-                        <label class="toggle-switch">
-                            <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
-                                echo "checked";
-                                         } ?> />
-                            <span class="toggle-btn js-btn-prescribe"></span>
-                        </label>
-                    <?php } else { ?>
-                        <i class="oe-i no-permissions medium-icon js-has-tooltip"
-                             data-tooltip-content="You do not have permissions"></i>
-                        <input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>"/>
-                    <?php } ?>
-                    </div>
-        </td>
-        <td>
-            <?php $tooltip_content_comes_from_history = "This item comes from medication history. " .
-                    "If you wish to delete it, it must be deleted from the Medication History element. " .
-                    "Alternatively, mark this item as stopped."; ?>
-            <span data-tooltip-content-comes-from-history="<?= $tooltip_content_comes_from_history ?>">
-                <i class="oe-i trash js-remove"></i>
-            </span>
+
         </td>
     </tr>
 <?php
