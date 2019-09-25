@@ -4,15 +4,13 @@
  * This is the model class for table "cat_prom5_questions".
  *
  * The followings are the available columns in table 'cat_prom5_questions':
- * @property string $id
+ * @property integer $id
  * @property string $question
  * @property integer $mandatory
- * @property string $display_order
+ * @property integer $display_order
  *
  * The followings are the available model relations:
  * @property CatProm5Answers[] $catProm5Answers
- * @property User $createdUser
- * @property User $lastModifiedUser
  */
 class CatProm5Questions extends CActiveRecord
 {
@@ -35,7 +33,6 @@ class CatProm5Questions extends CActiveRecord
             array('question, display_order', 'required'),
             array('mandatory', 'numerical', 'integerOnly'=>true),
             array('display_order', 'length', 'max'=>10),
-            // The following rule is used by search().
             array('id, question, mandatory, display_order', 'safe', 'on'=>'search'),
         );
     }
@@ -81,10 +78,10 @@ class CatProm5Questions extends CActiveRecord
     {
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id', $this->id, true);
+        $criteria->compare('id', $this->id);
         $criteria->compare('question', $this->question, true);
         $criteria->compare('mandatory', $this->mandatory);
-        $criteria->compare('display_order', $this->display_order, true);
+        $criteria->compare('display_order', $this->display_order);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,

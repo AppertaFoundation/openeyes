@@ -81,10 +81,10 @@ class CatProm5Answers extends CActiveRecord
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id', $this->id, true);
-        $criteria->compare('question_id', $this->question_id, true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('question_id', $this->question_id);
         $criteria->compare('answer', $this->answer, true);
-        $criteria->compare('score', $this->score, true);
+        $criteria->compare('score', $this->score);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
