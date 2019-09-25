@@ -19,23 +19,22 @@
 ?>
 <h3>Alternative Terms</h3>
 <table class="standard" id="medication_alternative_terms_tbl">
+    <colgroup>
+        <col class="cols-11">
+        <col class="cols-1">
+    </colgroup>
     <thead>
     <tr>
-        <th width="cols-11">Term</th>
-        <th width="cols-1">Action</th>
+        <th>Term</th>
+        <th>Action</th>
     </tr>
     </thead>
     <tbody>
     <?php foreach ($medication->medicationSearchIndexes as $row_key => $medicationSearchIndex) : ?>
-        <?php
-        $id = is_null($medicationSearchIndex->id) ? -1 : $medicationSearchIndex->id;
-        ?>
         <tr data-key="<?=$row_key?>">
             <td>
-                <?php if ($id != -1) { ?>
-                <input type="hidden" name="MedicationSearchIndex[<?=$row_key?>][id]" value="<?=$id?>" />
-                <?php } ?>
-                <?php echo CHtml::textField("MedicationSearchIndex[".$row_key."][alternative_term]", $medicationSearchIndex->alternative_term, array('class' => 'cols-full')); ?>
+                <input type="hidden" name="MedicationSearchIndex[<?=$row_key?>][id]" value="<?=$medicationSearchIndex->id?>" />
+                <?= \CHtml::textField("MedicationSearchIndex[".$row_key."][alternative_term]", $medicationSearchIndex->alternative_term, array('class' => 'cols-full')); ?>
             </td>
             <td>
                 <a href="javascript:void(0);" class="js-delete-alt-term"><i class="oe-i trash"></i></a>

@@ -78,30 +78,31 @@
 </script>
 <h3>Medication is member of the following sets</h3>
 <table class="standard" id="medication_set_assignment_tbl">
+    <colgroup>
+        <col width="17%">
+        <col width="13%">
+        <col width="13%">
+        <col width="13%">
+        <col width="13%">
+        <col width="13%">
+        <col width="5%">
+    </colgroup>
     <thead>
         <tr>
-            <th width="17%">Name</th>
-            <th width="13%">Default dose</th>
-            <th width="13%">Default dose unit</th>
-            <th width="13%">Default route</th>
-            <th width="13%">Default freq</th>
-            <th width="13%">Default duration</th>
-            <th width="5%">Action</th>
+            <th>Name</th>
+            <th>Default dose</th>
+            <th>Default dose unit</th>
+            <th>Default route</th>
+            <th>Default freq</th>
+            <th>Default duration</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
     <?php foreach ($medicationSetItems as $rowkey => $assignment) : ?>
-        <?php
-            $set_id = $assignment->medication_set_id;
-            $id = is_null($assignment->id) ? -1 : $assignment->id;
-        ?>
-        <tr data-key="<?=$rowkey?>" <?php if ($assignment->medicationSet->hidden) :
-            ?>style="display:none;" <?php
-                      endif; ?>>
+        <tr data-key="<?=$rowkey?>"<?=$assignment->medicationSet->hidden ? ' style="display:none;"' : ''; ?>>
             <td>
-                <?php if ($id != -1) { ?>
-                <input type="hidden" name="MedicationSetItem[<?=$rowkey?>][id]" value="<?=$id?>" />
-                <?php } ?>
+                <input type="hidden" name="MedicationSetItem[<?=$rowkey?>][id]" value="<?=$assignment->id?>" />
                 <input type="hidden" name="MedicationSetItem[<?=$rowkey?>][medication_set_id]" value="<?=$assignment->medication_set_id?>" />
                 <?=CHtml::encode($assignment->medicationSet->name)?>
             </td>
@@ -146,27 +147,22 @@
                             ],
                             onReturn: function (adderDialog, selectedItems) {
 
-                                var selObj = {};
+                                let selectedEntry = {};
+                                let $table = $("#medication_set_assignment_tbl > tbody");
 
                                 $.each(selectedItems, function(i,e){
-                                    selObj[e.itemSet.options.id] = {
+                                    selectedEntry[e.itemSet.options.id] = {
                                         id: e.id,
                                         label: e.label
                                     };
                                 });
 
-                                var lastkey = $("#medication_set_assignment_tbl > tbody > tr:last").attr("data-key");
-                                if(isNaN(lastkey)) {
-                                    lastkey = 0;
-                                }
-                                var key = parseInt(lastkey) + 1;
-                                var template = $('#set_row_template').html();
+                                selectedEntry.key = OpenEyes.Util.getNextDataKey($table.find('tr'), 'key');
+                                let template = $('#set_row_template').html();
                                 Mustache.parse(template);
 
-                                selObj.key = key;
-
-                                var rendered = Mustache.render(template, selObj);
-                                $("#medication_set_assignment_tbl > tbody").append(rendered);
+                                let rendered = Mustache.render(template, selectedEntry);
+                                $table.append(rendered);
                                 return true;
                             },
                             enableCustomSearchEntries: true,
@@ -183,5 +179,4 @@
             $(this).closest("tr").remove();
         });
     });
-
 </script>

@@ -1,5 +1,5 @@
 <tr>
-    <td><?= \CHtml::checkBox("delete-ids[{$medication->id}]", false, ['value' => $medication->id]); ?></td>
+    <td><?= \CHtml::checkBox(null, false, ['value' => $medication->id, 'id' => "delete-id_{$medication->id}"]); ?></td>
     <td><?=$medication->id?></td>
     <td><?=$medication->source_type?></td>
     <td><?=$medication->source_subtype?></td>

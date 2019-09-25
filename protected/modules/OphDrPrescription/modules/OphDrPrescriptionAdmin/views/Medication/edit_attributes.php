@@ -42,11 +42,16 @@
 </script>
 <h3>Attributes</h3>
 <table class="standard" id="medication_attribute_assignment_tbl">
+    <colgroup>
+        <col class="cols-3">
+        <col class="cols-6">
+        <col class="cols-3">
+    </colgroup>
     <thead>
         <tr>
-            <th width="25%">Name</th>
-            <th width="50%">Value</th>
-            <th width="25%">Action</th>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
