@@ -32,7 +32,7 @@
             <td>Name</td>
             <td class="cols-full">
                 <?php
-                if ($is_new) {
+                if ($model->isNewRecord) {
                     $max_display_order = $model::model()->find(['order'=>'display_order DESC'])->display_order;
                     $new_display_order = $max_display_order + 1;
                     echo \CHtml::hiddenField(

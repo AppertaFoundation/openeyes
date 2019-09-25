@@ -58,7 +58,6 @@ class MedicationStopReasonController extends \ModuleAdminController
         $this->render('/medicationstopreason/edit', [
             'model' => $model,
             'errors' => isset($errors) ? $errors : null,
-            'is_new' => true,
         ]);
     }
 
@@ -81,7 +80,6 @@ class MedicationStopReasonController extends \ModuleAdminController
         $this->render('/medicationstopreason/edit', [
             'model' => $model,
             'errors' => isset($errors) ? $errors : null,
-            'is_new' => false,
         ]);
     }
 

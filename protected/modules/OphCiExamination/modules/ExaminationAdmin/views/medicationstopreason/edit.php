@@ -26,7 +26,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
 ]);
 $this->renderPartial(
     '/medicationstopreason/_form',
-    ['form' => $form, 'model' => $model, 'is_new' => $is_new]
+    ['form' => $form, 'model' => $model]
 );
 $this->endWidget();
 
