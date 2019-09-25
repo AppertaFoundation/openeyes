@@ -242,7 +242,7 @@
         </table>
     </script>
     <script>
-        window.addEventListener("beforeunload", function (e) {
+        window.addEventListener("unload", function () {
             let documents = [];
             let controller = $('.js-document-upload-wrapper').data('controller');
             let removed_docs = $('#removed-docs');
@@ -277,9 +277,12 @@
             documents = removed_docs.data('documents');
 
             if (documents.length !== 0) {
-                $.post('/OphCoDocument/Default/removeDocuments', {
-                    doc_ids: documents,
-                    YII_CSRF_TOKEN: YII_CSRF_TOKEN
+                $.ajax({
+                    type: 'POST',
+                    url: '/OphCoDocument/Default/removeDocuments',
+                    data: {doc_ids: documents,
+                        YII_CSRF_TOKEN: YII_CSRF_TOKEN},
+                    async: false
                 });
             }
         });
