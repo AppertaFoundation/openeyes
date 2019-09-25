@@ -121,7 +121,33 @@ endif; ?>
 		</div>
 		</div>
 	</td>
-	<td></td>
+	<td>
+		<div class="js-comment-container flex-layout flex-left"
+				 id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+				 style="<?php if (!$entry->comments) :
+					 ?>display: none;<?php
+				 endif; ?>"
+				 data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
+			<?= CHtml::textArea($field_prefix . '[comments]', $entry->comments, [
+				'class' => 'js-comment-field autosize cols-full',
+				'rows' => '1',
+				'placeholder' => 'Comments',
+				'autocomplete' => 'off',
+			]) ?>
+			<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+		</div>
+		<button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
+						class="button js-add-comments"
+						data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+						type="button"
+						data-hide-method = "display"
+						style="<?php if ($entry->comments) :
+							?>display: none;<?php
+						endif; ?>"
+		>
+			<i class="oe-i comments small-icon"></i>
+		</button>
+	</td>
 	<td></td>
 	<td class="edit-column">
 		<?php if ($removable) { ?>
@@ -148,20 +174,22 @@ endif; ?>
 												<?php endif; ?>
                 </span>
 			<span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
-                    <i class="oe-i stop small pad"></i>
+
                     <div class="alternative-display inline">
             <div class="alternative-display-element textual">
                 <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
                     <?php if (!is_null($entry->end_date)) : ?>
+											<i class="oe-i stop small pad"></i>
 											<?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
 											<?php /* echo !is_null($entry->stop_reason_id) ?
                             ' ('.$entry->stopReason->name.')' : ''; */ ?>
 										<?php else : ?>
-											stopped?
+											<span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
 										<?php endif; ?>
                 </a>
             </div>
             <fieldset style="display: none;" class="js-datepicker-wrapper js-end-date-wrapper">
+							<i class="oe-i stop small pad"></i>
                 <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" class="js-end-date"
 											 name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
 											 data-default="<?= date('Y-m-d') ?>"
@@ -172,40 +200,16 @@ endif; ?>
                 </span>
 
 
-			<span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select"
+			<span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5"
 						style="<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
-            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-5 js-stop-reason')) ?>
+            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => ' js-stop-reason')) ?>
         </span>
 			<div class="js-stop-reason-text" style="<?= $is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
 				<?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
 			</div>
 		</div>
 	</td>
-	<td><div class="js-comment-container flex-layout flex-left"
-					 id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-					 style="<?php if (!$entry->comments) :
-						 ?>display: none;<?php
-					 endif; ?>"
-					 data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
-			<?= CHtml::textArea($field_prefix . '[comments]', $entry->comments, [
-				'class' => 'js-comment-field autosize cols-full',
-				'rows' => '1',
-				'placeholder' => 'Comments',
-				'autocomplete' => 'off',
-			]) ?>
-			<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
-		</div>
-		<button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
-						class="button js-add-comments"
-						data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-						type="button"
-						data-hide-method = "display"
-						style="<?php if ($entry->comments) :
-							?>display: none;<?php
-						endif; ?>"
-		>
-			<i class="oe-i comments small-icon"></i>
-		</button>
+	<td>
 	</td>
 	<td>
 
