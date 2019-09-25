@@ -40,34 +40,23 @@ $element_errors = $element->getErrors();
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="field-row flex-layout full">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
-        <table class="cols-full entries js-entry-table <?php echo $element_errors ? 'highlighted-error error' : '' ?>"
+        <table class="medications entries js-entry-table <?php echo $element_errors ? 'highlighted-error error' : '' ?>"
                              id="<?= $model_name ?>_entry_table cols-full">
-            <colgroup>
-                <col class="cols-2">
-                <col class="cols-3">
-                <col class="cols-2">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup>
-            <thead>
-            <tr>
-                <th>Drug</th>
-                <th>Dose/frequency/route</th>
-                <th>Stopped</th>
-                <th>Reason</th>
-                <th>Duration</th>
-                <th>Disp. cond.</th>
-                <th>Disp. loc.</th>
-                <th>
-                    <i class="oe-i drug-rx small no-click"></i>
-                </th>
-                <th></th>
-            </tr>
-            </thead>
+					<colgroup>
+						<col class="cols-2">
+						<col class="cols-6">
+						<col class="cols-3">
+						<col class="cols-icon" span="2">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>Drug</th>
+						<th>Dose/frequency/route/start/stop</th>
+						<th>Duration/dispense/comments</th>
+						<th><i class="oe-i drug-rx small no-click"></i></th>
+						<th></th><!-- actions -->
+					</tr>
+					</thead>
             <tbody>
                 <?php if ($this->isPostedEntries() || !empty($element->entries)) {
                     $row_count = 0;
