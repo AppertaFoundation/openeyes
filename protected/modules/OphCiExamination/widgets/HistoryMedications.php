@@ -37,7 +37,24 @@ class HistoryMedications extends \BaseEventElementWidget
 
     protected $print_view = 'HistoryMedications_event_print';
 
-    /**
+
+  /**
+   * @throws \CHttpException
+   */
+    public function init()
+    {
+        parent::init();
+
+      // add OpenEyes.UI.RestrictedData js
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath);
+
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
+    }
+
+
+  /**
      * @return HistoryMedicationsElement
      */
     protected function getNewElement()

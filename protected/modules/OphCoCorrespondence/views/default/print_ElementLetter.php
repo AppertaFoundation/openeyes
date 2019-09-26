@@ -25,7 +25,7 @@
 $toAddressContactType = $element->getToAddressContactType();
 
 if (!@$no_header) {?>
-    <header class="print-header" style="margin-bottom: 70px;">
+    <header class="print-header" style="margin-bottom: 0;">
     <?php
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
@@ -34,7 +34,7 @@ if (!@$no_header) {?>
             'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // defaut address is coming from the 'To'
             'patient' => $this->patient,
             'date' => $element->date,
-            'clinicDate' => $element->clinic_date,
+            'clinicDate' => strtotime($element->clinic_date),
             'element' => $element,
         ))?>
     </header>

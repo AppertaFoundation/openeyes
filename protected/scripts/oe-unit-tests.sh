@@ -16,7 +16,7 @@ WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 
 testtorun=""
 phpunitconfigxml="$WROOT/protected/tests/phpunit.xml"
-phpunitpath="$WROOT/vendor/phpunit/phpunit/phpunit.php"
+phpunitpath="$WROOT/vendor/phpunit/phpunit/phpunit"
 
 while [[ $# -gt 0 ]]
 do

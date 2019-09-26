@@ -26,4 +26,4 @@ Feature: Lab Results test
 
     Examples:
       |uname|pwd  |lastName|firstName|event           | type  | time | result | comment                            |
-      |admin|admin|Coffin, |Violet   |OphInLabResults | INR   | 01:00am | 2.1    | This the result message for testing|
+      |admin|admin|Coffin, |Violet   |OphInLabResults | INR   | 01:00am | 2    | This the result message for testing|
