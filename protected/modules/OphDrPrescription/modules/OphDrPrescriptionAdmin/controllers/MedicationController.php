@@ -119,12 +119,13 @@ class MedicationController extends BaseAdminController
         }
 
         if (\Yii::app()->request->isPostRequest) {
+            $medication_data = \Yii::app()->request->getParam('Medication');
             if ($medication->isNewRecord) {
                 //User created medications must be local
-                $data['source_type'] = 'local';
+                $medication_data['source_type'] = 'local';
             }
 
-            $medication->attributes = \Yii::app()->request->getParam('Medication');
+            $medication->attributes = $medication_data;
             $medication->medicationAttributeAssignments = \Yii::app()->request->getParam('MedicationAttributeAssignment', []);
             $medication->medicationSetItems = \Yii::app()->request->getParam('MedicationSetItem', []);
             $medication->medicationSearchIndexes = \Yii::app()->request->getParam('MedicationSearchIndex', []);
