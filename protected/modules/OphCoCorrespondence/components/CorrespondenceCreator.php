@@ -72,24 +72,26 @@ class CorrespondenceCreator extends \EventCreator
             }
         }
 
-        $this->documents['DocumentTarget'] = [
-             [
-                'attributes' => [
-                    'ToCc' => 'To',
-                    'contact_type' => $macro_target_data['to']['contact_type'],
-                    'contact_id' => isset($macro_target_data['to']['contact_id']) ? $macro_target_data['to']['contact_id'] : '',
-                    'contact_name' => isset($macro_target_data['to']['contact_name']) ? $macro_target_data['to']['contact_name'] : '',
-                    'address' => $macro_target_data['to']['address']
-                ],
+        if (isset($macro_target_data['to'])) {
+            $this->documents['DocumentTarget'] = [
+                 [
+                    'attributes' => [
+                        'ToCc' => 'To',
+                        'contact_type' => $macro_target_data['to']['contact_type'],
+                        'contact_id' => isset($macro_target_data['to']['contact_id']) ? $macro_target_data['to']['contact_id'] : '',
+                        'contact_name' => isset($macro_target_data['to']['contact_name']) ? $macro_target_data['to']['contact_name'] : '',
+                        'address' => $macro_target_data['to']['address']
+                    ],
 
-                'DocumentOutput' => [
-                    [
-                        //this gp_label paramt thing is extrem;y dodgy, we will have problem here I guess later
-                        'output_type' => strtolower($macro_target_data['to']['contact_type']) == strtolower(Yii::app()->params['gp_label']) ? 'Docman' : 'Print',
-                    ]
-                ],
-             ],
-        ];
+                    'DocumentOutput' => [
+                        [
+                            //this gp_label paramt thing is extrem;y dodgy, we will have problem here I guess later
+                            'output_type' => strtolower($macro_target_data['to']['contact_type']) == strtolower(Yii::app()->params['gp_label']) ? 'Docman' : 'Print',
+                        ]
+                    ],
+                 ],
+            ];
+        }
 
         $this->documents['macro_id'] = $macro_target_data['macro_id'];
     }
