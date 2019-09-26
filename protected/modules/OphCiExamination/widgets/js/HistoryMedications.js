@@ -240,48 +240,51 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       let $full_row = controller.$table.find('tr[data-key=' + key + ']');
       let $second_part_of_row = controller.$table.find('tr[data-key=' + key + '].js-second-row');
       controller.updateTextualDisplay($row);
-      if($row.find(".js-locked").val() === "1") {
-          var $txt_display = $row.find(".dose-frequency-route .textual-display");
+      if($full_row.find(".js-locked").val() === "1") {
+          var $txt_display = $full_row.find(".dose-frequency-route .textual-display");
           $txt_display.replaceWith('<span class="textual-display">'+$txt_display.html()+'</span>');
-          $row.find(".dose-frequency-route .alternative-display-element").hide();
-          $row.find(".dose-frequency-route .alternative-display-element.textual").show();
+				$full_row.find(".dose-frequency-route .alternative-display-element").hide();
+				$full_row.find(".dose-frequency-route .alternative-display-element.textual").show();
       }
 
-      $row.on('change', controller.options.routeFieldSelector, function(e) {
+		$full_row.on('change', controller.options.routeFieldSelector, function(e) {
           controller.updateRowRouteOptions($row);
       });
 
-			$second_part_of_row.on("click", ".js-meds-stop-btn", function(){
-          controller.showStopControls($second_part_of_row);
+		$second_part_of_row.on("click", ".js-meds-stop-btn", function(){
+          controller.showStopControls($full_row);
       });
 
-      $row.on("click", ".js-btn-prescribe", function () {
+		$full_row.on("click", ".js-btn-prescribe", function () {
         var $input = $(this).closest(".toggle-switch").find("input");
         var checked = !$input.prop("checked");
         if(!checked) {
         		let $data_key = $row.attr('data-key');
 						$(".js-taper-row[data-parent-key='" + $data_key + "']").remove();
-            $row.find(".js-disppense-location option").empty();
-            $row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
-            $row.find(".js-add-taper").hide();
+					$full_row.find(".js-disppense-location option").empty();
+					$full_row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
+					$full_row.find(".js-add-taper").hide();
         }
         else {
-            $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
+					$full_row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
         }
       });
 
       var controls_onchange = function (e) {
           let $bound_entry = $row.data('bound_entry');
           let bound_entry_key = $row.data('key');
-
+					let $full_bound_entry;
+					if (typeof $bound_entry !== 'undefined') {
+						$full_bound_entry = $bound_entry.parent().find("tr[data-key=" + bound_entry_key + "]");
+					}
 
           if (controller.options['modelName'] === "OEModule_OphCiExamination_models_HistoryMedications") {
-              controller.updateBoundEntry($row);
-              controller.updateTextualDisplay($row);
+              controller.updateBoundEntry($full_row);
+              controller.updateTextualDisplay($full_row);
               if (typeof $bound_entry !== 'undefined') {
-                  controller.updateTextualDisplay($bound_entry);
+                  controller.updateTextualDisplay($full_bound_entry);
                   if ($(e.target).hasClass('js-route')) {
-                      controller.updateRowRouteOptions($bound_entry);
+                      controller.updateRowRouteOptions($full_bound_entry);
                   }
               }
           } else {
@@ -292,7 +295,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                       if ($(e.target).hasClass(class_name)) {
                           row_needs_bond_removed = false;
 
-												$bound_entry.parent().find("tr[data-key=" + bound_entry_key + "]").find('.' + class_name).attr('value', $full_row.find('.' + class_name).attr('value'));
+												$full_bound_entry.find('.' + class_name).attr('value', $full_row.find('.' + class_name).attr('value'));
                       }
                   });
 
@@ -309,9 +312,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       controller.setDatepicker();
 
-      $row.on("change", ".js-dose, .js-unit-dropdown, .js-frequency, .js-route, .js-laterality, .js-stop-reason, .js-start-date, .js-end-date", controls_onchange);
-      var $end_date_ctrl = $row.find(".js-end-date");
-      var $start_date_ctrl = $row.find(".js-start-date");
+		$full_row.on("change", ".js-dose, .js-unit-dropdown, .js-frequency, .js-route, .js-laterality, .js-stop-reason, .js-start-date, .js-end-date", controls_onchange);
+      var $end_date_ctrl = $full_row.find(".js-end-date");
+      var $start_date_ctrl = $full_row.find(".js-start-date");
 
       if($end_date_ctrl.length > 0) {
           $end_date_ctrl[0].addEventListener('pickmeup-change', function(e){controls_onchange(e);});
@@ -321,12 +324,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           $start_date_ctrl[0].addEventListener('pickmeup-change', function(e){controls_onchange(e);});
       }
 
-      $row.on("change", ".js-dispense-condition", function(){
+		$full_row.on("change", ".js-dispense-condition", function(){
           controller.getDispenseLocation($(this));
           return false;
       });
 
-      $row.on("click", ".js-add-taper", function(){
+		$full_row.on("click", ".js-add-taper", function(){
           controller.addTaper($row);
           return false;
       });
@@ -409,7 +412,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 				$stop_reason_text.hide();
 
         if(typeof $row.data("bound_entry") !== "undefined" && $row.data("bound_entry").find('.js-meds-stop-btn').attr('style') !== "display: none;") {
-            this.boundController.showStopControls($row.data("bound_entry"));
+					let $bound_entry = $row.data("bound_entry");
+
+            this.boundController.showStopControls($bound_entry.parent().find('tr[data-key=' + $bound_entry.data('key') + '].js-second-row'));
         }
     };
 
@@ -1030,7 +1035,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     HistoryMedicationsController.prototype.setBoundEntryStop = function ($bound_entry) {
     		let key = $bound_entry.data('key');
-    		let $second_part_of_bound_entry = $bound_entry.parent().find('tr[data-key=' + key + '].js-last-row');
+    		let $second_part_of_bound_entry = $bound_entry.parent().find('tr[data-key=' + key + '].js-second-row');
         let stop_reason = $("option:contains('Medication parameters changed')").attr("value");
         this.showStopControls($second_part_of_bound_entry);
 			$second_part_of_bound_entry.find('.js-stop-reason').attr('value', stop_reason);
