@@ -214,7 +214,7 @@ $element_errors = $element->getErrors();
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
                             rowNeedsCopying = false;
-                            $medicationManagementRow = medicationManagementRow;
+                            $medicationManagementRow = $(medicationManagementRow);
 
                                                 }
                     });
@@ -230,8 +230,10 @@ $element_errors = $element->getErrors();
 
                     let hidden = ($(historyMedicationRow).find(".js-to-be-copied").val() === "0");
                     if(hidden) {
-                        $medicationManagementRow.addClass("hidden");
-                        $medicationManagementRow.find(".js-hidden").val("1");
+                        if(typeof  $medicationManagementRow !== undefined) {
+                            $medicationManagementRow.addClass("hidden");
+                            $medicationManagementRow.find(".js-hidden").val("1");
+                        }
                     }
                 });
 
