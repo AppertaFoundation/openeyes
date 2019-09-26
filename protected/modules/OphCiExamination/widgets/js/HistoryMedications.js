@@ -330,7 +330,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
 		$full_row.on("click", ".js-add-taper", function(){
-          controller.addTaper($row);
+          controller.addTaper($second_part_of_row);
           return false;
       });
 
