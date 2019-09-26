@@ -46,6 +46,7 @@ class MedicationStopReasonController extends \ModuleAdminController
         $request = Yii::app()->getRequest();
         if ($request->getPost('OEModule_OphCiExamination_models_HistoryMedicationsStopReason')) {
             $model->attributes = $request->getPost('OEModule_OphCiExamination_models_HistoryMedicationsStopReason');
+            $model->display_order = $model::model()->find(['order'=>'display_order DESC'])->display_order + 1;
             if ($model->save()) {
                 Audit::add('admin', 'create', serialize($model->attributes), false,
                     ['model' => 'OEModule_OphCiExamination_models_HistoryMedicationsStopReason']);
