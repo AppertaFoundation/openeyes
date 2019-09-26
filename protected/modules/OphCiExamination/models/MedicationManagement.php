@@ -398,7 +398,8 @@ class MedicationManagement extends BaseMedicationElement
         }
 
         foreach ($prescription_creator->elements['Element_OphDrPrescription_Details']->items as $item) {
-            $entry = self::$entry_class::model()->findBypk($item->id);
+            $class = self::$entry_class;
+            $entry = $class::model()->findBypk($item->id);
             $entry->prescription_item_id = $item->original_item_id;
             $entry->save();
         }
