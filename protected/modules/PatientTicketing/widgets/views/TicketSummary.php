@@ -34,7 +34,9 @@ $display_queue = $ticket->getDisplayQueueAssignment();
             continue;
         }
         ?>
-        <tr class="<?php if ($old_ass->id == $ticket->getDisplayQueueAssignment()->id) { ?>current_queue<?php } ?>"
+        <tr class="<?php if ($old_ass->id == $ticket->getDisplayQueueAssignment()->id) {
+            ?>current_queue<?php
+                   } ?>"
             style="font-style: italic;">
             <td>
                 <div class="data-label"><?= $old_ass->queue->name ?>:</div>

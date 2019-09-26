@@ -76,7 +76,7 @@ class Audit extends BaseActiveRecord
         return array(
             array('action_id,type_id', 'required'),
             // array('name', 'length', 'max'=>255),
-            array('id,action,target_type,patient_id,episode_id,event_id,user_id,data,remote_addr,http_user_agent,server_name,request_uri,site_id,firm_id', 'safe', 'on' => 'search'),
+            array('id,action,target_type,patient_id,episode_id,event_id,user_id,data,remote_addr,event_type_id,http_user_agent,server_name,request_uri,site_id,firm_id', 'safe', 'on' => 'search'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
         );
@@ -126,6 +126,7 @@ class Audit extends BaseActiveRecord
             'request_uri' => 'Request URI',
             'site_id' => 'Site',
             'firm_id' => 'Firm',
+            'event_type_id' => 'Event Type'
         );
     }
 
@@ -200,7 +201,8 @@ class Audit extends BaseActiveRecord
                     break;
                 case 'login-failed':
                 case 'search-error':
-                    return 'Red';
+                case 'create-failed': // This would be better as a warning when OE-8954 is complete
+                    return 'red';
                     break;
             }
         }

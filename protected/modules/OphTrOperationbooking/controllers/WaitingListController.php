@@ -90,6 +90,7 @@ class WaitingListController extends BaseModuleController
             $patient_search = new PatientSearch();
             $hos_num = $patient_search->getHospitalNumber($_POST['hos_num']);
             $site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
+                        $booking_status =  \Yii::app()->request->getParam('booking_status', '');
 
             YiiSession::set('waitinglist_searchoptions', array(
                     'subspecialty-id' => $subspecialty_id,
@@ -97,9 +98,10 @@ class WaitingListController extends BaseModuleController
                     'status' => $status,
                     'hos_num' => $hos_num,
                     'site_id' => $site_id,
+                    'booking_status' => $booking_status
             ));
 
-            $operations = $this->getWaitingList($firm_id, $subspecialty_id, $status, $hos_num, $site_id);
+            $operations = $this->getWaitingList($firm_id, $subspecialty_id, $status, $hos_num, $site_id, $booking_status);
         }
 
         $this->renderPartial('_list', array('operations' => $operations, 'assetPath' => $this->assetPath), false, true);
@@ -116,27 +118,37 @@ class WaitingListController extends BaseModuleController
      *
      * @return Element_OphTrOperationbooking_Operation[]
      */
-    public function getWaitingList($firm_id, $subspecialty_id, $status, $hos_num = false, $site_id = false)
+    public function getWaitingList($firm_id, $subspecialty_id, $status, $hos_num = false, $site_id = false, $booking_status)
     {
-        $whereSql = '';
-        $whereParams = array();
+        $where_sql = '';
+        $where_params = array();
 
         if ($firm_id) {
-            $whereSql .= ' AND firm.id = :firm_id';
-            $whereParams[':firm_id'] = $firm_id;
+            $where_sql .= ' AND firm.id = :firm_id';
+            $where_params[':firm_id'] = $firm_id;
         } elseif (!empty($subspecialty_id)) {
-            $whereSql .= ' AND serviceSubspecialtyAssignment.subspecialty_id = :subspecialty_id';
-            $whereParams[':subspecialty_id'] = $subspecialty_id;
+            $where_sql .= ' AND serviceSubspecialtyAssignment.subspecialty_id = :subspecialty_id';
+            $where_params[':subspecialty_id'] = $subspecialty_id;
         }
 
         if ($hos_num) {
-            $whereSql .= ' AND patient.hos_num = :hos_num';
-            $whereParams[':hos_num'] = $hos_num;
+            $where_sql .= ' AND patient.hos_num = :hos_num';
+            $where_params[':hos_num'] = $hos_num;
         }
 
         if ($site_id && ctype_digit($site_id)) {
-            $whereSql .= ' AND t.site_id = :site_id';
-            $whereParams[':site_id'] = $site_id;
+            $where_sql .= ' AND t.site_id = :site_id';
+            $where_params[':site_id'] = $site_id;
+        }
+
+        if ($booking_status) {
+                        $where_sql .= ' AND t.status_id = :status_id';
+                        $where_params[':status_id'] = $booking_status;
+        } else {
+                        $booking_status_ids = Yii::app()->db->createCommand()->select('id')->from('ophtroperationbooking_operation_status')
+                            ->where(['in','name', ['On-Hold', 'Requires scheduling', 'Requires rescheduling', ]])->queryColumn();
+                        $booking_status_ids = "(" . implode(',', $booking_status_ids) . ")";
+                        $where_sql .= ' AND t.status_id IN ' . $booking_status_ids;
         }
 
         Yii::app()->event->dispatch('start_batch_mode');
@@ -160,8 +172,8 @@ class WaitingListController extends BaseModuleController
                     'procedures',
                 )
             )->findAll(array(
-                    'condition' => 'event.id IS NOT NULL AND episode.end_date IS NULL AND t.status_id IN (1,3) '.$whereSql,
-                    'params' => $whereParams,
+                    'condition' => 'event.id IS NOT NULL AND episode.end_date IS NULL'.$where_sql,
+                    'params' => $where_params,
                     'order' => 'decision_date asc',
                 )
             );
@@ -239,7 +251,7 @@ class WaitingListController extends BaseModuleController
     protected function getFilteredFirms($subspecialtyId)
     {
         $criteria = new CDbCriteria();
-        if($subspecialtyId > 0){
+        if ($subspecialtyId > 0) {
             $criteria->addCondition('subspecialty_id = :subspecialtyId');
             $criteria->params[':subspecialtyId'] = $subspecialtyId;
         }
@@ -531,15 +543,14 @@ class WaitingListController extends BaseModuleController
         header('Content-type: application/json');
         $success = true;
 
-        if(!$element = Element_OphTrOperationbooking_Operation::model()->find("event_id = :event_id", array(":event_id" => $event_id)))
-        {
+        if (!$element = Element_OphTrOperationbooking_Operation::model()->find("event_id = :event_id", array(":event_id" => $event_id))) {
             echo CJSON::encode(array('success'=>false, 'This event could not be found.'));
             exit;
         }
 
         $transaction = \Yii::app()->db->beginTransaction();
 
-        try{
+        try {
             $element->status_id = 2; //@TODO: change hardcoded id to a query
             $element->save();
             $message = '';
@@ -557,14 +568,12 @@ class WaitingListController extends BaseModuleController
             $event->episode->save();
 
             $transaction->commit();
-
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $message = $e->getMessage();
 
             \OELog::log($message);
             $transaction->rollback();
             $success = false;
-
         }
 
         echo CJSON::encode(array('success' => $success, 'message' => $message));

@@ -21,12 +21,12 @@
     <tbody>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('specular_microscope_id') ?>:
-          <?php echo OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->getName($element->specular_microscope_id); ?>
+            <?php echo $element->getAttributeLabel('specular_microscope_id') ?>:
+            <?php echo OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->getName($element->specular_microscope_id); ?>
       </td>
       <td>
-          <?php echo $element->getAttributeLabel('scan_quality_id') ?>:
-          <?php echo OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->getName($element->scan_quality_id); ?>
+            <?php echo $element->getAttributeLabel('scan_quality_id') ?>:
+            <?php echo OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->getName($element->scan_quality_id); ?>
       </td>
       <td></td>
     </tr>
@@ -35,7 +35,7 @@
 </div>
 
 <div class="element-data element-eyes">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column">
           <?php if ($element->hasEye($eye_side)) { ?>
             <table class="cols-full">
@@ -58,11 +58,11 @@
               </tr>
               </tbody>
             </table>
-          <?php } else { ?>
+            <?php } else { ?>
               <div class="data-value not-recorded">
                   Not recorded
               </div>
-          <?php } ?>
+            <?php } ?>
       </div>
     <?php endforeach; ?>
 </div>

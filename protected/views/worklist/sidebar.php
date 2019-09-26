@@ -14,7 +14,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
 
 <div class="box admin">
     <h2>Worklists</h2>
@@ -30,7 +30,9 @@
             $requestUri = $requestUriArray[0];
 
             foreach ($links as $title => $uri) {?>
-                <li<?php if ($requestUri == $uri) {?> class="active"<?php }?>>
+                <li<?php if ($requestUri == $uri) {
+                    ?> class="active"<?php
+                   }?>>
                     <?php if ($requestUri == $uri) {?>
                         <span class="viewing"><?php echo $title?></span>
                     <?php } else {?>

@@ -53,23 +53,33 @@ $widgetOptionsJson = json_encode(array(
 
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div id="<?php echo $div_id ?>"
-     class="<?php echo $div_class ?> row widget" <?php if ($hidden) { ?>hidden<?php } ?>>
+     class="<?php echo $div_class ?> row widget" <?php if ($hidden) {
+            ?>hidden<?php
+            } ?>>
   <div class="cols-<?php echo $layoutColumns['label']; ?> column">
     <label for="<?php echo $field ?>">
         <?php echo @$htmlOptions['label'] ?>:
     </label>
   </div>
   <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
-      <?php } ?>
+<?php } ?>
     <div class="multi-select-free-text<?php if (!$inline) {
         echo ' multi-select-free-text-list';
-    } ?>" data-options='<?php echo $widgetOptionsJson; ?>'>
+                                      } ?>" data-options='<?php echo $widgetOptionsJson; ?>'>
       <input type="hidden" name="<?=\CHtml::modelName($element) ?>[MultiSelectFreeTextList_<?php echo $field ?>]"
              class="multi-select-free-text-list-name"/>
       <div class="multi-select-free-text-dropdown-container">
         <select id="<?=\CHtml::getIdByName($field) ?>"
-                class="MultiSelectFreeTextList<?php if ($showRemoveAllLink) { ?> inline<?php } ?><?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
-                name=""<?php if (isset($htmlOptions['data-linked-fields'])) { ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php } ?><?php if (isset($htmlOptions['data-linked-values'])) { ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php } ?>>
+                class="MultiSelectFreeTextList<?php if ($showRemoveAllLink) {
+                    ?> inline<?php
+                                              } ?><?php if (isset($htmlOptions['class'])) {
+    ?> <?php echo $htmlOptions['class'] ?><?php
+                                              } ?>"
+                name=""<?php if (isset($htmlOptions['data-linked-fields'])) {
+                    ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php
+                       } ?><?php if (isset($htmlOptions['data-linked-values'])) {
+    ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php
+                       } ?>>
           <option value=""><?php echo $htmlOptions['empty'] ?></option>
             <?php foreach ($filtered_options as $value => $option) {
                 $attributes = array('value' => $value);
@@ -83,65 +93,69 @@ $widgetOptionsJson = json_encode(array(
                 echo '>' . strip_tags($option) . '</option>';
             } ?>
         </select>
-          <?php if ($showRemoveAllLink) { ?>
+            <?php if ($showRemoveAllLink) { ?>
             <a href="#" class="remove-all" style="display: <?php echo !$found ? ' none' : 'inline'; ?>">Remove all</a>
-          <?php } ?>
+            <?php } ?>
       </div>
         <?php if ($noSelectionsMessage) { ?>
           <div class="no-selections-msg pill"
-              style="display: <?php if ($found) { ?> none<?php } ?>">
+              style="display: <?php if ($found) {
+                    ?> none<?php
+                              } ?>">
               <?php echo $noSelectionsMessage; ?></div>
         <?php } ?>
       <input type="hidden" name="<?php echo $field ?>"/>
       <ul class="MultiSelectFreeTextList multi-select-selections multi-select-free-text-selections">
-          <?php foreach ($selected_ids as $i => $id) {
-              if (isset($options[$id])) { ?>
+            <?php foreach ($selected_ids as $i => $id) {
+                if (isset($options[$id])) { ?>
                 <li>
                   <input type="hidden" name="<?php echo $field ?>[<?php echo $i ?>][id]" data-i="<?php echo $i ?>"
                          value="<?php echo $id ?>"
-                      <?php if (isset($opts[$id])) {
-                          foreach ($opts[$id] as $key => $val) {
-                              echo ' ' . $key . '="' . $val . '"';
-                          }
-                      } ?> />
+                        <?php if (isset($opts[$id])) {
+                            foreach ($opts[$id] as $key => $val) {
+                                echo ' ' . $key . '="' . $val . '"';
+                            }
+                        } ?> />
                   <span class="text">
-                      <?php echo htmlspecialchars($options[$id], ENT_QUOTES, Yii::app()->charset, false) ?>
+                        <?php echo htmlspecialchars($options[$id], ENT_QUOTES, Yii::app()->charset, false) ?>
                   </span>
                   <span data-text="<?php echo $options[$id] ?>"
                      class="MultiSelectFreeTextRemove remove-one
-                     <?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
-                      <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
+                       <?php if (isset($htmlOptions['class'])) {
+                            ?> <?php echo $htmlOptions['class'] ?><?php
+                       } ?>"
+                        <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
                         data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"
-                      <?php } ?>
-                      <?php if (isset($htmlOptions['data-linked-values'])) { ?>
+                        <?php } ?>
+                        <?php if (isset($htmlOptions['data-linked-values'])) { ?>
                         data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"
-                      <?php } ?>>
+                        <?php } ?>>
                     <i class="oe-i remove-circle small"></i>
                   </span>
                 </li>
-              <?php } ?>
-          <?php } ?>
+                <?php } ?>
+            <?php } ?>
       </ul>
       <div class="multi-select-free-text-descriptions">
-          <?php foreach ($selected_ids as $i => $id) {
-              if (isset($descriptions[$id])) { ?>
+            <?php foreach ($selected_ids as $i => $id) {
+                if (isset($descriptions[$id])) { ?>
                 <div class="data-group" data-option="<?php echo $options[$id] ?>">
                   <div class="cols-2">
                     <div class="data-label">
-                        <?php echo $options[$id] ?>
+                          <?php echo $options[$id] ?>
                     </div>
                   </div>
                   <div class="cols-4">
                     <div class="data-value">
-                        <?=\CHtml::textArea($field . "[$i][description]", $descriptions[$id]) ?>
+                          <?=\CHtml::textArea($field . "[$i][description]", $descriptions[$id]) ?>
                     </div>
                   </div>
                 </div>
-              <?php }
-          } ?>
+                <?php }
+            } ?>
       </div>
     </div>
-      <?php if (!@$htmlOptions['nowrapper']) { ?>
+        <?php if (!@$htmlOptions['nowrapper']) { ?>
   </div>
 </div>
-<?php } ?>
+        <?php } ?>

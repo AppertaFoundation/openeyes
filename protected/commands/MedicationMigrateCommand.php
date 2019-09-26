@@ -61,7 +61,7 @@ class MedicationMigrateCommand extends PatientLevelMigration
             return $row['drug_id'] || $row['medication_drug_id'];
         });
         $cleaned_rows = array();
-        foreach($rows as $row) {
+        foreach ($rows as $row) {
             if (!$row['drug_id'] && !$row['medication_drug_id']) {
                 continue;
             }
@@ -97,7 +97,8 @@ class MedicationMigrateCommand extends PatientLevelMigration
                 },
                 array_filter(
                     $entries,
-                    function($entry) {return $entry->prescription_item_id !== null;}
+                    function($entry) {return $entry->prescription_item_id !== null;
+                    }
                 )
             );
 

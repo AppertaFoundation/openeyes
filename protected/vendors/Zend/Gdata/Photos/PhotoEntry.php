@@ -362,7 +362,6 @@ class Zend_Gdata_Photos_PhotoEntry extends Zend_Gdata_Media_Entry
             default:
                 parent::takeChildFromDOM($child);
                 break;
-
         }
     }
 

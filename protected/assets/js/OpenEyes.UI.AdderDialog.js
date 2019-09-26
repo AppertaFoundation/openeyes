@@ -55,6 +55,9 @@
         searchAsTypedPrefix: 'As typed: ',
         filter: false,
         filterDataId: "",
+        listFilter:false,
+        filterListId: "",
+        listForFilterId: ""
     };
 
     /**
@@ -115,6 +118,19 @@
                     if ($(this).data('itemSet') && !($(this).data('itemSet') && $(this).data('itemSet').options.mandatory)
                         || $(this).closest('ul').find('li.selected').length > 1) {
                         $(this).removeClass('selected');
+                    }
+                }
+
+                if(dialog.options.listFilter) {
+                    if ($(this).closest('ul').data('id') === dialog.options.filterListId) {
+                        let filterValue = $(this).data('filter-value');
+                        let listToFilter = dialog.popup.find('ul[data-id="' + dialog.options.listForFilterId + '"]');
+                        if (!$(this).hasClass('selected')) {
+                            listToFilter.find('li').show();
+                        } else {
+                            listToFilter.find('li').hide().removeClass('selected');
+                            listToFilter.find('li[data-filter_value="' + filterValue +'"]').show();
+                        }
                     }
                 }
             });
@@ -203,7 +219,7 @@
             })
         }
 
-        this.noSearchResultsWrapper = $('<span />').text('No results found');
+        this.noSearchResultsWrapper = $('<span />', {style: 'display: inherit'}).text('No results found');
         this.noSearchResultsWrapper.appendTo($filterDiv);
 
         this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
@@ -237,10 +253,14 @@
         if (itemSet.options.number) {
             additionalClasses += ' number';
         }
+        if (dialog.options.listFilter && (itemSet.options.id === dialog.options.filterListId)) {
+            additionalClasses += ' category-filter ignore';
+        }
         let $list = $('<ul />', {
             class: 'add-options cols-full' + additionalClasses,
             'data-multiselect': itemSet.options.multiSelect,
-            'data-id': itemSet.options.id
+            'data-id': itemSet.options.id,
+            'data-deselectOnReturn': itemSet.options.deselectOnReturn,
         });
 
         itemSet.items.forEach(function (item) {
@@ -461,23 +481,42 @@
 
     AdderDialog.prototype.return = function () {
         let shouldClose = true;
-        if (this.options.onReturn) {
+        let dialog = this;
+        if (dialog.options.onReturn) {
             let selectedValues = [];
             let selectedAdditions = [];
-            this.getSelectedItems().forEach(selectedItem => {
+            dialog.getSelectedItems().forEach(selectedItem => {
                 if (selectedItem.addition) {
                     selectedAdditions.push(selectedItem);
                 } else {
                     selectedValues.push(selectedItem);
                 }
             });
-            shouldClose = this.options.onReturn(this, selectedValues, selectedAdditions) !== false;
+            shouldClose = dialog.options.onReturn(dialog, selectedValues, selectedAdditions) !== false;
         }
 
         if (shouldClose) {
-            if (this.options.deselectOnReturn) {
-                this.popup.find('li').removeClass('selected');
+            if (dialog.options.deselectOnReturn) {
+                let itemSets = dialog.popup.find('ul');
+                itemSets.each(function () {
+                    let deselect = $(dialog).data('deselectonreturn');
+                    if (typeof deselect === "undefined" || deselect) {
+                        $(dialog).find('li').removeClass('selected');
+                    }
+                });
             }
+
+            // deselect options when closing the adderDialog
+            dialog.popup.find('.selected').removeClass('selected');
+
+            const $input = dialog.popup.find('.js-search-autocomplete.search');
+            // reset search list when adding an item
+            if ($input.length) {
+                $input.val("");
+                // run item search with empty text so AdderDialogs that extend this class run their custom settings
+                this.runItemSearch('');
+            }
+
             this.close();
         }
     };
@@ -510,6 +549,13 @@
             let selectedFilter = this.popup.find('ul[data-id="' + this.options.filterDataId + '"]').find('li.selected');
             filterValue = selectedFilter.data('id');
         }
+        // reset results lists if there is no text searched
+        if (!text.length) {
+            dialog.searchResultList.empty();
+            dialog.noSearchResultsWrapper.text('No results found');
+            dialog.noSearchResultsWrapper.toggle(true);
+            return;
+        }
 
         dialog.searchingSpinnerWrapper.show();
         this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
@@ -532,7 +578,7 @@
             $(results).each(function (index, result) {
                 var dataset = AdderDialog.prototype.constructDataset(result);
                 var item = $("<li />", dataset)
-                    .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
+                    .append($('<span />', {class: dialog.options.liClass}).text(dataset['data-label']));
                 dialog.searchResultList.append(item);
             });
 

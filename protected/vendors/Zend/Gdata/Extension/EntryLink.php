@@ -86,8 +86,8 @@ class Zend_Gdata_Extension_EntryLink extends Zend_Gdata_Extension
                 $entry->transferFromDOM($child);
                 $this->_entry = $entry;
                 break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }
@@ -95,25 +95,23 @@ class Zend_Gdata_Extension_EntryLink extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'href':
-            $this->_href = $attribute->nodeValue;
+            case 'href':
+                $this->_href = $attribute->nodeValue;
             break;
-        case 'readOnly':
-            if ($attribute->nodeValue == "true") {
-                $this->_readOnly = true;
-            }
-            else if ($attribute->nodeValue == "false") {
-                $this->_readOnly = false;
-            }
-            else {
-                throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for gCal:selected#value.");
-            }
+            case 'readOnly':
+                if ($attribute->nodeValue == "true") {
+                    $this->_readOnly = true;
+                } else if ($attribute->nodeValue == "false") {
+                    $this->_readOnly = false;
+                } else {
+                    throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for gCal:selected#value.");
+                }
             break;
-        case 'rel':
-            $this->_rel = $attribute->nodeValue;
+            case 'rel':
+                $this->_rel = $attribute->nodeValue;
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 

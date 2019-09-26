@@ -40,7 +40,8 @@ return array(
                 'Custom episode summaries' => '/admin/episodeSummaries',
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
-                'Patient Shortcodes' => '/admin/patientshortcodes'
+                'Patient Shortcodes' => '/admin/patientshortcodes',
+                'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/list'
             ),
             'Worklist' => array(
                 'Automatic Worklists Definitions' => '/Admin/worklist/definitions',
@@ -50,6 +51,8 @@ return array(
                 'Benefits' => '/oeadmin/benefit/list',
                 'Complications' => '/oeadmin/complication/list',
                 'OPCS Codes' => '/oeadmin/opcsCode/list',
+                'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit',
+                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list'
             ),
             'Drugs' => array(
                 'Common Drugs List' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/commonDrug/list'),

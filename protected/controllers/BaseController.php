@@ -120,7 +120,7 @@ class BaseController extends Controller
         // Set AssetManager properties.
         $assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
         $assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
-        if (!isset(Yii::app()->params['tinymce_default_options']['content_css'])){
+        if (!isset(Yii::app()->params['tinymce_default_options']['content_css'])) {
             $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
             $print_css_path = $assetManager->getPublishedUrl($newblue_path).'/css/style_oe3.0_print.css';
             $newparams =
@@ -199,7 +199,7 @@ class BaseController extends Controller
     protected function afterRender($view, &$output)
     {
         // Register all assets that we pre-registered.
-        if(isset($this->action)){
+        if (isset($this->action)) {
             Yii::app()->getAssetManager()->registerFiles($this->isPrintAction($this->action->id));
         }
     }
@@ -240,10 +240,10 @@ class BaseController extends Controller
         // TODO: Check logged in before setting
         $this->jsVars['element_close_warning_enabled'] = Yii::app()->params['element_close_warning_enabled'];
         if (isset(Yii::app()->session['user'])) {
-          $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
-          $this->jsVars['user_id'] = $user->id;
-          $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
-          $this->jsVars['user_email'] = $user->email;
+            $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
+            $this->jsVars['user_id'] = $user->id;
+            $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
+            $this->jsVars['user_email'] = $user->email;
         }
         $institution = Institution::model()->findByAttributes(array('remote_id' => Yii::app()->params['institution_code']));
         $this->jsVars['institution_code'] = $institution->remote_id;
@@ -255,6 +255,7 @@ class BaseController extends Controller
         $this->jsVars['OE_event_print_method'] = Yii::app()->params['event_print_method'];
         $this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
         $this->jsVars['OE_GP_Setting'] = Yii::app()->params['gp_label'];
+        $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
 
         foreach ($this->jsVars as $key => $value) {
             $value = CJavaScript::encode($value);
@@ -347,27 +348,23 @@ class BaseController extends Controller
     protected function getUniqueCodeForUser()
     {
         $userUniqueCode = UniqueCodeMapping::model()->findByAttributes(array('user_id' => Yii::app()->user->id));
-        if($userUniqueCode)
-        {
+        if ($userUniqueCode) {
             return $userUniqueCode->unique_code_id;
-        }else
-        {
+        } else {
             $uniqueCode = $this->createNewUniqueCodeMapping(null, Yii::app()->user->id);
             return $uniqueCode->unique_code_id;
         }
     }
 
-    protected function createNewUniqueCodeMapping($eventId=null, $userId=null)
+    protected function createNewUniqueCodeMapping($eventId = null, $userId = null)
     {
         $newUniqueCode = UniqueCodeMapping::model();
         $newUniqueCode->lock();
         $newUniqueCode->unique_code_id = $this->getActiveUnusedUniqueCode();
-        if($eventId > 0)
-        {
+        if ($eventId > 0) {
             $newUniqueCode->event_id = $eventId;
             $newUniqueCode->user_id = NULL;
-        }elseif($userId > 0)
-        {
+        } elseif ($userId > 0) {
             $newUniqueCode->event_id = NULL;
             $newUniqueCode->user_id = $userId;
         }
@@ -400,7 +397,7 @@ class BaseController extends Controller
         UniqueCodeMapping::model()->unlock();
         //Yii::app()->db->createCommand("UNLOCK TABLES")->execute();
 
-        if($record){
+        if ($record) {
             return $record["id"];
         }
 

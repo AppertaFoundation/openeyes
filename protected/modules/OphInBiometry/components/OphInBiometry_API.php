@@ -35,7 +35,7 @@ class OphInBiometry_API extends BaseAPI
         if ($event) {
             $biometry_element = $this->getLatestElement('Element_OphInBiometry_Calculation', $patient, $use_context);
 
-            if($biometry_element){
+            if ($biometry_element) {
                 if ($biometry_element->hasLeft() && !empty($biometry_element->target_refraction_left)) {
                     $biometry_left = 'LEFT: ' . $biometry_element->target_refraction_left;
                 }
