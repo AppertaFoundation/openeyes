@@ -102,6 +102,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 				}
 
 				params.ajax = 'ajax';
+        params.term = search_term;
 
 				xhr = $.getJSON(options.url, params, function(data, status) {
 					if (status === 'success') {
