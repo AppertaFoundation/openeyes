@@ -37,7 +37,7 @@ class BaseCWidget extends CWidget
         if (file_exists($dir . "/js/" .get_class($this).'.js')) {
             $alias = str_replace('/', '.', substr($dir, strpos($dir, 'protected') + 10));
             $asset_manager = Yii::app()->getAssetManager();
-            $asset_manager->registerScriptFile('js/' . get_class($this) . '.js', "application.{$alias}");
+            $asset_manager->registerScriptFile('js/' . get_class($this) . '.js', "application.{$alias}", $this->scriptPriority);
         }
 
         $this->htmlOptions['autocomplete'] = Yii::app()->params['html_autocomplete'];
