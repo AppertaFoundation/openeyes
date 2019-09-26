@@ -45,7 +45,7 @@ $config = [
             'Inject. Mgmt - No Treatment Reasons' => '/OphCiExamination/admin/viewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason',
             'Inject. Mgmt - Diagnosis Questions' => '/OphCiExamination/admin/viewOphCiExamination_InjectionManagementComplex_Question',
             'Optom Invoice Statuses' => '/OphCiExamination/admin/InvoiceStatusList',
-            'Manage Dilation Drops' => '/OphCiExamination/admin/Drug/dilationDrugs',
+            'Manage Drops' => '/OphCiExamination/admin/Drug/dilationDrugs',
         ],
         'menu_bar_items' => [
             'ofm' => [

@@ -18,10 +18,9 @@
 ?>
 <div class="reply-address">
     <?php if ($is_internal_referral) : ?>
-        <br>
+        <br/>
         <div class="text-center internal-referral-heading">Internal Referral Letter</div>
     <?php endif; ?>
-    <br>
     <?php if ($site && $site->replyTo) {?>
         <strong>Please reply to:</strong>
         <br/>
