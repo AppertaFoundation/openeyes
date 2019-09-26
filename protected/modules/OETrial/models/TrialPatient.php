@@ -276,4 +276,5 @@ class TrialPatient extends BaseActiveRecordVersioned
 
         $this->audit('trial-patient', 'update-treatment-type');
     }
+
 }
