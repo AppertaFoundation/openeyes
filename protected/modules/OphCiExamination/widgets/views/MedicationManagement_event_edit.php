@@ -204,12 +204,12 @@ $element_errors = $element->getErrors();
             initRowsFromHistoryElement: function () {
 
                 let copyFields = <?=!$this->isPostedEntries() && $this->element->getIsNewRecord() ? 'true' : 'false'?>;
-                $.each(window.HMController.$table.children("tbody").children("tr"), function (i, historyMedicationRow) {
+                $.each(window.HMController.$table.children("tbody").children("tr.js-first-row"), function (i, historyMedicationRow) {
                     let medicationHistoryBoundKey = $(historyMedicationRow).find('.js-bound-key').val();
                     let rowNeedsCopying = true;
                     let $medicationManagementRow;
 
-                    $.each(window.MMController.$table.children("tbody").children("tr"), function (index, medicationManagementRow) {
+                    $.each(window.MMController.$table.children("tbody").children("tr.js-first-row"), function (index, medicationManagementRow) {
                         if (medicationHistoryBoundKey && $(medicationManagementRow).find('.js-bound-key').val() === medicationHistoryBoundKey) {
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
@@ -219,8 +219,12 @@ $element_errors = $element->getErrors();
                                                 }
                     });
 
+                    let historyMedicationKey = $(historyMedicationRow).data('key');
+                    let $historyMedicationFullRow = window.HMController.$table.find('tr[data-key=' + historyMedicationKey + ']');
+
+
                     if (copyFields && rowNeedsCopying) {
-                        $medicationManagementRow = window.HMController.copyRow($(historyMedicationRow), window.MMController.$table.children("tbody"));
+                        $medicationManagementRow = window.HMController.copyRow($historyMedicationFullRow, window.MMController.$table.children("tbody"));
                         window.HMController.bindEntries($(historyMedicationRow), $medicationManagementRow);
                     }
 
