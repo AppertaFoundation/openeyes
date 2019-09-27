@@ -24,7 +24,7 @@ return [
         'admin_structure' => [
             'Drugs' => [
                 'All Sets' => '/OphDrPrescription/admin/DrugSet/index',
-                'All Medications' => '/OphDrPrescription/refMedicationAdmin/list',
+                'All Medications' => '/OphDrPrescription/admin/Medication/index',
                 //'Old Auto set rules' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/medicationSetAutoRulesAdmin/list'),
                 'Auto set rules' => '/OphDrPrescription/admin/AutoSetRule/index',
                 'Local Drugs' => '/OphDrPrescription/localDrugsAdmin/list',
