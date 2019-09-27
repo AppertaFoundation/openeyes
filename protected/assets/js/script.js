@@ -300,12 +300,12 @@ $(document).ready(function () {
 
 		// check for the available space for tooltip:
     let hotlistPanel = $('body').find('.oe-hotlist-panel');
+    let unsafeWidth = (hotlistPanel.length === 1 && hotlistPanel.css('Display') !== 'none')
+      ? hotlistPanel.width()
+      : 0;
+    let tooltipOverlap = unsafeWidth - ($( window ).width() - iconPos.left - 200);
 
-
-    if ((hotlistPanel.length === 1
-      && hotlistPanel.css('Display') !== 'none'
-      && ( $( window ).width() - iconPos.left - 200) < hotlistPanel.width())
-    || ($( window ).width() - iconPos.left - 200) < 0){
+    if (tooltipOverlap > 0) {
       leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
       toolCSS = "oe-tooltip offset-left";
     } else {
