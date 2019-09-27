@@ -95,7 +95,6 @@ if (!isset($values)) {
         <td><i class="oe-i trash"></i></td>
     <?php else : ?>
         <td>
-            Read only
             <i class="js-has-tooltip oe-i info small pad right"
                data-tooltip-content="<?= $values['abnormality_display'] . " is mandatory to collect."; ?>"></i>
         </td>
