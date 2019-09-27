@@ -30,15 +30,11 @@ foreach ($element->getFrequencyOptions() as $k=>$v) {
         <input class="cols-2 js-dose" style="display: inline-block;"  type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
 		<?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-8')) ?>
     </td>
-	<td></td>
-	<td></td>
-	<td></td>
 	<td>
 		<?=\CHtml::dropDownList($field_prefix.'[duration_id]', $entry->duration_id,
 			CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration_id)->findAll(array('order' => 'display_order')), 'id', 'name'),
 			array('empty' => '- Select -', 'class' => 'cols-full js-duration')) ?>
     </td>
-	<td></td>
 	<td></td>
 	<td>
         <i class="oe-i trash js-remove-taper"></i>
