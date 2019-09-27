@@ -146,7 +146,12 @@ class MedicationController extends BaseAdminController
         $transaction = Yii::app()->db->beginTransaction();
 
         try {
-            \Medication::model()->deleteAll('id IN (:ids)', [':ids' => implode(',', $ids)]);
+            // Medication::model()->deleteAll() does not call beforeDelete() so we need to loop through to use
+            // delete() to automatically delete the objects in the relations
+            $medications = \Medication::model()->findAll('id IN (:ids)', [':ids' => implode(',', $ids)]);
+            foreach ($medications as $medication) {
+                $medication->delete();
+            }
             $transaction->commit();
             echo "1";
         } catch (Exception $e) {
