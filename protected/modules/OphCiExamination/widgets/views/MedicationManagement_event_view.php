@@ -23,45 +23,25 @@
                        "Stopped" => "getStoppedEntries",
                    ) as $section => $method): ?>
         <?php if (!empty($entries = $element->$method())): ?>
-            <div class="element-data">
-                <div class="data-value">
-                    <div class="tile-data overflow">
-                        <table>
-                            <colgroup>
-                                <col class="cols-3" />
-                                <col class="cols-3"/>
-                                <col class="cols-1"/>
-                                <col class="cols-2"/>
-                                <col class="cols-1" />
-                                <col class="cols-1"/>
-															<?php if($section === "Stopped") { ?>
-																<col class="cols-1"/>
-															<?php } ?>
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th><?php echo $section; ?></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-															<?php if($section === "Stopped") { ?>
-																<th></th>
-															<?php } ?>
-                            </tr>
-                            <tr>
-                                <th>Medication</th>
-                                <th>Dose/Route/Frequency</th>
-                                <th>Duration</th>
-                                <th>Dispense Condition/Location</th>
-                                <th>Laterality</th>
-                                <th>Start date</th>
-															<?php if($section === "Stopped") { ?>
-																<th>Stop date</th>
-															<?php } ?>
-                            </tr>
-                            </thead>
+            <div class="element-data full-width">
+
+                        <table class="medications">
+													<colgroup>
+														<col class="cols-3">
+														<col class="cols-5">
+														<col class="cols-3">
+														<col class="cols-icon" span="2">
+														<!-- actions auto-->
+													</colgroup>
+													<thead>
+													<tr>
+														<th>Drug</th>
+														<th>Dose/frequency/route/start/stop</th>
+														<th>Duration/dispense/comments</th>
+														<th><i class="oe-i drug-rx small no-click"></i></th>
+														<th></th><!-- actions -->
+													</tr>
+													</thead>
                             <tbody>
                             <?php foreach ($entries as $entry): ?>
                                 <?php echo $this->render('MedicationManagementEntry_event_view',
@@ -73,7 +53,5 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
         <?php endif; ?>
     <?php endforeach; ?>
