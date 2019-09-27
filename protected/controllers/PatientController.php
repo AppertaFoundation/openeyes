@@ -1748,11 +1748,22 @@ class PatientController extends BaseController
 
             if (isset($_POST['ExtraContact'])){
                 $gp_ids = $_POST['ExtraContact']['gp_id'];
-                $pca_models = array();
-                foreach ($gp_ids as $gp_id){
-                    $pca_model = new PatientContactAssociate();
-                    $pca_model->gp_id = $gp_id;
-                    $pca_models[] = $pca_model;
+                if(isset($_POST['ExtraContact']['practice_id'])) {
+                    $practice_ids = $_POST['ExtraContact']['practice_id'];
+                    $pca_models = array();
+                    for($i =0;$i<sizeof($gp_ids);$i++) {
+                        $pca_model = new PatientContactAssociate();
+                        $pca_model->gp_id = $gp_ids[$i];
+                        $pca_model->practice_id = $practice_ids[$i];
+                        $pca_models[] = $pca_model;
+                    }
+                } else {
+                    $pca_models = array();
+                    foreach ($gp_ids as $gp_id){
+                        $pca_model = new PatientContactAssociate();
+                        $pca_model->gp_id = $gp_id;
+                        $pca_models[] = $pca_model;
+                    }
                 }
                 if (!empty($pca_models)){
                     $patient->patientContactAssociates = $pca_models;
@@ -1800,7 +1811,6 @@ class PatientController extends BaseController
                 // Return the same page to the user without saving
                 // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
                 $patient->beforeValidate();
-                $patient->beforeSave();
             }
         }
         // Only auto increment hos no. when the set_auto_increment is on
@@ -1838,6 +1848,7 @@ class PatientController extends BaseController
         foreach($_POST['PatientIdentifier'] as $post_info) {
             $patient_identifier = new PatientIdentifier();
             $patient_identifier->patient_id = $patient->id;
+            $patient_identifier->id = $post_info['id'];
             $patient_identifier->code = $post_info['code'];
             $patient_identifier->value = @$post_info['value'];
             $patient_identifiers[] = $patient_identifier;
@@ -1973,20 +1984,6 @@ class PatientController extends BaseController
             Audit::add('Referred to', 'saved', $patient_user_referral->id);
         }
 
-
-        if (isset($patient->gp) && isset($patient->practice)){
-            $existing_cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id));
-            if (isset($existing_cpa)){
-                $existing_cpa->practice_id = $patient->practice_id;
-                $existing_cpa->save();
-            }else{
-                $new_cpa = new ContactPracticeAssociate();
-                $new_cpa->gp_id = $patient->gp_id;
-                $new_cpa->practice_id = $patient->practice_id;
-                $new_cpa->save();
-            }
-        }
-
         $this->performPatientContactAssociatesSave($patient);
 
         $action = $patient->isNewRecord ? 'add' : 'edit';
@@ -1999,15 +1996,35 @@ class PatientController extends BaseController
     }
 
     private function performPatientContactAssociatesSave($patient){
-        $existing_gp = PatientContactAssociate::model()->getGPsByPatientId($patient->id);
-        if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)){
-            foreach ($patient->patientContactAssociates as $patientContactAssociate){
-                if (!isset($patientContactAssociate->patient_id)){
-                    $patientContactAssociate->patient_id = $patient->id;
-                }
+        // Check if any contact selected for this patient.
+        if (isset($_POST['ExtraContact'])){
+            // If a single contact exists for a patient,  delete all the records from the patient_contact_associate table before populating.
+            $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+            if (isset($existing_pca_models)){
+                foreach ($existing_pca_models as $existing_pca_model){
 
-                if (empty($existing_gp) || !in_array($patientContactAssociate->gp_id,$existing_gp)){
-                    $patientContactAssociate->save();
+                    $existing_pca_model->delete();
+                }
+            }
+
+            $gp_ids = $_POST['ExtraContact']['gp_id'];
+            $practice_ids = $_POST['ExtraContact']['practice_id'];
+            for($i =0; $i<sizeof($gp_ids); $i++) {
+                $existing_pca_model = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id, 'gp_id'=>$gp_ids[$i], 'practice_id'=>$practice_ids[$i]));
+                if(empty($existing_pca_model)) {
+                    $pca_model = new PatientContactAssociate();
+                    $pca_model->patient_id = $patient->id;
+                    $pca_model->gp_id = $gp_ids[$i];
+                    $pca_model->practice_id = $practice_ids[$i];
+                    $pca_model->save();
+                }
+            }
+        } else{
+            // If not delete all the data related to this patient from the patient_contact_associate table.
+            $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+            if (isset($existing_pca_models)){
+                foreach ($existing_pca_models as $existing_pca_model){
+                    $existing_pca_model->delete();
                 }
             }
         }
@@ -2029,7 +2046,7 @@ class PatientController extends BaseController
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
 
-            if (empty($post_info->code) || empty($post_info->value))
+            if (empty($post_info->code))
                 continue;
 
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
@@ -2099,7 +2116,7 @@ class PatientController extends BaseController
             $this->redirect(array('view', 'id' => $patient->id));
         }
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
-            
+
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
@@ -2107,43 +2124,6 @@ class PatientController extends BaseController
 
             if (isset($_POST['PatientReferral'])) {
                 $referral->attributes = $_POST['PatientReferral'];
-            }
-
-
-            if (isset($_POST['ExtraContact'])){
-                $gp_ids = $_POST['ExtraContact']['gp_id'];
-                $pca_models = array();
-                $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
-                if (isset($existing_pca_models)){
-                    foreach ($existing_pca_models as $existing_pca_model){
-                        if (!in_array($existing_pca_model->id, $gp_ids)){
-                            $existing_pca_model->delete();
-                        }else{
-                            array_push($pca_models,$existing_pca_model);
-                            if (($key = array_search($existing_pca_model->id, $gp_ids)) !== false) {
-                                unset($gp_ids[$key]);
-                            }
-                        }
-                    }
-                }
-
-                foreach ($gp_ids as $gp_id){
-                    $pca_model = new PatientContactAssociate();
-                    $pca_model->gp_id = $gp_id;
-                    $pca_model->patient_id = $patient->id;
-                    array_push($pca_models,$pca_model);
-                }
-
-                if (!empty($pca_models)){
-                    $patient->patientContactAssociates = $pca_models;
-                }
-            }else{
-                $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
-                if (isset($existing_pca_models)){
-                    foreach ($existing_pca_models as $existing_pca_model){
-                        $existing_pca_model->delete();
-                    }
-                }
             }
 
             // not to be sync with PAS
@@ -2249,25 +2229,38 @@ class PatientController extends BaseController
 
         $output = array();
         foreach($gps as $gp){
-            $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
+            $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id'=>$gp->id));
             $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
-            $practiceDetails = $gp->getAssociatedPractice($gp->id);
-            if (isset($practice_contact_associate->practice)){
-                $practiceId = $practiceDetails['id'];
-                $practice = $practice_contact_associate->practice;
-                $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+            if(count($practice_contact_associates) == 0 ) {
                 $output[] = array(
-                    'label' => $gp->correspondenceName.$role.$practiceNameAddress,
-                    'value' => $gp->id,
-                    'practiceId' => $practiceId
-                );
-            }
-            else {
-                $output[] = array(
+                    'gpTitle' => $gp->contact->title,
+                    'gpFirstName' => $gp->contact->first_name,
+                    'gpLastName' => $gp->contact->last_name,
+                    'gpPhoneno' => $gp->contact->primary_phone,
+                    'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
                     'label' => $gp->correspondenceName.$role,
                     'value' => $gp->id,
                     'practiceId' => ''
                 );
+            } else {
+                foreach($practice_contact_associates as $practice_contact_associate) {
+                    if (isset($practice_contact_associate->practice)){
+                        $practice = $practice_contact_associate->practice;
+                        $practiceId = $practice->id;
+                        $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+                        $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
+                        $output[] = array(
+                            'gpTitle' => $gp->contact->title,
+                            'gpFirstName' => $gp->contact->first_name,
+                            'gpLastName' => $gp->contact->last_name,
+                            'gpPhoneno' => $gp->contact->primary_phone,
+                            'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                            'label' => $gp->correspondenceName.$providerNo.$role.$practiceNameAddress,
+                            'value' => $gp->id,
+                            'practiceId' => $practiceId
+                        );
+                    }
+                }
             }
         }
         echo CJSON::encode($output);
@@ -2337,7 +2330,7 @@ class PatientController extends BaseController
         }
     }
 
-  public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null){
+  public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null, $null_check){
 
         $patients = Patient::findDuplicatesByIdentifier($identifier_code, $identifier_value, $id);
 
@@ -2346,7 +2339,7 @@ class PatientController extends BaseController
                 'errors' => $patients['error'],
             ));
         } else {
-            if (count($patients) !== 0) {
+            if (count($patients) !== 0 && !empty($null_check)) {
                 $this->renderPartial('crud/_conflicts_identifier', array(
                     'patients' => $patients,
                     'identifier_code' => $identifier_code,
@@ -2563,5 +2556,6 @@ class PatientController extends BaseController
         );
         return ($command->queryScalar() == 0);
     }
+
 
 }

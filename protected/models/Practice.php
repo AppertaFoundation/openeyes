@@ -80,6 +80,7 @@ class Practice extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
+            array('phone', 'required', 'on' => array('manage_practice')),
             array('phone, contact_id, code', 'safe'),
             array('id, code', 'safe', 'on' => 'search'),
         );
@@ -180,7 +181,7 @@ class Practice extends BaseActiveRecordVersioned
     {
         return Gp::UNKNOWN_SALUTATION;
     }
-    
+
     public function getAddressLines()
     {
         if( isset($this->contact->address) ){

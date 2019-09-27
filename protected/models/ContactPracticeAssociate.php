@@ -7,6 +7,7 @@
  * @property integer $id
  * @property string $gp_id
  * @property string $practice_id
+ * @property string $provider_no
  *
  * The followings are the available model relations:
  * @property User $createdUser
@@ -33,10 +34,11 @@ class ContactPracticeAssociate extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('gp_id, practice_id', 'required'),
+			array('provider_no', 'unique', 'message'=>'Duplicate provider number.'),
 			array('gp_id, practice_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
-			array('id, gp_id, practice_id', 'safe', 'on'=>'search'),
+			array('id, gp_id, practice_id, provider_no', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -65,6 +67,7 @@ class ContactPracticeAssociate extends BaseActiveRecordVersioned
 			'id' => 'ID',
 			'gp_id' => 'Gp',
 			'practice_id' => 'Practice',
+            'provider_no' => 'Provider number',
 		);
 	}
 
@@ -88,6 +91,7 @@ class ContactPracticeAssociate extends BaseActiveRecordVersioned
 		$criteria->compare('id',$this->id);
 		$criteria->compare('gp_id',$this->gp_id,true);
 		$criteria->compare('practice_id',$this->practice_id,true);
+        $criteria->compare('provider_no',$this->provider_no,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

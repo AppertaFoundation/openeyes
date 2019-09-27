@@ -80,18 +80,22 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <td>Telephone</td>
             <td><?= !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown' ?></td>
           </tr>
-          <tr>
-            <td>Mobile</td>
-            <td>Unknown</td>
-          </tr>
+          <?php if (Yii::app()->params['institution_code'] !== 'CERA'): ?>
+              <tr>
+                <td>Mobile</td>
+                <td>Unknown</td>
+              </tr>
+          <?php endif; ?>
           <tr>
             <td>Email</td>
             <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
           </tr>
-          <tr>
-            <td>Next of kin</td>
-            <td>Unknown</td>
-          </tr>
+          <?php if (Yii::app()->params['institution_code'] !== 'CERA'): ?>
+              <tr>
+                <td>Next of kin</td>
+                <td>Unknown</td>
+              </tr>
+          <?php endif; ?>
           </tbody>
         </table>
       </div><!-- .popup-overflow -->
@@ -113,17 +117,21 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                   <td><?php echo Yii::app()->params['general_practitioner_label'].' Role' ?></td>
                   <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
               </tr>
-              <?php if (($this->patient->gp_id)) {
-                  $gp = Gp::model()->findByPk(array('id' => $this->patient->gp_id));
-                  $practice = $gp->getAssociatePractice();
-              }?>
-              <tr>
-                  <td><?php echo Yii::app()->params['gp_label']?> Address</td>
-                  <td> <?= isset($practice) ? $practice->getAddresslines() : 'Unknown' ?></td>
-              </tr>
               <tr>
                   <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
                   <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
+              </tr>
+              <?php if (($this->patient->gp_id)) {
+                  $gp = Gp::model()->findByPk(array('id' => $this->patient->gp_id));
+                  $practice = Practice::model()->findByPk(array('id' => $this->patient->practice_id));
+              }?>
+              <tr>
+                  <td>Referring Practice Address</td>
+                  <td> <?= isset($practice) ? $practice->getAddresslines() : 'Unknown' ?></td>
+              </tr>
+              <tr>
+                  <td>Referring Practice Telephone</td>
+                  <td><?= isset($practice->phone) ? $practice->phone : 'Unknown'; ?></td>
               </tr>
           <?php if (isset($this->referredTo)){ ?>
               <tr>
@@ -138,34 +146,34 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                   if ($index > 3) {
                       break;
                   }
-                  if (isset($pca->gp) && isset($this->patient->gp)) {
-                      if ($this->patient->gp->contact->id !== $pca->gp->contact->id) {
-                          $gp = $pca->gp; ?>
-                          <tr>
-                              <td>
-                                  Other Practitioner <br> Contact <?= $index; ?>
-                              </td>
-                              <td>
-                                  <div>
-                                      <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
-                                  </div>
-                                  <?php
-                                  if (isset($gp->contactPracticeAssociate)) {
-                                      $practice = $gp->contactPracticeAssociate->practice;
-                                      if (isset($practice)) {
-                                          $address = $practice->contact->address;
-                                          ?>
-                                          <div>
-                                              <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
-                                          </div>
-                                          <?php
-                                      }
-                                  } ?>
-                              </td>
-                          </tr>
-                          <?php
-                          $index += 1;
-                      }
+//                  Removed the check for other practitioner not being the same as a referring practitioner and a check for whether
+//                  a  a ref prac id is set as this was causing no contacts to be displayed - CERA-504
+                  if (isset($pca->gp)) {
+                      $gp = $pca->gp; ?>
+                      <tr>
+                          <td>
+                              Other Practitioner <br> Contact <?= $index; ?>
+                          </td>
+                          <td>
+                              <div>
+                                  <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
+                              </div>
+                              <?php
+                              if (isset($pca->practice)) {
+                                  $practice = $pca->practice;
+                                  if (isset($practice)) {
+                                      $address = $practice->contact->address;
+                                      ?>
+                                      <div>
+                                          <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
+                                      </div>
+                                      <?php
+                                  }
+                              } ?>
+                          </td>
+                      </tr>
+                      <?php
+                      $index += 1;
                   }
               }
           }
