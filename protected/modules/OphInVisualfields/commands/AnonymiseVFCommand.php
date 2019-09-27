@@ -21,18 +21,18 @@ class AnonymiseVFCommand extends CConsoleCommand
     public function getHelp()
     {
         return "Usage:\n\n\tanonymisefields [command]\n\nwhere command can be any one of:\n"
-        ."\ntransformFmes --fmesDir=[inputdir]  --outputDir=[outputDir] --realPidFile=[pidFile] --anonPidFile=[anonPidFile]\n\n"
-        ."\tTake the specified directory of FMES humphrey measurements, unpack the image from it, anonymise\n"
-        ."\tthe patient data, swap the recorded patient ID and swap it for the specified anonymous PID\n"
-        ."\tTwo files must be specified, each giving a newline separated list of patient IDs to substitute.\n"
-        ."\n\n"
-        ."anonymisefields redact --pattern=[filePattern]\n\n"
-        ."\tFor all files that match the specified pattern in the database, perform image oerations to remove name, PID etc.\n"
-        ."\tOnly images of the correct size (2400x3180) are transformed.\n"
-        ."\n\n"
-        ."anonymisefields redactTif --inDir=[tifInDir] --outDir=[tifOutDir]\n\n"
-        ."\tFor all files that match the specified pattern, perform image oerations to remove name, PID etc.\n"
-        ."\tOnly images of the correct size (2400x3180) are transformed.\n";
+            . "\ntransformFmes --fmesDir=[inputdir]  --outputDir=[outputDir] --realPidFile=[pidFile] --anonPidFile=[anonPidFile]\n\n"
+            . "\tTake the specified directory of FMES humphrey measurements, unpack the image from it, anonymise\n"
+            . "\tthe patient data, swap the recorded patient ID and swap it for the specified anonymous PID\n"
+            . "\tTwo files must be specified, each giving a newline separated list of patient IDs to substitute.\n"
+            . "\n\n"
+            . "anonymisefields redact --pattern=[filePattern]\n\n"
+            . "\tFor all files that match the specified pattern in the database, perform image oerations to remove name, PID etc.\n"
+            . "\tOnly images of the correct size (2400x3180) are transformed.\n"
+            . "\n\n"
+            . "anonymisefields redactTif --inDir=[tifInDir] --outDir=[tifOutDir]\n\n"
+            . "\tFor all files that match the specified pattern, perform image oerations to remove name, PID etc.\n"
+            . "\tOnly images of the correct size (2400x3180) are transformed.\n";
     }
 
     /**
@@ -47,7 +47,7 @@ class AnonymiseVFCommand extends CConsoleCommand
     {
         foreach (array($fmesDir, $realPidFile, $anonPidFile) as $file) {
             if (!file_exists($file)) {
-                echo $file.' does not exist'.PHP_EOL;
+                echo $file . ' does not exist' . PHP_EOL;
                 exit(1);
             }
         }
@@ -58,14 +58,14 @@ class AnonymiseVFCommand extends CConsoleCommand
         $aPids = explode(PHP_EOL, $anonPids);
         // make sure PID count is equal:
         if (count($rPids) != count($aPids)) {
-            echo 'Error: PID counts do not match; file contents must match 1-1'.PHP_EOL;
+            echo 'Error: PID counts do not match; file contents must match 1-1' . PHP_EOL;
             exit(1);
         }
         // check all real patients exist:
         foreach ($aPids as $pid) {
             if ($pid) {
-                if (count(Patient::model()->find("hos_num='".$pid."'")) < 1) {
-                    echo 'Failed to find anonymous patient '.$pid.PHP_EOL;
+                if (count(Patient::model()->find("hos_num='" . $pid . "'")) < 1) {
+                    echo 'Failed to find anonymous patient ' . $pid . PHP_EOL;
                     exit(1);
                 }
             }
@@ -77,7 +77,7 @@ class AnonymiseVFCommand extends CConsoleCommand
 
         $smgr = Yii::app()->service;
         $fhirMarshal = Yii::app()->fhirMarshal;
-        if ($entry = glob($fmesDir.'/*.fmes')) {
+        if ($entry = glob($fmesDir . '/*.fmes')) {
             foreach ($entry as $file) {
                 $field = file_get_contents($file);
                 $fieldObject = $fhirMarshal->parseXml($field);
@@ -95,7 +95,7 @@ class AnonymiseVFCommand extends CConsoleCommand
         // replacing the real ID with the anonymised ID; note that we also
         // need to swap out the image and do some redaction:
 
-        if ($entry = glob($fmesDir.'/*.fmes')) {
+        if ($entry = glob($fmesDir . '/*.fmes')) {
             foreach ($entry as $file) {
                 $field = file_get_contents($file);
                 $fieldObject = $fhirMarshal->parseXml($field);
@@ -105,8 +105,8 @@ class AnonymiseVFCommand extends CConsoleCommand
                     $index = array_search($match, $rPids);
                     $anonPid = $aPids[$index];
                     unset($fieldObject->patient_id);
-                    $fieldObject->patient_id = '__OE_PATIENT_ID_'.$anonPid.'__';
-                    echo 'replacing '.$match.' with '.$anonPid.PHP_EOL;
+                    $fieldObject->patient_id = '__OE_PATIENT_ID_' . $anonPid . '__';
+                    echo 'replacing ' . $match . ' with ' . $anonPid . PHP_EOL;
                 } else {
                     // not interested, move on:
                     continue;
@@ -126,82 +126,29 @@ class AnonymiseVFCommand extends CConsoleCommand
                 $contents = file_get_contents($img);
                 $fieldObject->image_scan_data = base64_encode($contents);
                 $doc = new DOMDocument();
-                file_put_contents($outputDir.'/'.basename($file), $fhirMarshal->renderXml($fieldObject));
-                echo 'Successfully written '.$file.PHP_EOL;
+                file_put_contents($outputDir . '/' . basename($file), $fhirMarshal->renderXml($fieldObject));
+                echo 'Successfully written ' . $file . PHP_EOL;
             }
         }
     }
 
     /**
-     * Take images from the in-directory, anonymise them and place the resulting
-     * file in the sepcified out-directory.
+     * @param type $file
+     * @param type $field
+     * @param array $matches
      *
-     * @param type $inDir
-     * @param type $outDir
+     * @return type
      */
-    public function actionRedactTif ($inDir, $outDir)
+    private function getHosNum($file, $field)
     {
-        if ($entries = glob($inDir.'/*.tif')) {
-            foreach ($entries as $entry) {
-                $this->anonymiseTif ($inDir.'/'.basename($entry), $outDir);
-            }
+        $matches = array();
+        preg_match('/__OE_PATIENT_ID_([0-9]*)__/', $field, $matches);
+        if (count($matches) < 2) {
+            echo 'Failed to extract patient ID in ' . basename($file) . '; moving to ' . $this->errorDir . PHP_EOL;
+            $this->move($this->errorDir, $file);
         }
-    }
 
-    /**
-     * Trawl an existing OE database and find all files that match the given
-     * pattern. A pattern MUST be specified.
-     *
-     * If no pattern is specified, all images that match the standard humphrey
-     * image size are processed.
-     */
-    public function actionRedact($pattern = null)
-    {
-        $criteria = new CDbCriteria();
-        if ($pattern != null) {
-            $criteria->condition = 'name like :name';
-            $criteria->params = array(':name' => $pattern);
-        } else {
-            echo 'You MUST specify a file pattern to match.';
-        }
-        $files = ProtectedFile::model()->findAll($criteria);
-        // we can't really filter images, except on size - for now just
-        // assume the count is half the amount when taking thumbnails into
-        // consideration
-        echo(count($files) / 2).' files found for modification.';
-        if ($files) {
-            foreach ($files as $file) {
-                if (file_exists($file->getPath())) {
-                    $this->anonymiseTif ($file->getPath());
-                } else {
-                    echo 'Could not transform file; '.$file->getPathName()
-                        .' does not exist.'.PHP_EOL;
-                }
-            }
-        }
-    }
-
-    /**
-     * Create a new image based on the image passed in and anonymise.
-     *
-     * @param type $file specified image file to anonymise; must be a valid path
-     *                   and the image must be the correct size.
-     * @param type $out  the directory to place the anonymised file.
-     */
-    private function anonymiseTif ($file, $out)
-    {
-        $image = new Imagick($file);
-        $geo = $image->getImageGeometry();
-        // only modify the main image, not the thumbnails:
-        if ($geo['width'] == 2400
-            && $geo['height'] == 3180
-        ) {
-            echo 'Modifying '.$file.PHP_EOL;
-            $this->fillImage($image);
-            echo $out.PHP_EOL;
-            $image->writeImage($file.'.tmp');
-            copy($file.'.tmp', $out.'/'.basename($file, '.tif').'.gif');
-        }
+        return str_pad($matches[1], 7, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -226,22 +173,74 @@ class AnonymiseVFCommand extends CConsoleCommand
     }
 
     /**
-     * @param type  $file
-     * @param type  $field
-     * @param array $matches
+     * Take images from the in-directory, anonymise them and place the resulting
+     * file in the sepcified out-directory.
      *
-     * @return type
+     * @param type $inDir
+     * @param type $outDir
      */
-    private function getHosNum($file, $field)
+    public function actionRedactTif($inDir, $outDir)
     {
-        $matches = array();
-        preg_match('/__OE_PATIENT_ID_([0-9]*)__/', $field, $matches);
-        if (count($matches) < 2) {
-            echo 'Failed to extract patient ID in '.basename($file).'; moving to '.$this->errorDir.PHP_EOL;
-            $this->move($this->errorDir, $file);
-            continue;
+        if ($entries = glob($inDir . '/*.tif')) {
+            foreach ($entries as $entry) {
+                $this->anonymiseTif($inDir . '/' . basename($entry), $outDir);
+            }
         }
+    }
 
-        return str_pad($matches[1], 7, '0', STR_PAD_LEFT);
+    /**
+     * Create a new image based on the image passed in and anonymise.
+     *
+     * @param type $file specified image file to anonymise; must be a valid path
+     *                   and the image must be the correct size.
+     * @param type $out the directory to place the anonymised file.
+     */
+    private function anonymiseTif($file, $out)
+    {
+        $image = new Imagick($file);
+        $geo = $image->getImageGeometry();
+        // only modify the main image, not the thumbnails:
+        if ($geo['width'] == 2400
+            && $geo['height'] == 3180
+        ) {
+            echo 'Modifying ' . $file . PHP_EOL;
+            $this->fillImage($image);
+            echo $out . PHP_EOL;
+            $image->writeImage($file . '.tmp');
+            copy($file . '.tmp', $out . '/' . basename($file, '.tif') . '.gif');
+        }
+    }
+
+    /**
+     * Trawl an existing OE database and find all files that match the given
+     * pattern. A pattern MUST be specified.
+     *
+     * If no pattern is specified, all images that match the standard humphrey
+     * image size are processed.
+     */
+    public function actionRedact($pattern = null)
+    {
+        $criteria = new CDbCriteria();
+        if ($pattern != null) {
+            $criteria->condition = 'name like :name';
+            $criteria->params = array(':name' => $pattern);
+        } else {
+            echo 'You MUST specify a file pattern to match.';
+        }
+        $files = ProtectedFile::model()->findAll($criteria);
+        // we can't really filter images, except on size - for now just
+        // assume the count is half the amount when taking thumbnails into
+        // consideration
+        echo (count($files) / 2) . ' files found for modification.';
+        if ($files) {
+            foreach ($files as $file) {
+                if (file_exists($file->getPath())) {
+                    $this->anonymiseTif($file->getPath());
+                } else {
+                    echo 'Could not transform file; ' . $file->getPathName()
+                        . ' does not exist.' . PHP_EOL;
+                }
+            }
+        }
     }
 }

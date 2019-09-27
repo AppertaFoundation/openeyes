@@ -6,82 +6,8 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
     /*
      * Insert Examination events to 'event_medication_use' table
      */
-    private function insertExaminations( $events )
-    {
-        if ($events){
-            foreach($events as $event){
-                $legacy_dose = explode(" ", $event['dose']);
-                $dose = '';
-                $dose_unit_term = '';
-
-
-                if (count($legacy_dose) == 1){
-                    $array = str_split($legacy_dose[0]);
-                    foreach ($array as $key => $char) {
-                        if (($char == '.') || ($char == '/') || (is_numeric($char))) {
-                            $dose .=  $char;
-                        } else {
-                            $dose_unit_term .=  $char;
-                        }
-                    }
-                } else {
-                    $dose = $legacy_dose[0];
-                    $dose_unit_term = $legacy_dose[1];
-                }
-
-                $event['ref_duration_id'] = (!isset($event['ref_duration_id'])) ? null : $event['ref_duration_id'];
-                $event['ref_medication_form_id'] = (!isset($event['ref_medication_form_id'])) ? 'NULL' : $event['ref_medication_form_id'];
-                $event['end_date'] = (!isset($event['end_date'])) ? $end_date_string = 'NULL' : $end_date_string = "'".$event['end_date']."'";
-
-                $ref_route_id = ($event['ref_route_id'] == null) ? 'NULL' : $event['ref_route_id'];
-                $ref_frequency_id = ($event['ref_frequency_id'] == null) ? 'NULL' : $event['ref_frequency_id'];
-                $ref_duration_id = ($event['ref_duration_id'] == null) ? 'NULL' : $event['ref_duration_id'];
-                $stop_reason_id = ($event['stop_reason_id'] == null) ? 'NULL' : $event['stop_reason_id'];
-                $prescription_item_id = ($event['prescription_item_id'] == null) ? 'NULL' : $event['prescription_item_id'];
-
-                $command = Yii::app()->db
-                ->createCommand("
-                    INSERT INTO event_medication_use (
-                        event_id, 
-                        usage_type, 
-                        usage_subtype,
-                        medication_id, 
-                        form_id, 
-                        laterality,
-                        dose,
-                        dose_unit_term,
-                        route_id, 
-                        frequency_id, 
-                        duration_id, 
-                        stop_reason_id,
-                        prescription_item_id,
-                        start_date,
-                        end_date
-                    ) values(
-                        ".$event['event_id'].",
-                        '".$event['class_name']."',
-                        'History',
-                        ".$event['ref_medication_id'].",
-                        ".$event['ref_medication_form_id'].", 
-                        '".$event['ref_laterality_id']."', 
-                        '".$dose."', 
-                        '".$dose_unit_term."', 
-                        ".$ref_route_id.",
-                        ".$ref_frequency_id.",
-                        ".$ref_duration_id.",
-                        ".$stop_reason_id.",
-                        '".$prescription_item_id."',
-                        '".$event['event_date']."',"
-                        .$end_date_string .")
-                ");
-                $command->execute();
-                $command = null;
-            }
-        }
-    }
-
     public function up()
-	{
+    {
         echo "> The import may take a several seconds!\n";
 
         $this->execute("SET foreign_key_checks = 0");
@@ -90,7 +16,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
          * Get Examination events with Drugs
          */
         $eventsDrugs = Yii::app()->db
-                ->createCommand("
+            ->createCommand("
                     SELECT 
                         event.id                            AS event_id,
                         SUBSTRING(REPLACE(ohme.start_date, '-', ''), 1,8)   AS event_date,
@@ -127,7 +53,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     AND medication.source_subtype = 'drug'
                     ORDER BY event.id ASC
                  ")
-                ->queryAll();
+            ->queryAll();
 
         $this->insertExaminations($eventsDrugs);
 
@@ -136,7 +62,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
          * Get Examination events with Medication Drugs
          */
         $eventMedDrugs = Yii::app()->db
-                ->createCommand("
+            ->createCommand("
                     SELECT 
                         event.id                            AS event_id,
                         SUBSTRING(REPLACE(event.event_date, '-', ''), 1,8) AS event_date,
@@ -166,17 +92,91 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     AND medication.source_subtype = 'medication_drug'
                     ORDER BY event.id ASC
                  ")
-                ->queryAll();
+            ->queryAll();
 
         $this->insertExaminations($eventMedDrugs);
         echo "> The Examinations with Medication Drug import was successfully!\n";
         $this->execute("SET foreign_key_checks = 1");
-	}
+    }
 
-	public function down()
-	{
+    private function insertExaminations($events)
+    {
+        if ($events) {
+            foreach ($events as $event) {
+                $legacy_dose = explode(" ", $event['dose']);
+                $dose = '';
+                $dose_unit_term = '';
+
+
+                if (count($legacy_dose) == 1) {
+                    $array = str_split($legacy_dose[0]);
+                    foreach ($array as $key => $char) {
+                        if (($char == '.') || ($char == '/') || (is_numeric($char))) {
+                            $dose .= $char;
+                        } else {
+                            $dose_unit_term .= $char;
+                        }
+                    }
+                } else {
+                    $dose = $legacy_dose[0];
+                    $dose_unit_term = $legacy_dose[1];
+                }
+
+                $event['ref_duration_id'] = (!isset($event['ref_duration_id'])) ? null : $event['ref_duration_id'];
+                $event['ref_medication_form_id'] = (!isset($event['ref_medication_form_id'])) ? 'NULL' : $event['ref_medication_form_id'];
+                $event['end_date'] = (!isset($event['end_date'])) ? $end_date_string = 'NULL' : $end_date_string = "'" . $event['end_date'] . "'";
+
+                $ref_route_id = ($event['ref_route_id'] == null) ? 'NULL' : $event['ref_route_id'];
+                $ref_frequency_id = ($event['ref_frequency_id'] == null) ? 'NULL' : $event['ref_frequency_id'];
+                $ref_duration_id = ($event['ref_duration_id'] == null) ? 'NULL' : $event['ref_duration_id'];
+                $stop_reason_id = ($event['stop_reason_id'] == null) ? 'NULL' : $event['stop_reason_id'];
+                $prescription_item_id = ($event['prescription_item_id'] == null) ? 'NULL' : $event['prescription_item_id'];
+
+                $command = Yii::app()->db
+                    ->createCommand("
+                    INSERT INTO event_medication_use (
+                        event_id, 
+                        usage_type, 
+                        usage_subtype,
+                        medication_id, 
+                        form_id, 
+                        laterality,
+                        dose,
+                        dose_unit_term,
+                        route_id, 
+                        frequency_id, 
+                        duration_id, 
+                        stop_reason_id,
+                        prescription_item_id,
+                        start_date,
+                        end_date
+                    ) values(
+                        " . $event['event_id'] . ",
+                        '" . $event['class_name'] . "',
+                        'History',
+                        " . $event['ref_medication_id'] . ",
+                        " . $event['ref_medication_form_id'] . ", 
+                        '" . $event['ref_laterality_id'] . "', 
+                        '" . $dose . "', 
+                        '" . $dose_unit_term . "', 
+                        " . $ref_route_id . ",
+                        " . $ref_frequency_id . ",
+                        " . $ref_duration_id . ",
+                        " . $stop_reason_id . ",
+                        '" . $prescription_item_id . "',
+                        '" . $event['event_date'] . "',"
+                        . $end_date_string . ")
+                ");
+                $command->execute();
+                $command = null;
+            }
+        }
+    }
+
+    public function down()
+    {
         $this->execute("SET foreign_key_checks = 0");
         $this->execute("DELETE FROM event_medication_use WHERE usage_type = 'OphCiExamination' ");
         $this->execute("SET foreign_key_checks = 1");
-	}
+    }
 }

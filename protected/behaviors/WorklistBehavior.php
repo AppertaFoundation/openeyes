@@ -14,6 +14,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 use \OEModule\PASAPI\models\PasApiAssignment;
 use \OEModule\PASAPI\resources\PatientAppointment;
 use \OEModule\PatientTicketing\models\Ticket;
@@ -148,7 +149,7 @@ class WorklistBehavior extends CBehavior
         }
 
         // for Eye Casualty events, the only time the patient wont be added to todays Eye Casualty unbooked worklist is if they already have a "booked" eye casualty appointment for today
-        if ($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE' && !($worklist_patient_today_AE)) ) {
+        if ($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE' && !($worklist_patient_today_AE))) {
             $unbooked_worklist_manager = new \UnbookedWorklist();
             $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
 

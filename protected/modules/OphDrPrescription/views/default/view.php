@@ -16,55 +16,55 @@
 $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array($this->event->id));
 
 ?>
-<?php $this->beginContent('//patient/event_container', ['Element' => $Element, 'no_face'=>true]); ?>
-
-    <?php
-        // Event actions
-        $elementEditable = $Element->isEditableByMedication();
-        if (($Element->draft ) && (!$elementEditable )){
-            $this->event_actions[] = EventAction::button(
-                'Save as final',
-                'save',
-                array('level' => 'secondary'),
-                array(
-                    'id' => 'et_save_final',
-                    'class' => 'button small',
-                    'type' => 'button',
-                    'data-element' => $Element->id
-                )
-            );
-        }
-
-        if ($this->checkPrintAccess()) {
-        	if (!$Element->draft || $this->checkEditAccess()){
-        		$this->event_actions[] = EventAction::printButton();
-        	}
-        }
-    ?>
-
-    <?php $this->renderPartial('//base/_messages'); ?>
-    <?php if ($this->event->delete_pending) {?>
-        <div class="alert-box alert with-icon">
-            This event is pending deletion and has been locked.
-        </div>
-    <?php } elseif ($Element->draft) {?>
-        <div class="alert-box alert with-icon">
-            This prescription is a draft and can still be edited
-        </div>
-    <?php }?>
-
-    <?php $this->renderOpenElements($this->action->id); ?>
-    <?php $this->renderOptionalElements($this->action->id); ?>
+<?php $this->beginContent('//patient/event_container', ['Element' => $Element, 'no_face' => true]); ?>
 
 <?php
-    if (isset(Yii::app()->session['print_prescription'])) :?>
-        <?php unset(Yii::app()->session['print_prescription']); ?>
-        <script>
-            $(document).ready(function() {
-                do_print_prescription();
-            });
-        </script>
+// Event actions
+$elementEditable = $Element->isEditableByMedication();
+if (($Element->draft) && (!$elementEditable)) {
+    $this->event_actions[] = EventAction::button(
+        'Save as final',
+        'save',
+        array('level' => 'secondary'),
+        array(
+            'id' => 'et_save_final',
+            'class' => 'button small',
+            'type' => 'button',
+            'data-element' => $Element->id
+        )
+    );
+}
+
+if ($this->checkPrintAccess()) {
+    if (!$Element->draft || $this->checkEditAccess()) {
+        $this->event_actions[] = EventAction::printButton();
+    }
+}
+?>
+
+<?php $this->renderPartial('//base/_messages'); ?>
+<?php if ($this->event->delete_pending) { ?>
+    <div class="alert-box alert with-icon">
+        This event is pending deletion and has been locked.
+    </div>
+<?php } elseif ($Element->draft) { ?>
+    <div class="alert-box alert with-icon">
+        This prescription is a draft and can still be edited
+    </div>
+<?php } ?>
+
+<?php $this->renderOpenElements($this->action->id); ?>
+<?php $this->renderOptionalElements($this->action->id); ?>
+
+<?php
+if (isset(Yii::app()->session['print_prescription'])) :?>
+    <?php unset(Yii::app()->session['print_prescription']); ?>
+    <script>
+        $(document).ready(function () {
+            do_print_prescription();
+        });
+    </script>
 <?php endif; ?>
 
-<?php $this->renderPartial('//default/delete');?>
-<?php $this->endContent();?>
+<?php $this->renderPartial('//default/delete'); ?>
+<?php $this->endContent(); ?>

@@ -39,7 +39,7 @@ class PrescriptionCommonController extends DefaultController
     {
         $this->initForPatient($patient_id);
 
-        $key = (integer) $key;
+        $key = (integer)$key;
 
         $items = MedicationSet::model()->findByPk($set_id)->items;
         if ($items) {
@@ -55,7 +55,7 @@ class PrescriptionCommonController extends DefaultController
         $drug_set_items = MedicationSetItem::model()->findAllByAttributes(array('medication_set_id' => $set_id));
         $drugs = [];
         /** @var MedicationSetItem[] $drug_set_items */
-		foreach ($drug_set_items as $drug_set_item) {
+        foreach ($drug_set_items as $drug_set_item) {
             $drug = $drug_set_item->medication;
             $drugs[] = [
                 'label' => $drug->getLabel(),
@@ -85,7 +85,7 @@ class PrescriptionCommonController extends DefaultController
         $returnData['drugsetSubspecialtyId'] = $drugset->subspecialty_id;
         $returnData['tableRows'] = ''; // the HTML content for the prescription items table
 
-        $key = (integer) $key;
+        $key = (integer)$key;
         $drug_set_items = DrugSetItem::model()->findAllByAttributes(array('drug_set_id' => $set_id));
 
         foreach ($drug_set_items as $drug_set_item) {
@@ -125,7 +125,7 @@ class PrescriptionCommonController extends DefaultController
     {
         $dispense_condition = OphDrPrescription_DispenseCondition::model()->with('locations')->findByPk($condition_id);
         foreach ($dispense_condition->locations as $location) {
-            echo '<option value="'.$location->id.'">'.$location->name.'</option>';
+            echo '<option value="' . $location->id . '">' . $location->name . '</option>';
         }
     }
 }

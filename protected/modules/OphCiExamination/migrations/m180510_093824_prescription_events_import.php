@@ -13,31 +13,10 @@ class m180510_093824_prescription_events_import extends CDbMigration
     {
         echo "> This migration may take a several seconds!\n";
         $this->dropTapersFK()
-             ->runPrescriptionImport()
-             ->applyTapersFK();
+            ->runPrescriptionImport()
+            ->applyTapersFK();
 
         return true;
-    }
-
-    public function down()
-    {
-        $this->execute("SET foreign_key_checks = 0");
-        $this->execute("DELETE FROM event_medication_use WHERE usage_type = 'OphDrPrescription' ");
-        $this->execute("SET foreign_key_checks = 1");
-
-        $this->dropForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper');
-        $this->alterColumn('ophdrprescription_item_taper', 'item_id', 'INT(10) UNSIGNED NOT NULL');
-
-        $this->execute("UPDATE ophdrprescription_item_taper SET item_id = (SELECT temp_prescription_item_id FROM event_medication_use WHERE id = ophdrprescription_item_taper.item_id)");
-
-        $this->addForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper', 'item_id', 'ophdrprescription_item', 'id');
-    }
-
-    private function dropTapersFK()
-    {
-        $this->dropForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper');
-        $this->alterColumn('ophdrprescription_item_taper', 'item_id', 'INT(11) NOT NULL');
-        return $this;
     }
 
     private function applyTapersFK()
@@ -46,9 +25,6 @@ class m180510_093824_prescription_events_import extends CDbMigration
         return $this;
     }
 
-    /*
-     * Prescription events import
-     */
     private function runPrescriptionImport()
     {
         $events = Yii::app()->db
@@ -90,21 +66,21 @@ class m180510_093824_prescription_events_import extends CDbMigration
                  ")
             ->queryAll();
 
-        if ($events){
-            foreach($events as $event){
+        if ($events) {
+            foreach ($events as $event) {
 
                 $legacy_dose = explode(" ", $event['legacy_dose']);
                 $dose = '';
                 $dose_unit_term = '';
 
-                if (count($legacy_dose) == 1){
+                if (count($legacy_dose) == 1) {
 
                     $array = str_split($legacy_dose[0]);
                     foreach ($array as $key => $char) {
                         if (($char == '.') || ($char == '/') || (is_numeric($char))) {
-                            $dose .=  $char;
+                            $dose .= $char;
                         } else {
-                            $dose_unit_term .=  $char;
+                            $dose_unit_term .= $char;
                         }
                     }
                     //var_dump($dose.' : '.$dose_unit_term);
@@ -114,8 +90,8 @@ class m180510_093824_prescription_events_import extends CDbMigration
 
                 } else {
                     $dose = $legacy_dose[0];
-                    for($i = 1; $i < count($legacy_dose); $i++){
-                        $dose_unit_term .= $legacy_dose[$i].' ';
+                    for ($i = 1; $i < count($legacy_dose); $i++) {
+                        $dose_unit_term .= $legacy_dose[$i] . ' ';
                     }
                 }
 
@@ -149,20 +125,20 @@ class m180510_093824_prescription_events_import extends CDbMigration
                         temp_prescription_item_id,
                         comments
                     ) values(
-                        ".$event['event_id'].",
-                        '".$event['class_name']."',
-                        ".$event['ref_medication_id'].",
-                        ".$event['ref_medication_form_id'].", 
-                        '".$event['ref_laterality_id']."', 
-                        '".$dose."', 
-                        '".$dose_unit_term."', 
-                        ".$ref_route_id.",
-                        ".$ref_frequency_id.",
-                        ".$event['duration_id'].",
-                        ".$ref_dispense_condition_id.",
-                        ".$ref_dispense_location_id.",
-                        '".$event['event_date']."',
-                        ".$event['temp_prescription_item_id'].",
+                        " . $event['event_id'] . ",
+                        '" . $event['class_name'] . "',
+                        " . $event['ref_medication_id'] . ",
+                        " . $event['ref_medication_form_id'] . ", 
+                        '" . $event['ref_laterality_id'] . "', 
+                        '" . $dose . "', 
+                        '" . $dose_unit_term . "', 
+                        " . $ref_route_id . ",
+                        " . $ref_frequency_id . ",
+                        " . $event['duration_id'] . ",
+                        " . $ref_dispense_condition_id . ",
+                        " . $ref_dispense_location_id . ",
+                        '" . $event['event_date'] . "',
+                        " . $event['temp_prescription_item_id'] . ",
                         :comments
                          )
                 ");
@@ -180,5 +156,30 @@ class m180510_093824_prescription_events_import extends CDbMigration
         }
 
         return $this;
+    }
+
+    private function dropTapersFK()
+    {
+        $this->dropForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper');
+        $this->alterColumn('ophdrprescription_item_taper', 'item_id', 'INT(11) NOT NULL');
+        return $this;
+    }
+
+    /*
+     * Prescription events import
+     */
+
+    public function down()
+    {
+        $this->execute("SET foreign_key_checks = 0");
+        $this->execute("DELETE FROM event_medication_use WHERE usage_type = 'OphDrPrescription' ");
+        $this->execute("SET foreign_key_checks = 1");
+
+        $this->dropForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper');
+        $this->alterColumn('ophdrprescription_item_taper', 'item_id', 'INT(10) UNSIGNED NOT NULL');
+
+        $this->execute("UPDATE ophdrprescription_item_taper SET item_id = (SELECT temp_prescription_item_id FROM event_medication_use WHERE id = ophdrprescription_item_taper.item_id)");
+
+        $this->addForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper', 'item_id', 'ophdrprescription_item', 'id');
     }
 }
