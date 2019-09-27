@@ -38,10 +38,10 @@ $element_errors = $element->getErrors();
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
-    <div class="field-row flex-layout full">
+    <div class="data-group">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <table class="medications entries js-entry-table <?php echo $element_errors ? 'highlighted-error error' : '' ?>"
-                             id="<?= $model_name ?>_entry_table cols-full">
+                             id="<?= $model_name ?>_entry_table">
 					<colgroup>
 						<col class="cols-2">
 						<col class="cols-6">
