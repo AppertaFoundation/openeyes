@@ -303,7 +303,7 @@ $(document).ready(function () {
     let unsafeWidth = (hotlistPanel.length === 1 && hotlistPanel.css('Display') !== 'none')
       ? hotlistPanel.width()
       : 0;
-    let tooltipOverlap = unsafeWidth - ($( window ).width() - iconPos.left - 200);
+    let tooltipOverlap = unsafeWidth - ($( window ).width() - iconPos.left - 100);
 
     if (tooltipOverlap > 0) {
       leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
