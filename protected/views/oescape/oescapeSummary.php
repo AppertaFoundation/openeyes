@@ -151,10 +151,10 @@ if (!empty($subspecialty)) { ?>
           for (let i=0; i < chart_list.length; i++){
           //test min
           if(my_min_value<chart_list[i]['layout']['xaxis']['range'][0])
-          let my_min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
+          my_min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
           //test max
           if(my_min_value>chart_list[i]['layout']['xaxis']['range'][1])
-          let my_max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
+          my_max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
           }
           // set these ranges to the min and max values
           let current_range = [my_min_value, my_max_value];
@@ -170,12 +170,13 @@ if (!empty($subspecialty)) { ?>
   document.getElementById('reset-zoom').addEventListener('click', function () {
     let charts = $('.rangeslider-container').parents('.plotly-VA');
     //are we looking at the left eye
+    let eye_side = null;
     if(!charts[0].style.display){
       //then set to left eye
-    let eye_side = $(charts[0]).attr('data-eye-side');
+    eye_side = $(charts[0]).attr('data-eye-side');
     }
     else{
-    let eye_side = $(charts[1]).attr('data-eye-side');
+    eye_side = $(charts[1]).attr('data-eye-side');
     }
     let chart_list = $('.plotly-'+eye_side);
     //reset the graphs to basics before we st them to thier maximums
