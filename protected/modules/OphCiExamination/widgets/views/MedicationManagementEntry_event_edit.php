@@ -57,9 +57,6 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
     >
 
         <td class="drug-details" rowspan="2">
-            <button class="js-add-taper" type="button" title="Add taper" style="<?=$prescribe_hide_style?>">
-                <i class="oe-i child-arrow small"></i>
-            </button>
 					<?php if ($entry->originallyStopped) { ?>
 						<i class="oe-i stop small pad"></i>
 					<?php } ?>
@@ -97,11 +94,11 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <input type="hidden" name="<?= $field_prefix ?>[source_subtype]" class="js-source-subtype" value="{{source_subtype}}" disabled="disabled">
         </td>
         <td class="dose-frequency-route alternative-display">
-					<?php
-					$dfrl_validation_error = array_intersect(
-						array("dose", "frequency_id", "route_id", "laterality"),
-						array_keys($entry->errors));
-					?>
+								<?php
+								$dfrl_validation_error = array_intersect(
+									array("dose", "frequency_id", "route_id", "laterality"),
+									array_keys($entry->errors));
+								?>
 							<div class="flex-meds-inputs alternative-display-element" id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>"
 								<?php if (!$direct_edit && !$dfrl_validation_error) {
 								echo 'style="display: none;"';
@@ -255,8 +252,11 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 
 			</td>
         <td>
-
+					<button class="js-add-taper" type="button" title="Add taper" style="<?=$prescribe_hide_style?>">
+						<i class="oe-i child-arrow small"></i>
+					</button>
         </td>
+			<td></td>
     </tr>
 <?php
 
