@@ -131,6 +131,10 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
                         return true;
                     }
                 });
+
+                ['.right-eye', '.left-eye'].forEach(function (side) {
+                    pupillary_abnormality_controller.dedupeAbnormalitiesSelector(side);
+                });
             });
         </script>
     <?php endforeach; ?>

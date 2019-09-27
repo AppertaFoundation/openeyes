@@ -32,8 +32,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.no_abnormalities_wrapper = '#' + this.options.model_name + '_no_abnormalities_wrapper_';
 
         this.initialiseTriggers();
-        this.dedupeAbnormalitiesSelector('.left-eye');
-        this.dedupeAbnormalitiesSelector('.right-eye');
     }
 
     PupillaryAbnormalitiesController._defaultOptions = {
