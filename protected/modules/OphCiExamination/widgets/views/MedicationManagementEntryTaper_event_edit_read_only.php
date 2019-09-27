@@ -27,19 +27,11 @@
 		<?= Chtml::hiddenField($field_prefix . '[frequency_id]', $entry->frequency_id);?>
 		<?= isset($entry->frequency) ? $entry->frequency->term : "" ?>
 	</td>
-	<td></td>
-	<td></td>
-	<td></td>
 	<td>
 		<?= Chtml::hiddenField($field_prefix . '[duration_id]', $entry->duration_id);?>
 		<?= isset($entry->duration) ? $entry->duration->name : ""?>
 	</td>
 	<td></td>
-	<td></td>
 	<td>
-		<?php $tooltip_no_prescribe_role = "This taper is from a prescribed medication and cannot be edited without prescribe permissions."; ?>
-		<span data-tooltip-content="<?= $tooltip_no_prescribe_role ?>" class="js-has-tooltip">
-				 <i class="oe-i trash js-remove disabled"></i>
-			</span>
 	</td>
 </tr>
