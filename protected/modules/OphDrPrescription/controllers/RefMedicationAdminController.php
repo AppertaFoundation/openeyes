@@ -25,12 +25,10 @@ class RefMedicationAdminController extends BaseAdminController
        Filter that can be applied to items in order to
        create admin screens for specific subsets of drugs
     */
+    public $group = 'Drugs';
     protected $source_type;
     protected $display_name;
-
     protected $list_mode_buttons = true;
-
-	public $group = 'Drugs';
 
     public function actionList()
     {
@@ -42,7 +40,7 @@ class RefMedicationAdminController extends BaseAdminController
             'preferred_code',
             'preferred_term',
             'alternativeTerms',
-			'vtm_term',
+            'vtm_term',
             'vmp_term',
             'amp_term',
         ));
@@ -51,14 +49,14 @@ class RefMedicationAdminController extends BaseAdminController
             $admin->getSearch()->getCriteria()->addColumnCondition(['source_type' => $this->source_type]);
         }
 
-		if (is_null($this->source_type)) {
-			$admin->getSearch()->addSearchItem('source_type');
-		}
+        if (is_null($this->source_type)) {
+            $admin->getSearch()->addSearchItem('source_type');
+        }
 
 
-		$admin->getSearch()->addSearchItem('source_subtype');
-		$admin->getSearch()->addSearchItem('preferred_code');
-		$admin->getSearch()->addSearchItem('preferred_term');
+        $admin->getSearch()->addSearchItem('source_subtype');
+        $admin->getSearch()->addSearchItem('preferred_code');
+        $admin->getSearch()->addSearchItem('preferred_term');
 
         $admin->setModelDisplayName($this->display_name);
 
@@ -67,281 +65,276 @@ class RefMedicationAdminController extends BaseAdminController
 
     public function actionEdit($id = null)
     {
-    	if (is_null($id)) {
-			$model = new Medication();
-			if (isset($this->source_type)) {
-				$model->source_type = $this->source_type;
-			}
-		}
-		else {
-			if (!$model = Medication::model()->findByPk($id)) {
-				throw new CHttpException(404);
-			}
-		}
+        if (is_null($id)) {
+            $model = new Medication();
+            if (isset($this->source_type)) {
+                $model->source_type = $this->source_type;
+            }
+        } else {
+            if (!$model = Medication::model()->findByPk($id)) {
+                throw new CHttpException(404);
+            }
+        }
 
         $this->_getEditAdmin($model)->editModel();
     }
-
-    protected function _getSourceSubtypes()
-	{
-		$values = Yii::app()->db->createCommand("SELECT DISTINCT source_subtype FROM ".Medication::model()->tableName())->queryColumn();
-		$ret_array = array();
-		foreach ($values as $value) {
-			$ret_array[$value] = $value;
-		}
-		return $ret_array;
-	}
-
-	protected function _getSourceTypes()
-	{
-		$values = Yii::app()->db->createCommand("SELECT DISTINCT source_type FROM ".Medication::model()->tableName())->queryColumn();
-		$ret_array = array();
-		foreach ($values as $value) {
-			$ret_array[$value] = $value;
-		}
-		return $ret_array;
-	}
-
-    protected function _getEditFields($model)
-	{
-		return array(
-			'preferred_term'=>'Preferred term',
-			'short_term'=>'Short term',
-			'preferred_code'=>'Preferred code',
-			'source_type' => array(
-				'widget' => 'DropDownList',
-				'options' => $this->_getSourceTypes(),
-				'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
-				'hidden' => false,
-				'layoutColumns' => array()
-			),
-			'source_subtype'=> array(
-				'widget' => 'DropDownList',
-				'options' => $this->_getSourceSubtypes(),
-				'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
-				'hidden' => false,
-				'layoutColumns' => array()
-			),
-			'vtm_term' => 'VTM term',
-			'vtm_code' => 'VTM code',
-			'vmp_term' => 'VMP term',
-			'vmp_code' => 'VMP code',
-			'amp_term' => 'AMP term',
-			'amp_code' => 'AMP code',
-			'default_form_id' => array(
-				'widget' => 'DropDownList',
-				'options' => CHtml::listData(MedicationForm::model()->findAll("deleted_date IS NULL"), "id", "term"),
-				'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
-				'hidden' => false,
-				'layoutColumns' => array()
-			),
-			'default_route_id' => array(
-				'widget' => 'DropDownList',
-				'options' => CHtml::listData(MedicationRoute::model()->findAll("deleted_date IS NULL"), "id", "term"),
-				'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
-				'hidden' => false,
-				'layoutColumns' => array()
-			),
-			'default_dose_unit_term' => 'Default dose unit',
-			'attributes' => array(
-				'widget' => 'CustomView',
-				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_attributes',
-				'viewArguments' => array(
-					'medication' => $model
-				)
-			),
-			'sets' => array(
-				'widget' => 'CustomView',
-				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_sets',
-				'viewArguments' => array(
-					'medication' => $model
-				)
-			),
-			'alternative_terms' =>  array(
-				'widget' => 'CustomView',
-				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_alternative_terms',
-				'viewArguments' => array(
-					'medication' => $model
-				)
-			),
-		);
-	}
 
     protected function _getEditAdmin(Medication $model)
     {
         $admin = new Admin($model, $this);
 
-		$admin->setEditFields($this->_getEditFields($model));
+        $admin->setEditFields($this->_getEditFields($model));
 
         $admin->setModelDisplayName("Medication");
-		$admin->setCustomSaveURL('/OphDrPrescription/'.$this->id.'/save/'.$model->id);
+        $admin->setCustomSaveURL('/OphDrPrescription/' . $this->id . '/save/' . $model->id);
 
         return $admin;
     }
 
+    protected function _getEditFields($model)
+    {
+        return array(
+            'preferred_term' => 'Preferred term',
+            'short_term' => 'Short term',
+            'preferred_code' => 'Preferred code',
+            'source_type' => array(
+                'widget' => 'DropDownList',
+                'options' => $this->_getSourceTypes(),
+                'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+                'hidden' => false,
+                'layoutColumns' => array()
+            ),
+            'source_subtype' => array(
+                'widget' => 'DropDownList',
+                'options' => $this->_getSourceSubtypes(),
+                'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+                'hidden' => false,
+                'layoutColumns' => array()
+            ),
+            'vtm_term' => 'VTM term',
+            'vtm_code' => 'VTM code',
+            'vmp_term' => 'VMP term',
+            'vmp_code' => 'VMP code',
+            'amp_term' => 'AMP term',
+            'amp_code' => 'AMP code',
+            'default_form_id' => array(
+                'widget' => 'DropDownList',
+                'options' => CHtml::listData(MedicationForm::model()->findAll("deleted_date IS NULL"), "id", "term"),
+                'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+                'hidden' => false,
+                'layoutColumns' => array()
+            ),
+            'default_route_id' => array(
+                'widget' => 'DropDownList',
+                'options' => CHtml::listData(MedicationRoute::model()->findAll("deleted_date IS NULL"), "id", "term"),
+                'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+                'hidden' => false,
+                'layoutColumns' => array()
+            ),
+            'default_dose_unit_term' => 'Default dose unit',
+            'attributes' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_attributes',
+                'viewArguments' => array(
+                    'medication' => $model
+                )
+            ),
+            'sets' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_sets',
+                'viewArguments' => array(
+                    'medication' => $model
+                )
+            ),
+            'alternative_terms' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_alternative_terms',
+                'viewArguments' => array(
+                    'medication' => $model
+                )
+            ),
+        );
+    }
+
+    protected function _getSourceTypes()
+    {
+        $values = Yii::app()->db->createCommand("SELECT DISTINCT source_type FROM " . Medication::model()->tableName())->queryColumn();
+        $ret_array = array();
+        foreach ($values as $value) {
+            $ret_array[$value] = $value;
+        }
+        return $ret_array;
+    }
+
+    protected function _getSourceSubtypes()
+    {
+        $values = Yii::app()->db->createCommand("SELECT DISTINCT source_subtype FROM " . Medication::model()->tableName())->queryColumn();
+        $ret_array = array();
+        foreach ($values as $value) {
+            $ret_array[$value] = $value;
+        }
+        return $ret_array;
+    }
+
     public function actionSave($id = null)
     {
-		if (is_null($id)) {
-			$model = new Medication();
-		}
-		else {
-			if (!$model = Medication::model()->findByPk($id)) {
-				throw new CHttpException(404);
-			}
-		}
+        if (is_null($id)) {
+            $model = new Medication();
+        } else {
+            if (!$model = Medication::model()->findByPk($id)) {
+                throw new CHttpException(404);
+            }
+        }
         /** @var Medication $model */
 
         $data = Yii::app()->request->getPost('Medication');
         $this->_setModelData($model, $data);
 
-		if ($model->hasErrors()) {
-			$admin = $this->_getEditAdmin($model);
-			$this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors() ));
-			exit;
-		}
+        if ($model->hasErrors()) {
+            $admin = $this->_getEditAdmin($model);
+            $this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors()));
+            exit;
+        }
 
         /** @var CDbTransaction $trans */
-		$trans = Yii::app()->db->beginTransaction();
+        $trans = Yii::app()->db->beginTransaction();
 
 
-		if ($model->save(false)) {
-			$trans->commit();
-		}
+        if ($model->save(false)) {
+            $trans->commit();
+        }
 
-		foreach ($model->medicationSetItems as $item) {
+        foreach ($model->medicationSetItems as $item) {
 
-			// If the set is an automatic set, then the rule will be updated to include the drug
-			$medicationSet = MedicationSet::model()->findByPk($item->medication_set_id);
+            // If the set is an automatic set, then the rule will be updated to include the drug
+            $medicationSet = MedicationSet::model()->findByPk($item->medication_set_id);
 
-			/** @var MedicationSet $medicationSet */
-			if ($medicationSet->automatic) {
-				$has_medication_in_list = false;
-				foreach ($medicationSet->medicationSetAutoRuleMedications as $m) {
-					if ($m->medication_id == $item->medication_id) {
-						$has_medication_in_list = true;
-					}
-				}
+            /** @var MedicationSet $medicationSet */
+            if ($medicationSet->automatic) {
+                $has_medication_in_list = false;
+                foreach ($medicationSet->medicationSetAutoRuleMedications as $m) {
+                    if ($m->medication_id == $item->medication_id) {
+                        $has_medication_in_list = true;
+                    }
+                }
 
-				if (!$has_medication_in_list) {
-					$assignment = new MedicationSetAutoRuleMedication();
-					$assignment->medication_id = $item->medication_id;
-					$assignment->medication_set_id = $medicationSet->id;
-					$assignment->save();
-				}
-			}
-		}
+                if (!$has_medication_in_list) {
+                    $assignment = new MedicationSetAutoRuleMedication();
+                    $assignment->medication_id = $item->medication_id;
+                    $assignment->medication_set_id = $medicationSet->id;
+                    $assignment->save();
+                }
+            }
+        }
 
-        $this->redirect('/'.$this->getModule()->id.'/'.$this->id.'/list');
+        $this->redirect('/' . $this->getModule()->id . '/' . $this->id . '/list');
 
     }
 
     private function _setModelData(Medication $model, $data)
-	{
-		$model->setAttributes($data);
+    {
+        $model->setAttributes($data);
 
-		if (!array_key_exists('source_type', $data)) {
-			$model->source_type = $this->source_type;
-		}
+        if (!array_key_exists('source_type', $data)) {
+            $model->source_type = $this->source_type;
+        }
 
-		$model->validate();
+        $model->validate();
 
-		$alt_terms = array();
-		if (array_key_exists('medicationSearchIndexes', $data)) {
-			foreach ($data['medicationSearchIndexes']['id'] as $key => $rid) {
-				if ($rid == -1) {
-					$alt_term = new MedicationSearchIndex();
-				}
-				else {
-					$alt_term = MedicationSearchIndex::model()->findByPk($rid);
-				}
+        $alt_terms = array();
+        if (array_key_exists('medicationSearchIndexes', $data)) {
+            foreach ($data['medicationSearchIndexes']['id'] as $key => $rid) {
+                if ($rid == -1) {
+                    $alt_term = new MedicationSearchIndex();
+                } else {
+                    $alt_term = MedicationSearchIndex::model()->findByPk($rid);
+                }
 
-				$alt_term->setAttributes(array(
-					'medication_id' => $model->id,
-					'alternative_term' => $data['medicationSearchIndexes']['alternative_term'][$key],
-				));
+                $alt_term->setAttributes(array(
+                    'medication_id' => $model->id,
+                    'alternative_term' => $data['medicationSearchIndexes']['alternative_term'][$key],
+                ));
 
-				if (!$alt_term->validate()) {
-					$model->addErrors($alt_term->getErrors());
-				}
+                if (!$alt_term->validate()) {
+                    $model->addErrors($alt_term->getErrors());
+                }
 
-				$alt_terms[] = $alt_term;
-			}
-		}
-		$model->medicationSearchIndexes = $alt_terms;
+                $alt_terms[] = $alt_term;
+            }
+        }
+        $model->medicationSearchIndexes = $alt_terms;
 
-		// ensure that preferred_term exists as alternative term
+        // ensure that preferred_term exists as alternative term
 
-		$pref_term_exists = false;
-		foreach ($model->medicationSearchIndexes as $si) {
-			if ($si->alternative_term == $model->preferred_term) {
-				$pref_term_exists = true;
-			}
-		}
+        $pref_term_exists = false;
+        foreach ($model->medicationSearchIndexes as $si) {
+            if ($si->alternative_term == $model->preferred_term) {
+                $pref_term_exists = true;
+            }
+        }
 
-		if (!$pref_term_exists) {
-			$alt_term = new MedicationSearchIndex();
-			$alt_term->setAttributes(array(
-				'medication_id' => $model->id,
-				'alternative_term' => $model->preferred_term,
-			));
-			$model->medicationSearchIndexes = array_merge($model->medicationSearchIndexes, [$alt_term]);
-		}
+        if (!$pref_term_exists) {
+            $alt_term = new MedicationSearchIndex();
+            $alt_term->setAttributes(array(
+                'medication_id' => $model->id,
+                'alternative_term' => $model->preferred_term,
+            ));
+            $model->medicationSearchIndexes = array_merge($model->medicationSearchIndexes, [$alt_term]);
+        }
 
-		// update attribute assignments
+        // update attribute assignments
 
-		$attr_assignments = [];
-		if (array_key_exists('medicationAttributeAssignment', $data)) {
-			foreach ($data['medicationAttributeAssignment']['id'] as $key=>$assignment_id) {
-				if ($assignment_id == -1) {
-					$assignment = new MedicationAttributeAssignment();
-					$assignment->medication_id = $model->id;
-					$assignment->medication_attribute_option_id = $data['medicationAttributeAssignment']['medication_attribute_option_id'][$key];
-				}
-				else {
-					$assignment = MedicationAttributeAssignment::model()->findByPk($assignment_id);
-					$assignment->medication_attribute_option_id = $data['medicationAttributeAssignment']['medication_attribute_option_id'][$key];
-				}
-				$attr_assignments[] = $assignment;
+        $attr_assignments = [];
+        if (array_key_exists('medicationAttributeAssignment', $data)) {
+            foreach ($data['medicationAttributeAssignment']['id'] as $key => $assignment_id) {
+                if ($assignment_id == -1) {
+                    $assignment = new MedicationAttributeAssignment();
+                    $assignment->medication_id = $model->id;
+                    $assignment->medication_attribute_option_id = $data['medicationAttributeAssignment']['medication_attribute_option_id'][$key];
+                } else {
+                    $assignment = MedicationAttributeAssignment::model()->findByPk($assignment_id);
+                    $assignment->medication_attribute_option_id = $data['medicationAttributeAssignment']['medication_attribute_option_id'][$key];
+                }
+                $attr_assignments[] = $assignment;
 
-				if (!$assignment->validate()) {
-					$model->addErrors($assignment->getErrors());
-				}
-			}
-		}
-		$model->medicationAttributeAssignments = $attr_assignments;
+                if (!$assignment->validate()) {
+                    $model->addErrors($assignment->getErrors());
+                }
+            }
+        }
+        $model->medicationAttributeAssignments = $attr_assignments;
 
-		// update set memberships
-		$medicationSetItems = array();
-		if (array_key_exists('medicationSetItems', $data)) {
-			foreach ($data['medicationSetItems']['id'] as $key => $medicationSetItem_id) {
-				$attributes = array();
+        // update set memberships
+        $medicationSetItems = array();
+        if (array_key_exists('medicationSetItems', $data)) {
+            foreach ($data['medicationSetItems']['id'] as $key => $medicationSetItem_id) {
+                $attributes = array();
 
-				foreach (MedicationSetItem::model()->attributeNames() as $attr_name) {
-					if (array_key_exists($attr_name, $data['medicationSetItems'])) {
-						$attributes[$attr_name] = array_key_exists($key, $data['medicationSetItems'][$attr_name]) ? $data['medicationSetItems'][$attr_name][$key] : null;
-					}
-				}
+                foreach (MedicationSetItem::model()->attributeNames() as $attr_name) {
+                    if (array_key_exists($attr_name, $data['medicationSetItems'])) {
+                        $attributes[$attr_name] = array_key_exists($key, $data['medicationSetItems'][$attr_name]) ? $data['medicationSetItems'][$attr_name][$key] : null;
+                    }
+                }
 
-				if ($medicationSetItem_id == -1) {
-					$medicationSetItem = new MedicationSetItem();
-				}
-				else {
-					$medicationSetItem = MedicationSetItem::model()->findByPk($medicationSetItem_id);
-				}
+                if ($medicationSetItem_id == -1) {
+                    $medicationSetItem = new MedicationSetItem();
+                } else {
+                    $medicationSetItem = MedicationSetItem::model()->findByPk($medicationSetItem_id);
+                }
 
-				$medicationSetItem->setAttributes($attributes);
-				$medicationSetItem->medication_id = $model->id;
+                $medicationSetItem->setAttributes($attributes);
+                $medicationSetItem->medication_id = $model->id;
 
-				if (!$medicationSetItem->validate(array('medication_set_id', 'default_form_id', 'default_route_id', 'default_frequency_id', 'default_duration_id'))) {
-					$model->addErrors($medicationSetItem->getErrors());
-				}
+                if (!$medicationSetItem->validate(array('medication_set_id', 'default_form_id', 'default_route_id', 'default_frequency_id', 'default_duration_id'))) {
+                    $model->addErrors($medicationSetItem->getErrors());
+                }
 
-				$medicationSetItems[] = $medicationSetItem;
-			}
-		}
+                $medicationSetItems[] = $medicationSetItem;
+            }
+        }
 
-		$model->medicationSetItems = $medicationSetItems;
-	}
+        $model->medicationSetItems = $medicationSetItems;
+    }
 
     public function actionExportForm()
     {
@@ -351,8 +344,7 @@ class RefMedicationAdminController extends BaseAdminController
             $med_set_ids = Yii::app()->request->getPost('MedicationSet');
             if (!empty($med_set_ids)) {
                 return $this->actionExport($med_set_ids);
-            }
-            else {
+            } else {
                 $data['form_error'] = 'Please select at least one Set.';
             }
         }
@@ -390,13 +382,17 @@ class RefMedicationAdminController extends BaseAdminController
 
         $sets_array = [];
 
-        $sets_array[0] = array_map(function ($e){ return $e->name; }, $sets);
-        $sets_array[1] = array_map(function ($e){ return $e->id; }, $sets);
-        $sets_array[2] = array_map(function ($e){
+        $sets_array[0] = array_map(function ($e) {
+            return $e->name;
+        }, $sets);
+        $sets_array[1] = array_map(function ($e) {
+            return $e->id;
+        }, $sets);
+        $sets_array[2] = array_map(function ($e) {
             /** @var MedicationSet $e */
             $ruleString = [];
             foreach ($e->medicationSetRules as $rule) {
-                $ruleString[] = ($rule->usageCode ? $rule->usageCode->usage_code : '') . " (site=".(is_null($rule->site_id) ? "null" : $rule->site->name).", ss=".(is_null($rule->subspecialty_id) ? "null" : $rule->subspecialty->name).")";
+                $ruleString[] = ($rule->usageCode ? $rule->usageCode->usage_code : '') . " (site=" . (is_null($rule->site_id) ? "null" : $rule->site->name) . ", ss=" . (is_null($rule->subspecialty_id) ? "null" : $rule->subspecialty->name) . ")";
             }
 
             return implode(PHP_EOL, $ruleString);
@@ -405,7 +401,7 @@ class RefMedicationAdminController extends BaseAdminController
         $sheet->fromArray($sets_array, null, 'E1');
 
         $cond = new CDbCriteria();
-        $cond->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN (".implode(",", $med_set_ids)."))");
+        $cond->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN (" . implode(",", $med_set_ids) . "))");
 
         $medications = Medication::model()->findAll($cond);
 
@@ -422,7 +418,7 @@ class RefMedicationAdminController extends BaseAdminController
                     $repr->dose = $ref_medication_set->default_dose;
                     $repr->dose_unit = $ref_medication_set->default_dose_unit_term;
                     $repr->route = is_null($ref_medication_set->default_route) ? null : $ref_medication_set->defaultRoute->term;
-                    $repr->frequency = is_null($ref_medication_set->default_frequency) ? null: $ref_medication_set->defaultFrequency->term;
+                    $repr->frequency = is_null($ref_medication_set->default_frequency) ? null : $ref_medication_set->defaultFrequency->term;
                     $repr->duration = is_null($ref_medication_set->default_duration) ? null : $ref_medication_set->defaultDuration->name;
 
                     if (!empty($ref_medication_set->tapers)) {
@@ -437,14 +433,13 @@ class RefMedicationAdminController extends BaseAdminController
                     }
 
                     $row[] = json_encode($repr);
-                }
-                else {
+                } else {
                     $row[] = null;
                 }
 
             }
 
-            $cells_array[]=$row;
+            $cells_array[] = $row;
         }
 
         $sheet->fromArray($cells_array, null, 'A5');
@@ -460,14 +455,13 @@ class RefMedicationAdminController extends BaseAdminController
         try {
             foreach (Yii::app()->request->getPost('Medication')['id'] as $id) {
                 $medication = Medication::model()->findByPk($id);
-                /** @var Medication $medication*/
+                /** @var Medication $medication */
                 foreach ($medication->medicationSearchIndexes as $index) {
                     $index->delete();
                 }
                 $medication->delete();
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             echo "0";
             exit;
         }

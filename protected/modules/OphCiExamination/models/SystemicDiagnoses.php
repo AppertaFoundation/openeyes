@@ -16,6 +16,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+
 use OEModule\OphCiExamination\components\OphCiExamination_API;
 use OEModule\PASAPI\resources\Patient;
 
@@ -40,11 +41,10 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
-
-    protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\SystemicDiagnoses';
+    public $cached_tip_status = null;
+    protected $auto_update_relations = true;
     protected $default_from_previous = true;
-
     /**
      * @var bool flag to indicate whether we should update the patient level data
      */
@@ -89,7 +89,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             array('event_id, diagnoses, checked_required_diagnoses', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id',  'safe', 'on' => 'search')
+            array('id, event_id', 'safe', 'on' => 'search')
         );
     }
 
@@ -162,7 +162,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         if ($patient) {
             $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
-                $both = array(true, false);
+            $both = array(true, false);
             foreach ($both as $present) {
                 foreach ($patient->getSystemicDiagnoses($present) as $sd) {
                     $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
@@ -190,7 +190,25 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         return implode(' <br /> ', $this->orderedDiagnoses);
     }
 
-    public $cached_tip_status = null;
+    /**
+     * Call this method before updating any attributes on the instance.
+     */
+    public function storePatientUpdateStatus()
+    {
+        $this->update_patient_level = $this->isAtTip();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAtTip()
+    {
+        // TODO: consolidate the cached status and the patient update flag
+        if ($this->cached_tip_status === null) {
+            $this->cached_tip_status = $this->calculateTipStatus();
+        }
+        return $this->cached_tip_status;
+    }
 
     protected function calculateTipStatus()
     {
@@ -218,40 +236,6 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 
     /**
      * @return bool
-     */
-    public function isAtTip()
-    {
-        // TODO: consolidate the cached status and the patient update flag
-        if ($this->cached_tip_status === null) {
-            $this->cached_tip_status = $this->calculateTipStatus();
-        }
-        return $this->cached_tip_status;
-    }
-
-    /**
-     * Call this method before updating any attributes on the instance.
-     */
-    public function storePatientUpdateStatus()
-    {
-        $this->update_patient_level = $this->isAtTip();
-    }
-
-    /**
-     * Validate the diagnoses
-     */
-    protected function afterValidate()
-    {
-        foreach ($this->diagnoses as $i => $diagnosis) {
-            if (!$diagnosis->validate()) {
-                foreach ($diagnosis->getErrors() as $fld => $err) {
-                    $this->addError('diagnoses', 'Diagnosis ('.($i + 1).'): '.implode(', ', $err));
-                }
-            }
-        }
-    }
-
-    /**
-     * @return bool
      *
      * If a diagnose is "not checked", do not store in db
      * If a diagnose is "not present", save separately
@@ -262,7 +246,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         $diags = $this->diagnoses;
         $checked_req_diags = array();
 
-        foreach ($diags as $key=>$entry) {
+        foreach ($diags as $key => $entry) {
             if ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_CHECKED) {
                 unset($diags[$key]);
             } else if ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_PRESENT) {
@@ -289,59 +273,58 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     }
 
     public function updatePatientLevelSystemicDiagnoses()
-	{
-		// extract event from the event id of the element - in afterSave the relation doesn't
-		// work when the instance has only just been saved
-		$event = \Event::model()->findByPk($this->event_id);
-		/** @var \Patient $patient */
-		$patient = $event->getPatient();
-		$sd_ids_to_keep = array();
+    {
+        // extract event from the event id of the element - in afterSave the relation doesn't
+        // work when the instance has only just been saved
+        $event = \Event::model()->findByPk($this->event_id);
+        /** @var \Patient $patient */
+        $patient = $event->getPatient();
+        $sd_ids_to_keep = array();
 
-		// update or create the secondary diagnoses for the diagnoses on this element
-		foreach ($this->diagnoses as $diagnosis) {
-			$sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
-			$sd_ids_to_keep[] = $sd->id;
-		}
+        // update or create the secondary diagnoses for the diagnoses on this element
+        foreach ($this->diagnoses as $diagnosis) {
+            $sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
+            $sd_ids_to_keep[] = $sd->id;
+        }
 
-		// then delete any other secondary diagnoses still on the patient.
-		foreach ($patient->getSystemicDiagnoses() as $sd) {
-			if (!in_array($sd->id, $sd_ids_to_keep)) {
-				$sd->delete();
-			}
-		}
+        // then delete any other secondary diagnoses still on the patient.
+        foreach ($patient->getSystemicDiagnoses() as $sd) {
+            if (!in_array($sd->id, $sd_ids_to_keep)) {
+                $sd->delete();
+            }
+        }
 
-		$sd_ids_to_keep = array();
-		// update or create not present secondary diagnoses
-		foreach ($this->checked_required_diagnoses as $diagnosis) {
-			$sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
-			$sd_ids_to_keep[] = $sd->id;
-		}
+        $sd_ids_to_keep = array();
+        // update or create not present secondary diagnoses
+        foreach ($this->checked_required_diagnoses as $diagnosis) {
+            $sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
+            $sd_ids_to_keep[] = $sd->id;
+        }
 
-		foreach ($patient->getSystemicDiagnoses(false) as $sd) {
-			if (!in_array($sd->id, $sd_ids_to_keep)) {
-				$sd->delete();
-			}
-		}
-	}
+        foreach ($patient->getSystemicDiagnoses(false) as $sd) {
+            if (!in_array($sd->id, $sd_ids_to_keep)) {
+                $sd->delete();
+            }
+        }
+    }
 
-	public function afterDelete()
-	{
-		$api = new OphCiExamination_API();
-		$event = \Event::model()->findByPk($this->event_id);
-		/** @var \Patient $patient */
-		$patient = $event->getPatient();
-		$et = $api->getLatestElement(SystemicDiagnoses::class, $patient);
-		if ($et) {
-			// There is an earlier element: revert diagnoses
-			/** @var SystemicDiagnoses $et */
-			$et->updatePatientLevelSystemicDiagnoses();
-		}
-		else {
-			// This is the only element: remove diagnoses
-			$this->updatePatientLevelSystemicDiagnoses();
-		}
+    public function afterDelete()
+    {
+        $api = new OphCiExamination_API();
+        $event = \Event::model()->findByPk($this->event_id);
+        /** @var \Patient $patient */
+        $patient = $event->getPatient();
+        $et = $api->getLatestElement(SystemicDiagnoses::class, $patient);
+        if ($et) {
+            // There is an earlier element: revert diagnoses
+            /** @var SystemicDiagnoses $et */
+            $et->updatePatientLevelSystemicDiagnoses();
+        } else {
+            // This is the only element: remove diagnoses
+            $this->updatePatientLevelSystemicDiagnoses();
+        }
 
-		return parent::afterDelete();
+        return parent::afterDelete();
     }
 
     /**
@@ -351,15 +334,30 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     public function getEntriesDisplay($category = 'entries')
     {
         if (!in_array($category, array('present', 'not_checked', 'not_present'))) {
-            $category  = 'entries';
+            $category = 'entries';
         }
-        return implode(', ', array_map(function($e) { return $e->getDisplay();
+        return implode(', ', array_map(function ($e) {
+            return $e->getDisplay();
         }, $this->$category));
     }
 
     public function getTileSize($action)
     {
         return $action === 'view' || $action === 'createImage' ? 1 : null;
+    }
+
+    /**
+     * Validate the diagnoses
+     */
+    protected function afterValidate()
+    {
+        foreach ($this->diagnoses as $i => $diagnosis) {
+            if (!$diagnosis->validate()) {
+                foreach ($diagnosis->getErrors() as $fld => $err) {
+                    $this->addError('diagnoses', 'Diagnosis (' . ($i + 1) . '): ' . implode(', ', $err));
+                }
+            }
+        }
     }
 
 }

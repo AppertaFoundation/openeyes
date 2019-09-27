@@ -19,14 +19,14 @@
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \CClientScript::POS_HEAD);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
-$is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getRequest()->getUserAgent());?>
+$is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getRequest()->getUserAgent()); ?>
 <div class="element-data full-width flex-layout flex-top col-gap">
     <div class="cols-3">
         <table class="cols-full">
             <tbody>
-                <?php if ($correspondeceApp === "on") { ?>
+            <?php if ($correspondeceApp === "on") { ?>
                 <tr>
-                    <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
+                    <td class="data-label"><?= \CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
                     <td>
                         <div class="data-value" style="text-align: right">
                             <?php
@@ -49,16 +49,16 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                     <td colspan="2">
                         <small class="fade">To</small><br>
                         <?php
-                            $ccString = "";
-                            $toAddress = "";
+                        $ccString = "";
+                        $toAddress = "";
                         if ($element->document_instance) {
                             foreach ($element->document_instance as $instance) {
                                 foreach ($instance->document_target as $target) {
                                     if ($target->ToCc == 'To') {
-                                           $toAddress = $target->contact_name . "\n" . $target->address;
+                                        $toAddress = $target->contact_name . "\n" . $target->address;
                                     } else {
                                         $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                                         $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                                        $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $element->renderSourceAddress($target->address) . "<br/>";
                                     }
                                 }
                             }
@@ -66,15 +66,15 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                             $toAddress = $element->address;
                             foreach (explode("\n", trim($element->cc)) as $line) {
                                 if (trim($line)) {
-                                    $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
+                                    $ccString .= "CC: " . str_replace(';', ',', $line) . "<br/>";
                                 }
                             }
                         }
-                            echo str_replace("\n", '<br/>', CHtml::encode($toAddress))."<br/>".$ccString;
+                        echo str_replace("\n", '<br/>', CHtml::encode($toAddress)) . "<br/>" . $ccString;
                         ?>
                     </td>
                 </tr>
-                <?php } ?>
+            <?php } ?>
             </tbody>
         </table>
     </div>
@@ -83,10 +83,11 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
             <p style="margin-bottom: 100px;">Generating PDFs</p>
             <i class="spinner"></i>
         </div>
-        <?php if ($is_mobile_or_tablet){?>
+        <?php if ($is_mobile_or_tablet) { ?>
             <div class="js-correspondence-image-overlay" style="position: relative;"></div>
-        <?php } else {?>
-            <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=<?= $element->checkPrint() ?>" style="width: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>px; height: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>px; border: 0; position: relative;"></iframe>
+        <?php } else { ?>
+            <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=<?= $element->checkPrint() ?>"
+                    style="width: <?= Yii::app()->params['lightning_viewer']['blank_image_template']['width'] ?>px; height: <?= Yii::app()->params['lightning_viewer']['blank_image_template']['height'] ?>px; border: 0; position: relative;"></iframe>
         <?php } ?>
     </div>
 </div>
@@ -95,6 +96,6 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
         let options = [];
         // OE-8581 Disable lightning image loading due to speed issues
         options['disableAjaxCall'] = <?= ($is_mobile_or_tablet ? 'false' : 'true'); ?>;
-        new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id , options);
+        new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id, options);
     });
 </script>

@@ -23,7 +23,6 @@
  * @property OphDrPrescription_DispenseCondition $dispense_condition
  * @property OphDrPrescription_DispenseLocation $dispense_location
  */
-
 class OphDrPrescription_Item extends EventMedicationUse
 {
     /**
@@ -91,14 +90,14 @@ class OphDrPrescription_Item extends EventMedicationUse
     {
         if ($this->medication_id) {
 
-        	$defaults = false;
+            $defaults = false;
 
-        	if (!is_null($set)) {
-				$defaults = MedicationSetItem::model()->find(array(
-					'condition' => 'medication_set_id = :med_set_id AND medication_id = :medication_id',
-					'params' => array(':med_set_id' => $set->id, ':medication_id' => $this->medication_id)
-				));
-			}
+            if (!is_null($set)) {
+                $defaults = MedicationSetItem::model()->find(array(
+                    'condition' => 'medication_set_id = :med_set_id AND medication_id = :medication_id',
+                    'params' => array(':med_set_id' => $set->id, ':medication_id' => $this->medication_id)
+                ));
+            }
 
             if ($defaults) {
                 /** @var MedicationSetItem $defaults */
@@ -107,14 +106,13 @@ class OphDrPrescription_Item extends EventMedicationUse
                 $this->dose = $defaults->default_dose;
                 $this->dose_unit_term = $defaults->default_dose_unit_term ? $defaults->default_dose_unit_term : $this->medication->default_dose_unit_term;
                 $this->form_id = $defaults->default_form_id ? $defaults->default_form_id : $this->medication->default_form_id;
+            } else {
+                $this->frequency_id = null;
+                $this->route_id = $this->medication->default_route_id;
+                $this->dose = 1;
+                $this->dose_unit_term = $this->medication->default_dose_unit_term;
+                $this->form_id = $this->medication->default_form_id;
             }
-            else {
-				$this->frequency_id = null;
-				$this->route_id = $this->medication->default_route_id;
-				$this->dose = 1;
-				$this->dose_unit_term = $this->medication->default_dose_unit_term;
-				$this->form_id = $this->medication->default_form_id;
-			}
         }
     }
 
@@ -123,7 +121,7 @@ class OphDrPrescription_Item extends EventMedicationUse
         foreach ($this->tapers as $i => $taper) {
             if (!$taper->validate()) {
                 foreach ($taper->getErrors() as $fld => $err) {
-                    $this->addError('tapers', 'Taper ('.($i + 1).'): '.implode(', ', $err));
+                    $this->addError('tapers', 'Taper (' . ($i + 1) . '): ' . implode(', ', $err));
                 }
             }
         }
@@ -151,17 +149,17 @@ class OphDrPrescription_Item extends EventMedicationUse
 
     public function getAdministrationDisplay()
     {
-        $dose = (string) $this->dose;
-        $freq = (string) $this->frequency;
-        $route = (string) $this->route;
+        $dose = (string)$this->dose;
+        $freq = (string)$this->frequency;
+        $route = (string)$this->route;
 
         if ($this->tapers) {
             $last_taper = array_slice($this->tapers, -1)[0];
-            $last_dose = (string) $last_taper->dose;
+            $last_dose = (string)$last_taper->dose;
             if ($last_dose != $dose) {
                 $dose .= ' - ' . $last_dose;
             }
-            $last_freq = (string) $last_taper->frequency;
+            $last_freq = (string)$last_taper->frequency;
             if ($last_freq != $freq) {
                 $freq .= ' - ' . $last_freq;
             }
@@ -169,69 +167,69 @@ class OphDrPrescription_Item extends EventMedicationUse
         return $dose . ($this->laterality ? ' ' . $this->getLateralityDisplay() : '') . ' ' . $route . ' ' . $freq;
     }
 
-	/**
-	 * Update the item based on its
-	 * management item
-	 */
+    /**
+     * Update the item based on its
+     * management item
+     */
 
-	public function updateFromManagementItem()
-	{
-		$attributes_to_check = array(
-			'medication_id',
-			'form_id',
-			'laterality',
-			'route_id',
-			'frequency_id',
-			'duration',
-			'dose',
-			'dispense_condition_id',
-			'dispense_location_id',
-		);
+    public function updateFromManagementItem()
+    {
+        $attributes_to_check = array(
+            'medication_id',
+            'form_id',
+            'laterality',
+            'route_id',
+            'frequency_id',
+            'duration',
+            'dose',
+            'dispense_condition_id',
+            'dispense_location_id',
+        );
 
-		if (!$mgment_item = \OEModule\OphCiExamination\models\MedicationManagementEntry::model()->findByAttributes(array("prescription_item_id" =>$this->id))) {
-			return false;
-		}
-		/** @var \OEModule\OphCiExamination\models\MedicationManagementEntry $mgment_item */
-		foreach ($attributes_to_check as $attribute) {
-			$this->setAttribute($attribute, $mgment_item->getAttribute($attribute));
-		}
+        if (!$mgment_item = \OEModule\OphCiExamination\models\MedicationManagementEntry::model()->findByAttributes(array("prescription_item_id" => $this->id))) {
+            return false;
+        }
+        /** @var \OEModule\OphCiExamination\models\MedicationManagementEntry $mgment_item */
+        foreach ($attributes_to_check as $attribute) {
+            $this->setAttribute($attribute, $mgment_item->getAttribute($attribute));
+        }
 
-		$this->save();
-		$this->updateTapers($mgment_item->tapers);
+        $this->save();
+        $this->updateTapers($mgment_item->tapers);
     }
 
-	public function updateTapers(array $tapers)
-	{
-		foreach ($this->tapers as $taper) {
-			$taper->delete();
-		}
+    public function updateTapers(array $tapers)
+    {
+        foreach ($this->tapers as $taper) {
+            $taper->delete();
+        }
 
-		foreach ($tapers as $taper) {
-			$new_taper = new OphDrPrescription_ItemTaper();
-			$new_taper->setAttributes([
-				'item_id' => $this->id,
-				'frequency_id' => $taper->frequency_id,
-				'duration_id' => $taper->duration_id,
-				'dose' => $taper->dose
-			]);
+        foreach ($tapers as $taper) {
+            $new_taper = new OphDrPrescription_ItemTaper();
+            $new_taper->setAttributes([
+                'item_id' => $this->id,
+                'frequency_id' => $taper->frequency_id,
+                'duration_id' => $taper->duration_id,
+                'dose' => $taper->dose
+            ]);
 
-			$new_taper->save();
-		}
+            $new_taper->save();
+        }
     }
 
-	public function saveTapers()
-	{
-		foreach ($this->tapers as $taper) {
-			$taper->item_id = $this->id;
-			$taper->save();
-		}
+    public function saveTapers()
+    {
+        foreach ($this->tapers as $taper) {
+            $taper->item_id = $this->id;
+            $taper->save();
+        }
     }
 
-	public function beforeDelete()
-	{
-		\Yii::app()->db->createCommand("DELETE FROM ".\OphDrPrescription_ItemTaper::model()->tableName(). " WHERE item_id = :item_id")->
-		bindValues(array(":item_id" => $this->id))->execute();
+    public function beforeDelete()
+    {
+        \Yii::app()->db->createCommand("DELETE FROM " . \OphDrPrescription_ItemTaper::model()->tableName() . " WHERE item_id = :item_id")->
+        bindValues(array(":item_id" => $this->id))->execute();
 
-		return parent::beforeDelete();
-	}
+        return parent::beforeDelete();
+    }
 }

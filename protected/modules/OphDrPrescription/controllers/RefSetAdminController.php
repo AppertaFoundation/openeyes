@@ -18,92 +18,90 @@
 
 class RefSetAdminController extends BaseAdminController
 {
-	public $group = 'Drugs';
+    public $group = 'Drugs';
 
-	public function actionList()
-	{
-		$admin = new Admin(MedicationSet::model(), $this);
-		$admin->setListFields(array(
-			'id',
-			'name',
-			'rulesString',
-			'itemsCount',
-			'hiddenString',
-			'adminListAction'
-		));
+    public function actionList()
+    {
+        $admin = new Admin(MedicationSet::model(), $this);
+        $admin->setListFields(array(
+            'id',
+            'name',
+            'rulesString',
+            'itemsCount',
+            'hiddenString',
+            'adminListAction'
+        ));
 
-		$admin->getSearch()->addSearchItem('name');
-		$admin->getSearch()->setItemsPerPage(30);
-		$admin->getSearch()->getCriteria()->order = 'name ASC';
+        $admin->getSearch()->addSearchItem('name');
+        $admin->getSearch()->setItemsPerPage(30);
+        $admin->getSearch()->getCriteria()->order = 'name ASC';
 
-		$admin->setListFieldsAction('edit');
+        $admin->setListFieldsAction('edit');
 
 
-		$admin->setModelDisplayName("Medication sets");
-		$admin->listModel();
-	}
+        $admin->setModelDisplayName("Medication sets");
+        $admin->listModel();
+    }
 
-	public function actionToList($id)
-	{
-		$this->redirect('/OphDrPrescription/refMedicationAdmin/list?ref_set_id='.$id);
-	}
+    public function actionToList($id)
+    {
+        $this->redirect('/OphDrPrescription/refMedicationAdmin/list?ref_set_id=' . $id);
+    }
 
-	public function actionEdit($id = null)
-	{
-		$admin = new Admin(MedicationSet::model(), $this);
+    public function actionEdit($id = null)
+    {
+        $admin = new Admin(MedicationSet::model(), $this);
 
-		$admin->setEditFields(array(
-			'name'=>'Name',
-			'rules' => array(
-				'widget' => 'CustomView',
-				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
-				'viewArguments' => array(
-					'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet()
-				)
-			),
+        $admin->setEditFields(array(
+            'name' => 'Name',
+            'rules' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.medication_set.edit_rules',
+                'viewArguments' => array(
+                    'medication_set' => !is_null($id) ? MedicationSet::model()->findByPk($id) : new MedicationSet()
+                )
+            ),
 
-		));
-		$admin->setModelDisplayName("Medication set");
-		if ($id) {
-			$admin->setModelId($id);
-		}
-		$admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/'.$id);
+        ));
+        $admin->setModelDisplayName("Medication set");
+        if ($id) {
+            $admin->setModelId($id);
+        }
+        $admin->setCustomSaveURL('/OphDrPrescription/refSetAdmin/save/' . $id);
 
-		$admin->editModel();
-	}
+        $admin->editModel();
+    }
 
-	public function actionSave($id = null)
-	{
-		if (is_null($id)) {
-			$model = new MedicationSet();
-		}
-		else {
-			if (!$model = MedicationSet::model()->findByPk($id)) {
-				throw new CHttpException(404, 'Page not found');
-			}
-		}
+    public function actionSave($id = null)
+    {
+        if (is_null($id)) {
+            $model = new MedicationSet();
+        } else {
+            if (!$model = MedicationSet::model()->findByPk($id)) {
+                throw new CHttpException(404, 'Page not found');
+            }
+        }
 
-		/** @var MedicationSet $model */
+        /** @var MedicationSet $model */
 
-		$data = Yii::app()->request->getPost('MedicationSet');
-		$model->setAttributes($data);
+        $data = Yii::app()->request->getPost('MedicationSet');
+        $model->setAttributes($data);
 
-		$model->save();
+        $model->save();
 
-		$existing_ids = array();
-		$updated_ids = array();
-		foreach ($model->medicationSetRules as $rule) {
-			$existing_ids[] = $rule->id;
-		}
+        $existing_ids = array();
+        $updated_ids = array();
+        foreach ($model->medicationSetRules as $rule) {
+            $existing_ids[] = $rule->id;
+        }
 
-		$medication_set = Yii::app()->request->getPost('MedicationSet');
-		$ids = isset($medication_set['medicationSetRules']['id']) ? $medication_set['medicationSetRules']['id'] : [];
+        $medication_set = Yii::app()->request->getPost('MedicationSet');
+        $ids = isset($medication_set['medicationSetRules']['id']) ? $medication_set['medicationSetRules']['id'] : [];
 
         foreach ($ids as $key => $rid) {
             if ($rid == -1) {
                 $medSetRule = new MedicationSetRule();
-            }
-            else {
+            } else {
                 $medSetRule = MedicationSetRule::model()->findByPk($rid);
                 $updated_ids[] = $rid;
             }
@@ -119,31 +117,31 @@ class RefSetAdminController extends BaseAdminController
         }
 
 
-		$deleted_ids = array_diff($existing_ids, $updated_ids);
-		if (!empty($deleted_ids)) {
-			MedicationSetRule::model()->deleteByPk($deleted_ids);
-		}
+        $deleted_ids = array_diff($existing_ids, $updated_ids);
+        if (!empty($deleted_ids)) {
+            MedicationSetRule::model()->deleteByPk($deleted_ids);
+        }
 
-		$this->redirect('/OphDrPrescription/refSetAdmin/list');
-	}
+        $this->redirect('/OphDrPrescription/refSetAdmin/list');
+    }
 
-	public function actionDelete()
-	{
-		$ids_to_delete = Yii::app()->request->getPost('MedicationSet')['id'];
-		if (is_array($ids_to_delete)) {
-			foreach ($ids_to_delete as $id) {
-				$model = MedicationSet::model()->findByPk($id);
-				/** @var MedicationSet $model */
-				foreach ($model->medicationSetRules as $rule) {
-					$rule->delete();
-				}
-				foreach ($model->items as $i) {
-					$i->delete();
-				}
-				$model->delete();
-			}
-		}
+    public function actionDelete()
+    {
+        $ids_to_delete = Yii::app()->request->getPost('MedicationSet')['id'];
+        if (is_array($ids_to_delete)) {
+            foreach ($ids_to_delete as $id) {
+                $model = MedicationSet::model()->findByPk($id);
+                /** @var MedicationSet $model */
+                foreach ($model->medicationSetRules as $rule) {
+                    $rule->delete();
+                }
+                foreach ($model->items as $i) {
+                    $i->delete();
+                }
+                $model->delete();
+            }
+        }
 
-		exit("1");
-	}
+        exit("1");
+    }
 }

@@ -14,78 +14,78 @@
  */
 ?>
 <div class="element-data full-width">
-  <div class="data-value">
-      <div class="cols-11">
-        <table class="last-left">
-          <thead>
-          <tr>
-            <th>Drug</th>
-            <th>Dose</th>
-            <th>Route</th>
-            <th>Frequency</th>
-            <th>Duration</th>
-            <th>Dispense Condition/Location</th>
-              <th>Comments</th>
-          </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($element->items as $key => $item) { ?>
-            <tr class="prescription-item">
-              <td class="priority-text">
-                  <?php if (isset($this->patient) && $this->patient->hasDrugAllergy($item->medication_id)): ?>
-                      <i class="oe-i warning small pad js-has-tooltip"
-                         data-tooltip-content="Allergic to <?= implode(',',$this->patient->getPatientDrugAllergy($item->medication_id))?>">
-                      </i>
-                  <?php endif; ?>
-                  <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
-                  <?php echo $item->medication->preferred_term; ?></td>
-              <td><?php echo $item->dose . " " . $item->dose_unit_term; ?></td>
-              <td><?php echo $item->route->term ?>
-                  <?php if ($item->laterality) {
-                      echo ' (' . $item->medicationLaterality->name . ')';
-                  } ?>
-              </td>
-              <td><?php echo $item->frequency ?$item->frequency->term : '' ?></td>
-              <td><?php echo $item->duration_id ? $item->drugDuration->name : '' ?></td>
-              <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
-                <td class="prescription-label">
-                    <?php if (!is_null($item->comments)) : ?>
-                        <i><?=\CHtml::encode($item->comments); ?></i>
-                    <?php endif; ?>
-                </td>
-            </tr>
-                <?php foreach ($item->tapers as $taper) { ?>
-              <tr class="prescription-tapier <?php echo (($key % 2) == 0) ? 'even' : 'odd'; ?>">
-                <td class="prescription-label">
-                  <i class="oe-i child-arrow small no-click pad"></i>
-                  <em class="fade">then</em>
-                </td>
-                <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->dose_unit_term) : $taper->dose ?></td>
-                <td></td>
-                <td><?php echo $taper->frequency->term ?></td>
-                <td><?php echo $taper->duration->name ?></td>
-                <td></td>
-              </tr>
-                <?php }
-            } ?>
-          </tbody>
-        </table>
-      </div>
+    <div class="data-value">
+        <div class="cols-11">
+            <table class="last-left">
+                <thead>
+                <tr>
+                    <th>Drug</th>
+                    <th>Dose</th>
+                    <th>Route</th>
+                    <th>Frequency</th>
+                    <th>Duration</th>
+                    <th>Dispense Condition/Location</th>
+                    <th>Comments</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($element->items as $key => $item) { ?>
+                    <tr class="prescription-item">
+                        <td class="priority-text">
+                            <?php if (isset($this->patient) && $this->patient->hasDrugAllergy($item->medication_id)): ?>
+                                <i class="oe-i warning small pad js-has-tooltip"
+                                   data-tooltip-content="Allergic to <?= implode(',', $this->patient->getPatientDrugAllergy($item->medication_id)) ?>">
+                                </i>
+                            <?php endif; ?>
+                            <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
+                            <?php echo $item->medication->preferred_term; ?></td>
+                        <td><?php echo $item->dose . " " . $item->dose_unit_term; ?></td>
+                        <td><?php echo $item->route->term ?>
+                            <?php if ($item->laterality) {
+                                echo ' (' . $item->medicationLaterality->name . ')';
+                            } ?>
+                        </td>
+                        <td><?php echo $item->frequency ? $item->frequency->term : '' ?></td>
+                        <td><?php echo $item->duration_id ? $item->drugDuration->name : '' ?></td>
+                        <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
+                        <td class="prescription-label">
+                            <?php if (!is_null($item->comments)) : ?>
+                                <i><?= \CHtml::encode($item->comments); ?></i>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php foreach ($item->tapers as $taper) { ?>
+                        <tr class="prescription-tapier <?php echo (($key % 2) == 0) ? 'even' : 'odd'; ?>">
+                            <td class="prescription-label">
+                                <i class="oe-i child-arrow small no-click pad"></i>
+                                <em class="fade">then</em>
+                            </td>
+                            <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->dose_unit_term) : $taper->dose ?></td>
+                            <td></td>
+                            <td><?php echo $taper->frequency->term ?></td>
+                            <td><?php echo $taper->duration->name ?></td>
+                            <td></td>
+                        </tr>
+                    <?php }
+                } ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <input type="hidden" id="et_ophdrprescription_draft" value="<?php echo $element->draft ?>"/>
 <input type="hidden" id="et_ophdrprescription_print" value="<?php echo $element->print ?>"/>
 
 <?php if ($element->comments) { ?>
-  <!-- CLose the wrapping section early so that teh commetns section can appear in its own section -->
-  </section>
-  <section class="element view full  view-comments">
+<!-- CLose the wrapping section early so that teh commetns section can appear in its own section -->
+</section>
+<section class="element view full  view-comments">
     <header class="element-header">
-      <h3 class="element-title">Comments</h3>
+        <h3 class="element-title">Comments</h3>
     </header>
     <div class="element-data full-width">
-      <div class="data-value">
-        <span class="large-text"><?php echo $element->textWithLineBreaks('comments') ?></span>
-      </div>
+        <div class="data-value">
+            <span class="large-text"><?php echo $element->textWithLineBreaks('comments') ?></span>
+        </div>
     </div>
-<?php } ?>
+    <?php } ?>

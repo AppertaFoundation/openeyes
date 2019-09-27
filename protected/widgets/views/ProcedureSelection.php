@@ -111,7 +111,7 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function () {
         const low_complexity = "0";
         const high_complexity = "10";
         const high_percentage = typeof op_booking_inc_time_high_complexity !== "undefined" ? parseInt(window.op_booking_inc_time_high_complexity) : 20;
@@ -222,8 +222,8 @@
             } else if (popped) {
                 // No subsections, so we should be safe to just push it back into the list
                 $('ul.add-options[data-id="select"]').append(
-                    '<li data-label="'+popped["name"]+'" data-id="'+popped["id"]+'">' +
-                        '<span class="auto-width">'+popped["name"]+'</span>' +
+                    '<li data-label="' + popped["name"] + '" data-id="' + popped["id"] + '">' +
+                    '<span class="auto-width">' + popped["name"] + '</span>' +
                     '</li>'
                 ).removeAttr('disabled');
                 sort_ul($('ul.add-options[data-id="select"]'));
@@ -346,7 +346,7 @@
             return false;
         });
 
-        <?php if ($durations): ?>
+        <?php if ($durations) : ?>
         $(document).ready(function () {
             if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
                 $('#projected_duration_<?php echo $identifier?> span').html(parseInt($('#projected_duration_<?php echo $identifier?> span').html()));
@@ -455,10 +455,10 @@
             initialiseProcedureAdder();
         });
 
-        $("input[id*='_complexity_']").on('click', function() {
+        $("input[id*='_complexity_']").on('click', function () {
             let $estimated = $('#Element_OphTrOperationbooking_Operation_total_duration_procs');
             if ($estimated) {
-                if (typeof updateTotalDuration === "function"){
+                if (typeof updateTotalDuration === "function") {
                     updateTotalDuration('procs');
                 }
             }

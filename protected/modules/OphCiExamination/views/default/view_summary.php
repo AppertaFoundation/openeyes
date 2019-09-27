@@ -13,196 +13,103 @@ $medicationsElement = $this->event->getElementByClass(models\HistoryMedications:
 $familyHistoryElement = $this->event->getElementByClass(models\FamilyHistory::class) ?: new models\FamilyHistory();
 $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::class) ?: new models\SocialHistory();
 
- if ($historyElement) {
-     $this->renderElement($historyElement, $action, $form, $data);
- }
- ?>
+if ($historyElement) {
+    $this->renderElement($historyElement, $action, $form, $data);
+}
+?>
 
 <div class="element-tile-group" data-collapse="expanded">
     <?php $this->renderElement($diagnosesElement, $action, $form, $data) ?>
     <?php $this->renderElement($pastSurgeryElement, $action, $form, $data) ?>
 
-  <section class="element view-Eye-Medications tile"
-           data-element-type-id="<?php echo $medicationsElement->elementType->id ?>"
-           data-element-type-class="<?php echo $medicationsElement->elementType->class_name ?>"
-           data-element-type-name="Eye Medications"
-           data-element-display-order="<?php echo $medicationsElement->elementType->display_order ?>">
-    <header class=" element-header">
-      <h3 class="element-title">Eye Medications</h3>
-    </header>
-      <div class="element-data">
-          <?php
-          $filter_eye_medication = function ($med) {
-              return $med->laterality !== null;
-          };
-          $current_eye_medications = array_filter($medicationsElement->current_entries, $filter_eye_medication);
-          $stopped_eye_medications = array_filter($medicationsElement->closed_entries, $filter_eye_medication);
-          ?>
-          <?php if (!$current_eye_medications && !$stopped_eye_medications) { ?>
-              <div class="data-value not-recorded">
-                  No medications recorded during this encounter
-              </div>
-          <?php } else { ?>
-              <?php if ($current_eye_medications) { ?>
-                  <div class="data-value">
-                      <div class="tile-data-overflow">
-                          <table>
-                              <colgroup>
-                                  <col class="cols-7">
-                              </colgroup>
-                              <tbody>
-                              <?php foreach ($current_eye_medications as $entry) { ?>
-                                  <tr>
-                                      <td>
-                                          <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
-                                          <?= $entry->getMedicationDisplay() ?>
-                                      </td>
-                                      <td>
+    <section class="element view-Eye-Medications tile"
+             data-element-type-id="<?php echo $medicationsElement->elementType->id ?>"
+             data-element-type-class="<?php echo $medicationsElement->elementType->class_name ?>"
+             data-element-type-name="Eye Medications"
+             data-element-display-order="<?php echo $medicationsElement->elementType->display_order ?>">
+        <header class=" element-header">
+            <h3 class="element-title">Eye Medications</h3>
+        </header>
+        <div class="element-data">
+            <?php
+            $filter_eye_medication = function ($med) {
+                return $med->laterality !== null;
+            };
+            $current_eye_medications = array_filter($medicationsElement->current_entries, $filter_eye_medication);
+            $stopped_eye_medications = array_filter($medicationsElement->closed_entries, $filter_eye_medication);
+            ?>
+            <?php if (!$current_eye_medications && !$stopped_eye_medications) { ?>
+                <div class="data-value not-recorded">
+                    No medications recorded during this encounter
+                </div>
+            <?php } else { ?>
+            <?php if ($current_eye_medications) { ?>
+                <div class="data-value">
+                    <div class="tile-data-overflow">
+                        <table>
+                            <colgroup>
+                                <col class="cols-7">
+                            </colgroup>
+                            <tbody>
+                            <?php foreach ($current_eye_medications as $entry) { ?>
+                                <tr>
+                                    <td>
+                                        <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+                                        <?= $entry->getMedicationDisplay() ?>
+                                    </td>
+                                    <td>
                                         <?php
                                         $laterality = $entry->getLateralityDisplay();
                                         $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                                         ?>
-                                      </td>
-                                      <td>
+                                    </td>
+                                    <td>
                                         <?php if ($entry->getDoseAndFrequency()) { ?>
                                             <i class="oe-i info small pro-theme js-has-tooltip"
                                                data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                             </i>
                                         <?php } ?>
-                                      </td>
-                                      <td><?= $entry->getStartDateDisplay() ?></td>
-                                  </tr>
-                              <?php } ?>
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
-              <?php } else { ?>
-                  <div class="data-value none">
-                      No current Eye Medications
-                  </div>
-              <?php } ?>
+                                    </td>
+                                    <td><?= $entry->getStartDateDisplay() ?></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <?php } else { ?>
+                <div class="data-value none">
+                    No current Eye Medications
+                </div>
+            <?php } ?>
 
-        <?php if ($stopped_eye_medications) { ?>
-          <div class="collapse-data">
-              <div class="collapse-data-header-icon expand">
-                  Stopped
-                  <small>(<?= sizeof($stopped_eye_medications) ?>)</small>
-              </div>
-              <div class="collapse-data-content">
-                  <div class="restrict-data-shown">
-                      <div class="restrict-data-content rows-10">
-                          <table>
-                      <colgroup>
-                          <col class="cols-7">
-                      </colgroup>
-                      <tbody>
-                      <?php foreach ($stopped_eye_medications as $entry) { ?>
-                          <tr>
-                              <td>
-                                  <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
-                                  <?= $entry->getMedicationDisplay() ?>
-                              </td>
-                              <td><?php
-                                  $laterality = $entry->getLateralityDisplay();
-                                  $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                                ?>
-                              </td>
-                              <td>
-                                  <?php if ($entry->getDoseAndFrequency()) {?>
-                                      <i class="oe-i info small pro-theme js-has-tooltip"
-                                         data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
-                                      </i>
-                                    <?php } ?>
-                              </td>
-                              <td><?= $entry->getStartDateDisplay() ?></td>
-                          </tr>
-                        <?php } ?>
-                      </tbody>
-                  </table>
-              </div>
-          </div>
-          <?php } ?>
-          <!-- <?php } ?> -->
-      </div>
-  </section>
-
-    <div class="collapse-tile-group">
-    <i class="oe-i medium reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
-  </div>
-</div>
-
-<div class="element-tile-group" data-collapse="expanded">
-
-    <?php $this->renderElement($systemicDiagnosesElement, $action, $form, $data) ?>
-
-  <section class="element tile view-family-social-history">
-    <header class="element-header">
-      <h3 class="element-title">Family-Social</h3>
-    </header>
-    <div class="element-data">
-        <?php $entries = array_merge($familyHistoryElement->entries, $socialHistoryElement->getDisplayAllEntries());
-        if (!$entries) { ?>
-          <div class="data-value not-recorded">
-            No family or social history recorded during this encounter
-          </div>
-        <?php } else { ?>
-          <div class="data-value">
-            <div class="tile-data-overflow">
-              <table class="last-left">
-                <tbody>
-                <?php foreach ($entries as $entry) { ?>
-                  <tr>
-                    <td><?= $entry ?></td>
-                  </tr>
-                <?php } ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        <?php } ?>
-    </div>
-  </section>
-
-  <section class=" element view-Systemic-Medications tile"
-           data-element-type-id="<?php echo $medicationsElement->elementType->id ?>"
-           data-element-type-class="<?php echo $medicationsElement->elementType->class_name ?>"
-           data-element-type-name="Systemic Medications"
-           data-element-display-order="<?php echo $medicationsElement->elementType->display_order + 1 ?>">
-    <header class=" element-header">
-      <h3 class="element-title">Systemic Medications</h3>
-    </header>
-    <div class="element-data">
-        <?php
-
-        $filterSystemicMedication = function ($med) {
-            return $med->laterality === null;
-        };
-
-        $current_systemic_medications = $medicationsElement ?
-            array_filter($medicationsElement->current_entries, $filterSystemicMedication) : [];
-        $stopped_systemic_medications = $medicationsElement ?
-            array_filter($medicationsElement->closed_entries, $filterSystemicMedication) : [];
-        ?>
-        <?php if (!$current_systemic_medications && !$stopped_systemic_medications) { ?>
-            <div class="data-value not-recorded">
-              No medications recorded during this encounter
-            </div>
-        <?php } else { ?>
-            <?php if ($current_systemic_medications) { ?>
-                <div class="element-data">
-                    <div class="data-value">
-                        <div class="tile-data-overflow">
+            <?php if ($stopped_eye_medications) { ?>
+            <div class="collapse-data">
+                <div class="collapse-data-header-icon expand">
+                    Stopped
+                    <small>(<?= sizeof($stopped_eye_medications) ?>)</small>
+                </div>
+                <div class="collapse-data-content">
+                    <div class="restrict-data-shown">
+                        <div class="restrict-data-content rows-10">
                             <table>
                                 <colgroup>
                                     <col class="cols-7">
                                 </colgroup>
                                 <tbody>
-                                <?php foreach ($current_systemic_medications as $entry) { ?>
+                                <?php foreach ($stopped_eye_medications as $entry) { ?>
                                     <tr>
-                                        <td><?= $entry->getMedicationDisplay() ?></td>
                                         <td>
-                                            <?php if ($entry->getDoseAndFrequency()) {?>
+                                            <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+                                            <?= $entry->getMedicationDisplay() ?>
+                                        </td>
+                                        <td><?php
+                                            $laterality = $entry->getLateralityDisplay();
+                                            $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php if ($entry->getDoseAndFrequency()) { ?>
                                                 <i class="oe-i info small pro-theme js-has-tooltip"
                                                    data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                                 </i>
@@ -215,32 +122,87 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                             </table>
                         </div>
                     </div>
+                    <?php } ?>
+                    <!-- <?php } ?> -->
+                </div>
+    </section>
+
+    <div class="collapse-tile-group">
+        <i class="oe-i medium reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
+    </div>
+</div>
+
+<div class="element-tile-group" data-collapse="expanded">
+
+    <?php $this->renderElement($systemicDiagnosesElement, $action, $form, $data) ?>
+
+    <section class="element tile view-family-social-history">
+        <header class="element-header">
+            <h3 class="element-title">Family-Social</h3>
+        </header>
+        <div class="element-data">
+            <?php $entries = array_merge($familyHistoryElement->entries, $socialHistoryElement->getDisplayAllEntries());
+            if (!$entries) { ?>
+                <div class="data-value not-recorded">
+                    No family or social history recorded during this encounter
                 </div>
             <?php } else { ?>
-                <div class="data-value none">
-                    No current Systemic Medications
+                <div class="data-value">
+                    <div class="tile-data-overflow">
+                        <table class="last-left">
+                            <tbody>
+                            <?php foreach ($entries as $entry) { ?>
+                                <tr>
+                                    <td><?= $entry ?></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             <?php } ?>
+        </div>
+    </section>
 
-            <?php if ($stopped_systemic_medications) { ?>
-                <div class="collapse-data">
-                    <div class="collapse-data-header-icon expand">
-                        Stopped
-                        <small>(<?= sizeof($stopped_systemic_medications) ?>)</small>
-                    </div>
-                    <div class="collapse-data-content">
-                        <div class="restrict-data-shown">
-                            <div class="restrict-data-content rows-10">
+    <section class=" element view-Systemic-Medications tile"
+             data-element-type-id="<?php echo $medicationsElement->elementType->id ?>"
+             data-element-type-class="<?php echo $medicationsElement->elementType->class_name ?>"
+             data-element-type-name="Systemic Medications"
+             data-element-display-order="<?php echo $medicationsElement->elementType->display_order + 1 ?>">
+        <header class=" element-header">
+            <h3 class="element-title">Systemic Medications</h3>
+        </header>
+        <div class="element-data">
+            <?php
+
+            $filterSystemicMedication = function ($med) {
+                return $med->laterality === null;
+            };
+
+            $current_systemic_medications = $medicationsElement ?
+                array_filter($medicationsElement->current_entries, $filterSystemicMedication) : [];
+            $stopped_systemic_medications = $medicationsElement ?
+                array_filter($medicationsElement->closed_entries, $filterSystemicMedication) : [];
+            ?>
+            <?php if (!$current_systemic_medications && !$stopped_systemic_medications) { ?>
+                <div class="data-value not-recorded">
+                    No medications recorded during this encounter
+                </div>
+            <?php } else { ?>
+                <?php if ($current_systemic_medications) { ?>
+                    <div class="element-data">
+                        <div class="data-value">
+                            <div class="tile-data-overflow">
                                 <table>
                                     <colgroup>
                                         <col class="cols-7">
                                     </colgroup>
                                     <tbody>
-                                    <?php foreach ($stopped_systemic_medications as $entry) { ?>
+                                    <?php foreach ($current_systemic_medications as $entry) { ?>
                                         <tr>
                                             <td><?= $entry->getMedicationDisplay() ?></td>
                                             <td>
-                                                <?php if ($entry->getDoseAndFrequency()) {?>
+                                                <?php if ($entry->getDoseAndFrequency()) { ?>
                                                     <i class="oe-i info small pro-theme js-has-tooltip"
                                                        data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                                     </i>
@@ -254,13 +216,51 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                             </div>
                         </div>
                     </div>
-                </div>
-            <?php } ?>
-        <?php } ?>
-    </div>
-  </section>
+                <?php } else { ?>
+                    <div class="data-value none">
+                        No current Systemic Medications
+                    </div>
+                <?php } ?>
 
-  <div class="collapse-tile-group">
-    <i class="oe-i medium reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
-  </div>
+                <?php if ($stopped_systemic_medications) { ?>
+                    <div class="collapse-data">
+                        <div class="collapse-data-header-icon expand">
+                            Stopped
+                            <small>(<?= sizeof($stopped_systemic_medications) ?>)</small>
+                        </div>
+                        <div class="collapse-data-content">
+                            <div class="restrict-data-shown">
+                                <div class="restrict-data-content rows-10">
+                                    <table>
+                                        <colgroup>
+                                            <col class="cols-7">
+                                        </colgroup>
+                                        <tbody>
+                                        <?php foreach ($stopped_systemic_medications as $entry) { ?>
+                                            <tr>
+                                                <td><?= $entry->getMedicationDisplay() ?></td>
+                                                <td>
+                                                    <?php if ($entry->getDoseAndFrequency()) { ?>
+                                                        <i class="oe-i info small pro-theme js-has-tooltip"
+                                                           data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                                        </i>
+                                                    <?php } ?>
+                                                </td>
+                                                <td><?= $entry->getStartDateDisplay() ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+            <?php } ?>
+        </div>
+    </section>
+
+    <div class="collapse-tile-group">
+        <i class="oe-i medium reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
+    </div>
 </div>

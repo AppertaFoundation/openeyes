@@ -1,22 +1,22 @@
 <?php
-    /**
-     * OpenEyes
-     *
-     * (C) OpenEyes Foundation, 2018
-     * This file is part of OpenEyes.
-     * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
-     * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-     * version. OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-     * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
-     * details. You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled
-     * COPYING. If not, see <http://www.gnu.org/licenses/>.
-     *
-     * @package OpenEyes
-     * @link http://www.openeyes.org.uk
-     * @author OpenEyes <info@openeyes.org.uk>
-     * @copyright Copyright (c) 2018, OpenEyes Foundation
-     * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
-     */
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2018
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+ * version. OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * details. You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled
+ * COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2018, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
 
 class MedicationManagementController extends BaseController
@@ -70,9 +70,9 @@ class MedicationManagementController extends BaseController
                     'tabsize' => null,
                     'will_copy' => $med->getToBeCopiedIntoMedicationManagement(),
                     'prepended_markup' => $tooltip,
-                    'set_ids' => array_map(function ($e){
+                    'set_ids' => array_map(function ($e) {
                         return $e->id;
-                    } , $med->getMedicationSetsForCurrentSubspecialty()),
+                    }, $med->getMedicationSetsForCurrentSubspecialty()),
                     'allergy_ids' => array_map(function ($e) {
                         return $e->id;
                     }, $med->allergies),
@@ -82,32 +82,6 @@ class MedicationManagementController extends BaseController
 
         header('Content-type: application/json');
         echo CJSON::encode($ret_data);
-    }
-
-    public function actionGetInfoBox($medication_id)
-    {
-        $info_box = new MedicationInfoBox();
-        $info_box->medication_id = $medication_id;
-        $info_box->init();
-        $info_box->run();
-    }
-
-    public function getCommonDrugsRefSet()
-    {
-        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-        $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-        $site_id = Yii::app()->session['selected_site_id'];
-        $rule = MedicationSetRule::model()->findByAttributes(array(
-            'subspecialty_id' => $subspecialty_id,
-            'site_id' => $site_id,
-            'usage_code' => 'COMMON_OPH'
-        ));
-        if ($rule) {
-            return $rule->medicationSet;
-        }
-        else {
-            return null;
-        }
     }
 
     public function getMedicationDefaults(Medication $medication, MedicationSet $set = null)
@@ -138,5 +112,30 @@ class MedicationManagementController extends BaseController
         }
 
         return $r;
+    }
+
+    public function getCommonDrugsRefSet()
+    {
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+        $site_id = Yii::app()->session['selected_site_id'];
+        $rule = MedicationSetRule::model()->findByAttributes(array(
+            'subspecialty_id' => $subspecialty_id,
+            'site_id' => $site_id,
+            'usage_code' => 'COMMON_OPH'
+        ));
+        if ($rule) {
+            return $rule->medicationSet;
+        }
+
+        return null;
+    }
+
+    public function actionGetInfoBox($medication_id)
+    {
+        $info_box = new MedicationInfoBox();
+        $info_box->medication_id = $medication_id;
+        $info_box->init();
+        $info_box->run();
     }
 }

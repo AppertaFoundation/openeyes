@@ -82,7 +82,7 @@ class MedicationController extends BaseController
             foreach (MedicationDrug::model()->with('tags')->findAll($criteria) as $md) {
                 $label = $md->name;
                 if (strpos(strtolower($md->name), $term) === false) {
-                    $label .= ' ('.$md->aliases.')';
+                    $label .= ' (' . $md->aliases . ')';
                 }
                 $return[] = array(
                     'name' => $md->name,
@@ -90,7 +90,8 @@ class MedicationController extends BaseController
                     'value' => $label,
                     'id' => $md->id,
                     'type' => 'md',
-                    'tags' => array_map(function($t) { return $t->id;
+                    'tags' => array_map(function ($t) {
+                        return $t->id;
                     }, $md->tags)
                 );
             }
@@ -98,7 +99,7 @@ class MedicationController extends BaseController
             foreach (Drug::model()->with('tags')->active()->findAll($criteria) as $drug) {
                 $label = $drug->tallmanlabel;
                 if (strpos(strtolower($drug->name), $term) === false) {
-                    $label .= ' ('.$drug->aliases.')';
+                    $label .= ' (' . $drug->aliases . ')';
                 }
                 $return[] = array(
                     'name' => $drug->tallmanlabel,
@@ -106,7 +107,8 @@ class MedicationController extends BaseController
                     'value' => $label,
                     'type' => 'd',
                     'id' => $drug->id,
-                    'tags' => array_map(function($t) { return $t->id;
+                    'tags' => array_map(function ($t) {
+                        return $t->id;
                     }, $drug->tags)
                 );
             }
@@ -138,12 +140,11 @@ class MedicationController extends BaseController
         $route = MedicationRoute::model()->findByPk($route_id);
         if ($route->has_laterality) {
             echo json_encode([
-                ['id' =>1, 'name' => 'Left'],
-                ['id' =>2, 'name' => 'Right'],
-                ['id' =>3, 'name' => 'Both'],
+                ['id' => 1, 'name' => 'Left'],
+                ['id' => 2, 'name' => 'Right'],
+                ['id' => 3, 'name' => 'Both'],
             ]);
-        }
-        else {
+        } else {
             echo json_encode([]);
         }
     }
