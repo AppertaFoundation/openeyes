@@ -57,8 +57,11 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
         if (!$model) {
             throw new Exception('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality not found with id ' . $request->getParam('id'));
         }
-        if ($request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality')) {
-            $model->attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality');
+
+        $values = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality', []);
+        if (!empty($values)) {
+            $model->active = $values['active'] === '1' ? 1 : 0;
+            $model->name = $values['name'];
             if ($model->save()) {
                 Yii::app()->user->setFlash('success', 'Pupillary Abnormality saved');
                 $this->redirect(['index']);
@@ -70,7 +73,6 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
         $this->render('/pupillaryabnormalities/edit', [
             'model' => $model,
             'errors' => isset($errors) ? $errors : null,
-            'is_new' => false,
         ]);
     }
 
@@ -83,8 +85,9 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
         $model = new OphCiExamination_PupillaryAbnormalities_Abnormality();
         $values = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality', []);
         if (!empty($values)) {
-            $model->attributes = $values;
-
+            $model->name = $values['name'];
+            $model->active = $values['active'] === '1' ? 1 : 0;
+            $model->display_order = $model::model()->find(['order'=>'display_order DESC'])->display_order + 1;
             if ($model->save()) {
                 Audit::add('admin', 'create', serialize($model->attributes), false,
                     ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality']);
@@ -97,7 +100,6 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
         $this->render('/pupillaryabnormalities/edit', [
             'model' => $model,
             'errors' => isset($errors) ? $errors : null,
-            'is_new' => true,
         ]);
     }
 
