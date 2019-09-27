@@ -20,7 +20,7 @@
 class ImportDrugsCommand extends CConsoleCommand
 {
     private $action = '';
-private $row_limit = 0;
+    private $row_limit = 0;
     private $params = []; // FOR DEBUG!! -- 0 = unlimited
     private $tablePrefix = 'f_';
     private $nodes = [
@@ -378,7 +378,6 @@ EOD;
         }
         $cdir = scandir($dir);
         foreach ($cdir as $key => $value) {
-
             if (!in_array($value, array(".", "..")) && preg_match("/^f.*.xml$/", $value)) {
                 $arry = explode('_', $value);
                 $result[trim($arry[1], '2')] = $dir . $value;
@@ -568,7 +567,7 @@ EOD;
 
         $cmd = "INSERT INTO  medication_attribute (`name`) VALUES " . implode(",", array_map(function ($e) {
                 return "('$e')";
-            }, $lookup_tables));
+        }, $lookup_tables));
         Yii::app()->db->createCommand($cmd)->execute();
         foreach ($lookup_tables as $table) {
             $tbl_name = $this->tablePrefix . "lookup_" . strtolower($table);

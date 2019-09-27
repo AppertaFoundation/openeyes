@@ -89,7 +89,6 @@ class OphDrPrescription_Item extends EventMedicationUse
     public function loadDefaults(MedicationSet $set = null)
     {
         if ($this->medication_id) {
-
             $defaults = false;
 
             if (!is_null($set)) {

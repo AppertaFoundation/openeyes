@@ -22,131 +22,128 @@ use OEModule\OphCiExamination\models\OphCiExaminationRisk;
 
 class RisksAdminController extends \ModuleAdminController
 {
-	public $group = 'Examination';
+    public $group = 'Examination';
 
-	private $_display_name = "Risks";
+    private $_display_name = "Risks";
 
-	public function actionList()
-	{
-		$admin = $this->_getAdmin();
-		$admin->setListFields(array(
-				'id',
-				'name',
-				'active'
-			)
-		);
+    public function actionList()
+    {
+        $admin = $this->_getAdmin();
+        $admin->setListFields(array(
+                'id',
+                'name',
+                'active'
+            )
+        );
 
-		$admin->listModel(true);
-	}
+        $admin->listModel(true);
+    }
 
-	public function actionEdit($id = null)
-	{
-		$admin = $this->_getEditAdmin($id);
-		$admin->editModel();
-	}
+    /**
+     * @return \Admin
+     */
 
-	public function actionSave($id = null)
-	{
-		if (is_null($id)) {
-			$model = new OphCiExaminationRisk();
-		}
-		else {
-			if (!$model = OphCiExaminationRisk::model()->findByPk($id)) {
-				throw new \CHttpException(404);
-			}
-		}
-		/** @var OphCiExaminationRisk $model */
+    private function _getAdmin($id = null)
+    {
+        if (is_null($id)) {
+            $model = OphCiExaminationRisk::model();
+        } else {
+            $model = OphCiExaminationRisk::model()->findByPk($id);
+        }
+        $admin = new \Admin($model, $this);
+        $admin->setModelDisplayName($this->_display_name);
+        return $admin;
+    }
 
-		$data = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRisk');
-		$this->_setModelData($model, $data);
+    public function actionEdit($id = null)
+    {
+        $admin = $this->_getEditAdmin($id);
+        $admin->editModel();
+    }
 
-		if ($model->hasErrors()) {
-			$admin = $this->_getEditAdmin($model);
-			$this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors() ));
-			exit;
-		}
+    /**
+     * @param null $id
+     * @return \Admin
+     */
 
-		/** @var CDbTransaction $trans */
-		$trans = \Yii::app()->db->beginTransaction();
+    private function _getEditAdmin($id = null)
+    {
+        $admin = $this->_getAdmin($id);
+        $admin->setEditFields(array(
+            'name' => 'text',
+            'active' => 'checkbox',
+            'medicationSets' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphCiExamination.views.admin.edit_risk_set_assignment',
+                'viewArguments' => array(
+                    'model' => $admin->getModel()
+                )
+            ),
+        ));
+        $admin->setCustomSaveURL("/OphCiExamination/risksAdmin/save/$id");
+        return $admin;
+    }
 
-		if ($model->save(false)) {
-			\Yii::app()->db->createCommand("DELETE FROM ophciexamination_risk_tag WHERE risk_id = {$model->id}")->execute();
-			if (array_key_exists('medicationSets', $data) && !empty($data['medicationSets'])) {
-				foreach ($data['medicationSets'] as $id) {
-					$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
-					\Yii::app()->db->createCommand("INSERT INTO ophciexamination_risk_tag (risk_id, medication_set_id) VALUES ({$model->id}, $id)")->execute();
-				}
-			}
-			$trans->commit();
-		}
-		else {
-			$trans->rollback();
-		}
+    public function actionSave($id = null)
+    {
+        if (is_null($id)) {
+            $model = new OphCiExaminationRisk();
+        } else {
+            if (!$model = OphCiExaminationRisk::model()->findByPk($id)) {
+                throw new \CHttpException(404);
+            }
+        }
+        /** @var OphCiExaminationRisk $model */
 
-		$this->redirect('/'.$this->getModule()->id.'/'.$this->id.'/list');
-	}
+        $data = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRisk');
+        $this->_setModelData($model, $data);
 
-	public function actionDelete()
-	{
-		foreach ($_POST['OEModule\OphCiExamination\models\OphCiExaminationRisk'] as $item) {
-			foreach ($item as $id) {
-				if (!$model = OphCiExaminationRisk::model()->findByPk($id)) {
-					throw new \CHttpException(404);
-				}
-				
-				$model->delete();
-			}
-		}
+        if ($model->hasErrors()) {
+            $admin = $this->_getEditAdmin($model);
+            $this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors()));
+            exit;
+        }
 
-		echo "1";
-	}
+        /** @var CDbTransaction $trans */
+        $trans = \Yii::app()->db->beginTransaction();
 
-	/**
-	 * @return \Admin
-	 */
+        if ($model->save(false)) {
+            \Yii::app()->db->createCommand("DELETE FROM ophciexamination_risk_tag WHERE risk_id = {$model->id}")->execute();
+            if (array_key_exists('medicationSets', $data) && !empty($data['medicationSets'])) {
+                foreach ($data['medicationSets'] as $id) {
+                    $id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+                    \Yii::app()->db->createCommand("INSERT INTO ophciexamination_risk_tag (risk_id, medication_set_id) VALUES ({$model->id}, $id)")->execute();
+                }
+            }
+            $trans->commit();
+        } else {
+            $trans->rollback();
+        }
 
-	private function _getAdmin($id = null)
-	{
-		if (is_null($id)) {
-			$model = OphCiExaminationRisk::model();
-		}
-		else {
-			$model = OphCiExaminationRisk::model()->findByPk($id);
-		}
-		$admin = new \Admin($model, $this);
-		$admin->setModelDisplayName($this->_display_name);
-		return $admin;
-	}
+        $this->redirect('/' . $this->getModule()->id . '/' . $this->id . '/list');
+    }
 
-	/**
-	 * @param null $id
-	 * @return \Admin
-	 */
+    private function _setModelData(OphCiExaminationRisk $model, array $data)
+    {
+        $model->name = $data['name'];
+        $model->active = $data['active'];
+        $model->validate();
+    }
 
-	private function _getEditAdmin($id = null)
-	{
-		$admin = $this->_getAdmin($id);
-		$admin->setEditFields(array(
-			'name' => 'text',
-			'active' => 'checkbox',
-			'medicationSets' => array(
-				'widget' => 'CustomView',
-				'viewName' => 'application.modules.OphCiExamination.views.admin.edit_risk_set_assignment',
-				'viewArguments' => array(
-					'model' => $admin->getModel()
-				)
-			),
-		));
-		$admin->setCustomSaveURL("/OphCiExamination/risksAdmin/save/$id");
-		return $admin;
-	}
+    public function actionDelete()
+    {
+        foreach ($_POST['OEModule\OphCiExamination\models\OphCiExaminationRisk'] as $item) {
+            foreach ($item as $id) {
+                if (!$model = OphCiExaminationRisk::model()->findByPk($id)) {
+                    throw new \CHttpException(404);
+                }
 
-	private function _setModelData(OphCiExaminationRisk $model, array $data)
-	{
-		$model->name = $data['name'];
-		$model->active = $data['active'];
-		$model->validate();
-	}
+                $model->delete();
+            }
+        }
+
+        echo "1";
+    }
 
     public function actionSearch()
     {
@@ -155,7 +152,7 @@ class RisksAdminController extends \ModuleAdminController
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
                 $criteria->addCondition(array('LOWER(name) LIKE :term'),
                     'OR');
-                $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
+                $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
             }
 
             $criteria->order = 'name';

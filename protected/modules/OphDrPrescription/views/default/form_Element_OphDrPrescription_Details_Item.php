@@ -18,10 +18,7 @@
 /** @var Patient $patient */
 /** @var OphDrPrescription_Item $item */
 ?>
-<tr data-key="<?= $key ?>" class="prescription-item prescriptionItem
-    <?php if ($item->getErrors()) :
-    ?>errors<?php
-endif; ?>">
+<tr data-key="<?= $key ?>" class="prescription-item prescriptionItem <?= $item->getErrors() ? 'errors' : ''; ?> ">
     <td>
         <button class="js-add-taper">
             <i class="oe-i child-arrow small"></i>

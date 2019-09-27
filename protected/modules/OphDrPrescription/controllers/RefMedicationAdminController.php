@@ -205,7 +205,6 @@ class RefMedicationAdminController extends BaseAdminController
         }
 
         foreach ($model->medicationSetItems as $item) {
-
             // If the set is an automatic set, then the rule will be updated to include the drug
             $medicationSet = MedicationSet::model()->findByPk($item->medication_set_id);
 
@@ -436,9 +435,7 @@ class RefMedicationAdminController extends BaseAdminController
                 } else {
                     $row[] = null;
                 }
-
             }
-
             $cells_array[] = $row;
         }
 

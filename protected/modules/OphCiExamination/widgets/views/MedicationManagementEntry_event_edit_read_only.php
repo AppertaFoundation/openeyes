@@ -55,11 +55,9 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 echo "{{& allergy_ids}}";
             } ?>"
             class="<?= $field_prefix ?>_row <?= ($is_new || /*$entry->group*/
-                "new" == 'new') ? " new" : "" ?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
-    >
-
+                "new" == 'new') ? " new" : "" ?><?= $entry->hidden == 1 ? ' hidden' : '' ?>">
         <td>
-			<span class="js-prepended_markup">
+            <span class="js-prepended_markup">
             <?php
             if (!is_null($entry->medication_id)) {
                 if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
@@ -72,10 +70,10 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 echo "{{& prepended_markup}}";
             }
             ?>
-          </span>
+            </span>
             <span class="js-medication-display">
-          <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
-      </span>
+                <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
+            </span>
             <?php if ($entry->originallyStopped) { ?>
                 <i class="oe-i stop small pad"></i>
             <?php } ?>
@@ -170,14 +168,13 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <?php $tooltip_no_prescribe_role = "This item is already prescribed and cannot be edited without prescribe permissions."; ?>
             <span data-tooltip-content="<?= $tooltip_no_prescribe_role ?>" class="js-has-tooltip">
 				 <i class="oe-i trash js-remove disabled"></i>
-			</span>
+            </span>
         </td>
     </tr>
 <?php
 
 if (!empty($entry->tapers)) {
-    $tcount = 0;
-    foreach ($entry->tapers as $taper) {
+    foreach ($entry->tapers as $tcount => $taper) {
         $this->render(
             "MedicationManagementEntryTaper_event_edit_read_only",
             array(
@@ -188,8 +185,6 @@ if (!empty($entry->tapers)) {
                 "field_prefix" => $model_name . "[entries][$row_count][taper][$tcount]"
             )
         );
-        $tcount++;
     }
 }
-
 ?>
