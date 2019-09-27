@@ -24,7 +24,7 @@ foreach ($element->getFrequencyOptions() as $k=>$v) {
 /** @var OphDrPrescription_ItemTaper $entry */
 ?>
 
-<tr class="js-taper-row" data-parent-key="<?=$row_count?>" data-taper-key="<?=$taper_count?>">
+<tr class="js-taper-row meds-taper col-gap" data-parent-key="<?=$row_count?>" data-taper-key="<?=$taper_count?>">
     <td><i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em></td>
 	<td>
         <input class="cols-2 js-dose" style="display: inline-block;"  type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />

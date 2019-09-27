@@ -82,7 +82,7 @@
 </tr>
 <?php if ($entry->taper_support): ?>
 	<?php foreach ($entry->tapers as $taper): ?>
-		<tr class="<?= isset($stopped) && $stopped ? "fade" : "" ?>"	 >
+		<tr class="meds-taper col-gap <?= isset($stopped) && $stopped ? "fade" : "" ?>"	 >
 			<td>
 				<i class="oe-i child-arrow small no-click pad"></i>
 				<em class="fade">then</em>
