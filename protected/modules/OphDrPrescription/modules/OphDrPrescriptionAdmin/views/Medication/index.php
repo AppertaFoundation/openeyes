@@ -18,110 +18,125 @@
 <div class="row divider">
     <h2>Medications</h2>
 </div>
-<?php $isSelected = function($source_type) use ($search) {
-    if (isset($search['source_type']) && in_array($source_type, $search['source_type'])) {
-        return 'green hint';
-    }
-
-    return '';
-} ?>
 
 <div class="row divider">
-    <form id="drug_set_search" method="post">
+    <form id="medical_set_search" method="post">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
 
-        <div id="set-filters" class="flex-layout row">
-            <button
-                    data-usage_code=""
-                    type="button"
-                    class="large js-set-select js-all-sets<?= !isset($search['usage_codes']) || empty($search['usage_codes']) ? ' green hint' : '' ?>"
-            >All Sets</button>
+        <hr>
 
-            <?php $source_types = [
-                    'LOCAL' => 'LOCAL',
-                    'DM+D' => 'DM + D',
-            ]; ?>
-            <?php foreach ($source_types as $source_type => $desc) :?>
-                <button
-                        data-usage_code="<?=$source_type;?>"
-                        type="button"
-                        class="large js-set-select <?=$isSelected($source_type);?>"
-                ><?=$desc;?>
-                </button>
-            <?php endforeach; ?>
-        </div>
+        <table class="cols-8">
+            <colgroup>
+                <col class="cols-3">
+                <col class="cols-3">
+                <col class="cols-3">
+                <col class="cols-3">
+            </colgroup>
 
-        <hr class="">
-
-            <table class="cols-8">
-                <colgroup>
-                    <col class="cols-6">
-                    <col class="cols-2">
-                    <col class="cols-2">
-                    <col class="cols-2">
-                </colgroup>
-
-                <tbody>
-                <tr class="col-gap">
-                    <td>
-                        <?= \CHtml::textField(
-                            'search[query]',
-                            $search['query'],
-                            ['class' => 'cols-full', 'placeholder' => "Name"]
-                        ); ?>
-                    </td>
-
-                    <td>
-                        <button class="blue hint" type="button" id="et_search">Search</button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <tbody>
+            <tr class="col-gap">
+                <td>
+                    <?= \CHtml::textField(
+                        'search[source_type]',
+                        $search['source_type'],
+                        [
+                            'class' => 'cols-full js-search-data',
+                            'placeholder' => 'Source Type',
+                            'data-name' => 'source_type'
+                        ]
+                    ); ?>
+                </td>
+                <td>
+                    <?= \CHtml::textField(
+                        'search[source_subtype]',
+                        $search['source_subtype'],
+                        [
+                            'class' => 'cols-full js-search-data',
+                            'placeholder' => 'Source Subtype',
+                            'data-name' => 'source_subtype'
+                        ]
+                    ); ?>
+                </td>
+                <td>
+                    <?= \CHtml::textField(
+                        'search[preferred_code]',
+                        $search['preferred_code'],
+                        [
+                            'class' => 'cols-full js-search-data',
+                            'placeholder' => 'Preferred Code',
+                            'data-name' => 'preferred_code'
+                        ]
+                    ); ?>
+                </td>
+                <td>
+                    <?= \CHtml::textField(
+                        'search[preferred_term]',
+                        $search['preferred_term'],
+                        [
+                            'class' => 'cols-full js-search-data',
+                            'placeholder' => 'Preferred Term',
+                            'data-name' => 'preferred_term'
+                        ]
+                    ); ?>
+                </td>
+                <td>
+                    <button class="blue hint" type="button" id="et_search">Search</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </form>
 </div>
 
 <div class="cols-12">
-    <form id="admin_DrugSets">
-        <table id="drugset-list" class="standard">
+    <form id="admin_medication_sets">
+        <table id="medication-list" class="standard">
             <colgroup>
-                <col style="width:3.33333%">
-                <col style="width:3.33333%">
+                <col style="width:1%">
+                <col style="width:4%">
+                <col style="width:8%">
+                <col style="width:8%">
+                <col style="width:10%">
                 <col class="cols-2">
-                <col class="cols-4">
-                <col class="cols-1">
-                <col class="cols-1">
+                <col style="width:10%">
+                <col class="cols-2">
+                <col class="cols-2">
+                <col style="width:1%">
             </colgroup>
             <thead>
             <tr>
                 <th><?= \CHtml::checkBox('selectall'); ?></th>
                 <th>Id</th>
-                <th>Name</th>
-                <th>Rule</th>
-                <th>Count</th>
-                <th>Hidden/system</th>
-                <th>Actions</th>
+                <th>Source Type</th>
+                <th>Source Subtype</th>
+                <th>Preferred Code</th>
+                <th>Preferred Term</th>
+                <th>VTM Terms</th>
+                <th>VMP Terms</th>
+                <th>AMP Terms</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
                 <?php
-                    /* foreach ($data_provider->getData() as $set) {
-                        $this->renderPartial('/DrugSet/_row', ['set' => $set]);
-                    } */
+                foreach ($data_provider->getData() as $medication) {
+                    $this->renderPartial('/Medication/_row', ['medication' => $medication]);
+                }
                 ?>
             </tbody>
             <tfoot class="pagination-container">
             <tr>
-                <td colspan="4">
+                <td colspan="7">
                     <?= \CHtml::submitButton('Add', [
                         'id' => 'et_add',
-                        'data-uri' => "/OphDrPrescription/admin/drugSet/edit",
+                        'data-uri' => "/OphDrPrescription/admin/medication/edit",
                         'class' => 'button large'
                     ]); ?>
                     <?= \CHtml::submitButton('Delete', [
-                        'id' => 'et_delete',
-                        'data-uri' => '/OphDrPrescription/admin/drugSet/delete',
+                        'id' => 'delete_medication',
+                        'data-uri' => '/OphDrPrescription/admin/medication/delete',
                         'class' => 'button large',
-                        'data-object' => 'DrugSet'
+                        'data-object' => 'Medication'
                     ]); ?>
                 </td>
                 <td colspan="4">
@@ -133,18 +148,28 @@
     </form>
 </div>
 
-<script type="text/html" id="medication_set_template" style="display:none">
+<script type="text/html" id="medication_template" style="display:none">
     <tr>
         <td><input type="checkbox" value="{{id}}" name="delete-ids[]" /></td>
         <td>{{id}}</td>
-        <td>{{name}}</td>
-        <td>{{rules}}</td>
-        <td>{{count}}</td>
-        <td>{{hidden}}</td>
-        <td><a href="/OphDrPrescription/admin/DrugSet/edit/{{id}}" class="button">Edit</a></td>
+        <td>{{source_type}}</td>
+        <td>{{source_subtype}}</td>
+        <td>{{preferred_code}}</td>
+        <td>{{preferred_term}}</td>
+        <td>{{vtm_term}}</td>
+        <td>{{vmp_term}}</td>
+        <td>{{amp_term}}</td>
+        <td><a href="/OphDrPrescription/admin/Medication/edit/{{id}}" class="button">Edit</a></td>
     </tr>
 </script>
 
 <script>
-    var drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController();
+    let medsController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
+        tableSelector: '#medication-list',
+        searchUrl: '/OphDrPrescription/admin/Medication/search',
+        deleteUrl: '/OphDrPrescription/admin/Medication/delete',
+        templateSelector: '#medication_template',
+        deleteButtonSelector: '#delete_medication'
+    });
+    $('#admin_medication_sets').data('medsController', medsController);
 </script>
