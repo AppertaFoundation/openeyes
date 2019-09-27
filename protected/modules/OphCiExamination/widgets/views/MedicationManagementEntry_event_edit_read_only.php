@@ -53,10 +53,11 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 		else {
 			echo "{{& allergy_ids}}";
 		}?>"
-		class="<?=$field_prefix ?>_row <?= ($is_new || /*$entry->group*/ "new" == 'new') ? " new" : ""?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
+		class="divider col-gap <?=$field_prefix ?>_row <?= ($is_new || /*$entry->group*/ "new" == 'new') ? " new" : ""?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
 	>
 
-		<td>
+		<td  class="drug-details" rowspan="2">
+			<?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
 			<span class="js-prepended_markup">
             <?php
 						if(!is_null($entry->medication_id)) {
@@ -72,9 +73,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 						}
 						?>
           </span>
-			<span class="js-medication-display">
-          <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
-      </span>
+
 			<?php if ($entry->originallyStopped) { ?>
 				<i class="oe-i stop small pad"></i>
 			<?php } ?>
@@ -92,65 +91,19 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 		<td class="dose-frequency-route">
 			<div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
 				<input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
-				<div class="flex-layout">
-					<div class="alternative-display inline">
-						<div class="alternative-display-element textual">
-
 								<div class="textual-display">
 									<span class="js-textual-display-dose"><?= isset($entry->dose) ? $entry->dose . ' ' .$entry->dose_unit_term : ''; ?></span>&nbsp;
 									<span class="js-textual-display-frequency"><?= $entry->frequency; ?></span>&nbsp;
 									<span class="js-textual-display-route-laterality"><?= ($entry->laterality ? $entry->medicationLaterality->name : ''); ?> <?= (is_null($entry->route_id) ? "" : $entry->route); ?></span>
 								</div>
 						</div>
-						<div class="alternative-display-element" style="display: none;">
-							<input class="cols-1 js-dose" style="width: 14%; display: inline-block;"  type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
-							<span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
-							<input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
-							<?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=>'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:none')); ?>
-							<?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-3')) ?>
-							<?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class'=>'js-route cols-3')) ?>
-							<?php echo CHtml::dropDownList($field_prefix . '[laterality]',
-								$entry->laterality,
-								$laterality_options,
-								array('empty' => '-Laterality-', 'class'=>'admin-route-options laterality cols-3', 'style'=>$entry->routeOptions()?'':'display:none' )); ?>
-						</div>
-					</div>
-				</div>
-			</div>
 		</td>
-		<td>
-			<fieldset>
-				<input type="hidden" name="<?= $field_prefix ?>[start_date]"
-							 value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
-				<i class="oe-i start small pad"></i>
-				<?php if($entry->start_date) {
-					echo $entry->getStartDateDisplay();
-				} ?>
-			</fieldset>
-		</td>
-		<td class="end-date-column">
-			<div class="alternative-display inline">
-				<div class="alternative-display-element textual">
-						<?php if(!is_null($entry->end_date)) {?>
-							<input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date?>"/>
-							<?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
-						<?php } ?>
-			</div>
-		</td>
-		<td>
-			<?php if(isset($entry->stop_reason_id)) {
-				$stop_reason = HistoryMedicationsStopReason::model()->findByPk($entry->stop_reason_id);
-				echo isset($stop_reason) ? $stop_reason->name : "";
-			} ?>
-		</td>
+
 		<td>
 			<?php $drug_duration = DrugDuration::model()->findByPK($entry->duration); ?>
 			<?= isset($drug_duration) ? $drug_duration->name : ""?>
-		</td>
-		<td>
+
 			<?= isset($entry->dispenseCondition) ? $entry->dispenseCondition->name : "" ?>
-		</td>
-		<td>
 			<?= isset($entry->dispenseLocation) ? $entry->dispenseLocation->name : "" ?>
 		</td>
 		<td>
@@ -158,12 +111,26 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 				<input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>" />
 		</td>
 		<td>
-			<?php $tooltip_no_prescribe_role = "This item is already prescribed and cannot be edited without prescribe permissions."; ?>
-			<span data-tooltip-content="<?= $tooltip_no_prescribe_role ?>" class="js-has-tooltip">
-				 <i class="oe-i trash js-remove disabled"></i>
-			</span>
 		</td>
 	</tr>
+<tr class="no-line col-gap">
+	<td class="nowrap">
+
+					<?php if(!is_null($entry->end_date)) {?>
+						<i class="oe-i stop small pad"></i>
+						<input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date?>"/>
+						<?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
+					<?php } ?>
+				</div>
+			<?php if(isset($entry->stop_reason_id)) {
+				$stop_reason	 = HistoryMedicationsStopReason::model()->findByPk($entry->stop_reason_id);
+				echo isset($stop_reason) ? $stop_reason->name : "";
+			} ?>
+		</td>
+	<td>
+		<?= $entry->comments ?>
+	</td>
+</tr>
 <?php
 
 if(!empty($entry->tapers)) {
