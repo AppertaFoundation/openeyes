@@ -627,7 +627,6 @@ class PatientController extends BaseController
             $criteria->addCondition('episode.patient_id = :patient_id');
             $criteria->params[':patient_id'] = $this->patient->id;
             $criteria->order = "event.event_date ASC";
-            $iop = models\Element_OphCiExamination_IntraocularPressure::model()->find($criteria);
 
             if ($cct_element) {
                 if ($cct_element->hasLeft()) {
@@ -638,11 +637,12 @@ class PatientController extends BaseController
                 }
                 $header_data['CCT']['date'] = \Helper::convertMySQL2NHS($cct_element->event->event_date);
             }
+            $iop = $exam_api->getBaseIOPValues($patient);
 
             if ($iop) {
-                $header_data['IOP']['right'] = $iop->getReading('right');
-                $header_data['IOP']['left'] = $iop->getReading('left');
-                $header_data['IOP']['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
+                $header_data['IOP']['right'] = $iop['right'];
+                $header_data['IOP']['left'] = $iop['left'];
+                $header_data['IOP']['date'] = $iop['date'];
             }
 
             $max_iop = $exam_api->getMaxIOPValues($patient);

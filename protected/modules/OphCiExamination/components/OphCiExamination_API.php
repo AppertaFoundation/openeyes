@@ -348,26 +348,98 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    public function getBaseIOPValues(Patient $patient){
+        //init output array
+        $base_values = [
+            'right' => null,
+            'left' => null,
+            'date' => null,
+        ];
+        //init our date temporary value
+        $first_date = null;
+        //get all of the events for our patient
+        $events = $patient->getEvents();
+        //for each of the events that we care about
+        foreach($events as $event){
+            if(($event->getEventName()=='Phasing')||($event->getEventName()=='Examination'))
+            {   
+                //get the elements (phasing still works here)
+                $elements = $event->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
+                
+                //for each element that we care about
+                foreach ($elements as $iop) {  
+                    if($iop->getElementTypeName()=='Intraocular Pressure' || $iop->getElementTypeName()=='Intraocular Pressure Phasing')
+                    {
+                        //if the date is null then this is the min value, otherwise check if this is the min value and not null
+                        if ( $base_values['date'] ==null||($first_date > $iop->event->event_date) && $iop->event->event_date != null){
+                            //set the date to this date
+                            $first_date = $iop->event->event_date;
+                            $base_values['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
+                            //for each side set the reading value average for this element
+                            $sum_values = [
+                                'right' => null,
+                                'left' => null,
+                            ];
+                            foreach (['left', 'right'] as $side) {
+                                $readings = $iop->getReadings($side);
+                                if (count($readings) > 0) {
+                                    //Get the average for all the values
+                                    foreach ($readings as $reading) {
+                                            $sum_values[$side] += (float)$reading;
+                                    }
+                                    $base_values[$side] = ($sum_values[$side])/count($readings);
+                                }
+                                else{
+                                    $base_values[$side] = null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }       
+        }
+        //return the base values
+        return $base_values;
+    }
+
     public function getMaxIOPValues(Patient $patient)
     {
+        //init output array
         $max_values = [
             'right' => null,
             'left' => null,
         ];
+        //get all of the events for our patient
+        $events = $patient->getEvents();
+        //for each of the events that we care about
+        foreach($events as $event){
+            if(($event->getEventName()=='Phasing')||($event->getEventName()=='Examination'))
+            {
+                //get the elements (phasing still works here)
+                $iops = $event->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
 
-        $iops = $this->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
-        foreach ($iops as $iop) {
-            $iop_right = $iop->getReading('right');
-            if ($iop_right > $max_values['right']) {
-                $max_values['right'] = $iop_right;
-            }
-
-            $iop_left = $iop->getReading('left');
-            if ($iop_left > $max_values['left']) {
-                $max_values['left'] = $iop_left;
+                //for each element that we care about
+                foreach ($iops as $iop) {
+                    if($iop->getElementTypeName()=='Intraocular Pressure' || $iop->getElementTypeName()=='Intraocular Pressure Phasing')
+                    {
+                        foreach (['left', 'right'] as $side) {
+                            //get all readings for each side separately
+                            $readings = $iop->getReadings($side);
+                            //if we have readings to check
+                            if (count($readings) > 0) {
+                                foreach ($readings as $reading) {
+                                    //if the readinf is larger than our Max value, save that value
+                                    if ((float)$reading > $max_values[$side]) {
+                                        $max_values[$side] = (float)$reading;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-
+        //return the max values
         return $max_values;
     }
 
