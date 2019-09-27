@@ -1379,8 +1379,7 @@ class DefaultController extends \BaseEventTypeController
             if (count($disorders) === 2) {
                 if (($disorders[0]['eye_id'] === $disorders[1]['eye_id'] && $disorders[0]['date'] === $disorders[1]['date'])
                     || ($disorders[0]['eye_id'] === \Eye::BOTH && $disorders[0]['date'] === $disorders[1]['date'])
-                    || (($disorders[1]['eye_id'] === \Eye::BOTH && $disorders[0]['date'] === $disorders[1]['date'])))
-                {
+                    || (($disorders[1]['eye_id'] === \Eye::BOTH && $disorders[0]['date'] === $disorders[1]['date']))) {
                     $errors[$et_name][] = "You have duplicates for " . \Disorder::model()->findByPk($disorder_id)->term . " diagnosis. Each combination of diagnosis, eye side and date must be unique.";
                     return $errors;
                 }

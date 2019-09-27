@@ -218,7 +218,6 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 } else {
                     $this->event->episode->patient->addDiagnosis($diagnosis->disorder_id,
                         $diagnosis->eye_id, $diagnosis->date);
-
                 }
             }
         }
@@ -262,7 +261,8 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      * @return string html table of daignoses and further findings
      *  if either the diagnosis or the finding has a letter macro text, it will replace the usual term
      */
-    public function getLetter_string() {
+    public function getLetter_string()
+    {
         $table_vals = array();
         $subspecialty = null;
         if (isset(\Yii::app()->session['selected_firm_id']) && \Yii::app()->session['selected_firm_id'] !== null) {
@@ -315,8 +315,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         ) {
             foreach (OphCiExamination_FurtherFindings_Assignment::model()
                          ->findAll('element_id=?', array($et_findings->id)
-                         ) as $finding
-            ) {
+                         ) as $finding) {
                 $table_vals[] = array(
                     'finding_id' => $finding->id,
                     'date' => \Helper::convertDate2NHS($this->event->event_date),
@@ -392,8 +391,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                          ->findAll(
                              't.disorder_id=? and parent.subspecialty_id=?',
                              array($disorder_id, $subspecialty->id)
-                         ) as $secto_disorder
-            ) {
+                         ) as $secto_disorder) {
                 if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
                     continue;
                 }
@@ -421,8 +419,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                          ->findAll(
                              't.finding_id=? and parent.subspecialty_id=?',
                              array($finding_id, $subspecialty->id)
-                         ) as $secto_disorder
-            ) {
+                         ) as $secto_disorder) {
                 if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
                     continue;
                 }
