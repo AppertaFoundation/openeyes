@@ -55,6 +55,13 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return 'et_ophciexamination_diagnoses';
     }
 
+    public function behaviors()
+    {
+        return array(
+            'PatientLevelElementBehaviour' => 'PatientLevelElementBehaviour',
+        );
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -147,56 +154,71 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      */
     public function updateDiagnoses($update_disorders)
     {
-        $current_diagnoses = OphCiExamination_Diagnosis::model()->findAll('element_diagnoses_id=?', array($this->id));
-        $curr_by_disorder_id = array();
-        $secondary_disorder_ids = array();
+        $disorder_to_update = [];
+        $disorder_to_create = [];
+        $added_diagnoses = [];
+        $current_diagnoses = OphCiExamination_Diagnosis::model()->findAll('element_diagnoses_id=?', [$this->id]);
+
+        foreach ($update_disorders as $ud) {
+            if ($ud['id'] !== "") {
+                $disorder_to_update[$ud['id']] = $ud;
+            } else {
+                $disorder_to_create[] = $ud;
+            }
+        }
+
+        //delete and update ophciexamination_diagnosis entries
         foreach ($current_diagnoses as $cd) {
-            $curr_by_disorder_id[$cd->id] = $cd;
-        }
-        foreach ($update_disorders as $u_disorder) {
-            if (!isset($curr_by_disorder_id[$u_disorder['id']])) {
-                $curr = new OphCiExamination_Diagnosis();
-                $curr->element_diagnoses_id = $this->id;
-                $curr->disorder_id = $u_disorder['disorder_id'];
-                $curr->date = $u_disorder['date'];
+            if (!array_key_exists($cd->id, $disorder_to_update)) {
+                if (!$cd->delete()) {
+                    throw new \Exception('Unable to remove old disorder');
+                }
             } else {
-                $curr = @$curr_by_disorder_id[$u_disorder['id']];
-                unset($curr_by_disorder_id[$u_disorder['id']]);
-            }
-            if ($curr->eye_id != $u_disorder['eye_id']
-                || $curr->principal != $u_disorder['principal'] || $curr->date != $u_disorder['date']) {
-                // need to update & save
-                $curr->eye_id = $u_disorder['eye_id'];
-                $curr->principal = $u_disorder['principal'];
-                $curr->date = $u_disorder['date'];
-                if (!$curr->save()) {
-                    throw new \Exception('save failed'.print_r($curr->getErrors(), true));
+                $cd->eye_id = $disorder_to_update[$cd->id]['eye_id'];
+                $cd->principal = $disorder_to_update[$cd->id]['principal'];
+                $cd->date = $disorder_to_update[$cd->id]['date'];
+                if (!$cd->save()) {
+                    throw new \Exception('save failed' . print_r($cd->getErrors(), true));
                 };
+                $added_diagnoses[] = $cd;
             }
-            if ($u_disorder['principal']) {
-                $this->event->episode->setPrincipalDiagnosis($u_disorder['disorder_id'], $u_disorder['eye_id'], $u_disorder['date']);
+        }
+
+        //merge ophciexamination_diagnosis entries if there is the same diagnosis with same date on different eyes otherwise create new one
+        foreach ($disorder_to_create as $dc) {
+            $related_diagnosis = OphCiExamination_Diagnosis::model()->find('disorder_id=? and element_diagnoses_id=? and date=? and principal=?', [$dc['disorder_id'], $this->id, $dc['date'], $dc['principal']]);
+            if ($related_diagnosis) {
+                if ($related_diagnosis->eye_id == $dc['eye_id'] || $related_diagnosis->eye_id === \Eye::BOTH) {
+                    $this->addError('disorder_id', 'Duplicate');
+                } else {
+                    $related_diagnosis->eye_id = \Eye::BOTH;
+                    if (!$related_diagnosis->save()) {
+                        throw new \Exception('save failed' . print_r($cd->getErrors(), true));
+                    };
+                    $added_diagnoses[] = $related_diagnosis;
+                }
             } else {
-                //add a secondary diagnosis
-                // Note that this may be creating duplicate diagnoses, but that is okay as the dates on them will differ
-                $this->event->episode->patient->addDiagnosis($u_disorder['disorder_id'],
-                    $u_disorder['eye_id'], substr($u_disorder['date'], 0, 10));
-                // and track
-                $secondary_disorder_ids[] = $u_disorder['disorder_id'];
+                $cd = new OphCiExamination_Diagnosis();
+                $cd->element_diagnoses_id = $this->id;
+                $cd->disorder_id = $dc['disorder_id'];
+                $cd->eye_id = $dc['eye_id'];
+                $cd->date = $dc['date'];
+                $cd->principal = $dc['principal'];
+                if (!$cd->save()) {
+                    throw new \Exception('Unable to save old secondary disorder');
+                }
+                $added_diagnoses[] = $cd;
             }
         }
-        // remove any current diagnoses no longer needed
-        foreach ($curr_by_disorder_id as $curr) {
-            if (!$curr->delete()) {
-                throw new \Exception('Unable to remove old disorder');
-            };
-        }
-        // ensure secondary diagnoses are consistent
-        // FIXME: ongoing discussion as to whether we should be removing diagnosis from the patient here
-        // particularly if this is a save of an older examination record.
-        foreach (\SecondaryDiagnosis::model()->findAll('patient_id=?', array($this->event->episode->patient_id)) as $sd) {
-            if ($sd->disorder->specialty && $sd->disorder->specialty->code == 130) {
-                if (!in_array($sd->disorder_id, $secondary_disorder_ids)) {
-                        $this->event->episode->patient->removeDiagnosis($sd->id);
+
+        if ($this->isAtTip()) {
+            foreach ($added_diagnoses as $diagnosis) {
+                if ($diagnosis->principal) {
+                    $this->event->episode->setPrincipalDiagnosis($diagnosis->disorder_id, $diagnosis->eye_id, $diagnosis->date);
+                } else {
+                    $this->event->episode->patient->addDiagnosis($diagnosis->disorder_id,
+                        $diagnosis->eye_id, $diagnosis->date);
+
                 }
             }
         }

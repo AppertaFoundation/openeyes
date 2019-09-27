@@ -1350,63 +1350,49 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidateOphthalmicDiagnosesFromData($data, $errors)
     {
         $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
-        $diagnoses = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses');
-              $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'] : [];
-        $duplicate_exists = false;
+        $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'] : [];
+        $entries_by_disorder_id = [];
 
-        $concat_occurrences = [];
-        foreach ($entries as $entry) {
-            if (isset($entry['right_eye']) && isset($entry['left_eye'])) {
-                $eye_id =  \Eye::BOTH;
-            } else if (isset($entry['right_eye'])) {
-                $eye_id =  \Eye::RIGHT;
-            } else if (isset($entry['left_eye'])) {
-                $eye_id =  \Eye::LEFT;
-            } else {
-                            continue;
-            }
-
-            // create a string with concatenation of  the columns that must be unique
-            $concat_data = $eye_id.$entry['disorder_id'].$entry['date'];
-
-            // do not take into consideration rows that have an id associated as they are already in the database
-            if (isset($entry['id']) && $entry['id']) {
-                $concat_occurrences[] = $concat_data;
-                continue;
-            }
-
-            // search if the input is already present in the database
-            $not_already_exists = true;
-            if (isset($diagnoses->id)) {
-                $criteria = new \CDbCriteria();
-                $criteria->addCondition('element_diagnoses_id=:element_diagnoses_id');
-                $criteria->addCondition('eye_id=:eye_id');
-                $criteria->addCondition('disorder_id=:disorder_id');
-                $criteria->addCondition('date=:date');
-
-                $criteria->params[":element_diagnoses_id"] = $diagnoses->id;
-                $criteria->params[":eye_id"] = $eye_id;
-                $criteria->params[":disorder_id"] = $entry['disorder_id'];
-                $criteria->params[":date"] = $entry['date'];
-
-                $count_saved_diagnosis = models\OphCiExamination_Diagnosis::model()->count($criteria);
-
-                // allow no more than one appearance in the database
-                $not_already_exists = $count_saved_diagnosis <= 1;
-            }
-
-            // if the concatenated info is not already present (neither on the screen nor in the database)
-            if ($not_already_exists && !in_array($concat_data, $concat_occurrences)) {
-                // add it to the known array
-                $concat_occurrences[] = $concat_data;
-            } else {
-                $duplicate_exists = true;
-            }
+        // The principal is unique by default so we can remove it
+        $principal = isset($data['principal_diagnosis_row_key']);
+        if ($principal) {
+            unset($entries[$principal]);
         }
 
-        // if there is any duplicate, add error message
-        if ($duplicate_exists) {
-            $errors[$et_name][] = "You have 1 or more duplicate diagnoses. Each combination of diagnosis, eye side and date must be unique.";
+        foreach ($entries as $entry) {
+            if (isset($entry['right_eye']) && isset($entry['left_eye'])) {
+                unset($entry['right_eye']);
+                unset($entry['left_eye']);
+                $entry['eye_id'] = \Eye::BOTH;
+            } else if (isset($entry['right_eye'])) {
+                unset($entry['right_eye']);
+                $entry['eye_id'] =  \Eye::RIGHT;
+            } else if (isset($entry['left_eye'])) {
+                unset($entry['left_eye']);
+                $entry['eye_id'] =  \Eye::LEFT;
+            }
+
+            $entries_by_disorder_id[$entry['disorder_id']][] = ['eye_id' => $entry['eye_id'], 'date' => $entry['date']];
+        }
+
+        foreach ($entries_by_disorder_id as $disorder_id => $disorders) {
+            if (count($disorders) === 2) {
+                if (($disorders[0]['eye_id'] === $disorders[1]['eye_id'] && $disorders[0]['date'] === $disorders[1]['date'])
+                    || ($disorders[0]['eye_id'] === \Eye::BOTH && $disorders[0]['date'] === $disorders[1]['date'])
+                    || (($disorders[1]['eye_id'] === \Eye::BOTH && $disorders[0]['date'] === $disorders[1]['date'])))
+                {
+                    $errors[$et_name][] = "You have duplicates for " . \Disorder::model()->findByPk($disorder_id)->term . " diagnosis. Each combination of diagnosis, eye side and date must be unique.";
+                    return $errors;
+                }
+            } else {
+                foreach ($disorders as $disorder) {
+                    $keys = array_keys($disorders, ['eye_id' => $disorder['eye_id'], 'date' => $disorder['date']]);
+                    if (count($keys) > 1) {
+                        $errors[$et_name][] = "You have duplicates for " . \Disorder::model()->findByPk($disorder_id)->term . " diagnosis. Each combination of diagnosis, eye side and date must be unique.";
+                        return $errors;
+                    }
+                }
+            }
         }
 
         return $errors;
