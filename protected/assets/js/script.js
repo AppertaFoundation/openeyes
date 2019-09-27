@@ -299,7 +299,7 @@ $(document).ready(function () {
 		let iconCenter = iconPos.width / 2;
 
 		// check for the available space for tooltip:
-		if ( ( $( window ).width() - iconPos.left) < 100 ){
+		if ( ( $( window ).width() - iconPos.left) > ($('body').find('.oe-hotlist-panel').width())){
 			leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
 			toolCSS = "oe-tooltip offset-left";
 		} else {
