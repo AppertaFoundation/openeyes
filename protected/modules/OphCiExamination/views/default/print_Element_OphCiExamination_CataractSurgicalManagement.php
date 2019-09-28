@@ -39,12 +39,10 @@
 
         <?php } ?>
 
-        <?php if ($element->fast_track) { ?>
         <tr>
             <th><?= $element->getAttributeLabel('fast_track') ?>:</th>
             <td><?= $element->fast_track ? 'Yes' : 'No'?></td>
         </tr>
-        <?php } ?>
 
         <tr>
             <th><?= $element->getAttributeLabel('target_postop_refraction')?>:</th>

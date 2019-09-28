@@ -17,7 +17,7 @@
  */
 $this->beginContent('//patient/event_container', array('no_face'=>true));
 
-$this->event_actions[] = EventAction::printButton('Print', 'print', array(), array('onclick'=>'window.open("/OphCoDocument/default/pdfprint/'.$this->event->id.'");'));
+$this->event_actions[] = EventAction::printButton('Print', 'print', array());
 
 $this->moduleNameCssClass .= ' highlight-fields';
 
