@@ -166,16 +166,27 @@
                 ));
             }
         }
-        ?>
-        <?php if ($data->event->episode->firm->getSubspecialty()->name === 'Cataract') : ?>
-        <div class="oe-wb-widget data-image">
-            <h3>Axis</h3>
-            <div class="wb-data image-fill">
-                <!--Add image here.-->
-            </div>
-        </div>
-        <?php endif; ?>
-        <?php $this->widget('RiskCard', array(
+        if ($data->event->episode->firm->getSubspecialty()->name === 'Cataract') {
+            /*$criteria = new CDbCriteria();
+            $criteria->addCondition('patient_id = :patient_id');
+            $criteria->params = array('patient_id' => $data->event->episode->patient->id);
+            $criteria->order = 'last_modified_date DESC';
+            $criteria->limit = 1;
+            $cataract_element = Element_OphTrOperationnote_Cataract::model()->find($criteria);*/
+
+            $this->widget('ImageCard', array(
+                'title' => 'Axis',
+                'eye' => $data->eye,
+                'element' => null
+            ));
+        } else {
+            $this->widget('WBCard', array(
+                'title' => null,
+                'data' => null,
+                'event_id' => $data->event_id,
+            ));
+        }
+        $this->widget('RiskCard', array(
                 'data' => $data,
                 'whiteboard' => $this->getWhiteboard(),
         )); ?>
