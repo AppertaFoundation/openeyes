@@ -75,7 +75,6 @@ class PrescriptionCreator extends \EventCreator
         $this->elements['Element_OphDrPrescription_Details']->items = $this->items;
 
         foreach ($this->elements as $element) {
-
             if ($element instanceof Element_OphDrPrescription_Details) {
                 $element->event_id = $event_id;
                 if (!$element->save()) {
@@ -85,7 +84,6 @@ class PrescriptionCreator extends \EventCreator
                     $element->updateItems($this->items);
                 }
             }
-
         }
 
         return !$this->hasErrors();

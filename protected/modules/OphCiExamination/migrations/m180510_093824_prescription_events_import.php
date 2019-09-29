@@ -68,13 +68,11 @@ class m180510_093824_prescription_events_import extends CDbMigration
 
         if ($events) {
             foreach ($events as $event) {
-
                 $legacy_dose = explode(" ", $event['legacy_dose']);
                 $dose = '';
                 $dose_unit_term = '';
 
                 if (count($legacy_dose) == 1) {
-
                     $array = str_split($legacy_dose[0]);
                     foreach ($array as $key => $char) {
                         if (($char == '.') || ($char == '/') || (is_numeric($char))) {
@@ -87,7 +85,6 @@ class m180510_093824_prescription_events_import extends CDbMigration
                 } else if (count($legacy_dose) == 2) {
                     $dose = $legacy_dose[0];
                     $dose_unit_term = $legacy_dose[1];
-
                 } else {
                     $dose = $legacy_dose[0];
                     for ($i = 1; $i < count($legacy_dose); $i++) {
