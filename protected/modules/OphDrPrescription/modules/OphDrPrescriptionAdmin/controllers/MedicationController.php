@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -26,21 +25,56 @@ class MedicationController extends BaseAdminController
 
     public $assetPath;
 
-    private function getSearchCriteria()
+    private $searchFields = [
+        'source_type',
+        'source_subtype',
+        'preferred_code',
+        // 'preferred_term' will be search differently
+    ];
+
+
+    public function actionIndex()
     {
-        $filters = \Yii::app()->request->getParam('search', []);
+        $asset_manager = \Yii::app()->getAssetManager();
+        $assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $url = $asset_manager->publish($assets_path . '/OpenEyes.OphDrPrescriptionAdmin.js');
+
+        \Yii::app()->clientScript->registerScriptFile($url, \CClientScript::POS_HEAD);
+
+        $filters = \Yii::app()->request->getParam('search');
+        $criteria = $this->getSearchCriteria($filters);
+
+        $data_provider = new CActiveDataProvider('medication', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = $this->itemsPerPage;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        $this->render('/Medication/index', [
+            'data_provider' => $data_provider,
+            'search' => $filters
+        ]);
+    }
+
+    private function getSearchCriteria($filters = [])
+    {
         $criteria = new \CDbCriteria();
 
-        if (isset($filters['set_id']) && $filters['set_id']) {
-            $criteria->together = true;
-            $criteria->with = ['medicationSetItems.medicationSet'];
+        $add_search = function ($field) use ($criteria, $filters) {
+            if (isset($filters[$field]) && !empty($filters[$field])) {
+                $criteria->addCondition($field . ' = :' . $field);
+                $criteria->params[':' . $field] = $filters[$field];
+            }
+        };
 
-            $criteria->addCondition('medicationSet.id = :set_id');
-            $criteria->params[':set_id'] = $filters['set_id'];
-        }
+        array_map($add_search, $this->searchFields);
 
-        if (isset($filters['query']) && $filters['query']) {
-            $criteria->addSearchCondition('preferred_term', trim($filters['query']));
+        if (isset($filters['preferred_term']) && $filters['preferred_term']) {
+            $criteria->addSearchCondition('preferred_term', $filters['preferred_term']);
         }
 
         return $criteria;
@@ -49,36 +83,21 @@ class MedicationController extends BaseAdminController
     public function actionSearch()
     {
         $search = \Yii::app()->request->getParam('search');
-        $set_id = isset($search['set_id']) ? $search['set_id'] : null;
-        $criteria = $this->getSearchCriteria();
+        $criteria = $this->getSearchCriteria($search);
         $data['items'] = [];
 
-        $data_provider = new CActiveDataProvider('Medication', [
+        $data_provider = new CActiveDataProvider('medication', [
             'criteria' => $criteria,
         ]);
 
         $pagination = new \CPagination($data_provider->totalItemCount);
         $pagination->pageSize = 20;
-        //$pagination->applyLimit($criteria);
-
         $data_provider->pagination = $pagination;
 
         foreach ($data_provider->getData() as $med) {
-
             $item = $med->attributes;
-            $link = \MedicationSetItem::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $set_id]);
-            if ($link) {
-                foreach (['default_dose', 'default_route_id', 'default_frequency_id', 'default_duration_id', 'default_dose_unit_term'] as $key) {
-                    $item[$key] = $link->{$key};
-                }
-
-                $item['default_route'] = $link->defaultRoute ? $link->defaultRoute->term : null;
-                $item['default_duration'] = $link->defaultDuration ? $link->defaultDuration->name : null;
-                $item['default_frequency'] = $link->defaultFrequency ? $link->defaultFrequency->term : null;
-                $item['set_item_id'] = $link->id;
-                $data['items'][] = $item;
-                $item = null;
-            }
+            $data['items'][] = $item;
+            $item = null;
         }
 
         ob_start();
@@ -91,5 +110,56 @@ class MedicationController extends BaseAdminController
         \Yii::app()->end();
     }
 
+    public function actionEdit($id = null)
+    {
+        $medication = Medication::model()->findByPk($id);
 
+        if (!isset($medication)) {
+            $medication = new Medication();
+        }
+
+        if (\Yii::app()->request->isPostRequest) {
+            $medication_data = \Yii::app()->request->getParam('Medication');
+            if ($medication->isNewRecord) {
+                //User created medications must be local
+                $medication_data['source_type'] = 'local';
+            }
+
+            $medication->attributes = $medication_data;
+            $medication->medicationAttributeAssignments = \Yii::app()->request->getParam('MedicationAttributeAssignment', []);
+            $medication->medicationSetItems = \Yii::app()->request->getParam('MedicationSetItem', []);
+            $medication->medicationSearchIndexes = \Yii::app()->request->getParam('MedicationSearchIndex', []);
+
+            if ($medication->save()) {
+                $this->redirect("/OphDrPrescription/admin/Medication/index");
+            }
+        }
+
+        $this->render('/Medication/edit', [
+            'model' => $medication
+        ]);
+    }
+
+    public function actionDelete()
+    {
+        $ids = \Yii::app()->request->getParam('delete-ids', []);
+        $transaction = Yii::app()->db->beginTransaction();
+
+        try {
+            // Medication::model()->deleteAll() does not call beforeDelete() so we need to loop through to use
+            // delete() to automatically delete the objects in the relations
+            $medications = \Medication::model()->findAll('id IN (:ids)', [':ids' => implode(',', $ids)]);
+            foreach ($medications as $medication) {
+                $medication->delete();
+            }
+            $transaction->commit();
+            echo "1";
+        } catch (Exception $e) {
+            $transaction->rollback();
+            echo "0";
+            \OELog::log($e->getMessage());
+        }
+
+        \Yii::app()->end();
+    }
 }
