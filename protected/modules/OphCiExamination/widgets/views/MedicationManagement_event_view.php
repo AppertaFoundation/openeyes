@@ -38,11 +38,13 @@
         <tbody>
     <?php foreach (array(
                        "start" => "getContinuedEntries",
-                       "direction-right " => "getEntriesStartedToday",
-//                       "Stopped" => "getStoppedEntries",
-                   ) as $entry_icon => $method) : ?>
-        <?php if (!empty($entries = $element->$method())) : ?>
-                            <?php foreach ($entries as $entry) : ?>
+					   "direction-right " => "getEntriesStartedToday",
+                   ) as $entry_icon => $method): ?>
+        <?php if (!empty($entries = $element->$method())): ?>
+
+
+
+                            <?php foreach ($entries as $entry): ?>
                                 <?php echo $this->render('MedicationManagementEntry_event_view',
                                                                 [
                                                                     'entry' => $entry,
@@ -70,17 +72,17 @@
                 <col class="cols-icon" span="2">
             </colgroup>
 
-            <tbody>
-            <?php foreach ($element->getStoppedEntries() as $entry) : ?>
-                <?php echo $this->render('MedicationManagementEntry_event_view',
-                    [
-                        'entry' => $entry,
-                        'entry_icon' => 'stop',
-                        'stopped' => true
-                    ]); ?>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
+			<tbody>
+			<?php foreach ($stoppedEntries as $entry): ?>
+				<?php echo $this->render('MedicationManagementEntry_event_view',
+					[
+						'entry' => $entry,
+						'entry_icon' => 'stop',
+						'stopped' => true
+					]); ?>
+			<?php endforeach; ?>
+			</tbody>
+		</table>
 </div>
     </div>
     <?php } ?>
