@@ -39,7 +39,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
 
 ?>
 
-<tr class="divider col-gap js-first-row"
+<tr class="divider col-gap js-first-row <?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>"
 		data-key="<?= $row_count ?>"
 		data-event-medication-use-id="<?php echo $entry->id; ?>"
 		<?php if (!is_null($entry->medication_id)) :
@@ -48,7 +48,8 @@ $is_posting = Yii::app()->request->getIsPostRequest();
 
 		}, $entry->medication->allergies)); ?>"<?php
 endif; ?>
-		class="<?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
+
+	<?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
 	<td class="drug-details" rowspan="2">
 		<div class="medication-display">
