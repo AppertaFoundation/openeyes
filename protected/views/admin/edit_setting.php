@@ -45,7 +45,7 @@
                 <?php
                 $this->renderPartial(
                     '_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
-                    ['metadata' => $metadata]
+                    ['metadata' => $metadata, 'allowed_classes' => $allowed_classes]
                 );
                 ?>
             </td>

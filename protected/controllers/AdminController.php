@@ -57,7 +57,7 @@ class AdminController extends BaseAdminController
         $this->jsVars['common_ophthalmic_disorder_group_options'] = $data;
 
         $errors = array();
-        $subspecialties = Subspecialty::model()->findAll(array('order'=>'name'));
+        $subspecialties = Subspecialty::model()->findAll(array('order' => 'name'));
         $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
         if (!$subspecialty_id) {
             $subspecialty_id = (isset($subspecialties[0]) && isset($subspecialties[0]->id)) ? $subspecialties[0]->id : null;
@@ -119,7 +119,7 @@ class AdminController extends BaseAdminController
             } else {
                 foreach ($errors as $error) {
                     foreach ($error as $attribute => $error_array) {
-                        $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
+                        $display_errors = '<strong>' . $common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
                 }
@@ -212,7 +212,7 @@ class AdminController extends BaseAdminController
             } else {
                 foreach ($errors as $error) {
                     foreach ($error as $attribute => $error_array) {
-                        $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
+                        $display_errors = '<strong>' . $common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
                 }
@@ -299,34 +299,34 @@ class AdminController extends BaseAdminController
         /*$drug = new Drug('create');
 
         if (!empty($_POST)) {
-            $drug->attributes = $_POST['Drug'];
+                $drug->attributes = $_POST['Drug'];
 
-            if (!$drug->validate()) {
-                $errors = $drug->getErrors();
-            } else {
-                if (!$drug->save()) {
-                    throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
+                if (!$drug->validate()) {
+                        $errors = $drug->getErrors();
+                } else {
+                        if (!$drug->save()) {
+                                throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
+                        }
+
+                        if (isset($_POST['allergies'])) {
+                                $posted_allergy_ids = $_POST['allergies'];
+
+                                //add new allergy mappings
+                                foreach ($posted_allergy_ids as $asign) {
+                                        $allergy_assignment = new DrugAllergyAssignment();
+                                        $allergy_assignment->drug_id = $drug->id;
+                                        $allergy_assignment->allergy_id = $asign;
+                                        $allergy_assignment->save();
+                                }
+                        }
+
+                        $this->redirect('/admin/drugs/' . ceil($drug->id / $this->items_per_page));
                 }
-
-                if (isset($_POST['allergies'])) {
-                    $posted_allergy_ids = $_POST['allergies'];
-
-                    //add new allergy mappings
-                    foreach ($posted_allergy_ids as $asign) {
-                        $allergy_assignment = new DrugAllergyAssignment();
-                        $allergy_assignment->drug_id = $drug->id;
-                        $allergy_assignment->allergy_id = $asign;
-                        $allergy_assignment->save();
-                    }
-                }
-
-                $this->redirect('/admin/drugs/' . ceil($drug->id / $this->items_per_page));
-            }
         }
 
         $this->render('/admin/adddrug', array(
-            'drug' => $drug,
-            'errors' => @$errors,
+                'drug' => $drug,
+                'errors' => @$errors,
         ));*/
     }
 
@@ -336,60 +336,60 @@ class AdminController extends BaseAdminController
 
         /*$drug = Drug::model()->findByPk($id);
         if (!$drug) {
-            throw new Exception("Drug not found: $id");
+                throw new Exception("Drug not found: $id");
         }
         $drug->scenario = 'update';
 
         if (!empty($_POST)) {
-            $drug->attributes = $_POST['Drug'];
+                $drug->attributes = $_POST['Drug'];
 
-            if (!$drug->validate()) {
-                $errors = $drug->getErrors();
-            } else {
-                if (!$drug->save()) {
-                    throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
+                if (!$drug->validate()) {
+                        $errors = $drug->getErrors();
+                } else {
+                        if (!$drug->save()) {
+                                throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
+                        }
+
+                        $posted_allergy_ids = array();
+
+                        if (isset($_POST['allergies'])) {
+                                $posted_allergy_ids = $_POST['allergies'];
+                        }
+
+                        $criteria = new CDbCriteria();
+                        $criteria->compare('drug_id', $drug->id);
+                        $allergy_assignments = DrugAllergyAssignment::model()->findAll($criteria);
+
+                        $allergy_assignment_ids = array();
+                        foreach ($allergy_assignments as $allergy_assignment) {
+                                $allergy_assignment_ids[] = $allergy_assignment->allergy_id;
+                        }
+
+                        $allergy_assignment_ids_to_delete = array_diff($allergy_assignment_ids, $posted_allergy_ids);
+                        $posted_allergy_ids_to_assign = array_diff($posted_allergy_ids, $allergy_assignment_ids);
+
+                        //add new allergy mappings
+                        foreach ($posted_allergy_ids_to_assign as $asign) {
+                                $allergy_assignment = new DrugAllergyAssignment();
+                                $allergy_assignment->drug_id = $drug->id;
+                                $allergy_assignment->allergy_id = $asign;
+                                $allergy_assignment->save();
+                        }
+
+                        //delete redundant allergy mappings
+                        foreach ($allergy_assignments as $asigned) {
+                                if (in_array($asigned->allergy_id, $allergy_assignment_ids_to_delete)) {
+                                        $asigned->delete();
+                                }
+                        }
+
+                        $this->redirect('/admin/drugs/' . ceil($drug->id / $this->items_per_page));
                 }
-
-                $posted_allergy_ids = array();
-
-                if (isset($_POST['allergies'])) {
-                    $posted_allergy_ids = $_POST['allergies'];
-                }
-
-                $criteria = new CDbCriteria();
-                $criteria->compare('drug_id', $drug->id);
-                $allergy_assignments = DrugAllergyAssignment::model()->findAll($criteria);
-
-                $allergy_assignment_ids = array();
-                foreach ($allergy_assignments as $allergy_assignment) {
-                    $allergy_assignment_ids[] = $allergy_assignment->allergy_id;
-                }
-
-                $allergy_assignment_ids_to_delete = array_diff($allergy_assignment_ids, $posted_allergy_ids);
-                $posted_allergy_ids_to_assign = array_diff($posted_allergy_ids, $allergy_assignment_ids);
-
-                //add new allergy mappings
-                foreach ($posted_allergy_ids_to_assign as $asign) {
-                    $allergy_assignment = new DrugAllergyAssignment();
-                    $allergy_assignment->drug_id = $drug->id;
-                    $allergy_assignment->allergy_id = $asign;
-                    $allergy_assignment->save();
-                }
-
-                //delete redundant allergy mappings
-                foreach ($allergy_assignments as $asigned) {
-                    if (in_array($asigned->allergy_id, $allergy_assignment_ids_to_delete)) {
-                        $asigned->delete();
-                    }
-                }
-
-                $this->redirect('/admin/drugs/' . ceil($drug->id / $this->items_per_page));
-            }
         }
 
         $this->render('/admin/editdrug', array(
-            'drug' => $drug,
-            'errors' => @$errors,
+                'drug' => $drug,
+                'errors' => @$errors,
         ));*/
     }
 
@@ -1867,6 +1867,36 @@ class AdminController extends BaseAdminController
             }
         }
         $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
+    }
+
+    public function actionEditInstallationSetting()
+    {
+        $this->group = "System";
+
+        $key = isset($_GET['key']) ? $_GET['key'] : null;
+        $metadata = SettingMetadata::model()->find('`key`=?', array($key));
+        if (!$metadata) {
+            $this->redirect(array('/admin/settings'));
+        }
+
+        $errors = array();
+
+        if (Yii::app()->request->isPostRequest) {
+            $setting_installation = SettingInstallation::model()->findByAttributes(['key' => $key]);
+            if (!$setting_installation) {
+                $setting_installation = new SettingInstallation();
+                $setting_installation->key = $key;
+            }
+            $value = \Yii::app()->request->getPost($key);
+            $setting_installation->value = $value;
+            if (!$setting_installation->save()) {
+                $errors = $setting_installation->errors;
+            } else {
+                $this->redirect(array('/admin/settings'));
+            }
+        }
+
+        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors, 'allowed_classes' => ['SettingInstallation']));
     }
 
     /**
