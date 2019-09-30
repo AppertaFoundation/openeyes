@@ -89,6 +89,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->hos_num = $patient['hos_num'];
         $this->procedure = implode(', ', array_column($operation, 'term'));
         $this->allergies = $allergyString;
+        $this->complexity = $booking->complexity;
 
         $this->iol_model = 'Unknown';
         $this->iol_power = 'None';

@@ -16,8 +16,8 @@ class ImageCard extends WBCard
         $this->data = array(
             'idSuffix' => 'Cataract',
             'side' => $this->eye->shortName,
-            'mode' => 'view',
-            'width' => 200,
+            'mode' => 'edit',
+            'width' => 400,
             'height' => 200,
             'model' => $this->element,
             'attribute' => 'eyedraw',

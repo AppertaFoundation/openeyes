@@ -45,6 +45,16 @@ class m190916_004623_add_new_whiteboard_columns extends OEMigration
             'aconst',
             'varchar(100)'
         );
+        $this->addColumn(
+            'ophtroperationbooking_whiteboard',
+            'complexity',
+            'int'
+        );
+        $this->addColumn(
+            'ophtroperationbooking_whiteboard_version',
+            'complexity',
+            'int'
+        );
     }
 
     public function down()
@@ -81,6 +91,14 @@ class m190916_004623_add_new_whiteboard_columns extends OEMigration
         $this->dropColumn(
             'ophtroperationbooking_whiteboard_version',
             'aconst'
+        );
+        $this->dropColumn(
+            'ophtroperationbooking_whiteboard',
+            'complexity'
+        );
+        $this->dropColumn(
+            'ophtroperationbooking_whiteboard_version',
+            'complexity'
         );
     }
 }
