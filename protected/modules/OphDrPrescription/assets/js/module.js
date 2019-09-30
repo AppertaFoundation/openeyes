@@ -17,6 +17,10 @@
 
 $(document).ready(function () {
 
+  const NORMAL_PRINT = '1';
+  const FP10_PRINT = '2';
+  const WP10_PRINT = '3';
+
   function checkPrescriptionLength() {
     var rowCount = $('#prescription_items tr').length;
     if (rowCount === 1) {
@@ -124,12 +128,18 @@ $(document).ready(function () {
     }
   });
 
-  if ($('#et_ophdrprescription_print').val() == 1) {
-    setTimeout("do_print_prescription();", 1000);
-  } else if ($('#et_ophdrprescription_print').val() == 2) {
-    setTimeout("do_print_fpTen('FP10');", 1000);
-  } else if ($('#et_ophdrprescription_print').val() == 3) {
-    setTimeout("do_print_fpTen('WP10');", 1000);
+  switch ($('#et_ophdrprescription_print').val()) {
+    case NORMAL_PRINT:
+      setTimeout(do_print_prescription(), 1000);
+      break;
+    case FP10_PRINT:
+      setTimeout(do_print_fpTen('FP10'), 1000);
+      break;
+    case WP10_PRINT:
+      setTimeout(do_print_fpTen('WP10'), 1000);
+      break;
+    default:
+      break;
   }
 });
 

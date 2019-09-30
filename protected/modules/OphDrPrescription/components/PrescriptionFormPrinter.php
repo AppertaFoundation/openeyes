@@ -65,7 +65,6 @@ class PrescriptionFormPrinter extends CWidget
                     }
                     $total_lines_used += $blank_lines + (int)floor($item->fpTenLinesUsed() / self::MAX_FPTEN_LINES);
                 } elseif ($item->fpTenLinesUsed() + 1 > self::MAX_FPTEN_LINES - $lines_used) {
-                    //echo $total_lines_used;
                     $total_lines_used += self::MAX_FPTEN_LINES - $lines_used;
                 }
                 $total_lines_used += ($item->fpTenLinesUsed() + 1);

@@ -19,6 +19,10 @@ class DefaultController extends BaseEventTypeController
 {
     protected $show_element_sidebar = false;
 
+    const FP10_PRINT_MODE = 2;
+    const WP10_PRINT_MODE = 3;
+    const NORMAL_PRINT_MODE = 1;
+
     protected static $action_types = array(
         'drugList' => self::ACTION_TYPE_FORM,
         'repeatForm' => self::ACTION_TYPE_FORM,
@@ -184,7 +188,7 @@ class DefaultController extends BaseEventTypeController
             throw new Exception('Prescription not found: '.$id);
         }
         $prescription->printed = 1;
-        if (!$prescription->update(["printed"])) {
+        if (!$prescription->update(['printed'])) {
             throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
         }
         $this->event->info = $prescription->infotext;
@@ -511,13 +515,11 @@ class DefaultController extends BaseEventTypeController
         }
 
         if ($print_mode === 'FP10') {
-            // Set to 2 for FP10 printing. This will prevent the normal print from occurring as well.
-            $prescription->print = 2;
+            $prescription->print = self::FP10_PRINT_MODE;
         } elseif ($print_mode === 'WP10') {
-            // Set to 3 for WP10 printing. This will prevent the normal print from occurring as well.
-            $prescription->print = 3;
+            $prescription->print = self::WP10_PRINT_MODE;
         } else {
-            $prescription->print = 1;
+            $prescription->print = self::NORMAL_PRINT_MODE;
         }
 
         $prescription->draft = 0;
@@ -562,7 +564,7 @@ class DefaultController extends BaseEventTypeController
         if ($prescription->print >= 1) {
             $prescription->print = 0;
 
-            if (!$prescription->update(["printed"])) {
+            if (!$prescription->update(['print', 'printed'])) {
                 throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
             }
         }

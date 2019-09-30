@@ -11,9 +11,11 @@
 </div>
 <div class="fpten-form-row">
     <div class="fpten-form-column <?= $form_css_class ?>-site">
-        <?= $this->user->getFullNameAndTitle() ?>
+        <?= $this->firm->cost_code ?: $this->getDefaultCostCode()?>
         <br/>
-        <?= $this->site->name ?>
+        <?= $this->site->institution->name ?>
+        <br/>
+        <?= $this->user->getFullNameAndTitle() ?> <?= ($side === 'left') ? str_replace('GMC', '', $this->user->registration_code) : '&nbsp;' ?>
         <br/>
         <?= $this->site->contact->address->address1 ?>
         <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
@@ -26,24 +28,11 @@
         <?= str_replace(' ', '', $this->site->contact->address->postcode) ?> <br/>
         Tel: <?= $this->site->telephone ?>
         <br/>
-        <?= $this->site->institution->name ?>
     </div>
 
     <div class="fpten-form-column <?= $form_css_class ?>-site-code">
-        <span class="fpten-registration-code">
-            <?= ($side === 'left') ? str_replace('GMC', '', $this->user->registration_code) : '&nbsp;' ?>
-        </span>
-        <br/>
-        <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
-        <br/>
-        <?= $this->site->contact->address->county ? '<br/>' : null ?>
         <br/>
         <br/>
-        <br/>
-        <br/>
-        <?php if ($side === 'left') {
-            echo $this->firm->cost_code ?: $this->getDefaultCostCode();
-        }?>
     </div>
     <?php if ($side === 'left') : ?>
         <span class="fpten-form-column fpten-prescriber-code">HP</span>
