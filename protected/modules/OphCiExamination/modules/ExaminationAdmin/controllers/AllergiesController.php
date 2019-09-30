@@ -27,7 +27,7 @@ class AllergiesController extends \ModuleAdminController
         $this->render('/Allergies/index', [
           'model' => OphCiExaminationAllergy::model(),
           'model_list' => OphCiExaminationAllergy::model()->findAll(),
-          'medication_set_list_options' => \MedicationSet::model()->findAll('id NOT IN (SELECT id FROM openeyes.medication_set_rule)'),
+          'medication_set_list_options' => \MedicationSet::model()->findAll('id NOT IN (SELECT medication_set_id FROM openeyes.medication_set_rule)'),
         ]);
     }
 
