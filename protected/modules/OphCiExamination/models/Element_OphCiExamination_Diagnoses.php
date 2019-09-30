@@ -160,7 +160,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         $current_diagnoses = OphCiExamination_Diagnosis::model()->findAll('element_diagnoses_id=?', [$this->id]);
 
         foreach ($update_disorders as $ud) {
-            if ($ud['id'] !== "") {
+            if (isset($ud['id']) && $ud['id'] !== "") {
                 $disorder_to_update[$ud['id']] = $ud;
             } else {
                 $disorder_to_create[] = $ud;
