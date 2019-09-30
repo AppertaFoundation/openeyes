@@ -81,7 +81,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                       </td>
                                       <td><?= $entry->getStartDateDisplay() ?></td>
                                   </tr>
-                              <?php } ?>
+                                <?php } ?>
                               </tbody>
                           </table>
                       </div>
@@ -122,11 +122,11 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                       <i class="oe-i info small pro-theme js-has-tooltip"
                                          data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                       </i>
-                                    <?php } ?>
+                                  <?php } ?>
                               </td>
                               <td><?= $entry->getStartDateDisplay() ?></td>
                           </tr>
-                        <?php } ?>
+                      <?php } ?>
                       </tbody>
                   </table>
               </div>
