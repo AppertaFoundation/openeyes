@@ -166,10 +166,9 @@ class SettingMetadata extends BaseActiveRecordVersioned
             'SettingInstitution' => 'institution_id',
             'SettingInstallation' => null,
             ) as $class => $field) {
-
-        		if($allowed_classes && !in_array($class, $allowed_classes)) {
-        			continue;
-						}
+            if ($allowed_classes && !in_array($class, $allowed_classes)) {
+                continue;
+            }
             if ($field) {
                 if (${$field}) {
                     if ($setting = $this->getSettingValue($class, $key, $field, ${$field}, $element_type)) {
@@ -204,7 +203,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
             $key = $this->key;
         }
 
-        $value = $this->getSetting($key, null , false, $allowed_classes);
+        $value = $this->getSetting($key, null, false, $allowed_classes);
 
         if ($value == '') {
             $value = $this->default_value;
@@ -230,7 +229,8 @@ class SettingMetadata extends BaseActiveRecordVersioned
         return $setting->value;
     }
 
-    public function scopes() {
+    public function scopes()
+    {
         return array(
             'byDisplayOrder' => array('order' => 'display_order DESC, name DESC'),
         );
