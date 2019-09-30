@@ -94,16 +94,14 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         <div id="<?= $model_name . "_entries_" . $row_count . "_dfrl_error" ?>">
             <div class="flex-meds-inputs">
                 <div class="alternative-display inline">
-                    <div
-                        class="alternative-display-element textual" <?= $direct_edit || !empty($entry->errors) ? 'style="display: none;"' : '' ?>>
+                    <div class="alternative-display-element textual" <?= $direct_edit || !empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <a class="textual-display-dose textual-display hint" href="javascript:void(0);"
                              onclick="switch_alternative(this);">
                             <?php $entry_text_display = $entry->getAdministrationDisplay();
                             echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         </a>
                     </div>
-                    <div
-                        class="alternative-display-element" <?= !$direct_edit && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
+                    <div class="alternative-display-element" <?= !$direct_edit && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <input class="fixed-width-small js-dose " type="text" name="<?= $field_prefix ?>[dose]"
                                      value="<?= $entry->dose ?>" placeholder="00"/>
                         <span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
