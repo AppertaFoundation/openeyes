@@ -163,7 +163,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                         <?php if ($is_new) : ?>
                                                     <input id="<?= $model_name ?>_datepicker_2_<?= $row_count ?>"
                                                                  name="<?= $field_prefix ?>[start_date]"
-                                                                 value="<?= $entry->start_date ? $entry->start_date : "" ?>"
+                                                                 value="<?= $entry->start_date ?>"
                                                                  style="width:80px" placeholder="yyyy-mm-dd" class="js-start-date"
                                                                  autocomplete="off">
 
