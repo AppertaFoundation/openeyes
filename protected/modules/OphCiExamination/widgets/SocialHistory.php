@@ -41,9 +41,9 @@ class SocialHistory extends \BaseEventElementWidget
         if (!is_a($element, 'OEModule\OphCiExamination\models\SocialHistory')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
+        if ($data && !isset($data['driving_statuses'])) {
+            $data['driving_statuses'] = null;
+        }
         $element->attributes = $data;
-        // note we ignore the has many relation for driving status, because the multiselect widget
-        // takes care of it. But it does mean that the element is not entire reflective of the POSTed data
-        // that is passed into this method.
     }
 }
