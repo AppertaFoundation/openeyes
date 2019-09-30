@@ -39,6 +39,7 @@ function printIFrameUrl(url, data) {
 		style: 'display: none;',
 	});
 	$('body').append(iframe);
+	window.frames.print_content_iframe.print();
 
 	// re-enable the buttons
 	$('#print_content_iframe').load(function() {

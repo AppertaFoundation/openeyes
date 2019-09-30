@@ -101,10 +101,16 @@ class PatientTest extends CDbTestCase
     {
         Yii::app()->params['pseudonymise_patient_details'] = false;
 
-        $patient = $this->patients('patient9');
+        $patient = $this->patients('patient9'); //dob=1979-09-08
+        
+        $age = 39; // patient9 died on 2019-07-10, when they were 39
 
-        $age = date('Y') - 1979;
-        if (date('md') > '0908') {
+        $this->assertEquals($age, $patient->getAge());
+
+        $patient = $this->patients('patient8'); // dob= 1977-03-04
+
+        $age = date('Y') - 1977;
+        if (date('md') < '0304') {
             --$age; // have not had a birthday yet
         }
 

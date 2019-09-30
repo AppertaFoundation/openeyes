@@ -17,6 +17,10 @@ class ResultTypeController extends BaseAdminController
 
     public function actionList()
     {
+        $asset_manager = Yii::app()->getAssetManager();
+        $asset_manager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
+        $asset_manager->registerScriptFile('/js/oeadmin/list.js');
+
         $this->render('/admin/list_OphInLabResults_Type', array(
             'model_list' => OphInLabResults_Type::model()->findAll(),
             'title' => 'Manage Result Types',
@@ -173,5 +177,15 @@ class ResultTypeController extends BaseAdminController
         }
 
         echo json_encode($result);
+    }
+
+    public function actions() {
+        return [
+          'sortTypes' => [
+            'class' => 'SaveDisplayOrderAction',
+            'model' => OphInLabResults_Type::model(),
+            'modelName' => 'OphInLabResults_Type',
+          ],
+        ];
     }
 }

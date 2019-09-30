@@ -228,11 +228,11 @@
 
         // instantiate jsPDF
         var doc = new jsPDF({
-			orientation: "landscape",
-			unit: "pt",
-			format: "a4",
-			compress: true
-		});
+            orientation: "landscape",
+            unit: "pt",
+            format: "a4",
+            compress: true
+        });
         // get page size
         var pageW = doc.internal.pageSize.width;
         var pageH = doc.internal.pageSize.height;
