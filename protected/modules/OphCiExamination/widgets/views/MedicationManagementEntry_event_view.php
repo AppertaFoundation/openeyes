@@ -30,15 +30,15 @@
 
         <?php if ($entry->route && $entry->route->has_laterality) {
             $laterality = $entry->getLateralityDisplay(); ?>
-            <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-            <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+            <i class="oe-i laterality small <?php echo $laterality === 'R' || $laterality === 'B' ? 'R' : 'NA' ?>"></i>
+            <i class="oe-i laterality small <?php echo $laterality === 'L' || $laterality === 'B' ? 'L' : 'NA' ?>"></i>
         <?php } ?>
     </td>
     <td>
 
         <?php echo $entry->duration ? $entry->drugDuration->name : '' ?>
         <?php if ($entry->dispense_condition_id) {
-            echo $entry->dispense_condition->name . " / " . $entry->dispense_location->name;
+            echo $entry->dispense_condition->name . " / " . isset($entry->dispense_location) ? $entry->dispense_location->name : "";
         } ?>
     </td>
     <td>
