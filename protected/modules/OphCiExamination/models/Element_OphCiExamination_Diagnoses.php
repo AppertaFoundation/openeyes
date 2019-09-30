@@ -234,7 +234,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         foreach ($disorder_to_create as $new_disorder) {
             $related_diagnosis = OphCiExamination_Diagnosis::model()->find('disorder_id=? and element_diagnoses_id=? and date=? and principal=?', [$new_disorder['disorder_id'], $this->id, $new_disorder['date'], $new_disorder['principal']]);
             if ($related_diagnosis) {
-                if ($related_diagnosis->eye_id == $new_disorder['eye_id'] || $related_diagnosis->eye_id === \Eye::BOTH) {
+                if ($related_diagnosis->eye_id === intval($new_disorder['eye_id']) || $related_diagnosis->eye_id === \Eye::BOTH) {
                     $this->addError('disorder_id', 'Duplicate');
                 } else {
                     $related_diagnosis->eye_id = \Eye::BOTH;
