@@ -2358,6 +2358,7 @@ class Patient extends BaseActiveRecordVersioned
     public function isMergedInto()
     {
         $criteria = new CDbCriteria();
+        $criteria->compare('secondary_id', $this->id);
         $criteria->compare('secondary_hos_num', $this->hos_num);
         $criteria->compare('status', PatientMergeRequest::STATUS_MERGED);
 
