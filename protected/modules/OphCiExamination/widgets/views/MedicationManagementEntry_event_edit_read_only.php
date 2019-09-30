@@ -51,9 +51,9 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                                         echo implode(",", array_map(function ($e) {
                                             return $e->id;
                                         }, $entry->medication->allergies));
-                                    } else {
-                                        echo "{{& allergy_ids}}";
-                                    }
+                              } else {
+                                  echo "{{& allergy_ids}}";
+                              }
                                 ?>"
             class="<?= $field_prefix ?>_row <?= ($is_new || /*$entry->group*/
                 "new" == 'new') ? " new" : "" ?><?= $entry->hidden == 1 ? ' hidden' : '' ?>">
@@ -168,7 +168,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
         <td>
             <?php $tooltip_no_prescribe_role = "This item is already prescribed and cannot be edited without prescribe permissions."; ?>
             <span data-tooltip-content="<?= $tooltip_no_prescribe_role ?>" class="js-has-tooltip">
-				 <i class="oe-i trash js-remove disabled"></i>
+                 <i class="oe-i trash js-remove disabled"></i>
             </span>
         </td>
     </tr>

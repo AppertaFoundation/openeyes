@@ -16,7 +16,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
 if ($historyElement) {
     $this->renderElement($historyElement, $action, $form, $data);
 }
-?>
+?>protected/modules/OphDrPrescription/views/admin/auto_set_rule/list.php
 
 <div class="element-tile-group" data-collapse="expanded">
     <?php $this->renderElement($diagnosesElement, $action, $form, $data) ?>

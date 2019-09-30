@@ -1,6 +1,6 @@
 <?php
 /**
- * (C) OpenEyes Foundation, 2018
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -50,7 +50,7 @@ if (!isset($uniqueid)) {
             ?>
             <input type="hidden" name="returnUri" id="returnUri" value="<?= $returnUri ?>"/>
 
-            <?php else: ?>
+            <?php else : ?>
             <form id="generic-admin-list">
                 <?php endif; ?>
                 <input type="hidden" name="page" value="<?php echo Yii::app()->request->getParam('page', 1) ?>"/>
@@ -75,13 +75,15 @@ if (!isset($uniqueid)) {
                                 <?php endif;
                                 ?>
                                 </th>
-                            <?php else: ?>
+                            <?php else : ?>
                                 <th>Action</th>
                             <?php endif;
                         endforeach; ?>
                     </tr>
                     </thead>
-                    <tbody <?php if (in_array('display_order', $admin->getListFields())) : echo 'class="sortable"'; endif; ?>>
+                    <tbody <?php if (in_array('display_order', $admin->getListFields())) :
+                        echo 'class="sortable"';
+                    endif; ?>>
                     <?php
                     $retrieveResults = $admin->getSearch()->retrieveResults();
                     foreach ($retrieveResults as $i => $row) { ?>
@@ -99,7 +101,7 @@ if (!isset($uniqueid)) {
                                         if (gettype($attr_val) === 'boolean') :
                                             if ($admin->attributeValue($row, $listItem)) :
                                                 ?><i class="oe-i tick small"></i><?php
-                                            else:
+                                            else :
                                                 ?><i class="oe-i remove small"></i><?php
                                             endif;
                                         elseif (gettype($attr_val) === 'array') :
@@ -110,7 +112,7 @@ if (!isset($uniqueid)) {
                                                                name="<?php echo $admin->getModelName(); ?>[display_order][]"
                                                                value="<?php echo $row->id ?>">
                                         <?php
-                                        else:
+                                        else :
                                             echo $attr_val;
                                         endif
                                         ?>
@@ -195,7 +197,7 @@ if (!isset($uniqueid)) {
         <?php endif; ?>
 
     </div>
-    <?php else: ?>
+    <?php else : ?>
     </form>
     <?php endif; ?>
 </div>
