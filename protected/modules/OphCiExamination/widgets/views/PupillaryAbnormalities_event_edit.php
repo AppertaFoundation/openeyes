@@ -42,7 +42,7 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
                                 <input type="hidden"
                                        name="<?= $model_name . '[' . $eye_side . '_no_pupillaryabnormalities]' ?>"
                                        value="0">
-                                <label class="inline highlight" for="<?= $eye_side ?>_no_pupillaryabnormalities" id="<?= $model_name . '_' . $eye_side ?>_no_pa_label">
+                                <label class="inline highlight" for="<?= $model_name . '_' . $eye_side ?>_no_pupillaryabnormalities" id="<?= $model_name . '_' . $eye_side ?>_no_pa_label">
                                     <?= \CHtml::checkBox($model_name . '[' . $eye_side . '_no_pupillaryabnormalities]', $element->{'no_pupillaryabnormalities_date_' . $eye_side} ? true : false); ?>
                                     Confirm patient has no pupillary abnormalities
                                 </label>
