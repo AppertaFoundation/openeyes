@@ -98,7 +98,8 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
                         <div class="add-data-actions flex-item-bottom" id="history-abnormality-popup-<?= $eye_side ?>">
                             <button class="button hint green js-add-select-search"
                                     id="add-abnormality-btn-<?= $eye_side ?>"
-                                    type="button">
+                                    type="button"
+                                <?= $element->{'no_pupillaryabnormalities_date_' . $eye_side} ? ' style="display: none;"' : ''?>>
                                 <i class="oe-i plus pro-theme"></i>
                             </button>
                         </div>
