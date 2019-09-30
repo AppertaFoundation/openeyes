@@ -39,14 +39,15 @@ $is_posting = Yii::app()->request->getIsPostRequest();
 
 ?>
 
-<tr class="divider col-gap js-first-row <?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>"
-		data-key="<?= $row_count ?>"
-		data-event-medication-use-id="<?php echo $entry->id; ?>"
-		<?php if (!is_null($entry->medication_id)) :
-		?>data-allergy-ids="<?php echo implode(",", array_map(function ($e) {
-			return $e->id;
+<tr
+	class="divider col-gap js-first-row <?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>"
+	data-key="<?= $row_count ?>"
+	data-event-medication-use-id="<?php echo $entry->id; ?>"
+	<?php if (!is_null($entry->medication_id)) :
+	?>data-allergy-ids="<?php echo implode(",", array_map(function ($e) {
+		return $e->id;
 
-		}, $entry->medication->allergies)); ?>"<?php
+	}, $entry->medication->allergies)); ?>"<?php
 endif; ?>
 
 	<?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
@@ -141,7 +142,7 @@ endif; ?>
 						class="button js-add-comments"
 						data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
 						type="button"
-						data-hide-method = "display"
+						data-hide-method="display"
 						style="<?php if ($entry->comments) :
 							?>display: none;<?php
 						endif; ?>"
@@ -156,7 +157,7 @@ endif; ?>
 		<?php } ?>
 	</td>
 </tr>
-<tr  data-key="<?= $row_count ?>" class="no-line col-gap js-second-row">
+<tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row">
 	<td class="nowrap">
 		<div class="flex-meds-inputs">
                 <span id="<?= $model_name . "_entries_" . $row_count . "_start_date_error" ?>">
@@ -201,7 +202,8 @@ endif; ?>
                 </span>
 
 
-			<span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5"
+			<span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>"
+						class="js-stop-reason-select cols-5"
 						style="<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
             <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => ' js-stop-reason')) ?>
         </span>
