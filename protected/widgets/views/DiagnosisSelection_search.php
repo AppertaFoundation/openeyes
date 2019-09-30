@@ -30,80 +30,59 @@
 				<div class="dropdown-row">
 					<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => 'Select') : array_merge($dropdownOptions, array('style' => 'width : 100%'))) : ''?>
                 </div>
-        <div class="autocomplete-row" style="display: none">
+                <?php if($searchBtn){ ?>
+                <div class="autocomplete-row" style="display: none">
             <?php
-            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                'name' => "ignore_{$class}[$field]",
-                'id' => "{$class}_{$field}_searchbox",
-                'value' => '',
-                'source' => "js:function(request, response) {
-								$.ajax({
-									'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
-									'type':'GET',
-									'data':{'term': request.term, 'code': '" . $code . "'},
-									'success':function(data) {
-										data = $.parseJSON(data);
-										var result = [];
-										for (var i = 0; i < data.length; i++) {
-											var ok = true;
-											$('#selected_diagnoses').children('input').map(function() {
-												if ($(this).val() == data[i]['id']) {
-													ok = false;
-												}
-											});
-											if (ok) {
-												result.push(data[i]);
-											}
-										}
-
-										response(result);
-									}
-								});
-							}",
-                'options' => array(
-                    'minLength' => '3',
-                    'select' => 'js:function(event, ui) { ' . ($callback ? $callback . '(ui.item.id, ui.item.value);' : '') . "
-										$('#" . $class . '_' . $field . "_searchbox').val('').parent().addClass('hide');
-										var matched = false;
-										$('#" . $class . '_' . $field . "').children('option').map(function() {
-											if ($(this).val() == ui.item.id) {
-												matched = true;
-											}
-										});
-										if (!matched) {
-											$('#" . $class . '_' . $field . "').append('<option value=\"' + ui.item.id + '\">'+ui.item.value+'</option>');
-										}
-										$('#" . $class . '_' . $field . "').val(ui.item.id).trigger('change');
-										return false;
-									}",
-                ),
-                'htmlOptions' => array(
-                    'placeholder' => 'search for diagnosis',
-                ),
-            ));
+            $this->widget('application.widgets.AutoCompleteSearch',['field_name' => "{$class}_{$field}_searchbox"]);
             ?>
         </div>
+                <?php }?>
 			</div>
 			<div class="cols-2 column">
 				<div class="postfix">
+                    <?php if($searchBtn){ ?>
 					<button class="oe-i search pad-left" id="<?php echo $class.'_'.$field.'_search'?>" style="height: 28px; width: 28px;" type="button">
 						<span class="icon-button-small-search" ></span>
 						<span style="display: none">Search</span>
 					</button>
+                    <?php }?>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<?php if($searchBtn){ ?>
+<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', false, -1); ?>"></script>
 <script type="text/javascript">
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $('<?="#{$class}_{$field}_searchbox";?>'),
+        url: '<?=Yii::app()->createUrl('/disorder/autocomplete');?>',
+        maxHeight: '200px',
+        onSelect: function(){
+            let AutoCompleteResponse =  OpenEyes.UI.AutoCompleteSearch.getResponse();
+            var matched = false;
+            $('<?="#".$class. "_".$field;?>').children('option').map(function() {
+                if ($(this).val() == AutoCompleteResponse.id) {
+                    matched = true;
+                }
+            });
+            if (!matched) {
+                $('<?="#".$class. "_".$field;?>').append('<option value=\"' + AutoCompleteResponse.id + '\">'+AutoCompleteResponse.value+'</option>');
+            }
+            $('<?="#".$class. "_".$field;?>').val(AutoCompleteResponse.id).trigger('change');
+            $('<?= "#".$class."_".$field."_searchbox";?>').parent().addClass('hide');
+        }
+    });
 	$(document).ready(function() {
-
 		var searchButton = $('#<?php echo $class.'_'.$field.'_search'?>');
 		var searchBox = $('#<?php echo $class.'_'.$field.'_searchbox'?>');
 		searchButton.on('click', function(e) {
 			e.preventDefault();
-			searchBox.parent().toggle();
-			searchBox.focus();
+			(searchBox.parent()).parent().toggle();
+            searchBox.closest('.patient-activity').show();
+            searchBox.focus();
 		});
 	});
+
 </script>
+<?php }?>

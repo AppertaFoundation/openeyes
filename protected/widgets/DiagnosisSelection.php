@@ -36,6 +36,7 @@ class DiagnosisSelection extends BaseFieldWidget
     public $options = array();
     public $secondary_to = array();
     public $allowClear=false;
+    public $searchBtn = true;
     // text in diagnosis search box
     public $placeholder = 'or type the first few characters of a diagnosis';
 
