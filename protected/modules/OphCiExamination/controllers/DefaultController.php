@@ -1340,60 +1340,6 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidatePatientTicketingFromData($data, $errors, $api);
         }
 
-        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])) {
-            $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
-        }
-
-        return $errors;
-    }
-
-    protected function setAndValidateOphthalmicDiagnosesFromData($data, $errors)
-    {
-        $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
-        $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'] : [];
-        $entries_by_disorder_id = [];
-
-        // The principal is unique by default so we can remove it
-        $principal = isset($data['principal_diagnosis_row_key']);
-        if ($principal) {
-            unset($entries[$principal]);
-        }
-
-        foreach ($entries as $entry) {
-            if (isset($entry['right_eye']) && isset($entry['left_eye'])) {
-                unset($entry['right_eye']);
-                unset($entry['left_eye']);
-                $entry['eye_id'] = \Eye::BOTH;
-            } else if (isset($entry['right_eye'])) {
-                unset($entry['right_eye']);
-                $entry['eye_id'] =  \Eye::RIGHT;
-            } else if (isset($entry['left_eye'])) {
-                unset($entry['left_eye']);
-                $entry['eye_id'] =  \Eye::LEFT;
-            }
-
-            $entries_by_disorder_id[$entry['disorder_id']][] = ['eye_id' => $entry['eye_id'], 'date' => $entry['date']];
-        }
-
-        foreach ($entries_by_disorder_id as $disorder_id => $disorders) {
-            if (count($disorders) === 2) {
-                if (($disorders[0]['eye_id'] === $disorders[1]['eye_id'] && $disorders[0]['date'] === $disorders[1]['date'])
-                    || ($disorders[0]['eye_id'] === \Eye::BOTH && $disorders[0]['date'] === $disorders[1]['date'])
-                    || (($disorders[1]['eye_id'] === \Eye::BOTH && $disorders[0]['date'] === $disorders[1]['date']))) {
-                    $errors[$et_name][] = "You have duplicates for " . \Disorder::model()->findByPk($disorder_id)->term . " diagnosis. Each combination of diagnosis, eye side and date must be unique.";
-                    return $errors;
-                }
-            } else {
-                foreach ($disorders as $disorder) {
-                    $keys = array_keys($disorders, ['eye_id' => $disorder['eye_id'], 'date' => $disorder['date']]);
-                    if (count($keys) > 1) {
-                        $errors[$et_name][] = "You have duplicates for " . \Disorder::model()->findByPk($disorder_id)->term . " diagnosis. Each combination of diagnosis, eye side and date must be unique.";
-                        return $errors;
-                    }
-                }
-            }
-        }
-
         return $errors;
     }
 

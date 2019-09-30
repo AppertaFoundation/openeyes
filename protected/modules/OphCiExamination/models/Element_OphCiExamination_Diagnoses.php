@@ -35,6 +35,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 {
+    protected $errorExceptions = [
+            'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses_table'
+    ];
     /**
      * Returns the static model of the specified AR class.
      *
@@ -70,10 +73,11 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('diagnoses' ,'disorderIdIsSet', 'required'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('id, event_id', 'safe', 'on' => 'search'),
+            array('diagnoses', 'checkForDuplicates'),
+            array('diagnoses', 'disorderIdIsSet', 'required'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, event_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -84,6 +88,48 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 $this->addError($attributeName, "Diagnosis cannot be empty");
             }
         }
+    }
+
+    public function checkForDuplicates($attribute, $params) {
+        $entries_by_disorder_id = [];
+
+        foreach ($this->diagnoses as $diagnosis) {
+            $entries_by_disorder_id[$diagnosis->disorder_id][] = ['eye_id' => $diagnosis->eye_id, 'date' => $diagnosis->date];
+        }
+
+        foreach ($entries_by_disorder_id as $disorder_id => $disorders) {
+            foreach ($disorders as $disorder) {
+                $keys = array_keys($disorders, ['eye_id' => $disorder['eye_id'], 'date' => $disorder['date']]);
+                if (count($keys) > 1) {
+                    $duplicates = [];
+
+                    foreach ($this->diagnoses as $key => $value) {
+                        if ($value->disorder_id == $disorder_id && $value->eye_id === $disorder['eye_id'] && $value->date === $disorder['date']) {
+                            $duplicates[] = $key;
+                        }
+                    }
+
+                    foreach ($duplicates as $duplicate){
+                        $this->addError($attribute, "row $duplicate - You have duplicates for " . \Disorder::model()->findByPk($disorder_id)->term . " diagnosis. Each combination of diagnosis, eye side and date must be unique.");
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $attribute
+     * @inheritdoc
+     */
+    protected function errorAttributeException($attribute, $message)
+    {
+        if ($attribute === \CHtml::modelName($this) . '_diagnoses') {
+            if (preg_match('/(\d+)/', $message, $match) === 1) {
+                return $attribute . '_entries_row_' . ($match[1]+1);
+            }
+        }
+        return parent::errorAttributeException($attribute, $message);
     }
 
     /**

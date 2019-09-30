@@ -38,7 +38,7 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
     }
 }
 ?>
-<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row">
+<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row" id="<?= $model_name . '_diagnoses_entries_row_' . $row_count ?>">
     <td>
         <?=$values['disorder_display'];?>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
