@@ -4,7 +4,6 @@
   <h2 class="event-title">
         <?php echo $this->title ?>
         <?php if ($this->event->is_automated) {
-            echo " - ";
             $this->renderPartial('//patient/event_automated');
         } ?>
         <?php if ($this->action->id === 'view') { ?>

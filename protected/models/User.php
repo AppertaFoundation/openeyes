@@ -176,7 +176,7 @@ class User extends BaseActiveRecordVersioned
                 'firm_id',
                 'through' => 'firm_preferences',
                 'order' => 'firm_preferences.position DESC',
-                'limit' => 6,
+                'limit' => (string)SettingMetadata::model()->getSetting('recent_context_firm_limit'), //Method to get recent_context_firm_limit from setting_installation (default is 6)
             ),
             'firmSelections' => array(
                 self::MANY_MANY,

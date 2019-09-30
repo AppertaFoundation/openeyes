@@ -105,13 +105,19 @@
                         <td>
                             <?php
                                 $bmi = 'N/A';
-                                $bmi_container_color = "rgb(0%, 80%, 0%)";
-                                if (ceil($element->weight) > 0 && ceil($element->height) > 0) {
-                                    $bmi = $element->bmiCalculator($element->weight, $element->height);
-                                    if($bmi < 18.5 || $bmi >= 30){
-                                        $bmi_container_color = "rgb(80%, 0%, 0%)";
-                                    }
-                                } ?>
+                                $bmi_container_color = "";
+                            if (ceil($element->weight) > 0 && ceil($element->height) > 0) {
+                                $bmi = $element->bmiCalculator($element->weight, $element->height);
+                                if ($bmi < 18.5 || $bmi >= 30) {
+                                    $bmi_container_color = "rgb(80%, 0%, 0%)";
+                                } else {
+                                    $bmi_container_color = "rgb(0%, 80%, 0%)";
+                                }
+                            }
+                            // else  {
+                            //     $bmi_container_color = "";
+                            // }
+                            ?>
                             <div id="bmi-container" class="data-value" style="display:inline-block; text-align: center; background-color: <?= $bmi_container_color ?>;">
                                 <?= $bmi ?>
                             </div>
