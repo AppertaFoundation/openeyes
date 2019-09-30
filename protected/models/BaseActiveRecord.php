@@ -195,7 +195,7 @@ class BaseActiveRecord extends CActiveRecord
                     foreach ($value as $v) {
                         if (is_array($v)) {
                             // looks like a list of attribute values, try to find or instantiate the classes
-                            if (array_key_exists($pk_attr, $v) && isset($v[$pk_attr])) {
+                            if (array_key_exists($pk_attr, $v) && $v[$pk_attr]) {
                                 $m = $rel_cls::model()->findByPk($v[$pk_attr]);
                             } else {
                                 $m = new $rel_cls();
