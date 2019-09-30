@@ -253,7 +253,7 @@ class PatientController extends BaseController
     public function actionGetPlansProblems($patient_id, $inc_deactive = false)
     {
         $criteria = new CDbCriteria();
-        if(!$inc_deactive){
+        if (!$inc_deactive) {
             $criteria->addCondition("active=1");
         }
         $criteria->addCondition("patient_id=:patient_id");

@@ -172,7 +172,7 @@ class DefaultController extends \BaseEventTypeController
         $remove = $this->getElementFilterList(false);
         return array_filter(
             parent::getAllElementTypes(),
-            function($et) use ($remove) {
+            function ($et) use ($remove) {
                 return !in_array($et->class_name, $remove);
             });
     }
@@ -1159,7 +1159,8 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
-    private function getOtherSide($side1, $side2, $selectedSide) {
+    private function getOtherSide($side1, $side2, $selectedSide)
+    {
         return $selectedSide === $side1 ? $side2 : $side1;
     }
 
@@ -1260,7 +1261,8 @@ class DefaultController extends \BaseEventTypeController
      * @param $errors
      * @return mixed
      */
-    protected function setAndValidateHistoryIopFromData($data, $errors) {
+    protected function setAndValidateHistoryIopFromData($data, $errors)
+    {
         $et_name = models\HistoryIOP::model()->getElementTypeName();
         $historyIOP = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryIOP');
         $entries = $data['OEModule_OphCiExamination_models_HistoryIOP'];
@@ -1323,7 +1325,8 @@ class DefaultController extends \BaseEventTypeController
 
         $posted_risk = [];
         if (isset($data['OEModule_OphCiExamination_models_HistoryRisks']['entries'])) {
-            $posted_risk = array_map(function($r){ return $r['risk_id'];
+            $posted_risk = array_map(function ($r) {
+                return $r['risk_id'];
             }, $data['OEModule_OphCiExamination_models_HistoryRisks']['entries']);
         }
 
@@ -1337,7 +1340,7 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidatePatientTicketingFromData($data, $errors, $api);
         }
 
-        if(isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])){
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])) {
             $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
         }
 
@@ -1348,7 +1351,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
         $diagnoses = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses');
-        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'];
+              $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'] : [];
         $duplicate_exists = false;
 
         $concat_occurrences = [];
@@ -1359,6 +1362,8 @@ class DefaultController extends \BaseEventTypeController
                 $eye_id =  \Eye::RIGHT;
             } else if (isset($entry['left_eye'])) {
                 $eye_id =  \Eye::LEFT;
+            } else {
+                            continue;
             }
 
             // create a string with concatenation of  the columns that must be unique
@@ -1624,7 +1629,7 @@ class DefaultController extends \BaseEventTypeController
         if (!$element_assignment && $this->event) {
             \OELog::log("Assignment not found for event id: {$this->event->id}");
         }
-      
+
         if ($this->action->id == 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
             $this->step = $this->getCurrentStep();
         }
