@@ -350,7 +350,8 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
               </div>
           </div>
       </div><!--    .oe-popup-overflow -->
-    </div><!-- .flex-layout -->
+  </div><!-- .flex-layout -->
+</div>
 
     <div class="oe-patient-popup patient-popup-management" style="display: none;">
         <div class="flex-layout flex-top">
