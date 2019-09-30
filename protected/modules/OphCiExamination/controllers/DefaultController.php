@@ -1359,7 +1359,10 @@ class DefaultController extends \BaseEventTypeController
     {
         $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
         $diagnoses = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses');
-        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'];
+
+        $entries = array_key_exists('entries',$data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']) ?
+          $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'] :
+          [];
         $duplicate_exists = false;
 
         $concat_occurrences = [];
