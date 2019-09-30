@@ -129,8 +129,6 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
                     <?php if (!is_null($entry->end_date)) : ?>
                                             <i class="oe-i stop small pad"></i>
                                             <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
-                                            <?php /* echo !is_null($entry->stop_reason_id) ?
-                            ' ('.$entry->stopReason->name.')' : ''; */ ?>
                     <?php else : ?>
                                             <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
                     <?php endif; ?>

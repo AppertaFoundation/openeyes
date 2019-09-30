@@ -53,7 +53,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                               } else {
                                   echo "{{& allergy_ids}}";
                               }?>"
-            class="divider col-gap js-first-row <?=$field_prefix ?>_row <?= $is_new ? " new" : ""?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
+            class="divider col-gap js-first-row <?=$field_prefix ?>_row <?= $is_new ? " new" : ""?><?= $entry->hidden === "1" ? ' hidden' : '' ?>"
     >
 
         <td class="drug-details" rowspan="2">
@@ -186,7 +186,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             </span>
             </td>
         </tr>
-        <tr class="no-line col-gap js-second-row <?= $entry->hidden == 1 ? ' hidden' : '' ?>" data-key="<?=$row_count?>">
+        <tr class="no-line col-gap js-second-row <?= $entry->hidden === "1" ? ' hidden' : '' ?>" data-key="<?=$row_count?>">
         <td class="nowrap">
            <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
 
@@ -196,8 +196,6 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                     <?php if (!is_null($entry->end_date)) : ?>
                                             <i class="oe-i stop small pad"></i>
                                             <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
-                                            <?php /* echo !is_null($entry->stop_reason_id) ?
-                            ' ('.$entry->stopReason->name.')' : ''; */ ?>
                     <?php else : ?>
                                             <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
                     <?php endif; ?>
