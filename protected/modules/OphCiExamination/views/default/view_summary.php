@@ -43,7 +43,7 @@ if ($historyElement) {
                     No medications recorded during this encounter
                 </div>
             <?php } else { ?>
-            <?php if ($current_eye_medications) { ?>
+                <?php if ($current_eye_medications) { ?>
                 <div class="data-value">
                     <div class="tile-data-overflow">
                         <table>
@@ -77,12 +77,12 @@ if ($historyElement) {
                         </table>
                     </div>
                 </div>
-            <?php } else { ?>
+                <?php } else { ?>
                 <div class="data-value none">
                     No current Eye Medications
                 </div>
-            <?php } ?>
-            <?php if ($stopped_eye_medications) : ?>
+                <?php } ?>
+                <?php if ($stopped_eye_medications) : ?>
             <div class="collapse-data">
                 <div class="collapse-data-header-icon expand">
                     Stopped
@@ -105,7 +105,7 @@ if ($historyElement) {
                                         <td><?php
                                             $laterality = $entry->getLateralityDisplay();
                                             $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                                            ?>
+                                        ?>
                                         </td>
                                         <td>
                                             <?php if ($entry->getDoseAndFrequency()) { ?>
@@ -123,7 +123,7 @@ if ($historyElement) {
                     </div>
                 </div>
                 <?php endif; ?>
-                <?php } ?>
+            <?php } ?>
             </div>
     </section>
 

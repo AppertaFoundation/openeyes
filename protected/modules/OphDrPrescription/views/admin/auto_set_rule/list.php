@@ -36,23 +36,23 @@ if (!isset($uniqueid)) {
 
         <?php if ($admin->isForceFormDisplay()) : ?>
         <form id="generic-admin-list">
-            <?php endif; ?>
+        <?php endif; ?>
 
             <?php
             if ($admin->getSubListParent() && is_array($admin->getSubListParent())) :
                 foreach ($admin->getSubListParent() as $key => $value) :
                     ?>
                     <input type="hidden" name="default[<?= $key ?>]" value="<?= $value ?>"/>
-                <?php
+                    <?php
                 endforeach;
             endif;
             $returnUri = $admin->generateReturnUrl(Yii::app()->request->requestUri);
             ?>
             <input type="hidden" name="returnUri" id="returnUri" value="<?= $returnUri ?>"/>
 
-            <?php else : ?>
+    <?php else : ?>
             <form id="generic-admin-list">
-                <?php endif; ?>
+    <?php endif; ?>
                 <input type="hidden" name="page" value="<?php echo Yii::app()->request->getParam('page', 1) ?>"/>
                 <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
 
@@ -67,13 +67,13 @@ if (!isset($uniqueid)) {
                                     <?php if ($admin->isSortableColumn($listItem)) : ?>
                                     <a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder,
                                         Yii::app()->request->getQueryString()) ?>">
-                                        <?php endif;
-                                        ?>
+                                    <?php endif;
+                                    ?>
                                         <?php echo $admin->getModel()->getAttributeLabel($listItem); ?>
                                         <?php if ($admin->isSortableColumn($listItem)) : ?>
                                     </a>
-                                <?php endif;
-                                ?>
+                                        <?php endif;
+                                        ?>
                                 </th>
                             <?php else : ?>
                                 <th>Action</th>
@@ -83,7 +83,7 @@ if (!isset($uniqueid)) {
                     </thead>
                     <tbody <?php if (in_array('display_order', $admin->getListFields())) :
                         echo 'class="sortable"';
-                    endif; ?>>
+                           endif; ?>>
                     <?php
                     $retrieveResults = $admin->getSearch()->retrieveResults();
                     foreach ($retrieveResults as $i => $row) { ?>
@@ -104,16 +104,16 @@ if (!isset($uniqueid)) {
                                             else :
                                                 ?><i class="oe-i remove small"></i><?php
                                             endif;
-                                        elseif (gettype($attr_val) === 'array') :
-                                            echo implode(',', $admin->attributeValue($row, $listItem));
+                                            elseif (gettype($attr_val) === 'array') :
+                                                echo implode(',', $admin->attributeValue($row, $listItem));
                                         elseif ($listItem === 'display_order') :
-                                            ?>
+                                                ?>
                                             &uarr;&darr;<input type="hidden"
                                                                name="<?php echo $admin->getModelName(); ?>[display_order][]"
                                                                value="<?php echo $row->id ?>">
-                                        <?php
-                                        else :
-                                            echo $attr_val;
+                                                <?php
+                                            else :
+                                                echo $attr_val;
                                         endif
                                         ?>
                                     </td>
@@ -132,7 +132,7 @@ if (!isset($uniqueid)) {
                                                 Options</a>
                                         <?php endif; ?>
                                     </td>
-                                <?php
+                                    <?php
                                 endif;
                             endforeach; ?>
 
@@ -192,12 +192,12 @@ if (!isset($uniqueid)) {
                     </tfoot>
                 </table>
                 <?php if ($admin->isSubList()) : ?>
-                <?php if ($admin->isForceFormDisplay()) : ?>
+                    <?php if ($admin->isForceFormDisplay()) : ?>
             </form>
-        <?php endif; ?>
+                    <?php endif; ?>
 
     </div>
-    <?php else : ?>
+                <?php else : ?>
     </form>
-    <?php endif; ?>
+                <?php endif; ?>
 </div>
