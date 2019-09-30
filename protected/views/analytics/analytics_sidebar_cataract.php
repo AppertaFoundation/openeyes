@@ -162,7 +162,7 @@
         // if from, to not filled, the max / min date from event data will be filled in
         var date = "";
         var from_date = $('#analytics_datepicker_from').val() ? $('#analytics_datepicker_from').val() : "<?php echo $min_event_date?>";
-        var to_date = $('#analytics_datepicker_to').val() ? " to " + $('#analytics_datepicker_to').val() : " to " + "<?php echo $max_event_date?>";
+        var to_date = $('#analytics_datepicker_to').val() ? $('#analytics_datepicker_to').val() : "<?php echo $max_event_date?>";
         // make sure the entry is logical
         if(new Date(from_date) > new Date(to_date)){
             alert('From date cannot be later than To date')
@@ -172,7 +172,7 @@
             alert('To date cannot be earlier than From date')
             return;
         }
-        date = from_date + to_date
+        date = format_date(new Date(from_date)) + " to " + format_date(new Date(to_date));
         // prevent click during downloading
         if($(this).text() === 'Downloading...'){
             return false;
@@ -227,7 +227,12 @@
         };
 
         // instantiate jsPDF
-        var doc = new jsPDF('l', 'pt', 'A4'); 
+        var doc = new jsPDF({
+            orientation: "landscape",
+            unit: "pt",
+            format: "a4",
+            compress: true
+        });
         // get page size
         var pageW = doc.internal.pageSize.width;
         var pageH = doc.internal.pageSize.height;
@@ -246,10 +251,10 @@
 
         // fix plot width
         // marginL * 3 means: left, middle, right
-        var plotWidth = (pageW - marginL * 3) / 2;
+        var plotWidth = (pageW - marginL * 3);
         // fix plot width
         // marginL * 3 means: top, middle, bottom
-        var plotHeight = (pageH - marginT * 3) / 2;
+        var plotHeight = (pageH - marginT * 3);
 
         // get current selected cataract report type
         var selected = $('.js-cataract-report-type.selected').data('report'); 
@@ -263,10 +268,7 @@
                 configPlotPDF(currentPlot, config);
                 Plotly.toImage(currentPlot)
                     .then((dataURL)=>{
-                        doc.setFontSize(8);
-                        doc.text(15, 10, 'Surgeon Name: ' + 
-                        "<?php echo $current_user->contact->first_name . ' ' . $current_user->contact->last_name; ?>");
-                        doc.text(15, 20, 'Date: ' + date);
+                        pageStampDetails(doc, date);
 
                         doc.addImage(dataURL, 'PNG', marginL, marginT, plotWidth, plotHeight);
                         counter++;
@@ -297,12 +299,10 @@
                 // convert the plot into image
                 Plotly.toImage(plot)
                     .then((dataURL)=>{
-                        // calculate offset of the plot in pdf
-                        var offsetW = (counter % 2 === 0) ? (marginL * 2 + plotWidth) : marginL;
-                        var offsetH = ((((counter - 1) % 4) + 1)* plotWidth + marginL * 2 > pageW) ? (marginT * 2 + plotHeight) : marginT;
-
+                        doc.addPage();
+                        pageStampDetails(doc, date);
                         // put the image into pdf
-                        doc.addImage(dataURL, 'PNG', offsetW, offsetH, plotWidth, plotHeight);
+                        doc.addImage(dataURL, 'PNG', marginL, marginT, plotWidth, plotHeight);
                         
                         if(counter >= total){
                             doc.save('Cataract_Plots.pdf');
@@ -310,10 +310,7 @@
                             return saved;
                         } else {
                             counter++;
-                            // every four plots add new page
-                            if(counter % 4 === 1){
-                                doc.addPage();
-                            }
+                            // See Jira OE-8869 to find the removed code (every four plots add new page)
                         }
                     }).then(function(flag){
                         // once the plot is added into pdf, it will be cleared out
@@ -350,5 +347,12 @@
             plot.layout.yaxis.linecolor = config.yaxis.linecolor;
             plot.layout.xaxis.linecolor = config.xaxis.linecolor;
         }
+    }
+
+    function pageStampDetails(doc, date){
+        doc.setFontSize(8);
+        doc.text(15, 10, 'Surgeon Name: ' + 
+        "<?php echo $current_user->contact->first_name . ' ' . $current_user->contact->last_name; ?>");
+        doc.text(15, 20, 'Date: ' + date);
     }
 </script>
