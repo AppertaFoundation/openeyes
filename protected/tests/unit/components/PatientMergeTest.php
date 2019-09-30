@@ -81,7 +81,7 @@ class PatientMergeTest extends CDbTestCase
 
         $this->assertEquals($result['details'][0]['column'], 'dob');
         $this->assertEquals($result['details'][0]['primary'], '1981-12-21');
-        $this->assertEquals($result['details'][0]['secondary'], '1977-01-01');
+        $this->assertEquals($result['details'][0]['secondary'], '1977-03-04');
 
         $this->assertEquals($result['details'][1]['column'], 'gender');
         $this->assertEquals($result['details'][1]['primary'], 'M');

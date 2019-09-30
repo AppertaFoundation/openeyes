@@ -384,8 +384,8 @@ function changeState(wb,sp) {
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
 
 function format_date(d) {
-	if (window["NHSDateFormat"] !== undefined) {
-		var date = window["NHSDateFormat"];
+	if (NHSDateFormat !== undefined) {
+		var date = NHSDateFormat;
 		var m = date.match(/[a-zA-Z]+/g);
 
 		for (var i in m) {
