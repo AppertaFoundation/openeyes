@@ -178,4 +178,3 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php endif; ?>
         </div>
     </div>
-</div>

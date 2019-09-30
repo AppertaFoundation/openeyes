@@ -299,13 +299,19 @@ $(document).ready(function () {
 		let iconCenter = iconPos.width / 2;
 
 		// check for the available space for tooltip:
-		if ( ( $( window ).width() - iconPos.left) < 100 ){
-			leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
-			toolCSS = "oe-tooltip offset-left";
-		} else {
-			leftPos = (iconPos.left - 100) + iconCenter - 0.5; 	// tooltip is 200px (center on the icon)
-			toolCSS = "oe-tooltip";
-		}
+    let hotlistPanel = $('body').find('.oe-hotlist-panel');
+    let unsafeWidth = (hotlistPanel.length === 1 && hotlistPanel.css('Display') !== 'none')
+      ? hotlistPanel.width()
+      : 0;
+    let tooltipOverlap = unsafeWidth - ($( window ).width() - iconPos.left - 100);
+
+    if (tooltipOverlap > 0) {
+      leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
+      toolCSS = "oe-tooltip offset-left";
+    } else {
+      leftPos = (iconPos.left - 100) + iconCenter - 0.5; 	// tooltip is 200px (center on the icon)
+      toolCSS = "oe-tooltip";
+    }
 
 		// add, calculate height then show (remove 'hidden')
 		var tip = $( "<div></div>", {
