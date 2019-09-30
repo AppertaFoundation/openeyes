@@ -14,17 +14,11 @@
  */
 ?>
 <?php use OEModule\OphCiExamination\models\PupillaryAbnormalityEntry; ?>
-<?php
-$required_present = false;
-if ($element->widget->getRequiredAbnormalities()) {
-    $required_present = true;
-}
-?>
 
 <div class="element-data element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
     <div class="js-element-eye <?= $eye_side ?>-eye column">
-        <?php if ($element->{'no_pupillaryabnormalities_date_' . $eye_side} && !$required_present) : ?>
+        <?php if ($element->{'no_pupillaryabnormalities_date_' . $eye_side} && empty($this->getRequiredAbnormalities())) : ?>
             <div class="data-value">
                 <span class="large-text">
                     Patient has no <?= $eye_side ?> pupillary abnormalitites (confirmed)
