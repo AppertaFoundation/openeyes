@@ -186,7 +186,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             </span>
 			</td>
 		</tr>
-		<tr class="no-line col-gap js-second-row" data-key="<?=$row_count?>">
+		<tr class="no-line col-gap js-second-row <?= $entry->hidden == 1 ? ' hidden' : '' ?>" data-key="<?=$row_count?>">
         <td class="nowrap">
            <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
 
