@@ -17,41 +17,40 @@
 
 class PopulateAutoMedicationSetsCommand extends CConsoleCommand
 {
-	private $_pid;
-	private $_pidfile = '/tmp/oe_populatesets.pid';
+    private $_pid;
+    private $_pidfile = '/tmp/oe_populatesets.pid';
 
-	public function getHelp()
-	{
-		return "Re-populate the automatic Medication Sets based on the stored criteria\n";
-	}
+    public function getHelp()
+    {
+        return "Re-populate the automatic Medication Sets based on the stored criteria\n";
+    }
 
-	public function run($args)
-	{
-		$this->_pid = getmypid();
+    public function run($args)
+    {
+        $this->_pid = getmypid();
 
-		if ($this->_isRunning()) {
-			echo "Another process is already being run.".PHP_EOL;
-			exit(1);
-		}
+        if ($this->_isRunning()) {
+            echo "Another process is already being run." . PHP_EOL;
+            exit(1);
+        }
 
-		$this->_savePid();
-		MedicationSet::populateAutoSets();
-		exit(0);
-	}
+        $this->_savePid();
+        MedicationSet::populateAutoSets();
+        exit(0);
+    }
 
-	private function _savePid()
-	{
-		file_put_contents($this->_pidfile, $this->_pid);
-	}
+    private function _isRunning()
+    {
+        if (file_exists($this->_pidfile)) {
+            $pid = filter_var(file_get_contents($this->_pidfile), FILTER_SANITIZE_NUMBER_INT);
+            return file_exists("/proc/$pid");
+        } else {
+            return false;
+        }
+    }
 
-	private function _isRunning()
-	{
-		if (file_exists($this->_pidfile)) {
-			$pid = filter_var(file_get_contents($this->_pidfile), FILTER_SANITIZE_NUMBER_INT);
-			return file_exists("/proc/$pid");
-		}
-		else {
-			return false;
-		}
-	}
+    private function _savePid()
+    {
+        file_put_contents($this->_pidfile, $this->_pid);
+    }
 }

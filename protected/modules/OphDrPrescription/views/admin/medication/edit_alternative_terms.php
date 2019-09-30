@@ -14,8 +14,6 @@ $rowkey = 0;
             <a href="javascript:void(0);" class="js-delete-alt-term"><i class="oe-i trash"></i></a>
         </td>
     </tr>
-
-
 </script>
 <script type="text/javascript">
     $(function () {

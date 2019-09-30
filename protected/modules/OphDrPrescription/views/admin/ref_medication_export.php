@@ -20,15 +20,15 @@
     <h2>Export Medications</h2>
     <p>Please select Ref Sets to export:</p>
     <div>
-        <?php if (isset($form_error)): ?>
+        <?php if (isset($form_error)) : ?>
             <div class="alert-box alert with-icon">
                 <p><?php echo $form_error; ?></p>
             </div>
         <?php endif; ?>
         <?php echo CHtml::form("/OphDrPrescription/RefMedicationAdmin/exportForm"); ?>
-            <?php echo CHtml::checkBoxList('MedicationSet', [], CHtml::listData(MedicationSet::model()->byName()->findAll(), 'id', 'name'), ['labelOptions' => ['style' => 'display: inline-block']]); ?>
-            <br/>
-            <?php echo CHtml::submitButton('Export'); ?>
+        <?php echo CHtml::checkBoxList('MedicationSet', [], CHtml::listData(MedicationSet::model()->byName()->findAll(), 'id', 'name'), ['labelOptions' => ['style' => 'display: inline-block']]); ?>
+        <br/>
+        <?php echo CHtml::submitButton('Export'); ?>
         <?php echo CHtml::endForm(); ?>
     </div>
 </div>

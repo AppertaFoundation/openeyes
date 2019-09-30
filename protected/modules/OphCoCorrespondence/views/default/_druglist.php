@@ -17,7 +17,7 @@
  */
 
 ?>
-<table class="standard borders <?php echo isset($table_class) ? $table_class : ""?>">
+<table class="standard borders <?php echo isset($table_class) ? $table_class : "" ?>">
     <colgroup>
         <col class="cols-5">
     </colgroup>
@@ -31,26 +31,25 @@
     </tr>
     </thead>
     <tbody>
-	<?php foreach ($entries as $entry): ?>
-		<?php /** @var \EventMedicationUse $entry */ ?>
+    <?php foreach ($entries as $entry) : ?>
+        <?php /** @var \EventMedicationUse $entry */ ?>
         <tr>
-            <td><?=$entry->getMedicationDisplay(true) ?></td>
-            <td><?=$entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '')?></td>
+            <td><?= $entry->getMedicationDisplay(true) ?></td>
+            <td><?= $entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '') ?></td>
             <td>
-				<?php
-				if ($laterality = $entry->getLateralityDisplay()) {
-					\Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
-				}
-				else {
-				    echo "N/A";
+                <?php
+                if ($laterality = $entry->getLateralityDisplay()) {
+                    \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                } else {
+                    echo "N/A";
                 }
-				?>
+                ?>
             </td>
             <td>
-				<?=$entry->frequency ? $entry->frequency : '';?>
+                <?= $entry->frequency ? $entry->frequency : ''; ?>
             </td>
-            <td><?=$entry->getEndDateDisplay('Ongoing');?></td>
+            <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
         </tr>
-	<?php endforeach; ?>
+    <?php endforeach; ?>
     </tbody>
 </table>

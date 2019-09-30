@@ -36,20 +36,20 @@ $lists = array(
         <th>Until</th>
     </tr>
     </thead>
-    <?php foreach ($lists as $list => $header): ?>
-        <?php if (!empty($$list)): ?>
+    <?php foreach ($lists as $list => $header) : ?>
+        <?php if (!empty($$list)) : ?>
         <tbody>
             <tr>
                 <th colspan="5"><?=$header?></th>
             </tr>
-			<?php foreach ($$list as $entry): ?>
+			<?php foreach ($$list as $entry) : ?>
 				<?php /** @var \EventMedicationUse $entry */ ?>
                 <tr>
                     <td><?=$entry->getMedicationDisplay(true) ?></td>
                     <td><?=$entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '')?></td>
                     <td>
 						<?php
-						if ($laterality = $entry->getLateralityDisplay()) {
+                        if ($laterality = $entry->getLateralityDisplay()) {
 							\Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
 						}
 						else {

@@ -32,7 +32,7 @@
                 <?php foreach ($element->items as $key => $item) { ?>
                     <tr class="prescription-item">
                         <td class="priority-text">
-                            <?php if (isset($this->patient) && $this->patient->hasDrugAllergy($item->medication_id)): ?>
+                            <?php if (isset($this->patient) && $this->patient->hasDrugAllergy($item->medication_id)) : ?>
                                 <i class="oe-i warning small pad js-has-tooltip"
                                    data-tooltip-content="Allergic to <?= implode(',', $this->patient->getPatientDrugAllergy($item->medication_id)) ?>">
                                 </i>
