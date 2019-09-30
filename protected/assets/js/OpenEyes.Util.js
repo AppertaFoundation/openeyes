@@ -63,7 +63,7 @@
         } else {
             return 0;
         }
-	}
+	};
 
     Util.formatTimeToFuzzyDate =function (date) {
         let day = date.getDate();
@@ -73,7 +73,7 @@
         let year = date.getFullYear();
 
         return year + '-' + displayMonth + '-' + displayDay;
-    }
+    };
 	exports.Util = Util;
 
 }(this.OpenEyes));
