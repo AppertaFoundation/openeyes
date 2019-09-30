@@ -52,7 +52,6 @@ $assetManager = Yii::app()->getAssetManager();
                     <?php
                     if (is_array($type)) {
                         switch ($type['widget']) {
-
                             case 'GenericAdmin':
                                 echo CHtml::label($type['label'] . ':', '');
                                 $this->widget('GenericAdmin', $type['options']);

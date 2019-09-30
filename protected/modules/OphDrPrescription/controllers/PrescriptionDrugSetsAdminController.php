@@ -17,7 +17,7 @@
 
 class PrescriptionDrugSetsAdminController extends RefSetAdminController
 {
-	public $group = 'Drugs';
+    public $group = 'Drugs';
 
     public function actionList()
     {

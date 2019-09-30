@@ -134,10 +134,10 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                                         <select id="<?= 'pcrrisk_' . $side . '_doctor_grade_id' ?>"
                                                 class="pcr_doctor_grade cols-full"
                                                 name="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk[<?= $side ?>_doctor_grade_id]">
-                                            <?php if (is_array($grades)): ?>
-                                                <?php foreach ($grades as $grade): ?>
+                                            <?php if (is_array($grades)) : ?>
+                                                <?php foreach ($grades as $grade) : ?>
                                                     <?php
-                                                    if ($element->{$side . '_doctor_grade_id'} === $grade->id):
+                                                    if ($element->{$side . '_doctor_grade_id'} === $grade->id) :
                                                         $selected = 'selected';
                                                     else :
                                                         $selected = '';
@@ -150,25 +150,24 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                                         </select>
                                     </td>
                                 </div>
-                            <?php
-                            else :
-                                if ($element->{'left_diabetic'} == 'Y' OR $element->{'left_diabetic'} == 'N') {
+                                <?php else :
+                                    if ($element->{'left_diabetic'} == 'Y' OR $element->{'left_diabetic'} == 'N') {
                                         $element->{'right_diabetic'} = $element->{'left_diabetic'};
-                                } elseif ($element->{'right_diabetic'} == 'Y' OR $element->{'right_diabetic'} == 'N') {
+                                    } elseif ($element->{'right_diabetic'} == 'Y' OR $element->{'right_diabetic'} == 'N') {
                                         $element->{'left_diabetic'} = $element->{'right_diabetic'};
-                                }
-                                if ($element->{'left_alpha_receptor_blocker'} == 'Y' OR $element->{'left_alpha_receptor_blocker'} == 'N') {
+                                    }
+                                    if ($element->{'left_alpha_receptor_blocker'} == 'Y' OR $element->{'left_alpha_receptor_blocker'} == 'N') {
                                         $element->{'right_alpha_receptor_blocker'} = $element->{'left_alpha_receptor_blocker'};
-                                } elseif ($element->{'right_alpha_receptor_blocker'} == 'Y' OR $element->{'right_alpha_receptor_blocker'} == 'N') {
+                                    } elseif ($element->{'right_alpha_receptor_blocker'} == 'Y' OR $element->{'right_alpha_receptor_blocker'} == 'N') {
                                         $element->{'left_alpha_receptor_blocker'} = $element->{'right_alpha_receptor_blocker'};
                                     } ?>
-                                <td>
-                                    <?= $element->getAttributeLabel($side . '_' . $key) ?>
-                                </td>
-                                <td>
-                                    <?= CHtml::activeDropDownList($element, $side . '_' . $key, $data['options'], ['class' => $data['class'] . ' cols-full']); ?>
-                                </td>
-                            <?php endif; ?>
+                                    <td>
+                                        <?= $element->getAttributeLabel($side . '_' . $key) ?>
+                                    </td>
+                                    <td>
+                                        <?= CHtml::activeDropDownList($element, $side . '_' . $key, $data['options'], ['class' => $data['class'] . ' cols-full']); ?>
+                                    </td>
+                                <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>

@@ -35,8 +35,8 @@
     </tr>
     </thead>
     <tbody>
-    <?php if (!is_null($set)): ?>
-        <?php foreach ($set->medicationSetAutoRuleMedications as $row_key => $assignment): ?>
+    <?php if (!is_null($set)) : ?>
+        <?php foreach ($set->medicationSetAutoRuleMedications as $row_key => $assignment) : ?>
             <tr data-key="<?= $row_key ?>">
                 <td>
                     <input type="hidden" name="MedicationSetAutoRuleMedication[<?= $row_key; ?>][id]"

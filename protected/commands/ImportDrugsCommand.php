@@ -273,7 +273,6 @@ EOD;
                     $structure[$tableName] = $cells;
                 }
             }
-
         } elseif ($version == 2) {
             $parentNode = $XMLdata['element']['complexType']['sequence']['element'];
             $tableName = strtolower($this->tablePrefix . $fileType . '_' . $parentNode['@attributes']['name']);

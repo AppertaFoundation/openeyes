@@ -128,7 +128,6 @@ class WorklistBehavior extends CBehavior
         // if there is an event->worklist_patient_id we check if the worklist is EyeCasualty and is for today
         $worklist_patient_today_AE = null;
         if ($this->owner->event->worklist_patient_id) {
-
             $criteria = new \CDbCriteria();
 
             $criteria->with = ['worklist.displayContext.subspecialty'];

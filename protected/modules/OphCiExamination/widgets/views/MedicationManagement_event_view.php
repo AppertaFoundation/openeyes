@@ -21,8 +21,8 @@
                    "Continued" => "getContinuedEntries",
                    "Started" => "getEntriesStartedToday",
                    "Stopped" => "getStoppedEntries",
-               ) as $section => $method): ?>
-    <?php if (!empty($entries = $element->$method())): ?>
+               ) as $section => $method) : ?>
+    <?php if (!empty($entries = $element->$method())) : ?>
         <div class="element-data">
             <div class="data-value">
                 <div class="tile-data overflow">
@@ -63,7 +63,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($entries as $entry): ?>
+                        <?php foreach ($entries as $entry) : ?>
                             <?php echo $this->render('MedicationManagementEntry_event_view',
                                 [
                                     'entry' => $entry,

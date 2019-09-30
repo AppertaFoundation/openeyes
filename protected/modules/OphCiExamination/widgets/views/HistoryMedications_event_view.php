@@ -27,11 +27,11 @@
     <header class=" element-header">
         <h3 class="element-title">Eye Medications</h3>
     </header>
-    <?php foreach ($visible_sections as $key => $section_name): ?>
+    <?php foreach ($visible_sections as $key => $section_name) : ?>
         <?php $entries = array_filter($element->$key, function ($e) {
             return in_array($e->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL));
         }); ?>
-        <?php if (!empty($entries)): ?>
+        <?php if (!empty($entries)) : ?>
             <div class="label"><?php echo $section_name; ?>:</div>
             <div class="element-data">
                 <div class="data-value">
@@ -63,11 +63,11 @@
     <header class=" element-header">
         <h3 class="element-title">Systemic Medications</h3>
     </header>
-    <?php foreach ($visible_sections as $key => $section_name): ?>
+    <?php foreach ($visible_sections as $key => $section_name) : ?>
         <?php $entries = array_filter($element->$key, function ($e) {
             return !in_array($e->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL));
         }); ?>
-        <?php if (!empty($entries)): ?>
+        <?php if (!empty($entries)) : ?>
             <div class="label"><?php echo $section_name; ?>:</div>
             <div class="element-data">
                 <div class="data-value">
@@ -79,7 +79,7 @@
                                 <col width="85px">
                             </colgroup>
                             <tbody>
-                            <?php foreach ($entries as $entry): ?>
+                            <?php foreach ($entries as $entry) : ?>
                                 <?php echo $this->render('HistoryMedicationsEntry_event_view', ['entry' => $entry]); ?>
                             <?php endforeach; ?>
                             </tbody>

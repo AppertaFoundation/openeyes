@@ -94,7 +94,6 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                              ['is_copied_from_previous_event', 'group'])
                          as $k) {
                     if (array_key_exists($k, $entry_data) && in_array($k, $entry->attributeNames())) {
-
                         if (in_array($k, ['prescribe', 'stop'])) {
                             continue;
                         }

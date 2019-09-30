@@ -48,12 +48,13 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             data-key="<?= $row_count ?>"
             data-event-medication-use-id="<?php echo $entry->id; ?>"
             data-allergy-ids="<?php if (!is_null($entry->medication_id)) {
-                echo implode(",", array_map(function ($e) {
-                    return $e->id;
-                }, $entry->medication->allergies));
-            } else {
-                echo "{{& allergy_ids}}";
-            } ?>"
+                                        echo implode(",", array_map(function ($e) {
+                                            return $e->id;
+                                        }, $entry->medication->allergies));
+                                    } else {
+                                        echo "{{& allergy_ids}}";
+                                    }
+                                ?>"
             class="<?= $field_prefix ?>_row <?= ($is_new || /*$entry->group*/
                 "new" == 'new') ? " new" : "" ?><?= $entry->hidden == 1 ? ' hidden' : '' ?>">
         <td>

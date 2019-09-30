@@ -22,7 +22,7 @@
             $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
         } ?>
         <?= $entry->getMedicationDisplay(true) ?>
-        <?php if ($entry->prescribe && $entry->prescriptionItem): ?>
+        <?php if ($entry->prescribe && $entry->prescriptionItem) : ?>
             <a href="<?= $entry->getPrescriptionLink(); ?>">
                 &nbsp;<i class="oe-i drug-rx small" title="Prescribed"></i>
             </a>
@@ -46,8 +46,8 @@
         <td><?= $entry->getEndDateDisplay() ?></td>
     <?php } ?>
 </tr>
-<?php if ($entry->taper_support): ?>
-    <?php foreach ($entry->tapers as $taper): ?>
+<?php if ($entry->taper_support) : ?>
+    <?php foreach ($entry->tapers as $taper) : ?>
         <tr>
             <td>
                 <i class="oe-i child-arrow small no-click pad"></i>

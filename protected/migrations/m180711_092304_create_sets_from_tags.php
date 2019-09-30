@@ -58,8 +58,6 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
                         }
                     }
                 }
-
-
             }
             $ref_set_id = null;
         }

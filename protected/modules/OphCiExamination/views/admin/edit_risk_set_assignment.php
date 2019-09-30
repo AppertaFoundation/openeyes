@@ -8,7 +8,7 @@ $active_sets = array_map(function ($e) {
     <h3>Related medication sets</h3>
     <table id="medication-sets-list">
         <tbody>
-        <?php foreach ($model->medicationSets as $set): ?>
+        <?php foreach ($model->medicationSets as $set) : ?>
             <?php /** @var MedicationSet $set */ ?>
             <tr>
                 <td>

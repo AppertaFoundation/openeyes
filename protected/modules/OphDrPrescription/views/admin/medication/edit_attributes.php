@@ -44,7 +44,7 @@ $rowkey = 0;
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($medication->medicationAttributeAssignments as $assignment): ?>
+    <?php foreach ($medication->medicationAttributeAssignments as $assignment) : ?>
         <?php
         $attr_id = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->medication_attribute_id : null;
         $attr_name = isset($assignment->medicationAttributeOption) ? $assignment->medicationAttributeOption->medicationAttribute->name : "";
