@@ -4,54 +4,28 @@ class m190916_004623_add_new_whiteboard_columns extends OEMigration
 {
     public function up()
     {
-        $this->addColumn(
+        $this->addOEColumn(
             'ophtroperationbooking_whiteboard',
             'axial_length',
             'varchar(100)'
         );
-        $this->addColumn(
+        $this->addOEColumn(
             'ophtroperationbooking_whiteboard',
             'acd',
             'varchar(100)'
         );
-        $this->addColumn(
+        $this->addOEColumn(
             'ophtroperationbooking_whiteboard',
             'formula',
             'varchar(100)'
         );
-        $this->addColumn(
+        $this->addOEColumn(
             'ophtroperationbooking_whiteboard',
             'aconst',
             'varchar(100)'
         );
-
-        $this->addColumn(
-            'ophtroperationbooking_whiteboard_version',
-            'axial_length',
-            'varchar(100)'
-        );
-        $this->addColumn(
-            'ophtroperationbooking_whiteboard_version',
-            'acd',
-            'varchar(100)'
-        );
-        $this->addColumn(
-            'ophtroperationbooking_whiteboard_version',
-            'formula',
-            'varchar(100)'
-        );
-        $this->addColumn(
-            'ophtroperationbooking_whiteboard_version',
-            'aconst',
-            'varchar(100)'
-        );
-        $this->addColumn(
+        $this->addOEColumn(
             'ophtroperationbooking_whiteboard',
-            'complexity',
-            'int'
-        );
-        $this->addColumn(
-            'ophtroperationbooking_whiteboard_version',
             'complexity',
             'int'
         );
@@ -59,45 +33,24 @@ class m190916_004623_add_new_whiteboard_columns extends OEMigration
 
     public function down()
     {
-        $this->dropColumn(
+        $this->dropOEColumn(
             'ophtroperationbooking_whiteboard',
             'axial_length'
         );
-        $this->dropColumn(
+        $this->dropOEColumn(
             'ophtroperationbooking_whiteboard',
             'acd'
         );
-        $this->dropColumn(
+        $this->dropOEColumn(
             'ophtroperationbooking_whiteboard',
             'formula'
         );
-        $this->dropColumn(
+        $this->dropOEColumn(
             'ophtroperationbooking_whiteboard',
             'aconst'
         );
-
-        $this->dropColumn(
-            'ophtroperationbooking_whiteboard_version',
-            'axial_length'
-        );
-        $this->dropColumn(
-            'ophtroperationbooking_whiteboard_version',
-            'acd'
-        );
-        $this->dropColumn(
-            'ophtroperationbooking_whiteboard_version',
-            'formula'
-        );
-        $this->dropColumn(
-            'ophtroperationbooking_whiteboard_version',
-            'aconst'
-        );
-        $this->dropColumn(
+        $this->dropOEColumn(
             'ophtroperationbooking_whiteboard',
-            'complexity'
-        );
-        $this->dropColumn(
-            'ophtroperationbooking_whiteboard_version',
             'complexity'
         );
     }

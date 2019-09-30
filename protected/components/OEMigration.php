@@ -810,6 +810,29 @@ class OEMigration extends CDbMigration
         $this->insert('authitemchild', array('parent' => $task_name, 'child' => $oprn_name));
     }
 
+    /**
+     * Add a column to an OE table and its corresponding versioning table.
+     * @param $table string Table name (do not include 'version' at the end unless it appears twice in the table's name).
+     * @param $column string Column name.
+     * @param $type string Column type.
+     */
+    public function addOEColumn($table, $column, $type)
+    {
+        $this->addColumn($table, $column, $type);
+        $this->addColumn($table . '_version', $column, $type);
+    }
+
+    /**
+     * Drop a column from an OE table and its corresponding versioning table.
+     * @param $table string Table name (do not include 'version' at the end unless it appears twice in the table's name).
+     * @param $column string Column name
+     */
+    public function dropOEColumn($table, $column)
+    {
+        $this->dropColumn($table, $column);
+        $this->dropColumn($table . '_version', $column);
+    }
+
     public function removeOperationFromTask($oprn_name, $task_name)
     {
         $this->delete('authitemchild', 'parent = :task_name and child = :oprn_name', array(":task_name" => $task_name, ':oprn_name' => $oprn_name));
