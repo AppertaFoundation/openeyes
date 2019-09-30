@@ -111,7 +111,7 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getContinuedEntries()
     {
-        $event_date = substr($this->event->event_date, 0,10);
+        $event_date = substr($this->event->event_date, 0, 10);
 
         return array_filter($this->visible_entries, function ($e) use ($event_date) {
             return ($e->start_date < $event_date &&
@@ -126,7 +126,7 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getEntriesStartedToday()
     {
-        $event_date = substr($this->event->event_date, 0 , 10);
+        $event_date = substr($this->event->event_date, 0, 10);
 
         return array_filter($this->visible_entries, function ($e) use ($event_date) {
             return ($e->start_date == $event_date && is_null($e->end_date));

@@ -42,21 +42,21 @@ $element_errors = $element->getErrors();
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <table class="medications entries js-entry-table <?php echo $element_errors ? 'highlighted-error error' : '' ?>"
                              id="<?= $model_name ?>_entry_table">
-					<colgroup>
-						<col class="cols-2">
-						<col class="cols-6">
-						<col class="cols-3">
-						<col class="cols-icon" span="2">
-					</colgroup>
-					<thead>
-					<tr>
-						<th>Drug</th>
-						<th>Dose/frequency/route/start/stop</th>
-						<th>Duration/dispense/comments</th>
-						<th><i class="oe-i drug-rx small no-click"></i></th>
-						<th></th><!-- actions -->
-					</tr>
-					</thead>
+                    <colgroup>
+                        <col class="cols-2">
+                        <col class="cols-6">
+                        <col class="cols-3">
+                        <col class="cols-icon" span="2">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>Drug</th>
+                        <th>Dose/frequency/route/start/stop</th>
+                        <th>Duration/dispense/comments</th>
+                        <th><i class="oe-i drug-rx small no-click"></i></th>
+                        <th></th><!-- actions -->
+                    </tr>
+                    </thead>
             <tbody>
                 <?php if ($this->isPostedEntries() || !empty($element->entries)) {
                     $row_count = 0;
