@@ -185,29 +185,29 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         }
 
         //merge ophciexamination_diagnosis entries if there is the same diagnosis with same date on different eyes otherwise create new one
-        foreach ($disorder_to_create as $dc) {
-            $related_diagnosis = OphCiExamination_Diagnosis::model()->find('disorder_id=? and element_diagnoses_id=? and date=? and principal=?', [$dc['disorder_id'], $this->id, $dc['date'], $dc['principal']]);
+        foreach ($disorder_to_create as $new_disorder) {
+            $related_diagnosis = OphCiExamination_Diagnosis::model()->find('disorder_id=? and element_diagnoses_id=? and date=? and principal=?', [$new_disorder['disorder_id'], $this->id, $new_disorder['date'], $new_disorder['principal']]);
             if ($related_diagnosis) {
-                if ($related_diagnosis->eye_id == $dc['eye_id'] || $related_diagnosis->eye_id === \Eye::BOTH) {
+                if ($related_diagnosis->eye_id == $new_disorder['eye_id'] || $related_diagnosis->eye_id === \Eye::BOTH) {
                     $this->addError('disorder_id', 'Duplicate');
                 } else {
                     $related_diagnosis->eye_id = \Eye::BOTH;
                     if (!$related_diagnosis->save()) {
-                        throw new \Exception('save failed' . print_r($cd->getErrors(), true));
+                        throw new \Exception('save failed' . print_r($related_diagnosis->getErrors(), true));
                     };
                     $added_diagnoses[] = $related_diagnosis;
                 }
             } else {
-                $cd = new OphCiExamination_Diagnosis();
-                $cd->element_diagnoses_id = $this->id;
-                $cd->disorder_id = $dc['disorder_id'];
-                $cd->eye_id = $dc['eye_id'];
-                $cd->date = $dc['date'];
-                $cd->principal = $dc['principal'];
-                if (!$cd->save()) {
+                $new_diagnosis = new OphCiExamination_Diagnosis();
+                $new_diagnosis->element_diagnoses_id = $this->id;
+                $new_diagnosis->disorder_id = $new_disorder['disorder_id'];
+                $new_diagnosis->eye_id = $new_disorder['eye_id'];
+                $new_diagnosis->date = $new_disorder['date'];
+                $new_diagnosis->principal = $new_disorder['principal'];
+                if (!$new_diagnosis->save()) {
                     throw new \Exception('Unable to save old secondary disorder');
                 }
-                $added_diagnoses[] = $cd;
+                $added_diagnoses[] = $new_diagnosis;
             }
         }
 
