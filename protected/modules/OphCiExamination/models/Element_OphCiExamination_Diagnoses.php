@@ -90,7 +90,8 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         }
     }
 
-    public function checkForDuplicates($attribute, $params) {
+    public function checkForDuplicates($attribute, $params)
+    {
         $entries_by_disorder_id = [];
 
         foreach ($this->diagnoses as $diagnosis) {
@@ -109,7 +110,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                         }
                     }
 
-                    foreach ($duplicates as $duplicate){
+                    foreach ($duplicates as $duplicate) {
                         $this->addError($attribute, "row $duplicate - You have duplicates for " . \Disorder::model()->findByPk($disorder_id)->term . " diagnosis. Each combination of diagnosis, eye side and date must be unique.");
                     }
                     break;
