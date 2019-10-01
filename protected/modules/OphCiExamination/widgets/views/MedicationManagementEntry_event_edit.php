@@ -123,8 +123,8 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                         <?php else : ?>
                             <div class="textual-display">
                         <?php endif; ?>
-												<?php $entry_text_display = $entry->getAdministrationDisplay();
-												echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
+                                                <?php $entry_text_display = $entry->getAdministrationDisplay();
+                                                echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                                 <?php if ($locked == 1) : ?>
                             </div>
                                 <?php else : ?>
