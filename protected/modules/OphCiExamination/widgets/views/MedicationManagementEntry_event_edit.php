@@ -119,13 +119,12 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                         echo 'style="display: none;"';
                                                                      }?>>
                         <?php if ($locked == 0) : ?>
-                        <a class="textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
+                        <a class="textual-display hint" href="javascript:void(0);" onclick="switch_alternative(this);">
                         <?php else : ?>
                             <div class="textual-display">
                         <?php endif; ?>
-                                <span class="js-textual-display-dose"><?= isset($entry->dose) ? $entry->dose . ' ' .$entry->dose_unit_term : ''; ?></span>&nbsp;
-                                <span class="js-textual-display-frequency"><?= $entry->frequency; ?></span>&nbsp;
-                                <span class="js-textual-display-route-laterality"><?= ($entry->laterality ? $entry->medicationLaterality->name : ''); ?> <?= (is_null($entry->route_id) ? "" : $entry->route); ?></span>
+												<?php $entry_text_display = $entry->getAdministrationDisplay();
+												echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                                 <?php if ($locked == 1) : ?>
                             </div>
                                 <?php else : ?>
