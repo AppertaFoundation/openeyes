@@ -37,7 +37,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
 
                     <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
                     <div class="cols-9">
-                        <table class="cols-full standard colourvision_table_<?= $eye_side ?>"<?php if (!$element->{$eye_side . '_readings'}) {
+                        <table id="<?= CHtml::modelName($element) ?>_<?= $eye_side ?>_readings" class="cols-full standard colourvision_table_<?= $eye_side ?>"<?php if (!$element->{$eye_side . '_readings'} && !$element->hasErrors($eye_side . '_readings')){
                             ?> style="display: none;" <?php
                                                                             } ?>>
                             <thead>
@@ -47,7 +47,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                                 <th>Actions</th>
                             </tr>
                             </thead>
-                            <tbody class="plain" id="colourvision_right">
+                            <tbody class="plain">
                             <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                                 $this->renderPartial('form_OphCiExamination_ColourVision_Reading', array(
                                     'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_readings]',
