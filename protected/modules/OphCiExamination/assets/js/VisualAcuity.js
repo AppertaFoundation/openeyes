@@ -4,7 +4,7 @@ $(document).ready(function () {
     if(near === 'near'){
       suffix = 'NearVisualAcuity';
     }
-    var target_element = $(target).closest('.element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');    
+    var target_element = $(target).closest('.element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
     var el = $('.event-content').find('ul.sub-elements-list li[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
     if (el.length) {
       el.addClass('clicked');
@@ -61,11 +61,6 @@ $(document).ready(function () {
       if ($('.va_readings tbody', activeForm).children('tr').length === 0) {
         $('.noReadings', activeForm).show();
       }
-      else {
-        // VA can affect DR
-        var side = getSplitElementSide($(this));
-        OphCiExamination_DRGrading_update(side);
-      }
       e.preventDefault();
     });
 
@@ -78,11 +73,6 @@ $(document).ready(function () {
       if ($('.near-va-readings tbody', activeForm).children('tr').length === 0) {
         $('.noReadings', activeForm).show();
       }
-      else {
-        // VA can affect DR
-        var side = getSplitElementSide($(this));
-        OphCiExamination_DRGrading_update(side);
-      }
       e.preventDefault();
     });
 
@@ -93,8 +83,6 @@ $(document).ready(function () {
     } else {
       OphCiExamination_VisualAcuity_addReading(side);
     }
-    // VA can affect DR
-    OphCiExamination_DRGrading_update(side);
     e.preventDefault();
   });
 
@@ -363,7 +351,7 @@ function swapElement(element_to_swap, elementTypeClass, params){
                             reading_val_li = conversion_values[i].value;
                         }
                     }
-                    
+
                     let method_li = $('.'+eye_side+' ul[data-id="method"]').find('li[data-id="'+method_val+'"]');
 
                     // get index and label
@@ -382,7 +370,7 @@ function swapElement(element_to_swap, elementTypeClass, params){
 
         // select equivalent
         if(Object.keys(reading_val).length > 0 && Object.keys(method).length > 0){
-            $.each(Object.keys(reading_val), function(eye_index, eye_side){                
+            $.each(Object.keys(reading_val), function(eye_index, eye_side){
                 $.each(reading_val[eye_side], function(i, val){
                     let target = $('section[data-element-type-name="'+(nva ? 'Near ' : '')+'Visual Acuity"] .'+eye_side);
 
