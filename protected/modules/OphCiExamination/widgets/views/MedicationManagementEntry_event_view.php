@@ -38,7 +38,7 @@
 
         <?php echo $entry->duration ? $entry->drugDuration->name : '' ?>
         <?php if ($entry->dispense_condition_id) {
-            echo $entry->dispense_condition->name . " / " . isset($entry->dispense_location) ? $entry->dispense_location->name : "";
+            echo $entry->dispense_condition->name . " / " . (isset($entry->dispense_location) ? $entry->dispense_location->name : "");
         } ?>
     </td>
     <td>
