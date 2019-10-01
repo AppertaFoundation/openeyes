@@ -8,27 +8,27 @@ class CatProm5QuestionsTest extends CDbTestCase {
 
   public function dataProvider_Search() {
     return array(
-    	array(array('id'=>1), 1, array('question1')),
-//			array(array('id'=>2), 1, array('question2')),
-//			array(array('id'=>3), 1, array('question3')),
-//			array(array('id'=>4), 1, array('question4')),
-//			array(array('id'=>5), 1, array('question5')),
-//			array(array('id'=>6), 1, array('question6')),
+      array(array('id'=>1), 1, array('question1')),
+      array(array('id'=>2), 1, array('question2')),
+      array(array('id'=>3), 1, array('question3')),
+      array(array('id'=>4), 1, array('question4')),
+      array(array('id'=>5), 1, array('question5')),
+      array(array('id'=>6), 1, array('question6')),
 
-//      array(array('id'=>1, 'display_order'=>10), 1, array('question1')),
-//      array(array('id'=>2, 'display_order'=>20), 1, array('question2')),
-//      array(array('id'=>3, 'display_order'=>30), 1, array('question3')),
-//      array(array('display_order'=>'40'), 1, array('question4')),
-//      array(array('display_order'=>'50'), 1, array('question5')),
-//      array(array('display_order'=>'60'), 1, array('question6')),
-//			array(array('mandatory'=>1), 6, array('question1','question2','question3','question4','question5','question6')),
+      array(array('id'=>1, 'display_order'=>10), 1, array('question1')),
+      array(array('id'=>2, 'display_order'=>20), 1, array('question2')),
+      array(array('id'=>3, 'display_order'=>30), 1, array('question3')),
+      array(array('display_order'=>'40'), 1, array('question4')),
+      array(array('display_order'=>'50'), 1, array('question5')),
+      array(array('display_order'=>'60'), 1, array('question6')),
+      array(array('mandatory'=>1), 6, array('question1','question2','question3','question4','question5','question6')),
 
-			array(array('question'=>"In the past month"), 4, array('question1','question2', 'question4', 'question5')),
-//      array(array('question'=>'In the past month, how much has your eyesight interfered with your life in general?'), 1, array('question2')),
-//      array(array('question'=>'How would you describe your vision overall in the past month – with both eyes open, wearing glasses or contact lenses if you usually do?'), 1, array('question3')),
-//      array(array('question'=>'In the past month, how often has your eyesight prevented you from doing the things you would like to do?'), 1, array('question4')),
-//      array(array('question'=>'In the past month, have you had difficulty reading normal print in books or newspapers because of trouble with your eyesight?'), 1, array('question5')),
-//      array(array('question'=>'Please tell us who actually gave the answers to the questions and who wrote them down'), 1, array('question6')),
+      array(array('question'=>"In the past month"), 5, array('question1','question2','question3', 'question4', 'question5')),
+      array(array('question'=>'In the past month, how much has your eyesight interfered with your life in general?'), 1, array('question2')),
+      array(array('question'=>'How would you describe your vision overall in the past month – with both eyes open, wearing glasses or contact lenses if you usually do?'), 1, array('question3')),
+      array(array('question'=>'In the past month, how often has your eyesight prevented you from doing the things you would like to do?'), 1, array('question4')),
+      array(array('question'=>'In the past month, have you had difficulty reading normal print in books or newspapers because of trouble with your eyesight?'), 1, array('question5')),
+      array(array('question'=>'Please tell us who actually gave the answers to the questions and who wrote them down'), 1, array('question6')),
       array(array('question'=>'Non existent question'), 0, array())
     );
   }
@@ -89,14 +89,10 @@ class CatProm5QuestionsTest extends CDbTestCase {
    * @dataProvider dataProvider_Search
    */
   public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
-
-  	printf(var_dump($searchTerms));
-  	printf(var_dump($expectedKeys));
     $catProm5Question = new CatProm5Questions();
     $catProm5Question->setAttributes($searchTerms);
     $results = $catProm5Question->search();
     $data = $results->getData();
-		printf(var_export($data, true));
     $expectedResults = array();
     if (!empty($expectedKeys)) {
       foreach ($expectedKeys as $key) {
