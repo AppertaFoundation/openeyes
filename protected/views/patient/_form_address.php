@@ -97,7 +97,7 @@
   <td>
       <?= $form->dropDownList($address, 'country_id', $countries, (in_array(Yii::app()->params['default_country'],$countries)) ?
           array('options' => array(array_search(Yii::app()->params['default_country'], $countries)=>array('selected'=>true)),
-              'placeholder' => 'Country') : array('empty' => '-- select --'))  ?>
+              'placeholder' => 'Country') : array('empty' => array('empty' => $countries[Yii::app()->params['default_country']+1])))  ?>
   </td>
 </tr>
 
