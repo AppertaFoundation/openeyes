@@ -71,7 +71,7 @@ class OphCiExaminationAllergy extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, display_order, medication_set_id', 'safe'),
+            array('name, display_order, medication_set_id, active', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
