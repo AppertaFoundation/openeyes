@@ -800,7 +800,7 @@ class BaseActiveRecord extends CActiveRecord
     /**
      * @param $rel_name
      */
-    private function validateRelation($rel_name, $fk)
+    public function validateRelation($rel_name, $fk)
     {
         foreach ($this->$rel_name as $i => $rel_obj) {
             $rel_obj->$fk = $this->id;

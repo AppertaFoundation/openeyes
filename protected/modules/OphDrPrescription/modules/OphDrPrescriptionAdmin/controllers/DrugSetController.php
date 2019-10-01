@@ -297,14 +297,26 @@ class DrugSetController extends BaseAdminController
                 \MedicationSetRule::model()->deleteAll($criteria);
 
                 if ($set->autoValidateRelation(true)->validate() && !$set->getErrors()) {
+                    $transaction = Yii::app()->db->beginTransaction();
                     if ($set->save()) {
-                        foreach ($set->medicationSetRules as $rule_model) {
-                            $rule_model->medication_set_id = $set->id;
-                            $rule_model->save();
+                        $can_continue_save = true;
+                        if ($is_new_record) {
+                            $set->validateRelation('medicationSetRules', 'medication_set_id');
+                            if ($set->getErrors()) {
+                                $can_continue_save = false;
+                            }
                         }
 
-                        $this->redirect($is_new_record ? "/OphDrPrescription/admin/DrugSet/edit/{$set->id}" : "/OphDrPrescription/admin/DrugSet/index");
+                        if ($can_continue_save) {
+                            foreach ($set->medicationSetRules as $rule_model) {
+                                $rule_model->medication_set_id = $set->id;
+                                $rule_model->save();
+                            }
+                            $transaction->commit();
+                            $this->redirect($is_new_record ? "/OphDrPrescription/admin/DrugSet/edit/{$set->id}" : "/OphDrPrescription/admin/DrugSet/index");
+                        }
                     }
+                    $transaction->rollback();
                 }
             }
             //esle if the set is an auto set we just managing site, subspecialty and usage_code
@@ -330,7 +342,7 @@ class DrugSetController extends BaseAdminController
 
         $data_provider->pagination = $pagination;
 
-        $this->render('/DrugSet/edit', ['medication_set' => $set, 'medication_data_provider' => $data_provider]);
+        $this->render('/DrugSet/edit', ['medication_set' => $set, 'medication_data_provider' => $data_provider, 'errors' => $set->getErrors()]);
     }
 
     public function actionDelete()

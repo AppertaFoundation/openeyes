@@ -15,8 +15,21 @@
 ?>
 <h2><?= $medication_set->isNewRecord ? 'Create' : 'Edit';?> Medication set</h2>
 <div class="row divider"></div>
-
 <form id="drugset-admin-form" action="/OphDrPrescription/admin/DrugSet/edit/<?=$medication_set->id;?>" method="post">
+<?php if (!empty($errors)) {?>
+    <div class="alert-box alert error with-icon">
+        <p>Please fix the following input errors:</p>
+        <ul>
+            <?php foreach ($errors as $field => $errs) {?>
+                <?php foreach ($errs as $err) {?>
+                    <li>
+                        <?php echo $err?>
+                    </li>
+                <?php }?>
+            <?php }?>
+        </ul>
+    </div>
+<?php }?>
     <div class="row flex-layout flex-top col-gap">
         <div class="cols-6">
             <table class="large">
@@ -34,7 +47,7 @@
                                     'class' => 'cols-full',
                                     'placeholder' => 'Name of the set'
                             ]);
-                        ?>
+?>
                     </td>
                     <td>
                         <div class="js-spinner-as-icon" style="display:none"><i class="spinner as-icon"></i></div>
@@ -55,7 +68,7 @@
         'id' => 'et_save'
     ]
 ); ?>
- <?=\CHtml::submitButton(
+    <?=\CHtml::submitButton(
     'Cancel',
     [
         'class' => 'button large red hint',
