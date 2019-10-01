@@ -228,8 +228,12 @@ $element_errors = $element->getErrors();
                         window.HMController.bindEntries($(historyMedicationRow), $medicationManagementRow);
                     }
 
-                    let hidden = ($(historyMedicationRow).find(".js-to-be-copied").val() === "false");
+                    let hidden = (
+                        $(historyMedicationRow).find(".js-to-be-copied").val() === "false" ||
+												$(historyMedicationRow).find(".js-to-be-copied").val() === "0"
+										);
                     if(hidden) {
+                        console.log($medicationManagementRow);
                         if(typeof  $medicationManagementRow !== undefined) {
                             $medicationManagementRow.addClass("hidden");
                             $medicationManagementRow.find(".js-hidden").val("1");
