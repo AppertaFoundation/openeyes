@@ -29,6 +29,21 @@ class m190916_004623_add_new_whiteboard_columns extends OEMigration
             'complexity',
             'int'
         );
+        $this->addOEColumn(
+            'ophtroperationbooking_whiteboard',
+            'axis',
+            'decimal(6, 1)'
+        );
+        $this->addOEColumn(
+            'ophtroperationbooking_whiteboard',
+            'flat_k',
+            'decimal(6, 2)'
+        );
+        $this->addOEColumn(
+            'ophtroperationbooking_whiteboard',
+            'steep_k',
+            'decimal(6, 2)'
+        );
     }
 
     public function down()
@@ -52,6 +67,18 @@ class m190916_004623_add_new_whiteboard_columns extends OEMigration
         $this->dropOEColumn(
             'ophtroperationbooking_whiteboard',
             'complexity'
+        );
+        $this->dropOEColumn(
+            'ophtroperationbooking_whiteboard',
+            'axis'
+        );
+        $this->dropOEColumn(
+            'ophtroperationbooking_whiteboard',
+            'flat_k'
+        );
+        $this->dropOEColumn(
+            'ophtroperationbooking_whiteboard',
+            'steep_k'
         );
     }
 }

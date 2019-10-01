@@ -7,19 +7,22 @@
      */
 class ImageCard extends WBCard
 {
-    public $element;
+    public $doodles = array();
     public $eye;
     protected $css_class = 'data-image';
     protected $baseViewFile = 'data/image_data';
     public function init()
     {
         $this->data = array(
-            'idSuffix' => 'Cataract',
+            'idSuffix' => 'CataractAxis',
+            'onReadyCommandArray' => array(
+                array('addDoodle', $this->doodles),
+                array('deselectDoodles', array()),
+            ),
             'side' => $this->eye->shortName,
-            'mode' => 'edit',
-            'width' => 400,
-            'height' => 200,
-            'model' => $this->element,
+            'mode' => 'view',
+            'width' => 333.25,
+            'height' => 183,
             'attribute' => 'eyedraw',
         );
     }

@@ -124,18 +124,7 @@ $other_card_list = array(
         )
     ),
     'Biometry' => array(
-        'data' => $data->eye_id !== Eye::BOTH ? array(
-            array(
-                'content' => $data->axial_length,
-                'small_data' => $data->axial_length !== 'Unknown' ? 'mm' : null,
-                'extra_data' => 'Axial Length',
-            ),
-            array(
-                'content' => $data->acd,
-                'small_data' => $data->acd !== 'Unknown' ? 'mm' : null,
-                'extra_data' => 'ACD',
-            )
-        ) : null,
+        'data' => null,
     ),
     'Predicted Outcome' => array(
         'data' => null,
@@ -187,14 +176,10 @@ $other_card_list = array(
             $criteria->limit = 1;
             $cataract_element = Element_OphTrOperationnote_Cataract::model()->find($criteria);
 
-            /*$this->widget('ImageCard', array(
+            $this->widget('ImageCard', array(
                 'title' => 'Axis',
                 'eye' => $data->eye,
-                'element' => null,//$cataract_element,
-            ));*/
-            $this->widget('WBCard', array(
-                'title' => 'Axis',
-                'data' => null,
+                'doodles' => array('AntSegSteepAxis', array('axis' => $data->axis, 'flatK' => $data->flat_k, 'steepK' => $data->steep_k)),
             ));
         } else {
             $this->widget('WBCard', array(

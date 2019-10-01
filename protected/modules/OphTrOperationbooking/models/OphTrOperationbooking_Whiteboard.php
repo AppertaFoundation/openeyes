@@ -97,6 +97,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->acd = 'Unknown';
         $this->predicted_refractive_outcome = 'Unknown';
         $this->formula = 'Unknown';
+        $this->axis = 0.0;
 
         if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, \EYE::BOTH])) {
             if ($biometry->attributes['lens_display_name_' . $eyeLabel]) {
@@ -107,6 +108,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 $this->predicted_refractive_outcome = $biometry->attributes["predicted_refraction_$eyeLabel"];
                 $this->formula = $biometry->attributes["formula_$eyeLabel"];
                 $this->aconst = $biometry->attributes["lens_acon_$eyeLabel"];
+                $this->axis = $biometry->attributes["delta_k_axis_$eyeLabel"];
+                $this->flat_k = $biometry->attributes["k1_$eyeLabel"];
+                $this->steep_k = $biometry->attributes["k2_$eyeLabel"];
             }
         }
 
