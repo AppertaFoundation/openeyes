@@ -61,7 +61,7 @@
                 <i class="oe-i start small pad"></i>
             <?= $entry->getStartDateDisplay() ?>
                     </span>
-            <?php if (isset($stopped) && $stopped) { ?>
+            <?php if (isset($entry->end_date)) { ?>
                 <span>
             <i class="oe-i stop small pad"></i>
                 <?= $entry->getEndDateDisplay() ?>
