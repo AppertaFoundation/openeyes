@@ -230,8 +230,8 @@ $element_errors = $element->getErrors();
 
                     let hidden = (
                         $(historyMedicationRow).find(".js-to-be-copied").val() === "false" ||
-												$(historyMedicationRow).find(".js-to-be-copied").val() === "0"
-										);
+                                                $(historyMedicationRow).find(".js-to-be-copied").val() === "0"
+                                        );
                     if(hidden) {
                         console.log($medicationManagementRow);
                         if(typeof  $medicationManagementRow !== undefined) {
