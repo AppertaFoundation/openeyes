@@ -144,7 +144,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
                     || ($eo->getDueLetter() == Element_OphTrOperationbooking_Operation::LETTER_GP && $patient->practice && $patient->practice->contact->address)
                 )) { ?>
               <div>
-                <input<?php if ($letterStatusClass == '' && !Yii::app()->user->checkAccess('admin')) { ?> disabled="disabled"<?php } ?>
+                <input<?php if ($letterStatusClass == '' && !$this->checkAccess('OprnConfirmBookingLetterPrinted')) { ?> disabled="disabled"<?php } ?>
                     type="checkbox" id="operation<?php echo $eo->id ?>" value="1"/>
               </div>
             <?php } ?>
