@@ -178,6 +178,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         $.each($('.js-search-data'), function(i, input) {
             const name = $(input).data('name');
             const value = $(input).val();
+
             data.search[name] = value;
         });
 

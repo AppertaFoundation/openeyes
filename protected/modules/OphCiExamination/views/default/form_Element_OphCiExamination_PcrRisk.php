@@ -1,5 +1,6 @@
 <?php
 $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/PCRCalculation.js', false, -1);
+Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
 ?>
 <script type="text/javascript">
 
