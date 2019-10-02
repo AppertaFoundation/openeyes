@@ -7,8 +7,8 @@ class m190808_045047_create_cat_prom5_answer_results extends OEMigration
         $this->createOETable('cat_prom5_answer_results', array(
             'id' => 'pk',
             'element_id' => 'int(11)',
-            'question_id' => 'int(10) unsigned NOT NULL',
-            'answer_id' => 'int(10) unsigned',
+            'question_id' => 'int(11) NOT NULL',
+            'answer_id' => 'int(11) NOT NULL',
         ), true);
         $this->addForeignKey('cat_prom5_results_fk_ques', 'cat_prom5_answer_results', 'question_id', 'cat_prom5_questions', 'id');
         $this->addForeignKey('cat_prom5_results_fk_ans', 'cat_prom5_answer_results', 'answer_id', 'cat_prom5_answers', 'id');

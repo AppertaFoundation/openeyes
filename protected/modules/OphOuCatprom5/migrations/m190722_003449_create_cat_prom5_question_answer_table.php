@@ -6,10 +6,10 @@ class m190722_003449_create_cat_prom5_question_answer_table extends OEMigration
     public function safeUp()
     {
         $this->createOETable('cat_prom5_answers', array(
-            'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
-            'question_id' => 'int(10) unsigned NOT NULL',
-            'answer' => 'varchar(65535) NOT NULL',
-            'score' => 'int unsigned NOT NULL DEFAULT 0',
+            'id' => 'pk',
+            'question_id' => 'int(11) NOT NULL',
+            'answer' => 'text NOT NULL',
+            'score' => 'int NOT NULL',
         ));
         $this->addForeignKey('cat_prom5_answers_qid_fk', 'cat_prom5_answers', 'question_id', 'cat_prom5_questions', 'id');
 

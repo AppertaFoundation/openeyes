@@ -84,8 +84,9 @@ class CatProm5AnswerResult extends \BaseEventTypeElement
         $criteria=new CDbCriteria;
 
         $criteria->compare('id', $this->id);
-        $criteria->compare('element_id', $this->event_id);
-        $criteria->compare('answer_id', $this->answer_id, true);
+        $criteria->compare('element_id', $this->element_id);
+        $criteria->compare('question_id', $this->question_id);
+        $criteria->compare('answer_id', $this->answer_id);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,

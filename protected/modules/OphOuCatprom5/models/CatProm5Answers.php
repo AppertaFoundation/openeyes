@@ -4,10 +4,10 @@
  * This is the model class for table "cat_prom5_answers".
  *
  * The followings are the available columns in table 'cat_prom5_answers':
- * @property string $id
- * @property string $question_id
+ * @property integer $id
+ * @property integer $question_id
  * @property string $answer
- * @property string $score
+ * @property integer $score
  *
  * The followings are the available model relations:
  * @property CatProm5AnswerResult[] $catProm5AnswerResults
@@ -31,9 +31,7 @@ class CatProm5Answers extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('question_id, answer', 'required'),
-            array('question_id, score', 'length', 'max'=>10),
-            // The following rule is used by search().
+            array('id, question_id, answer, score', 'required'),
             array('id, question_id, answer, score', 'safe', 'on'=>'search'),
         );
     }
@@ -81,10 +79,10 @@ class CatProm5Answers extends CActiveRecord
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id', $this->id, true);
-        $criteria->compare('question_id', $this->question_id, true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('question_id', $this->question_id);
         $criteria->compare('answer', $this->answer, true);
-        $criteria->compare('score', $this->score, true);
+        $criteria->compare('score', $this->score);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,

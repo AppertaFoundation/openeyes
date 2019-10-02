@@ -92,12 +92,6 @@ class CatProm5EventResult extends \BaseEventTypeElement
         parent::setDefaultOptions($patient);
     }
 
-    public function setUpdateOptions()
-    {
-
-        parent::setUpdateOptions();
-    }
-
   /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
