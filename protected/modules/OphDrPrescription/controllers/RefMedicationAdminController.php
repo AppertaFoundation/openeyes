@@ -213,28 +213,6 @@ class RefMedicationAdminController extends BaseAdminController
             exit;
         }
 
-        foreach ($model->medicationSetItems as $item) {
-            // If the set is an automatic set, then the rule will be updated to include the drug
-            $medicationSet = MedicationSet::model()->findByPk($item->medication_set_id);
-
-            /** @var MedicationSet $medicationSet */
-            if ($medicationSet->automatic) {
-                $has_medication_in_list = false;
-                foreach ($medicationSet->medicationSetAutoRuleMedications as $m) {
-                    if ($m->medication_id == $item->medication_id) {
-                        $has_medication_in_list = true;
-                    }
-                }
-
-                if (!$has_medication_in_list) {
-                    $assignment = new MedicationSetAutoRuleMedication();
-                    $assignment->medication_id = $item->medication_id;
-                    $assignment->medication_set_id = $medicationSet->id;
-                    $assignment->save();
-                }
-            }
-        }
-
         $this->redirect('/'.$this->getModule()->id.'/'.$this->id.'/list');
 
     }
@@ -303,7 +281,6 @@ class RefMedicationAdminController extends BaseAdminController
             }
         }
         $model->medicationSetItems = $medicationSetItems;
-        $model->validate();
     }
 
     public function actionExportForm()
