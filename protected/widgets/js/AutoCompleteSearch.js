@@ -56,7 +56,6 @@ OpenEyes.UI = OpenEyes.UI || {};
     var xhr;
     var response;
     var current_focus;
-    var item_clicked;
     var inputbox;
     var onSelect = [];
     var timeout_id = null;
@@ -109,7 +108,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     	});
 
     	input.parent().find(".oe-autocomplete").on('click', '.oe-menu-item', function(){
-    		item_clicked = response[$(this).index()];
+			exports.item_clicked = response[$(this).index()];
             inputbox.val('');
             onSelect[inputbox.selector.replace(/[^A-z]/, '')]();
     		hideMe();
@@ -206,7 +205,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     		}
     	},
         getResponse: function(){
-            return item_clicked;
+            return exports.item_clicked;
         }
     };
 
