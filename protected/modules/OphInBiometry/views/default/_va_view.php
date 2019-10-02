@@ -23,7 +23,7 @@ if ($eventtype) {
 ?>
 <?php
 $VAdate = "";
-$VA_data = NULL;
+$VA_data = null;
 $episode = $this->episode;
 $api = Yii::app()->moduleAPI->get('OphCiExamination');
 if ($api) {
@@ -48,16 +48,16 @@ if ($api) {
     }
     $rightData = array();
     $leftData = array();
-    if($VA_data) {
-			for ($i = 0; $i < count($VA_data); ++$i) {
-				if ($VA_data[$i]->side == 0) {
-					$rightData[] = $VA_data[$i];
-				}
-				if ($VA_data[$i]->side == 1) {
-					$leftData[] = $VA_data[$i];
-				}
-			}
-		}
+    if ($VA_data) {
+        for ($i = 0; $i < count($VA_data); ++$i) {
+            if ($VA_data[$i]->side == 0) {
+                $rightData[] = $VA_data[$i];
+            }
+            if ($VA_data[$i]->side == 1) {
+                $leftData[] = $VA_data[$i];
+            }
+        }
+    }
     $methodnameRight = array();
     $methodnameLeft = array();
     if ($VA_data) {
