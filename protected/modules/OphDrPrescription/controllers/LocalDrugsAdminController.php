@@ -30,7 +30,12 @@ class LocalDrugsAdminController extends RefMedicationAdminController
 			'source_subtype'=> array(
 				'widget' => 'DropDownList',
 				'options' => $this->_getSourceSubtypes(),
-				'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+        'htmlOptions' => array(
+          'empty' => '-- None --',
+          'class' => 'cols-full disabled',
+          'disabled' => 'disabled',
+          'style' => 'background-color:#f0f0f0',
+        ),
 				'hidden' => false,
 				'layoutColumns' => array()
 			),
