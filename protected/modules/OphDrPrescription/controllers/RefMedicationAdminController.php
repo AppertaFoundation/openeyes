@@ -114,7 +114,6 @@ class RefMedicationAdminController extends BaseAdminController
                     'empty' => '-- None --',
                     'class' => 'cols-full disabled',
                     'disabled' => 'disabled',
-                    'style' => 'background-color:#f0f0f0',
                 ),
                 'hidden' => false,
                 'layoutColumns' => array()
@@ -126,7 +125,6 @@ class RefMedicationAdminController extends BaseAdminController
                     'empty' => '-- None --',
                     'class' => 'cols-full disabled',
                     'disabled' => 'disabled',
-                    'style' => 'background-color:#f0f0f0',
                 ),
                 'hidden' => false,
                 'layoutColumns' => array()
@@ -190,30 +188,30 @@ class RefMedicationAdminController extends BaseAdminController
 
     public function actionSave($id = null)
     {
-        if (is_null($id)) {
-            $model = new Medication();
-        } else {
-            if (!$model = Medication::model()->findByPk($id)) {
-                throw new CHttpException(404);
-            }
-        }
+		if(is_null($id)) {
+			$model = new Medication();
+		}
+		else {
+			if(!$model = Medication::model()->findByPk($id)) {
+				throw new CHttpException(404);
+			}
+		}
+        /** @var CDbTransaction $trans */
+		$transaction = Yii::app()->db->beginTransaction();
+
         /** @var Medication $model */
 
         $data = Yii::app()->request->getPost('Medication');
         $this->_setModelData($model, $data);
 
-        if ($model->hasErrors()) {
-            $admin = $this->_getEditAdmin($model);
-            $this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors() ));
+
+		if($model->save()) {
+			$transaction->commit();
+        } else {
+            $transaction->rollback();
+			$admin = $this->_getEditAdmin($model);
+			$this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors() ));
             exit;
-        }
-
-        /** @var CDbTransaction $trans */
-        $trans = Yii::app()->db->beginTransaction();
-
-
-        if ($model->save(false)) {
-            $trans->commit();
         }
 
         foreach ($model->medicationSetItems as $item) {
