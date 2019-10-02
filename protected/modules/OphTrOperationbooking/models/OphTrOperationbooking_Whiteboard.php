@@ -307,12 +307,23 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             return !in_array($risk->name, ['Anticoagulants', 'Alpha blockers']);
         });
 
-        $lines = array_merge($lines, array_map(static function ($risk) {
-            if ($risk->comments !== '' && $risk->display_on_whiteboard) {
-                return '<span class="has-tooltip" data-tooltip-content="'.$risk->comments.'">'.$risk->name.'</span>';
-            }
-            return $risk->name;
-        }, $risks));
+        $lines = array_merge(
+            $lines,
+            array_map(
+                static function ($risk) {
+                    if ($risk->comments !== '') {
+                        return '<span class="has-tooltip" data-tooltip-content="'.$risk->comments.'">'.$risk->name.'</span>';
+                    }
+                    return $risk->name;
+                },
+                array_filter(
+                    $risks,
+                    static function ($risk) {
+                        return $risk->display_on_whiteboard;
+                    }
+                )
+            )
+        );
 
         $display = implode('</div><div class="alert-box warning">', $lines);
 
