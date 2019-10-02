@@ -42,7 +42,6 @@ class BaseEventTypeElement extends BaseElement
 
     protected $_element_type;
     protected $frontEndErrors = array();
-    // TODO: these should be defined in their relevant classes
     protected $errorExceptions = array(
     );
 

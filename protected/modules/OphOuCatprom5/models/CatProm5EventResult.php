@@ -18,7 +18,7 @@ class CatProm5EventResult extends \BaseEventTypeElement
 {
     protected $auto_update_relations = true;
     protected $relation_defaults = array(
-    'catProm5AnswerResults' => array(),
+      'catProm5AnswerResults' => array(),
     );
     /**
      * @return string the associated database table name

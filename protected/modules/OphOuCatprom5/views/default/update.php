@@ -19,12 +19,11 @@
 
 <?php
 $form_id = 'catprom5-update';
-$this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id)); ?>
-<?php
+$this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id));
 $this->breadcrumbs = array($this->module->id);
 $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
-?>
-<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
   'id' => $form_id,
   'enableAjaxValidation' => false,
   'layoutColumns' => array(
@@ -33,16 +32,12 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 's
   ),
 ));
 ?>
-<?php
-if (!empty($errors)) {
-    ;
-}  ?>
   <script type='text/javascript'>
     $(document).ready( function(){
       window.formHasChanged = true;
     });
   </script>
-<?php $this->displayErrors($errors)?>
+<?php $this->displayErrors($errors, true)?>
 <?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
 <?php $this->displayErrors($errors, true)?>
 

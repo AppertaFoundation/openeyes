@@ -1,7 +1,7 @@
 <?php
 class m190731_053530_event_type_OphOuCatprom5 extends OEMigration
 {
-    public function safeup()
+    public function safeUp()
     {
         if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->
         where('class_name=:class_name',
@@ -11,8 +11,7 @@ class m190731_053530_event_type_OphOuCatprom5 extends OEMigration
         }
         $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphOuCatprom5'))->queryRow();
 
-//        $this->addCatprom5Element($event_type['id'],'Questionare', array('class_name'=> 'CatProm5AnswerResult','display_order'=>1,'default'=>true,'required' =>true));
-                $this->addCatprom5Element($event_type['id'], 'Questionare', array('class_name'=> 'CatProm5EventResult','display_order'=>1,'default'=>true,'required' =>true));
+        $this->addCatprom5Element($event_type['id'], 'Questionare', array('class_name'=> 'CatProm5EventResult','display_order'=>1,'default'=>true,'required' =>true));
 
     }
 
@@ -31,7 +30,7 @@ class m190731_053530_event_type_OphOuCatprom5 extends OEMigration
     }
 
 
-    public function safedown()
+    public function safeDown()
     {
 
         $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphOuCatprom5'))->queryRow();
