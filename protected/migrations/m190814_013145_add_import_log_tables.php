@@ -40,12 +40,12 @@ class m190814_013145_add_import_log_tables extends OEMigration
 		$this->dropTable('import_log');
 		$this->dropTable('import');
 
-		$this->delete('import_status', 'status_value="Duplicate Patient"');
-		$this->delete('import_status', 'status_value="Duplicate Contact"');
-		$this->delete('import_status', 'status_value="Import Patient Success"');
-		$this->delete('import_status', 'status_value="Invalid Patient Data"');
-		$this->delete('import_status', 'status_value="Invalid Contact Data"');
-		$this->delete('import_status', 'status_value="Invalid Diagnosis"');
+		$this->delete('import_status', 'id=6 AND status_value="Duplicate Patient"');
+		$this->delete('import_status', 'id=7 AND status_value="Duplicate Contact"');
+		$this->delete('import_status', 'id=8 AND status_value="Import Patient Success"');
+		$this->delete('import_status', 'id=9 AND status_value="Invalid Patient Data"');
+		$this->delete('import_status', 'id=10 AND status_value="Invalid Contact Data"');
+		$this->delete('import_status', 'id=11 AND status_value="Invalid Diagnosis"');
 	}
 
 	/*

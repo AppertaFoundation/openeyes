@@ -117,17 +117,21 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                   <td><?php echo Yii::app()->params['general_practitioner_label'].' Role' ?></td>
                   <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
               </tr>
-              <?php if (($this->patient->gp_id)) {
-                  $gp = Gp::model()->findByPk(array('id' => $this->patient->gp_id));
-                  $practice = $gp->getAssociatePractice();
-              }?>
-              <tr>
-                  <td><?php echo Yii::app()->params['gp_label']?> Address</td>
-                  <td> <?= isset($practice) ? $practice->getAddresslines() : 'Unknown' ?></td>
-              </tr>
               <tr>
                   <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
                   <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
+              </tr>
+              <?php if (($this->patient->gp_id)) {
+                  $gp = Gp::model()->findByPk(array('id' => $this->patient->gp_id));
+                  $practice = Practice::model()->findByPk(array('id' => $this->patient->practice_id));
+              }?>
+              <tr>
+                  <td>Referring Practice Address</td>
+                  <td> <?= isset($practice) ? $practice->getAddresslines() : 'Unknown' ?></td>
+              </tr>
+              <tr>
+                  <td>Referring Practice Telephone</td>
+                  <td><?= isset($practice->phone) ? $practice->phone : 'Unknown'; ?></td>
               </tr>
           <?php if (isset($this->referredTo)){ ?>
               <tr>
@@ -155,8 +159,8 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                   <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
                               </div>
                               <?php
-                              if (isset($gp->contactPracticeAssociate)) {
-                                  $practice = $gp->contactPracticeAssociate->practice;
+                              if (isset($pca->practice)) {
+                                  $practice = $pca->practice;
                                   if (isset($practice)) {
                                       $address = $practice->contact->address;
                                       ?>

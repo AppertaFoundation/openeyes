@@ -29,7 +29,7 @@ class Import extends BaseActiveRecord
 		return array(
 			array('parent_log_id, message, import_status_id', 'required'),
 			array('parent_log_id', 'numerical', 'integerOnly'=>true),
-			array('message', 'length', 'max'=>255),
+			array('message', 'length', 'max'=>4096),
 			array('import_status_id', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.

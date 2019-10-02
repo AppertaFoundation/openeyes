@@ -68,7 +68,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
     public function rules()
     {
         return array_merge(parent::rules(), array(
-                array('trialType, trial, status, treatmentTypeId', 'safe'),
+                array('trialType, trialTypeId,  trial, status, treatmentTypeId', 'safe'),
             )
         );
     }
@@ -80,7 +80,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             '!=' => 'Is not',
         );
 
-        $trials = Trial::getTrialList($this->trialType);
+        $trials = Trial::getTrialList(isset($this->trialType) ? $this->trialType->id : '');
 
         $statusList = array(
             TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id => 'Shortlisted in',
@@ -108,18 +108,18 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             </div>
             <div class="js-trial-type parameter-option">
             <?php echo CHtml::activeDropDownList($this, "[$id]trialTypeId", TrialType::getOptions(),
-                    array('empty' => 'Any Trial', 'onchange' => "getTrialList(this, $this->id)")); ?>
+                    array('empty' => 'Any Trial', 'onchange' => "getTrialList(this)")); ?>
             </div>
             <div class="js-trial-list parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]trial", $trials,
-                    array('empty' => 'Any', 'style' => 'display: none;')); ?>
+                    array('empty' => 'Any')); ?>
             </div>
             <span class="js-treatment-type-container flex-layout flex-left"
                 style="<?= $this->trialType && $this->trialType->code = TrialType::NON_INTERVENTION_CODE ? 'display:none;':''?>"
             >
                 <p class="parameter-option" style="margin-bottom: 0px;">with</p>
                 <div class="parameter-option">
-                    <?php echo CHtml::activeDropDownList($this, "[$id]treatmentType", TreatmentType::getOptions(),
+                    <?php echo CHtml::activeDropDownList($this, "[$id]treatmentTypeId", TreatmentType::getOptions(),
                         array('empty' => 'Any')); ?>
                 </div>
                 <p class="parameter-option">treatment</p>
@@ -127,14 +127,28 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         </div>
 
         <script type="text/javascript">
-            function getTrialList(target, parameter_id) {
-                var parameterNode = $('.parameter#' + parameter_id);
+
+            let DOMStrings = {
+                parameterClass: '.parameter',
+                trialType: '.js-trial-type',
+                trialList: '.js-trial-list select',
+                treatmentType: '.js-treatment-type-container'
+            };
+
+            function getDOM() {
+                return DOMStrings;
+            }
+
+            // populateTrialList argument receives a boolean to specify whether we need to get the trial list or not.
+            function init(target, populateTrialList = true) {
+                let DOM = getDOM();
+                var parameterNode = $(DOM.parameterClass + '#' + <?= $this->id ?>);
 
                 var trialType = $(target).val();
-                var trialList = parameterNode.find('.js-trial-list select');
-                var treatmentTypeContainer = parameterNode.find('.js-treatment-type-container');
+                var trialList = parameterNode.find(DOM.trialList);
+                var treatmentTypeContainer = parameterNode.find(DOM.treatmentType);
 
-                // Only show the treatment type if the trial type is set to "Any" or "Intervention"
+                // If user has selected Any Trial as Trial type then hide the trial list
                 treatmentTypeContainer.toggle(
                     !trialType ||
                     trialType === '<?= TrialType::model()->find('code = "INTERVENTION"')->id ?>'
@@ -144,30 +158,34 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     trialList.empty();
                     trialList.hide();
                 } else {
-                    $.ajax({
-                        url: '<?php echo Yii::app()->createUrl('/OETrial/trial/getTrialList'); ?>',
-                        type: 'GET',
-                        data: {type: trialType},
-                        success: function (response) {
-                            trialList.empty();
-                            trialList.append(response);
-                            trialList.show();
-                        }
-                    });
+                    if(populateTrialList) {
+                        $.ajax({
+                            url: '<?php echo Yii::app()->createUrl('/OETrial/trial/getTrialList'); ?>',
+                            type: 'GET',
+                            data: {type: trialType},
+                            success: function (response) {
+                                trialList.empty();
+                                trialList.append(response);
+                                trialList.show();
+                            }
+                        });
+                    }
                 }
             }
+
+            // Execute the function on loading the page.
+            jQuery(document).ready(function(){
+                var DOM = getDOM();
+                init($(DOM.trialType).children(), false);
+            });
+
+            function getTrialList(target) {
+                init(target);
+            }
+
         </script>
 
         <?php
-        Yii::app()->clientScript->registerScript('GetTrials', '
-          $(".js-previous_trial").each(function() {
-            var typeElem = $(this).find(".js-trial-type select");
-            if (typeElem.val() !== "") {
-              var trialElem = $(this).find(".js-trial-list select");
-              trialElem.show();
-            }
-          });
-        ', CClientScript::POS_READY); // Put this in $(document).ready() so it runs on every page churn from a search.
     }
 
     /**
@@ -178,14 +196,14 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function query($searchProvider)
     {
-        $condition = ' 1=1 ';
+        $condition = ' ';
         switch ($this->operation) {
             case '=':
                 $joinCondition = 'JOIN';
                 if ($this->trialType) {
                     if ($this->trial === '') {
                         // Any intervention/non-intervention trial
-                        $condition = "t.trial_type_id = :p_t_type_$this->id";
+                        $condition = "t.trial_type_id = :p_t_trial_type_$this->id";
                     } else {
                         // specific trial
                         $condition = "t_p.trial_id = :p_t_trial_$this->id";
@@ -202,11 +220,11 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 } else {
                     // in any trial
                     $condition .= ' AND t_p.status_id IN (
-                      SELECT id FROM trial_patient_status WHERE code IN ("ACCEPTED", "REJECTED"))';
+                      SELECT id FROM trial_patient_status WHERE code IN ("ACCEPTED", "SHORTLISTED", "REJECTED"))';
                 }
 
                 if ((!$this->trialType || $this->trialType->code !== TrialType::NON_INTERVENTION_CODE)
-                    && $this->treatmentType !== '' && $this->treatmentType !== null
+                    && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
                 ) {
                     $condition .= " AND t_p.treatment_type_id = :p_t_treatment_type_id_$this->id";
                 }
@@ -218,16 +236,16 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     $condition = 't_p.trial_id IS NULL OR ';
                     if ($this->trial === '') {
                         // Not in any intervention/non-intervention trial
-                        $condition .= "t._id != :p_t_type_$this->id";
+                        $condition .= "t.trial_type_id  != :p_t_trial_type_$this->id OR";
                     } else {
                         // Not in a specific trial
-                        $condition .= "t_p.trial_id != :p_t_trial_$this->id";
+                        $condition .= "t_p.trial_id != :p_t_trial_$this->id OR";
                     }
                 }
 
                 if ($this->status !== '' && $this->status !== null) {
                     $condition .=
-                      " AND p.id NOT IN(
+                      "  p.id NOT IN(
                           SELECT patient_id
                           FROM trial_patient
                           WHERE status_id = :p_t_status_$this->id
@@ -236,16 +254,16 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 } else {
                     // not accepted/rejected in any trial
                     $condition .=
-                        ' AND p.id NOT IN(
+                        ' p.id NOT IN(
                           SELECT patient_id
                           FROM trial_patient
-                          WHERE status_id IN (SELECT id FROM trial_patient_status WHERE code IN ("ACCEPTED", "REJECTED"))';
+                          WHERE status_id IN (SELECT id FROM trial_patient_status WHERE code IN ("ACCEPTED", "SHORTLISTED", "REJECTED")))';
                 }
 
                 if ((!$this->trialType || $this->trialType->code !== TrialType::INTERVENTION_CODE)
-                    && $this->treatmentType !== '' && $this->treatmentType !== null
+                    && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
                 ) {
-                    $condition .= " AND t_p.treatment_type_id IS NULL OR t_p.treatment_type_id != :p_t_treatment_type__id_$this->id";
+                    $condition .= " OR t_p.treatment_type_id IS NULL OR t_p.treatment_type_id != :p_t_treatment_type_id_$this->id";
                 }
 
                 break;
@@ -275,7 +293,7 @@ WHERE $condition";
 
         if ($this->trial !== '' && $this->trial !== null) {
             $binds[":p_t_trial_$this->id"] = $this->trial;
-        } elseif ($this->trialType) {
+        } elseif ($this->trialTypeId) {
             $binds[":p_t_trial_type_$this->id"] = $this->trialTypeId;
         }
 
@@ -283,10 +301,18 @@ WHERE $condition";
             $binds[":p_t_status_$this->id"] = $this->status;
         }
 
-        if ((!$this->trialType || $this->trialType->code !== TrialType::INTERVENTION_CODE)
-            && $this->treatmentType !== '' && $this->treatmentType !== null
-        ) {
-            $binds[":p_t_treatment_type_id_$this->id"] = $this->treatmentType;
+        if ($this->operation === '=') {
+            if ((!$this->trialType || $this->trialType->code !== TrialType::NON_INTERVENTION_CODE)
+                && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
+            ) {
+                $binds[":p_t_treatment_type_id_$this->id"] = $this->treatmentTypeId;
+            }
+        } else {
+            if ((!$this->trialType || $this->trialType->code !== TrialType::INTERVENTION_CODE)
+                && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
+            ) {
+                $binds[":p_t_treatment_type_id_$this->id"] = $this->treatmentTypeId;
+            }
         }
 
         return $binds;
@@ -304,13 +330,13 @@ WHERE $condition";
             TrialPatientStatus::model()->find('code = "ACCEPTED"')->id => 'Accepted in',
             TrialPatientStatus::model()->find('code = "REJECTED"')->id => 'Rejected from',
         );
-        $trials = Trial::getTrialList($this->trialType);
+        $trials = Trial::getTrialList(isset($this->trialType) ? $this->trialType->id : '');
         $treatmentTypeList = TreatmentType::getOptions();
 
         $status = $this->status === null || $this->status === '' ? 'Included in' : $statusList[$this->status];
         $type = !$this->trialType ? 'Any Trial Type with' : $trialTypes[$this->trialTypeId];
         $trial = $this->trial === null || $this->trial === '' ? 'Any trial with' : $trials[$this->trial] . ' with ';
-        $treatment = $this->treatmentType === null || $this->treatmentType === '' ? 'Any Treatment' : $treatmentTypeList[$this->treatmentType];
+        $treatment = $this->treatmentTypeId === null || $this->treatmentTypeId === '' ? 'Any Treatment' : $treatmentTypeList[$this->treatmentTypeId];
 
         return "$this->name: $this->operation $status $type $trial $treatment";
     }

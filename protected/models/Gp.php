@@ -27,6 +27,7 @@
  *
  * The followings are the available model relations:
  * @property Contact $contact
+ * @property ContactPracticeAssociate $contactPracticeAssociate
  */
 class Gp extends BaseActiveRecordVersioned
 {
@@ -84,6 +85,7 @@ class Gp extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('id', 'required', 'on' => array('manage_practice'), 'message'=>'Please select at least one practitioner.'),
             array('obj_prof, nat_id', 'required'),
             array('obj_prof, nat_id', 'length', 'max' => 20),
             // The following rule is used by search().
@@ -101,7 +103,7 @@ class Gp extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-            'contactPracticeAssociate'=>array(self::HAS_ONE,'ContactPracticeAssociate','gp_id'),
+            'contactPracticeAssociate'=>array(self::HAS_MANY,'ContactPracticeAssociate','gp_id'),
         );
     }
 

@@ -63,6 +63,7 @@ if (!Yii::app()->user->isGuest) {
                 </a>
             </li>
             <?= $menuHelper->render($navIconUrl) ?>
+            <?php if(Yii::app()->params['institution_code'] !== 'CERA'):?>
             <li class="oe-nav-btn">
                 <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
                     <svg viewBox="0 0 80 40" class="icon clinic ">
@@ -70,6 +71,7 @@ if (!Yii::app()->user->isGuest) {
                     </svg>
                 </a>
             </li>
+            <?php endif; ?>
             <li class="oe-nav-btn js-hotlist-panel-wrapper">
                 <a href="/" class="nav-js-btn icon-btn" id="js-nav-hotlist-btn" onclick="returnFalse()"
                      data-fixable="<?= $this->fixedHotlist ? 'true' : 'false' ?>">

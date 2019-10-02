@@ -17,7 +17,7 @@
         </colgroup>
         <thead>
         <tr>
-            <th class="drill_down_patient_list" style="text-align: center;vertical-align: center;">Hospital No</th>
+            <th class="drill_down_patient_list" style="text-align: center;vertical-align: center;"><?php echo Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ')?></th>
             <th class="drill_down_patient_list" style="text-align: center;vertical-align: center;">Name</th>
             <th style="text-align: center;vertical-align: center;">DOB</th>
             <th style="text-align: center;vertical-align: center;">Age</th>

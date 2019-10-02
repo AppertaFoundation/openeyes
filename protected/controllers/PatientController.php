@@ -1811,7 +1811,6 @@ class PatientController extends BaseController
                 // Return the same page to the user without saving
                 // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
                 $patient->beforeValidate();
-                $patient->beforeSave();
             }
         }
         // Only auto increment hos no. when the set_auto_increment is on
@@ -2047,7 +2046,7 @@ class PatientController extends BaseController
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
 
-            if (empty($post_info->code) || empty($post_info->value))
+            if (empty($post_info->code))
                 continue;
 
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
@@ -2231,34 +2230,36 @@ class PatientController extends BaseController
         $output = array();
         foreach($gps as $gp){
             $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id'=>$gp->id));
-            foreach($practice_contact_associates as $practice_contact_associate) {
-                $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
-                if (isset($practice_contact_associate->practice)){
-                    $practiceId = $practice_contact_associate->practice->id;
-                    $practice = $practice_contact_associate->practice;
-                    $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
-                    $output[] = array(
-                        'gpTitle' => $gp->contact->title,
-                        'gpFirstName' => $gp->contact->first_name,
-                        'gpLastName' => $gp->contact->last_name,
-                        'gpPhoneno' => $gp->contact->primary_phone,
-                        'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
-                        'label' => $gp->correspondenceName.$role.$practiceNameAddress,
-                        'value' => $gp->id,
-                        'practiceId' => $practiceId
-                    );
-                }
-                else {
-                    $output[] = array(
-                        'gpTitle' => $gp->contact->title,
-                        'gpFirstName' => $gp->contact->first_name,
-                        'gpLastName' => $gp->contact->last_name,
-                        'gpPhoneno' => $gp->contact->primary_phone,
-                        'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
-                        'label' => $gp->correspondenceName.$role,
-                        'value' => $gp->id,
-                        'practiceId' => ''
-                    );
+            $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
+            if(count($practice_contact_associates) == 0 ) {
+                $output[] = array(
+                    'gpTitle' => $gp->contact->title,
+                    'gpFirstName' => $gp->contact->first_name,
+                    'gpLastName' => $gp->contact->last_name,
+                    'gpPhoneno' => $gp->contact->primary_phone,
+                    'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                    'label' => $gp->correspondenceName.$role,
+                    'value' => $gp->id,
+                    'practiceId' => ''
+                );
+            } else {
+                foreach($practice_contact_associates as $practice_contact_associate) {
+                    if (isset($practice_contact_associate->practice)){
+                        $practice = $practice_contact_associate->practice;
+                        $practiceId = $practice->id;
+                        $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+                        $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
+                        $output[] = array(
+                            'gpTitle' => $gp->contact->title,
+                            'gpFirstName' => $gp->contact->first_name,
+                            'gpLastName' => $gp->contact->last_name,
+                            'gpPhoneno' => $gp->contact->primary_phone,
+                            'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                            'label' => $gp->correspondenceName.$providerNo.$role.$practiceNameAddress,
+                            'value' => $gp->id,
+                            'practiceId' => $practiceId
+                        );
+                    }
                 }
             }
         }
@@ -2329,7 +2330,7 @@ class PatientController extends BaseController
         }
     }
 
-  public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null){
+  public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null, $null_check){
 
         $patients = Patient::findDuplicatesByIdentifier($identifier_code, $identifier_value, $id);
 
@@ -2338,7 +2339,7 @@ class PatientController extends BaseController
                 'errors' => $patients['error'],
             ));
         } else {
-            if (count($patients) !== 0) {
+            if (count($patients) !== 0 && !empty($null_check)) {
                 $this->renderPartial('crud/_conflicts_identifier', array(
                     'patients' => $patients,
                     'identifier_code' => $identifier_code,
