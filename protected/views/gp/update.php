@@ -19,7 +19,6 @@ $this->pageTitle = 'Update Practitioner';
     </div>
     <div class="oe-full-content oe-new-patient flex-layout flex-top">
         <div class="patient-content">
-            <?php $this->renderPartial('_form', array('model' => $model, 'gp' => $gp, 'context' => null)); ?>
             <div class="form">
                 <?php
                 \Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
@@ -99,6 +98,19 @@ $this->pageTitle = 'Update Practitioner';
                                     <div>
                                         <div class="selected_gp">No result</div>
                                     </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Active</td>
+                                <td>
+                                  <?=
+                                  \CHtml::activeRadioButtonList(
+                                    $gp,
+                                    'is_active',
+                                    [1 => 'Yes', 0 => 'No'],
+                                    ['separator' => ' ']
+                                  );
+                                  ?>
                                 </td>
                             </tr>
                             <tr>
