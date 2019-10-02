@@ -26,7 +26,7 @@ class PrescriptionCreator extends \EventCreator
         $this->elements['Element_OphDrPrescription_Details'] = new \Element_OphDrPrescription_Details();
     }
 
-    public function addMedicationSet(int $medication_set_id, $laterality = null)
+    public function addMedicationSet($medication_set_id, $laterality = null)
     {
         $set = \MedicationSet::model()->findByPk($medication_set_id);
         foreach ($set->medicationSetItems as $medication_set_item) {
