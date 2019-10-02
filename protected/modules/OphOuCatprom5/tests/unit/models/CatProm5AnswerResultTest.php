@@ -33,6 +33,11 @@ class CatProm5AnswerResultTest extends CDbTestCase {
 
   }
 
+  public static function setupBeforeClass()
+  {
+    Yii::app()->getModule('OphOuCatprom5');
+  }
+
   public function setUp() {
     parent::setUp();
     $this->model = new CatProm5AnswerResult();

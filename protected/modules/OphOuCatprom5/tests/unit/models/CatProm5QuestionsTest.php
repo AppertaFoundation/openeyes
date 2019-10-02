@@ -33,6 +33,11 @@ class CatProm5QuestionsTest extends CDbTestCase {
     );
   }
 
+  public static function setupBeforeClass()
+  {
+    Yii::app()->getModule('OphOuCatprom5');
+  }
+
   public function setUp() {
     $this->getFixtureManager()->basePath = Yii::getPathOfAlias('application.modules.OphOuCatprom5.tests.fixtures');
     parent::setUp();

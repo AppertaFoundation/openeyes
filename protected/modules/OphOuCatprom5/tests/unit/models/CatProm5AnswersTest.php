@@ -8,7 +8,7 @@ class CatProm5AnswersTest extends CDbTestCase {
 
   public function dataProvider_Search() {
     return array(
-    	array(array('id'=>1), 1, array('answer1')),
+      array(array('id'=>1), 1, array('answer1')),
       array(array('answer'=>'No'), 4, array('answer1','answer5', 'answer22', 'answer26')),
       array(array('answer'=>'Never'), 2, array('answer1', 'answer18')),
       array(array('answer'=>'yes'), 7, array('answer2', 'answer3', 'answer4', 'answer23', 'answer24', 'answer25', 'answer26')),
@@ -56,6 +56,11 @@ class CatProm5AnswersTest extends CDbTestCase {
       array(array('question_id'=>5), 5, array('answer22', 'answer23', 'answer24', 'answer25', 'answer26')),
       array(array('question_id'=>6), 3, array('answer27', 'answer28', 'answer29')),
     );
+  }
+
+  public static function setupBeforeClass()
+  {
+    Yii::app()->getModule('OphOuCatprom5');
   }
 
   public function setUp() {
