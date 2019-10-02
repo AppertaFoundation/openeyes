@@ -308,7 +308,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         });
 
         $lines = array_merge($lines, array_map(static function ($risk) {
-            if ($risk->comments !== '') {
+            if ($risk->comments !== '' && $risk->display_on_whiteboard) {
                 return '<span class="has-tooltip" data-tooltip-content="'.$risk->comments.'">'.$risk->name.'</span>';
             }
             return $risk->name;
