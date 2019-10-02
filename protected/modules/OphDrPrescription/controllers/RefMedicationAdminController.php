@@ -188,16 +188,15 @@ class RefMedicationAdminController extends BaseAdminController
 
     public function actionSave($id = null)
     {
-		if(is_null($id)) {
-			$model = new Medication();
-		}
-		else {
-			if(!$model = Medication::model()->findByPk($id)) {
-				throw new CHttpException(404);
-			}
-		}
+        if (is_null($id)) {
+            $model = new Medication();
+        } else {
+            if (!$model = Medication::model()->findByPk($id)) {
+                throw new CHttpException(404);
+            }
+        }
         /** @var CDbTransaction $trans */
-		$transaction = Yii::app()->db->beginTransaction();
+        $transaction = Yii::app()->db->beginTransaction();
 
         /** @var Medication $model */
 
@@ -205,12 +204,12 @@ class RefMedicationAdminController extends BaseAdminController
         $this->_setModelData($model, $data);
 
 
-		if($model->save()) {
-			$transaction->commit();
+        if ($model->save()) {
+            $transaction->commit();
         } else {
             $transaction->rollback();
-			$admin = $this->_getEditAdmin($model);
-			$this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors() ));
+            $admin = $this->_getEditAdmin($model);
+            $this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors() ));
             exit;
         }
 

@@ -34,7 +34,7 @@ class LocalDrugsAdminController extends RefMedicationAdminController
           'empty' => '-- None --',
           'class' => 'cols-full disabled',
           'disabled' => 'disabled',
-<<<<<<< Updated upstream
+        <<<<<<< Updated upstream
           'style' => 'background-color:#f0f0f0',
             ),
                 'hidden' => false,
@@ -63,33 +63,33 @@ class LocalDrugsAdminController extends RefMedicationAdminController
             ),
         );
     }
-=======
+    =======
         ),
-				'hidden' => false,
-				'layoutColumns' => array()
-			),
-			'attributes' => array(
-				'widget' => 'CustomView',
-				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_attributes',
-				'viewArguments' => array(
-					'medication' => $model
-				)
-			),
-			'sets' => array(
-				'widget' => 'CustomView',
-				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_sets',
-				'viewArguments' => array(
-					'medication' => $model
-				)
-			),
-			'alternative_terms' =>  array(
-				'widget' => 'CustomView',
-				'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_alternative_terms',
-				'viewArguments' => array(
-					'medication' => $model
-				)
-			),
-		);
-	}
+                'hidden' => false,
+                'layoutColumns' => array()
+            ),
+            'attributes' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_attributes',
+                'viewArguments' => array(
+                    'medication' => $model
+                )
+            ),
+                'sets' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_sets',
+                'viewArguments' => array(
+                    'medication' => $model
+                )
+                ),
+                'alternative_terms' =>  array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_alternative_terms',
+                'viewArguments' => array(
+                    'medication' => $model
+                )
+                ),
+            );
+}
 >>>>>>> Stashed changes
 }
