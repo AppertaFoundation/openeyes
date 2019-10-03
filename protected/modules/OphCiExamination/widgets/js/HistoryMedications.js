@@ -100,7 +100,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     stopDateButtonSelector: '.stop-medication.enable',
     cancelStopDateButtonSelector: '.stop-medication.cancel',
     routeFieldSelector: 'select[name$="[route_id]"]',
-    routeOptionWrapperSelector: '.admin-route-options',
+		routeOptionWrapperSelector: '.admin-route-options',
+    routeOptionInputSelector: '.laterality-input',
     patientAllergies: [],
       allAllergies: {},
       classes_that_dont_break_binding: ['js-end-date', 'js-stop-reason'],
@@ -269,6 +270,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 					$full_row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
         }
       });
+
+		$full_row.on("change",controller.options.routeOptionWrapperSelector, function() {
+			let input_value = 0;
+			$(this).find('input').each(function (){
+					if($(this).is(':checked')) {
+						input_value += parseInt($(this).val());
+					}
+			});
+			$full_row.find(controller.options.routeOptionInputSelector).val(input_value);
+		});
 
       var controls_onchange = function (e) {
           let $bound_entry = $row.data('bound_entry');
@@ -497,6 +508,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 if(typeof data[field] !== "undefined") {
 									var $input = $("[name='"+self.options.modelName+"[entries]["+rc+"]["+field+"]']");
 									$input.val(data[field]);
+									if(field === "laterality") {
+										$row.find(self.options.routeOptionWrapperSelector).find('input').each(function(){
+												if($(this).val() === data[field] || data[field] === "3") {
+													$(this).prop( "checked", true);
+												} else {
+													$(this).prop( "checked", false);
+												}
+										});
+									}
                 }
             }
         });
@@ -753,7 +773,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var data = this.getRowData($row);
         var controller = $bound_entry.closest(".element-fields").data("controller_instance");
         controller.setRowData($bound_entry, data);
-        //controller.updateRowRouteOptions($bound_entry);
+        // controller.updateRowRouteOptions($bound_entry);
 
         if(data.end_date !== "") {
             controller.showStopControls($bound_entry);
@@ -846,24 +866,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
       var $routeOptionWrapper = $row.find(this.options.routeOptionWrapperSelector);
       $routeOptionWrapper.hide();
-      $routeOptionWrapper.find('option').each(function() {
-          if ($(this).val().length) {
-              $(this).remove();
-          }
+      $routeOptionWrapper.find('input').each(function() {
+          $(this).prop( "checked", false );
       });
+			$row.find(this.options.routeOptionInputSelector).val('');
+
       var value = $row.find(this.options.routeFieldSelector + ' option:selected').val();
       if (value !== "" && typeof value !== "undefined") {
           $.getJSON(this.options.routeOptionSource, {route_id: value}, function(data) {
               if (data.length) {
-                  var $select = $routeOptionWrapper;
-                  $.each(data, function(i, item) {
-                    $select.append('<option value="' + item.id +'">' + item.name + '</option>');
-                  });
-
-                  if(typeof $row.data("medication") !== "undefined" && $row.data("medication").laterality !== "") {
-                      $select.val($row.data("medication").laterality);
-                  }
-
                   $routeOptionWrapper.show();
               }
           });
