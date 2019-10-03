@@ -64,6 +64,8 @@ var analytics_drill_down = (function () {
 		}
 	}
 
+	var prev_leavel_name = '';
+
 	function processDrillDownListTitle(data, specialty, selected_cataract){
 		var list_title = 'Patient List';
 		var additional_info = '';
@@ -78,22 +80,26 @@ var analytics_drill_down = (function () {
 					var week_num = data.pointIndex;
 					var week_str = week_num > 1 ? 'Weeks' : 'Week'
 					additional_info = patient_total + ' ' + patient_str + week_num + ' ' + week_str + ' for ' + plot_type;
-
-					list_title = list_title + ' ' + additional_info;
 					break;
 				case 'clinical':
 					var selected_clinical = $('.clinical-plot-button.selected').text().trim();
 					switch(selected_clinical){
 						case 'Diagnoses':
-							var diagnoses_item = analytics_dataCenter.clinical.getClinicalData().text[data.pointIndex];
-							additional_info = patient_total + ' ' + patient_str + diagnoses_item + ' for ' + data.data['name'];
-							list_title = list_title + ' ' + additional_info;
+							// if the plot has further drill, the data will be an object
+							var further_drill = !Array.isArray(data.customdata);
+							var diagnoses_item = data.yaxis.ticktext[data.y];
+							if(further_drill){
+								// in case there are more further drill downs
+								prev_leavel_name = '';
+								prev_leavel_name = diagnoses_item;
+							}
+							var str_ending =  prev_leavel_name ? prev_leavel_name : data.data['name'];
+							additional_info = patient_total + ' ' + patient_str + diagnoses_item + ' for ' + str_ending;
 							break;
 						case 'Change in vision':
 							var hover_text = data.hovertext.trim();
 							hover_text = hover_text.slice(0, hover_text.indexOf('<'));
 							additional_info = patient_total + ' ' + patient_str + hover_text + ' for ' + data.data['name'] + ' in Change in Vision';
-							list_title = list_title + ' ' + additional_info;
 							break;
 					}
 					break;
@@ -114,13 +120,12 @@ var analytics_drill_down = (function () {
 
 				additional_info = patient_total + ' ' + patient_str + hover_text + ' for ' + data.data.name;
 
-				list_title = list_title + ' ' + additional_info;
 			} else {
 				additional_info = patient_total + ' ' + patient_str + data.x + ': ' + (data.y === 1 ? '100%' : data.y.toFixed(2) + '%') + ' for ' + selected_cataract.text().trim() + ' ' + data.data.name;
 
-				list_title = list_title + ' ' + additional_info;
 			}
 		}
+		list_title = list_title + ' ' + additional_info;
 		$('.analytics-patient-list #js-list-title').html(list_title);
 	}
 	var init = function (ele) {
@@ -192,6 +197,7 @@ var analytics_drill_down = (function () {
 			start = 0;
 			
 			analytics_toolbox.hideDrillDownShowChart();
+			prev_leavel_name = '';
 		})
 
 	}
