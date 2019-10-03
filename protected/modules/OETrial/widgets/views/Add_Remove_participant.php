@@ -25,11 +25,11 @@ $current_patient_status_id = $this->isPatientInTrial() ? $this->getPatientTrialS
 <?php
  if($current_patient_status_id == $accepted_status->id){
 ?>
-    <span class = "alert-box success">Accepted</span>
+    <span class = "alert-box success" style="display: table;float: left">&nbsp;Accepted&nbsp;</span>
 <?php
 }else if($current_patient_status_id == $rejected_status->id){
 ?>
-    <span class = "alert-box error">Rejected</span>
+    <span class = "alert-box error" style="display: table; float: left">&nbsp;Rejected&nbsp;</span>
 <?php
 }
 ?>
