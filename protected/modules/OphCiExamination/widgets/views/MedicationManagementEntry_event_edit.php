@@ -110,10 +110,18 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                             <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=>'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:none')); ?>
                             <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-4')) ?>
                             <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class'=>'js-route cols-3')) ?>
-                            <?php echo CHtml::dropDownList($field_prefix . '[laterality]',
+															<span class="oe-eye-lat-icons admin-route-options js-laterality" style="<?=$entry->routeOptions() ? "" :"display:none"?>" >
+																<label class="inline highlight">
+																	<input value="2" name="eyelat-select-R" type="checkbox"
+																				 <?= $entry->laterality === "2" || $entry->laterality === "3"? "checked" : ""?>>R
+																</label>
+																<label class="inline highlight">
+																	<input value="1" name="eyelat-select-L" type="checkbox" <?= $entry->laterality === "1" || $entry->laterality === "3" ? "checked" : ""?>> L
+																</label>
+															</span>
+                            <?php echo CHtml::hiddenField($field_prefix . '[laterality]',
                                 $entry->laterality,
-                                $laterality_options,
-                                array('empty' => '-Laterality-', 'class'=>'admin-route-options laterality cols-3', 'style'=>$entry->routeOptions()?'':'display:none' )); ?>
+                                array('class'=>'laterality-input' )); ?>
                     </div>
                     <div class="alternative-display-element textual" <?php if ($direct_edit || $dfrl_validation_error) {
                         echo 'style="display: none;"';
