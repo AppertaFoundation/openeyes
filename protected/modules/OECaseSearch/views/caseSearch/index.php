@@ -237,7 +237,6 @@ $this->pageTitle = 'Case Search';
       var addLink = this;
       var $removeLink = $(this).closest('.js-add-remove-participant').find('.js-remove-from-trial');
       var patientId = $(this).closest('.js-oe-patient').data('patient-id');
-      var $shortlistLabel = $(this).closest('.js-add-remove-participant').parent().parent().siblings().find('.js-show-shortlisted');
 
       $.ajax({
         url: '<?php echo Yii::app()->createUrl('/OETrial/trial/addPatient'); ?>',
@@ -248,7 +247,6 @@ $this->pageTitle = 'Case Search';
         success: function (response) {
           $(addLink).hide();
           $removeLink.show();
-          $shortlistLabel.show();
         },
         error: function (response) {
           new OpenEyes.UI.Dialog.Alert({

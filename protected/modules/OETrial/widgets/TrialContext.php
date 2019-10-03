@@ -43,17 +43,6 @@ class TrialContext extends CWidget
         $this->ensureTrialAndPatientSet($data);
         parent::render('Add_Remove_participant');
     }
-    /***
-     * Renders a label indicating whether the patient has been accepted or rejected in the trial in concern
-     * @param array|null $data array containing patient/trial to set
-     * @throws CException
-     */
-
-    public function renderPatientCurrentTrialStatus($data = null)
-    {
-        $this->ensureTrialAndPatientSet($data);
-        parent::render('Patient_Trial_status_label');
-    }
 
     /***
      * @return bool Whether the patient belongs to the trial
