@@ -4,7 +4,7 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
 ?>
 <script type="text/javascript">
 
-    function pcr_init(){
+    function pcr_init() {
         //Map the elements
         mapExaminationToPcr();
         //Make the initial calculations
@@ -36,7 +36,7 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
             var $pcrAlphaRight = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_alpha_receptor_blocker").prop('selectedIndex');
             $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_alpha_receptor_blocker").prop('selectedIndex', $pcrAlphaRight);
         });
-  }
+    }
 </script>
 <div class="element-eyes element-fields flex-layout full-width">
     <?php
@@ -96,20 +96,22 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
     foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :
         $opposite = ($side === 'right') ? 'left' : 'right';
         $pcrRisk = new PcrRisk();
-        $activeClass = ($element->{'has'.ucfirst($side)}()) ? 'active' : 'inactive'; ?>
-      <div class="js-element-eye <?=$side?>-eye column <?=$opposite?> side<?=$activeClass?>" data-side="<?=$side?>" >
-          <?php
-          if($this->event){
-              $patientId = $this->event->episode->patient->id;
-          } else {
-              $patientId = Yii::app()->request->getQuery('patient_id');
-          }
+        $activeClass = ($element->{'has' . ucfirst($side)}()) ? 'active' : 'inactive'; ?>
+        <div class="js-element-eye <?= $side ?>-eye column <?= $opposite ?> side<?= $activeClass ?>"
+             data-side="<?= $side ?>">
+            <?php
+            if ($this->event) {
+                $patientId = $this->event->episode->patient->id;
+            } else {
+                $patientId = Yii::app()->request->getQuery('patient_id');
+            }
 
             $pcr = $pcrRisk->getPCRData($patientId, $side, $element);
             echo CHtml::hiddenField('age', $pcr['age_group']);
             echo CHtml::hiddenField('gender', $pcr['gender']);
             ?>
-            <div class="active-form js-pcr-<?= $side ?>" style="display: <?= !($element->{'has' . ucfirst($side)}()) ? 'none' : 'block'; ?>;">
+            <div class="active-form js-pcr-<?= $side ?>"
+                 style="display: <?= !($element->{'has' . ucfirst($side)}()) ? 'none' : 'block'; ?>;">
                 <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 
                 <table class="cols-full last-left">
@@ -132,10 +134,10 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                                         <select id="<?= 'pcrrisk_' . $side . '_doctor_grade_id' ?>"
                                                 class="pcr_doctor_grade cols-full"
                                                 name="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk[<?= $side ?>_doctor_grade_id]">
-                                            <?php if (is_array($grades)): ?>
-                                                <?php foreach ($grades as $grade): ?>
+                                            <?php if (is_array($grades)) : ?>
+                                                <?php foreach ($grades as $grade) : ?>
                                                     <?php
-                                                    if ($element->{$side . '_doctor_grade_id'} === $grade->id):
+                                                    if ($element->{$side . '_doctor_grade_id'} === $grade->id) :
                                                         $selected = 'selected';
                                                     else :
                                                         $selected = '';
@@ -148,8 +150,7 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                                         </select>
                                     </td>
                                 </div>
-                                <?php
-                                else :
+                                <?php else :
                                     if ($element->{'left_diabetic'} == 'Y' OR $element->{'left_diabetic'} == 'N') {
                                         $element->{'right_diabetic'} = $element->{'left_diabetic'};
                                     } elseif ($element->{'right_diabetic'} == 'Y' OR $element->{'right_diabetic'} == 'N') {
@@ -160,12 +161,12 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
                                     } elseif ($element->{'right_alpha_receptor_blocker'} == 'Y' OR $element->{'right_alpha_receptor_blocker'} == 'N') {
                                         $element->{'left_alpha_receptor_blocker'} = $element->{'right_alpha_receptor_blocker'};
                                     } ?>
-                                <td>
-                                    <?= $element->getAttributeLabel($side . '_' . $key) ?>
-                                </td>
-                                <td>
-                                    <?= CHtml::activeDropDownList($element, $side . '_' . $key, $data['options'], ['class' => $data['class'] . ' cols-full']); ?>
-                                </td>
+                                    <td>
+                                        <?= $element->getAttributeLabel($side . '_' . $key) ?>
+                                    </td>
+                                    <td>
+                                        <?= CHtml::activeDropDownList($element, $side . '_' . $key, $data['options'], ['class' => $data['class'] . ' cols-full']); ?>
+                                    </td>
                                 <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>

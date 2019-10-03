@@ -152,7 +152,7 @@
     onSelect: function(){
       let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
       var tr = $('#report-drug-list').find('tr#' + AutoCompleteResponse.id);
-      if( tr.length === 0 ){
+      if ( tr.length === 0 ){
         $('.no-drugs').hide();
         addItem(AutoCompleteResponse);
       }

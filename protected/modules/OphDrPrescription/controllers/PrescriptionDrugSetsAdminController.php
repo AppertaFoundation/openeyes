@@ -17,7 +17,7 @@
 
 class PrescriptionDrugSetsAdminController extends RefSetAdminController
 {
-	public $group = 'Drugs';
+    public $group = 'Drugs';
 
     public function actionList()
     {
@@ -93,7 +93,7 @@ class PrescriptionDrugSetsAdminController extends RefSetAdminController
     public function actionDelete()
     {
         $ids_to_delete = Yii::app()->request->getPost('MedicationSet')['id'];
-        if(is_array($ids_to_delete)) {
+        if (is_array($ids_to_delete)) {
             foreach ($ids_to_delete as $id) {
                 $model = MedicationSet::model()->findByPk($id);
                 /** @var MedicationSet $model */

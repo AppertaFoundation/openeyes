@@ -48,7 +48,7 @@ class WKHtmlToImage extends WKHtmlToX
         $options = array(),
         $output_html = false
     ) {
-        if(!$output_html) {
+        if (!$output_html) {
             $html = $this->remapAssetPaths($html);
             $html = $this->remapCanvasImagePaths($html);
         }
@@ -65,7 +65,7 @@ class WKHtmlToImage extends WKHtmlToX
             $cmd_str .= ' --width ' . ($options['viewport_width'] ?: $options['width']) . ' --disable-smart-width ';
         }
 
-        if(array_key_exists('quality', $options)) {
+        if (array_key_exists('quality', $options)) {
             $cmd_str .= ' --quality ' . $options['quality'];
         }
 
@@ -83,7 +83,7 @@ class WKHtmlToImage extends WKHtmlToX
             $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
             $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
             // save new re-sized image with the same file name
-            if(file_put_contents($image_file, $imagick->getImage()) === false) {
+            if (file_put_contents($image_file, $imagick->getImage()) === false) {
                 \OELog::log('Cannot write :' . $image_file);
             }
         }
