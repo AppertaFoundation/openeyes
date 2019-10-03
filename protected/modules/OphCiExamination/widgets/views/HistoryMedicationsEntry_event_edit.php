@@ -37,18 +37,19 @@ $to_be_copied = !$entry->originallyStopped && isset($entry->medication) && $entr
 
 $is_posting = Yii::app()->request->getIsPostRequest();
 
-$allergy_ids = implode(",", array_map(function ($e) {
-    return $e->id;
-}, $entry->medication->allergies));
+
+$allergy_ids = !is_null($entry->medication_id) ?
+    implode(",", array_map(function ($e) {
+        return $e->id;
+    }, $entry->medication->allergies)) :
+    [];
+
 ?>
 
 <tr data-key="<?= $row_count ?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
     <?php if (!is_null($entry->medication_id)) :
-        ?>data-allergy-ids="<?php echo implode(",", array_map(function ($e) {
-            return $e->id;
-
-        }, $entry->medication->allergies)); ?>"<?php
+        ?>data-allergy-ids="<?= $allergy_ids ?>"<?php
     endif; ?>
     class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
     <td>
@@ -77,7 +78,10 @@ $allergy_ids = implode(",", array_map(function ($e) {
         <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= !isset($entry->bound_key) && isset($is_template) && $is_template ? "{{bound_key}}" : $entry->bound_key ?>">
     </td>
     <?php if (!empty($entry->errors) || !isset($entry->dose)) {
-        $show_unit = in_array(true, array_map(function ($i) { return strpos($i, 'dose') !== false;}, array_keys($entry->errors)));
+        $show_unit = in_array(true, array_map(function ($i) {
+            return strpos($i, 'dose') !== false;
+
+        }, array_keys($entry->errors)));
     } else {
         $show_unit = $direct_edit;
     }?>
