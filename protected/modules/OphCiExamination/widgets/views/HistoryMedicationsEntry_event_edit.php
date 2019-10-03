@@ -37,16 +37,16 @@ $to_be_copied = !$entry->originallyStopped && isset($entry->medication) && $entr
 
 $is_posting = Yii::app()->request->getIsPostRequest();
 
+$allergy_ids = !is_null($entry->medication_id) ?
+    implode(",", array_map(function ($e) {
+        return $e->id;
+    }, $entry->medication->allergies)) :
+    [];
 ?>
 
 <tr data-key="<?=$row_count?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
-    <?php if (!is_null($entry->medication_id)) :
-        ?>data-allergy-ids="<?php echo implode(",", array_map(function ($e) {
-            return $e->id;
-
-        }, $entry->medication->allergies)); ?>"<?php
-    endif; ?>
+    <?php if (!is_null($entry->medication_id)): ?>data-allergy-ids="<?= $allergy_ids ?>"<?php endif; ?>
     class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
     <td>
