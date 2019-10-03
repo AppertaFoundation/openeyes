@@ -55,7 +55,7 @@ foreach ($ethnic_list as $key=>$item){
     // controller action is handling ajax validation correctly.
     // There is a call to performAjaxValidation() commented in generated controller code.
     // See class documentation of CActiveForm for details on this.
-		'action' => isset($prevUrl) ? Yii::app()->createUrl($prevUrl) : Yii::app()->baseUrl,
+		'action' => isset($prevUrl) ? Yii::app()->createUrl($prevUrl) : null,
     'enableAjaxValidation' => true,
     'htmlOptions' => array('enctype' => 'multipart/form-data'),
 
