@@ -46,7 +46,9 @@ $allergy_ids = !is_null($entry->medication_id) ?
 
 <tr data-key="<?=$row_count?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
-    <?php if (!is_null($entry->medication_id)): ?>data-allergy-ids="<?= $allergy_ids ?>"<?php endif; ?>
+    <?php if (!is_null($entry->medication_id)) :
+        ?>data-allergy-ids="<?= $allergy_ids ?>"<?php
+    endif; ?>
     class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
     <td>
@@ -75,7 +77,10 @@ $allergy_ids = !is_null($entry->medication_id) ?
         <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= !isset($entry->bound_key) && isset($is_template) && $is_template ? "{{bound_key}}" : $entry->bound_key ?>">
     </td>
     <?php if (!empty($entry->errors) || !isset($entry->dose)) {
-        $show_unit = in_array(true, array_map(function ($i) { return strpos($i, 'dose') !== false;}, array_keys($entry->errors)));
+        $show_unit = in_array(true, array_map(function ($i) {
+            return strpos($i, 'dose') !== false;
+
+        }, array_keys($entry->errors)));
     } else {
         $show_unit = $direct_edit;
     }?>
