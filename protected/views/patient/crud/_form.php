@@ -353,7 +353,7 @@ foreach ($ethnic_list as $key=>$item) {
                                     return false;
                     }",
                         'response' => 'js:function(event, ui){
-                        if(ui.content.length === 0){
+                        if (ui.content.length === 0){
                             $("#no_gp_result").show();
                         } else {
                             $("#no_gp_result").hide();

@@ -124,13 +124,13 @@ class MenuHelper
              * in order to be displayed
              */
 
-            if(isset($menu_item['requires_setting']))
+            if (isset($menu_item['requires_setting']))
             {
                 $setting_key = $menu_item['requires_setting']['setting_key'];
                 $required_value = $menu_item['requires_setting']['required_value'];
 
                 $element_enabled = Yii::app()->params[$setting_key];
-                if(isset($element_enabled) && $element_enabled != $required_value)
+                if (isset($element_enabled) && $element_enabled != $required_value)
                 {
                     continue;
                 }
@@ -153,7 +153,7 @@ class MenuHelper
         }
 
         usort($menu, function ($a, $b) {
-            if($a['position'] == $b['position']){
+            if ($a['position'] == $b['position']){
                 return strcasecmp($a['title'], $b['title']);
             }
             return $a['position'] - $b['position'];

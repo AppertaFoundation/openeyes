@@ -3,7 +3,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2018
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,11 +12,13 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2018, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\models;
+
+use PrescriptionCreator;
 
 /**
  * This is the model class for table "et_ophciexamination_medicationmanagement".
@@ -113,10 +115,10 @@ class MedicationManagement extends BaseMedicationElement
     {
         $event_date = $this->event->event_date;
 
-        return array_filter($this->visible_entries, function ($e) use ($event_date) {
+        return array_filter($this->visible_entries, function($e) use($event_date) {
             return ($e->start_date < $event_date &&
-                            (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
-                        );
+                (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
+            );
         });
     }
 
@@ -128,7 +130,7 @@ class MedicationManagement extends BaseMedicationElement
     {
         $event_date = $this->event->event_date;
         $event_date_YYYYMMDD = substr($event_date, 0, 4).substr($event_date, 5, 2).substr($event_date, 8, 2);
-        return array_filter($this->visible_entries, function ($e) use ($event_date_YYYYMMDD) {
+        return array_filter($this->visible_entries, function($e) use($event_date_YYYYMMDD){
             return ($e->start_date == $event_date_YYYYMMDD && is_null($e->end_date));
         });
     }
@@ -151,7 +153,7 @@ class MedicationManagement extends BaseMedicationElement
     public function getEntriesStoppedToday()
     {
         $event_date = $this->event->event_date;
-        return array_filter($this->visible_entries, function ($e) use ($event_date) {
+        return array_filter($this->visible_entries, function($e) use($event_date){
             return ($e->end_date == $event_date);
         });
     }
@@ -164,25 +166,16 @@ class MedicationManagement extends BaseMedicationElement
     {
         $property = $visible_only ? "visible_entries" : "entries";
 
-        return array_filter($this->$property, function ($e) {
+        return array_filter($this->$property, function($e){
             return $e->prescribe == 1;
         });
     }
 
     public function getOtherEntries()
     {
-        $continued = array_map(function ($e) {
-            return $e->id;
-
-        }, $this->getContinuedEntries());
-        $stopped = array_map(function ($e) {
-            return $e->id;
-
-        }, $this->getStoppedEntries());
-        $prescribed = array_map(function ($e) {
-            return $e->id;
-
-        }, $this->getPrescribedEntries());
+        $continued = array_map(function($e){ return $e->id; }, $this->getContinuedEntries());
+        $stopped = array_map(function($e){ return $e->id; }, $this->getStoppedEntries());
+        $prescribed = array_map(function($e){ return $e->id; }, $this->getPrescribedEntries());
         $exclude = array_merge($continued, $stopped, $prescribed);
         $other = array();
         foreach ($this->visible_entries as $entry) {
@@ -230,7 +223,6 @@ class MedicationManagement extends BaseMedicationElement
         $class = self::$entry_class;
 
         foreach ($this->entries as $entry) {
-            /** @var MedicationManagementEntry $entry */
             $entry->event_id = $this->event->id;
 
             /* Why do I have to do this? */
@@ -288,7 +280,7 @@ class MedicationManagement extends BaseMedicationElement
             // prescription exists
 
             /** @var \Element_OphDrPrescription_Details $prescription */
-            $prescription =$this->prescription;
+            $prescription = $this->prescription;
             $changed = false;
 
             /* items to update or remove */
@@ -337,7 +329,6 @@ class MedicationManagement extends BaseMedicationElement
                         'frequency_id' => $entry->frequency_id,
                         'duration' => $entry->duration,
                         'dose' => $entry->dose,
-                        'dose_unit_term' => $entry->dose_unit_term,
                         'start_date' => $entry->start_date,
                         'dispense_location_id' => $entry->dispense_location_id,
                         'dispense_condition_id' => $entry->dispense_condition_id
@@ -386,61 +377,37 @@ class MedicationManagement extends BaseMedicationElement
 
     private function generatePrescriptionEvent()
     {
-        $prescription = new \Event();
-        $prescription->episode_id = $this->event->episode_id;
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition("class_name = :class_name");
-        $criteria->params['class_name'] = 'OphDrPrescription';
-        $prescription_event_type = \EventType::model()->findAll($criteria);
-        $prescription->event_type_id = $prescription_event_type[0]->id;
-        $prescription->event_date = $this->event->event_date;
-        if (!$prescription->save()) {
-            \Yii::trace(print_r($prescription->errors, true));
-        }
-        $prescription_details = $this->getPrescriptionDetails();
-        $prescription_details->event_id = $prescription->id;
-        $prescription_details->draft = 0;
+        $prescription_creator = new PrescriptionCreator($this->event->episode);
+        $prescription_creator->patient = $this->event->episode->patient;
 
-        if (!$prescription_details->save(false)) {
-            \Yii::trace(print_r($prescription_details->errors, true));
-            throw new \Exception("An error occured during saving");
-        }
-        foreach ($prescription_details->items as $item) {
-            $item->event_id = $prescription->id;
-                        $item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
-            if (!$item->save(false)) {
-                \Yii::trace(print_r($item->errors, true));
-                throw new \Exception("An error occured during saving");
-            }
-
-            $item->id = \Yii::app()->db->getLastInsertId();
-            $item->saveTapers();
-
-            $original_item_id = $item->original_item_id;
-            \Yii::app()->db->createCommand("UPDATE ".MedicationManagementEntry::model()->tableName().
-                                            " set prescription_item_id = :p_item_id WHERE id = :orig_item_id")
-                ->bindValues(array(":p_item_id" => $item->id, ":orig_item_id" => $original_item_id))->execute();
-        }
-
-        $this->prescription_id = $prescription_details->id;
-        \Yii::app()->db->createCommand("UPDATE ".$this->tableName()." SET prescription_id=".$this->prescription_id." WHERE id=".$this->id)->execute();
-    }
-
-    private function getPrescriptionDetails()
-    {
         $entries = $this->entries_to_prescribe;
-        if (is_null($this->prescription_details)) {
-            $prescription_details = new \Element_OphDrPrescription_Details();
-            $prescription_items = array();
-            foreach ($entries as $entry) {
-                $prescription_item = $this->getPrescriptionItem($entry);
-                $prescription_item->original_item_id = $entry->id;
-                $prescription_items[] = $prescription_item;
-            }
-            $prescription_details->items = $prescription_items;
-            $this->prescription_details = $prescription_details;
+        foreach ($entries as $entry) {
+            $item = $this->getPrescriptionItem($entry);
+            $item->original_item_id = $entry->id;
+            $item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
+
+            $prescription_creator->additem($item);
         }
-        return $this->prescription_details;
+
+        $prescription_creator->elements['Element_OphDrPrescription_Details']->draft = 1;
+
+        $prescription_creator->save();
+
+        if (!$prescription_creator->hasErrors()) {
+            \Yii::trace(print_r($prescription_creator->getErrors(), true));
+        }
+
+        foreach ($prescription_creator->elements['Element_OphDrPrescription_Details']->items as $item) {
+            $class = self::$entry_class;
+            $entry = $class::model()->findBypk($item->id);
+            $entry->prescription_item_id = $item->original_item_id;
+            $entry->save();
+        }
+
+        $this->prescription_id = $prescription_creator->elements['Element_OphDrPrescription_Details']->id;
+        // updte only prescription_id - no validation here
+        $this->update(['prescription_id']);
+
     }
 
     private function getPrescriptionItem(\EventMedicationUse $entry)
