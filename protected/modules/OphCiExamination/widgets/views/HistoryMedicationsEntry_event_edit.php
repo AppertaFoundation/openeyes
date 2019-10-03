@@ -43,7 +43,7 @@ $allergy_ids = implode(",", array_map(function ($e) {
 ?>
 
 <tr
-    class="divider col-gap js-first-row <?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>"
+    class="divider col-gap js-first-row <?= $stopped ? 'fade' : ''?> <?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>"
     data-key="<?= $row_count ?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
     <?php if (!is_null($entry->medication_id)) :
@@ -165,7 +165,7 @@ $allergy_ids = implode(",", array_map(function ($e) {
         <?php } ?>
     </td>
 </tr>
-<tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row">
+<tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row <?= $stopped ? 'fade' : ''?>">
     <td class="nowrap">
         <div class="flex-meds-inputs">
                 <span id="<?= $model_name . "_entries_" . $row_count . "_start_date_error" ?>">
