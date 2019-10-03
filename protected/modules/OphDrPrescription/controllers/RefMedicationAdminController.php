@@ -79,35 +79,31 @@ class RefMedicationAdminController extends BaseAdminController
         $this->_getEditAdmin($model)->editModel();
     }
 
-    protected function _getEditAdmin(Medication $model)
-    {
-        $admin = new Admin($model, $this);
-
-        $admin->setEditFields($this->_getEditFields($model));
-
-        $admin->setModelDisplayName("Medication");
-        $admin->setCustomSaveURL('/OphDrPrescription/' . $this->id . '/save/' . $model->id);
-
-        return $admin;
-    }
-
     protected function _getEditFields($model)
     {
         return array(
-            'preferred_term' => 'Preferred term',
-            'short_term' => 'Short term',
-            'preferred_code' => 'Preferred code',
+            'preferred_term'=>'Preferred term',
+            'short_term'=>'Short term',
+            'preferred_code'=>'Preferred code',
             'source_type' => array(
                 'widget' => 'DropDownList',
                 'options' => $this->_getSourceTypes(),
-                'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+                'htmlOptions' => array(
+                    'empty' => '-- None --',
+                    'class' => 'cols-full disabled',
+                    'disabled' => 'disabled',
+                ),
                 'hidden' => false,
                 'layoutColumns' => array()
             ),
-            'source_subtype' => array(
+            'source_subtype'=> array(
                 'widget' => 'DropDownList',
                 'options' => $this->_getSourceSubtypes(),
-                'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+                'htmlOptions' => array(
+                    'empty' => '-- None --',
+                    'class' => 'cols-full disabled',
+                    'disabled' => 'disabled',
+                ),
                 'hidden' => false,
                 'layoutColumns' => array()
             ),
@@ -146,7 +142,7 @@ class RefMedicationAdminController extends BaseAdminController
                     'medication' => $model
                 )
             ),
-            'alternative_terms' => array(
+            'alternative_terms' =>  array(
                 'widget' => 'CustomView',
                 'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_alternative_terms',
                 'viewArguments' => array(
@@ -154,6 +150,18 @@ class RefMedicationAdminController extends BaseAdminController
                 )
             ),
         );
+    }
+
+    protected function _getEditAdmin(Medication $model)
+    {
+        $admin = new Admin($model, $this);
+
+        $admin->setEditFields($this->_getEditFields($model));
+
+        $admin->setModelDisplayName("Medication");
+        $admin->setCustomSaveURL('/OphDrPrescription/' . $this->id . '/save/' . $model->id);
+
+        return $admin;
     }
 
     protected function _getSourceTypes()
@@ -185,48 +193,25 @@ class RefMedicationAdminController extends BaseAdminController
                 throw new CHttpException(404);
             }
         }
+
+        /** @var CDbTransaction $trans */
+        $transaction = Yii::app()->db->beginTransaction();
+
         /** @var Medication $model */
 
         $data = Yii::app()->request->getPost('Medication');
         $this->_setModelData($model, $data);
 
-        if ($model->hasErrors()) {
+        if ($model->save()) {
+            $transaction->commit();
+        } else {
+            $transaction->rollback();
             $admin = $this->_getEditAdmin($model);
-            $this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors()));
+            $this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors() ));
             exit;
         }
 
-        /** @var CDbTransaction $trans */
-        $trans = Yii::app()->db->beginTransaction();
-
-
-        if ($model->save(false)) {
-            $trans->commit();
-        }
-
-        foreach ($model->medicationSetItems as $item) {
-            // If the set is an automatic set, then the rule will be updated to include the drug
-            $medicationSet = MedicationSet::model()->findByPk($item->medication_set_id);
-
-            /** @var MedicationSet $medicationSet */
-            if ($medicationSet->automatic) {
-                $has_medication_in_list = false;
-                foreach ($medicationSet->medicationSetAutoRuleMedications as $m) {
-                    if ($m->medication_id == $item->medication_id) {
-                        $has_medication_in_list = true;
-                    }
-                }
-
-                if (!$has_medication_in_list) {
-                    $assignment = new MedicationSetAutoRuleMedication();
-                    $assignment->medication_id = $item->medication_id;
-                    $assignment->medication_set_id = $medicationSet->id;
-                    $assignment->save();
-                }
-            }
-        }
-
-        $this->redirect('/' . $this->getModule()->id . '/' . $this->id . '/list');
+        $this->redirect('/'.$this->getModule()->id.'/'.$this->id.'/list');
 
     }
 
@@ -238,51 +223,30 @@ class RefMedicationAdminController extends BaseAdminController
             $model->source_type = $this->source_type;
         }
 
-        $model->validate();
-
         $alt_terms = array();
         if (array_key_exists('medicationSearchIndexes', $data)) {
             foreach ($data['medicationSearchIndexes']['id'] as $key => $rid) {
-                if ($rid == -1) {
-                    $alt_term = new MedicationSearchIndex();
-                } else {
-                    $alt_term = MedicationSearchIndex::model()->findByPk($rid);
-                }
-
-                $alt_term->setAttributes(array(
-                    'medication_id' => $model->id,
-                    'alternative_term' => $data['medicationSearchIndexes']['alternative_term'][$key],
-                ));
-
-                if (!$alt_term->validate()) {
-                    $model->addErrors($alt_term->getErrors());
-                }
-
-                $alt_terms[] = $alt_term;
+                $alt_terms[] = [ 'alternative_term' => $data['medicationSearchIndexes']['alternative_term'][$key] ];
             }
         }
-        $model->medicationSearchIndexes = $alt_terms;
 
-        // ensure that preferred_term exists as alternative term
-
+      // ensure that preferred_term exists as alternative term
         $pref_term_exists = false;
-        foreach ($model->medicationSearchIndexes as $si) {
-            if ($si->alternative_term == $model->preferred_term) {
+        foreach ($alt_terms as $si) {
+            if ($si['alternative_term'] == $model->preferred_term) {
                 $pref_term_exists = true;
+                break;
             }
         }
 
         if (!$pref_term_exists) {
-            $alt_term = new MedicationSearchIndex();
-            $alt_term->setAttributes(array(
-                'medication_id' => $model->id,
-                'alternative_term' => $model->preferred_term,
-            ));
-            $model->medicationSearchIndexes = array_merge($model->medicationSearchIndexes, [$alt_term]);
+            $alt_terms[] = [ 'alternative_term' => $model->preferred_term ];
         }
 
-        // update attribute assignments
+        $model->medicationSearchIndexes = $alt_terms;
 
+
+      // update attribute assignments
         $attr_assignments = [];
         if (array_key_exists('medicationAttributeAssignment', $data)) {
             foreach ($data['medicationAttributeAssignment']['id'] as $key => $assignment_id) {
@@ -295,43 +259,26 @@ class RefMedicationAdminController extends BaseAdminController
                     $assignment->medication_attribute_option_id = $data['medicationAttributeAssignment']['medication_attribute_option_id'][$key];
                 }
                 $attr_assignments[] = $assignment;
-
-                if (!$assignment->validate()) {
-                    $model->addErrors($assignment->getErrors());
-                }
             }
         }
         $model->medicationAttributeAssignments = $attr_assignments;
 
-        // update set memberships
+
+      // update set memberships
         $medicationSetItems = array();
         if (array_key_exists('medicationSetItems', $data)) {
-            foreach ($data['medicationSetItems']['id'] as $key => $medicationSetItem_id) {
-                $attributes = array();
-
-                foreach (MedicationSetItem::model()->attributeNames() as $attr_name) {
-                    if (array_key_exists($attr_name, $data['medicationSetItems'])) {
-                        $attributes[$attr_name] = array_key_exists($key, $data['medicationSetItems'][$attr_name]) ? $data['medicationSetItems'][$attr_name][$key] : null;
+            foreach ($data['medicationSetItems'] as $attribute_key => $attribute_values) {
+                if ($attribute_key != 'id') {
+                    foreach ($attribute_values as $attribute_id => $attribute_value) {
+                        if (!array_key_exists($attribute_id, $medicationSetItems)) {
+                            $medicationSetItems[$attribute_id] = [];
+                        }
+                        $medicationSetItems[$attribute_id][$attribute_key] = $attribute_value;
                     }
                 }
-
-                if ($medicationSetItem_id == -1) {
-                    $medicationSetItem = new MedicationSetItem();
-                } else {
-                    $medicationSetItem = MedicationSetItem::model()->findByPk($medicationSetItem_id);
-                }
-
-                $medicationSetItem->setAttributes($attributes);
-                $medicationSetItem->medication_id = $model->id;
-
-                if (!$medicationSetItem->validate(array('medication_set_id', 'default_form_id', 'default_route_id', 'default_frequency_id', 'default_duration_id'))) {
-                    $model->addErrors($medicationSetItem->getErrors());
-                }
-
-                $medicationSetItems[] = $medicationSetItem;
             }
         }
-
+      
         $model->medicationSetItems = $medicationSetItems;
     }
 
