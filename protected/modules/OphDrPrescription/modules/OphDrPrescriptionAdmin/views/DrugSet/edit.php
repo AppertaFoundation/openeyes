@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    <?= $this->renderPartial('_usage_rules', ['medication_set' => $medication_set]); ?>
+    <?= $this->renderPartial('/DrugSet/_usage_rules', ['medication_set' => $medication_set]); ?>
 
 <?=\CHtml::submitButton(
     'Save',
