@@ -51,6 +51,9 @@ $deceased = $this->patient->isDeceased();
                 <?php echo $this->patient->isDeleted() ? "(Deleted)" : ''; ?>
             </span>
         </a>
+                <?php if ($trialContext) {
+                    echo $trialContext->renderPatientCurrentTrialStatus();
+                } ?>
     </div>
 
     <div class="flex-layout">
