@@ -67,7 +67,7 @@ var analytics_drill_down = (function () {
 	var prev_leavel_name = '';
 
 	function processDrillDownListTitle(data, specialty, selected_cataract){
-		var list_title = 'Patient List';
+		var list_title = 'Patient List -';
 		var additional_info = '';
 		var patient_total = data.customdata.length;
 		var patient_str = patient_total > 1 ? 'patients are at ' : 'patient is at ';
@@ -89,11 +89,9 @@ var analytics_drill_down = (function () {
 							var further_drill = !Array.isArray(data.customdata);
 							var diagnoses_item = data.yaxis.ticktext[data.y];
 							if(further_drill){
-								// in case there are more further drill downs
-								prev_leavel_name = '';
 								prev_leavel_name = diagnoses_item;
 							}
-							var str_ending =  prev_leavel_name ? prev_leavel_name : data.data['name'];
+							var str_ending =  data.data['name'] ? data.data['name'] : prev_leavel_name;
 							additional_info = patient_total + ' ' + patient_str + diagnoses_item + ' for ' + str_ending;
 							break;
 						case 'Change in vision':
@@ -197,7 +195,6 @@ var analytics_drill_down = (function () {
 			start = 0;
 			
 			analytics_toolbox.hideDrillDownShowChart();
-			prev_leavel_name = '';
 		})
 
 	}
