@@ -81,12 +81,16 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 
             <?php /* <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" /> */ ?>
             <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
-            <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]" value="<?= $is_new ? "{{medication_id}}" : $entry->medication_id ?>" />
-            <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" class="medication-name" />
-            <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
+            <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]"
+                   value="<?= $is_new ? "{{medication_id}}" : $entry->medication_id ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[medication_name]"
+                   value="<?= $entry->getMedicationDisplay() ?>" class="medication-name"/>
+            <input type="hidden" name="<?= $field_prefix ?>[usage_type]"
+                   value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[hidden]" class="js-hidden" value="<?=$entry->hidden ?>" />
-            <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
+            <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]"
+                   value="<?= $entry->prescription_item_id ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[locked]" value="<?= $locked ?>" class="js-locked" />
         </td>
         <td class="dose-frequency-route">
@@ -135,8 +139,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 <?php
 
 if (!empty($entry->tapers)) {
-    $tcount = 0;
-    foreach ($entry->tapers as $taper) {
+    foreach ($entry->tapers as $tcount => $taper) {
         $this->render(
             "MedicationManagementEntryTaper_event_edit_read_only",
             array(
@@ -147,8 +150,6 @@ if (!empty($entry->tapers)) {
                 "field_prefix" => $model_name."[entries][$row_count][taper][$tcount]"
             )
         );
-        $tcount++;
     }
 }
-
 ?>

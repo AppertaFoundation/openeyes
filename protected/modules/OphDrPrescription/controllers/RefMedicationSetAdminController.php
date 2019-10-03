@@ -73,7 +73,7 @@ class RefMedicationSetAdminController extends BaseAdminController
             'medication_set_id' => 'hidden'
         ));
         $admin->setModelDisplayName("medication to set '{$medSet->name}'");
-        if($id) {
+        if ($id) {
             $admin->setModelId($id);
         }
 
@@ -83,7 +83,7 @@ class RefMedicationSetAdminController extends BaseAdminController
     public function actionDelete()
     {
         $ids_to_delete = Yii::app()->request->getPost('MedicationSetItem')['id'];
-        if(is_array($ids_to_delete)) {
+        if (is_array($ids_to_delete)) {
             foreach ($ids_to_delete as $id) {
                 $model = MedicationSetItem::model()->findByPk($id);
                 $model->delete();

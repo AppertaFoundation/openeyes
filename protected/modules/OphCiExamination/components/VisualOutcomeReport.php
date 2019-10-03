@@ -144,7 +144,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
                 OR post_acuity.eye_id = 3)'
             )->join($table.' pre_reading',
                 'pre_acuity.id = pre_reading.element_id
-                AND IF(op_procedure.eye_id = 1, pre_reading.side = 1, IF(op_procedure.eye_id = 2,
+                AND if (op_procedure.eye_id = 1, pre_reading.side = 1, if (op_procedure.eye_id = 2,
                                                                            pre_reading.side = 0,
                                                                            pre_reading.side IS NOT NULL))'
             )->join($table.' post_reading', 'post_acuity.id = post_reading.element_id

@@ -61,7 +61,7 @@
         });
 
         const worklist_selected = $.cookie("worklist_selected");
-        if(worklist_selected){
+        if (worklist_selected){
             updateWorkLists(worklist_selected);
             $('.js-worklist-filter').filter('[data-worklist="'+worklist_selected+'"]').addClass('selected');
         }

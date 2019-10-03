@@ -135,15 +135,15 @@ $key = 0;
          ],
         onReturn: function (adderDialog, selectedItems) {
           var tableSelector = $('.<?= $eye_side ?>-eye .near-va-readings');
-          if(selectedItems.length==2){
+          if (selectedItems.length==2){
             var selected_data = {};
             for (i in selectedItems) {
-              if(selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
+              if (selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
                 selected_data.reading_value = selectedItems[i]['id'];
                 selected_data.reading_display = selectedItems[i]['label'];
                 selected_data.tooltip =  <?= CJSON::encode($val_options)?>[selectedItems[i]['id']]['data-tooltip']
               }
-              if(selectedItems[i]['itemSet'].options['id'] == 'method'){
+              if (selectedItems[i]['itemSet'].options['id'] == 'method'){
                 selected_data.method_id = selectedItems[i]['id'];
                 selected_data.method_display = selectedItems[i]['label'];
               }

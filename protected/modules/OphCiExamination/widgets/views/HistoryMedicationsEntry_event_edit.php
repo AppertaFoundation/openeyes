@@ -37,6 +37,9 @@ $to_be_copied = !$entry->originallyStopped && isset($entry->medication) && $entr
 
 $is_posting = Yii::app()->request->getIsPostRequest();
 
+$allergy_ids = implode(",", array_map(function ($e) {
+    return $e->id;
+}, $entry->medication->allergies));
 ?>
 
 <tr
