@@ -116,18 +116,6 @@ class TrialPatient extends BaseActiveRecordVersioned
         return TrialPatient::model()->find($criteria);
     }
 
-    public function getPatientTrialStatus($patient_id, $trial_id)
-    {
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition('trial_id = :trialId');
-        $criteria->addCondition('patient_id = :patientId');
-        $criteria->params[':trialId'] = $trial_id;
-        $criteria->params[':patientId'] = $patient_id;
-
-        $result = TrialPatient::model()->find($criteria);
-        return $result->status_id;
-    }
-
     /**
      * @return string the associated database table name
      */

@@ -52,11 +52,6 @@ class TrialContext extends CWidget
         return null !== TrialPatient::getTrialPatient($this->patient, $this->trial->id);
     }
 
-    public function getPatientTrialStatusId($patient_id, $trial_id){
-        $trial_patient = new TrialPatient();
-        return $trial_patient->getPatientTrialStatus($patient_id, $trial_id);
-    }
-
     /***
      * @param array|null $data array containing patient and trail
      * @throws CException When either trial or patient remained unset
