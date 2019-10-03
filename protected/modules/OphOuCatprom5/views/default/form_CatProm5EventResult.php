@@ -11,7 +11,7 @@ $name_stub = CHtml::modelName($element) . '[catProm5AnswerResults]';
     <!-- Add a element remove flag which is used when saving data -->
     <input type="hidden" name="[element_removed]CatProm5EventResult" value="0">
     <!-- Element title -->
-    <h3 class="element-title">Questionare Score</h3>
+    <h3 class="element-title">Questionnaire Score</h3>
   </header>
   <!-- Additional element title information -->
   <!-- Element actions -->

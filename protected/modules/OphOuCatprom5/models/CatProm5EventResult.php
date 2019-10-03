@@ -1,7 +1,4 @@
 <?php
-
-use MongoDB\Driver\Query;
-
 /**
  * This is the model class for table "cat_prom5_event_result".
  *

@@ -31,7 +31,7 @@ class CatProm5Answers extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('id, question_id, answer, score', 'required'),
+            array('question_id, answer, score', 'required'),
             array('id, question_id, answer, score', 'safe', 'on'=>'search'),
         );
     }
