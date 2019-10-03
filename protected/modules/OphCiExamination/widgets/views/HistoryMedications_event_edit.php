@@ -69,7 +69,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                         'stop_reason_options' => $stop_reason_options,
                         'usage_type' => 'OphCiExamination',
                         'patient' => $this->patient,
-												'stopped' => false,
+                                                'stopped' => false,
                     )
                 );
             } else {
@@ -93,7 +93,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                         'is_new' => $entry->getIsNewRecord(),
                         'patient' => $this->patient,
                         'unit_options' => $unit_options,
-												'stopped' => false,
+                                                'stopped' => false,
                     )
                 );
             }
@@ -101,71 +101,71 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
         ?>
         </tbody>
     </table>
-		<div class="collapse-data" style="<?php echo !sizeof($element->closed_entries)?  'display:none': ''; ?>">
-			<div class="collapse-data-header-icon expand">
-				Stopped Medications <small>(<?=count($element->closed_entries);?>)</small>
-			</div>
-			<div class="collapse-data-content" style="display: none;">
+        <div class="collapse-data" style="<?php echo !sizeof($element->closed_entries)?  'display:none': ''; ?>">
+            <div class="collapse-data-header-icon expand">
+                Stopped Medications <small>(<?=count($element->closed_entries);?>)</small>
+            </div>
+            <div class="collapse-data-content" style="display: none;">
 
-				<table class="medications js-entry-table" >
-					<colgroup>
-						<col class="cols-2">
-						<col class="cols-6">
-						<col class="cols-3">
-						<col class="cols-icon" span="2">
-					</colgroup>
+                <table class="medications js-entry-table" >
+                    <colgroup>
+                        <col class="cols-2">
+                        <col class="cols-6">
+                        <col class="cols-3">
+                        <col class="cols-icon" span="2">
+                    </colgroup>
 
-					<tbody>
-					<?php
-					foreach ($element->closed_entries as $entry) {
-						if ($entry->prescription_item_id) {
-							$this->render(
-								'HistoryMedicationsEntry_prescription_event_edit',
-								array(
-									'entry' => $entry,
-									'form' => $form,
-									'model_name' => $model_name,
-									'field_prefix' => $model_name . '[entries][' . $row_count . ']',
-									'row_count' => $row_count,
-									'stop_reason_options' => $stop_reason_options,
-									'usage_type' => 'OphCiExamination',
-									'patient' => $this->patient,
-									'stopped' => true,
-								)
-							);
-						} else {
-							$this->render(
-								'HistoryMedicationsEntry_event_edit',
-								array(
-									'entry' => $entry,
-									'form' => $form,
-									'model_name' => $model_name,
-									'field_prefix' => $model_name . '[entries][' . $row_count . ']',
-									'row_count' => $row_count,
-									'stop_reason_options' => $stop_reason_options,
-									'laterality_options' => $laterality_options,
-									'route_options' => $route_options,
-									'frequency_options' => $frequency_options,
-									'removable' => true,
-									'direct_edit' => false,
-									'usage_type' => 'OphCiExamination',
-									'row_type' => '',
-									'is_last' => ($row_count == $total_count - 1),
-									'is_new' => $entry->getIsNewRecord(),
-									'patient' => $this->patient,
-									'unit_options' => $unit_options,
-									'stopped' => true,
-								)
-							);
-						}
-						$row_count++;
-					}
-					?>
-					</tbody>
-				</table>
+                    <tbody>
+                    <?php
+                    foreach ($element->closed_entries as $entry) {
+                        if ($entry->prescription_item_id) {
+                            $this->render(
+                                'HistoryMedicationsEntry_prescription_event_edit',
+                                array(
+                                    'entry' => $entry,
+                                    'form' => $form,
+                                    'model_name' => $model_name,
+                                    'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                                    'row_count' => $row_count,
+                                    'stop_reason_options' => $stop_reason_options,
+                                    'usage_type' => 'OphCiExamination',
+                                    'patient' => $this->patient,
+                                    'stopped' => true,
+                                )
+                            );
+                        } else {
+                            $this->render(
+                                'HistoryMedicationsEntry_event_edit',
+                                array(
+                                    'entry' => $entry,
+                                    'form' => $form,
+                                    'model_name' => $model_name,
+                                    'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                                    'row_count' => $row_count,
+                                    'stop_reason_options' => $stop_reason_options,
+                                    'laterality_options' => $laterality_options,
+                                    'route_options' => $route_options,
+                                    'frequency_options' => $frequency_options,
+                                    'removable' => true,
+                                    'direct_edit' => false,
+                                    'usage_type' => 'OphCiExamination',
+                                    'row_type' => '',
+                                    'is_last' => ($row_count == $total_count - 1),
+                                    'is_new' => $entry->getIsNewRecord(),
+                                    'patient' => $this->patient,
+                                    'unit_options' => $unit_options,
+                                    'stopped' => true,
+                                )
+                            );
+                        }
+                        $row_count++;
+                    }
+                    ?>
+                    </tbody>
+                </table>
 
-			</div>
-		</div>
+            </div>
+        </div>
   </div>
   <div class="flex-layout flex-right">
     <div class="add-data-actions flex-item-bottom" id="medication-history-popup">
@@ -198,7 +198,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                 'patient' => $this->patient,
                                 'unit_options' => $unit_options,
                                 'is_template' => true,
-							'stopped' => false,
+                            'stopped' => false,
             )
         );
         ?>
