@@ -179,7 +179,7 @@ class ODTTemplateManager
        
         foreach ($nodes as $node) {
             foreach ($data as $key => $value){
-                if(strpos($node->nodeValue, '${'.$key.'}') !== false){
+                if (strpos($node->nodeValue, '${'.$key.'}') !== false){
                 	$this->createSingleOrMultilineTextNode($value);
                 }    
             }

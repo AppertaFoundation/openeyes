@@ -519,11 +519,11 @@ class OEMigration extends CDbMigration
                 );
 
             $element_type = Yii::app()->db->schema->getTable('element_type');
-            if(isset($element_type->columns['element_group_id'])) {
+            if (isset($element_type->columns['element_group_id'])) {
                 //this is needed to se the parent id for those elements set as children elements of another element type
                 $thisGroupId = isset($element_type_data['element_group_id']) ? $element_type_data['element_group_id'] : null;
                 $to_insert['element_group_id'] = $thisGroupId;
-            } else if(isset($element_type->columns['parent_element_type_id'])) {
+            } else if (isset($element_type->columns['parent_element_type_id'])) {
                 $thisParentId = isset($element_type_data['parent_element_type_id']) ? $this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']) : null;
                 $to_insert['parent_element_type_id'] = $thisParentId;
             }
@@ -727,7 +727,7 @@ class OEMigration extends CDbMigration
             echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
         }
 
-        if(!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('id = :id',array(':id' => $event_type_id))->queryScalar()){
+        if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('id = :id',array(':id' => $event_type_id))->queryScalar()){
             $event_type_id = NULL;
         }
 

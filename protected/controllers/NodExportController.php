@@ -2214,7 +2214,7 @@ UNION
 SELECT
   op.oe_event_id AS OperationId
 , CASE WHEN proc_list.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
-, IF(element_type.name = 'Trabeculectomy', 25, 23)  AS CoPathologyId
+, if (element_type.name = 'Trabeculectomy', 25, 23)  AS CoPathologyId
 , NULL
 , NULL
 FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
@@ -2233,7 +2233,7 @@ UNION
 SELECT
   op.oe_event_id AS OperationId
 , CASE WHEN proc_list.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
-, IF(element_type.name = 'Trabeculectomy', 25, 23)  AS CoPathologyId
+, if (element_type.name = 'Trabeculectomy', 25, 23)  AS CoPathologyId
 , NULL
 , NULL
 FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
@@ -2391,7 +2391,7 @@ EOL;
             SELECT 
                   ct.oe_event_id
                 , ct.TreatmentId
-                , IF(
+                , if (
                 IFNULL(
                   /* Correlated SCALAR subquery to get EYE NAME from cateract management for clostest event(exam) to event(opnote) within episode_id */
                   /* This will return EYE NAME or null */
@@ -2422,10 +2422,10 @@ EOL;
                 , 0
                 ) AS IsFirstEye
               , '' AS PreparationDrugId
-              , IF(
+              , if (
                   oci.name = 'Limbal'
                 , 5
-                , IF(
+                , if (
                     oci.name = 'Scleral'
                   , 8
                   , 4
@@ -2434,13 +2434,13 @@ EOL;
               , oc.length AS IncisionLengthId
               , 4 AS IncisionPlanesId /* TODO what was #unkown about in original implementation */
               , oc.meridian AS IncisionMeridean
-              , IF(
+              , if (
                   oc.pupil_size = 'Small'
                 , 1
-                , IF(
+                , if (
                     oc.pupil_size = 'Medium'
                     , 2
-                    , IF(
+                    , if (
                         oc.pupil_size = 'Large'
                       , 3
                       , NULL
@@ -2925,7 +2925,7 @@ EOL;
                 , co.OperationId
                 , 'L' AS Eye
                 , IFNULL(rcoct.code, onccs.id) AS ComplicationTypeId
-                , IF(rcoct.code IS NULL, onccs.name, rcoct.name) as ComplicationTypeDescription
+                , if (rcoct.code IS NULL, onccs.name, rcoct.name) as ComplicationTypeDescription
                 #, onccs.name AS ComplicationTypeDescription
                 
                 /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
@@ -2962,7 +2962,7 @@ EOL;
                 , co.OperationId
                 , 'R' AS Eye
                 , IFNULL(rcoct.code, onccs.id) AS ComplicationTypeId
-                , IF(rcoct.code IS NULL, onccs.name, rcoct.name) as ComplicationTypeDescription
+                , if (rcoct.code IS NULL, onccs.name, rcoct.name) as ComplicationTypeDescription
                 #, onccs.name AS ComplicationTypeDescription
                 
                 /* Restriction: Start with OPERATIONS (processed previously), seeded from control events */
@@ -3189,10 +3189,10 @@ FROM
     v.oe_event_id
   , v.orginal_unit_id
   , v.eye
-  , MAX(IF(v.method IN ('Unaided','Aided','Pinhole'), v.reading_base_value, NULL)) AS max_all_base_value /* Higher base_value is better */
-  , MAX(IF(v.method = 'Unaided', v.reading_base_value, NULL)) AS max_unaided_base_value /* Higher base_value is better */
-  , MAX(IF(v.method = 'Aided', v.reading_base_value, NULL)) AS max_aided_base_value /* Higher base_value is better */
-  , MAX(IF(v.method = 'Pinhole', v.reading_base_value, NULL)) AS max_pinhole_base_value /* Higher base_value is better */
+  , MAX(if (v.method IN ('Unaided','Aided','Pinhole'), v.reading_base_value, NULL)) AS max_all_base_value /* Higher base_value is better */
+  , MAX(if (v.method = 'Unaided', v.reading_base_value, NULL)) AS max_unaided_base_value /* Higher base_value is better */
+  , MAX(if (v.method = 'Aided', v.reading_base_value, NULL)) AS max_aided_base_value /* Higher base_value is better */
+  , MAX(if (v.method = 'Pinhole', v.reading_base_value, NULL)) AS max_pinhole_base_value /* Higher base_value is better */
   , v.logmar_single_letter_unit_id
   FROM (
     SELECT 

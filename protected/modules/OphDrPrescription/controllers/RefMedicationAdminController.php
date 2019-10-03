@@ -25,12 +25,10 @@ class RefMedicationAdminController extends BaseAdminController
        Filter that can be applied to items in order to
        create admin screens for specific subsets of drugs
     */
+    public $group = 'Drugs';
     protected $source_type;
     protected $display_name;
-
     protected $list_mode_buttons = true;
-
-    public $group = 'Drugs';
 
     public function actionList()
     {
@@ -181,9 +179,94 @@ class RefMedicationAdminController extends BaseAdminController
         $admin->setEditFields($this->_getEditFields($model));
 
         $admin->setModelDisplayName("Medication");
-        $admin->setCustomSaveURL('/OphDrPrescription/'.$this->id.'/save/'.$model->id);
+        $admin->setCustomSaveURL('/OphDrPrescription/' . $this->id . '/save/' . $model->id);
 
         return $admin;
+    }
+
+    protected function _getEditFields($model)
+    {
+        return array(
+            'preferred_term' => 'Preferred term',
+            'short_term' => 'Short term',
+            'preferred_code' => 'Preferred code',
+            'source_type' => array(
+                'widget' => 'DropDownList',
+                'options' => $this->_getSourceTypes(),
+                'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+                'hidden' => false,
+                'layoutColumns' => array()
+            ),
+            'source_subtype' => array(
+                'widget' => 'DropDownList',
+                'options' => $this->_getSourceSubtypes(),
+                'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+                'hidden' => false,
+                'layoutColumns' => array()
+            ),
+            'vtm_term' => 'VTM term',
+            'vtm_code' => 'VTM code',
+            'vmp_term' => 'VMP term',
+            'vmp_code' => 'VMP code',
+            'amp_term' => 'AMP term',
+            'amp_code' => 'AMP code',
+            'default_form_id' => array(
+                'widget' => 'DropDownList',
+                'options' => CHtml::listData(MedicationForm::model()->findAll("deleted_date IS NULL"), "id", "term"),
+                'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+                'hidden' => false,
+                'layoutColumns' => array()
+            ),
+            'default_route_id' => array(
+                'widget' => 'DropDownList',
+                'options' => CHtml::listData(MedicationRoute::model()->findAll("deleted_date IS NULL"), "id", "term"),
+                'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+                'hidden' => false,
+                'layoutColumns' => array()
+            ),
+            'default_dose_unit_term' => 'Default dose unit',
+            'attributes' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_attributes',
+                'viewArguments' => array(
+                    'medication' => $model
+                )
+            ),
+            'sets' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_sets',
+                'viewArguments' => array(
+                    'medication' => $model
+                )
+            ),
+            'alternative_terms' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_alternative_terms',
+                'viewArguments' => array(
+                    'medication' => $model
+                )
+            ),
+        );
+    }
+
+    protected function _getSourceTypes()
+    {
+        $values = Yii::app()->db->createCommand("SELECT DISTINCT source_type FROM " . Medication::model()->tableName())->queryColumn();
+        $ret_array = array();
+        foreach ($values as $value) {
+            $ret_array[$value] = $value;
+        }
+        return $ret_array;
+    }
+
+    protected function _getSourceSubtypes()
+    {
+        $values = Yii::app()->db->createCommand("SELECT DISTINCT source_subtype FROM " . Medication::model()->tableName())->queryColumn();
+        $ret_array = array();
+        foreach ($values as $value) {
+            $ret_array[$value] = $value;
+        }
+        return $ret_array;
     }
 
     public function actionSave($id = null)
@@ -195,6 +278,7 @@ class RefMedicationAdminController extends BaseAdminController
                 throw new CHttpException(404);
             }
         }
+
         /** @var CDbTransaction $trans */
         $transaction = Yii::app()->db->beginTransaction();
 
@@ -202,7 +286,6 @@ class RefMedicationAdminController extends BaseAdminController
 
         $data = Yii::app()->request->getPost('Medication');
         $this->_setModelData($model, $data);
-
 
         if ($model->save()) {
             $transaction->commit();
@@ -280,6 +363,7 @@ class RefMedicationAdminController extends BaseAdminController
                 }
             }
         }
+      
         $model->medicationSetItems = $medicationSetItems;
     }
 
@@ -331,17 +415,15 @@ class RefMedicationAdminController extends BaseAdminController
 
         $sets_array[0] = array_map(function ($e) {
             return $e->name;
-
         }, $sets);
         $sets_array[1] = array_map(function ($e) {
             return $e->id;
-
         }, $sets);
         $sets_array[2] = array_map(function ($e) {
             /** @var MedicationSet $e */
             $ruleString = [];
             foreach ($e->medicationSetRules as $rule) {
-                $ruleString[] = ($rule->usageCode ? $rule->usageCode->usage_code : '') . " (site=".(is_null($rule->site_id) ? "null" : $rule->site->name).", ss=".(is_null($rule->subspecialty_id) ? "null" : $rule->subspecialty->name).")";
+                $ruleString[] = ($rule->usageCode ? $rule->usageCode->usage_code : '') . " (site=" . (is_null($rule->site_id) ? "null" : $rule->site->name) . ", ss=" . (is_null($rule->subspecialty_id) ? "null" : $rule->subspecialty->name) . ")";
             }
 
             return implode(PHP_EOL, $ruleString);
@@ -350,7 +432,7 @@ class RefMedicationAdminController extends BaseAdminController
         $sheet->fromArray($sets_array, null, 'E1');
 
         $cond = new CDbCriteria();
-        $cond->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN (".implode(",", $med_set_ids)."))");
+        $cond->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN (" . implode(",", $med_set_ids) . "))");
 
         $medications = Medication::model()->findAll($cond);
 
@@ -367,7 +449,7 @@ class RefMedicationAdminController extends BaseAdminController
                     $repr->dose = $ref_medication_set->default_dose;
                     $repr->dose_unit = $ref_medication_set->default_dose_unit_term;
                     $repr->route = is_null($ref_medication_set->default_route) ? null : $ref_medication_set->defaultRoute->term;
-                    $repr->frequency = is_null($ref_medication_set->default_frequency) ? null: $ref_medication_set->defaultFrequency->term;
+                    $repr->frequency = is_null($ref_medication_set->default_frequency) ? null : $ref_medication_set->defaultFrequency->term;
                     $repr->duration = is_null($ref_medication_set->default_duration) ? null : $ref_medication_set->defaultDuration->name;
 
                     if (!empty($ref_medication_set->tapers)) {
@@ -386,8 +468,7 @@ class RefMedicationAdminController extends BaseAdminController
                     $row[] = null;
                 }
             }
-
-            $cells_array[]=$row;
+            $cells_array[] = $row;
         }
 
         $sheet->fromArray($cells_array, null, 'A5');
@@ -403,7 +484,7 @@ class RefMedicationAdminController extends BaseAdminController
         try {
             foreach (Yii::app()->request->getPost('Medication')['id'] as $id) {
                 $medication = Medication::model()->findByPk($id);
-                /** @var Medication $medication*/
+                /** @var Medication $medication */
                 foreach ($medication->medicationSearchIndexes as $index) {
                     $index->delete();
                 }

@@ -164,7 +164,7 @@ class Zend_Ldap_Ldif_Encoder
         } else if (is_array($value)) {
             return $this->_encodeAttributes($value);
         } else if ($value instanceof Zend_Ldap_Node) {
-            return $value->toLdif($this->_options);
+            return $value->toLdif ($this->_options);
         }
         return null;
     }
