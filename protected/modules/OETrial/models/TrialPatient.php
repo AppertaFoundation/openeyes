@@ -123,7 +123,7 @@ class TrialPatient extends BaseActiveRecordVersioned
         $criteria->addCondition('patient_id = :patientId');
         $criteria->params[':trialId'] = $trial_id;
         $criteria->params[':patientId'] = $patient_id;
-        
+
         $result = TrialPatient::model()->find($criteria);
         return $result->status_id;
     }
