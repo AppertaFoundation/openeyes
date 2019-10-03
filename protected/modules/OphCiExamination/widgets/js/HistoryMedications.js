@@ -68,7 +68,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 					'bound_key'
       ];
 
-    this.initialiseFilters();
     this.initialiseTriggers();
     this.initialiseDatepicker();
 
@@ -141,20 +140,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         hide_on_select: true,
         default_date: false
       });
-    }
-  };
-
-  /**
-  * Sets up the filter controls on the table.
-  */
-  HistoryMedicationsController.prototype.initialiseFilters = function()
-  {
-    // if there aren't any stopped medications, then the filter is irrelevant
-    if (!this.$table.find('tr.originally-stopped').length) {
-        this.$element.find('.show-stopped').hide();
-        this.$element.find('.hide-stopped').hide();
-    } else {
-        this.$table.find('tr.originally-stopped').hide();
     }
   };
 
