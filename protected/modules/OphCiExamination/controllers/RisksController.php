@@ -79,7 +79,7 @@ class RisksController extends \BaseController
 
     public function actionForRefMedication($id)
     {
-        if(!$medication =\Medication::model()->findByPk($id)) {
+        if (!$medication =\Medication::model()->findByPk($id)) {
             throw new \CHttpException('Medication not found', 404);
         }
 

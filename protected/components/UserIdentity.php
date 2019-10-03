@@ -75,7 +75,7 @@ class UserIdentity extends CUserIdentity
             Yii::app()->params['auth_source'] = 'BASIC';
         }
 
-        if(Yii::app()->params['utf8_decode_required']){
+        if (Yii::app()->params['utf8_decode_required']){
             $this->password = utf8_decode($this->password);
         }
 

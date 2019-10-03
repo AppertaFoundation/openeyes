@@ -554,7 +554,7 @@ class Admin
         $this->assetManager->registerScriptFile('/js/oeadmin/list.js');
         $this->audit('list');
         $this->pagination = $this->getSearch()->initPagination();
-        if($this->request->isAjaxRequest){
+        if ($this->request->isAjaxRequest){
             $this->ajaxResponse();
         } else {
             $this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder, 'buttons' => $buttons));
@@ -586,30 +586,30 @@ class Admin
 
             foreach($this->editFields as $editField => $type){
                 //widgets et al can be dealt with in the widget
-                if(is_array($type)){
+                if (is_array($type)){
                     continue;
                 }
-                if(method_exists($this, $type.'Format')){
+                if (method_exists($this, $type.'Format')){
                     $this->model->$editField = $this->{$type.'Format'}($this->model->attributes[$editField]);
                 }
             }
 
             if (!$this->model->validate()) {
                 $errors = $this->model->getErrors();
-                if(!$redirect){
+                if (!$redirect){
                     return false;
                 }
             } else {
 
                 // Model's id property must be null to be populated after save
-                if( empty($this->model->id) ){
+                if ( empty($this->model->id) ){
                     $this->model->id = null;
                 }
                 if (!$this->model->save()) {
                     throw new CHttpException(500, 'Unable to save '.$this->modelName.': '.print_r($this->model->getErrors(), true));
                 }
                 $this->audit('edit', $this->model->id);
-                if($redirect){
+                if ($redirect){
                     $this->redirect();
                 } else {
                     $this->model = $this->model->findByPk($this->model->id);
@@ -625,7 +625,7 @@ class Admin
             }
         }
 
-        if($partial === false){
+        if ($partial === false){
             $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
         } else {
             $this->controller->renderPartial($this->editTemplate, array('admin' => $this, 'errors' => $errors));
@@ -656,7 +656,7 @@ class Admin
                         }
                     }
 
-                    if($response == 1){
+                    if ($response == 1){
                         Audit::add(get_class($model),'delete', serialize($attributes), get_class($model). ' deleted');
                     }
                 }
