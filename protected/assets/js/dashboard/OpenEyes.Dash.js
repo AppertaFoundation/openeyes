@@ -79,14 +79,14 @@
         var $dateInputs = $('#from-date, #to-date');
         Dash.$container = $(container);
 
-        Dash.$container.off('click').on('click', '.search-icon', function(){
+        Dash.$container.on('click', '.search-icon', function(){
             $(this).parent('.report-container').find('.report-search').removeClass('visuallyhidden').animate({
                 height: '100%'
             }, 300);
         });
 
 
-        $dateInputs.off('focus').on('focus', function(){
+        $dateInputs.on('focus', function(){
             $(this).parent().addClass('is-dirty');
         });
         $dateInputs.datepicker({
@@ -100,7 +100,7 @@
             }
         });
 
-        Dash.$container.off('submit').on('submit', '.report-search-form', function(e){
+        Dash.$container.on('submit', '.report-search-form', function(e){
             e.preventDefault();
             var chart,
                 $searchForm = $(this),
@@ -164,7 +164,7 @@
             var $checkboxes;
 
             $checkboxes = $(this).find(':input[type="checkbox"]');
-            $checkboxes.off('change').on('change', function(){
+            $checkboxes.on('change', function(){
                 if(this.value == 'all' && this.checked){
                     $checkboxes.filter(':input[value!="all"]').removeAttr('checked').parents('label').removeClass('is-checked');
                 } else {
