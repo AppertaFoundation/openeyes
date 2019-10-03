@@ -34,7 +34,7 @@
             <?php foreach (MedicationUsageCode::model()->findAll() as $usage_code) :?>
                 <button
                         data-usage_code_id="<?=$usage_code->id;?>"
-												id="drug_type_usage_code_id"
+												id="button_drug_type_usage_<?= preg_replace('/\s+/', '_', strtolower($usage_code->name));?>"
                         type="button"
                         class="large js-set-select <?=$isSelected($usage_code->id);?>"
                 ><?=$usage_code->name;?>
