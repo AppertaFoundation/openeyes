@@ -10,7 +10,7 @@
             'procedure' => 'Repositioning of Intraocular lens',
             'allergies' => 'Atropine',
             'iol_model' => 'Akreos Adapt',
-            'iol_power' => '+21.50',
+            'iol_power' => '21.50',
             'formula' => 'Hagis Hyperonic',
             'aconst' => '118.0',
             'axial_length' => '26.07',

@@ -93,6 +93,7 @@ return array(
         'overnight_stay' => 0,
         'site_id' => 1,
         'priority_id' => 1,
+        'complexity' => Element_OphTrOperationbooking_Operation::COMPLEXITY_MEDIUM,
         'decision_date' => date('Y-m-d'),
         'comments' => 'Test comments',
         'total_duration' => 100,

@@ -49,7 +49,7 @@ class WhiteboardController extends BaseDashboardController
     {
         return array(
             array('allow',
-                'actions' => array('view', 'reload', 'confirm', 'saveComment'),
+                'actions' => array('view', 'reload', 'confirm', 'saveComment', 'biometryReport'),
                 'roles' => array('OprnViewClinical'),
             ),
         );
@@ -158,7 +158,37 @@ class WhiteboardController extends BaseDashboardController
             $whiteboard->loadData($id);
         }
 
-        $this->render('view', array('data' => $whiteboard), false, true);
+        $this->render('view', array('data' => $whiteboard, 'booking_id' => $id), false, true);
+    }
+
+    public function actionBiometryReport($id)
+    {
+        $whiteboard = $this->getWhiteboard();
+        if (!$whiteboard) {
+            $whiteboard = new OphTrOperationbooking_Whiteboard();
+            $whiteboard->loadData($id);
+        }
+        $this->setWhiteboard($whiteboard);
+
+        if (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) {
+            $whiteboard->loadData($id);
+        }
+
+        $event = Event::model()->findByPk($id);
+        $episode = Episode::model()->findByPk($event->episode_id);
+        $patient = Patient::model()->findByPk($episode->patient_id);
+
+        $criteria = new CDbCriteria();
+        $criteria->with = array('event.episode.patient');
+        $criteria->addCondition('patient_id = :patient_id');
+        $criteria->addCondition('event_sub_type = :sub_type');
+        $criteria->params = array('patient_id' => $patient->id, 'sub_type' => 2);
+        $criteria->order = 't.last_modified_date DESC';
+        $criteria->limit = 1;
+
+        $element = Element_OphCoDocument_Document::model()->find($criteria);
+
+        $this->render('biometry', array('data' => $whiteboard, 'booking_id' => $id, 'document_event_id' => $element->event->id, 'pages' => $element->event->previewImages), false, true);
     }
 
     /**

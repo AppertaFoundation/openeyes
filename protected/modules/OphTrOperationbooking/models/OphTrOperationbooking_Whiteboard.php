@@ -19,6 +19,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
+     * @param $className string
      *
      * @return OphTrOperationbooking_Whiteboard the static model class
      */
@@ -76,7 +77,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $biometry = $this->recentBiometry($patient);
         $blockers = $this->alphaBlockerStatusAndDate($patient);
         $anticoag = $this->anticoagsStatusAndDate($patient);
-        $labResult = Element_OphInLabResults_Entry::model()->findPatientResultByType($patient->id, '1');
+
         $allergyString = $this->allergyString($episode);
         $operation = $this->operation($id);
 
@@ -84,7 +85,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->booking = $booking;
         $this->eye_id = $eye->id;
         $this->eye = $eye;
-        $this->patient_name = $contact['title'] . ' ' . $contact['first_name'] . ' ' . $contact['last_name'];
+        $this->patient_name = $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
         $this->date_of_birth = $patient['dob'];
         $this->hos_num = $patient['hos_num'];
         $this->procedure = implode(', ', array_column($operation, 'term'));
@@ -118,7 +119,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
         $this->alpha_blocker_name = $blockers;
         $this->anticoagulant_name = $anticoag;
-        $this->inr = ($labResult) ? $labResult : 'None';
 
         if (!$this->predicted_additional_equipment) {
             $this->predicted_additional_equipment = $booking->special_equipment_details;
@@ -159,7 +159,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
     /**
      * @param $episode
-     *
+     * @throws CException
      * @return string
      */
     protected function allergyString($episode)
@@ -187,13 +187,12 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $allergyOtherString = implode(', ', array_column($allergiesOther, 'other'));
 
             if ($allergyOtherString && $allergyString) {
-                $allergyString = $allergyString . ", " . $allergyOtherString;
+                $allergyString .= ', ' . $allergyOtherString;
             }
 
             if ($allergyOtherString && !$allergyString) {
                 $allergyString = $allergyOtherString;
             }
-
 
             return $allergyString;
         }
@@ -203,7 +202,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
     /**
      * @param $id
-     *
+     * @throws CException
      * @return mixed
      */
     protected function operation($id)
@@ -249,9 +248,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         if ($exam_api) {
             $alpha = $exam_api->getRiskByName($patient, 'Alpha blockers');
-            if ($alpha) {
-                return $this->getDisplayHasRisk($alpha) . ($alpha['comments'] ? ' - ' . $alpha['comments'] : '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
+            if ($alpha && $this->getDisplayHasRisk($alpha) !== 'Not present') {
+                return $this->getDisplayHasRisk($alpha)
+                    . ($alpha['comments'] ? ' - ' . $alpha['comments'] : '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
             }
+            return 'No Alpha Blockers';
         }
 
         //default value when no Risk element exists
@@ -266,11 +267,16 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     protected function anticoagsStatusAndDate($patient)
     {
         $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        $labResult = Element_OphInLabResults_Entry::model()->findPatientResultByType($patient->id, '1');
+        $this->inr = ($labResult) ? $labResult : 'None';
         if ($exam_api) {
             $anticoag = $exam_api->getRiskByName($patient, 'Anticoagulants');
-            if ($anticoag) {
-                return $this->getDisplayHasRisk($anticoag) . ($anticoag['comments'] ? ' - ' . $anticoag['comments'] : '') . '(' . Helper::convertMySQL2NHS($anticoag['date']) . ')';
+            if ($anticoag && $this->getDisplayHasRisk($anticoag) !== 'Not present') {
+                return $this->getDisplayHasRisk($anticoag)
+                    . ($anticoag['comments'] ? ' - ' . $anticoag['comments'] : '') . '(' . ($this->inr !== 'None' ? "INR {$this->inr}, " : '')
+                    . Helper::convertMySQL2NHS($anticoag['date']) . ')';
             }
+            return 'No Anticoagulants';
         }
 
         //default value when no Risk element exists
@@ -281,7 +287,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
      * @return string
      */
 
-    public function getPatientRisksDisplay()
+    public function getPatientRisksDisplay(&$total_risks)
     {
         /** @var Patient $patient */
         $patient = $this->event->patient;
@@ -326,6 +332,12 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         );
 
         $display = implode('</div><div class="alert-box warning">', $lines);
+
+        if ($display === '') {
+            $total_risks = 0;
+        } else {
+            $total_risks = count($lines);
+        }
 
         return $display === '' ? '<div class="alert-box success">No Risks</div>' : ('<div class="alert-box warning">' . $display . '</div>');
     }

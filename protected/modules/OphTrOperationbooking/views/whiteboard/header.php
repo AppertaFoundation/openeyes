@@ -1,5 +1,5 @@
 <?php
-    $date = date_create_from_format('Y-m-d H:i:s', $this->getWhiteboard()->last_modified_date);
+    $date = date_create_from_format('Y-m-d H:i:s', $data->last_modified_date);
 ?>
 <div class="oe-hd-title">
     <ul class="dot-list">

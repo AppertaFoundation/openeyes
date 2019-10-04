@@ -1,4 +1,7 @@
 <?php
+    /**
+     * @var $booking_id int
+     */
     $complexity_colour = 'green';
 
 switch ($data->complexity) {
@@ -29,7 +32,7 @@ $cataract_card_list = array(
     ),
     'Lens' => array(
         'data' => array(
-            'content' => ((float) $data->iol_power > 0.0 ? '+' : '-') . $data->iol_power,
+            'content' => ((float) $data->iol_power >= 0.0 ? '+' : null) . $data->iol_power,
             'extra_data' => $data->iol_model
                 . ' '
                 . ((float)$data->aconst === (int)$data->aconst ? (float)$data->aconst . '.0' : (float)$data->aconst),
@@ -124,7 +127,18 @@ $other_card_list = array(
         )
     ),
     'Biometry' => array(
-        'data' => null,
+        'data' => $data->eye->id === Eye::BOTH ? null : array(
+            array(
+                'content' => $data->axial_length,
+                'small_data' => $data->axial_length !== 'Unknown' ? 'mm' : null,
+                'extra_data' => 'Axial Length',
+            ),
+            array(
+                'content' => $data->acd,
+                'small_data' => $data->acd !== 'Unknown' ? 'mm' : null,
+                'extra_data' => 'ACD',
+            )
+        ),
     ),
     'Predicted Outcome' => array(
         'data' => null,
@@ -194,6 +208,9 @@ $other_card_list = array(
         )); ?>
     </div>
     <footer class="wb3-actions down">
-        <?php $this->renderPartial('footer'); ?>
+        <?php $this->renderPartial('footer', array(
+            'biometry' => false,
+            'booking_id' => $booking_id,
+        )); ?>
     </footer>
 </main>
