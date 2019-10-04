@@ -55,7 +55,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
           </thead>
         <tbody>
         <?php
-				$row_count = 0;
+                $row_count = 0;
         $total_count = count($element->current_entries);
         foreach ($element->current_entries as $row_count => $entry) {
             if ($entry->prescription_item_id) {
@@ -98,17 +98,18 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                     )
                 );
             }
+                    $row_count++;
         }
         ?>
         </tbody>
     </table>
         <div class="collapse-data" style="<?php echo !sizeof($element->closed_entries)?  'display:none': ''; ?>">
             <div class="collapse-data-header-icon expand">
-                Stopped Medications <small>(<?=count($element->closed_entries);?>)</small>
+                Stopped Medications <small class="js-stopped-medications-count">(<?=count($element->closed_entries);?>)</small>
             </div>
             <div class="collapse-data-content" style="display: none;">
 
-                <table class="medications js-entry-table" >
+                <table class="medications js-entry-table js-stopped-medications">
                     <colgroup>
                         <col class="cols-2">
                         <col class="cols-6">

@@ -153,7 +153,7 @@ if ($is_prescription_set) {
                 <?php
                 if (!empty($set_item->tapers)) {
                     foreach ($set_item->tapers as $count => $taper) {
-                        $this->renderPartial('MedicationSetItemTaper_edit', array(
+                        $this->renderPartial('/DrugSet/MedicationSetItemTaper_edit', array(
                             "taper" => $taper,
                             "set_item_medication_id" => $med->id,
                             "set_item_medication" => $med,
@@ -180,7 +180,7 @@ if ($is_prescription_set) {
     <?php
         $empty_entry = new MedicationSetItemTaper();
 
-        $this->renderPartial('MedicationSetItemTaper_edit', array(
+        $this->renderPartial('/DrugSet/MedicationSetItemTaper_edit', array(
             "taper" => $empty_entry,
             "set_item_medication_id" => "{{data_med_id}}",
             "set_item_medication" => null,
