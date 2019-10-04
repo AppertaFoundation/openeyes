@@ -256,29 +256,7 @@ $this->pageTitle = 'Case Search';
       });
     });
 
-    $(document).on('click', '.js-remove-from-trial', function addPatientToTrial() {
-        var removeLink = this;
-        var $addLink = $(this).closest('.js-add-remove-participant').find('.js-add-to-trial');
-        var patientId = $(this).closest('.js-oe-patient').data('patient-id');
 
-        $.ajax({
-          url: '<?php echo Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',
-          data: {
-            id: <?= $this->trialContext->id?>,
-            patient_id: patientId,
-          },
-          success: function (response) {
-            $(removeLink).hide();
-            $addLink.show();
-          },
-          error: function (response) {
-            new OpenEyes.UI.Dialog.Alert({
-              content: "Sorry, an internal error occurred and we were unable to remove the patient from the trial.\n\nPlease contact support for assistance."
-            }).open();
-          }
-        });
-      }
-    );
   </script>
 <?php } ?>
 
