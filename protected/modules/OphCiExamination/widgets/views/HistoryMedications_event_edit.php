@@ -36,6 +36,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
       <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
       <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="js-do-not-save-entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>
+			<?php $current_entries = $element->event_id ? $element->current_entries : $element->entries;?>
       <table id="<?= $model_name ?>_entry_table" class="js-entry-table medications <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
           <colgroup>
               <col class="cols-2">
@@ -44,7 +45,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
               <col class="cols-icon" span="2">
               <!-- actions auto-->
           </colgroup>
-        <thead style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >
+        <thead style= <?php echo !sizeof($current_entries)?  'display:none': ''; ?> >
           <tr>
               <th>Drug</th>
               <th>Dose/frequency/route/start/stop</th>
@@ -55,9 +56,9 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
           </thead>
         <tbody>
         <?php
-                $row_count = 0;
-        $total_count = count($element->current_entries);
-        foreach ($element->current_entries as $row_count => $entry) {
+				$row_count = 0;
+        $total_count = count($current_entries);
+        foreach ($current_entries as $row_count => $entry) {
             if ($entry->prescription_item_id) {
                 $this->render(
                     'HistoryMedicationsEntry_prescription_event_edit',
