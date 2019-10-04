@@ -47,25 +47,32 @@ class Contacts extends \BaseEventElementWidget
                 $_POST["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'] : [];
             if (!empty($contact_ids)) {
                 foreach ($contact_ids as $contact_id) {
-                    $criteria = new \CDbCriteria();
-                    $criteria->addCondition('t.patient_id = ' . $this->patient->id);
-                    $criteria->addCondition('t.contact_id = ' . $contact_id);
-                    $this->contact_assignments[] = \PatientContactAssignment::model()->findByPk($contact_id);
+                    $patientContactAssignment = \PatientContactAssignment::model()->findByPk($contact_id);
+                    if ($patientContactAssignment == null) {
+                        $patientContactAssignment = new \PatientContactAssignment();
+                        $patientContactAssignment->patient_id = $this->patient->id;
+                        $patientContactAssignment->contact_id = $contact_id;
+                    }
+                    $this->contact_assignments[] = $patientContactAssignment;
                 }
             }
         } else {
             $criteria = new \CDbCriteria();
             $gp = $this->patient->gp;
             $criteria->addCondition('t.patient_id = ' . $this->patient->id);
-            $criteria->addCondition('t.contact_id != ' . $gp->contact->id);
+            if (isset($gp)) {
+                $criteria->addCondition('t.contact_id != ' . $gp->contact->id);
+            }
             $this->contact_assignments = \PatientContactAssignment::model()->findAll($criteria);
         }
 
         $criteria = new \CDbCriteria();
         $gp = $this->patient->gp;
-        $criteria->addCondition('t.patient_id = ' . $this->patient->id);
-        $criteria->addCondition('t.contact_id = ' . $gp->contact->id);
-        $this->gp_contact_assignment = \PatientContactAssignment::model()->findAll($criteria);
+        if (isset($gp)) {
+            $criteria->addCondition('t.patient_id = ' . $this->patient->id);
+            $criteria->addCondition('t.contact_id = ' . $gp->contact->id);
+            $this->gp_contact_assignment = \PatientContactAssignment::model()->findAll($criteria);
+        }
     }
 
 }

@@ -83,7 +83,7 @@ $(document).ready(function() {
 		if (m = window.location.href.match(/\/update\/[0-9]+/)) {
 			window.location.href = window.location.href.replace('/update/','/view/');
 		} else {
-			window.location.href = baseUrl+'/patient/episodes/'+et_patient_id;
+			window.location.href = baseUrl+'/patient/summary/'+et_patient_id;
 		}
 		e.preventDefault();
 	});
@@ -92,7 +92,7 @@ $(document).ready(function() {
 		if (m = window.location.href.match(/\/delete\/[0-9]+/)) {
 			window.location.href = window.location.href.replace('/delete/','/view/');
 		} else {
-			window.location.href = baseUrl+'/patient/episodes/'+et_patient_id;
+			window.location.href = baseUrl+'/patient/summary/'+et_patient_id;
 		}
 		e.preventDefault();
 	});
@@ -157,6 +157,11 @@ $(document).ready(function() {
 
 	$('#Element_OphInBiometry_Selection_lens_id_left').on('change', () => onChangeLensType('left'));
 	$('#Element_OphInBiometry_Selection_lens_id_right').on('change', () => onChangeLensType('right'));
+
+	$('.js-lens-manual-override-dropdown').on('change', function() {
+		let option_selected = $(this).find("option:selected").data('constant');
+		$(this).closest('tbody').find('.js-lens-constant').text(option_selected);
+	});
 
 	function onChangeLensType(side){
 		clearIolSelection(side);

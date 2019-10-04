@@ -36,16 +36,16 @@ $this->pageTitle = Yii::app()->name . ' - Login';
       <div class="flex-layout">
         <span>Need Help?
 
-            <?php if (Yii::app()->params['helpdesk_email']): ?>
-              <?php echo Yii::app()->params['helpdesk_email'] ?>
+            <?php if (Yii::app()->params['helpdesk_email']) : ?>
+                <?php echo Yii::app()->params['helpdesk_email'] ?>
             <?php endif; ?>
 
-            <?php if (Yii::app()->params['helpdesk_phone']): ?>
+            <?php if (Yii::app()->params['helpdesk_phone']) : ?>
               <strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong>
             <?php endif; ?>
 
-            <?php if (Yii::app()->params['help_url']): ?>
-              <?=\CHtml::link('Help Documentation', Yii::app()->params['help_url'],
+            <?php if (Yii::app()->params['help_url']) : ?>
+                <?=\CHtml::link('Help Documentation', Yii::app()->params['help_url'],
                       array('target' => '_blank')) ?>
             <?php endif; ?>
 

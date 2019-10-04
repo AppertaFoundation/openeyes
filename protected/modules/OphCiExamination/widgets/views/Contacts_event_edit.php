@@ -28,7 +28,7 @@ $element_errors = $element->getErrors();
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <div class="cols-full">
             <table id="<?= $model_name ?>_pas_table"
-                    class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
+                   class=" cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
                 <colgroup>
                     <col class="cols-2">
                     <col class="cols-2">
@@ -46,16 +46,18 @@ $element_errors = $element->getErrors();
                 </tr>
                 </thead>
                 <tbody>
-                <?= $this->render(
-                    'ContactsEntry_event_edit',
-                    array(
-                        'contact' => $this->patient->gp->contact,
-                        'show_comments' => false,
-                        'row_count' => 0,
-                        'model_name' => $model_name,
-                        'field_prefix' => $model_name,
-                        'removable' => false,
-                        'is_template' => true,)); ?>
+                <?php if (isset($this->patient->gp)) {
+                    echo $this->render(
+                        'ContactsEntry_event_edit',
+                        array(
+                            'contact' => $this->patient->gp->contact,
+                            'show_comments' => false,
+                            'row_count' => 0,
+                            'model_name' => $model_name,
+                            'field_prefix' => $model_name,
+                            'removable' => false,
+                            'is_template' => true,));
+                } ?>
                 </tbody>
             </table>
         </div>

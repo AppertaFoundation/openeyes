@@ -104,8 +104,8 @@ class OeDateFormat extends CActiveRecordBehavior
 
         // get month and day
         preg_match_all('/\b\d{2}\b/', $date, $matches);
-        $month = sizeof($matches[0]) > 0 ? $matches[0][0] : '00';
-        $day = sizeof($matches[0]) > 1 ? $matches[0][1] : '00';
+        $month = sizeof($matches[0]) > 0 ? (integer) $matches[0][0] : '00';
+        $day = sizeof($matches[0]) > 1 ? (integer) $matches[0][1] : '00';
 
         // get year
         preg_match('/\b\d{4}\b/', $date, $matches);

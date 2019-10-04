@@ -99,7 +99,7 @@ class AuthRules
      */
     public function canDeleteEvent(User $user, Event $event)
     {
-        if (!($event->created_user_id == $user->id || Yii::app()->user->checkAccess('admin'))) {
+        if (!(Yii::app()->user->checkAccess('admin'))) {
             return false;
         }
 

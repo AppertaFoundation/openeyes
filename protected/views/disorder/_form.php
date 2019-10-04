@@ -25,47 +25,47 @@ $specialties = Specialty::model()->findAll();
         <tbody>
         <tr>
             <td>
-                <?php echo $form->labelEx($model,'id'); ?>
+                <?php echo $form->labelEx($model, 'id'); ?>
             </td>
             <td>
-                <?php echo $form->textField($model,'id',array('size'=>20,'maxlength'=>20,'disabled'=>($model->isNewRecord ? false : true),)); ?>
-                <?php echo $form->error($model,'id'); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <?php echo $form->labelEx($model,'fully_specified_name'); ?>
-            </td>
-            <td>
-                <?php echo $form->textField($model,'fully_specified_name',array('size'=>60,'maxlength'=>255)); ?>
-                <?php echo $form->error($model,'fully_specified_name'); ?>
+                <?php echo $form->textField($model, 'id', array('size'=>20,'maxlength'=>20,'disabled'=>($model->isNewRecord ? false : true),)); ?>
+                <?php echo $form->error($model, 'id'); ?>
             </td>
         </tr>
         <tr>
             <td>
-                <?php echo $form->labelEx($model,'term'); ?>
+                <?php echo $form->labelEx($model, 'fully_specified_name'); ?>
             </td>
             <td>
-                <?php echo $form->textField($model,'term',array('size'=>60,'maxlength'=>255)); ?>
-                <?php echo $form->error($model,'term'); ?>
+                <?php echo $form->textField($model, 'fully_specified_name', array('size'=>60,'maxlength'=>255)); ?>
+                <?php echo $form->error($model, 'fully_specified_name'); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php echo $form->labelEx($model, 'term'); ?>
+            </td>
+            <td>
+                <?php echo $form->textField($model, 'term', array('size'=>60,'maxlength'=>255)); ?>
+                <?php echo $form->error($model, 'term'); ?>
             </td>
         </tr>
          <tr>
             <td>
-                <?php echo $form->labelEx($model,'specialty_id'); ?>
+                <?php echo $form->labelEx($model, 'specialty_id'); ?>
             </td>
             <td>
                 <?php echo $form->dropDownList($model, 'specialty_id', CHtml::listData($specialties, 'id', 'name')) ?>
-                <?php echo $form->error($model,'specialty_id'); ?>
+                <?php echo $form->error($model, 'specialty_id'); ?>
             </td>
         </tr>
         <tr>
             <td>
-                <?php echo $form->labelEx($model,'active'); ?>
+                <?php echo $form->labelEx($model, 'active'); ?>
             </td>
             <td>
-                <?php echo $form->checkBox($model,'active',array('checked'=>'checked')); ?>
-                <?php echo $form->error($model,'active'); ?>
+                <?php echo $form->checkBox($model, 'active', array('checked'=>'checked')); ?>
+                <?php echo $form->error($model, 'active'); ?>
             </td>
         </tr>
         </tbody>

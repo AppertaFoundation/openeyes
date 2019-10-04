@@ -41,7 +41,7 @@
         <tr>
             <td>Active</td>
             <td class="cols-full">
-              <?=\CHtml::activeCheckBox(
+                <?=\CHtml::activeCheckBox(
                 $model,
                 'active',
                 []
@@ -51,9 +51,9 @@
     </tbody>
   </table>
 
-  <?= \OEHtml::submitButton() ?>
+    <?= \OEHtml::submitButton() ?>
 
-  <?= \OEHtml::cancelButton("Cancel", [
+    <?= \OEHtml::cancelButton("Cancel", [
     'data-uri' => '/OphCiExamination/admin/ClinicOutcomeRoles/index/',
   ]) ?>
 

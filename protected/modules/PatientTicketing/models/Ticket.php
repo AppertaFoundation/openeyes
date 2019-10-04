@@ -170,7 +170,7 @@ class Ticket extends \BaseActiveRecordVersioned
         if ($this->event) {
             $qs = $this->initial_queue->queueset;
             if ($qs->summary_link) {
-                return Yii::app()->createUrl('/patient/episode/view/', array('id' => $this->event->episode_id));
+                return Yii::app()->createURL("/patient/summary/", array("id" => $this->patient_id));
             }
 
             return Yii::app()->createURL('/' . $this->event->eventType->class_name . '/default/view/',

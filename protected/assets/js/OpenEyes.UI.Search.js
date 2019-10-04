@@ -76,19 +76,25 @@
      * @returns {*|jQuery}
      */
     var renderItem = function (ul, item) {
-        ul.addClass("patient-ajax-list");
+        ul.addClass("oe-autocomplete patient-ajax-list");
         return $("<li></li>")
-          .data("item.autocomplete", item)
-          .append("<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ")" + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() + "_trans'>Male</span>" + "<div class='nhs-number'>" + item.nhsnum + "</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + "</a>")
-          .appendTo(ul);
+            .data("item.autocomplete ui-menu-item oe-menu-item", item)
+            .append("<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ") " + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() + "_trans'>" + item.gender + "</span>" + "<div class='nhs-number'>" + item.nhsnum + "</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + "</a>")
+            .appendTo(ul);
     };
 
     /**
      * Init the search
      */
     function initAutocomplete($input) {
-      $input.autocomplete({
-            minLength: 0,
+
+        $input.on('keyup', function () {
+            if($input.val().trim() === '' ) {
+                $input.siblings('.no-result-patients').slideUp();
+            }
+        });
+        $input.autocomplete({
+            minLength: 3,
             delay: 700,
             source: function (request, response) {
                 $.getJSON(autocompleteSource, {
@@ -99,21 +105,21 @@
             search: function () {
                 $(loader).show();
             },
-            select: function(event, ui){
+            select: function (event, ui) {
                 window.location.href = "/patient/view/" + ui.item.id;
             },
             response: function (event, ui) {
                 $(loader).hide();
                 if (ui.content.length === 0) {
-                  $input.siblings('.no-result-patients').slideDown();
+                    $input.siblings('.no-result-patients').slideDown();
                 } else {
-                  $input.siblings('.no-result-patients').slideUp();
+                    $input.siblings('.no-result-patients').slideUp();
                 }
             }
         });
 
         if ($input !== 'undefined' && $input.length) {
-          $input.data("autocomplete")._renderItem = renderItem;
+            $input.data("autocomplete")._renderItem = renderItem;
         }
     }
 
@@ -124,16 +130,16 @@
 
             return exports.Search;
         },
-        setSourceURL: function(url){
+        setSourceURL: function (url) {
             autocompleteSource = url;
         },
-        setRenderItem: function(renderItem){
+        setRenderItem: function (renderItem) {
             $searchInput.data("autocomplete")._renderItem = renderItem;
         },
-        getElement: function(){
+        getElement: function () {
             return $searchInput;
         },
-        setLoader: function(selector){
+        setLoader: function (selector) {
             loader = selector;
         }
     };

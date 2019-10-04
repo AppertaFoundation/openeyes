@@ -60,7 +60,7 @@
                         'id' => 'et_save'
                     ]
                 );
-                ?>
+?>
 
                 <?= CHtml::submitButton('Cancel', [
                         'class' => 'button large',
@@ -68,7 +68,7 @@
                         'id' => 'et_cancel'
                     ]
                 );
-                ?>
+?>
             </td>
         </tr>
         </tfoot>

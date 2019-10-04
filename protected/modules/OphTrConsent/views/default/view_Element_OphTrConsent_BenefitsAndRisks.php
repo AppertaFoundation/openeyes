@@ -30,6 +30,6 @@
     <div class="data-label">
         <?=\CHtml::encode($element->getAttributeLabel('risks')) ?>:
     </div>
-      <?=nl2br(\CHtml::encode($element->risks)) ?>
+        <?=nl2br(\CHtml::encode($element->risks)) ?>
   </div>
 </div>

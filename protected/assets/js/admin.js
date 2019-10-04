@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+    autosize($('.autosize'));
+
     var $globalFirmRights = $("input[name='User[global_firm_rights]']");
 
     $('#selectall').click(function () {
@@ -132,7 +135,7 @@ $(document).ready(function () {
             'data': $checked.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
             'success': function (response) {
                 response = JSON.parse(response);
-                if (response['status'] === "1") {
+                if (response['status'] === 1) {
                     window.location.reload();
                 } else {
                     $('.js-admin-errors').show();

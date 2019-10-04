@@ -5,11 +5,8 @@
     function constructPlotlyData(service_data) {
         var service_layout = JSON.parse(JSON.stringify(analytics_layout));
         service_layout['xaxis']['rangemode'] = 'nonnegative';
-        service_layout['xaxis']['dtick'] = 5;
-        service_layout['xaxis']['range'] = [0, 80];
         service_layout['yaxis']['title'] = 'Patient count';
         service_layout['yaxis']['tickformat'] = 'd';
-        service_layout['yaxis']['dtick'] = 1;
 
         var overdue_data = {
             name: "Overdue followups",
@@ -48,6 +45,13 @@
         };
         var waiting_max = Math.max(...waiting_data['y'])+5 > 20? Math.max(...waiting_data['y']) + 5: 20;
         var waiting_count = waiting_data['y'].reduce((a, b) => a + b, 0);
+      
+        for (const item of [overdue_data, coming_data, waiting_data]){
+          if (item['x'].length == 0) {
+            item['x'] = [null];
+            item['y'] = [null];
+          }
+        }
 
         var first_plot_data;
         if ($('#js-hs-app-follow-up-overdue').hasClass("selected")){
@@ -127,7 +131,7 @@
     }
 
     $(document).ready(function () {
-        var service_data = <?= CJavaScript::encode($service_data); ?>;
+        var service_data = JSON.parse(<?= json_encode($service_data); ?>);
         window.csv_data_for_report['service_data'] = service_data['csv_data'];
         constructPlotlyData(service_data['plot_data']);
     });

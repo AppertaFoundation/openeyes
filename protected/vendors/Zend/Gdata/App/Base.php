@@ -92,7 +92,7 @@ abstract class Zend_Gdata_App_Base
      * @see registerAllNamespaces()
      * @var array
      */
-   protected $_namespaces = array(
+    protected $_namespaces = array(
         'atom'      => array(
             1 => array(
                 0 => 'http://www.w3.org/2005/Atom'
@@ -456,7 +456,7 @@ abstract class Zend_Gdata_App_Base
      */
     public function registerAllNamespaces($namespaceArray)
     {
-        foreach($namespaceArray as $namespace) {
+        foreach ($namespaceArray as $namespace) {
                 $this->registerNamespace(
                     $namespace[0], $namespace[1], $namespace[2], $namespace[3]);
         }

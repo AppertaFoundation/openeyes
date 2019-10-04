@@ -13,7 +13,7 @@ if ($anti = $element->getRiskEntryByName('Anticoagulant')) {
       <h2 class="mdl-card__title-text">Alpha-blockers</h2>
     </div>
     <div class="mdl-card__supporting-text">
-      <?=$alpha_result?>
+        <?=$alpha_result?>
     </div>
   </div>
 </div>
@@ -23,12 +23,12 @@ if ($anti = $element->getRiskEntryByName('Anticoagulant')) {
       <h2 class="mdl-card__title-text">Anticoagulants</h2>
     </div>
     <div class="mdl-card__supporting-text">
-      <?=$anti_result?> <br>
+        <?=$anti_result?> <br>
       INR: <?php
-      $lab_result = Element_OphInLabResults_Inr::model()->findPatientResultByType($this->patient->id, '1');
-      $inr = $lab_result ? $lab_result : 'None';
-      echo $inr;
-      ?>
+        $lab_result = Element_OphInLabResults_Inr::model()->findPatientResultByType($this->patient->id, '1');
+        $inr = $lab_result ? $lab_result : 'None';
+        echo $inr;
+        ?>
     </div>
   </div>
 </div>

@@ -34,7 +34,9 @@ $display_queue = $ticket->getDisplayQueueAssignment();
             continue;
         }
         ?>
-        <tr class="<?php if ($old_ass->id == $ticket->getDisplayQueueAssignment()->id) { ?>current_queue<?php } ?>"
+        <tr class="<?php if ($old_ass->id == $ticket->getDisplayQueueAssignment()->id) {
+            ?>current_queue<?php
+                   } ?>"
             style="font-style: italic;">
             <td>
                 <div class="data-label"><?= $old_ass->queue->name ?>:</div>
@@ -64,6 +66,6 @@ $display_queue = $ticket->getDisplayQueueAssignment();
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('.js-report table').addClass('borders');
+        $('.js-report table').addClass('borders').removeClass('standard');
     });
 </script>

@@ -34,6 +34,7 @@ $this->renderPartial('/admin/form_' . get_class($model), array(
     'model' => $model,
     'form' => $form,
     'title' => $title,
+    'procedures' => isset($procedures) ? $procedures : null,
 )) ?>
 
 <?php echo $form->formActions(array('cancel-uri' => isset($cancel_uri) ? $cancel_uri : "")) ?>

@@ -26,7 +26,7 @@
     <div class="alert-box success">
         <strong>Allergies</strong> - Patient has no known allergies.
     </div>
-<?php else: ?>
+<?php else : ?>
     <div class="alert-box patient">
         <strong>Allergies</strong>
     </div>

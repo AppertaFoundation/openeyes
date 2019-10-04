@@ -264,8 +264,11 @@
 <?php echo $form->hiddenInput($element, 'pcr_risk') ?>
 <script>
     $(document).ready(function () {
-        $('#Element_OphTrOperationnote_Cataract_comments').autosize();
-        $('#Element_OphTrOperationnote_Cataract_complication_notes').autosize();
+        autosize($('#Element_OphTrOperationnote_Cataract_comments'));
+        autosize($('#Element_OphTrOperationnote_Cataract_complication_notes'));
+        autosize($('#Element_OphTrOperationnote_Cataract_report'));
+
+        $('#Element_OphTrOperationnote_Cataract_report').css('overflow', '');
 
         $("#Element_OphTrOperationnote_Cataract_iol_type_id option").each(function() {
             if($(this).text() === '-') {

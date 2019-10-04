@@ -189,7 +189,8 @@ class PatientLevelMigration extends CConsoleCommand
      * @param $patient_count
      */
     protected function generateAdditionalRecords(&$processed_count, &$patient_count)
-    {}
+    {
+    }
 
     /**
      * @return mixed
@@ -270,8 +271,7 @@ class PatientLevelMigration extends CConsoleCommand
             $element->save();
 
             $transaction->commit();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $transaction->rollback();
             throw $e;
         }

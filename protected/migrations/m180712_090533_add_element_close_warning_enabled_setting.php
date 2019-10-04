@@ -2,8 +2,8 @@
 
 class m180712_090533_add_element_close_warning_enabled_setting extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->insert('setting_metadata', array(
             'element_type_id' => null,
             'display_order' => 22,
@@ -20,21 +20,21 @@ class m180712_090533_add_element_close_warning_enabled_setting extends CDbMigrat
     }
 
 
-	public function down()
-	{
+    public function down()
+    {
         $this->delete('setting_installation', '`key`="element_close_warning_enabled"');
         $this->delete('setting_metadata', '`key`="element_close_warning_enabled"');
 
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

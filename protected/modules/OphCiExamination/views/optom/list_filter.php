@@ -88,7 +88,7 @@
                         'name' => 'patient_number',
                         'class' => 'cols-full',
                     ));
-                ?>
+?>
 
                 <h3>Optometrist GOC code:
                     <h3>
@@ -99,7 +99,7 @@
                                 'class' => 'cols-full'
                             )
                         );
-                        ?>
+?>
                         <?php if ($this->isListFiltered()) { ?>
                             <h3></h3>
                             <button id="reset_button" class="warning" type="submit">Reset</button>

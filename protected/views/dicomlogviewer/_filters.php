@@ -85,10 +85,10 @@
                 ['class' => 'cols-full']
                 ); ?></td>
             <td>
-                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'study_id']); ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'study_id']); ?>
             </td>
             <td>
-                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'file_name']); ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'file_name']); ?>
             </td>
         </tr>
         </tbody>
@@ -99,7 +99,7 @@
         <tr>
             <td>
                 <?=\CHtml::radioButtonList(
-                    'date',
+                    'date_type',
                     2,
                     ['1' => 'Import date', '2' => 'Study date'],
                     ['separator' => '  ']

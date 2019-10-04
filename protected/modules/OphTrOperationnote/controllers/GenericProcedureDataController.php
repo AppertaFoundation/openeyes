@@ -31,11 +31,12 @@ class GenericProcedureDataController extends ModuleAdminController
         if (Yii::app()->request->isPostRequest) {
             if ($search['query']) {
                 if (is_numeric($search['query'])) {
-                    $criteria->addCondition('id = :id');
+                    $criteria->addCondition('proc_id = :id');
                     $criteria->params[':id'] = $search['query'];
                 } else {
-
                     $criteria->addSearchCondition('procedure.term', $search['query'], true, 'OR');
+                    $criteria->addSearchCondition('procedure.snomed_term', $search['query'], true, 'OR');
+                    $criteria->addSearchCondition('procedure.aliases', $search['query'], true, 'OR');
                     $criteria->addSearchCondition('proc_id', $search['query'], true, 'OR');
                 }
             }
@@ -105,9 +106,16 @@ class GenericProcedureDataController extends ModuleAdminController
             }
         }
 
-        $this->render('edit', array(
+        $criteria = new CDbCriteria();
+        $criteria->join = ' LEFT JOIN ophtroperationnote_procedure_element ope ON ope.`procedure_id` = t.id';
+        $criteria->join .= ' LEFT JOIN ophtroperationnote_generic_procedure_data gpa ON gpa.`proc_id` = t.id';
+        $criteria->addCondition('ope.procedure_id IS NULL');
+        $criteria->addCondition('gpa.proc_id IS NULL');
+
+        $this->render('/admin/edit', array(
             'model' => $model,
             'title' => 'Add Generic Procedure Data',
+            'procedures' => Procedure::model()->findAll($criteria),
             'cancel_uri' => '/OphTrOperationnote/GenericProcedureData/list',
         ));
     }

@@ -52,6 +52,7 @@ class PatientSearch
      * Checking the search term if it is a NHS number, Hospital number or Patient name.
      *
      * @param string $term
+     * @return array
      */
     public function parseTerm($term)
     {

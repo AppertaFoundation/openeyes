@@ -54,7 +54,7 @@ if (@$_POST[get_class($element)] && $complication_ids = @$_POST[get_class($eleme
     $complications = $element->{$side . '_complications'};
 }
 
-if( is_array($complications) ){
+if ( is_array($complications) ) {
     foreach ($complications as $complication) {
         if ($complication->description_required) {
             $show_desc = true;
@@ -64,14 +64,16 @@ if( is_array($complications) ){
 ?>
 
 <div id="div_Element_OphTrIntravitrealinjection_Complications_<?php echo $side; ?>_oth_descrip" class="data-group"
-     style="display: <?php if (!$show_desc) { echo ' none'; } ?>">
+     style="display: <?php if (!$show_desc) {
+            echo ' none';
+                     } ?>">
   <div class="cols-<?php echo $form->columns('label'); ?>">
     <label for="<?php echo get_class($element) ?>_<?php echo $side . '_oth_descrip' ?>">
         <?php echo $element->getAttributeLabel($side . '_oth_descrip'); ?>:
     </label>
   </div>
   <div class="cols-<?php echo $form->columns('field'); ?>">
-      <?php echo $form->textArea($element, $side . '_oth_descrip', array('rows' => 4, 'cols' => 30, 'nowrapper' => true)); ?>
+        <?php echo $form->textArea($element, $side . '_oth_descrip', array('rows' => 4, 'cols' => 30, 'nowrapper' => true)); ?>
   </div>
 </div>
 

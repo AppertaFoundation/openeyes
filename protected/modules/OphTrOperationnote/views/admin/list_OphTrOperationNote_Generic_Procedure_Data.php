@@ -77,7 +77,7 @@
                             'class' => 'button large',
                             'type' => 'button',
                             'name' => 'add',
-                            'data-uri' => 'OphTrOperationnote/GenericProcedureData/add',
+                            'data-uri' => '/OphTrOperationnote/GenericProcedureData/add',
                             'id' => 'et_add'
                         ]
                     ); ?>

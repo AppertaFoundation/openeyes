@@ -192,65 +192,57 @@ class Zend_Gdata_Gapps_Extension_Login extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'userName':
-            $this->_username = $attribute->nodeValue;
+            case 'userName':
+                $this->_username = $attribute->nodeValue;
             break;
-        case 'password':
-            $this->_password = $attribute->nodeValue;
+            case 'password':
+                $this->_password = $attribute->nodeValue;
             break;
-        case 'hashFunctionName':
-            $this->_hashFunctionName = $attribute->nodeValue;
+            case 'hashFunctionName':
+                $this->_hashFunctionName = $attribute->nodeValue;
             break;
-        case 'admin':
-            if ($attribute->nodeValue == "true") {
-                $this->_admin = true;
-            }
-            else if ($attribute->nodeValue == "false") {
-                $this->_admin = false;
-            }
-            else {
-                require_once('Zend/Gdata/App/InvalidArgumentException.php');
-                throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for apps:login#admin.");
-            }
+            case 'admin':
+                if ($attribute->nodeValue == "true") {
+                    $this->_admin = true;
+                } else if ($attribute->nodeValue == "false") {
+                    $this->_admin = false;
+                } else {
+                    require_once('Zend/Gdata/App/InvalidArgumentException.php');
+                    throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for apps:login#admin.");
+                }
             break;
-        case 'agreedToTerms':
-            if ($attribute->nodeValue == "true") {
-                $this->_agreedToTerms = true;
-            }
-            else if ($attribute->nodeValue == "false") {
-                $this->_agreedToTerms = false;
-            }
-            else {
-                require_once('Zend/Gdata/App/InvalidArgumentException.php');
-                throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for apps:login#agreedToTerms.");
-            }
+            case 'agreedToTerms':
+                if ($attribute->nodeValue == "true") {
+                    $this->_agreedToTerms = true;
+                } else if ($attribute->nodeValue == "false") {
+                    $this->_agreedToTerms = false;
+                } else {
+                    require_once('Zend/Gdata/App/InvalidArgumentException.php');
+                    throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for apps:login#agreedToTerms.");
+                }
             break;
-        case 'suspended':
-            if ($attribute->nodeValue == "true") {
-                $this->_suspended = true;
-            }
-            else if ($attribute->nodeValue == "false") {
-                $this->_suspended = false;
-            }
-            else {
-                require_once('Zend/Gdata/App/InvalidArgumentException.php');
-                throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for apps:login#suspended.");
-            }
+            case 'suspended':
+                if ($attribute->nodeValue == "true") {
+                    $this->_suspended = true;
+                } else if ($attribute->nodeValue == "false") {
+                    $this->_suspended = false;
+                } else {
+                    require_once('Zend/Gdata/App/InvalidArgumentException.php');
+                    throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for apps:login#suspended.");
+                }
             break;
-        case 'changePasswordAtNextLogin':
-            if ($attribute->nodeValue == "true") {
-                $this->_changePasswordAtNextLogin = true;
-            }
-            else if ($attribute->nodeValue == "false") {
-                $this->_changePasswordAtNextLogin = false;
-            }
-            else {
-                require_once('Zend/Gdata/App/InvalidArgumentException.php');
-                throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for apps:login#changePasswordAtNextLogin.");
-            }
+            case 'changePasswordAtNextLogin':
+                if ($attribute->nodeValue == "true") {
+                    $this->_changePasswordAtNextLogin = true;
+                } else if ($attribute->nodeValue == "false") {
+                    $this->_changePasswordAtNextLogin = false;
+                } else {
+                    require_once('Zend/Gdata/App/InvalidArgumentException.php');
+                    throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for apps:login#changePasswordAtNextLogin.");
+                }
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 

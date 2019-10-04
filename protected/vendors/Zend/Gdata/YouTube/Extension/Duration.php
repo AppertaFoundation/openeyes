@@ -82,11 +82,11 @@ class Zend_Gdata_YouTube_Extension_Duration extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'seconds':
-            $this->_seconds = $attribute->nodeValue;
+            case 'seconds':
+                $this->_seconds = $attribute->nodeValue;
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 

@@ -239,7 +239,7 @@ class Zend_Gdata_Analytics_DataQuery extends Zend_Gdata_Query
      */
     public function addDimension($dimension)
     {
-        $this->_dimensions[$dimension] = true;        
+        $this->_dimensions[$dimension] = true;
         return $this;
     }
 
@@ -331,7 +331,7 @@ class Zend_Gdata_Analytics_DataQuery extends Zend_Gdata_Query
      * @param boolean[optional] $descending
      * @return Zend_Gdata_Analytics_DataQuery
      */
-    public function addSort($sort, $descending=false)
+    public function addSort($sort, $descending = false)
     {
         // add to sort storage
         $this->_sort[] = ($descending?'-':'').$sort;

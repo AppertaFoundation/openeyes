@@ -950,14 +950,14 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
             $event_type_name = @$_REQUEST['EventTypeModuleCode']['moduleSuffix'];
         }
         ?>
-		<label>Specialty: </label>
-		<?=\CHtml::dropDownList('Specialty[id]', $specialty_id, CHtml::listData(Specialty::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br/>
-		<label>Event group: </label><?=\CHtml::dropDownList('EventGroup[id]', $event_group_id, CHtml::listData(EventGroup::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
-		<label>Name of event type: </label> <?=\CHtml::textField('EventTypeModuleCode[moduleSuffix]', $event_type_name, array('size' => 65, 'id' => 'moduleSuffix'));
+        <label>Specialty: </label>
+        <?=\CHtml::dropDownList('Specialty[id]', $specialty_id, CHtml::listData(Specialty::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br/>
+        <label>Event group: </label><?=\CHtml::dropDownList('EventGroup[id]', $event_group_id, CHtml::listData(EventGroup::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
+        <label>Name of event type: </label> <?=\CHtml::textField('EventTypeModuleCode[moduleSuffix]', $event_type_name, array('size' => 65, 'id' => 'moduleSuffix'));
         ?><br />
-		<label>Event type short name: </label> <?=\CHtml::textField('EventTypeModuleCode[moduleShortSuffix]', $event_type_short_name, array('size' => 65, 'id' => 'moduleShortSuffix'));
+        <label>Event type short name: </label> <?=\CHtml::textField('EventTypeModuleCode[moduleShortSuffix]', $event_type_short_name, array('size' => 65, 'id' => 'moduleShortSuffix'));
         ?><br />
-		<?php
+        <?php
 
     }
 

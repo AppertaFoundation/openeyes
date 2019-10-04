@@ -35,7 +35,7 @@ if (!empty($sop) && Yii::app()->params['enable_forum_integration'] === 'on') {
         ));
 }
 
-if ($this->checkEditAccess()){
+if ($this->checkEditAccess()) {
     array_unshift(
     $this->event_actions,
         EventAction::link('Choose Lens', Yii::app()->createUrl($this->module->id.'/default/update/'.$this->event->id), null, array('class' => 'button small')
@@ -45,11 +45,17 @@ if ($this->checkEditAccess()){
 $this->beginContent('//patient/event_container', array('no_face'=>false));
 $this->moduleNameCssClass .= ' highlight-fields';
 
+if ($this->event->delete_pending) { ?>
+    <div class="alert-box alert with-icon">
+        This event is pending deletion and has been locked.
+    </div>
+<?php }
+
 if ($this->is_auto) {
     ?>
 <div id="surgeon">
-	<div class="cols-2 column" style="margin-left: 10px;">
-		<div class="data-label">Surgeon:
+    <div class="cols-2 column" style="margin-left: 10px;">
+        <div class="data-label">Surgeon:
            <b> <?php
             if (isset(Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)) {
                 echo OphInBiometry_Surgeon::model()->findByAttributes(
@@ -59,12 +65,11 @@ if ($this->is_auto) {
             ?>
            </b>
         </div>
-	</div>
+    </div>
 </div>
-<?php
+<?php }
 
-}
 $this->renderOpenElements($this->action->id); ?>
 <?php $this->renderPartial('//default/delete');?>
-<?php $this->renderPartial('_va_view' , ['action' => 'view']);?>
+<?php $this->renderPartial('_va_view', ['action' => 'view']);?>
 <?php $this->endContent()?>

@@ -1,5 +1,5 @@
 <tr id="conflicts" class="cols-full error" style="font-style: italic; font-size: small;">
-  <?php if (isset($patients)): ?>
+  <?php if (isset($patients)) : ?>
     <td class="row field-row">
       <p>Duplicate patient detected.</p>
     </td>
@@ -14,7 +14,7 @@
         </thead>
         <tbody>
         <tr>
-          <?php foreach ($patients as $patient): ?>
+          <?php foreach ($patients as $patient) : ?>
             <tr>
               <td><?php echo CHtml::link($patient->hos_num,
                   Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?></td>
@@ -24,12 +24,12 @@
               </td>
               <td></td>
             </tr>
-          <?php endforeach; ?>
+            <?php endforeach; ?>
         </tr>
         </tbody>
       </table>
     </td>
-  <?php else: ?>
+    <?php else : ?>
     <p>No conflicts found.</p>
-  <?php endif; ?>
+    <?php endif; ?>
 </tr>

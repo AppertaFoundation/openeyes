@@ -43,7 +43,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             <td><?=$theatre->getAttributeLabel('site_id');?></td>
             <td><?=CHtml::activeDropDownList($theatre, 'site_id', Site::model()->getListForCurrentInstitution(), ['empty' => '- Site -', 'class' => 'cols-full']);?></td>
         </tr>
-        <?php foreach(['name', 'code'] as $attr) :?>
+        <?php foreach (['name', 'code'] as $attr) :?>
         <tr>
             <td><?=$theatre->getAttributeLabel($attr);?></td>
             <td><?=CHtml::activeTextField($theatre, $attr, ['class' => 'cols-full'])?></td>

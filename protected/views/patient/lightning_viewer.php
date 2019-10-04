@@ -15,6 +15,7 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
 <?php $this->renderPartial('//patient/episodes_sidebar'); ?>
 
 <main class="oe-lightning-viewer">
+    <?php $this->renderPartial('//patient/_patient_alerts') ?>
   <div class="lightning-timeline">
     <div class="timeline-options js-lightning-options">
 
@@ -37,7 +38,9 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
                     continue;
                 }
                 ?>
-              <li class="<?php if ($previewType === $selectedPreviewType): ?>selected<?php endif; ?>">
+              <li class="<?php if ($previewType === $selectedPreviewType) :
+                    ?>selected<?php
+                         endif; ?>">
                 <i class="oe-i-e <?= count($events) > 0 ? reset($events)->eventType->getEventIconCssClass() : '' ?>"></i>
                 <a href="<?= Yii::app()->createUrl('/patient/lightningViewer',
                     array('id' => $this->patient->id, 'preview_type' => $previewType)) ?>"
@@ -124,16 +127,20 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
               >
                   <?php if (count($eventImages) === 0) { ?>
                     <p class="no-lightning-image">No preview is available at this time</p>
-                  <?php } else { ?>
-                      <?php foreach ($eventImages as $eventImage) { ?>
+                    <?php } else { ?>
+                        <?php foreach ($eventImages as $eventImage) { ?>
                       <div class="js-lightning-image-preview-page"
                            data-loaded="0"
                            data-src="<?= $eventImage->getImageUrl() ?>"
-                           style="max-width: <?= $previewWidth ?>px; <?php if ($eventImage->page): ?>display: none;<?php endif; ?>"
-                           <?php if ($eventImage->page !== null): ?>data-page-number="<?= $eventImage->page ?>"<?php endif; ?>
+                           style="max-width: <?= $previewWidth ?>px; <?php if ($eventImage->page) :
+                                ?>display: none;<?php
+                                             endif; ?>"
+                            <?php if ($eventImage->page !== null) :
+                                ?>data-page-number="<?= $eventImage->page ?>"<?php
+                            endif; ?>
                       ></div>
-                      <?php } ?>
-                  <?php } ?>
+                        <?php } ?>
+                    <?php } ?>
               </div>
             <?php }
         } ?>

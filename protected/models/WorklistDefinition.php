@@ -58,7 +58,23 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                     ]
                 ],
             ],
+            'displayOrder' => ['order' => 'display_order ASC']
         ];
+    }
+
+    public function beforeValidate()
+    {
+        if ( preg_match('/^(\d{2}):(\d{2})$/', $this->start_time)) {
+            // the format is 00:00, we need to append :00
+            $this->start_time .= ':00';
+        }
+
+        if ( preg_match('/^(\d{2}):(\d{2})$/', $this->end_time)) {
+            // the format is 00:00, we need to append :00
+            $this->end_time .= ':00';
+        }
+
+        return parent::beforeValidate();
     }
 
     /**
@@ -74,7 +90,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             array('name, rrule', 'required'),
             array('name', 'length', 'max' => 100),
             array('description', 'length', 'max' => 1000),
-            array('start_time, end_time', 'type', 'type'=>'time', 'timeFormat'=>'hh:mm:ss'),
+            array('start_time, end_time', 'type', 'type'=>'time', 'timeFormat'=>'hh:mm:ss', 'except' => 'sortDisplayOrder'),
             array('active_from, active_until', 'OEDateValidator'),
             array(
                 'active_from',
@@ -167,6 +183,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         foreach (array('start_time', 'end_time') as $time_attr) {
             $this->$time_attr = substr($this->$time_attr, 0, 5);
         }
+
         parent::afterFind();
     }
 

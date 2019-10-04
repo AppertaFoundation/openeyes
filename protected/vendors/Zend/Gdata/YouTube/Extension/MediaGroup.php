@@ -190,8 +190,8 @@ class Zend_Gdata_YouTube_Extension_MediaGroup extends Zend_Gdata_Media_Extension
                 $uploaded ->transferFromDOM($child);
                 $this->_uploaded = $uploaded;
                 break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }

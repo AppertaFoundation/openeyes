@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    $('.autosize').autosize();
+    autosize($('.autosize'));
 
     $('#et_delete_generic_procedure_data').click(function(e) {
         e.preventDefault();

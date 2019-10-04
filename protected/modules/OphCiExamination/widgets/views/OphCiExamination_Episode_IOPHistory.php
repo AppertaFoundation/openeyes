@@ -13,12 +13,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if ($chart->hasData()): ?>
+<?php if ($chart->hasData()) : ?>
     <div class="column cols-12">
       <div id="iop-history-chart" class="chart" style="width: 100%; height: 500px"></div>
     </div>
     <?= $chart->run(); ?>
-  <?php else: ?>
+<?php else : ?>
     <div class="cols-12 column">
       <div class="data-value">(no data)</div>
     </div>

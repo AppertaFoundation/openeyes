@@ -19,8 +19,8 @@
 <?php
 $mode = 'Basic';
 $settings = new SettingMetadata();
-$expert = $settings->getSetting('expert',$element->elementType);
-if($expert){
+$expert = $settings->getSetting('expert', $element->elementType);
+if ($expert) {
     $mode = 'Expert';
 }
 $doodleToolBarArray = array('AngleNV', 'AntSynech', 'AngleRecession');
@@ -63,6 +63,6 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         setTimeout(function(){
             $('#<?= $side ?>_gonioscopy_mode option').filter('[data-value="<?= $mode ?>"]').attr('selected','selected');
             $('#<?= $side ?>_gonioscopy_mode').trigger('change');
-        },150);
+        },500);
     });
 </script>

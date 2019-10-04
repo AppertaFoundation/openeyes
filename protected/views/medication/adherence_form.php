@@ -42,26 +42,26 @@ if ($adherence === null) {
 ?>
 <input type="hidden" name="patient_id" id="medication_id" value="<?= $patient->id ?>"/>
 <fieldset class="data-group">
-	<legend><strong>Adherence</strong></legend>
-	<div class="data-group">
-		<div class="<?= $form->columns('label') ?>"><label for="adherence">Adherence:</label></div>
-		<div class="<?= $form->columns('field') ?>"><?=
+    <legend><strong>Adherence</strong></legend>
+    <div class="data-group">
+        <div class="<?= $form->columns('label') ?>"><label for="adherence">Adherence:</label></div>
+        <div class="<?= $form->columns('field') ?>"><?=
             CHtml::activeDropDownList(
                 $adherence, 'level',
                 CHtml::listData(MedicationAdherenceLevel::model()->
                     findAll(array('order' => 'display_order')), 'id', 'name')
             )
-            ?></div>
-	</div>
-	<div class="data-group">
-		<div class="<?= $form->columns('label') ?>"><label for="adherence">Comments:</label></div>
-		<div class="<?= $form->columns('field') ?>">
-			<?= CHtml::activeTextArea($adherence, 'comments') ?>
-		</div>
-	</div>
+                    ?></div>
+    </div>
+    <div class="data-group">
+        <div class="<?= $form->columns('label') ?>"><label for="adherence">Comments:</label></div>
+        <div class="<?= $form->columns('field') ?>">
+            <?= CHtml::activeTextArea($adherence, 'comments') ?>
+        </div>
+    </div>
 </fieldset>
 <div class="buttons">
-	<button type="button" class="medication_save secondary small">Save</button>
-	<button type="button" class="medication_cancel warning small">Cancel</button>
+    <button type="button" class="medication_save secondary small">Save</button>
+    <button type="button" class="medication_cancel warning small">Cancel</button>
 </div>
 <?php $this->endWidget(); ?>

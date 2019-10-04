@@ -21,7 +21,8 @@ $(document).ready(function () {
     var rowCount = $('#prescription_items tr').length;
     if (rowCount === 1) {
       new OpenEyes.UI.Dialog.Alert({
-        content: "Items cannot be blank."
+        content: "Items cannot be blank.",
+        closeCallback: enableButtons // re-enable buttons when closing the popup
       }).open();
 
       return false;
@@ -30,7 +31,7 @@ $(document).ready(function () {
     return true;
   }
 
-  $('#Element_OphDrPrescription_Details_comments').autosize();
+  autosize($('#Element_OphDrPrescription_Details_comments'));
 
   $(document).on('click', '#et_save_print', function (e) {
     $('#Element_OphDrPrescription_Details_draft').val(0);

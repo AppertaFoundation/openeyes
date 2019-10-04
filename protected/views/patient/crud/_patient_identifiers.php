@@ -6,7 +6,6 @@
 <?php if (isset(Yii::app()->params['patient_identifiers'])) { ?>
     <?php $index = 0;
     foreach (Yii::app()->params['patient_identifiers'] as $identifier_code => $identifier_config) {
-
         $patient_identifier = null;
         foreach ($patient_identifiers as $pi) {
             if ($pi->code === $identifier_code) {

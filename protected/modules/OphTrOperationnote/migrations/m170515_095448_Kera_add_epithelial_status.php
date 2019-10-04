@@ -23,22 +23,22 @@ class m170515_095448_Kera_add_epithelial_status extends OEMigration
 
     }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropColumn('et_ophtroperationnote_cxl', 'epithelial_status_id');
         $this->dropColumn('et_ophtroperationnote_cxl_version', 'epithelial_status_id');
         $this->dropOETable('ophtroperationnote_cxl_epithelial_status', true);
 
     }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

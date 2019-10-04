@@ -2,8 +2,8 @@
 
 class m180409_140353_shortcodes_for_observations extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $event_type_id = $this->dbConnection->createCommand()
             ->select('id')
             ->from('event_type')
@@ -72,17 +72,17 @@ class m180409_140353_shortcodes_for_observations extends CDbMigration
             'description' => 'Last BMI',
             'last_modified_user_id' => '1',
         ));
-	}
+    }
 
-	public function down()
-	{
-		$this->delete('patient_shortcode', '`default_code`="bmi"');
-		$this->delete('patient_shortcode', '`default_code`="lwt"');
-		$this->delete('patient_shortcode', '`default_code`="lht"');
-		$this->delete('patient_shortcode', '`default_code`="lh1"');
-		$this->delete('patient_shortcode', '`default_code`="lbg"');
-		$this->delete('patient_shortcode', '`default_code`="lo2"');
-		$this->delete('patient_shortcode', '`default_code`="lbp"');
-	}
+    public function down()
+    {
+        $this->delete('patient_shortcode', '`default_code`="bmi"');
+        $this->delete('patient_shortcode', '`default_code`="lwt"');
+        $this->delete('patient_shortcode', '`default_code`="lht"');
+        $this->delete('patient_shortcode', '`default_code`="lh1"');
+        $this->delete('patient_shortcode', '`default_code`="lbg"');
+        $this->delete('patient_shortcode', '`default_code`="lo2"');
+        $this->delete('patient_shortcode', '`default_code`="lbp"');
+    }
 
 }

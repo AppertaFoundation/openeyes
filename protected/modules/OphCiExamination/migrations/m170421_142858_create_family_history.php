@@ -31,8 +31,8 @@ class m170421_142858_create_family_history extends OEMigration
         }
     }
 
-	public function up()
-	{
+    public function up()
+    {
         $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name',
             array(':class_name' => 'OphCiExamination'))->queryScalar();
 
@@ -148,14 +148,14 @@ class m170421_142858_create_family_history extends OEMigration
             array(':id' => $element_type_id));
     }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

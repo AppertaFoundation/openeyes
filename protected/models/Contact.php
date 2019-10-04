@@ -182,7 +182,7 @@ class Contact extends BaseActiveRecordVersioned
      */
     public function getSalutationName()
     {
-        if($this->title) {
+        if ($this->title) {
             return $this->title . ' ' . $this->last_name;
         } else {
             return $this->first_name . ' ' . $this->last_name;

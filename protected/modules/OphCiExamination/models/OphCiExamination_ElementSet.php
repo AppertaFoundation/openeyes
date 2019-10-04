@@ -150,14 +150,14 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
     }
 
     public function isDeletable($step_id = null){
-        if(!$step_id){
+        if (!$step_id) {
             $step_id = $this->id;
         }
 
         $criteria = new \CDbCriteria();
         $criteria->addCondition('step_id =:step_id');
         $criteria->params[':step_id'] = $step_id;
-       return !(bool)OphCiExamination_Event_ElementSet_Assignment::model()->find($criteria);
+        return !(bool)OphCiExamination_Event_ElementSet_Assignment::model()->find($criteria);
     }
 
     /**

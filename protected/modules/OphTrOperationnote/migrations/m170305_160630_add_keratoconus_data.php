@@ -2,8 +2,8 @@
 
 class m170305_160630_add_keratoconus_data extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->insert('ophtroperationnote_cxl_iontophoresis', array(
             'name' => 'Yes',
             'display_order' => 1,
@@ -535,10 +535,10 @@ class m170305_160630_add_keratoconus_data extends OEMigration
         ));
 
         $columns = 30;
-        for ($k = 1 ; $k < $columns; $k++){
-            if($k == 10){
+        for ($k = 1 ; $k < $columns; $k++) {
+            if ($k == 10) {
                 $defaultChoice = 1;
-            }else{
+            } else {
                 $defaultChoice = 0;
             }
             $this->insert('ophtroperationnote_cxl_soak_duration', array(
@@ -554,10 +554,10 @@ class m170305_160630_add_keratoconus_data extends OEMigration
         }
 
         $columns = 30;
-        for ($k = 0 ; $k < $columns; $k++){
-            if($k == 8){
+        for ($k = 0 ; $k < $columns; $k++) {
+            if ($k == 8) {
                 $defaultChoice = 1;
-            }else{
+            } else {
                 $defaultChoice = 0;
             }
             $this->insert('ophtroperationnote_cxl_total_exposure_time', array(
@@ -573,10 +573,10 @@ class m170305_160630_add_keratoconus_data extends OEMigration
         }
 
         $columns = 40;
-        for ($k = 3 ; $k < $columns; $k++){
-            if($k == 30){
+        for ($k = 3 ; $k < $columns; $k++) {
+            if ($k == 30) {
                 $defaultChoice = 1;
-            }else{
+            } else {
                 $defaultChoice = 0;
             }
             $this->insert('ophtroperationnote_cxl_uv_irradiance', array(
@@ -849,19 +849,19 @@ class m170305_160630_add_keratoconus_data extends OEMigration
 
 
     public function down()
-	{
-		echo "m170305_160630_add_keratoconus_data does not support migration down.\n";
-		return false;
-	}
+    {
+        echo "m170305_160630_add_keratoconus_data does not support migration down.\n";
+        return false;
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

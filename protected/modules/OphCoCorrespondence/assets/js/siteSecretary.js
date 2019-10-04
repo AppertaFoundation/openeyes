@@ -15,14 +15,16 @@ OpenEyes.CO.SiteSecretary = (function () {
         $targetRow,
         $loaderImage,
         saveButton = '<button class="addButton small">{{text}}</button>',
-        deleteButton = '<button type="submit" form="deleteSecretaryForm" name="id" class="small" value="">Delete</button>',
+        deleteButton = '<button type="submit" form="deleteSecretaryForm" name="id" class="small" value=""><i class="oe-i trash-blue "></i></button>',
         addUrl = "/OphCoCorrespondence/admin/addSiteSecretary",
         deleteUrl = "/OphCoCorrespondence/admin/deleteSiteSecretary",
         postData = {},
         errorTmpl = '<div class="alert-box alert with-icon">' +
             '<p>Please fix the following input errors:</p>' +
             '<ul>{{#errors}}<li>{{.}}</li>{{/errors}}</ul>' +
-            '</div>';
+            '</div>',
+        $blankRow,
+        $blankRowBtn;
 
     function addSuccess(data, status, xhr) {
         if (!data.success) {
@@ -91,6 +93,11 @@ OpenEyes.CO.SiteSecretary = (function () {
         });
     }
 
+    function showBlankRow(){
+        $blankRow.removeClass('hidden');
+        $blankRowBtn.closest('tr').addClass('hidden');
+    }
+
     return {
         init: function () {
             $editForm = $('#editSecretaryForm');
@@ -100,11 +107,15 @@ OpenEyes.CO.SiteSecretary = (function () {
             $lastEdit.find('button[form="deleteSecretaryForm"]').replaceWith(Mustache.render(saveButton, {text: "Add"}));
             $blankEdit = $lastEdit.clone();
             $loaderImage = $saveRow.find('.loader').clone();
+            $blankRow = $('.js-addNewRow');
+            $blankRowBtn = $('.js-showBlankRow');
+            $blankRow.addClass('hidden');
 
             //We'll handle these with fancy JS actions now so remove them
             $saveRow.remove();
             $('button[form="deleteSecretaryForm"]').parent().prepend(Mustache.render(saveButton, {text: "Save"}));
             $editForm.on('click', 'button[form="deleteSecretaryForm"], .addButton', formEvent);
+            $editForm.on('click', '.js-showBlankRow', showBlankRow);
         }
     };
 })();

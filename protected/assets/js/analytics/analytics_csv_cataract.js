@@ -3,27 +3,35 @@ function pcr_risk_to_csv(){
     var file_name = data.name;
     data.x = data.x.concat($('#PcrRiskReport')[0].data[1].x);
     data.y = data.y.concat($('#PcrRiskReport')[0].data[1].y);
-    csv_export(file_name,data);
+    csv_export_cataract(file_name,data);
 }
 
 function complication_profile_to_csv(){
     var data = $('#CataractComplicationsReport')[0].data[0];
     var file_name = data.name;
-    csv_export(file_name,data);
+    csv_export_cataract(file_name,data);
 }
 
 function visual_acuity_to_csv(){
     var data = $('#OEModule_OphCiExamination_components_VisualOutcomeReport')[0].data[0];
-    var file_name = data.name;
-    csv_export(file_name,data);
+    var file_name = 'VisualOutcomeReport';
+    csv_export_cataract(file_name,data);
 }
 
 function refractive_outcome_to_csv(){
     var data = $('#OEModule_OphCiExamination_components_RefractiveOutcomeReport')[0].data[0];
     var file_name = data.name;
-    csv_export(file_name,data);
+    csv_export_cataract(file_name,data);
 }
-function csv_export(filename,data){
+
+function NOD_Audit_to_csv(){
+    var data = $('#NodAuditReport')[0].data[0];
+    var file_name = 'NODAuditReportCompletion';
+    csv_export_cataract(file_name,data);
+}
+
+function csv_export_cataract(filename,data){
+    filename += '.csv';
     var processData = function (x,y) {
         var finalVal = x+','+y+'\n';
         return finalVal;
@@ -64,6 +72,9 @@ $('#js-download-csv').click(function () {
             break;
         case 'RO':
             refractive_outcome_to_csv();
+            break;
+        case 'NOD':
+            NOD_Audit_to_csv();
             break;
     }
 });

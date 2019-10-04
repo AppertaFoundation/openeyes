@@ -6,7 +6,7 @@ var analytics_layout = {
     autosize: false,
     margin:{
         l:50,
-        t:30,
+        t:100,
         b: 50,
         pad:4,
     },
@@ -17,7 +17,7 @@ var analytics_layout = {
     showlegend: true,
     legend: {
         x: 0 ,
-        y: 1.1,
+        y: 1.05,
         traceorder: 'normal',
         font: {
             family: 'sans-serif',
