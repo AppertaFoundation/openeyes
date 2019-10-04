@@ -568,7 +568,7 @@ class Zend_Ldap_Node extends Zend_Ldap_Node_Abstract implements Iterator, Recurs
      * @param  array $options Additional options used during encoding
      * @return string
      */
-    public function toLdif(array $options = array())
+    public function toLdif (array $options = array())
     {
         $attributes = array_merge(array('dn' => $this->getDnString()), $this->getData(false));
         /**

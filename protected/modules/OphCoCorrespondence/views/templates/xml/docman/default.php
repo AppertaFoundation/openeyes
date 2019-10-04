@@ -52,7 +52,7 @@
     <SubLocation></SubLocation>
     <SubLocationName></SubLocationName>
     <LetterType><?=$data['letter_type'];?></LetterType>
-<?php if(isset($data['with_internal_referral']) && $data['with_internal_referral']):?>
+<?php if (isset($data['with_internal_referral']) && $data['with_internal_referral']):?>
     <!--Internal Referral-->
     <ServiceTo><?=$data['service_to'];?></ServiceTo>
     <ConsultantTo><?=$data['consultant_to'];?></ConsultantTo>

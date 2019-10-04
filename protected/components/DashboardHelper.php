@@ -128,7 +128,7 @@ class DashboardHelper
 
         $module = Yii::app()->moduleAPI->get($module_name);
 
-        if(isset($item['js'])){
+        if (isset($item['js'])){
 					$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module_name.'.assets/js/'), false, -1);
 					Yii::app()->clientScript->registerScriptFile($assetPath . '/' . $item['js']);
 				}
