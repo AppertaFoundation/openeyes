@@ -5,7 +5,8 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
 (function (exports) {
     function DrugSetController(options) {
         this.options = $.extend(true, {}, DrugSetController._defaultOptions, options);
-
+        
+        this.loadingOverlay = new OpenEyes.UI.LoadingOverlay();
         this.initFilters();
         this.initTable();
     }
@@ -185,7 +186,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             url: controller.options.searchUrl,
             dataType: "json",
             data: data,
-            beforeSend: controller.showOverlay,
+            beforeSend: () => controller.loadingOverlay.open(),
             success: function(data) {
                 let rows = [];
 
@@ -210,14 +211,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
 
             },
             complete: function() {
-                //Make sure only correct popup is removed
-                $('.oe-popup-wrap').each( (key, element) => {
-                    let children = [];
-                    Array.from(element.children).forEach( child => children.push(child.className) );
-                    if (children.includes('spinner')) {
-                        element.remove();
-                    }
-                });
+                controller.loadingOverlay.close();
 
                 if (typeof callback === 'function') {
                     callback();
@@ -239,7 +233,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             url: controller.options.deleteUrl,
             dataType: "json",
             data: data,
-            beforeSend: controller.showOverlay,
+            beforeSend: () => controller.loadingOverlay.open(),
             success: function(data) {
                 if (data.message && data.message.length) {
                     new OpenEyes.UI.Dialog.Alert({
@@ -252,16 +246,6 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             }
         });
 
-    };
-
-    DrugSetController.prototype.showOverlay = function () {
-        if (!$('.oe-popup-wrap').length) {
-            // load spinner
-            let $overlay = $('<div>', {class: 'oe-popup-wrap'});
-            let $spinner = $('<div>', {class: 'spinner'});
-            $overlay.append($spinner);
-            $('body').prepend($overlay);
-        }
     };
 
     exports.DrugSetController = DrugSetController;
