@@ -45,10 +45,10 @@ class ReCropVFImagesCommand extends CConsoleCommand
 
             // next step, take image_id and open image:
             if (file_exists($full->getPath())) {
-                $src = imagecreatefromgif($full->getPath());
+                $src = imagecreatefromgif ($full->getPath());
                 $dest = imagecreatetruecolor($dest_w, $dest_h);
                 imagecopy($dest, $src, 0, 0, $src_x, $src_y, $dest_w, $dest_h);
-                imagegif($dest, $cropped->getPath());
+                imagegif ($dest, $cropped->getPath());
                 echo 'patient: '.$field->getPatientMeasurement()->patient->hos_num.', path: '.$cropped->getPath().PHP_EOL;
 
                 // Reset sizes

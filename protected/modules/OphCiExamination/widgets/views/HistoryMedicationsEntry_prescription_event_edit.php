@@ -44,7 +44,7 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
 
         }, $entry->medication->allergies)); ?>"<?php
     endif; ?>
-    class="divider col-gap js-first-row <?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>" >
+    class="divider col-gap <?= $stopped ? 'fade' : ''?> js-first-row <?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>" >
     <td class="drug-details" rowspan="2">
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
@@ -110,7 +110,7 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
         "This medication was prescribed through OpenEyes.<?= $entry->prescriptionNotCurrent() ? ' The prescription has been altered since this entry was recorded.' : ''; ?>"></i>
     </td>
 </tr>
-    <tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row">
+    <tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row <?= $stopped ? 'fade' : ''?>">
     <td class="nowrap">
             <div class="flex-meds-inputs">
                 <span>
