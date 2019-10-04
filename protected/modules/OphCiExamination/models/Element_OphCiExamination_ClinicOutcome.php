@@ -26,12 +26,10 @@ use Yii;
  * The followings are the available columns in table:
  *
  * @property int $id
- * @property Event $event
- * @property OphCiExamination_ClinicOutcome_Status $status
- * @property int $followup_quantity
- * @property Period $followup_period
- * @property OphCiExamination_ClinicOutcome_Role $role
- * @property string $role_comments
+ * @property \Event $event
+ * @property string $comments
+ * @property ClinicOutcomeEntry[] $entries
+ *
  */
 class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 {
@@ -63,14 +61,10 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-                array('description, followup_quantity, followup_period_id, role_id, role_comments', 'safe'),
-                array('status_id', 'required'),
-                array('status_id', 'statusDependencyValidation'),
-                array('role_id', 'roleDependencyValidation'),
-                array('followup_quantity', 'numerical', 'integerOnly' => true, 'min' => self::FOLLOWUP_Q_MIN, 'max' => self::FOLLOWUP_Q_MAX),
-                array('id, event_id, status_id, description, followup_quantity, followup_period_id, role_id, role_comments', 'safe', 'on' => 'search'),
-        );
+        return [
+                ['comments', 'safe'],
+                ['id, event_id, comments', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -78,15 +72,11 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
      */
     public function relations()
     {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
         return array(
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-                'status' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status', 'status_id'),
-                'followup_period' => array(self::BELONGS_TO, 'Period', 'followup_period_id'),
-                'role' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role', 'role_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\ClinicOutcomeEntry', 'element_id'),
         );
     }
 
@@ -95,22 +85,17 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
      */
     public function attributeLabels()
     {
-        return array(
+        return [
                 'id' => 'ID',
                 'event_id' => 'Event',
-                'description' => 'Comments',
-                'status_id' => 'Status',
-                'followup_quantity' => 'Follow-up',
-                'followup_period_id' => 'Follow-up period',
-                'role_id' => 'Role',
-                'role_comments' => 'Role comment',
-        );
+                'comments' => 'Comments',
+        ];
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -118,43 +103,35 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
-        $criteria->compare('description', $this->description);
-        $criteria->compare('status_id', $this->status_id);
-        $criteria->compare('followup_quanityt', $this->followup_quantity);
-        $criteria->compare('followup_quantity', $this->followup_quantity);
-        $criteria->compare('followup_period_id', $this->followup_period_id);
-        $criteria->compare('role_id', $this->role_id);
-        $criteria->compare('role_comments', $this->role_comments);
+        $criteria->compare('comments', $this->comments);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
     }
 
-    /**
-     * Follow up data is only required for status that are flagged for follow up.
-     *
-     * @property string $attribute
-     */
-    public function statusDependencyValidation($attribute)
+    public function checkForDeletedEntries($entries_ids)
     {
-        if ($this->status_id && $this->status->followup) {
-            $v = \CValidator::createValidator('required', $this, array('followup_quantity', 'followup_period_id', 'role_id'));
-            $v->validate($this);
+        $entries = ClinicOutcomeEntry::model()->findAll("element_id=:element_id", [":element_id" => $this->id]);
+        foreach ($entries as $entry) {
+            if (array_search($entry->id, $entries_ids) === false) {
+                $entry->delete();
+            }
         }
     }
 
-    /**
-     * Role comments are only required if role flags it.
-     *
-     * @property string $attribute
-     */
-    public function roleDependencyValidation($attribute)
+    public function afterSave()
     {
-        if ($this->role && $this->role->requires_comment
-                && !trim($this->role_comments)) {
-            $this->addError($attribute, 'Role requires a comment');
+        // Update Episode status when outcome is saved
+        if ($this->entries && $this->entries[0]->status->episode_status_id) {
+            if ($this->event->isLatestOfTypeInEpisode()) {
+                $this->event->episode->episode_status_id = $this->entries[0]->status->episode_status_id;
+                if (!$this->event->episode->save()) {
+                    throw new Exception('Unable to save episode status: '.print_r($this->event->episode->getErrors(), true));
+                }
+            }
         }
+        parent::afterSave();
     }
 
     public function getFollowUpQuantityOptions()
@@ -165,45 +142,6 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         }
 
         return $opts;
-    }
-
-    public function getFollowUp()
-    {
-        if ($this->status->followup) {
-            return $this->followup_quantity.' '.$this->followup_period;
-        }
-    }
-
-    /**
-     * Returns the follow up period information.
-     *
-     * @return string
-     */
-    public function getLetter_fup()
-    {
-        $text = array();
-
-        $text[] = $this->getFollowUp();
-        $text[] = $this->role->name;
-        if ($this->role_comments) {
-            $text[] = '('.$this->role_comments.')';
-        }
-
-        return implode(' ', $text);
-    }
-
-    public function afterSave()
-    {
-        // Update Episode status when outcome is saved
-        if ($this->status && $this->status->episode_status) {
-            if ($this->event->isLatestOfTypeInEpisode()) {
-                $this->event->episode->episode_status_id = $this->status->episode_status_id;
-                if (!$this->event->episode->save()) {
-                    throw new Exception('Unable to save episode status: '.print_r($this->event->episode->getErrors(), true));
-                }
-            }
-        }
-        parent::afterSave();
     }
 
     /**
