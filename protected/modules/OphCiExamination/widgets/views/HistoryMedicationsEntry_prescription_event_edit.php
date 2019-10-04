@@ -134,9 +134,9 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
                     <?php endif; ?>
                 </a>
             </div>
-            <fieldset style="display: none;" class="js-datepicker-wrapper js-end-date-wrapper">
+            <fieldset class="js-datepicker-wrapper js-end-date-wrapper">
                             <i class="oe-i stop small pad"></i>
-                <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" class="js-end-date"
+                <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
                                              name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
                                              data-default="<?= date('Y-m-d') ?>"
                                              style="width:80px" placeholder="yyyy-mm-dd"

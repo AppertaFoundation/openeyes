@@ -121,16 +121,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       var modelName = this.options['modelName'];
     var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
     for (var i=0; i < row_count; i++){
-      this.constructDatepicker('#'+modelName+'_datepicker_2_'+i);
-      this.constructDatepicker('#'+modelName+'_datepicker_3_'+i);
+      this.constructDatepicker('#'+modelName+'_entries_'+i+'_start_date');
+      this.constructDatepicker('#'+modelName+'_entries_'+i+'_end_date');
     }
   };
 
   HistoryMedicationsController.prototype.setDatepicker = function () {
       var modelName = this.options['modelName'];
     var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
-    this.constructDatepicker('#'+modelName+'_datepicker_2_'+row_count);
-    this.constructDatepicker('#'+modelName+'_datepicker_3_'+row_count);
+		this.constructDatepicker('#'+modelName+'_entries_'+row_count+'_start_date');
+		this.constructDatepicker('#'+modelName+'_entries_'+row_count+'_end_date');
   };
 
   HistoryMedicationsController.prototype.constructDatepicker = function (name) {
