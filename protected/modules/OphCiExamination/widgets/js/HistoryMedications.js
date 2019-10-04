@@ -151,6 +151,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     controller.$table.on('click', controller.options.removeButtonSelector, function(e) {
         e.preventDefault();
         var $row = $(e.target).closest("tr");
+        let $closest_table = $(e.target).closest('table');
 
         var key = $row.attr("data-key");
         var $tapers = controller.$table.find("tr[data-parent-key="+key+"]");
@@ -158,6 +159,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         controller.removeBoundEntry($row);
         controller.$table.find('tr[data-key=' + key + ']').remove();
         controller.displayTableHeader();
+
+			if($closest_table.hasClass("js-stopped-medications")) {
+				$closest_table.closest('.collapse-data').find('.js-stopped-medications-count').text('(' +$closest_table.find('tr.js-first-row').length + ')');
+			}
     });
 
     // removal button for tapers
