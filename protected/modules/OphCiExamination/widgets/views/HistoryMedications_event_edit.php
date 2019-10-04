@@ -55,6 +55,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
           </thead>
         <tbody>
         <?php
+				$row_count = 0;
         $total_count = count($element->current_entries);
         foreach ($element->current_entries as $row_count => $entry) {
             if ($entry->prescription_item_id) {
