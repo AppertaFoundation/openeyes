@@ -45,7 +45,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
     <tr
             data-key="<?=$row_count?>"
             data-event-medication-use-id="<?php echo $entry->id; ?>"
-            data-allergy-ids="<?php if (!is_null($entry->medication_id)) {
+            data-allergy-ids="<?php if (isset($entry->medication)) {
                 echo implode(",", array_map(function ($e) {
                     return $e->id;
 
