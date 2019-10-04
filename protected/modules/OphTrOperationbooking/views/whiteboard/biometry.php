@@ -27,9 +27,39 @@
     <div class="multipage-stack whiteboard">
         <?php
         foreach ($pages as $id => $page) : ?>
-            <img src="/eventImage/view/<?= $document_event_id?>" alt="biom-<?= $id + 1?>"/>
+            <img id="biom-<?= $id + 1?>" src="/eventImage/view/<?= $document_event_id?>" alt="biom-<?= $id + 1?>"/>
         <?php endforeach; ?>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            let id = 0;
+            let maxPages = <?= count($pages) ?>;
+            $('#js-scroll-btn-down').click(function() {
+                if (id + 1 < maxPages) {
+                    id++;
+                    $('.multipage-stack').animate({
+                        scrollTop:  $('#biom-' + (id + 1)).offset().top
+                    });
+                }
+            });
+
+            $('#js-scroll-btn-up').click(function() {
+                if (id > 0) {
+                    id--;
+                    $('.multipage-stack').animate({
+                        scrollTop:  $('#biom-' + (id + 1)).offset().top
+                    });
+                }
+            });
+
+            $('.page-num-btn').click(function() {
+                id = $(this).data('page');
+                $('.multipage-stack').animate({
+                    scrollTop:  $('#biom-' + (id + 1)).offset().top
+                });
+            })
+        });
+    </script>
     <footer class="wb3-actions down">
         <?php $this->renderPartial('footer', array(
             'biometry' => true,
