@@ -179,7 +179,7 @@ class OphDrPrescription_Item extends EventMedicationUse
             'laterality',
             'route_id',
             'frequency_id',
-            'duration',
+            'duration_id',
             'dose',
             'dispense_condition_id',
             'dispense_location_id',

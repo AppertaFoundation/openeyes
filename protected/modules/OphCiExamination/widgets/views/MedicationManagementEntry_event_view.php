@@ -31,7 +31,7 @@
     <td>
         <?php echo $entry->getAdministrationDisplay(); ?>
     </td>
-    <td><?php echo $entry->duration ? $entry->drugDuration->name : '' ?></td>
+    <td><?php echo $entry->duration_id ? $entry->drugDuration->name : '' ?></td>
     <td>
         <?php if ($entry->dispense_condition_id) {
             echo $entry->dispense_condition->name . " / " . $entry->dispense_location->name;
