@@ -327,8 +327,9 @@ class MedicationManagement extends BaseMedicationElement
                         'laterality' => $entry->laterality,
                         'route_id' => $entry->route_id,
                         'frequency_id' => $entry->frequency_id,
-                        'duration' => $entry->duration,
+                        'duration_id' => $entry->duration_id,
                         'dose' => $entry->dose,
+												'dose_unit_term' => $entry->dose_unit_term,
                         'start_date' => $entry->start_date,
                         'dispense_location_id' => $entry->dispense_location_id,
                         'dispense_condition_id' => $entry->dispense_condition_id
@@ -386,7 +387,7 @@ class MedicationManagement extends BaseMedicationElement
             $item->original_item_id = $entry->id;
             $item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
 
-            $prescription_creator->additem($item);
+            $prescription_creator->addItem($item);
         }
 
         $prescription_creator->elements['Element_OphDrPrescription_Details']->draft = 1;
@@ -419,7 +420,7 @@ class MedicationManagement extends BaseMedicationElement
         $item->frequency_id = $entry->frequency_id;
         $item->route_id = $entry->route_id;
         $item->medication_id = $entry->medication_id;
-        $item->duration= $entry->duration;
+        $item->duration_id = $entry->duration_id;
         $item->dispense_condition_id = $entry->dispense_condition_id;
         $item->dispense_location_id = $entry->dispense_location_id;
         $item->laterality = $entry->laterality;

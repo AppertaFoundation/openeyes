@@ -169,8 +169,8 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             </div>
         </td>
         <td>
-            <?=\CHtml::dropDownList($field_prefix.'[duration]', $entry->duration,
-                CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),
+            <?=\CHtml::dropDownList($field_prefix.'[duration_id]', $entry->duration_id,
+                CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration_id)->findAll(array('order' => 'display_order')), 'id', 'name'),
                 array('empty' => '- Select -', 'class' => 'cols-full js-duration', 'style' => $prescribe_hide_style)) ?>
         </td>
         <td id="<?= $model_name."_entries_".$row_count."_dispense_condition_id_error" ?>">

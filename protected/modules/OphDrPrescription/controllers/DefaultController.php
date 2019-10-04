@@ -633,7 +633,7 @@ class DefaultController extends BaseEventTypeController
             // Source is a prescription item, so we should clone it
             foreach (array(
                          'medication_id',
-                         'duration',
+                         'duration_id',
                          'frequency_id',
                          'dose',
                          'laterality',
