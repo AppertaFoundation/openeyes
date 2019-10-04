@@ -115,7 +115,7 @@ class MedicationManagement extends BaseMedicationElement
     {
         $event_date = $this->event->event_date;
 
-        return array_filter($this->visible_entries, function($e) use($event_date) {
+        return array_filter($this->visible_entries, function ($e) use ($event_date) {
             return ($e->start_date < $event_date &&
                 (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
             );
@@ -130,7 +130,7 @@ class MedicationManagement extends BaseMedicationElement
     {
         $event_date = $this->event->event_date;
         $event_date_YYYYMMDD = substr($event_date, 0, 4).substr($event_date, 5, 2).substr($event_date, 8, 2);
-        return array_filter($this->visible_entries, function($e) use($event_date_YYYYMMDD){
+        return array_filter($this->visible_entries, function ($e) use ($event_date_YYYYMMDD) {
             return ($e->start_date == $event_date_YYYYMMDD && is_null($e->end_date));
         });
     }
@@ -153,7 +153,7 @@ class MedicationManagement extends BaseMedicationElement
     public function getEntriesStoppedToday()
     {
         $event_date = $this->event->event_date;
-        return array_filter($this->visible_entries, function($e) use($event_date){
+        return array_filter($this->visible_entries, function ($e) use ($event_date) {
             return ($e->end_date == $event_date);
         });
     }
@@ -166,16 +166,25 @@ class MedicationManagement extends BaseMedicationElement
     {
         $property = $visible_only ? "visible_entries" : "entries";
 
-        return array_filter($this->$property, function($e){
+        return array_filter($this->$property, function ($e) {
             return $e->prescribe == 1;
         });
     }
 
     public function getOtherEntries()
     {
-        $continued = array_map(function($e){ return $e->id; }, $this->getContinuedEntries());
-        $stopped = array_map(function($e){ return $e->id; }, $this->getStoppedEntries());
-        $prescribed = array_map(function($e){ return $e->id; }, $this->getPrescribedEntries());
+        $continued = array_map(function ($e) {
+            return $e->id;
+
+        }, $this->getContinuedEntries());
+        $stopped = array_map(function ($e) {
+            return $e->id;
+
+        }, $this->getStoppedEntries());
+        $prescribed = array_map(function ($e) {
+            return $e->id;
+
+        }, $this->getPrescribedEntries());
         $exclude = array_merge($continued, $stopped, $prescribed);
         $other = array();
         foreach ($this->visible_entries as $entry) {
@@ -329,7 +338,7 @@ class MedicationManagement extends BaseMedicationElement
                         'frequency_id' => $entry->frequency_id,
                         'duration_id' => $entry->duration_id,
                         'dose' => $entry->dose,
-												'dose_unit_term' => $entry->dose_unit_term,
+                                                'dose_unit_term' => $entry->dose_unit_term,
                         'start_date' => $entry->start_date,
                         'dispense_location_id' => $entry->dispense_location_id,
                         'dispense_condition_id' => $entry->dispense_condition_id
