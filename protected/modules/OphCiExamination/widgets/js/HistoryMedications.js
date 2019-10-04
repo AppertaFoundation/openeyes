@@ -774,15 +774,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
     };
 
-    HistoryMedicationsController.prototype.removeBoundEntry = function($row)
-    {
-        var $bound_entry = $row.data("bound_entry");
-        if(typeof $bound_entry === "undefined") {
-            return;
-        }
+	HistoryMedicationsController.prototype.removeBoundEntry = function ($row) {
+		var $bound_entry = $row.data("bound_entry");
+		if (typeof $bound_entry === "undefined") {
+			return;
+		}
 
-        $bound_entry.remove();
-    };
+		let key = $bound_entry.data('key');
+		let $full_entry = $bound_entry.parent().find('tr[data-key=' + key + ']');
+		$full_entry.remove();
+	};
 
 
     HistoryMedicationsController.prototype.setDoNotSaveEntries = function(v)
