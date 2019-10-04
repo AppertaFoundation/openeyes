@@ -211,7 +211,14 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
 
             },
             complete: function() {
-                $('.oe-popup-wrap').remove();
+                //Make sure only correct popup is removed
+                $('.oe-popup-wrap').each( (key, element) => {
+                    let children = [];
+                    Array.from(element.children).forEach( child => children.push(child.className) );
+                    if (children.includes('spinner')) {
+                        element.remove();
+                    }
+                });
 
                 if (typeof callback === 'function') {
                     callback();
@@ -227,7 +234,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             return $(tr).find('input[type=checkbox]:checked').val();
         });
 
-        data['usage-code'] = $('#set-filters button.green.hint').data('usage_code');
+        data['usage-code'] = $('#set-filters button.green.hint').data('usage_code_id');
 
         $.ajax({
             url: controller.options.deleteUrl,
@@ -235,16 +242,10 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             data: data,
             beforeSend: controller.showOverlay,
             success: function(data) {
-
                 if (data.message && data.message.length) {
-
-                    // because $('.oe-popup-wrap').remove(); will remove alert as well
-                    setTimeout(() => {
-                        new OpenEyes.UI.Dialog.Alert({
-                            content: data.message
-                        }).open();
-                    }, 500);
-
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: data.message,
+                    }).open();
                 }
             },
             complete: function() {
