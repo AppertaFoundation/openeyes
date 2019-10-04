@@ -2,8 +2,8 @@
 
 class m191001_152313_followup_element_upgrade extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->createOETable(
             'ophciexamination_clinicoutcome_entry',
             array(
@@ -54,10 +54,10 @@ class m191001_152313_followup_element_upgrade extends OEMigration
         $this->dropColumn('et_ophciexamination_clinicoutcome_version', 'role_id');
         $this->dropColumn('et_ophciexamination_clinicoutcome_version', 'role_comments');
         $this->renameColumn('et_ophciexamination_clinicoutcome_version', 'description', 'comments');
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropForeignKey('ophciexamination_clinicoutcome_entry_ei_fk', 'ophciexamination_clinicoutcome_entry');
         $this->dropForeignKey('ophciexamination_clinicoutcome_entry_status_fk', 'ophciexamination_clinicoutcome_entry');
         $this->dropForeignKey('ophciexamination_clinicoutcome_entry_fu_p_fk', 'ophciexamination_clinicoutcome_entry');

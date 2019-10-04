@@ -43,7 +43,7 @@ if (!isset($values)) {
     <td <?= isset($values['patient_ticket']) ? 'style="vertical-align:top"' : '' ?>>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
         <input type="hidden" name="<?= $field_prefix ?>[status_id]" value="<?= $values['status_id'] ?>"/>
-        <?php if (isset($values['followup'])): ?>
+        <?php if (isset($values['followup'])) : ?>
             <input type="hidden" name="<?= $field_prefix ?>[followup_quantity]"
                    value="<?= $values['followup_quantity'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[followup_period_id]"

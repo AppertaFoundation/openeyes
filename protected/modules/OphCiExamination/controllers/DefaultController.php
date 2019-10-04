@@ -1382,7 +1382,8 @@ class DefaultController extends \BaseEventTypeController
         return $errors;
     }
 
-    protected function setAndValidateClinicOutcomeFromData($data, $errors) {
+    protected function setAndValidateClinicOutcomeFromData($data, $errors)
+    {
         $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
         $posted_entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries'] : [];
         $clinic_outcome = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome');
@@ -1397,7 +1398,7 @@ class DefaultController extends \BaseEventTypeController
                 $new_entry->role_id = $entry['role_id'];
                 $new_entry->followup_comments = $entry['followup_comments'];
             }
-            if (!$new_entry->validate()){
+            if (!$new_entry->validate()) {
                 $entry_errors = $new_entry->getErrors();
                 foreach ($entry_errors as $entry_error_attribute_name => $entry_error_messages) {
                     foreach ($entry_error_messages as $entryErrorMessage) {
