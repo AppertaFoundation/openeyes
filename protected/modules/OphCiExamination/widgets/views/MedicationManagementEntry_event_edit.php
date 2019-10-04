@@ -202,7 +202,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 
                     <div class="alternative-display inline">
             <div class="alternative-display-element textual">
-                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);" <?php if ($direct_edit && (!$entry->hasErrors('end_date'))) {?> style="display: none;"<?php }?>>
+                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);" <?php if ($direct_edit || ($entry->hasErrors('end_date'))) {?> style="display: none;"<?php }?>>
                     <?php if (!is_null($entry->end_date)) : ?>
                                             <i class="oe-i stop small pad"></i>
                                             <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
