@@ -98,7 +98,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
                     )
                 );
             }
-					$row_count++;
+                    $row_count++;
         }
         ?>
         </tbody>
