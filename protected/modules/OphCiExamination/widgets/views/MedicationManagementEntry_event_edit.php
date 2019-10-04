@@ -143,8 +143,8 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 <td>
                     <div class="flex-meds-inputs">
 <!--                    Duration/dispense/comments-->
-                <?=\CHtml::dropDownList($field_prefix.'[duration]', $entry->duration,
-                    CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),
+                <?=\CHtml::dropDownList($field_prefix.'[duration_id]', $entry->duration_id,
+                    CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration_id)->findAll(array('order' => 'display_order')), 'id', 'name'),
                     array('empty' => '- Select -', 'class' => 'cols-4 js-duration', 'style' => $prescribe_hide_style)) ?>
                 <?=\CHtml::dropDownList($field_prefix.'[dispense_condition_id]',
                     $entry->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(

@@ -63,7 +63,7 @@ class PrescriptionCreator extends \EventCreator
         }
     }
 
-    private function addItem(\OphDrPrescription_Item $item)
+    public function addItem(\OphDrPrescription_Item $item)
     {
         $this->items[] = $item;
     }
