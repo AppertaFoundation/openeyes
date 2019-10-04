@@ -12,5 +12,5 @@
    style="<?= $this->isPatientInTrial() ? 'display:none;' : '' ?>"
 >Add to Shortlist</button>
 
-<em style="display: none;font-style: italic" class="oe-list-patient js-remove-from-trial">Added to Shortlist</em>
+<em style="display: none;font-style: italic" class="oe-list-patient js-remove-from-trial">Shortlisted</em>
 </span>
