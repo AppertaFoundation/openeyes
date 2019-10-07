@@ -240,10 +240,11 @@ class BaseController extends Controller
         // TODO: Check logged in before setting
         $this->jsVars['element_close_warning_enabled'] = Yii::app()->params['element_close_warning_enabled'];
         if (isset(Yii::app()->session['user'])) {
-            $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
-            $this->jsVars['user_id'] = $user->id;
-            $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
-            $this->jsVars['user_email'] = $user->email;
+          $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
+          $this->jsVars['user_id'] = $user->id;
+          $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
+          $this->jsVars['user_email'] = $user->email;
+          $this->jsVars['user_username'] = $user->username;
         }
         $institution = Institution::model()->findByAttributes(array('remote_id' => Yii::app()->params['institution_code']));
         $this->jsVars['institution_code'] = $institution->remote_id;
