@@ -19,7 +19,6 @@
 <?php
 if (!isset($values)) {
     $values = array(
-        'id' => $entry->id,
         'status_id' => $entry->status_id,
         'status' => $entry->getStatusLabel(),
         'followup_quantity' => $entry->followup_quantity,
@@ -41,7 +40,7 @@ if (!isset($values)) {
 <tr id="<?= $model_name ?>_entries" class="row-<?= $row_count ?>" data-key="<?= $row_count ?>"
     data-status="<?= $values['status_id'] ?>">
     <td <?= isset($values['patient_ticket']) ? 'style="vertical-align:top"' : '' ?>>
-        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
+        <?= Chtml::activeHiddenField($entry, 'id');?>
         <input type="hidden" name="<?= $field_prefix ?>[status_id]" value="<?= $values['status_id'] ?>"/>
         <?php if (isset($values['followup'])) : ?>
             <input type="hidden" name="<?= $field_prefix ?>[followup_quantity]"
@@ -58,7 +57,7 @@ if (!isset($values)) {
         <?php if (isset($values['followup'])) {
             echo $values['status'] . ' ' . $values['followup_quantity'] . ' ' . $values['followup_period'] . $values['role'] . $values['followup_comments_display'];
         } else if (isset($values['patient_ticket']) && $ticket_api) { ?>
-            <div data-queue-ass-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
+            <div data-queue-assignment-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
                  id="div_<?= $model_name ?>_patientticket">
                 <!-- TODO, this should be pulled from the ticketing module somehow -->
                 <?php if ($ticket) { ?>
@@ -82,7 +81,7 @@ if (!isset($values)) {
                                 <input type="hidden" name="patientticket_queue" value="<?= $qid ?>"/>
 
                             <?php } else {
-                                echo CHtml::dropDownList('patientticket_queue', @$_POST['patientticket_queue'], $queues,
+                                echo CHtml::dropDownList('patientticket_queue', $_POST['patientticket_queue'], $queues,
                                     array('empty' => 'Select', 'nowrapper' => true, 'options' => array()));
                             } ?>
                         </div>
@@ -91,7 +90,7 @@ if (!isset($values)) {
                         </div>
                     </fieldset>
                     <div id="queue-assignment-placeholder">
-                        <?php if (@$_POST['patientticket_queue']) {
+                        <?php if (isset($_POST['patientticket_queue'])) {
                             $this->widget(
                                 $ticket_api::$QUEUE_ASSIGNMENT_WIDGET,
                                 array('queue_id' => $_POST['patientticket_queue'], 'label_width' => 3, 'data_width' => 5)

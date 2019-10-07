@@ -33,6 +33,9 @@ use Yii;
  */
 class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 {
+    protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+
     const FOLLOWUP_Q_MIN = 1;
     const FOLLOWUP_Q_MAX = 18;
 
@@ -62,7 +65,8 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return [
-                ['comments', 'safe'],
+                ['comments, entries', 'safe'],
+                ['entries', 'required'],
                 ['id, event_id, comments', 'safe', 'on' => 'search'],
         ];
     }
@@ -77,6 +81,8 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\ClinicOutcomeEntry', 'element_id'),
+            'patient_ticket_entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\ClinicOutcomeEntry', 'element_id',
+                'on' => 'status_id IN (select id from ophciexamination_clinicoutcome_status where patientticket=1)'),
         );
     }
 
@@ -108,16 +114,6 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
-    }
-
-    public function checkForDeletedEntries($entries_ids)
-    {
-        $entries = ClinicOutcomeEntry::model()->findAll("element_id=:element_id", [":element_id" => $this->id]);
-        foreach ($entries as $entry) {
-            if (array_search($entry->id, $entries_ids) === false) {
-                $entry->delete();
-            }
-        }
     }
 
     public function afterSave()

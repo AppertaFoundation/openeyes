@@ -21,7 +21,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 (function (exports) {
     function ClinicOutcomeController(options) {
         this.options = $.extend(true, {}, ClinicOutcomeController._defaultOptions, options);
-        this.$element = this.options.element;
+        this.$element = $('.' + this.options.model_name);
         this.followup_template_text = $('#' + this.options.model_name + '_followup_entry_template').text();
         this.patient_ticket_template_text = $('#' + this.options.model_name + '_patient_ticket_entry_template').text();
         this.entry_table_selector = '#' + this.options.model_name + '_entry_table';
@@ -31,15 +31,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     ClinicOutcomeController._defaultOptions = {
         model_name: 'OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome',
-        element: undefined,
     };
 
     ClinicOutcomeController.prototype.initialiseTriggers = function () {
         let controller = this;
 
         $('#followup-outcome-options li').on('click', function () {
-            let followup = !!$(this).data('followup');
-            $('.follow-up-options-follow-up-only').toggle(followup);
+            let is_followup_entry = !!$(this).data('followup');
+            $('.follow-up-options-follow-up-only').toggle(is_followup_entry);
         });
 
         $(this.entry_table_selector).on('click', 'i.trash', function (e) {
@@ -99,5 +98,5 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
 $(document).ready(function () {
     let controller = new OpenEyes.OphCiExamination.ClinicOutcomeController();
-    $('.OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome').data('controller', controller);
+    $(controller.$element).data('controller', controller);
 });

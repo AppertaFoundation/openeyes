@@ -852,7 +852,7 @@ $(document).ready(function() {
         placeholder.html('');
         if (id) {
             $.ajax({
-                url: $('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_ClinicOutcome_patientticket').data('queue-ass-form-uri') + id,
+                url: $('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_ClinicOutcome_patientticket').data('queue-assignment-form-uri') + id,
                 data: {label_width: 3, data_width: 5},
                 success: function(response) {
                     placeholder.html(response);

@@ -174,7 +174,6 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
             'field_prefix' => $model_name . '[entries][{{row_count}}]',
             'row_count' => '{{row_count}}',
             'values' => [
-                'id' => '',
                 'status_id' => '{{status_id}}',
                 'status' => '{{status}}',
                 'followup' => '{{followup}}',

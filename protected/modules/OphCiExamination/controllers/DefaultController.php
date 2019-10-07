@@ -1149,45 +1149,17 @@ class DefaultController extends \BaseEventTypeController
     protected function saveComplexAttributes_Element_OphCiExamination_ClinicOutcome($element, $data, $index)
     {
         $api = Yii::app()->moduleAPI->get('PatientTicketing');
-        $posted_entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries'];
-        $new_entries = [];
-        $entries_ids = [];
 
-        foreach ($posted_entries as $entry) {
-            if ($entry['id'] === "") {
-                $new_entry = new models\ClinicOutcomeEntry();
-
-                $new_entry->element_id = $element->id;
-                $new_entry->status_id = $entry['status_id'];
-                if ($new_entry->isFollowUp()) {
-                    $new_entry->followup_quantity = $entry['followup_quantity'];
-                    $new_entry->followup_period_id = $entry['followup_period_id'];
-                    $new_entry->role_id = $entry['role_id'];
-                    $new_entry->followup_comments = $entry['followup_comments'];
-                }
-                if ($new_entry->isPatientTicket()) {
-                    if (isset($data['patientticket_queue'])) {
-                        $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
-                        $queue_data = $api->extractQueueData($queue, $data);
-                        $api->createTicketForEvent($this->event, $queue, Yii::app()->user, $this->firm, $queue_data);
-                    } else {
-                        $api->updateTicketForEvent($this->event);
-                    }
-                }
-
-                if (!$new_entry->save()) {
-                    throw new \Exception('Unable to save the new Follow up entry' . print_r($new_entry->getErrors(), true));
-                };
-
-                $entries_ids[] = $new_entry->id;
-                $new_entries[] = $new_entry;
+        foreach ($element->patient_ticket_entries as $entry) {
+            if (isset($data['patientticket_queue'])) {
+                $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
+                $queue_data = $api->extractQueueData($queue, $data);
+                $api->createTicketForEvent($this->event, $queue, Yii::app()->user, $this->firm, $queue_data);
             } else {
-                $entries_ids[] = $entry['id'];
+                $api->updateTicketForEvent($this->event);
             }
         }
 
-        $element->entries = $new_entries;
-        $element->checkForDeletedEntries($entries_ids);
     }
 
     private function getOtherSide($side1, $side2, $selectedSide)
@@ -1375,42 +1347,6 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
         }
 
-        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome'])) {
-            $errors = $this->setAndValidateClinicOutcomeFromData($data, $errors);
-        }
-
-        return $errors;
-    }
-
-    protected function setAndValidateClinicOutcomeFromData($data, $errors)
-    {
-        $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-        $posted_entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries'] : [];
-        $clinic_outcome = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome');
-        $entries = [];
-
-        foreach ($posted_entries as $index => $entry) {
-            $new_entry = new models\ClinicOutcomeEntry();
-            $new_entry->status_id = $entry['status_id'];
-            if ($new_entry->isFollowUp()) {
-                $new_entry->followup_quantity = $entry['followup_quantity'];
-                $new_entry->followup_period_id = $entry['followup_period_id'];
-                $new_entry->role_id = $entry['role_id'];
-                $new_entry->followup_comments = $entry['followup_comments'];
-            }
-            if (!$new_entry->validate()) {
-                $entry_errors = $new_entry->getErrors();
-                foreach ($entry_errors as $entry_error_attribute_name => $entry_error_messages) {
-                    foreach ($entry_error_messages as $entryErrorMessage) {
-                        $clinic_outcome->addError("entries_" . $index, $entryErrorMessage);
-                        $errors[$et_name][] = $entryErrorMessage;
-                    }
-                }
-            }
-            $entries[] = $new_entry;
-        }
-
-        $clinic_outcome->entries = $entries;
         return $errors;
     }
 
