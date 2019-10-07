@@ -53,9 +53,10 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
     public function actionUpdate()
     {
         $request = Yii::app()->getRequest();
-        $model = OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findByPk((int)$request->getParam('id'));
+        $model = OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findByPk($request->getParam('id'));
         if (!$model) {
-            throw new Exception('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality not found with id ' . $request->getParam('id'));
+            \OELog::log('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality not found with id ' . $request->getParam('id'));
+            $this->redirect(['index']);
         }
 
         $values = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality', []);
@@ -116,16 +117,14 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
         $result['errors'] = "";
         try {
             foreach ($delete_ids as $abnormality_id) {
-                $abnormality = OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findByPk($abnormality_id);
+                $abnormality = OphCiExamination_PupillaryAbnormalities_Abnormality::model()->deleteByPk($abnormality_id);
                 if ($abnormality) {
-                    if (!$abnormality->delete()) {
-                        $success = false;
-                        $result['status'] = 0;
-                        $result['errors'][]= $abnormality->getErrors();
-                        break;
-                    } else {
-                        Audit::add('admin-pupillary-abnormality', 'delete', $abnormality);
-                    }
+                    Audit::add('admin-pupillary-abnormality', 'delete', $abnormality);
+                } else {
+                    $success = false;
+                    $result['status'] = 0;
+                    $result['errors'][] = $abnormality->getErrors();
+                    break;
                 }
             }
         } catch (Exception $e) {
