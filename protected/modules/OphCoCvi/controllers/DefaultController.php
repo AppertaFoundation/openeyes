@@ -17,9 +17,9 @@
 
 namespace OEModule\OphCoCvi\controllers;
 
-use \OEModule\OphCoCvi\models;
-use \OEModule\OphCoCvi\components\OphCoCvi_Manager;
-use \OEModule\OphCoCvi\components\LabelManager;
+use OEModule\OphCoCvi\components\LabelManager;
+use OEModule\OphCoCvi\components\OphCoCvi_Manager;
+use OEModule\OphCoCvi\models;
 
 /**
  * Class DefaultController
@@ -185,7 +185,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function getOptionalElements()
     {
-        return null;
+        return [];
     }
 
     /**
@@ -576,7 +576,7 @@ class DefaultController extends \BaseEventTypeController
         $remove_list = array_merge($remove_list, array('OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo'));
         return parent::getElementTree($remove_list);
     }
-    
+
     /**
      * @return models\Element_OphCoCvi_EventInfo[]
      */

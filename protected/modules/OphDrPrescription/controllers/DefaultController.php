@@ -420,8 +420,45 @@ class DefaultController extends BaseEventTypeController
     {
         foreach ($this->open_elements as $element) {
             if (get_class($element) == 'Element_OphDrPrescription_Details') {
-                /** @var Element_OphDrPrescription_Details $element */
-                $element->updateItems(isset($data['Element_OphDrPrescription_Details']['items']) ? $data['Element_OphDrPrescription_Details']['items'] : array());
+                $items = [];
+                if (isset($data['Element_OphDrPrescription_Details']['items'])) {
+                    foreach ($data['Element_OphDrPrescription_Details']['items'] as $item) {
+                        if (isset($item['id']) && isset($existing_item_ids[$item['id']])) {
+                            $item_model = OphDrPrescription_Item::model()->findByPk($item['id']);
+                        } else {
+                            $item_model = new OphDrPrescription_Item();
+                            $item_model->event_id = $this->event->id;
+                            $item_model->medication_id = $item['medication_id'];
+                            $item_model->start_date = substr($this->event->event_date, 0, 10);
+                        }
+
+                        $item_model->setAttributes($item);
+                    }
+
+                    $new_tapers = (isset($item['taper'])) ? $item['taper'] : [];
+                    $taper_relation = [];
+                    foreach ($new_tapers as $taper) {
+                        if (isset($taper['id']) && isset($existing_taper_ids[$taper['id']])) {
+                            // Taper is being updated
+                            $taper_model = OphDrPrescription_ItemTaper::model()->findByPk($taper['id']);
+                        } else {
+                            // Taper is new
+                            $taper_model = new OphDrPrescription_ItemTaper();
+                        }
+
+                        $taper_model->dose = $taper['dose'];
+                        $taper_model->frequency_id = $taper['frequency_id'];
+                        $taper_model->duration_id = $taper['duration_id'];
+
+                        $taper_relation[] = $taper_model;
+                    }
+
+                    $item_model->tapers = $taper_relation;
+
+                    $items[] = $item_model;
+                }
+
+                $element->updateItems($items);
             }
         }
     }
@@ -596,7 +633,7 @@ class DefaultController extends BaseEventTypeController
             // Source is a prescription item, so we should clone it
             foreach (array(
                          'medication_id',
-                         'duration',
+                         'duration_id',
                          'frequency_id',
                          'dose',
                          'laterality',

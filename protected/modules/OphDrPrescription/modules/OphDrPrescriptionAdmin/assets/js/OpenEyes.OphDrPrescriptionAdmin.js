@@ -5,7 +5,8 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
 (function (exports) {
     function DrugSetController(options) {
         this.options = $.extend(true, {}, DrugSetController._defaultOptions, options);
-
+        
+        this.loadingOverlay = new OpenEyes.UI.LoadingOverlay();
         this.initFilters();
         this.initTable();
     }
@@ -29,16 +30,15 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         });
 
         $(this.options.tableSelector).on('click', '.js-add-taper', function () {
-						const $row = $(this).closest('tr');
-						controller.addTaper($row);
-						const $tapers = $('#meds-list tr[data-parent-med-id="' + $row.attr('data-med_id') + '"]');
-						controller.showEditControls($row, $tapers);
-						controller.hideGeneralControls($row);
-						$row.find('.js-text').hide();
-						controller.showEditFields($row, $tapers);
-						return false;
-				});
-
+            const $row = $(this).closest('tr');
+            controller.addTaper($row);
+            const $tapers = $('#meds-list tr[data-parent-med-id="' + $row.attr('data-med_id') + '"]');
+            controller.showEditControls($row, $tapers);
+            controller.hideGeneralControls($row);
+            $row.find('.js-text').hide();
+            controller.showEditFields($row, $tapers);
+            return false;
+        });
     };
 
     DrugSetController.prototype.showEditFields = function($row, $tapers) {
@@ -69,17 +69,17 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
 
     DrugSetController.prototype.addTaper = function($row) {
         let data_med_id = $row.attr('data-med_id');
-				let next_taper_count = 0;
-				let last_taper_count;
+        let next_taper_count = 0;
+        let last_taper_count;
 
-				let $tapers = $('#meds-list tr[data-parent-med-id="' + data_med_id + '"]');
+        let $tapers = $('#meds-list tr[data-parent-med-id="' + data_med_id + '"]');
         if($tapers.length > 0) {
             last_taper_count = parseInt($tapers.last().attr("data-taper"));
             next_taper_count = last_taper_count + 1;
         }
 
         var markup = Mustache.render(
-            $('#medication_item_taper_template').text(),
+            $('#medication_item_taper_template').html(),
             {
                 'data_med_id' : data_med_id,
                 'taper_count' : next_taper_count
@@ -186,7 +186,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             url: controller.options.searchUrl,
             dataType: "json",
             data: data,
-            beforeSend: controller.showOverlay,
+            beforeSend: () => controller.loadingOverlay.open(),
             success: function(data) {
                 let rows = [];
 
@@ -211,7 +211,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
 
             },
             complete: function() {
-                $('.oe-popup-wrap').remove();
+                controller.loadingOverlay.close();
 
                 if (typeof callback === 'function') {
                     callback();
@@ -227,24 +227,18 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             return $(tr).find('input[type=checkbox]:checked').val();
         });
 
-        data['usage-code'] = $('#set-filters button.green.hint').data('usage_code');
+        data['usage-code'] = $('#set-filters button.green.hint').data('usage_code_id');
 
         $.ajax({
             url: controller.options.deleteUrl,
             dataType: "json",
             data: data,
-            beforeSend: controller.showOverlay,
+            beforeSend: () => controller.loadingOverlay.open(),
             success: function(data) {
-
                 if (data.message && data.message.length) {
-
-                    // because $('.oe-popup-wrap').remove(); will remove alert as well
-                    setTimeout(() => {
-                        new OpenEyes.UI.Dialog.Alert({
-                            content: data.message
-                        }).open();
-                    }, 500);
-
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: data.message,
+                    }).open();
                 }
             },
             complete: function() {
@@ -252,16 +246,6 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             }
         });
 
-    };
-
-    DrugSetController.prototype.showOverlay = function () {
-        if (!$('.oe-popup-wrap').length) {
-            // load spinner
-            let $overlay = $('<div>', {class: 'oe-popup-wrap'});
-            let $spinner = $('<div>', {class: 'spinner'});
-            $overlay.append($spinner);
-            $('body').prepend($overlay);
-        }
     };
 
     exports.DrugSetController = DrugSetController;

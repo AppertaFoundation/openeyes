@@ -18,7 +18,7 @@
 <div class="row divider">
     <h2>Drug Sets</h2>
 </div>
-<?php $isSelected = function($usage_code_id) use ($search) {
+<?php $isSelected = function ($usage_code_id) use ($search) {
     if (isset($search['usage_code_ids']) && in_array($usage_code_id, $search['usage_code_ids'])) {
         return 'green hint';
     }
@@ -34,6 +34,7 @@
             <?php foreach (MedicationUsageCode::model()->findAll() as $usage_code) :?>
                 <button
                         data-usage_code_id="<?=$usage_code->id;?>"
+                                                id="button_drug_type_usage_<?= preg_replace('/\s+/', '_', strtolower($usage_code->name));?>"
                         type="button"
                         class="large js-set-select <?=$isSelected($usage_code->id);?>"
                 ><?=$usage_code->name;?>
@@ -106,9 +107,9 @@
             </thead>
             <tbody>
                 <?php
-                    foreach ($data_provider->getData() as $set) {
-                        $this->renderPartial('/DrugSet/_row', ['set' => $set]);
-                    }
+                foreach ($data_provider->getData() as $set) {
+                    $this->renderPartial('/DrugSet/_row', ['set' => $set]);
+                }
                 ?>
             </tbody>
             <tfoot class="pagination-container">

@@ -51,6 +51,7 @@
                     }
                 }
             } else {
+                $('[id*="' + errorObject[k] + '"]').closest('.element').find('.element-title').addClass('error');
                 if (!$('[id*="' + errorObject[k] + '"]').hasClass('error')) {
                     $('[id*="' + errorObject[k] + '"]:not(:hidden)').addClass('error');
                     $('[id*="' + errorObject[k] + '"]:not(:hidden)').parent().addClass('highlight error');

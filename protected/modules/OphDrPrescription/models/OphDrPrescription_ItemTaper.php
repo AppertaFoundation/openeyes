@@ -117,16 +117,16 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
 
     public function getDescription()
     {
-        $return = 'then '.$this->dose;
-        $return .= ' '.$this->frequency->name;
-        $return .= ' for '.$this->duration->name;
+        $return = 'then ' . $this->dose;
+        $return .= ' ' . $this->frequency->term;
+        $return .= ' for ' . $this->duration->name;
 
         return $return;
     }
 
-	public function compareTo(OphDrPrescription_ItemTaper $taper)
-	{
-		$fields = array('frequency_id, duration_id', 'dose');
-		return $this->getAttributes($fields) == $taper->getAttributes($fields);
+    public function compareTo(OphDrPrescription_ItemTaper $taper)
+    {
+        $fields = array('frequency_id, duration_id', 'dose');
+        return $this->getAttributes($fields) == $taper->getAttributes($fields);
     }
 }

@@ -230,8 +230,8 @@ class ModelSearch
                     continue;
                 }
                 
-                if($key === 'precision' ){
-                    if(is_array($value)){
+                if ($key === 'precision' ){
+                    if (is_array($value)){
                         foreach($value as $_key => $_value){
                             $this->addCompare($this->criteria, $_key, $_value, $sensitive, 'AND', true);
                         }
@@ -304,7 +304,7 @@ class ModelSearch
             return;
         }
 
-        if(method_exists($this->model, $attribute) ){
+        if (method_exists($this->model, $attribute) ){
             $compareArguments = $this->model->{$attribute}();
             $criteria->compare($compareArguments['field'], $value, $compareArguments['exactmatch'], $compareArguments['operator']);
             return;
@@ -347,7 +347,7 @@ class ModelSearch
      */
     public function retrieveResults()
     {
-        if(!$this->defaultResults && !$this->searching){
+        if (!$this->defaultResults && !$this->searching){
             return array();
         }
 

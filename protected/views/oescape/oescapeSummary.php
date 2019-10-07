@@ -84,7 +84,7 @@ if (!empty($subspecialty)) { ?>
           var chart_data_list = chart[eye_side]['data'];
           var has_data = false;
           for (var i in chart_data_list){
-            if(chart_data_list[i]['x'].length!==0){
+            if (chart_data_list[i]['x'].length!==0){
               has_data = true;
             }
           }
@@ -96,7 +96,7 @@ if (!empty($subspecialty)) { ?>
           var chart_data_list = chart[eye_side]['data'];
           var has_data = false;
           for (var i in chart_data_list){
-            if(chart_data_list[i]['x'].length!==0){
+            if (chart_data_list[i]['x'].length!==0){
               has_data = true;
             }
           }

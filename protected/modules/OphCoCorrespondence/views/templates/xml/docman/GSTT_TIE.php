@@ -22,7 +22,7 @@
     <NHSNumber><?=$data['nhs_num'];?></NHSNumber>
     <HospitalNumber><?=$data['hos_num'];?></HospitalNumber>
     <VisitID><?=$data['visit_id'];?></VisitID>
-<?php if(isset($data['document_links']) && is_array($data['document_links']) ): ?>
+<?php if (isset($data['document_links']) && is_array($data['document_links']) ): ?>
         <?php foreach($data['document_links'] as $link):?>
             <DocumentLink><?=$link;?></DocumentLink>
         <?php endforeach;?>
@@ -43,7 +43,7 @@
         <DateOfBirth><?=$data['dob'];?></DateOfBirth>
         <DateOfDeath><?=$data['date_of_death'];?></DateOfDeath>
     </Patient>
-<?php if(isset($data['with_internal_referral']) && $data['with_internal_referral']):?>
+<?php if (isset($data['with_internal_referral']) && $data['with_internal_referral']):?>
     <Consultant>
         <ConsultantNumber><?=$data['consultant_to'];?></ConsultantNumber>
         <SpecialtyCode><?=$data['location_code'];?></SpecialtyCode>

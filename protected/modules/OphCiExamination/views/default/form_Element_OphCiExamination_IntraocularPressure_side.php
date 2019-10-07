@@ -73,7 +73,7 @@ foreach ($readings as $reading) {
   </table>
   <div id="iop-<?= $side; ?>-comments"
        class="comment-group js-comment-container field-row-pad-top flex-layout flex-left"
-       style="<?php if (!$element->$comments) :
+       style="<?php if (!$element->$comments && !$element->hasErrors($side.'_comments')) :
             ?>display: none;<?php
               endif; ?>"
        data-comment-button="#iop-<?= $side ?>-comment-button">

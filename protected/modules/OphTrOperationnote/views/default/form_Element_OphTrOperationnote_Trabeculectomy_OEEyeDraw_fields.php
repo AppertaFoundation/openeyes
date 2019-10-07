@@ -190,10 +190,10 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(this).delegate('.trabeculectomy .MultiSelectList', 'MultiSelectChanged', function () {
-            if($.trim($(this).attr('id')) === 'MultiSelect_Difficulties'){
+            if ($.trim($(this).attr('id')) === 'MultiSelect_Difficulties'){
                 toggleAdditionalFields($(this), '_difficulty_other');
 
-            } else if($.trim($(this).attr('id')) ==='MultiSelect_Complications'){
+            } else if ($.trim($(this).attr('id')) ==='MultiSelect_Complications'){
                 toggleAdditionalFields($(this), '_complication_other');
             }
         });
@@ -204,7 +204,7 @@
             var showOther = false;
             var listItems = selections.find('li');
             listItems.find('span').each(function(){
-                if($.trim($(this).text()) == 'Other'){
+                if ($.trim($(this).text()) == 'Other'){
                     showOther = true;
                 }
             })
