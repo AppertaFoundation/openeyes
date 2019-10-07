@@ -137,31 +137,8 @@ class m190730_084706_upgrade_pupil_element extends OEMigration
 
     public function safeDown()
     {
-        $this->dropForeignKey('et_ophciexamination_pupillaryabnormality_entry_ei_fk', 'ophciexamination_pupillary_abnormality_entry');
-        $this->dropForeignKey('et_ophciexamination_pupillaryabnormality__entry_ab_fk', 'ophciexamination_pupillary_abnormality_entry');
-        $this->dropForeignKey('et_ophciexamination_pupillaryabnormality_entry_eye_fk', 'ophciexamination_pupillary_abnormality_entry');
+        echo "m190730_084706_upgrade_pupil_element does not support migration down.\n";
 
-        $this->dropForeignKey('ophciexamination_pupillary_abnormality_set_entry_ab_fk', 'ophciexamination_pupillary_abnormality_set_entry');
-        $this->dropForeignKey('ophciexamination_pupillary_abnormality_set_entry_set_fk', 'ophciexamination_pupillary_abnormality_set_entry');
-
-        $this->dropForeignKey('ophciexamination_pupillary_abnormality_set_firm', 'ophciexamination_pupillary_abnormality_set');
-        $this->dropForeignKey('ophciexamination_pupillary_abnormality_set_subspecialty', 'ophciexamination_pupillary_abnormality_set');
-
-        $this->dropForeignKey('et_ophciexamination_pupillary_abnormalities_ei_fk', 'et_ophciexamination_pupillary_abnormalities');
-        $this->dropForeignKey('et_ophciexamination_pupillary_abnormalities_eye_fk', 'et_ophciexamination_pupillary_abnormalities');
-
-        $this->dropOETable('ophciexamination_pupillary_abnormality_entry', true);
-
-        $this->dropOETable('et_ophciexamination_pupillary_abnormalities', true);
-
-        $this->dropOETable('ophciexamination_pupillary_abnormality_set_entry', true);
-
-        $this->dropOETable('ophciexamination_pupillary_abnormality_set', true);
-
-        $this->update('element_type', ["class_name" => "OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities"], "name = 'Pupils'");
-
-        $this->delete('ophciexamination_pupillaryabnormalities_abnormality', "name = :name", [':name' => 'Fixed']);
-        $this->delete('ophciexamination_pupillaryabnormalities_abnormality', "name = :name", [':name' => 'Fixed-dilated']);
-        $this->delete('ophciexamination_pupillaryabnormalities_abnormality', "name = :name", [':name' => 'Dilated']);
+        return false;
     }
 }
