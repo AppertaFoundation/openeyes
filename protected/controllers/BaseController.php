@@ -244,6 +244,7 @@ class BaseController extends Controller
           $this->jsVars['user_id'] = $user->id;
           $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
           $this->jsVars['user_email'] = $user->email;
+          $this->jsVars['user_username'] = $user->username;
         }
         $institution = Institution::model()->findByAttributes(array('remote_id' => Yii::app()->params['institution_code']));
         $this->jsVars['institution_code'] = $institution->remote_id;
