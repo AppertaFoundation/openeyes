@@ -55,7 +55,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testgetLetterVisualAcuityForEpisode_Side_hasReading()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -107,7 +107,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testgetLetterVisualAcuityForEpisode_Side_hasNoReading()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -155,7 +155,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testgetLetterVisualAcuityForEpisodeBoth_recorded()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -195,7 +195,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPrincipalCCTBoth()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -226,7 +226,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPrincipalCCTRight()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -249,7 +249,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPrincipalCCTLeft()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -272,7 +272,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPrincipalCCT_NotLatestEvent()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -338,7 +338,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPricipalVanHerick()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -375,7 +375,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPricipalVanHerickNoPrincipalEye()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -412,7 +412,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPricipalVanHerickRight()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -449,7 +449,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPricipalVanHerickLeft()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -486,7 +486,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPricipalOpticDiscDescription()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -523,7 +523,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPricipalOpticDiscDescriptionNoPrincipalEye()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -560,7 +560,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPricipalOpticDiscDescriptionRight()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -597,7 +597,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPricipalOpticDiscDescriptionLeft()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -634,7 +634,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetLetterIOPReadingAbbr_Right()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -651,7 +651,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetLetterIOPReadingAbbr_Right_Avg()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -669,7 +669,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetLetterIOPReadingAbbr_Left()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -686,7 +686,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetLetterIOPReadingAbbr_Left_Avg()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -704,7 +704,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetLetterIOPReadingAbbr_Both()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -722,7 +722,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetLetterIOPReadingAbbr_Both_Avg()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -742,7 +742,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testIOPReadingRightNoUnits()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -760,7 +760,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testIOPReadingLeftNoUnits()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -778,7 +778,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testIOPReadingLeftNoUnitsNotRecorded()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -795,7 +795,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testIOPReadingRightNoUnitsNotRecorded()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -848,7 +848,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetTargetIOP()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -885,7 +885,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetTargetIOPOneSideNull()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -922,7 +922,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetTargetIOPReturnsNull()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(
@@ -953,7 +953,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetIOPValuesAsTable()
     {
-        /** 
+        /**
         * This test has been marked incomplete - it needs updating to work with latest models
         */
         $this->markTestIncomplete(

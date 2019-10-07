@@ -27,6 +27,7 @@ class Helper
     const NHS_DATE_REGEX = '/^\d{1,2} \w{3} \d{4}$/';
     const NHS_DATE_EXAMPLE = '5 Dec 2011';
     const SHORT_DATE_FORMAT = 'd/m/y';
+    const FULL_YEAR_FORMAT = 'd/m/Y';
 
     /**
      * Convert NHS dates to MySQL format.
@@ -118,6 +119,16 @@ class Helper
             return $empty_string;
         }
     }
+
+	public static function convertDate2FullYear($value, $empty_string = '-')
+	{
+		$time = strtotime($value);
+		if ($time !== false) {
+			return date(self::FULL_YEAR_FORMAT, $time);
+		}
+
+		return $empty_string;
+	}
 
     public static function convertDate2HTML($value, $empty_string = '-')
     {

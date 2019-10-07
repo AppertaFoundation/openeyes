@@ -2942,22 +2942,40 @@ class OphCiExamination_API extends \BaseAPI
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($current_eye_meds as $entry) : ?>
-                <tr>
-                    <td><?= $entry->getMedicationDisplay() ?></td>
-                    <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
-                    <td>
-                        <?php
-                        $laterality = $entry->getLateralityDisplay();
-                        \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                        ?>
-                    </td>
-                    <td>
-                        <?= $entry->frequency ? $entry->frequency : ''; ?>
-                    </td>
-                    <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
-                </tr>
-            <?php endforeach; ?>
+                <?php foreach ($current_eye_meds as $entry) : ?>
+                    <?php $tapers = \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers; ?>
+                    <tr>
+                        <td><?= $entry->getMedicationDisplay() ?></td>
+                        <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
+                        <td>
+                            <?php
+                            $laterality = $entry->getLateralityDisplay();
+                            \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                            ?>
+                        </td>
+                        <td>
+                            <?= $entry->frequency ? $entry->frequency : ''; ?>
+                        </td>
+                        <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
+                    </tr>
+                    <?php foreach ($tapers as $taper) : ?>
+                        <tr>
+                            <td>
+                                <div class="oe-i child-arrow small no-click"></div>
+                                <i> then</i>
+                            </td>
+                            <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                            <td>
+                            </td>
+                            <td>
+                                <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
+                            </td>
+                            <td>
+                                <?= $taper->duration ? $taper->duration->name : '' ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
             </tbody>
         </table>
 

@@ -240,10 +240,11 @@ class BaseController extends Controller
         // TODO: Check logged in before setting
         $this->jsVars['element_close_warning_enabled'] = Yii::app()->params['element_close_warning_enabled'];
         if (isset(Yii::app()->session['user'])) {
-            $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
-            $this->jsVars['user_id'] = $user->id;
-            $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
-            $this->jsVars['user_email'] = $user->email;
+          $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
+          $this->jsVars['user_id'] = $user->id;
+          $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
+          $this->jsVars['user_email'] = $user->email;
+          $this->jsVars['user_username'] = $user->username;
         }
         $institution = Institution::model()->findByAttributes(array('remote_id' => Yii::app()->params['institution_code']));
         $this->jsVars['institution_code'] = $institution->remote_id;
@@ -255,6 +256,7 @@ class BaseController extends Controller
         $this->jsVars['OE_event_print_method'] = Yii::app()->params['event_print_method'];
         $this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
         $this->jsVars['OE_GP_Setting'] = Yii::app()->params['gp_label'];
+        $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
 
         foreach ($this->jsVars as $key => $value) {
             $value = CJavaScript::encode($value);

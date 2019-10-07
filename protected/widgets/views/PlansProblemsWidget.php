@@ -17,15 +17,18 @@
 
 ?>
 <div class="problems-plans">
+    <div class="subtitle">
+        Problems &amp; Plans
+    </div>
     <ul class="problems-plans-sortable" id="problems-plans-sortable">
         <?php foreach ($plans_problems as $plan_problem) {
             if ($plan_problem->active) { ?>
             <li>
-                <span class="drag-handle" style="position: absolute;"><i class="oe-i menu medium pro-theme"></i></span>
-                <span style="display:inline-block;margin-left:30px;"><?= $plan_problem->name ?></span>
+                <span class="drag-handle"><i class="oe-i menu medium pro-theme"></i></span>
+                <?= $plan_problem->name ?>
                 <div class="metadata">
                     <i class="oe-i info small pro-theme js-has-tooltip"
-                       data-tooltip-content="<?= $plan_problem->createdUser->title ?> <?= $plan_problem->createdUser->first_name ?> <?= $plan_problem->createdUser->last_name ?> <br /> Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?>"></i>
+                       data-tooltip-content="Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?> <?= ($plan_problem->createdUser ? 'by '.$plan_problem->createdUser->getFullNameAndTitle() : '') ?>"></i>
                 </div>
                 <div class="remove"><i class="oe-i remove-circle small pro-theme pad" data-plan-id="<?= $plan_problem->id ?>"></i></div>
             </li>
@@ -62,7 +65,7 @@
                     <td style="padding: 6px 3px;"><?= $plan_problem->name ?></td>
                     <td><div class="metadata">
                         <i class="oe-i info small <?= $pro_theme ?> js-has-tooltip"
-                       data-tooltip-content="<?= $plan_problem->createdUser->title ?> <?= $plan_problem->createdUser->first_name ?> <?= $plan_problem->createdUser->last_name ?> <br /> Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?>"></i>
+                       data-tooltip-content="Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?> <?= ($plan_problem->createdUser ? 'by '.$plan_problem->createdUser->getFullNameAndTitle() : '') ?> <br /> Closed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?> <?= ($plan_problem->lastModifiedUser ? 'by '.$plan_problem->lastModifiedUser->getFullNameAndTitle() : '') ?>"></i>
                     </div>
                     </td>
                     <td><span class="oe-date">Removed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?></span></td>
@@ -76,5 +79,25 @@
 <?php if ($allow_save) : ?>
 <script>
     const PlansProblems = new OpenEyes.UI.PlansProblemsController();
+</script>
+<script type="text/html" id="plans-problems-template">
+    <li>
+        <span class="drag-handle"><i class="oe-i menu medium pro-theme"></i></span>
+        {{name}}
+        <div class="metadata">
+            <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="Created: {{create_at}} {{title}}"></i>
+        </div>
+        <div class="remove"><i class="oe-i remove-circle small pro-theme pad" data-plan-id="{{id}}"></i></div>
+    </li>
+</script>
+<script type="text/html" id="past-plans-problems-template">
+    <tr>
+        <td style="padding: 6px 3px;">{{name}}</td>
+        <td><div class="metadata">
+            <i class="oe-i info small pro-theme js-has-tooltip" data-tooltip-content="Created: {{create_at}} {{title}}<br />Closed: {{last_modified}} {{last_modified_by}}"></i>
+        </div>
+        </td>
+        <td><span class="oe-date">Removed: {{last_modified}}</span></td>
+    </tr>
 </script>
 <?php endif; ?>
