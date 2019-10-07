@@ -190,6 +190,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             ['usage_code' => 'Formulary', 'name' => 'Formulary Drugs'],
             ['usage_code' => 'MedicationDrug', 'name' => 'Medication Drug'],
             ['usage_code' => 'Management', 'name' => 'Management'],
+            ['usage_code' => 'OEScape', 'name' => 'OEScape'],
         ]);
     }
 
