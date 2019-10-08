@@ -416,7 +416,7 @@ class MedicationManagement extends BaseMedicationElement
 
         $this->prescription_id = $prescription_creator->elements['Element_OphDrPrescription_Details']->id;
         // updte only prescription_id - no validation here
-				\Yii::app()->db->createCommand("UPDATE ".$this->tableName()." SET prescription_id=".$this->prescription_id." WHERE id=".$this->id)->execute();
+                \Yii::app()->db->createCommand("UPDATE ".$this->tableName()." SET prescription_id=".$this->prescription_id." WHERE id=".$this->id)->execute();
 
     }
 
