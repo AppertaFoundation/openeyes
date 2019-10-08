@@ -577,7 +577,16 @@ class DefaultController extends BaseEventTypeController
 
     }
 
-    /**
+    protected function verifyActionAccess(CAction $action)
+		{
+			if ($this->action->id === 'PDFprint' && Yii::app()->request->getParam('is_view') === '1') {
+					return;
+			} else {
+					parent::verifyActionAccess($action);
+			}
+		}
+
+	/**
      * The PDFPrint action is used in all cases, normal print action won't work!
      * This is required to make sure that the PDF attachments can be merged to the letter.
      * TODO: need to check audit trail!

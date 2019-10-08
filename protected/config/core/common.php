@@ -488,13 +488,7 @@ return array(
          * To remove an option set it to NULL
          * e.g: saveprint' => null,
          */
-        'OphCoCorrespondence_event_actions' => array(
-                'create' => array(
-                    'savedraft' => 'Save draft',
-                    'save' => null,
-                    'saveprint' => 'Save and print'
-            )
-        ),
+
 
         /**
          * Enable or disable the draft printouts DRAFT background
