@@ -15,6 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+$fpten_setting = SettingMetadata::model()->getSetting('prescription_form_format');
+$fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'));
 ?>
 
 <tr data-key="<?php echo $key ?>" class="prescription-item prescriptionItem
@@ -93,7 +95,9 @@
           $item->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
               'condition' => "active or id='" . $item->dispense_condition_id . "'",
               'order' => 'display_order',
-          )), 'id', 'name'), array('class' => 'dispenseCondition cols-11', 'empty' => 'Select')); ?>
+          )), 'id', 'name'), array('class' => 'dispenseCondition cols-11', 'empty' => 'Select', 'options' => array(
+                $fpten_dispense_condition->id => array('label' => "Print to $fpten_setting")
+            ))) ?>
 
   </td>
   <td>

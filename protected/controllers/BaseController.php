@@ -244,6 +244,7 @@ class BaseController extends Controller
             $this->jsVars['user_id'] = $user->id;
             $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
             $this->jsVars['user_email'] = $user->email;
+            $this->jsVars['user_username'] = $user->username;
         }
         $institution = Institution::model()->findByAttributes(array('remote_id' => Yii::app()->params['institution_code']));
         $this->jsVars['institution_code'] = $institution->remote_id;
@@ -255,6 +256,7 @@ class BaseController extends Controller
         $this->jsVars['OE_event_print_method'] = Yii::app()->params['event_print_method'];
         $this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
         $this->jsVars['OE_GP_Setting'] = Yii::app()->params['gp_label'];
+        $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
 
         foreach ($this->jsVars as $key => $value) {
             $value = CJavaScript::encode($value);
@@ -362,9 +364,9 @@ class BaseController extends Controller
         $newUniqueCode->unique_code_id = $this->getActiveUnusedUniqueCode();
         if ($eventId > 0) {
             $newUniqueCode->event_id = $eventId;
-            $newUniqueCode->user_id = NULL;
+            $newUniqueCode->user_id = null;
         } elseif ($userId > 0) {
-            $newUniqueCode->event_id = NULL;
+            $newUniqueCode->event_id = null;
             $newUniqueCode->user_id = $userId;
         }
         $newUniqueCode->isNewRecord = true;
@@ -405,5 +407,21 @@ class BaseController extends Controller
     public function setPageTitle($pageTitle)
     {
         parent::setPageTitle($pageTitle . ' - OE');
+    }
+
+    public function sanitizeInput($input)
+    {
+        $allowable_tags = "<b><table><thead><tbody><tr><th><td>";
+        if (count($input) > 0) {
+            foreach ($input as $key => $value) {
+                if (is_array($value) || is_object($value)) {
+                    $input[$key] = $this->sanitizeInput($value);
+                    continue;
+                }
+                $value = CHtml::encode(strip_tags($value, $allowable_tags));
+                $input[$key] = $value;
+            }
+        }
+        return $input;
     }
 }

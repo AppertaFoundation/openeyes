@@ -94,7 +94,7 @@
                 <tr>
                     <td>
                         <label for="<?= CHtml::modelName($element) . '_hba1c'; ?>">
-                            <?= $element->getAttributeLabel('hba1c') ?>
+                            <?= $element->getAttributeLabel('hba1c') ?> (mmol/mol)
                         </label>
                     </td>
                     <td>
@@ -174,20 +174,29 @@
         function getAndSetBMI(height, weight) {
             let $bmiContainer = $('#bmi-container');
             let bmi = 0;
-            let red = "0%";
-            let green = "80%";
+            let red = "100%";
+            let green = "100%";
+            let blue = "100%";
             let result = 'N/A';
             if ((height > 0) && (weight > 0)) {
                 bmi = bmi_calculator(weight, height);
                 result = bmi.toFixed(2) || 'N/A';
+                blue = "0%";
                 let resultFloat = parseFloat(result);
                 if (resultFloat < 18.5 || resultFloat >= 30) {
                     red = "80%";
                     green = "0%";
+                } else {
+                    red = "0%";
+                    green = "80%";
                 }
+                $bmiContainer.css("background-color", "rgb("+red+", "+green+", "+blue+")");
+            }
+            else {
+                $bmiContainer.css("background-color", '');
             }
             $bmiContainer.text(result);
-            $bmiContainer.css("background-color", "rgb("+red+", "+green+", 0%)");
+            
         }
     });
 </script>

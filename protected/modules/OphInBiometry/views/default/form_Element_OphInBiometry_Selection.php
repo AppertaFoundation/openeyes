@@ -73,6 +73,7 @@
 
         $manual_override_container.toggle(checked);
         $manual_override_container.find('input,select').prop("disabled", !checked);
+        $manual_override_container.find('[name*="iol_power_"], [name*="predicted_refraction_"]').val(0);
         $auto_values_container.find('input,select').prop("disabled", checked);
         $auto_values_container.toggle(!checked);
     });

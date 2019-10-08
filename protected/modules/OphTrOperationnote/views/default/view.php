@@ -36,6 +36,13 @@ if ($this->checkPrintAccess()) {
 ?>
 
 <input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath ?>/css"/>
+<?php if (\Yii::app()->user->hasFlash('error')) {?>
+  <div class="cols-12 column">
+    <div class="alert-box issue with-icon">
+        <?=\Yii::app()->user->getFlash('error');?>
+    </div>
+  </div>
+<?php }?>
 
 <?php if ($this->event->delete_pending) { ?>
   <div class="alert-box alert with-icon">

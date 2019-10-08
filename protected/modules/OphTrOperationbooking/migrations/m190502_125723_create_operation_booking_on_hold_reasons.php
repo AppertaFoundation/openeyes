@@ -12,17 +12,18 @@ class m190502_125723_create_operation_booking_on_hold_reasons extends OEMigratio
         ], true);
 
         $this->insertMultiple('ophtroperationbooking_operation_on_hold_reason', [
-            ['reason' => 'Uncontrolled hypertension', 'display_order' => 1],
-            ['reason' => 'Uncontrolled blood sugar', 'display_order' => 2],
-            ['reason' => 'Recent MI', 'display_order' => 3],
-            ['reason' => 'Recent CVA', 'display_order' => 4],
-            ['reason' => 'Too unwell', 'display_order' => 5],
-            ['reason' => 'Blepharitis', 'display_order' => 6],
-            ['reason' => 'Awaiting surgery elsewhere', 'display_order' => 7],
-            ['reason' => 'Under investigations', 'display_order' => 8],
-            ['reason' => 'Still under post op review - 1st eye', 'display_order' => 9],
-            ['reason' => 'Out of the country', 'display_order' => 10],
-            ['reason' => 'Bereavement', 'display_order' => 11],
+            ['reason' => 'Awaiting completion of 1st eye', 'display_order' => 1],
+            ['reason' => 'Uncontrolled hypertension', 'display_order' => 2],
+            ['reason' => 'Uncontrolled blood sugar', 'display_order' => 3],
+            ['reason' => 'Recent MI', 'display_order' => 4],
+            ['reason' => 'Recent CVA', 'display_order' => 5],
+            ['reason' => 'Too unwell', 'display_order' => 6],
+            ['reason' => 'Blepharitis', 'display_order' => 7],
+            ['reason' => 'Awaiting surgery elsewhere', 'display_order' => 8],
+            ['reason' => 'Under investigations', 'display_order' => 9],
+            ['reason' => 'Still under post op review - 1st eye', 'display_order' => 10],
+            ['reason' => 'Out of the country', 'display_order' => 11],
+            ['reason' => 'Bereavement', 'display_order' => 12],
         ]);
 
         $this->addColumn('et_ophtroperationbooking_operation', 'on_hold_reason', 'varchar(100) NULL');
