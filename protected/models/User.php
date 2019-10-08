@@ -838,4 +838,13 @@ class User extends BaseActiveRecordVersioned
 
         return $users_with_roles;
     }
+
+    public function getUserActiveStatus($user){
+      if($user->active){
+        $active = '1';
+      } else {
+        $active = '0';
+      }
+      return $active;
+    }
 }
