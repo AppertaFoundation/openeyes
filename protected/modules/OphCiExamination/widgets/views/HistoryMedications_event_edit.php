@@ -31,15 +31,12 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
 $current_entries = [];
 $stopped_entries = [];
 foreach($element->entries as $entry) {
-  if ($entry->end_date && DateTime::createFromFormat('Y-m-d', $entry->end_date) < new DateTime()) {
+  if ($entry->originallyStopped) {
     $stopped_entries[] = $entry;
   } else {
     $current_entries[] = $entry;
   }
 }
-$element->current_entries = $current_entries;
-$element->closed_entries = $stopped_entries;
-$current_entries = $element->event_id ? $element->current_entries : $element->entries;
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
@@ -116,9 +113,9 @@ $current_entries = $element->event_id ? $element->current_entries : $element->en
         ?>
         </tbody>
     </table>
-        <div class="collapse-data" style="<?php echo !sizeof($element->closed_entries)?  'display:none': ''; ?>">
+        <div class="collapse-data" style="<?php echo !sizeof($stopped_entries)?  'display:none': ''; ?>">
             <div class="collapse-data-header-icon expand">
-                Stopped Medications <small class="js-stopped-medications-count">(<?=count($element->closed_entries);?>)</small>
+                Stopped Medications <small class="js-stopped-medications-count">(<?=count($stopped_entries);?>)</small>
             </div>
             <div class="collapse-data-content" style="display: none;">
 
@@ -132,7 +129,7 @@ $current_entries = $element->event_id ? $element->current_entries : $element->en
 
                     <tbody>
                     <?php
-                    foreach ($element->closed_entries as $entry) {
+                    foreach ($stopped_entries as $entry) {
                         if ($entry->prescription_item_id) {
                             $this->render(
                                 'HistoryMedicationsEntry_prescription_event_edit',
