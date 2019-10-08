@@ -361,21 +361,21 @@ class DefaultController extends BaseEventTypeController
 
                         $create_correspondence = \Yii::app()->request->getParam('auto_generate_gp_letter_after_surgery');
                         if ($create_correspondence) {
-                        		if ($this->patient->gp_id && $this->patient->practice_id) {
-																$macro_name = \SettingMetadata::model()->getSetting('default_post_op_letter');
-																$transaction = Yii::app()->db->beginTransaction();
-																// create 'post-op' letter
-																$result = $this->createCorrespondenceEvent($macro_name);
-																if ($result['success'] === true) {
-																		$transaction->commit();
-																} else {
-																		$transaction->rollback();
-																		$this->logEventCreationFail($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
-																}
-														} else {
-																Yii::app()->user->setFlash('error', "GP letter could not be created because the patient has no GP");
-																$this->logEventCreationFail(['Error Message' => 'GP letter could not be created because the patient has no GP', 'gp_id' => $this->patient->gp_id, 'practice_id' => $this->patient->practice_id], 'OphCoCorrespondence', 'Patient');
-														}
+                            if ($this->patient->gp_id && $this->patient->practice_id) {
+                                                            $macro_name = \SettingMetadata::model()->getSetting('default_post_op_letter');
+                                                            $transaction = Yii::app()->db->beginTransaction();
+                                                            // create 'post-op' letter
+                                                            $result = $this->createCorrespondenceEvent($macro_name);
+                                if ($result['success'] === true) {
+                                    $transaction->commit();
+                                } else {
+                                    $transaction->rollback();
+                                    $this->logEventCreationFail($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
+                                }
+                            } else {
+                                    Yii::app()->user->setFlash('error', "GP letter could not be created because the patient has no GP");
+                                    $this->logEventCreationFail(['Error Message' => 'GP letter could not be created because the patient has no GP', 'gp_id' => $this->patient->gp_id, 'practice_id' => $this->patient->practice_id], 'OphCoCorrespondence', 'Patient');
+                            }
                         }
 
                         $create_optom_correspondence = \Yii::app()->request->getParam('auto_generate_optom_post_op_letter_after_surgery');
