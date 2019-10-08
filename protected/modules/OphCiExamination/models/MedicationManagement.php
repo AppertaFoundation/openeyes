@@ -415,6 +415,7 @@ class MedicationManagement extends BaseMedicationElement
         }
 
         $this->prescription_id = $prescription_creator->elements['Element_OphDrPrescription_Details']->id;
+        $this->update(['prescription_id']);
     }
 
     private function getPrescriptionItem(\EventMedicationUse $entry)
