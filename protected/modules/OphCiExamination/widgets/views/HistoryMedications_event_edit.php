@@ -27,6 +27,19 @@ $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', '
 $element_errors = $element->getErrors();
 $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'name');
 $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
+
+$current_entries = [];
+$stopped_entries = [];
+foreach($element->entries as $entry) {
+  if ($entry->end_date && DateTime::createFromFormat('Y-m-d', $entry->end_date) < new DateTime()) {
+    $stopped_entries[] = $entry;
+  } else {
+    $current_entries[] = $entry;
+  }
+}
+$element->current_entries = $current_entries;
+$element->closed_entries = $stopped_entries;
+$current_entries = $element->event_id ? $element->current_entries : $element->entries;
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
@@ -36,7 +49,6 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
       <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
       <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="js-do-not-save-entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>
-            <?php $current_entries = $element->entries;?>
       <table id="<?= $model_name ?>_entry_table" class="js-entry-table medications <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
           <colgroup>
               <col class="cols-2">
