@@ -409,14 +409,14 @@ class MedicationManagement extends BaseMedicationElement
 
         foreach ($prescription_creator->elements['Element_OphDrPrescription_Details']->items as $item) {
             $class = self::$entry_class;
-            $entry = $class::model()->findBypk($item->id);
-            $entry->prescription_item_id = $item->original_item_id;
+            $entry = $class::model()->findBypk($item->original_item_id);
+            $entry->prescription_item_id = $item->id;
             $entry->save();
         }
 
         $this->prescription_id = $prescription_creator->elements['Element_OphDrPrescription_Details']->id;
         // updte only prescription_id - no validation here
-        $this->update(['prescription_id']);
+				\Yii::app()->db->createCommand("UPDATE ".$this->tableName()." SET prescription_id=".$this->prescription_id." WHERE id=".$this->id)->execute();
 
     }
 
