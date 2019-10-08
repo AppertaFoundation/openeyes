@@ -38,6 +38,13 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
       );
       $patientPanel->render('PatientPanel');
       ?>
+		<?php if(count($warnings) > 0): ?>
+			<div class="alert-box error">
+				<?php	foreach ($warnings as $warning) {
+					echo $warning . "<br>";
+				}	?>
+			</div>
+		<?php endif; ?>
   </td>
   <td> <!-- External Reference -->
       <?php

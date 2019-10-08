@@ -70,6 +70,7 @@ class Contact extends BaseActiveRecordVersioned
             array('nick_name', 'length', 'max' => 80),
             array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name, contact_label_id', 'safe'),
             array('first_name, last_name', 'required', 'on' => array('manualAddPatient','referral','self_register','other_register','manage_gp')),
+            array('title, first_name, last_name, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
             array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
             array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message'=>'Please select a Role.'),
             array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
@@ -123,8 +124,8 @@ class Contact extends BaseActiveRecordVersioned
             'nick_name' => 'Nickname',
             'primary_phone' => 'Phone number',
             'title' => 'Title',
-            'first_name' =>  $this->scenario === 'manage_practice' ? 'Practice Name' : 'First name',
-            'last_name' => 'Last name',
+            'first_name' =>  $this->scenario === 'manage_practice' ? 'Practice Name' : 'First Name',
+            'last_name' => 'Last Name',
             'qualifications' => 'Qualifications',
             'contact_label_id' => 'Label',
         );

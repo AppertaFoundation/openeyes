@@ -10,7 +10,6 @@ $trialsShortlistedInto = TrialPatient::getTrialCount($this->patient, TrialPatien
 $trialsAcceptedInto = TrialPatient::getTrialCount($this->patient, TrialPatientStatus::ACCEPTED_CODE);
 $trialsRejectedFrom = TrialPatient::getTrialCount($this->patient, TrialPatientStatus::REJECTED_CODE);
 ?>
-
-<?php if($trialsShortlistedInto > 0):?><div class="trial-count"><em>Shortlisted</em> <?= $trialsShortlistedInto?></div><?php endif;?>
-<?php if($trialsAcceptedInto > 0):?><div class="trial-count"><em>Accepted</em> <?= $trialsAcceptedInto?></div><?php endif;?>
-<?php if($trialsRejectedFrom > 0):?><div class="trial-count"><em>Rejected</em> <?= $trialsRejectedFrom?></div><?php endif;?>
+<div class="trial-count trial-shortlist" style="<?= $trialsShortlistedInto == 0 ? 'display:none;' : '' ?>"><em>Shortlisted</em> <?= $trialsShortlistedInto?></div>
+<div class="trial-count" style="<?= $trialsAcceptedInto == 0 ? 'display:none;' : '' ?>"><em>Accepted</em> <?= $trialsAcceptedInto?></div>
+<div class="trial-count" style="<?= $trialsRejectedFrom == 0 ? 'display:none;' : '' ?>"><em>Rejected</em> <?= $trialsRejectedFrom?></div>
