@@ -103,7 +103,6 @@
                             'name' => 'delete',
                             'data-object' => 'users',
                             'id' => 'et_delete',
-                            'onClick' => "window.location.reload();",
                         ]
                     ); ?>
                 </td>

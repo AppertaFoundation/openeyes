@@ -77,6 +77,14 @@ function enableButtons(selector) {
 	$('.spinner').hide();
 }
 
+function updateActiveIcon($form){
+  $form
+    .find('table.standard tbody input[type="checkbox"]:checked')
+    .closest('tr')
+    .find('td i')
+    .attr('class','oe-i remove small');
+}
+
 $(document).ready(function() {
 	$('button.auto').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {

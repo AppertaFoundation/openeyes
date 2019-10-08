@@ -105,7 +105,7 @@ $(document).ready(function(){
 
     $.when(et_delete_ajax_call(uri, serializedForm)).done(function(html){
       if (html === '1') {
-        $form.find('table.standard tbody input[type="checkbox"]:checked').closest('tr').remove();
+        updateActiveIcon($form);
         enableButtons();
       } else {
         if(html.indexOf('Attribute Element is in use') !== -1){
