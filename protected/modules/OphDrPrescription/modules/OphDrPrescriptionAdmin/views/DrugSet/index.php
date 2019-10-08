@@ -33,10 +33,10 @@
 
         <div id="set-filters" class="flex-layout row">
             <button
-                data-usage_code_id="ALL"
+                data-usage_code_id='<?= $this->FILTER_USAGE_CODE_ID_FOR_ALL ?>'
                 id="usage_code_button_all"
                 type="button"
-                class="large js-set-select <?=$isSelected('ALL');?>"
+                class="large js-set-select <?=$isSelected($this->FILTER_USAGE_CODE_ID_FOR_ALL);?>"
             >All
             </button>
             <?php foreach (MedicationUsageCode::model()->findAll(['condition' => 'active = 1']) as $usage_code) :?>

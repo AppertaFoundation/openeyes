@@ -26,13 +26,15 @@ class DrugSetController extends BaseAdminController
 
     public $assetPath;
 
+    public $FILTER_USAGE_CODE_ID_FOR_ALL = 'ALL';
+
     public function getFilters()
     {
         $default = [
             'query' => null,
             'subspecialty_id' => null,
             'site_id' => null,
-            'usage_code_ids' => ['ALL'],
+            'usage_code_ids' => [$this->FILTER_USAGE_CODE_ID_FOR_ALL],
         ];
 
         $filters = \Yii::app()->request->getParam('search');
@@ -98,7 +100,10 @@ class DrugSetController extends BaseAdminController
         $criteria->with = ['medicationSetRules'];
         $criteria->together = true;
 
-        if (isset($filters['usage_code_ids']) && $filters['usage_code_ids'] && !in_array('ALL', $filters['usage_code_ids'])) {
+        if (isset($filters['usage_code_ids']) &&
+          $filters['usage_code_ids'] &&
+          !in_array($this->FILTER_USAGE_CODE_ID_FOR_ALL, $filters['usage_code_ids'])) {
+
             $criteria->addInCondition('usage_code_id', $filters['usage_code_ids']);
         }
 
