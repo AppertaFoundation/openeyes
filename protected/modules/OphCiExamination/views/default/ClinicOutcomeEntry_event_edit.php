@@ -66,15 +66,14 @@ if (!isset($values)) {
                     <fieldset class="flex-layout">
                         Virtual Clinic:
                         <div class="cols-3">
-                            <?php if (count($queues) == 0) { ?>
+                            <?php if (count($queues) === 0) { ?>
                                 <span>No valid Virtual Clinics available</span>
-                            <?php } elseif (count($queues) == 1) {
+                            <?php } elseif (count($queues) === 1) {
                                 echo reset($queues);
                                 $qid = key($queues);
                                 $_POST['patientticket_queue'] = $qid;
                                 ?>
                                 <input type="hidden" name="patientticket_queue" value="<?= $qid ?>"/>
-
                             <?php } else {
                                 echo CHtml::dropDownList('patientticket_queue', $_POST['patientticket_queue'], $queues,
                                     array('empty' => 'Select', 'nowrapper' => true, 'options' => array()));

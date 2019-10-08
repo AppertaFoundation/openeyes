@@ -106,16 +106,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     ClinicOutcomeController.prototype.resetAdderDialog = function () {
-        this.$status_options.each(function () {
-            $(this).removeClass('selected');
-        });
-        this.$quantity_options.each(function () {
-            $(this).removeClass('selected');
-        });
-        this.$period_options.each(function () {
-            $(this).removeClass('selected');
-        });
-        this.$role_options.each(function () {
+        this.$status_options.add(this.$quantity_options).add(this.$period_options).add(this.$role_options).each(function () {
             $(this).removeClass('selected');
         });
         $('.follow-up-options-follow-up-only').each(function () {

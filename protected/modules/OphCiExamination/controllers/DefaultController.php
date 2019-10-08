@@ -1469,18 +1469,19 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidatePatientTicketingFromData($data, $errors, $api)
     {
         $err = array();
-        $queue = null;
         if (!$data['patientticket_queue']) {
             $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
-        } elseif (!$queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue'])) {
-            $err['patientticket_queue'] = 'Virtual Clinic not found';
-        }
-        if ($queue) {
-            if (!$api->canAddPatientToQueue($this->patient, $queue)) {
-                $err['patientticket_queue'] = 'Cannot add Patient to Queue';
+        } else {
+            $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
+            if (!$queue) {
+                $err['patientticket_queue'] = 'Virtual Clinic not found';
             } else {
-                list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
-                $err = array_merge($err, $fld_errs);
+                if (!$api->canAddPatientToQueue($this->patient, $queue)) {
+                    $err['patientticket_queue'] = 'Cannot add Patient to Queue';
+                } else {
+                    list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
+                    $err = array_merge($err, $fld_errs);
+                }
             }
         }
 
