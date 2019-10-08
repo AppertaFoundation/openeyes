@@ -99,13 +99,15 @@
                     </div>
                 </td>
             </tr>
+            <?php $disabled = $model->source_type == 'LOCAL' ? 'disabled' : ''; ?>
             <tr>
                 <td>
                     <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>VTM Term</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'vtm_term', [
-                                'class' => 'cols-full',
+                                'class' => 'cols-full ' + $disabled,
+                                'disabled' => $disabled,
                             ])?>
                         </div>
                     </div>
@@ -117,7 +119,8 @@
                         <div class="cols-2"><label>VTM Code</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'vtm_code', [
-                                'class' => 'cols-full',
+                                'class' => 'cols-full ' + $disabled,
+                                'disabled' => $disabled,
                             ])?>
                         </div>
                     </div>
@@ -129,7 +132,8 @@
                         <div class="cols-2"><label>VMP Term</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'vmp_term', [
-                                'class' => 'cols-full',
+                                'class' => 'cols-full ' + $disabled,
+                                'disabled' => $disabled,
                             ])?>
                         </div>
                     </div>
@@ -141,7 +145,8 @@
                         <div class="cols-2"><label>VMP Code</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'vmp_code', [
-                                'class' => 'cols-full',
+                                'class' => 'cols-full ' + $disabled,
+                                'disabled' => $disabled,
                             ])?>
                         </div>
                     </div>
@@ -153,7 +158,8 @@
                         <div class="cols-2"><label>AMP Term</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'amp_term', [
-                                'class' => 'cols-full',
+                                'class' => 'cols-full ' + $disabled,
+                                'disabled' => $disabled,
                             ])?>
                         </div>
                     </div>
@@ -165,7 +171,8 @@
                         <div class="cols-2"><label>AMP Code</label></div>
                         <div class="cols-5">
                             <?=CHtml::activeTextField($model, 'amp_code', [
-                                'class' => 'cols-full',
+                                'class' => 'cols-full ' + $disabled,
+                                'disabled' => $disabled,
                             ])?>
                         </div>
                     </div>
