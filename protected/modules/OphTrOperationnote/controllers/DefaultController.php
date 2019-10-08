@@ -1156,8 +1156,7 @@ class DefaultController extends BaseEventTypeController
             return '<span class="extra-info">' .
                 '<span class="fade">Site: </span>' .
                 $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</span>' .
-                '</span>' .
-                '<span class="extra-info">' . Helper::convertDate2NHS($this->event->event_date) . '</span>';
+                '</span>';
         }
         return null;
     }

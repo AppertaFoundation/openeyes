@@ -1,6 +1,5 @@
 <main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content">
 
-
   <h2 class="event-title">
       <?php echo $this->title ?>
       <?php if ($this->event->is_automated) {
@@ -10,27 +9,26 @@
       <?php if ($this->action->id === 'view') { ?>
         <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
       <?php } ?>
-      <?php $extra_info = $this->getExtraTitleInfo();
-      if ($extra_info && $extra_info !== ""): ?>
-        <div class="event-title-extra-info">
-            <?= $extra_info ?>
-        </div>
-      <?php endif; ?>
 
   </h2>
+	<?php $extra_info = $this->getExtraTitleInfo(); ?>
+		<div class="event-title-extra-info flex-layout">
 
     <?php if ($this->title != 'Please select booking') { ?>
-        <div class="event-title-extra-info flex-layout">
             <?php if (isset($this->event->firm)): ?>
-                <div>
-                    <b>Subspecialty: </b>
-                    <?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name ; ?>
+                <div class="extra-info">
+                    <span class="fade">Subspecialty: </span>
+                    <?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name; ?>
                 </div>
-                <div>
-                    <b>&nbsp;Context: </b>
+                <div class="extra-info">
+                    <span class="fade">&nbsp;Context: </span>
                     <?= $this->event->firm->name; ?>
                 </div>
             <?php endif; ?>
+
+						<?php if ($extra_info && $extra_info !== ""): ?>
+							<?= $extra_info ?>
+						<?php endif; ?>
 
             <?php $errors = $this->event->getErrors();
             $error_class = isset($errors['event_date']) ? 'error' : '';
@@ -77,9 +75,10 @@
           <i class="oe-i history large pad-left js-has-tooltip js-change-event-date"
              data-tooltip-content="Change Event date"
              style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
-      </div>
-    <?php } ?>
-    <?php $this->renderPartial('//patient/_patient_alerts') ?>
+<?php } ?>
+		</div>
+
+	<?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
 
     <?php echo $content; ?>
