@@ -142,7 +142,7 @@ class ClinicOutcomeEntry extends \BaseElement
     {
         if ($this->role && $this->role->requires_comment
             && !trim($this->followup_comments)) {
-            $this->addError($attribute, 'this role requires a comment');
+            $this->addError($attribute, '"' .$this->role->name . '" role requires a comment');
         }
     }
 
