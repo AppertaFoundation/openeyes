@@ -29,20 +29,15 @@ if (!isset($values)) {
         'role_id' => $entry->role_id,
         'role' => $entry->getRoleLabel(),
     );
-    if ($entry->isPatientTicket()) {
-        $values['patient_ticket'] = '1';
-    } else {
-        $values['followup'] = '1';
-    }
 }
 ?>
 
 <tr id="<?= $model_name ?>_entries" class="row-<?= $row_count ?>" data-key="<?= $row_count ?>"
     data-status="<?= $values['status_id'] ?>">
-    <td <?= isset($values['patient_ticket']) ? 'style="vertical-align:top"' : '' ?>>
+    <td <?= $patient_ticket ? 'style="vertical-align:top"' : '' ?>>
         <?= Chtml::activeHiddenField($entry, 'id');?>
         <input type="hidden" name="<?= $field_prefix ?>[status_id]" value="<?= $values['status_id'] ?>"/>
-        <?php if (isset($values['followup'])) : ?>
+        <?php if (!$patient_ticket) : ?>
             <input type="hidden" name="<?= $field_prefix ?>[followup_quantity]"
                    value="<?= $values['followup_quantity'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[followup_period_id]"
@@ -54,9 +49,9 @@ if (!isset($values)) {
         <?= isset($condition_text) ? $condition_text : "{{condition_text}}"; ?>
     </td>
     <td id="<?= $model_name ?>_entries_<?= $row_count ?>">
-        <?php if (isset($values['followup'])) {
+        <?php if (!$patient_ticket) {
             echo $values['status'] . ' ' . $values['followup_quantity'] . ' ' . $values['followup_period'] . $values['role'] . $values['followup_comments_display'];
-        } else if (isset($values['patient_ticket']) && $ticket_api) { ?>
+        } else if ($patient_ticket && $ticket_api) { ?>
             <div data-queue-assignment-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
                  id="div_<?= $model_name ?>_patientticket">
                 <!-- TODO, this should be pulled from the ticketing module somehow -->
@@ -102,6 +97,6 @@ if (!isset($values)) {
         <?php } ?>
     </td>
     <td style="vertical-align:top">
-        <i class="oe-i trash <?= isset($values['followup']) ? 'followup' : 'patient_ticket' ?>"></i>
+        <i class="oe-i trash"></i>
     </td>
 </tr>

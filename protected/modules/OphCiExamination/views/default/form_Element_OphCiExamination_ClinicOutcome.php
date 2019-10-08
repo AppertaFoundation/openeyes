@@ -61,6 +61,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                         'ticket_api' => $ticket_api ? $ticket_api : null,
                         'queues' => $queues,
                         'ticket' => $ticket,
+                        'patient_ticket' => $entry->isPatientTicket(),
                     )
                 );
                 $row_count++;
@@ -173,10 +174,10 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
             'model_name' => $model_name,
             'field_prefix' => $model_name . '[entries][{{row_count}}]',
             'row_count' => '{{row_count}}',
+            'patient_ticket' => false,
             'values' => [
                 'status_id' => '{{status_id}}',
                 'status' => '{{status}}',
-                'followup' => '{{followup}}',
                 'followup_quantity' => '{{followup_quantity}}',
                 'followup_period_id' => '{{followup_period_id}}',
                 'followup_period' => '{{followup_period}}',
@@ -203,11 +204,11 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
             'queues' => $queues,
             'ticket' => $ticket,
             'row_count' => '{{row_count}}',
+            'patient_ticket' => true,
             'values' => [
                 'id' => '',
                 'status_id' => '{{status_id}}',
                 'status' => '{{status}}',
-                'patient_ticket' => '{{patient_ticket}}',
             ],
         ]
     );
