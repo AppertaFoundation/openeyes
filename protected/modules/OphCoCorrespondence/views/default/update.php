@@ -30,7 +30,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 
 $actions = array('savedraft' => 'Save draft');
 if ($this->checkPrintAccess()) {
-	$actions['saveprint'] = 'Save and print';
+    $actions['saveprint'] = 'Save and print';
 }
 
 foreach ($actions as $action_id => $action) {

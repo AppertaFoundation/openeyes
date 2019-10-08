@@ -474,11 +474,10 @@ class DefaultController extends BaseEventTypeController
 
         // after "Save and Print" button clicked we only print out what the user checked
         if (!$is_view && \Yii::app()->user->getState('correspondece_element_letter_saved', true) && (!isset($_GET['print_only_gp']) || $_GET['print_only_gp'] !== "1")) {
-
             if ($letter->document_instance) {
                 // check if the first recipient is GP
                 $document_instance = $letter->document_instance[0];
-                $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
+                $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)', array(
                     ':id' => $document_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL', ));
 
                 if ($to_recipient_gp) {
@@ -578,15 +577,15 @@ class DefaultController extends BaseEventTypeController
     }
 
     protected function verifyActionAccess(CAction $action)
-		{
-			if ($this->action->id === 'PDFprint' && Yii::app()->request->getParam('is_view') === '1') {
-					return;
-			} else {
-					parent::verifyActionAccess($action);
-			}
-		}
+    {
+        if ($this->action->id === 'PDFprint' && Yii::app()->request->getParam('is_view') === '1') {
+                return;
+        } else {
+                parent::verifyActionAccess($action);
+        }
+    }
 
-	/**
+    /**
      * The PDFPrint action is used in all cases, normal print action won't work!
      * This is required to make sure that the PDF attachments can be merged to the letter.
      * TODO: need to check audit trail!
