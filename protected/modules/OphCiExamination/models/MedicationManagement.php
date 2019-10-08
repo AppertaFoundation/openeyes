@@ -409,13 +409,23 @@ class MedicationManagement extends BaseMedicationElement
 
         foreach ($prescription_creator->elements['Element_OphDrPrescription_Details']->items as $item) {
             $class = self::$entry_class;
-            $entry = $class::model()->findBypk($item->id);
-            $entry->prescription_item_id = $item->original_item_id;
+            $entry = $class::model()->findBypk($item->original_item_id);
+            $entry->prescription_item_id = $item->id;
             $entry->save();
         }
 
         $this->prescription_id = $prescription_creator->elements['Element_OphDrPrescription_Details']->id;
-        $this->update(['prescription_id']);
+
+        // To save in afterSave when it's a new record without doing an sql query we have to set the
+                // the isNewRecord to false , before saving the attribute and setting it back to true afterwards
+                // We're also using saveAttributes to avoid any calls to beforeSave and AfterSave
+        if ($this->getIsNewRecord()) {
+            $this->setIsNewRecord(false);
+            $this->saveAttributes(['prescription_id']);
+            $this->setIsNewRecord(true);
+        } else {
+            $this->saveAttributes(['prescription_id']);
+        }
     }
 
     private function getPrescriptionItem(\EventMedicationUse $entry)
