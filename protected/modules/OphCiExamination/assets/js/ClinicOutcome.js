@@ -25,6 +25,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.followup_template_text = $('#' + this.options.model_name + '_followup_entry_template').text();
         this.patient_ticket_template_text = $('#' + this.options.model_name + '_patient_ticket_entry_template').text();
         this.entry_table_selector = '#' + this.options.model_name + '_entry_table';
+        this.status_options_selector = '#followup-outcome-options li';
+        this.$status_options = $(this.status_options_selector);
+        this.period_options_selector = '#follow-up-period-options li';
+        this.$period_options = $(this.period_options_selector);
+        this.role_options_selector = '#follow-up-role-options li';
+        this.$role_options = $(this.role_options_selector);
+        this.quantity_options_selector = '#follow-up-quantity-options li';
+        this.$quantity_options = $(this.quantity_options_selector);
 
         this.initialiseTriggers();
     }
@@ -36,7 +44,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     ClinicOutcomeController.prototype.initialiseTriggers = function () {
         let controller = this;
 
-        $('#followup-outcome-options li').on('click', function () {
+        this.$status_options.on('click', function () {
             let is_followup_entry = !!$(this).data('followup');
             $('.follow-up-options-follow-up-only').toggle(is_followup_entry);
         });
@@ -48,48 +56,71 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     ClinicOutcomeController.prototype.addRow = function () {
-        let $options = $('#followup-outcome-options li.selected');
-        let $period = $('#follow-up-period-options li.selected');
-        let $role = $('#follow-up-role-options li.selected');
+        let $selected_status = $(this.status_options_selector + '.selected');
+        let $selected_period = $(this.period_options_selector + '.selected');
+        let $selected_role = $(this.role_options_selector + '.selected');
+        let selected_quantity = $(this.quantity_options_selector + '.selected').data('quantity');
+
+        if ($selected_status.data('followup') && (!$selected_period.length || !$selected_role.length || typeof selected_quantity === "undefined")) {
+            $('#add-to-follow-up').show();
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Please select a value for quantity, period and role."
+            }).open();
+            return;
+        }
         let data = {};
 
         data.row_count = OpenEyes.Util.getNextDataKey(this.entry_table_selector + ' tbody.entries tr', 'key');
         data.condition_text = data.row_count ? "AND" : "";
-        data.status_id = $options.data('id');
-        data.status = $options.data('label');
-        data.followup = $options.data('followup');
-        data.patient_ticket = $options.data('patient-ticket');
-        let template = data.patient_ticket ? this.patient_ticket_template_text : this.followup_template_text;
-        if (data.followup){
-            data.followup_quantity = $('#follow-up-quantity-options li.selected').data('quantity');
-            data.followup_period_id = $period.data('period-id');
-            data.followup_period = $period.data('label');
+        data.status_id = $selected_status.data('id');
+        data.status = $selected_status.data('label');
+        let template = $selected_status.data('patient-ticket') ? this.patient_ticket_template_text : this.followup_template_text;
+        if ($selected_status.data('followup')){
+            data.followup_quantity = selected_quantity;
+            data.followup_period_id = $selected_period.data('period-id');
+            data.followup_period = $selected_period.data('label');
             let comments = $('#followup_comments').val();
             data.followup_comments = comments;
             data.followup_comments_display = comments !== '' ? ' ('+ comments + ')' : null;
-            data.role_id = $role.data('role-id');
-            data.role = ' with ' + $role.data('label');
+            data.role_id = $selected_role.data('role-id');
+            data.role = ' with ' + $selected_role.data('label');
         }
 
         //only one Virtual Review can be created
         if (inArray(data.status_id, $('#pt_status_list').data('statuses'))) {
-            $('#followup-outcome-options li.selected').hide();
+            $selected_status.hide();
         }
 
         $(this.entry_table_selector + ' tbody.entries').append(Mustache.render(template, data));
-        $('#followup-outcome-options li').each(function () {
-            $(this).removeClass('selected');
-        });
+        this.resetAdderDialog();
     };
 
     ClinicOutcomeController.prototype.deleteRow = function ($row) {
         if (inArray($row.data('status'), $('#pt_status_list').data('statuses'))) {
-            $('#followup-outcome-options li').each(function () {
+            this.$status_options.each(function () {
                 $(this).show();
             });
         }
 
         $row.remove();
+    };
+
+    ClinicOutcomeController.prototype.resetAdderDialog = function () {
+        this.$status_options.each(function () {
+            $(this).removeClass('selected');
+        });
+        this.$quantity_options.each(function () {
+            $(this).removeClass('selected');
+        });
+        this.$period_options.each(function () {
+            $(this).removeClass('selected');
+        });
+        this.$role_options.each(function () {
+            $(this).removeClass('selected');
+        });
+        $('.follow-up-options-follow-up-only').each(function () {
+            $(this).hide();
+        });
     };
 
     exports.ClinicOutcomeController = ClinicOutcomeController;
