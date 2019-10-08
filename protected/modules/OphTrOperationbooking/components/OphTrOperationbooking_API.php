@@ -75,16 +75,19 @@ class OphTrOperationbooking_API extends BaseAPI
 
     public function getOperationsForEpisode($patient, $use_context = false)
     {
-        if ($operations = $this->getElements(
+        $operations = $this->getElements(
             'Element_OphTrOperationbooking_Operation',
             $patient,
-            $use_context)
-        ) {
+            $use_context
+        );
+
+        if ($operations) {
             foreach ($operations as $key => $operation) {
                 $operations[$key]['booking'] = $operation->booking;
             }
             return $operations;
         }
+        return [];
     }
 
     /**

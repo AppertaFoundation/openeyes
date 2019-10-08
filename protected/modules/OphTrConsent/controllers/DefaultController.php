@@ -202,8 +202,6 @@ class DefaultController extends BaseEventTypeController
         if ($this->booking_event || $this->unbooked) {
             parent::actionCreate();
         } else {
-            $bookings = array();
-
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
                 $bookings = $api->getOperationsForEpisode($this->patient);
             }
@@ -225,7 +223,7 @@ class DefaultController extends BaseEventTypeController
             $this->processJsVars();
             $this->render('select_event', array(
                 'errors' => $errors,
-                'bookings' => $bookings,
+                'bookings' => $bookings ? $bookings : [],
             ), false, true);
         }
     }
