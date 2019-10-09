@@ -394,7 +394,7 @@ class MedicationManagement extends BaseMedicationElement
         foreach ($entries as $entry) {
             $item = $this->getPrescriptionItem($entry);
             $item->original_item_id = $entry->id;
-            $item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
+            $item->bound_key =  substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
 
             $prescription_creator->addItem($item);
         }
