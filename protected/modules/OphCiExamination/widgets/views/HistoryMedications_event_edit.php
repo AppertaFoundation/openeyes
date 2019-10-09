@@ -27,6 +27,16 @@ $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', '
 $element_errors = $element->getErrors();
 $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'name');
 $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
+
+$current_entries = [];
+$stopped_entries = [];
+foreach ($element->entries as $entry) {
+    if ($entry->originallyStopped) {
+        $stopped_entries[] = $entry;
+    } else {
+        $current_entries[] = $entry;
+    }
+}
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
@@ -36,7 +46,6 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
       <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
       <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="js-do-not-save-entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>
-            <?php $current_entries = $element->event_id ? $element->current_entries : $element->entries;?>
       <table id="<?= $model_name ?>_entry_table" class="js-entry-table medications <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
           <colgroup>
               <col class="cols-2">
@@ -104,9 +113,9 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
         ?>
         </tbody>
     </table>
-        <div class="collapse-data" style="<?php echo !sizeof($element->closed_entries)?  'display:none': ''; ?>">
+        <div class="collapse-data" style="<?php echo !sizeof($stopped_entries)?  'display:none': ''; ?>">
             <div class="collapse-data-header-icon expand">
-                Stopped Medications <small class="js-stopped-medications-count">(<?=count($element->closed_entries);?>)</small>
+                Stopped Medications <small class="js-stopped-medications-count">(<?=count($stopped_entries);?>)</small>
             </div>
             <div class="collapse-data-content" style="display: none;">
 
@@ -120,7 +129,7 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
 
                     <tbody>
                     <?php
-                    foreach ($element->closed_entries as $entry) {
+                    foreach ($stopped_entries as $entry) {
                         if ($entry->prescription_item_id) {
                             $this->render(
                                 'HistoryMedicationsEntry_prescription_event_edit',
