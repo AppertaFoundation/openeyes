@@ -115,9 +115,9 @@ $allergy_ids = !is_null($entry->medication_id) ?
                         <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => 'Frequency', 'class' => 'js-frequency cols-4')) ?>
                         <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => 'Route', 'class' => 'js-route cols-3')) ?>
                                                 <span class="oe-eye-lat-icons admin-route-options js-laterality" style="<?=$entry->routeOptions() ? "" :"display:none"?>" >
-																								<?php
-																									$lateralityClass = ($entry->hasErrors('laterality') ? 'error' : '')
-																								?>
+                                                                                                <?php
+                                                                                                    $lateralityClass = ($entry->hasErrors('laterality') ? 'error' : '')
+                                                                                                ?>
                                                                 <label class="inline highlight <?= $lateralityClass?>">
                                                                     <input value="2" name="eyelat-select-R" type="checkbox"<?= $entry->laterality === "2" || $entry->laterality === "3"? "checked" : ""?>>R
                                                                 </label>
@@ -191,7 +191,9 @@ $allergy_ids = !is_null($entry->medication_id) ?
 
                     <div class="alternative-display inline">
             <div class="alternative-display-element textual">
-                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0); " <?php if ($entry->hasErrors('end_date')) {?> style="display: none;"<?php }?>>
+                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0); " <?php if ($entry->hasErrors('end_date')) {
+                    ?> style="display: none;"<?php
+                                                            }?>>
                     <?php if (!is_null($entry->end_date)) : ?>
                                             <i class="oe-i stop small pad"></i>
                                             <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
@@ -202,7 +204,9 @@ $allergy_ids = !is_null($entry->medication_id) ?
                     <?php endif; ?>
                 </a>
             </div>
-            <fieldset <?php if (!($entry->hasErrors('end_date'))) {?> style="display: none;"<?php }?> class="js-datepicker-wrapper js-end-date-wrapper">
+            <fieldset <?php if (!($entry->hasErrors('end_date'))) {
+                ?> style="display: none;"<?php
+                      }?> class="js-datepicker-wrapper js-end-date-wrapper">
                             <i class="oe-i stop small pad"></i>
                 <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
                                              name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"

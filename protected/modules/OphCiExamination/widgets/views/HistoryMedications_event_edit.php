@@ -30,12 +30,12 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
 
 $current_entries = [];
 $stopped_entries = [];
-foreach($element->entries as $entry) {
-  if ($entry->originallyStopped) {
-    $stopped_entries[] = $entry;
-  } else {
-    $current_entries[] = $entry;
-  }
+foreach ($element->entries as $entry) {
+    if ($entry->originallyStopped) {
+        $stopped_entries[] = $entry;
+    } else {
+        $current_entries[] = $entry;
+    }
 }
 ?>
 
