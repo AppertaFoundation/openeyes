@@ -28,9 +28,12 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     ),
 ));
 
-$actions = array('savedraft' => 'Save draft');
-if ($this->checkPrintAccess()) {
-    $actions['saveprint'] = 'Save and print';
+$actions = array('savedraft' => 'Save draft', 'saveprint' => 'Save and print');
+if ( isset(Yii::app()->params['OphCoCorrespondence_event_actions']['create']) ) {
+		$actions = Yii::app()->params['OphCoCorrespondence_event_actions']['create'];
+}
+if (!$this->checkPrintAccess()) {
+		unset($actions['saveprint']);
 }
 
 foreach ($actions as $action_id => $action) {
