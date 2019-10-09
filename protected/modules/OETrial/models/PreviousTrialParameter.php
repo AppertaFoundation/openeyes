@@ -197,100 +197,61 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
     public function query($searchProvider)
     {
         $condition = ' ';
+        $joinCondition = 'JOIN';
+        if ($this->trialType) {
+            if ($this->trial === '') {
+                // Any intervention/non-intervention trial
+                $condition = "t.trial_type_id = :p_t_trial_type_$this->id";
+            } else {
+                // specific trial
+                $condition = "t_p.trial_id = :p_t_trial_$this->id";
+            }
+
+        } else {
+            // Any trial
+            $condition = 't_p.trial_id IS NOT NULL';
+        }
+
+        if ($this->status !== '' && $this->status !== null) {
+            //in a trial with a specific status
+            $condition .= " AND t_p.status_id = :p_t_status_$this->id";
+        } else {
+            // in any trial
+            $condition .= ' AND t_p.status_id IN (
+                      SELECT id FROM trial_patient_status WHERE code IN ("ACCEPTED", "SHORTLISTED", "REJECTED"))';
+        }
+
+        if ((!$this->trialType || $this->trialType->code !== TrialType::NON_INTERVENTION_CODE)
+            && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
+        ) {
+            $condition .= " AND t_p.treatment_type_id = :p_t_treatment_type_id_$this->id";
+        }
         switch ($this->operation) {
             case '=':
-                $joinCondition = 'JOIN';
-                if ($this->trialType) {
-                    if ($this->trial === '') {
-                        // Any intervention/non-intervention trial
-                        $condition = "t.trial_type_id = :p_t_trial_type_$this->id";
-                    } else {
-                        // specific trial
-                        $condition = "t_p.trial_id = :p_t_trial_$this->id";
-                    }
-
-                } else {
-                    // Any trial
-                    $condition = 't_p.trial_id IS NOT NULL';
-                }
-
-                if ($this->status !== '' && $this->status !== null) {
-                    //in a trial with a specific status
-                    $condition .= " AND t_p.status_id = :p_t_status_$this->id";
-                } else {
-                    // in any trial
-                    $condition .= ' AND t_p.status_id IN (
-                      SELECT id FROM trial_patient_status WHERE code IN ("ACCEPTED", "SHORTLISTED", "REJECTED"))';
-                }
-
-                if ((!$this->trialType || $this->trialType->code !== TrialType::NON_INTERVENTION_CODE)
-                    && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
-                ) {
-                    $condition .= " AND t_p.treatment_type_id = :p_t_treatment_type_id_$this->id";
-                }
+                $query = "SELECT p.id 
+                        FROM patient p 
+                        $joinCondition trial_patient t_p 
+                          ON t_p.patient_id = p.id 
+                        $joinCondition trial t
+                          ON t.id = t_p.trial_id
+                        WHERE $condition";
 
                 break;
             case '!=':
-                $joinCondition = 'LEFT JOIN';
-                $condition = 't_p.trial_id IS NULL OR ';
-
-                if ($this->status !== '' && $this->status !== null) {
-                    if ($this->trial == '' ){
-                        $condition .=
-                            "  p.id NOT IN(
-                          SELECT patient_id
-                          FROM trial_patient
-                          WHERE status_id = :p_t_status_$this->id
-                      ) ";
-                    }else {
-                        $condition .=
-                            "  p.id NOT IN(
-                          SELECT patient_id
-                          FROM trial_patient
-                          WHERE status_id = :p_t_status_$this->id
-                          AND trial_id = :p_t_trial_$this->id
-                      ) ";
-                    }
-
-                } else {
-                    // not accepted/rejected in any trial
-                    $condition .=
-                        ' p.id NOT IN(
-                          SELECT patient_id
-                          FROM trial_patient
-                          WHERE status_id IN (SELECT id FROM trial_patient_status WHERE code IN ("ACCEPTED", "SHORTLISTED", "REJECTED")))';
-                }
-                if ($this->trialType) {
-
-                    if ($this->trial === '') {
-                        // Not in any intervention/non-intervention trial
-                        $condition .= " OR t.trial_type_id  != :p_t_trial_type_$this->id ";
-                    } else {
-                        // Not in a specific trial
-                        $condition .= " AND t_p.trial_id != :p_t_trial_$this->id ";
-                    }
-                }
-
-                if ((!$this->trialType || $this->trialType->code !== TrialType::INTERVENTION_CODE)
-                    && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
-                ) {
-                    $condition .= " OR t_p.treatment_type_id IS NULL OR t_p.treatment_type_id != :p_t_treatment_type_id_$this->id";
-                }
-
+                $query = "SELECT p.id from patient p WHERE p.id NOT IN (SELECT p.id 
+                            FROM patient p 
+                            $joinCondition trial_patient t_p 
+                              ON t_p.patient_id = p.id 
+                            $joinCondition trial t
+                              ON t.id = t_p.trial_id
+                            WHERE $condition)";
                 break;
             default:
                 throw new CHttpException(400, 'Invalid operator specified.');
                 break;
         }
 
-        return "
-SELECT p.id 
-FROM patient p 
-$joinCondition trial_patient t_p 
-  ON t_p.patient_id = p.id 
-$joinCondition trial t
-  ON t.id = t_p.trial_id
-WHERE $condition";
+        return $query;
     }
 
     /**
@@ -301,40 +262,23 @@ WHERE $condition";
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         $binds = array();
-
-        if ($this->trial !== '' && $this->trial !== null) {
-            $binds[":p_t_trial_$this->id"] = $this->trial;
-        } elseif ($this->trialTypeId) {
-            $binds[":p_t_trial_type_$this->id"] = $this->trialTypeId;
-        }
-
-        if ($this->status !== '' && $this->status !== null && $this->operation === '!=') {
-            if($this->trial ==''){
-                $binds[":p_t_status_$this->id"] = $this->status;
-            }else {
-                $binds[":p_t_status_$this->id"] = $this->status;
+        if ($this->trialType) {
+            if ($this->trial === '') {
+                $binds[":p_t_trial_type_$this->id"] = $this->trialTypeId;
+            } else {
                 $binds[":p_t_trial_$this->id"] = $this->trial;
             }
         }
 
-        if ($this->status !== '' && $this->status !== null && $this->operation === '=') {
+        if ($this->status !== '' && $this->status !== null) {
             $binds[":p_t_status_$this->id"] = $this->status;
         }
-
-        if ($this->operation === '=') {
-            if ((!$this->trialType || $this->trialType->code !== TrialType::NON_INTERVENTION_CODE)
-                && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
-            ) {
-                $binds[":p_t_treatment_type_id_$this->id"] = $this->treatmentTypeId;
-            }
-        } else {
-            if ((!$this->trialType || $this->trialType->code !== TrialType::INTERVENTION_CODE)
-                && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
-            ) {
-                $binds[":p_t_treatment_type_id_$this->id"] = $this->treatmentTypeId;
-            }
+        if ((!$this->trialType || $this->trialType->code !== TrialType::NON_INTERVENTION_CODE)
+            && $this->treatmentTypeId !== '' && $this->treatmentTypeId !== null
+        ) {
+            $binds[":p_t_treatment_type_id_$this->id"] = $this->treatmentTypeId;
         }
-
+        
         return $binds;
     }
 
