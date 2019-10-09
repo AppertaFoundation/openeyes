@@ -104,18 +104,21 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                                     echo 'style="display: none;"';
                                 }?>>
 
-                            <input class="fixed-width-small js-dose"   type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="00" />
+                            <input class="fixed-width-small js-dose" id="<?= $model_name."_entries_".$row_count."_dose"?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="00" />
                             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
                                                         <span class="js-dose-unit-term"><?php echo $entry->dose_unit_term; ?></span>
                             <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=>'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:none')); ?>
                             <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-4')) ?>
                             <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class'=>'js-route cols-3')) ?>
-                                                            <span class="oe-eye-lat-icons admin-route-options js-laterality" style="<?=$entry->routeOptions() ? "" :"display:none"?>" >
-                                                                <label class="inline highlight">
+                                                            <span class="oe-eye-lat-icons admin-route-options js-laterality" style="<?=$entry->routeOptions() ? "" :"display:none"?>">
+																																<?php
+																																	$lateralityClass = ($entry->hasErrors('laterality') ? 'error' : '')
+																																?>
+                                                                <label class="inline highlight <?= $lateralityClass?>">
                                                                     <input value="2" name="eyelat-select-R" type="checkbox"
                                                                                     <?= $entry->laterality === "2" || $entry->laterality === "3"? "checked" : ""?>>R
                                                                 </label>
-                                                                <label class="inline highlight">
+                                                                <label class="inline highlight <?= $lateralityClass?>"">
                                                                     <input value="1" name="eyelat-select-L" type="checkbox" <?= $entry->laterality === "1" || $entry->laterality === "3" ? "checked" : ""?>> L
                                                                 </label>
                                                             </span>
@@ -199,7 +202,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 
                     <div class="alternative-display inline">
             <div class="alternative-display-element textual">
-                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
+                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);" <?php if ($direct_edit || ($entry->hasErrors('end_date'))) {?> style="display: none;"<?php }?>>
                     <?php if (!is_null($entry->end_date)) : ?>
                                             <i class="oe-i stop small pad"></i>
                                             <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
@@ -208,9 +211,9 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                     <?php endif; ?>
                 </a>
             </div>
-            <fieldset style="display: none;" class="js-datepicker-wrapper js-end-date-wrapper">
+            <fieldset <?php if (!$direct_edit && !($entry->hasErrors('end_date'))) {?> style="display: none;"<?php }?> class="js-datepicker-wrapper js-end-date-wrapper">
                             <i class="oe-i stop small pad"></i>
-                <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" class="js-end-date"
+                <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
                                              name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
                                              data-default="<?= date('Y-m-d') ?>"
                                              style="width:80px" placeholder="yyyy-mm-dd"

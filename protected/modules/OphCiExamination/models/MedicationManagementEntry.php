@@ -77,7 +77,7 @@ class MedicationManagementEntry extends \EventMedicationUse
     {
         $current_date = date("Y-m-d");
         if ($this->end_date && $this->end_date < $current_date && !$this->hidden) {
-            $this->addError("end_date", "Stop date date cannot be in the past");
+            $this->addError("end_date", "Stop date cannot be in the past");
         }
     }
 
@@ -160,11 +160,11 @@ class MedicationManagementEntry extends \EventMedicationUse
             $taper->item_id = $this->id;
             if (!$taper->validate()) {
                 foreach ($taper->getErrors() as $field => $error) {
-                    $this->addError($field, "Taper " . ($key + 1) . ' - ' . implode(', ', $error));
+                    $this->addError('taper_'.$key.'_'.$field, "Taper " . ($key + 1) . ' - ' . implode(', ', $error));
                 }
-                return false;
             }
         }
+				return false;
 
         return parent::afterValidate();
     }
