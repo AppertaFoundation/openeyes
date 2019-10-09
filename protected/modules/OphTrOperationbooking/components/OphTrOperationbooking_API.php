@@ -85,6 +85,8 @@ class OphTrOperationbooking_API extends BaseAPI
             }
             return $operations;
         }
+
+        return [];
     }
 
     /**

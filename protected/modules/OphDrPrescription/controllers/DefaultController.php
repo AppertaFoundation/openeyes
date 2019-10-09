@@ -50,22 +50,6 @@ class DefaultController extends BaseEventTypeController
         return parent::actionView($id);
     }
 
-    /**
-     * Defines JS data structure for common drug lookup in prescription.
-     */
-    protected function setCommonDrugMetadata()
-    {
-        $this->jsVars['common_drug_metadata'] = array();
-        foreach (Element_OphDrPrescription_Details::model()->commonDrugs() as $medication) {
-            $this->jsVars['common_drug_metadata'][$medication->id] = array(
-                    'medication_set_id' => array_map(function ($e) {
-                        return $e->id;
-                    }, $medication->getTypes()),
-                    'preservative_free' => (int)$medication->isPreservativeFree(),
-            );
-        }
-    }
-
     protected function initEdit()
     {
         if (!$this->checkPrintAccess()) {
@@ -76,8 +60,7 @@ class DefaultController extends BaseEventTypeController
         $baseAssetsPath = Yii::getPathOfAlias('application.assets.js');
         $assetManager->publish($baseAssetsPath);
         Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.InputFieldValidation.js', CClientScript::POS_END);
-
-        $this->setCommonDrugMetadata();
+        
         $this->showAllergyWarning();
         // Save and print clicked, stash print flag
         if (isset($_POST['saveprint'])) {

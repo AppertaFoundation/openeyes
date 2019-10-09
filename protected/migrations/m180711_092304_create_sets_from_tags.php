@@ -7,64 +7,72 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
         $this->addColumn('ophciexamination_risk_tag', 'medication_set_id', 'int(10) AFTER tag_id');
         $this->createIndex('idx_ref_set_id', 'ophciexamination_risk_tag', 'medication_set_id');
         $this->addForeignKey('fk_ref_set_id', 'ophciexamination_risk_tag', 'medication_set_id', 'medication_set', 'id');
+        $command = Yii::app()->db;
 
-        $tags = Yii::app()->db
-            ->createCommand('SELECT id, name FROM tag ORDER BY name ASC')
-            ->queryAll();
+        $glaucoma_tag = $command->createCommand('SELECT id, name FROM tag WHERE name = "Glaucoma"')->queryRow();
 
-        if ($tags) {
-            $drug_tag_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'DrugTag'])->queryScalar();
-            foreach ($tags as $tag) {
-                $command = Yii::app()->db;
-                $command->createCommand("INSERT INTO medication_set(name) values ('" . $tag['name'] . "')")->execute();
-                $ref_set_id = $command->getLastInsertID();
-                Yii::app()->db->createCommand("INSERT INTO medication_set_rule (medication_set_id, usage_code_id) values (" . $ref_set_id . ", $drug_tag_id )")->execute();
+        if ($glaucoma_tag) {
+            // creating Glaucoma set
+            $command->createCommand("INSERT INTO medication_set(name) values ('" . $glaucoma_tag['name'] . "')")->execute();
+            $medication_set_id = $command->getLastInsertID();
 
-                /*
-                 * Update ophciexamination_risk_tag
-                 */
-                Yii::app()->db->createCommand("UPDATE ophciexamination_risk_tag SET medication_set_id = " . $ref_set_id . " WHERE tag_id = " . $tag['id'])->execute();
+            // get the id of the OESCape usage code
+            $oescape_usage_code_id = $command->createCommand()
+                ->select('id')
+                ->from('medication_usage_code')
+                ->where('usage_code = :usage_code', [':usage_code' => 'OESCape'])
+                ->queryScalar();
 
-                $drugTags = Yii::app()->db
-                    ->createCommand('SELECT drug_id FROM drug_tag WHERE tag_id = ' . $tag['id'])
-                    ->queryAll();
+            // get Glaucoma subspecialty's Id
+            $gl_subspecialty_id = $command->createCommand()
+                ->select('id')
+                ->from('subspecialty')
+                ->where('ref_spec = :ref_spec', [':ref_spec' => 'GL'])
+                ->queryScalar();
 
-                if ($drugTags) {
-                    foreach ($drugTags as $drugTag) {
-                        $ref_medication_id = Yii::app()->db
-                            ->createCommand("SELECT id FROM medication WHERE source_old_id = '" . $drugTag['drug_id'] . "' AND source_subtype = 'drug'")
-                            ->queryRow();
+            // add rule to OESCape Glaucoma
+            $command->createCommand("INSERT INTO medication_set_rule (medication_set_id, subspecialty_id, usage_code_id)
+											VALUES ($medication_set_id, $gl_subspecialty_id, $oescape_usage_code_id )")->execute();
 
-                        if ($ref_medication_id['id']) {
-                            Yii::app()->db->createCommand("INSERT INTO medication_set_item(medication_id, medication_set_id) values (" . $ref_medication_id['id'] . ", " . $ref_set_id . " )")->execute();
-                        }
-                    }
+            // get all the items belong to Glaucoma
+            $drug_tags = $command
+                ->createCommand('SELECT drug_id FROM drug_tag WHERE tag_id = ' . $glaucoma_tag['id'])
+                ->queryAll();
 
-                    $ref_medication_id = null;
-                }
+            if ($drug_tags) {
+                foreach ($drug_tags as $drug_tag) {
+                    $ref_medication_id = $command
+                        ->createCommand("SELECT id FROM medication WHERE source_old_id = '" . $drug_tag['drug_id'] . "' AND source_subtype = 'drug'")
+                        ->queryScalar();
 
-                $medicationDrugTags = Yii::app()->db
-                    ->createCommand('SELECT medication_drug_id FROM medication_drug_tag WHERE tag_id = ' . $tag['id'])
-                    ->queryAll();
-
-                if ($medicationDrugTags) {
-                    foreach ($medicationDrugTags as $medicationDrugTag) {
-                        $ref_medication_id = Yii::app()->db
-                            ->createCommand("SELECT id FROM medication WHERE source_old_id = '" . $medicationDrugTag['medication_drug_id'] . "' AND source_subtype='medication_drug';")
-                            ->queryRow();
-
-                        if ($ref_medication_id['id']) {
-                            Yii::app()->db->createCommand("INSERT INTO medication_set_item (medication_id, medication_set_id) values (" . $ref_medication_id['id'] . ", " . $ref_set_id . " )")->execute();
-                        }
+                    if ($ref_medication_id) {
+                        $command->createCommand("INSERT INTO medication_set_item(medication_id, medication_set_id) values (" . $ref_medication_id . ", " . $medication_set_id . " )")->execute();
                     }
                 }
             }
-            $ref_set_id = null;
+
+            //Ok, I am not sure if this part is actually needed
+            $medication_drug_tags = Yii::app()->db
+                ->createCommand('SELECT medication_drug_id FROM medication_drug_tag WHERE tag_id = ' . $glaucoma_tag['id'])
+                ->queryAll();
+
+            if ($medication_drug_tags) {
+                foreach ($medication_drug_tags as $medication_drug_tag) {
+                    $ref_medication_id = $command
+                        ->createCommand("SELECT id FROM medication WHERE source_old_id = '" . $medication_drug_tag['medication_drug_id'] . "' AND source_subtype='medication_drug';")
+                        ->queryRow();
+
+                    if ($ref_medication_id['id']) {
+                        $command->createCommand("INSERT INTO medication_set_item (medication_id, medication_set_id) values (" . $ref_medication_id['id'] . ", " . $medication_set_id . " )")->execute();
+                    }
+                }
+            }
         }
     }
 
     public function down()
     {
-        return true;
+        echo "m180711_092304_create_sets_from_tags does not support migration down.\n";
+        return false;
     }
 }
