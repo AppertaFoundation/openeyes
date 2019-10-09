@@ -55,19 +55,30 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
     };
 
-    ClinicOutcomeController.prototype.addRow = function () {
+    ClinicOutcomeController.prototype.onAdderDialogReturn = function () {
         let $selected_status = $(this.status_options_selector + '.selected');
         let $selected_period = $(this.period_options_selector + '.selected');
         let $selected_role = $(this.role_options_selector + '.selected');
         let selected_quantity = $(this.quantity_options_selector + '.selected').data('quantity');
 
+        if (this.validateInputs($selected_status, $selected_period, $selected_role, selected_quantity)) {
+            this.createRow($selected_status, $selected_period, $selected_role, selected_quantity);
+        }
+    };
+
+    ClinicOutcomeController.prototype.validateInputs = function ($selected_status, $selected_period, $selected_role, selected_quantity) {
         if ($selected_status.data('followup') && (!$selected_period.length || !$selected_role.length || typeof selected_quantity === "undefined")) {
             $('#add-to-follow-up').show();
             new OpenEyes.UI.Dialog.Alert({
                 content: "Please select a value for quantity, period and role."
             }).open();
-            return;
+            return false;
         }
+
+        return true;
+    };
+
+    ClinicOutcomeController.prototype.createRow = function ($selected_status, $selected_period, $selected_role, selected_quantity) {
         let data = {};
 
         data.row_count = OpenEyes.Util.getNextDataKey(this.entry_table_selector + ' tbody.entries tr', 'key');
@@ -86,11 +97,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             data.role = ' with ' + $selected_role.data('label');
         }
 
-        //only one Virtual Review can be created
-        if (inArray(data.status_id, $('#pt_status_list').data('statuses'))) {
-            $selected_status.hide();
-        }
+        this.hideUniqueOptions($selected_status);
+        this.addRow(template, data);
+    };
 
+    ClinicOutcomeController.prototype.addRow = function(template, data) {
         $(this.entry_table_selector + ' tbody.entries').append(Mustache.render(template, data));
         this.resetAdderDialog();
     };
@@ -103,6 +114,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
 
         $row.remove();
+    };
+
+    ClinicOutcomeController.prototype.hideUniqueOptions = function ($selected_status) {
+        if (inArray($selected_status.data('id'), $('#pt_status_list').data('statuses'))) {
+            $selected_status.hide();
+        }
     };
 
     ClinicOutcomeController.prototype.resetAdderDialog = function () {

@@ -119,7 +119,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
     public function afterSave()
     {
         // Update Episode status when outcome is saved
-        if ($this->entries && $this->entries[0]->status->episode_status_id) {
+        if ($this->entries && $this->entries[0]->status) {
             if ($this->event->isLatestOfTypeInEpisode()) {
                 $this->event->episode->episode_status_id = $this->entries[0]->status->episode_status_id;
                 if (!$this->event->episode->save()) {

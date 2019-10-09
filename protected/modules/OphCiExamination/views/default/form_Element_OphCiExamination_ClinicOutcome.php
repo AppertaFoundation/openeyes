@@ -220,7 +220,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
             $('#add-to-follow-up'),
             null,
             function () {
-                $('.OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome').data('controller').addRow();
+                $('.OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome').data('controller').onAdderDialogReturn();
             },
             $('#show-follow-up-popup-btn'),
             $('#add-followup-btn'),

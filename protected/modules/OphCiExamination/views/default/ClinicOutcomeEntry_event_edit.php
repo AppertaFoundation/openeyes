@@ -32,7 +32,7 @@ if (!isset($values)) {
 }
 ?>
 
-<tr id="<?= $model_name ?>_entries" class="row-<?= $row_count ?>" data-key="<?= $row_count ?>"
+<tr class="row-<?= $row_count ?>" data-key="<?= $row_count ?>"
     data-status="<?= $values['status_id'] ?>">
     <td <?= $patient_ticket ? 'style="vertical-align:top"' : '' ?>>
         <?= Chtml::activeHiddenField($entry, 'id');?>

@@ -23,7 +23,7 @@ $row_count = 0;
     <div class="data-group">
         <table class="cols-full">
             <tbody>
-            <?php foreach ($element->entries as $entry) : ?>
+            <?php foreach ($element->entries as $entry) { ?>
                 <tr>
                     <td>
                         <?= $row_count ? "AND" : "" ?>
@@ -33,11 +33,11 @@ $row_count = 0;
                     if ($entry->isPatientTicket()) {
                         $api = Yii::app()->moduleAPI->get('PatientTicketing');
                         $ticket = $api->getTicketForEvent($this->event);
-                        if ($ticket) : ?>
+                        if ($ticket) { ?>
                             <div class="cols-7">
                                 <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
                             </div>
-                        <?php endif;
+                        <?php }
                     } else {
                         echo $entry->getInfos();
                     }
@@ -45,7 +45,7 @@ $row_count = 0;
                     ?>
                     </td>
                 </tr>
-            <?php endforeach; ?>
+            <?php } ?>
             </tbody>
         </table>
     </div>
