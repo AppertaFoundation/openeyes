@@ -18,6 +18,7 @@
 /**
  * @var \OEModule\OphCiExamination\models\SocialHistory $element
  */
+$nothing_selected_text = "Nothing selected.";
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath("SocialHistory.js") ?>"></script>
 <div class="element-fields flex-layout full-width">
@@ -36,7 +37,7 @@
       </td>
       <td>
           <div id="textField_occupation_id" class="cols-8">
-              <?= isset($element->occupation) ?  $element->occupation->name :  'Nothing selected.'; ?>
+              <?= isset($element->occupation) ?  $element->occupation->name :  $nothing_selected_text; ?>
           </div>
           <?= $form->dropDownList(
               $element,
@@ -68,7 +69,7 @@
       <td>
           <div id="textField_driving_statuses" class="cols-8">
               <?php if (isset($element['driving_statuses']) && count($element['driving_statuses']) <= 0) {
-                  echo 'Nothing selected.';
+                  echo $nothing_selected_text;
               } else {
                   $driving_statuses = array_map(function($driving_status){ return trim($driving_status->name);  },
                       is_array($element->driving_statuses) ? $element->driving_statuses : []);
@@ -84,7 +85,7 @@
       </td>
       <td>
           <div id="textField_smoking_status_id" class="cols-8">
-              <?= isset($element->smoking_status) ?  $element->smoking_status->name :  'Nothing selected.'; ?>
+              <?= isset($element->smoking_status) ?  $element->smoking_status->name :  $nothing_selected_text; ?>
           </div>
           <?= $form->dropDownList(
               $element,
@@ -99,7 +100,7 @@
       </td>
       <td>
           <div id="textField_accommodation_id" class="cols-8">
-              <?= isset($element->accommodation) ?  $element->accommodation->name :  'Nothing selected.'; ?>
+              <?= isset($element->accommodation) ?  $element->accommodation->name :  $nothing_selected_text; ?>
           </div>
           <?= $form->dropDownList(
               $element,
@@ -124,7 +125,7 @@
                   'autocomplete' => Yii::app()->params['html_autocomplete'],
                   'nowrapper' => true,
                   'style' => 'width: 100px; margin-right: 10px;',
-                  'append-text' => (isset($element->alcohol_intake) ? 'units/week' : 'Nothing selected.'),
+                  'append-text' => (isset($element->alcohol_intake) ? 'units/week' : $nothing_selected_text),
                   'hidden' => true
               )
           );
@@ -135,7 +136,7 @@
       </td>
       <td>
           <div id="textField_carer_id" class="cols-8">
-              <?= isset($element->carer) ?  $element->carer->name :  'Nothing selected.'; ?>
+              <?= isset($element->carer) ?  $element->carer->name :  $nothing_selected_text; ?>
           </div>
           <?= $form->dropDownList(
               $element,
@@ -152,7 +153,7 @@
         </td>
         <td>
             <div id="textField_substance_misuse_id" class="cols-8">
-                <?= isset($element->substance_misuse) ?  $element->substance_misuse->name :  'Nothing selected.'; ?>
+                <?= isset($element->substance_misuse) ?  $element->substance_misuse->name :  $nothing_selected_text; ?>
             </div>
             <?= $form->dropDownList(
                 $element,
@@ -197,7 +198,7 @@
     // hide the driving status select
     $('#OEModule_OphCiExamination_models_SocialHistory_driving_statuses').hide();
 
-    var controller = new OpenEyes.OphCiExamination.SocialHistoryController();
+    const controller = new OpenEyes.OphCiExamination.SocialHistoryController({nothing_selected_text: "<?= $nothing_selected_text; ?>"});
 
     // Disable removing items from the driving status multi-select list
     $('#<?= $model_name ?>_driving_statuses').closest('.multi-select-list').css("pointer-events", "none");
@@ -211,7 +212,7 @@
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                     return ['label' => $item->name, 'id' => $item->id, 'selected' => $item->id === $element->occupation_id];
                 }, $element->occupation_options, [])
-            ) ?>, {'header': 'Employment', 'id': 'occupation_id', 'mandatory': true}),
+            ) ?>, {'header': 'Employment', 'id': 'occupation_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?php
@@ -226,7 +227,7 @@
                         'selected' => in_array($item->id, $selected_driving_statuses),
                     ];
                 }, $element->driving_statuses_options, [])
-            ) ?>, {'header': 'Driving Status', 'multiSelect': true, 'id': 'driving_statuses'}),
+            ) ?>, {'header': 'Driving Status', 'id': 'driving_statuses'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -236,7 +237,7 @@
                         'selected' => $element->smoking_status_id === $item->id,
                     ];
                 }, $element->smoking_status_options, [])
-            ) ?>, {'header': 'Smoking Status', 'id': 'smoking_status_id', 'mandatory': true}),
+            ) ?>, {'header': 'Smoking Status', 'id': 'smoking_status_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -246,13 +247,13 @@
                         'selected' => $element->accommodation_id === $item->id,
                     ];
                 }, $element->accommodation_options, [])
-            ) ?>, {'header': 'Accommodation', 'id': 'accommodation_id', 'mandatory': true}),
+            ) ?>, {'header': 'Accommodation', 'id': 'accommodation_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                     return ['label' => $item->name, 'id' => $item->id, 'selected' => $element->carer_id === $item->id];
                 }, $element->carer_options, [])
-            ) ?>, {'header': 'Carer', 'id': 'carer_id', 'mandatory': true}),
+            ) ?>, {'header': 'Carer', 'id': 'carer_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -262,14 +263,14 @@
                         'selected' => $element->substance_misuse_id === $item->id,
                     ];
                 }, $element->substance_misuse_options, [])
-            ) ?>, {'header': 'Substance Misuse', 'id': 'substance_misuse_id', 'mandatory': true}),
+            ) ?>, {'header': 'Substance Misuse', 'id': 'substance_misuse_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) use ($element) {
                 return ['label' => $item, 'id' => $item,
                     'selected' => isset($element->alcohol_intake) && $element->alcohol_intake == $item];
             }, array_merge(range(0, 15, 5),range(20, 100, 10),[150],range(200, 400, 100)))
-        ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake', 'mandatory': true})
+        ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake'})
       ],
       onReturn: function (adderDialog, selectedItems) {
         controller.addEntry(selectedItems);

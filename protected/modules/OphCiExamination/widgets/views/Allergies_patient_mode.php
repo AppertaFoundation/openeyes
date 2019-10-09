@@ -20,11 +20,11 @@
 
 <?php if (!$this->patient->hasAllergyStatus()) : ?>
     <div class="alert-box info">
-        <strong>Allergies</strong> - Patient allergy status is unknown.
+        <strong>Allergies</strong> - status unknown.
     </div>
 <?php elseif ($element->no_allergies_date) : ?>
     <div class="alert-box success">
-        <strong>Allergies</strong> - Patient has no known allergies.
+        <strong>Allergies</strong> - none known.
     </div>
 <?php else: ?>
     <div class="alert-box patient">
