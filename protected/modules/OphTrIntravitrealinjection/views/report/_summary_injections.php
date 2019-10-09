@@ -56,7 +56,7 @@
                     <td><?php echo $injection['patient_surname']?></td>
                     <td><?php echo $injection['patient_gender']?></td>
                     <td><?php echo $injection['patient_dob']?></td>
-                    <td><?php echo $injection['eye']?></td>
+                    <td><?php echo ucfirst($injection['eye'])?></td>
                     <td><?php echo $injection['drug']?></td>
                     <td><?php echo $injection['site']?></td>
                     <td><?php echo $injection['first_injection_date']?></td>
