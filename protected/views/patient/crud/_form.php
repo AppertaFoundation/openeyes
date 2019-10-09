@@ -55,6 +55,7 @@ foreach ($ethnic_list as $key=>$item){
     // controller action is handling ajax validation correctly.
     // There is a call to performAjaxValidation() commented in generated controller code.
     // See class documentation of CActiveForm for details on this.
+		'action' => isset($prevUrl) ? Yii::app()->createUrl($prevUrl) : null,
     'enableAjaxValidation' => true,
     'htmlOptions' => array('enctype' => 'multipart/form-data'),
 
@@ -398,7 +399,7 @@ foreach ($ethnic_list as $key=>$item){
                 <?= $form->fileField($referral, 'uploadedFile'); ?>
             </td>
         </tr>
-        
+
         <tr>
           <td>
             <?= $form->label($patientuserreferral, 'Referred to') ?>
@@ -730,7 +731,7 @@ $this->renderPartial('../patient/crud/create_contact_form',
         }
         )
     }
-    
+
     function extraContactFormCleaning(){
         $("#extra-gp-form")[0].reset();
         $("#extra_gp_errors").text("");
