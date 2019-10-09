@@ -663,7 +663,7 @@ class DefaultController extends BaseEventTypeController
                 $item->dose = $source->default_dose;
                 $item->dose_unit_term = $source->default_dose_unit_term ? $source->default_dose_unit_term : $source->medication->default_dose_unit_term;
                 $item->route_id = $source->default_route_id ? $source->default_route_id : $source->medication->default_route_id;
-                $item->duration = $source->default_duration_id;
+                $item->duration_id = $source->default_duration_id;
 
                 if ($source->tapers) {
                     $tapers = array();
