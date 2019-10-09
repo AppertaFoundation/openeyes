@@ -26,7 +26,7 @@
     <input type="hidden" name="pre_va" value="<?php echo $report->pre_va?>" />
     <input type="hidden" name="post_va" value="<?php echo $report->post_va?>" />
 </form>
-<table>
+<table class="standard">
     <thead>
         <tr>
             <th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
