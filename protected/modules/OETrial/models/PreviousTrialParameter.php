@@ -232,24 +232,25 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 break;
             case '!=':
                 $joinCondition = 'LEFT JOIN';
-                if ($this->trialType) {
-                    $condition = 't_p.trial_id IS NULL OR ';
-                    if ($this->trial === '') {
-                        // Not in any intervention/non-intervention trial
-                        $condition .= "t.trial_type_id  != :p_t_trial_type_$this->id OR";
-                    } else {
-                        // Not in a specific trial
-                        $condition .= "t_p.trial_id != :p_t_trial_$this->id OR";
-                    }
-                }
+                $condition = 't_p.trial_id IS NULL OR ';
 
                 if ($this->status !== '' && $this->status !== null) {
-                    $condition .=
-                      "  p.id NOT IN(
+                    if ($this->trial == '' ){
+                        $condition .=
+                            "  p.id NOT IN(
                           SELECT patient_id
                           FROM trial_patient
                           WHERE status_id = :p_t_status_$this->id
                       ) ";
+                    }else {
+                        $condition .=
+                            "  p.id NOT IN(
+                          SELECT patient_id
+                          FROM trial_patient
+                          WHERE status_id = :p_t_status_$this->id
+                          AND trial_id = :p_t_trial_$this->id
+                      ) ";
+                    }
 
                 } else {
                     // not accepted/rejected in any trial
@@ -258,6 +259,16 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                           SELECT patient_id
                           FROM trial_patient
                           WHERE status_id IN (SELECT id FROM trial_patient_status WHERE code IN ("ACCEPTED", "SHORTLISTED", "REJECTED")))';
+                }
+                if ($this->trialType) {
+
+                    if ($this->trial === '') {
+                        // Not in any intervention/non-intervention trial
+                        $condition .= " OR t.trial_type_id  != :p_t_trial_type_$this->id ";
+                    } else {
+                        // Not in a specific trial
+                        $condition .= " AND t_p.trial_id != :p_t_trial_$this->id ";
+                    }
                 }
 
                 if ((!$this->trialType || $this->trialType->code !== TrialType::INTERVENTION_CODE)
@@ -297,7 +308,16 @@ WHERE $condition";
             $binds[":p_t_trial_type_$this->id"] = $this->trialTypeId;
         }
 
-        if ($this->status !== '' && $this->status !== null) {
+        if ($this->status !== '' && $this->status !== null && $this->operation === '!=') {
+            if($this->trial ==''){
+                $binds[":p_t_status_$this->id"] = $this->status;
+            }else {
+                $binds[":p_t_status_$this->id"] = $this->status;
+                $binds[":p_t_trial_$this->id"] = $this->trial;
+            }
+        }
+
+        if ($this->status !== '' && $this->status !== null && $this->operation === '=') {
             $binds[":p_t_status_$this->id"] = $this->status;
         }
 
