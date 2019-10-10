@@ -391,6 +391,8 @@
                 data['COMPLICATION']['post-complete'],
                 data['INDICATION_FOR_SURGERY']['complete'],
                 data['E/I']['eligible'],
+                data['CATPROM5']['pre-complete'],
+                data['CATPROM5']['post-complete'],
             ];
             var incompletedData = [
                 data['VA']['pre-incomplete'],
@@ -403,6 +405,8 @@
                 data['COMPLICATION']['post-incomplete'],
                 data['INDICATION_FOR_SURGERY']['incomplete'],
                 data['E/I']['ineligible'],
+                data['CATPROM5']['pre-incomplete'],
+                data['CATPROM5']['post-incomplete'],
             ];
             chart.data[0]['y'] = completedData.map(function (item) {
                 return item.length/data['total'];

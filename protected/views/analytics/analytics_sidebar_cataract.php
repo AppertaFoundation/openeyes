@@ -30,6 +30,7 @@
                 <li><a href="#" data-report="VA" class="js-cataract-report-type">Visual Acuity</a></li>
                 <li><a href="#" data-report="RO" class="js-cataract-report-type">Refractive Outcome</a></li>
                 <li><a href="#" data-report="NOD" class="js-cataract-report-type">NOD Audit</a></li>
+                <li><a href="#" data-report="CA5" class="js-cataract-report-type">Catprom5</a></li>
             </ul>
             <form id="search-form">
                 <div id="search-form-report-search-section"></div>
@@ -121,6 +122,7 @@
         $('#visual-acuity-grid').html("");
         $('#refractive-outcome-grid').html("");
         $('#nod-audit-grid').html("");
+        $('#catprom5-grid').html("");
         $('#analytics_datepicker_from').val("");
         $('#analytics_datepicker_to').val("");
         $('#analytics_allsurgeons').val("");
@@ -149,6 +151,10 @@
             case "NOD":
                 OpenEyes.Dash.init('#nod-audit-grid');
                 OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=NodAudit&template=analytics', null, 10);
+                break;
+            case "CA5":
+                OpenEyes.Dash.init('#catprom5-grid');
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphOuCatprom5\\components\\Catprom5&template=analytics', null, 10);
                 break;
         }
     });
