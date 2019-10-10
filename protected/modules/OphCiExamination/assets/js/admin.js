@@ -79,13 +79,7 @@ $(document).ready(function() {
 			'url': baseUrl+'/OphCiExamination/admin/editWorkflowStep?step_id='+id,
 			'success': function(html) {
 				$('#step_element_types').html(html);
-        $('#step_element_types tbody').sortable({
-          stop: (event, ui) => {
-            workflow_edited = true;
-            $('#et_save_workflow').fadeIn();
-          }
-        });
-
+        bindWorkflowEditEventListeners();
 			}
 		});
 	});
@@ -121,106 +115,122 @@ $(document).ready(function() {
     setTimeout(()=>$('#workflow-flash').fadeOut(), duration);
   };
 
-  $('#et_reset_workflow').live('click', e => {
-    e.preventDefault();
-    $('.spinner').css('display', 'block');
-
-    $.ajax({
-      'type': 'GET',
-      'url' : baseUrl + '/OphCiExamination/admin/setWorkflowToDefault?element_set_id=' + e.target.dataset['element_set_id'],
-      'success': function() {
-        workflowFlash('Worflow reset.');
-
-
-        $.ajax({
-          'type': 'GET',
-          'url' : baseUrl + '/OphCiExamination/admin/editWorkflowStep?step_id=' + e.target.dataset['element_set_id'],
-          'success': function (html) {
-            $('#step_element_types').html(html);
-            $('.spinner').css('display', 'none');
-          },
-          'error': function () {
-            workflowFlash('Workflow reset, please refresh.');
-          }
-        });
-      },
-      'error': function (jqXHR, status) {
-        workflowFlash('Failed to reset workflow.');
-        alert(jqXHR.responseText);
-      }
-    });
-  });
-
   let workflow_edited = false;
 
-  $('#et_save_workflow').live('click', e => {
-    e.preventDefault();
-
-    $('#et_save_workflow').attr('disabled','true');
-    $('.spinner').css('display', 'block');
-    let $form = $('#et_sort').closest('form');
-    $.ajax({
-      'type': 'POST',
-      'url': $('#et_sort').data('uri'),
-      'data': $form.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-      'success': function(){
-        workflowFlash();
-        $('.spinner').css('display', 'none');
-        $('#et_save_workflow').fadeOut();
-        $('#et_save_workflow').attr('disabled','false');
-        workflow_edited = false;
-      },
-      'error': function (jqXHR, status) {
-        workflowFlash('Failed to save workflow.');
-        alert(jqXHR.responseText);
+  let bindWorkflowEditEventListeners = () => {
+    // Activate edit mode when a change is made
+    $('#step_element_types tbody').sortable({
+      stop: (event, ui) => {
+        workflow_edited = true;
+        $('#et_save_workflow').fadeIn();
       }
     });
-  });
 
-	$('#et_add_element_type').live('click',function(e) {
-		e.preventDefault();
+    // Bind Reset button for current flow
+    $('#et_reset_workflow').click(e => {
+      e.preventDefault();
+      $('.spinner').css('display', 'block');
 
-		if ($('#element_type_id').val() == '') {
-			alert("Please select an element type to add");
-			return;
-		}
+      $.ajax({
+        'type': 'GET',
+        'url' : baseUrl + '/OphCiExamination/admin/setWorkflowToDefault?element_set_id=' + e.target.dataset['element_set_id'],
+        'success': function() {
+          workflowFlash('Worflow reset.');
 
-		$.ajax({
-			'type': 'POST',
-			'data': 'element_type_id='+$('#element_type_id').val()+'&step_id='+$('#admin_workflow_steps tr.selected').data('id')+'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
-			'url': baseUrl+'/OphCiExamination/admin/addElementTypeToWorkflowStep',
-			'success': function(resp) {
-				if (resp != "1") {
-					alert("Something went wrong trying to add the element type.  Please try again or contact support for assistance.");
-				} else {
-					$('#admin_workflow_steps tr.selected').click();
-				}
-			}
-		});
-	});
 
-	$('a.removeElementType').live('click',function(e) {
-		e.preventDefault();
+          $.ajax({
+            'type': 'GET',
+            'url' : baseUrl + '/OphCiExamination/admin/editWorkflowStep?step_id=' + e.target.dataset['element_set_id'],
+            'success': function (html) {
+              $('#step_element_types').html(html);
+              $('.spinner').css('display', 'none');
+            },
+            'error': function () {
+              workflowFlash('Workflow reset, please refresh.');
+            }
+          });
+        },
+        'error': function (jqXHR, status) {
+          workflowFlash('Failed to reset workflow.');
+          alert(jqXHR.responseText);
+        }
+      });
+    });
 
-		var row = $(this).parent().parent();
-		var element_type_name = row.children('td:first').text();
-		var element_type_id = $(this).data('element-type-id');
+    //Bind save for current flow
+    $('#et_save_workflow').click(e => {
+      e.preventDefault();
 
-		$.ajax({
-			'type': 'POST',
-			'data': 'element_type_item_id='+$(this).attr('rel')+'&step_id='+$('#admin_workflow_steps tr.selected').data('id')+'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
-			'url': baseUrl+'/OphCiExamination/admin/removeElementTypeFromWorkflowStep',
-			'success': function(resp) {
-				if (resp != "1") {
-					alert("Something went wrong trying to remove the element type.	Please try again or contact support for assistance.");
-				} else {
-					row.remove();
-					$('#element_type_id').append('<option value="'+element_type_id+'">'+element_type_name+'</option>');
-					sort_selectbox($('#element_type_id'));
-				}
-			}
-		});
-	});
+      $('#et_save_workflow').attr('disabled','true');
+      $('.spinner').css('display', 'block');
+      let $form = $('#et_sort').closest('form');
+      $.ajax({
+        'type': 'POST',
+        'url': $('#et_sort').data('uri'),
+        'data': $form.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+        'success': function(){
+          workflowFlash();
+          $('.spinner').css('display', 'none');
+          $('#et_save_workflow').fadeOut();
+          $('#et_save_workflow').attr('disabled','false');
+          workflow_edited = false;
+        },
+        'error': function (jqXHR, status) {
+          workflowFlash('Failed to save workflow.');
+          alert(jqXHR.responseText);
+        }
+      });
+    });
+
+    // Bind Add element button to current flow.
+    $('#et_add_element_type').click(function(e) {
+      e.preventDefault();
+
+      if ($('#element_type_id').val() == '') {
+        alert("Please select an element type to add");
+        return;
+      }
+
+      $.ajax({
+        'type': 'POST',
+        'data': 'element_type_id='+$('#element_type_id').val()+'&step_id='+$('#admin_workflow_steps tr.selected').data('id')+'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
+        'url': baseUrl+'/OphCiExamination/admin/addElementTypeToWorkflowStep',
+        'success': function(resp) {
+          if (resp != "1") {
+            alert("Something went wrong trying to add the element type.  Please try again or contact support for assistance.");
+          } else {
+            $('#admin_workflow_steps tr.selected').click();
+          }
+        }
+      });
+    });
+
+    // Bind Remove element action to current flow rows.
+    $('a.removeElementType').click(function(e) {
+      e.preventDefault();
+
+      var row = $(this).parent().parent();
+      var element_type_name = row.children('td:first').text();
+      var element_type_id = $(this).data('element-type-id');
+
+      $.ajax({
+        'type': 'POST',
+        'data': 'element_type_item_id='+$(this).attr('rel')+'&step_id='+$('#admin_workflow_steps tr.selected').data('id')+'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
+        'url': baseUrl+'/OphCiExamination/admin/removeElementTypeFromWorkflowStep',
+        'success': function(resp) {
+          if (resp != "1") {
+            alert("Something went wrong trying to remove the element type.	Please try again or contact support for assistance.");
+          } else {
+            row.remove();
+            $('#element_type_id').append('<option value="'+element_type_id+'">'+element_type_name+'</option>');
+            sort_selectbox($('#element_type_id'));
+          }
+        }
+      });
+    });
+
+
+  }
 
     $('#step_element_types').on('click', 'tr.clickable .workflow-item-attr',  function(){
         var item = this,
@@ -280,7 +290,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$('a.removeElementSet').live('click',function(e) {
+	$('a.removeElementSet').click(function(e) {
 		e.preventDefault();
 
 		var element_set_id = $(this).attr('rel');
@@ -299,7 +309,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$('#et_save_step_name').live('click',function(e) {
+	$('#et_save_step_name').click(function(e) {
 		e.preventDefault();
 
 		if ($('#step_name').val() == '') {
