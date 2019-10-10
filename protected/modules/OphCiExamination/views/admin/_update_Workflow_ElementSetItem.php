@@ -55,19 +55,21 @@
         </tbody>
         <tfoot class="pagination-container">
         <tr>
-          <td colspan="3">
+          <td colspan="5">
             <div class="grid-view">
-              <div id="workflow-edit-controls" class="data-group" style="display: none">
+              <div id="workflow-edit-controls" class="data-group">
+                <div class="cols-3 column end">
+                  <?php echo EventAction::button('Save workflow order', 'save_workflow', null, array('class' => 'small hint green', 'style' => 'display: none;'))->toHtml()?>
+                </div>
                 <div class="cols-3 column">
-                    <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
+                  <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
                 </div>
                 <div class="cols-3 column end">
-                    <?php echo EventAction::button('Add element type', 'add_element_type', null, array('class' => 'small'))->toHtml()?>
+                  <?php echo EventAction::button('Add element type', 'add_element_type', null, array('class' => 'small'))->toHtml()?>
                 </div>
               </div>
               <div>
-                  <?php echo EventAction::button('Edit workflow', 'edit_workflow', null, array('class' => 'small'))->toHtml()?>
-                  <?php echo EventAction::button('Reset workflow', 'reset_workflow', null, array('class' => 'small', 'data-element_set_id'=>$step->id))->toHtml()?>
+                <?php echo EventAction::button('Reset workflow', 'reset_workflow', null, array('class' => 'small', 'data-element_set_id'=>$step->id))->toHtml()?>
               </div>
             </div>
           </td>
@@ -80,8 +82,5 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        //Add sortable then disable then have it disabled by default.
-        $('#step_element_types tbody').sortable();
-        $('#step_element_types tbody').sortable('disable');
     });
 </script>
