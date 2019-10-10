@@ -48,12 +48,6 @@ EOH;
             $worksheet = $this->spreadsheet->getSheet($i);
             $this->createAutomaticSet($worksheet->getTitle(), $this->processSheetCells($worksheet));
         }
-
-        // Add usage code to the management set
-        $rule = new MedicationSetRule();
-        $rule->medication_set_id = MedicationSet::model()->find("name = 'medication_management'")->id;
-
-        $rule->save();
     }
 
     /**
