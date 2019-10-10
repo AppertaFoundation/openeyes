@@ -281,6 +281,7 @@ if (!empty($entry->tapers)) {
                 "element" => $this->element,
                 "entry" => $taper,
                 "row_count" => $row_count,
+                "model_name" => $model_name,
                 "taper_count" => $tcount,
                 "field_prefix" => $model_name."[entries][$row_count][taper][$tcount]"
             )
