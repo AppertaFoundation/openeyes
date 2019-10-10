@@ -8,13 +8,6 @@ class CatProm5QuestionsTest extends CDbTestCase {
 
   public function dataProvider_Search() {
     return array(
-      array(array('id'=>1), 1, array('question1')),
-      array(array('id'=>2), 1, array('question2')),
-      array(array('id'=>3), 1, array('question3')),
-      array(array('id'=>4), 1, array('question4')),
-      array(array('id'=>5), 1, array('question5')),
-      array(array('id'=>6), 1, array('question6')),
-
       array(array('id'=>1, 'display_order'=>10), 1, array('question1')),
       array(array('id'=>2, 'display_order'=>20), 1, array('question2')),
       array(array('id'=>3, 'display_order'=>30), 1, array('question3')),
@@ -98,6 +91,7 @@ class CatProm5QuestionsTest extends CDbTestCase {
     $catProm5Question->setAttributes($searchTerms);
     $results = $catProm5Question->search();
     $data = $results->getData();
+
     $expectedResults = array();
     if (!empty($expectedKeys)) {
       foreach ($expectedKeys as $key) {

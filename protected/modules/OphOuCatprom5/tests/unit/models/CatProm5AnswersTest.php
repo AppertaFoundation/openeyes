@@ -8,7 +8,6 @@ class CatProm5AnswersTest extends CDbTestCase {
 
   public function dataProvider_Search() {
     return array(
-      array(array('id'=>1), 1, array('answer1')),
       array(array('answer'=>'No'), 4, array('answer1','answer5', 'answer22', 'answer26')),
       array(array('answer'=>'Never'), 2, array('answer1', 'answer18')),
       array(array('answer'=>'yes'), 7, array('answer2', 'answer3', 'answer4', 'answer23', 'answer24', 'answer25', 'answer26')),

@@ -78,7 +78,7 @@ class CatProm5Questions extends CActiveRecord
     {
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id', $this->id);
+        $criteria->compare('id', $this->id, true);
         $criteria->compare('question', $this->question, true);
         $criteria->compare('mandatory', $this->mandatory);
         $criteria->compare('display_order', $this->display_order);
