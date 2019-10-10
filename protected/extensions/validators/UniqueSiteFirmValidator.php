@@ -15,7 +15,7 @@ class UniqueSiteFirmValidator extends CValidator
     protected function validateAttribute($object, $attribute)
     {
         if (!array_key_exists('site_id', $object->attributes) || !array_key_exists('firm_id', $object->attributes)) {
-            $this->addError($object, $attribute,  get_class($object).' is missing site_id or firm_id');
+            $this->addError($object, $attribute, get_class($object).' is missing site_id or firm_id');
 
             return;
         }

@@ -19,24 +19,24 @@ $logoHelper = new LogoHelper();
 
 ?>
 <div class="banner clearfix">
-		<?= $logoHelper->render('letter_head') ?>
-	
+        <?= $logoHelper->render('letter_head') ?>
+    
 </div>
 <style>
 td, p {
-	font-size: 8pt;
+    font-size: 8pt;
 }
 
 h1 {
-	text-align: center;
+    text-align: center;
 }
 
 table td {
-	border: 1px solid #dae6f1;
+    border: 1px solid #dae6f1;
 }
 
 td.signature {
-	background-color: #dae6f1;
+    background-color: #dae6f1;
 }
 
 </style>
@@ -98,18 +98,18 @@ $gp_cb = $patient->gp ? $patient->practice->getCommissioningBodyOfType($cbody_ty
 </tr>
 <?php foreach ($suitability->getDecisionTreeAnswersForDisplay($side) as $question => $answer) {?>
 <tr>
-	<td colspan="3"><?php echo $question ?></td>
-	<td colspan="3"><?php echo $answer ?></td>
+    <td colspan="3"><?php echo $question ?></td>
+    <td colspan="3"><?php echo $answer ?></td>
 </tr>
 <?php }?>
 <tr>
-	<td colspan="3">Which eye is the treatment for?</td>
-	<td colspan="3"><?php echo ucfirst($side) ?></td>
+    <td colspan="3">Which eye is the treatment for?</td>
+    <td colspan="3"><?php echo ucfirst($side) ?></td>
 </tr>
 
 <tr>
-	<td colspan="3">What is the acquisition cost of the drug including VAT (if applicable)</td>
-	<td colspan="3">&pound;1,044 per vial<br /><br />Inpatient (Day Case)<br />PbR Tariff</td>
+    <td colspan="3">What is the acquisition cost of the drug including VAT (if applicable)</td>
+    <td colspan="3">&pound;1,044 per vial<br /><br />Inpatient (Day Case)<br />PbR Tariff</td>
 </tr>
 
 

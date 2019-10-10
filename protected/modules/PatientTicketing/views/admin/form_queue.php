@@ -19,10 +19,10 @@
 
 <?php $this->renderPartial('//elements/form_errors', array('errors' => $errors, 'bottom' => false)); ?>
 <form>
-	<input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
-	<?php if ($parent) {?>
-		<input type="hidden" name="parent_id" value="<?=$parent->id?>" />
-	<?php }?>
+    <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
+    <?php if ($parent) {?>
+        <input type="hidden" name="parent_id" value="<?=$parent->id?>" />
+    <?php }?>
 
     <div>
 
@@ -82,5 +82,5 @@
         </tbody>
     </table>
 
-	</div>
+    </div>
 </form>

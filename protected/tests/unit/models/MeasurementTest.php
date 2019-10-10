@@ -61,6 +61,6 @@ class MeasurementTest_HeightMeasurement extends Measurement
 
     public function getMetadata()
     {
-        return PHPUnit_Framework_MockObject_Generator::getMock('CActiveRecordMetaData', array(), array(), '', false);
+        return (new PHPUnit_Framework_MockObject_Generator())->getMock('CActiveRecordMetaData', array(), array(), '', false);
     }
 }

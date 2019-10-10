@@ -25,7 +25,7 @@
     <tr>
       <td>Ability</td>
       <td >
-          <?= $form->multiSelectList(
+            <?= $form->multiSelectList(
               $element,
               'MultiSelect_ability',
               'abilitys',
@@ -46,13 +46,13 @@
     <tr style="<?= $element->hasMultiSelectValue('abilitys', 'Other') ? '' : 'display: none;' ?> ">
       <td></td>
       <td>
-          <?= $form->textArea($element, 'other', array('rows' => 4, 'nowrapper' => true), true, array('placeholder' => 'Other - please specify')) ?>
+            <?= $form->textArea($element, 'other', array('rows' => 4, 'nowrapper' => true), true, array('placeholder' => 'Other - please specify')) ?>
       </td>
     </tr>
     <tr>
       <td><?= $element->getAttributeLabel('glasses') ?></td>
       <td>
-          <?= $form->radioBoolean($element, 'glasses', array('nowrapper' => true)) ?>
+            <?= $form->radioBoolean($element, 'glasses', array('nowrapper' => true)) ?>
       </td>
     </tr>
     </tbody>

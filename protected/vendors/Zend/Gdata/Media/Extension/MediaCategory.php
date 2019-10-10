@@ -95,14 +95,14 @@ class Zend_Gdata_Media_Extension_MediaCategory extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'scheme':
-            $this->_scheme = $attribute->nodeValue;
+            case 'scheme':
+                $this->_scheme = $attribute->nodeValue;
             break;
-        case 'label':
-            $this->_label = $attribute->nodeValue;
+            case 'label':
+                $this->_label = $attribute->nodeValue;
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 

@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-fields">
-	<?php echo $form->radioBoolean($element, 'cerebrovascular_accident')?>
-	<?php echo $form->radioBoolean($element, 'ischaemic_attack')?>
-	<?php echo $form->radioBoolean($element, 'myocardial_infarction')?>
+    <?php echo $form->radioBoolean($element, 'cerebrovascular_accident')?>
+    <?php echo $form->radioBoolean($element, 'ischaemic_attack')?>
+    <?php echo $form->radioBoolean($element, 'myocardial_infarction')?>
 </div>

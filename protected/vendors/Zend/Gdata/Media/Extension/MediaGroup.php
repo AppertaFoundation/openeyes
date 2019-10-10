@@ -323,8 +323,8 @@ class Zend_Gdata_Media_Extension_MediaGroup extends Zend_Gdata_Extension
                 $title->transferFromDOM($child);
                 $this->_title = $title;
                 break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }

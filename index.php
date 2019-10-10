@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 $dirname = dirname(__FILE__);
-if (file_exists($dirname . '/vendor/autoload.php')){
+if (file_exists($dirname . '/vendor/autoload.php')) {
     require_once($dirname . '/vendor/autoload.php');
 }
 

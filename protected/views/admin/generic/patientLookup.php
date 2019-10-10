@@ -11,7 +11,7 @@
         <input type="hidden" name="<?= get_class($model) ?>[patient_id]" id="patient-result-id" value="<?= $model->patient_id ?>">
   </div>
 </div>
-<?php if(isset($extras) && $extras): ?>
+<?php if (isset($extras) && $extras) : ?>
 <div class="data-group">
     <div class="cols-2 column">
         <label for="patient-search">Maiden Name</label>

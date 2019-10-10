@@ -1477,12 +1477,10 @@ class OphCiExamination_API extends \BaseAPI
             $criteria->order = 'display_order';
 
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
-
                 $class = $element_type->class_name;
 
                 $element = $class::model()->find('event_id=?', array($event->id));
                 if ($element) {
-
                     // need to check for element behaviour for eyedraw elements
                     if (method_exists($element, 'getLetter_string') || $element->asa('EyedrawElementBehavior')) {
                         $element_types[] = $element_type;
@@ -2376,10 +2374,7 @@ class OphCiExamination_API extends \BaseAPI
         if ($element) {
             $str = $element->status->name;
             if ($element->status->followup) {
-                $str .= " in {$element->followup_quantity} {$element->followup_period} by {$element->role->name}";
-                if ($element->role_comments != '') {
-                    $str .= " ({$element->role_comments})";
-                }
+                $str .= " in {$element->followup_quantity} {$element->followup_period}";
             }
         }
         return $str;
@@ -2531,7 +2526,6 @@ class OphCiExamination_API extends \BaseAPI
                     if (isset($allergy) && isset($allergy->id)) {
                         $required[$allergy->id] = $allergy;
                     }
-
                 }
             }
         }
@@ -2636,7 +2630,6 @@ class OphCiExamination_API extends \BaseAPI
         );
 
         if ($el) {
-
             $result .= 'Clinic Interval: ' . ($el->clinic_interval ?: 'NR') . "\n";
             $result .= 'Photo: ' . ($el->photo ?: 'NR') . "\n";
             $result .= 'OCT: ' . ($el->oct ?: 'NR') . "\n";
@@ -2655,8 +2648,6 @@ class OphCiExamination_API extends \BaseAPI
             if (isset($el->left_target_iop->name)) {
                 $result .= 'Target IOP Left Eye: ' . $el->left_target_iop->name . " mmHg\n";
             }
-
-
         }
         return $result;
     }
@@ -2951,22 +2942,40 @@ class OphCiExamination_API extends \BaseAPI
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($current_eye_meds as $entry) : ?>
-                <tr>
-                    <td><?= $entry->getMedicationDisplay() ?></td>
-                    <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
-                    <td>
-                        <?php
-                        $laterality = $entry->getLateralityDisplay();
-                        \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                        ?>
-                    </td>
-                    <td>
-                        <?= $entry->frequency ? $entry->frequency : ''; ?>
-                    </td>
-                    <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
-                </tr>
-            <?php endforeach; ?>
+                <?php foreach ($current_eye_meds as $entry) : ?>
+                    <?php $tapers = \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers; ?>
+                    <tr>
+                        <td><?= $entry->getMedicationDisplay() ?></td>
+                        <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
+                        <td>
+                            <?php
+                            $laterality = $entry->getLateralityDisplay();
+                            \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                            ?>
+                        </td>
+                        <td>
+                            <?= $entry->frequency ? $entry->frequency : ''; ?>
+                        </td>
+                        <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
+                    </tr>
+                    <?php foreach ($tapers as $taper) : ?>
+                        <tr>
+                            <td>
+                                <div class="oe-i child-arrow small no-click"></div>
+                                <i> then</i>
+                            </td>
+                            <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                            <td>
+                            </td>
+                            <td>
+                                <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
+                            </td>
+                            <td>
+                                <?= $taper->duration ? $taper->duration->name : '' ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
             </tbody>
         </table>
 

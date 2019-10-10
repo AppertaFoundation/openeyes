@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
 <div class="element-fields">
     <?= $form->hiddenField($element, 'draft') ?>
     <?= $form->dropDownList($element, 'type_id', 'OphTrConsent_Type_Type', ['nowrapper' => true], false, []) ?>

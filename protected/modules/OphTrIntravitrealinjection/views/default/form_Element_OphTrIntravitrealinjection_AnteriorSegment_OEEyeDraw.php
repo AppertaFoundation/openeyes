@@ -18,7 +18,7 @@
 ?>
 
 <div class="eyedraw-row field-row anterior-segment">
-	<?php
+    <?php
     $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'doodleToolBarArray' => array('InjectionSite'),
         'onReadyCommandArray' => array(

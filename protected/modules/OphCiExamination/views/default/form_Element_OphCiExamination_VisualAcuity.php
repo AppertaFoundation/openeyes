@@ -24,21 +24,21 @@ $unit_id = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::m
 $default_display_value = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id'=>$unit_id, 'value'=>'6/6'))->base_value;
 
 $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
-	'id', 'name');
+    'id', 'name');
 $key = 0;
 
-if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
+if (isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
     ?>
     <script type="text/javascript">
-			var valOptions = <?= CJSON::encode($val_options)?>;
-			var OE_patient_firstname = "<?php echo $this->patient->first_name; ?>";
-			var OE_patient_lastname = "<?php echo $this->patient->last_name; ?>";
-			var OE_patient_dob = "<?php echo str_replace("-","",$this->patient->dob); ?>";
-			var OE_patient_address = "<?php echo $this->patient->getSummaryAddress("^"); ?>";
-			var OE_patient_gender = "<?php echo $this->patient->gender; ?>";
-			var OE_COMPLog_port = <?php echo Yii::app()->params['COMPLog_port']; ?>;
+            var valOptions = <?= CJSON::encode($val_options)?>;
+            var OE_patient_firstname = "<?php echo $this->patient->first_name; ?>";
+            var OE_patient_lastname = "<?php echo $this->patient->last_name; ?>";
+            var OE_patient_dob = "<?php echo str_replace("-", "", $this->patient->dob); ?>";
+            var OE_patient_address = "<?php echo $this->patient->getSummaryAddress("^"); ?>";
+            var OE_patient_gender = "<?php echo $this->patient->gender; ?>";
+            var OE_COMPLog_port = <?php echo Yii::app()->params['COMPLog_port']; ?>;
     </script>
-<?php
+    <?php
     Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CompLog.js", CClientScript::POS_END);
 }
 
@@ -46,27 +46,26 @@ if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port
 ?>
 <div class="element-both-eyes">
   <div>
-      <?php if ($element->isNewRecord) { ?>
+        <?php if ($element->isNewRecord) { ?>
           <span class="data-label">VA Scale &nbsp;&nbsp;</span>
             <?=\CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
                 CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
                 model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
                     'id', 'name'), array('class' => 'inline'));
-          if ($element->unit->information) { ?>
+            if ($element->unit->information) { ?>
             <span class="js-has-tooltip fa oe-i info small"
                   data-tooltip-content="<?php echo $element->unit->information ?>"></span>
-          <?php }
-      }
+            <?php }
+        }
 
-      if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0)
-      {
-      ?>
+        if (isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
+            ?>
           <button class="button blue hint" name="complog" id="et_complog">Measure in COMPLog</button>
           <iframe id="complog_launcher" src="" width="0" height="0" style="display:none;">
           </iframe>
-      <?php
-      }
-      ?>
+            <?php
+        }
+        ?>
       </div>
 </div>
 
@@ -82,7 +81,7 @@ if ($cvi_api) {
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
           data-side="<?= $eye_side ?>"
       >
@@ -95,8 +94,8 @@ if ($cvi_api) {
               <tbody>
               <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                   // Adjust currently element readings to match unit steps
-                  $reading->loadClosest($element->unit->id);
-                  $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
+                    $reading->loadClosest($element->unit->id);
+                    $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
                       'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_readings]',
                       'key' => $key,
                       'reading' => $reading,
@@ -105,8 +104,8 @@ if ($cvi_api) {
                       'val_options' => $val_options,
                       'methods' => $methods,
                       'asset_path' => $this->getAssetPathForElement($element),
-                  ));
-                  ++$key;
+                    ));
+                    ++$key;
               } ?>
               </tbody>
             </table>
@@ -118,10 +117,27 @@ if ($cvi_api) {
                       array('text-align' => 'right', 'nowrapper' => true)) ?>
               </div>
             </div>
+              <div id="visualacuity-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
+                   style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#visualacuity-<?= $eye_side ?>-comment-button">
+                  <?=\CHtml::activeTextArea($element, $eye_side . '_notes',
+                      array(
+                          'rows' => 1,
+                          'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
+                          'class' => 'cols-full js-comment-field',
+                          'style' => 'overflow-wrap: break-word; height: 24px;',
+                      )) ?>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+              </div>
           </div>
-          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-VisualAcuity-reading"
-               style="<?= !$element->eyeAssesable($eye_side)? 'display: none;': '' ?>">
-            <button class="button hint green addReading" id="add-reading-btn-<?= $eye_side?>" type="button">
+          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-VisualAcuity-reading">
+              <button id="visualacuity-<?= $eye_side ?>-comment-button"
+                      class="button js-add-comments" data-comment-container="#visualacuity-<?= $eye_side ?>-comments"
+                      type="button" style="<?= $element->{$eye_side . '_notes'} ? 'visibility: hidden;' : '' ?>">
+                  <i class="oe-i comments small-icon"></i>
+              </button>
+            <button class="button hint green addReading" id="add-VisualAcuity-reading-btn-<?= $eye_side?>"
+                    style="<?= !$element->eyeAssesable($eye_side)? 'display: none;': '' ?>"
+                    type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
             <!-- oe-add-select-search -->
@@ -140,7 +156,7 @@ if ($cvi_api) {
   <script type="text/javascript">
     $(function () {
       new OpenEyes.UI.AdderDialog({
-        openButton:$('#add-reading-btn-<?= $eye_side?>'),
+        openButton:$("#add-VisualAcuity-reading-btn-<?= $eye_side?>"),
         itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) use ($default_display_value) {
                 return $key==$default_display_value? ['label' => $value, 'id' => $key, 'set-default' => true]: ['label' => $value, 'id' => $key];
@@ -211,12 +227,12 @@ Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($bas
 
     OphCiExamination_VisualAcuity_method_ids = [ <?php
         $first = true;
-        foreach ($methods as $index => $method) {
-            if (!$first) {
-                echo ', ';
-            }
-            $first = false;
-            echo $index;
-        } ?> ];
+    foreach ($methods as $index => $method) {
+        if (!$first) {
+            echo ', ';
+        }
+        $first = false;
+        echo $index;
+    } ?> ];
   });
 </script>

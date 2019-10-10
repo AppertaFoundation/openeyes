@@ -64,7 +64,7 @@ trait Study {
      */
     public function participatingStudyIds(BaseActiveRecord $subject)
     {
-        if(!$subject->id) {
+        if (!$subject->id) {
             return array();
         }
 

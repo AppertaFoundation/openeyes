@@ -163,7 +163,6 @@ class BookingController extends OphTrOperationbookingEventController
                             foreach ($result as $attribute => $message) {
                                 $errors[$operation->getAttributeLabel($attribute)] = $message;
                             }
-
                         } else {
                             $transaction->commit();
                             $this->redirect(array('default/view/'.$operation->event_id));
@@ -258,12 +257,11 @@ class BookingController extends OphTrOperationbookingEventController
             if (!$reason = OphTrOperationbooking_Operation_Cancellation_Reason::model()->findByPk($_POST['cancellation_reason'])) {
                 $errors[] = 'Please select a rescheduling reason';
             } else {
-
                 $comment = isset($_POST['cancellation_comment']) ? $_POST['cancellation_comment'] : null;
 
                 $is_cancelled = $operation->cancel($_POST['cancellation_reason'], $comment)['result'];
 
-                if($is_cancelled){
+                if ($is_cancelled) {
                     $operation->setStatus('Requires rescheduling');
 
                     if (!$operation->event->hasIssue('Operation requires scheduling')) {

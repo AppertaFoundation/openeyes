@@ -40,9 +40,9 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             )
         );
         ?>
-		<?php  $this->displayErrors($errors)?>
-		<?php $this->renderOpenElements($this->action->id, $form); ?>
-		<?php $this->renderOptionalElements($this->action->id, $form); ?>
-		<?php  $this->displayErrors($errors, true)?>
-	<?php $this->endWidget()?>
+        <?php  $this->displayErrors($errors)?>
+        <?php $this->renderOpenElements($this->action->id, $form); ?>
+        <?php $this->renderOptionalElements($this->action->id, $form); ?>
+        <?php  $this->displayErrors($errors, true)?>
+    <?php $this->endWidget()?>
 <?php  $this->endContent()?>

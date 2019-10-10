@@ -14,9 +14,9 @@
  */
 ?>
 <div class="data-group">
-  <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-	<div class="cols-6 column">
-		<div class="data-value"><?= $element && $element->hasEye($eye_side) ? $element->getCombined($eye_side) : 'Not recorded' ?></div>
-	</div>
-  <?php endforeach; ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
+    <div class="cols-6 column">
+        <div class="data-value"><?= $element && $element->hasEye($eye_side) ? $element->getCombined($eye_side) : 'Not recorded' ?></div>
+    </div>
+    <?php endforeach; ?>
 </div>

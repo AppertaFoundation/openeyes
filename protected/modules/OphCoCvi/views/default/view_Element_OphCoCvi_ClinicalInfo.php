@@ -99,7 +99,7 @@
       <h3 class="element-title">Visual Acuity</h3>
     </header>
     <div class="element-data element-eyes">
-        <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) { ?>
           <div class="js-element-eye <?= $eye_side ?>-eye">
               <ul class="dot-list large-text">
                 <li><?=\CHtml::encode($element->{'unaided_'.$eye_side.'_va'}.' Unaided'); ?></li>
@@ -115,7 +115,7 @@
         <h3 class="element-title"><?=\CHtml::encode($element->getAttributeLabel('disorders')) ?>:</h3>
       </header>
         <div class="element-data full-width">
-      <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
+        <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
           'element' => $element,
       ))?>
     <div class="data-group">

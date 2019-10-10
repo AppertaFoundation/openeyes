@@ -6,8 +6,8 @@ class m170307_115007_add_poi_shortcode extends CDbMigration
         array('code' => 'poi', 'method' => 'getLastOperationPostOpInstructions', 'description' => 'Last operation post op instructions'),
     );
 
-	public function up()
-	{
+    public function up()
+    {
         $eventTypeId = $this->dbConnection->createCommand()
             ->select('id')
             ->from('event_type')
@@ -22,23 +22,23 @@ class m170307_115007_add_poi_shortcode extends CDbMigration
                 'description' => $short_code['description'],
             ));
         }
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         foreach ($this->shortCodeForPoi as $short_code) {
             $this->delete('patient_shortcode', 'default_code = :code', array(':code' => $short_code['code']));
         }
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

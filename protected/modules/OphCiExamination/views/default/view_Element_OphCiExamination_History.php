@@ -19,7 +19,7 @@
 <div class="element-data">
   <div class="data-value">
     <span class="large-text">
-      <?= Yii::app()->format->Ntext($element->description) ?>
+        <?= Yii::app()->format->Ntext($element->description) ?>
     </span>
   </div>
 </div>

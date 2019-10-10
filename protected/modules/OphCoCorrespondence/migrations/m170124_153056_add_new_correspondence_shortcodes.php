@@ -2,8 +2,8 @@
 
 class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
         $data = $this->dbConnection->createCommand()
             ->select('id')->from('event_type')
@@ -126,14 +126,14 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
         $this->delete('patient_shortcode', '`default_code`="alg"');
     }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

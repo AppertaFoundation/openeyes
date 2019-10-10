@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-fields full-width flex-layout">
-      <?php echo $form->multiSelectList(
+        <?php echo $form->multiSelectList(
           $element,
           'Drug',
           'drugs',
@@ -53,7 +53,8 @@
       itemSets:[
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $item) {
-              return ['label' => $item, 'id' => $key];}, array_keys($drugs), $drugs))?>,
+              return ['label' => $item, 'id' => $key];
+          }, array_keys($drugs), $drugs))?>,
           {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         for (i in selectedItems) {

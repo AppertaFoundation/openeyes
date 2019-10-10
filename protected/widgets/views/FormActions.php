@@ -39,7 +39,6 @@
         } ?>
         <?php
         if (isset($buttonOptions['add-snippet'])) {
-
             // GenericAdmin and FormActions is so great that I cannot add extra buttons dynamically.... so let's just hardcode here
             //@TODO: get rid of the GenericAdmin (+FormActions) to not to risk devs mental health
 

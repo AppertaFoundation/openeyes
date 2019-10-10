@@ -67,4 +67,45 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         }
         return '';
     }
+
+
+    protected function getImageFileNameForRotation($image_id){
+        $protected = ProtectedFile::model()->findByPk($image_id);
+        if ($protected) {
+            $file_name = $protected->getFilePath().'/'.$protected->uid;
+            $image_size = getimagesize($file_name);
+            $mime = isset($image_size['mime']) ? $image_size['mime'] : null;
+            if ($mime && $mime == 'image/jpeg') {
+                return $file_name;
+            }
+        }
+    }
+
+    public function rotate($file_name, $rotate = null) {
+        $original = imagecreatefromjpeg($file_name);
+
+        if (empty($rotate)) {
+            $exif = @exif_read_data($file_name);
+            if (isset($exif['Orientation'])) {
+                switch ($exif['Orientation']) {
+                    case 1:
+                        $rotate = 0;
+                        break;
+                    case 3:
+                        $rotate = 180;
+                        break;
+                    case 6:
+                        $rotate = -90;
+                        break;
+                    case 8:
+                        $rotate = 90;
+                        break;
+                }
+            }
+        }
+        $rotated = imagerotate($original, $rotate, 0);
+        imagejpeg($rotated, $file_name);
+
+        return $file_name;
+    }
 }

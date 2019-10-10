@@ -79,6 +79,7 @@ class AuditTest extends CDbTestCase
             'request_uri' => 'Request URI',
             'site_id' => 'Site',
             'firm_id' => 'Firm',
+            'event_type_id' => 'Event Type'
         );
 
         $this->assertEquals($expected, $this->model->attributeLabels());
@@ -113,7 +114,7 @@ class AuditTest extends CDbTestCase
         $audit = new Audit();
         $audit->action = ComponentStubGenerator::generate('AuditAction', array('name' => 'search-error'));
         $result = $audit->getColour();
-        $expected = 'Red';
+        $expected = 'red';
 
         $this->assertEquals($expected, $result);
     }

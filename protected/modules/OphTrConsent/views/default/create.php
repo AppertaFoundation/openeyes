@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
 <?php
 $form_id = 'clinical-create';
 $this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
@@ -26,13 +26,13 @@ $this->beginContent('//patient/event_container', array('no_face'=>true , 'form_i
 
         $this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'secondary'), array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id));
         $this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id));
-        ?>
+    ?>
 
-		<?php  $this->displayErrors($errors)?>
-		<?php  $this->renderOpenElements($this->action->id, $form); ?>
-		<?php  $this->renderOptionalElements($this->action->id, $form); ?>
-		<?php  $this->displayErrors($errors, true)?>
+        <?php  $this->displayErrors($errors)?>
+        <?php  $this->renderOpenElements($this->action->id, $form); ?>
+        <?php  $this->renderOptionalElements($this->action->id, $form); ?>
+        <?php  $this->displayErrors($errors, true)?>
 
-	<?php  $this->endWidget(); ?>
+    <?php  $this->endWidget(); ?>
 
 <?php $this->endContent();?>

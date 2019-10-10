@@ -99,8 +99,7 @@ class Zend_Ldap_Collection implements Iterator, Countable
         if ($this->count()>0) {
             $this->rewind();
             return $this->current();
-        }
-        else return null;
+        } else return null;
     }
 
     /**
@@ -123,8 +122,7 @@ class Zend_Ldap_Collection implements Iterator, Countable
      */
     public function current()
     {
-        if (!array_key_exists($this->_currentNumber, $this->_cache))
-        {
+        if (!array_key_exists($this->_currentNumber, $this->_cache)) {
             $this->_cache[$this->_currentNumber] =
                 $this->_createEntry($this->_iterator->current());
         }

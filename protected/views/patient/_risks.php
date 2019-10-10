@@ -17,13 +17,13 @@
  */
 ?>
 <section class="element view full patient-info associated-data js-toggle-container">
-	<header class="element-header">
-		<h3 class="element-title">
-			<span class="icon-patient-clinician-hd_flag"></span>
-			Risks
-		</h3>
-	</header>
-	<div class="jelement-data full-width js-toggle-body">
+    <header class="element-header">
+        <h3 class="element-title">
+            <span class="icon-patient-clinician-hd_flag"></span>
+            Risks
+        </h3>
+    </header>
+    <div class="jelement-data full-width js-toggle-body">
         <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryRisks', array(
             'patient' => $this->patient,
             'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE

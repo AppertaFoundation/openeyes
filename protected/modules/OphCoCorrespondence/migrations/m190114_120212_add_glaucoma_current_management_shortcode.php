@@ -2,8 +2,8 @@
 
 class m190114_120212_add_glaucoma_current_management_shortcode extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $eventTypeId = $this->dbConnection->createCommand()
             ->select('id')
             ->from('event_type')
@@ -17,10 +17,10 @@ class m190114_120212_add_glaucoma_current_management_shortcode extends CDbMigrat
                 'method' => 'getGlaucomaCurrentPlan',
                 'description' => 'Glaucoma current management plan from latest Examination',
             ));
-	}
+    }
 
-	public function down()
-	{
-		$this->delete('patient_shortcode', 'default_code = :code', array(':code' => 'gcm'));
-	}
+    public function down()
+    {
+        $this->delete('patient_shortcode', 'default_code = :code', array(':code' => 'gcm'));
+    }
 }

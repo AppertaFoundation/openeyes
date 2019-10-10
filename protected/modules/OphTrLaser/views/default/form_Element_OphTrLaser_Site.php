@@ -50,19 +50,19 @@ foreach ($lasers as $laser) {
       <td>
 
 
-          <?php echo $form->dropDownList($element, 'site_id',
+            <?php echo $form->dropDownList($element, 'site_id',
               CHtml::listData($sites, 'id', 'short_name'),
               array('class' => 'cols-full', 'empty' => 'Select', 'nowrapper' => true),
               false) ?>
       </td>
       <td>
-          <?php echo $form->dropDownList($element, 'laser_id',
+            <?php echo $form->dropDownList($element, 'laser_id',
               CHtml::listData($laser_options, 'id', 'name'),
               array('class' => 'cols-full', 'empty' => 'Select', 'nowrapper' => true),
               false) ?>
       </td>
       <td>
-          <?php echo $form->dropDownList($element, 'operator_id',
+            <?php echo $form->dropDownList($element, 'operator_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
               array('class' => 'cols-full', 'empty' => 'Select', 'nowrapper' => true),
               false) ?>

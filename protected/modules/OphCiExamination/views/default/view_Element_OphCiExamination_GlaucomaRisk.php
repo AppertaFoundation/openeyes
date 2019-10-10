@@ -16,8 +16,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="sub-element-data">
+<div class="element-data full-width">
   <div class="pill <?php echo $element->risk->class?>">
-      <?php echo $element->risk->name?>
+      <span class="large-text">
+            <?php echo $element->risk->name?>
+      </span>
   </div>
 </div>
