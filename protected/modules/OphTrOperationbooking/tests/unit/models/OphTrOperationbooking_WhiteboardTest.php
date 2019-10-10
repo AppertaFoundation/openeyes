@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphCiExamination\models\Element_OphCiExamination_Risks;
+
 class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
 {
     protected $fixtures = array(
@@ -9,7 +11,7 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
         'biometry_selection' => Element_OphInBiometry_Selection::class,
         'biometry_calculation' => Element_OphInBiometry_Calculation::class,
         'procedures' => OphTrOperationbooking_Operation_Procedures::class,
-        'risks' => \OEModule\OphCiExamination\models\Element_OphCiExamination_Risks::class,
+        'risks' => Element_OphCiExamination_Risks::class,
         'patients' => Patient::class,
         'events' => Event::class,
         'episodes' => Episode::class
@@ -22,7 +24,7 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
 
     protected function tearDown()
     {
-        unset($whiteboard);
+        unset($this->whiteboard);
         parent::tearDown();
     }
 
@@ -38,10 +40,10 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
                 'comment' => null,
                 'complexity' => Element_OphTrOperationbooking_Operation::COMPLEXITY_MEDIUM,
             ),
-            'Existing whiteboard' => array(
-                'booking_id' => 5,
+            'Existing editable whiteboard' => array(
+                'booking_id' => 6,
                 'fixtureId' => 'whiteboard1',
-                'procedure' => 'Dacrocystogram',
+                'procedure' => 'Repositioning of Intraocular lens',
                 'aconst' => 118.0,
                 'equipment' => "Test equipment 1\nTest equipment 2",
                 'comment' => 'Test whiteboard',
@@ -55,6 +57,9 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
      * @param $fixtureId string|null
      * @param $procedure string
      * @param $aconst double|null
+     * @param $equipment string
+     * @param $comment string
+     * @param $complexity int
      * @dataProvider getBookings
      * @covers OphTrOperationbooking_Whiteboard::loadData
      * @throws CHttpException
@@ -83,13 +88,15 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
      */
     public function testGetPatientRisksDisplay($booking_id, $fixtureId)
     {
+        $total_risks = 0;
         if ($fixtureId !== null) {
             $this->whiteboard = $this->whiteboards($fixtureId);
         } else {
             $this->whiteboard = new OphTrOperationbooking_Whiteboard();
             $this->whiteboard->loadData($booking_id);
         }
-        $risks = $this->whiteboard->getPatientRisksDisplay();
+        $risks = $this->whiteboard->getPatientRisksDisplay($total_risks);
+        $this->assertEquals(0, $total_risks);
         $this->assertEquals('<div class="alert-box success">No Risks</div>', $risks);
     }
 }

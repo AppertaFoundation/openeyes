@@ -115,6 +115,7 @@ return array(
         'comments' => 'Test comments',
         'total_duration' => 100,
         'status_id' => 6,
+        'complexity' => Element_OphTrOperationbooking_Operation::COMPLEXITY_MEDIUM,
         'anaesthetist_required' => 1,
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00'),

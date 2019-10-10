@@ -32,12 +32,18 @@ class RiskCardTest extends CDbTestCase
         parent::tearDown();
     }
 
+    /**
+     * @covers RiskCard::init
+     */
     public function testInit()
     {
         $this->widget->init();
         $this->assertEquals('Special', $this->widget->getType());
     }
 
+    /**
+     * @covers RiskCard::run
+     */
     public function testRun()
     {
         $this->widget->init();

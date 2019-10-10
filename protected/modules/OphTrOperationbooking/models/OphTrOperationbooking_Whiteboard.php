@@ -284,9 +284,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param $total_risks int Total risks for the patient. The variable passed to this function is populated with the value.
      * @return string
      */
-
     public function getPatientRisksDisplay(&$total_risks)
     {
         /** @var Patient $patient */
