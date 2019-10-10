@@ -163,21 +163,21 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
                 $both = array(true, false);
-                foreach ($both as $present) {
-                    foreach ($patient->getSystemicDiagnoses($present) as $sd) {
-                        $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
-                        $diagnosis->has_disorder = $present ? SystemicDiagnoses_Diagnosis::$PRESENT : SystemicDiagnoses_Diagnosis::$NOT_PRESENT;
-                        $duplicate_diagnosis = false;
-                        foreach ($diagnoses as $current_diagnosis) {
-                            if ($diagnosis->disorder_id === $current_diagnosis->disorder_id) {
-                                $duplicate_diagnosis = true;
-                            }
-                        }
-                        if (!$duplicate_diagnosis) {
-                            $diagnoses[] = $diagnosis;
+            foreach ($both as $present) {
+                foreach ($patient->getSystemicDiagnoses($present) as $sd) {
+                    $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
+                    $diagnosis->has_disorder = $present ? SystemicDiagnoses_Diagnosis::$PRESENT : SystemicDiagnoses_Diagnosis::$NOT_PRESENT;
+                    $duplicate_diagnosis = false;
+                    foreach ($diagnoses as $current_diagnosis) {
+                        if ($diagnosis->disorder_id === $current_diagnosis->disorder_id) {
+                            $duplicate_diagnosis = true;
                         }
                     }
+                    if (!$duplicate_diagnosis) {
+                        $diagnoses[] = $diagnosis;
+                    }
                 }
+            }
             $this->diagnoses = $diagnoses;
         }
     }
@@ -262,11 +262,10 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         $diags = $this->diagnoses;
         $checked_req_diags = array();
 
-        foreach ($diags as $key=>$entry) {
-            if($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_CHECKED) {
+        foreach ($diags as $key => $entry) {
+            if ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_CHECKED) {
                 unset($diags[$key]);
-            }
-            else if($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_PRESENT) {
+            } else if ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_PRESENT) {
                 $checked_req_diag = new SystemicDiagnoses_RequiredDiagnosisCheck();
                 $checked_req_diag->setAttributes(array_diff_key($entry->getAttributes(), array('id' => null)), false);
                 $checked_req_diags[] = $checked_req_diag;
@@ -290,59 +289,58 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     }
 
     public function updatePatientLevelSystemicDiagnoses()
-	{
-		// extract event from the event id of the element - in afterSave the relation doesn't
-		// work when the instance has only just been saved
-		$event = \Event::model()->findByPk($this->event_id);
-		/** @var \Patient $patient */
-		$patient = $event->getPatient();
-		$sd_ids_to_keep = array();
+    {
+        // extract event from the event id of the element - in afterSave the relation doesn't
+        // work when the instance has only just been saved
+        $event = \Event::model()->findByPk($this->event_id);
+        /** @var \Patient $patient */
+        $patient = $event->getPatient();
+        $sd_ids_to_keep = array();
 
-		// update or create the secondary diagnoses for the diagnoses on this element
-		foreach ($this->diagnoses as $diagnosis) {
-			$sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
-			$sd_ids_to_keep[] = $sd->id;
-		}
+        // update or create the secondary diagnoses for the diagnoses on this element
+        foreach ($this->diagnoses as $diagnosis) {
+            $sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
+            $sd_ids_to_keep[] = $sd->id;
+        }
 
-		// then delete any other secondary diagnoses still on the patient.
-		foreach ($patient->getSystemicDiagnoses() as $sd) {
-			if (!in_array($sd->id, $sd_ids_to_keep)) {
-				$sd->delete();
-			}
-		}
+        // then delete any other secondary diagnoses still on the patient.
+        foreach ($patient->getSystemicDiagnoses() as $sd) {
+            if (!in_array($sd->id, $sd_ids_to_keep)) {
+                $sd->delete();
+            }
+        }
 
-		$sd_ids_to_keep = array();
-		// update or create not present secondary diagnoses
-		foreach ($this->checked_required_diagnoses as $diagnosis) {
-			$sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
-			$sd_ids_to_keep[] = $sd->id;
-		}
+        $sd_ids_to_keep = array();
+        // update or create not present secondary diagnoses
+        foreach ($this->checked_required_diagnoses as $diagnosis) {
+            $sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
+            $sd_ids_to_keep[] = $sd->id;
+        }
 
-		foreach ($patient->getSystemicDiagnoses(false) as $sd) {
-			if (!in_array($sd->id, $sd_ids_to_keep)) {
-				$sd->delete();
-			}
-		}
-	}
+        foreach ($patient->getSystemicDiagnoses(false) as $sd) {
+            if (!in_array($sd->id, $sd_ids_to_keep)) {
+                $sd->delete();
+            }
+        }
+    }
 
-	public function afterDelete()
-	{
-		$api = new OphCiExamination_API();
-		$event = \Event::model()->findByPk($this->event_id);
-		/** @var \Patient $patient */
-		$patient = $event->getPatient();
-		$et = $api->getLatestElement(SystemicDiagnoses::class, $patient);
-		if($et) {
-			// There is an earlier element: revert diagnoses
-			/** @var SystemicDiagnoses $et */
-			$et->updatePatientLevelSystemicDiagnoses();
-		}
-		else {
-			// This is the only element: remove diagnoses
-			$this->updatePatientLevelSystemicDiagnoses();
-		}
+    public function afterDelete()
+    {
+        $api = new OphCiExamination_API();
+        $event = \Event::model()->findByPk($this->event_id);
+        /** @var \Patient $patient */
+        $patient = $event->getPatient();
+        $et = $api->getLatestElement(SystemicDiagnoses::class, $patient);
+        if ($et) {
+            // There is an earlier element: revert diagnoses
+            /** @var SystemicDiagnoses $et */
+            $et->updatePatientLevelSystemicDiagnoses();
+        } else {
+            // This is the only element: remove diagnoses
+            $this->updatePatientLevelSystemicDiagnoses();
+        }
 
-		return parent::afterDelete();
+        return parent::afterDelete();
     }
 
     /**
@@ -354,7 +352,9 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         if (!in_array($category, array('present', 'not_checked', 'not_present'))) {
             $category  = 'entries';
         }
-        return implode(', ', array_map(function($e) { return $e->getDisplay(); }, $this->$category));
+        return implode(', ', array_map(function ($e) {
+            return $e->getDisplay();
+        }, $this->$category));
     }
 
     public function getTileSize($action)

@@ -33,8 +33,8 @@ if ($outcome = $api->getFollowUp($this->ticket->id)) {
         <tr>
           <td>
               <?php
-              $value = @$this->form_data[$this->form_name]['appointment_date'];
-              $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                $value = @$this->form_data[$this->form_name]['appointment_date'];
+                $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                   'name' => $this->form_name . '[appointment_date]',
                   'id' => $this->form_name . '_appointment_date',
                   // additional javascript options for the date picker plugin
@@ -46,7 +46,7 @@ if ($outcome = $api->getFollowUp($this->ticket->id)) {
                   'value' => preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)
                       ? Helper::convertMySQL2NHS($value) : $value,
                   'htmlOptions' => ['class'=>'cols-11'],
-              )); ?>
+                )); ?>
           </td>
           <td>
               <?=\CHtml::textField($this->form_name . '[appointment_time]',

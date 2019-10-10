@@ -41,7 +41,7 @@ if ($this->patient->id > 0) {
                 'element' => $latestData,
                 'form' => $form,
                 'is_new_opnote' => $element->isNewRecord,
-            ));
+                ));
         }
         ?>
 </div>

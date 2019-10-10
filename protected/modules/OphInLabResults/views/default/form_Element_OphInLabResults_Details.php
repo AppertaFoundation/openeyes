@@ -23,19 +23,36 @@
                 <label for="Element_OphInLabResults_Details_result_type_id">Type:</label>
             </div>
             <div class="cols-4 column end">
-                <select name="Element_OphInLabResults_Details[result_type_id]" id="Element_OphInLabResults_Details_result_type_id">
+                <select name="Element_OphInLabResults_Details[result_type_id]"
+                        id="Element_OphInLabResults_Details_result_type_id"
+                <?= (isset($element->result_type_id) ? "disabled=disabled" : "") ?> >
                     <option>Select</option>
-                    <?php foreach (OphInLabResults_Type::model()->findAll() as $type):?>
+                    <?php foreach (OphInLabResults_Type::model()->findAll() as $type) : ?>
                         <option
-                            data-element-id="<?=$type->result_element_id?>"
-                            value="<?=$type->id?>"
-                            <?=($type->id === $element->result_type_id) ? 'selected' : '' ?>
+                                data-element-id="<?= $type->result_element_id ?>"
+                                data-type-id="<?= $type->id ?>"
+                                data-field-type-name="<?= $type->fieldType->name ?>"
+                            <?php if ($type->fieldType->name === "Numeric Field") { ?>
+                                data-normal-min="<?= $type->normal_min ?>"
+                                data-normal-max="<?= $type->normal_max ?>"
+                                data-custom-message="<?= $type->custom_warning_message ?>"
+                            <?php } ?>
+                                value="<?= $type->id ?>"
+                            <?= ($type->id === $element->result_type_id) ? 'selected' : '' ?>
                         >
-                            <?=$type->type?>
+                            <?= $type->type ?>
                         </option>
-                    <?php endforeach;?>
+                    <?php endforeach; ?>
                 </select>
             </div>
         </div>
     </div>
 </section>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#et_save').on('click', function (){
+            $('#Element_OphInLabResults_Details_result_type_id').attr('disabled', false);
+        })
+    })
+</script>

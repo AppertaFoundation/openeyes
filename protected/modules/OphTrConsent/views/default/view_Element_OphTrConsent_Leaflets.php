@@ -19,15 +19,15 @@
 <div class="element-data full-width">
   <div class="data-value">
     <ul class="dot-list">
-          <?php if (empty($element->leaflets)) { ?>
+            <?php if (empty($element->leaflets)) { ?>
             <li>None</li>
-          <?php } else { ?>
-              <?php foreach ($element->leaflets as $leaflet) { ?>
+            <?php } else { ?>
+                <?php foreach ($element->leaflets as $leaflet) { ?>
               <li>
-                  <?php echo $leaflet->leaflet->name ?>
+                    <?php echo $leaflet->leaflet->name ?>
               </li>
-              <?php } ?>
-          <?php } ?>
+                <?php } ?>
+            <?php } ?>
       </ul>
   </div>
 </div>

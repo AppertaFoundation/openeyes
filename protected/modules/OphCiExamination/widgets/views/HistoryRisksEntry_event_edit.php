@@ -86,13 +86,15 @@ if (!isset($values)) {
             </label>
         <?php } ?>
     </td>
-	<td>
+    <td>
     <div class="cols-full">
       <div class="js-comment-container flex-layout flex-left"
-						id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
-						style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
-						data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
-      <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
+                        id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
+                        style="<?php if (!$values['comments']) :
+                            ?>display: none;<?php
+                               endif; ?>"
+                        data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
+        <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
         'class' => 'js-comment-field autosize cols-full',
         'rows' => '1',
         'placeholder' => 'Comments',
@@ -101,22 +103,24 @@ if (!isset($values)) {
       ]) ?>
         <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
       </div>
-  		<button
-  			id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
-  			type="button"
-  			class="button js-add-comments"
+        <button
+            id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
+            type="button"
+            class="button js-add-comments"
         data-hide-method = "display"
-  			style="<?php if ($values['comments']): ?>display: none;<?php endif; ?>"
-  			data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
-  			<i class="oe-i comments small-icon"></i>
-  		</button>
+            style="<?php if ($values['comments']) :
+                ?>display: none;<?php
+                   endif; ?>"
+            data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
+            <i class="oe-i comments small-icon"></i>
+        </button>
     </div>
-	</td>
+    </td>
     <?php if ($removable) : ?>
         <td>
             <i class="oe-i trash"></i>
         </td>
-    <?php else: ?>
+    <?php else : ?>
         <td>read only</td>
     <?php endif; ?>
 </tr>

@@ -3,7 +3,7 @@
     <script type="text/javascript">var OpenEyes = OpenEyes || {};</script>
     <link href="<?= Yii::app()->assetManager->createUrl('fonts/Roboto/roboto.css')?>" rel="stylesheet">
     <link href="<?= Yii::app()->assetManager->createUrl('fonts/material-design/material-icons.css')?>" rel="stylesheet">
-<!--    <link rel="stylesheet" href="--><?//= Yii::app()-assetManager-createUrl('components/material-design-lite/material.min.css')?><!--">-->
+<!--    <link rel="stylesheet" href="--><?php //= Yii::app()-assetManager-createUrl('components/material-design-lite/material.min.css')?><!--">-->
     <link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('css/dashboard.css')?>">
     <link rel="stylesheet" href="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/themes/base/minified/jquery.ui.datepicker.min.css')?>">
 

@@ -22,10 +22,10 @@
     <tbody>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('conjunctival_flap_type_id') ?>
+            <?php echo $element->getAttributeLabel('conjunctival_flap_type_id') ?>
       </td>
       <td>
-          <?php echo $form->dropDownList($element, 'conjunctival_flap_type_id',
+            <?php echo $form->dropDownList($element, 'conjunctival_flap_type_id',
               'OphTrOperationnote_Trabeculectomy_Conjunctival_Flap_Type',
               array('textAttribute' => 'data-value', 'nolabel' => true),
               false, array('field' => 4)) ?>
@@ -33,38 +33,38 @@
     </tr>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('stay_suture') ?>
+            <?php echo $element->getAttributeLabel('stay_suture') ?>
       </td>
       <td>
-          <?php echo $form->checkBox($element, 'stay_suture',
+            <?php echo $form->checkBox($element, 'stay_suture',
               array('text-align' => 'right', 'nowrapper' => true, 'no-label' => true),
               array('field' => 4)) ?>
       </td>
     </tr>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('site_id') ?>
+            <?php echo $element->getAttributeLabel('site_id') ?>
       </td>
       <td>
-          <?php echo $form->dropDownList($element, 'site_id', 'OphTrOperationnote_Trabeculectomy_Site',
+            <?php echo $form->dropDownList($element, 'site_id', 'OphTrOperationnote_Trabeculectomy_Site',
               array('textAttribute' => 'data-value', 'nolabel' => true), false, array('field' => 4)) ?>
       </td>
     </tr>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('size_id') ?>
+            <?php echo $element->getAttributeLabel('size_id') ?>
       </td>
       <td>
-          <?php echo $form->dropDownList($element, 'size_id', 'OphTrOperationnote_Trabeculectomy_Size',
+            <?php echo $form->dropDownList($element, 'size_id', 'OphTrOperationnote_Trabeculectomy_Size',
               array('textAttribute' => 'data-value', 'nolabel' => true), false, array('field' => 4)) ?>
       </td>
     </tr>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('sclerostomy_type_id') ?>
+            <?php echo $element->getAttributeLabel('sclerostomy_type_id') ?>
       </td>
       <td>
-          <?php echo $form->dropDownList($element, 'sclerostomy_type_id',
+            <?php echo $form->dropDownList($element, 'sclerostomy_type_id',
               'OphTrOperationnote_Trabeculectomy_Sclerostomy_Type',
               array('textAttribute' => 'data-value', 'nolabel' => true), false,
               array('field' => 4)) ?>
@@ -72,30 +72,30 @@
     </tr>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('viscoelastic_type_id') ?>
+            <?php echo $element->getAttributeLabel('viscoelastic_type_id') ?>
       </td>
       <td>
-          <?php echo $form->dropDownList($element, 'viscoelastic_type_id',
+            <?php echo $form->dropDownList($element, 'viscoelastic_type_id',
               'OphTrOperationnote_Trabeculectomy_Viscoelastic_Type', array('nolabel' => true), false,
               array('field' => 4)) ?>
       </td>
     </tr>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('viscoelastic_removed') ?>
+            <?php echo $element->getAttributeLabel('viscoelastic_removed') ?>
       </td>
       <td>
-          <?php echo $form->checkBox($element, 'viscoelastic_removed',
+            <?php echo $form->checkBox($element, 'viscoelastic_removed',
               array('text-align' => 'right', 'nowrapper' => true, 'no-label' => true),
               array('field' => 4)) ?>
       </td>
     </tr>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('viscoelastic_flow_id') ?>
+            <?php echo $element->getAttributeLabel('viscoelastic_flow_id') ?>
       </td>
       <td>
-          <?php echo $form->dropDownList($element, 'viscoelastic_flow_id',
+            <?php echo $form->dropDownList($element, 'viscoelastic_flow_id',
               'OphTrOperationnote_Trabeculectomy_Viscoelastic_Flow', array('nowrapper' => true), false,
               array('field' => 4)) ?>
       </td>
@@ -108,11 +108,11 @@
     </tr>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('MultiSelect_Difficulties') ?>
+            <?php echo $element->getAttributeLabel('MultiSelect_Difficulties') ?>
       </td>
       <td>
-          <?php
-          echo $form->multiSelectList(
+            <?php
+            echo $form->multiSelectList(
               $element,
               'MultiSelect_Difficulties',
               'difficulty_assignments',
@@ -134,24 +134,24 @@
               false,
               false,
               array('field' => 4)
-          ) ?>
+            ) ?>
       </td>
     </tr>
     <tr id="<?=  CHtml::modelName($element) ?>_difficulty_other"
         style="<?= !$element->hasMultiSelectValue('difficulties', 'Other') ? "display: none;":"" ?>">
       <td>
-          <?php echo $element->getAttributeLabel('difficulty_other') ?>
+            <?php echo $element->getAttributeLabel('difficulty_other') ?>
       </td>
       <td>
-          <?php echo $form->textArea($element, 'difficulty_other', array('nowrapper'=>true)) ?>
+            <?php echo $form->textArea($element, 'difficulty_other', array('nowrapper'=>true)) ?>
       </td>
     </tr>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('MultiSelect_Complications') ?>
+            <?php echo $element->getAttributeLabel('MultiSelect_Complications') ?>
       </td>
       <td>
-          <?php echo $form->multiSelectList(
+            <?php echo $form->multiSelectList(
               $element,
               'MultiSelect_Complications',
               'complication_assignments',
@@ -178,10 +178,10 @@
     <tr id="<?= CHtml::modelName($element) ?>_complication_other"
         style="<?= $element->hasMultiSelectValue('complications', 'Other') ? '' : 'display: none;' ?>">
       <td>
-          <?php echo $element->getAttributeLabel('complication_other') ?>
+            <?php echo $element->getAttributeLabel('complication_other') ?>
       </td>
       <td>
-          <?php echo $form->textArea($element, 'complication_other', array('nowrapper'=>true)) ?>
+            <?php echo $form->textArea($element, 'complication_other', array('nowrapper'=>true)) ?>
       </td>
     </tr>
     </tbody>

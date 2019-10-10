@@ -21,111 +21,111 @@
     <label><?php echo $element->getAttributeLabel('asthma_id') ?>:</label>
   </div>
   <div class="large-2 column">
-      <?php $form->radioButtons(
+        <?php $form->radioButtons(
           $element,
           'asthma_id',
           array(
               0 => 'No',
               1 => 'Yes',
           ),
-          ($element->asthma_id !== null) ? $element->asthma_id : 0,
-          false,
-          false,
-          false,
-          false,
-          array(
+           ($element->asthma_id !== null) ? $element->asthma_id : 0,
+           false,
+           false,
+           false,
+           false,
+           array(
               'text-align' => 'right',
               'nowrapper' => true,
           ),
-          array(
+           array(
               'label' => 4,
               'field' => 8,
           ));
-      ?>
+            ?>
   </div>
   <div class="large-1 column">
     <label><?php echo $element->getAttributeLabel('eczema_id') ?>:</label>
   </div>
   <div class="large-2 column">
-      <?php $form->radioButtons(
+        <?php $form->radioButtons(
           $element,
           'eczema_id',
           array(
               0 => 'No',
               1 => 'Yes',
           ),
-          ($element->eczema_id !== null) ? $element->eczema_id : 0,
-          false,
-          false,
-          false,
-          false,
-          array(
+           ($element->eczema_id !== null) ? $element->eczema_id : 0,
+           false,
+           false,
+           false,
+           false,
+           array(
               'text-align' => 'right',
               'nowrapper' => true,
           ),
-          array(
+           array(
               'label' => 4,
               'field' => 8,
           ));
-      ?>
+            ?>
   </div>
   <div class="large-1 column">
     <label><?php echo $element->getAttributeLabel('eye_rubber_id') ?>:</label>
   </div>
   <div class="large-2 column">
-      <?php $form->radioButtons(
+        <?php $form->radioButtons(
           $element,
           'eye_rubber_id',
           array(
               0 => 'No',
               1 => 'Yes',
           ),
-          ($element->eye_rubber_id !== null) ? $element->eye_rubber_id : 0,
-          false,
-          false,
-          false,
-          false,
-          array(
+           ($element->eye_rubber_id !== null) ? $element->eye_rubber_id : 0,
+           false,
+           false,
+           false,
+           false,
+           array(
               'text-align' => 'right',
               'nowrapper' => true,
           ),
-          array(
+           array(
               'label' => 4,
               'field' => 8,
           ));
-      ?>
+            ?>
   </div>
   <div class="large-1 column">
     <label><?php echo $element->getAttributeLabel('hayfever_id') ?>:</label>
   </div>
   <div class="large-2 column">
-      <?php $form->radioButtons(
+        <?php $form->radioButtons(
           $element,
           'hayfever_id',
           array(
               0 => 'No',
               1 => 'Yes',
           ),
-          ($element->hayfever_id !== null) ? $element->hayfever_id : 0,
-          false,
-          false,
-          false,
-          false,
-          array(
+           ($element->hayfever_id !== null) ? $element->hayfever_id : 0,
+           false,
+           false,
+           false,
+           false,
+           array(
               'text-align' => 'right',
               'nowrapper' => true,
           ),
-          array(
+           array(
               'label' => 4,
               'field' => 8,
           ));
-      ?>
+            ?>
   </div>
 </div>
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :
         ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
@@ -144,20 +144,20 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->{$eye_side . '_previous_cxl_value'} !== null) ? $element->{$eye_side . '_previous_cxl_value'} : 0,
-                      false,
-                      false,
-                      false,
-                      false,
-                      array(
+                       ($element->{$eye_side . '_previous_cxl_value'} !== null) ? $element->{$eye_side . '_previous_cxl_value'} : 0,
+                       false,
+                       false,
+                       false,
+                       false,
+                       array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                      array(
+                       array(
                           'label' => 4,
                           'field' => 8,
                       ));
-                  ?>
+                    ?>
               </td>
             </tr>
             <tr>
@@ -172,20 +172,20 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->{$eye_side . '_previous_refractive_value'} !== null) ? $element->{$eye_side . '_previous_refractive_value'} : 0,
-                      false,
-                      false,
-                      false,
-                      false,
-                      array(
+                       ($element->{$eye_side . '_previous_refractive_value'} !== null) ? $element->{$eye_side . '_previous_refractive_value'} : 0,
+                       false,
+                       false,
+                       false,
+                       false,
+                       array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                      array(
+                       array(
                           'label' => 4,
                           'field' => 8,
                       ));
-                  ?>
+                    ?>
               </td>
             </tr>
             <tr>
@@ -200,20 +200,20 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->{$eye_side . '_intacs_kera_ring_value'} !== null) ? $element->{$eye_side . '_intacs_kera_ring_value'} : 0,
-                      false,
-                      false,
-                      false,
-                      false,
-                      array(
+                       ($element->{$eye_side . '_intacs_kera_ring_value'} !== null) ? $element->{$eye_side . '_intacs_kera_ring_value'} : 0,
+                       false,
+                       false,
+                       false,
+                       false,
+                       array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                      array(
+                       array(
                           'label' => 4,
                           'field' => 8,
                       ));
-                  ?>
+                    ?>
               </td>
             </tr>
             <tr>
@@ -228,20 +228,20 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->{$eye_side . '_previous_hsk_keratitis_value'} !== null) ? $element->{$eye_side . '_previous_hsk_keratitis_value'} : 0,
-                      false,
-                      false,
-                      false,
-                      false,
-                      array(
+                       ($element->{$eye_side . '_previous_hsk_keratitis_value'} !== null) ? $element->{$eye_side . '_previous_hsk_keratitis_value'} : 0,
+                       false,
+                       false,
+                       false,
+                       false,
+                       array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                      array(
+                       array(
                           'label' => 4,
                           'field' => 8,
                       ));
-                  ?>
+                    ?>
               </td>
             </tr>
             </tbody>

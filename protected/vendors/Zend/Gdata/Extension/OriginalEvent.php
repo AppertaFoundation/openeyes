@@ -79,14 +79,14 @@ class Zend_Gdata_Extension_OriginalEvent extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'id':
-            $this->_id = $attribute->nodeValue;
+            case 'id':
+                $this->_id = $attribute->nodeValue;
             break;
-        case 'href':
-            $this->_href = $attribute->nodeValue;
+            case 'href':
+                $this->_href = $attribute->nodeValue;
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
@@ -99,8 +99,8 @@ class Zend_Gdata_Extension_OriginalEvent extends Zend_Gdata_Extension
                 $when->transferFromDOM($child);
                 $this->_when = $when;
                 break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }

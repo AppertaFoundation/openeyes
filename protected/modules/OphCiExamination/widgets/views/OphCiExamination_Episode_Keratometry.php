@@ -63,13 +63,13 @@ if ($keratometry) { ?>
         </div>
         <div class="data-group">
             <?php
-                foreach ($keratometry as $kera) {
-                    ?>
+            foreach ($keratometry as $kera) {
+                ?>
                     <div class="cols-3 column">
-                    <?php
-                    $keraDate = new DateTime($kera['created_date']);
-                    echo $keraDate->format('d-m-Y');
-                        ?>
+                <?php
+                $keraDate = new DateTime($kera['created_date']);
+                echo $keraDate->format('d-m-Y');
+                ?>
                     </div>
             <div class="cols-1 column">
                 <?php
@@ -103,8 +103,8 @@ if ($keratometry) { ?>
             </div>
             <div class="cols-3 column"></div><br/>
                 <?php
-                }
-             ?>
+            }
+            ?>
         </div>
     </div>
     <br/>
@@ -156,49 +156,49 @@ if ($keratometry) { ?>
         </div>
         <div class="data-group">
             <?php
-                foreach ($keratometry as $kera){
-                    ?>
+            foreach ($keratometry as $kera) {
+                ?>
                     <div class="cols-3 column">
-                        <?php
-                        $keraDate = new DateTime($kera['created_date']);
-                        echo $keraDate->format('d-m-Y');
-                        ?>
+                    <?php
+                    $keraDate = new DateTime($kera['created_date']);
+                    echo $keraDate->format('d-m-Y');
+                    ?>
                     </div>
                     <div class="cols-1 column">
-                        <?php
-                        echo $kera['left_anterior_k1_value'];
-                        ?>
+                    <?php
+                    echo $kera['left_anterior_k1_value'];
+                    ?>
                     </div>
                     <div class="cols-1 column">
-                        <?php
-                        echo $kera['left_axis_anterior_k1_value'];
-                        ?>
+                    <?php
+                    echo $kera['left_axis_anterior_k1_value'];
+                    ?>
                     </div>
                     <div class="cols-1 column">
-                        <?php
-                        echo $kera['left_anterior_k2_value'];
-                        ?>
+                    <?php
+                    echo $kera['left_anterior_k2_value'];
+                    ?>
                     </div>
                     <div class="cols-1 column">
-                        <?php
-                        echo $kera['left_axis_anterior_k2_value'];
-                        ?>
+                    <?php
+                    echo $kera['left_axis_anterior_k2_value'];
+                    ?>
                     </div>
                     <div class="cols-1 column">
-                        <?php
-                        echo $kera['left_kmax_value'];
-                        ?>
+                    <?php
+                    echo $kera['left_kmax_value'];
+                    ?>
                     </div>
                     <div class="cols-1 column">
-                        <?php
-                        echo $kera['left_thinnest_point_pachymetry_value'];
-                        ?>
+                    <?php
+                    echo $kera['left_thinnest_point_pachymetry_value'];
+                    ?>
                     </div>
                     <div class="cols-3 column"></div><br/>
                     <?php
-                }
- ?>
+            }
+            ?>
         </div>
     </div>
     <br/>
-        <?php } ?>
+<?php } ?>

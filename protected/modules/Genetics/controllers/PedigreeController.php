@@ -63,7 +63,6 @@ class PedigreeController extends BaseModuleController
         if ($id) {
             $admin->setModelId($id);
         } else {
-
             //oh, sure, let me just set the defaults this way.
             //more: Admin.php line ~515
             $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
@@ -229,14 +228,12 @@ class PedigreeController extends BaseModuleController
 
         $pedigree_id = Yii::app()->request->getQuery('term', null);
 
-        if( strlen($pedigree_id) > 2){
-
+        if ( strlen($pedigree_id) > 2) {
             $criteria = new CDbCriteria();
             $criteria->addSearchCondition('t.id', $pedigree_id, true);
 
             $pedigrees = Pedigree::model()->with('gene')->findAll($criteria);
         } else {
-
             //if pedigree_id is 2 digit or less we return the exact match because of performance reasons
 
             $pedigrees = Pedigree::model()->with('gene')->findByPk($pedigree_id);
@@ -244,7 +241,7 @@ class PedigreeController extends BaseModuleController
         }
 
         $output = array();
-        foreach($pedigrees as $pedigree){
+        foreach ($pedigrees as $pedigree) {
             $output[] = array(
                 'label' => $pedigree->id . ($pedigree->gene ? (" (" . $pedigree->gene->name . ")") : ''),
                 'value' => $pedigree->id,
@@ -267,7 +264,6 @@ class PedigreeController extends BaseModuleController
             $post = Yii::app()->request->getPost('Pedigree', array());
             if (array_key_exists('id', $post) && is_array($post['id'])) {
                 foreach ($post['id'] as $id) {
-
                     $model = $model->findByPk($id);
                     if (!count($model->subjects)) {
                         if (isset($model->active)) {

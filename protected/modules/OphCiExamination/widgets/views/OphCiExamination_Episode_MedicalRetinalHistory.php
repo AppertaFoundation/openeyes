@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if ($chart->hasData()): ?>
+<?php if ($chart->hasData()) : ?>
   <div class="data-group">
     <div class="data-label column cols-9"></div>
     <div class="data-value column cols-3">
@@ -117,7 +117,7 @@
         plot.draw();
     });
   </script>
-  <?php else: ?>
+<?php else : ?>
     <div class="cols-12 column">
       <div class="data-value">(no data)</div>
     </div>

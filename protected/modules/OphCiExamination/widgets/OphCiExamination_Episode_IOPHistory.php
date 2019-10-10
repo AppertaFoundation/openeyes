@@ -108,13 +108,13 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
             if (($iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure'))) {
                 $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
                 foreach (['left', 'right'] as $side) {
-                    if ($reading = $iop->getReading($side)){
+                    if ($reading = $iop->getReading($side)) {
                         array_push($iop_data_list[$side], array('x'=>$timestamp, 'y'=>(float)$reading));
                     }
                 }
             }
         }
-        foreach (['left', 'right'] as $side){
+        foreach (['left', 'right'] as $side) {
             usort($iop_data_list[$side], function($item1, $item2){
                 if ($item1['x'] == $item2['x']) return 0;
                 return $item1['x'] < $item2['x'] ? -1 : 1;
@@ -124,33 +124,33 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
     }
 
     public function getPlotlyIOPData(){
-      $iop_data_list = array('right'=>array(), 'left'=>array());
-      $iop_plotly_list = array('right'=>array('x'=>array(), 'y'=>array()), 'left'=>array('x'=>array(), 'y'=>array()));
+        $iop_data_list = array('right'=>array(), 'left'=>array());
+        $iop_plotly_list = array('right'=>array('x'=>array(), 'y'=>array()), 'left'=>array('x'=>array(), 'y'=>array()));
 
-      $events = $this->event_type->api->getEvents($this->patient, false);
-      foreach ($events as $event) {
-        $iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
-        if ($iop) {
-          $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
-          foreach (['left', 'right'] as $side) {
-            $reading = $iop->getReading($side);
-            if ($reading){
-              array_push($iop_data_list[$side], array('x'=>$timestamp, 'y'=>(float)$reading));
+        $events = $this->event_type->api->getEvents($this->patient, false);
+        foreach ($events as $event) {
+            $iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
+            if ($iop) {
+                $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
+                foreach (['left', 'right'] as $side) {
+                    $reading = $iop->getReading($side);
+                    if ($reading) {
+                        array_push($iop_data_list[$side], array('x'=>$timestamp, 'y'=>(float)$reading));
+                    }
+                }
             }
-          }
         }
-      }
-      foreach (['left', 'right'] as $side){
-        usort($iop_data_list[$side], function($item1, $item2){
-          if ($item1['x'] == $item2['x']) return 0;
-          return $item1['x'] < $item2['x'] ? -1 : 1;
-        });
-        foreach ($iop_data_list[$side] as $item){
-          $iop_plotly_list[$side]['x'][] = $item['x'];
-          $iop_plotly_list[$side]['y'][] = $item['y'];
+        foreach (['left', 'right'] as $side) {
+            usort($iop_data_list[$side], function($item1, $item2){
+                if ($item1['x'] == $item2['x']) return 0;
+                return $item1['x'] < $item2['x'] ? -1 : 1;
+            });
+            foreach ($iop_data_list[$side] as $item) {
+                $iop_plotly_list[$side]['x'][] = $item['x'];
+                $iop_plotly_list[$side]['y'][] = $item['y'];
+            }
         }
-      }
-      return $iop_plotly_list;
+        return $iop_plotly_list;
     }
 
     public function getTargetIOP(){

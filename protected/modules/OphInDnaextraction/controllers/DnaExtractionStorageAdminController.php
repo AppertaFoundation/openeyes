@@ -70,15 +70,14 @@ class DnaExtractionStorageAdminController extends \ModuleAdminController
         $admin->deleteModel();
     }
     
-    public function actionGetNextLetterNumberRow( )
+    public function actionGetNextLetterNumberRow()
     {
         $result = array();
-        if((int)$_POST['box_id'] > 0){
-            
+        if ((int)$_POST['box_id'] > 0) {
             $storage = new OphInDnaextraction_DnaExtraction_Storage();
            
-            $boxRanges = OphInDnaextraction_DnaExtraction_Box::boxMaxValues(Yii::app()->request->getPost('box_id'));  
-            $letterArray = $storage->generateLetterArrays(Yii::app()->request->getPost('box_id'), $boxRanges['maxletter'] , $boxRanges['maxnumber']);       
+            $boxRanges = OphInDnaextraction_DnaExtraction_Box::boxMaxValues(Yii::app()->request->getPost('box_id'));
+            $letterArray = $storage->generateLetterArrays(Yii::app()->request->getPost('box_id'), $boxRanges['maxletter'], $boxRanges['maxnumber']);
             $usedBoxRows = $storage->getAllLetterNumberToBox( Yii::app()->request->getPost('box_id') );
         
       
@@ -86,8 +85,8 @@ class DnaExtractionStorageAdminController extends \ModuleAdminController
                 return !in_array($element, $usedBoxRows);
             });
            
-            foreach($arrayDiff as $key => $val){
-                if($val['letter'] == "0"){
+            foreach ($arrayDiff as $key => $val) {
+                if ($val['letter'] == "0") {
                     $result['letter'] = "You have not specified a maximum letter value.";
                     $result['number'] = "You have not specified a maximum number value.";
                 } else {

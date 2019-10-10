@@ -24,19 +24,16 @@ class LabResults extends EventPage
             ),
 
             'timeField' => array(
-                'xpath' => "//*[@id='Element_OphInLabResults_Inr_time']"
-            ),
-            'timeBtn' => array(
-                'xpath' => "//*[@id='div_Element_OphInLabResults_Inr_time']"
+                'xpath' => "//*[@id='Element_OphInLabResults_Entry_time']"
             ),
             'resultField' => array(
-                'xpath' => "//*[@id='Element_OphInLabResults_Inr_result']"
+                'xpath' => "//*[@id='Element_OphInLabResults_Entry_result']"
             ),
             'commentField' => array(
-                'xpath' => "//*[@id='Element_OphInLabResults_Inr_comment']"
+                'xpath' => "//*[@id='Element_OphInLabResults_Entry_comment']"
             ),
              'inrResultField' => array(
-                 'xpath' => "//*[@class='element full edit Element_OphInLabResults_Inr']"
+                 'xpath' => "//*[@class='element full edit Element_OphInLabResults_Entry']"
              ),
 
         );
@@ -52,7 +49,6 @@ class LabResults extends EventPage
     {
         $this->waitForElementDisplayBlock('inrResultField');
         if($this->getElement('inrResultField')->isVisible()){
-        $this->getElement('timeBtn')->click();
         $this->getElement('timeField')->setValue($time);
         }
     }

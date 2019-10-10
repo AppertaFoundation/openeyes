@@ -24,8 +24,8 @@
   <section class="element-fields full-width">
     <div class="eyedraw flex-layout flex-top">
       <div class="eyedraw-canvas">
-          <?php
-          $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+            <?php
+            $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
               'side' => $element->eye->getShortName(),
               'mode' => 'view',
               'width' => 200,
@@ -33,8 +33,8 @@
               'model' => $element,
               'attribute' => 'eyedraw',
               'idSuffix' => 'Buckle',
-          ));
-          ?>
+            ));
+            ?>
       </div>
       <div class="eyedraw-data cols-9">
         <table class="label-value no-lines last-left">
@@ -45,37 +45,24 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('drainage_type_id')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('drainage_type_id')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?php echo $element->drainage_type->name ?>
+                    <?php echo $element->drainage_type->name ?>
               </div>
             </td>
           </tr>
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('drain_haem')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('drain_haem')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?php echo $element->drain_haem ? 'Yes' : 'No' ?>
-              </div>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('deep_suture')) ?>
-              </div>
-            </td>
-            <td>
-              <div class="data-value">
-                  <?php echo $element->deep_suture ? 'Yes' : 'No' ?>
+                    <?php echo $element->drain_haem ? 'Yes' : 'No' ?>
               </div>
             </td>
           </tr>
@@ -83,12 +70,12 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('report')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('deep_suture')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?=\CHtml::encode($element->report) ?>
+                    <?php echo $element->deep_suture ? 'Yes' : 'No' ?>
               </div>
             </td>
           </tr>
@@ -96,12 +83,25 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?=\CHtml::encode($element->getAttributeLabel('comments')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('report')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?php echo Yii::app()->format->Ntext($element->comments) ?>
+                    <?=\CHtml::encode($element->report) ?>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="data-label">
+                    <?=\CHtml::encode($element->getAttributeLabel('comments')) ?>
+              </div>
+            </td>
+            <td>
+              <div class="data-value">
+                    <?php echo Yii::app()->format->Ntext($element->comments) ?>
               </div>
             </td>
           </tr>

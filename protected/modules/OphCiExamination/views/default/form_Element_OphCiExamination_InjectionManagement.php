@@ -21,7 +21,7 @@
   <div class="data-group">
     <div class="cols-3 column">
       <label>
-          <?php echo $element->getAttributeLabel('injection_status_id') ?>:
+            <?php echo $element->getAttributeLabel('injection_status_id') ?>:
       </label>
     </div>
     <div class="cols-9 column">
@@ -54,7 +54,7 @@
   <div class="data-group">
     <div class="cols-3 column">
       <label>
-          <?=$element->getAttributeLabel('injection_deferralreason_id')?>:
+            <?=$element->getAttributeLabel('injection_deferralreason_id')?>:
       </label>
     </div>
     <div class="cols-4 column ">
@@ -71,8 +71,8 @@
 
 <div class="element-fields flex-layout full-width "
      id="div_<?=\CHtml::modelName($element) ?>_injection_deferralreason_other"<?php if (!($element->injection_deferralreason && $element->injection_deferralreason->other)) {
-    ?> style="display: none;"<?php
-} ?>>
+            ?> style="display: none;"<?php
+             } ?>>
   <div class="data-group">
     <div class="cols-3 column">
       <label>
