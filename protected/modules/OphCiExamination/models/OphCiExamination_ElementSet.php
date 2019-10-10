@@ -103,7 +103,6 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
                 $element_types[$item->display_order] = $item->element_type;
             } else {
                 $element_types[$maximum_worklist_display_order + $item->element_type->display_order] = $item->element_type;
-
             }
         }
 
@@ -111,10 +110,11 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
         return $element_types;
     }
 
-    public function getWorkFlowMaximumDisplayOrder(){
+    public function getWorkFlowMaximumDisplayOrder()
+    {
         $maximum_display_order = 0;
-        foreach($this->visibleItems as $item) {
-            if($item->display_order && $item->display_order > $maximum_display_order) {
+        foreach ($this->visibleItems as $item) {
+            if ($item->display_order && $item->display_order > $maximum_display_order) {
                 $maximum_display_order = $item->display_order;
             }
         }
@@ -170,7 +170,8 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
         return $mandatoryElementTypes;
     }
 
-    public function isDeletable($step_id = null){
+    public function isDeletable($step_id = null)
+    {
         if (!$step_id) {
             $step_id = $this->id;
         }

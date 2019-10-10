@@ -17,13 +17,13 @@
  */
 ?>
 <div class="box admin">
-	<div class="data-group">
-		<div class="column cols-2">
-			<?=\CHtml::textField('step_name', $step->name, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		</div>
-		<div class="column cols-2 end">
-			<?php echo EventAction::button('Save', 'save_step_name', null, array('class' => 'small'))->toHtml()?>
-		</div>
+    <div class="data-group">
+        <div class="column cols-2">
+            <?=\CHtml::textField('step_name', $step->name, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+        </div>
+        <div class="column cols-2 end">
+            <?php echo EventAction::button('Save', 'save_step_name', null, array('class' => 'small'))->toHtml()?>
+        </div>
   </div>
   <div id="workflow-flash" class="alert-box info" style="display: none">Workflow saved</div>
   <i class="spinner loader" style="display: none;"></i>
@@ -66,8 +66,8 @@
                 </div>
               </div>
               <div>
-                  <?php echo EventAction::button('Edit workflow', 'edit_workflow', null, array('class' => 'small'))->toHtml()?>
-                  <?php echo EventAction::button('Reset workflow', 'reset_workflow', null, array('class' => 'small', 'data-element_set_id'=>$step->id))->toHtml()?>
+                    <?php echo EventAction::button('Edit workflow', 'edit_workflow', null, array('class' => 'small'))->toHtml()?>
+                    <?php echo EventAction::button('Reset workflow', 'reset_workflow', null, array('class' => 'small', 'data-element_set_id'=>$step->id))->toHtml()?>
               </div>
             </div>
           </td>
