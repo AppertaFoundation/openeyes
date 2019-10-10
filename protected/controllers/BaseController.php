@@ -240,11 +240,11 @@ class BaseController extends Controller
         // TODO: Check logged in before setting
         $this->jsVars['element_close_warning_enabled'] = Yii::app()->params['element_close_warning_enabled'];
         if (isset(Yii::app()->session['user'])) {
-          $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
-          $this->jsVars['user_id'] = $user->id;
-          $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
-          $this->jsVars['user_email'] = $user->email;
-          $this->jsVars['user_username'] = $user->username;
+            $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
+            $this->jsVars['user_id'] = $user->id;
+            $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
+            $this->jsVars['user_email'] = $user->email;
+            $this->jsVars['user_username'] = $user->username;
         }
         $institution = Institution::model()->findByAttributes(array('remote_id' => Yii::app()->params['institution_code']));
         $this->jsVars['institution_code'] = $institution->remote_id;
@@ -312,7 +312,8 @@ class BaseController extends Controller
     protected function renderJSON($data)
     {
         header('Content-type: application/json');
-        echo CJSON::encode($data);
+        // echo CJSON::encode($data);
+        echo json_encode($data);
 
         foreach (Yii::app()->log->routes as $route) {
             if ($route instanceof CWebLogRoute) {
@@ -364,9 +365,9 @@ class BaseController extends Controller
         $newUniqueCode->unique_code_id = $this->getActiveUnusedUniqueCode();
         if ($eventId > 0) {
             $newUniqueCode->event_id = $eventId;
-            $newUniqueCode->user_id = NULL;
+            $newUniqueCode->user_id = null;
         } elseif ($userId > 0) {
-            $newUniqueCode->event_id = NULL;
+            $newUniqueCode->event_id = null;
             $newUniqueCode->user_id = $userId;
         }
         $newUniqueCode->isNewRecord = true;
@@ -407,5 +408,21 @@ class BaseController extends Controller
     public function setPageTitle($pageTitle)
     {
         parent::setPageTitle($pageTitle . ' - OE');
+    }
+
+    public function sanitizeInput($input)
+    {
+        $allowable_tags = "<b><table><thead><tbody><tr><th><td>";
+        if (count($input) > 0) {
+            foreach ($input as $key => $value) {
+                if (is_array($value) || is_object($value)) {
+                    $input[$key] = $this->sanitizeInput($value);
+                    continue;
+                }
+                $value = CHtml::encode(strip_tags($value, $allowable_tags));
+                $input[$key] = $value;
+            }
+        }
+        return $input;
     }
 }
