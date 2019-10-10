@@ -462,7 +462,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         // code adapted from module.js to verify if diagnosis already in table or not
         var alreadyInList = false;
-        var listSide = null;
         var row, $tr;
 
         // iterate over table rows.
@@ -474,10 +473,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 $(this).find('.js-left-eye').prop('checked', side === 3 || side === 1);
                 $(this).find('.js-right-eye').prop('checked', side === 3 || side === 2);
 
-                listSide = $(this).find('input[type="radio"]:checked').val();
-                if (listSide !== side) {
-                    $(this).find('input[type="radio"][value=' + side + ']').prop('checked', true);
-                }
                 // stop iterating
                 return false;
             }
