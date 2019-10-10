@@ -179,8 +179,7 @@ class NodAuditReport extends Report implements ReportInterface
                                             cp5er.total_raw_score as raw_score')
                         ->leftJoin('cat_prom5_event_result cp5er','e2.id = cp5er.event_id')
                         ->andWhere('cp5er.event_id is not null')
-                        // ->andWhere('DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0', array(':days'=>$this->months))
-                        ->group('e2.id');
+                        ->group('e2.id, e1.id');
                     break;
         }
 

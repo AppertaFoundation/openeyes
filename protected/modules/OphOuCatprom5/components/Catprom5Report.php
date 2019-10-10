@@ -35,7 +35,7 @@ class Catprom5Report extends \Report implements \ReportInterface
      */
 
     protected $plotlyConfig = array(
-      'type' => 'line',
+      'type' => 'bar',
       'showlegend' => false,
       'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
       'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
@@ -44,15 +44,15 @@ class Catprom5Report extends \Report implements \ReportInterface
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
       ),
       'xaxis' => array(
-        'title' => 'POR - PPOR (Dioptres)',
-        'range' => [0,40],
+        'title' => 'Rasch Score',
+        'range' => [0,21],
         'ticks' => 'outside',
         'tickvals' => [],
         'ticktext' => [],
         'tickangle' => -45,
       ),
       'yaxis' => array(
-        'title' => 'Number of eyes',
+        'title' => 'Number of Scores',
         'showline' => true,
         'showgrid' => true,
         'ticks' => 'outside',
@@ -88,6 +88,7 @@ class Catprom5Report extends \Report implements \ReportInterface
     {
         $this->getExaminationEvent();
 
+        $this->command->reset();
         $this->command->select('post_examination.episode_id, note_event.episode_id, note_event.event_date as op_date, note_event.id, op_procedure.eye_id,
         post_examination.event_date as post_exam_date, post_examination.event_date as post_exam_date, post_examination.id as post_id, patient.id as patient_id,
         left_sphere, right_sphere, left_cylinder, right_cylinder, predicted_refraction, note_event.id as event_id')
@@ -120,11 +121,12 @@ class Catprom5Report extends \Report implements \ReportInterface
     public function dataset(){
 
         $data = $this->queryData($this->from, $this->to, $this->months, $this->procedures);
+        // var_export($data);
         $count = array();
         $this->padPlotlyCategories();
 
       // fill up the array with 0, have to send 0 to highcharts if there is no data
-        for ($i = -10; $i <= 10; $i += 0.5) {
+        for ($i = 0; $i <= 21; $i++) {
             $count[] = array(0,array());
         }
         $bestvalues = array();
@@ -168,6 +170,8 @@ class Catprom5Report extends \Report implements \ReportInterface
         $this->plotlyConfig['yaxis']['range'] = [0, max(array_map(function($item){
             return $item[1];
         }, $dataSet))];
+        
+        // var_export($dataSet);
         return $dataSet;
     }
 
@@ -177,8 +181,14 @@ class Catprom5Report extends \Report implements \ReportInterface
 
     protected function padPlotlyCategories()
     {
-        for ($i = -10, $j = 0; $i <= 10; $i += 0.5, $j++) {
-            $this->plotlyConfig['xaxis']['ticktext'][] = $i;
+        $this->command->reset();
+        $this->command->select('rasch_measure')
+        ->from('cat_prom5_score_map')
+        ->order('raw_score');
+        $raschVals =$this->command->queryAll();
+        
+        for ($j = 0; $j <count($raschVals);$j++) {
+            $this->plotlyConfig['xaxis']['ticktext'][] = number_format($raschVals[$j]['rasch_measure'],2);
             $this->plotlyConfig['xaxis']['tickvals'][] = $j;
         }
     }
@@ -203,7 +213,7 @@ class Catprom5Report extends \Report implements \ReportInterface
         $dataset = $this->dataset();
         $trace1 = array(
           'name' => 'Catprom5',
-          'type' => 'line',
+          'type' => 'bar',
           'marker' => array(
             'color' => '#7cb5ec',
           ),
@@ -217,9 +227,8 @@ class Catprom5Report extends \Report implements \ReportInterface
                 return $item[2];
             }, $dataset),
           'hovertext' => array_map(function($item){
-            return '<i>Diff Post: </i>'.$this->plotlyConfig['xaxis']['ticktext'][$item[0]]. 
-            '<br><b>Catprom5</b><br><i>Max</i>: '.'<br><i>Average</i>: '.'<br><i>Min</i>: '
-              .'<br><i>Num results:</i> '.$item[1];
+            return '<b>Catprom5</b><br><i>Diff Post: </i>'.$this->plotlyConfig['xaxis']['ticktext'][$item[0]]. 
+            '<br><i>Num results:</i> '.$item[1];
           }, $dataset),
           'hoverinfo' => 'text',
           'hoverlabel' => array(
@@ -268,10 +277,10 @@ class Catprom5Report extends \Report implements \ReportInterface
             $plusOrMinusHalfPercent = number_format((($plusOrMinusHalf / $totalEyes) * 100), 1, '.', '');
         }
 
-        $this->plotlyConfig['title'] = 'Catprom5: mean sphere (D)<br>'
-        . '<sub>Total eyes: ' . $totalEyes
-        . ', ±0.5D: ' .$plusOrMinusHalfPercent
-        . '%, ±1D: '.$plusOrMinusOnePercent.'%</sub>';
+        $this->plotlyConfig['title'] = 'Catprom5: Rasch Scores';
+        // . '<br><sub>Total eyes: ' . $totalEyes
+        // . ', ±0.5D: ' .$plusOrMinusHalfPercent
+        // . '%, ±1D: '.$plusOrMinusOnePercent.'%</sub>';
         return json_encode($this->plotlyConfig);
     }
 
